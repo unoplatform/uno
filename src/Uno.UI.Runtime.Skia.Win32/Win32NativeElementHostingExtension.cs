@@ -20,27 +20,45 @@ using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : ContentPresenter.INativeElementHostingExtension
+internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
-	private static string? _lastFinalSvgClipPath;
 
+	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
 	private Rect _lastArrangeRect;
+	private string? _lastFinalSvgClipPath;
+	private HRGN _lastClipHrgn;
+
+	public Win32NativeElementHostingExtension(ContentPresenter presenter)
+	{
+		_presenter = presenter;
+	}
+
+	~Win32NativeElementHostingExtension()
+	{
+		if (!_lastClipHrgn.IsNull)
+		{
+			if (!PInvoke.DeleteObject(_lastClipHrgn))
+			{
+				typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+		}
+	}
 
 	private HWND Hwnd
 	{
 		get
 		{
-			if (presenter.XamlRoot is null)
+			if (_presenter.XamlRoot is null)
 			{
 				throw new InvalidOperationException($"{nameof(XamlRoot)} is null.");
 			}
 
-			if (presenter.XamlRoot.HostWindow is not { } window)
+			if (_presenter.XamlRoot.HostWindow is not { } window)
 			{
-				throw new InvalidOperationException($"{nameof(presenter)}.{nameof(XamlRoot)}.{nameof(XamlRoot.HostWindow)} is null.");
+				throw new InvalidOperationException($"{nameof(_presenter)}.{nameof(XamlRoot)}.{nameof(XamlRoot.HostWindow)} is null.");
 			}
 
 			if (window.NativeWindow is not Win32NativeWindow nativeWindow)
@@ -75,7 +93,7 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 			return;
 		}
 
-		Win32WindowWrapper.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!.RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
+		Win32WindowWrapper.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!.RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
 	}
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
@@ -91,8 +109,9 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
 		_tempPath.Transform(SKMatrix.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
 
-		if (_tempPath.ToSvgPathData() is var svgPathData && svgPathData == _lastFinalSvgClipPath)
+		if (_tempPath.ToSvgPathData() is var svgPathData && svgPathData == _lastFinalSvgClipPath && !_lastClipHrgn.IsNull)
 		{
+			SetHrgnAndCache(this, _lastClipHrgn);
 			return;
 		}
 
@@ -211,9 +230,41 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 			return;
 		}
 
-		// "After a successful call to SetWindowRgn, the system owns the region specified by the region handle hRgn. The system does not make a copy of the region. Thus, you should not make any further function calls with this region handle. In particular, do not delete this region handle. The system deletes the region handle when it no longer needed."
-		var success = PInvoke.SetWindowRgn((HWND)((Win32NativeWindow)presenter.Content).Hwnd, new HRGN(hrgn), true) != 0;
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowRgn)} failed: {Win32Helper.GetErrorMessage()}"); }
+		SetHrgnAndCache(this, hrgn);
+
+		static void SetHrgnAndCache(Win32NativeElementHostingExtension @this, HRGN hrgn)
+		{
+			var hwnd = (HWND)((Win32NativeWindow)@this._presenter.Content).Hwnd;
+
+			// "After a successful call to SetWindowRgn, the system owns the region specified by the region handle hRgn. The system does not make a copy of the region. Thus, you should not make any further function calls with this region handle. In particular, do not delete this region handle. The system deletes the region handle when it no longer needed."
+			if (PInvoke.SetWindowRgn(hwnd, new HRGN(hrgn), true) == 0)
+			{
+				@this.LogError()?.Error($"{nameof(PInvoke.SetWindowRgn)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+
+			if (!@this._lastClipHrgn.IsNull)
+			{
+				if (!PInvoke.DeleteObject(@this._lastClipHrgn))
+				{
+					typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}");
+				}
+			}
+
+			@this._lastClipHrgn = PInvoke.CreateRectRgn(0, 0, 0, 0);
+			if (@this._lastClipHrgn.IsNull)
+			{
+				@this.LogError()?.Error($"{nameof(PInvoke.SetWindowRgn)} failed: {Win32Helper.GetErrorMessage()}");
+				return;
+			}
+
+			if (PInvoke.GetWindowRgn(hwnd, @this._lastClipHrgn) == GDI_REGION_TYPE.RGN_ERROR)
+			{
+				// Do not report an error here as this will spam the console.
+				// RGN_ERROR means that "The specified window does not have a region, or an error occurred while attempting to return the region."
+				// @this.LogError()?.Error($"{nameof(PInvoke.GetWindowRgn)} failed: {Win32Helper.GetErrorMessage()}");
+				@this._lastClipHrgn = HRGN.Null;
+			}
+		}
 	}
 
 	public void DetachNativeElement(object content)
@@ -231,7 +282,7 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		Win32WindowWrapper.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!.RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
+		Win32WindowWrapper.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!.RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
 
 	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
@@ -241,7 +292,7 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		var scale = presenter.XamlRoot?.RasterizationScale ?? 1;
+		var scale = _presenter.XamlRoot?.RasterizationScale ?? 1;
 
 		_lastArrangeRect = new Rect(arrangeRect.X * scale, arrangeRect.Y * scale, arrangeRect.Width * scale, arrangeRect.Height * scale);
 
