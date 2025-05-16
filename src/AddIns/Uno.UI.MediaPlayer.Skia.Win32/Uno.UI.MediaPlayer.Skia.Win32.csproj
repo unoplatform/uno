@@ -57,5 +57,6 @@
 
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+		<EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\libvlc_init_sample.mp4" />
 	</ItemGroup>
 </Project>

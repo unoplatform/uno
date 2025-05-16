@@ -4,15 +4,16 @@ using Uno.WinUI.Runtime.Skia.X11;
 
 namespace Uno.UI.Hosting;
 
-internal partial class X11HostBuilder : IPlatformHostBuilder
+public partial class X11HostBuilder : IPlatformHostBuilder
 {
 	// [hostname]:display[.screen], e.g. 127.0.0.1:0.0 or most likely just :0
 	[GeneratedRegex(@"^(?:(?<hostname>[\w\.-]+))?:(?<displaynumber>\d+)(?:\.(?<screennumber>\d+))?$")]
 	private static partial Regex DisplayRegex();
 
 	private int _renderFrameRate = 60;
+	private bool _preloadMediaPlayer;
 
-	public X11HostBuilder()
+	internal X11HostBuilder()
 	{
 	}
 
@@ -25,11 +26,17 @@ internal partial class X11HostBuilder : IPlatformHostBuilder
 		return this;
 	}
 
-	public bool IsSupported
+	public X11HostBuilder PreloadMediaPlayer(bool preload)
+	{
+		_preloadMediaPlayer = preload;
+		return this;
+	}
+
+	bool IPlatformHostBuilder.IsSupported
 		=> OperatingSystem.IsLinux() &&
 			Environment.GetEnvironmentVariable("DISPLAY") is { } displayString &&
 			DisplayRegex().Match(displayString).Success;
 
-	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
-		=> new X11ApplicationHost(appBuilder, _renderFrameRate);
+	UnoPlatformHost IPlatformHostBuilder.Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
+		=> new X11ApplicationHost(appBuilder, _renderFrameRate, preloadVlc: _preloadMediaPlayer);
 }

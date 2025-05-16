@@ -1,8 +1,10 @@
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Media.Playback;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -19,6 +21,7 @@ using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
+using Uno.Media.Playback;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -74,8 +77,17 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
 	}
 
-	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60)
+	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60) : this(appBuilder, renderFrameRate, false)
 	{
+	}
+
+	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60, bool preloadVlc = false)
+	{
+		if (preloadVlc && Type.GetType("Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaExtensionType)
+		{
+			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
+		}
+
 		_appBuilder = appBuilder;
 
 		if (RenderFrameRate != default && renderFrameRate != RenderFrameRate)
