@@ -79,7 +79,6 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60) : this(appBuilder, renderFrameRate, false)
 	{
-		
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60, bool preloadVlc = false)
