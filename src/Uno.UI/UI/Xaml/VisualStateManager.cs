@@ -290,5 +290,74 @@ namespace Microsoft.UI.Xaml
 
 			return (null, null);
 		}
+
+		internal static void InitializeStateTriggers(DependencyObject pDO, bool forceUpdate = false)
+		{
+			if (pDO is not Control pControl)
+			{
+				return;
+			}
+
+			var groupCollection = VisualStateManager.GetVisualStateGroups(pControl);
+			if (groupCollection is null)
+			{
+				return;
+			}
+
+			// auto& groupCollectionMap = groupCollection->GetStateTriggerVariantMaps();
+			// if (forceUpdate)
+			// {
+			// 	// Forcing an update, clear the map
+			// 	groupCollectionMap.clear();
+			//
+			// 	// If we're forcing an update, we should also clear the state trigger variant maps in each group.
+			// 	for (auto group : *groupCollection)
+			// 	{
+			// 		static_cast<CVisualStateGroup*>(group)->m_pStateTriggerVariantMap = nullptr;
+			// 	}
+			//
+			// 	for (auto& groupContext : groupCollection->GetGroupContext())
+			// 	{
+			// 		groupContext.GetStateTriggerVariantMap() = nullptr;
+			// 	}
+			// }
+			//
+			// if (!groupCollectionMap.empty())
+			// {
+			// 	// If the map isn't clear, then we are already initialized or we weren't forced by diagnostics to update.
+			// 	// Adding triggers isn't something usually supported at runtime.
+			// 	return S_OK;
+			// }
+			//
+			// auto dataSource = CreateVisualStateManagerDataSource(groupCollection);
+			// auto dataSourceMap = dataSource->GetStateTriggerVariantMaps();
+			//
+			// if (!dataSourceMap.empty())
+			// {
+			// 	if (forceUpdate)
+			// 	{
+			// 		// Forcing an update, clear the map
+			// 		dataSourceMap.clear();
+			// 	}
+			//
+			// 	if (!dataSourceMap.empty())
+			// 	{
+			// 		// If the map isn't clear, then we are already initialized or we weren't forced by diagnostics to update.
+			// 		// Adding triggers isn't something usually supported at runtime.
+			// 		return S_OK;
+			// 	}
+			// }
+			//
+			// VisualStateManagerActuator actuator(
+			// 	static_cast<CFrameworkElement*>(pControl->GetFirstChildNoAddRef()), dataSource.get());
+			// IFC_RETURN(actuator.InitializeStateTriggers(pControl));
+
+			// Uno Specific
+			foreach (var visualStateGroup in GetVisualStateGroups(pControl))
+			{
+				visualStateGroup.OnOwnerElementLoaded(pControl, null);
+				visualStateGroup.RefreshStateTriggers(forceUpdate);
+			}
+		}
 	}
 }
