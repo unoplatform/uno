@@ -193,6 +193,7 @@ SetCursor
 SetLayeredWindowAttributes
 SetParent
 SetPixelFormat
+SetProcessDpiAwarenessContext
 SetThreadDpiAwarenessContext
 SetWindowLong
 SetWindowPos
