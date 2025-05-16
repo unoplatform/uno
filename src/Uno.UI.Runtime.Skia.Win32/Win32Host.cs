@@ -93,7 +93,11 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		}
 	}
 
-	public Win32Host(Func<Application> appBuilder, bool preloadVlc = false)
+	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)
+	{
+	}
+
+	public Win32Host(Func<Application> appBuilder, bool preloadVlc)
 	{
 		if (preloadVlc && Type.GetType("Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.Win32") is { } mediaExtensionType)
 		{

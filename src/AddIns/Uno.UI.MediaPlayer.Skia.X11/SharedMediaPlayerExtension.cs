@@ -21,6 +21,14 @@ using MediaPlayer = Windows.Media.Playback.MediaPlayer;
 using Windows.Web.Http.Headers;
 using Uno.Logging;
 
+#if IS_MPE_X11
+[assembly: ApiExtension(
+	typeof(IMediaPlayerExtension),
+	typeof(Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension),
+	ownerType: typeof(MediaPlayer),
+	operatingSystemCondition: "linux")]
+#endif
+
 #if IS_MPE_WIN32
 namespace Uno.UI.MediaPlayer.Skia.Win32;
 #else
