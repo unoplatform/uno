@@ -39,9 +39,9 @@ To use MSAL into an Uno project, follow the following steps:
 
 By adding those helpers, Uno will correctly add required initializations to MSAL for all supported platforms.
 
-## Windows - UWP
+## WinUI
 
-There is nothing to change for UWP. The `.WithUnoHelpers()` does nothing on UAP/UWP platforms, they are just there to allow the code to compile without introducing `#if` conditionals in your code.
+There is nothing to change for WinUI. The `.WithUnoHelpers()` does nothing on WinUI, they are just there to allow the code to compile without introducing `#if` conditionals in your code.
 
 ## Android
 

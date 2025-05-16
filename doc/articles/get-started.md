@@ -75,7 +75,7 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 
 |                                    | [**Visual Studio**](xref:Uno.GetStarted.vs2022) | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
 |------------------------------------|-------------------------------------------------|--------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (UWP/WinUI)          | ✔️                                              | ❌                                         | ❌                                                   | ✔️                                              |
+| Windows 10/11 (WinUI)              | ✔️                                              | ❌                                         | ❌                                                   | ✔️                                              |
 | Android                            | ✔️                                              | ✔️                                         | ❌                                                   | ✔️                                              |
 | iOS                                | ✔️†                                             | ✔️††                                       | ❌                                                   | ❌                                              |
 | Web (WebAssembly)                  | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️†††                                           |
@@ -98,7 +98,7 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 
 |                                    | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
 |------------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (UWP/WinUI)          | ❌                                       | ❌                                                   | ❌                                               |
+| Windows 10/11 (WinUI)              | ❌                                       | ❌                                                   | ❌                                               |
 | Android                            | ✔️                                       | ❌                                                   | ✔️                                               |
 | iOS                                | ✔️                                       | ❌                                                   | ✔️                                               |
 | Web (WebAssembly)                  | ✔️                                       | ✔️                                                   | ✔️                                               |
@@ -119,7 +119,7 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 
 |                                    | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
 |------------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (UWP/WinUI)          | ❌                                        | ❌                                                     | ❌                                            |
+| Windows 10/11 (WinUI)              | ❌                                        | ❌                                                     | ❌                                            |
 | Android                            | ✔️                                        | ❌                                                     | ✔️                                            |
 | iOS                                | ❌                                        | ❌                                                     | ❌                                            |
 | Web (WebAssembly)                  | ✔️                                        | ✔️                                                     | ✔️†                                           |

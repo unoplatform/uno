@@ -225,7 +225,7 @@ Several platforms such as macOS, iOS, and Android do not differentiate between t
 
 When applying data to the native clipboard or dragging/dropping data from a DataPackage, only one URI/URL may be used. Therefore, all URI data formats are merged together into a single URI using the above-defined priority. WebLink is considered more specific than ApplicationLink.
 
-When pulling data from the native clipboard or drag/drop data, this single native URI/URL is separated into the equivalent UWP data format (since UWP's direct equivalent standard data format 'Uri' is deprecated). The mapping is as follows:
+When pulling data from the native clipboard or drag/drop data, this single native URI/URL is separated into the equivalent WinUI data format (since WinUI's direct equivalent standard data format 'Uri' is deprecated). The mapping is as follows:
 
 1. WebLink is used if the given URL/URI has a scheme of "http" or "https"
 2. ApplicationLink is used if not #1
