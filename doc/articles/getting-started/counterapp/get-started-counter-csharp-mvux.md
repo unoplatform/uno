@@ -73,8 +73,6 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ![Counter Solution](Assets/counter-solution-csharp.png)
 
-[!INCLUDE [Notice](includes/include-vscode-csproj-notice.md)]
-
 [!INCLUDE [Main Window](includes/include-mainwindow.md)]
 
 [!INCLUDE [Main Page - C# Markup](includes/include-mainpage-csharp.md)]
