@@ -14,6 +14,7 @@ public partial class ContainerVisual : Visual
 {
 	private List<Visual>? _childrenInRenderOrder;
 	private bool _hasCustomRenderOrder;
+	private int? _subtreeVisualCount;
 
 	private (Rect rect, bool isAncestorClip)? _layoutClip;
 
@@ -24,6 +25,13 @@ public partial class ContainerVisual : Visual
 		Children.CollectionChanged += (s, e) =>
 		{
 			IsChildrenRenderOrderDirty = true;
+
+			var parent = this;
+			while (parent is not null && parent._subtreeVisualCount is not null)
+			{
+				parent._subtreeVisualCount = null;
+				parent = parent.Parent;
+			}
 
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)
@@ -160,5 +168,21 @@ public partial class ContainerVisual : Visual
 		}
 
 		return false;
+	}
+
+	internal override int GetSubTreeVisualCount()
+	{
+		if (_subtreeVisualCount is { } count)
+		{
+			return count;
+		}
+		var acc = 0;
+		foreach (var visual in Children.InnerList)
+		{
+			acc += visual.GetSubTreeVisualCount();
+		}
+		_subtreeVisualCount ??= Children.Count + acc;
+
+		return _subtreeVisualCount.Value;
 	}
 }

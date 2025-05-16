@@ -6,7 +6,6 @@ using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
-using Uno.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {

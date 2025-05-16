@@ -206,6 +206,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 		private const SKColorType ColorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
+		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 		private readonly bool _hardwareAccelerated = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
 
 		private GRContext? _context;
@@ -220,6 +221,8 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
+			using var _ = _fpsHelper.BeginFrame();
+
 			var currentPicture = Volatile.Read(ref surfaceView._picture);
 
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
@@ -285,6 +288,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			{
 				// start drawing
 				canvas.DrawPicture(currentPicture);
+				_fpsHelper.DrawFps(canvas);
 			}
 
 			// flush the SkiaSharp contents to GL

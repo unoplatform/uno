@@ -10,6 +10,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	{
 		private const int BitmapPad = 32;
 
+		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 		private SKBitmap? _bitmap;
 		private SKSurface? _surface;
 		private X11AirspaceRenderHelper? _airspaceHelper;
@@ -22,6 +23,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		void IX11Renderer.Render()
 		{
+			using var fpsDisposable = _fpsHelper.BeginFrame();
 			using var lockDiposable = X11Helper.XLock(x11window.Display);
 
 			if (host is X11XamlRootHost { Closed.IsCompleted: true })
@@ -79,6 +81,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				if (host.RootElement?.Visual is { } rootVisual)
 				{
 					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface.Canvas);
+					_fpsHelper.DrawFps(canvas);
 					_airspaceHelper.XShapeClip(path);
 				}
 

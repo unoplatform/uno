@@ -516,6 +516,12 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		public bool ShowFpsIndicator
+		{
+			get => Application.Current.DebugSettings.EnableFrameRateCounter;
+			set => Application.Current.DebugSettings.EnableFrameRateCounter = value;
+		}
+
 #if HAS_UNO
 		public bool SimulateTouch
 		{

@@ -15,6 +15,7 @@ internal partial class Win32WindowWrapper
 
 	private Size? _lastSize;
 	private SKSurface? _surface;
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
@@ -24,6 +25,8 @@ internal partial class Win32WindowWrapper
 		{
 			return;
 		}
+
+		using var _ = _fpsHelper.BeginFrame();
 
 		this.LogTrace()?.Trace($"Render {this._renderCount++}");
 
@@ -64,6 +67,7 @@ internal partial class Win32WindowWrapper
 			{
 				rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
 				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(clientRect.Width, clientRect.Height, rootVisual, _surface.Canvas);
+				_fpsHelper.DrawFps(canvas);
 				RenderingNegativePathReevaluated?.Invoke(this, path);
 			}
 			finally

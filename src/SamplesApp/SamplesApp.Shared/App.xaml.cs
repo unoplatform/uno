@@ -97,6 +97,8 @@ namespace SamplesApp
 			ConfigureFeatureFlags();
 			ParseCommandLineFeatureFlags();
 
+			DebugSettings.EnableFrameRateCounter = true;
+
 			AssertIssue1790ApplicationSettingsUsable();
 			AssertApplicationData();
 
