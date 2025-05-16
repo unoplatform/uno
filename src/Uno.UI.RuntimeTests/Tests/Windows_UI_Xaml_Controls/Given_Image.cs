@@ -75,12 +75,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
 
 #if __SKIA__
-			// Sub-pixel alignment is different with SkiaSharp 3
+			// Sub-pixel alignment is different with SkiaSharp 3 + image downsampling has some smoothing which affects the values need edges
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
 			Assert.AreEqual(new Rect(20, 30, 59, 18), redBounds);
 			Assert.AreEqual(new Rect(20, 41, 19, 17), greenBounds);
-			Assert.AreEqual(new Rect(44, 40, 19, 18), yellowBounds);
-			Assert.AreEqual(new Rect(68, 40, 11, 19), pinkBounds);
+			Assert.AreEqual(new Rect(44, 41, 19, 17), yellowBounds);
+			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
 #else
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
 			Assert.AreEqual(new Rect(20, 38, 59, 18), redBounds);
