@@ -168,6 +168,24 @@ public App()
 >
 > This feature will only work for security reasons when the application runs in Debug mode.
 
+## X11 specifics
+
+In order to use WebView2 on Linux, you'll need to install `libwebkit2gtk` and `libgtk3-0`:
+
+- On Ubuntu 22.04:
+
+  ```bash
+  sudo apt install libwebkit2gtk-4.0-37
+  ```
+
+- On Ubuntu 24.04:
+
+  ```bash
+  sudo apt install libgtk-3-0 libwebkit2gtk-4.1-dev
+  ```
+
+It's overall preferable to use libwebkit2gtk 4.1 whenever possible in order to get http headers support, if your environment allows for it.
+
 ## WinAppSDK Specifics
 
 When using the WebView2 and running on WinAppSDK, make sure to create an `x64` or `ARM64` configuration:
