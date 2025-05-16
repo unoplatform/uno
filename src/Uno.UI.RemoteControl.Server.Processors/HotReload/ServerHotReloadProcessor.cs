@@ -17,6 +17,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Uno.UI.RemoteControl.Messaging;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
@@ -134,6 +135,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async ValueTask Notify(HotReloadEvent evt, HotReloadEventSource source = HotReloadEventSource.DevServer)
 		{
+			if (EventTracingProvider.Instance.IsEnabled())
+			{
+				EventTracingProvider.Instance.OnHotReloadEvent(source.ToString(), evt.ToString());
+			}
+
 			switch (evt)
 			{
 				// Global state events
@@ -164,6 +170,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				case HotReloadEvent.NoChanges:
 					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
 					break;
+
 				case HotReloadEvent.Failed:
 					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
 					break;
