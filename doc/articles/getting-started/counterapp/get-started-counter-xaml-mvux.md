@@ -47,6 +47,7 @@ Before completing the wizard, take a look through each of the sections and see w
 The template will create a solution with a single cross-platform project, named `Counter`, ready to run.
 
 ### [Rider](#tab/rider)
+
 > [!NOTE]
 > If you don't have the **Uno Platform Extension for Rider** installed, follow [these instructions](xref:Uno.GetStarted.Rider).
 
@@ -67,6 +68,7 @@ The template will create a solution with a single cross-platform project, named 
   The template will create a solution with a single cross-platform project, named `Counter`, ready to run.
 
 ### [VS Code](#tab/vscode)
+
 > [!NOTE]
 > If you don't have the **Uno Platform Extension for VS Code** installed, follow [these instructions](xref:Uno.GetStarted.vscode).
 
