@@ -66,7 +66,6 @@ The template will create a solution with a single cross-platform project, named 
 - Once the solution has been loaded, in the status bar at the bottom left of VS Code, `Counter.sln` is selected by default. Select `Counter.csproj` to load the project instead.
 ![Counter.csproj selection in Visual Studio Code](Assets/vscode-csproj-dotnet9.0.png)
 
-
 ## [Command Line](#tab/cli)
 
 > [!NOTE]
