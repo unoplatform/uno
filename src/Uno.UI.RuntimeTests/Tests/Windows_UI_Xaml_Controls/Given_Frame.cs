@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
+using Combinatorial.MSTest;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -497,8 +498,7 @@ public class Given_Frame
 #if !__ANDROID__
 	[Ignore("This test specifically tests Android's NativeFramePresenter")]
 #endif
-	[DataRow(false)]
-	[DataRow(true)]
+	[CombinatorialData]
 	[Timeout(5 * 60 * 1000)] // test is really slow in CI
 	public async Task When_Navigating_NativeFrame_Pages_Get_Collected(bool backAndForth)
 	{

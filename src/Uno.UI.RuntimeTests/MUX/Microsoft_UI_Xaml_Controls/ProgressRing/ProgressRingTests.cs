@@ -4,6 +4,7 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
+using Combinatorial.MSTest;
 
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.ProgressRingTests;
 
@@ -12,8 +13,7 @@ public class ProgressRingTests
 {
 	[TestMethod]
 	[RunsOnUIThread]
-	[DataRow(true)]
-	[DataRow(false)]
+	[CombinatorialData]
 #if !(__WASM__ || HAS_SKOTTIE)
 	[Ignore("Skottie is not supported on net6+ UWP targets")]
 #endif

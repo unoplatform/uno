@@ -35,6 +35,8 @@ using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
 using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
 using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
 using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
+using Combinatorial.MSTest;
+
 #if HAS_UNO
 using Windows.Foundation.Metadata;
 using TreeNodeSelectionState = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeNodeSelectionState;
@@ -109,8 +111,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
@@ -544,11 +545,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
 #endif
-		[DataRow("1", false)]
-		[DataRow("1", true)]
-		[DataRow("111", false)]
-		[DataRow("111", true)]
-		public async Task When_SelectedItem_Expanded(string labelToSelect, bool useBinding)
+		[CombinatorialData]
+		public async Task When_SelectedItem_Expanded(
+			[CombinatorialValues("1", "111")] string labelToSelect, bool useBinding)
 		{
 			var tvm = new TestTreeViewModel
 			{

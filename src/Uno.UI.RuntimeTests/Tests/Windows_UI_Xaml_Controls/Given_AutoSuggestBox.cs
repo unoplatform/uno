@@ -21,6 +21,7 @@ using static Microsoft.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
+using Combinatorial.MSTest;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -112,8 +113,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 #if __SKIA__
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_Text_Changed_UserInput(bool useTextBoxOverlay)
 #else
 		public async Task When_Text_Changed_UserInput()
@@ -392,8 +392,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_Text_Changed_Sequence(bool waitBetweenActions)
 		{
 			var SUT = new AutoSuggestBox()
@@ -793,8 +792,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if WINAPPSDK
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #endif
-		[DataRow(false)]
-		[DataRow(true)]
+		[CombinatorialData]
 		public async Task When_Enter_Escape_Handled(bool escape)
 		{
 			var SUT = new AutoSuggestBox();

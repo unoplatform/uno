@@ -81,6 +81,7 @@
 		<PackageReference Update="MSTest.TestFramework" Version="$(MSTestVersion)" />
 		<PackageReference Update="MSTest.TestAdapter" Version="$(MSTestVersion)" />
 		<PackageReference Update="MSTest.Analyzers" Version="$(MSTestVersion)" />
+		<PackageReference Update="Combinatorial.MSTest" Version="1.0.0" />
 		<PackageReference Update="Microsoft.Testing.Extensions.HangDump" Version="1.6.3" />
 
 		<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
