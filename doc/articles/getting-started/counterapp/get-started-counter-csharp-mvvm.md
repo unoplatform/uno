@@ -46,16 +46,46 @@ Before completing the wizard, take a look through each of the sections and see w
 
 The template will create a solution with a simple cross-platform project, named `Counter`, ready to run.
 
+### [Rider](#tab/rider)
+> [!NOTE]
+> If you don't have the **Uno Platform Extension for Rider** installed, follow [these instructions](xref:Uno.GetStarted.Rider).
+
+- Launch **Rider** and click on **New Solution** on the Start Window
+
+- From the left menu, under the **Uno Platform** section, select **Uno Platform App**
+  At this point, you'll see options for creating a new Uno app, allowing you to customize the generated application. For this tutorial, we will only configure the presentation framework.
+
+- Name the project `Counter`
+
+- Select **Blank** in **Presets** selection
+
+- Select the **Presentation** tab and choose **MVVM**
+
+- Select the Markup tab and choose **C# Markup**
+
+- Click **Create** to complete the creation
+  The template will create a solution with a single cross-platform project, named `Counter`, ready to run.
+
 ### [VS Code](#tab/vscode)
+> [!NOTE]
+> If you don't have the **Uno Platform Extension for VS Code** installed, follow [these instructions](xref:Uno.GetStarted.vscode).
 
 - Launch The Live Wizard by clicking [here](https://new.platform.uno/)
+
 - Name the project `Counter` and click **Start**
+
 - Select **Blank** in **Presets** selection
+
 - Select the **Presentation** tab and choose **MVVM**
+
 - Select the Markup tab and choose **C# Markup**
+
 - Click **Create** to complete the wizard
+
 - Copy the `dotnet new` command and run it from a terminal where you want your solution to be located.
+
 - This will create a new folder called **Counter** containing the new application.
+
 - Next, open the project using Visual Studio Code. In the terminal type the following:
 
   ```bash
@@ -63,6 +93,7 @@ The template will create a solution with a simple cross-platform project, named 
   ```
 
 - Visual Studio Code might ask to restore the NuGet packages. Allow it to restore them if asked.
+
 - Once the solution has been loaded, in the status bar at the bottom left of VS Code, `Counter.sln` is selected by default. Select `Counter.csproj` to load the project instead.
   ![Counter.csproj selection in Visual Studio Code](Assets/vscode-csproj-dotnet9.0.png)
 
