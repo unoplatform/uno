@@ -25,6 +25,8 @@ public sealed partial class ApplicationData
 	private readonly Lazy<ApplicationDataContainer> _localSettingsLazy;
 	private readonly Lazy<ApplicationDataContainer> _roamingSettingsLazy;
 
+	private const string VersionSettingKey = ApplicationDataContainer.InternalSettingPrefix + "ApplictionDataVersion";
+
 	private ApplicationData()
 	{
 		_localFolderLazy = new(() => CreateStorageFolder(GetLocalFolder()));
@@ -91,7 +93,11 @@ public sealed partial class ApplicationData
 	/// <summary>
 	/// Gets the version number of the application data in the app data store.
 	/// </summary>
-	public uint Version { get; private set; } //TODO:MZ: This should be persisted.
+	public uint Version
+	{
+		get => GetVersionSetting();
+		private set => SetVersionSetting(value);
+	}
 
 	[Uno.NotImplemented]
 	public void SignalDataChanged()
@@ -150,6 +156,33 @@ public sealed partial class ApplicationData
 		request.DeferralManager.EventRaiseCompleted();
 		await request.DeferralManager.WhenAllCompletedAsync();
 		Version = desiredVersion;
+	}
+
+	private uint GetVersionSetting()
+	{
+		if (LocalSettings.Values is not ApplicationDataContainerSettings settings)
+		{
+			throw new InvalidOperationException("The settings container is not initialized.");
+		}
+
+		if (settings.TryGetValue(VersionSettingKey, out var version))
+		{
+			if (version is uint versionValue)
+			{
+				return versionValue;
+			}
+		}
+
+		return 0;
+	}
+
+	private void SetVersionSetting(uint version)
+	{
+		if (LocalSettings.Values is not ApplicationDataContainerSettings settings)
+		{
+			throw new InvalidOperationException("The settings container is not initialized.");
+		}
+		settings[VersionSettingKey] = version;
 	}
 
 	private static StorageFolder CreateStorageFolder(string folder)
