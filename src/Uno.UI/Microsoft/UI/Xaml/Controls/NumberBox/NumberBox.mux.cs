@@ -192,10 +192,10 @@ partial class NumberBox
 			m_textBox = textBox;
 		}
 
-		if (m_textBox is not null)
+		if (m_textBox is { } tb)
 		{
-			m_textBox.Loaded += OnTextBoxLoaded;
-			registrations.Add(() => textBox.Loaded -= OnTextBoxLoaded);
+			tb.Loaded += OnTextBoxLoaded;
+			registrations.Add(() => tb.Loaded -= OnTextBoxLoaded);
 		}
 
 		m_popup = GetTemplateChild(c_numberBoxPopupName) as Popup;
