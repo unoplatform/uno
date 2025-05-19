@@ -10,7 +10,9 @@ public partial class SetVersionRequest
 {
 	internal SetVersionRequest(uint currentVersion, uint desiredVersion)
 	{
-		DeferralManager = new DeferralManager<SetVersionDeferral>(c => new SetVersionDeferral(c));
+		CurrentVersion = currentVersion;
+		DesiredVersion = desiredVersion;
+		DeferralManager = new DeferralManager<SetVersionDeferral>(c => new SetVersionDeferral(c), requiresUIThread: false);
 	}
 
 	/// <summary>
