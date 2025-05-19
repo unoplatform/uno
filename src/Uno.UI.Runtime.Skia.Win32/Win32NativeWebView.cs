@@ -100,7 +100,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		}
 		_webViewForNextCreateWindow = null;
 
-		_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+		_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
 
 		if (_hwnd == HWND.Null)
 		{
@@ -111,8 +111,6 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		{
 			this.Log().Trace("Created web view window.");
 		}
-
-		Win32Host.RegisterWindow(_hwnd);
 
 		var success = PInvoke.RegisterTouchWindow(_hwnd, 0);
 		if (!success && this.Log().IsEnabled(LogLevel.Error))
@@ -182,8 +180,6 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 			{
 				_hwndToWebView.Remove(_hwnd);
 			}
-
-			Win32Host.UnregisterWindow(_hwnd);
 		});
 	}
 

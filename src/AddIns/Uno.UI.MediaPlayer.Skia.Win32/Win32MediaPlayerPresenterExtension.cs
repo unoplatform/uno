@@ -149,8 +149,7 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		{
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
 				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
-				var point = _presenter.GetAbsoluteBoundsRect().Location;
-				Win32WindowWrapper.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!.OnPointer(msg, wParam, new Point(-(int)point.X, -(int)point.Y));
+				Win32WindowWrapper.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!.OnPointer(msg, wParam, _hwnd);
 				return new LRESULT(0);
 		}
 

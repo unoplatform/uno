@@ -178,7 +178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/1091")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/1091")]
 		public async Task When_Theme_Changes_NVItem_Foreground()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

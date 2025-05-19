@@ -88,6 +88,10 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						if (FeatureConfiguration.Image.EnableBitmapImageCache)
 						{
 							BitmapImageCache.Add(uri, imageDataTask);
+							// if loading failed not because of an actual failure but because
+							// the task was canceled (usually because the Uri changed), we
+							// don't want to cache the failed task
+							ct.Register(() => BitmapImageCache.Remove(uri, imageDataTask));
 						}
 					}
 

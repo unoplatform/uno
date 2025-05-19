@@ -1583,23 +1583,23 @@ namespace Microsoft.UI.Xaml.Controls
 								rightStart = true;
 								continue;
 							}
-						}
 
-						if (spElement as FrameworkElement is { } spFrmElement)
-						{
-							var width = spFrmElement.Width;
+							if (spElement as FrameworkElement is { } spFrmElement)
+							{
+								var width = spFrmElement.Width;
 
-							if (!leftComplete)
-							{
-								leftWidth = leftWidth + width;
-							}
-							else if (!rightStart)
-							{
-								middleWidth = middleWidth + width;
-							}
-							else
-							{
-								rightWidth = rightWidth + width;
+								if (!leftComplete)
+								{
+									leftWidth = leftWidth + width;
+								}
+								else if (!rightStart)
+								{
+									middleWidth = middleWidth + width;
+								}
+								else
+								{
+									rightWidth = rightWidth + width;
+								}
 							}
 						}
 					}

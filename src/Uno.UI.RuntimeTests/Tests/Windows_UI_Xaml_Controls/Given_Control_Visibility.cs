@@ -21,7 +21,7 @@ public class Given_Control_Visibility
 {
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Times out in Skia UIKit CI https://github.com/unoplatform/uno-private/issues/806
-	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16369")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16369")]
 #if !HAS_RENDER_TARGET_BITMAP
 	[Ignore("Cannot take screenshot on this platform.")]
 #endif

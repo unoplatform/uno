@@ -2549,7 +2549,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18371")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]
 		public async Task When_BeforeTextChanging_Resets_Selection_Direction()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -4078,7 +4078,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno.chefs/issues/1472")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno.chefs/issues/1472")]
 		public async Task When_PasswordBox_Focus_Changes()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -4127,7 +4127,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
 		public async Task When_TextBox_Touch_Tapped_At_End()
 		{
 			var SUT = new TextBox
@@ -4177,7 +4177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
 		public async Task When_Touch_Focused_Then_Scrolled_Away()
 		{
 			var SUT = new TextBox
@@ -4240,7 +4240,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/1199")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/1199")]
 		public async Task When_TextBox_TextChange_Not_Trigger_Selection_Change_To_Start()
 		{
 			var SUT = new TextBox
@@ -4276,7 +4276,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19327")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19327")]
 		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
 		{
 			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;

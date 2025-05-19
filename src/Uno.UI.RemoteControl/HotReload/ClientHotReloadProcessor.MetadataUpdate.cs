@@ -236,9 +236,9 @@ partial class ClientHotReloadProcessor
 
 				if (elementMappedType is not null)
 				{
-					if (_log.IsEnabled(LogLevel.Error))
+					if (_log.IsEnabled(LogLevel.Debug))
 					{
-						_log.Error($"Updating element [{element}] to [{elementMappedType}]");
+						_log.Debug($"Updating element [{element}] to [{elementMappedType}]");
 					}
 
 					ReplaceViewInstance(element, elementMappedType, elementHandlers, updatedTypes);

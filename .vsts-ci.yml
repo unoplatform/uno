@@ -68,6 +68,7 @@ variables:
   #enable_package_cache: true
 
   enable_dotnet_cache: true
+  enable_emsdk_cache: true
   GlobalUnoCheckVersion: '1.31.0-dev.12'
 
 stages:

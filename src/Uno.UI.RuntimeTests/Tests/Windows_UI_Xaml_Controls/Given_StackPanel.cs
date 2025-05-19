@@ -158,7 +158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/3543")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3543")]
 		public async Task When_InsertingChildren_Then_ResultIsInRightOrder()
 		{
 			var pnl = new StackPanel();

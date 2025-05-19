@@ -93,7 +93,7 @@ public class X11NativeWebView : INativeWebView
 
 			if (!WebKit.Global.IsSupported)
 			{
-				_initException = new PlatformNotSupportedException("libwebkit2gtk-4.0 is not found. Make sure that WebKit2GTK 4.0 and GTK 3 are installed.");
+				_initException = new PlatformNotSupportedException("libwebkit2gtk-4.0 is not found. Make sure that WebKit2GTK 4.0 and GTK 3 are installed. See https://aka.platform.uno/webview2 for more information");
 				return;
 			}
 
