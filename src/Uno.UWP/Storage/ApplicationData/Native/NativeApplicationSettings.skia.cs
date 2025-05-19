@@ -13,7 +13,7 @@ namespace Uno.Storage;
 
 partial class NativeApplicationSettings
 {
-	private static partial bool SupportsLocality() => true;
+	private static partial bool SupportsLocalityPlatform() => true;
 
 	private readonly Dictionary<string, string> _values = new();
 	private string _folderPath = null!;
@@ -29,7 +29,7 @@ partial class NativeApplicationSettings
 		ReadFromFile();
 	}
 
-	//public ICollection<string> Keys => _values.Keys;
+	private partial IEnumerable<string> GetKeysPlatform() => _values.Keys;
 
 	public void Add(string key, object value)
 	{
@@ -53,7 +53,7 @@ partial class NativeApplicationSettings
 		WriteToFile();
 	}
 
-	private partial bool ContainsSetting(string key) => _values.ContainsKey(key);
+	private partial bool ContainsSettingPlatform(string key) => _values.ContainsKey(key);
 
 	public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 		=> throw new NotSupportedException();
@@ -61,7 +61,7 @@ partial class NativeApplicationSettings
 	public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 		=> _values.Select(v => new KeyValuePair<string, object>(v.Key, v.Value)).GetEnumerator();
 
-	private partial bool RemoveSetting(string key)
+	private partial bool RemoveSettingPlatform(string key)
 	{
 		var ret = _values.Remove(key);
 
@@ -72,9 +72,9 @@ partial class NativeApplicationSettings
 
 	#region Validated
 
-	private partial bool TryGetSetting(string key, out string? value) => _values.TryGetValue(key, out value);
+	private partial bool TryGetSettingPlatform(string key, out string? value) => _values.TryGetValue(key, out value);
 
-	private partial void SetSetting(string key, string value)
+	private partial void SetSettingPlatform(string key, string value)
 	{
 		_values[key] = value;
 		WriteToFile();
