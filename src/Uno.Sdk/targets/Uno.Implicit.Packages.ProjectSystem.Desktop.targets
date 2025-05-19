@@ -25,7 +25,7 @@
 		<_UnoProjectSystemPackageReference Include="Microsoft.Web.WebView2" ProjectSystem="true" Aliases="$(UnoWebView2Aliases)" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skcanvas;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
