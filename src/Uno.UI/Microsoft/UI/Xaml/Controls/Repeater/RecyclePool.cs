@@ -74,11 +74,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 						var elemInfo = elements[i];
 						if ((elemInfo.Owner == winrtOwner) || (elemInfo.Owner == null))
 						{
-							iter=i;
+							iter = i;
 							break;
 						}
 					}
-					
+
 					if (iter < 0)
 					{
 						iter = elements.Count - 1;
