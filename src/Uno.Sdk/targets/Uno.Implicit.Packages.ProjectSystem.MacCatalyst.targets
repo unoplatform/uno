@@ -17,4 +17,9 @@
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.AppleUIKit" PrivateAssets="all" IncludeAssets="None" ProjectSystem="true" />
 	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skcanvas;')) AND $(UnoFeatures.Contains(';skiarenderer;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
+	</ItemGroup>
+
 </Project>
