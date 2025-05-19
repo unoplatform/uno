@@ -65,19 +65,10 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	public bool IsReadOnly => false;
 
 	public ICollection<string> Keys => _nativeApplicationSettings
-		.GetKeysWithPrefix(_container.ContainerPath)
-		.Except(
-			_nativeApplicationSettings.GetKeysWithPrefix(_container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix))
-		)
+		.GetKeys(IsCurrentContainerPublicKey)
 		.ToArray();
 
-	public global::System.Collections.Generic.ICollection<object> Values
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
+	public ICollection<object> Values => _nativeApplicationSettings.GetValues(Keys).ToArray();
 
 	public void Add(string key, object value)
 	{
@@ -88,7 +79,7 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 
 		if (value != null)
 		{
-			_nativeApplicationSettings[_container.GetSettingKey(key)] = SerializeValue(value);
+			_nativeApplicationSettings[_container.GetSettingKey(key)] = value;
 		}
 	}
 
@@ -99,49 +90,62 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		ContainsKey(item.Key) &&
 		Equals(
 			_nativeApplicationSettings[_container.GetSettingKey(item.Key)],
-			SerializeValue(item.Value)
+			item.Value
 		);
 
 	public bool ContainsKey(string key) => _nativeApplicationSettings.ContainsKey(_container.GetSettingKey(key));
 
-	public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
+	public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 	{
-		throw new global::System.NotSupportedException();
+		if (array is null)
+		{
+			throw new ArgumentNullException(nameof(array));
+		}
+		if (arrayIndex < 0 || arrayIndex >= array.Length)
+		{
+			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+		}
+		if (array.Length - arrayIndex < Count)
+		{
+			throw new ArgumentException("The number of elements in the source dictionary is greater than the available space from arrayIndex to the end of the destination array.");
+		}
+		foreach (var kvp in this)
+		{
+			array[arrayIndex++] = kvp;
+		}
 	}
 
 	public bool Remove(string key) => _nativeApplicationSettings.Remove(_container.GetSettingKey(key));
 
 	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
 
-	public bool TryGetValue(string key, out object value)
-	{
-		if (_nativeApplicationSettings.TryGetValue(_container.GetSettingKey(key), out var serializedValue))
-		{
-			value = DeserializeValue(serializedValue as string);
-			return true;
-		}
-		value = null;
-		return false;
-	}
+	public bool TryGetValue(string key, out object value) =>
+		_nativeApplicationSettings.TryGetValue(_container.GetSettingKey(key), out value);
 
 	// TODO:MZ: Does clearing with public Clear also remove subcontainers?
-	public void Clear() => _nativeApplicationSettings.RemoveKeys(key =>
-		key.StartsWith(_container.ContainerPath, StringComparison.Ordinal) &&
-		!key.StartsWith(_container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix), StringComparison.Ordinal));
+	public void Clear() => _nativeApplicationSettings.RemoveKeys(IsCurrentContainerPublicKey);
 
-	public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
+	public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 	{
-		throw new global::System.NotSupportedException();
+		foreach (var key in Keys)
+		{
+			yield return new KeyValuePair<string, object>(key, this[key]);
+		}
 	}
 
-	internal void ClearIncludingInternal()
-	{
-		throw new NotImplementedException();
-	}
+	internal void ClearIncludingInternal() =>
+		_nativeApplicationSettings.RemoveKeys(IsCurrentContainerInternalKey);
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	private object DeserializeValue(string value) => DataTypeSerializer.Deserialize(value);
+	private bool IsCurrentContainerKey(string key) => key.StartsWith(_container.ContainerPath, StringComparison.Ordinal);
 
-	private string SerializeValue(object value) => DataTypeSerializer.Serialize(value);
+	private bool IsInternalKey(string key) =>
+		key.StartsWith(_container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix), StringComparison.Ordinal);
+
+	private bool IsCurrentContainerPublicKey(string key) =>
+		IsCurrentContainerKey(key) && !IsInternalKey(key);
+
+	private bool IsCurrentContainerInternalKey(string key) =>
+		IsCurrentContainerKey(key) && IsInternalKey(key);
 }
