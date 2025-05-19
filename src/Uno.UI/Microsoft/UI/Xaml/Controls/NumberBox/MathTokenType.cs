@@ -2,12 +2,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NumberBoxParser.h, commit de788345659ba319597161149843504fbe686659
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+
+internal enum MathTokenType
 {
-	internal enum MathTokenType
-	{
-		Numeric,
-		Operator,
-		Parenthesis,
-	}
+	Numeric,
+	Operator,
+	Parenthesis,
 }
