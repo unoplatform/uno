@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Windows.Storage;
 
@@ -17,7 +18,7 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 
 	private readonly ApplicationDataLocality _locality;
 
-	public IEnumerable<string> Keys => throw new NotImplementedException();
+	public IEnumerable<string> Keys => GetKeysPlatform();
 
 	private NativeApplicationSettings(ApplicationDataLocality locality)
 	{
@@ -28,7 +29,7 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 
 	internal static NativeApplicationSettings GetForLocality(ApplicationDataLocality locality)
 	{
-		if (!SupportsLocality())
+		if (!SupportsLocalityPlatform())
 		{
 			locality = ApplicationDataLocality.Local;
 		}
@@ -36,7 +37,7 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 		return _instances.GetOrAdd(locality, locality => new NativeApplicationSettings(locality));
 	}
 
-	private static partial bool SupportsLocality();
+	private static partial bool SupportsLocalityPlatform();
 
 	partial void InitializePlatform();
 
@@ -44,7 +45,7 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 	{
 		get
 		{
-			if (TryGetSetting(key, out var value))
+			if (TryGetSettingPlatform(key, out var value))
 			{
 				return DeserializeValue(value);
 			}
@@ -55,20 +56,20 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 		{
 			if (value is not null)
 			{
-				SetSetting(key, SerializeValue(value));
+				SetSettingPlatform(key, SerializeValue(value));
 			}
 			else
 			{
-				RemoveSetting(key);
+				RemoveSettingPlatform(key);
 			}
 		}
 	}
 
-	public bool Remove(string key) => RemoveSetting(key);
+	public bool Remove(string key) => RemoveSettingPlatform(key);
 
 	public bool TryGetValue(string key, out object? value)
 	{
-		if (TryGetSetting(key, out var stringValue))
+		if (TryGetSettingPlatform(key, out var stringValue))
 		{
 			value = DeserializeValue(stringValue);
 			return true;
@@ -77,31 +78,40 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 		return false;
 	}
 
-	public bool ContainsKey(string key) => ContainsSetting(key);
+	public bool ContainsKey(string key) => ContainsSettingPlatform(key);
 
 	public void RemoveKeys(Predicate<string> shouldRemove)
 	{
 		var keysToRemove = Keys.Where(k => shouldRemove(k)).ToList();
 		foreach (var key in keysToRemove)
 		{
-			RemoveSetting(key);
+			RemoveSettingPlatform(key);
 		}
 	}
 
-	private partial bool ContainsSetting(string key);
+	private partial bool ContainsSettingPlatform(string key);
 
-	private partial void SetSetting(string key, string value);
+	private partial void SetSettingPlatform(string key, string value);
 
-	private partial bool TryGetSetting(string key, out string? value);
+	private partial bool TryGetSettingPlatform(string key, out string? value);
 
-	private partial bool RemoveSetting(string key);
+	private partial bool RemoveSettingPlatform(string key);
+
+	private partial IEnumerable<string> GetKeysPlatform();
 
 	internal IEnumerable<string> GetKeysWithPrefix(string prefix) =>
 		Keys.Where(kvp => kvp.StartsWith(prefix, StringComparison.InvariantCulture));
+
+	internal IEnumerable<string> GetKeys(Predicate<string> shouldInclude) =>
+		Keys.Where(kvp => shouldInclude(kvp));
+
+	internal IEnumerable<object?> GetValues(IEnumerable<string> keys) =>
+		keys.Select(k => this[k]);
 
 	private object? DeserializeValue(string? value) => DataTypeSerializer.Deserialize(value);
 
 	private string SerializeValue(object value) => DataTypeSerializer.Serialize(value);
 
-	internal void RemoveKeysWithPrefix(string internalSettingPrefix) => throw new NotImplementedException();
+	internal void RemoveKeysWithPrefix(string internalSettingPrefix) =>
+		RemoveKeys(k => k.StartsWith(internalSettingPrefix, StringComparison.Ordinal));
 }
