@@ -112,7 +112,7 @@ public enum UnoFeature
 
 	[UnoArea(UnoArea.Core)]
 	GLCanvas,
-	
+
 	[UnoArea(UnoArea.Core)]
 	SKCanvas,
 }
