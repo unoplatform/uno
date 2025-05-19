@@ -14,11 +14,11 @@
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';glcanvas;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DGL" ProjectSystem="true" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skcanvas;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
+	</ItemGroup>
+	
+	<ItemGroup Condition="$(UnoFeatures.Contains(';glcanvas;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DGL" ProjectSystem="true" />
 	</ItemGroup>
 </Project>
