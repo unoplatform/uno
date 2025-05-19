@@ -14,6 +14,7 @@ namespace Uno.Helpers;
 internal class DeferralManager<T>
 {
 	private readonly Func<DeferralCompletedHandler, T> _deferralFactory;
+	private readonly bool _requiresUIThread;
 	private readonly TaskCompletionSource<object?> _allDeferralsCompletedCompletionSource = new();
 
 	/// <summary>
@@ -22,9 +23,10 @@ internal class DeferralManager<T>
 	/// </summary>
 	private int _deferralsCount = 1;
 
-	public DeferralManager(Func<DeferralCompletedHandler, T> deferralFactory)
+	public DeferralManager(Func<DeferralCompletedHandler, T> deferralFactory, bool requiresUIThread = true)
 	{
 		_deferralFactory = deferralFactory ?? throw new ArgumentNullException(nameof(deferralFactory));
+		_requiresUIThread = requiresUIThread;
 	}
 
 	internal event EventHandler? Completed;
@@ -39,7 +41,10 @@ internal class DeferralManager<T>
 
 		void OnDeferralCompleted()
 		{
-			CoreDispatcher.CheckThreadAccess();
+			if (_requiresUIThread)
+			{
+				CoreDispatcher.CheckThreadAccess();
+			}
 
 			if (isCompleted)
 			{
