@@ -10,22 +10,24 @@ namespace Uno.Storage;
 
 partial class NativeApplicationSettings
 {
-	private partial void SetSetting(string key, string value)
+	private partial void SetSettingPlatform(string key, string value)
 	{
 		throw new NotImplementedException();
 	}
 
-	private partial bool TryGetSetting(string key, out string? value)
+	private partial bool TryGetSettingPlatform(string key, out string? value)
 	{
 		throw new NotImplementedException();
 	}
 
-	private partial bool RemoveSetting(string key)
+	private partial bool RemoveSettingPlatform(string key)
 	{
 		throw new NotImplementedException();
 	}
 
-	private static partial bool SupportsLocality() => false;
+	private static partial bool SupportsLocalityPlatform() => false;
 
-	private partial bool ContainsSetting(string key) => throw new NotImplementedException();
+	private partial bool ContainsSettingPlatform(string key) => throw new NotImplementedException();
+
+	private partial IEnumerable<string> GetKeysPlatform() => throw new NotImplementedException();
 }

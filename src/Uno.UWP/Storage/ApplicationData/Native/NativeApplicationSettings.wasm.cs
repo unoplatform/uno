@@ -42,20 +42,20 @@ partial class NativeApplicationSettings
 	//	}
 	//}
 
-	public ICollection<string> Keys
-	{
-		get
-		{
-			var keys = new List<string>();
+	//public ICollection<string> Keys
+	//{
+	//	get
+	//	{
+	//		var keys = new List<string>();
 
-			for (int i = 0; i < Count; i++)
-			{
-				keys.Add(NativeMethods.GetKeyByIndex(_locality, i));
-			}
+	//		for (int i = 0; i < Count; i++)
+	//		{
+	//			keys.Add(NativeMethods.GetKeyByIndex(_locality, i));
+	//		}
 
-			return keys.AsReadOnly();
-		}
-	}
+	//		return keys.AsReadOnly();
+	//	}
+	//}
 
 	//public ICollection<object> Values
 	//{
@@ -171,12 +171,12 @@ partial class NativeApplicationSettings
 		//}
 	}
 
-	private partial void SetSetting(string key, string value)
+	private partial void SetSettingPlatform(string key, string value)
 	{
 		throw new NotImplementedException();
 	}
 
-	private partial bool TryGetSetting(string key, out string? value)
+	private partial bool TryGetSettingPlatform(string key, out string? value)
 	{
 		if (NativeMethods.TryGetValue(_locality, key, out var innervalue))
 		{
@@ -188,11 +188,13 @@ partial class NativeApplicationSettings
 		return false;
 	}
 
-	private partial bool RemoveSetting(string key)
+	private partial bool RemoveSettingPlatform(string key)
 	{
 		var ret = NativeMethods.Remove(_locality, key);
 		return ret;
 	}
 
-	private partial bool ContainsSetting(string key) => NativeMethods.ContainsKey(_locality, key);
+	private partial bool ContainsSettingPlatform(string key) => NativeMethods.ContainsKey(_locality, key);
+
+	private partial IEnumerable<string> GetKeysPlatform() => throw new NotImplementedException();
 }
