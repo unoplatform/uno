@@ -24,6 +24,8 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
+using Combinatorial.MSTest;
+
 
 #if __SKIA__
 using SkiaSharp;
@@ -1297,8 +1299,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !__SKIA__
 		[Ignore("The context menu is only implemented on skia.")]
 #endif
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_TextBlock_RightTapped(bool isTextSelectionEnabled)
 		{
 			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));

@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Combinatorial.MSTest;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
@@ -87,8 +88,7 @@ public class Given_BindingExpression
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[DataRow(true)]
-	[DataRow(false)]
+	[CombinatorialData]
 	public async Task When_Binding_Outer_Inner_DC_Not_Null_Outer_Not_Null_Inner_Null(bool canReturnNull)
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -154,8 +154,7 @@ public class Given_BindingExpression
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[DataRow(true)]
-	[DataRow(false)]
+	[CombinatorialData]
 	public async Task When_Binding_Outer_DC_Not_Null_Outer_Null(bool canReturnNull)
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -285,8 +284,7 @@ public class Given_BindingExpression
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[DataRow(true)]
-	[DataRow(false)]
+	[CombinatorialData]
 	public async Task When_xBindNoDataTemplate_Outer_Inner_DC_Not_Null_Outer_Not_Null_Inner_Null(bool canReturnNull)
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -320,8 +318,7 @@ public class Given_BindingExpression
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[DataRow(true)]
-	[DataRow(false)]
+	[CombinatorialData]
 	public async Task When_xBindNoDataTemplate_Outer_DC_Not_Null_Outer_Null(bool canReturnNull)
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -523,8 +520,7 @@ public class Given_BindingExpression
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[DataRow(true)]
-	[DataRow(false)]
+	[CombinatorialData]
 	public async Task When_xBindInDataTemplate_Outer_Inner_DC_Not_Null_Outer_Not_Null_Inner_Null(bool canReturnNull)
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -561,8 +557,7 @@ public class Given_BindingExpression
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[DataRow(true)]
-	[DataRow(false)]
+	[CombinatorialData]
 	public async Task When_xBindInDataTemplate_Outer_DC_Not_Null_Outer_Null(bool canReturnNull)
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
