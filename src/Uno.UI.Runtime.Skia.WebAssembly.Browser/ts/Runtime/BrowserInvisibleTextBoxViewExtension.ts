@@ -2,6 +2,7 @@
 	export class BrowserInvisibleTextBoxViewExtension {
 		private static _exports: any;
 		private static readonly inputElementId = "uno-input";
+		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
 		private static inputElement: HTMLInputElement | HTMLTextAreaElement;
 		private static isInSelectionChange: boolean;
 
@@ -86,7 +87,7 @@
 			};
 
 			input.onkeydown = ev => {
-				if (ev.ctrlKey) {
+				if (ev.ctrlKey || (ev.metaKey && BrowserInvisibleTextBoxViewExtension.isMacOS)) {
 					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
 					// So, we do stopPropagation instead of preventDefault
 					if (ev.key == "c" || ev.key == "C" || ev.key == "v" || ev.key == "V" || ev.key == "x" || ev.key == "X") {
