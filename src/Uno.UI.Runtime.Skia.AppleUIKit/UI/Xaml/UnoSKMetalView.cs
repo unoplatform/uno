@@ -126,6 +126,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
 				_owner!.OnPaintSurfaceInner(canvas);
+				_fpsHelper.Scale = (float?)AppManager.XamlRootMap.GetRootForHost(_owner)?.RasterizationScale;
 
 				var picture = recorder.EndRecording();
 

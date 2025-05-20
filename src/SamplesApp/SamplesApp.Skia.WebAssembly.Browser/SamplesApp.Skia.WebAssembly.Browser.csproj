@@ -32,8 +32,6 @@
 
 		<WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
 		<WasmBuildNative>true</WasmBuildNative>
-
-		<WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">

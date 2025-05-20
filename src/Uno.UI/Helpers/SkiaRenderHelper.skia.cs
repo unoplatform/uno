@@ -72,6 +72,8 @@ internal static class SkiaRenderHelper
 		public double Fps { get; private set; }
 		public double FrameTime { get; private set; }
 
+		public float? Scale { private get; set; }
+
 		public FrameDisposable BeginFrame()
 		{
 			_currentFrameBeginTimestamp = Stopwatch.GetTimestamp();
@@ -101,8 +103,17 @@ internal static class SkiaRenderHelper
 
 			var text = $"{Fps:F1}   {FrameTime:F1}";
 			_font.MeasureText(text, out var rect);
+			if (Scale is { } scale)
+			{
+				canvas.Save();
+				canvas.Scale(scale, scale);
+			}
 			canvas.DrawRect(new SKRect(0, 0, rect.Width, rect.Height), _blackPaint);
 			canvas.DrawText(text, 0, -rect.Top, _font, _redPaint);
+			if (Scale is not null)
+			{
+				canvas.Restore();
+			}
 		}
 
 		private void TimerTick()
