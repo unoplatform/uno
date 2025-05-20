@@ -204,7 +204,8 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 					properties.IsMiddleButtonPressed = Win32Helper.IS_POINTER_THIRDBUTTON_WPARAM(wParam);
 					properties.IsXButton1Pressed = Win32Helper.IS_POINTER_FOURTHBUTTON_WPARAM(wParam);
 					properties.IsXButton2Pressed = Win32Helper.IS_POINTER_FIFTHBUTTON_WPARAM(wParam);
-					properties.IsHorizontalMouseWheel = (wParam & (ulong)POINTER_FLAGS.POINTER_FLAG_HWHEEL) != 0;
+					// POINTER_FLAG_HWHEEL is set when mouse-scrolling with Shift held. TouchPad horizontal scrolling uses WM_POINTERHWHEEL and does not set POINTER_FLAG_HWHEEL
+					properties.IsHorizontalMouseWheel = msg is PInvoke.WM_POINTERHWHEEL || (wParam & (ulong)POINTER_FLAGS.POINTER_FLAG_HWHEEL) != 0;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(pointerType));
