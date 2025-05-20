@@ -6,7 +6,7 @@
 	-->
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skcanvas;'))">
+	<ItemGroup>
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
