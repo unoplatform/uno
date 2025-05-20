@@ -1,8 +1,8 @@
-﻿#pragma warning disable 109 // Member does not hide an inherited member; new keyword is not required
-
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference src\controls\dev\Generated\NumberBox.properties.cpp, tag winui3/release/1.7.1, commit 5f27a786ac9
+
+#pragma warning disable 109 // Member does not hide an inherited member; new keyword is not required
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -90,6 +90,21 @@ partial class NumberBox
 			typeof(DataTemplate),
 			typeof(NumberBox),
 			new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => (s as NumberBox)?.OnHeaderTemplatePropertyChanged(e)));
+
+	/// <summary>
+	/// Gets or sets the input scope for the control.
+	/// </summary>
+	public InputScope InputScope
+	{
+		get => (InputScope)GetValue(InputScopeProperty);
+		set => SetValue(InputScopeProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the InputScope dependency property.
+	/// </summary>
+	public static DependencyProperty InputScopeProperty { get; } =
+		DependencyProperty.Register(nameof(InputScope), typeof(InputScope), typeof(NumberBox), new FrameworkPropertyMetadata(null));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether line breaking occurs when header text extends beyond the available width of the control.
@@ -327,6 +342,21 @@ partial class NumberBox
 			typeof(string),
 			typeof(NumberBox),
 			new FrameworkPropertyMetadata("", (s, e) => (s as NumberBox)?.OnTextPropertyChanged(e)));
+
+	/// <summary>
+	/// Gets or sets a value that indicates how the text in the NumberBox is aligned.
+	/// </summary>
+	public new TextAlignment TextAlignment
+	{
+		get => (TextAlignment)GetValue(TextAlignmentProperty);
+		set => SetValue(TextAlignmentProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the TextAlignment dependency property.
+	/// </summary>
+	public static DependencyProperty TextAlignmentProperty { get; } =
+		DependencyProperty.Register(nameof(TextAlignment), typeof(TextAlignment), typeof(NumberBox), new FrameworkPropertyMetadata(TextAlignment.Left));
 
 	/// <summary>
 	/// Gets or sets a value that indicates how the reading order is determined for the NumberBox.

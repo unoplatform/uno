@@ -13,24 +13,6 @@ partial class NumberBox
 {
 	private readonly SerialDisposable _eventSubscriptions = new();
 
-	public InputScope InputScope
-	{
-		get => (InputScope)GetValue(InputScopeProperty);
-		set => SetValue(InputScopeProperty, value);
-	}
-
-	public static DependencyProperty InputScopeProperty { get; } =
-		DependencyProperty.Register(nameof(InputScope), typeof(InputScope), typeof(NumberBox), new FrameworkPropertyMetadata(null));
-
-	public TextAlignment TextAlignment
-	{
-		get => (TextAlignment)GetValue(TextAlignmentProperty);
-		set => SetValue(TextAlignmentProperty, value);
-	}
-
-	public static DependencyProperty TextAlignmentProperty { get; } =
-		DependencyProperty.Register(nameof(TextAlignment), typeof(TextAlignment), typeof(NumberBox), new FrameworkPropertyMetadata(TextAlignment.Left));
-
 	private void ReApplyTemplate()
 	{
 		// No need to reapply template on initial load.
