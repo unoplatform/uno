@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -17,7 +18,8 @@ using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
-
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Hosting;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -589,8 +591,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
 			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
 		}
-#endif
 
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
+		{
+			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
+			// we don't end up to invoke IScrollStrategy.Set again and again (preventing the CompositorScrollStrategy to properly process its animation)
+
+			FrameworkElement content;
+			var sut = new ScrollViewer
+			{
+				Height = 100,
+				Width = 100,
+				Content = content = new Border
+				{
+					Height = 200,
+					Background = new SolidColorBrush(Colors.Chartreuse)
+				},
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			// First make sure that this test can effectively test something!
+			var strategy = sut.Presenter?.GetType().GetField("_strategy", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(sut.Presenter);
+#if __SKIA__
+			Assert.AreEqual(CompositorScrollStrategy.Instance, strategy);
+#else
+			if (strategy is null || strategy.GetType().Name != "CompositorScrollStrategy")
+			{
+				Assert.Inconclusive("This test is valid only on platforms that uses the CompositorScrollStrategy.");
+			}
+#endif
+			var visual = ElementCompositionPreview.GetElementVisual(content);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var initialAnimation = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
+			initialAnimation.Should().BeNull(because: "we have not scrolled yet");
+
+			mouse.MoveTo(bounds.GetCenter());
+			mouse.Wheel(-400, steps: 1);
+
+			// Here we assume that CompositorScrollStrategy is using KeyFrameAnimation. If no longer the case, the test can be updated!
+			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
+			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
+
+			// Scroll again in the same direction
+			mouse.Wheel(-200, steps: 1);
+
+			var scrollAnimation2 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
+			scrollAnimation2.Should().Be(scrollAnimation1, because: "the wheel event has no effect");
+
+			// But if we scroll in the opposite direction, the animation should be stopped and replaced
+			// (this basically confirm that the test is working -i.e the animation is not being re-used)
+			mouse.Wheel(+200, steps: 1);
+
+			var scrollAnimation3 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
+			scrollAnimation3.Should().NotBe(scrollAnimation1, because: "the wheel event should scroll in the opposite direction");
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
