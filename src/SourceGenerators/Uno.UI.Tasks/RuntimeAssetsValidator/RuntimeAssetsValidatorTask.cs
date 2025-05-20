@@ -54,7 +54,7 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 					&& (metadata.ConstructorArguments[0].Value?.ToString().Equals("UnoUIRuntimeIdentifier", StringComparison.OrdinalIgnoreCase) ?? false)
 					)
 				{
-					var identifier = metadata.ConstructorArguments[0].Value.ToString();
+					var identifier = metadata.ConstructorArguments[1].Value.ToString();
 
 					if (!string.IsNullOrEmpty(identifier)
 						&& !UnoUIRuntimeIdentifier.Equals(identifier, StringComparison.OrdinalIgnoreCase))
