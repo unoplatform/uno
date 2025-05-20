@@ -549,9 +549,6 @@
 				},
 				"GLCanvas": {
 					"description": "Adds support for 3D graphics APIs based on OpenGL."
-				},
-				"SKCanvas": {
-					"description": "Adds support for 2D graphics canvas based on SkiaSharp."
 				}
 			}
 		}
