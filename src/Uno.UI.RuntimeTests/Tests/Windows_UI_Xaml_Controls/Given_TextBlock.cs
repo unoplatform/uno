@@ -809,7 +809,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Text_Does_Not_Fit()
+		[DataRow(TextTrimming.None)]
+#if __WASM__
+		[DataRow(TextTrimming.Clip)]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+#endif
+		public async Task When_Text_Does_Not_Fit(TextTrimming trimming)
 		{
 			var lv = new ListView()
 			{
@@ -817,11 +823,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			ScrollViewer.SetHorizontalScrollBarVisibility(lv, ScrollBarVisibility.Visible);
 			ScrollViewer.SetHorizontalScrollMode(lv, ScrollMode.Enabled);
-			var SUT = new TextBlock { Text = "text that is a lot longer than the given bounds" };
+			var SUT = new TextBlock
+			{
+				Text = "text that is a lot longer than the given bounds",
+				TextTrimming = trimming
+			};
 			lv.Items.Add(SUT);
 			await UITestHelper.Load(lv);
 
-			lv.FindFirstDescendant<ScrollViewer>().ScrollableWidth.Should().BeGreaterThan(50);
+			if (trimming is TextTrimming.None)
+			{
+				lv.FindFirstDescendant<ScrollViewer>().ScrollableWidth.Should().BeGreaterThan(50);
+			}
+			else
+			{
+				// Not necessarily zero because of measuring inaccuracies
+				lv.FindFirstDescendant<ScrollViewer>().ScrollableWidth.Should().BeLessThan(5);
+			}
 		}
 
 #if !__APPLE_UIKIT__ // Line height is not supported on iOS
