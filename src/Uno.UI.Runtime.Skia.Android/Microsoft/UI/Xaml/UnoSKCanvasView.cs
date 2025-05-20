@@ -1,6 +1,4 @@
-﻿// #define FPS_DISPLAY
-
-using System;
+﻿using System;
 using System.Threading;
 using Android.Content;
 using Android.Graphics;
@@ -25,12 +23,7 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class UnoSKCanvasView : GLSurfaceView
 {
-#if FPS_DISPLAY
-	private long _counter;
-	private DateTime _time = DateTime.UtcNow;
-	private string _fpsText = "0";
-#endif
-
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private SKPicture? _picture;
 
 	internal UnoExploreByTouchHelper ExploreByTouchHelper { get; }
@@ -91,6 +84,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 		{
 			canvas.Clear(SKColors.Transparent);
 			var scale = DisplayInformation.GetForCurrentViewSafe()!.RawPixelsPerViewPixel;
+			_fpsHelper.Scale = (float)scale;
 			canvas.Scale((float)scale);
 			var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath((int)window.Bounds.Width,
 				(int)window.Bounds.Height, root.Visual, canvas);
@@ -99,24 +93,6 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 				nativeLayerHost.Path = negativePath;
 				nativeLayerHost.Invalidate();
 			}
-
-#if FPS_DISPLAY
-			// This naively calculates the difference in time every 100 frames, so to get
-			// a usable number, open a sample with a continuously-running animation.
-			_counter++;
-			if (_counter % 100 == 0)
-			{
-				var newTime = DateTime.UtcNow;
-				_fpsText = $"{100 / (newTime - _time).TotalSeconds}";
-				_time = newTime;
-			}
-			canvas.DrawText(
-				_fpsText,
-				(float)(window.Bounds.Width / 2),
-				(float)(window.Bounds.Height / 2),
-				new SKFont(SKTypeface.Default, size: 20F),
-				new SKPaint { Color = SKColors.Red});
-#endif
 
 			var picture = recorder.EndRecording();
 
@@ -206,7 +182,6 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 		private const SKColorType ColorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
-		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 		private readonly bool _hardwareAccelerated = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
 
 		private GRContext? _context;
@@ -221,7 +196,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
-			using var _ = _fpsHelper.BeginFrame();
+			using var _ = surfaceView._fpsHelper.BeginFrame();
 
 			var currentPicture = Volatile.Read(ref surfaceView._picture);
 
@@ -288,7 +263,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			{
 				// start drawing
 				canvas.DrawPicture(currentPicture);
-				_fpsHelper.DrawFps(canvas);
+				surfaceView._fpsHelper.DrawFps(canvas);
 			}
 
 			// flush the SkiaSharp contents to GL
