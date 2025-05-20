@@ -11,8 +11,6 @@ On Uno Platform Skia targets, we can utilize the pre-existing internal Skia canv
 > [!IMPORTANT]
 > This functionality is only available on Skia targets.
 
-The canvas capability is part of the `Uno.WinUI.Graphics2DSK` package. It can be enabled in Uno.Sdk-based applications by adding the [`SKCanvas` UnoFeature](xref:Uno.Features.Uno.Sdk).
-
 ## SKCanvasElement
 
 `SKCanvasElement` is an abstract `FrameworkElement` for 2D drawing with Skia. To use `SKCanvasElement`, create a subclass of `SKCanvasElement` and override the `RenderOverride` method, which takes the canvas that will be drawn on and the clipping area inside the canvas.
