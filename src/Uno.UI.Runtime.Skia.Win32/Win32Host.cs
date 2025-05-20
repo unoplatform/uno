@@ -122,50 +122,12 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 	protected override void Initialize()
 	{
-		SetProcessDpiAwareness();
-
 		CoreDispatcher.DispatchOverride = Win32EventLoop.Schedule;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 		// We do not have a display timer on this target, we can use
 		// a constant timer.
 		CompositionTargetTimer.Start();
-	}
-
-	private void SetProcessDpiAwareness()
-	{
-		// This call ensures that the application is properly marked as per-monitor DPI aware (PerMonitorV2).
-		// When launched via `dotnet.exe` (e.g., `dotnet MyApp.dll` or `dotnet run`), the host process is the .NET CLI runtime,
-		// which does NOT contain a DPI-awareness declaration in its embedded application manifest (RT_MANIFEST).
-		// Consequently, Windows assumes the process is DPI-unaware, applies bitmap scaling, and reports a logical DPI of 96,
-		// leading to incorrect pointer coordinates, layout glitches, and drag-and-drop offsets.
-		//
-		// In contrast, when launching a native application executable (e.g., `MyApp.exe`), the process inherits the
-		// DPI-awareness setting defined in the manifest block:
-		//
-		// <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">
-		//   <asmv3:application>
-		//     <asmv3:windowsSettings>
-		//       <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2</dpiAwareness>
-		//     </asmv3:windowsSettings>
-		//   </asmv3:application>
-		// </assembly>
-		//
-		// Important: Calling SetThreadDpiAwarenessContext() affects only the DPI behavior of user32/GDI calls **on that thread**,
-		// but it does NOT update the global DPI-awareness context of the process, nor does it affect how the OS scales
-		// the window or reports DPI-related metrics to frameworks like Skia or WinUI. To enable proper DPI scaling and
-		// accurate coordinate transformation, the process DPI-awareness must be set at launch or via SetProcessDpiAwarenessContext().
-		//
-		// NOTE: DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 (-4) provides the most accurate and modern DPI behavior available
-		// on Windows 10+ with improved scaling, child-window consistency, and multi-monitor support.
-		//
-		// More details on DPI Awareness contexts and behaviors:
-		// - https://learn.microsoft.com/en-us/windows/win32/hidpi/setting-the-default-dpi-awareness-for-a-process
-		//
-		// This call must be made BEFORE any window is initialized.
-
-		var success = PInvoke.SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) != 0;
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetProcessDpiAwarenessContext)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	protected override Task RunLoop()
