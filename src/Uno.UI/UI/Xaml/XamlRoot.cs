@@ -22,6 +22,7 @@ public sealed partial class XamlRoot
 	internal XamlRoot(VisualTree visualTree)
 	{
 		VisualTree = visualTree;
+		VisualTree.SizeChanged += (s, e) => RaiseChangedEvent();
 	}
 
 	/// <summary>

@@ -922,6 +922,24 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
+		internal event SizeChangedEventHandler SizeChanged
+		{
+			add
+			{
+				if (RootElement is FrameworkElement fe)
+				{
+					fe.SizeChanged += value;
+				}
+			}
+			remove
+			{
+				if (RootElement is FrameworkElement fe)
+				{
+					fe.SizeChanged -= value;
+				}
+			}
+		}
+
 		internal void OnVisibleBoundChanged() => VisibleBoundsChanged?.Invoke(this, EventArgs.Empty);
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
