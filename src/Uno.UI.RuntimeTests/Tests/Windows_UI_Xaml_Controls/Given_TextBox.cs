@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using Uno.Extensions;
 using Windows.UI.ViewManagement;
 using Private.Infrastructure;
+using Combinatorial.MSTest;
 
 
 #if WINAPPSDK
@@ -749,8 +750,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[DataRow(false)]
-		[DataRow(true)]
+		[CombinatorialData]
 		public async Task When_Default_Foreground_TextBoxView(bool useDarkTheme)
 		{
 			using var _ = useDarkTheme ? ThemeHelper.UseDarkTheme() : default;

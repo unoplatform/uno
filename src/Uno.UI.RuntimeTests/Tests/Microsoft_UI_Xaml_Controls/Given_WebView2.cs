@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
 using FluentAssertions;
+using Combinatorial.MSTest;
+
 
 #if !HAS_UNO_WINUI && !WINAPPSDK
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -464,8 +466,7 @@ public class Given_WebView2
 	}
 
 #if !WINAPPSDK && !__ANDROID__
-	[DataRow(true)]
-	[DataRow(false)]
+	[CombinatorialData]
 	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaAndroid)]
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -284,8 +285,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_CloseLightDismissablePopups(bool isLightDismissEnabled)
 		{
 			var popup = new Popup()
