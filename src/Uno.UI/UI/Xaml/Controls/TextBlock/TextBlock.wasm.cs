@@ -36,6 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _paddingChangedChanged;
 
 		private bool _shouldUpdateIsTextTrimmed;
+		private Size _lastMeasuredSize;
 
 		public TextBlock() : base("p")
 		{
@@ -111,14 +112,17 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			SynchronizeHtmlParagraphAttributes();
 
-			// We measure the size needed for the text to fit, so
-			// we make the height unbounded and we only bound the
-			// width if the text wraps, otherwise it will be measured
-			// as if all the text is on one line.
-			availableSize.Height = int.MaxValue;
-			if (TextWrapping == TextWrapping.NoWrap)
+			if (!IsTextTrimmable)
 			{
-				availableSize.Width = double.PositiveInfinity;
+				// We measure the size needed for the text to fit, so
+				// we make the height unbounded, and we only bound the
+				// width if the text wraps, otherwise it will be measured
+				// as if all the text is on one line.
+				availableSize.Height = double.PositiveInfinity;
+				if (TextWrapping == TextWrapping.NoWrap)
+				{
+					availableSize.Width = double.PositiveInfinity;
+				}
 			}
 
 			if (UseInlinesFastPath)
@@ -135,14 +139,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 					TextBlockMeasureCache.Instance.CacheMeasure(this, availableSize, desiredSize);
 
+					_lastMeasuredSize = desiredSize;
 					return desiredSize;
 				}
 			}
 			else
 			{
-				var desizedSize = MeasureView(availableSize);
+				var desiredSize = MeasureView(availableSize);
 
-				return desizedSize;
+				_lastMeasuredSize = desiredSize;
+				return desiredSize;
 			}
 		}
 
@@ -241,7 +247,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			IsTextTrimmed =
 				IsTextTrimmable &&
-				WindowManagerInterop.GetIsOverflowing(HtmlId);
+				(_lastMeasuredSize.Width < ActualWidth || _lastMeasuredSize.Height < ActualHeight);
 		}
 	}
 }
