@@ -315,6 +315,9 @@ $projects =
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
 
+    # 5.6 Android/ios/Wasm+Skia nuget package (build first before the app)
+    @(4, "unoplatform/uno/src/SolutionTemplate/5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:Build_SourcesDirectory\src\PackageCache"), @("macOS", "NetCore")),
+
     # 5.6 Android/ios/Wasm+Skia
     @(4, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @("macOS", "NetCore")),
 
