@@ -46,7 +46,7 @@ If your target framework is Android 12, you must also add `Exported = true` to t
 
 ### WASM
 
-WASM implementation uses the [`Navigator.registerProtocolHandler` API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler). 
+WASM implementation uses the [`Navigator.registerProtocolHandler` API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler).
 
 This has several limitations when using a custom scheme:
 
