@@ -1029,7 +1029,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.SkiaWasm)]
+		// Not supported on Desktop and WebAssembly as InputPane is not implemented.
+		// Very flaky on Android Native and Skia #9080.
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android)]
 		public async Task When_Focus_Immediately()
 		{
 			var inputPaneShown = false;

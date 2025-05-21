@@ -31,4 +31,8 @@ public enum RuntimeTestPlatforms
 	SkiaDesktop = SkiaWpf | SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands,
 	Skia = SkiaDesktop | SkiaWasm | SkiaMobile,
 	Native = NativeWasm | NativeAndroid | NativeIOS | NativeMacCatalyst | NativeTvOS | NativeWinUI,
+
+	Wasm = NativeWasm | SkiaWasm,
+	Android = NativeAndroid | SkiaAndroid,
+	IOS = NativeIOS | SkiaIOS,
 }
