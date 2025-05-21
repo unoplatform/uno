@@ -94,4 +94,8 @@ internal class NativeOverlappedPresenter : INativeOverlappedPresenter
 			_wpfWindow.ResizeMode = System.Windows.ResizeMode.CanResize;
 		}
 	}
+
+	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMinimumHeight) { }
+
+	public void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight) { }
 }

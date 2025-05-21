@@ -16,6 +16,10 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	private bool _isAlwaysOnTop;
 	private bool _hasBorder;
 	private bool _hasTitleBar;
+	private int? _preferredMinimumHeight;
+	private int? _preferredMinimumWidth;
+	private int? _preferredMaximumWidth;
+	private int? _preferredMaximumHeight;
 
 	internal OverlappedPresenter() : base(AppWindowPresenterKind.Overlapped)
 	{
@@ -80,6 +84,70 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	public OverlappedPresenterState State => Native?.State ?? OverlappedPresenterState.Restored;
 
 	public static OverlappedPresenterState RequestedStartupState { get; } = OverlappedPresenterState.Restored;
+
+	/// <summary>
+	/// Gets or sets the preferred minimum width for the window.
+	/// </summary>
+	public int? PreferredMinimumWidth
+	{
+		get => _preferredMinimumWidth;
+		set
+		{
+			if (_preferredMinimumWidth != value)
+			{
+				_preferredMinimumWidth = value;
+				Native?.SetPreferredMinimumSize(PreferredMinimumWidth, PreferredMinimumHeight);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred minimum height for the window.
+	/// </summary>
+	public int? PreferredMinimumHeight
+	{
+		get => _preferredMinimumHeight;
+		set
+		{
+			if (_preferredMinimumHeight != value)
+			{
+				_preferredMinimumHeight = value;
+				Native?.SetPreferredMinimumSize(PreferredMinimumWidth, PreferredMinimumHeight);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred maximum width for the window.
+	/// </summary>
+	public int? PreferredMaximumWidth
+	{
+		get => _preferredMaximumWidth;
+		set
+		{
+			if (_preferredMaximumWidth != value)
+			{
+				_preferredMaximumWidth = value;
+				Native?.SetPreferredMaximumSize(PreferredMaximumWidth, PreferredMaximumHeight);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred maximum height for the window.
+	/// </summary>
+	public int? PreferredMaximumHeight
+	{
+		get => _preferredMaximumHeight;
+		set
+		{
+			if (_preferredMaximumHeight != value)
+			{
+				_preferredMaximumHeight = value;
+				Native?.SetPreferredMaximumSize(PreferredMaximumWidth, PreferredMaximumHeight);
+			}
+		}
+	}
 
 	public void Restore() => Restore(false);
 
