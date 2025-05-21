@@ -20,11 +20,7 @@ using static Private.Infrastructure.TestServices;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml.Automation.Peers;
 using MUXControlsTestApp.Utilities;
-<<<<<<< HEAD
-=======
-using Combinatorial.MSTest;
 using Uno.UI.Extensions;
->>>>>>> e2692ad388 (fix(ContentDialog): full-size dialog being cut off at bottom)
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
