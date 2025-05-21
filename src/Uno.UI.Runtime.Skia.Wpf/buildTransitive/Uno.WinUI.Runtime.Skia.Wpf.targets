@@ -7,7 +7,7 @@
 	<Target Name="_UnoSkiaWpfFeatureDefines" AfterTargets="PrepareForBuild">
 
 		<PropertyGroup>
-			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WPF;__UNO_SKIA__;__UNO_SKIA_WPF__</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WPF;__DESKTOP__;__UNO_SKIA__;__UNO_SKIA_WPF__</DefineConstants>
 		</PropertyGroup>
 
 	</Target>
