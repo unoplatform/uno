@@ -54,9 +54,8 @@ partial class InputManager
 
 	internal partial class PointerManager
 	{
-#pragma warning disable
 		private static readonly Logger _log = LogExtensionPoint.Log(typeof(PointerManager));
-		private static readonly bool _trace = true;//_log.IsEnabled(LogLevel.Trace);
+		private static readonly bool _trace = _log.IsEnabled(LogLevel.Trace);
 
 		private readonly InputManager _inputManager;
 
