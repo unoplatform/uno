@@ -110,6 +110,14 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 * `*.Apple.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst` and `net9.0-tvos`
 * `*.Android.cs` is built only for `net9.0-android`
 
+In addition, for class libraries:
+
+- `*.reference.cs` is built only for reference implementation
+- `*.crossruntime.cs` is built for WebAssembly, Desktop, and reference implementation
+
+> [!NOTE]
+> For backwards compatibility, using `.skia.cs` is currently equivalent to `.desktop.cs`. This might change in the future, so we recommend using the suffixes above instead.
+
 Using file name conventions allows for reducing the use of `#if` compiler directives.
 
 ### A simple example
