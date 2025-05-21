@@ -14,7 +14,7 @@
     <UnoDisableValidateWinAppSDK3548>true</UnoDisableValidateWinAppSDK3548>
 
     <!-- We can ignore nuget warnings, since were making a test package-->
-    <NoWarn>$(NoWarn);NU5104</NU5104>
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
 
     <!--
       UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
