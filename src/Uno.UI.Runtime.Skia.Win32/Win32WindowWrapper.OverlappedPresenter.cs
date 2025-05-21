@@ -73,6 +73,10 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 	public void Restore(bool activateWindow) => PInvoke.ShowWindow(_hwnd, activateWindow ? SHOW_WINDOW_CMD.SW_SHOWNORMAL : SHOW_WINDOW_CMD.SW_SHOWNOACTIVATE);
 
+	public void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight) => throw new NotImplementedException();
+
+	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMaximumHeight) => throw new NotImplementedException();
+
 	public OverlappedPresenterState State
 	{
 		get
