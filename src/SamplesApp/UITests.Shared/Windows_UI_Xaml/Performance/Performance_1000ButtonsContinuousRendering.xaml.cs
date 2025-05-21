@@ -25,6 +25,11 @@ namespace UITests.Windows_UI_Xaml.Performance
 				NumberBoxValueChanged(this, new NumberBoxValueChangedEventArgs(0, 100));
 #endif
 			};
+
+			Unloaded += (s, e) =>
+			{
+				colorStoryboard.Stop();
+			};
 		}
 
 		private async void NumberBoxValueChanged(object sender, NumberBoxValueChangedEventArgs e)
