@@ -31,4 +31,8 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Android" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skiarenderer;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
+	</ItemGroup>
+
 </Project>
