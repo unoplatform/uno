@@ -286,6 +286,14 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 - `*.Android.cs` (Android)
 - `*.WinAppSDK.cs` (Windows App SDK)
 
+For class libraries we also provide:
+
+- `*.reference.cs` (Reference only)
+- `*.crossruntime.cs` (WebAssembly, Desktop, or Reference)
+
+> [!NOTE]
+> For backwards compatibility, using `.skia.cs` is currently equivalent to `.desktop.cs`. This might change in the future, so we recommend using the suffixes above instead.
+
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
 
 > [!TIP]
