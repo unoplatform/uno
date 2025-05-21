@@ -7,7 +7,7 @@
 	<Target Name="_UnoSkiaMacOSFeatureDefines" AfterTargets="PrepareForBuild">
 
 		<PropertyGroup>
-			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_MACOS;__UNO_SKIA__;__UNO_SKIA_MACOS__</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_MACOS;__DESKTOP__;__UNO_SKIA__;__UNO_SKIA_MACOS__</DefineConstants>
 		</PropertyGroup>
 
 	</Target>
