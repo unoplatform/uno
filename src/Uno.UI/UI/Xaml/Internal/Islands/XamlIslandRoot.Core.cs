@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics;
 using DirectUI;
 using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
@@ -21,9 +22,11 @@ internal partial class XamlIslandRoot
 	private bool _isVisible;
 	private Size _previousIslandSize;
 
-	internal void InitializeRoot(WinUICoreServices coreServices)
+	internal void InitializeRoot(WinUICoreServices coreServices, ContentRootType type = ContentRootType.XamlIslandRoot)
 	{
-		_contentRoot = coreServices.ContentRootCoordinator.CreateContentRoot(ContentRootType.XamlIslandRoot, Colors.Transparent, this);
+		Debug.Assert(type is ContentRootType.XamlIslandRoot or ContentRootType.ShellWindow);
+
+		_contentRoot = coreServices.ContentRootCoordinator.CreateContentRoot(type, Colors.Transparent, this);
 		_contentRoot.XamlIslandRoot = this;
 	}
 

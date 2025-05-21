@@ -81,12 +81,12 @@ namespace Uno.UI.Xaml.Core
 				RootElement = RootVisual;
 			}
 
-			if (ContentRoot.Type == ContentRootType.CoreWindow)
+			if (ContentRoot.Type is ContentRootType.CoreWindow)
 			{
 				var config = RootScaleConfig.ParentApply; //XamlOneCoreTransforms.IsEnabled ? RootScaleConfig::ParentApply : RootScaleConfig::ParentInvert;
 				RootScale = new CoreWindowRootScale(config, coreServices, this);
 			}
-			else if (ContentRoot.Type == ContentRootType.XamlIslandRoot)
+			else if (ContentRoot.Type is ContentRootType.XamlIslandRoot or ContentRootType.ShellWindow)
 			{
 				RootScale = new XamlIslandRootScale(coreServices, this);
 

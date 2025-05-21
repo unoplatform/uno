@@ -13,13 +13,13 @@ internal partial class XamlIslandRoot : Panel
 {
 	private readonly ContentManager _contentManager;
 
-	public XamlIslandRoot()
+	public XamlIslandRoot(ContentRootType type = ContentRootType.XamlIslandRoot)
 	{
 		_contentManager = new(this, false);
 		// TODO: Uno specific - additional root logic required by Uno.
 		_rootElementLogic = new(this);
 
-		InitializeRoot(WinUICoreServices.Instance);
+		InitializeRoot(WinUICoreServices.Instance, type);
 	}
 
 	internal ContentManager ContentManager => _contentManager;

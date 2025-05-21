@@ -80,7 +80,7 @@ internal partial class InputManager
 				return;
 			}
 
-			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)
+			if (_inputManager.ContentRoot.Type is ContentRootType.CoreWindow or ContentRootType.ShellWindow)
 			{
 				CoreWindow.GetForCurrentThreadSafe()?.SetPointerInputSource(_source);
 			}

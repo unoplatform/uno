@@ -151,6 +151,7 @@ internal class FocusObserver
 		pRoot = _contentRoot.Type switch
 		{
 			ContentRootType.XamlIslandRoot => _contentRoot.VisualTree.RootScrollViewer ?? _contentRoot.VisualTree.ActiveRootVisual,
+			ContentRootType.ShellWindow => _contentRoot.VisualTree.RootScrollViewer ?? _contentRoot.VisualTree.ActiveRootVisual,
 			_ => _contentRoot.VisualTree.ActiveRootVisual,
 		};
 

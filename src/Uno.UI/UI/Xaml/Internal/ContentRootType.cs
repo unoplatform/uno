@@ -6,6 +6,7 @@ namespace Uno.UI.Xaml.Core;
 
 internal enum ContentRootType
 {
-	CoreWindow,
-	XamlIslandRoot
+	CoreWindow, // A window created using the "native UI framework" (e.g. iOS-UIKit / Android-View / Windows-WPF)
+	XamlIslandRoot, // Xaml Island hosted in an application which uses another UI framework (e.g. WPF / WinUI)
+	ShellWindow, // A window created using system OS APIs (e.g. Win32 / X11)
 }

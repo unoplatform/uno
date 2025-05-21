@@ -4,6 +4,7 @@ using System;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml.Hosting;
@@ -23,7 +24,7 @@ public partial class DesktopWindowXamlSource : IDisposable
 	/// </summary>
 	public DesktopWindowXamlSource()
 	{
-		_xamlIsland = new();
+		_xamlIsland = new(ContentRootType.ShellWindow);
 	}
 
 	/// <summary>

@@ -89,6 +89,7 @@ internal partial class ContentRoot
 				FocusManager.SetFocusObserver(new CoreWindowFocusObserver(this));
 				break;
 			case ContentRootType.XamlIslandRoot:
+			case ContentRootType.ShellWindow:
 				FocusAdapter = new FocusManagerXamlIslandAdapter(this);
 				FocusManager.SetFocusObserver(new FocusObserver(this));
 				break;
@@ -136,6 +137,7 @@ internal partial class ContentRoot
 		switch (Type)
 		{
 			case ContentRootType.XamlIslandRoot:
+			case ContentRootType.ShellWindow:
 				XamlIslandRoot?.OnStateChanged();
 				break;
 			case ContentRootType.CoreWindow:
@@ -150,7 +152,7 @@ internal partial class ContentRoot
 		ContentIsland content,
 		ContentIslandAutomationProviderRequestedEventArgs args)
 	{
-		if (Type == ContentRootType.XamlIslandRoot)
+		if (Type is ContentRootType.XamlIslandRoot or ContentRootType.ShellWindow)
 		{
 			// XamlislandRoot.OnContentAutomationProviderRequested(content, args));
 		}
@@ -278,7 +280,7 @@ internal partial class ContentRoot
 		return Type switch
 		{
 			ContentRootType.CoreWindow => Window.CurrentSafe,
-			ContentRootType.XamlIslandRoot when XamlIslandRoot is not null => XamlIslandRoot.OwnerWindow,
+			ContentRootType.XamlIslandRoot or ContentRootType.ShellWindow when XamlIslandRoot is not null => XamlIslandRoot.OwnerWindow,
 			_ => null
 		};
 	}
