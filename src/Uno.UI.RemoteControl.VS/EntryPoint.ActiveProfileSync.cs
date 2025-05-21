@@ -419,7 +419,7 @@ public partial class EntryPoint : IDisposable
 
 			if (hierarchy is IVsBuildPropertyStorage propertyStorage)
 			{
-				WriteUserProperty(propertyStorage, UnoSelectedTargetFrameworkProperty, targetFramework);
+				propertyStorage.SetUserProperty(UnoSelectedTargetFrameworkProperty, targetFramework);
 			}
 			else
 			{
@@ -430,15 +430,5 @@ public partial class EntryPoint : IDisposable
 		{
 			_debugAction?.Invoke("Could not write .user file (1)");
 		}
-	}
-
-	private static void WriteUserProperty(IVsBuildPropertyStorage propertyStorage, string propertyName, string propertyValue)
-	{
-		propertyStorage.SetPropertyValue(
-			propertyName,        // Property name
-			null,                 // Configuration name, null applies to all configurations
-			(uint)_PersistStorageType.PST_USER_FILE,  // Specifies that this is a user-specific property
-			propertyValue             // Property value
-		);
 	}
 }
