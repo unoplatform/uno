@@ -244,6 +244,10 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		}
 	}
 
+	public void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight) => throw new NotImplementedException();
+
+	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMaximumHeight) => throw new NotImplementedException();
+
 	public OverlappedPresenterState State
 	{
 		get
