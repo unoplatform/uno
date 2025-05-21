@@ -80,7 +80,7 @@ namespace BlankApp
 ```
 
 ```csharp
-// SKCanvasElementImpl.skia.cs <-- NOTICE the `.skia`
+// SKCanvasElementImpl.desktop.cs <-- NOTICE the `.desktop`
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
