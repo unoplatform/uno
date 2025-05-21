@@ -290,6 +290,9 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_set_min_size(nint window, double width, double height);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_max_size(nint window, double width, double height);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_window_clip_svg(nint window, string? svg);
