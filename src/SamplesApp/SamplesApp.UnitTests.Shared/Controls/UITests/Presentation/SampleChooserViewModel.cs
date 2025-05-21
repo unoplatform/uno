@@ -150,7 +150,7 @@ namespace SampleControl.Presentation
 		/// <returns></returns>
 		private void ShowNewSection(CancellationToken ct, Section section)
 		{
-			Console.WriteLine($"Section changed: {section}");
+			Console.WriteLine($"Section changed: {section} ({GetMemoryStats()})");
 
 			switch (section)
 			{
@@ -173,6 +173,14 @@ namespace SampleControl.Presentation
 				default:
 					break;
 			}
+		}
+
+		private string GetMemoryStats()
+		{
+			var totalMemory = GC.GetTotalMemory(false);
+			var processMemory = OperatingSystem.IsBrowser() ? 0 : Process.GetCurrentProcess().PrivateMemorySize64;
+
+			return $"GC Heap: {totalMemory / 1024.0 / 1024.0:0.00} MB, ProcessMemory: {processMemory / 1024.0 / 1024.0:0.00} MB";
 		}
 
 		/// <summary>
