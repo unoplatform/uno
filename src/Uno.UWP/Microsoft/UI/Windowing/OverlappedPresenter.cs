@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Windowing.Native;
 
 namespace Microsoft.UI.Windowing;
@@ -130,7 +132,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMaximumWidth != value)
 			{
 				_preferredMaximumWidth = value;
-				Native?.SetPreferredMaximumSize(PreferredMaximumWidth, PreferredMaximumHeight);
+				Native?.SetPreferredMaximumSize(GetEffectiveMaxWidth(), GetEffectiveMaxHeight());
 			}
 		}
 	}
@@ -146,7 +148,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMaximumHeight != value)
 			{
 				_preferredMaximumHeight = value;
-				Native?.SetPreferredMaximumSize(PreferredMaximumWidth, PreferredMaximumHeight);
+				Native?.SetPreferredMaximumSize(GetEffectiveMaxWidth(), GetEffectiveMaxHeight());
 			}
 		}
 	}
@@ -316,6 +318,25 @@ public partial class OverlappedPresenter : AppWindowPresenter
 
 			_pendingState = null;
 		}
+	}
+
+	private int? GetEffectiveMaxWidth()
+	{
+		if (PreferredMaximumWidth is not null && PreferredMinimumWidth is not null)
+		{
+			return Math.Max(PreferredMaximumWidth.Value, PreferredMinimumWidth.Value);
+		}
+
+		return PreferredMaximumWidth;
+	}
+
+	private int? GetEffectiveMaxHeight()
+	{
+		if (PreferredMaximumHeight is not null && PreferredMinimumHeight is not null)
+		{
+			return Math.Max(PreferredMaximumHeight.Value, PreferredMinimumHeight.Value);
+		}
+		return PreferredMaximumHeight;
 	}
 
 	internal void NotifyAppWindow() => Owner?.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
