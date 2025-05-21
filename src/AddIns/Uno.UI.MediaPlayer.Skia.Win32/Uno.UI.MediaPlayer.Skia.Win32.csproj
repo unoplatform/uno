@@ -34,6 +34,10 @@
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Compile Include="..\Uno.UI.MediaPlayer.Skia.X11\SharedMediaPlayerExtension.cs" />
+	</ItemGroup>
+
 	<Target Name="_UnoUIUnoUIMediaPlayerSkiaWin32OverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
