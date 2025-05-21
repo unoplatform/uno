@@ -278,11 +278,9 @@ Many Uno projects and libraries make use of a `winappsdk-workaround.targets` fil
 
 By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. The supported file extensions are as shown below:
 
-- `*.crossruntime.cs` (WASM, Skia, or Reference)
 - `*.wasm.cs` (WebAssembly)
-- `*.skia.cs` (Skia)
-- `*.reference.cs` (Reference only)
-- `*.iOS.cs`, `*.iOSmacOS.cs` (iOS)
+- `*.desktop.cs` (Desktop)
+- `*.iOS.cs` (iOS)
 - `*.tvOS.cs`(tvOS)
 - `*.UIKit.cs`, `*.Apple.cs` (iOS & tvOS)
 - `*.Android.cs` (Android)
