@@ -16,7 +16,7 @@ uid: Uno.Features.WSPower
 * ✔  Supported
 * ✖ Not supported
 
-| Picker         | UWP/WinUI   | WebAssembly | Android | iOS   | macOS | Skia Desktop |
+| Picker         | WinUI   | WebAssembly | Android | iOS   | macOS | Skia Desktop |
 |----------------|-------|-------------|---------|-------|-------|-----|
 | `BatteryStatus` | ✔   | ✔  | ✔     | ✔    |✖ ️   | ✖ |
 | `EnergySaverStatus` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ |

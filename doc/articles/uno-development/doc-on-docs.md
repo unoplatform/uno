@@ -40,7 +40,7 @@ It depends.
 
 There's two different cases:
 
-### I'm implementing a feature from the WinUI/UWP contract
+### I'm implementing a feature from the WinUI contract
 
 Uno's API matches WinUI's API, and most of the time, a new Uno feature will map to an existing WinUI feature.
 
