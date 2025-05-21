@@ -28,9 +28,6 @@
 
 		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on 6.0.0 which has a vulnerability -->
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.2" />
-
-		<!-- Avoid transitive dependency from System.Security.Cryptography.Xml on 8.0.0 which has a vulnerability -->
-		<PackageReference Include="System.Formats.Asn1" Version="8.0.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
