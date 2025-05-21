@@ -296,6 +296,9 @@ public partial class EntryPoint : IDisposable
 		var persistedPort = persistedPorts.FirstOrDefault(p => p > 0);
 
 		var port = _devServer?.port ?? persistedPort;
+		// Determine if the port configuration is incorrect:
+		// - Either no ports or multiple ports are persisted (`persistedPorts is { Length: 0 or > 1 }`).
+		// - Or the currently used port (`port`) does not match the persisted port (`persistedPort`).
 		var portMisConfigured = persistedPorts is { Length: 0 or > 1 } || port != persistedPort;
 
 		if (_devServer is { process.HasExited: false })
