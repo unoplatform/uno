@@ -288,19 +288,19 @@ public partial class EntryPoint : IDisposable
 	{
 		_debugAction?.Invoke($"Starting server (tid:{Environment.CurrentManagedThreadId})");
 
-		var persistedPortsStr = await _dte.GetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, ProjectAttribute.Application);
-		var persistedPorts = persistedPortsStr
+		var persistedPorts = (await _dte
+			.GetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, ProjectAttribute.Application))
 			.Distinct(StringComparer.OrdinalIgnoreCase)
 			.Select(str => int.TryParse(str, out var p) ? p : -1)
 			.ToArray();
 		var persistedPort = persistedPorts.FirstOrDefault(p => p > 0);
 
 		var port = _devServer?.port ?? persistedPort;
-		var portMissConfigured = persistedPorts is { Length: 0 or > 1 } || port != persistedPort;
+		var portMisConfigured = persistedPorts is { Length: 0 or > 1 } || port != persistedPort;
 
 		if (_devServer is { process.HasExited: false })
 		{
-			if (portMissConfigured)
+			if (portMisConfigured)
 			{
 				_debugAction?.Invoke($"Server already running on port {_devServer?.port}, but port is not configured properly on all projects. Updating it ...");
 
@@ -320,7 +320,7 @@ public partial class EntryPoint : IDisposable
 		await _devServerGate.WaitAsync();
 		try
 		{
-			if (EnsureTcpPort(ref port) || portMissConfigured)
+			if (EnsureTcpPort(ref port) || portMisConfigured)
 			{
 				// The port has changed, or all application projects does not have the same port number (or is not configured), we update port in *all* user files
 				await _dte.SetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, port.ToString(CultureInfo.InvariantCulture), ProjectAttribute.Application);
