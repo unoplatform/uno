@@ -8,10 +8,10 @@ This article explores how Uno works in detail, with a focus on information that'
 
 ## What Uno Platform does
 
-Uno Platform is a cross-platform projection of Microsoft's WinUI framework (and its preview iteration, UWP). Uno mirrors WinUI/UWP types and supports the WinUI/UWP XAML dialect, as well as handling several additional aspects of the app contract, like assets and string resources. Thus, it allows app code written for UWP to be built and run on Android, iOS, in the browser via WebAssembly, Linux, and on macOS.
+Uno Platform is a cross-platform projection of Microsoft's WinUI framework (and its preview iteration, UWP). Uno mirrors WinUI types and supports the WinUI XAML dialect, as well as handling several additional aspects of the app contract, like assets and string resources. Thus, it allows app code written for WinUI to be built and run on Android, iOS, Linux, macOS, and in the browser via WebAssembly.
 
 > [!NOTE]
-> While UWP supports authoring app code in C++ as well as C#, Uno Platform only supports C#.
+> While WinUI supports authoring app code in C++ as well as C#, Uno Platform only supports C#.
 
 Broadly then, Uno Platform has two jobs to do:
 
@@ -20,7 +20,7 @@ Broadly then, Uno Platform has two jobs to do:
 
 Like WinUI, Uno Platform provides access to the existing .NET libraries, via [.NET](https://dotnet.microsoft.com/en-us/).
 
-Uno Platform aims to be a 1:1 match for WinUI (and UWP), in API surface (types, properties, methods, events, etc...), in appearance, and in behavior. At the same time, Uno Platform places an emphasis on native interoperability and making it easy to intermix purely native views with Uno/UWP controls in the visual tree.
+Uno Platform aims to be a 1:1 match for WinUI, in API surface (types, properties, methods, events, etc), in appearance, and in behavior. At the same time, Uno Platform places an emphasis on native interoperability and making it easy to intermix purely native views with Uno/WinUI controls in the visual tree.
 
 ## Uno.WinUI as a class library
 
@@ -34,7 +34,7 @@ APIs for non-UI features, for example [`Windows.System.Power`](../features/windo
 
 ### Generated `NotImplemented` stubs
 
-WinUI has a very large API surface area, and not all features in it have been implemented by Uno Platform. We want pre-existing WinUI (and UWP) apps and libraries that reference these features to still be able to at least compile on Uno Platform. To support this, an [internal automated tool](https://github.com/unoplatform/uno/tree/master/src/Uno.UWPSyncGenerator) inspects the UWP framework, compares it to authored code in Uno Platform, and generates stubs for all types and type members that exist in UWP but are not implemented on Uno. For example:
+WinUI has a very large API surface area, and not all features in it have been implemented by Uno Platform. We want pre-existing WinUI apps and libraries that reference these features to still be able to at least compile on Uno Platform. To support this, an [internal automated tool](https://github.com/unoplatform/uno/tree/master/src/Uno.UWPSyncGenerator) inspects the WinUI framework, compares it to authored code in Uno Platform, and generates stubs for all types and type members that exist in WinUI but are not implemented on Uno. For example:
 
 ```csharp
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__
@@ -73,9 +73,9 @@ Uno Platform uses existing libraries to parse a given XAML file into a XAML obje
 
 ### DependencyObject implementation generator
 
-On [Android](uno-internals-android.md), [iOS](uno-internals-ios.md), and [macOS](uno-internals-macos.md), `UIElement` (the base view type in UWP/WinUI) inherits from the native view class on the respective platform. This poses a challenge because `UIElement` inherits from the `DependencyObject` class in UWP/WinUI, which is a key part of the dependency property system. Uno makes this work by breaking from UWP/WinUI and having `DependencyObject` be an interface rather than a type.
+On [Android](uno-internals-android.md), [iOS](uno-internals-ios.md), and [macOS](uno-internals-macos.md), `UIElement` (the base view type in WinUI) inherits from the native view class on the respective platform. This poses a challenge because `UIElement` inherits from the `DependencyObject` class in UWP/WinUI, which is a key part of the dependency property system. Uno makes this work by breaking from WinUI and having `DependencyObject` be an interface rather than a type.
 
-Class library authors and app authors sometimes inherit directly from `DependencyObject` rather than a more derived type. To support this scenario seamlessly, the [`DependencyObjectGenerator` task](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) looks for such classes and [generates](https://github.com/unoplatform/Uno.SourceGeneration) a partial implementation for the `DependencyObject` interface, ie the methods that on UWP would be inherited from the base class.
+Class library authors and app authors sometimes inherit directly from `DependencyObject` rather than a more derived type. To support this scenario seamlessly, the [`DependencyObjectGenerator` task](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) looks for such classes and [generates](https://github.com/unoplatform/Uno.SourceGeneration) a partial implementation for the `DependencyObject` interface, ie, the methods that on UWP would be inherited from the base class.
 
 ### Formatting image assets
 
@@ -83,4 +83,4 @@ Different platforms have different requirements for where bundled image files ar
 
 ### Formatting string resources
 
-As with images, different platforms have different requirements for location and formatting of localized string resources. The [ResourcesGenerationTask](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.Tasks/ResourcesGenerator/ResourcesGenerationTask.cs) reads the strings defined in UWP's `*.resw` files in the shared project, and generates the appropriate platform-specific file.
+As with images, different platforms have different requirements for the location and formatting of localized string resources. The [ResourcesGenerationTask](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.Tasks/ResourcesGenerator/ResourcesGenerationTask.cs) reads the strings defined in WinUI's `*.resw` files in the shared project, and generates the appropriate platform-specific file.

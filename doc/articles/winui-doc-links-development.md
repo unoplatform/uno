@@ -90,7 +90,3 @@ The resources below explain many aspects of the API shared by WinUI and Uno Plat
 * [StaticResource markup extension](https://learn.microsoft.com/windows/uwp/xaml-platform/staticresource-markup-extension)
 * [TemplateBinding markup extension](https://learn.microsoft.com/windows/uwp/xaml-platform/templatebinding-markup-extension)
 * [ThemeResource markup extension](https://learn.microsoft.com/windows/uwp/xaml-platform/themeresource-markup-extension)
-
-## Other
-
-* [Concept map - UWP, Android, iOS](https://learn.microsoft.com/windows/uwp/porting/android-ios-uwp-map)

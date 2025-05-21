@@ -44,9 +44,6 @@ This class can be used as follows in the XAML:
 
 WinUI 3 provides enhanced support for MarkupExtension with the ability to get the markup context.
 
-> [!NOTE]
-> While this feature is available on all Uno Platform targets (UWP and WinUI), the UWP head on Windows does not support this feature, only the WinAppSDK head supports it.
-
 ### IProvideValueTarget
 
 ```csharp
