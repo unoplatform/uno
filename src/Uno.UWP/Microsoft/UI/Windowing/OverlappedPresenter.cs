@@ -97,7 +97,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMinimumWidth != value)
 			{
 				_preferredMinimumWidth = value;
-				Native?.SetPreferredMinimumSize(PreferredMinimumWidth, PreferredMinimumHeight);
+				SetNativeWindowConstraints();
 			}
 		}
 	}
@@ -113,7 +113,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMinimumHeight != value)
 			{
 				_preferredMinimumHeight = value;
-				Native?.SetPreferredMinimumSize(PreferredMinimumWidth, PreferredMinimumHeight);
+				SetNativeWindowConstraints();
 			}
 		}
 	}
@@ -129,7 +129,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMaximumWidth != value)
 			{
 				_preferredMaximumWidth = value;
-				Native?.SetPreferredMaximumSize(GetEffectiveMaxWidth(), GetEffectiveMaxHeight());
+				SetNativeWindowConstraints();
 			}
 		}
 	}
@@ -145,7 +145,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMaximumHeight != value)
 			{
 				_preferredMaximumHeight = value;
-				Native?.SetPreferredMaximumSize(GetEffectiveMaxWidth(), GetEffectiveMaxHeight());
+				SetNativeWindowConstraints();
 			}
 		}
 	}
@@ -264,6 +264,12 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			Native.SetIsAlwaysOnTop(IsAlwaysOnTop);
 			Native.SetBorderAndTitleBar(HasBorder, HasTitleBar);
 		}
+	}
+
+	private void SetNativeWindowConstraints()
+	{
+		Native?.SetPreferredMaximumSize(GetEffectiveMaxWidth(), GetEffectiveMaxHeight());
+		Native?.SetPreferredMinimumSize(PreferredMinimumWidth, PreferredMinimumHeight);
 	}
 
 	private int? GetEffectiveMaxWidth()
