@@ -154,7 +154,31 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 		return span.ToArray();
 	}
 
-	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMinimumHeight) { }
+	public void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight)
+	{
+		var minWidth = preferredMinimumWidth ?? 0;
+		var minHeight = preferredMinimumHeight ?? 0;
+		var hints = new XSizeHints
+		{
+			flags = (int)XSizeHintsFlags.PMinSize,
+			min_width = minWidth,
+			min_height = minHeight,
+		};
 
-	public void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMaximumHeight) { }
+		XLib.XSetWMNormalHints(x11Window.Display, x11Window.Window, ref hints);
+	}
+
+	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMaximumHeight)
+	{
+		var maxWidth = preferredMaximumHeight ?? int.MaxValue;
+		var maxHeight = preferredMaximumHeight ?? int.MaxValue;
+		var hints = new XSizeHints
+		{
+			flags = (int)XSizeHintsFlags.PMaxSize,
+			max_width = maxWidth,
+			max_height = maxHeight,
+		};
+
+		XLib.XSetWMNormalHints(x11Window.Display, x11Window.Window, ref hints);
+	}
 }
