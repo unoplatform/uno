@@ -178,9 +178,7 @@ namespace SampleControl.Presentation
 		private string GetMemoryStats()
 		{
 			var totalMemory = GC.GetTotalMemory(false);
-			var processMemory = OperatingSystem.IsBrowser() ? 0 : Process.GetCurrentProcess().PrivateMemorySize64;
-
-			return $"GC Heap: {totalMemory / 1024.0 / 1024.0:0.00} MB, ProcessMemory: {processMemory / 1024.0 / 1024.0:0.00} MB";
+			return $"GC Heap: {totalMemory / 1024.0 / 1024.0:0.00} MB";
 		}
 
 		/// <summary>
