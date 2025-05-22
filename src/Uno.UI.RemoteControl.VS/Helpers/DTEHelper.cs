@@ -9,6 +9,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using VSLangProj110;
 
 namespace Uno.UI.RemoteControl.VS.Helpers;
 
@@ -47,14 +48,14 @@ internal static class DTEHelper
 	{
 		ThreadHelper.ThrowIfNotOnUIThread();
 
-		return project.Properties?.Item("OutputType")?.Value is 0; // for "exe" and "winexe"
+		return project.Properties?.Item("OutputType")?.Value is prjOutputTypeEx.prjOutputTypeEx_Exe or prjOutputTypeEx.prjOutputTypeEx_WinExe or prjOutputTypeEx.prjOutputTypeEx_AppContainerExe;
 	}
 
 	public static bool IsLibrary(this EnvDTE.Project project)
 	{
 		ThreadHelper.ThrowIfNotOnUIThread();
 
-		return project.Properties?.Item("OutputType")?.Value is 2;
+		return project.Properties?.Item("OutputType")?.Value is prjOutputTypeEx.prjOutputTypeEx_Library or prjOutputTypeEx.prjOutputTypeEx_WinMDObj;
 	}
 
 	public static async ValueTask<IEnumerable<Project>> GetProjectsAsync(this DTE dte, ProjectAttribute? attributes = null)
