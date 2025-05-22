@@ -438,14 +438,7 @@
       - name: Troubleshooting Hot Reload
         href: xref:Uno.Studio.HotReload.Troubleshooting
     - name: Hot Design
-      href: xref:Uno.Studio.HotDesign.Overview
-      items:
-      - name: Overview
-        href: xref:Uno.Studio.HotDesign.Overview
-      - name: Getting Started with Hot Design
-        href: xref:Uno.Studio.HotDesign.GetStarted.Guide
-      - name: Counter Tutorial
-        href: xref:Uno.Studio.HotDesign.GetStarted.CounterTutorial
+      href: studio/Hot Design/toc.yml
     - name: Design-to-Code
       href: external/figma-docs/toc.yml
     - name: Feedback
