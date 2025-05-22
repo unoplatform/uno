@@ -3,7 +3,7 @@ param(
   $branches = $null
 )
 
-#Set-PSDebug -Trace 1
+Set-PSDebug -Trace 1
 
 # --- CONFIGURATION ----------------------------------------------------------
 # Each entry: repo name -> @{ ref = '<commit|branch>'; dest = '<sub-folder>'? }
@@ -21,7 +21,7 @@ $external_docs = @{
     "workshops"          = @{ ref="e3c2a11a588b184d8cd3a6f88813e5615cca891d" } #latest master commit
     "uno.samples"        = @{ ref="8261367edffd836512f9b37fbb526f620d0a381e" } #latest master commit
     "uno.chefs"          = @{ ref="25da718f7aba5719b7053b9c53e1f4c8abce2193" } #latest main commit
-    #"hd-docs"            = @{ ref="main"; dest="studio/Hot Design" } #latest main commit
+    "hd-docs"            = @{ ref="683cd1525524c85812e820c100f8c651c788cadb"; dest="studio/Hot Design" } #latest main commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
@@ -40,13 +40,6 @@ if ($branches) {
     }
 }
 
-# Create the destination folders
-foreach ($cfg in $external_docs.Values) {
-    $dest = if ($cfg.ContainsKey('dest') -and $cfg.dest) { $cfg.dest } else { 'external' }
-    $dir  = Join-Path 'articles' $dest
-    if (-not (Test-Path $dir)) { mkdir $dir -EA Continue }
-}
-
 echo "Current setup:"
 $external_docs
 
@@ -54,7 +47,7 @@ $ErrorActionPreference = 'Stop'
 
 function Get-TargetRoot([string]$repo) {
     $cfg  = $external_docs[$repo]
-    $dest = if ($cfg.ContainsKey('dest') -and $cfg.dest) { $cfg.dest } else { 'external' }
+    $dest = if ($cfg.ContainsKey('dest') -and $cfg.dest) { $cfg.dest } else { Join-Path 'external' $repo }
     return Join-Path 'articles' $dest
 }
 
@@ -81,24 +74,24 @@ foreach ($repoPath in $external_docs.Keys)
     $repoCfg = $external_docs[$repoPath]
     $repoRef = $repoCfg.ref
     $targetRoot = Get-TargetRoot $repoPath
-    $fullPath   = Join-Path $targetRoot $repoPath
+    $fullPath   = $targetRoot
     $repoUrl = "$uno_git_url$repoPath"
         
     if (-Not (Test-Path $fullPath))
     {        
         Write-Host "Cloning $repoPath ($repoUrl@$repoRef) into $targetRoot..." -ForegroundColor Black -BackgroundColor Blue
-        git clone --depth 1 --filter=blob:none --no-tags $repoUrl $fullPath
+        git clone --filter=blob:none --no-tags $repoUrl $fullPath
         Assert-ExitCodeIsZero
     }
     else
     {
-        Write-Host "Skipping clone of $repoPath ($repoUrl@$repoRef) into $targetRoot (already exists)."-ForegroundColor Black -BackgroundColor DarkRed
+        Write-Host "Skipping clone of $repoPath ($repoUrl@$repoRef) into $targetRoot (already exists)."-ForegroundColor Black -BackgroundColor DarkYellow
     }
 
     pushd $fullPath
 
     Write-Host "Checking out $repoUrl@$repoRef..." -ForegroundColor Black -BackgroundColor Blue
-    git fetch --depth 1 --filter=blob:none origin $repoRef # fetch the latest commit for the specified ref
+    git fetch --filter=blob:none origin $repoRef # fetch the latest commit for the specified ref
     Assert-ExitCodeIsZero
     git checkout --detach FETCH_HEAD # detach the HEAD to avoid issues with git status
     Assert-ExitCodeIsZero
