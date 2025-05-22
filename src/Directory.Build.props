@@ -59,7 +59,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<!--
+		Enable only when requiring specific versions of the compiler, otherwise, use the one
+		bundled with the SDK.
 		<MicrosoftNetCompilersToolsetVersion>4.14.0</MicrosoftNetCompilersToolsetVersion>
+		-->
 	</PropertyGroup>
 
   <ItemGroup Condition=" '$(MicrosoftNetCompilersToolsetVersion)' != ''">
