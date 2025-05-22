@@ -562,7 +562,7 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				Matrix4x4.Invert(to.Visual.TotalMatrix /* root2To */, out var to2Root);
-				from2To = (to2Root * from.Visual.TotalMatrix /* root2from */).ToMatrix3x2();
+				from2To = (from.Visual.TotalMatrix /* root2from */ * to2Root).ToMatrix3x2();
 			}
 
 			if (from.Log().IsEnabled(LogLevel.Trace))
