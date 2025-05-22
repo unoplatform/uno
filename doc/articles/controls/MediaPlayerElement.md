@@ -108,6 +108,18 @@ Add the following to your AndroidManifest.xml
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 ```
 
+### Skia
+
+On some weaker devices, the first load of a `MediaPlayerElement` instance is extremely slow. To attempt to preload media playback resources on app startup, enable the `PreloadMediaPlayer` option in the host builder where supported.
+
+```csharp
+var host = UnoPlatformHostBuilder.Create()
+            .App(() => new App())
+            .UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
+            .UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
+            .Build();
+```
+
 ## Future improvement
 
 - React to audio focus changes (pause/stop playback or reduce audio volume)
