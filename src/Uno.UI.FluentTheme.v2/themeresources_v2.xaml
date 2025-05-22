@@ -1201,11 +1201,8 @@
       <StaticResource x:Key="NavigationViewButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="NavigationViewButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="TextFillColorSecondaryBrush" />
-      <contract7NotPresent:StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
-      <contract7Present:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
-      <contract7NotPresent:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
-      <contract7Present:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
-      <contract7NotPresent:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush" />
+      <StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
+      <StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
       <Thickness x:Key="NumberBoxPopupBorderThickness">1</Thickness>
       <StaticResource x:Key="NumberBoxPopupSpinButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <Thickness x:Key="NumberBoxPopupSpinButtonBorderThickness">0</Thickness>
@@ -3008,11 +3005,8 @@
       <StaticResource x:Key="NavigationViewButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="NavigationViewButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="TextFillColorSecondaryBrush" />
-      <contract7NotPresent:StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
-      <contract7Present:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
-      <contract7NotPresent:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
-      <contract7Present:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
-      <contract7NotPresent:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush" />
+      <StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
+      <StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
       <Thickness x:Key="NumberBoxPopupBorderThickness">1</Thickness>
       <StaticResource x:Key="NumberBoxPopupSpinButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <Thickness x:Key="NumberBoxPopupSpinButtonBorderThickness">0</Thickness>
@@ -4802,11 +4796,8 @@
       <StaticResource x:Key="NavigationViewButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
       <StaticResource x:Key="NavigationViewButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <contract7NotPresent:StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="SystemControlPageTextBaseMediumBrush" />
-      <contract7Present:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="SystemControlBackgroundBaseHighBrush" />
-      <contract7NotPresent:StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
-      <contract7Present:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
-      <contract7NotPresent:StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
+      <StaticResource x:Key="NumberBoxPopupBackground" ResourceKey="SystemControlBackgroundBaseHighBrush" />
+      <StaticResource x:Key="NumberBoxPopupBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
       <Thickness x:Key="NumberBoxPopupBorderThickness">1</Thickness>
       <StaticResource x:Key="NumberBoxPopupSpinButtonBackground" ResourceKey="SystemControlTransparentBrush" />
       <Thickness x:Key="NumberBoxPopupSpinButtonBorderThickness">2</Thickness>
@@ -19278,8 +19269,10 @@
     <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
     <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
     <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
     <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
     <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
+    <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
     <Setter Property="Padding" Value="{ThemeResource TextControlThemePadding}" />
     <Setter Property="Template">
       <Setter.Value>
@@ -19382,7 +19375,7 @@
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ContentPresenter x:Name="HeaderContentPresenter" Grid.ColumnSpan="3" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" FontWeight="Normal" Foreground="{ThemeResource TextControlHeaderForeground}" Margin="{ThemeResource TextBoxTopHeaderMargin}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" TextWrapping="Wrap" VerticalAlignment="Top" Visibility="Collapsed" x:DeferLoadStrategy="Lazy" />
-            <TextBox x:Name="InputBox" Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource NumberBoxTextBoxStyle}" InputScope="{TemplateBinding InputScope}" PlaceholderText="{TemplateBinding PlaceholderText}" SelectionFlyout="{TemplateBinding SelectionFlyout}" SelectionHighlightColor="{TemplateBinding SelectionHighlightColor}" TextReadingOrder="{TemplateBinding TextReadingOrder}" PreventKeyboardDisplayOnProgrammaticFocus="{TemplateBinding PreventKeyboardDisplayOnProgrammaticFocus}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" TextAlignment="{TemplateBinding TextAlignment}" CornerRadius="{TemplateBinding CornerRadius}" />
+            <TextBox x:Name="InputBox" Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource NumberBoxTextBoxStyle}" InputScope="{TemplateBinding InputScope}" PlaceholderText="{TemplateBinding PlaceholderText}" SelectionFlyout="{TemplateBinding SelectionFlyout}" SelectionHighlightColor="{TemplateBinding SelectionHighlightColor}" TextReadingOrder="{TemplateBinding TextReadingOrder}" PreventKeyboardDisplayOnProgrammaticFocus="{TemplateBinding PreventKeyboardDisplayOnProgrammaticFocus}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" TextAlignment="{TemplateBinding TextAlignment}" CornerRadius="{TemplateBinding CornerRadius}" />
             <Popup x:Name="UpDownPopup" Grid.Row="1" Grid.Column="1" VerticalOffset="{ThemeResource NumberBoxPopupVerticalOffset}" HorizontalOffset="{ThemeResource NumberBoxPopupHorizonalOffset}" ShouldConstrainToRootBounds="False" HorizontalAlignment="Left">
               <Grid x:Name="PopupContentRoot" Padding="6" Background="{ThemeResource NumberBoxPopupBackground}" BorderBrush="{ThemeResource NumberBoxPopupBorderBrush}" BorderThickness="{ThemeResource NumberBoxPopupBorderThickness}" CornerRadius="{ThemeResource OverlayCornerRadius}">
                 <Grid.RowDefinitions>
@@ -19475,8 +19468,6 @@
     </Style.Setters>
   </Style>
   <Style x:Key="NumberBoxTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}">
-    <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue #16505 -->
-    <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="TextBox">
@@ -19631,8 +19622,6 @@
             </Grid.ColumnDefinitions>
             <ContentPresenter x:Name="HeaderContentPresenter" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" FontWeight="Normal" Foreground="{ThemeResource TextControlHeaderForeground}" Margin="{ThemeResource TextBoxTopHeaderMargin}" TextWrapping="Wrap" VerticalAlignment="Top" Visibility="Collapsed" x:DeferLoadStrategy="Lazy" />
             <Border x:Name="BorderElement" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="3" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" Control.IsTemplateFocusTarget="True" MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}" />
-            <!-- Uno specific (LinearGradientBrush borders): #6457 -->
-            <uc:FauxGradientBorderPresenter Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="3" RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
             <ScrollViewer x:Name="ContentElement" Grid.Row="1" Grid.Column="0" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" IsTabStop="False" AutomationProperties.AccessibilityView="Raw" ZoomMode="Disabled" />
             <TextBlock x:Name="PlaceholderTextContentPresenter" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForeground}}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Text="{TemplateBinding PlaceholderText}" TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}" IsHitTestVisible="False" />
             <Button x:Name="DeleteButton" Grid.Row="1" Grid.Column="1" Style="{StaticResource DeleteButtonStyle}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{ThemeResource HelperButtonThemePadding}" IsTabStop="False" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" FontSize="{TemplateBinding FontSize}" HorizontalAlignment="Right" MinWidth="40" VerticalAlignment="Stretch" />
