@@ -116,8 +116,8 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 
 In addition, for class libraries:
 
-- `*.reference.cs` is built only for reference implementation
-- `*.crossruntime.cs` is built for WebAssembly, Desktop, and reference implementation
+* `*.reference.cs` is built only for reference implementation
+* `*.crossruntime.cs` is built for WebAssembly, Desktop, and reference implementation
 
 > [!NOTE]
 > For backwards compatibility, using `.skia.cs` is currently equivalent to `.desktop.cs`. This might change in the future, so we recommend using the suffixes above instead.
