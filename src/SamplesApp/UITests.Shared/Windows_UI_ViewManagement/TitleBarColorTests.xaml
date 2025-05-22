@@ -11,9 +11,13 @@
 
     <StackPanel>
 		<TextBox x:Name="BackgroundColorTextBox" Header="Color" Text="#FF0000" />
-		<StackPanel Orientation="Horizontal">
+		<StackPanel Orientation="Vertical">
 			<Button Click="SetColor_Click">Set color</Button>
-			<Button Margin="4,0,0,0" Click="ResetDefault_Click">Reset default</Button>
+			<Button Click="ResetDefault_Click">Reset default</Button>
+			<Button Click="SetColorWithOpacity_Click">Status Bar BG</Button>
+			<Button Click="FG_White">FG White</Button>
+			<Button Click="FG_Black">FG Black</Button>
+			
 		</StackPanel>
 		<TextBlock Text="" x:Name="ErrorMessage" Foreground="Red" />
 	</StackPanel>

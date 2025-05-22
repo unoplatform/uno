@@ -14,6 +14,7 @@ namespace Windows.UI.ViewManagement
 	public sealed partial class StatusBar
 	{
 		private static StatusBar _statusBar;
+		private Color? _backgroundColor;
 
 		public event TypedEventHandler<StatusBar, object> Hiding;
 		public event TypedEventHandler<StatusBar, object> Showing;
@@ -70,10 +71,32 @@ namespace Windows.UI.ViewManagement
 				{
 					return;
 				}
-
+#if __ANDROID__
+				IsForegroundColorSet = true;
+#endif
 				var foregroundType = ColorToForegroundType(value.Value);
-
 				SetStatusBarForegroundType(foregroundType);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the background color of the status bar.
+		/// </summary>
+		public Color? BackgroundColor
+		{
+			get
+			{
+				return _backgroundColor;
+			}
+			set
+			{
+				if (!value.HasValue)
+				{
+					return;
+				}
+
+				_backgroundColor = value;
+				SetStatusBarBackgroundColor(value);
 			}
 		}
 
@@ -101,21 +124,6 @@ namespace Windows.UI.ViewManagement
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "double StatusBar.BackgroundOpacity");
 			}
-		}
-
-		[global::Uno.NotImplemented]
-		public global::Windows.UI.Color? BackgroundColor
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
-				return null;
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
-			}
-
 		}
 	}
 }

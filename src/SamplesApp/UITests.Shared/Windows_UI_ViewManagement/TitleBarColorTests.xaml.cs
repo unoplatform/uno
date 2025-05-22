@@ -42,9 +42,29 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 			}
 		}
 
+		private async void SetColorWithOpacity_Click(object sender, RoutedEventArgs e)
+		{
+			await StatusBar.GetForCurrentView().ShowAsync();
+			var colorString = StringToColor(BackgroundColorTextBox.Text);
+			StatusBar.GetForCurrentView().BackgroundColor = colorString;
+		}
+
+		private async void FG_White(object sender, RoutedEventArgs e)
+		{
+			await StatusBar.GetForCurrentView().ShowAsync();
+			StatusBar.GetForCurrentView().ForegroundColor = Colors.White;
+		}
+
+		private async void FG_Black(object sender, RoutedEventArgs e)
+		{
+			await StatusBar.GetForCurrentView().ShowAsync();
+			StatusBar.GetForCurrentView().ForegroundColor = Colors.Black;
+		}
+
 		private void ResetDefault_Click(object sender, RoutedEventArgs e)
 		{
 			ApplicationView.GetForCurrentView().TitleBar.BackgroundColor = null;
+			StatusBar.GetForCurrentView().BackgroundColor = null;
 		}
 
 		/// <summary>
