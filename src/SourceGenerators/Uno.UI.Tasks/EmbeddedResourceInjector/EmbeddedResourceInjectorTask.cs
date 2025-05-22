@@ -88,7 +88,7 @@ namespace Uno.UI.Tasks.EmbeddedResourceInjector
 							asm.MainModule.Resources.Add(new EmbeddedResource(logicalName, ManifestResourceAttributes.Public, File.ReadAllBytes(embeddedResource.GetMetadata("FullPath"))));
 						}
 
-						asm.Write(new WriterParameters() { WriteSymbols = true });
+						asm.Write(new WriterParameters() { WriteSymbols = asm.MainModule.SymbolReader is not null });
 					}
 
 					WaitForUnlockedFile(TargetAssembly);
