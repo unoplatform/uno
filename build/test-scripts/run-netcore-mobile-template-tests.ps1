@@ -316,7 +316,7 @@ $projects =
     @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
 
     # 5.6 Android/ios/Wasm+Skia nuget package (build first before the app)
-    @(4, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore")),
+    @(4, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp")),
 
     # 5.6 Android/ios/Wasm+Skia
     @(4, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @("macOS", "NetCore")),
@@ -354,6 +354,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $runOnlyOnMacOS = $buildOptions -contains "OnlyMacOS"
     $buildWithNetCore = $buildOptions -contains "NetCore"
     $usePublish = $buildOptions -contains "Publish"
+    $cleanNugetCache = $buildOptions -contains "CleanNugetTemp"
 
     if ($TestGroup -ne $projectTestGroup)
     {
@@ -419,5 +420,11 @@ for($i = 0; $i -lt $projects.Length; $i++)
 
             & $msbuild $release /r /t:Clean "$projectPath"
         }
+    }
+
+    if($cleanNugetCache)
+    {
+        # Clean the nuget cache in order to avoid missed lookups when generating test packages
+        dotnet nuget locals temp -c
     }
 }
