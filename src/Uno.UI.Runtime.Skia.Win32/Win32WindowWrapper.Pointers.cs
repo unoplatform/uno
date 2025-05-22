@@ -145,7 +145,11 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 		PointerPointProperties properties;
 		if (msg is PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL)
 		{
-			properties = new() { MouseWheelDelta = Win32Helper.GET_WHEEL_DELTA_WPARAM(wParam) };
+			properties = new()
+			{
+				MouseWheelDelta = Win32Helper.GET_WHEEL_DELTA_WPARAM(wParam),
+				IsHorizontalMouseWheel = msg is PInvoke.WM_POINTERHWHEEL
+			};
 		}
 		else
 		{
@@ -211,7 +215,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 					// POINTER_FLAG_HWHEEL is set when mouse-scrolling with Shift held. We choose to handle this as
 					// a vertical scroll + shift instead to keep behavior consistent between platforms, specially when
 					// interacting with ScrollViewers
-					properties.IsHorizontalMouseWheel = msg is PInvoke.WM_POINTERHWHEEL && ((modifiers & VirtualKeyModifiers.Shift) == 0 && (wParam & (ulong)POINTER_FLAGS.POINTER_FLAG_HWHEEL) != 0);
+					properties.IsHorizontalMouseWheel = (modifiers & VirtualKeyModifiers.Shift) == 0 && (wParam & (ulong)POINTER_FLAGS.POINTER_FLAG_HWHEEL) != 0;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(pointerType));
