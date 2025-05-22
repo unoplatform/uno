@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Android.App;
+using Android.OS;
 using Android.Views;
 using AndroidX.Core.View;
 using Uno.Foundation.Logging;
@@ -13,6 +14,10 @@ namespace Windows.UI.ViewManagement
 {
 	public sealed partial class StatusBar
 	{
+		public bool IsForegroundColorSet { get; set; }
+		public bool IsSettingBackgroundColor { get; set; }
+		public bool IsInitializingVisibility { get; set; }
+
 		private StatusBarForegroundType? _foregroundType;
 		private bool? _isShown;
 
@@ -95,6 +100,7 @@ namespace Windows.UI.ViewManagement
 			{
 				CoreDispatcher.CheckThreadAccess();
 				_isShown = visible;
+				IsInitializingVisibility = true;
 				UpdateSystemUiVisibility();
 
 				if (visible)
@@ -106,8 +112,44 @@ namespace Windows.UI.ViewManagement
 					Hiding?.Invoke(this, null);
 				}
 
+				IsInitializingVisibility = false;
+
 				return Task.CompletedTask;
 			});
+		}
+
+		private void SetStatusBarBackgroundColor(Color? color)
+		{
+			if (!ContextHelper.TryGetCurrent(out var context) || context is not Activity activity)
+			{
+				// The API was used too early in application lifecycle
+				return;
+			}
+
+			var decorView = activity.Window?.DecorView;
+
+			if (activity is null || decorView is null)
+			{
+				// The API was used too early in application lifecycle
+				return;
+			}
+
+			if ((int)Build.VERSION.SdkInt >= 35)
+			{
+				IsSettingBackgroundColor = true;
+
+				ViewCompat.SetOnApplyWindowInsetsListener(decorView, new InsetsListener(this));
+				WindowCompat.SetDecorFitsSystemWindows(activity.Window, false);
+
+				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
+				insetsController.Show(WindowInsetsCompat.Type.StatusBars());
+			}
+			else
+			{
+				activity?.Window?.SetStatusBarColor((Android.Graphics.Color)color);
+			}
+
+			UpdateSystemUiVisibility();
 		}
 
 		internal void UpdateSystemUiVisibility()
@@ -146,6 +188,8 @@ namespace Windows.UI.ViewManagement
 					// A bit confusingly, "appearance light" refers to light theme, so dark foreground is used!
 					insetsController.AppearanceLightStatusBars = _foregroundType == StatusBarForegroundType.Dark;
 				}
+
+				ViewCompat.RequestApplyInsets(decorView);
 			}
 			else
 			{
@@ -193,5 +237,23 @@ namespace Windows.UI.ViewManagement
 		private int StatusBarHeightResourceId =>
 			_statusBarHeightResourceId ??=
 				((Activity)ContextHelper.Current).Resources.GetIdentifier("status_bar_height", "dimen", "android");
+
+		private class InsetsListener : Java.Lang.Object, IOnApplyWindowInsetsListener
+		{
+			private readonly StatusBar _statusBar;
+
+			public InsetsListener(StatusBar owner)
+			{
+				_statusBar = owner;
+			}
+
+			public WindowInsetsCompat OnApplyWindowInsets(View view, WindowInsetsCompat insets)
+			{
+				var statusBarInsets = insets.GetInsets(WindowInsets.Type.StatusBars());
+				view.SetBackgroundColor(((Android.Graphics.Color)_statusBar._backgroundColor));
+				view.SetPadding(0, statusBarInsets.Top, 0, 0); // adjust padding to avoid overlap
+				return insets;
+			}
+		}
 	}
 }

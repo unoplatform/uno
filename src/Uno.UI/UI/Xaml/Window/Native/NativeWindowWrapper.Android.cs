@@ -132,13 +132,19 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 		{
 			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+			var statusBar = StatusBar.GetForCurrentView();
+
+			// avoid setting top inset twice when setting BackgroundColor and initializing
+			if (statusBar.IsSettingBackgroundColor || statusBar.IsInitializingVisibility)
+			{
+				insets.Top = 0;
+			}
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Insets: {insets}");
 			}
 
-			// Edge-to-edge is default on Android 15 and above
 			windowBounds = new Rect(default, GetWindowSize());
 			visibleBounds = windowBounds.DeflateBy(insets);
 		}
@@ -206,20 +212,24 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void ApplySystemOverlaysTheming()
 	{
-		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
+		// When the ForegroundColor was set explicitly we want to keep it that color
+		if (!StatusBar.GetForCurrentView().IsForegroundColorSet)
 		{
-			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
-			if (Microsoft.UI.Xaml.Application.Current is { } application &&
-				(ContextHelper.TryGetCurrent(out var context)) &&
-				context is Activity activity &&
-				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 			{
-				var requestedTheme = application.RequestedTheme;
+				// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
+				if (Microsoft.UI.Xaml.Application.Current is { } application &&
+					(ContextHelper.TryGetCurrent(out var context)) &&
+					context is Activity activity &&
+					activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+				{
+					var requestedTheme = application.RequestedTheme;
 
-				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
+					var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
 
-				// "appearance light" refers to status bar set to light theme == dark foreground
-				insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
+					// "appearance light" refers to status bar set to light theme == dark foreground
+					insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
+				}
 			}
 		}
 	}
