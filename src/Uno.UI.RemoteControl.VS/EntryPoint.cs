@@ -284,12 +284,51 @@ public partial class EntryPoint : IDisposable
 		throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" returned \"{result.output}\")");
 	}
 
+	private async Task OnStartupProjectChangedAsync()
+	{
+		if (_dte.Solution.SolutionBuild.StartupProjects is null)
+		{
+			// The user unloaded all projects, we need to reset the state
+			_isFirstProfileTfmChange = true;
+		}
+
+		if (!await EnsureProjectUserSettingsAsync() && _debuggerObserver is not null)
+		{
+			_debugAction?.Invoke($"The user setting is not yet initialized, aligning framework and profile");
+
+			// The user settings file is not available, we have created the
+			// file, but we also need to align the profile.
+			string currentActiveDebugFramework = "";
+
+			var hasTargetFramework = _debuggerObserver
+				.UnconfiguredProject
+				?.Services
+				.ActiveConfiguredProjectProvider
+				?.ActiveConfiguredProject
+				?.ProjectConfiguration
+				.Dimensions
+				.TryGetValue("TargetFramework", out currentActiveDebugFramework) ?? false;
+
+			if (hasTargetFramework)
+			{
+				await OnDebugFrameworkChangedAsync(null, currentActiveDebugFramework, true);
+			}
+		}
+
+		// We make sure to trigger the `EnsureServerAsync` as we write the port in the user file of the startup project.
+		await EnsureServerAsync();
+	}
+
 	private async Task EnsureServerAsync()
 	{
 		_debugAction?.Invoke($"Starting server (tid:{Environment.CurrentManagedThreadId})");
 
+		// As Android projects are "library", we cannot filter on "Application" projects.
+		// Instead, we persist the port only in the current startup projects ... and we make sure to re-write it when the startup project changes (cf. OnStartupProjectChangedAsync).
+		const ProjectAttribute persistenceFilter = ProjectAttribute.Startup;
+
 		var persistedPorts = (await _dte
-			.GetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, ProjectAttribute.Application))
+			.GetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, persistenceFilter))
 			.Distinct(StringComparer.OrdinalIgnoreCase)
 			.Select(str => int.TryParse(str, out var p) ? p : -1)
 			.ToArray();
@@ -310,7 +349,7 @@ public partial class EntryPoint : IDisposable
 				// The dev-server is already running, but at least one project is not configured properly
 				// (This can happen when a project is being added to the solution while opened - Reminder: This EnsureServerAsync is invoked each time a project is built)
 				// We make sure to set the current port for **all** projects.
-				await _dte.SetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, port.ToString(CultureInfo.InvariantCulture), ProjectAttribute.Application);
+				await _dte.SetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, port.ToString(CultureInfo.InvariantCulture), persistenceFilter);
 			}
 			else
 			{
@@ -326,7 +365,7 @@ public partial class EntryPoint : IDisposable
 			if (EnsureTcpPort(ref port) || portMisConfigured)
 			{
 				// The port has changed, or all application projects does not have the same port number (or is not configured), we update port in *all* user files
-				await _dte.SetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, port.ToString(CultureInfo.InvariantCulture), ProjectAttribute.Application);
+				await _dte.SetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, port.ToString(CultureInfo.InvariantCulture), persistenceFilter);
 			}
 
 			_debugAction?.Invoke($"Using available port {port}");
