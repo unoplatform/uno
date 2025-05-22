@@ -14,7 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public class Given_ProgressBar
 {
-#if HAS_UNO
+#if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_ProgressBar_Automation_Listener_Attached()
