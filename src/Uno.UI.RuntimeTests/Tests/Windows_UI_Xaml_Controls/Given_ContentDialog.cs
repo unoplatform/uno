@@ -20,6 +20,7 @@ using static Private.Infrastructure.TestServices;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml.Automation.Peers;
 using MUXControlsTestApp.Utilities;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -146,6 +147,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				SUT.Hide();
+			}
+		}
+
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.Native)]
+		public async Task When_Uncapped_FullSizeDesired()
+		{
+			var SUT = new MyContentDialog(unconstrained: true)
+			{
+				Content = new Grid
+				{
+					BorderBrush = new SolidColorBrush(Colors.Red),
+					BorderThickness = new Thickness(5),
+				},
+				Background = new SolidColorBrush(Colors.SkyBlue),
+				PrimaryButtonText = "YES",
+				SecondaryButtonText = "NO",
+			};
+			SUT.FullSizeDesired = true;
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
+
+			using (ScreenHelper.OverrideVisibleBounds(new Thickness(0, 38, 0, 72), skipIfHasNativeUnsafeArea: (nativeUnsafeArea.Top + nativeUnsafeArea.Bottom) > 50))
+			{
+				try
+				{
+					await ShowDialog(SUT);
+
+					var bgeScreenRect = SUT.BackgroundElement.GetOnScreenBounds();
+					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+
+					var scale =
+#if HAS_UNO && __SKIA__
+						SUT.BackgroundElement.GetScaleFactorForLayoutRounding();
+#else
+						1;
+#endif
+					var roundingMargin = 0.5 / scale;
+
+					Assert.AreEqual(visibleBounds.Top, bgeScreenRect.Top, roundingMargin * 2);
+					Assert.AreEqual(visibleBounds.Height, bgeScreenRect.Height, roundingMargin * 2);
+				}
+				finally
+				{
+					SUT.Hide();
+				}
 			}
 		}
 
@@ -758,18 +805,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public partial class MyContentDialog : ContentDialog
 	{
+		private readonly bool unconstrained;
+		public MyContentDialog(bool unconstrained = false)
+		{
+			this.unconstrained = unconstrained;
+		}
+
 		public Button PrimaryButton { get; private set; }
 		public Border BackgroundElement { get; private set; }
+		public Border Container { get; private set; }
 		public Grid LayoutRoot { get; private set; }
 		public ScrollViewer ContentScrollViewer { get; private set; }
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
-			PrimaryButton = GetTemplateChild("PrimaryButton") as Button;
-			BackgroundElement = GetTemplateChild("BackgroundElement") as Border;
+			Container = GetTemplateChild("Container") as Border;
 			LayoutRoot = GetTemplateChild("LayoutRoot") as Grid;
+			BackgroundElement = GetTemplateChild("BackgroundElement") as Border;
+
 			ContentScrollViewer = GetTemplateChild("ContentScrollViewer") as ScrollViewer;
+			PrimaryButton = GetTemplateChild("PrimaryButton") as Button;
+
+			if (unconstrained && BackgroundElement is { })
+			{
+				BackgroundElement.MinWidth = BackgroundElement.MinHeight = 0;
+				BackgroundElement.MaxWidth = BackgroundElement.MaxHeight = double.PositiveInfinity;
+			}
 		}
 	}
 }
