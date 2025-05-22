@@ -17,6 +17,7 @@ using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
 using MUX = Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml;
+using Windows.UI;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -131,15 +132,23 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 		{
-			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+			var opaqueInsets = Thickness.Empty;
+			if (StatusBar.GetForCurrentView().BackgroundColor is { } color)
+			{
+				opaqueInsets = windowInsets?.GetInsets(WindowInsetsCompat.Type.StatusBars()).ToThickness() ?? default;
 
+			}
+			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+			
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Insets: {insets}");
 			}
 
+			
+
 			// Edge-to-edge is default on Android 15 and above
-			windowBounds = new Rect(default, GetWindowSize());
+			windowBounds = new Rect(default, GetWindowSize().Subtract(opaqueInsets));
 			visibleBounds = windowBounds.DeflateBy(insets);
 		}
 		else

@@ -14,6 +14,10 @@
 		<StackPanel Orientation="Horizontal">
 			<Button Click="SetColor_Click">Set color</Button>
 			<Button Margin="4,0,0,0" Click="ResetDefault_Click">Reset default</Button>
+			<Button Margin="4,0,0,0" Click="SetColorWithOpacity_Click">Status Bar</Button>
+			<Button Margin="4,0,0,0" Click="FG_White">FG White</Button>
+			<Button Margin="4,0,0,0" Click="FG_Black">FG Black</Button>
+			
 		</StackPanel>
 		<TextBlock Text="" x:Name="ErrorMessage" Foreground="Red" />
 	</StackPanel>

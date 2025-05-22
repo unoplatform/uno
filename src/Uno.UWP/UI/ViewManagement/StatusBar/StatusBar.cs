@@ -18,7 +18,12 @@ namespace Windows.UI.ViewManagement
 		public event TypedEventHandler<StatusBar, object> Hiding;
 		public event TypedEventHandler<StatusBar, object> Showing;
 
-		private StatusBar() { }
+		private StatusBar()
+		{
+			InitPartial();
+		}
+
+		partial void InitPartial();
 
 		/// <summary>
 		/// Gets the status bar for the current window (app view).
@@ -103,17 +108,21 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		[global::Uno.NotImplemented]
 		public global::Windows.UI.Color? BackgroundColor
 		{
 			get
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
-				return null;
+				return _backgroundColor;
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
+				if (!value.HasValue)
+				{
+					return;
+				}
+
+				_backgroundColor = value;
+				SetStatusBarBackgroundColor(value);
 			}
 
 		}

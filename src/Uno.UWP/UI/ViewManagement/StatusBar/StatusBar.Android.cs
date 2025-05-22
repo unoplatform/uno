@@ -1,19 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿
+using System.Threading.Tasks;
 using Android.App;
+using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using AndroidX.Core.View;
+using Java.Interop;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage;
 using Windows.UI.Core;
+using static Android.Renderscripts.Sampler;
 
 namespace Windows.UI.ViewManagement
 {
 	public sealed partial class StatusBar
 	{
 		private StatusBarForegroundType? _foregroundType;
+		private Color? _backgroundColor;
 		private bool? _isShown;
 
 		private DisplayInformation _displayInformation;
@@ -110,6 +116,38 @@ namespace Windows.UI.ViewManagement
 			});
 		}
 
+		private void SetStatusBarBackgroundColor(Color? color)
+		{
+			if (!ContextHelper.TryGetCurrent(out var context) || context is not Activity activity)
+			{
+				// The API was used too early in application lifecycle
+				return;
+			}
+
+			var decorView = activity.Window?.DecorView;
+
+			if (activity is null || decorView is null)
+			{
+				// The API was used too early in application lifecycle
+				return;
+			}
+
+			if (Build.VERSION.SdkInt >= BuildVersionCodes.VanillaIceCream)
+			{
+				ViewCompat.SetOnApplyWindowInsetsListener(decorView, new InsetsListener(this));
+				WindowCompat.SetDecorFitsSystemWindows(activity.Window, false);
+
+				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
+				insetsController.Show(WindowInsetsCompat.Type.StatusBars());
+			}
+			else
+			{
+				activity?.Window?.SetStatusBarColor((Android.Graphics.Color)color);
+			}
+
+			UpdateSystemUiVisibility();
+		}
+
 		internal void UpdateSystemUiVisibility()
 		{
 			if (!ContextHelper.TryGetCurrent(out var context) || context is not Activity activity)
@@ -193,5 +231,26 @@ namespace Windows.UI.ViewManagement
 		private int StatusBarHeightResourceId =>
 			_statusBarHeightResourceId ??=
 				((Activity)ContextHelper.Current).Resources.GetIdentifier("status_bar_height", "dimen", "android");
+
+		private class InsetsListener : Java.Lang.Object, IOnApplyWindowInsetsListener
+		{
+			private readonly StatusBar _statusBar;
+
+			public InsetsListener(StatusBar owner)
+			{
+				_statusBar = owner;
+			}
+
+			public WindowInsetsCompat OnApplyWindowInsets(View view, WindowInsetsCompat insets)
+			{
+				var statusBarInsets = insets.GetInsets(WindowInsets.Type.StatusBars());
+				
+				view.SetBackgroundColor(((Android.Graphics.Color)_statusBar._backgroundColor));
+
+				// Adjust padding to avoid overlap
+				view.SetPadding(0, statusBarInsets.Top, 0, 0);
+				return insets;
+			}
+		}
 	}
 }

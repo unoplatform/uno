@@ -4,6 +4,7 @@
 	<Import Project="crosstargeting_override.props" Condition="exists('crosstargeting_override.props')" />
 
 	<PropertyGroup>
+	<MicrosoftNetCompilersToolsetVersion>4.14.0</MicrosoftNetCompilersToolsetVersion>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>True</DebugSymbols>
 
@@ -59,7 +60,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.13.0</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.14.0</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
