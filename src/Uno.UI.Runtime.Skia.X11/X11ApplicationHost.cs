@@ -79,7 +79,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		if (Type.GetType("Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaPresenterExtensionType
 			&& Type.GetType("Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaExtensionType)
 		{
-            // Load the library in lazy mode to limit the performance impact on startup
+			// Load the library in lazy mode to limit the performance impact on startup
 			var libvlcHandle = dlopen("libvlc.so", /* RTLD_LAZY */ 0x4);
 			if (libvlcHandle != IntPtr.Zero)
 			{
