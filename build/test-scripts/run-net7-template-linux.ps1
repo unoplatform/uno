@@ -89,7 +89,7 @@ $projects =
     # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
 
     # 5.6 Android/ios/Wasm+Skia nuget package first
-    @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY/src/PackageCache"), @()),
+    @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY/src/PackageCache"), @("CleanNugetTemp")),
 
     # 5.6 Android/ios/Wasm+Skia
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @()),
@@ -120,6 +120,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
 
     $buildOptions=$projects[$i][3];
     $usePublish = $buildOptions -contains "Publish"
+    $cleanNugetCache = $buildOptions -contains "CleanNugetTemp"
 
     if ($TestGroup -ne $projectTestGroup)
     {
@@ -153,6 +154,11 @@ for($i = 0; $i -lt $projects.Length; $i++)
     Write-Host "Building Release $projectPath with $projectParameters"
     dotnet $dotnetCommand $release "$projectPath" $projectParameters $extraArgs -bl:binlogs/$projectPath/$i/release.binlog
     Assert-ExitCodeIsZero
+
+    if($cleanNugetCache)
+    {
+        dotnet nuget locals temp -c
+    }
 
     dotnet clean $release "$projectPath"
 }
