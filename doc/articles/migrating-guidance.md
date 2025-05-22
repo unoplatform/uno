@@ -2,9 +2,9 @@
 uid: Uno.Development.MigratingGuidance
 ---
 
-# General guidance for making UWP-only code Uno compatible
+# General guidance for making WinUI/UWP-only code Uno compatible
 
-This article explains adjustments that may need to be made to UWP-only code for it to run on Uno Platform, be it in an application or a class library.
+This article explains adjustments that may need to be made to WinUI/UWP-only code for it to run on Uno Platform, be it in an application or a class library.
 
 ## Code adjustments
 

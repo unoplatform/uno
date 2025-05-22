@@ -28,7 +28,7 @@ The following features of `Windows.Media.SpeechRecognition.SpeechRecognizer` are
 | SystemSpeechLanguage                       | -   | -       |                               |
 | Timeouts                                   | X   | X       |                               |
 | UIOptions                                  | X   | X       | Not used                      |
-| CompileConstraintsAsync()                  | X   | X       | Always return Success (implemented to meet UWP constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`) |
+| CompileConstraintsAsync()                  | X   | X       | Always return Success (implemented to meet WinUI constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`) |
 | Dispose()                                  | X   | X       |                               |
 | RecognizeAsync()                           | X   | X       |                               |
 | RecognizeWithUIAsync()                     | -   | -       |                               |
