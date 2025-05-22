@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 	public class Given_Path
 	{
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/6846")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6846")]
 		public void Should_not_throw_if_Path_Data_is_set_to_null()
 		{
 			// Set initial Data
@@ -44,7 +44,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18694")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18694")]
 #if !__SKIA__
 		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
 #endif
@@ -115,7 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18694")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18694")]
 #if !__SKIA__
 		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
 #endif

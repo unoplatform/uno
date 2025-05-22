@@ -21,6 +21,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
 using System.Diagnostics;
+using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 
@@ -56,7 +57,7 @@ public partial class TextBox
 
 	private bool _clearHistoryOnTextChanged = true;
 
-	private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+	private static readonly VirtualKeyModifiers _platformCtrlKey;
 
 	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
 	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
@@ -87,6 +88,17 @@ public partial class TextBox
 	internal TextBoxView TextBoxView => _textBoxView;
 
 	internal ContentControl ContentElement => _contentElement;
+
+	static TextBox()
+	{
+		_platformCtrlKey =
+			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && Eval("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
+			? VirtualKeyModifiers.Windows
+			: VirtualKeyModifiers.Control;
+	}
+
+	[JSImport("globalThis.eval")]
+	private static partial bool Eval(string js);
 
 	internal CaretDisplayMode CaretMode
 	{

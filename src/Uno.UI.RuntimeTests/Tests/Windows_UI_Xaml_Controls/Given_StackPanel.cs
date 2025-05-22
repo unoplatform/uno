@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Combinatorial.MSTest;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.UI.Xaml;
@@ -158,7 +159,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/3543")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3543")]
 		public async Task When_InsertingChildren_Then_ResultIsInRightOrder()
 		{
 			var pnl = new StackPanel();
@@ -403,8 +404,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(Orientation.Vertical)]
-		[DataRow(Orientation.Horizontal)]
+		[CombinatorialData]
 		[RequiresFullWindow]
 		public async Task When_Spacing_All_Visible(Orientation orientation)
 		{
@@ -441,8 +441,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(Orientation.Vertical)]
-		[DataRow(Orientation.Horizontal)]
+		[CombinatorialData]
 		[RequiresFullWindow]
 		public async Task When_Spacing_All_Collapsed(Orientation orientation)
 		{
@@ -480,8 +479,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(Orientation.Vertical)]
-		[DataRow(Orientation.Horizontal)]
+		[CombinatorialData]
 		[RequiresFullWindow]
 		public async Task When_Spacing_Middle_Collapsed(Orientation orientation)
 		{
@@ -518,8 +516,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(Orientation.Vertical)]
-		[DataRow(Orientation.Horizontal)]
+		[CombinatorialData]
 		[RequiresFullWindow]
 		public async Task When_Spacing_Last_Two_Collapsed(Orientation orientation)
 		{
@@ -556,8 +553,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(Orientation.Vertical)]
-		[DataRow(Orientation.Horizontal)]
+		[CombinatorialData]
 		[RequiresFullWindow]
 		public async Task When_Spacing_Outer_Collapsed(Orientation orientation)
 		{
@@ -594,8 +590,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(Orientation.Vertical)]
-		[DataRow(Orientation.Horizontal)]
+		[CombinatorialData]
 		[RequiresFullWindow]
 		public async Task When_Spacing_Multiple_Collapsed(Orientation orientation)
 		{

@@ -17,4 +17,5 @@ using Android.App;
 [assembly: UsesPermission("android.permission.READ_MEDIA_IMAGES")]
 [assembly: UsesPermission("android.permission.READ_MEDIA_VIDEO")]
 [assembly: UsesPermission("android.permission.READ_MEDIA_AUDIO")]
+[assembly: UsesPermission("android.permission.READ_PHONE_STATE")]
 [assembly: UsesPermission("android.permission.MANAGE_EXTERNAL_STORAGE")]

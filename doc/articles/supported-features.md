@@ -4,6 +4,9 @@ uid: Uno.Development.SupportedFeatures
 
 # Uno Platform Features
 
+> [!NOTE]
+> If you are looking for `UnoFeature` reference, check the [Using the Uno.Sdk article](xref:Uno.Features.Uno.Sdk) instead.
+
 ## Development Flow
 
 - Uno Platform's WinUI/UWP XAML
@@ -104,7 +107,7 @@ uid: Uno.Development.SupportedFeatures
 - `SolidColorBrush`
 - `ImageBrush`
 - `LinearGradientBrush`, with animations support.
-- Local assets support with automatic conversion from UWP conventions
+- Local assets support with automatic conversion from WinUI conventions
 
 ### Others
 
@@ -112,7 +115,7 @@ uid: Uno.Development.SupportedFeatures
 - Localization for any property via x:Uid, using scoped or unscoped `.resw` files (Size localization)
 - FocusManager (advanced large forms navigation, dynamic UIs)
 - Advanced WebView support (scripting, scrolling, string, custom agent)
-- Automatic asset generation from UWP assets
+- Automatic asset generation from WinUI assets
 - Native element embedding
 - Panels (Grid, StackPanel with `Spacing`, RelativePanel, Canvas)
 - Custom Panels
@@ -120,7 +123,7 @@ uid: Uno.Development.SupportedFeatures
 - Work with the usual Windows tooling
 - Animations
   - Easing functions
-  - UWP Theme Transitions
+  - Theme Transitions
   - Entrance animations
 - XAML Behaviors
 - AttachedProperty Binding

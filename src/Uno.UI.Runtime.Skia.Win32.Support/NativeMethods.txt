@@ -167,6 +167,7 @@ InvalidateRect
 LoadCursor
 LoadRegTypeLib
 LocalFree
+MapWindowPoints
 MonitorFromWindow
 OleInitialize
 OpenClipboard

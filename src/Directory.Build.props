@@ -59,12 +59,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<!--
-		Enable only when requiring specific versions of the compiler, otherwise, use the one
-		bundled with the SDK.
-		
-		<MicrosoftNetCompilersToolsetVersion>4.13.0</MicrosoftNetCompilersToolsetVersion>
-		-->
+		<MicrosoftNetCompilersToolsetVersion>4.14.0</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup Condition=" '$(MicrosoftNetCompilersToolsetVersion)' != ''">
@@ -129,6 +124,8 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.WebAssembly.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.X11.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.Win32.csproj</_AdjustedOutputProjects>
+		
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.WebView.Skia.X11.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Wasm.csproj</_AdjustedOutputProjects>

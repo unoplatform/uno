@@ -25,7 +25,7 @@ namespace Uno.UI.Tests.BinderTests
 	[TestClass]
 	public partial class Given_Binder_FastConvert
 	{
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(typeof(Visibility))]
 		[DataRow(typeof(VerticalAlignment))]
 		[DataRow(typeof(HorizontalAlignment))]

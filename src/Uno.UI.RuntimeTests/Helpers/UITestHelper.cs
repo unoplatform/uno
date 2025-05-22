@@ -392,10 +392,10 @@ public static class FrameworkElementExtensions
 
 public static class PointExtensions
 {
-	public static Point Offset(this Point point, double xAndY)
+	public static Point OffsetLinear(this Point point, double xAndY)
 		=> new(point.X + xAndY, point.Y + xAndY);
 
-	public static Point Offset(this Point point, double x, double y)
+	public static Point Offset(this Point point, double x = 0, double y = 0)
 		=> new(point.X + x, point.Y + y);
 }
 
@@ -411,6 +411,12 @@ public static class InjectedPointerExtensions
 	{
 		pointer.Press(from);
 		pointer.MoveTo(to, steps, stepOffsetInMilliseconds);
+		pointer.Release();
+	}
+
+	public static void Tap(this IInjectedPointer pointer, Point location)
+	{
+		pointer.Press(location);
 		pointer.Release();
 	}
 }

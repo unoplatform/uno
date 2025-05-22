@@ -24,6 +24,8 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
+using Combinatorial.MSTest;
+
 
 #if __SKIA__
 using SkiaSharp;
@@ -632,7 +634,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __WASM__
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19380")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19380")]
 		public async Task When_Changing_Text_Through_Inlines()
 		{
 			var SUT = new TextBlock { Text = "Initial Text" };
@@ -1297,8 +1299,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !__SKIA__
 		[Ignore("The context menu is only implemented on skia.")]
 #endif
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_TextBlock_RightTapped(bool isTextSelectionEnabled)
 		{
 			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));

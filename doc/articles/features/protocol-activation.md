@@ -46,28 +46,57 @@ If your target framework is Android 12, you must also add `Exported = true` to t
 
 ### WASM
 
-WASM implementation uses the [`Navigator.registerProtocolHandler` API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler). This has several limitations for the custom scheme:
+WASM implementation uses the [`Navigator.registerProtocolHandler` API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler).
+
+This has several limitations when using a custom scheme:
 
 - The custom scheme's name must begin with `web+`
 - The custom scheme's name must include at least 1 letter after the `web+` prefix
 - The custom scheme must have only lowercase ASCII letters in its name.
+
+You can also use one of the following supported schemes instead:
+
+- `bitcoin`
+- `ftp`
+- `ftps`
+- `geo`
+- `im`
+- `irc`
+- `ircs`
+- `magnet`
+- `mailto`
+- `matrix`
+- `mms`
+- `news`
+- `nntp`
+- `openpgp4fpr`
+- `sftp`
+- `sip`
+- `sms`
+- `smsto`
+- `ssh`
+- `tel`
+- `urn`
+- `webcal`
+- `wtai`
+- `xmpp`
 
 To register the custom theme, call the WASM-specific `Uno.Helpers.ProtocolActivation` API when appropriate to let the user confirm URI handler association:
 
 ```csharp
 #if __WASM__
    Uno.Helpers.ProtocolActivation.RegisterCustomScheme(
-      "web+myscheme", 
+      "web+myscheme",
       new System.Uri("http://localhost:55838/"), 
       "Can we handle web+myscheme links?");
 #endif
 ```
 
-The first argument is the scheme name, the second is the base URL of your application (it must match the current domain to be registered successfully), and the third is a text prompt, which will be displayed to the user to ask for permission.
+The first argument is the scheme name, the second is the base URL of your application (it must match the current domain to be registered successfully), and the third is a text prompt, which will be displayed to the user to ask for permission (this does not work on all browsers e.g. edge).
 
-When a link with the custom scheme gets executed, the browser will navigate to a your URL with additional `unoprotocolactivation` query string key, which will contain the custom URI. Uno internally recognizes this query string key and executes `OnActivated` appropriately.
+When a link with the custom scheme gets executed, the browser will navigate to the URL with an additional `unoprotocolactivation` query string key, which will contain the custom URI. Uno internally recognizes this query string key and executes `OnActivated` appropriately.
 
-### UWP
+### WinUI
 
 Works according to Windows docs. For more information, see [Handle URI activation | Microsoft Docs](https://learn.microsoft.com/windows/uwp/launch-resume/handle-uri-activation).
 
@@ -89,7 +118,7 @@ protected override void OnActivated(IActivatedEventArgs e)
 }
 ```
 
-Note that in line with UWP, if the application is not running, the `OnLaunched` method is not called and only `OnActivated` is executed instead. You must perform similar initialization of root app frame and activate the current `Window` at the end. If the application was running, this initialization can be skipped.
+Note that in line with WinUI, if the application is not running, the `OnLaunched` method is not called and only `OnActivated` is executed instead. You must perform a similar initialization of the root app frame and activate the current `Window` at the end. If the application is running, this initialization can be skipped.
 
 A full application lifecycle handling with shared logic between `OnLaunched` and `OnActivated` could look as follows:
 

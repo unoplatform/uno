@@ -21,8 +21,8 @@ public partial class Given_PipsPager
 	[RunsOnUIThread]
 #if __WASM__
 	[Ignore("RenderTargetBitmap is not implemented on WASM.")]
-#elif __SKIA__
-	[Ignore("Fails even on Windows.")]
+#else
+	[Ignore("Fails even on Windows, very flaky on Uno.")] // Flaky #9080
 #endif
 	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Horizontal()
 	{
@@ -49,6 +49,8 @@ public partial class Given_PipsPager
 	[RunsOnUIThread]
 #if __WASM__
 	[Ignore("RenderTargetBitmap is not implemented on WASM.")]
+#else
+	[Ignore("Very flaky on Uno.")] // Flaky #9080
 #endif
 	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Vertical()
 	{

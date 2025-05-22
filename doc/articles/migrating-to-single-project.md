@@ -6,9 +6,7 @@ uid: Uno.Development.MigratingToSingleProject
 The Uno Platform 5.2 and later use the [Uno.Sdk](https://www.nuget.org/packages/uno.sdk) which provides a single Uno Project structure and a single location for updating the Uno Platform core packages version in `global.json`.
 
 > [!IMPORTANT]
-> Migrating to the Uno.Sdk and Single Project is not required. Existing projects, 5.1 and earlier continue to be supported in Uno Platform 5.2 or later.
-> [!NOTE]
-> The Uno.Sdk only supports the WinUI API set. If your application uses the UWP API set, you'll need to keep using the multi-projects solution structure.
+> Migrating to the Uno.Sdk and Single Project are not required. Existing projects, 5.1 and earlier, continue to be supported in Uno Platform 5.2 or later.
 
 With Uno Platform Single Project, you can optimize your project structure and simplify maintenance while leveraging the power of Uno Platform for cross-platform app development. This guide provides step-by-step instructions and practical tips to ensure a smooth migration process. Let's get started!
 

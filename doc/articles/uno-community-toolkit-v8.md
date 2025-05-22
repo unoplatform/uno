@@ -90,20 +90,6 @@ When using the Uno Platform solution templates, add the following to your applic
     > [!NOTE]
     > Windows Community Toolkit version 8.x requires an update to Windows SDK **10.0.22621** and above, along with [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK) updated to the latest matching version.
 
-    ### [Multi-Head Project Template (Legacy) [UWP]](#tab/multihead-uwp)
-
-    Edit your project file `PROJECT_NAME.csproj` and add the needed reference(s):
-
-    ```xml
-    <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240916" />
-      <!-- Add more community toolkit references here -->
-    </ItemGroup>
-    ```
-
-    > [!NOTE]
-    > Windows Community Toolkit version 8.x requires an update to Windows SDK **10.0.22621** and above, along with [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK) updated to the latest matching version.
-
     ### [Shared Project (.shproj) Template (Legacy) [WinUI / WinAppSDK]](#tab/shproj-winui)
 
     1. Select the following projects for installation and add the needed reference(s) to each of them:
@@ -123,33 +109,9 @@ When using the Uno Platform solution templates, add the following to your applic
     > [!NOTE]
     > Windows Community Toolkit version 8.x requires an update to Windows SDK **10.0.22621** and above, along with [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK) updated to the latest matching version.
 
-    ### [Shared Project (.shproj) Template (Legacy) [UWP]](#tab/shproj-uwp)
-
-    1. Select the following projects for installation and add the needed reference(s) to each of them:
-        - `PROJECT_NAME.UWP.csproj`
-        - `PROJECT_NAME.Wasm.csproj`
-        - `PROJECT_NAME.Mobile.csproj` (or `PROJECT_NAME.iOS.csproj`, `PROJECT_NAME.Droid.csproj`, and `PROJECT_NAME.macOS.csproj` if you have an existing project)
-        - `PROJECT_NAME.Skia.Gtk.csproj`
-        - `PROJECT_NAME.Skia.WPF.csproj`
-
-        ```xml
-        <ItemGroup>
-          <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240916" />
-          <!-- Add more uno community toolkit references here -->
-        </ItemGroup>
-        ```
-
-    > [!NOTE]
-    > Windows Community Toolkit version 8.x requires an update to Windows SDK **10.0.22621** and above, along with [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK) updated to the latest matching version.
-
     ---
 
 1. Add the related needed namespace(s)
-
-    > [!NOTE]
-    > In WCT version 8.x, the namespaces between UWP and WinAppSDK were merged.
-
-    ### WinUI / WinAppSDK / UWP
 
       In XAML:
         ```xmlns:controls="using:CommunityToolkit.WinUI.Controls"```
@@ -214,11 +176,6 @@ The implementation of these is similar to the example of the `SettingsControl` a
         ```
 
 1. Add the related needed namespace(s)
-
-    > [!NOTE]
-    > In WCT version 8.x, the namespaces between UWP and WinAppSDK were merged.
-
-    ### WinUI / WinAppSDK / UWP
 
       In XAML:
         ```xmlns:converters="using:CommunityToolkit.WinUI.Converters"```

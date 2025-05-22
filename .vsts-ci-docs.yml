@@ -21,7 +21,8 @@ variables:
   linuxVMImage: 'ubuntu-22.04'
 
   enable_dotnet_cache: true
-  GlobalUnoCheckVersion: '1.31.0-dev.33'
+  enable_emsdk_cache: true
+  GlobalUnoCheckVersion: '1.31.7'
 
 stages:
 - template: build/ci/.azure-devops-stages-docs.yml

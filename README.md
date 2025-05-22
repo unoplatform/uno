@@ -89,6 +89,7 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 * The [Uno.RoslynQuoter](https://roslynquoter-wasm.platform.uno/), a [Roslyn](https://github.com/dotnet/roslyn) based C# analysis tool ([Source](https://github.com/unoplatform/uno.RoslynQuoter)).
 * The [SQLite + Entity Framework Core App](https://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://learn.microsoft.com/ef/core/), [SQLite](https://github.com/unoplatform/uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
 * A [WebAssembly AOT RayTracer](https://raytracer-mono-aot.platform.uno/).
+* The [Unexpected APIs](https://unexpectedapis.uno/), a fun collection of UI and non-UI APIs that you can explore and use with the Uno Platform.
 
 Let us know if you've made your app publicly available, we'll list it here!
 

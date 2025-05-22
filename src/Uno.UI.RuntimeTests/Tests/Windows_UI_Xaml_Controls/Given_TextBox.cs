@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using Uno.Extensions;
 using Windows.UI.ViewManagement;
 using Private.Infrastructure;
+using Combinatorial.MSTest;
 
 
 #if WINAPPSDK
@@ -749,8 +750,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[DataRow(false)]
-		[DataRow(true)]
+		[CombinatorialData]
 		public async Task When_Default_Foreground_TextBoxView(bool useDarkTheme)
 		{
 			using var _ = useDarkTheme ? ThemeHelper.UseDarkTheme() : default;
@@ -1029,7 +1029,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.SkiaWasm)]
+		// Not supported on Desktop and WebAssembly as InputPane is not implemented.
+		// Very flaky on Android Native and Skia #9080.
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android)]
 		public async Task When_Focus_Immediately()
 		{
 			var inputPaneShown = false;
@@ -1079,7 +1081,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18040")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18040")]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
@@ -1157,7 +1159,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18790")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18790")]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif

@@ -17,6 +17,9 @@ public enum UnoFeature
 	[UnoArea(UnoArea.Core)]
 	MediaElement,
 
+	[UnoArea(UnoArea.Core)]
+	WebView,
+
 	[UnoArea(UnoArea.CSharpMarkup)]
 	CSharpMarkup,
 
@@ -108,5 +111,5 @@ public enum UnoFeature
 	Svg,
 
 	[UnoArea(UnoArea.Core)]
-	GLCanvas
+	GLCanvas,
 }
