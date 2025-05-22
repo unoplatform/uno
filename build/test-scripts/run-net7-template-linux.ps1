@@ -158,6 +158,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
     if($cleanNugetCache)
     {
         dotnet nuget locals temp -c
+        dotnet nuget locals http-cache -c
     }
 
     dotnet clean $release "$projectPath"

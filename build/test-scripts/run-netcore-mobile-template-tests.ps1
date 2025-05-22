@@ -426,5 +426,6 @@ for($i = 0; $i -lt $projects.Length; $i++)
     {
         # Clean the nuget cache in order to avoid missed lookups when generating test packages
         dotnet nuget locals temp -c
+        dotnet nuget locals http-cache -c
     }
 }
