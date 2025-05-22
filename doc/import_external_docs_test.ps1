@@ -1,5 +1,5 @@
 <#
-    build.ps1 [-NoFetch]
+    import_external_docs_test.ps1 [-NoFetch]
 
     -NoFetch   : Skip the import of external repositories. Useful for testing or authoring.
                  The default is to import the external repositories from the main branch.
