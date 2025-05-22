@@ -230,6 +230,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 				return new LRESULT(0);
+			case PInvoke.WM_ERASEBKGND: // Without painting also on WM_ERASEBKGND, we get an initial white frame
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
+				Paint();
+				break;
 			case PInvoke.WM_PAINT:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_PAINT)} message.");
 				Paint();
