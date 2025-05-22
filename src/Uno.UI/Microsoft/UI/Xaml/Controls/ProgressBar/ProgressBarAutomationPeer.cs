@@ -1,22 +1,20 @@
-﻿using Microsoft.UI.Xaml.Automation.Peers;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Automation.Peers;
 
-public class ProgressBarAutomationPeer : AutomationPeer, IRangeValueProvider
+public partial class ProgressBarAutomationPeer : RangeBaseAutomationPeer, IRangeValueProvider
 {
-	private readonly ProgressBar _owner;
-
-	public ProgressBarAutomationPeer(ProgressBar owner)
+	public ProgressBarAutomationPeer(ProgressBar owner) : base(owner)
 	{
-		_owner = owner;
 	}
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.RangeValue)
 		{
-			if (_owner.IsIndeterminate)
+			if (Owner is ProgressBar progressBar && progressBar.IsIndeterminate)
 			{
 				return null;
 			}
@@ -33,30 +31,39 @@ public class ProgressBarAutomationPeer : AutomationPeer, IRangeValueProvider
 	{
 		var name = base.GetNameCore();
 
-		var progressBar = _owner;
-
-		if (progressBar.ShowError)
+		if (Owner is ProgressBar progressBar)
 		{
-			return "Error" + name;
-		}
-		else if (progressBar.ShowPaused)
-		{
-			return "Busy" + name;
-		}
-		else if (progressBar.IsIndeterminate)
-		{
-			return "Paused" + name;
+			if (progressBar.ShowError)
+			{
+				return "Error" + name;
+			}
+			else if (progressBar.ShowPaused)
+			{
+				return "Busy" + name;
+			}
+			else if (progressBar.IsIndeterminate)
+			{
+				return "Paused" + name;
+			}
 		}
 		return name;
 	}
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.ProgressBar;
 
-	public bool IsReadOnly => true;
-	public double Value => _owner.Value;
-	public double SmallChange => double.NaN;
-	public double LargeChange => double.NaN;
-	public double Minimum => _owner.Minimum;
-	public double Maximum => _owner.Maximum;
-	public void SetValue(double value) => _owner.Value = value; // ???
+	private ProgressBar GetImpl() => (ProgressBar)Owner;
+
+	bool IRangeValueProvider.IsReadOnly => true;
+
+	double IRangeValueProvider.Value => GetImpl().Value;
+
+	double IRangeValueProvider.SmallChange => double.NaN;
+
+	double IRangeValueProvider.LargeChange => double.NaN;
+
+	double IRangeValueProvider.Minimum => GetImpl().Minimum;
+
+	double IRangeValueProvider.Maximum => GetImpl().Maximum;
+
+	void IRangeValueProvider.SetValue(double value) => GetImpl().Value = value;
 }
