@@ -8,6 +8,7 @@ DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 E_NOINTERFACE
 E_POINTER
 E_UNEXPECTED
+GDI_REGION_TYPE
 HKEY_CURRENT_USER
 HTBOTTOM
 HTBOTTOMLEFT
@@ -152,6 +153,7 @@ GetRegionData
 GetWindowLong
 GetWindowPlacement
 GetWindowRect
+GetWindowRgn
 GetWindowText
 GetWindowThreadProcessId
 glGetError
