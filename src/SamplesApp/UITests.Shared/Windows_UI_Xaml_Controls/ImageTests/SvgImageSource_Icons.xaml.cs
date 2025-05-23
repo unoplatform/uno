@@ -17,7 +17,7 @@ using UITests.Shared.Helpers;
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 
 [Sample("Image"
-#if __SKIA
+#if __SKIA__
 	, IgnoreInSnapshotTests = true
 #endif
 	)]
