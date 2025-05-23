@@ -208,4 +208,5 @@ wglCreateContext
 wglDeleteContext
 wglGetCurrentContext
 wglGetCurrentDC
+wglGetProcAddress
 wglMakeCurrent
