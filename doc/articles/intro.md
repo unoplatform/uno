@@ -110,7 +110,7 @@ Design your app in Figma and easily import to XAML or C#
 
 #### Uno Themes
 
-Use Material or Cupertino themes in your app
+Use Material theme in your app
 
 </div>
 </a>
