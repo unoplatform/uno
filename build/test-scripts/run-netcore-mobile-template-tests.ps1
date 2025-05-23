@@ -316,7 +316,7 @@ $projects =
     @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
 
     # 5.6 Android/ios/Wasm+Skia nuget package (build first before the app)
-    @(4, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp")),
+    @(4, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp","NoBuildClean")),
 
     # 5.6 Android/ios/Wasm+Skia
     @(4, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @("macOS", "NetCore")),
@@ -355,6 +355,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $buildWithNetCore = $buildOptions -contains "NetCore"
     $usePublish = $buildOptions -contains "Publish"
     $cleanNugetCache = $buildOptions -contains "CleanNugetTemp"
+    $noBuildClead = $buildOptions -contains "NoBuildClean"
 
     if ($TestGroup -ne $projectTestGroup)
     {
@@ -402,7 +403,10 @@ for($i = 0; $i -lt $projects.Length; $i++)
         dotnet $dotnetCommand $release "$projectPath" $projectOptions $extraArgs -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
  
-        dotnet clean $release $projectOptions "$projectPath"
+        if(!$NoBuildClean)
+        {
+            dotnet clean $release $projectOptions "$projectPath"
+        }
     }
     else
     {

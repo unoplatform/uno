@@ -89,7 +89,7 @@ $projects =
     # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
 
     # 5.6 Android/ios/Wasm+Skia nuget package first
-    @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY/src/PackageCache"), @("CleanNugetTemp")),
+    @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY/src/PackageCache"), @("CleanNugetTemp","NoBuildClean")),
 
     # 5.6 Android/ios/Wasm+Skia
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @()),
@@ -121,6 +121,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $buildOptions=$projects[$i][3];
     $usePublish = $buildOptions -contains "Publish"
     $cleanNugetCache = $buildOptions -contains "CleanNugetTemp"
+    $noBuildClead = $buildOptions -contains "NoBuildClean"
 
     if ($TestGroup -ne $projectTestGroup)
     {
@@ -161,5 +162,8 @@ for($i = 0; $i -lt $projects.Length; $i++)
         dotnet nuget locals http-cache -c
     }
 
-    dotnet clean $release "$projectPath"
+    if(!$NoBuildClean)
+    {
+        dotnet clean $release "$projectPath"
+    }
 }
