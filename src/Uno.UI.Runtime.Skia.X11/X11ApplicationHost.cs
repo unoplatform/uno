@@ -97,10 +97,10 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		}
 	}
 
-	[LibraryImport("libdl", StringMarshalling = StringMarshalling.Utf8)]
+	[LibraryImport("libdl.so.2", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial IntPtr dlopen(string path, int mode);
 
-	[LibraryImport("libdl")]
+	[LibraryImport("libdl.so.2")]
 	internal static partial int dlclose(IntPtr handle);
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60) : this(appBuilder, renderFrameRate, false)
