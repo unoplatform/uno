@@ -73,6 +73,7 @@ Using Skia rendering might have some limitations compared to native rendering. S
 - **Text rendering differences**: Font rendering may not match platform-specific expectations due to differences in text shaping and anti-aliasing.
 - **IME support**: This portion of input support is also a work in progress, expect improvements in upcoming releases.
 - **Limited hardware acceleration on some platforms**: Depending on the platform, Skia may fall back to software rendering, affecting the overall performance.
+- Skia Rendering on WebAssembly is only supported on .NET 9 and later.
 
 Skia rendering is best suited for cross-platform scenarios where a unified appearance and customized graphics are key. Some native integration scenarios may not yet be supported. If you encounter any of such scenarios, make sure to let it be known by [opening an issue](https://github.com/unoplatform/uno/issues).
 
