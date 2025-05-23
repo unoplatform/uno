@@ -38,7 +38,7 @@ internal partial class X11XamlRootHost
 
 					lock (_nextRenderParamsLock)
 					{
-						_nextRenderParams = new RenderParams(picture, nativeClippingPath, (float)scale, (float)scale);
+						_nextRenderParams = new RenderParams(picture, nativeClippingPath, (float)scale);
 					}
 
 					if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
@@ -48,7 +48,7 @@ internal partial class X11XamlRootHost
 							Volatile.Write(ref _renderingScheduled, 0);
 							if (_nextRenderParams is { } renderParams)
 							{
-								_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.ScaleX, renderParams.ScaleY);
+								_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.Scale);
 							}
 						});
 					}
@@ -67,6 +67,5 @@ internal partial class X11XamlRootHost
 	private readonly record struct RenderParams(
 		SKPicture Picture,
 		SKPath NativeClippingPath,
-		float ScaleX,
-		float ScaleY);
+		float Scale);
 }

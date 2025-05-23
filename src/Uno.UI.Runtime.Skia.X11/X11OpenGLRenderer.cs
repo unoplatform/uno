@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Drawing;
 using System.Globalization;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11
@@ -17,7 +15,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		private readonly GRContext _grContext;
 		private readonly X11Window _x11Window;
-		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 
 		private GRBackendRenderTarget? _renderTarget;
 
@@ -47,11 +44,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		{
 			if (!GlxInterface.glXMakeCurrent(_x11Window.Display, _x11Window.Window, _x11Window.glXInfo!.Value.context))
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					throw new NotSupportedException($"glXMakeCurrent failed for Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
-				}
-				return;
+				this.LogError()?.Error($"glXMakeCurrent failed for Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
 			}
 		}
 
