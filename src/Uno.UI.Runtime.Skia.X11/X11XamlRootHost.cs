@@ -469,7 +469,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			(int)visual->depth,
 			/* InputOutput */ 1,
 			visual->visual,
-			UIntPtr.Zero,
+			UIntPtr.Zero, // adding XCreateWindowFlags.CWBackPixel here would cause flickering when resizing the window. cf. https://github.com/unoplatform/uno/issues/20383
 			ref attribs);
 
 		_ = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
