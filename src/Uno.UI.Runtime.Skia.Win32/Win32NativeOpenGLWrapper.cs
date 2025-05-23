@@ -13,6 +13,8 @@ using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
+// Mostly a copy from WpfNativeOpenGLWrapper
+
 internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 {
 	private static readonly Type _type = typeof(Win32NativeOpenGLWrapper);
