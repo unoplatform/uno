@@ -1,6 +1,7 @@
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -12,15 +13,19 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 	private Size _lastSize;
 	private SKSurface? _surface;
 	private X11AirspaceRenderHelper? _airspaceHelper;
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 
 	public void SetBackgroundColor(SKColor color) => _background = color;
 
-	public void Render(SKPicture picture, SKPath nativeClippingPath, float scaleX, float scaleY)
+	public void Render(SKPicture picture, SKPath nativeClippingPath, float scale)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"Render {_renderCount++}");
 		}
+
+		using var fpsHelperDisposable = _fpsHelper.BeginFrame();
+		_fpsHelper.Scale = scale;
 
 		var display = x11Window.Display;
 		var window = x11Window.Window;
@@ -58,8 +63,9 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 
 		var saveCount = canvas.Save();
 		canvas.Clear(_background);
-		canvas.Scale(scaleX, scaleY);
+		canvas.Scale(scale);
 		canvas.DrawPicture(picture);
+		_fpsHelper.DrawFps(canvas);
 		canvas.RestoreToCount(saveCount);
 		canvas.Flush();
 

@@ -8,7 +8,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	{
 		private const int BitmapPad = 32;
 
-		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 		private readonly IntPtr _gc;
 		private SKBitmap? _bitmap;
 		private IntPtr? _xImage;
