@@ -361,7 +361,7 @@ namespace SampleControl.Presentation
 
 							try
 							{
-								UseDarkTheme = true;
+								SetRootTheme(ElementTheme.Dark);
 								file = await rootFolder.CreateFileAsync(fileName + "-dark.png",
 									CreationCollisionOption.ReplaceExisting
 									).AsTask(ct);
@@ -369,7 +369,7 @@ namespace SampleControl.Presentation
 							}
 							finally
 							{
-								UseDarkTheme = false;
+								SetRootTheme(ElementTheme.Default);
 							}
 						}
 						catch (Exception e)

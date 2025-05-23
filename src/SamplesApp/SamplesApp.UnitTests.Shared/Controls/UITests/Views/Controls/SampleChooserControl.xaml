@@ -536,14 +536,6 @@ BorderBrush="{StaticResource Color05Brush}">
 
 					</Button>
 
-					<!-- Dark theme check box -->
-					<CheckBox Grid.Column="9"
-							  Width="64"
-							  MinWidth="64"
-							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}">
-						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
-					</CheckBox>
-
 					<!-- Overflow More(...) Button -->
 					<Button Grid.Column="10"
 							Margin="0,0,8,0"
@@ -551,6 +543,14 @@ BorderBrush="{StaticResource Color05Brush}">
 						<SymbolIcon Symbol="More" />
 						<Button.Flyout>
 							<MenuFlyout>
+								<MenuFlyoutSubItem Text="Theme" x:Name="ThemeMenuFlyout">
+									<MenuFlyoutSubItem.Icon>
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
+									</MenuFlyoutSubItem.Icon>
+									<RadioMenuFlyoutItem Text="System" IsChecked="{Binding IsAppThemeSystem, Mode=TwoWay}" Tag="Auto" GroupName="AppTheme" />
+									<RadioMenuFlyoutItem Text="Light" IsChecked="{Binding IsAppThemeLight, Mode=TwoWay}" Tag="Light" GroupName="AppTheme" />
+									<RadioMenuFlyoutItem Text="Dark" IsChecked="{Binding IsAppThemeDark, Mode=TwoWay}" Tag="Dark" GroupName="AppTheme" />
+								</MenuFlyoutSubItem>
 								<ToggleMenuFlyoutItem Text="Use Fluent styles" IsChecked="{Binding UseFluentStyles, Mode=TwoWay}">
 									<ToggleMenuFlyoutItem.Icon>
 										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
