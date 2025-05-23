@@ -9,5 +9,9 @@
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
-	<TextBlock Text="Try resizing the window by dragging the border of the window. The window should not flicker, specially on Linux. See also https://github.com/unoplatform/uno/issues/20383." />
+	<TextBlock>
+		<Run>Try resizing the window by dragging the border of the window. The window should not flicker, specially on Linux. See also </Run>
+		<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/20383">https://github.com/unoplatform/uno/issues/20383</Hyperlink>
+		<Run>.</Run>
+	</TextBlock>
 </UserControl>
