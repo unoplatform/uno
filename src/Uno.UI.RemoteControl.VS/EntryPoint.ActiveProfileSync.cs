@@ -320,37 +320,7 @@ public partial class EntryPoint : IDisposable
 			: null;
 	}
 
-	private async Task OnStartupProjectChangedAsync()
-	{
-		if (_dte.Solution.SolutionBuild.StartupProjects is null)
-		{
-			// The user unloaded all projects, we need to reset the state
-			_isFirstProfileTfmChange = true;
-		}
 
-		if (!await EnsureProjectUserSettingsAsync() && _debuggerObserver is not null)
-		{
-			_debugAction?.Invoke($"The user setting is not yet initialized, aligning framework and profile");
-
-			// The user settings file is not available, we have created the
-			// file, but we also need to align the profile.
-			string currentActiveDebugFramework = "";
-
-			var hasTargetFramework = _debuggerObserver
-				.UnconfiguredProject
-				?.Services
-				.ActiveConfiguredProjectProvider
-				?.ActiveConfiguredProject
-				?.ProjectConfiguration
-				.Dimensions
-				.TryGetValue("TargetFramework", out currentActiveDebugFramework) ?? false;
-
-			if (hasTargetFramework)
-			{
-				await OnDebugFrameworkChangedAsync(null, currentActiveDebugFramework, true);
-			}
-		}
-	}
 
 	private async Task<bool> EnsureProjectUserSettingsAsync()
 	{
@@ -419,7 +389,7 @@ public partial class EntryPoint : IDisposable
 
 			if (hierarchy is IVsBuildPropertyStorage propertyStorage)
 			{
-				WriteUserProperty(propertyStorage, UnoSelectedTargetFrameworkProperty, targetFramework);
+				propertyStorage.SetUserProperty(UnoSelectedTargetFrameworkProperty, targetFramework);
 			}
 			else
 			{
@@ -430,15 +400,5 @@ public partial class EntryPoint : IDisposable
 		{
 			_debugAction?.Invoke("Could not write .user file (1)");
 		}
-	}
-
-	private static void WriteUserProperty(IVsBuildPropertyStorage propertyStorage, string propertyName, string propertyValue)
-	{
-		propertyStorage.SetPropertyValue(
-			propertyName,        // Property name
-			null,                 // Configuration name, null applies to all configurations
-			(uint)_PersistStorageType.PST_USER_FILE,  // Specifies that this is a user-specific property
-			propertyValue             // Property value
-		);
 	}
 }
