@@ -47,7 +47,6 @@ namespace SampleControl.Presentation
 		private bool _isAnyContentVisible = false;
 		private bool _contentAttachedToWindow;
 		private bool _useFluentStyles;
-		private bool _useDarkTheme;
 		private bool _manualTestsOnly;
 		private object _contentPhone = null;
 		private string _searchTerm = "";
@@ -550,17 +549,59 @@ namespace SampleControl.Presentation
 		}
 #endif
 
-		public bool UseDarkTheme
+		public bool IsAppThemeDark
 		{
-			get => _useDarkTheme;
+			get => GetRootTheme() == ElementTheme.Dark;
 			set
 			{
-				_useDarkTheme = value;
-				if (Owner.XamlRoot.Content is FrameworkElement root)
+				if (value)
 				{
-					root.RequestedTheme = _useDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+					SetRootTheme(ElementTheme.Dark);
+					RaisePropertyChanged();
 				}
-				RaisePropertyChanged();
+			}
+		}
+
+		public bool IsAppThemeLight
+		{
+			get => GetRootTheme() == ElementTheme.Light;
+			set
+			{
+				if (value)
+				{
+					SetRootTheme(ElementTheme.Light);
+					RaisePropertyChanged();
+				}
+			}
+		}
+
+		public bool IsAppThemeSystem
+		{
+			get => GetRootTheme() == ElementTheme.Default;
+			set
+			{
+				if (value)
+				{
+					SetRootTheme(ElementTheme.Default);
+					RaisePropertyChanged();
+				}
+			}
+		}
+
+		private ElementTheme GetRootTheme()
+		{
+			if (Owner.XamlRoot.Content is FrameworkElement root)
+			{
+				return root.RequestedTheme;
+			}
+			return ElementTheme.Default;
+		}
+
+		private void SetRootTheme(ElementTheme theme)
+		{
+			if (Owner.XamlRoot.Content is FrameworkElement root)
+			{
+				root.RequestedTheme = theme;
 			}
 		}
 
