@@ -704,7 +704,7 @@ partial class InputManager
 			private PointerPoint GetRelativePoint(PointerEventArgs args)
 			{
 				var absolutePoint = args.CurrentPoint;
-				var relativePosition = UIElement.GetTransform(element, null).Transform(args.CurrentPoint.Position);
+				var relativePosition = UIElement.GetTransform(element, null).Inverse().Transform(args.CurrentPoint.Position);
 
 				return absolutePoint.At(relativePosition);
 			}
