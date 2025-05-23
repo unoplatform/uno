@@ -10,7 +10,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		
 		<!-- Required as the project name does not end with `.Skia` when building for netcoremobile targets -->
-		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
+		<UnoDisableTargetFrameworkPlatformOverride Condition="!$(UnoTargetFrameworkOverride.Contains('windows10'))">true</UnoDisableTargetFrameworkPlatformOverride>
     </PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
