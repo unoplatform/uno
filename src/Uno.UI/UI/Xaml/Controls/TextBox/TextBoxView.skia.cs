@@ -107,11 +107,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void OnForegroundChanged(Brush brush)
-		{
-			DisplayBlock.Foreground = brush;
-			_overlayTextBoxViewExtension?.UpdateProperties();
-		}
+		internal void OnForegroundChanged(Brush brush) => _overlayTextBoxViewExtension?.UpdateProperties();
 
 		internal void OnSelectionHighlightColorChanged(SolidColorBrush brush)
 		{
