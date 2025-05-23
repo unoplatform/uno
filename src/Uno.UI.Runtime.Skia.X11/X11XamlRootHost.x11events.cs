@@ -15,7 +15,8 @@ internal partial class X11XamlRootHost
 		(1 << (int)XiEventType.XI_ButtonRelease) |
 		(1 << (int)XiEventType.XI_Motion);
 
-	private static int _threadCount;
+	private static int _seqNumber;
+	private readonly int _id = Interlocked.Increment(ref _seqNumber) - 1;
 
 	private readonly Action _closingCallback;
 	private readonly Action<bool> _focusCallback;
@@ -29,16 +30,14 @@ internal partial class X11XamlRootHost
 
 	private void InitializeX11EventsThread()
 	{
-		var id = Interlocked.Increment(ref _threadCount) - 1;
-
 		new Thread(() => Run(RootX11Window))
 		{
-			Name = $"Uno XEvents {id} (Root)",
+			Name = $"Uno XEvents {_id} (Root)",
 			IsBackground = true
 		}.Start();
 		new Thread(() => Run(TopX11Window))
 		{
-			Name = $"Uno XEvents {id} (Top)",
+			Name = $"Uno XEvents {_id} (Top)",
 			IsBackground = true
 		}.Start();
 	}

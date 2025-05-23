@@ -17,8 +17,6 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
-using Microsoft.UI.Dispatching;
-using Uno.UI.Dispatching;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -82,7 +80,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
-	private IX11Renderer? _renderer;
+	private X11Renderer? _renderer;
+	private readonly SKPictureRecorder _recorder = new SKPictureRecorder();
 
 	private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
@@ -131,6 +130,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
+		_renderingEventLoop = new(start => new Thread(start)
+		{
+			Name = $"Uno X11 Rendering thread {_id}",
+			IsBackground = true
+		});
 
 		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
 		UpdateRendererBackground();
@@ -145,6 +149,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
+				_renderingEventLoop.Dispose();
 			}
 		});
 	}
@@ -450,8 +455,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		XSetWindowAttributes attribs = default;
 		attribs.border_pixel = XLib.XBlackPixel(display, screen);
 		attribs.background_pixel = XLib.XWhitePixel(display, screen);
-		// Not sure why this is needed, commented out until further notice
-		// attribs.override_redirect = /* True */ 1;
 		attribs.colormap = XLib.XCreateColormap(display, parent, visual->visual, /* AllocNone */ 0);
 		var window = XLib.XCreateWindow(
 			display,
@@ -536,24 +539,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	}
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
-
-	// running XConfigureEvent and rendering callbacks on a timer is necessary to avoid freezing in certain situations
-	// where we get spammed with these events. Most notably, when resizing a window by dragging an edge, we'll get spammed
-	// with XConfigureEvents.
-	void IXamlRootHost.InvalidateRender()
-	{
-		if (DispatcherQueue.Main.HasThreadAccess)
-		{
-			_renderer?.Render();
-		}
-		else
-		{
-			// We need to be on the dispatcher to render the UI
-			// Requeue to request a full update (including possible
-			// window size changes)
-			NativeDispatcher.Main.DispatchRendering();
-		}
-	}
 
 	private void RaiseConfigureCallback()
 	{

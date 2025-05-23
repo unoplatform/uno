@@ -122,7 +122,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		public void QueueRender()
 		{
 			var recorder = new SKPictureRecorder();
-			var canvas = recorder.BeginRecording(new SKRect(-9999, -9999, 9999, 9999));
+			var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
 				_owner!.OnPaintSurfaceInner(canvas);
