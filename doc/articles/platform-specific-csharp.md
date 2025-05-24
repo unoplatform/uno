@@ -109,6 +109,7 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 * `*.UIKit.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst` and `net9.0-tvos`
 * `*.Apple.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst` and `net9.0-tvos`
 * `*.Android.cs` is built only for `net9.0-android`
+* `*.WinAppSDK.cs` is built only for `net9.0-windows10` (eg. `net9.0-windows10.0.22621`)
 
 Using file name conventions allows for reducing the use of `#if` compiler directives.
 
