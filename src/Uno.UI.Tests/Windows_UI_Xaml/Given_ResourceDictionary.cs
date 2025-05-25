@@ -814,7 +814,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(rd);
 			Assert.IsTrue(rd.ContainsKey("TestKey"));
-			Assert.AreEqual(rd["TestKey"], "Test123");
+			Assert.AreEqual("Test123", rd["TestKey"]);
 		}
 
 		[TestMethod]
@@ -825,7 +825,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(resources);
 			Assert.IsTrue(resources.ContainsKey("TestKey"));
-			Assert.AreEqual(resources["TestKey"], "Test123");
+			Assert.AreEqual("Test123", resources["TestKey"]);
 		}
 
 		[TestMethod]
