@@ -85,7 +85,7 @@ public partial class Given_VisualStateManager
 
 #if HAS_UNO
 	[TestMethod]
-	[UnoWorkItem("https://github.com/unoplatform/uno/issues/19364")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19364")]
 	public async Task When_StateTriggers_Evaluated_Before_First_Layout()
 	{
 		MyUserControl uc = new MyUserControl();
