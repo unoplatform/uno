@@ -234,11 +234,20 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		if (GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
 		{
+<<<<<<< HEAD
 			layer.AddSubview(nativeView);
+=======
+			var view = layer.Subviews.LastOrDefault();
+>>>>>>> 37acdbf6c9 (fix(iOS): adding native view multiple times)
 
+			if ((view as IInvisibleTextBoxView)?.Owner?.TextBox != _textBoxView?.Owner?.TextBox)
+			{
+				_latestNativeView = view;
+			layer.AddSubview(nativeView);
 			// Push the overlay native view out of the visible view - this way
 			// the blue typing suggestion overlay will not be shown to the user.
 			nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
+			}
 		}
 	}
 
