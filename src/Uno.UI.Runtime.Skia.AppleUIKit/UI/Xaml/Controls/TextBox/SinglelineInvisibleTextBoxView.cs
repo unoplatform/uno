@@ -25,6 +25,8 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	private bool _settingTextFromManaged;
 	private bool _settingSelectionFromManaged;
 
+	public TextBoxView? Owner => TextBoxViewExtension?.Owner;
+
 	public SinglelineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
 		if (textBoxView is null)
