@@ -358,7 +358,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $buildWithNetCore = $buildOptions -contains "NetCore"
     $usePublish = $buildOptions -contains "Publish"
     $cleanNugetCache = $buildOptions -contains "CleanNugetTemp"
-    $noBuildClead = $buildOptions -contains "NoBuildClean"
+    $NoBuildClean = $buildOptions -contains "NoBuildClean"
 
     if ($TestGroup -ne $projectTestGroup)
     {
