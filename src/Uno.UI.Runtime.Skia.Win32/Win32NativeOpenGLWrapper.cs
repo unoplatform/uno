@@ -30,8 +30,9 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 		return _handle;
 	});
 
-	private HDC _hdc;
-	private HGLRC _glContext;
+	private readonly HDC _hdc;
+	private readonly HGLRC _glContext;
+	private readonly HWND _hwnd;
 
 	public Win32NativeOpenGLWrapper(XamlRoot xamlRoot)
 	{
@@ -39,9 +40,9 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 		{
 			throw new InvalidOperationException($"The XamlRoot and the XamlRootMap must be initialized before constructing a {_type.Name}.");
 		}
-		var hwnd = (HWND)(wrapper.NativeWindow as Win32NativeWindow)!.Hwnd;
+		_hwnd = (HWND)(wrapper.NativeWindow as Win32NativeWindow)!.Hwnd;
 
-		_hdc = PInvoke.GetDC(hwnd);
+		_hdc = PInvoke.GetDC(_hwnd);
 		if (_hdc == IntPtr.Zero)
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.GetDC)} failed: {Win32Helper.GetErrorMessage()}");
@@ -65,7 +66,7 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 		if (pixelFormat == 0)
 		{
 			var choosePixelFormatError = Win32Helper.GetErrorMessage();
-			var success = PInvoke.ReleaseDC(hwnd, _hdc) == 0;
+			var success = PInvoke.ReleaseDC(_hwnd, _hdc) == 0;
 			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
 			throw new InvalidOperationException($"{nameof(PInvoke.ChoosePixelFormat)} failed: {choosePixelFormatError}");
 		}
@@ -80,7 +81,7 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 		if (PInvoke.SetPixelFormat(_hdc, pixelFormat, in pfd) == 0)
 		{
 			var setPixelFormatError = Win32Helper.GetErrorMessage();
-			var success = PInvoke.ReleaseDC(hwnd, _hdc) == 0;
+			var success = PInvoke.ReleaseDC(_hwnd, _hdc) == 0;
 			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
 			throw new InvalidOperationException($"{nameof(PInvoke.SetPixelFormat)} failed: {setPixelFormatError}");
 		}
@@ -89,7 +90,7 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 		if (_glContext == IntPtr.Zero)
 		{
 			var createContextError = Win32Helper.GetErrorMessage();
-			var success = PInvoke.ReleaseDC(hwnd, _hdc) == 0;
+			var success = PInvoke.ReleaseDC(_hwnd, _hdc) == 0;
 			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
 			throw new InvalidOperationException($"{nameof(PInvoke.wglCreateContext)} failed: {createContextError}");
 		}
@@ -119,37 +120,14 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 
 	public void Dispose()
 	{
-		if (PInvoke.wglDeleteContext(_glContext) == 0)
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"{nameof(PInvoke.wglDeleteContext)} failed.");
-			}
-		}
-		_glContext = default;
-		_hdc = default;
+		var success = PInvoke.wglDeleteContext(_glContext) == 0;
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.wglDeleteContext)} failed."); }
+		var success2 = PInvoke.ReleaseDC(_hwnd, _hdc) == 0;
+		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	public IDisposable MakeCurrent()
 	{
-		var glContext = PInvoke.wglGetCurrentContext();
-		var dc = PInvoke.wglGetCurrentDC();
-		if (PInvoke.wglMakeCurrent(_hdc, _glContext) == 0)
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"{nameof(PInvoke.wglMakeCurrent)} failed.");
-			}
-		}
-		return Disposable.Create(() =>
-		{
-			if (PInvoke.wglMakeCurrent(dc, glContext) == 0)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"{nameof(PInvoke.wglMakeCurrent)} failed.");
-				}
-			}
-		});
+		return new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 	}
 }
