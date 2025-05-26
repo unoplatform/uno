@@ -66,7 +66,7 @@ You can edit the `Info.plist` file, add any required entries (for permissions), 
 Then from the CLI run:
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSCustomInfoPlist=path/to/Info.plist
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSCustomInfoPlist=path/to/Info.plist
 ```
 
 ### Hardened Runtime
@@ -76,7 +76,7 @@ dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 If needed you can turn it off by providing `-p:UnoMacOSHardenedRuntime=false` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSHardenedRuntime=false
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSHardenedRuntime=false
 ```
 
 ### Custom Entitlements
@@ -97,7 +97,7 @@ dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 You can provide your own entitlement file if needed using `-p:UnoMacOSEntitlements=/path/to/entitlements.plist` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSEntitlements=/path/to/entitlements.plist
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSEntitlements=/path/to/entitlements.plist
 ```
 
 ### Trimming
@@ -107,7 +107,7 @@ App bundles that are distributed should be self-contained applications that depe
 To reduce the size of the app bundle you can enable dotnet's [trimming](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options#enable-trimming) when publishing the app, using `-p:PublishTrimmed=true`. The full command from the CLI would be:
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:PublishTrimmed=true
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:PublishTrimmed=true
 ```
 
 > [!IMPORTANT]
@@ -124,7 +124,7 @@ Although useful for debugging, the `createdump` executable is rarely used by the
 If you wish to include `createdump` inside your app bundle add the `-p:UnoMacOSIncludeCreateDump=true` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeCreateDump=true
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeCreateDump=true
 ```
 
 #### Including `libclrgc.dylib` extraneous GC
@@ -134,7 +134,7 @@ An alternate garbage collection (GC) library is included by `dotnet publish`. It
 If you wish to include this extra GC library inside your app bundle add the `-p:UnoMacOSIncludeExtraClrGC=true` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeExtraClrGC=true
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeExtraClrGC=true
 ```
 
 #### Including `libmscordaccore.dylib` and `libmscordbi.dylib` debugging support
@@ -144,7 +144,7 @@ Extraneous debugging support libraries are included by `dotnet publish`. They ar
 If you wish to include the extra debugging libraries inside your app bundle add the `-p:UnoMacOSIncludeNativeDebugging=true` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeNativeDebugging=true
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeNativeDebugging=true
 ```
 
 #### Including assemblies debugging symbols (.pdb) files
@@ -154,7 +154,7 @@ dotnet debugging symbols (`.pdb`) are generally included in released application
 If you wish to remove them anyway, you can do so by adding the `-p:UnoMacOSIncludeDebugSymbols=false` on the CLI.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeDebugSymbols=false
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeDebugSymbols=false
 ```
 
 ## Disk Image (.dmg) Customization
@@ -164,7 +164,7 @@ dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 By default, the produced disk image will contain a symlink to `/Applications` so users can drag-and-drop the app bundle inside it. If you do not want the symlink to be present inside the disk image you can add `-p:UnoMacOSIncludeSymlinkToApplications=false` on the command line.
 
 ```bash
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=dmg -p:UnoMacOSIncludeSymlinkToApplications=false -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}}
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=dmg -p:UnoMacOSIncludeSymlinkToApplications=false -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}}
 ```
 
 ### Additional Customization
