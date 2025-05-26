@@ -46,6 +46,11 @@ namespace Microsoft.UI.Xaml.Input
 		private DependencyObject? _focusedElement;
 
 		/// <summary>
+		/// Represents the element being focused.
+		/// </summary>
+		private DependencyObject? _focusingElement;
+
+		/// <summary>
 		/// Focused element's AutomationPeer.
 		/// </summary>
 		private AutomationPeer? _focusedAutomationPeer;
@@ -139,6 +144,11 @@ namespace Microsoft.UI.Xaml.Input
 		/// Returns the current focused element.
 		/// </summary>
 		internal DependencyObject? FocusedElement => _focusedElement;
+
+		/// <summary>
+		/// Returns the current focused element.
+		/// </summary>
+		internal DependencyObject? FocusingElement => _focusingElement;
 
 		/// <summary>
 		/// Returns the content root associated with this focus manager instance.
@@ -1796,6 +1806,7 @@ namespace Microsoft.UI.Xaml.Input
 
 			// Update the previous focused control
 			oldFocusedElement = _focusedElement; // Still has reference that will be freed in Cleanup.
+			_focusingElement = newFocusTarget;
 
 			if (oldFocusedElement != null && FocusableHelper.GetIFocusableForDO(oldFocusedElement) is IFocusable oldFocusFocusable)
 			{
