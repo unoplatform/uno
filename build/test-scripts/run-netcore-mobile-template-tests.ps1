@@ -405,6 +405,9 @@ for($i = 0; $i -lt $projects.Length; $i++)
  
         if(!$NoBuildClean)
         {
+            # Cleaning may also remove generated nuget files, even if
+            # OutputPath has been overriden, causing dependents to not find
+            # the pacage.
             dotnet clean $release $projectOptions "$projectPath"
         }
     }
