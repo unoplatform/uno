@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Xaml.Controls;
@@ -49,6 +50,11 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		_textBoxView.BecomeFirstResponder();
 
+<<<<<<< HEAD
+=======
+		RemovePreviousViewFromTextInputLayer();
+
+>>>>>>> d492ab9fbf (fix(iOS): crash focusing input multiple times)
 		var start = textBox?.SelectionStart ?? 0;
 		var length = textBox?.SelectionLength ?? 0;
 		_textBoxView.Select(start, length);
@@ -243,16 +249,31 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			if ((view as IInvisibleTextBoxView)?.Owner?.TextBox != _textBoxView?.Owner?.TextBox)
 			{
 				_latestNativeView = view;
-			layer.AddSubview(nativeView);
-			// Push the overlay native view out of the visible view - this way
-			// the blue typing suggestion overlay will not be shown to the user.
-			nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
+				layer.AddSubview(nativeView);
+				// Push the overlay native view out of the visible view - this way
+				// the blue typing suggestion overlay will not be shown to the user.
+				nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
 			}
 		}
 	}
 
 	public void RemoveViewFromTextInputLayer()
 	{
+<<<<<<< HEAD
+		if (_textBoxView is not UIView nativeView)
+=======
+		var xamlRoot = _owner.TextBox?.XamlRoot;
+		if (xamlRoot is null)
+		{
+			return;
+		}
+
+		var focusingView = FocusManager.GetFocusingElement(xamlRoot) as FrameworkElement;
+		if (CouldBecomeFirstResponder(focusingView))
+		{
+			return;
+		}
+
 		if (_textBoxView is not UIView nativeView)
 		{
 			return;
@@ -262,6 +283,27 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		{
 			nativeView.RemoveFromSuperview();
 		}
+	}
+
+	private void RemovePreviousViewFromTextInputLayer()
+	{
+		if (_latestNativeView is not UIView nativeView)
+>>>>>>> d492ab9fbf (fix(iOS): crash focusing input multiple times)
+		{
+			return;
+		}
+
+		if (nativeView.Superview is not null)
+		{
+			nativeView.RemoveFromSuperview();
+		}
+	}
+
+	private static bool CouldBecomeFirstResponder(FrameworkElement? element)
+	{
+		return element is TextBox ||
+		element is AutoSuggestBox ||
+		element is NumberBox;
 	}
 
 	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
