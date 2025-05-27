@@ -794,5 +794,18 @@ namespace Microsoft.UI.Xaml.Input
 
 			return dependencyObject;
 		}
+
+		private static object? GetFocusingElementWithRootImpl(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			var focusManager = xamlRoot.VisualTree.ContentRoot.FocusManager;
+			var dependencyObject = focusManager.FocusingElement;
+
+			return dependencyObject;
+		}
 	}
 }
