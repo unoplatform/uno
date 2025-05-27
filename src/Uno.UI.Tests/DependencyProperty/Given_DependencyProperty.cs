@@ -1411,9 +1411,9 @@ namespace Uno.UI.Tests.BinderTests
 			var datacontext2 = new NullablePropertyOwner { MyNullable = 42 };
 			var datacontext3 = new NullablePropertyOwner { MyNullable = 84 };
 
-			var changes = new List<DependencyPropertyChangedEventArgs>();
+			var values = new List<object>();
 
-			SUT.MyNullableChanged += (snd, evt) => changes.Add(evt);
+			SUT.MyNullableChanged += (snd, evt) => values.Add(evt.NewValue);
 
 			SUT.SetBinding(
 				NullablePropertyOwner.MyNullableProperty,
@@ -1424,28 +1424,28 @@ namespace Uno.UI.Tests.BinderTests
 			);
 
 			SUT.DataContext = datacontext1;
-			changes.Count.Should().Be(1);
-			changes.Last().NewValue.Should().Be(42);
+			values.Count.Should().Be(1);
+			values.Last().Should().Be(42);
 
 			SUT.DataContext = datacontext2;
-			changes.Count.Should().Be(1); // Here we ensure we're not receiving a default value, still no changes
+			values.Count.Should().Be(1); // Here we ensure we're not receiving a default value, still no changes
 
 			SUT.DataContext = datacontext3;
-			changes.Count.Should().Be(2);
-			changes.Last().NewValue.Should().Be(84);
+			values.Count.Should().Be(2);
+			values.Last().Should().Be(84);
 
 			SUT.DataContext = null;
-			changes.Count.Should().Be(3);
-			changes.Last().NewValue.Should().Be(null);
+			values.Count.Should().Be(3);
+			values.Last().Should().Be(null);
 
 			var parent = new Border { Child = SUT };
 
 			parent.DataContext = datacontext1;
-			changes.Count.Should().Be(3);
+			values.Count.Should().Be(3);
 
 			SUT.DataContext = DependencyProperty.UnsetValue; // Propagate the datacontext from parent
-			changes.Count.Should().Be(4);
-			changes.Last().NewValue.Should().Be(42);
+			values.Count.Should().Be(4);
+			values.Last().Should().Be(42);
 		}
 
 		[TestMethod]
