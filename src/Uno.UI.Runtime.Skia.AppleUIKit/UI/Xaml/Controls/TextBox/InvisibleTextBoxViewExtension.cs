@@ -50,11 +50,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		_textBoxView.BecomeFirstResponder();
 
-<<<<<<< HEAD
-=======
 		RemovePreviousViewFromTextInputLayer();
 
->>>>>>> d492ab9fbf (fix(iOS): crash focusing input multiple times)
 		var start = textBox?.SelectionStart ?? 0;
 		var length = textBox?.SelectionLength ?? 0;
 		_textBoxView.Select(start, length);
@@ -240,11 +237,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		if (GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
 		{
-<<<<<<< HEAD
-			layer.AddSubview(nativeView);
-=======
 			var view = layer.Subviews.LastOrDefault();
->>>>>>> 37acdbf6c9 (fix(iOS): adding native view multiple times)
 
 			// prevents adding the same native view multiple times. This should not happen very often.
 			if ((view as IInvisibleTextBoxView)?.Owner?.TextBox != _textBoxView?.Owner?.TextBox)
@@ -260,9 +253,6 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void RemoveViewFromTextInputLayer()
 	{
-<<<<<<< HEAD
-		if (_textBoxView is not UIView nativeView)
-=======
 		var xamlRoot = _owner.TextBox?.XamlRoot;
 		if (xamlRoot is null)
 		{
@@ -289,7 +279,6 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	private void RemovePreviousViewFromTextInputLayer()
 	{
 		if (_latestNativeView is not UIView nativeView)
->>>>>>> d492ab9fbf (fix(iOS): crash focusing input multiple times)
 		{
 			return;
 		}
