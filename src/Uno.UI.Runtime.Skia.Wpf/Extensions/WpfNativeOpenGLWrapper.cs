@@ -105,14 +105,14 @@ internal class WpfNativeOpenGLWrapper
 
 		if (WindowsRenderingNativeMethods.SetPixelFormat(_hdc, pixelFormat, ref pfd) == 0)
 		{
-			throw new InvalidOperationException("ChoosePixelFormat failed");
+			throw new InvalidOperationException("SetPixelFormat failed");
 		}
 
 		_glContext = WindowsRenderingNativeMethods.wglCreateContext(_hdc);
 
 		if (_glContext == IntPtr.Zero)
 		{
-			throw new InvalidOperationException("ChoosePixelFormat failed");
+			throw new InvalidOperationException("wglCreateContext failed");
 		}
 	}
 
