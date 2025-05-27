@@ -243,6 +243,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		{
 			var view = layer.Subviews.LastOrDefault();
 
+			// prevents adding the same native view multiple times. This should not happen very often.
 			if ((view as IInvisibleTextBoxView)?.Owner?.TextBox != _textBoxView?.Owner?.TextBox)
 			{
 				_latestNativeView = view;
