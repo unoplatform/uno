@@ -467,6 +467,32 @@ public partial class Given_ContentPresenter
 			return new(o);
 		}
 	}
+
+#if __SKIA__
+	[TestMethod]
+	public async Task When_Native_Host_Infinite_Measure_Bounds()
+	{
+		var SUT = new ContentPresenter();
+		SUT.Content = SUT.CreateSampleComponent("test");
+
+		if (SUT.Content is null)
+		{
+			Assert.Inconclusive("This platform does not support native element hosting.");
+		}
+
+		await UITestHelper.Load(new StackPanel()
+		{
+			Children =
+			{
+				SUT
+			},
+			Width = 200
+		}, sp => sp.IsLoaded);
+
+		Assert.AreEqual(200, SUT.ActualWidth);
+		Assert.AreEqual(0, SUT.ActualHeight);
+	}
+#endif
 }
 public partial class Given_ContentPresenter
 {
