@@ -146,7 +146,7 @@ namespace Microsoft.UI.Xaml.Input
 		internal DependencyObject? FocusedElement => _focusedElement;
 
 		/// <summary>
-		/// Returns the current focused element.
+		/// Returns the element about to be focused when focus is changing
 		/// </summary>
 		internal DependencyObject? FocusingElement => _focusingElement;
 
