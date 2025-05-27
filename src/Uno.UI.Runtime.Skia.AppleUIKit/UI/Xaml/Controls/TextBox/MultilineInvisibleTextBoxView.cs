@@ -14,6 +14,8 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	private bool _settingTextFromManaged;
 	private bool _settingSelectionFromManaged;
 
+	public TextBoxView? Owner => TextBoxViewExtension?.Owner;
+
 	public MultilineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
 		if (textBoxView is null)

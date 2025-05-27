@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Xaml.Controls;
@@ -53,7 +54,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		// change FirstResponder's View before removing the previous view to avoid flickering
 		_textBoxView.BecomeFirstResponder();
 
-		RemoveViewFromTextInputLayer();
+		RemovePreviousViewFromTextInputLayer();
 
 		var start = textBox?.SelectionStart ?? 0;
 		var length = textBox?.SelectionLength ?? 0;
@@ -240,18 +241,35 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		if (GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
 		{
-			_latestNativeView = layer.Subviews.LastOrDefault();
-			layer.AddSubview(nativeView);
+			var view = layer.Subviews.LastOrDefault();
 
-			// Push the overlay native view out of the visible view - this way
-			// the blue typing suggestion overlay will not be shown to the user.
-			nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
+			// prevents adding the same native view multiple times. This should not happen very often.
+			if ((view as IInvisibleTextBoxView)?.Owner?.TextBox != _textBoxView?.Owner?.TextBox)
+			{
+				_latestNativeView = view;
+				layer.AddSubview(nativeView);
+				// Push the overlay native view out of the visible view - this way
+				// the blue typing suggestion overlay will not be shown to the user.
+				nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
+			}
 		}
 	}
 
 	public void RemoveViewFromTextInputLayer()
 	{
-		if (_latestNativeView is not UIView nativeView)
+		var xamlRoot = _owner.TextBox?.XamlRoot;
+		if (xamlRoot is null)
+		{
+			return;
+		}
+
+		var focusingView = FocusManager.GetFocusingElement(xamlRoot) as FrameworkElement;
+		if (CouldBecomeFirstResponder(focusingView))
+		{
+			return;
+		}
+
+		if (_textBoxView is not UIView nativeView)
 		{
 			return;
 		}
@@ -261,6 +279,26 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			nativeView.RemoveFromSuperview();
 			_latestNativeView = null;
 		}
+	}
+
+	private void RemovePreviousViewFromTextInputLayer()
+	{
+		if (_latestNativeView is not UIView nativeView)
+		{
+			return;
+		}
+
+		if (nativeView.Superview is not null)
+		{
+			nativeView.RemoveFromSuperview();
+		}
+	}
+
+	private static bool CouldBecomeFirstResponder(FrameworkElement? element)
+	{
+		return element is TextBox ||
+		element is AutoSuggestBox ||
+		element is NumberBox;
 	}
 
 	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>

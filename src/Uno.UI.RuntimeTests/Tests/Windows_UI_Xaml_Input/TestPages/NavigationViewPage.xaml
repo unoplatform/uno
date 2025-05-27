@@ -908,7 +908,8 @@
         </Style>
     </Page.Resources>
 
-    <Grid>
+    <Grid x:Name="RootGrid"
+          x:FieldModifier="public">
         <controls:NavigationView
             x:Name="NavigationViewControl"
             Grid.Row="2"
