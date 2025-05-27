@@ -1966,6 +1966,8 @@ namespace Microsoft.UI.Xaml.Input
 				ElementSoundPlayerService.Instance.RequestInteractionSoundForElement(ElementSoundKind.Focus, newFocusTarget);
 			}
 
+			_focusingElement = null;
+
 			return Cleanup();
 
 			FocusMovementResult Cleanup()
