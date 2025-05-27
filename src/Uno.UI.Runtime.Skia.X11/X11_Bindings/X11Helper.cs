@@ -261,13 +261,7 @@ internal static partial class X11Helper
 			// the property wasn't set. Let's turn on everything by default.
 			arr[0] |= (IntPtr)(MotifFlags.Decorations | MotifFlags.Functions);
 			arr[1] |= (IntPtr)MotifFunctions.All;
-
-			// Border doesn't seem to do anything except show the title bar even if Title is off,
-			// so we turn it off.
-			// arr[2] |= (IntPtr)MotifDecorations.All;
-			arr[2] = ((int[])Enum.GetValuesAsUnderlyingType<MotifDecorations>()).Aggregate(0, (i1, i2) => i1 | i2);
-			arr[2] &= ~(IntPtr)MotifDecorations.Border;
-			arr[2] &= ~(IntPtr)MotifDecorations.All;
+			arr[2] |= (IntPtr)MotifDecorations.All;
 		}
 		else
 		{
