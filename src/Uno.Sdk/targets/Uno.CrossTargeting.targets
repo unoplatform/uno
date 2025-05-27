@@ -15,6 +15,9 @@
 		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 
+		<None Include="**\*.desktop.cs" Exclude="bin\**\*.desktop.cs;obj\**\*.desktop.cs" Condition="!$(IsDesktop)" />
+		<Compile Remove="**\*.desktop.cs" Condition="!$(IsDesktop)" />
+
 		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 
