@@ -6,5 +6,6 @@
     See https://aka.platform.uno/upgrade-uno-packages for more information.
   -->
   <ItemGroup>
+    <PackageVersion Include="Uno56NugetLibrary" Version="1.0.0" />
   </ItemGroup>
 </Project>

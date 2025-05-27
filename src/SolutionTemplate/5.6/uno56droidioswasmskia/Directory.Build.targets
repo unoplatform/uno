@@ -2,6 +2,6 @@
   <Target Name="ValidateIsPackable"
           AfterTargets="CoreCompile;Build">
     <Error Text="Expected IsPackable='false', however it actually equals '$(IsPackable)'."
-      Condition="$(IsPackable) == 'true'" />
+      Condition="$(IsPackable) == 'true' AND '$(GeneratePackageOnBuild)' != 'true' " />
   </Target>
 </Project>
