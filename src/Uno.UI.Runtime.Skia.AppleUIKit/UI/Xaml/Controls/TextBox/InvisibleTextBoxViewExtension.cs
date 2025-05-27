@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -13,6 +14,7 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit;
 internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
 	private readonly TextBoxView _owner;
+	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
@@ -46,8 +48,10 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		EnsureTextBoxView(textBox);
 		SetSoftKeyboardTheme();
+
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
+		// change FirstResponder's View before removing the previous view to avoid flickering
 		_textBoxView.BecomeFirstResponder();
 
 		RemovePreviousViewFromTextInputLayer();
@@ -273,6 +277,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		if (nativeView.Superview is not null)
 		{
 			nativeView.RemoveFromSuperview();
+			_latestNativeView = null;
 		}
 	}
 
