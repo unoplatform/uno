@@ -226,15 +226,15 @@ internal class ProfilesObserver : IDisposable
 		}
 		if (_projectRemoved is not null)
 		{
-			_dte.Events.SolutionEvents.ProjectRemoved -= _projectRemoved; 
+			_dte.Events.SolutionEvents.ProjectRemoved -= _projectRemoved;
 		}
 		if (_projectRenamed is not null)
 		{
-			_dte.Events.SolutionEvents.ProjectRenamed -= _projectRenamed; 
+			_dte.Events.SolutionEvents.ProjectRenamed -= _projectRenamed;
 		}
 		if (_afterExecute is not null)
 		{
-			_dte.Events.CommandEvents.AfterExecute -= _afterExecute; 
+			_dte.Events.CommandEvents.AfterExecute -= _afterExecute;
 		}
 	}
 
