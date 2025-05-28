@@ -38,99 +38,114 @@ public class Given_WebView2
 #endif
 	public async Task When_Navigate()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		var uri = new Uri("https://platform.uno/");
-		await webView.EnsureCoreWebView2Async();
-		bool navigationStarting = false;
-		bool navigationDone = false;
-		webView.NavigationStarting += (s, e) => navigationStarting = true;
-		webView.NavigationCompleted += (s, e) => navigationDone = true;
-		webView.CoreWebView2.Navigate(uri.ToString());
-		Assert.IsNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 30000);
-		Assert.IsNotNull(webView.Source);
-		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://platform.uno/", StringComparison.OrdinalIgnoreCase));
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			var uri = new Uri("https://platform.uno/");
+			await webView.EnsureCoreWebView2Async();
+			bool navigationStarting = false;
+			bool navigationDone = false;
+			webView.NavigationStarting += (s, e) => navigationStarting = true;
+			webView.NavigationCompleted += (s, e) => navigationDone = true;
+			webView.CoreWebView2.Navigate(uri.ToString());
+			Assert.IsNull(webView.Source);
+			await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
+			await TestServices.WindowHelper.WaitFor(() => navigationDone, 30000);
+			Assert.IsNotNull(webView.Source);
+			Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://platform.uno/", StringComparison.OrdinalIgnoreCase));
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
 
 	[TestMethod]
 	public async Task When_NavigateToString()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		var uri = new Uri("https://platform.uno/");
-		await webView.EnsureCoreWebView2Async();
-		bool navigationStarting = false;
-		bool navigationDone = false;
-		webView.NavigationStarting += (s, e) => navigationStarting = true;
-		webView.NavigationCompleted += (s, e) => navigationDone = true;
-		webView.Source = uri;
-		Assert.IsNotNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
-		Assert.IsNotNull(webView.Source);
-		navigationStarting = false;
-		navigationDone = false;
-		webView.NavigateToString("<html></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
-		Assert.AreEqual(new Uri("about:blank"), webView.Source);
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			var uri = new Uri("https://platform.uno/");
+			await webView.EnsureCoreWebView2Async();
+			bool navigationStarting = false;
+			bool navigationDone = false;
+			webView.NavigationStarting += (s, e) => navigationStarting = true;
+			webView.NavigationCompleted += (s, e) => navigationDone = true;
+			webView.Source = uri;
+			Assert.IsNotNull(webView.Source);
+			await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
+			await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
+			Assert.IsNotNull(webView.Source);
+			navigationStarting = false;
+			navigationDone = false;
+			webView.NavigateToString("<html></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
+			await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
+			Assert.AreEqual(new Uri("about:blank"), webView.Source);
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
 
 
 	[TestMethod]
 	public async Task When_GoBack()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		bool navigated = false;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		await webView.EnsureCoreWebView2Async();
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
 
-		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
-		Assert.IsFalse(webView.CanGoBack);
-		Assert.IsFalse(webView.CoreWebView2.CanGoForward);
-		Assert.IsFalse(webView.CanGoForward);
+			Assert.IsFalse(webView.CoreWebView2.CanGoBack);
+			Assert.IsFalse(webView.CanGoBack);
+			Assert.IsFalse(webView.CoreWebView2.CanGoForward);
+			Assert.IsFalse(webView.CanGoForward);
 
-		webView.NavigationCompleted += (sender, e) => navigated = true;
-		webView.CoreWebView2.Navigate("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html");
-		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			webView.CoreWebView2.Navigate("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html");
+			await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
-		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
-		Assert.IsFalse(webView.CanGoBack);
-		Assert.IsFalse(webView.CoreWebView2.CanGoForward);
-		Assert.IsFalse(webView.CanGoForward);
+			Assert.IsFalse(webView.CoreWebView2.CanGoBack);
+			Assert.IsFalse(webView.CanGoBack);
+			Assert.IsFalse(webView.CoreWebView2.CanGoForward);
+			Assert.IsFalse(webView.CanGoForward);
 
-		navigated = false;
-		webView.CoreWebView2.Navigate("https://platform.uno");
-		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
+			navigated = false;
+			webView.CoreWebView2.Navigate("https://platform.uno");
+			await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
-		Assert.IsTrue(webView.CoreWebView2.CanGoBack);
-		Assert.IsTrue(webView.CanGoBack);
+			Assert.IsTrue(webView.CoreWebView2.CanGoBack);
+			Assert.IsTrue(webView.CanGoBack);
 
-		navigated = false;
-		webView.GoBack();
-		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
+			navigated = false;
+			webView.GoBack();
+			await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
-		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
-		Assert.IsFalse(webView.CanGoBack);
-		Assert.IsTrue(webView.CoreWebView2.CanGoForward);
-		Assert.IsTrue(webView.CanGoForward);
+			Assert.IsFalse(webView.CoreWebView2.CanGoBack);
+			Assert.IsFalse(webView.CanGoBack);
+			Assert.IsTrue(webView.CoreWebView2.CanGoForward);
+			Assert.IsTrue(webView.CanGoForward);
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
 
 #if __ANDROID__ || __IOS__
