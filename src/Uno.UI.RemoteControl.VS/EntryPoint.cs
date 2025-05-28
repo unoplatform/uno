@@ -321,47 +321,52 @@ public partial class EntryPoint : IDisposable
 
 	private async Task EnsureServerAsync()
 	{
+		if (_isDisposed || _closing)
+		{
+			return;
+		}
+
 		_debugAction?.Invoke($"Starting server (tid:{Environment.CurrentManagedThreadId})");
 
 		// As Android projects are "library", we cannot filter on "Application" projects.
 		// Instead, we persist the port only in the current startup projects ... and we make sure to re-write it when the startup project changes (cf. OnStartupProjectChangedAsync).
 		const ProjectAttribute persistenceFilter = ProjectAttribute.Startup;
 
-		var persistedPorts = (await _dte
-			.GetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, persistenceFilter))
-			.Distinct(StringComparer.OrdinalIgnoreCase)
-			.Select(str => int.TryParse(str, out var p) ? p : -1)
-			.ToArray();
-		var persistedPort = persistedPorts.FirstOrDefault(p => p > 0);
-
-		var port = _devServer?.port ?? persistedPort;
-		// Determine if the port configuration is incorrect:
-		// - Either no ports or multiple ports are persisted (`persistedPorts is { Length: 0 or > 1 }`).
-		// - Or the currently used port (`port`) does not match the persisted port (`persistedPort`).
-		var portMisConfigured = persistedPorts is { Length: 0 or > 1 } || port != persistedPort;
-
-		if (_devServer is { process.HasExited: false })
-		{
-			if (portMisConfigured)
-			{
-				_debugAction?.Invoke($"Server already running on port {_devServer?.port}, but port is not configured properly on all projects. Updating it ...");
-
-				// The dev-server is already running, but at least one project is not configured properly
-				// (This can happen when a project is being added to the solution while opened - Reminder: This EnsureServerAsync is invoked each time a project is built)
-				// We make sure to set the current port for **all** projects.
-				await _dte.SetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, port.ToString(CultureInfo.InvariantCulture), persistenceFilter);
-			}
-			else
-			{
-				_debugAction?.Invoke($"Server already running on port {_devServer?.port}");
-			}
-
-			return;
-		}
-
 		await _devServerGate.WaitAsync();
 		try
 		{
+			var persistedPorts = (await _dte
+				.GetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, persistenceFilter))
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.Select(str => int.TryParse(str, out var p) ? p : -1)
+				.ToArray();
+			var persistedPort = persistedPorts.FirstOrDefault(p => p > 0);
+
+			var port = _devServer?.port ?? persistedPort;
+			// Determine if the port configuration is incorrect:
+			// - Either no ports or multiple ports are persisted (`persistedPorts is { Length: 0 or > 1 }`).
+			// - Or the currently used port (`port`) does not match the persisted port (`persistedPort`).
+			var portMisConfigured = persistedPorts is { Length: 0 or > 1 } || port != persistedPort;
+
+			if (_devServer is { process.HasExited: false })
+			{
+				if (portMisConfigured)
+				{
+					_debugAction?.Invoke($"Server already running on port {_devServer?.port}, but port is not configured properly on all projects. Updating it ...");
+
+					// The dev-server is already running, but at least one project is not configured properly
+					// (This can happen when a project is being added to the solution while opened - Reminder: This EnsureServerAsync is invoked each time a project is built)
+					// We make sure to set the current port for **all** projects.
+					await _dte.SetProjectUserSettingsAsync(_asyncPackage, RemoteControlServerPortProperty, port.ToString(CultureInfo.InvariantCulture), persistenceFilter);
+				}
+				else
+				{
+					_debugAction?.Invoke($"Server already running on port {_devServer?.port}");
+				}
+
+				return;
+			}
+
 			if (EnsureTcpPort(ref port) || portMisConfigured)
 			{
 				// The port has changed, or all application projects does not have the same port number (or is not configured), we update port in *all* user files
