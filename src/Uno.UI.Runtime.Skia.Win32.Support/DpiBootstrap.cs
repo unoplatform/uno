@@ -1,6 +1,11 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.System.Diagnostics.Debug;
 using Windows.Win32.UI.HiDpi;
+using Uno.Foundation.Logging;
 
 #pragma warning disable CA2255
 
@@ -31,6 +36,30 @@ internal static class DpiBootstrap
 		//
 		// This call must be made BEFORE any window is initialized.
 
-		PInvoke.SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+		var success = PInvoke.SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+		if (!success) { typeof(DpiBootstrap).LogError()?.Error($"{nameof(PInvoke.AddClipboardFormatListener)} failed: {GetErrorMessage()}"); }
+	}
+
+	private static string GetErrorMessage() => GetErrorMessage((uint)Marshal.GetLastWin32Error());
+
+	private static unsafe string GetErrorMessage(uint errorCode)
+	{
+		IntPtr* messagePtr = stackalloc IntPtr[1];
+		var messageLength = PInvoke.FormatMessage(
+			FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_IGNORE_INSERTS,
+			default,
+			errorCode,
+			0,
+			new PWSTR((char*)messagePtr),
+			0);
+		var message = *messagePtr;
+		try
+		{
+			return Marshal.PtrToStringUni(message, (int)messageLength);
+		}
+		finally
+		{
+			PInvoke.LocalFree(new HLOCAL(message.ToPointer()));
+		}
 	}
 }
