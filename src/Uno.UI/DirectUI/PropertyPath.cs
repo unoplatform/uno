@@ -196,3 +196,19 @@ partial class PropertyPathListener // src\dxaml\xcp\dxaml\lib\PropertyPath.cpp
 		return m_tpFirst;
 	}
 }
+partial class PropertyPathListener : IDisposable
+{
+	public void Dispose()
+	{
+		var previousStep = default(PropertyPathStep);
+		for (var step = m_tpFirst; step is { }; step = step.GetNextStep())
+		{
+			step.Dispose();
+
+			previousStep?.SetNext(null);
+			previousStep = step;
+		}
+
+		ClearOwner();
+	}
+}
