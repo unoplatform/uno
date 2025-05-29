@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class DependencyObjectStore
 	{
-		internal class DependencyPropertyChangedEventArgsPool
+		private class DependencyPropertyChangedEventArgsPool
 		{
 			private readonly Element[] _elements;
 			private DependencyPropertyChangedEventArgs? _spare;
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml
 				return result;
 			}
 
-			public DependencyPropertyChangedEventArgs RentSlow()
+			private DependencyPropertyChangedEventArgs RentSlow()
 			{
 				var elements = _elements;
 
