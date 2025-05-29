@@ -44,12 +44,6 @@ body:
       label: "Workaround 🛠️"
       description: "Please provide steps to workaround this problem if possible. Got a hack? Share it! 💡"
 
-  - type: textarea
-    id: nuget-versions
-    attributes:
-      label: "Uno.Sdk version 📦"
-      description: "Please provide the version of the Uno.Sdk you are using. This can be found in the `global.json` file."
-
   - type: checkboxes
     id: renderer
     attributes:
@@ -77,10 +71,16 @@ body:
         - "Windows App SDK"
         - "Build tasks"
 
+  - type: textarea
+    id: nuget-versions
+    attributes:
+      label: "Uno.Sdk version (and other relevant versions) 📦"
+      description: "Please provide the version of the Uno.Sdk you are using. This can be found in the `global.json` file."
+
   - type: input
     id: ide
     attributes:
-      label: "IDE and version 🧑‍💻"
+      label: "IDE version 🧑‍💻"
       description: "Please provide the full name and version of the IDE you are using, e.g. `Visual Studio 2022 17.14.2`."
 
   - type: textarea
