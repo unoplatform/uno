@@ -6,14 +6,16 @@ body:
     attributes:
       value: |
         Please only use this template for reporting issues with the documentation where the fix isn't straightforward. We greatly appreciate it when people send in pull requests with fixes. If any friction, apart from knowledge, is preventing you from doing so, please let us know below. 🙏
+
   - type: input
     id: docs-issue-location
     attributes:
       label: "On which page? 📄"
-      description: "Specify the page or section of the documentation where you've identified an issue 🔍"
+      description: "Specify the page or section of the documentation where you've identified an issue"
       placeholder: "ex. https://platform.uno/docs/articles/intro.html"
     validations:
       required: true
+
   - type: textarea
     id: docs-issue-description
     attributes:
@@ -21,6 +23,7 @@ body:
       description: "Provide a detailed description of what you believe is incorrect, unclear, or needs improvement 🛠️"
     validations:
       required: true
+
   - type: textarea
     id: docs-issue-additional-info
     attributes:
