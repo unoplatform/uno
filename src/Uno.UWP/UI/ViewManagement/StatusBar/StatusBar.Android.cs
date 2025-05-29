@@ -139,6 +139,7 @@ namespace Windows.UI.ViewManagement
 
 				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
 				insetsController.Show(WindowInsetsCompat.Type.StatusBars());
+				ViewCompat.RequestApplyInsets(decorView);
 			}
 			else
 			{
@@ -244,7 +245,7 @@ namespace Windows.UI.ViewManagement
 			public WindowInsetsCompat OnApplyWindowInsets(View view, WindowInsetsCompat insets)
 			{
 				var statusBarInsets = insets.GetInsets(WindowInsets.Type.StatusBars());
-				
+
 				view.SetBackgroundColor(((Android.Graphics.Color)_statusBar._backgroundColor));
 
 				// Adjust padding to avoid overlap

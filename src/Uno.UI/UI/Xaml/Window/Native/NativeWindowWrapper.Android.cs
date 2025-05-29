@@ -139,13 +139,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 			}
 			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
-			
+
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Insets: {insets}");
 			}
-
-			
 
 			// Edge-to-edge is default on Android 15 and above
 			windowBounds = new Rect(default, GetWindowSize().Subtract(opaqueInsets));
