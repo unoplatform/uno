@@ -20,6 +20,8 @@ body:
     id: enhancement-renderer
     attributes:
       label: "Renderer 🎨"
+      description: "Select the renderer you are using. Your application is using Skia if you find `SkiaRenderer` in your `.csproj` project file."
+      multiple: true
       options:
         - label: "Skia"
         - label: "Native"
@@ -29,6 +31,7 @@ body:
     attributes:
       label: "For which platforms 📱💻🖥️"
       multiple: true
+      description: "Select the platforms for which your enhancement is relevant 🌍"
       options:
         - "All platforms 🌍"
         - "WebAssembly"

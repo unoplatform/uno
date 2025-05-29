@@ -34,6 +34,8 @@ body:
     id: docs-request-renderer
     attributes:
       label: "Renderer 🎨"
+      description: "Select the renderer you are using. Your application is using Skia if you find `SkiaRenderer` in your `.csproj` project file."
+      multiple: true
       options:
         - label: "Skia"
         - label: "Native"
@@ -42,6 +44,7 @@ body:
     id: docs-request-platforms
     attributes:
       label: "Affected platforms 📱💻🖥️"
+      description: "Select the platforms for which the requested documentation is relevant 🌍"
       multiple: true
       options:
         - "All platforms 🌍"
