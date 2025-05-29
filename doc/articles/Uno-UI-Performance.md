@@ -153,9 +153,9 @@ Here's what to look for:
 
 - On Desktop targets, it's possible to change the composition refresh rate using `FeatureConfiguration.CompositionTarget.FrameRate`. The default value is 60 (frames per second).
 - On all targets:
-   - It's possible to set `DebugSettings.EnableFrameRateCounter` in `App.OnLaunched` in order to view a top-left indicator. It indicates the current frames per second, as well as the time spent rendering a composition frame, in milliseconds.
-   - If the indicator does not change, this means that the UI is not refreshing.
-   - If it is, but nothing is changing visually, it could be that a XAML or Composition animation is still running, see the `ProgressRing` section in this document.
+  - It's possible to set `DebugSettings.EnableFrameRateCounter` in `App.OnLaunched` in order to view a top-left indicator. It indicates the current frames per second, as well as the time spent rendering a composition frame, in milliseconds.
+  - If the indicator does not change, this means that the UI is not refreshing.
+  - If it is, but nothing is changing visually, it could be that a XAML or Composition animation is still running, see the `ProgressRing` section in this document.
 
 ## Advanced performance Tracing
 
