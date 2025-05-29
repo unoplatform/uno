@@ -935,6 +935,11 @@ namespace Uno.UI
 			public static bool DisableThreadingCheck { get; set; }
 
 			/// <summary>
+			/// Defines how many <see cref="DependencyPropertyChangedEventArgs" /> are pooled.
+			/// </summary>
+			public static int DependencyPropertyChangedEventArgsPoolSize { get; set; } = 32;
+
+			/// <summary>
 			/// Enables checks that make sure that <see cref="DependencyObjectStore.GetValue" /> and
 			/// <see cref="DependencyObjectStore.SetValue" /> are only called on the owner of the property being
 			/// set/got.
