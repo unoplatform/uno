@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -355,3 +356,4 @@ partial class Given_PropertyPathListener
 
 	}
 }
+#endif
