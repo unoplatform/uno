@@ -21,8 +21,8 @@ body:
       label: "Renderer 🎨"
       description: "Select the renderer you are using. Your application is using Skia if you find `SkiaRenderer` in your `.csproj` project file."
       options:
-        - "Skia"
-        - "Native"
+        - label: "Skia"
+        - label: "Native"
 
   - type: dropdown
     id: samples-request-platforms

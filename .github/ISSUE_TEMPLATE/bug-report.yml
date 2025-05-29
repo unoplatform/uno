@@ -23,7 +23,7 @@ body:
       description: |
                     Please provide a **MINIMAL REPRO PROJECT** and the **STEPS TO REPRODUCE**
 
-                    📦 To create a minimal reproduction project:
+                    To create a minimal reproduction project: 📦 
 
                     - Create an Uno app through:
                     - `dotnet new install Uno.Templates` and `dotnet new unoapp`
@@ -33,7 +33,7 @@ body:
                     - Remove all the `obj/bin` folders and zip the folder.
                     - Attach the zip file to the issue
 
-                    🌐 If the issue is visible on WebAssembly and uses only XAML:
+                    If the issue is visible on WebAssembly and uses only XAML: 🌐
 
                     - Visit https://playground.platform.uno
                     - Add your code and data context as needed
