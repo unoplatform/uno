@@ -56,7 +56,6 @@ function Assert-ExitCodeIsZero()
     if ($LASTEXITCODE -ne 0)
     {
         Set-PSDebug -Off
-        popd
 
         throw "Exit code must be zero."
     }
@@ -80,6 +79,7 @@ foreach ($repoPath in $external_docs.Keys)
     if (-Not (Test-Path $fullPath))
     {        
         Write-Host "Cloning $repoPath ($repoUrl@$repoRef) into $targetRoot..." -ForegroundColor Black -BackgroundColor Blue
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $fullPath) | Out-Null
         git clone --filter=blob:none --no-tags $repoUrl $fullPath
         Assert-ExitCodeIsZero
     }
@@ -89,22 +89,24 @@ foreach ($repoPath in $external_docs.Keys)
     }
 
     pushd $fullPath
-
-    Write-Host "Checking out $repoUrl@$repoRef..." -ForegroundColor Black -BackgroundColor Blue
-    git fetch --filter=blob:none origin $repoRef # fetch the latest commit for the specified ref
-    Assert-ExitCodeIsZero
-    git checkout --detach FETCH_HEAD # detach the HEAD to avoid issues with git status
-    Assert-ExitCodeIsZero
-
-    # if not detached
-    if ((git symbolic-ref -q HEAD) -ne $null)
-    {
-        echo "Resetting to $repoUrl@$repoRef..."
-        git reset --hard origin/$repoRef
+    try {
+        Write-Host "Checking out $repoUrl@$repoRef..." -ForegroundColor Black -BackgroundColor Blue
+        git fetch --filter=blob:none origin $repoRef # fetch the latest commit for the specified ref
         Assert-ExitCodeIsZero
-    }
+        git checkout --detach FETCH_HEAD # detach the HEAD to avoid issues with git status
+        Assert-ExitCodeIsZero
 
-    popd
+        # if not detached
+        if ((git symbolic-ref -q HEAD) -ne $null)
+        {
+            echo "Resetting to $repoUrl@$repoRef..."
+            git reset --hard origin/$repoRef
+            Assert-ExitCodeIsZero
+        }
+    }
+    finally {
+        popd
+    }
 }
 
 git config advice.detachedHead $detachedHeadConfig
