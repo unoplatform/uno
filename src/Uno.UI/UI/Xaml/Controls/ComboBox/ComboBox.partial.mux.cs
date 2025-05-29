@@ -646,6 +646,11 @@ partial class ComboBox
 		{
 			OnIsSelectionActiveChanged();
 		}
+		else if (args.Property == DisplayMemberPathProperty)
+		{
+			m_spPropertyPathListener?.Dispose();
+			m_spPropertyPathListener = null;
+		}
 		else if (args.Property == TextProperty)
 		{
 			if (m_tpEditableTextPart is not null && IsEditable)

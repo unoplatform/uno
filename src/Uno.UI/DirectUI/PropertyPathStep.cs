@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Uno.Disposables;
@@ -78,10 +79,10 @@ partial class PropertyPathStep // src\dxaml\xcp\dxaml\lib\PropertyPathStep.cpp
 		DisconnectCurrentItem();
 	}
 
-	~PropertyPathStep()
-	{
-		SafeRemoveCurrentChangedEventHandler();
-	}
+	//~PropertyPathStep()
+	//{
+	//	SafeRemoveCurrentChangedEventHandler();
+	//}
 
 	protected virtual void AddCurrentChangedEventHandler()
 	{
@@ -118,6 +119,13 @@ partial class PropertyPathStep // src\dxaml\xcp\dxaml\lib\PropertyPathStep.cpp
 		{
 			((PropertyPathListener)spListener).PropertyPathStepChanged(this);
 		}
+	}
+}
+partial class PropertyPathStep : IDisposable
+{
+	public void Dispose()
+	{
+		Disconnect();
 	}
 }
 
@@ -666,10 +674,10 @@ internal partial class IntIndexerPathStep : // src\dxaml\xcp\dxaml\lib\IntIndexe
 }
 partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.cpp
 {
-	~IntIndexerPathStep()
-	{
-		SafeRemoveVectorChangedHandler();
-	}
+	//~IntIndexerPathStep()
+	//{
+	//	SafeRemoveVectorChangedHandler();
+	//}
 
 	protected override void DisconnectCurrentItem()
 	{
@@ -1019,6 +1027,7 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 #endif
 	}
 
+	[SuppressMessage("Style", "IDE0051:Remove unused private members", Justification = "...")]
 	private void SafeRemoveVectorChangedHandler()
 	{
 		if (m_epVectorChangedEventHandler is { })

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Uno.Disposables;
@@ -105,14 +106,14 @@ partial class PropertyInfoPropertyAccess // src\dxaml\xcp\dxaml\lib\PropertyInfo
 		m_pSourceType = pSourceType;
 	}
 
-	~PropertyInfoPropertyAccess()
-	{
-		var spSource = m_tpSource;
-		if (spSource is { })
-		{
-			DisconnectPropertyChangedHandler(spSource);
-		}
-	}
+	//~PropertyInfoPropertyAccess()
+	//{
+	//	var spSource = m_tpSource;
+	//	if (spSource is { })
+	//	{
+	//		DisconnectPropertyChangedHandler(spSource);
+	//	}
+	//}
 
 	public override object GetValue()
 	{
@@ -436,10 +437,10 @@ partial class MapPropertyAccess // src\dxaml\xcp\dxaml\lib\MapPropertyAccess.cpp
 		m_tpSource = pSource;
 	}
 
-	~MapPropertyAccess()
-	{
-		SafeRemoveKeyChangedEventHandler();
-	}
+	//~MapPropertyAccess()
+	//{
+	//	SafeRemoveKeyChangedEventHandler();
+	//}
 
 	public static PropertyAccess CreateInstance(
 		IPropertyAccessHost pOwner,
@@ -559,6 +560,7 @@ partial class MapPropertyAccess // src\dxaml\xcp\dxaml\lib\MapPropertyAccess.cpp
 		}
 	}
 
+	[SuppressMessage("Style", "IDE0051:Remove unused private members", Justification = "...")]
 	private void SafeRemoveKeyChangedEventHandler()
 	{
 		if (m_epMapChangedEventHandler is { })
@@ -669,16 +671,16 @@ partial class DependencyObjectPropertyAccess // src\dxaml\xcp\dxaml\lib\Dependen
 		m_pSourceType = null;
 	}
 
-	~DependencyObjectPropertyAccess()
-	{
-		try
-		{
-			SafeRemovePropertyChangedHandler();
-		}
-		catch (Exception)
-		{
-		}
-	}
+	//~DependencyObjectPropertyAccess()
+	//{
+	//	try
+	//	{
+	//		SafeRemovePropertyChangedHandler();
+	//	}
+	//	catch (Exception)
+	//	{
+	//	}
+	//}
 
 	protected void Initialize(
 		IPropertyAccessHost pOwner,
@@ -785,6 +787,7 @@ partial class DependencyObjectPropertyAccess // src\dxaml\xcp\dxaml\lib\Dependen
 		}
 	}
 
+	[SuppressMessage("Style", "IDE0051:Remove unused private members", Justification = "...")]
 	private void SafeRemovePropertyChangedHandler()
 	{
 		if (m_epSyncHandler is { })
@@ -1007,14 +1010,14 @@ partial class PropertyProviderPropertyAccess // src\dxaml\xcp\dxaml\lib\Property
 		m_pPropertyType = pPropertyType;
 	}
 
-	~PropertyProviderPropertyAccess()
-	{
-		var spSource = m_tpSource;
-		if (spSource is { })
-		{
-			DisconnectPropertyChangedHandler(spSource);
-		}
-	}
+	//~PropertyProviderPropertyAccess()
+	//{
+	//	var spSource = m_tpSource;
+	//	if (spSource is { })
+	//	{
+	//		DisconnectPropertyChangedHandler(spSource);
+	//	}
+	//}
 
 	public static PropertyAccess CreateInstance(
 		IPropertyAccessHost pOwner,
@@ -1453,10 +1456,10 @@ partial class IndexerPropertyAccess // src\dxaml\xcp\dxaml\lib\IndexerPropertyAc
 		m_pPropertyType = pPropertyType;
 	}
 
-	~IndexerPropertyAccess()
-	{
-		SafeRemovePropertyChangedHandler();
-	}
+	//~IndexerPropertyAccess()
+	//{
+	//	SafeRemovePropertyChangedHandler();
+	//}
 
 	public override object GetValue()
 	{
@@ -1526,6 +1529,7 @@ partial class IndexerPropertyAccess // src\dxaml\xcp\dxaml\lib\IndexerPropertyAc
 		}
 	}
 
+	[SuppressMessage("Style", "IDE0051:Remove unused private members", Justification = "...")]
 	private void SafeRemovePropertyChangedHandler()
 	{
 		if (m_epPropertyChangedHandler is { })
