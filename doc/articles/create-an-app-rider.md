@@ -126,6 +126,12 @@ Set the Android debug profile in the debugger toolbar, then click the green arro
 
 ### [**WebAssembly**](#tab/wasm)
 
+> [!IMPORTANT]
+> To run WebAssembly with Rider you will need to install one of the following browsers:
+>
+>   * **Google Chrome**
+>   * **Microsoft Edge (Chromium-based)**
+
 Select the **MyUnoApp (WebAssembly)** debug profile then click the green arrow or the debug button.
 
 ![A view of the Rider taskbar for WebAssembly](Assets/quick-start/run-wasm-rider.png)
