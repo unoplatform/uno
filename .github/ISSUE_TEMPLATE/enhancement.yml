@@ -1,46 +1,46 @@
-name: Enhancement Request
-description: Suggest an enhancement to Uno Platform
+name: "🚀 Enhancement Request"
+description: "Suggest an enhancement to Uno Platform ✨"
 labels: [kind/enhancement, triage/untriaged, difficulty/tbd]
 body:
   - type: textarea
     id: enhancement-description
     attributes:
-      label: What would you like to be added
-      description: Describe in detail what is the feature or functionality you are missing
+      label: "What would you like to be added? 💡"
+      description: "Describe in detail what is the feature or functionality you are missing 📝"
 
   - type: textarea
     id: enhancement-use-case
     attributes:
-      label: Why is this needed
-      description: Describe the use case of this enhancement
+      label: "Why is this needed? 🤔"
+      description: "Describe the use case of this enhancement 📚"
 
   - type: checkboxes
     id: enhancement-renderer
     attributes:
-      label: Renderer
+      label: "Renderer 🎨"
       options:
-        - label: Skia
-        - label: Native
+        - label: "Skia"
+        - label: "Native"
 
   - type: dropdown
     id: enhancement-platforms
     attributes:
-      label: For which platforms
+      label: "For which platforms 📱💻🖥️"
       multiple: true
-      description: Select the platforms for which your request is relevant
       options:
-        - WebAssembly
-        - Android
-        - iOS
-        - Desktop (Windows)
-        - Desktop (macOS)
-        - Desktop (X11)
-        - Desktop (Linux Framebuffer)
-        - Windows App SDK
-        - Build tasks
+        - "All platforms 🌍"
+        - "WebAssembly"
+        - "Android"
+        - "iOS"
+        - "Desktop (Windows)"
+        - "Desktop (macOS)"
+        - "Desktop (X11)"
+        - "Desktop (Linux Framebuffer)"
+        - "Windows App SDK"
+        - "Build tasks"
 
   - type: textarea
     id: enhancement-additional-info
     attributes:
-      label: Anything else we need to know?
-      description: Notes for contributors, further explanations, or any other information
+      label: "Anything else we need to know? 💬"
+      description: "Notes for contributors, further explanations, or any other information you want to share 💭"
