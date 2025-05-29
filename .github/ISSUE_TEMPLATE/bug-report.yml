@@ -55,7 +55,6 @@ body:
     attributes:
       label: "Renderer 🎨"
       description: "Select the renderer you are using. Your application is using Skia if you find `SkiaRenderer` in your `.csproj` project file."
-      multiple: true
       options:
         - label: "Skia"
         - label: "Native"
