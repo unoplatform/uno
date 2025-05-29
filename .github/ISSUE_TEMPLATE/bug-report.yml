@@ -40,33 +40,11 @@ body:
     attributes:
       label: Workaround
       description: Please provide steps to workaround this problem if possible
-  - type: dropdown
-    id: works-uwp-winui
-    attributes:
-      label: Works on UWP/WinUI
-      description: |
-                    To make sure this is an Uno Platform specific issue, try running your sample application on Windows using the UWP or WinUI project. If it does not work on Windows either, it may be a Windows issue or it may be a documentation issue.
-                    In this case, [open a discussion](https://github.com/unoplatform/uno/discussions) instead.
-      options:
-        - 'Yes'
-        - 'No'
-
-  - type: dropdown
-    id: environment
-    attributes:
-      label: Environment
-      description: NuGet package(s)
-      multiple: true
-      options:
-        - Uno.WinUI / Uno.WinUI.WebAssembly / Uno.WinUI.Skia
-        - Uno.SourceGenerationTasks
-        - Uno.WinUI.DevServer
-        - Other
 
   - type: textarea
     id: nuget-versions
     attributes:
-      label: NuGet package version(s)
+      label: Uno.Sdk version
 
   - type: checkboxes
     id: renderer
@@ -81,7 +59,8 @@ body:
     attributes:
       label: Affected platforms
       multiple: true
-      options:        
+      options:
+        - All platforms
         - WebAssembly
         - Android
         - iOS
@@ -92,28 +71,11 @@ body:
         - Windows App SDK
         - Build tasks
 
-  - type: dropdown
+  - type: input
     id: ide
     attributes:
-      label: IDE
-      multiple: true
-      options:
-        - Visual Studio 2022
-        - Visual Studio Code
-        - Rider Windows
-        - Rider macOS
-        - Rider Linux
-
-  - type: input
-    id: ide-version
-    attributes:
-      label: IDE version
-
-  - type: textarea
-    id: plugins
-    attributes:
-      label: Relevant plugins
-      description: For example, ReSharper version X
+      label: IDE and version
+      description: Please provide the name and version of the IDE you are using, e.g. `Visual Studio 2022 17.14.2`.
 
   - type: textarea
     id: additional-info
