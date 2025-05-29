@@ -66,11 +66,6 @@ namespace Microsoft.UI.Xaml.Controls
 			FocusTextView();
 		}
 
-		partial void OnForegroundColorChangedPartial(Brush newValue)
-		{
-			_textBoxView?.SetForeground(newValue);
-		}
-
 		partial void UpdateFontPartial()
 		{
 			if (_textBoxView == null)
