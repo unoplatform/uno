@@ -217,14 +217,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return Disposable.Create(() => _textBoxView.ShowSoftInputOnFocus = before);
 		}
 
-		partial void OnForegroundColorChangedPartial(Brush newValue)
-		{
-			if (_textBoxView != null)
-			{
-				_textBoxView.Foreground = newValue;
-			}
-		}
-
 		partial void OnInputScopeChangedPartial(InputScope newValue)
 		{
 			this.CoerceValue(ImeOptionsProperty);
