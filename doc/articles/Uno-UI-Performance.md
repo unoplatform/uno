@@ -149,7 +149,7 @@ Here's what to look for:
 
 - Use [String Resource Trimming](xref:Uno.Features.StringResourceTrimming) to improve package size and startup time
 
-## Skia Targets Specfics
+## Skia Targets Specifics
 
 - On Desktop targets, it's possible to change the composition refresh rate using `FeatureConfiguration.CompositionTarget.FrameRate`. The default value is 60 (frames per second).
 - On all targets:
