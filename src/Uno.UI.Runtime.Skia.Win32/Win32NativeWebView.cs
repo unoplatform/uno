@@ -1,5 +1,5 @@
-extern alias EdgeWebView;
-using NativeWebView = EdgeWebView::Microsoft.Web.WebView2.Core;
+extern alias mswebview2;
+using NativeWebView = mswebview2::Microsoft.Web.WebView2.Core;
 
 using System;
 using System.Collections.Generic;
