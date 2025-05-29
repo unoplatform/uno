@@ -218,6 +218,26 @@ internal class ProfilesObserver : IDisposable
 		_dte.Events.CommandEvents.AfterExecute += _afterExecute;
 	}
 
+	private void UnObserveSolutionEvents()
+	{
+		if (_projectAdded is not null)
+		{
+			_dte.Events.SolutionEvents.ProjectAdded -= _projectAdded;
+		}
+		if (_projectRemoved is not null)
+		{
+			_dte.Events.SolutionEvents.ProjectRemoved -= _projectRemoved;
+		}
+		if (_projectRenamed is not null)
+		{
+			_dte.Events.SolutionEvents.ProjectRenamed -= _projectRenamed;
+		}
+		if (_afterExecute is not null)
+		{
+			_dte.Events.CommandEvents.AfterExecute -= _afterExecute;
+		}
+	}
+
 	private async Task OnUnconfiguredProject_ProjectUnloadingAsync(object? sender, EventArgs args)
 	{
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -412,6 +432,7 @@ internal class ProfilesObserver : IDisposable
 
 	public void Dispose()
 	{
+		UnObserveSolutionEvents();
 		_projectRuleSubscriptionLink?.Dispose();
 		_isDisposed = true;
 	}
