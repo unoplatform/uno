@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml
 					var url = (NSUrl)urlObject;
 					if (TryParseUri(url, out var uri))
 					{
-						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+						InvokeOnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
 						handled = true;
 					}
 				}
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml
 				{
 					_preventSecondaryActivationHandling = true;
 					var shortcutItem = (UIApplicationShortcutItem)shortcutItemObject;
-					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
+					InvokeOnLaunched(new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
 					handled = true;
 				}
 #endif
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml
 					_preventSecondaryActivationHandling = true;
 					if (TryParseUri(userActivity.WebPageUrl, out var uri))
 					{
-						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+						InvokeOnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
 						handled = true;
 					}
 				}
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml
 			// default to normal launch
 			if (!handled)
 			{
-				OnLaunched(new LaunchActivatedEventArgs());
+				InvokeOnLaunched(null);
 			}
 			return true;
 		}
@@ -109,7 +109,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (TryParseUri(url, out var uri))
 				{
-					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+					InvokeOnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
 				}
 			}
 			_preventSecondaryActivationHandling = false;
@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (TryParseUri(userActivity.WebPageUrl, out var uri))
 				{
-					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+					InvokeOnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
 					return true;
 				}
 			}
