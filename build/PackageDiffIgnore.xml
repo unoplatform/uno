@@ -2070,8 +2070,6 @@
 		</Methods>
 	</IgnoreSet>
 
-<<<<<<< HEAD
-=======
 	<IgnoreSet baseVersion="6.0">
 		<Types>
 			<Member fullName="Microsoft.UI.Xaml.Controls.ProgressBarAutomationPeer" reason="Does not exist in WinUI" />
@@ -2101,7 +2099,7 @@
 			<!-- END AppBarButton-->
 		</Methods>
 	</IgnoreSet>
->>>>>>> 3325616472 (chore: Diffignore)
+
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
