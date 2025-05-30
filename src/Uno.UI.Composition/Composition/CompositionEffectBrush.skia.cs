@@ -26,11 +26,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 	internal bool HasBackdropBrushInput
 	{
 		get => _hasBackdropBrushInput;
-		private set
-		{
-			Console.WriteLine($"Ramez {this.GetHashCode()} setting HasBackdropBrushInput to {value} from {_hasBackdropBrushInput}");
-			SetProperty(ref _hasBackdropBrushInput, value);
-		}
+		private set => SetProperty(ref _hasBackdropBrushInput, value);
 	}
 
 	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
