@@ -154,6 +154,29 @@ namespace Microsoft.UI.Xaml.Controls
 				m_windowSizeChangedEventHandler.Disposable = Disposable.Create(() => XamlRoot.Changed -= OnXamlRootChanged);
 			}
 
+#if HAS_UNO
+			// Re-attach the handlers that OnApplyTemplate wired up.
+			if (GetTemplateChild("ContentRoot") is FrameworkElement contentRoot)
+			{
+				contentRoot.SizeChanged += OnContentRootSizeChanged;
+				m_contentRootSizeChangedEventHandler.Disposable =
+					Disposable.Create(() => contentRoot.SizeChanged -= OnContentRootSizeChanged);
+			}
+
+			if (GetTemplateChild("ExpandButton") is ButtonBase expandBtn)
+			{
+				expandBtn.Click += OnExpandButtonClick;
+				m_expandButtonClickEventHandler.Disposable =
+					Disposable.Create(() => expandBtn.Click -= OnExpandButtonClick);
+			}
+			if (GetTemplateChild("MoreButton") is ButtonBase moreButton)
+			{
+				moreButton.Click += OnExpandButtonClick;
+				m_expandButtonClickEventHandler.Disposable =
+					Disposable.Create(() => moreButton.Click -= OnExpandButtonClick);
+			}
+#endif
+
 			//UNO TODO
 
 			//if (m_Mode != AppBarMode_Inline)
