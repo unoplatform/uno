@@ -474,6 +474,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Height.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_OuterSelection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5920,6 +5924,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ExpanderTests\Expander_ScrollView.xaml.cs">
       <DependentUpon>Expander_ScrollView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Height.xaml.cs">
+      <DependentUpon>WebView2_Height.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_OuterSelection.xaml.cs">
       <DependentUpon>WebView2_OuterSelection.xaml</DependentUpon>
