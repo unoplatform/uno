@@ -343,6 +343,12 @@ namespace Microsoft.UI.Xaml.Controls
 				SetOverflowStyleAndInputModeOnSecondaryCommand(i, true);
 			}
 
+			if (GetTemplateChild("MoreButton") is Button moreButton)
+			{
+				moreButton.Click -= MoreButtonClick;
+				moreButton.Click += MoreButtonClick;
+			}
+
 			//Enabling Keytips and AccessKeys in CommandBar secondary commands
 			if (m_tpExpandButton is { } && m_tpSecondaryItemsControlPart is { })
 			{
@@ -359,6 +365,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateVisualState();
 		}
+		private void MoreButtonClick(object sender, RoutedEventArgs e) => IsOpen = true;
 
 		#region Uno Only
 
