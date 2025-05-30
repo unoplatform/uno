@@ -113,7 +113,7 @@ namespace Microsoft.UI.Composition
 					SKShader imageShader;
 					var sigmaX = scs.Image.Width / bounds.Width;
 					var sigmaY = scs.Image.Height / bounds.Height;
-					if (scs.Image.Width > bounds.Width || scs.Image.Height > bounds.Height)
+					if (scs.Image.Width < bounds.Width || scs.Image.Height < bounds.Height)
 					{
 						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
 					}
