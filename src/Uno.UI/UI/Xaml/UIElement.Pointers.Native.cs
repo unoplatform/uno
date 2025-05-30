@@ -46,7 +46,7 @@ partial class UIElement
 		if (IsGestureRecognizerCreated)
 		{
 			var gestures = GestureRecognizer;
-			gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
+			gestures.ProcessMoveEvents(args.GetIntermediatePoints(this));
 			if (gestures.IsDragging)
 			{
 				XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
