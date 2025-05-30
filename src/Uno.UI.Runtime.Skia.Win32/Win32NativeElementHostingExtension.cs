@@ -335,7 +335,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			hwnd = PInvoke.FindWindow(null, windowTitle);
 			return hwnd != HWND.Null;
-		}, TimeSpan.FromSeconds(5));
+		}, TimeSpan.FromSeconds(50));
 
 
 		if (!success)
