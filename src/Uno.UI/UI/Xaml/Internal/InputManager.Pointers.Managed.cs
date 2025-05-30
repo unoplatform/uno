@@ -244,7 +244,7 @@ internal partial class InputManager
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			if (IsRedirectedToManipulations(args.CurrentPoint.Pointer))
+			if (BeforeEnterTryRedirectToManipulation(args))
 			{
 				TraceIgnoredForManipulations(args);
 				return;
@@ -454,7 +454,7 @@ internal partial class InputManager
 			AfterCancelForManipulations(args);
 		}
 
-		private void CancelPointer(PointerEventArgs args, bool isInjected = false, bool isDirectManipulation = false)
+		internal void CancelPointer(PointerEventArgs args, bool isInjected = false, bool isDirectManipulation = false, bool isDirectManipulationResume = false)
 		{
 			if (!HitTestOrRoot(args, _isOver, out var originalSource, out var overStaleBranch))
 			{
@@ -475,12 +475,15 @@ internal partial class InputManager
 			// (The move that trigger the direct manipulation to kick-in might include element boundaries traversal)
 			result += RaiseLeave(routedArgs, overStaleBranch, ref originalSource);
 
-			// Then we raise the cancelled event on element directly under the pointer.
-			// (This will also raise the leave on the "main" branch)
-			result += RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
+			if (!isDirectManipulationResume) // Before resuming a direct manipulation we might have let dispatch only pointer enter events
+			{
+				// Then we raise the cancelled event on element directly under the pointer.
+				// (This will also raise the leave on the "main" branch)
+				result += RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
 
-			// Finally we also make sure to clean the pressed state if any branch was not detected.
-			result += CleanPressedState(routedArgs);
+				// Finally we also make sure to clean the pressed state if any branch was not detected.
+				result += CleanPressedState(routedArgs);
+			}
 
 			// Note: No ReleaseCaptures(routedArgs);, the cancel automatically raise it
 			SetSourceCursor(originalSource);
@@ -911,7 +914,6 @@ internal partial class InputManager
 		private static void Trace(string text)
 		{
 			_log.Trace(text);
-			Console.WriteLine(text);
 		}
 
 		private void TraceIgnoredAsNoTree(Windows.UI.Core.PointerEventArgs args, [CallerMemberName] string caller = "")
