@@ -40,6 +40,11 @@
     <Content Include="TestStaticContent.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- nuget package reference validation -->
+    <PackageReference Include="Uno56NugetLibrary" />
+  </ItemGroup>
+
   <Target Name="_UnoValidateSelfAssets" 
           BeforeTargets="AfterBuild" 
           Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041'">
