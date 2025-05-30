@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -26,13 +27,13 @@ public class Given_RadioMenuFlyoutItem
 
 		var button = new Microsoft.UI.Xaml.Controls.Button
 		{
-			Content = "Open Menu",
-			Flyout = menu
+			Content = "Open Menu"
 		};
+		FlyoutBase.SetAttachedFlyout(button, menu);
 		TestServices.WindowHelper.WindowContent = button;
 		await TestServices.WindowHelper.WaitForLoaded(button);
-		ButtonAutomationPeer automationPeer = (ButtonAutomationPeer)button.GetAutomationPeer();
-		automationPeer.Invoke();
+		FlyoutBase.ShowAttachedFlyout(button);
+		await TestServices.WindowHelper.WaitForLoaded(item1);
 		item1.IsChecked = true;
 		Assert.IsTrue(item1.IsChecked);
 		Assert.IsFalse(item2.IsChecked);
