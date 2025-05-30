@@ -132,21 +132,20 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 		{
-			var opaqueInsets = Thickness.Empty;
-			if (StatusBar.GetForCurrentView().BackgroundColor is { } color)
-			{
-				opaqueInsets = windowInsets?.GetInsets(WindowInsetsCompat.Type.StatusBars()).ToThickness() ?? default;
-
-			}
 			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+
+			// adjust top inset only if we already handled it manually
+			if (StatusBar.GetForCurrentView().BackgroundColor is { })
+			{
+				insets.Top = 0;
+			}
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Insets: {insets}");
 			}
 
-			// Edge-to-edge is default on Android 15 and above
-			windowBounds = new Rect(default, GetWindowSize().Subtract(opaqueInsets));
+			windowBounds = new Rect(default, GetWindowSize());
 			visibleBounds = windowBounds.DeflateBy(insets);
 		}
 		else
