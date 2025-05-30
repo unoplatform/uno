@@ -1,6 +1,7 @@
 param(
-  [Parameter(ValueFromPipeLineByPropertyName = $true)]
-  $branches = $null
+    [Parameter(ValueFromPipeLineByPropertyName = $true)]$branches = $null,
+    [Parameter(ValueFromPipeLineByPropertyName = $true)][string]$contributor_git_url = $null,
+    [Parameter(ValueFromPipeLineByPropertyName = $true)][string[]]$forks_to_import = $null
 )
 
 Set-PSDebug -Trace 1
@@ -23,10 +24,15 @@ $external_docs = @{
 
 $uno_git_url = "https://github.com/unoplatform/"
 
-if($branches -ne $null)
-{
-    foreach ($repo in $branches.keys)
-    {
+if ($contributor_git_url -ne $null -and -not ($contributor_git_url -is [string])) {
+    throw "The parameter 'contributor_git_urls' must be a string or null."
+}
+if ($forks_to_import -ne $null -and -not ($forks_to_import -is [string[]])) {
+    throw "The parameter 'forks_to_import' must be a array of string or null."
+}
+
+if ($branches -ne $null) {
+    foreach ($repo in $branches.keys) {
         $branch = $branches[$repo]
 
         $external_docs[$repo] = $branch
@@ -38,10 +44,8 @@ $external_docs
 
 $ErrorActionPreference = 'Stop'
 
-function Assert-ExitCodeIsZero()
-{
-    if ($LASTEXITCODE -ne 0)
-    {
+function Assert-ExitCodeIsZero() {
+    if ($LASTEXITCODE -ne 0) {
         popd
         popd
 
@@ -51,8 +55,7 @@ function Assert-ExitCodeIsZero()
     }
 }
 
-if (-Not (Test-Path articles\external))
-{
+if (-Not (Test-Path articles\external)) {
     mkdir articles\external -ErrorAction Continue
 }
 
@@ -65,13 +68,17 @@ $detachedHeadConfig = git config --get advice.detachedHead
 git config advice.detachedHead false
 
 # Heads - Release
-foreach ($repoPath in $external_docs.keys)
-{
-    $repoUrl = "$uno_git_url$repoPath"
+foreach ($repoPath in $external_docs.keys) {
+    if ($forks_to_import -ne $null -and $forks_to_import.Contains("$repoPath")) {
+        $repoUrl = "$contributor_git_url$repoPath"
+    }
+    else {
+        $repoUrl = "$uno_git_url$repoPath"
+    }
+    Write-Output "Importing $repoPath from $repoUrl..."
     $repoBranch = $external_docs[$repoPath]
-        
-    if (-Not (Test-Path $repoPath))
-    {        
+
+    if (-Not (Test-Path $repoPath)) {
         echo "Cloning $repoPath ($repoUrl@$repoBranch)..."
         git clone $repoUrl $repoPath
         Assert-ExitCodeIsZero
@@ -80,15 +87,14 @@ foreach ($repoPath in $external_docs.keys)
     pushd $repoPath
 
     echo "Checking out $repoUrl@$repoBranch..."
-    git fetch
+    git fetch # TODO: check if the remote to be fetched should get specified for the case its done for contributor execution of this script
     git checkout --force $repoBranch
     Assert-ExitCodeIsZero
 
     # if not detached
-    if ((git symbolic-ref -q HEAD) -ne $null)
-    {
+    if ((git symbolic-ref -q HEAD) -ne $null) {
         echo "Resetting to $repoUrl@$repoBranch..."
-        git reset --hard origin/$repoBranch
+        git reset --hard origin/$repoBranch # TODO: This could potentially fail if a contributor followed the guide and named his remote uno-origin!
         Assert-ExitCodeIsZero
     }
 
