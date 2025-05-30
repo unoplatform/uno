@@ -18,6 +18,8 @@ namespace Windows.UI.ViewManagement
 {
 	public sealed partial class StatusBar
 	{
+		public bool IgnoreTopInset { get; set; }
+
 		private StatusBarForegroundType? _foregroundType;
 		private Color? _backgroundColor;
 		private bool? _isShown;
@@ -139,7 +141,6 @@ namespace Windows.UI.ViewManagement
 
 				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
 				insetsController.Show(WindowInsetsCompat.Type.StatusBars());
-				ViewCompat.RequestApplyInsets(decorView);
 			}
 			else
 			{
@@ -185,6 +186,8 @@ namespace Windows.UI.ViewManagement
 					// A bit confusingly, "appearance light" refers to light theme, so dark foreground is used!
 					insetsController.AppearanceLightStatusBars = _foregroundType == StatusBarForegroundType.Dark;
 				}
+
+				ViewCompat.RequestApplyInsets(decorView);
 			}
 			else
 			{
@@ -250,6 +253,8 @@ namespace Windows.UI.ViewManagement
 
 				// Adjust padding to avoid overlap
 				view.SetPadding(0, statusBarInsets.Top, 0, 0);
+				_statusBar.IgnoreTopInset = true;
+
 				return insets;
 			}
 		}

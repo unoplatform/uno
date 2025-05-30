@@ -133,9 +133,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 		{
 			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+			var statusBar = StatusBar.GetForCurrentView();
 
 			// adjust top inset only if we already handled it manually
-			if (StatusBar.GetForCurrentView().BackgroundColor is { })
+			if (statusBar.IgnoreTopInset)
 			{
 				insets.Top = 0;
 			}
@@ -147,6 +148,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 			windowBounds = new Rect(default, GetWindowSize());
 			visibleBounds = windowBounds.DeflateBy(insets);
+
+			statusBar.IgnoreTopInset = false;
 		}
 		else
 		{
