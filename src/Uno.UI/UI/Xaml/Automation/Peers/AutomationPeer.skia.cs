@@ -10,7 +10,7 @@ partial class AutomationPeer
 
 	internal static IAutomationPeerListener? AutomationPeerListener
 	{
-		get => _automationPeerListener;
+		get => TestAutomationPeerListener ?? _automationPeerListener;
 		set
 		{
 			if (_automationPeerListener is not null)
@@ -21,6 +21,8 @@ partial class AutomationPeer
 			_automationPeerListener = value;
 		}
 	}
+
+	internal static IAutomationPeerListener? TestAutomationPeerListener { get; set; }
 
 	public void RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)
 	{
