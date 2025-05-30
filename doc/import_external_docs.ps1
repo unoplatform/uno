@@ -1,6 +1,7 @@
 param(
-  [Parameter(ValueFromPipelineByPropertyName = $true)]
-  $branches = $null
+    [Parameter(ValueFromPipeLineByPropertyName = $true)]$branches = $null,
+    [Parameter(ValueFromPipeLineByPropertyName = $true)][string]$contributor_git_url = $null,
+    [Parameter(ValueFromPipeLineByPropertyName = $true)][string[]]$forks_to_import = $null
 )
 
 Set-PSDebug -Trace 1
@@ -29,12 +30,22 @@ $uno_git_url = "https://github.com/unoplatform/"
 # --- END OF CONFIGURATION --------------------------------------------------
 
 # If branches are passed, use them to override the default ones (ref, but not dest)
-if ($branches) {
+
+if ($contributor_git_url -ne $null -and -not ($contributor_git_url -is [string])) {
+    throw "The parameter 'contributor_git_urls' must be a string or null."
+}
+if ($forks_to_import -ne $null -and -not ($forks_to_import -is [string[]])) {
+    throw "The parameter 'forks_to_import' must be a array of string or null."
+}
+
+# If branches are passed, use them to override the default ones (ref, but not dest)
+if ($branches -ne $null) {
     foreach ($repo in $branches.Keys) {
         $branch = $branches[$repo]
         if ($external_docs[$repo]) {
             $external_docs[$repo].ref = $branch
-        } else {
+        }
+        else {
             $external_docs[$repo] = @{ ref = $branch }     # default dest = external
         }
     }
@@ -46,15 +57,15 @@ $external_docs
 $ErrorActionPreference = 'Stop'
 
 function Get-TargetRoot([string]$repo) {
-    $cfg  = $external_docs[$repo]
-    $dest = if ($cfg.ContainsKey('dest') -and $cfg.dest) { $cfg.dest } else { Join-Path 'external' $repo }
+    $cfg = $external_docs[$repo]
+    $dest = if ($cfg.ContainsKey('dest') -and $cfg.dest) { $cfg.dest } else {
+        Join-Path 'external' $repo 
+    }
     return Join-Path 'articles' $dest
 }
 
-function Assert-ExitCodeIsZero()
-{
-    if ($LASTEXITCODE -ne 0)
-    {
+function Assert-ExitCodeIsZero() {
+    if ($LASTEXITCODE -ne 0) {
         Set-PSDebug -Off
 
         throw "Exit code must be zero."
@@ -68,27 +79,33 @@ $detachedHeadConfig = git config --get advice.detachedHead
 git config advice.detachedHead false
 
 # Heads - Release
-foreach ($repoPath in $external_docs.Keys)
-{
+foreach ($repoPath in $external_docs.Keys) {
     $repoCfg = $external_docs[$repoPath]
     $repoRef = $repoCfg.ref
     $targetRoot = Get-TargetRoot $repoPath
-    $fullPath   = $targetRoot
-    $repoUrl = "$uno_git_url$repoPath"
-        
-    if (-Not (Test-Path $fullPath))
-    {        
+    $fullPath = $targetRoot
+
+    if ($forks_to_import -ne $null -and $forks_to_import.Contains("$repoPath")) {
+        $repoUrl = "$contributor_git_url$repoPath"
+    }
+    else {
+        $repoUrl = "$uno_git_url$repoPath"
+    }
+
+    Write-Output "Importing $repoPath from $repoUrl..."
+
+    if (-Not (Test-Path $fullPath)) {        
         Write-Host "Cloning $repoPath ($repoUrl@$repoRef) into $targetRoot..." -ForegroundColor Black -BackgroundColor Blue
         New-Item -ItemType Directory -Force -Path (Split-Path -Parent $fullPath) | Out-Null
         git clone --filter=blob:none --no-tags $repoUrl $fullPath
         Assert-ExitCodeIsZero
     }
-    else
-    {
+    else {
         Write-Host "Skipping clone of $repoPath ($repoUrl@$repoRef) into $targetRoot (already exists)."-ForegroundColor Black -BackgroundColor DarkYellow
     }
-
     pushd $fullPath
+
+
     try {
         Write-Host "Checking out $repoUrl@$repoRef..." -ForegroundColor Black -BackgroundColor Blue
         git fetch --filter=blob:none origin $repoRef # fetch the latest commit for the specified ref
@@ -97,8 +114,7 @@ foreach ($repoPath in $external_docs.Keys)
         Assert-ExitCodeIsZero
 
         # if not detached
-        if ((git symbolic-ref -q HEAD) -ne $null)
-        {
+        if ((git symbolic-ref -q HEAD) -ne $null) {
             echo "Resetting to $repoUrl@$repoRef..."
             git reset --hard origin/$repoRef
             Assert-ExitCodeIsZero
