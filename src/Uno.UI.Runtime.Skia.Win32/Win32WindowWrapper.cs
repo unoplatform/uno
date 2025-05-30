@@ -52,6 +52,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
+	private bool _isFirstEraseBkgnd = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -230,9 +231,23 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 				return new LRESULT(0);
-			case PInvoke.WM_ERASEBKGND: // Without painting also on WM_ERASEBKGND, we get an initial white frame
+			case PInvoke.WM_ERASEBKGND:
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
+				if (_isFirstEraseBkgnd)
+				{
+					// Without painting on the first WM_ERASEBKGND, we get an initial white frame
+					_isFirstEraseBkgnd = false;
+					Paint();
+					return new LRESULT(1);
+				}
+				else
+				{
+					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
+					// only do it the first time when we really need to
+					return new LRESULT(0);
+				}
 			case PInvoke.WM_PAINT:
-				this.LogTrace()?.Trace($"WndProc received a {(msg is PInvoke.WM_PAINT ? nameof(PInvoke.WM_PAINT) : nameof(PInvoke.WM_ERASEBKGND))} message.");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_PAINT)} message.");
 				Paint();
 				break;
 			case PInvoke.WM_KEYDOWN:
