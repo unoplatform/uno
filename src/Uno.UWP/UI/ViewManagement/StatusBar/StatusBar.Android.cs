@@ -18,7 +18,9 @@ namespace Windows.UI.ViewManagement
 {
 	public sealed partial class StatusBar
 	{
-		public bool IgnoreTopInset { get; set; }
+		public bool IsSettingColor { get; set; }
+		public bool IsInitializingVisibility { get; set; }
+
 
 		private StatusBarForegroundType? _foregroundType;
 		private Color? _backgroundColor;
@@ -103,6 +105,7 @@ namespace Windows.UI.ViewManagement
 			{
 				CoreDispatcher.CheckThreadAccess();
 				_isShown = visible;
+				IsInitializingVisibility = true;
 				UpdateSystemUiVisibility();
 
 				if (visible)
@@ -113,6 +116,8 @@ namespace Windows.UI.ViewManagement
 				{
 					Hiding?.Invoke(this, null);
 				}
+
+				IsInitializingVisibility = false;
 
 				return Task.CompletedTask;
 			});
@@ -136,6 +141,8 @@ namespace Windows.UI.ViewManagement
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.VanillaIceCream)
 			{
+				IsSettingColor = true;
+
 				ViewCompat.SetOnApplyWindowInsetsListener(decorView, new InsetsListener(this));
 				WindowCompat.SetDecorFitsSystemWindows(activity.Window, false);
 
@@ -253,7 +260,6 @@ namespace Windows.UI.ViewManagement
 
 				// Adjust padding to avoid overlap
 				view.SetPadding(0, statusBarInsets.Top, 0, 0);
-				_statusBar.IgnoreTopInset = true;
 
 				return insets;
 			}

@@ -136,7 +136,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			var statusBar = StatusBar.GetForCurrentView();
 
 			// adjust top inset only if we already handled it manually
-			if (statusBar.IgnoreTopInset)
+			if (statusBar.IsSettingColor || statusBar.IsInitializingVisibility)
 			{
 				insets.Top = 0;
 			}
@@ -148,8 +148,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 			windowBounds = new Rect(default, GetWindowSize());
 			visibleBounds = windowBounds.DeflateBy(insets);
-
-			statusBar.IgnoreTopInset = false;
 		}
 		else
 		{
