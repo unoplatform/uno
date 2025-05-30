@@ -61,7 +61,7 @@
 	</Target>
 
 	<PropertyGroup>
-		<MSTestVersion>3.8.3</MSTestVersion>
+		<MSTestVersion>3.9.0</MSTestVersion>
 
 		<SkiaSharpVersion>3.119.0-preview.1.2</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1-preview.1.2</HarfbuzzSharpVersion>
@@ -82,7 +82,7 @@
 		<PackageReference Update="MSTest.TestAdapter" Version="$(MSTestVersion)" />
 		<PackageReference Update="MSTest.Analyzers" Version="$(MSTestVersion)" />
 		<PackageReference Update="Combinatorial.MSTest" Version="1.0.0" />
-		<PackageReference Update="Microsoft.Testing.Extensions.HangDump" Version="1.6.3" />
+		<PackageReference Update="Microsoft.Testing.Extensions.HangDump" Version="1.7.0" />
 
 		<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
 		<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
@@ -90,7 +90,7 @@
 		<PackageReference Update="NUnit" Version="3.14.0" />
 		<PackageReference Update="NUnit3TestAdapter" Version="5.0.0" />
 		<PackageReference Update="NunitXml.TestLogger" Version="3.1.15" />
-		<PackageReference Update="Microsoft.Testing.Extensions.TrxReport" Version="1.6.3" />
+		<PackageReference Update="Microsoft.Testing.Extensions.TrxReport" Version="1.7.0" />
 		<PackageReference Update="Uno.UITest" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
