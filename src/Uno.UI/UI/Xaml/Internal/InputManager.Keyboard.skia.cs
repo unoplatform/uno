@@ -42,10 +42,7 @@ partial class InputManager
 				return;
 			}
 
-			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)
-			{
-				CoreWindow.GetForCurrentThreadSafe()?.SetKeyboardInputSource(_source);
-			}
+			CoreWindow.GetForCurrentThreadSafe()?.SetKeyboardInputSource(_source);
 
 			_source.KeyDown += (_, e) => OnKey(e, true);
 			_source.KeyUp += (_, e) => OnKey(e, false);
