@@ -95,10 +95,10 @@ public partial class ContainerVisual : Visual
 	}
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
-	internal virtual bool HitTest(Point point) => new Rect(0, 0, Size.X, Size.Y).Contains(point);
+	internal virtual bool HitTest(Point relativeLocation) => new Rect(0, 0, Size.X, Size.Y).Contains(relativeLocation);
 
 	/// <returns>true if a ViewBox exists</returns>
-	internal bool GetArrangeClipPathInElementCoordinateSpace(SKPath dst)
+	internal bool GetArrangeClipPathInElementCoordinateSpace(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
 	{
 		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
 		{
@@ -122,7 +122,7 @@ public partial class ContainerVisual : Visual
 
 	private static SKPath _sparePrePaintingClippingPath = new SKPath();
 
-	internal override bool GetPrePaintingClipping(SKPath dst)
+	internal override bool GetPrePaintingClipping(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
 	{
 		var prePaintingClipPath = _sparePrePaintingClippingPath;
 

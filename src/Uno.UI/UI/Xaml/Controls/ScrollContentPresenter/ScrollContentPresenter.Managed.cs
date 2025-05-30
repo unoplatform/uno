@@ -7,13 +7,13 @@ using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
 using Microsoft.UI.Input;
 using Uno.Disposables;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using static Uno.UI.Xaml.Core.InputManager.PointerManager;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using static System.Net.Mime.MediaTypeNames;
-
 
 #if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
@@ -325,6 +325,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return mode;
 		}
 
+		bool IDirectManipulationHandler.CanAddPointerAt(in Point absoluteLocation)
+			=> GetTransform(this, null).Transform(new Rect(new Point(), LayoutSlotWithMarginsAndAlignments.Size)).Contains(absoluteLocation);
+
 		void IDirectManipulationHandler.OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming)
 		{
 			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
@@ -385,13 +388,13 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <inheritdoc />
-		void IDirectManipulationHandler.OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args, ref bool isHandled)
+		bool IDirectManipulationHandler.OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args, bool isHandled)
 		{
 			if (isHandled)
 			{
 				_touchInertia = null; // Make clear that inertia is not allowed for the OnUpdated, but this is only for safety!
 
-				return;
+				return false;
 			}
 
 			var scrollable = GetScrollableOffsets();
@@ -405,10 +408,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				_touchInertia = null; // Make clear that inertia is not allowed for the OnUpdated, but this is only for safety!
 
-				return;
+				return false;
 			}
-
-			isHandled = true;
 
 			var inertia = args.Manipulation.Inertia ?? throw new InvalidOperationException("Inertia processor is not available.");
 			if (OperatingSystem.IsIOS())
@@ -467,22 +468,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 				sv.AdjustOffsetsForSnapPoints(ref h, ref v, null);
 				Set(horizontalOffset: h, verticalOffset: v, disableAnimation: false, isIntermediate: false);
+			}
+			else
+			{
+				// We can handle the inertia scrolling, configure to accept allow it by assigning the _touchInertia field.
+				_touchInertia = args.Manipulation;
 
-				return;
+				// Even if usually empty, make sure to apply the delta
+				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
+				var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
+
+				Set(
+					horizontalOffset: HorizontalOffset + deltaX,
+					verticalOffset: VerticalOffset + deltaY,
+					options: new(DisableAnimation: false, IsInertial: true),
+					isIntermediate: true);
 			}
 
-			// We can handle the inertia scrolling, configure to accept allow it by assigning the _touchInertia field.
-			_touchInertia = args.Manipulation;
-
-			// Even if usually empty, make sure to apply the delta
-			var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
-			var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
-
-			Set(
-				horizontalOffset: HorizontalOffset + deltaX,
-				verticalOffset: VerticalOffset + deltaY,
-				options: new(DisableAnimation: false, IsInertial: true),
-				isIntermediate: true);
+			return true;
 		}
 
 		/// <inheritdoc />
