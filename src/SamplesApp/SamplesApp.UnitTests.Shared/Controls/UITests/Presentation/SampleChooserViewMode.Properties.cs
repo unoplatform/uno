@@ -590,10 +590,11 @@ namespace SampleControl.Presentation
 
 		private ElementTheme GetRootTheme()
 		{
-			if (Owner.XamlRoot.Content is FrameworkElement root)
+			if (Owner.XamlRoot?.Content is FrameworkElement root)
 			{
 				return root.RequestedTheme;
 			}
+
 			return ElementTheme.Default;
 		}
 
