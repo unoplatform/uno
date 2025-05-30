@@ -13,8 +13,6 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{
-		private static SKRuntimeEffect? _effect;
-
 		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface;
 
 		bool ISizedBrush.IsSized => true;
@@ -115,37 +113,13 @@ namespace Microsoft.UI.Composition
 					SKShader imageShader;
 					var sigmaX = scs.Image.Width / bounds.Width;
 					var sigmaY = scs.Image.Height / bounds.Height;
-					if (sigmaX < 3 || sigmaY < 3)
+					if (scs.Image.Width > bounds.Width || scs.Image.Height > bounds.Height)
 					{
 						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
 					}
-					else
+					else // downsampling: do not use bicubic samplers which perform extremely poorly (quality wise) in this case
 					{
-						// Severe Downsampling : we use a gaussian blur instead of Catmull-Rom which is absolutely
-						// terrible when downsampling. We can't use a blur SKImageFilter because the bluring will happen
-						// after resizing, so we're forced to write the blurring shader manually. Ideally, we should
-						// implement a Lanczos resampling shader.
-						if (_effect is null)
-						{
-							_effect = SKRuntimeEffect.CreateShader(ImageDownsamplingShader, out var error);
-							if (error is { } e)
-							{
-								throw new InvalidOperationException(e);
-							}
-						}
-
-						var uniforms = new SKRuntimeEffectUniforms(_effect)
-						{
-							{ "imageSize", new[] { (float)backgroundArea.Width, (float)backgroundArea.Height } },
-							{ "sigmaX", sigmaX },
-							{ "sigmaY", sigmaY }
-						};
-						var children = new SKRuntimeEffectChildren(_effect)
-						{
-							["image"] = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal)
-						};
-
-						imageShader = _effect.ToShader(uniforms, children, matrix.ToSKMatrix());
+						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear), matrix.ToSKMatrix());
 					}
 
 					if (UsePaintColorToColorSurface)
@@ -193,39 +167,5 @@ namespace Microsoft.UI.Composition
 			if (Surface is ISkiaSurface skiaSurface)
 				skiaSurface.UpdateSurface(session);
 		}
-
-		// A gaussian blur filter for downsampling
-		private const string ImageDownsamplingShader =
-			"""
-			uniform shader image;
-			uniform vec2 imageSize;
-			uniform float sigmaX;
-			uniform float sigmaY;
-
-			const float PI = 3.14159265359;
-
-			float gaussian(float x, float sigma) {
-				return exp(-(x * x)/(2.0 * sigma * sigma)) / (sigma * sqrt(2.0 * PI));
-			}
-
-			vec4 main(vec2 texCoords){
-				vec4 finalColor = vec4(0.0);
-				float totalWeight = 0.0;
-			   
-				// A window size of 5 was empirically selected
-				// Theoretically, we would want to sample as wide as 3*sigma 
-				// in all directions where sigma is the resizing ratio (new size / old size)
-				// but SKSL (and GLSL) don't allow variable-length loops.
-				for (float x = -2; x <= 2; x += 1.0) {
-					for (float y = -2; y <= 2; y += 1.0) {
-						float weight = gaussian(x, sigmaX) * gaussian(y, sigmaY);
-						finalColor += image.eval(texCoords + vec2(x, y)) * weight;
-						totalWeight += weight;
-					}
-				}
-
-				return finalColor / totalWeight;
-			}
-			""";
 	}
 }
