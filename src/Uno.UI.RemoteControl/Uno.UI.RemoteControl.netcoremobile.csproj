@@ -20,6 +20,8 @@
 		<PackageId>Uno.UI.DevServer</PackageId>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer</PackageId>
 		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
+		
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
