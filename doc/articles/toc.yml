@@ -10,7 +10,7 @@
         href: xref:Uno.GetStarted.vscode
       - name: Rider
         href: xref:Uno.GetStarted.Rider
-        
+
     - name: Create an App
       topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
       items:
@@ -370,15 +370,20 @@
       - name: Using the SamplesApp
         href: uno-development/working-with-the-samples-apps.md
       - name: Guidelines for creating tests
+        href: xref:Uno.Contributing.Tests.CreatingTests
         items:
           - name: Overview
-            href: contributing/guidelines/creating-tests.md
+            href: xref:Uno.Contributing.Tests.CreatingTests
           - name: Mocked unit tests (Uno.UI.Tests)
-            href: uno-development/creating-mocked-tests.md
+            href: xref:Uno.Contributing.Tests.Creating-mocked-tests.md
           - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
-            href: uno-development/creating-runtime-tests.md
+            href: xref:Uno.Contributing.Tests.CreateRuntimeTests
           - name: UI tests with Uno.UITest
-            href: uno-development/creating-ui-tests.md
+            href: xref:Uno.Contributing.Tests.CreateUITests
+          - name: Testing PowerShell Scripts with Pester
+            href: xref:Uno.Contributing.Tests.PowerShell-Pester-Tests
+          - name: Using the SamplesApp
+            href: xref:Uno.Contributing.SamplesApp
       - name: Debugging Solution Templates
         href: uno-development/debugging-templates.md
       - name: Conventional Commits format
@@ -393,10 +398,21 @@
         href: contributing/guidelines/issue-triage.md
       - name: Guidelines for implementing a new WinUI/WinRT feature
         href: contributing/guidelines/implementing-a-new-winui-winrt-feature.md
-      - name: Adding documentation
-        href: uno-development/doc-on-docs.md
-      - name: DocFX
-        href: uno-development/docfx.md
+      - name: Guidelines for Contributing Documentation
+        items:
+        - name: Adding documentation
+          href: xref:Uno.Contributing.Docs
+        - name: DocFX
+          href: xref:Uno.Contributing.DocFx
+        - name: Toc Checker
+          href: xref:Uno.Contributing.check-toc.Overview
+          items:
+          - name: Overview
+            href: xref:Uno.Contributing.check-toc.Overview
+          - name: How-To Use the TOC Checker
+            href: xref:Uno.Contributing.check-toc.Guide
+          - name: Utility Functions for the TOC Checker
+            href: xref:Uno.Contributing.check-toc.Utilities
       - name: Uno.UI release procedure
         href: uno-development/release-procedure.md
       - name: Build Artifacts
