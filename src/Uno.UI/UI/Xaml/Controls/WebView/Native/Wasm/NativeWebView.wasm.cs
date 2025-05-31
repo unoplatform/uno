@@ -36,7 +36,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 		_coreWebView = coreWebView;
 		_elementId = elementId;
 
-		NativeMethods.SetBackground(elementId, "transparent");
+		NativeMethods.InitializeStyling(elementId);
 		NativeMethods.SetupEvents(elementId);
 	}
 

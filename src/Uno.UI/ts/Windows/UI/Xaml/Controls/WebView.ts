@@ -44,8 +44,10 @@ namespace Microsoft.UI.Xaml.Controls {
 			return (<HTMLIFrameElement>document.getElementById(htmlId)).getAttribute(name);
 		}
 
-		static setBackground(htmlId: string, color: string) {
-			(<HTMLIFrameElement>document.getElementById(htmlId)).style.backgroundColor = color;
+		static initializeStyling(htmlId: string) {
+			const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+			iframe.style.backgroundColor = "transparent";
+			iframe.style.border = "0";
 		}
 
 		static setupEvents(htmlId: string) {
