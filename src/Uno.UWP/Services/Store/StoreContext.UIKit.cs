@@ -70,7 +70,7 @@ public sealed partial class StoreContext
 		{
 			await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				SKStoreReviewController.RequestReview(UIApplication.SharedApplication.KeyWindow.WindowScene);
+				RequestReviewAction.RequestReview(UIApplication.SharedApplication.KeyWindow.WindowScene);
 			});
 
 			return new StoreRateAndReviewResult(StoreRateAndReviewStatus.Succeeded);
