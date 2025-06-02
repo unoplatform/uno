@@ -4,6 +4,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Windows.Foundation;
 using Windows.System;
@@ -57,10 +58,10 @@ public partial class GestureRecognizer
 			private IInertiaProcessorTimer? _timer;
 			private ManipulationState _stateOnLastTick;
 
-			private readonly bool _isTranslateInertiaXEnabled;
-			private readonly bool _isTranslateInertiaYEnabled;
-			private readonly bool _isRotateInertiaEnabled;
-			private readonly bool _isScaleInertiaEnabled;
+			private bool _isTranslateInertiaXEnabled;
+			private bool _isTranslateInertiaYEnabled;
+			private bool _isRotateInertiaEnabled;
+			private bool _isScaleInertiaEnabled;
 
 			internal const double DefaultDesiredDisplacementDeceleration = .001;
 			internal const double DefaultDesiredRotationDeceleration = .0001;
@@ -74,7 +75,50 @@ public partial class GestureRecognizer
 			public double DesiredExpansion = NaN;
 			public double DesiredExpansionDeceleration = NaN;
 
-			public InertiaProcessor(Manipulation owner, ulong timestamp, Point position, ManipulationDelta cumulative, ManipulationVelocities velocities)
+			public static bool TryStart(Manipulation owner, [NotNullWhen(true)] ref InertiaProcessor? processor, ManipulationChangeSet changeSet)
+			{
+				if (processor is not null
+					|| owner.IsDragManipulation
+					|| (owner._settings & GestureSettingsHelper.Inertia) is 0
+					|| (owner._settings & GestureSettingsHelper.Manipulations) is 0) // On pointer removed, we should not start inertia if all manip are disabled (could happen if configured for drag but IsDragManipulation not yet true)
+				{
+					return false;
+				}
+
+				var velocities = changeSet.Velocities;
+				var isTranslateInertiaXEnabled = owner._isTranslateXEnabled
+					&& owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
+					&& Abs(velocities.Linear.X) > owner._inertiaThresholds.TranslateX;
+				var isTranslateInertiaYEnabled = owner._isTranslateYEnabled
+					&& owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
+					&& Abs(velocities.Linear.Y) > owner._inertiaThresholds.TranslateY;
+				var isRotateInertiaEnabled = owner._isRotateEnabled
+					&& owner._settings.HasFlag(Input.GestureSettings.ManipulationRotateInertia)
+					&& Abs(velocities.Angular) > owner._inertiaThresholds.Rotate;
+				var isScaleInertiaEnabled = owner._isScaleEnabled
+					&& owner._settings.HasFlag(Input.GestureSettings.ManipulationScaleInertia)
+					&& Abs(velocities.Expansion) > owner._inertiaThresholds.Expansion;
+
+				if (!isTranslateInertiaXEnabled && !isTranslateInertiaYEnabled && !isRotateInertiaEnabled && !isScaleInertiaEnabled)
+				{
+					return false;
+				}
+
+				// For better experience, as soon inertia kicked-in on an axis, we bypass threshold on the second axis.
+				isTranslateInertiaXEnabled |= isTranslateInertiaYEnabled && owner._isTranslateXEnabled;
+				isTranslateInertiaYEnabled |= isTranslateInertiaXEnabled && owner._isTranslateYEnabled;
+
+				processor = new InertiaProcessor(owner, changeSet.Timestamp, changeSet.Position, changeSet.Cumulative, changeSet.Velocities)
+				{
+					_isTranslateInertiaXEnabled = isTranslateInertiaXEnabled,
+					_isTranslateInertiaYEnabled = isTranslateInertiaYEnabled,
+					_isRotateInertiaEnabled = isRotateInertiaEnabled,
+					_isScaleInertiaEnabled = isScaleInertiaEnabled,
+				};
+				return true;
+			}
+
+			private InertiaProcessor(Manipulation owner, ulong timestamp, Point position, ManipulationDelta cumulative, ManipulationVelocities velocities)
 			{
 				_owner = owner;
 				_t0 = timestamp;
@@ -83,25 +127,6 @@ public partial class GestureRecognizer
 				_velocities0 = velocities;
 
 				_stateOnLastTick = new ManipulationState(timestamp, position, cumulative);
-
-				_isTranslateInertiaXEnabled = _owner._isTranslateXEnabled
-					&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
-					&& Math.Abs(velocities.Linear.X) > _owner._inertiaThresholds.TranslateX;
-				_isTranslateInertiaYEnabled = _owner._isTranslateYEnabled
-					&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
-					&& Math.Abs(velocities.Linear.Y) > _owner._inertiaThresholds.TranslateY;
-				_isRotateInertiaEnabled = _owner._isRotateEnabled
-					&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationRotateInertia)
-					&& Abs(velocities.Angular) > _owner._inertiaThresholds.Rotate;
-				_isScaleInertiaEnabled = _owner._isScaleEnabled
-					&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationScaleInertia)
-					&& Abs(velocities.Expansion) > _owner._inertiaThresholds.Expansion;
-
-				global::System.Diagnostics.Debug.Assert(_isTranslateInertiaXEnabled || _isTranslateInertiaYEnabled || _isRotateInertiaEnabled || _isScaleInertiaEnabled);
-
-				// For better experience, as soon inertia kicked-in on an axis, we bypass threshold on the second axis.
-				_isTranslateInertiaXEnabled |= _isTranslateInertiaYEnabled && _owner._isTranslateXEnabled;
-				_isTranslateInertiaYEnabled |= _isTranslateInertiaXEnabled && _owner._isTranslateYEnabled;
 			}
 
 			public bool IsRunning => _timer?.IsRunning ?? false;
