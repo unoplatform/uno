@@ -54,6 +54,7 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 	private readonly InputManager.PointerManager _pointerManager;
 	private readonly DirectManipulationCollection _collection;
+	private readonly PointerIdentifier _originalPointer; // The original pointer that started the manipulation. Valid only when _state is States.Preparing, might have changed for all other states.
 	private readonly GestureRecognizer _recognizer;
 
 	private bool _isResuming;
@@ -69,10 +70,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 	public List<IDirectManipulationHandler> Handlers { get; } = new();
 
-	public DirectManipulation(InputManager.PointerManager pointerManager, DirectManipulationCollection collection)
+	public DirectManipulation(InputManager.PointerManager pointerManager, DirectManipulationCollection collection, PointerIdentifier originalPointer)
 	{
 		_pointerManager = pointerManager;
 		_collection = collection;
+		_originalPointer = originalPointer;
 
 		_recognizer = new GestureRecognizer(this)
 		{
@@ -104,7 +106,12 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	/// (This does NOT mean "interacting" !!)
 	/// </summary>
 	public bool IsTracking(PointerIdentifier pointer)
-		=> _state is not States.Inertial && _recognizer.PendingManipulation?.IsActive(pointer) is true;
+		=> _state switch
+		{
+			States.Preparing => pointer == _originalPointer,
+			not States.Inertial => _recognizer.PendingManipulation?.IsActive(pointer) is true, // Note: Will return false once completed
+			_ => false
+		};
 
 	public bool Cancel()
 	{

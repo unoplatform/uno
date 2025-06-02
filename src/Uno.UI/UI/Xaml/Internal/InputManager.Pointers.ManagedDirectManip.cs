@@ -70,7 +70,7 @@ partial class InputManager
 			var manipulation = _directManipulations.Get(pointer);
 			if (manipulation is null)
 			{
-				manipulation = new DirectManipulation(this, _directManipulations);
+				manipulation = new DirectManipulation(this, _directManipulations, pointer);
 
 				_directManipulations.Add(manipulation);
 				RegisterGestureRecognizerCore(pointer, manipulation);
