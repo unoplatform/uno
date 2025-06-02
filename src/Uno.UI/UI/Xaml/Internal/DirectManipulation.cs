@@ -190,7 +190,8 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	/// <inheritdoc />
 	public void ProcessDown(_PointerEventArgs args)
 	{
-		if (_state is States.Preparing) // If resuming, we would have already processed the down event in TryProcessDown.
+		if (_state is States.Preparing // If resuming, we would have already processed the down event in TryProcessDown.
+			&& args.CurrentPoint.Pointer == _originalPointer) // If a second pointer of the same type is pressed, it should have been handled in TryProcessDown.
 		{
 			Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Adding pointer --POST DISPATCH-- (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 
@@ -217,6 +218,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	/// <inheritdoc />
 	public void ProcessMove(_PointerEventArgs args)
 	{
+		if (!IsTracking(args.CurrentPoint.Pointer)) // The IGestureRecognizer is being called for all pointers of the same type, but direct-manipulation should only process the ones that are currently tracked.
+		{
+			return;
+		}
+
 		Debug.Assert(_state is States.Preparing or States.Cancelled, "In all other states we should it should have gone to the TryProcessMove and prevented dispatch to visual tree)");
 
 		if (_state is not States.Cancelled)
@@ -228,7 +234,7 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		}
 	}
 
-	public bool TryProcessRelease(_PointerEventArgs args)
+	public bool TryProcessUp(_PointerEventArgs args)
 	{
 		Debug.Assert(_state is States.Preparing or States.Interacting or States.Cancelled);
 
@@ -254,6 +260,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	/// <inheritdoc />
 	public void ProcessUp(_PointerEventArgs args)
 	{
+		if (!IsTracking(args.CurrentPoint.Pointer)) // The IGestureRecognizer is being called for all pointers of the same type, but direct-manipulation should only process the ones that are currently tracked.
+		{
+			return;
+		}
+
 		Debug.Assert(_state is not States.Interacting, "Interacting should have been processed by TryProcessRelease (and prevented dispatch to visual tree)");
 
 		if (_state is not States.Completed)
@@ -285,6 +296,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	/// <inheritdoc />
 	public void ProcessCancel(_PointerEventArgs args)
 	{
+		if (!IsTracking(args.CurrentPoint.Pointer)) // The IGestureRecognizer is being called for all pointers of the same type, but direct-manipulation should only process the ones that are currently tracked.
+		{
+			return;
+		}
+
 		Debug.Assert(_state is not States.Interacting, "Interacting should have been processed by TryProcessCancel (and prevented dispatch to visual tree)");
 
 		if (_state is not States.Completed)
