@@ -100,8 +100,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				{
 					if (previousCheckedItemWeak.TryGetTarget(out var previousCheckedItem))
 					{
-						// Uncheck the previously checked item.
-						previousCheckedItem.IsChecked = false;
+						if (previousCheckedItem != this)
+						{
+							// Uncheck the previously checked item.
+							previousCheckedItem.IsChecked = false;
+						}
 					}
 				}
 
