@@ -821,6 +821,312 @@ public class Given_InputManager
 #elif !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
+	public async Task When_DirectManipulationMultiple_Then_RunsIndependently()
+	{
+		ScrollViewer sv1, sv2;
+		var root = new Grid
+		{
+			Width = 400,
+			Height = 200,
+			ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
+			Children =
+			{
+				(sv1 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.BlueViolet),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}.Apply(sv => Grid.SetColumn(sv, 0))),
+				(sv2 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					Background = new SolidColorBrush(Colors.Chartreuse),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.DarkGreen),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}.Apply(sv => Grid.SetColumn(sv, 1))),
+			}
+		};
+
+		await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+
+		using var finger1 = injector.GetFinger();
+		finger1.Press(sv1.GetAbsoluteBounds().GetCenter());
+
+		using var finger2 = injector.GetFinger(id: 83);
+		finger2.Press(sv2.GetAbsoluteBounds().GetCenter());
+
+		// Start scrolling on both fingers
+		finger1.MoveBy(y: -200);
+		finger2.MoveBy(y: -100);
+
+		sv1.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "first finger should have scrolled the first ScrollViewer");
+		sv2.VerticalOffset.Should().BeApproximately(100, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
+
+		// Release first finger and validate that first finger is still scrolling
+		finger1.Release();
+		finger2.MoveBy(y: -100);
+		finger2.Release();
+
+		sv1.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "first ScrollViewer should not have been affected by second finger");
+		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second finger should still be scrolling the second ScrollViewer after first finger release");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_DirectManipulationMultiple_Then_RunsIndependently_2()
+	{
+		ScrollViewer sv1, sv2;
+		var root = new Grid
+		{
+			Width = 400,
+			Height = 200,
+			ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
+			Children =
+			{
+				(sv1 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.BlueViolet),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}.Apply(sv => Grid.SetColumn(sv, 0))),
+				(sv2 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					Background = new SolidColorBrush(Colors.Chartreuse),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.DarkGreen),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}.Apply(sv => Grid.SetColumn(sv, 1))),
+			}
+		};
+
+		await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+
+		using var finger1 = injector.GetFinger();
+		finger1.Press(sv1.GetAbsoluteBounds().GetCenter());
+
+		using var finger2 = injector.GetFinger(id: 83);
+		finger2.Press(sv2.GetAbsoluteBounds().GetCenter());
+
+		// Start scrolling on both fingers
+		finger1.MoveBy(y: -100);
+		finger2.MoveBy(y: -200);
+
+		sv1.VerticalOffset.Should().BeApproximately(100, precision: 2, because: "first finger should have scrolled the first ScrollViewer");
+		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
+
+		// Release second finger and validate that first finger is still scrolling
+		finger2.Release();
+		finger1.MoveBy(y: -100);
+		finger1.Release();
+
+		sv1.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "first finger should still be scrolling the first ScrollViewer after second finger release");
+		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second ScrollViewer should not have been affected by first finger");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_DirectManipulationMultipleWithInertia_Then_RunsIndependently()
+	{
+		ScrollViewer sv1, sv2;
+		var root = new Grid
+		{
+			Width = 400,
+			Height = 200,
+			ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
+			Children =
+			{
+				(sv1 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = true,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.BlueViolet),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}.Apply(sv => Grid.SetColumn(sv, 0))),
+				(sv2 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = false,
+					Background = new SolidColorBrush(Colors.Chartreuse),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.DarkGreen),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}.Apply(sv => Grid.SetColumn(sv, 1))),
+			}
+		};
+
+		await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger(); // We re-used the same finger ID on all interactions
+
+		// Start inertia on SV1
+		finger.Drag(
+			from: sv1.GetAbsoluteBounds().GetCenter(),
+			to: sv1.GetAbsoluteBounds().GetCenter().Offset(y: -200),
+			steps: 1,
+			stepOffsetInMilliseconds: 20);
+
+		var sv1VOffsetAtEndOfSv1Drag = sv1.VerticalOffset; // Capture the initial offset after the drag
+		sv1VOffsetAtEndOfSv1Drag.Should().BeGreaterOrEqualTo(200);
+
+		// Attempt to scroll SV2
+		finger.Drag(
+			from: sv2.GetAbsoluteBounds().GetCenter(),
+			to: sv2.GetAbsoluteBounds().GetCenter().Offset(y: -200),
+			steps: 1);
+		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
+
+		await Task.Delay(1); // Allow time for the inertia to process at least one frame
+
+		var sv1VOffsetAtEndOfSv2Drag = sv1.VerticalOffset; // Capture the initial offset after the drag
+		sv1VOffsetAtEndOfSv2Drag.Should().BeGreaterThan(sv1VOffsetAtEndOfSv1Drag, because: "Inertia should still be running after SV2 interaction");
+
+		await Task.Delay(10); // Allow time for the inertia to process more frames (to confirm it's still running even after finger2 has been released)
+
+		sv1.VerticalOffset.Should().BeGreaterThan(sv1VOffsetAtEndOfSv2Drag, because: "Inertia should still be running");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_DirectManipulationMultipleWithMultipleInertia_Then_RunsIndependently()
+	{
+		ScrollViewer sv1, sv2;
+		var root = new Grid
+		{
+			Width = 400,
+			Height = 200,
+			ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
+			Children =
+			{
+				(sv1 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = true,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.BlueViolet),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}.Apply(sv => Grid.SetColumn(sv, 0))),
+				(sv2 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = true,
+					Background = new SolidColorBrush(Colors.Chartreuse),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.DarkGreen),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}.Apply(sv => Grid.SetColumn(sv, 1))),
+			}
+		};
+
+		await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger(); // We re-used the same finger ID on all interactions
+
+		// Start inertia on SV1
+		finger.Drag(
+			from: sv1.GetAbsoluteBounds().GetCenter(),
+			to: sv1.GetAbsoluteBounds().GetCenter().Offset(y: -200),
+			steps: 1,
+			stepOffsetInMilliseconds: 20);
+
+		var sv1VOffsetAtEndOfSv1Drag = sv1.VerticalOffset; // Capture the initial offset after the drag
+		sv1VOffsetAtEndOfSv1Drag.Should().BeGreaterOrEqualTo(200);
+
+		// Start inertia on SV2
+		finger.Drag(
+			from: sv2.GetAbsoluteBounds().GetCenter(),
+			to: sv2.GetAbsoluteBounds().GetCenter().Offset(y: -200),
+			steps: 1,
+			stepOffsetInMilliseconds: 20);
+
+		await Task.Delay(1); // Allow time for the inertia to process at least one frame
+
+		var sv1VOffsetAtEndOfSv2Drag = sv1.VerticalOffset; // Capture the initial offset after the drag
+		sv1VOffsetAtEndOfSv2Drag.Should().BeGreaterThan(sv1VOffsetAtEndOfSv1Drag);
+		var sv2VOffsetAtEndOfSv2Drag = sv2.VerticalOffset; // Capture the initial offset after the drag
+		sv2VOffsetAtEndOfSv2Drag.Should().BeGreaterOrEqualTo(200);
+
+		await Task.Delay(10); // Allow time for the inertia to process more frames (to confirm it's still running even after finger2 has been released)
+
+		sv1.VerticalOffset.Should().BeGreaterThan(sv1VOffsetAtEndOfSv1Drag, because: "Inertia should still be running on sv1");
+		sv2.VerticalOffset.Should().BeGreaterThan(sv2VOffsetAtEndOfSv2Drag, because: "Inertia should still be running on sv2");
+
+		// Finally stop scrollers by tapping them
+		finger.Tap(sv2.GetAbsoluteBounds().GetCenter());
+
+		var sv1VOffsetAfterSv2Tap = sv1.VerticalOffset;
+		var sv2VOffsetAfterSv2Tap = sv2.VerticalOffset;
+
+		await Task.Delay(1); // Allow time for the inertia to process at least one frame
+
+		sv1.VerticalOffset.Should().BeGreaterThan(sv1VOffsetAfterSv2Tap, because: "Inertia should still be running on sv1");
+		sv2.VerticalOffset.Should().Be(sv2VOffsetAfterSv2Tap, because: "Inertia should have been stopped on sv2");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_DirectManipulationMixedWithUIElementManipulation_Then_TopMostWins()
 	{
 		ScrollViewer sv1, sv2;
