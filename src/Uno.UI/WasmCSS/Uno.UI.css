@@ -297,15 +297,8 @@ input::-ms-clear {
   visibility: collapse;
 }
 
-.uno-nativewebview {
-  border: 0px;
-  width: 100%;
-  height: 100%;
-  user-select: none;
-}
-
-.uno-htmlwebviewelement {
-  border: 0px;
+.uno-nativewebview, .uno-htmlwebviewelement {
+  border: 0;
   width: 100%;
   height: 100%;
   user-select: none;
