@@ -19,7 +19,6 @@
 		<StackPanel Grid.Row="0">
 		</StackPanel>
 		<StackPanel Grid.Row="1">
-			<TextBlock>Responsive: <Run Text="{utu:Responsive Narrow=Narrow, Wide=Wide}"/></TextBlock>
 			<TextBlock>PageSize: <Run x:Name="PageSize"/></TextBlock>
 			<TextBlock>XamlRootSize: <Run x:Name="XamlRootSize"/></TextBlock>
 			<TextBlock>XamlRootChangeCount: <Run x:Name="XamlRootChangeCount"/></TextBlock>
