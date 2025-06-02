@@ -37,6 +37,8 @@ partial class InputManager
 	{
 		internal interface IGestureRecognizer
 		{
+			bool IsTracking(PointerIdentifier pointer);
+
 			void ProcessDown(Windows.UI.Core.PointerEventArgs args);
 
 			void ProcessMove(Windows.UI.Core.PointerEventArgs args);
@@ -213,7 +215,7 @@ partial class InputManager
 
 		private bool BeforeReleaseTryRedirectToManipulations(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_directManipulations.Get(args.CurrentPoint.Pointer)?.TryProcessRelease(args) is true)
+			if (_directManipulations.Get(args.CurrentPoint.Pointer)?.TryProcessUp(args) is true)
 			{
 				// The AfterReleaseForManipulations will **not** be invoked, so make sure to clean-up the recognizers here.
 				_gestureRecognizers.Remove(args.CurrentPoint.Pointer.Type); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
@@ -281,10 +283,11 @@ partial class InputManager
 
 			/// <inheritdoc />
 			public ManipulationModes OnStarting(GestureRecognizer recognizer, ManipulationStartingEventArgs args)
-			{
-				Tracker.StartUserManipulation();
-				return ManipulationModes.All;
-			}
+				=> ManipulationModes.All;
+
+			/// <inheritdoc />
+			public void OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming)
+				=> Tracker.StartUserManipulation();
 
 			/// <inheritdoc />
 			public void OnUpdated(GestureRecognizer recognizer, ManipulationUpdatedEventArgs args, ref ManipulationDelta unhandledDelta)
@@ -312,6 +315,10 @@ partial class InputManager
 
 		private class UIElementRecognizer(UIElement element, GestureRecognizer recognizer) : IGestureRecognizer
 		{
+			/// <inheritdoc />
+			public bool IsTracking(PointerIdentifier pointer)
+				=> recognizer.IsTracking(pointer);
+
 			/// <inheritdoc />
 			public void ProcessDown(PointerEventArgs args) { } // Currently, to avoid any regression for 6.0 SR1, only the move is processed.
 
