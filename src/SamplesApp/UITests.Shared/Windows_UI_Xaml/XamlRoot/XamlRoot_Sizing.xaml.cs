@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Silk.NET.Core.Native;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml.XamlRoot;
@@ -20,33 +21,33 @@ public sealed partial class XamlRoot_Sizing : UserControl
 
 		Loaded += (s, e) =>
 		{
-			UpdateProperties();
 			XamlRoot.Changed += OnXamlRootChanged;
+			(XamlRoot.Content as FrameworkElement).SizeChanged += OnSizeChanged;
 		};
 
 		Unloaded += (s, e) =>
 		{
 			XamlRoot.Changed -= OnXamlRootChanged;
+			(XamlRoot.Content as FrameworkElement).SizeChanged -= OnSizeChanged;
 		};
-
-		SizeChanged += OnSizeChanged;
 	}
 
 	public ObservableCollection<string> ChangeLog { get; } = new();
 
 	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 	{
-		Debug.WriteLine($"MainPage::OnSizeChanged: NewSize={PrettyPrint.FormatSize(args.NewSize)}, PreviousSize={PrettyPrint.FormatSize(args.PreviousSize)}");
-		PageSize.Text = PrettyPrint.FormatSize(args.NewSize);
+		PageSize.Text = "X: " + args.NewSize.Width + ", Y: " + args.NewSize.Height;
+		var previousSizeString = "X: " + args.PreviousSize.Width + ", Y: " + args.PreviousSize.Height;
+		System.Diagnostics.Debug.WriteLine($"MainPage::OnSizeChanged: NewSize={PageSize.Text}, PreviousSize={previousSizeString}");
 	}
 
 	private int _count;
-	private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
+	private void OnXamlRootChanged(Microsoft.UI.Xaml.XamlRoot sender, XamlRootChangedEventArgs args)
 	{
 		_count++;
 		XamlRootChangeCount.Text = _count.ToString();
-		XamlRootSize.Text = PrettyPrint.FormatSize(sender.Size);
+		XamlRootSize.Text = "X: " + sender.Size.Width + ", Y: " + sender.Size.Height;
 
-		Debug.WriteLine($"MainPage::OnXamlRootChanged: size={PrettyPrint.FormatSize(sender.Size)}");
+		System.Diagnostics.Debug.WriteLine($"MainPage::OnXamlRootChanged: size={XamlRootSize.Text}");
 	}
 }
