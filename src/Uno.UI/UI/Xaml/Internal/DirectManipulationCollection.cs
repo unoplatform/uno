@@ -40,5 +40,8 @@ internal sealed class DirectManipulationCollection : IEnumerable<DirectManipulat
 
 	IEnumerator IEnumerable.GetEnumerator()
 		=> GetEnumerator();
+
+	public void ClearForFatalError()
+		=> _instances.Clear();
 }
 #endif
