@@ -67,8 +67,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void SwipeControl_Unfinalizer()
 		{
-			DetachEventHandlers(); // Do not double subscribe
-			AttachEventHandlers(isUnoUnfinalizer: true);
+			if (_isReady)
+			{
+				DetachEventHandlers(); // Do not double subscribe
+				AttachEventHandlers(isUnoUnfinalizer: true);
+			}
 		}
 
 		private void SwipeControl_Finalizer()
@@ -181,6 +184,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			GetTemplateParts();
 			EnsureClip();
 			AttachEventHandlers();
+
+			_isReady = true;
 		}
 
 		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
