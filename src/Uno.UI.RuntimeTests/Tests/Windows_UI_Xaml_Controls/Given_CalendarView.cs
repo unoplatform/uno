@@ -255,6 +255,7 @@ public class Given_CalendarView
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20575")]
 	public async Task When_Year_Mode_Shown()
 	{
 		var now = DateTimeOffset.UtcNow;
