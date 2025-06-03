@@ -37,7 +37,7 @@ internal static class DpiBootstrap
 		// This call must be made BEFORE any window is initialized.
 
 		var success = PInvoke.SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-		if (!success) { typeof(DpiBootstrap).LogError()?.Error($"{nameof(PInvoke.AddClipboardFormatListener)} failed: {GetErrorMessage()}"); }
+		if (!success) { typeof(DpiBootstrap).LogError()?.Error($"{nameof(PInvoke.SetProcessDpiAwarenessContext)} failed: {GetErrorMessage()}"); }
 	}
 
 	private static string GetErrorMessage() => GetErrorMessage((uint)Marshal.GetLastWin32Error());
