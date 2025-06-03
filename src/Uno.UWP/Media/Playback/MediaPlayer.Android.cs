@@ -379,7 +379,7 @@ namespace Windows.Media.Playback
 			{
 				if (PlaybackSession.PlaybackState != MediaPlaybackState.None)
 				{
-					_player?.SeekTo((int)value.TotalMilliseconds);
+					_player?.SeekTo((int)value.TotalMilliseconds, MediaPlayerSeekMode.Closest);
 				}
 			}
 		}
