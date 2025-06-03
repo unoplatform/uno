@@ -36,7 +36,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 			// This prevents the keyboard from flickering when switching between TextBoxes
 			// https://github.com/unoplatform/uno-private/issues/1160
 			var xamlRoot = textBox.XamlRoot;
-			if (xamlRoot is null || FocusManager.GetFocusedElement(xamlRoot) is not TextBox)
+			if (xamlRoot is null || FocusManager.GetFocusingElement(xamlRoot) is not TextBox)
 			{
 				canvasView.TextInputPlugin.HideTextInput();
 			}
