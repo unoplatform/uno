@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Composition;
 using Silk.NET.OpenGL;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -220,8 +221,27 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// </summary>
 #if WINAPPSDK
 	public void Invalidate() => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
-#else // WPF hangs if we attempt to enqueue on Low inside RenderOverride
-	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
+#else
+	// We used to Invalidate like this
+	// public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
+	// but Win32 will hang when resizing or moving the window by dragging it
+	// because the DefWindowProc handler for WM_SYSCOMMAND will enter an internal loop that processes received
+	// win32 messages until the pointer that resizes/moves the window is released. In that loop, our
+	// UnoWin32DispatcherMsg messages are always processed before WM_PAINT messages, so if user code calls
+	// Invalidate() inside RenderOverride(), we will enter an infinite loop that completely hangs the app.
+	public void Invalidate()
+	{
+		Compositor.GetSharedCompositor().InvalidateRender(Visual);
+	}
+	private protected override ContainerVisual CreateElementVisual() => new GLVisual(this, Compositor.GetSharedCompositor());
+	private class GLVisual(GLCanvasElement owner, Compositor compositor) : BorderVisual(compositor)
+	{
+		internal override void Paint(in PaintingSession session)
+		{
+			NativeDispatcher.Main.Enqueue(owner.Render, NativeDispatcherPriority.High);
+			base.Paint(session);
+		}
+	}
 #endif
 
 	public static DependencyProperty IsGLInitializedProperty { get; } =
