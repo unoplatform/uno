@@ -11,21 +11,18 @@
 	<Page.Resources>
 		<SolidColorBrush x:Key="ColorAnimation_Background_Brush"
 		                 Color="Blue" />
-		<Storyboard x:Name="ZoomStoryboard">
-			<DoubleAnimation Duration="0:00:05"
+		<Storyboard x:Name="colorStoryboard">
+			<ColorAnimation Duration="0:00:05"
 			                RepeatBehavior="Forever"
-			                Storyboard.TargetName="grid"
-			                Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-			                From="0.25" To="4" />
-			<DoubleAnimation Duration="0:00:05"
-			                 RepeatBehavior="Forever"
-			                 Storyboard.TargetName="grid"
-			                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-			                 From="0.25" To="4" />
+			                Storyboard.TargetName="TargetBorder"
+			                Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+			                To="Red" />
 		</Storyboard>
 	</Page.Resources>
 
 	<StackPanel>
+		<Slider Header="ScaleX" Minimum="0.25" Maximum="4" StepFrequency="0.1" Value="{x:Bind ScaleTransform.ScaleX, Mode=TwoWay}" />
+		<Slider Header="ScaleY" Minimum="0.25" Maximum="4" StepFrequency="0.1" Value="{x:Bind ScaleTransform.ScaleY, Mode=TwoWay}" />
 		<StackPanel Orientation="Horizontal">
 			<TextBlock Text="Number of Columns: " />
 			<NumberBox x:Name="nb" Minimum="1" ValueChanged="NumberBoxValueChanged" Value="5" />
@@ -35,9 +32,13 @@
 				<ComboBoxItem Content="Border with a BitmapImage background" />
 			</ComboBox>
 		</StackPanel>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="A border that has a ColorAnimation to keep rendering active: " />
+			<Border x:Name="TargetBorder" Width="10" Height="10" Background="{StaticResource ColorAnimation_Background_Brush}" />
+		</StackPanel>
 		<Grid x:Name="grid">
 			<Grid.RenderTransform>
-				<ScaleTransform  />
+				<ScaleTransform x:Name="ScaleTransform" />
 			</Grid.RenderTransform>
 		</Grid>
 	</StackPanel>

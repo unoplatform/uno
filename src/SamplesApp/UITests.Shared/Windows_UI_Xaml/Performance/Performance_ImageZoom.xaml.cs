@@ -12,7 +12,7 @@ using CollectionExtensions = Uno.Extensions.CollectionExtensions;
 
 namespace UITests.Windows_UI_Xaml.Performance
 {
-	[Sample("Performance", IsManualTest = true, Description = "Try different column counts and make sure that the frame time (right value) in the FPS indicator stays low. Make sure to test on different DPIs.")]
+	[Sample("Performance", IsManualTest = true, Description = "Try different combinations and make sure that the frame time (right value) in the FPS indicator stays low. Make sure to test on different DPIs.")]
 	public sealed partial class Performance_ImageZoom : Page
 	{
 		public Performance_ImageZoom()
@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 
 			Loaded += (s, e) =>
 			{
-				ZoomStoryboard.Begin();
+				colorStoryboard.Begin();
 #if __SKIA__
 				Update();
 #endif
@@ -29,7 +29,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 
 			Unloaded += (s, e) =>
 			{
-				ZoomStoryboard.Stop();
+				colorStoryboard.Stop();
 			};
 		}
 
