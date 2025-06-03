@@ -75,6 +75,23 @@ public partial class GestureRecognizer
 			public double DesiredExpansion = NaN;
 			public double DesiredExpansionDeceleration = NaN;
 
+			/// <summary>
+			/// Attempts to start the inertia processor for the given manipulation.
+			/// </summary>
+			/// <param name="owner">The manipulation instance that owns this inertia processor.</param>
+			/// <param name="processor">A reference to the inertia processor. If inertia is successfully started, this will be set to a new instance.</param>
+			/// <param name="changeSet">The set of changes that occurred during the manipulation.</param>
+			/// <returns>True if inertia was successfully started; otherwise, false.</returns>
+			/// <remarks>
+			/// Inertia can only be enabled if the following preconditions are met:
+			/// <list type="bullet">
+			/// <item><description>The <paramref name="processor"/> is null.</description></item>
+			/// <item><description>The manipulation is not a drag manipulation (<see cref="Manipulation.IsDragManipulation"/>).</description></item>
+			/// <item><description>The manipulation settings include inertia (<see cref="GestureSettingsHelper.Inertia"/>).</description></item>
+			/// <item><description>The manipulation settings include manipulations (<see cref="GestureSettingsHelper.Manipulations"/>).</description></item>
+			/// </list>
+			/// Additionally, inertia for specific properties (e.g., translation, rotation, expansion) is enabled based on the velocities and thresholds defined in the manipulation settings.
+			/// </remarks>
 			public static bool TryStart(Manipulation owner, [NotNullWhen(true)] ref InertiaProcessor? processor, ManipulationChangeSet changeSet)
 			{
 				if (processor is not null
