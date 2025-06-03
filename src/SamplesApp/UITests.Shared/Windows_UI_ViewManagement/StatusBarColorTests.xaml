@@ -13,7 +13,7 @@
                  Header="Choose Background/Foreground Color"
                  Text="#FF0000" />
 
-        <StackPanel Orientation="Vertical">
+        <StackPanel>
             <Button Click="SetBackgroundColor_Click">Set Background color</Button>
             <Button Click="SetForegroundColor_Click">Set Foreground color</Button>
             <TextBlock Text="ForegroundColor can only be Light or Dark. It will choose the closest match to the specified color. Or you can use the buttons below."
