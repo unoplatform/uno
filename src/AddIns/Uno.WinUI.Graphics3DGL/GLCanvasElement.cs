@@ -233,7 +233,9 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	{
 		Compositor.GetSharedCompositor().InvalidateRender(Visual);
 	}
+	
 	private protected override ContainerVisual CreateElementVisual() => new GLVisual(this, Compositor.GetSharedCompositor());
+	
 	private class GLVisual(GLCanvasElement owner, Compositor compositor) : BorderVisual(compositor)
 	{
 		internal override void Paint(in PaintingSession session)
