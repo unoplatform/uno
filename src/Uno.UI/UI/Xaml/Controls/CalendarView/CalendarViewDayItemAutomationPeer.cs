@@ -11,67 +11,66 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using DirectUI;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Automation.Peers;
+
+internal partial class CalendarViewDayItemAutomationPeer : CalendarViewBaseItemAutomationPeer
 {
-	partial class CalendarViewDayItem
+	public CalendarViewDayItemAutomationPeer(CalendarViewDayItem owner) : base(owner)
 	{
-		internal partial class CalendarViewDayItemAutomationPeer : CalendarViewBaseItemAutomationPeer
+	}
+
+	protected override object GetPatternCore(PatternInterface patternInterface)
+	{
+		object ppReturnValue = null;
+
+		if (patternInterface == PatternInterface.TableItem ||
+			patternInterface == PatternInterface.SelectionItem)
 		{
-			public CalendarViewDayItemAutomationPeer(CalendarViewDayItem owner) : base(owner)
-			{
-			}
+			ppReturnValue = this;
+		}
+		else
+		{
+			ppReturnValue = base.GetPatternCore(patternInterface);
+		}
 
-			protected override object GetPatternCore(PatternInterface patternInterface)
-			{
-				object ppReturnValue = null;
+		return ppReturnValue;
+	}
 
-				if (patternInterface == PatternInterface.TableItem ||
-					patternInterface == PatternInterface.SelectionItem)
-				{
-					ppReturnValue = this;
-				}
-				else
-				{
-					ppReturnValue = base.GetPatternCore(patternInterface);
-				}
+	protected override AutomationControlType GetAutomationControlTypeCore()
+	{
+		var pReturnValue = AutomationControlType.DataItem;
 
-				return ppReturnValue;
-			}
+		return pReturnValue;
+	}
 
-			protected override AutomationControlType GetAutomationControlTypeCore()
-			{
-				var pReturnValue = AutomationControlType.DataItem;
+	protected override string GetClassNameCore()
+	{
+		return "CalendarViewDayItem";
+	}
 
-				return pReturnValue;
-			}
+	protected override bool IsEnabledCore()
+	{
+		bool pReturnValue;
+		UIElement spOwner;
+		spOwner = Owner;
 
-			protected override string GetClassNameCore()
-			{
-				return "CalendarViewDayItem";
-			}
+		bool isBlackout = false;
+		isBlackout = ((CalendarViewDayItem)spOwner).IsBlackout;
 
-			protected override bool IsEnabledCore()
-			{
-				bool pReturnValue;
-				UIElement spOwner;
-				spOwner = Owner;
+		// This property also takes in consideration of a day is 'blackout' or not. Blackout dates are disabled
+		if (isBlackout)
+		{
+			pReturnValue = false;
+		}
+		else
+		{
+			pReturnValue = base.IsEnabledCore();
+		}
 
-				bool isBlackout = false;
-				isBlackout = ((CalendarViewDayItem)spOwner).IsBlackout;
-
-				// This property also takes in consideration of a day is 'blackout' or not. Blackout dates are disabled
-				if (isBlackout)
-				{
-					pReturnValue = false;
-				}
-				else
-				{
-					pReturnValue = base.IsEnabledCore();
-				}
-
-				return pReturnValue;
-			}
+		return pReturnValue;
+	}
 
 #if false
 			private void GetColumnHeaderItemsImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
@@ -331,6 +330,4 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 #endif
-		}
-	}
 }

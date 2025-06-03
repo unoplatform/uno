@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			AutomationPeer ppAutomationPeer = null;
 
-			CalendarViewItem.CalendarViewItemAutomationPeer spAutomationPeer;
+			CalendarViewItemAutomationPeer spAutomationPeer;
 			spAutomationPeer = new CalendarViewItemAutomationPeer(this);
 			ppAutomationPeer = spAutomationPeer;
 			return ppAutomationPeer;

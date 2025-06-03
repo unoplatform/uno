@@ -22,5 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		}
 #endif
+
+		internal DateTime GetDate() => DateBase;
 	}
 }
