@@ -82,13 +82,107 @@ internal partial class InputManager
 
 			CoreWindow.GetForCurrentThreadSafe()?.SetPointerInputSource(_source);
 
-			_source.PointerMoved += (c, e) => OnPointerMoved(e);
-			_source.PointerEntered += (c, e) => OnPointerEntered(e);
-			_source.PointerExited += (c, e) => OnPointerExited(e);
-			_source.PointerPressed += (c, e) => OnPointerPressed(e);
-			_source.PointerReleased += (c, e) => OnPointerReleased(e);
-			_source.PointerWheelChanged += (c, e) => OnPointerWheelChanged(e);
-			_source.PointerCancelled += (c, e) => OnPointerCancelled(e);
+			_source.PointerMoved += (c, e) =>
+			{
+				try
+				{
+					OnPointerMoved(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerMoved), error);
+				}
+			};
+			_source.PointerEntered += (c, e) =>
+			{
+				try
+				{
+					OnPointerEntered(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerEntered), error);
+				}
+			};
+			_source.PointerExited += (c, e) =>
+			{
+				try
+				{
+					OnPointerExited(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerExited), error);
+				}
+			};
+			_source.PointerPressed += (c, e) =>
+			{
+				try
+				{
+					OnPointerPressed(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerPressed), error);
+				}
+			};
+			_source.PointerReleased += (c, e) =>
+			{
+				try
+				{
+					OnPointerReleased(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerReleased), error);
+				}
+			};
+			_source.PointerWheelChanged += (c, e) =>
+			{
+				try
+				{
+					OnPointerWheelChanged(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerWheelChanged), error);
+				}
+			};
+			_source.PointerCancelled += (c, e) =>
+			{
+				try
+				{
+					OnPointerCancelled(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerCancelled), error);
+				}
+			};
+		}
+
+		private void OnTopLevelFatalError(string evt, Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Critical))
+			{
+				this.Log().Critical($"""
+					Critical error while handling pointer event '{evt}'.
+					This is a top level error handler to prevent application crash, but error is not recoverable and pointers are expected to work erratically starting from now.
+					Application restart is required to continue.
+					Please report issue to the team.
+					""",
+					error);
+			}
+
+			// Attempt to recover by clearing all states that can prevent normal pointer event dispatching.
+			try
+			{
+				_directManipulations.ClearForFatalError();
+				_gestureRecognizers.ClearForFataError();
+				PointerCapture.ClearForFatalError();
+				_reRouted = null;
+			}
+			catch { }
 		}
 
 		#region Current event dispatching transaction

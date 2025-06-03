@@ -411,6 +411,15 @@ partial class InputManager
 			/// <inheritdoc />
 			IEnumerator IEnumerable.GetEnumerator()
 				=> GetEnumerator();
+
+			public void ClearForFataError()
+			{
+				for (var i = 0; i < _length; i++)
+				{
+					_hasValues[i] = false;
+					_values[i] = default!;
+				}
+			}
 		}
 	}
 }
