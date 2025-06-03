@@ -36,21 +36,13 @@
 			<!-- Styles -->
 			<Style x:Key="BaseTitleGridContainerStyle"
 				   TargetType="Grid">
-				<Setter Property="BorderBrush"
-						Value="{ThemeResource Color05Brush}" />
-				<Setter Property="BorderThickness"
-						Value="0,0,0,0" />
 				<Setter Property="Margin" Value="4" />
 				<Setter Property="Background"
-						Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+						Value="{ThemeResource NavigationViewExpandedPaneBackground}" />
 			</Style>
 
 			<Style x:Key="BaseTitleContainerStyle"
 				   TargetType="Border">
-				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
-				<Setter Property="BorderThickness"
-						Value="0,0,0,1" />
 				<Setter Property="HorizontalAlignment"
 						Value="Stretch" />
 			</Style>
@@ -71,10 +63,6 @@
 
 			<Style x:Key="TemplateContainerStyle"
 				   TargetType="Border">
-				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
-				<Setter Property="BorderThickness"
-						Value="0,0,0,1" />
 				<Setter Property="Margin"
 						Value="4,0,4,0" />
 				<Setter Property="Padding"
@@ -221,103 +209,101 @@
 		</ResourceDictionary>
 	</UserControl.Resources>
 
-	<SplitView x:Name="SplitView"
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<SplitView x:Name="SplitView"
 			   IsPaneOpen="{Binding IsSplitVisible, Mode=TwoWay}"
 			   OpenPaneLength="280"
 			   DisplayMode="Overlay">
-		<VisualStateManager.VisualStateGroups>
-			<VisualStateGroup>
-				<VisualState x:Name="TabletState">
-					<VisualState.StateTriggers>
-						<AdaptiveTrigger MinWindowWidth="500" />
-					</VisualState.StateTriggers>
-					<VisualState.Setters>
-						<Setter Target="SplitView.DisplayMode"
+			<VisualStateManager.VisualStateGroups>
+				<VisualStateGroup>
+					<VisualState x:Name="TabletState">
+						<VisualState.StateTriggers>
+							<AdaptiveTrigger MinWindowWidth="500" />
+						</VisualState.StateTriggers>
+						<VisualState.Setters>
+							<Setter Target="SplitView.DisplayMode"
 								Value="Inline" />
-					</VisualState.Setters>
-				</VisualState>
-			</VisualStateGroup>
-		</VisualStateManager.VisualStateGroups>
-		<SplitView.Pane>
-			<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-				  BorderBrush="LightGray"
-				  BorderThickness="0,0,1,0"
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateManager.VisualStateGroups>
+			<SplitView.Pane>
+				<Grid Background="{ThemeResource NavigationViewContentBackground}"
 				  toolkit:VisibleBoundsPadding.PaddingMask="All">
-
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="*" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-
-				<!-- LIBRARY (Categories)-->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
-					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
-
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
-					<!-- Runtime tests button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+					<!-- LIBRARY (Categories)-->
+					<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
+					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<!-- Runtime tests button -->
+						<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
 							Command="{Binding OpenRuntimeTestsCommand}">
-						<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
+							<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
 									   Margin="5,0" />
-					</Button>
+						</Button>
 
-					<!-- Playground button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+						<!-- Playground button -->
+						<Button Style="{StaticResource IconButtonStyle}"
 							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
 							Grid.Column="1"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
 							Command="{Binding OpenPlaygroundCommand}">
-						<FontIcon Glyph="&#xE7FC;" />
-					</Button>
+							<FontIcon Glyph="&#xE7FC;" />
+						</Button>
 
-					<!-- Title -->
-					<StackPanel Grid.Column="2">
-						<Image Source="ms-appx:///Assets/AppLogoSmall.png" Width="32" Margin="0,0,0,2" />
-						<TextBlock FontSize="10" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding TargetPlatform}" />
-						<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" TextTrimming="CharacterEllipsis" />
-					</StackPanel>
+						<!-- Title -->
+						<StackPanel Grid.Column="2">
+							<Image Source="ms-appx:///Assets/AppLogoSmall.png" Width="32" Margin="0,0,0,2" />
+							<TextBlock FontSize="10" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding TargetPlatform}" />
+							<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" TextTrimming="CharacterEllipsis" />
+						</StackPanel>
 
-					<Button Style="{StaticResource IconButtonStyle}"
+						<Button Style="{StaticResource IconButtonStyle}"
 							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
 							Grid.Column="3"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
 							Command="{Binding CreateNewWindowCommand}">
-						<FontIcon Glyph="&#xE8A7;" />
-					</Button>
+							<FontIcon Glyph="&#xE8A7;" />
+						</Button>
 
-					<!-- Record All Tests Button -->
-					<Button
+						<!-- Record All Tests Button -->
+						<Button
 						Grid.Column="4"
 						Style="{StaticResource IconButtonStyle}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Right"
 						Command="{Binding RecordAllTestsCommand}">
-						<u:PathControl Style="{StaticResource Icon_RunAll}" Margin="5,0" />
-					</Button>
-				</Grid>
+							<u:PathControl Style="{StaticResource Icon_RunAll}" Margin="5,0" />
+						</Button>
+					</Grid>
 
-				<!-- Search -->
-				<StackPanel IsTabStop="True" Grid.Row="1" Spacing="4" Padding="4" BorderThickness="0,0,0,1"
-BorderBrush="{StaticResource Color05Brush}">
-					<AutoSuggestBox PlaceholderText="Search..."
+					<!-- Search -->
+					<StackPanel IsTabStop="True" Grid.Row="1" Spacing="4" Padding="4">
+						<AutoSuggestBox PlaceholderText="Search..."
 						TextChanged="SearchBox_TextChanged"
 						TextMemberPath="ControlName"
 						QueryIcon="Find"
@@ -325,152 +311,149 @@ BorderBrush="{StaticResource Color05Brush}">
 						HorizontalAlignment="Stretch"
 						QuerySubmitted="SearchBox_QuerySubmitted"
 						SuggestionChosen="SearchBox_SuggestionChosen">
-						<AutoSuggestBox.ItemTemplate>
-							<DataTemplate x:DataType="entities:SampleChooserContent">
-								<TextBlock Text="{x:Bind ControlName}" />
-							</DataTemplate>
-						</AutoSuggestBox.ItemTemplate>
-					</AutoSuggestBox>
+							<AutoSuggestBox.ItemTemplate>
+								<DataTemplate x:DataType="entities:SampleChooserContent">
+									<TextBlock Text="{x:Bind ControlName}" />
+								</DataTemplate>
+							</AutoSuggestBox.ItemTemplate>
+						</AutoSuggestBox>
 
 
-					<CheckBox Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Center" 
+						<CheckBox Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Center" 
 							  IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}" Content="Manual tests only" />
-				</StackPanel>
+					</StackPanel>
 
-				<ContentControl ContentTemplate="{StaticResource CategoriesList}"
+					<ContentControl ContentTemplate="{StaticResource CategoriesList}"
 								Grid.Row="2"
 								HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}" />
 
-				<!--SAMPLES-->
-				<ContentControl HorizontalContentAlignment="Stretch"
+					<!--SAMPLES-->
+					<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource SamplesTitle}" />
 
 
-				<ContentControl HorizontalContentAlignment="Stretch"
+					<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Grid.Row="2"
 								Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource SamplesList}" />
 
-				<!--FAVORITES-->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
+					<!--FAVORITES-->
+					<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
 					  Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource Typo03}"
+						<TextBlock Style="{StaticResource Typo03}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
 							   Text="Favorites" />
-				</Grid>
-				<ContentControl HorizontalContentAlignment="Stretch"
+					</Grid>
+					<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Grid.Row="2"
 								Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource FavoritesList}" />
 
-				<!--RECENTS-->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
+					<!--RECENTS-->
+					<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
 					  Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource Typo03}"
+						<TextBlock Style="{StaticResource Typo03}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
 							   Text="Recents" />
-				</Grid>
-				<ContentControl HorizontalContentAlignment="Stretch"
+					</Grid>
+					<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Grid.Row="2"
 								Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource RecentSamplesList}" />
 
-				<!--NAVIGATION BUTTONS-->
-				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-
-						BorderThickness="0,1,0,0"
-						BorderBrush="{StaticResource Color05Brush}"
+					<!--NAVIGATION BUTTONS-->
+					<Border Background="{ThemeResource NavigationViewExpandedPaneBackground}"
 						Height="50"
 						Grid.Row="3">
-					<u:StarStackPanel VerticalAlignment="Stretch"
+						<u:StarStackPanel VerticalAlignment="Stretch"
 									  Sizes="*,*,*"
 									  Orientation="Horizontal">
-						<!--Button foreground has to be set by converter instead of Button's visual state
+							<!--Button foreground has to be set by converter instead of Button's visual state
 							because path foreground doesn't change through visual states.-->
-						<RadioButton GroupName="SelectedSectionPhone"
+							<RadioButton GroupName="SelectedSectionPhone"
 									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
 									 IsChecked="{Binding CategoriesSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Library">
-							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-								<FontIcon Glyph="&#xE8F1;" />
-								<TextBlock Style="{StaticResource Typo06}"
+								<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+									<FontIcon Glyph="&#xE8F1;" />
+									<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
 										   Text="Library" />
-							</StackPanel>
-						</RadioButton>
+								</StackPanel>
+							</RadioButton>
 
-						<RadioButton GroupName="SelectedSectionPhone"
+							<RadioButton GroupName="SelectedSectionPhone"
 									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
 									 IsChecked="{Binding FavoritesSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Favorites">
-							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-								<FontIcon Glyph="&#xE734;" />
-								<TextBlock Style="{StaticResource Typo06}"
+								<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+									<FontIcon Glyph="&#xE734;" />
+									<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
 										   Text="Favorites" />
-							</StackPanel>
-						</RadioButton>
+								</StackPanel>
+							</RadioButton>
 
-						<RadioButton GroupName="SelectedSectionPhone"
+							<RadioButton GroupName="SelectedSectionPhone"
 									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
 									 IsChecked="{Binding RecentsSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Recents">
-							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-								<FontIcon Glyph="&#xE823;" />
-								<TextBlock Style="{StaticResource Typo06}"
+								<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+									<FontIcon Glyph="&#xE823;" />
+									<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
 										   Text="Recents" />
-							</StackPanel>
-						</RadioButton>
-					</u:StarStackPanel>
-				</Border>
-			</Grid>
-		</SplitView.Pane>
-		<SplitView.Content>
-			<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+								</StackPanel>
+							</RadioButton>
+						</u:StarStackPanel>
+					</Border>
+				</Grid>
+			</SplitView.Pane>
+			<SplitView.Content>
+				<Grid Background="{ThemeResource NavigationViewContentBackground}"
 				  toolkit:VisibleBoundsPadding.PaddingMask="All">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="*" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-				<!-- CONTENT -->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}" ColumnSpacing="4">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="50" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<!-- CONTENT -->
+					<Grid Style="{StaticResource BaseTitleGridContainerStyle}" Background="{ThemeResource NavigationViewTopPaneBackground}" ColumnSpacing="4">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="50" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
 
-					<!-- Back Button -->
-					<ToggleButton Style="{StaticResource BurgerButtonStyle}"
+						<!-- Back Button -->
+						<ToggleButton Style="{StaticResource BurgerButtonStyle}"
 								  IsChecked="{Binding IsPaneOpen, ElementName=SplitView, Mode=TwoWay}"
 								  IsEnabled="{Binding IsRecordAllTests, Converter={StaticResource reverseBoolConverter}}"
 								  HorizontalAlignment="Left"
 								  VerticalAlignment="Center" />
 
-					<!-- Sample Name -->
-					<TextBlock Text="{Binding CurrentSelectedSample.ControlName}"
+						<!-- Sample Name -->
+						<TextBlock Text="{Binding CurrentSelectedSample.ControlName}"
 							   Style="{StaticResource Typo03}"
 							   HorizontalAlignment="Center"
 							   TextAlignment="Center"
@@ -479,8 +462,8 @@ BorderBrush="{StaticResource Color05Brush}">
 							   VerticalAlignment="Center"
 							   Grid.Column="1" />
 
-					<!-- Info Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+						<!-- Info Button -->
+						<Button Style="{StaticResource IconButtonStyle}"
 							x:Name="InfoButton"
 							Grid.Column="2"
 							FontWeight="SemiBold"
@@ -490,123 +473,122 @@ BorderBrush="{StaticResource Color05Brush}">
 							HorizontalContentAlignment="Center"
 							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
 							Visibility="{Binding IsDebug}">
-						<Button.Content>
-							<SymbolIcon Symbol="Help" />
-						</Button.Content>
-						<Button.Flyout>
-							<Flyout>
-								<u:SampleInfoControl DataContext="{Binding CurrentSelectedSample}" />
-							</Flyout>
-						</Button.Flyout>
-					</Button>
+							<Button.Content>
+								<SymbolIcon Symbol="Help" />
+							</Button.Content>
+							<Button.Flyout>
+								<Flyout>
+									<u:SampleInfoControl DataContext="{Binding CurrentSelectedSample}" />
+								</Flyout>
+							</Button.Flyout>
+						</Button>
 
-					<!-- Previous Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+						<!-- Previous Button -->
+						<Button Style="{StaticResource IconButtonStyle}"
 					        Grid.Column="3"
 					        Command="{Binding LoadPreviousTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
-						<FontIcon Glyph="&#xE76B;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
-					</Button>
+							<FontIcon Glyph="&#xE76B;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+						</Button>
 
-					<!-- Reload Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+						<!-- Reload Button -->
+						<Button Style="{StaticResource IconButtonStyle}"
 					        Grid.Column="4"
 					        Command="{Binding ReloadCurrentTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
-						<FontIcon Glyph="&#xE72C;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
-					</Button>
+							<FontIcon Glyph="&#xE72C;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+						</Button>
 
-					<!-- Next Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+						<!-- Next Button -->
+						<Button Style="{StaticResource IconButtonStyle}"
 					        Grid.Column="5"
 					        Command="{Binding LoadNextTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
-						<FontIcon Glyph="&#xE76C;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
-					</Button>
+							<FontIcon Glyph="&#xE76C;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+						</Button>
 
-					<!-- Favorite Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+						<!-- Favorite Button -->
+						<Button Style="{StaticResource IconButtonStyle}"
 							Grid.Column="6"
 							Command="{Binding ToggleFavoriteCommand}"
 							CommandParameter="{Binding CurrentSelectedSample}">
-						<Grid>
-							<FontIcon Glyph="&#xE734;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToCollapsed}}" />
-							<FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE735;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToVisible}}" />
-						</Grid>
+							<Grid>
+								<FontIcon Glyph="&#xE734;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToCollapsed}}" />
+								<FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE735;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToVisible}}" />
+							</Grid>
 
-					</Button>
+						</Button>
 
-					<!-- Overflow More(...) Button -->
-					<Button Grid.Column="10"
+						<!-- Overflow More(...) Button -->
+						<Button Grid.Column="10"
 							Margin="0,0,8,0"
 							Style="{StaticResource SampleControlButtonStyle}">
-						<SymbolIcon Symbol="More" />
-						<Button.Flyout>
-							<MenuFlyout>
-								<MenuFlyoutSubItem Text="Theme" x:Name="ThemeMenuFlyout">
-									<MenuFlyoutSubItem.Icon>
-										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
-									</MenuFlyoutSubItem.Icon>
-									<RadioMenuFlyoutItem Text="System" IsChecked="{Binding IsAppThemeSystem, Mode=TwoWay}" Tag="Auto" GroupName="AppTheme" />
-									<RadioMenuFlyoutItem Text="Light" IsChecked="{Binding IsAppThemeLight, Mode=TwoWay}" Tag="Light" GroupName="AppTheme" />
-									<RadioMenuFlyoutItem Text="Dark" IsChecked="{Binding IsAppThemeDark, Mode=TwoWay}" Tag="Dark" GroupName="AppTheme" />
-								</MenuFlyoutSubItem>
-								<ToggleMenuFlyoutItem Text="Use Fluent styles" IsChecked="{Binding UseFluentStyles, Mode=TwoWay}">
-									<ToggleMenuFlyoutItem.Icon>
-										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
-									</ToggleMenuFlyoutItem.Icon>
-								</ToggleMenuFlyoutItem>
-								<ToggleMenuFlyoutItem Text="Flow text right-to-left" IsChecked="{Binding UseRtl, Mode=TwoWay}">
-									<ToggleMenuFlyoutItem.Icon>
-										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9AB;" />
-									</ToggleMenuFlyoutItem.Icon>
-								</ToggleMenuFlyoutItem>
-								<not_win:ToggleMenuFlyoutItem Text="Keep popups open on breakpoints" IsChecked="{Binding PreventLightDismissOnWindowDeactivated, Mode=TwoWay}">
-									<not_win:ToggleMenuFlyoutItem.Icon>
-										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE92F;" />
-									</not_win:ToggleMenuFlyoutItem.Icon>
-								</not_win:ToggleMenuFlyoutItem>
-								<not_win:ToggleMenuFlyoutItem Text="Simulate touch" IsChecked="{Binding SimulateTouch, Mode=TwoWay}">
-									<not_win:ToggleMenuFlyoutItem.Icon>
-										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE815;" />
-									</not_win:ToggleMenuFlyoutItem.Icon>
-								</not_win:ToggleMenuFlyoutItem>
-								<ToggleMenuFlyoutItem Text="Show FPS Indicator" IsChecked="{Binding ShowFpsIndicator, Mode=TwoWay}">
-									<ToggleMenuFlyoutItem.Icon>
-										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC4A;" />
-									</ToggleMenuFlyoutItem.Icon>
-								</ToggleMenuFlyoutItem>
-								<MenuFlyoutItem Text="Log view dump" Command="{Binding LogViewDumpCommand}" Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
-									<MenuFlyoutItem.Icon>
-										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
-									</MenuFlyoutItem.Icon>
-								</MenuFlyoutItem>
-							</MenuFlyout>
-						</Button.Flyout>
-					</Button>
-				</Grid>
+							<SymbolIcon Symbol="More" />
+							<Button.Flyout>
+								<MenuFlyout>
+									<MenuFlyoutSubItem Text="Theme" x:Name="ThemeMenuFlyout">
+										<MenuFlyoutSubItem.Icon>
+											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
+										</MenuFlyoutSubItem.Icon>
+										<RadioMenuFlyoutItem Text="System" IsChecked="{Binding IsAppThemeSystem, Mode=TwoWay}" Tag="Auto" GroupName="AppTheme" />
+										<RadioMenuFlyoutItem Text="Light" IsChecked="{Binding IsAppThemeLight, Mode=TwoWay}" Tag="Light" GroupName="AppTheme" />
+										<RadioMenuFlyoutItem Text="Dark" IsChecked="{Binding IsAppThemeDark, Mode=TwoWay}" Tag="Dark" GroupName="AppTheme" />
+									</MenuFlyoutSubItem>
+									<ToggleMenuFlyoutItem Text="Use Fluent styles" IsChecked="{Binding UseFluentStyles, Mode=TwoWay}">
+										<ToggleMenuFlyoutItem.Icon>
+											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
+										</ToggleMenuFlyoutItem.Icon>
+									</ToggleMenuFlyoutItem>
+									<ToggleMenuFlyoutItem Text="Flow text right-to-left" IsChecked="{Binding UseRtl, Mode=TwoWay}">
+										<ToggleMenuFlyoutItem.Icon>
+											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9AB;" />
+										</ToggleMenuFlyoutItem.Icon>
+									</ToggleMenuFlyoutItem>
+									<not_win:ToggleMenuFlyoutItem Text="Keep popups open on breakpoints" IsChecked="{Binding PreventLightDismissOnWindowDeactivated, Mode=TwoWay}">
+										<not_win:ToggleMenuFlyoutItem.Icon>
+											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE92F;" />
+										</not_win:ToggleMenuFlyoutItem.Icon>
+									</not_win:ToggleMenuFlyoutItem>
+									<not_win:ToggleMenuFlyoutItem Text="Simulate touch" IsChecked="{Binding SimulateTouch, Mode=TwoWay}">
+										<not_win:ToggleMenuFlyoutItem.Icon>
+											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE815;" />
+										</not_win:ToggleMenuFlyoutItem.Icon>
+									</not_win:ToggleMenuFlyoutItem>
+									<ToggleMenuFlyoutItem Text="Show FPS Indicator" IsChecked="{Binding ShowFpsIndicator, Mode=TwoWay}">
+										<ToggleMenuFlyoutItem.Icon>
+											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC4A;" />
+										</ToggleMenuFlyoutItem.Icon>
+									</ToggleMenuFlyoutItem>
+									<MenuFlyoutItem Text="Log view dump" Command="{Binding LogViewDumpCommand}" Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
+										<MenuFlyoutItem.Icon>
+											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
+										</MenuFlyoutItem.Icon>
+									</MenuFlyoutItem>
+								</MenuFlyout>
+							</Button.Flyout>
+						</Button>
+					</Grid>
 
-				<!-- Sample Content -->
-				<ContentControl Content="{Binding ContentPhone}"
+					<!-- Sample Content -->
+					<ContentControl Content="{Binding ContentPhone}"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Grid.Row="1"/>
 
-				<StackPanel Grid.Row="2"
+					<StackPanel Grid.Row="2"
 							Padding="8"
-							BorderThickness="0,1,0,0"
-							BorderBrush="{ThemeResource Color05Brush}"
-							Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+							Background="{ThemeResource NavigationViewExpandedPaneBackground}"
 							Visibility="{Binding CurrentSelectedSample.Description, Converter={StaticResource StringEmptyToVisibilityConverter}}">
-					<TextBlock Text="Description"
+						<TextBlock Text="Description"
 							Style="{StaticResource Typo03}"
 							Margin="0,0,0,4" />
-					<TextBlock Text="{Binding CurrentSelectedSample.Description}"
+						<TextBlock Text="{Binding CurrentSelectedSample.Description}"
 							Style="{StaticResource Typo05}"
 							MaxHeight="80" />
-				</StackPanel>
-			</Grid>
-		</SplitView.Content>
-	</SplitView>
+					</StackPanel>
+				</Grid>
+			</SplitView.Content>
+		</SplitView>
+	</Grid>
 </UserControl>
