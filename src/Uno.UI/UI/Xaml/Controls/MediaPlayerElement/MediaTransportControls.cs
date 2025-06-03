@@ -144,6 +144,11 @@ namespace Microsoft.UI.Xaml.Controls
 			InitializeTemplateChild(TemplateParts.TimeRemainingElement, UIAKeys.UIA_MEDIA_TIME_REMAINING, out m_tpTimeRemainingElement);
 			if (InitializeTemplateChild(TemplateParts.ProgressSlider, UIAKeys.UIA_MEDIA_SEEK, out m_tpMediaPositionSlider))
 			{
+#if HAS_UNO
+				// removes the "Seek" tooltip completely, which can get stuck sometimes when scrubbing.
+				ToolTipService.SetToolTip(m_tpMediaPositionSlider, null);
+#endif
+
 				if (m_tpMediaPositionSlider.TemplatedRoot is { } || m_tpMediaPositionSlider.ApplyTemplate())
 				{
 					m_tpDownloadProgressIndicator = m_tpMediaPositionSlider.GetTemplateChild<ProgressBar>(TemplateParts.DownloadProgressIndicator);
