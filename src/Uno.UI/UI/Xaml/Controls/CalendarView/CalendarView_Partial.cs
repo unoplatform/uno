@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private const char RTL_CHARACTER_CODE = '\x8207';
 
-		TrackableDateCollection m_tpSelectedDates;
+		internal TrackableDateCollection m_tpSelectedDates;
 
 		Button m_tpHeaderButton;
 		Button m_tpPreviousButton;
