@@ -20,8 +20,16 @@
 		<Setter Property="IsHitTestVisible" Value="False" />
 		<Setter Property="HorizontalAlignment" Value="Left" />
 		<Setter Property="VerticalAlignment" Value="Top" />
-		<Setter Property="Padding" Value="0" />
-		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="Foreground" Value="{ThemeResource ToolTipForegroundBrush}" />
+		<Setter Property="Background" Value="{ThemeResource ToolTipBackgroundBrush}" />
+		<Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
+		<Setter Property="BorderBrush" Value="{ThemeResource ToolTipBorderBrush}" />
+		<Setter Property="BorderThickness" Value="{ThemeResource ToolTipBorderThemeThickness}" />
+		<Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+		<Setter Property="FontSize" Value="{ThemeResource ToolTipContentThemeFontSize}" />
+		<Setter Property="Padding" Value="{StaticResource ToolTipBorderPadding}" />
+		<Setter Property="MaxWidth" Value="{StaticResource ToolTipMaxWidth}" />
+		<Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="DragView">
@@ -32,20 +40,24 @@
 							</Image.RenderTransform>
 						</Image>
 						<StackPanel
-							HorizontalAlignment="Left"
-							VerticalAlignment="Top"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
 							Orientation="Horizontal"
-							BorderThickness="1"
-							BorderBrush="{StaticResource SystemControlForegroundChromeHighBrush}"
-							Background="{StaticResource SystemControlBackgroundChromeMediumLowBrush}"
-							Padding="2,5"
-							Visibility="{TemplateBinding TooltipVisibility}">
+							BorderThickness="{TemplateBinding BorderThickness}"
+							Background="{TemplateBinding Background}"
+							BackgroundSizing="{TemplateBinding BackgroundSizing}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							MaxWidth="{TemplateBinding MaxWidth}"
+							Padding="{TemplateBinding Padding}"
+							CornerRadius="{TemplateBinding CornerRadius}"
+							Visibility="{TemplateBinding TooltipVisibility}"
+							Spacing="4">
 							<StackPanel.RenderTransform>
 								<!-- The caption is above the pointer -->
 								<TranslateTransform Y="-40" />
 							</StackPanel.RenderTransform>
-							<FontIcon Visibility="{TemplateBinding GlyphVisiblity}" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{TemplateBinding Glyph}" Margin="3,0" />
-							<TextBlock Visibility="{TemplateBinding CaptionVisiblity}" Text="{TemplateBinding Caption}" Margin="3,0" />
+							<FontIcon Visibility="{TemplateBinding GlyphVisibility}" VerticalAlignment="Center" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{TemplateBinding Glyph}" />
+							<TextBlock Visibility="{TemplateBinding CaptionVisibility}" VerticalAlignment="Center" Text="{TemplateBinding Caption}" />
 						</StackPanel>
 					</Grid>
 				</ControlTemplate>
