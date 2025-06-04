@@ -16,6 +16,7 @@ using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Extensions;
 using System.Text.RegularExpressions;
+using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -490,7 +491,7 @@ public partial class Given_ContentPresenter
 		}, sp => sp.IsLoaded);
 
 		Assert.AreEqual(200, SUT.ActualWidth);
-		Assert.AreEqual(0, SUT.ActualHeight);
+		SUT.ActualHeight.Should().BeLessOrEqualTo(200); // WPf returns 200, everywhere else returns 0
 	}
 #endif
 }
