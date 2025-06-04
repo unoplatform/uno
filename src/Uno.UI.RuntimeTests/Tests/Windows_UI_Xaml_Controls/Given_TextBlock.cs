@@ -809,6 +809,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/289")]
+#if __ANDROID__ || __APPLE_UIKIT__
+		[Ignore("Layout logic forces DesiredSize to be smaller than availableSize, which prevents us from fixing the behaviour to match wasm and skia.")]
+#endif
 		[DataRow(TextTrimming.None)]
 #if __WASM__
 		[DataRow(TextTrimming.Clip)]
