@@ -21,7 +21,8 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 // https://github.com/tmds/Tmds.DBus/blob/main/docs/modelling.md#argument-types
 
 /// <summary>
-/// This class implements the org.freedesktop.portal.FileChooser portal for files as defined by freedesktop.org
+/// This class implements v4 of the org.freedesktop.portal.FileChooser portal for files as defined by freedesktop.org
+/// v4 is backwards compatible with v3, so this file also implements v4.
 /// </summary>
 internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerExtension
 {
@@ -72,11 +73,11 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			}
 
 			var version = await chooser.GetVersionAsync();
-			if (version != 3)
+			if (version is not 3 and not 4)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"File pickers are only implemented for version 3 of the File chooser portal, but version {version} was found");
+					this.Log().Error($"File pickers are only implemented for version 3 and 4 of the File chooser portal, but version {version} was found");
 				}
 				return null;
 			}
