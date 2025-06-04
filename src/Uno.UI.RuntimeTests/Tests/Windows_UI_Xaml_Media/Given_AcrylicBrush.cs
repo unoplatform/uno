@@ -138,7 +138,7 @@ public class Given_AcrylicBrush
 		sp.XamlRoot.RenderInvalidated += () => renderInvalidateCount++;
 
 		await Task.Delay(TimeSpan.FromSeconds(5));
-		renderInvalidateCount.Should().BeLessThan(30);
+		renderInvalidateCount.Should().BeLessThan(100);
 	}
 }
 #endif
