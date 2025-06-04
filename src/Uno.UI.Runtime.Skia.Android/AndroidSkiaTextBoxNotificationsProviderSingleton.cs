@@ -32,16 +32,27 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 		if (UnoSKCanvasView.Instance is { } canvasView)
 		{
-			// Hide the keyboard only when the next focused element is not a TextBox
+			// Hide the keyboard only when the next element to be focused is not an Element that
+			// could require the keyboard (TextBox, AutoSuggestBox, NumberBox, etc.).
 			// This prevents the keyboard from flickering when switching between TextBoxes
 			// https://github.com/unoplatform/uno-private/issues/1160
-			var xamlRoot = textBox.XamlRoot;
-			if (xamlRoot is null || FocusManager.GetFocusingElement(xamlRoot) is not TextBox)
+			if (IsFocusingElementKeyboardActivator(textBox.XamlRoot))
 			{
 				canvasView.TextInputPlugin.HideTextInput();
 			}
 
 			canvasView.TextInputPlugin.NotifyViewExited(textBox.GetHashCode());
+		}
+
+		static bool IsFocusingElementKeyboardActivator(XamlRoot? xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				return true;
+			}
+
+			var focusingElement = FocusManager.GetFocusingElement(xamlRoot) as FrameworkElement;
+			return !CouldRequireKeyboard(focusingElement);
 		}
 	}
 
@@ -71,5 +82,12 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 		{
 			canvasView.TextInputPlugin.NotifyValueChanged(textBox.GetHashCode(), textBox.Text);
 		}
+	}
+
+	private static bool CouldRequireKeyboard(FrameworkElement? element)
+	{
+		return element is TextBox ||
+		element is AutoSuggestBox ||
+		element is NumberBox;
 	}
 }
