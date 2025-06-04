@@ -91,8 +91,8 @@ namespace Microsoft.UI.Xaml.Controls
 		internal override bool HitTest(Point point)
 		{
 			var transform = GetTransform(this, (UIElement)this.GetParent());
-			Matrix3x2.Invert(transform, out var inverted);
-			return inverted.Transform(LayoutSlotWithMarginsAndAlignments).Contains(point);
+			var success = Matrix3x2.Invert(transform, out var inverted);
+			return success && inverted.Transform(LayoutSlotWithMarginsAndAlignments).Contains(point);
 		}
 
 		partial void OnIsTextSelectionEnabledChangedPartial()
