@@ -8,12 +8,13 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;')) OR $(IsDesktop) == 'true'">
+	<!-- SkiaSharp.Views are always included on Skia Renderer targets -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;')) OR $(UnoFeatures.Contains(';skiarenderer;')) OR $(IsDesktop) == 'true'">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
-		<_UnoProjectSystemPackageReference Remove="SkiaSharp.Views.Uno.WinUI" Condition="!$(UnoFeatures.Contains(';skia;')) AND $(IsBrowserWasm)" />
+		<_UnoProjectSystemPackageReference Remove="SkiaSharp.Views.Uno.WinUI" Condition="$(IsBrowserWasm) AND !$(UnoFeatures.Contains(';skia;')) AND !$(UnoFeatures.Contains(';skiarenderer;'))" /> <!-- Exclude SkiaSharp on WASM if not explicitly included and when not using Skia Renderer -->
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true' AND ('$(IsBrowserWasm)' != 'true' OR $(UnoFeatures.Contains(';skiarenderer;')))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true' AND ('$(IsBrowserWasm)' != 'true' OR $(UnoFeatures.Contains(';skiarenderer;')))"> <!-- Exclude the package on WASM with native renderer (not needed) -->
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
 	</ItemGroup>
 
