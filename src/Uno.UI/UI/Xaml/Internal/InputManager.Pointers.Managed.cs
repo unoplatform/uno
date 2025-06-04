@@ -82,13 +82,107 @@ internal partial class InputManager
 
 			CoreWindow.GetForCurrentThreadSafe()?.SetPointerInputSource(_source);
 
-			_source.PointerMoved += (c, e) => OnPointerMoved(e);
-			_source.PointerEntered += (c, e) => OnPointerEntered(e);
-			_source.PointerExited += (c, e) => OnPointerExited(e);
-			_source.PointerPressed += (c, e) => OnPointerPressed(e);
-			_source.PointerReleased += (c, e) => OnPointerReleased(e);
-			_source.PointerWheelChanged += (c, e) => OnPointerWheelChanged(e);
-			_source.PointerCancelled += (c, e) => OnPointerCancelled(e);
+			_source.PointerMoved += (c, e) =>
+			{
+				try
+				{
+					OnPointerMoved(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerMoved), error);
+				}
+			};
+			_source.PointerEntered += (c, e) =>
+			{
+				try
+				{
+					OnPointerEntered(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerEntered), error);
+				}
+			};
+			_source.PointerExited += (c, e) =>
+			{
+				try
+				{
+					OnPointerExited(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerExited), error);
+				}
+			};
+			_source.PointerPressed += (c, e) =>
+			{
+				try
+				{
+					OnPointerPressed(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerPressed), error);
+				}
+			};
+			_source.PointerReleased += (c, e) =>
+			{
+				try
+				{
+					OnPointerReleased(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerReleased), error);
+				}
+			};
+			_source.PointerWheelChanged += (c, e) =>
+			{
+				try
+				{
+					OnPointerWheelChanged(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerWheelChanged), error);
+				}
+			};
+			_source.PointerCancelled += (c, e) =>
+			{
+				try
+				{
+					OnPointerCancelled(e);
+				}
+				catch (Exception error)
+				{
+					OnTopLevelFatalError(nameof(OnPointerCancelled), error);
+				}
+			};
+		}
+
+		private void OnTopLevelFatalError(string evt, Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Critical))
+			{
+				this.Log().Critical($"""
+					Critical error while handling pointer event '{evt}'.
+					This is a top level error handler to prevent application crash, but error is not recoverable and pointers are expected to work erratically starting from now.
+					Application restart is required to continue.
+					Please report issue to the team.
+					""",
+					error);
+			}
+
+			// Attempt to recover by clearing all states that can prevent normal pointer event dispatching.
+			try
+			{
+				_directManipulations.ClearForFatalError();
+				_gestureRecognizers.ClearForFataError();
+				PointerCapture.ClearForFatalError();
+				_reRouted = null;
+			}
+			catch { }
 		}
 
 		#region Current event dispatching transaction
@@ -244,7 +338,7 @@ internal partial class InputManager
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			if (IsRedirectedToManipulations(args.CurrentPoint.Pointer))
+			if (BeforeEnterTryRedirectToManipulation(args))
 			{
 				TraceIgnoredForManipulations(args);
 				return;
@@ -454,7 +548,7 @@ internal partial class InputManager
 			AfterCancelForManipulations(args);
 		}
 
-		private void CancelPointer(PointerEventArgs args, bool isInjected = false, bool isDirectManipulation = false)
+		internal void CancelPointer(PointerEventArgs args, bool isInjected = false, bool isDirectManipulation = false, bool isDirectManipulationResume = false)
 		{
 			if (!HitTestOrRoot(args, _isOver, out var originalSource, out var overStaleBranch))
 			{
@@ -475,12 +569,15 @@ internal partial class InputManager
 			// (The move that trigger the direct manipulation to kick-in might include element boundaries traversal)
 			result += RaiseLeave(routedArgs, overStaleBranch, ref originalSource);
 
-			// Then we raise the cancelled event on element directly under the pointer.
-			// (This will also raise the leave on the "main" branch)
-			result += RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
+			if (!isDirectManipulationResume) // Before resuming a direct manipulation we might have let dispatch only pointer enter events
+			{
+				// Then we raise the cancelled event on element directly under the pointer.
+				// (This will also raise the leave on the "main" branch)
+				result += RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
 
-			// Finally we also make sure to clean the pressed state if any branch was not detected.
-			result += CleanPressedState(routedArgs);
+				// Finally we also make sure to clean the pressed state if any branch was not detected.
+				result += CleanPressedState(routedArgs);
+			}
 
 			// Note: No ReleaseCaptures(routedArgs);, the cancel automatically raise it
 			SetSourceCursor(originalSource);
@@ -911,7 +1008,6 @@ internal partial class InputManager
 		private static void Trace(string text)
 		{
 			_log.Trace(text);
-			Console.WriteLine(text);
 		}
 
 		private void TraceIgnoredAsNoTree(Windows.UI.Core.PointerEventArgs args, [CallerMemberName] string caller = "")

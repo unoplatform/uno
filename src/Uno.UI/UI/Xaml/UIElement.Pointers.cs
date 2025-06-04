@@ -357,6 +357,10 @@ namespace Microsoft.UI.Xaml
 #endif
 
 			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that, args));
+
+#if UNO_HAS_MANAGED_POINTERS
+			that.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.UnregisterUiElementManipulationRecognizer(args.Pointers, sender);
+#endif
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
