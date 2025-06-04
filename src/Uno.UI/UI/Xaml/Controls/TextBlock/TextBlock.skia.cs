@@ -90,6 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// the entire body of the text block is considered hit-testable
 		internal override bool HitTest(Point point)
 		{
+			// This is equivalent to using TransformToVisual but without the unnecessary MatrixTransform allocation.
 			var transform = GetTransform(this, (UIElement)this.GetParent());
 			var success = Matrix3x2.Invert(transform, out var inverted);
 			return success && inverted.Transform(LayoutSlotWithMarginsAndAlignments).Contains(point);
