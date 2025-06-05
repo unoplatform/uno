@@ -31,7 +31,7 @@ Do not set a `ContentTemplate` or a `ContentTemplateSelector` on the `ContentCon
 
 ## Features
 
-The layouting of native elements behaves mostly like regular `UIElement`s, using the native platform's measuring and arranging functions, e.g. `UIKit.UIView.SizeThatFits` on Apple UIKit, if they are present and defaulting to taking the entire available space on targets that don't have corresponding native measuring and arranging methods.
+The layouting of native elements behaves mostly like regular `UIElement`s, using the native platform's measuring and arranging functions, e.g. `UIKit.UIView.SizeThatFits` on Apple UIKit, if they are present and defaulting to taking the entire available space on targets that don't have corresponding native measuring and arranging methods. On targets that don't have native measuring methods and expand to fill all available space, make sure that the wrapping `ContentControl` is not given infinite width or height when being measured, for example, by being put in a StackPanel. In those cases, limit the layout bounds by, for example, setting `MaxWidth`/`MaxHeight`/`Width`/`Height`.
 
 Furthermore, native elements blend and overlap naturally with Uno controls and respect Z-axis ordering. For example, if you open a popup on top of a native element, the popup will show on top of the element. Native-managed blending is not limited to rectangular boundaries and elements clipped with arbitrary paths work as expected. For example, elements with rounded corners that are placed on a native element will not show up as rectangles but behave as usual with rounded corners.
 
