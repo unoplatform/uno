@@ -73,11 +73,11 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			}
 
 			var version = await chooser.GetVersionAsync();
-			if (version is not 3 and not 4)
+			if (version < 3)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"File pickers are only implemented for version 3 and 4 of the File chooser portal, but version {version} was found");
+					this.Log().Error($"File pickers are only implemented for version 3 and above of the File chooser portal, but version {version} was found");
 				}
 				return null;
 			}
