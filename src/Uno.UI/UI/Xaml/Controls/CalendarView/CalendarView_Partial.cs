@@ -2122,7 +2122,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (newDisplayMode != CalendarViewDisplayMode.Month)
 				{
 #if HAS_UNO // Uno workaround: UpdateLayout requires XamlRoot to find the root element in our case. #20681
-					pCurrentPanel.XamlRoot ??= spCurrentHost.ScrollViewer.XamlRoot;
+					pCurrentPanel.XamlRoot ??= spCurrentHost.ScrollViewer?.XamlRoot;
 #endif
 					pCurrentPanel.UpdateLayout();
 				}
