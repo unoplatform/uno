@@ -242,7 +242,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			async Task Release(uint i)
 			{
-				var secondPress = Finger.GetRelease(SUT.GetAbsoluteBounds().GetCenter());
+				var secondPress = Finger.GetRelease(42, SUT.GetAbsoluteBounds().GetCenter());
 				var pointerInfo = secondPress.PointerInfo;
 				pointerInfo.TimeOffsetInMilliseconds = i;
 				secondPress.PointerInfo = pointerInfo;

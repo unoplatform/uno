@@ -84,7 +84,7 @@ public partial struct InjectedInputPointerInfo
 			state.FrameId + (uint)PerformanceCount,
 			timestampInMicroseconds,
 			PointerDevice.For(state.Type),
-			isNew ? PointerId : state.PointerId,
+			PointerId,
 			location,
 			location,
 			PointerOptions.HasFlag(InjectedInputPointerOptions.InContact),
