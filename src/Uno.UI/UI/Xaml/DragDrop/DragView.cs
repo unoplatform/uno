@@ -180,7 +180,7 @@ namespace Microsoft.UI.Xaml
 			}
 			else // None
 			{
-				return "\uE194";
+				return "\uF140";
 			}
 		}
 
