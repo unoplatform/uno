@@ -254,7 +254,7 @@ public class Given_CalendarView
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush2);
 	}
 
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeIOS)] // Test is flaky on iOS native because the calendar takes longer to fully #9080.
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20575")]
 	public async Task When_Year_Mode_Shown()
 	{
