@@ -101,6 +101,7 @@
 		]
 	},
 	{
+<<<<<<< HEAD
 	  "group": "SkiaSharp",
 	  "version": "3.119.0-preview.1.2",
 	  "packages": [
@@ -112,6 +113,19 @@
 		"SkiaSharp.NativeAssets.Win32",
 		"SkiaSharp.NativeAssets.WebAssembly"
 	  ]
+=======
+		"group": "SkiaSharp",
+		"version": "3.119.0",
+		"packages": [
+			"SkiaSharp.Skottie",
+			"SkiaSharp.Views.Uno.WinUI",
+			"SkiaSharp.Views.WinUI",
+			"SkiaSharp.NativeAssets.Linux",
+			"SkiaSharp.NativeAssets.macOS",
+			"SkiaSharp.NativeAssets.Win32",
+			"SkiaSharp.NativeAssets.WebAssembly"
+		]
+>>>>>>> 8abed42acb (feat: Update SkiaSharp and HarfbuzzSharp to stable)
 	},
 	{
 	  "group": "SvgSkia",
