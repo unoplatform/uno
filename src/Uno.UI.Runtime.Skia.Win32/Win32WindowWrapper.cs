@@ -26,6 +26,7 @@ using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
+using Microsoft.UI.Windowing;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -131,15 +132,20 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		if (e.PropertyName == nameof(_applicationView.PreferredMinSize))
 		{
-			if (!PInvoke.GetWindowRect(_hwnd, out var rect))
-			{
-				this.LogError()?.Error($"{nameof(PInvoke.GetWindowRect)} failed: {Win32Helper.GetErrorMessage()}");
-				return;
-			}
-			// We are setting the window rect to itself to trigger a WM_GETMINMAXINFO
-			var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
-			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+			NotifyMinMaxSizeChange();
 		}
+	}
+
+	private void NotifyMinMaxSizeChange()
+	{
+		if (!PInvoke.GetWindowRect(_hwnd, out var rect))
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.GetWindowRect)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+		// We are setting the window rect to itself to trigger a WM_GETMINMAXINFO
+		var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	private unsafe HWND CreateWindow()
@@ -228,8 +234,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
-				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
-				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
+				if (Window?.AppWindow?.Presenter is OverlappedPresenter overlappedPresenter)
+				{
+					int minWidth = overlappedPresenter.PreferredMinimumWidth ?? 0;
+					int minHeight = overlappedPresenter.PreferredMinimumHeight ?? 0;
+					int maxWidth = overlappedPresenter.PreferredMaximumWidth ?? int.MaxValue;
+					int maxHeight = overlappedPresenter.PreferredMaximumHeight ?? int.MaxValue;
+
+					MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
+					info->ptMinTrackSize = new Point(minWidth, minHeight);
+					info->ptMaxTrackSize = new Point(maxWidth, maxHeight);
+				}
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
