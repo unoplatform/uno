@@ -4,11 +4,13 @@ using System.Drawing;
 using Microsoft.UI.Xaml;
 using SamplesApp;
 using Silk.NET.OpenGL;
+using Uno.UI.Samples.Controls;
 using Uno.WinUI.Graphics3DGL;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
 	// https://learnopengl.com/Getting-started/Hello-Triangle
+	[Sample("Microsoft.UI.Composition")]
 	public class SimpleTriangleGlCanvasElement()
 		: GLCanvasElement(() => App.MainWindow)
 	{

@@ -27,6 +27,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics2DSK")]
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
