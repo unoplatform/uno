@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CoreGraphics;
 using UIKit;
 using Windows.Foundation;
 using Windows.UI;
@@ -54,6 +56,21 @@ namespace Windows.UI.ViewManagement
 			return new Rect(rect.X, rect.Y, rect.Width, rect.Height);
 		}
 
+		public void SetStatusBarBackgroundColor(Color? color)
+		{
+			// random unique tag to avoid recreating the view
+			const int StatusBarViewTag = 38482;
+			var (windows, statusBarFrame) = GetWindowsAndStatusBarFrame();
+
+			foreach (var window in windows)
+			{
+				var sbar = window.ViewWithTag(StatusBarViewTag) ?? new UIView(statusBarFrame) { Tag = StatusBarViewTag };
+				sbar.BackgroundColor = color;
+				sbar.TintColor = color;
+				window.AddSubview(sbar);
+			}
+		}
+
 		public IAsyncAction ShowAsync()
 		{
 			return AsyncAction.FromTask(ct =>
@@ -74,6 +91,29 @@ namespace Windows.UI.ViewManagement
 				Hiding?.Invoke(this, null);
 				return Task.CompletedTask;
 			});
+		}
+
+		private static (UIWindow[] Windows, CGRect StatusBarFrame) GetWindowsAndStatusBarFrame()
+		{
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+			{
+				IEnumerable<UIScene> scenes = UIApplication.SharedApplication.ConnectedScenes;
+				var currentScene = scenes.FirstOrDefault(n => n.ActivationState == UISceneActivationState.ForegroundActive);
+
+				if (currentScene is not UIWindowScene uiWindowScene)
+					throw new InvalidOperationException("Unable to find current window scene.");
+
+				if (uiWindowScene.StatusBarManager is not { } statusBarManager)
+					throw new InvalidOperationException("Unable to find a status bar manager.");
+
+				return (uiWindowScene.Windows, statusBarManager.StatusBarFrame);
+			}
+			else
+			{
+#pragma warning disable CA1422
+				return (UIApplication.SharedApplication.Windows, UIApplication.SharedApplication.StatusBarFrame);
+#pragma warning restore CA1422
+			}
 		}
 	}
 }
