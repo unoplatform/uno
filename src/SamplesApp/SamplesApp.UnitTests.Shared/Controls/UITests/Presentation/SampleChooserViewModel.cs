@@ -114,6 +114,14 @@ namespace SampleControl.Presentation
 			Microsoft.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
 #endif
 			UseFluentStyles = true;
+
+			// FPS indicator visibility is persisted across app sessions.
+			var localSettings = ApplicationData.Current.LocalSettings;
+			if (localSettings.Values.TryGetValue(nameof(ShowFpsIndicator), out var value) && value is bool boolValue)
+			{
+				ShowFpsIndicator = boolValue;
+			}
+
 			InitializeCommands();
 			ObserveChanges();
 
@@ -361,7 +369,7 @@ namespace SampleControl.Presentation
 
 							try
 							{
-								UseDarkTheme = true;
+								SetRootTheme(ElementTheme.Dark);
 								file = await rootFolder.CreateFileAsync(fileName + "-dark.png",
 									CreationCollisionOption.ReplaceExisting
 									).AsTask(ct);
@@ -369,7 +377,7 @@ namespace SampleControl.Presentation
 							}
 							finally
 							{
-								UseDarkTheme = false;
+								SetRootTheme(ElementTheme.Default);
 							}
 						}
 						catch (Exception e)
