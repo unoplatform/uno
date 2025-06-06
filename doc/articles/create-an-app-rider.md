@@ -139,8 +139,7 @@ Select the **MyUnoApp (WebAssembly)** debug profile then click the green arrow o
 A new browser window will automatically run your application.
 
 > [!IMPORTANT]
-> If you get an **"Error: Default system browser option is not supported for Blazor apps. Please select a Chromium-based browser."** error message, you will also need to change the project configuration in Rider for WebAssembly, to ensure it uses either Chrome or Microsoft Edge. You can do so by:
-> Edit Configuration -> WebAssembly -> Change browser from 'Default' to 'Chrome' or 'Edge'
+> If you get an **"Error: Default system browser option is not supported for Blazor apps. Please select a Chromium-based browser."** error message, you will also need to change the project configuration in Rider for WebAssembly, to ensure it uses either Chrome or Microsoft Edge. To do this, click on the TFMs dropdown to access the Edit Configuration option. Then navigate to WebAssembly, and change the browser setting from 'Default' to 'Chrome' or 'Edge'.
 
 ![Updating Rider WebAssembly Browser Configuration](Assets/quick-start/rider_webassembly_change_browser.png)
 
