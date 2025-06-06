@@ -13,11 +13,11 @@ namespace Uno.Storage;
 
 partial class NativeApplicationSettings
 {
-	private static partial bool SupportsLocalityPlatform() => true;
-
 	private readonly Dictionary<string, string> _values = new();
 	private string _folderPath = null!;
 	private string _filePath = null!;
+
+	private static partial bool SupportsLocalityPlatform() => true;
 
 	partial void InitializePlatform()
 	{
@@ -29,37 +29,7 @@ partial class NativeApplicationSettings
 		ReadFromFile();
 	}
 
-	private partial IEnumerable<string> GetKeysPlatform() => _values.Keys;
-
-	public void Add(string key, object value)
-	{
-		if (ContainsKey(key))
-		{
-			throw new ArgumentException("An item with the same key has already been added.");
-		}
-		if (value != null)
-		{
-			_values.Add(key, DataTypeSerializer.Serialize(value));
-			WriteToFile();
-		}
-	}
-
-	public void Add(KeyValuePair<string, object> item)
-		=> Add(item.Key, item.Value);
-
-	public void Clear()
-	{
-		_values.Clear();
-		WriteToFile();
-	}
-
 	private partial bool ContainsSettingPlatform(string key) => _values.ContainsKey(key);
-
-	public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
-		=> throw new NotSupportedException();
-
-	public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-		=> _values.Select(v => new KeyValuePair<string, object>(v.Key, v.Value)).GetEnumerator();
 
 	private partial bool RemoveSettingPlatform(string key)
 	{
@@ -70,7 +40,7 @@ partial class NativeApplicationSettings
 		return ret;
 	}
 
-	#region Validated
+	private partial IEnumerable<string> GetKeysPlatform() => _values.Keys;
 
 	private partial bool TryGetSettingPlatform(string key, out string? value) => _values.TryGetValue(key, out value);
 
@@ -151,7 +121,4 @@ partial class NativeApplicationSettings
 			}
 		}
 	}
-
-
-	#endregion
 }
