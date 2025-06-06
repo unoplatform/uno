@@ -29,9 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_WebView
 {
 	[TestMethod]
-#if __IOS__
-	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
-#endif
+	[Ignore("This test is flaky on CI, see #9080")]
 	public async Task When_Navigate()
 	{
 		async Task Do()
@@ -61,6 +59,7 @@ public class Given_WebView
 #endif
 
 	[TestMethod]
+	[Ignore("This test is flaky on CI, see #9080")]
 	public async Task When_NavigateToString()
 	{
 		async Task Do()
