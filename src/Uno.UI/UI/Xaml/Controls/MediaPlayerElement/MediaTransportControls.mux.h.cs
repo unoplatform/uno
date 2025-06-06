@@ -271,7 +271,6 @@ public partial class MediaTransportControls // Template Parts
 	private Grid? _rootGrid;
 	private Border? _timelineContainer;
 	private Border? _controlPanelBorder;
-	private Thumb? _progressSliderThumb;
 	private Flyout? _playbackRateFlyout;
 	private ListView? _playbackRateListView;
 

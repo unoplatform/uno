@@ -206,29 +206,83 @@ namespace Microsoft.UI.Xaml.Controls
 			});
 		}
 
-		private void OnMediaPositionSliderValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+		private void OnPositionSliderValueChanged(object sender, RangeBaseValueChangedEventArgs e)
 		{
-			if (m_positionUpdateUIOnly || m_isInScrubMode)
+			double newSliderValue = 0.0;
+			TimeSpan newMediaPosition;
+			//bool isMediaClosed = false;
+
+			if (m_transportControlsEnabled && _mediaPlayer is { })
 			{
-				// ignore events coming from PlaybackSession.PositionChanged or Stop button
-				// the remainder should be coming from the user.
+				// If slider was updated internally in response to Position DP change,
+				// do not update the DP again.
+				if (m_positionUpdateUIOnly)
+				{
+					return;
+				}
 
-				// we also want to ignore the events in scrub mode.
-				// the final change will be handled in ThumbOnDragCompleted.
-				return;
+				//if (MTCParent.MediaPlayerElement == m_parentType)
+				//{
+				//	isMediaClosed = IsMediaStateClosedFromMPE();
+				//}
+
+				// If user tried to set the slider while in Closed state or for live content,
+				// do not update the DP, but refresh Position UI (snap slider back to 0 position, etc).
+				//if (isMediaClosed || IsLiveContent())
+				//{
+				//	UpdatePositionUI();
+				//	return;
+				//}
+
+				newSliderValue = e.NewValue;
+				//newMediaPosition = TimeSpan.FromTicks(
+				//	(newSliderValue - m_positionSliderMinimum) / (m_positionSliderMaximum - m_positionSliderMinimum) *
+				//	_mediaPlayer.PlaybackSession.NaturalDuration.Ticks
+				//);
+				newMediaPosition = TimeSpan.FromSeconds(newSliderValue);
+
+				EnterScrubbingMode();
+				SetPosition(newMediaPosition);
+				//FireThumbnailEvent();
+				m_isthruScrubber = true;
 			}
+		}
 
-			if (m_tpMediaPositionSlider is { } &&
-				!double.IsNaN(m_tpMediaPositionSlider.Value) &&
-				_mediaPlayer is { })
+		private void OnPositionSliderPressed(object sender, PointerRoutedEventArgs e)
+		{
+			//ShowHideThumbnail(true);
+			//EnterScrubbingMode();
+
+			if (m_transportControlsEnabled && _mediaPlayer is { })
 			{
 				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
 				EnterScrubbingMode();
 
 				_mediaPlayer.Pause();
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value);
+			}
+		}
 
+		private void OnPositionSliderReleased(object sender, PointerRoutedEventArgs e)
+		{
+			//ShowHideThumbnail(false);
+			//ExitScrubbingMode();
+
+			if (m_tpMediaPositionSlider is null || double.IsNaN(m_tpMediaPositionSlider.Value))
+			{
+				return;
+			}
+
+			if (m_transportControlsEnabled && _mediaPlayer is { })
+			{
+				if (m_isPlaying || m_isBuffering)
+				{
+					EnterScrubbingMode();
+					_mediaPlayer.Pause();
+				}
+
+				SetPosition(TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value));
 				ExitScrubbingMode();
+
 				if (_wasPlaying)
 				{
 					_mediaPlayer.Play();
@@ -423,59 +477,18 @@ namespace Microsoft.UI.Xaml.Controls
 			ResetControlsVisibilityTimer();
 		}
 
-		private void ThumbOnDragStarted(object sender, DragStartedEventArgs dragStartedEventArgs)
-		{
-			if (_mediaPlayer != null && !m_isInScrubMode)
-			{
-				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
-				EnterScrubbingMode();
-
-				_mediaPlayer.Pause();
-			}
-		}
-
-		private void ThumbOnDragCompleted(object sender, DragCompletedEventArgs dragCompletedEventArgs)
-		{
-			if (m_tpMediaPositionSlider is null || double.IsNaN(m_tpMediaPositionSlider.Value))
-			{
-				return;
-			}
-
-			if (_mediaPlayer != null)
-			{
-				if (m_isPlaying || m_isBuffering)
-				{
-					EnterScrubbingMode();
-					_mediaPlayer.Pause();
-				}
-
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value);
-
-				if (_wasPlaying)
-				{
-					_mediaPlayer.Play();
-				}
-			}
-
-			ExitScrubbingMode();
-		}
-
 		private void EnterScrubbingMode()
 		{
 			if (m_transportControlsEnabled && _mediaPlayer is { })
 			{
 				if (
-#if !HAS_UNO
-					!m_isAudioOnly &&
-					!IsLiveContent() &&
-#endif
+					//!m_isAudioOnly &&
+					//!IsLiveContent() &&
 					!m_isInScrubMode)
 				{
 					m_currentPlaybackRate = _mediaPlayer.PlaybackSession.PlaybackRate;
 					_mediaPlayer.PlaybackSession.PlaybackRate = 0;
-#if !HAS_UNO
-					EnableValueChangedEventThrottlingOnSliderAutomation(false);
-#endif
+					//EnableValueChangedEventThrottlingOnSliderAutomation(false);
 					m_isInScrubMode = true;
 				}
 			}
@@ -486,16 +499,12 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_transportControlsEnabled && _mediaPlayer is { })
 			{
 				if (
-#if !HAS_UNO
-					!m_isAudioOnly &&
-					!IsLiveContent() &&
-#endif
+					//!m_isAudioOnly &&
+					//!IsLiveContent() &&
 					m_isInScrubMode)
 				{
 					_mediaPlayer.PlaybackSession.PlaybackRate = m_currentPlaybackRate;
-#if !HAS_UNO
-					EnableValueChangedEventThrottlingOnSliderAutomation(true);
-#endif
+					//EnableValueChangedEventThrottlingOnSliderAutomation(true);
 					m_isInScrubMode = false;
 				}
 			}
