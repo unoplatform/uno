@@ -99,6 +99,7 @@ public class Given_WebView2
 
 
 	[TestMethod]
+	[Ignore("Currently very flaky https://github.com/unoplatform/uno/issues/9080")]
 	public async Task When_GoBack()
 	{
 		async Task Do()
