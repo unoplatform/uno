@@ -253,11 +253,13 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(1, requested);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]  // Very flaky on Skia Android/iOS #9080
+		[TestMethod]
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
+#else
+		[Ignore("This test is flaky on CI, see #9080")]
 #endif
 		public async Task When_ListViewNestedAndSwipeUpThenFlickDown_Then_ScrollThenShowIndicatorButDoNotRequest()
 		{
