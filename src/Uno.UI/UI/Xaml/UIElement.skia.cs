@@ -52,16 +52,14 @@ namespace Microsoft.UI.Xaml
 
 		public bool UseLayoutRounding
 		{
-			get => (bool)this.GetValue(UseLayoutRoundingProperty);
-			set => this.SetValue(UseLayoutRoundingProperty, value);
+			get => GetUseLayoutRoundingValue();
+			set => SetUseLayoutRoundingValue(value);
 		}
 
-		public static DependencyProperty UseLayoutRoundingProperty { get; } =
-			DependencyProperty.Register(
-				nameof(UseLayoutRounding),
-				typeof(bool),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(true, propertyChangedCallback: (o, _) => (o as IBorderInfoProvider)?.UpdateBorderThickness()));
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallbackName = nameof(OnUseLayoutRoundingChanged))]
+		public static DependencyProperty UseLayoutRoundingProperty { get; } = CreateUseLayoutRoundingProperty();
+
+		private void OnUseLayoutRoundingChanged(DependencyPropertyChangedEventArgs args) => (this as IBorderInfoProvider)?.UpdateBorderThickness();
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
