@@ -94,8 +94,6 @@ To upgrade:
     ```csharp
     public static int Main(string[] args)
     {
-        App.InitializeLogging();
-
         Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
 
         return 0;
@@ -111,8 +109,6 @@ To upgrade:
 
     public static async Task Main(string[] args)
     {
-        App.InitializeLogging();
-
         var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())
             .UseWebAssembly()
@@ -146,8 +142,6 @@ To upgrade:
 
     public static void Main(string[] args)
     {
-        App.InitializeLogging();
-
         var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())
             .UseAppleUIKit()
