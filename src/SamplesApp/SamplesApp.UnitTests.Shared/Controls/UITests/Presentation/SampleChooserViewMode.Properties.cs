@@ -26,6 +26,7 @@ using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI;
 using Uno;
+using Windows.Storage;
 #endif
 
 namespace SampleControl.Presentation
@@ -518,7 +519,13 @@ namespace SampleControl.Presentation
 		public bool ShowFpsIndicator
 		{
 			get => Application.Current.DebugSettings.EnableFrameRateCounter;
-			set => Application.Current.DebugSettings.EnableFrameRateCounter = value;
+			set
+			{
+				Application.Current.DebugSettings.EnableFrameRateCounter = value;
+				var localSettings = ApplicationData.Current.LocalSettings;
+				localSettings.Values[nameof(ShowFpsIndicator)] = value;
+				RaisePropertyChanged();
+			}
 		}
 
 #if HAS_UNO
