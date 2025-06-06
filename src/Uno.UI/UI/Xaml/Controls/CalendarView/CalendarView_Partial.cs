@@ -2121,6 +2121,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// hooked up yet. Give the panel an extra layout pass to hook up the ScrollViewer.
 				if (newDisplayMode != CalendarViewDisplayMode.Month)
 				{
+#if HAS_UNO // Uno workaround: UpdateLayout requires XamlRoot to find the root element in our case. #20681
+					pCurrentPanel.XamlRoot ??= spCurrentHost.ScrollViewer?.XamlRoot;
+#endif
 					pCurrentPanel.UpdateLayout();
 				}
 
