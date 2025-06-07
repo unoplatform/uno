@@ -311,3 +311,8 @@ input::-ms-clear {
   */
   pointer-events: none;
 }
+  
+.title-bar-area {
+  -webkit-app-region: drag;
+  app-region: drag;
+}
