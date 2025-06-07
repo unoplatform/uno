@@ -21,6 +21,8 @@
 		<PlatformItemsBasePath>..\Uno.UI.RemoteControl\</PlatformItemsBasePath>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer</PackageId>
+		
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
