@@ -134,15 +134,20 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void SetMaxLines(object localValue)
+		internal void SetMaxLines(object maxLines, object textWrapping)
 		{
-			if (localValue == DependencyProperty.UnsetValue)
+			var isWrapping = textWrapping is TextWrapping.Wrap or TextWrapping.WrapWholeWords;
+
+			// If MaxLines is set to 1, but text is not wrapping, there is no need to set the
+			// webkit properties, as we will have a single line anyway, and these properties would
+			// otherwise interfere with text-overflow ellipsis functionality.
+			if (maxLines == DependencyProperty.UnsetValue || (!isWrapping && maxLines is 1))
 			{
 				this.ResetStyle("display", "-webkit-line-clamp", "webkit-box-orient");
 			}
 			else
 			{
-				var value = (int)localValue;
+				var value = (int)maxLines;
 				this.SetStyle(("display", "-webkit-box"), ("-webkit-line-clamp", value.ToStringInvariant()), ("-webkit-box-orient", "vertical"));
 			}
 		}
