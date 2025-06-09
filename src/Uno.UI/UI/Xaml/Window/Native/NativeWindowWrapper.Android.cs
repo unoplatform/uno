@@ -132,10 +132,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 		{
 			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
-			var statusBar = StatusBar.GetForCurrentView();
 
-			// avoid setting top inset twice when setting BackgroundColor and initializing
-			if (statusBar.IsSettingBackgroundColor || statusBar.IsInitializingVisibility)
+			// avoid doubling top inset when setting BackgroundColor
+			if (StatusBar.GetForCurrentView().BackgroundColor is { })
 			{
 				insets.Top = 0;
 			}
@@ -212,8 +211,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void ApplySystemOverlaysTheming()
 	{
-		// When the ForegroundColor was set explicitly we want to keep it that color
-		if (!StatusBar.GetForCurrentView().IsForegroundColorSet)
+		// Only apply theming if the app hasn't explicitly set a foreground
+		if (StatusBar.GetForCurrentView().ForegroundColor is null)
 		{
 			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 			{

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CoreGraphics;
+using Foundation;
 using UIKit;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
@@ -20,20 +22,35 @@ namespace Windows.UI.ViewManagement
 	/// programmatically manipulate the status bar with <see cref="ShowAsync"/> and <see cref="HideAsync"/>.</remarks>
 	public sealed partial class StatusBar
 	{
+		partial void InitializePartial()
+		{
+			NSNotificationCenter.DefaultCenter.AddObserver(
+				UIApplication.DidChangeStatusBarOrientationNotification,
+				_ => SetStatusBarBackgroundColor(_backgroundColor)
+			);
+		}
+
 		private void SetStatusBarForegroundType(StatusBarForegroundType foregroundType)
 		{
-			switch (foregroundType)
+			if (IsBasedStatusBarAppearanceDisabled())
 			{
-				case StatusBarForegroundType.Dark:
-					// iOS 13 and above requires explicit configuration of darkContent for light backgrounds statusbar
-					// https://developer.apple.com/documentation/uikit/uistatusbarstyle/darkcontent
-					UIApplication.SharedApplication.StatusBarStyle = UIDevice.CurrentDevice.CheckSystemVersion(13, 0)
-						? UIStatusBarStyle.DarkContent
-						: UIStatusBarStyle.Default;
-					break;
-				case StatusBarForegroundType.Light:
-					UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.LightContent;
-					break;
+				switch (foregroundType)
+				{
+					case StatusBarForegroundType.Dark:
+						// iOS 13 and above requires explicit configuration of darkContent for light backgrounds statusbar
+						// https://developer.apple.com/documentation/uikit/uistatusbarstyle/darkcontent
+						UIApplication.SharedApplication.StatusBarStyle = UIDevice.CurrentDevice.CheckSystemVersion(13, 0)
+							? UIStatusBarStyle.DarkContent
+							: UIStatusBarStyle.Default;
+						break;
+					case StatusBarForegroundType.Light:
+						UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.LightContent;
+						break;
+				}
+			}
+			else
+			{
+				this.Log().Warn("The status bar foreground color couldn't be changed because UIViewControllerBasedStatusBarAppearance is not disabled.");
 			}
 		}
 
@@ -61,14 +78,33 @@ namespace Windows.UI.ViewManagement
 			// random unique tag to avoid recreating the view
 			const int StatusBarViewTag = 38482;
 			var (windows, statusBarFrame) = GetWindowsAndStatusBarFrame();
+			var removeStatusBar = statusBarFrame.Height == 0;
 
 			foreach (var window in windows)
 			{
-				var sbar = window.ViewWithTag(StatusBarViewTag) ?? new UIView(statusBarFrame) { Tag = StatusBarViewTag };
+				var sbar = window.ViewWithTag(StatusBarViewTag) ??
+					new UIView(statusBarFrame)
+					{
+						Tag = StatusBarViewTag,
+						AutoresizingMask = UIViewAutoresizing.FlexibleWidth
+					};
+
+				if (removeStatusBar)
+				{
+					sbar.RemoveFromSuperview();
+					continue;
+				}
+
 				sbar.BackgroundColor = color;
 				sbar.TintColor = color;
 				window.AddSubview(sbar);
 			}
+		}
+
+		private bool IsBasedStatusBarAppearanceDisabled()
+		{
+			var value = NSBundle.MainBundle.ObjectForInfoDictionary("UIViewControllerBasedStatusBarAppearance") as NSNumber;
+			return !(value?.BoolValue ?? true); // this property is enabled by default
 		}
 
 		public IAsyncAction ShowAsync()
