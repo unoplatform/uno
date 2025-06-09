@@ -2,6 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+#if __IOS__
+using Foundation;
+using UIKit;
+#endif
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
@@ -19,7 +23,12 @@ namespace Windows.UI.ViewManagement
 		public event TypedEventHandler<StatusBar, object> Hiding;
 		public event TypedEventHandler<StatusBar, object> Showing;
 
-		private StatusBar() { }
+		private StatusBar()
+		{
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
 
 		/// <summary>
 		/// Gets the status bar for the current window (app view).
@@ -52,29 +61,20 @@ namespace Windows.UI.ViewManagement
 		/// </remarks>
 		public Color? ForegroundColor
 		{
-			get
+			get => GetStatusBarForegroundType() switch
 			{
-				var foregroundType = GetStatusBarForegroundType();
-				switch (foregroundType)
-				{
-					case StatusBarForegroundType.Light:
-						return Colors.White;
-					case StatusBarForegroundType.Dark:
-						return Colors.Black;
-					default:
-						return null;
-				}
-			}
+				StatusBarForegroundType.Light => Colors.White,
+				StatusBarForegroundType.Dark => Colors.Black,
+				_ => (Color?)null
+			};
 			set
 			{
-				if (!value.HasValue)
-				{
-					return;
-				}
 #if __ANDROID__
-				IsForegroundColorSet = true;
+				_isForegroundColorSet = value.HasValue;
+#elif __IOS__
+				UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.Default;
 #endif
-				var foregroundType = ColorToForegroundType(value.Value);
+				var foregroundType = ColorToForegroundType(value) ?? GetStatusBarForegroundType();
 				SetStatusBarForegroundType(foregroundType);
 			}
 		}
@@ -84,30 +84,27 @@ namespace Windows.UI.ViewManagement
 		/// </summary>
 		public Color? BackgroundColor
 		{
-			get
-			{
-				return _backgroundColor;
-			}
+			get => _backgroundColor;
 			set
 			{
-				if (!value.HasValue)
-				{
-					return;
-				}
-
 				_backgroundColor = value;
 				SetStatusBarBackgroundColor(value);
 			}
 		}
 
-		private StatusBarForegroundType ColorToForegroundType(Color color)
+		private StatusBarForegroundType? ColorToForegroundType(Color? color)
 		{
-			// Source: https://en.wikipedia.org/wiki/Luma_(video)
-			var y = 0.2126 * color.R + 0.7152 * color.G + 0.0722 * color.B;
+			if (color is Color c)
+			{
+				// Source: https://en.wikipedia.org/wiki/Luma_(video)
+				var y = 0.2126 * c.R + 0.7152 * c.G + 0.0722 * c.B;
 
-			return y < 128
-				? StatusBarForegroundType.Dark
-				: StatusBarForegroundType.Light;
+				return y < 128
+					? StatusBarForegroundType.Dark
+					: StatusBarForegroundType.Light;
+			}
+
+			return null;
 		}
 
 		private enum StatusBarForegroundType { Light, Dark }

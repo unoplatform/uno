@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Android.App;
 using Android.OS;
 using Android.Views;
@@ -14,22 +15,25 @@ namespace Windows.UI.ViewManagement
 {
 	public sealed partial class StatusBar
 	{
-		public bool IsForegroundColorSet { get; set; }
-		public bool IsSettingBackgroundColor { get; set; }
-		public bool IsInitializingVisibility { get; set; }
-
-		private StatusBarForegroundType? _foregroundType;
+		private int? _statusBarHeightResourceId;
 		private bool? _isShown;
+		private StatusBarForegroundType? _foregroundType;
 
+		private bool _isForegroundColorSet;
+		private IOnApplyWindowInsetsListener _insetsListener;
 		private DisplayInformation _displayInformation;
 
-		private int? _statusBarHeightResourceId;
-
-		private void SetStatusBarForegroundType(StatusBarForegroundType foregroundType)
+		private void SetStatusBarForegroundType(StatusBarForegroundType? foregroundType)
 		{
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
 			{
 				_foregroundType = foregroundType;
+
+				if (foregroundType is null)
+				{
+					return;
+				}
+
 				UpdateSystemUiVisibility();
 			}
 			else
@@ -38,28 +42,33 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		private StatusBarForegroundType GetStatusBarForegroundType()
+		private StatusBarForegroundType? GetStatusBarForegroundType()
 		{
-			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
+			if (_isForegroundColorSet)
 			{
-				var activity = ContextHelper.Current as Activity;
+				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
+				{
+					var activity = ContextHelper.Current as Activity;
 #pragma warning disable 618
 #pragma warning disable CA1422 // Validate platform compatibility
-				int uiVisibility = (int)activity.Window.DecorView.SystemUiVisibility;
+					int uiVisibility = (int)activity.Window.DecorView.SystemUiVisibility;
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
-				var isForegroundDark = (int)SystemUiFlags.LightStatusBar == (uiVisibility & (int)SystemUiFlags.LightStatusBar);
+					var isForegroundDark = (int)SystemUiFlags.LightStatusBar == (uiVisibility & (int)SystemUiFlags.LightStatusBar);
 
-				return isForegroundDark
-					? StatusBarForegroundType.Dark
-					: StatusBarForegroundType.Light;
+					return isForegroundDark
+						? StatusBarForegroundType.Dark
+						: StatusBarForegroundType.Light;
+				}
+				else
+				{
+					// The status bar foreground is always light below Android M (API 23)
+					return StatusBarForegroundType.Light;
+				}
 			}
-			else
-			{
-				// The status bar foreground is always light below Android M (API 23)
-				return StatusBarForegroundType.Light;
-			}
+
+			return null;
 		}
 
 		public Rect GetOccludedRect()
@@ -100,8 +109,6 @@ namespace Windows.UI.ViewManagement
 			{
 				CoreDispatcher.CheckThreadAccess();
 				_isShown = visible;
-				IsInitializingVisibility = true;
-				UpdateSystemUiVisibility();
 
 				if (visible)
 				{
@@ -112,23 +119,13 @@ namespace Windows.UI.ViewManagement
 					Hiding?.Invoke(this, null);
 				}
 
-				IsInitializingVisibility = false;
-
 				return Task.CompletedTask;
 			});
 		}
 
 		private void SetStatusBarBackgroundColor(Color? color)
 		{
-			if (!ContextHelper.TryGetCurrent(out var context) || context is not Activity activity)
-			{
-				// The API was used too early in application lifecycle
-				return;
-			}
-
-			var decorView = activity.Window?.DecorView;
-
-			if (activity is null || decorView is null)
+			if (!TryGetActivityAndDecorView(out var activity, out var decorView))
 			{
 				// The API was used too early in application lifecycle
 				return;
@@ -136,33 +133,55 @@ namespace Windows.UI.ViewManagement
 
 			if ((int)Build.VERSION.SdkInt >= 35)
 			{
-				IsSettingBackgroundColor = true;
+				if (color is null)
+				{
+					_backgroundColor = Colors.Transparent;
+					DisposeInsetsListener();
+					return;
+				}
 
-				ViewCompat.SetOnApplyWindowInsetsListener(decorView, new InsetsListener(this));
+				if (_insetsListener is null)
+				{
+					_insetsListener = new InsetsListener(this);
+					ViewCompat.SetOnApplyWindowInsetsListener(decorView, _insetsListener);
+				}
+
 				WindowCompat.SetDecorFitsSystemWindows(activity.Window, false);
 
 				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
 				insetsController.Show(WindowInsetsCompat.Type.StatusBars());
+
+				ViewCompat.RequestApplyInsets(decorView);
 			}
 			else
 			{
 				activity?.Window?.SetStatusBarColor((Android.Graphics.Color)color);
 			}
-
-			UpdateSystemUiVisibility();
 		}
 
-		internal void UpdateSystemUiVisibility()
+		private bool TryGetActivityAndDecorView([NotNullWhen(true)] out Activity activity, [NotNullWhen(true)] out View decorView)
 		{
-			if (!ContextHelper.TryGetCurrent(out var context) || context is not Activity activity)
+			activity = ContextHelper.TryGetCurrent(out var context) ? context as Activity : default;
+			decorView = activity?.Window?.DecorView;
+
+			return activity is { } && decorView is { };
+		}
+
+		private void DisposeInsetsListener()
+		{
+			if (!TryGetActivityAndDecorView(out _, out var decorView))
 			{
 				// The API was used too early in application lifecycle
 				return;
 			}
 
-			var decorView = activity.Window?.DecorView;
+			_insetsListener = null;
+			ViewCompat.SetOnApplyWindowInsetsListener(decorView, _insetsListener);
+		}
 
-			if (activity is null || decorView is null)
+		internal void UpdateSystemUiVisibility()
+		{
+			if (!TryGetActivityAndDecorView(out var activity, out var decorView))
 			{
 				// The API was used too early in application lifecycle
 				return;
@@ -188,8 +207,6 @@ namespace Windows.UI.ViewManagement
 					// A bit confusingly, "appearance light" refers to light theme, so dark foreground is used!
 					insetsController.AppearanceLightStatusBars = _foregroundType == StatusBarForegroundType.Dark;
 				}
-
-				ViewCompat.RequestApplyInsets(decorView);
 			}
 			else
 			{
