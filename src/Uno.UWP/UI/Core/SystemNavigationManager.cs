@@ -4,22 +4,14 @@ namespace Windows.UI.Core
 {
 	public sealed partial class SystemNavigationManager
 	{
-		private static SystemNavigationManager _instance;
+		internal static SystemNavigationManager Instance { get; } = new();
 
 		// If Android 16+ (SDK 36+) we must always handle back presses
 		// when any subscriber is present.
 		private readonly bool _backIsAlwaysHandled =
 			OperatingSystem.IsAndroid() && OperatingSystem.IsAndroidVersionAtLeast(36);
 
-		public static SystemNavigationManager GetForCurrentView()
-		{
-			if (_instance == null)
-			{
-				_instance = new SystemNavigationManager();
-			}
-
-			return _instance;
-		}
+		public static SystemNavigationManager GetForCurrentView() => Instance;
 
 		private readonly object _backRequestedLock = new object();
 		private EventHandler<BackRequestedEventArgs> _backRequested;
