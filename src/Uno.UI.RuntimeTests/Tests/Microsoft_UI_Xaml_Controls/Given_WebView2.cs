@@ -32,10 +32,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
 public class Given_WebView2
 {
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)]
-#if __IOS__
-	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
-#endif
+	[TestMethod]
+	[Ignore("This test is flaky on CI, see #9080")]
 	public async Task When_Navigate()
 	{
 		async Task Do()
@@ -65,6 +63,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+	[Ignore("This test is flaky on CI, see #9080")]
 	public async Task When_NavigateToString()
 	{
 		async Task Do()
@@ -100,6 +99,7 @@ public class Given_WebView2
 
 
 	[TestMethod]
+	[Ignore("Currently very flaky https://github.com/unoplatform/uno/issues/9080")]
 	public async Task When_GoBack()
 	{
 		async Task Do()

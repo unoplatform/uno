@@ -337,6 +337,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[Ignore("This test is flaky on CI, see #9080")]
 		public async Task When_Page_Navigates_Back_With_Outer_Before()
 		{
 			var stackPanel = new StackPanel();
