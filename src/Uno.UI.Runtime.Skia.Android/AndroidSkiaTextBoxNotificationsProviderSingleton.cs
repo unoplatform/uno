@@ -36,7 +36,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 			// could require the keyboard (TextBox, AutoSuggestBox, NumberBox, etc.).
 			// This prevents the keyboard from flickering when switching between TextBoxes
 			// https://github.com/unoplatform/uno-private/issues/1160
-			if (IsFocusingElementKeyboardActivator(textBox.XamlRoot))
+			if (!IsFocusingElementKeyboardActivator(textBox.XamlRoot))
 			{
 				canvasView.TextInputPlugin.HideTextInput();
 			}
@@ -52,7 +52,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 			}
 
 			var focusingElement = FocusManager.GetFocusingElement(xamlRoot) as FrameworkElement;
-			return !CouldRequireKeyboard(focusingElement);
+			return CouldRequireKeyboard(focusingElement);
 		}
 	}
 
