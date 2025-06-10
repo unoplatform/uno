@@ -6,17 +6,9 @@ namespace Windows.UI.Core
 {
 	public sealed partial class SystemNavigationManager
 	{
-		private static SystemNavigationManager _instance;
+		internal static SystemNavigationManager Instance { get; } = new();
 
-		public static SystemNavigationManager GetForCurrentView()
-		{
-			if (_instance == null)
-			{
-				_instance = new SystemNavigationManager();
-			}
-
-			return _instance;
-		}
+		public static SystemNavigationManager GetForCurrentView() => Instance;
 
 		public event EventHandler<BackRequestedEventArgs> BackRequested = delegate { };
 
