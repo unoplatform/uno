@@ -178,6 +178,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.IsOpen = true;
 			await WindowHelper.WaitForIdle();
 		}
+
+		[TestMethod]
+		public async Task When_LoadUnload_CommandBar_IsOpen_Resets_OnReload()
+		{
+			var SUT = new CommandBar
+			{
+				SecondaryCommands =
+				{
+					new AppBarButton { Label = "SecondaryCommand" }
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(SUT.IsOpen);
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(SUT.IsOpen);
+		}
 	}
 
 #if __APPLE_UIKIT__
