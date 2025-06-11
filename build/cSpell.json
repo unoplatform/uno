@@ -216,7 +216,8 @@
 	"uikit",
 	"settingscard",
 	"trackpad",
-	"COEP"
+	"COEP",
+	"TFMs"
   ],
   "patterns": [
 	{
