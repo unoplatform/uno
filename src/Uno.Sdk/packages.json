@@ -282,6 +282,7 @@
 	  ]
 	},
 	{
+<<<<<<< HEAD
 	  "group": "Extensions",
 	  "version": "5.3-dev.120",
 	  "packages": [
@@ -309,6 +310,36 @@
 		"Uno.Extensions.Logging.Serilog",
 		"Uno.Extensions.Storage.WinUI"
 	  ]
+=======
+		"group": "Extensions",
+		"version": "5.3.8",
+		"packages": [
+			"Uno.Extensions.Authentication.WinUI",
+			"Uno.Extensions.Authentication.MSAL.WinUI",
+			"Uno.Extensions.Authentication.Oidc.WinUI",
+			"Uno.Extensions.Configuration",
+			"Uno.Extensions.Core.WinUI",
+			"Uno.Extensions.Hosting.WinUI",
+			"Uno.Extensions.Http.WinUI",
+			"Uno.Extensions.Http.Refit",
+			"Uno.Extensions.Http.Kiota",
+			"Uno.Extensions.Localization.WinUI",
+			"Uno.Extensions.Logging.WinUI",
+			"Uno.Extensions.Maui.WinUI",
+			"Uno.Extensions.Maui.WinUI.Markup",
+			"Uno.Extensions.Maui.WinUI.Runtime.Skia",
+			"Uno.Extensions.Navigation.WinUI",
+			"Uno.Extensions.Navigation.WinUI.Markup",
+			"Uno.Extensions.Navigation.Toolkit.WinUI",
+			"Uno.Extensions.Reactive.WinUI",
+			"Uno.Extensions.Reactive.Messaging",
+			"Uno.Extensions.Reactive.WinUI.Markup",
+			"Uno.Extensions.Serialization.Http",
+			"Uno.Extensions.Serialization.Refit",
+			"Uno.Extensions.Logging.Serilog",
+			"Uno.Extensions.Storage.WinUI"
+		]
+>>>>>>> 16c37044b5 (chore: update maui skia refs)
 	},
 	{
 	  "group": "Toolkit",
