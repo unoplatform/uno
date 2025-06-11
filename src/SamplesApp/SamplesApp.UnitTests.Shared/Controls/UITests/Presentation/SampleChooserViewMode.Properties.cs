@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml;
 using Uno.UI.Common;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+using Windows.Storage;
 
 #if XAMARIN || UNO_REFERENCE_API
 using Microsoft.UI.Xaml.Controls;
@@ -26,7 +27,6 @@ using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI;
 using Uno;
-using Windows.Storage;
 #endif
 
 namespace SampleControl.Presentation
