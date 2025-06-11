@@ -186,7 +186,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				SecondaryCommands =
 				{
-					new AppBarButton { Label = "SecondaryCommand" }
+					new AppBarButton { Label = "SecondaryCommand", Name = "SecondaryButton" }
 				}
 			};
 
@@ -201,6 +201,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var finger = injector.GetFinger();
+			var secBtn = (AppBarButton)SUT.FindName("SecondaryButton");
+			var secBounds = secBtn.GetAbsoluteBounds();
+			finger.Press(secBounds.Left + secBounds.Width / 2, secBounds.Bottom + 20);
+			finger.Release();
+
 			await WindowHelper.WaitForIdle();
 			Assert.IsFalse(SUT.IsOpen);
 		}
