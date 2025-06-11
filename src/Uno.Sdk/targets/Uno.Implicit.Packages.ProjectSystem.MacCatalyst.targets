@@ -22,4 +22,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skiarenderer;')) AND $(UnoFeatures.Contains(';mauiembedding;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI.Runtime.Skia" ProjectSystem="true" />
+	</ItemGroup>
 </Project>
