@@ -59,7 +59,7 @@ If you’ve already set up **Visual Studio Code** by following the [Get Started 
    > [!NOTE]
    > If the notification doesn’t appear, access the Studio app by selecting **View** > **Command Palette...** and typing `Uno Platform: Open Studio`.
    >
-   > ![Visual Studio Code Menu](Assets/uno-settings-vsc.png)
+   > ![Visual Studio Code Menu](Assets/uno-settings-vsc.jpeg)
 
 ### [**JetBrains Rider**](#tab/rider)
 
