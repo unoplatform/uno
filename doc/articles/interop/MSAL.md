@@ -63,7 +63,7 @@ Follow [Considerations for using Xamarin iOS with MSAL.NET](https://learn.micros
 
 Particularities for WASM:
 
-* Currently, .NET 9 [enforces COOP/COEP](https://github.com/dotnet/runtime/issues/109937) for WebAssembly applications. This prevents any cross site behavior, including authentication through a browser window popup. There are currently two workarounds for this:
+* Currently, .NET 9 [enforces COOP/COEP](https://github.com/dotnet/runtime/issues/109937) for WebAssembly applications. This prevents any cross-site behavior, including authentication through a browser window popup. There are currently two workarounds for this:
 
   * Use an Uno [Server project](xref:Uno.GettingStarted.UsingWizard#server) which will host the WASM app on its own, and will not have COOP enabled. WASM Debugging may not work as intended in this context. Starting the Server project without the debugger will work.
   * Run the app via `dotnet serve` from the CLI. This approach will not allow for debugging.
