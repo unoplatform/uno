@@ -63,6 +63,11 @@ Follow [Considerations for using Xamarin iOS with MSAL.NET](https://learn.micros
 
 Particularities for WASM:
 
+* Currently, .NET 9 [enforces COOP/COEP](https://github.com/dotnet/runtime/issues/109937) for WebAssembly applications. This prevents any cross-site behavior, including authentication through a browser window popup. There are currently two workarounds for this:
+
+  * Use an Uno [Server project](xref:Uno.GettingStarted.UsingWizard#server) which will host the WASM app on its own, and will not have COOP enabled. WASM Debugging may not work as intended in this context. Starting the Server project without the debugger will work.
+  * Run the app via `dotnet serve` from the CLI. This approach will not allow for debugging.
+
 * Because of browser security requirements, the `redirectUri` must be on the same **protocol** (http/https), **hostname** & **port** as your application. The path is not particularly important and there's a good practice to set the callback URI to some static content defined in your `wwwroot` folder (could be an empty page). For example:
 
   * Define this *Redirect URI* in Azure AD: `http://localhost:5000/authentication/login-callback.htm` - for local development using the port  `5000` with `http` protocol. (Azure AD accepts non-`https` redirect URIs for localhost to simplify development - `https` will work too).
