@@ -1,7 +1,7 @@
 namespace Uno.UI.Runtime.Skia {
 	export class ImageLoader {
 		static canvas: HTMLCanvasElement = document.createElement('canvas');
-		static ctx: CanvasRenderingContext2D = ImageLoader.canvas.getContext("2d");
+		static ctx: CanvasRenderingContext2D = ImageLoader.canvas.getContext("2d", { willReadFrequently: true }) as CanvasRenderingContext2D;
 		
 		public static async loadFromArray(array: Uint8Array): Promise<object> {
 			return new Promise<object>((resolve) => {
