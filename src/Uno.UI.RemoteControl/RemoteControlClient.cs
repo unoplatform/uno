@@ -22,7 +22,6 @@ using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
-using Windows.Foundation.Internal;
 using Windows.Networking.Sockets;
 using Windows.Storage;
 using static Uno.UI.RemoteControl.RemoteControlStatus;
@@ -429,17 +428,18 @@ public partial class RemoteControlClient : IRemoteControlClient
 			}
 			else if (port == 443)
 			{
-#if __WASM__
-				if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
+				if (OperatingSystem.IsBrowser())
 				{
-					var originParts = endpoint.Split('-');
+					if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
+					{
+						var originParts = endpoint.Split('-');
 
-					var currentHost = Foundation.WebAssemblyRuntime.InvokeJS("window.location.hostname");
-					var targetParts = currentHost.Split('-');
+						var currentHost = WebAssemblyImports.EvalString("window.location.hostname");
+						var targetParts = currentHost.Split('-');
 
-					endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
+						endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
+					}
 				}
-#endif
 
 				serverUri = new Uri($"wss://{endpoint}/rc");
 			}
