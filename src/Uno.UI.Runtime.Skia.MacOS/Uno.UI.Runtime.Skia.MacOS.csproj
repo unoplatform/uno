@@ -18,8 +18,6 @@
 		<RootNamespace>Uno.UI.Runtime.Skia.MacOS</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>

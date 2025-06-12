@@ -53,9 +53,8 @@
 		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 
 		<RestoreEnablePackagePruning>true</RestoreEnablePackagePruning>
-	
-		<!-- Don't install GTK in CI, let the workflow do it to prevent concurrency issues -->
-		<SkipGtkInstall Condition=" '$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true' ">true</SkipGtkInstall>
+
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -15,8 +15,6 @@
 		<RootNamespace>Uno.WinUI.Runtime.Skia.X11</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>

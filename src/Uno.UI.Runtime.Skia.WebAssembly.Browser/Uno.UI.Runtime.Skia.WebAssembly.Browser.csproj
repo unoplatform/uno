@@ -25,8 +25,6 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<DefineConstants>$(DefineConstants);WASM_SKIA</DefineConstants>
-
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
