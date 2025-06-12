@@ -24,6 +24,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
+using Windows.Foundation.Internal;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -92,13 +94,10 @@ public partial class TextBox
 	static TextBox()
 	{
 		_platformCtrlKey =
-			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && Eval("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
+			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && WebAssemblyImports.EvalBool("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
 			? VirtualKeyModifiers.Windows
 			: VirtualKeyModifiers.Control;
 	}
-
-	[JSImport("globalThis.eval")]
-	private static partial bool Eval(string js);
 
 	internal CaretDisplayMode CaretMode
 	{
