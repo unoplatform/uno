@@ -86,8 +86,9 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	private static bool CouldRequireKeyboard(FrameworkElement? element)
 	{
-		return element is TextBox ||
-		element is AutoSuggestBox ||
-		element is NumberBox;
+		return element
+			is TextBox
+			or AutoSuggestBox
+			or NumberBox;
 	}
 }
