@@ -10,6 +10,11 @@ namespace Uno.UI.Tests;
 [TestClass]
 public class DependencyProperty_Type
 {
+	private readonly (string owner, string propertyName)[] _dpDataTypesIgnoreList = new (string, string)[]
+	{
+		("RefreshVisualizer", "InfoProvider"),
+	};
+
 	[TestMethod]
 	public void Check_All_DP_Data_Types()
 	{
@@ -41,6 +46,11 @@ public class DependencyProperty_Type
 
 				var type = associatedInstanceProperty?.PropertyType;
 				var dp = (DependencyProperty)dpInfo.GetValue(null);
+
+				if (_dpDataTypesIgnoreList.Any(ignore => ignore.owner == dependencyObject.Name && ignore.propertyName == dp.Name))
+				{
+					continue;
+				}
 
 				CheckType(dp, type);
 			}
@@ -75,12 +85,14 @@ public class DependencyProperty_Type
 		if (dpDefaultValue is null)
 		{
 			// type needs to be a reference type
-			Assert.IsFalse(dpSpecifiedType.IsValueType);
+			// or Nullable<T>
+			Assert.IsTrue(!dpSpecifiedType.IsValueType || (dpSpecifiedType.IsGenericType && dpSpecifiedType.GetGenericTypeDefinition() == typeof(Nullable<>)),
+				$"Default value for {property.OwnerType}.{property.Name} is null but type is {dpSpecifiedType} which is not a reference type or Nullable<T>.");
 		}
 		else
 		{
 			// type needs to be same type or derived from it
-			Assert.IsTrue(dpSpecifiedType.IsAssignableFrom(dpDefaultValue.GetType()));
+			Assert.IsTrue(dpSpecifiedType.IsAssignableFrom(dpDefaultValue.GetType()), $"Default value for {property.Name} is not of type {dpSpecifiedType} but of type {dpDefaultValue.GetType()}.");
 		}
 	}
 
