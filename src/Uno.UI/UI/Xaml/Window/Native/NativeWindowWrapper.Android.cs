@@ -134,7 +134,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
 
 			// avoid doubling top inset when setting BackgroundColor
-			if (StatusBar.GetForCurrentView().BackgroundColor is { })
+			if (StatusBar.GetForCurrentView().BackgroundColor is { } && (int)Android.OS.Build.VERSION.SdkInt >= 35)
 			{
 				insets.Top = 0;
 			}
