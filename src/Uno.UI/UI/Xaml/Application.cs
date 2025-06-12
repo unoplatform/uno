@@ -45,7 +45,7 @@ using UIKit;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
-using Windows.Foundation.Internal;
+using Uno.Foundation;
 #endif
 
 namespace Microsoft.UI.Xaml

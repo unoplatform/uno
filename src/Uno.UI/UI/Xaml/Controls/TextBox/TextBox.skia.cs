@@ -24,7 +24,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
-using Windows.Foundation.Internal;
+using Uno.Foundation;
 
 
 #if HAS_UNO_WINUI
