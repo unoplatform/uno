@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Windows.Foundation.Internal;
+namespace Uno.Foundation;
 
 internal static partial class WebAssemblyImports
 {

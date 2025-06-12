@@ -7,7 +7,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation.Internal;
+#if __SKIA__
+using Uno.Foundation;
+#endif
 
 namespace Uno.UI.Samples.UITests.Helpers
 {
