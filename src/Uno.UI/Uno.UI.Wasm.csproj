@@ -14,7 +14,6 @@
 		<Deterministic>true</Deterministic>
 		<RootNamespace>Uno.UI</RootNamespace>
 		<AssemblyName>Uno.UI</AssemblyName>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 		<TSBindingAssemblySource>Uno;Uno.UI</TSBindingAssemblySource>

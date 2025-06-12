@@ -24,7 +24,6 @@
 		assembly, for non-fully qualified types in System and Windows.System
 		-->
 		<AndroidResgenNamespace>Uno.UWP</AndroidResgenNamespace>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>

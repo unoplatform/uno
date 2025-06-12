@@ -6,7 +6,6 @@
 	<Import Project="../../targetframework-override.props"/>
 
 	<PropertyGroup>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MSAL</AssemblyName>
 		<RootNamespace>Uno.UI.MSAL</RootNamespace>

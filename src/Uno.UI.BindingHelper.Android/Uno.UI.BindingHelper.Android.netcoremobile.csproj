@@ -2,7 +2,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>$(NetAndroidPreviousAndCurrent)</TargetFrameworks>
 
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>1701;1702;1705;109</NoWarn>
 
 		<!-- generated\src\Java.Interop.__TypeRegistrations.cs(16,6): Error CA1825: Avoid unnecessary zero-length array allocations. -->
