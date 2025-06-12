@@ -53,12 +53,12 @@ public sealed partial class XamlRoot
 			var rootElement = VisualTree.RootElement;
 			if (rootElement is RootVisual)
 			{
-				if (Window.CurrentSafe is null)
+				if (Window.CurrentSafe is not { } window)
 				{
 					throw new InvalidOperationException("Window.Current must be set.");
 				}
 
-				return Window.CurrentSafe.Bounds;
+				return window.Bounds;
 			}
 			else if (rootElement is XamlIslandRoot xamlIsland)
 			{
