@@ -1,5 +1,8 @@
 namespace Uno.UI.Runtime.Skia {
 	export class ImageLoader {
+		static canvas: HTMLCanvasElement = document.createElement('canvas');
+		static gl: WebGLRenderingContext = ImageLoader.canvas.getContext("webgl")
+		
 		public static async loadFromArray(array: Uint8Array): Promise<object> {
 			return new Promise<object>((resolve) => {
 				const image = new Blob([array]);
@@ -38,14 +41,12 @@ namespace Uno.UI.Runtime.Skia {
 		// instead. This is very likely slower than the '2d' canvas API, but we
 		// have to do this way to do the alpha premultiplication.
 		private static imageToBytes(img: HTMLImageElement): Array<number> {
-			const canvas = document.createElement('canvas');
-			canvas.width = img.width;
-			canvas.height = img.height;
+			ImageLoader.canvas.width = img.width;
+			ImageLoader.canvas.height = img.height;
 
 			// All the code below is standard WebGL boilerplate to draw an image
 			// except for the fragement shader which has an alpha multiplication step.
-			const gl = canvas.getContext("webgl")
-			gl.viewport(0, 0, canvas.width, canvas.height);
+			ImageLoader.gl.viewport(0, 0, ImageLoader.canvas.width, ImageLoader.canvas.height);
 
 			const vertexShaderSource = `
 				attribute vec4 a_position;
@@ -72,17 +73,17 @@ namespace Uno.UI.Runtime.Skia {
 
 			// @ts-ignore
 			function createShader(type, source) {
-				const shader = gl.createShader(type);
-				gl.shaderSource(shader, source);
-				gl.compileShader(shader);
+				const shader = ImageLoader.gl.createShader(type);
+				ImageLoader.gl.shaderSource(shader, source);
+				ImageLoader.gl.compileShader(shader);
 				return shader;
 			}
 
-			const program = gl.createProgram();
-			gl.attachShader(program, createShader(gl.VERTEX_SHADER, vertexShaderSource));
-			gl.attachShader(program, createShader(gl.FRAGMENT_SHADER, fragmentShaderSource));
-			gl.linkProgram(program);
-			gl.useProgram(program);
+			const program = ImageLoader.gl.createProgram();
+			ImageLoader.gl.attachShader(program, createShader(ImageLoader.gl.VERTEX_SHADER, vertexShaderSource));
+			ImageLoader.gl.attachShader(program, createShader(ImageLoader.gl.FRAGMENT_SHADER, fragmentShaderSource));
+			ImageLoader.gl.linkProgram(program);
+			ImageLoader.gl.useProgram(program);
 
 			const vertices = new Float32Array([
 				-1, -1, 0, 0,  // Bottom left
@@ -91,40 +92,40 @@ namespace Uno.UI.Runtime.Skia {
 				1,  1, 1, 1   // Top right
 			]);
 
-			const vertexBuffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+			const vertexBuffer = ImageLoader.gl.createBuffer();
+			ImageLoader.gl.bindBuffer(ImageLoader.gl.ARRAY_BUFFER, vertexBuffer);
+			ImageLoader.gl.bufferData(ImageLoader.gl.ARRAY_BUFFER, vertices, ImageLoader.gl.STATIC_DRAW);
 
-			const positionLocation = gl.getAttribLocation(program, 'a_position');
-			gl.enableVertexAttribArray(positionLocation);
-			gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 16, 0);
+			const positionLocation = ImageLoader.gl.getAttribLocation(program, 'a_position');
+			ImageLoader.gl.enableVertexAttribArray(positionLocation);
+			ImageLoader.gl.vertexAttribPointer(positionLocation, 2, ImageLoader.gl.FLOAT, false, 16, 0);
 
-			const texcoordLocation = gl.getAttribLocation(program, 'a_texcoord');
-			gl.enableVertexAttribArray(texcoordLocation);
-			gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 16, 8);
+			const texcoordLocation = ImageLoader.gl.getAttribLocation(program, 'a_texcoord');
+			ImageLoader.gl.enableVertexAttribArray(texcoordLocation);
+			ImageLoader.gl.vertexAttribPointer(texcoordLocation, 2, ImageLoader.gl.FLOAT, false, 16, 8);
 
-			const texture = gl.createTexture();
-			gl.bindTexture(gl.TEXTURE_2D, texture);
+			const texture = ImageLoader.gl.createTexture();
+			ImageLoader.gl.bindTexture(ImageLoader.gl.TEXTURE_2D, texture);
 
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			ImageLoader.gl.texParameteri(ImageLoader.gl.TEXTURE_2D, ImageLoader.gl.TEXTURE_WRAP_S, ImageLoader.gl.CLAMP_TO_EDGE);
+			ImageLoader.gl.texParameteri(ImageLoader.gl.TEXTURE_2D, ImageLoader.gl.TEXTURE_WRAP_T, ImageLoader.gl.CLAMP_TO_EDGE);
+			ImageLoader.gl.texParameteri(ImageLoader.gl.TEXTURE_2D, ImageLoader.gl.TEXTURE_MIN_FILTER, ImageLoader.gl.LINEAR);
+			ImageLoader.gl.texParameteri(ImageLoader.gl.TEXTURE_2D, ImageLoader.gl.TEXTURE_MAG_FILTER, ImageLoader.gl.LINEAR);
 
-			gl.bindTexture(gl.TEXTURE_2D, texture);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+			ImageLoader.gl.bindTexture(ImageLoader.gl.TEXTURE_2D, texture);
+			ImageLoader.gl.texImage2D(ImageLoader.gl.TEXTURE_2D, 0, ImageLoader.gl.RGBA, ImageLoader.gl.RGBA, ImageLoader.gl.UNSIGNED_BYTE, img);
 
-			gl.clear(gl.COLOR_BUFFER_BIT);
-			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+			ImageLoader.gl.clear(ImageLoader.gl.COLOR_BUFFER_BIT);
+			ImageLoader.gl.drawArrays(ImageLoader.gl.TRIANGLE_STRIP, 0, 4);
 
-			gl.flush();
+			ImageLoader.gl.flush();
 
 			const pixelData = new Uint8Array(img.width * img.height * 4);
 
-			gl.readPixels(0, 0, img.width, img.height, gl.RGBA, gl.UNSIGNED_BYTE, pixelData);
+			ImageLoader.gl.readPixels(0, 0, img.width, img.height, ImageLoader.gl.RGBA, ImageLoader.gl.UNSIGNED_BYTE, pixelData);
 
-			canvas.width = 0;
-			canvas.height = 0;
+			ImageLoader.canvas.width = 0;
+			ImageLoader.canvas.height = 0;
 			
 			return Array.from<number>(pixelData);
 		}
