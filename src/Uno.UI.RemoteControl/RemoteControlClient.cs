@@ -22,6 +22,7 @@ using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
+using Windows.Foundation.Internal;
 using Windows.Networking.Sockets;
 using Windows.Storage;
 using static Uno.UI.RemoteControl.RemoteControlStatus;
@@ -273,8 +274,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 		return connection?.Socket;
 	}
 
-	[JSImport("globalThis.eval")]
-	private static partial string Eval(string js);
+
 
 	private async Task<Connection?> StartConnection()
 	{
@@ -294,7 +294,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			var isHttps = false;
 			if (OperatingSystem.IsBrowser())
 			{
-				isHttps = Eval("window.location.protocol == 'https:'").Equals("true", StringComparison.OrdinalIgnoreCase);
+				isHttps = WebAssemblyImports.EvalBool("window.location.protocol == 'https:'");
 			}
 
 			_status.Report(ConnectionState.Connecting);
