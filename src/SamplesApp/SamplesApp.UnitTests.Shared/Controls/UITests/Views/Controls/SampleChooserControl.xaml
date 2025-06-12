@@ -210,25 +210,25 @@
 	</UserControl.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup>
+				<VisualState x:Name="TabletState">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="500" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="SplitView.DisplayMode"
+								Value="Inline" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
 		<SplitView x:Name="SplitView"
 			   IsPaneOpen="{Binding IsSplitVisible, Mode=TwoWay}"
 			   OpenPaneLength="280"
 			   DisplayMode="Overlay">
-			<VisualStateManager.VisualStateGroups>
-				<VisualStateGroup>
-					<VisualState x:Name="TabletState">
-						<VisualState.StateTriggers>
-							<AdaptiveTrigger MinWindowWidth="500" />
-						</VisualState.StateTriggers>
-						<VisualState.Setters>
-							<Setter Target="SplitView.DisplayMode"
-								Value="Inline" />
-						</VisualState.Setters>
-					</VisualState>
-				</VisualStateGroup>
-			</VisualStateManager.VisualStateGroups>
 			<SplitView.Pane>
-				<Grid Background="{ThemeResource NavigationViewContentBackground}"
+				<Grid Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}"
 				  toolkit:VisibleBoundsPadding.PaddingMask="All">
 
 					<Grid.RowDefinitions>
@@ -275,7 +275,7 @@
 						</Button>
 
 						<!-- Title -->
-						<StackPanel Grid.Column="2">
+						<StackPanel Grid.Column="2" VerticalAlignment="Center">
 							<Image Source="ms-appx:///Assets/AppLogoSmall.png" Width="32" Margin="0,0,0,2" />
 							<TextBlock FontSize="10" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding TargetPlatform}" />
 							<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" TextTrimming="CharacterEllipsis" />
@@ -362,7 +362,7 @@
 						<TextBlock Style="{StaticResource Typo03}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
-							   Text="Recents" />
+							   Text="History" />
 					</Grid>
 					<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
@@ -371,7 +371,7 @@
 								ContentTemplate="{StaticResource RecentSamplesList}" />
 
 					<!--NAVIGATION BUTTONS-->
-					<Border Background="{ThemeResource NavigationViewExpandedPaneBackground}"
+					<Border Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}"
 						Height="50"
 						Grid.Row="3">
 						<u:StarStackPanel VerticalAlignment="Stretch"
@@ -414,7 +414,7 @@
 									<FontIcon Glyph="&#xE823;" />
 									<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="Recents" />
+										   Text="History" />
 								</StackPanel>
 							</RadioButton>
 						</u:StarStackPanel>

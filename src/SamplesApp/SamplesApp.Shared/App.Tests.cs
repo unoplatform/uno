@@ -85,7 +85,7 @@ partial class App
 			// let the app finish its startup
 			await Task.Delay(TimeSpan.FromSeconds(5));
 
-			// Runtime tests should run in dark theme by default
+			// Runtime tests should run in light theme by default
 			SampleControl.Presentation.SampleChooserViewModel.Instance.IsAppThemeLight = true;
 
 			await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
