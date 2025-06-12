@@ -180,6 +180,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
 		public async Task When_LoadUnload_CommandBar_IsOpen_Resets_OnReload()
 		{
 			var SUT = new CommandBar
@@ -193,25 +196,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 			await WindowHelper.WaitForIdle();
 
-			SUT.IsOpen = true;
+			var moreBtn = (Button)SUT.FindName("MoreButton");
+			Assert.IsNotNull(moreBtn);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var finger = injector.GetFinger();
+			Point GetCenter(Rect rect) => new Point(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
+			finger.Press(GetCenter(moreBtn.GetAbsoluteBounds()));
+			finger.Release();
 			await WindowHelper.WaitForIdle();
 			Assert.IsTrue(SUT.IsOpen);
 
 			WindowHelper.WindowContent = null;
 			await WindowHelper.WaitForIdle();
-
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForIdle();
 
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
-			using var finger = injector.GetFinger();
-			var secBtn = (AppBarButton)SUT.FindName("SecondaryButton");
-			var secBounds = secBtn.GetAbsoluteBounds();
-			finger.Press(secBounds.Left + secBounds.Width / 2, secBounds.Bottom + 20);
+			moreBtn = (Button)SUT.FindName("MoreButton");
+			Assert.IsNotNull(moreBtn);
+			finger.Press(GetCenter(moreBtn.GetAbsoluteBounds()));
 			finger.Release();
 
 			await WindowHelper.WaitForIdle();
-			Assert.IsFalse(SUT.IsOpen);
+			Assert.IsTrue(SUT.IsOpen);
 		}
 	}
 
