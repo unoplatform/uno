@@ -14,4 +14,16 @@ internal static partial class WebAssemblyImports
 
 	[JSImport("globalThis.eval")]
 	internal static partial bool EvalBool(string js);
+
+	[JSImport("globalThis.window.location.href")]
+	internal static partial string GetWindowLocationHref();
+
+	[JSImport("globalThis.window.location.protocol")]
+	internal static partial string GetWindowLocationProtocol();
+
+	[JSImport("globalThis.window.location.hostname")]
+	internal static partial string GetWindowLocationHostname();
+
+	[JSImport("globalThis.window.location.port")]
+	internal static partial string GetWindowLocationPort();
 }
