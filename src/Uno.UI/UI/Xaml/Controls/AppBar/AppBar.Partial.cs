@@ -24,6 +24,7 @@ using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Windows.System;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation;
+using Uno.UI.Controls;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
