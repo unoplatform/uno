@@ -133,13 +133,6 @@ namespace Windows.UI.ViewManagement
 
 			if ((int)Build.VERSION.SdkInt >= 35)
 			{
-				if (color is null)
-				{
-					_backgroundColor = Colors.Transparent;
-					DisposeInsetsListener();
-					return;
-				}
-
 				if (_insetsListener is null)
 				{
 					_insetsListener = new InsetsListener(this);
@@ -165,18 +158,6 @@ namespace Windows.UI.ViewManagement
 			decorView = activity?.Window?.DecorView;
 
 			return activity is { } && decorView is { };
-		}
-
-		private void DisposeInsetsListener()
-		{
-			if (!TryGetActivityAndDecorView(out _, out var decorView))
-			{
-				// The API was used too early in application lifecycle
-				return;
-			}
-
-			_insetsListener = null;
-			ViewCompat.SetOnApplyWindowInsetsListener(decorView, _insetsListener);
 		}
 
 		internal void UpdateSystemUiVisibility()

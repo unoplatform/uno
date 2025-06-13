@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Helpers.Theming;
 #if __IOS__
 using Foundation;
 using UIKit;
@@ -87,8 +88,13 @@ namespace Windows.UI.ViewManagement
 			get => _backgroundColor;
 			set
 			{
+#if __ANDROID__
+				var themeColor = SystemThemeHelper.SystemTheme == SystemTheme.Dark ? Colors.Black : Colors.White;
+				_backgroundColor = value ?? themeColor;
+#elif __IOS__
 				_backgroundColor = value;
-				SetStatusBarBackgroundColor(value);
+#endif
+				SetStatusBarBackgroundColor(_backgroundColor);
 			}
 		}
 
