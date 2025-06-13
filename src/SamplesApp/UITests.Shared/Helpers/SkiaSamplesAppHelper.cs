@@ -32,9 +32,9 @@ namespace Uno.UI.Samples.UITests.Helpers
 				var json = JsonSerializer.Serialize(new { FilePath = filePath, Content = content });
 				using (var client = new HttpClient())
 				{
-					var protocol = WebAssemblyImports.EvalString("window.location.protocol");
-					var hostname = WebAssemblyImports.EvalString("window.location.hostname");
-					if (!int.TryParse(WebAssemblyImports.EvalString("window.location.port"), out var port))
+					var protocol = WebAssemblyImports.GetWindowLocationProtocol();
+					var hostname = WebAssemblyImports.GetWindowLocationHostname();
+					if (!int.TryParse(WebAssemblyImports.GetWindowLocationPort(), out var port))
 					{
 						port = protocol == "http:" ? 80 : 443;
 					}

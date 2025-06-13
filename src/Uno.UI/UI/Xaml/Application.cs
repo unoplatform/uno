@@ -558,7 +558,7 @@ namespace Microsoft.UI.Xaml
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{
-				return Uri.UnescapeDataString(new Uri(WebAssemblyImports.EvalString("window.location.href")).Query.TrimStart('?'));
+				return Uri.UnescapeDataString(new Uri(WebAssemblyImports.GetWindowLocationHref()).Query.TrimStart('?'));
 			}
 			else
 			{
