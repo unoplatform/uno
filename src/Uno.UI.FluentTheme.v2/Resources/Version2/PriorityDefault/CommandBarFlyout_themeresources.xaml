@@ -1,11 +1,11 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout_themeresources.xaml, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb -->
+<!-- MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout_themeresources.xaml, tag winui3/release/1.7.3, commit 65718e2813a90fc900e8775d2ddc580b268fcc2f -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Default">
-      <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
-      <!-- Uno specific: DesktopAcrylic backdrop is not supported in Uno -->
+      <!-- Uno specific: DesktopAcrylic backdrop is not supported in Uno, using AcrylicInAppFillColorDefaultBrush -->
       <!-- <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="DesktopAcrylicTransparentBrush" /> -->
+      <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
       <StaticResource x:Key="CommandBarFlyoutForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="CommandBarFlyoutBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="CommandBarFlyoutAppBarButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
@@ -39,9 +39,9 @@
       <StaticResource x:Key="CommandBarFlyoutButtonBackground" ResourceKey="SystemControlTransparentBrush" />
     </ResourceDictionary>
     <ResourceDictionary x:Key="Light">
-      <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
-      <!-- Uno specific: DesktopAcrylic backdrop is not supported in Uno -->
+      <!-- Uno specific: DesktopAcrylic backdrop is not supported in Uno, using AcrylicInAppFillColorDefaultBrush -->
       <!-- <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="DesktopAcrylicTransparentBrush" /> -->
+      <StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
       <StaticResource x:Key="CommandBarFlyoutForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="CommandBarFlyoutBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="CommandBarFlyoutAppBarButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />

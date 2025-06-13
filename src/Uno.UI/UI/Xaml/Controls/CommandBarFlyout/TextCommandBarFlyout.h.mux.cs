@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\CommandBarFlyout\TextCommandBarFlyout.h, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb
+// MUX Reference controls\dev\CommandBarFlyout\TextCommandBarFlyout.h, tag winui3/release/1.7.3, commit 65718e2813a90fc900e8775d2ddc580b268fcc2f
 
 #nullable enable
 
