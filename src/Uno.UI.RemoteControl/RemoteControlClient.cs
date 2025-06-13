@@ -273,8 +273,6 @@ public partial class RemoteControlClient : IRemoteControlClient
 		return connection?.Socket;
 	}
 
-
-
 	private async Task<Connection?> StartConnection()
 	{
 		try

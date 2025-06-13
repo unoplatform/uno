@@ -21,8 +21,6 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer</PackageId>
 
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
-		
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
