@@ -5,8 +5,8 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 {
-	internal interface IExtendedLeakTest
+	internal interface ITrackingLeakTest : IExtendedLeakTest
 	{
-		Task WaitForTestToComplete();
+		event EventHandler<DependencyObject> ObjectTrackingRequested;
 	}
 }
