@@ -193,7 +193,7 @@ partial class CommandBarFlyout
 				{
 					commandBar.OverflowButtonVisibility = CommandBarOverflowButtonVisibility.Auto;
 				}
-				// TODO:MZ: This needs to be done differently in Uno
+
 				SharedHelpers.QueueCallbackForCompositionRendering(() =>
 					{
 						if (commandBar is { } commandBarFlyoutCommandBar)
@@ -291,14 +291,15 @@ partial class CommandBarFlyout
 		};
 	}
 
-	// TODO:MZ: Move to Unloaded
-	//CommandBarFlyout.~public CommandBarFlyout()
-	//{
-	//	m_primaryCommands.VectorChanged(m_primaryCommandsVectorChangedToken);
-	//	m_secondaryCommands.VectorChanged(m_secondaryCommandsVectorChangedToken);
+#if !HAS_UNO // Detaching is not needed, as these are all children of the flyout child.
+	CommandBarFlyout.~public CommandBarFlyout()
+	{
+		m_primaryCommands.VectorChanged(m_primaryCommandsVectorChangedToken);
+		m_secondaryCommands.VectorChanged(m_secondaryCommandsVectorChangedToken);
 
-	//	UnhookAllCommandBarElementDependencyPropertyChanges();
-	//}
+		UnhookAllCommandBarElementDependencyPropertyChanges();
+	}
+#endif
 
 	protected override Control CreatePresenter()
 	{
@@ -464,7 +465,6 @@ partial class CommandBarFlyout
 			var token = appBarButton.RegisterDisposablePropertyChangedCallback(
 					s_appBarButtonDependencyProperties[commandBarElementDependencyPropertyIndex],
 					OnCommandBarElementDependencyPropertyChanged);
-			// TODO:MZ: Wrong probably
 			revokers[commandBarElementDependencyPropertyIndex] = token;
 		}
 	}
