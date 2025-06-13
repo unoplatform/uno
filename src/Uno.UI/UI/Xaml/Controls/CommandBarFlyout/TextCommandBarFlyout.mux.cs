@@ -270,8 +270,16 @@ partial class TextCommandBarFlyout
 			// to the proofing menu items (if they exist) to handle that.
 			if (proofingMenuFlyout is not null)
 			{
-				//TODO:MZ:Dispose!
+				foreach (var revoker in m_proofingMenuItemClickRevokers)
+				{
+					revoker?.Dispose();
+				}
 				m_proofingMenuItemClickRevokers.Clear();
+
+				foreach (var revoker in m_proofingMenuToggleItemClickRevokers)
+				{
+					revoker?.Dispose();
+				}
 				m_proofingMenuToggleItemClickRevokers.Clear();
 
 				void closeFlyoutFunc(object sender, object args)
@@ -608,7 +616,6 @@ partial class TextCommandBarFlyout
 		{
 			// If we got a clipboard error, we don't want to crash as a result of that - that can happen (e.g.)
 			// if the app isn't the foreground window when we try to execute a clipboard operation.
-			// TODO Uno: Exception handlers in this file should check for Clipboard specific exceptions.
 		}
 
 		if (IsButtonInPrimaryCommands(TextControlButtons.Copy))

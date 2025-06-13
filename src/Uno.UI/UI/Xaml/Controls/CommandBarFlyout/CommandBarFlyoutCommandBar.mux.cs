@@ -16,6 +16,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -338,7 +339,7 @@ partial class CommandBarFlyoutCommandBar
 			secondaryItemsRoot.SizeChanged += sizeChangedHandler;
 			m_secondaryItemsRootSizeChangedRevoker.Disposable = Disposable.Create(() => secondaryItemsRoot.SizeChanged -= sizeChangedHandler);
 
-			if (SharedHelpers.IsRS3OrHigher()) // TODO MZ: Change this to check for PreviewKeyDown availability
+			if (ApiInformation.IsEventPresent("Microsoft.UI.Xaml.UIElement", "PreviewKeyDown"))
 			{
 				void previewKeyDownHandler(object sender, KeyRoutedEventArgs args)
 				{
@@ -544,15 +545,13 @@ partial class CommandBarFlyoutCommandBar
 
 		if (m_currentPrimaryItemsEndElement is not null)
 		{
-			// TODO:MZ: Fix
-			//AutomationProperties.GetFlowsTo(m_currentPrimaryItemsEndElement).Clear();
+			AutomationProperties.GetFlowsTo(m_currentPrimaryItemsEndElement)?.Clear();
 			m_currentPrimaryItemsEndElement = null;
 		}
 
 		if (m_currentSecondaryItemsStartElement is not null)
 		{
-			// TODO:MZ: Fix
-			//AutomationProperties.GetFlowsFrom(m_currentSecondaryItemsStartElement).Clear();
+			AutomationProperties.GetFlowsFrom(m_currentSecondaryItemsStartElement)?.Clear();
 			m_currentSecondaryItemsStartElement = null;
 		}
 
@@ -595,9 +594,8 @@ partial class CommandBarFlyoutCommandBar
 
 			if (m_currentPrimaryItemsEndElement is not null && m_currentSecondaryItemsStartElement is not null)
 			{
-				// TODO:MZ: Fix
-				//AutomationProperties.GetFlowsTo(m_currentPrimaryItemsEndElement).Add(m_currentSecondaryItemsStartElement);
-				//AutomationProperties.GetFlowsFrom(m_currentSecondaryItemsStartElement).Add(m_currentPrimaryItemsEndElement);
+				AutomationProperties.GetFlowsTo(m_currentPrimaryItemsEndElement)?.Add(m_currentSecondaryItemsStartElement);
+				AutomationProperties.GetFlowsFrom(m_currentSecondaryItemsStartElement)?.Add(m_currentPrimaryItemsEndElement);
 			}
 		}
 	}
@@ -846,7 +844,8 @@ partial class CommandBarFlyoutCommandBar
 			VisualStateManager.GoToState(item, "NoPrimaryLabels", false /* useTransitions */);
 		}
 	}
-	protected override void UpdateTemplateSettings() // TODO:MZ: Should override?
+
+	protected override void UpdateTemplateSettings()
 	{
 		//COMMANDBARFLYOUT_TRACE_INFO(this, TRACE_MSG_METH_INT, METH_NAME, this, IsOpen);
 

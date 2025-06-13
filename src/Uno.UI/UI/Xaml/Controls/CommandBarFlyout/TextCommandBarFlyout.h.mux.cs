@@ -32,7 +32,6 @@ partial class TextCommandBarFlyout
 	private Dictionary<TextControlButtons, ICommandBarElement> m_buttons = new();
 	private AppBarButton? m_proofingButton;
 
-	// TODO:MZ: Ensure disposal of all lists of revokers
 	private List<IDisposable> m_buttonCommandRevokers = new();
 	private List<IDisposable> m_buttonClickRevokers = new();
 	private List<IDisposable> m_toggleButtonCheckedRevokers = new();
