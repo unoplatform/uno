@@ -563,7 +563,7 @@ partial class CommandBarFlyoutCommandBar
 			{
 				Control? primaryCommandAsControl = element as Control;
 				return IsControlFocusable(primaryCommandAsControl, false);
-			};
+			}
 
 			var primaryCommands = PrimaryCommands;
 			for (int i = (int)(PrimaryCommands.Count - 1); i >= 0; i--)
