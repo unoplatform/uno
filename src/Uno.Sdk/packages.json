@@ -283,7 +283,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "5.3.8",
+		"version": "6.1.0-dev.11",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -298,6 +298,7 @@
 			"Uno.Extensions.Logging.WinUI",
 			"Uno.Extensions.Maui.WinUI",
 			"Uno.Extensions.Maui.WinUI.Markup",
+			"Uno.Extensions.Maui.WinUI.Runtime.Skia",
 			"Uno.Extensions.Navigation.WinUI",
 			"Uno.Extensions.Navigation.WinUI.Markup",
 			"Uno.Extensions.Navigation.Toolkit.WinUI",
