@@ -27,7 +27,7 @@ using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class AppBarButton : ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner
+partial class AppBarButton : ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner, IAppBarCommand
 {
 	/// <summary>
 	/// Initializes a new instance of the AppBarButton class.
