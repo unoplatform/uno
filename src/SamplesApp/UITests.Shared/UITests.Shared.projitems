@@ -6521,6 +6521,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Performance\Performance_1000ButtonsContinuousRendering.xaml.cs">
       <DependentUpon>Performance_1000ButtonsContinuousRendering.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Performance\Performance_ImageLoading.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Performance\Performance_ManyImages.xaml.cs">
       <DependentUpon>Performance_ManyImages.xaml</DependentUpon>
     </Compile>
@@ -9838,6 +9839,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\closeIcon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colored-ellipse.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ColorPicker.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\when_alpha_blending.png" />
     <None Include="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colors300.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ComboBox.png" />
