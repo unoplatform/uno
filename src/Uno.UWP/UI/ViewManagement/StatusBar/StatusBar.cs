@@ -2,6 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Helpers.Theming;
+#if __IOS__
+using Foundation;
+using UIKit;
+#endif
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
@@ -14,11 +19,17 @@ namespace Windows.UI.ViewManagement
 	public sealed partial class StatusBar
 	{
 		private static StatusBar _statusBar;
+		private Color? _backgroundColor;
 
 		public event TypedEventHandler<StatusBar, object> Hiding;
 		public event TypedEventHandler<StatusBar, object> Showing;
 
-		private StatusBar() { }
+		private StatusBar()
+		{
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
 
 		/// <summary>
 		/// Gets the status bar for the current window (app view).
@@ -51,40 +62,55 @@ namespace Windows.UI.ViewManagement
 		/// </remarks>
 		public Color? ForegroundColor
 		{
-			get
+			get => GetStatusBarForegroundType() switch
 			{
-				var foregroundType = GetStatusBarForegroundType();
-				switch (foregroundType)
-				{
-					case StatusBarForegroundType.Light:
-						return Colors.White;
-					case StatusBarForegroundType.Dark:
-						return Colors.Black;
-					default:
-						return null;
-				}
-			}
+				StatusBarForegroundType.Light => Colors.White,
+				StatusBarForegroundType.Dark => Colors.Black,
+				_ => (Color?)null
+			};
 			set
 			{
-				if (!value.HasValue)
-				{
-					return;
-				}
-
-				var foregroundType = ColorToForegroundType(value.Value);
-
+#if __ANDROID__
+				_isForegroundColorSet = value.HasValue;
+#elif __IOS__
+				UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.Default;
+#endif
+				var foregroundType = ColorToForegroundType(value) ?? GetStatusBarForegroundType();
 				SetStatusBarForegroundType(foregroundType);
 			}
 		}
 
-		private StatusBarForegroundType ColorToForegroundType(Color color)
+		/// <summary>
+		/// Gets or sets the background color of the status bar.
+		/// </summary>
+		public Color? BackgroundColor
 		{
-			// Source: https://en.wikipedia.org/wiki/Luma_(video)
-			var y = 0.2126 * color.R + 0.7152 * color.G + 0.0722 * color.B;
+			get => _backgroundColor;
+			set
+			{
+#if __ANDROID__
+				var themeColor = SystemThemeHelper.SystemTheme == SystemTheme.Dark ? Colors.Black : Colors.White;
+				_backgroundColor = value ?? themeColor;
+#elif __IOS__
+				_backgroundColor = value;
+#endif
+				SetStatusBarBackgroundColor(_backgroundColor);
+			}
+		}
 
-			return y < 128
-				? StatusBarForegroundType.Dark
-				: StatusBarForegroundType.Light;
+		private StatusBarForegroundType? ColorToForegroundType(Color? color)
+		{
+			if (color is Color c)
+			{
+				// Source: https://en.wikipedia.org/wiki/Luma_(video)
+				var y = 0.2126 * c.R + 0.7152 * c.G + 0.0722 * c.B;
+
+				return y < 128
+					? StatusBarForegroundType.Dark
+					: StatusBarForegroundType.Light;
+			}
+
+			return null;
 		}
 
 		private enum StatusBarForegroundType { Light, Dark }
@@ -101,21 +127,6 @@ namespace Windows.UI.ViewManagement
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "double StatusBar.BackgroundOpacity");
 			}
-		}
-
-		[global::Uno.NotImplemented]
-		public global::Windows.UI.Color? BackgroundColor
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
-				return null;
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
-			}
-
 		}
 	}
 }
