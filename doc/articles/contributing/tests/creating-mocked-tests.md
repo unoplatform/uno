@@ -1,5 +1,5 @@
 ---
-uid: Uno.Contributing.CreateMockedTests
+uid: Uno.Contributing.Tests.CreateMockedTests
 ---
 
 # Creating unit tests in Uno.UI.Tests
