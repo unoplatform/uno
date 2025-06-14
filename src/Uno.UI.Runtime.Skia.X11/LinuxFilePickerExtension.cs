@@ -85,11 +85,19 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 			}
 
 			var version = await chooser.GetVersionAsync();
+<<<<<<< HEAD
 			if (version != 3)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
 					this.Log().Error($"File pickers are only implemented for version 3 of the File chooser portal, but version {version} was found");
+=======
+			if (version < 3)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"File pickers are only implemented for version 3 and above of the File chooser portal, but version {version} was found");
+>>>>>>> fb13a93492 (chore: adjust FileChooser portal version check)
 				}
 				return ImmutableList<string>.Empty;
 			}
