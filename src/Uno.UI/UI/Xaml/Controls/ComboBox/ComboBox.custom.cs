@@ -352,15 +352,6 @@ public partial class ComboBox : Selector
 		return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
 	}
 
-	private void RestoreSelectedItem()
-	{
-		var selection = GetSelectionContent();
-		if (selection is _View selectionView)
-		{
-			RestoreSelectedItem(selectionView);
-		}
-	}
-
 	/// <summary>
 	/// Restore SelectedItem (or former SelectedItem) view to its position in the dropdown list.
 	/// </summary>
