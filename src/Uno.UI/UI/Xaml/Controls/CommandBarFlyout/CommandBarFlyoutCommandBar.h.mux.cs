@@ -29,7 +29,7 @@ partial class CommandBarFlyoutCommandBar
 
 	internal bool m_commandBarFlyoutIsOpening;
 
-	private bool HasVisibleLabel(IAppBarCommand? command)
+	private bool HasVisibleLabel(IAppBarButtonHelpersProvider? command)
 	{
 		return command is not null &&
 			!string.IsNullOrEmpty(command.Label) &&

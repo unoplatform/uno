@@ -26,7 +26,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class AppBarToggleButton : ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, IAppBarCommand
+public partial class AppBarToggleButton : ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement
 {
 	/// <summary>
 	/// Initializes a new instance of the AppBarToggleButton class.

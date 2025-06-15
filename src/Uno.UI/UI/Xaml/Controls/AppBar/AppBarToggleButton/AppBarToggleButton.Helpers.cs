@@ -42,4 +42,8 @@ partial class AppBarToggleButton : IAppBarButtonHelpersProvider
 	void IAppBarButtonHelpersProvider.GoToState(bool useTransitions, string stateName) => GoToState(useTransitions, stateName);
 
 	void IAppBarButtonHelpersProvider.StopAnimationForWidthAdjustments() => StopAnimationForWidthAdjustments();
+
+	Visibility IAppBarButtonHelpersProvider.Visibility => Visibility;
+
+	CommandBarLabelPosition IAppBarButtonHelpersProvider.LabelPosition => LabelPosition;
 }
