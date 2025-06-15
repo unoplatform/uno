@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Ак</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Ачык соры</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Соры</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Куе соры</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Кара</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Мәрҗән</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Ал</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Ачык кызгылт-сары</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Саргылт-көрән</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Саргылт</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Яшькелт</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Үлән төсендә</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Яшел-зәңгәр</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Күк</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Аксыл фирүзә</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Сыек зәңгәр</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Зәңгәрсу</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Күксел</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Зәңгәрсу-шәмәхә</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Ала миләүшә</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Алсу</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Кызыл</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Кызгылт-сары</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Көрән</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Алтын</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Сары</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Куе зәйтүн</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Яшел</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Ачык яшел</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Яшькелт-зәңгәр</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Фирүзә</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Зәңгәр</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Күгелҗем</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Карасу-күк</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Ачык шәмәхә</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Караңгы кызыл</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Куе сары</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Куе яшел</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Куе яшькелт-зәңгәр</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Куе зәңгәр</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Куе шәмәхә</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Чия төсе</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>контекстлы масштаблау</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>күчереп ялгагыч</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>элемент</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 элемент</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>%1 сөйрәүдән баш тарту</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Киләсе</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Артка</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>Уйнату</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Туктатып тору</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Үткән вакыт</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Калган вакыт</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Буферлау барышы</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Эзләү</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Тавышсыз</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Тавыш</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Хата</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>Көн </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Ай </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>Ел </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Сәгать </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Минут </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 минут</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 минут</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 секунд</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 с</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Зур вертикаль кимү</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Кечкенә вертикаль кимү</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Кисеп алу</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>дата сайлагыз</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, бүген</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Азрак карау</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Вертикаль шудырма</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s өчен күбрәк параметрлар</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Җайланмага тапшыру</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>кушымта аслыгы кабызу-сүндерү төймәсе</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s өчен азрак кушымта аслыгы</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>медиауйнаткыч</value>
@@ -1024,7 +1078,7 @@
     <value>NavigationView</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>Үзгәртмәскә</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
     <value>Юк</value>
@@ -1150,7 +1204,7 @@
     <value>Snapshot</value>
   </data>
   <data name="TEXT_VK_SPACE" xml:space="preserve">
-    <value>Space</value>
+    <value>Бушлык</value>
   </data>
   <data name="TEXT_VK_STOP" xml:space="preserve">
     <value>Стоп</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>Кертү ысулы редакторы - сүндерү</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Ак</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 сәгать</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Ачык соры</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 сәгать</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Соры</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 минут</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Куе соры</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 минут</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Кара</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 секунд</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Мәрҗән</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 с</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Ал</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>%1 %2 урын</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Ачык кызгылт-сары</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>%1 %2 %3 урын</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Саргылт-көрән</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Саргылт</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Яшькелт</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Үлән төсендә</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Яшел-зәңгәр</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Күк</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Аксыл фирүзә</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Сыек зәңгәр</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Зәңгәрсу</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Күксел</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Зәңгәрсу-шәмәхә</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Ала миләүшә</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Алсу</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Кызыл</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Кызгылт-сары</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Көрән</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Алтын</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Сары</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Куе зәйтүн</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Яшел</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Ачык яшел</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Яшькелт-зәңгәр</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Фирүзә</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Зәңгәр</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Күгелҗем</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Карасу-күк</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Ачык шәмәхә</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Караңгы кызыл</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Куе сары</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Куе яшел</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Куе яшькелт-зәңгәр</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Куе зәңгәр</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Куе шәмәхә</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Чия төсе</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Ябу</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

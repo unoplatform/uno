@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Бела</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Светлосива</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Сива</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Тамносива</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Црна</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Црвенкастожута</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Ружичаста</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Светлонаранџаста</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Жутомрка</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Светложута</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Светлозелена</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Бледозелена</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Аквамарин</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Небоплава</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Светлотиркизна</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Бледоплава</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Светлоплава</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Леденоплава</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Боја четинара</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Лаванда</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Ружичаста</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Црвена</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Наранџаста</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Браон</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Златна</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Жута</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Маслинастозелена</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Зелена</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Светлозелена</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Плавозелена</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Тиркизна</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Плава</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Сивкастоплава</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Индиго</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Љубичаста</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Тамноцрвена</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Тамножута</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Тамнозелена</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Тегет</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Тамноплава</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Тамнопурпурна</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Тамнољубичаста</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>семантичко зумирање</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>преклопник</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>ставка</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>Ставки: %1</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>откажи превлачење ставке %1</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Следеће</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Претходно</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>Репродукуј</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Паузирај</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Протекло време</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Преостало време</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Ток смештања у бафер</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Потражи</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Пригуши тон</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Јачина звука</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Грешка</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>Дан </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Месец </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>Година </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Час </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Минут </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 минут</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 мин.</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 секунда</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>Секунди: %1</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Вертикално велико смањење</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Вертикално мало смањење</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Исеци</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>изаберите датум</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, данас</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Погледајте мање</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Вертикални клизач</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Још опција за уређај %s</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Пребаци на уређај</value>
   </data>
@@ -660,6 +711,9 @@
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>преклопно дугме на траци апликација</value>
   </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Мања трака апликација за %s</value>
+  </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>медијски плејер</value>
   </data>
@@ -673,7 +727,7 @@
     <value>Понови: све</value>
   </data>
   <data name="UIA_MEDIA_UNMUTE" xml:space="preserve">
-    <value>Поново укључи</value>
+    <value>Поново укључи звук</value>
   </data>
   <data name="UIA_AP_FLIPVIEW" xml:space="preserve">
     <value>преокренут приказ</value>
@@ -715,37 +769,37 @@
     <value>A</value>
   </data>
   <data name="TEXT_VK_ACCEPT" xml:space="preserve">
-    <value>Accept</value>
+    <value>Прихвати</value>
   </data>
   <data name="TEXT_VK_ADD" xml:space="preserve">
     <value>+</value>
   </data>
   <data name="TEXT_VK_APPLICATION" xml:space="preserve">
-    <value>Application</value>
+    <value>Апликација</value>
   </data>
   <data name="TEXT_VK_B" xml:space="preserve">
     <value>B</value>
   </data>
   <data name="TEXT_VK_BACK" xml:space="preserve">
-    <value>Back</value>
+    <value>Назад</value>
   </data>
   <data name="TEXT_VK_C" xml:space="preserve">
     <value>C</value>
   </data>
   <data name="TEXT_VK_CANCEL" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Откажи</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
     <value>Caps Lock</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
-    <value>Clear</value>
+    <value>Обриши</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
     <value>Ctrl</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
-    <value>Convert</value>
+    <value>Конвертуј</value>
   </data>
   <data name="TEXT_VK_D" xml:space="preserve">
     <value>D</value>
@@ -760,7 +814,7 @@
     <value>/</value>
   </data>
   <data name="TEXT_VK_DOWN" xml:space="preserve">
-    <value>Down</value>
+    <value>Стрелица надоле</value>
   </data>
   <data name="TEXT_VK_E" xml:space="preserve">
     <value>E</value>
@@ -775,7 +829,7 @@
     <value>Esc</value>
   </data>
   <data name="TEXT_VK_EXECUTE" xml:space="preserve">
-    <value>Execute</value>
+    <value>Изврши</value>
   </data>
   <data name="TEXT_VK_F" xml:space="preserve">
     <value>F</value>
@@ -853,10 +907,10 @@
     <value>F9</value>
   </data>
   <data name="TEXT_VK_FAVORITES" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Фаворити</value>
   </data>
   <data name="TEXT_VK_FINAL" xml:space="preserve">
-    <value>Final</value>
+    <value>Коначно</value>
   </data>
   <data name="TEXT_VK_G" xml:space="preserve">
     <value>G</value>
@@ -952,7 +1006,7 @@
     <value>Hanja</value>
   </data>
   <data name="TEXT_VK_HELP" xml:space="preserve">
-    <value>Help</value>
+    <value>Помоћ</value>
   </data>
   <data name="TEXT_VK_HOME" xml:space="preserve">
     <value>Home</value>
@@ -976,7 +1030,7 @@
     <value>L</value>
   </data>
   <data name="TEXT_VK_LEFT" xml:space="preserve">
-    <value>Left</value>
+    <value>Стрелица налево</value>
   </data>
   <data name="TEXT_VK_LEFTBUTTON" xml:space="preserve">
     <value>LeftButton</value>
@@ -1027,7 +1081,7 @@
     <value>NonConvert</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Ништа</value>
   </data>
   <data name="TEXT_VK_NUMBER0" xml:space="preserve">
     <value>0</value>
@@ -1108,7 +1162,7 @@
     <value>Pause</value>
   </data>
   <data name="TEXT_VK_PRINT" xml:space="preserve">
-    <value>Print</value>
+    <value>Одштампај</value>
   </data>
   <data name="TEXT_VK_Q" xml:space="preserve">
     <value>Q</value>
@@ -1117,7 +1171,7 @@
     <value>R</value>
   </data>
   <data name="TEXT_VK_REFRESH" xml:space="preserve">
-    <value>Refresh</value>
+    <value>Освежи</value>
   </data>
   <data name="TEXT_VK_RIGHT" xml:space="preserve">
     <value>Right</value>
@@ -1132,28 +1186,28 @@
     <value>Scroll Lock</value>
   </data>
   <data name="TEXT_VK_SEARCH" xml:space="preserve">
-    <value>Search</value>
+    <value>Претражи</value>
   </data>
   <data name="TEXT_VK_SELECT" xml:space="preserve">
-    <value>Select</value>
+    <value>Изабери</value>
   </data>
   <data name="TEXT_VK_SEPARATOR" xml:space="preserve">
-    <value>Separator</value>
+    <value>Разделник</value>
   </data>
   <data name="TEXT_VK_SHIFT" xml:space="preserve">
     <value>Shift</value>
   </data>
   <data name="TEXT_VK_SLEEP" xml:space="preserve">
-    <value>Sleep</value>
+    <value>Спавање</value>
   </data>
   <data name="TEXT_VK_SNAPSHOT" xml:space="preserve">
-    <value>Snapshot</value>
+    <value>Снимак</value>
   </data>
   <data name="TEXT_VK_SPACE" xml:space="preserve">
     <value>Размакница</value>
   </data>
   <data name="TEXT_VK_STOP" xml:space="preserve">
-    <value>Stop</value>
+    <value>Заустави</value>
   </data>
   <data name="TEXT_VK_SUBTRACT" xml:space="preserve">
     <value>-</value>
@@ -1168,7 +1222,7 @@
     <value>U</value>
   </data>
   <data name="TEXT_VK_UP" xml:space="preserve">
-    <value>Up</value>
+    <value>Стрелица нагоре</value>
   </data>
   <data name="TEXT_VK_V" xml:space="preserve">
     <value>V</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>Искључивање уређивача IME</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Бела</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 час</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Светлосива</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 ч.</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Сива</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 минут</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Тамносива</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 мин.</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Црна</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 секунда</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Црвенкастожута</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>Секунди: %1</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Ружичаста</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>позиција %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Светлонаранџаста</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>позиција %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Жутомрка</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Светложута</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Светлозелена</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Бледозелена</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Аквамарин</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Небоплава</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Светлотиркизна</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Бледоплава</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Светлоплава</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Леденоплава</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Боја четинара</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Лаванда</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Ружичаста</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Црвена</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Наранџаста</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Браон</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Златна</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Жута</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Маслинастозелена</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Зелена</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Светлозелена</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Плавозелена</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Тиркизна</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Плава</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Сивкастоплава</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Индиго</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Љубичаста</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Тамноцрвена</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Тамножута</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Тамнозелена</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Тегет</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Тамноплава</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Тамнопурпурна</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Тамнољубичаста</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Затвори</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

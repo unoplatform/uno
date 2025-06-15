@@ -32,4 +32,8 @@ partial class AppBarButton : IAppBarButtonHelpersProvider
 	string IAppBarButtonHelpersProvider.KeyboardAcceleratorTextOverride { get => KeyboardAcceleratorTextOverride; set => KeyboardAcceleratorTextOverride = value; }
 
 	IAppBarButtonTemplateSettings IAppBarButtonHelpersProvider.TemplateSettings { get => TemplateSettings; set => TemplateSettings = (AppBarButtonTemplateSettings)value; }
+
+	Visibility IAppBarButtonHelpersProvider.Visibility => Visibility;
+
+	CommandBarLabelPosition IAppBarButtonHelpersProvider.LabelPosition => LabelPosition;
 }

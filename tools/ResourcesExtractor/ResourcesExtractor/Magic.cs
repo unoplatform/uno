@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Language codes - https://github.com/FreeRDP/FreeRDP/blob/master/libfreerdp/locale/keyboard_layout.c
+
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -25,7 +27,7 @@ public static class Magic
 		el_GR = 0x408,
 		en_GB = 0x809,
 		en_us = 0x409,
-		//es_ES = 0x40a,
+		es_ES = 0xc0a,
 		es_MX = 0x80a,
 		et_EE = 0x0425,
 		eu_ES = 0x042d,

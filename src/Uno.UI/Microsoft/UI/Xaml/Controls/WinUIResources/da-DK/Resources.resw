@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Hvid</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Lysegrå</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Grå</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Mørkegrå</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koral</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Lys orange</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Sand</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Lysegul</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Pastelgrøn</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Lime</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akvamarin</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Himmelblå</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Blegturkis</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Blegblå</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Lyseblå</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Isblå</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Kornblå</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavendel</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Pink</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rød</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Brun</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Gylden</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Gul</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olivengrøn</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Grøn</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Knaldgrøn</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Blågrøn</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turkis</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blå</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Blågrå</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Lilla</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Rødbrun</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Olivengul</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Mørkegrøn</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Dybblå</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Mørkeblå</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Mørklilla</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Blomme</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>semantisk zoom</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>til/fra-knap</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>element</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 elementer</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>annuller træk af %1</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Næste</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Forrige</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>Afspil</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Afbryd midlertidigt</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Forløbet tid</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Resterende tid</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Status for bufferlagring</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Søg</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Slå lyd fra</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Lydstyrke</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Fejl</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>Dag </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Måned </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>År </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Time </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Minut </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 minut</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 minutter</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 sekund</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 sekunder</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Stor lodret formindskelse</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Lille lodret formindskelse</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Klip</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>vælg en dato</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, i dag</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Se mindre</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Lodret miniaturebillede</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Flere indstillinger for %s</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Enhedsstreaming</value>
   </data>
@@ -660,6 +711,9 @@
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>til/fra-knap på applinje</value>
   </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Mindre applinje til %s</value>
+  </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>medieafspiller</value>
   </data>
@@ -715,37 +769,37 @@
     <value>A</value>
   </data>
   <data name="TEXT_VK_ACCEPT" xml:space="preserve">
-    <value>Accept</value>
+    <value>Acceptér</value>
   </data>
   <data name="TEXT_VK_ADD" xml:space="preserve">
     <value>+</value>
   </data>
   <data name="TEXT_VK_APPLICATION" xml:space="preserve">
-    <value>Application</value>
+    <value>Program</value>
   </data>
   <data name="TEXT_VK_B" xml:space="preserve">
     <value>B</value>
   </data>
   <data name="TEXT_VK_BACK" xml:space="preserve">
-    <value>Back</value>
+    <value>Tilbage</value>
   </data>
   <data name="TEXT_VK_C" xml:space="preserve">
     <value>C</value>
   </data>
   <data name="TEXT_VK_CANCEL" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Annuller</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
     <value>Caps Lock</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
-    <value>Clear</value>
+    <value>Ryd</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
     <value>Ctrl</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
-    <value>Convert</value>
+    <value>Konverter</value>
   </data>
   <data name="TEXT_VK_D" xml:space="preserve">
     <value>D</value>
@@ -760,7 +814,7 @@
     <value>/</value>
   </data>
   <data name="TEXT_VK_DOWN" xml:space="preserve">
-    <value>Down</value>
+    <value>Ned</value>
   </data>
   <data name="TEXT_VK_E" xml:space="preserve">
     <value>E</value>
@@ -775,7 +829,7 @@
     <value>Esc</value>
   </data>
   <data name="TEXT_VK_EXECUTE" xml:space="preserve">
-    <value>Execute</value>
+    <value>Udfør</value>
   </data>
   <data name="TEXT_VK_F" xml:space="preserve">
     <value>F</value>
@@ -853,10 +907,10 @@
     <value>F9</value>
   </data>
   <data name="TEXT_VK_FAVORITES" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Favoritter</value>
   </data>
   <data name="TEXT_VK_FINAL" xml:space="preserve">
-    <value>Final</value>
+    <value>Sidste</value>
   </data>
   <data name="TEXT_VK_G" xml:space="preserve">
     <value>G</value>
@@ -934,13 +988,13 @@
     <value>GamepadY</value>
   </data>
   <data name="TEXT_VK_GOBACK" xml:space="preserve">
-    <value>GoBack</value>
+    <value>Tilbage</value>
   </data>
   <data name="TEXT_VK_GOFORWARD" xml:space="preserve">
-    <value>GoForward</value>
+    <value>Fremad</value>
   </data>
   <data name="TEXT_VK_GOHOME" xml:space="preserve">
-    <value>GoHome</value>
+    <value>Hjem</value>
   </data>
   <data name="TEXT_VK_H" xml:space="preserve">
     <value>H</value>
@@ -952,16 +1006,16 @@
     <value>Hanja</value>
   </data>
   <data name="TEXT_VK_HELP" xml:space="preserve">
-    <value>Help</value>
+    <value>Hjælp</value>
   </data>
   <data name="TEXT_VK_HOME" xml:space="preserve">
-    <value>Home</value>
+    <value>Hjem</value>
   </data>
   <data name="TEXT_VK_I" xml:space="preserve">
     <value>I</value>
   </data>
   <data name="TEXT_VK_INSERT" xml:space="preserve">
-    <value>Insert</value>
+    <value>Indsæt</value>
   </data>
   <data name="TEXT_VK_J" xml:space="preserve">
     <value>J</value>
@@ -976,10 +1030,10 @@
     <value>L</value>
   </data>
   <data name="TEXT_VK_LEFT" xml:space="preserve">
-    <value>Left</value>
+    <value>Venstre</value>
   </data>
   <data name="TEXT_VK_LEFTBUTTON" xml:space="preserve">
-    <value>LeftButton</value>
+    <value>VenstreKnap</value>
   </data>
   <data name="TEXT_VK_M" xml:space="preserve">
     <value>M</value>
@@ -988,10 +1042,10 @@
     <value>Alt</value>
   </data>
   <data name="TEXT_VK_MIDDLEBUTTON" xml:space="preserve">
-    <value>MiddleButton</value>
+    <value>MidtersteKnap</value>
   </data>
   <data name="TEXT_VK_MODECHANGE" xml:space="preserve">
-    <value>ModeChange</value>
+    <value>ÆndreTilstand</value>
   </data>
   <data name="TEXT_VK_MULTIPLY" xml:space="preserve">
     <value>*</value>
@@ -1000,34 +1054,34 @@
     <value>N</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONACCEPT" xml:space="preserve">
-    <value>NavigationAccept</value>
+    <value>NavigationAcceptér</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONCANCEL" xml:space="preserve">
-    <value>NavigationCancel</value>
+    <value>NavigationAnnuller</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONDOWN" xml:space="preserve">
-    <value>NavigationDown</value>
+    <value>NavigationNed</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONLEFT" xml:space="preserve">
-    <value>NavigationLeft</value>
+    <value>NavigationVenstre</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONMENU" xml:space="preserve">
     <value>NavigationMenu</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONRIGHT" xml:space="preserve">
-    <value>NavigationRight</value>
+    <value>NavigationHøjre</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONUP" xml:space="preserve">
-    <value>NavigationUp</value>
+    <value>NavigationOp</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONVIEW" xml:space="preserve">
-    <value>NavigationView</value>
+    <value>NavigationVisning</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>KonverterIkke</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Ingen</value>
   </data>
   <data name="TEXT_VK_NUMBER0" xml:space="preserve">
     <value>0</value>
@@ -1099,10 +1153,10 @@
     <value>P</value>
   </data>
   <data name="TEXT_VK_PAGEDOWN" xml:space="preserve">
-    <value>PageDown</value>
+    <value>SideNed</value>
   </data>
   <data name="TEXT_VK_PAGEUP" xml:space="preserve">
-    <value>PageUp</value>
+    <value>SideOp</value>
   </data>
   <data name="TEXT_VK_PAUSE" xml:space="preserve">
     <value>Pause</value>
@@ -1117,13 +1171,13 @@
     <value>R</value>
   </data>
   <data name="TEXT_VK_REFRESH" xml:space="preserve">
-    <value>Refresh</value>
+    <value>Genindlæs</value>
   </data>
   <data name="TEXT_VK_RIGHT" xml:space="preserve">
-    <value>Right</value>
+    <value>Højre</value>
   </data>
   <data name="TEXT_VK_RIGHTBUTTON" xml:space="preserve">
-    <value>RightButton</value>
+    <value>HøjreKnap</value>
   </data>
   <data name="TEXT_VK_S" xml:space="preserve">
     <value>S</value>
@@ -1132,10 +1186,10 @@
     <value>Scroll Lock</value>
   </data>
   <data name="TEXT_VK_SEARCH" xml:space="preserve">
-    <value>Search</value>
+    <value>Søg</value>
   </data>
   <data name="TEXT_VK_SELECT" xml:space="preserve">
-    <value>Select</value>
+    <value>Vælg</value>
   </data>
   <data name="TEXT_VK_SEPARATOR" xml:space="preserve">
     <value>Separator</value>
@@ -1144,7 +1198,7 @@
     <value>Skift</value>
   </data>
   <data name="TEXT_VK_SLEEP" xml:space="preserve">
-    <value>Sleep</value>
+    <value>Slumre</value>
   </data>
   <data name="TEXT_VK_SNAPSHOT" xml:space="preserve">
     <value>Snapshot</value>
@@ -1168,7 +1222,7 @@
     <value>U</value>
   </data>
   <data name="TEXT_VK_UP" xml:space="preserve">
-    <value>Up</value>
+    <value>Op</value>
   </data>
   <data name="TEXT_VK_V" xml:space="preserve">
     <value>V</value>
@@ -1183,10 +1237,10 @@
     <value>X</value>
   </data>
   <data name="TEXT_VK_XBUTTON1" xml:space="preserve">
-    <value>XButton1</value>
+    <value>XKnap1</value>
   </data>
   <data name="TEXT_VK_XBUTTON2" xml:space="preserve">
-    <value>XButton2</value>
+    <value>XKnap2</value>
   </data>
   <data name="TEXT_VK_Y" xml:space="preserve">
     <value>Y</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME slået fra</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Hvid</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 time</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Lysegrå</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 timer</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Grå</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 minut</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Mørkegrå</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 minutter</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Sort</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 sekund</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Koral</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 sekunder</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Rosa</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>position %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Lys orange</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>position %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Sand</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Lysegul</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Pastelgrøn</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Lime</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Akvamarin</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Himmelblå</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Blegturkis</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Blegblå</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Lyseblå</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Isblå</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Kornblå</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Lavendel</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Pink</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Rød</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Orange</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Brun</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Gylden</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Gul</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Olivengrøn</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Grøn</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Knaldgrøn</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Blågrøn</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Turkis</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Blå</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Blågrå</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Indigo</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Lilla</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Rødbrun</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Olivengul</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Mørkegrøn</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Dybblå</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Mørkeblå</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Mørklilla</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Blomme</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Luk</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

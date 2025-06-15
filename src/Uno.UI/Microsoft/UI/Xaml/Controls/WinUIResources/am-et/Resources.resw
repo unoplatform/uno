@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>ነጭ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ውሃ ግራጫ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ግራጫ</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ጥቁር ግራጫ</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ጥቁር</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value> ኮራል</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ሮዝ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ውሃ ብርቱካን</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value> ታን</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ቀላል</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ውሃ አረንጓዴ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ኖራ</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>አኳ</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ሰማይ ሰማያዊ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ውሃ ቱርኮይዝ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ፈዛዛ ሰማያዊ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ውሃ ሰማያዊ</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>አይስ ሰማያዊ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value> ፔሪዊንክል</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ላቬንደር</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ሮዝ</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ቀይ</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ብርቱካን</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ቡናማ</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ወርቃማ</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>ብጫ</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ወይራ አረንጓዴ</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>አረንጓዴ</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ብሩህ አረንጓዴ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value> ቲል</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ቱርኮይዝ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ሰማያዊ</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ሰማያዊ-ግራጫ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ኢንዲጎ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ወይን ጠጅ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ጥቁር ቀይ</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>ጥቁር ብጫ</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ደማቅ አረንጓዴ</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ጥቁር ቲል</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ጥቁር ሰማያዊ</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ጥቁር ወይን ጠጅ</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ፕለም</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>ሴማንቲክ ማጉላት/ማሳነስ </value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>ቀይሬ ለውጥ</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>ንጥል ነገር</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 ንጥል ነገሮች</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>መጎተት ሰርዝ %1</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>ቀጣይ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>የፊተኛዎቹ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>አጫውት</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>ላፍታ አቁም</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>የፈጀው ጊዜ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>የቀረው ጊዜ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>የማቋት ሂደት</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>ፈልግ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>ድምጽ አጥፋ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>የድምጽ መጠን</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>ስሕተት</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>ቀን </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>ወር </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>ዓመት </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>ሰአት</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>ደቂቃ </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 ደቂቃ</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 ደቂቃዎች</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 ሰከንድ</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 ሰከንዶች</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>ቋሚ ትልቅ ቅናሽ</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>ቋሚ ትንሽ ቅናሽ</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>ቁረጥ</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>ቀን ይምረጡ</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>፣ ዛሬ</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>ያነሰ አሳይ</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>ቋሚ የአውራጣት</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>ለ %s ተጨማሪ አማራጮች</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>ወደ መሳሪያ ውሰድ</value>
   </data>
@@ -660,6 +711,9 @@
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>የመተግበሪያ አሞሌ መቀያየሪያ አዝራር</value>
   </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>ለ%s ያነሰ የመተግበሪያ አሞሌ</value>
+  </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>ሚድያ ማጫወቻ</value>
   </data>
@@ -673,7 +727,7 @@
     <value>ድገም ሁሉንም</value>
   </data>
   <data name="UIA_MEDIA_UNMUTE" xml:space="preserve">
-    <value>ድምጽ ይክፈቱ</value>
+    <value>ድምጸ ከል አንሳ</value>
   </data>
   <data name="UIA_AP_FLIPVIEW" xml:space="preserve">
     <value>እይታን ይገልብጡ</value>
@@ -742,7 +796,7 @@
     <value>ግልጽ</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
-    <value>Ctrl</value>
+    <value>ኮንትሮል</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
     <value>ቀይር</value>
@@ -1024,7 +1078,7 @@
     <value>የአሰሳ እይታ</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>የማይለወጥ</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
     <value>ምንም</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME አጥፋ</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>ነጭ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 ሰዓት</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>ውሃ ግራጫ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 ሰዓታት</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>ግራጫ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 ደቂቃ</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>ጥቁር ግራጫ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 ደቂቃዎች</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>ጥቁር</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 ሰከንድ</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value> ኮራል</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 ሰከንዶች</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>ሮዝ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>አቀማመጥ %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>ውሃ ብርቱካን</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>አቀማመጥ %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value> ታን</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>ቀላል</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>ውሃ አረንጓዴ</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>ኖራ</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>አኳ</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>ሰማይ ሰማያዊ</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>ውሃ ቱርኮይዝ</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>ፈዛዛ ሰማያዊ</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>ውሃ ሰማያዊ</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>አይስ ሰማያዊ</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value> ፔሪዊንክል</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>ላቬንደር</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>ሮዝ</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>ቀይ</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>ብርቱካን</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>ቡናማ</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>ወርቃማ</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>ብጫ</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>ወይራ አረንጓዴ</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>አረንጓዴ</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>ብሩህ አረንጓዴ</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value> ቲል</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>ቱርኮይዝ</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>ሰማያዊ</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>ሰማያዊ-ግራጫ</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>ኢንዲጎ</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>ወይን ጠጅ</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>ጥቁር ቀይ</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>ጥቁር ብጫ</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>ደማቅ አረንጓዴ</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>ጥቁር ቲል</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>ጥቁር ሰማያዊ</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>ጥቁር ወይን ጠጅ</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>ፕለም</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>ዝጋ</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

@@ -45,4 +45,8 @@ internal interface IAppBarButtonHelpersProvider
 	DependencyProperty GetIconDependencyProperty();
 
 	DependencyProperty GetKeyboardAcceleratorTextDependencyProperty();
+
+	Visibility Visibility { get; }
+
+	CommandBarLabelPosition LabelPosition { get; }
 }

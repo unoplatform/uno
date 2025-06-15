@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>ಬಿಳಿ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ತಿಳಿ ಬೂದು</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ಬೂದು</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ಗಾಢ ಬೂದು</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ಕಪ್ಪು</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>ಹವಳಗೆಂಪು</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ಗುಲಾಬಿ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ತಿಳಿ ಕಿತ್ತಳೆ</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ಹಳದಿಗಂದು</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ತಿಳಿ ಹಳದಿ</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ತಿಳಿ ಹಸಿರು</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ಲೈಮ್</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ಅಕ್ವಾ</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ಆಕಾಶ ನೀಲಿ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ತಿಳಿ ಹಸಿರುನೀಲಿ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ನಸು ನೀಲಿ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ತಿಳಿನೀಲಿ</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ಐಸ್ ನೀಲಿ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>ಪೆರಿವಿಂಕಲ್</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ನಸು ಕೆನ್ನೀಲಿ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ಗುಲಾಬಿ</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ಕೆಂಪು</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ಕಿತ್ತಳೆ</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ಕಂದು</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ಚಿನ್ನ</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>ಹಳದಿ</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ಆಲಿವ್ ಹಸಿರು</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>ಹಸಿರು</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ಪ್ರಕಾಶ ಹಸಿರು</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>ಕಡು ಹಸಿರು</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ಹಸಿರುನೀಲಿ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ನೀಲಿ</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ನೀಲಿ-ಬೂದು</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ಇಂಡಿಗೋ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ಕೆನ್ನೀಲಿ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ಗಾಢ ಕೆಂಪು</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>ಗಾಢ ಹಳದಿ</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ಗಾಢ ಹಸಿರು</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ಗಾಢ ಕಡು ಹಸಿರು</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ಗಾಢ ನೀಲಿ</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ಗಾಢ ಕೆನ್ನೀಲಿ</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ಪ್ಲಮ್</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>ಸೆಮಾಂಟಿಕ್ ಜೂಮ್</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>ಟಾಗಲ್ ಸ್ವಿಚ್</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>ಐಟಂ</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 ಐಟಂಗಳು</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>%1 ಜಗ್ಗುವಿಕೆ ರದ್ದುಮಾಡಿ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>ಮುಂದೆ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>ಹಿಂದಿನದು</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>ಪ್ಲೇ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>ವಿರಾಮ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>ಕಳೆದು ಹೋದ ಸಮಯ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>ಉಳಿದಿರುವ ಸಮಯ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>ಬಫರಿಂಗ್ ಪ್ರಗತಿಯಲ್ಲಿದೆ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>ಕೇಳು</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>ಮ್ಯೂಟ್</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>ವಾಲ್ಯೂಮ್</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>ದೋಷ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>ದಿನ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>ತಿಂಗಳು </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>ವರ್ಷ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>ಗಂಟೆ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>ನಿಮಿಷ </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 ನಿಮಿಷ</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 ನಿಮಿಷಗಳು</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 ಸೆಕೆಂಡ್</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 ಸೆಕೆಂಡುಗಳು</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>ಲಂಬವಾಗಿ ದೊಡ್ಡ ಪ್ರಮಾಣದಲ್ಲಿ ಇಳಿಕೆ</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>ಲಂಬವಾಗಿ ಸಣ್ಣ ಪ್ರಮಾಣದಲ್ಲಿ ಇಳಿಕೆ</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>ಕತ್ತರಿಸು</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>ದಿನಾಂಕ ಆಯ್ಕೆಮಾಡಿ</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, ಇಂದು</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>ಕಡಿಮೆ ನೋಡಿ</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>ಲಂಬ ಥಂಬ್</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s ಗೆ ಮತ್ತಷ್ಟು ಆಯ್ಕೆಗಳು</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>ಸಾಧನಕ್ಕೆ ಕಾಸ್ಟ್ ಮಾಡುವಿಕೆ</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>ಅಪ್ಲಿ ಬಾರ್ ಟಾಗಲ್ ಬಟನ್</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s ಗೆ ಕಡಿಮೆ ಆಪ್‌ ಬಾರ್</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>ಮಾಧ್ಯಮ ಪ್ಲೇಯರ್</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ಆಫ್</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>ಬಿಳಿ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 ಗಂಟೆ</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>ತಿಳಿ ಬೂದು</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 ಗಂಟೆಗಳು</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>ಬೂದು</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 ನಿಮಿಷ</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>ಗಾಢ ಬೂದು</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 ನಿಮಿಷಗಳು</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>ಕಪ್ಪು</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 ಸೆಕೆಂಡ್</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>ಹವಳಗೆಂಪು</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 ಸೆಕೆಂಡುಗಳು</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>ಗುಲಾಬಿ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>ಪೊಸಿಶನ್ %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>ತಿಳಿ ಕಿತ್ತಳೆ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>ಪೊಸಿಶನ್ %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>ಹಳದಿಗಂದು</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>ತಿಳಿ ಹಳದಿ</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>ತಿಳಿ ಹಸಿರು</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>ಲೈಮ್</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>ಅಕ್ವಾ</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>ಆಕಾಶ ನೀಲಿ</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>ತಿಳಿ ಹಸಿರುನೀಲಿ</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>ನಸು ನೀಲಿ</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>ತಿಳಿನೀಲಿ</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>ಐಸ್ ನೀಲಿ</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>ಪೆರಿವಿಂಕಲ್</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>ನಸು ಕೆನ್ನೀಲಿ</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>ಗುಲಾಬಿ</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>ಕೆಂಪು</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>ಕಿತ್ತಳೆ</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>ಕಂದು</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>ಚಿನ್ನ</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>ಹಳದಿ</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>ಆಲಿವ್ ಹಸಿರು</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>ಹಸಿರು</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>ಪ್ರಕಾಶ ಹಸಿರು</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>ಕಡು ಹಸಿರು</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>ಹಸಿರುನೀಲಿ</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>ನೀಲಿ</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>ನೀಲಿ-ಬೂದು</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>ಇಂಡಿಗೋ</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>ಕೆನ್ನೀಲಿ</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>ಗಾಢ ಕೆಂಪು</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>ಗಾಢ ಹಳದಿ</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>ಗಾಢ ಹಸಿರು</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>ಗಾಢ ಕಡು ಹಸಿರು</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>ಗಾಢ ನೀಲಿ</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>ಗಾಢ ಕೆನ್ನೀಲಿ</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>ಪ್ಲಮ್</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>ಮುಚ್ಚಿರಿ</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

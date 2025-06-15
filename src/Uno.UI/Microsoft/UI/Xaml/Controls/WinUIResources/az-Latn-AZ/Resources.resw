@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Ağ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Açıq boz</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Boz</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Tünd boz</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Qara</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Mərcan rəngi</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Çəhrayı</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Açıq narıncı</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Sarı-şabalıdı</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Açıq sarı</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Açıq yaşıl</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Limon rəngi</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Abı</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Səma mavisi</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Açıq firuzəyi</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Solğun mavi</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Açıq mavi</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Buz mavisi</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Bənövşəyi-mavi</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavanda</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Çəhrayı</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Qırmızı</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Narıncı</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Qəhvəyi</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Qızılı</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Sarı</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Sarı yaşıl</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Yaşıl</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Parlaq yaşıl</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Dəniz mavisi</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Firuzəyi</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Mavi</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Boz-Mavi</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Tünd göy</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Bənövşəyi</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Tünd qırmızı</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Tünd sarı</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Tünd yaşıl</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Tünd mavi</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Tünd mavi</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Tünd bənövşəyi</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Bənövşəyi rəng</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>Semantik miqyasdəyişmə</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>Dəyişdiricini keçir</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>Element</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 element</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>%1 sürüklənməsini ləğv et</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Növbəti</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Əvvəlki</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>İfa et</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Fasilə ver</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Sərf olunmuş vaxt</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Qalan vaxt</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Buferləmənin gedişatı</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Axtar</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Səssiz</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Səs səviyyəsi</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Səhv</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>Gün </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Ay </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>İl </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Saat </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Dəqiqə </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 dəqiqə</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 dəqiqə</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 saniyə</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 saniyə</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Şaquli Böyük Azalma</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Şaquli Kiçik Azalma</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Kəs</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>Tarix seçin</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, bu gün</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Daha az bax</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Şaquli Rəsmcik</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s kompüteri üçün daha çox seçim</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Cihazda yerləşdir</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>proqram zolağını dəyişdirmə düyməsi</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s üçün daha az proqram zolağı</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>media pleyeri</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME sönülü</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Ağ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 saat</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Açıq boz</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 saat</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Boz</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 dəqiqə</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Tünd boz</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 dəqiqə</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Qara</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 saniyə</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Mərcan rəngi</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 saniyə</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Çəhrayı</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>mövqe %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Açıq narıncı</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>mövqe %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Sarı-şabalıdı</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Açıq sarı</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Açıq yaşıl</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Limon rəngi</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Abı</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Səma mavisi</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Açıq firuzəyi</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Solğun mavi</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Açıq mavi</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Buz mavisi</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Bənövşəyi-mavi</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Lavanda</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Çəhrayı</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Qırmızı</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Narıncı</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Qəhvəyi</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Qızılı</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Sarı</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Sarı yaşıl</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Yaşıl</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Parlaq yaşıl</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Dəniz mavisi</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Firuzəyi</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Mavi</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Boz-Mavi</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Tünd göy</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Bənövşəyi</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Tünd qırmızı</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Tünd sarı</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Tünd yaşıl</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Tünd mavi</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Tünd mavi</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Tünd bənövşəyi</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Bənövşəyi rəng</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Bağla</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

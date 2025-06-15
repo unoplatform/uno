@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Білий</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Світло-сірий</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Сірий</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Темно-сірий</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Чорний</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Кораловий</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Рожевий</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Світло-оранжевий</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Жовто-коричневий</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Світло-жовтий</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Світло-зелений</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Світло-зелений</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Блакитний</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Блакитний</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Світло-бірюзовий</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Блідо-синій</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Світло-синій</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Пастельно-блакитний</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Синьо-фіолетовий</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Ліловий</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Рожевий</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Червоний</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Помаранчевий</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Коричневий</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Золотистий</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Жовтий</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Оливковий</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Зелений</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Яскраво-зелений</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Бірюзовий</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Бірюзовий</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Синій</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Сизий</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Індиго</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Бузковий</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Темно-червоний</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Темно-жовтий</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Темно-зелений</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Темно-сизий</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Темно-синій</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Темно-фіолетовий</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Сливовий</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>семантичне масштабування</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>перемикач</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>елемент</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>елементів: %1</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>скасувати перетягування елемента %1</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Далі</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Назад</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>Відтворити</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Пауза</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Час, що минув</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Залишилося часу</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Перебіг буферизації</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Шукати</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Вимкнути звук</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Гучність</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Помилка</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>День </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Місяць </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>Рік </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Година </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Хвилина </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 хв.</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 хв.</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 секунда</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 с</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Вертикальне значне зменшення</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Вертикальне незначне зменшення</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Вирізати</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>вибір дати</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, сьогодні</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Показати менше</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Вертикальний ескіз</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Додаткові параметри для "%s"</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Перекинути на пристрій</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>перемикач на панелі команд програми</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Менше панелі команд програм для %s</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>медіапрогравач</value>
@@ -754,7 +808,7 @@
     <value>.</value>
   </data>
   <data name="TEXT_VK_DELETE" xml:space="preserve">
-    <value>Delete</value>
+    <value>Видалити</value>
   </data>
   <data name="TEXT_VK_DIVIDE" xml:space="preserve">
     <value>/</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>РЕДАКТОР IME ВИМКНУТО</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Білий</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 година</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Світло-сірий</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 год.</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Сірий</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 хв.</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Темно-сірий</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 хв.</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Чорний</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 секунда</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Кораловий</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 с</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Рожевий</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>позиція %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Світло-оранжевий</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>позиція %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Жовто-коричневий</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Світло-жовтий</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Світло-зелений</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Світло-зелений</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Блакитний</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Блакитний</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Світло-бірюзовий</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Блідо-синій</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Світло-синій</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Пастельно-блакитний</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Синьо-фіолетовий</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Ліловий</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Рожевий</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Червоний</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Помаранчевий</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Коричневий</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Золотистий</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Жовтий</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Оливковий</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Зелений</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Яскраво-зелений</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Бірюзовий</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Бірюзовий</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Синій</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Сизий</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Індиго</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Бузковий</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Темно-червоний</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Темно-жовтий</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Темно-зелений</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Темно-сизий</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Темно-синій</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Темно-фіолетовий</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Сливовий</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Закрити</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>
