@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Blanc</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Gris clar</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Gris</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Gris fosc</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Negre</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Coral</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Taronja clar</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Canyella</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Groc clar</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Verd clar</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Llima</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Aigua</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Blau cel</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Turquesa clar</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Blau pàl·lid</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Blau clar</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Blau gel</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Blau tinta</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavanda</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Roig</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Taronja</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Marró</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Daurat</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Groc</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Verd oliva</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Verd</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Verd llima</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Verd blavós</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turquesa</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blau</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Gris blavós</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Anyil</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Porpra</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Roig fosc</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Groc fosc</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Verd fosc</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Verd blavós fosc</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Blau fosc</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Porpra fosc</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Pruna</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -127,172 +253,94 @@
     <value></value>
   </data>
   <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
-    <value>浅蓝色</value>
+    <value>Blau clar</value>
   </data>
   <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
-    <value>冰蓝</value>
+    <value>Blau gel</value>
   </data>
   <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
-    <value>文档</value>
+    <value>document</value>
   </data>
   <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
-    <value>拆分按钮</value>
+    <value>botó de divisió</value>
   </data>
   <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
-    <value>窗口</value>
+    <value>finestra</value>
   </data>
   <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
-    <value>窗格</value>
+    <value>subfinestra</value>
   </data>
   <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
-    <value>标题</value>
+    <value>capçalera</value>
   </data>
   <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
-    <value>标头项目</value>
+    <value>element de capçalera</value>
   </data>
   <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
-    <value>表格</value>
+    <value>taula</value>
   </data>
   <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
-    <value>标题栏</value>
+    <value>barra de títol</value>
   </data>
   <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
-    <value>分隔符</value>
+    <value>separador</value>
   </data>
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
-    <value>语义式缩放</value>
-  </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>切换开关</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>项</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 个项</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>取消拖动 %1</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>下一个</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>上一个</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>播放</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>暂停</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>已用时间</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>剩余时间</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>缓冲进度</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>定位</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>静音</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>音量</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>错误</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>天 </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>月 </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>年 </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>小时</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>分钟</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 分钟</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 分钟</value>
+    <value>zoom semàntic</value>
   </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
-    <value>%1 秒</value>
+    <value>%1 segon</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
-    <value>%1 秒</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>垂直大幅下降</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>垂直小幅下降</value>
+    <value>%1 segons</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
-    <value>剪切</value>
+    <value>Retalla</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_COPY" xml:space="preserve">
-    <value>复制</value>
+    <value>Copia</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_PASTE" xml:space="preserve">
-    <value>粘贴</value>
+    <value>Apega</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_UNDO" xml:space="preserve">
-    <value>撤消</value>
+    <value>Desfés</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_REDO" xml:space="preserve">
-    <value>恢复</value>
+    <value>Refés</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_SELECT_ALL" xml:space="preserve">
-    <value>全选</value>
+    <value>Selecciona-ho tot</value>
   </data>
   <data name="TEXT_TOGGLESWITCH_ON" xml:space="preserve">
-    <value>开</value>
+    <value>Activat</value>
   </data>
   <data name="TEXT_TOGGLESWITCH_OFF" xml:space="preserve">
-    <value>关</value>
+    <value>Desactivat</value>
   </data>
   <data name="TEXT_MEDIA_AUDIO_TRACK_UNTITLED" xml:space="preserve">
-    <value>无标题</value>
+    <value>sense títol</value>
   </data>
   <data name="TEXT_MEDIA_AUDIO_TRACK_SELECTED" xml:space="preserve">
-    <value>(打开)</value>
+    <value>(Activada)</value>
   </data>
   <data name="TEXT_PASSWORDBOX_SHOW_PASSWORD" xml:space="preserve">
-    <value>显示密码</value>
+    <value>Mostra la contrasenya</value>
   </data>
   <data name="TEXT_MEDIA_CC_OFF" xml:space="preserve">
-    <value>关</value>
+    <value>Desactivat</value>
   </data>
   <data name="TEXT_HUB_SEE_MORE" xml:space="preserve">
-    <value>查看更多</value>
+    <value>Més informació</value>
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
-    <value>选择日期</value>
+    <value>selecciona una data</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, hui</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
-    <value>收起</value>
+    <value>Mostra'n menys</value>
   </data>
   <data name="TEXT_MEDIA_AUDIO_TRACK_SEPARATOR" xml:space="preserve">
     <value> - </value>
@@ -304,448 +352,454 @@
     <value>%s (%s)</value>
   </data>
   <data name="UIA_AP_BUTTON" xml:space="preserve">
-    <value>按钮</value>
+    <value>botó</value>
   </data>
   <data name="UIA_AP_CALENDAR" xml:space="preserve">
-    <value>日历</value>
+    <value>calendari</value>
   </data>
   <data name="UIA_AP_CHECKBOX" xml:space="preserve">
-    <value>复选框</value>
+    <value>casella de selecció</value>
   </data>
   <data name="UIA_AP_COMBOBOX" xml:space="preserve">
-    <value>组合框</value>
+    <value>quadre combinat</value>
   </data>
   <data name="UIA_AP_EDIT" xml:space="preserve">
-    <value>编辑</value>
+    <value>edita</value>
   </data>
   <data name="UIA_AP_HYPERLINK" xml:space="preserve">
-    <value>链接</value>
+    <value>enllaç</value>
   </data>
   <data name="UIA_AP_IMAGE" xml:space="preserve">
-    <value>图像</value>
+    <value>imatge</value>
   </data>
   <data name="UIA_AP_LISTITEM" xml:space="preserve">
-    <value>列表项目</value>
+    <value>element de llista</value>
   </data>
   <data name="UIA_AP_LIST" xml:space="preserve">
-    <value>列表</value>
+    <value>llista</value>
   </data>
   <data name="UIA_AP_MENU" xml:space="preserve">
-    <value>菜单</value>
+    <value>menú</value>
   </data>
   <data name="UIA_AP_MENUBAR" xml:space="preserve">
-    <value>菜单栏</value>
+    <value>barra de menús</value>
   </data>
   <data name="UIA_AP_MENUITEM" xml:space="preserve">
-    <value>菜单项目</value>
+    <value>element de menú</value>
   </data>
   <data name="UIA_AP_PROGRESSBAR" xml:space="preserve">
-    <value>进度栏</value>
+    <value>barra de progrés</value>
   </data>
   <data name="UIA_AP_RADIOBUTTON" xml:space="preserve">
-    <value>单选按钮</value>
+    <value>botó d'opció</value>
   </data>
   <data name="UIA_AP_SCROLLBAR" xml:space="preserve">
-    <value>滚动条</value>
+    <value>barra de desplaçament</value>
   </data>
   <data name="UIA_AP_SLIDER" xml:space="preserve">
-    <value>滑块</value>
+    <value>control lliscant</value>
   </data>
   <data name="UIA_AP_SPINNER" xml:space="preserve">
-    <value>沙网</value>
+    <value>control de gir</value>
   </data>
   <data name="UIA_AP_STATUSBAR" xml:space="preserve">
-    <value>状态栏</value>
+    <value>barra d'estat</value>
   </data>
   <data name="UIA_AP_TAB" xml:space="preserve">
-    <value>选项卡</value>
+    <value>pestanya</value>
   </data>
   <data name="UIA_AP_TABITEM" xml:space="preserve">
-    <value>选项卡项目</value>
+    <value>element de pestanya</value>
   </data>
   <data name="UIA_AP_TEXT" xml:space="preserve">
-    <value>文本</value>
+    <value>text</value>
   </data>
   <data name="UIA_AP_TOOLBAR" xml:space="preserve">
-    <value>工具栏</value>
+    <value>barra d'eines</value>
   </data>
   <data name="UIA_AP_TOOLTIP" xml:space="preserve">
-    <value>工具提示</value>
+    <value>indicador de funció</value>
   </data>
   <data name="UIA_AP_TREE" xml:space="preserve">
-    <value>树</value>
+    <value>arbre</value>
   </data>
   <data name="UIA_AP_TREEITEM" xml:space="preserve">
-    <value>树项目</value>
+    <value>element d'arbre</value>
   </data>
   <data name="UIA_AP_CUSTOM" xml:space="preserve">
-    <value>自定义</value>
+    <value>personalitzat</value>
   </data>
   <data name="UIA_AP_GROUP" xml:space="preserve">
-    <value>组</value>
+    <value>grup</value>
   </data>
   <data name="UIA_AP_THUMB" xml:space="preserve">
-    <value>缩略图</value>
+    <value>miniatura</value>
   </data>
   <data name="UIA_AP_DATAGRID" xml:space="preserve">
-    <value>数据网格</value>
+    <value>quadrícula de dades</value>
   </data>
   <data name="UIA_AP_DATAITEM" xml:space="preserve">
-    <value>数据项目</value>
+    <value>element de dades</value>
   </data>
   <data name="UIA_AP_DOCUMENT" xml:space="preserve">
-    <value>文档</value>
+    <value>document</value>
   </data>
   <data name="UIA_AP_SPLITBUTTON" xml:space="preserve">
-    <value>拆分按钮</value>
+    <value>botó de divisió</value>
   </data>
   <data name="UIA_AP_WINDOW" xml:space="preserve">
-    <value>窗口</value>
+    <value>finestra</value>
   </data>
   <data name="UIA_AP_PANE" xml:space="preserve">
-    <value>窗格</value>
+    <value>subfinestra</value>
   </data>
   <data name="UIA_AP_HEADER" xml:space="preserve">
-    <value>标题</value>
+    <value>capçalera</value>
   </data>
   <data name="UIA_AP_HEADERITEM" xml:space="preserve">
-    <value>标头项目</value>
+    <value>element de capçalera</value>
   </data>
   <data name="UIA_AP_TABLE" xml:space="preserve">
-    <value>表格</value>
+    <value>taula</value>
   </data>
   <data name="UIA_AP_TITLEBAR" xml:space="preserve">
-    <value>标题栏</value>
+    <value>barra de títol</value>
   </data>
   <data name="UIA_AP_SEPARATOR" xml:space="preserve">
-    <value>分隔符</value>
+    <value>separador</value>
   </data>
   <data name="UIA_AP_SEMANTICZOOM" xml:space="preserve">
-    <value>语义式缩放</value>
+    <value>zoom semàntic</value>
   </data>
   <data name="UIA_AP_TOGGLESWITCH" xml:space="preserve">
-    <value>切换开关</value>
+    <value>commutador</value>
   </data>
   <data name="UIA_DRAG_ITEM" xml:space="preserve">
-    <value>项</value>
+    <value>element</value>
   </data>
   <data name="UIA_DRAG_ITEMS_COUNT" xml:space="preserve">
-    <value>%1 个项</value>
+    <value>%1 elements</value>
   </data>
   <data name="UIA_DRAG_CANCEL_DRAGGING" xml:space="preserve">
-    <value>取消拖动 %1</value>
+    <value>cancel·la l'arrossegament de %1</value>
   </data>
   <data name="UIA_DRAG_PLACE_BETWEEN" xml:space="preserve">
-    <value>将 %1 放在 %2 和 %3 之间</value>
+    <value>col·loca %1 entre %2 i %3</value>
   </data>
   <data name="UIA_DRAG_AFTER" xml:space="preserve">
-    <value>之后</value>
+    <value>després</value>
   </data>
   <data name="UIA_DRAG_BEFORE" xml:space="preserve">
-    <value>之前</value>
+    <value>abans</value>
   </data>
   <data name="UIA_DRAG_PLACE_3" xml:space="preserve">
-    <value>将 %1 放在 %3 %2</value>
+    <value>col·loca %1 %2 %3</value>
   </data>
   <data name="UIA_DRAG_PLACE_ITEM" xml:space="preserve">
-    <value>放置 %1</value>
+    <value>col·loca %1</value>
   </data>
   <data name="UIA_DRAG_MOVE" xml:space="preserve">
-    <value>移动</value>
+    <value>desplaça</value>
   </data>
   <data name="UIA_FLIPVIEW_NEXT" xml:space="preserve">
-    <value>下一个</value>
+    <value>Següent</value>
   </data>
   <data name="UIA_FLIPVIEW_PREVIOUS" xml:space="preserve">
-    <value>上一个</value>
+    <value>Anterior</value>
   </data>
   <data name="UIA_MEDIA_PLAY" xml:space="preserve">
-    <value>播放</value>
+    <value>Reprodueix</value>
   </data>
   <data name="UIA_MEDIA_PAUSE" xml:space="preserve">
-    <value>暂停</value>
+    <value>Para temporalment</value>
   </data>
   <data name="UIA_MEDIA_TIME_ELAPSED" xml:space="preserve">
-    <value>已用时间</value>
+    <value>Temps transcorregut</value>
   </data>
   <data name="UIA_MEDIA_TIME_REMAINING" xml:space="preserve">
-    <value>剩余时间</value>
+    <value>Temps restant</value>
   </data>
   <data name="UIA_MEDIA_DOWNLOAD_PROGRESS" xml:space="preserve">
-    <value>下载进度</value>
+    <value>Progrés de la baixada</value>
   </data>
   <data name="UIA_MEDIA_BUFFERING_PROGRESS" xml:space="preserve">
-    <value>缓冲进度</value>
+    <value>Progrés de l'emmagatzematge a la memòria intermèdia</value>
   </data>
   <data name="UIA_MEDIA_SEEK" xml:space="preserve">
-    <value>定位</value>
+    <value>Busca</value>
   </data>
   <data name="UIA_MEDIA_MUTE" xml:space="preserve">
-    <value>静音</value>
+    <value>Silencia</value>
   </data>
   <data name="UIA_MEDIA_VOLUME" xml:space="preserve">
-    <value>音量</value>
+    <value>Volum</value>
   </data>
   <data name="UIA_MEDIA_ERROR" xml:space="preserve">
-    <value>错误</value>
+    <value>Error</value>
   </data>
   <data name="UIA_DATEPICKER_DAY" xml:space="preserve">
-    <value>天 </value>
+    <value>Dia </value>
   </data>
   <data name="UIA_DATEPICKER_MONTH" xml:space="preserve">
-    <value>月 </value>
+    <value>Mes </value>
   </data>
   <data name="UIA_DATEPICKER_YEAR" xml:space="preserve">
-    <value>年 </value>
+    <value>Any </value>
   </data>
   <data name="UIA_TIMEPICKER_HOUR" xml:space="preserve">
-    <value>小时</value>
+    <value>Hora </value>
   </data>
   <data name="UIA_TIMEPICKER_MINUTE" xml:space="preserve">
-    <value>分钟</value>
+    <value>Minut </value>
   </data>
   <data name="UIA_TIMEPICKER_PERIOD" xml:space="preserve">
-    <value>时间段</value>
+    <value>Període </value>
   </data>
   <data name="UIA_AP_DATEPICKER" xml:space="preserve">
-    <value>日期选取器</value>
+    <value>selector de data</value>
   </data>
   <data name="UIA_AP_TIMEPICKER" xml:space="preserve">
-    <value>时间选取器</value>
+    <value>selector d'hora</value>
   </data>
   <data name="UIA_POPUP_NAME" xml:space="preserve">
-    <value>弹出窗口</value>
+    <value>Element emergent</value>
   </data>
   <data name="UIA_LIGHTDISMISS_NAME" xml:space="preserve">
-    <value>关闭</value>
+    <value>Tanca</value>
   </data>
   <data name="UIA_MEDIA_FULLSCREEN" xml:space="preserve">
-    <value>全屏</value>
+    <value>Pantalla sencera</value>
   </data>
   <data name="UIA_MEDIA_EXIT_FULLSCREEN" xml:space="preserve">
-    <value>退出全屏</value>
+    <value>Ix de la pantalla sencera</value>
   </data>
   <data name="UIA_MEDIA_AUDIO_SELECTION" xml:space="preserve">
-    <value>显示音频选择菜单</value>
+    <value>Mostra el menú de selecció d'àudio</value>
   </data>
   <data name="UIA_AP_APPBAR" xml:space="preserve">
-    <value>应用栏</value>
+    <value>barra de l'aplicació</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICAL" xml:space="preserve">
-    <value>垂直</value>
+    <value>Vertical</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTAL" xml:space="preserve">
-    <value>水平</value>
+    <value>Horitzontal</value>
   </data>
   <data name="UIA_TEXTBOX_DELETE" xml:space="preserve">
-    <value>删除</value>
+    <value>Suprimeix</value>
   </data>
   <data name="UIA_MEDIA_CC_SELECTION" xml:space="preserve">
-    <value>显示隐藏式字幕菜单</value>
+    <value>Mostra el menú de subtítol ocult</value>
   </data>
   <data name="UIA_MEDIA_PLAYBACKRATE" xml:space="preserve">
-    <value>显示播放速率列表</value>
+    <value>Mostra la llista de velocitat de reproducció</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD" xml:space="preserve">
-    <value>快进	</value>
+    <value>Avança ràpidament</value>
   </data>
   <data name="UIA_MEDIA_REWIND" xml:space="preserve">
-    <value>后退</value>
+    <value>Rebobina</value>
   </data>
   <data name="UIA_MEDIA_STOP" xml:space="preserve">
-    <value>停止</value>
+    <value>Para</value>
   </data>
   <data name="UIA_WINDOWED_POPUP_HOST" xml:space="preserve">
-    <value>主机弹出窗口</value>
+    <value>Amfitrió d'element emergent</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALLARGEINCREASE" xml:space="preserve">
-    <value>水平大幅增长</value>
+    <value>Augment horitzontal gran</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALSMALLINCREASE" xml:space="preserve">
-    <value>水平小幅增长</value>
+    <value>Augment horitzontal xicotet</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALLARGEDECREASE" xml:space="preserve">
-    <value>水平大幅下降</value>
+    <value>Reducció horitzontal gran</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALSMALLDECREASE" xml:space="preserve">
-    <value>水平小幅下降</value>
+    <value>Reducció horitzontal xicoteta</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALTHUMB" xml:space="preserve">
-    <value>水平缩略图</value>
+    <value>Control de posició horitzontal</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALALLARGEINCREASE" xml:space="preserve">
-    <value>垂直大幅增长</value>
+    <value>Augment vertical gran</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALSMALLINCREASE" xml:space="preserve">
-    <value>垂直小幅增长</value>
+    <value>Augment vertical xicotet</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALLARGEDECREASE" xml:space="preserve">
-    <value>垂直大幅下降</value>
+    <value>Reducció vertical gran</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALSMALLDECREASE" xml:space="preserve">
-    <value>垂直小幅下降</value>
+    <value>Reducció vertical xicoteta</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
-    <value>垂直缩略图</value>
+    <value>Control de posició vertical</value>
+  </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Més opcions per a %s</value>
   </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
-    <value>强制转换为设备</value>
+    <value>Transmet al dispositiu</value>
   </data>
   <data name="UIA_MORE_BUTTON" xml:space="preserve">
-    <value>更多选项</value>
+    <value>Més opcions</value>
   </data>
   <data name="UIA_MEDIA_ASPECTRATIO" xml:space="preserve">
-    <value>纵横比</value>
+    <value>Relació d'aspecte</value>
   </data>
   <data name="UIA_NAME_DATEPICKER" xml:space="preserve">
-    <value>%1 %2 日期选取器</value>
+    <value>Selector de dades %1 %2</value>
   </data>
   <data name="UIA_NAME_TIMEPICKER" xml:space="preserve">
-    <value>%1 %2 时间选取器</value>
+    <value>Selector d'hora %1 %2</value>
   </data>
   <data name="UIA_DRAG_DROPINTO" xml:space="preserve">
-    <value>将 %1 放到 %2 中</value>
+    <value>deixa anar %1 a %2</value>
   </data>
   <data name="UIA_MEDIA_SKIPBACKWARD" xml:space="preserve">
-    <value>倒转跳过</value>
+    <value>Salta arrere</value>
   </data>
   <data name="UIA_MEDIA_SKIPFORWARD" xml:space="preserve">
-    <value>快转跳过</value>
+    <value>Salta avant</value>
   </data>
   <data name="UIA_MEDIA_NEXTRACK" xml:space="preserve">
-    <value>下一曲目</value>
+    <value>Pista següent</value>
   </data>
   <data name="UIA_MEDIA_PREVIOUSTRACK" xml:space="preserve">
-    <value>上一曲目</value>
+    <value>Pista anterior</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD_2X" xml:space="preserve">
-    <value>以 2 倍速快进</value>
+    <value>Avança ràpidament a 2X</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD_4X" xml:space="preserve">
-    <value>以 4 倍速快进</value>
+    <value>Avança ràpidament a 4X</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD_8X" xml:space="preserve">
-    <value>以 8 倍速快进</value>
+    <value>Avança ràpidament a 8X</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD_16X" xml:space="preserve">
-    <value>以 16 倍速快进</value>
+    <value>Avança ràpidament a 16X</value>
   </data>
   <data name="UIA_MEDIA_REWIND_2X" xml:space="preserve">
-    <value>以 2 倍速后退</value>
+    <value>Rebobina a 2X</value>
   </data>
   <data name="UIA_MEDIA_REWIND_4X" xml:space="preserve">
-    <value>以 4 倍速后退</value>
+    <value>Rebobina a 4X</value>
   </data>
   <data name="UIA_MEDIA_REWIND_8X" xml:space="preserve">
-    <value>以 8 倍速后退</value>
+    <value>Rebobina a 8X</value>
   </data>
   <data name="UIA_MEDIA_REWIND_16X" xml:space="preserve">
-    <value>以 16 倍速后退</value>
+    <value>Rebobina a 16X</value>
   </data>
   <data name="UIA_AUTOSUGGESTBOX_QUERY" xml:space="preserve">
-    <value>搜索</value>
+    <value>Busca</value>
   </data>
   <data name="UIA_LESS_BUTTON" xml:space="preserve">
-    <value>减少应用栏</value>
+    <value>Menys barra de l'aplicació</value>
   </data>
   <data name="UIA_PASSWORDBOX_REVEAL" xml:space="preserve">
-    <value>显示密码</value>
+    <value>Mostra la contrasenya</value>
   </data>
   <data name="UIA_PASSWORDBOX_REVEAL_ACCELERATORKEY" xml:space="preserve">
-    <value>按 ALT F8 显示密码</value>
+    <value>ALT + F8 per mostrar la contrasenya</value>
   </data>
   <data name="UIA_AP_APPBAR_BUTTON" xml:space="preserve">
-    <value>应用栏按钮</value>
+    <value>botó de la barra de l'aplicació</value>
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
-    <value>应用栏切换按钮</value>
+    <value>botó de commutació de la barra de l'aplicació</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Menys barra de l'aplicació per a %s</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
-    <value>媒体播放器</value>
+    <value>reproductor multimèdia</value>
   </data>
   <data name="UIA_MEDIA_REPEAT_NONE" xml:space="preserve">
-    <value>不重复</value>
+    <value>No en repetisques cap</value>
   </data>
   <data name="UIA_MEDIA_REPEAT_ONE" xml:space="preserve">
-    <value>单一重复</value>
+    <value>Repeteix-ne un</value>
   </data>
   <data name="UIA_MEDIA_REPEAT_ALL" xml:space="preserve">
-    <value>重复全部</value>
+    <value>Repeteix-los tots</value>
   </data>
   <data name="UIA_MEDIA_UNMUTE" xml:space="preserve">
-    <value>启用通知</value>
+    <value>Activa el so</value>
   </data>
   <data name="UIA_AP_FLIPVIEW" xml:space="preserve">
-    <value>翻转视图</value>
+    <value>gira la visualització</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_ABORTED_VIDEO" xml:space="preserve">
-    <value>错误: 视频播放已中止</value>
+    <value>Error: s'ha abandonat la reproducció del vídeo</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_NETWORK_VIDEO" xml:space="preserve">
-    <value>网络错误: 无法检索视频</value>
+    <value>Error de xarxa: no es pot recuperar el vídeo</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_DECODE_VIDEO" xml:space="preserve">
-    <value>错误: 无法解码视频</value>
+    <value>Error: no s'ha pogut descodificar el vídeo</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_SRC_NOT_SUPPORTED_VIDEO" xml:space="preserve">
-    <value>错误: 视频类型不受支持或文件路径无效</value>
+    <value>Error: el tipus de vídeo no és compatible o el camí del fitxer no és vàlid</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_DEFAULT" xml:space="preserve">
-    <value>错误: 发生未知错误</value>
+    <value>Error: s'ha produït un error desconegut</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_ABORTED_AUDIO" xml:space="preserve">
-    <value>错误: 音频播放已中止</value>
+    <value>Error: s'ha abandonat la reproducció d'àudio</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_NETWORK_AUDIO" xml:space="preserve">
-    <value>网络错误: 无法检索音频</value>
+    <value>Error de xarxa: no es pot recuperar l'àudio</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_DECODE_AUDIO" xml:space="preserve">
-    <value>错误: 无法解码音频</value>
+    <value>Error: l'àudio no s'ha pogut descodificar</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_SRC_NOT_SUPPORTED_AUDIO" xml:space="preserve">
-    <value>错误: 音频类型不受支持或文件路径无效</value>
+    <value>Error: el tipus d'àudio no és compatible o el camí del fitxer no és vàlid</value>
   </data>
   <data name="UIA_PROGRESSRING_BUSY" xml:space="preserve">
-    <value>正忙...</value>
+    <value>Ocupat...</value>
   </data>
   <data name="UIA_PROGRESSRING_NOTBUSY" xml:space="preserve">
-    <value>不忙...</value>
+    <value>No ocupat...</value>
   </data>
   <data name="TEXT_VK_A" xml:space="preserve">
     <value>A</value>
   </data>
   <data name="TEXT_VK_ACCEPT" xml:space="preserve">
-    <value>Accept</value>
+    <value>Accepta</value>
   </data>
   <data name="TEXT_VK_ADD" xml:space="preserve">
     <value>+</value>
   </data>
   <data name="TEXT_VK_APPLICATION" xml:space="preserve">
-    <value>Application</value>
+    <value>Aplicació</value>
   </data>
   <data name="TEXT_VK_B" xml:space="preserve">
     <value>B</value>
   </data>
   <data name="TEXT_VK_BACK" xml:space="preserve">
-    <value>Back</value>
+    <value>Arrere</value>
   </data>
   <data name="TEXT_VK_C" xml:space="preserve">
     <value>C</value>
   </data>
   <data name="TEXT_VK_CANCEL" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Cancel·la</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
-    <value>Caps Lock</value>
+    <value>Bloq Maj</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
-    <value>Clear</value>
+    <value>Esborra</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
     <value>Ctrl</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
-    <value>Convert</value>
+    <value>Converteix</value>
   </data>
   <data name="TEXT_VK_D" xml:space="preserve">
     <value>D</value>
@@ -754,28 +808,28 @@
     <value>.</value>
   </data>
   <data name="TEXT_VK_DELETE" xml:space="preserve">
-    <value>删除</value>
+    <value>Suprimeix</value>
   </data>
   <data name="TEXT_VK_DIVIDE" xml:space="preserve">
     <value>/</value>
   </data>
   <data name="TEXT_VK_DOWN" xml:space="preserve">
-    <value>Down</value>
+    <value>Avall</value>
   </data>
   <data name="TEXT_VK_E" xml:space="preserve">
     <value>E</value>
   </data>
   <data name="TEXT_VK_END" xml:space="preserve">
-    <value>End</value>
+    <value>Finalitza</value>
   </data>
   <data name="TEXT_VK_ENTER" xml:space="preserve">
-    <value>Enter</value>
+    <value>Introdueix</value>
   </data>
   <data name="TEXT_VK_ESCAPE" xml:space="preserve">
     <value>Esc</value>
   </data>
   <data name="TEXT_VK_EXECUTE" xml:space="preserve">
-    <value>Execute</value>
+    <value>Executa</value>
   </data>
   <data name="TEXT_VK_F" xml:space="preserve">
     <value>F</value>
@@ -853,7 +907,7 @@
     <value>F9</value>
   </data>
   <data name="TEXT_VK_FAVORITES" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Favorits</value>
   </data>
   <data name="TEXT_VK_FINAL" xml:space="preserve">
     <value>Final</value>
@@ -934,13 +988,13 @@
     <value>GamepadY</value>
   </data>
   <data name="TEXT_VK_GOBACK" xml:space="preserve">
-    <value>GoBack</value>
+    <value>Retrocedeix</value>
   </data>
   <data name="TEXT_VK_GOFORWARD" xml:space="preserve">
-    <value>GoForward</value>
+    <value>Avança</value>
   </data>
   <data name="TEXT_VK_GOHOME" xml:space="preserve">
-    <value>GoHome</value>
+    <value>Ves a la pàgina principal</value>
   </data>
   <data name="TEXT_VK_H" xml:space="preserve">
     <value>H</value>
@@ -952,16 +1006,16 @@
     <value>Hanja</value>
   </data>
   <data name="TEXT_VK_HELP" xml:space="preserve">
-    <value>Help</value>
+    <value>Ajuda</value>
   </data>
   <data name="TEXT_VK_HOME" xml:space="preserve">
-    <value>Home</value>
+    <value>Inici</value>
   </data>
   <data name="TEXT_VK_I" xml:space="preserve">
     <value>I</value>
   </data>
   <data name="TEXT_VK_INSERT" xml:space="preserve">
-    <value>Insert</value>
+    <value>Insereix</value>
   </data>
   <data name="TEXT_VK_J" xml:space="preserve">
     <value>J</value>
@@ -976,10 +1030,10 @@
     <value>L</value>
   </data>
   <data name="TEXT_VK_LEFT" xml:space="preserve">
-    <value>Left</value>
+    <value>Esquerra</value>
   </data>
   <data name="TEXT_VK_LEFTBUTTON" xml:space="preserve">
-    <value>LeftButton</value>
+    <value>Botó esquerre</value>
   </data>
   <data name="TEXT_VK_M" xml:space="preserve">
     <value>M</value>
@@ -988,10 +1042,10 @@
     <value>Alt</value>
   </data>
   <data name="TEXT_VK_MIDDLEBUTTON" xml:space="preserve">
-    <value>MiddleButton</value>
+    <value>Botó del mig</value>
   </data>
   <data name="TEXT_VK_MODECHANGE" xml:space="preserve">
-    <value>ModeChange</value>
+    <value>Canvia de mode</value>
   </data>
   <data name="TEXT_VK_MULTIPLY" xml:space="preserve">
     <value>*</value>
@@ -1000,34 +1054,34 @@
     <value>N</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONACCEPT" xml:space="preserve">
-    <value>NavigationAccept</value>
+    <value>Accepta la navegació</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONCANCEL" xml:space="preserve">
-    <value>NavigationCancel</value>
+    <value>Cancel·la la navegació</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONDOWN" xml:space="preserve">
-    <value>NavigationDown</value>
+    <value>Navega cap avall</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONLEFT" xml:space="preserve">
-    <value>NavigationLeft</value>
+    <value>Navega cap a l’esquerra</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONMENU" xml:space="preserve">
-    <value>NavigationMenu</value>
+    <value>Menú de navegació</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONRIGHT" xml:space="preserve">
-    <value>NavigationRight</value>
+    <value>Navega cap a la dreta</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONUP" xml:space="preserve">
-    <value>NavigationUp</value>
+    <value>Navega cap amunt</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONVIEW" xml:space="preserve">
-    <value>NavigationView</value>
+    <value>Visualització de navegació</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>No es converteix</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Cap</value>
   </data>
   <data name="TEXT_VK_NUMBER0" xml:space="preserve">
     <value>0</value>
@@ -1060,7 +1114,7 @@
     <value>9</value>
   </data>
   <data name="TEXT_VK_NUMBERKEYLOCK" xml:space="preserve">
-    <value>Num Lock</value>
+    <value>Blocatge de números</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD0" xml:space="preserve">
     <value>Num 0</value>
@@ -1099,16 +1153,16 @@
     <value>P</value>
   </data>
   <data name="TEXT_VK_PAGEDOWN" xml:space="preserve">
-    <value>PageDown</value>
+    <value>Pàgina d’avall</value>
   </data>
   <data name="TEXT_VK_PAGEUP" xml:space="preserve">
-    <value>PageUp</value>
+    <value>Pàgina d’amunt</value>
   </data>
   <data name="TEXT_VK_PAUSE" xml:space="preserve">
-    <value>Pause</value>
+    <value>Pausa</value>
   </data>
   <data name="TEXT_VK_PRINT" xml:space="preserve">
-    <value>Print</value>
+    <value>Imprimeix</value>
   </data>
   <data name="TEXT_VK_Q" xml:space="preserve">
     <value>Q</value>
@@ -1117,43 +1171,43 @@
     <value>R</value>
   </data>
   <data name="TEXT_VK_REFRESH" xml:space="preserve">
-    <value>Refresh</value>
+    <value>Actualitza</value>
   </data>
   <data name="TEXT_VK_RIGHT" xml:space="preserve">
-    <value>Right</value>
+    <value>Dreta</value>
   </data>
   <data name="TEXT_VK_RIGHTBUTTON" xml:space="preserve">
-    <value>RightButton</value>
+    <value>Botó dret</value>
   </data>
   <data name="TEXT_VK_S" xml:space="preserve">
     <value>S</value>
   </data>
   <data name="TEXT_VK_SCROLL" xml:space="preserve">
-    <value>Scroll Lock</value>
+    <value>Bloqueja Desplaçar</value>
   </data>
   <data name="TEXT_VK_SEARCH" xml:space="preserve">
-    <value>搜索</value>
+    <value>Recerca</value>
   </data>
   <data name="TEXT_VK_SELECT" xml:space="preserve">
-    <value>Select</value>
+    <value>Selecciona</value>
   </data>
   <data name="TEXT_VK_SEPARATOR" xml:space="preserve">
-    <value>Separator</value>
+    <value>Separador</value>
   </data>
   <data name="TEXT_VK_SHIFT" xml:space="preserve">
-    <value>Shift</value>
+    <value>Maj</value>
   </data>
   <data name="TEXT_VK_SLEEP" xml:space="preserve">
-    <value>Sleep</value>
+    <value>Parada temporal</value>
   </data>
   <data name="TEXT_VK_SNAPSHOT" xml:space="preserve">
-    <value>Snapshot</value>
+    <value>Instantània</value>
   </data>
   <data name="TEXT_VK_SPACE" xml:space="preserve">
-    <value>空格键</value>
+    <value>Espai</value>
   </data>
   <data name="TEXT_VK_STOP" xml:space="preserve">
-    <value>Stop</value>
+    <value>Para</value>
   </data>
   <data name="TEXT_VK_SUBTRACT" xml:space="preserve">
     <value>-</value>
@@ -1162,13 +1216,13 @@
     <value>T</value>
   </data>
   <data name="TEXT_VK_TAB" xml:space="preserve">
-    <value>Tab</value>
+    <value>Tecla de tabulació</value>
   </data>
   <data name="TEXT_VK_U" xml:space="preserve">
     <value>U</value>
   </data>
   <data name="TEXT_VK_UP" xml:space="preserve">
-    <value>Up</value>
+    <value>Amunt</value>
   </data>
   <data name="TEXT_VK_V" xml:space="preserve">
     <value>V</value>
@@ -1183,10 +1237,10 @@
     <value>X</value>
   </data>
   <data name="TEXT_VK_XBUTTON1" xml:space="preserve">
-    <value>XButton1</value>
+    <value>XBotó1</value>
   </data>
   <data name="TEXT_VK_XBUTTON2" xml:space="preserve">
-    <value>XButton2</value>
+    <value>XBotó2</value>
   </data>
   <data name="TEXT_VK_Y" xml:space="preserve">
     <value>Y</value>
@@ -1195,109 +1249,109 @@
     <value>Z</value>
   </data>
   <data name="UIA_AP_CALENDARDATEPICKER" xml:space="preserve">
-    <value>日历日期选取器</value>
+    <value>selector de data del calendari</value>
   </data>
   <data name="UIA_MEDIA_MINIVIEW" xml:space="preserve">
-    <value>进入 MiniView</value>
+    <value>Obri el MiniView</value>
   </data>
   <data name="UIA_MEDIA_EXIT_MINIVIEW" xml:space="preserve">
-    <value>退出 MiniView</value>
+    <value>Tanca el MiniView</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_CUT" xml:space="preserve">
-    <value>剪切</value>
+    <value>Retalla</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_COPY" xml:space="preserve">
-    <value>复制</value>
+    <value>Copia</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_PASTE" xml:space="preserve">
-    <value>粘贴</value>
+    <value>Apega</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_SELECTALL" xml:space="preserve">
-    <value>全选</value>
+    <value>Selecciona-ho tot</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_DELETE" xml:space="preserve">
-    <value>删除</value>
+    <value>Suprimeix</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_SHARE" xml:space="preserve">
-    <value>共享</value>
+    <value>Comparteix</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_SAVE" xml:space="preserve">
-    <value>保存</value>
+    <value>Guarda</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_OPEN" xml:space="preserve">
-    <value>打开</value>
+    <value>Obri</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_CLOSE" xml:space="preserve">
-    <value>关闭</value>
+    <value>Tanca</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_PAUSE" xml:space="preserve">
-    <value>暂停</value>
+    <value>Para temporalment</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_PLAY" xml:space="preserve">
-    <value>播放</value>
+    <value>Reprodueix</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_STOP" xml:space="preserve">
-    <value>停止</value>
+    <value>Para</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_FORWARD" xml:space="preserve">
-    <value>向前</value>
+    <value>Avant</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_BACKWARD" xml:space="preserve">
-    <value>向后</value>
+    <value>Arrere</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_UNDO" xml:space="preserve">
-    <value>取消操作</value>
+    <value>Desfés</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_REDO" xml:space="preserve">
-    <value>重新操作</value>
+    <value>Refés</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_CUT" xml:space="preserve">
-    <value>移除所选内容并放入剪贴板</value>
+    <value>Suprimeix el contingut seleccionat i col·loca'l al Porta-retalls</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_COPY" xml:space="preserve">
-    <value>将所选内容复制到剪贴板</value>
+    <value>Copia el contingut seleccionat al Porta-retalls</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_PASTE" xml:space="preserve">
-    <value>在当前位置插入剪贴板内容</value>
+    <value>Insereix el contingut del Porta-retalls a la ubicació actual</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_SELECTALL" xml:space="preserve">
-    <value>选择所有内容</value>
+    <value>Selecciona tot el contingut</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_DELETE" xml:space="preserve">
-    <value>删除所选内容</value>
+    <value>Suprimeix el contingut seleccionat</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_SHARE" xml:space="preserve">
-    <value>共享所选内容</value>
+    <value>Comparteix el contingut seleccionat</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_SAVE" xml:space="preserve">
-    <value>保存您的更改</value>
+    <value>Guarda els canvis</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_OPEN" xml:space="preserve">
-    <value>打开</value>
+    <value>Obri</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_CLOSE" xml:space="preserve">
-    <value>关闭</value>
+    <value>Tanca</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_PAUSE" xml:space="preserve">
-    <value>暂停</value>
+    <value>Para temporalment</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_PLAY" xml:space="preserve">
-    <value>播放</value>
+    <value>Reprodueix</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_STOP" xml:space="preserve">
-    <value>停止</value>
+    <value>Para</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_FORWARD" xml:space="preserve">
-    <value>至下一项</value>
+    <value>Vés a l'element següent</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_BACKWARD" xml:space="preserve">
-    <value>至前一项</value>
+    <value>Vés a l'element anterior</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_UNDO" xml:space="preserve">
-    <value>撤销最新操作</value>
+    <value>Inverteix l'acció més recent</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_REDO" xml:space="preserve">
-    <value>重复最新取消操作</value>
+    <value>Repeteix l'acció que has desfet més recentment</value>
   </data>
   <data name="TEXT_COMMAND_KEYBOARDACCELERATORKEY_CUT" xml:space="preserve">
     <value>X</value>
@@ -1327,76 +1381,99 @@
     <value>Y</value>
   </data>
   <data name="UIA_AP_PROGRESSRING" xml:space="preserve">
-    <value>进度环形</value>
+    <value>anell de progrés</value>
   </data>
   <data name="TEXT_DATEPICKER_DAY_PLACEHOLDER" xml:space="preserve">
-    <value>天</value>
+    <value>dia</value>
   </data>
   <data name="TEXT_DATEPICKER_MONTH_PLACEHOLDER" xml:space="preserve">
-    <value>月</value>
+    <value>mes</value>
   </data>
   <data name="TEXT_DATEPICKER_YEAR_PLACEHOLDER" xml:space="preserve">
-    <value>年</value>
+    <value>any</value>
   </data>
   <data name="TEXT_TIMEPICKER_HOUR_PLACEHOLDER" xml:space="preserve">
-    <value>小时</value>
+    <value>hora</value>
   </data>
   <data name="TEXT_TIMEPICKER_MINUTE_PLACEHOLDER" xml:space="preserve">
-    <value>分钟</value>
+    <value>minut</value>
   </data>
   <data name="TEXT_TIMEPICKER_PERIOD_PLACEHOLDER" xml:space="preserve">
-    <value>上午</value>
+    <value>AM</value>
   </data>
   <data name="TEXT_SPELLCHECK_IGNORE" xml:space="preserve">
-    <value>忽略</value>
+    <value>Ignora</value>
   </data>
   <data name="TEXT_SPELLCHECK_STOP_CORRECTING" xml:space="preserve">
-    <value>停止更正 %s</value>
+    <value>Deixa de corregir %s</value>
   </data>
   <data name="TEXT_SPELLCHECK_ADD_TO_DICTIONARY" xml:space="preserve">
-    <value>增添至词典</value>
+    <value>Afig-ho al diccionari</value>
   </data>
   <data name="TEXT_SPELLCHECK_DELETE_REPEATED_WORD" xml:space="preserve">
-    <value>删除重复的字词</value>
+    <value>Suprimeix la paraula repetida</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_TURNON_TITLE" xml:space="preserve">
-    <value>打开插入光标浏览?</value>
+    <value>Vols activar la navegació amb cursor?</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_TURNOFF_TITLE" xml:space="preserve">
-    <value>关闭插入光标浏览?</value>
+    <value>Vols desactivar la navegació amb cursor?</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_CONTENT" xml:space="preserve">
-    <value>这将在文本上添加光标，以便你可以使用键盘选择文本。按 F7 可打开或关闭插入光标浏览功能。</value>
+    <value>Esta acció col·loca un cursor al text perquè pugues seleccionar text amb el teclat. Per activar o desactivar la navegació amb cursor, prem F7.</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_CHECKBOX" xml:space="preserve">
-    <value>按 F7 时不再询问我。</value>
+    <value>No em tornes a preguntar quan prema F7.</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_YES" xml:space="preserve">
-    <value>是</value>
+    <value>Sí</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_NO" xml:space="preserve">
-    <value>否</value>
+    <value>No</value>
   </data>
   <data name="TEXT_TOOLTIP_MINIMIZE" xml:space="preserve">
-    <value>最小化</value>
+    <value>Minimitza</value>
   </data>
   <data name="TEXT_TOOLTIP_MAXIMIZE" xml:space="preserve">
-    <value>最大化</value>
+    <value>Maximitza</value>
   </data>
   <data name="TEXT_TOOLTIP_CLOSE" xml:space="preserve">
-    <value>关闭</value>
+    <value>Tanca</value>
   </data>
   <data name="TEXT_TOOLTIP_RESTORE" xml:space="preserve">
-    <value>向下还原</value>
+    <value>Restaura avall</value>
   </data>
   <data name="TEXT_VK_IMEON" xml:space="preserve">
-    <value>输入法打开</value>
+    <value>IME ACTIVAT</value>
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
-    <value>输入法关闭</value>
+    <value>IME DESACTIVAT</value>
   </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>关闭</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 hora</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 hores</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 minut</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 minuts</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 segon</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 segons</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>posició %1 %2</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>posició %1 %2 %3</value>
+  </data>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

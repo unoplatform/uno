@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>سفيد</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ہلکا مٹيالا</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>مٹيالا</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>گہرا مٹیالا</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>سیاہ</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>مرجانی</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>گلاب</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ہلکا نارنجی</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>کتھئی رنگت</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ہلکا پیلا</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ہلکا سبز</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>لیمونی</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>سمندری سبز رنگ</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>آسمانی</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ہلکا فیروزی</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>پھیکا نیلا</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ہلکا نیلا</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>برفانی نیلا</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>مہندی رنگ</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ہلکا ارغوانی رنگ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>گلابى</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>سرخ</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>نارنجى</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>بھورا</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>سونا</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>پيلا</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>زیتونی سبز</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>سبز</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>اجلا سبز</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>سبزى مائل</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>فیروزی</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>نیلا</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>نیلا-مٹیالا</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>قدرتی نیلا</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>جامنی</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>گہرا سرخ</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>گہرا پیلا</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>گہرا سبز</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>گہرا سبزی مائل</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>گہرا نیلا</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>گہرا جامن</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>سرخ مائل</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -127,172 +253,94 @@
     <value></value>
   </data>
   <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
-    <value>ਹਲਕਾ ਨੀਲਾ</value>
+    <value>ہلکا نیلا</value>
   </data>
   <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
-    <value>ਆਈਸ ਬਲੂ</value>
+    <value>برفانی نیلا</value>
   </data>
   <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
-    <value>ਦਸਤਾਵੇਜ਼</value>
+    <value>دستاویز</value>
   </data>
   <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
-    <value>ਵਿਭਾਜਨ ਬਟਨ</value>
+    <value>پھوٹ بٹن</value>
   </data>
   <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
-    <value>ਵਿੰਡੋ</value>
+    <value>دریچہ</value>
   </data>
   <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
-    <value>ਉਪਖੰਡ</value>
+    <value>جھروکا</value>
   </data>
   <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
-    <value>ਸਿਰਲੇਖ</value>
+    <value>ہیڈر</value>
   </data>
   <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
-    <value>ਸਿਰਲੇਖ ਆਈਟਮ</value>
+    <value>ہیڈر شے</value>
   </data>
   <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
-    <value>ਤਾਲਿਕਾ</value>
+    <value>جدول</value>
   </data>
   <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
-    <value>ਸਿਰਲੇਖ ਪੱਟੀ</value>
+    <value>عنوان بار</value>
   </data>
   <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
-    <value>ਵਿਭਾਜਕ</value>
+    <value>جدا کار</value>
   </data>
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
-    <value>ਸੇਮੈਂਟਿਕ ਜ਼ੂਮ</value>
-  </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>ਟੌਗਲ ਸਵਿੱਚ</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>ਆਈਟਮ</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 ਆਈਟਮਾਂ</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>%1 ਨੂੰ ਖਿੱਚਣਾ ਰੱਦ ਕਰੋ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>ਅਗਲਾ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>ਪਿਛਲਾ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>ਚਲਾਓ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>ਰੋਕੋ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>ਸਮਾਂ ਸਮਾਪਤ ਹੋਇਆ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>ਬਚਿਆ ਸਮਾਂ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>ਬਫਰਿੰਗ ਪ੍ਰਗਤੀ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>ਖੋਜ ਕਰੋ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>ਮੌਨ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>ਧੁਨੀ-ਮਾਤਰਾ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>ਤਰੁਟੀ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>ਦਿਨ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>ਮਹੀਨਾ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>ਸਾਲ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>ਘੰਟਾ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>ਮਿੰਟ </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 ਮਿੰਟ</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 ਮਿੰਟ</value>
+    <value>معنوی زوم</value>
   </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
-    <value>%1 ਸਕਿੰਟ</value>
+    <value>%1 دوسرا</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
-    <value>%1 ਸਕਿੰਟ</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>ਲੰਬਵਤ ਵੱਡਾ ਘਾਟਾ</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>ਲੰਬਵਤ ਛੋਟਾ ਘਾਟਾ</value>
+    <value>%1 سیکنڈ</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
-    <value>ਕੱਟੋ</value>
+    <value>کاٹيں</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_COPY" xml:space="preserve">
-    <value>ਪ੍ਰਤੀਲਿਪੀ ਬਣਾਉ</value>
+    <value>نقل</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_PASTE" xml:space="preserve">
-    <value>ਚਿਪਕਾਉ</value>
+    <value>جوڑيں</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_UNDO" xml:space="preserve">
-    <value>ਪਹਿਲੇ ਵਰਗਾ ਕਰੋ</value>
+    <value>کالعدم کريں</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_REDO" xml:space="preserve">
-    <value>ਦੁਬਾਰਾ ਕਰੋ</value>
+    <value>پھر کريں</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_SELECT_ALL" xml:space="preserve">
-    <value>ਸਾਰੇ ਚੁਣੋ</value>
+    <value>تمام منتخب</value>
   </data>
   <data name="TEXT_TOGGLESWITCH_ON" xml:space="preserve">
-    <value>ਚਾਲੂ</value>
+    <value>چالو</value>
   </data>
   <data name="TEXT_TOGGLESWITCH_OFF" xml:space="preserve">
-    <value>ਬੰਦ</value>
+    <value>بند</value>
   </data>
   <data name="TEXT_MEDIA_AUDIO_TRACK_UNTITLED" xml:space="preserve">
-    <value>ਸਿਰਲੇਖ-ਰਹਿਤ</value>
+    <value>بلاعنوان</value>
   </data>
   <data name="TEXT_MEDIA_AUDIO_TRACK_SELECTED" xml:space="preserve">
-    <value>(ਚਾਲੂ)</value>
+    <value>(چالو)</value>
   </data>
   <data name="TEXT_PASSWORDBOX_SHOW_PASSWORD" xml:space="preserve">
-    <value>ਪਾਸਵਰਡ ਦਿਖਾਓ</value>
+    <value>پاس ورڈ دکھائیں</value>
   </data>
   <data name="TEXT_MEDIA_CC_OFF" xml:space="preserve">
-    <value>ਬੰਦ</value>
+    <value>آف</value>
   </data>
   <data name="TEXT_HUB_SEE_MORE" xml:space="preserve">
-    <value>ਹੋਰ ਦੇਖੋ</value>
+    <value>مزید دیکھیں</value>
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
-    <value>ਮਿਤੀ ਚੁਣੋ</value>
+    <value>کو تاریخ منتخب کریں</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>، آج</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
-    <value>ਘੱਟ ਦੇਖੋ</value>
+    <value>کم دیکھیں</value>
   </data>
   <data name="TEXT_MEDIA_AUDIO_TRACK_SEPARATOR" xml:space="preserve">
     <value> - </value>
@@ -304,448 +352,454 @@
     <value>%s (%s)</value>
   </data>
   <data name="UIA_AP_BUTTON" xml:space="preserve">
-    <value>ਬਟਨ</value>
+    <value>بٹن</value>
   </data>
   <data name="UIA_AP_CALENDAR" xml:space="preserve">
-    <value>ਕੈਲੰਡਰ</value>
+    <value>کیلنڈر</value>
   </data>
   <data name="UIA_AP_CHECKBOX" xml:space="preserve">
-    <value>ਚੈੱਕ ਬਾਕਸ</value>
+    <value>پڑتال خانہ</value>
   </data>
   <data name="UIA_AP_COMBOBOX" xml:space="preserve">
-    <value>ਕੋਂਬੋ ਬਾਕਸ</value>
+    <value>کومبو خانہ</value>
   </data>
   <data name="UIA_AP_EDIT" xml:space="preserve">
-    <value>ਸੰਪਾਦਨ ਕਰੋ</value>
+    <value>تدوین کریں</value>
   </data>
   <data name="UIA_AP_HYPERLINK" xml:space="preserve">
-    <value>ਲਿੰਕ</value>
+    <value>ربط</value>
   </data>
   <data name="UIA_AP_IMAGE" xml:space="preserve">
-    <value>ਪ੍ਰਤੀਬਿੰਬ</value>
+    <value>نقش</value>
   </data>
   <data name="UIA_AP_LISTITEM" xml:space="preserve">
-    <value>ਸੂਚੀ ਆਈਟਮ</value>
+    <value>فہرست شے</value>
   </data>
   <data name="UIA_AP_LIST" xml:space="preserve">
-    <value>ਸੂਚੀ</value>
+    <value>فہرست</value>
   </data>
   <data name="UIA_AP_MENU" xml:space="preserve">
-    <value>ਮੇਨੂ</value>
+    <value>مینیو</value>
   </data>
   <data name="UIA_AP_MENUBAR" xml:space="preserve">
-    <value>ਮੇਨੂ ਬਾਰ</value>
+    <value>مینیو بار</value>
   </data>
   <data name="UIA_AP_MENUITEM" xml:space="preserve">
-    <value>ਮੇਨੂ ਆਈਟਮ</value>
+    <value>مینیو شے</value>
   </data>
   <data name="UIA_AP_PROGRESSBAR" xml:space="preserve">
-    <value>ਪ੍ਰਗਤੀ ਬਾਰ</value>
+    <value>پیش رفت بار</value>
   </data>
   <data name="UIA_AP_RADIOBUTTON" xml:space="preserve">
-    <value>ਰੇਡੀਓ ਬਟਨ</value>
+    <value>ریڈیو بٹن</value>
   </data>
   <data name="UIA_AP_SCROLLBAR" xml:space="preserve">
-    <value>ਸਕ੍ਰੋਲ ਪੱਟੀ</value>
+    <value>سکرول بار</value>
   </data>
   <data name="UIA_AP_SLIDER" xml:space="preserve">
-    <value>ਸਲਾਇਡਰ</value>
+    <value>سلائیڈر</value>
   </data>
   <data name="UIA_AP_SPINNER" xml:space="preserve">
-    <value>ਸਪਿੰਨਰ</value>
+    <value>spinner</value>
   </data>
   <data name="UIA_AP_STATUSBAR" xml:space="preserve">
-    <value>ਸਥਿਤੀ ਪੱਟੀ</value>
+    <value>حیثیت بار</value>
   </data>
   <data name="UIA_AP_TAB" xml:space="preserve">
-    <value>ਟੈਬ</value>
+    <value>ٹیب</value>
   </data>
   <data name="UIA_AP_TABITEM" xml:space="preserve">
-    <value>ਟੈਬ ਆਈਟਮ</value>
+    <value>ٹیب شے</value>
   </data>
   <data name="UIA_AP_TEXT" xml:space="preserve">
-    <value>ਟੈਕਸਟ</value>
+    <value>متن</value>
   </data>
   <data name="UIA_AP_TOOLBAR" xml:space="preserve">
-    <value>ਸਾਧਨ ਪੱਟੀ</value>
+    <value>ٹول بار</value>
   </data>
   <data name="UIA_AP_TOOLTIP" xml:space="preserve">
-    <value>ਟੂਲ ਟਿਪ</value>
+    <value>ٹول ٹوٹکہ</value>
   </data>
   <data name="UIA_AP_TREE" xml:space="preserve">
-    <value>ਟ੍ਰੀ</value>
+    <value>درخت</value>
   </data>
   <data name="UIA_AP_TREEITEM" xml:space="preserve">
-    <value>ਟ੍ਰੀ ਆਈਟਮ</value>
+    <value>درخت شے</value>
   </data>
   <data name="UIA_AP_CUSTOM" xml:space="preserve">
-    <value>ਕਸਟਮ</value>
+    <value>تخصیص کریں</value>
   </data>
   <data name="UIA_AP_GROUP" xml:space="preserve">
-    <value>ਸਮੂਹ</value>
+    <value>گروہ</value>
   </data>
   <data name="UIA_AP_THUMB" xml:space="preserve">
-    <value>ਥੰਬ</value>
+    <value>انگوٹھا</value>
   </data>
   <data name="UIA_AP_DATAGRID" xml:space="preserve">
-    <value>ਡੇਟਾ ਗ੍ਰਿਡ</value>
+    <value>ڈیٹا گرڈ</value>
   </data>
   <data name="UIA_AP_DATAITEM" xml:space="preserve">
-    <value>ਡੇਟਾ ਆਈਟਮ</value>
+    <value>کوائف شے</value>
   </data>
   <data name="UIA_AP_DOCUMENT" xml:space="preserve">
-    <value>ਦਸਤਾਵੇਜ਼</value>
+    <value>دستاویز</value>
   </data>
   <data name="UIA_AP_SPLITBUTTON" xml:space="preserve">
-    <value>ਵਿਭਾਜਨ ਬਟਨ</value>
+    <value>پھوٹ بٹن</value>
   </data>
   <data name="UIA_AP_WINDOW" xml:space="preserve">
-    <value>ਵਿੰਡੋ</value>
+    <value>دریچہ</value>
   </data>
   <data name="UIA_AP_PANE" xml:space="preserve">
-    <value>ਉਪਖੰਡ</value>
+    <value>جھروکا</value>
   </data>
   <data name="UIA_AP_HEADER" xml:space="preserve">
-    <value>ਸਿਰਲੇਖ</value>
+    <value>ہیڈر</value>
   </data>
   <data name="UIA_AP_HEADERITEM" xml:space="preserve">
-    <value>ਸਿਰਲੇਖ ਆਈਟਮ</value>
+    <value>ہیڈر شے</value>
   </data>
   <data name="UIA_AP_TABLE" xml:space="preserve">
-    <value>ਤਾਲਿਕਾ</value>
+    <value>جدول</value>
   </data>
   <data name="UIA_AP_TITLEBAR" xml:space="preserve">
-    <value>ਸਿਰਲੇਖ ਪੱਟੀ</value>
+    <value>عنوان بار</value>
   </data>
   <data name="UIA_AP_SEPARATOR" xml:space="preserve">
-    <value>ਵਿਭਾਜਕ</value>
+    <value>جدا کار</value>
   </data>
   <data name="UIA_AP_SEMANTICZOOM" xml:space="preserve">
-    <value>ਸੇਮੈਂਟਿਕ ਜ਼ੂਮ</value>
+    <value>معنوی زوم</value>
   </data>
   <data name="UIA_AP_TOGGLESWITCH" xml:space="preserve">
-    <value>ਟੌਗਲ ਸਵਿੱਚ</value>
+    <value>ٹوگل سوئچ</value>
   </data>
   <data name="UIA_DRAG_ITEM" xml:space="preserve">
-    <value>ਆਈਟਮ</value>
+    <value>شے</value>
   </data>
   <data name="UIA_DRAG_ITEMS_COUNT" xml:space="preserve">
-    <value>%1 ਆਈਟਮਾਂ</value>
+    <value>%1 اشیاء</value>
   </data>
   <data name="UIA_DRAG_CANCEL_DRAGGING" xml:space="preserve">
-    <value>%1 ਨੂੰ ਖਿੱਚਣਾ ਰੱਦ ਕਰੋ</value>
+    <value>%1 کو کھینچنا منسوخ کریں</value>
   </data>
   <data name="UIA_DRAG_PLACE_BETWEEN" xml:space="preserve">
-    <value>%1 ਨੂੰ %2 ਅਤੇ %3 ਦੇ ਵਿੱਚਕਾਰ ਲਗਾਓ</value>
+    <value>%1 کو %2 اور %3 کے درمیان رکھیں</value>
   </data>
   <data name="UIA_DRAG_AFTER" xml:space="preserve">
-    <value>ਬਾਅਦ</value>
+    <value>بعد میں</value>
   </data>
   <data name="UIA_DRAG_BEFORE" xml:space="preserve">
-    <value>ਪਹਿਲੇ</value>
+    <value>پہلے</value>
   </data>
   <data name="UIA_DRAG_PLACE_3" xml:space="preserve">
-    <value>%1 %2 %3 ਨੂੰ ਲਗਾਓ</value>
+    <value>کو رکھیں %1 %2 %3</value>
   </data>
   <data name="UIA_DRAG_PLACE_ITEM" xml:space="preserve">
-    <value>%1 ਨੂੰ ਲਗਾਓ</value>
+    <value>%1 کو رکھیں</value>
   </data>
   <data name="UIA_DRAG_MOVE" xml:space="preserve">
-    <value>ਖਿਸਕਾਓ</value>
+    <value>منتقل کریں</value>
   </data>
   <data name="UIA_FLIPVIEW_NEXT" xml:space="preserve">
-    <value>ਅਗਲਾ</value>
+    <value>اگلا</value>
   </data>
   <data name="UIA_FLIPVIEW_PREVIOUS" xml:space="preserve">
-    <value>ਪਿਛਲਾ</value>
+    <value>پچھلا</value>
   </data>
   <data name="UIA_MEDIA_PLAY" xml:space="preserve">
-    <value>ਚਲਾਓ</value>
+    <value>چلائيں</value>
   </data>
   <data name="UIA_MEDIA_PAUSE" xml:space="preserve">
-    <value>ਰੋਕੋ</value>
+    <value>توقف</value>
   </data>
   <data name="UIA_MEDIA_TIME_ELAPSED" xml:space="preserve">
-    <value>ਸਮਾਂ ਸਮਾਪਤ ਹੋਇਆ</value>
+    <value>گزرا ہوا وقت</value>
   </data>
   <data name="UIA_MEDIA_TIME_REMAINING" xml:space="preserve">
-    <value>ਬਚਿਆ ਸਮਾਂ</value>
+    <value>باقی وقت</value>
   </data>
   <data name="UIA_MEDIA_DOWNLOAD_PROGRESS" xml:space="preserve">
-    <value>ਡਾਉਨਲੋਡ ਪ੍ਰਗਤੀ</value>
+    <value>ڈاؤن لوڈ پیش رفت</value>
   </data>
   <data name="UIA_MEDIA_BUFFERING_PROGRESS" xml:space="preserve">
-    <value>ਬਫਰਿੰਗ ਪ੍ਰਗਤੀ</value>
+    <value>بفرنگ کی پیش رفت</value>
   </data>
   <data name="UIA_MEDIA_SEEK" xml:space="preserve">
-    <value>ਖੋਜ ਕਰੋ</value>
+    <value>کھوجیں</value>
   </data>
   <data name="UIA_MEDIA_MUTE" xml:space="preserve">
-    <value>ਮੌਨ</value>
+    <value>خاموش</value>
   </data>
   <data name="UIA_MEDIA_VOLUME" xml:space="preserve">
-    <value>ਧੁਨੀ-ਮਾਤਰਾ</value>
+    <value>صوت</value>
   </data>
   <data name="UIA_MEDIA_ERROR" xml:space="preserve">
-    <value>ਤਰੁਟੀ</value>
+    <value>نقص</value>
   </data>
   <data name="UIA_DATEPICKER_DAY" xml:space="preserve">
-    <value>ਦਿਨ </value>
+    <value>دن</value>
   </data>
   <data name="UIA_DATEPICKER_MONTH" xml:space="preserve">
-    <value>ਮਹੀਨਾ </value>
+    <value>ماہ</value>
   </data>
   <data name="UIA_DATEPICKER_YEAR" xml:space="preserve">
-    <value>ਸਾਲ </value>
+    <value>سال</value>
   </data>
   <data name="UIA_TIMEPICKER_HOUR" xml:space="preserve">
-    <value>ਘੰਟਾ </value>
+    <value>گھنٹہ</value>
   </data>
   <data name="UIA_TIMEPICKER_MINUTE" xml:space="preserve">
-    <value>ਮਿੰਟ </value>
+    <value>منٹ</value>
   </data>
   <data name="UIA_TIMEPICKER_PERIOD" xml:space="preserve">
-    <value>ਮਿਆਦ </value>
+    <value>دورانیہ</value>
   </data>
   <data name="UIA_AP_DATEPICKER" xml:space="preserve">
-    <value>ਮਿਤੀ ਪਿਕਰ</value>
+    <value>تاریخ چننے والا</value>
   </data>
   <data name="UIA_AP_TIMEPICKER" xml:space="preserve">
-    <value>ਸਮਾਂ ਪਿਕਰ</value>
+    <value>وقت چننے والا</value>
   </data>
   <data name="UIA_POPUP_NAME" xml:space="preserve">
-    <value>ਪੌਪਅਪ</value>
+    <value>پاپ اپ</value>
   </data>
   <data name="UIA_LIGHTDISMISS_NAME" xml:space="preserve">
-    <value>ਬੰਦ ਕਰੋ</value>
+    <value>بند کريں</value>
   </data>
   <data name="UIA_MEDIA_FULLSCREEN" xml:space="preserve">
-    <value>ਪੂਰੀ ਸਕ੍ਰੀਨ</value>
+    <value>پوری سکرین</value>
   </data>
   <data name="UIA_MEDIA_EXIT_FULLSCREEN" xml:space="preserve">
-    <value>ਪੂਰੀ ਸਕ੍ਰੀਨ ਤੋਂ ਨਿਕਾਸ ਕਰੋ</value>
+    <value>پوری سکرین سے نکلیں</value>
   </data>
   <data name="UIA_MEDIA_AUDIO_SELECTION" xml:space="preserve">
-    <value>ਔਡੀਓ ਚੋਣ ਮੇਨੂ ਦਿਖਾਓ</value>
+    <value>آڈیو انتخاب مینو دکھائیں</value>
   </data>
   <data name="UIA_AP_APPBAR" xml:space="preserve">
-    <value>ਐਪਲੀਕੇਸ਼ ਪੱਟੀ</value>
+    <value>ایپ بار</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICAL" xml:space="preserve">
-    <value>ਲੰਬਵਤ</value>
+    <value>عمودی</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTAL" xml:space="preserve">
-    <value>ਸਮਤਲ</value>
+    <value>افقی</value>
   </data>
   <data name="UIA_TEXTBOX_DELETE" xml:space="preserve">
-    <value>ਮਿਟਾਓ</value>
+    <value>حذف کریں</value>
   </data>
   <data name="UIA_MEDIA_CC_SELECTION" xml:space="preserve">
-    <value>ਬੰਦ ਕੈਪਸ਼ਨ ਮੇਨੂ ਦਿਖਾਓ</value>
+    <value>بند کیپشن مینیو دکھائیں</value>
   </data>
   <data name="UIA_MEDIA_PLAYBACKRATE" xml:space="preserve">
-    <value>ਪਲੇਬੈਕ ਰੇਟ ਸੂਚੀ ਦਿਖਾਓ</value>
+    <value>پلے بیک نرخ فہرست دکھائیں</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD" xml:space="preserve">
-    <value>ਫਾਸਟ ਫੌਰਵਰਡ ਕਰੋ</value>
+    <value>تیز آگے کریں</value>
   </data>
   <data name="UIA_MEDIA_REWIND" xml:space="preserve">
-    <value>ਰਿਵਾਇੰਡ ਕਰੋ</value>
+    <value>واپس لپیٹیں</value>
   </data>
   <data name="UIA_MEDIA_STOP" xml:space="preserve">
-    <value>ਰੋਕੋ</value>
+    <value>روکیں</value>
   </data>
   <data name="UIA_WINDOWED_POPUP_HOST" xml:space="preserve">
-    <value>ਪੌਪਅਪ ਹੋਸਟ</value>
+    <value>پاپ اپ میزبان</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALLARGEINCREASE" xml:space="preserve">
-    <value>ਸਮਤਲ ਵੱਡਾ ਵਾਧਾ</value>
+    <value>افقی زیادہ بڑھانا</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALSMALLINCREASE" xml:space="preserve">
-    <value>ਸਮਤਲ ਛੋਟਾ ਵਾਧਾ</value>
+    <value>افقی کم بڑھانا</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALLARGEDECREASE" xml:space="preserve">
-    <value>ਸਮਤਲ ਵੱਡਾ ਘਾਟਾ</value>
+    <value>افقی زیادہ گھٹانا</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALSMALLDECREASE" xml:space="preserve">
-    <value>ਸਮਤਲ ਛੋਟਾ ਘਾਟਾ</value>
+    <value>افقی کم گھٹانا</value>
   </data>
   <data name="UIA_SCROLLBAR_HORIZONTALTHUMB" xml:space="preserve">
-    <value>ਸਮਤਲ ਥੰਬ</value>
+    <value>افقی انگوٹھا</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALALLARGEINCREASE" xml:space="preserve">
-    <value>ਲੰਬਵਤ ਵੱਡਾ ਵਾਧਾ</value>
+    <value>عمودی زیادہ بڑھانا</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALSMALLINCREASE" xml:space="preserve">
-    <value>ਲੰਬਵਤ ਛੋਟਾ ਵਾਧਾ</value>
+    <value>عمودی کم بڑھانا</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALLARGEDECREASE" xml:space="preserve">
-    <value>ਲੰਬਵਤ ਵੱਡਾ ਘਾਟਾ</value>
+    <value>عمودی زیادہ گھٹانا</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALSMALLDECREASE" xml:space="preserve">
-    <value>ਲੰਬਵਤ ਛੋਟਾ ਘਾਟਾ</value>
+    <value>عمودی کم گھٹانا</value>
   </data>
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
-    <value>ਲੰਬਵਤ ਥੰਬ</value>
+    <value>عمودی انگوٹھا</value>
+  </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s کے لئے مزید اختیارات</value>
   </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
-    <value>ਡਿਵਾਇਸ ਤੇ ਕਾਸਟ ਕਰੋ</value>
+    <value>آلے پر ڈھالیں</value>
   </data>
   <data name="UIA_MORE_BUTTON" xml:space="preserve">
-    <value>ਹੋਰ ਚੋਣਾਂ</value>
+    <value>مزید اختیارات</value>
   </data>
   <data name="UIA_MEDIA_ASPECTRATIO" xml:space="preserve">
-    <value>ਦ੍ਰਿਸ਼ਟੀਕੋਣ ਅਨੁਪਾਤ</value>
+    <value>پہلو کی شرح</value>
   </data>
   <data name="UIA_NAME_DATEPICKER" xml:space="preserve">
-    <value>%1 %2 ਮਿਤੀ ਪਿਕਰ</value>
+    <value>%1 %2 تاریخ چننے والا</value>
   </data>
   <data name="UIA_NAME_TIMEPICKER" xml:space="preserve">
-    <value>%1 %2 ਸਮਾਂ ਪਿਕਰ</value>
+    <value>%1 %2 وقت چننے والا</value>
   </data>
   <data name="UIA_DRAG_DROPINTO" xml:space="preserve">
-    <value>%1 ਨੂੰ %2 'ਤੇ ਡ੍ਰੌਪ ਕਰੋ</value>
+    <value>%1 کو %2 میں ڈراپ کریں</value>
   </data>
   <data name="UIA_MEDIA_SKIPBACKWARD" xml:space="preserve">
-    <value>ਪ੍ਰਿਸ਼ਟਗਾਮੀ ਨੂੰ ਛੱਡ ਦਿਓ</value>
+    <value>پیچھے پھلانگیں</value>
   </data>
   <data name="UIA_MEDIA_SKIPFORWARD" xml:space="preserve">
-    <value>ਫੌਰਵਰਡ ਨੂੰ ਛੱਡ ਦਿਓ</value>
+    <value>آگے بڑھیں</value>
   </data>
   <data name="UIA_MEDIA_NEXTRACK" xml:space="preserve">
-    <value>ਅਗਲਾ ਟ੍ਰੈਕ</value>
+    <value>اگلا ٹريک</value>
   </data>
   <data name="UIA_MEDIA_PREVIOUSTRACK" xml:space="preserve">
-    <value>ਪਿਛਲਾ ਟ੍ਰੈਕ</value>
+    <value>پچھلا ٹريک</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD_2X" xml:space="preserve">
-    <value>2X ਵਿੱਚ ਫਾਸਟ ਫੌਰਵਰਡ ਕਰੋ</value>
+    <value>2X میں تیز آگے بھیجیں</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD_4X" xml:space="preserve">
-    <value>4X ਵਿੱਚ ਫਾਸਟ ਫੌਰਵਰਡ ਕਰੋ</value>
+    <value>4X میں تیز آگے بھیجیں</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD_8X" xml:space="preserve">
-    <value>8X ਵਿੱਚ ਫਾਸਟ ਫੌਰਵਰਡ ਕਰੋ</value>
+    <value>8X میں تیز آگے بھیجیں</value>
   </data>
   <data name="UIA_MEDIA_FASTFORWARD_16X" xml:space="preserve">
-    <value>16X ਵਿੱਚ ਫਾਸਟ ਫੌਰਵਰਡ ਕਰੋ</value>
+    <value>16X میں تیز آگے بھیجیں</value>
   </data>
   <data name="UIA_MEDIA_REWIND_2X" xml:space="preserve">
-    <value>2X ਵਿੱਚ ਰਿਵਾਇੰਡ ਕਰੋ</value>
+    <value>2X میں واپس لپیٹیں</value>
   </data>
   <data name="UIA_MEDIA_REWIND_4X" xml:space="preserve">
-    <value>4X ਵਿੱਚ ਰਿਵਾਇੰਡ ਕਰੋ</value>
+    <value>4X میں واپس لپیٹیں</value>
   </data>
   <data name="UIA_MEDIA_REWIND_8X" xml:space="preserve">
-    <value>8X ਵਿੱਚ ਰਿਵਾਇੰਡ ਕਰੋ</value>
+    <value>8X میں واپس لپیٹیں</value>
   </data>
   <data name="UIA_MEDIA_REWIND_16X" xml:space="preserve">
-    <value>16X ਵਿੱਚ ਰਿਵਾਇੰਡ ਕਰੋ</value>
+    <value>16X میں واپس لپیٹیں</value>
   </data>
   <data name="UIA_AUTOSUGGESTBOX_QUERY" xml:space="preserve">
-    <value>ਖੋਜ</value>
+    <value>تلاش کریں</value>
   </data>
   <data name="UIA_LESS_BUTTON" xml:space="preserve">
-    <value>ਘੱਟ ਐਪ ਪੱਟੀ</value>
+    <value>ایپ بار کم کریں</value>
   </data>
   <data name="UIA_PASSWORDBOX_REVEAL" xml:space="preserve">
-    <value>ਪਾਸਵਰਡ ਦਿਖਾਓ</value>
+    <value>پاس ورڈ دکھائیں</value>
   </data>
   <data name="UIA_PASSWORDBOX_REVEAL_ACCELERATORKEY" xml:space="preserve">
-    <value>ਪਾਸਵਰਡ ਦਿਖਾਉਣ ਲਈ ALT F8</value>
+    <value>پاس ورڈ دکھانے کے لیے ALT F8</value>
   </data>
   <data name="UIA_AP_APPBAR_BUTTON" xml:space="preserve">
-    <value>ਐਪਲੀਕੇਸ਼ ਪੱਟੀ ਬਟਨ</value>
+    <value>ایپ بار بٹن</value>
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
-    <value>ਐਪਲੀਕੇਸ਼ ਪੱਟੀ ਟੌਗਲ ਬਟਨ</value>
+    <value>ایپ بار ٹوگل بٹن</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s کے لیے کم ایپ بار</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
-    <value>ਮੀਡੀਆ ਪਲੇਅਰ</value>
+    <value>ميڈيا پليئر</value>
   </data>
   <data name="UIA_MEDIA_REPEAT_NONE" xml:space="preserve">
-    <value>ਕੁਝ ਵੀ ਨਾ ਦੁਹਰਾਓ</value>
+    <value>کچھ بھی دوبارہ نہ دہرائیں</value>
   </data>
   <data name="UIA_MEDIA_REPEAT_ONE" xml:space="preserve">
-    <value>ਇੱਕ ਨੂੰ ਦੁਹਰਾਓ</value>
+    <value>ایک دہرائیں</value>
   </data>
   <data name="UIA_MEDIA_REPEAT_ALL" xml:space="preserve">
-    <value>ਸਭ ਨੂੰ ਦੁਹਰਾਓ</value>
+    <value>تمام دہرائيں</value>
   </data>
   <data name="UIA_MEDIA_UNMUTE" xml:space="preserve">
-    <value>ਮੌਨ ਨਾ ਕਰੋ</value>
+    <value>آواز کھولیں</value>
   </data>
   <data name="UIA_AP_FLIPVIEW" xml:space="preserve">
-    <value>ਦ੍ਰਿਸ਼ ਫਲਿਪ ਕਰੋ</value>
+    <value>منظر فلپ کریں</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_ABORTED_VIDEO" xml:space="preserve">
-    <value>ਗਲਤੀ: ਵਿਡੀਓ ਪਲੇਬੈਕ ਰੋਕਿਆ ਗਿਆ ਸੀ</value>
+    <value>نقص: ویڈیو چلانا ساقط ہوگیا۔</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_NETWORK_VIDEO" xml:space="preserve">
-    <value>ਨੈਟਵਰਕ ਗਲਤੀ: ਵਿਡੀਓ ਨੂੰ ਮੁੜ-ਪ੍ਰਾਪਤ ਕਰਨ ਦੇ ਅਸਮਰੱਥ</value>
+    <value>نیٹ ورک نقص: ویڈیو حاصل کرنے میں ناکام</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_DECODE_VIDEO" xml:space="preserve">
-    <value>ਗਲਤੀ: ਵੀਡਿਓ ਡਿਕੌਡ ਨਹੀਂ ਹੋ ਸਕੀ</value>
+    <value>نقص: ویڈیو ڈی کوڈ نہیں ہوسکی</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_SRC_NOT_SUPPORTED_VIDEO" xml:space="preserve">
-    <value>ਗਲਤੀ: ਅਸਮਰਥਿਤ ਵਿਡੀਓ ਕਿਸਮ ਜਾਂ ਅਵੈਧ ਫਾਈਲ ਰਸਤਾ</value>
+    <value>نقص: غیرمعاونت شدہ ویڈیو قسم یا ناجائز مسل راستہ</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_DEFAULT" xml:space="preserve">
-    <value>ਗਲਤੀ: ਇਕ ਅਗਿਆਤ ਗਲਤੀ ਹੋਈ</value>
+    <value>نقص: نامعلوم نقص پیدا ہوگیا</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_ABORTED_AUDIO" xml:space="preserve">
-    <value>ਗਲਤੀ: ਔਡੀਓ ਪਲੇਬੈਕ ਰੋਕਿਆ ਗਿਆ ਸੀ</value>
+    <value>نقص: آڈیو چلانا ساقط ہوگیا۔</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_NETWORK_AUDIO" xml:space="preserve">
-    <value>ਨੈਟਵਰਕ ਗਲਤੀ: ਔਡੀਓ ਨੂੰ ਮੁੜ-ਪ੍ਰਾਪਤ ਕਰਨ ਦੇ ਅਸਮਰੱਥ</value>
+    <value>نیٹ ورک نقص: آڈیو حاصل کرنے میں ناکام</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_DECODE_AUDIO" xml:space="preserve">
-    <value>ਗਲਤੀ: ਔਡੀਓ ਡਿਕੌਰਡ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ</value>
+    <value>نیٹ ورک نقص: آڈیو ڈی کوڈ نہیں ہوسکا</value>
   </data>
   <data name="AG_E_MEDIA_CONTROLS_LONG_ERR_SRC_NOT_SUPPORTED_AUDIO" xml:space="preserve">
-    <value>ਗਲਤੀ: ਅਸਮਰਥਿਤ ਔਡੀਓ ਕਿਸਮ ਜਾਂ ਅਵੈਧ ਫਾਈਲ ਰਸਤਾ</value>
+    <value>نقص: غیرمعاونت شدہ آڈیو قسم یا ناجائز مسل راستہ</value>
   </data>
   <data name="UIA_PROGRESSRING_BUSY" xml:space="preserve">
-    <value>ਰੁੱਝਿਆ...</value>
+    <value>مصروف...</value>
   </data>
   <data name="UIA_PROGRESSRING_NOTBUSY" xml:space="preserve">
-    <value>ਵਿਅੱਸਤ ਨਹੀਂ ...</value>
+    <value>مصروف نہیں۔۔۔</value>
   </data>
   <data name="TEXT_VK_A" xml:space="preserve">
     <value>A</value>
   </data>
   <data name="TEXT_VK_ACCEPT" xml:space="preserve">
-    <value>Accept</value>
+    <value>قبول کریں</value>
   </data>
   <data name="TEXT_VK_ADD" xml:space="preserve">
     <value>+</value>
   </data>
   <data name="TEXT_VK_APPLICATION" xml:space="preserve">
-    <value>Application</value>
+    <value>ايپلی کيشن</value>
   </data>
   <data name="TEXT_VK_B" xml:space="preserve">
     <value>B</value>
   </data>
   <data name="TEXT_VK_BACK" xml:space="preserve">
-    <value>Back</value>
+    <value>واپس جائیں</value>
   </data>
   <data name="TEXT_VK_C" xml:space="preserve">
     <value>C</value>
   </data>
   <data name="TEXT_VK_CANCEL" xml:space="preserve">
-    <value>Cancel</value>
+    <value>منسوخ کریں</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
     <value>Caps Lock</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
-    <value>Clear</value>
+    <value>صاف کریں</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
     <value>Ctrl</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
-    <value>Convert</value>
+    <value>بدليں</value>
   </data>
   <data name="TEXT_VK_D" xml:space="preserve">
     <value>D</value>
@@ -754,28 +808,28 @@
     <value>.</value>
   </data>
   <data name="TEXT_VK_DELETE" xml:space="preserve">
-    <value>Delete</value>
+    <value>حذف کریں</value>
   </data>
   <data name="TEXT_VK_DIVIDE" xml:space="preserve">
     <value>/</value>
   </data>
   <data name="TEXT_VK_DOWN" xml:space="preserve">
-    <value>Down</value>
+    <value>نیچے</value>
   </data>
   <data name="TEXT_VK_E" xml:space="preserve">
     <value>E</value>
   </data>
   <data name="TEXT_VK_END" xml:space="preserve">
-    <value>End</value>
+    <value>اختتام</value>
   </data>
   <data name="TEXT_VK_ENTER" xml:space="preserve">
-    <value>ਐਂਟਰ</value>
+    <value>داخل کريں</value>
   </data>
   <data name="TEXT_VK_ESCAPE" xml:space="preserve">
     <value>Esc</value>
   </data>
   <data name="TEXT_VK_EXECUTE" xml:space="preserve">
-    <value>Execute</value>
+    <value>نفاذ کریں</value>
   </data>
   <data name="TEXT_VK_F" xml:space="preserve">
     <value>F</value>
@@ -853,10 +907,10 @@
     <value>F9</value>
   </data>
   <data name="TEXT_VK_FAVORITES" xml:space="preserve">
-    <value>Favorites</value>
+    <value>پسندیدگان</value>
   </data>
   <data name="TEXT_VK_FINAL" xml:space="preserve">
-    <value>Final</value>
+    <value>حتمی</value>
   </data>
   <data name="TEXT_VK_G" xml:space="preserve">
     <value>G</value>
@@ -946,22 +1000,22 @@
     <value>H</value>
   </data>
   <data name="TEXT_VK_HANGUL" xml:space="preserve">
-    <value>Hangul</value>
+    <value>ہنگل</value>
   </data>
   <data name="TEXT_VK_HANJA" xml:space="preserve">
     <value>Hanja</value>
   </data>
   <data name="TEXT_VK_HELP" xml:space="preserve">
-    <value>Help</value>
+    <value>مدد</value>
   </data>
   <data name="TEXT_VK_HOME" xml:space="preserve">
-    <value>Home</value>
+    <value>صفحہ اول</value>
   </data>
   <data name="TEXT_VK_I" xml:space="preserve">
     <value>I</value>
   </data>
   <data name="TEXT_VK_INSERT" xml:space="preserve">
-    <value>Insert</value>
+    <value>داخل کریں</value>
   </data>
   <data name="TEXT_VK_J" xml:space="preserve">
     <value>J</value>
@@ -976,7 +1030,7 @@
     <value>L</value>
   </data>
   <data name="TEXT_VK_LEFT" xml:space="preserve">
-    <value>Left</value>
+    <value>بائیں</value>
   </data>
   <data name="TEXT_VK_LEFTBUTTON" xml:space="preserve">
     <value>LeftButton</value>
@@ -1021,13 +1075,13 @@
     <value>NavigationUp</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONVIEW" xml:space="preserve">
-    <value>NavigationView</value>
+    <value>نیویگیشن منظر</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
     <value>NonConvert</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>کوئى نہيں</value>
   </data>
   <data name="TEXT_VK_NUMBER0" xml:space="preserve">
     <value>0</value>
@@ -1105,10 +1159,10 @@
     <value>PageUp</value>
   </data>
   <data name="TEXT_VK_PAUSE" xml:space="preserve">
-    <value>Pause</value>
+    <value>توقف کریں</value>
   </data>
   <data name="TEXT_VK_PRINT" xml:space="preserve">
-    <value>Print</value>
+    <value>پرنٹ کریں</value>
   </data>
   <data name="TEXT_VK_Q" xml:space="preserve">
     <value>Q</value>
@@ -1117,10 +1171,10 @@
     <value>R</value>
   </data>
   <data name="TEXT_VK_REFRESH" xml:space="preserve">
-    <value>Refresh</value>
+    <value>تازہ کريں</value>
   </data>
   <data name="TEXT_VK_RIGHT" xml:space="preserve">
-    <value>Right</value>
+    <value>دایاں</value>
   </data>
   <data name="TEXT_VK_RIGHTBUTTON" xml:space="preserve">
     <value>RightButton</value>
@@ -1132,28 +1186,28 @@
     <value>Scroll Lock</value>
   </data>
   <data name="TEXT_VK_SEARCH" xml:space="preserve">
-    <value>Search</value>
+    <value>تلاش کریں</value>
   </data>
   <data name="TEXT_VK_SELECT" xml:space="preserve">
-    <value>Select</value>
+    <value>منتخب کریں</value>
   </data>
   <data name="TEXT_VK_SEPARATOR" xml:space="preserve">
-    <value>Separator</value>
+    <value>جدا کار</value>
   </data>
   <data name="TEXT_VK_SHIFT" xml:space="preserve">
-    <value>ਸ਼ਿਫਟ</value>
+    <value>Shift</value>
   </data>
   <data name="TEXT_VK_SLEEP" xml:space="preserve">
-    <value>Sleep</value>
+    <value>سلیپ</value>
   </data>
   <data name="TEXT_VK_SNAPSHOT" xml:space="preserve">
     <value>Snapshot</value>
   </data>
   <data name="TEXT_VK_SPACE" xml:space="preserve">
-    <value>ਸਪੇਸ</value>
+    <value>جگہ</value>
   </data>
   <data name="TEXT_VK_STOP" xml:space="preserve">
-    <value>Stop</value>
+    <value>روکیں</value>
   </data>
   <data name="TEXT_VK_SUBTRACT" xml:space="preserve">
     <value>-</value>
@@ -1162,7 +1216,7 @@
     <value>T</value>
   </data>
   <data name="TEXT_VK_TAB" xml:space="preserve">
-    <value>Tab</value>
+    <value>ٹیب</value>
   </data>
   <data name="TEXT_VK_U" xml:space="preserve">
     <value>U</value>
@@ -1195,109 +1249,109 @@
     <value>Z</value>
   </data>
   <data name="UIA_AP_CALENDARDATEPICKER" xml:space="preserve">
-    <value>ਕੈਲੰਡਰ ਮਿਤੀ ਪਿਕਰ</value>
+    <value>کیلنڈر کی تاریخ چننے والا</value>
   </data>
   <data name="UIA_MEDIA_MINIVIEW" xml:space="preserve">
-    <value>MiniView ਅੰਦਰ ਦਾਖ਼ਲ ਹੋਵੋ</value>
+    <value>MiniView داخل کریں</value>
   </data>
   <data name="UIA_MEDIA_EXIT_MINIVIEW" xml:space="preserve">
-    <value>MiniView ਤੋਂ ਨਿਕਾਸ ਕਰੋ</value>
+    <value>MiniView سے باہر نکلیں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_CUT" xml:space="preserve">
-    <value>ਕੱਟੋ</value>
+    <value>کاٹيں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_COPY" xml:space="preserve">
-    <value>ਪ੍ਰਤੀਲਿਪੀ ਬਣਾਓ</value>
+    <value>نقل کریں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_PASTE" xml:space="preserve">
-    <value>ਚਿਪਕਾਓ</value>
+    <value>چپکائیں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_SELECTALL" xml:space="preserve">
-    <value>ਸਾਰੇ ਚੁਣੋ</value>
+    <value>تمام منتخب کریں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_DELETE" xml:space="preserve">
-    <value>ਮਿਟਾਓ</value>
+    <value>حذف کریں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_SHARE" xml:space="preserve">
-    <value>ਸਾਂਝਾ ਕਰੋ</value>
+    <value>حصہ داری کریں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_SAVE" xml:space="preserve">
-    <value>ਸੁਰੱਖਿਅਤ ਕਰੋ</value>
+    <value>محفوظ کریں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_OPEN" xml:space="preserve">
-    <value>ਖੋਲੋ</value>
+    <value>کھولیں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_CLOSE" xml:space="preserve">
-    <value>ਬੰਦ ਕਰੋ</value>
+    <value>بند کریں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_PAUSE" xml:space="preserve">
-    <value>ਰੋਕੋ</value>
+    <value>توقف کریں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_PLAY" xml:space="preserve">
-    <value>ਚਲਾਓ</value>
+    <value>چلائیں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_STOP" xml:space="preserve">
-    <value>ਰੋਕੋ</value>
+    <value>روکیں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_FORWARD" xml:space="preserve">
-    <value>ਅੱਗੇ ਭੇਜੋ</value>
+    <value>آگے</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_BACKWARD" xml:space="preserve">
-    <value>ਪਿਛਾਂਹ</value>
+    <value>پیچھے</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_UNDO" xml:space="preserve">
-    <value>ਪਹਿਲੇ ਵਰਗਾ ਕਰੋ</value>
+    <value>کالعدم کريں</value>
   </data>
   <data name="TEXT_COMMAND_LABEL_REDO" xml:space="preserve">
-    <value>ਦੁਬਾਰਾ ਕਰੋ</value>
+    <value>پھر کريں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_CUT" xml:space="preserve">
-    <value>ਚੁਣੀ ਸਮੱਗਰੀ ਹਟਾਓ ਅਤੇ ਇਸ ਨੂੰ ਕਲਿੱਪਬੋਰਡ ਤੇ ਰੱਖੋ</value>
+    <value>منتخب کردہ مشمول کو ہٹائیں اور اسے تختہ تراشہ پر رکھیں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_COPY" xml:space="preserve">
-    <value>ਚੁਣੀ ਗਈ ਸਮੱਗਰੀ ਨੂੰ ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਪ੍ਰਤਿਲਿਪਿਤ ਕਰੋ</value>
+    <value>منتخب کردہ متن تختہ تراشہ پر نقل کریں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_PASTE" xml:space="preserve">
-    <value>ਕਲਿੱਪਬੋਰਡ ਦੀ ਸਮੱਗਰੀ ਨੂੰ ਮੌਜੂਦਾ ਸਥਾਨ 'ਤੇ ਪਾਓ</value>
+    <value>تختہ تراشہ کے مشمولات کو حاليہ مقام پر داخل کریں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_SELECTALL" xml:space="preserve">
-    <value>ਸਾਰੀ ਸਮੱਗਰੀ ਚੁਣੋ</value>
+    <value>تمام مشمول منتخب کریں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_DELETE" xml:space="preserve">
-    <value>ਚੁਣੀ ਸਮਗਰੀ ਨੂੰ ਮਿਟਾਓ</value>
+    <value>منتخب کردہ مشمول کو حذف کریں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_SHARE" xml:space="preserve">
-    <value>ਚੁਣੀ ਸਮਗਰੀ ਨੂੰ ਸਾਂਝਾ ਕਰੋ</value>
+    <value>منتخب کردہ مشمول کی حصہ داری کریں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_SAVE" xml:space="preserve">
-    <value>ਆਪਣੀਆਂ ਤਬਦੀਲੀਆਂ ਸੁਰੱਖਿਅਤ ਕਰੋ</value>
+    <value>آپ کی تبدیلیاں محفوظ کریں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_OPEN" xml:space="preserve">
-    <value>ਖੋਲ੍ਹੋ</value>
+    <value>کھولیں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_CLOSE" xml:space="preserve">
-    <value>ਬੰਦ ਕਰੋ</value>
+    <value>بند کریں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_PAUSE" xml:space="preserve">
-    <value>ਰੋਕੋ</value>
+    <value>توقف کریں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_PLAY" xml:space="preserve">
-    <value>ਚਲਾਓ</value>
+    <value>چلائیں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_STOP" xml:space="preserve">
-    <value>ਬੰਦ ਕਰੋ</value>
+    <value>روکیں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_FORWARD" xml:space="preserve">
-    <value>ਅਗਲੀ ਆਈਟਮ 'ਤੇ ਜਾਓ</value>
+    <value>اگلی شے پر جائیں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_BACKWARD" xml:space="preserve">
-    <value>ਪਿਛਲੀ ਆਈਟਮ 'ਤੇ ਜਾਓ</value>
+    <value>سابقہ شے پر جائیں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_UNDO" xml:space="preserve">
-    <value>ਸਭ ਤੋਂ ਹਾਲੀਆ ਕਾਰਵਾਈ ਨੂੰ ਉਲਟਾਓ</value>
+    <value>حالیہ ترین عمل معکوس کریں</value>
   </data>
   <data name="TEXT_COMMAND_DESCRIPTION_REDO" xml:space="preserve">
-    <value>ਸਭ ਤੋਂ ਹਾਲੀਆ ਉਲਟਾਈ ਕਾਰਵਾਈ ਨੂੰ ਦੁਹਰਾਓ</value>
+    <value>سب سے حالیہ طور پر کالعدم کردہ عمل دہرائیں</value>
   </data>
   <data name="TEXT_COMMAND_KEYBOARDACCELERATORKEY_CUT" xml:space="preserve">
     <value>X</value>
@@ -1327,76 +1381,99 @@
     <value>Y</value>
   </data>
   <data name="UIA_AP_PROGRESSRING" xml:space="preserve">
-    <value>ਪ੍ਰਗਤੀ ਰਿੰਗ</value>
+    <value>پیش رفت رنگ</value>
   </data>
   <data name="TEXT_DATEPICKER_DAY_PLACEHOLDER" xml:space="preserve">
-    <value>ਦਿਨ</value>
+    <value>دن</value>
   </data>
   <data name="TEXT_DATEPICKER_MONTH_PLACEHOLDER" xml:space="preserve">
-    <value>ਮਹੀਨਾ</value>
+    <value>ماہ</value>
   </data>
   <data name="TEXT_DATEPICKER_YEAR_PLACEHOLDER" xml:space="preserve">
-    <value>ਸਾਲ</value>
+    <value>سال</value>
   </data>
   <data name="TEXT_TIMEPICKER_HOUR_PLACEHOLDER" xml:space="preserve">
-    <value>ਘੰਟਾ</value>
+    <value>گھنٹہ</value>
   </data>
   <data name="TEXT_TIMEPICKER_MINUTE_PLACEHOLDER" xml:space="preserve">
-    <value>ਮਿੰਟ</value>
+    <value>منٹ</value>
   </data>
   <data name="TEXT_TIMEPICKER_PERIOD_PLACEHOLDER" xml:space="preserve">
-    <value>AM</value>
+    <value>قبل از دوپہر</value>
   </data>
   <data name="TEXT_SPELLCHECK_IGNORE" xml:space="preserve">
-    <value>ਨਜ਼ਰ-ਅੰਦਾਜ਼ ਕਰੋ</value>
+    <value>نظر انداز کریں</value>
   </data>
   <data name="TEXT_SPELLCHECK_STOP_CORRECTING" xml:space="preserve">
-    <value>%s ਨੂੰ ਦਰੁਸਤ ਕਰਨਾ ਰੋਕੋ</value>
+    <value>%s کی تصحیح روک دیں</value>
   </data>
   <data name="TEXT_SPELLCHECK_ADD_TO_DICTIONARY" xml:space="preserve">
-    <value>ਸ਼ਬਦਕੋਸ਼ ਨੂੰ ਜੋੜਣਾ</value>
+    <value>لغت میں شامل کریں</value>
   </data>
   <data name="TEXT_SPELLCHECK_DELETE_REPEATED_WORD" xml:space="preserve">
-    <value>ਦੁਹਰਾਇਆ ਸ਼ਬਦ ਮਿਟਾਓ</value>
+    <value>مکرر لفظ حذف کریں</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_TURNON_TITLE" xml:space="preserve">
-    <value>ਕੈਰੇਟ ਬ੍ਰਾਊਜ਼ਿੰਗ ਨੂੰ ਚਾਲੂ ਕਰਨਾ ਹੈ?</value>
+    <value>نجمہ براؤزکاری آن کریں؟</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_TURNOFF_TITLE" xml:space="preserve">
-    <value>ਕੈਰੇਟ ਬ੍ਰਾਊਜ਼ਿੰਗ ਨੂੰ ਬੰਦ ਕਰਨਾ ਹੈ?</value>
+    <value>نجمہ براؤزکاری بند کریں؟</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_CONTENT" xml:space="preserve">
-    <value>ਇਹ ਟੈਕਸਟ ਤੇ ਇੱਕ ਕਰਸਰ ਜੋੜਦਾ ਹੈ ਤਾਂ ਜੋ ਤੁਸੀਂ ਆਪਣੇ ਕੀਬੋਰਡ ਨਾਲ ਟੈਕਸਟ ਚੁਣ ਸਕੋ। F7 ਕੈਰੇਟ ਬ੍ਰਾਊਜ਼ਿੰਗ ਨੂੰ ਚਾਲੂ ਜਾਂ ਬੰਦ ਕਰਦਾ ਹੈ।</value>
+    <value>یہ متن پر کرسر شامل کرتا ہے تا کہ آپ اپنے کی بورڈ کے ساتھ متن منتخب کر سکیں۔ F7 سے نجمہ براؤز کاری آن یا آف ہوتی ہے۔</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_CHECKBOX" xml:space="preserve">
-    <value>ਮੈਨੂੰ ਦੁਬਾਰਾ ਨਾ ਪੁੱਛੋ ਜਦੋਂ ਮੈਂ F7 ਦਬਾਓ।</value>
+    <value>جب میں F7 دباؤں تو مجھ سے دوبارہ مت کہیں۔</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_YES" xml:space="preserve">
-    <value>ਹਾਂ</value>
+    <value>جی ہاں</value>
   </data>
   <data name="TEXT_CARETBROWSING_DIALOG_NO" xml:space="preserve">
-    <value>ਨਹੀਂ</value>
+    <value>نہیں</value>
   </data>
   <data name="TEXT_TOOLTIP_MINIMIZE" xml:space="preserve">
-    <value>ਛੋਟਾ ਕਰੋ</value>
+    <value>چھوٹا کریں</value>
   </data>
   <data name="TEXT_TOOLTIP_MAXIMIZE" xml:space="preserve">
-    <value>ਵੱਡਾ ਕਰੋ</value>
+    <value>بڑا کريں</value>
   </data>
   <data name="TEXT_TOOLTIP_CLOSE" xml:space="preserve">
-    <value>ਬੰਦ ਕਰੋ</value>
+    <value>بند کریں</value>
   </data>
   <data name="TEXT_TOOLTIP_RESTORE" xml:space="preserve">
-    <value>ਥੱਲੇ ਦੁਬਾਰਾ ਸਥਾਪਿਤ ਕਰੋ</value>
+    <value>نيچے بحال کريں</value>
   </data>
   <data name="TEXT_VK_IMEON" xml:space="preserve">
-    <value>IME ਚਾਲੂ</value>
+    <value>IME آن</value>
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
-    <value>IME ਬੰਦ</value>
+    <value>IME آف</value>
   </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>ਬੰਦ ਕਰੋ</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 گھنٹہ</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 گھنٹے</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 منٹ</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 منٹ</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 دوسرا</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 سیکنڈ</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>پوزیشن %1 %2</value>
+  </data>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>پوزیشن %1 %2 %3</value>
+  </data>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

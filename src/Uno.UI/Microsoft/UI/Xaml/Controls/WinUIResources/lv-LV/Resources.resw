@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Balta</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Gaiši pelēka</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Pelēka</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Tumši pelēka</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Melna</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koraļļu</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rožaina</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Gaiši oranža</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Dzeltenbrūna</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Gaiši dzeltena</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Gaiši zaļa</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Laima zaļa</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akvamarīna</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Debeszila</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Gaiši tirkīzzila</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Bāli zila</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Gaiši zila</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Leduszila</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Pelēcīgi violeta</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Mēļa</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rozā</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Sarkana</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranža</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Brūna</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Zelta</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Dzeltena</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olīvzaļa</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Zaļa</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Spilgti zaļa</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Zilganzaļa</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Tirkīzzila</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Zila</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Zilganpelēka</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Purpursarkana</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Tumši sarkana</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Tumši dzeltena</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Tumši zaļa</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Tumši zilganzaļa</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Tumši zila</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Tumši purpursarkana</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Plūmju</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>semantiskā tālummaiņa</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>slēdzis</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>vienums</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 vienumi</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>atcelt %1 vilkšanu</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Nākamais</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Iepriekšējais</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>Atskaņot</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Pauze</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Pagājušais laiks</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Atlikušais laiks</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Buferī ievietošanas process</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Meklēt</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Izslēgt skaņu</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Skaļums</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Kļūda</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>Diena </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Mēnesis </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>Gads </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Stunda </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Minūte </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 minūte</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 minūtes</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 sekunde</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 sekundes</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Vertikāla, liela, samazināt</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Vertikāla, maza, samazināt</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Izgriezt</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>atlasīt datumu</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, šodien</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Skatīt mazāk</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Vertikāla, sīktēli</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Papildu opcijas %s</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Atskaņošana ierīcē</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>programmas joslas pārslēgšanas poga</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Mazāk programmu joslas lietotājam %s</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>multivides atskaņotājs</value>
@@ -1027,7 +1081,7 @@
     <value>NonConvert</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Nav</value>
   </data>
   <data name="TEXT_VK_NUMBER0" xml:space="preserve">
     <value>0</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME IZSLĒGTS</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Balta</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 stunda</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Gaiši pelēka</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 stundas</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Pelēka</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 minūte</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Tumši pelēka</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 minūtes</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Melna</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 sekunde</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Koraļļu</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 sekundes</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Rožaina</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>pozīcija %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Gaiši oranža</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>pozīcija %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Dzeltenbrūna</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Gaiši dzeltena</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Gaiši zaļa</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Laima zaļa</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Akvamarīna</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Debeszila</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Gaiši tirkīzzila</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Bāli zila</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Gaiši zila</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Leduszila</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Pelēcīgi violeta</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Mēļa</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Rozā</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Sarkana</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Oranža</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Brūna</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Zelta</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Dzeltena</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Olīvzaļa</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Zaļa</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Spilgti zaļa</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Zilganzaļa</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Tirkīzzila</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Zila</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Zilganpelēka</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Indigo</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Purpursarkana</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Tumši sarkana</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Tumši dzeltena</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Tumši zaļa</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Tumši zilganzaļa</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Tumši zila</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Tumši purpursarkana</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Plūmju</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Aizvērt</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

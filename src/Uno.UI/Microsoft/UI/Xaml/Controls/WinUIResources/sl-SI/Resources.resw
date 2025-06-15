@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Bela</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Svetlo siva</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Siva</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Temno siva</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Črna</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koralna</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rožnata</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Svetlo oranžna</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Kožno rjava</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Svetlo rumena</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Svetlo zelena</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Rumenozelena</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akvamarin</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Nebesno modra</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Svetlo turkizna</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Bledo modra</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Svetlo modra</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Ledeno modra</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Vijoličasto modra</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Sivka</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Roza</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rdeča</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranžna</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Rjava</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Zlata</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Rumena</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olivno zelena</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Zelena</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Bleščeče zelena</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Zelenomodra</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turkizna</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Modra</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Modro-siva</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Purpurna</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Temno rdeča</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Temno rumena</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Temno zelena</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Temno zelenomodra</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Temno modra</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Temno purpurna</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Sliva</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>semantična povečava</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>preklopno stikalo</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>element</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 elementov</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>prekliči vlečenje elementa %1</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Naslednja</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Prejšnja</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>Predvajaj</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Začasno ustavi</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Pretečeni čas</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Preostali čas</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Potek medpomnjenja</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Išči</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Izklopi zvok</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Glasnost</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Napaka</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>Dan </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Mesec </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>Leto </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Ura </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Minuta </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 min.</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 min.</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 sekunda</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 s</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Navpično veliko zmanjšanje</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Navpično majhno zmanjšanje</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Izreži</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>izberite datum</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, danes</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Pokaži manj</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Navpični palec</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Več možnosti za %s</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Predvajaj v napravo</value>
   </data>
@@ -660,6 +711,9 @@
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>preklopni gumb vrstice z aplikacijami</value>
   </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Manj vrstice z aplikacijami za %s</value>
+  </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>predvajalnik predstavnosti</value>
   </data>
@@ -715,37 +769,37 @@
     <value>A</value>
   </data>
   <data name="TEXT_VK_ACCEPT" xml:space="preserve">
-    <value>Accept</value>
+    <value>Sprejmi</value>
   </data>
   <data name="TEXT_VK_ADD" xml:space="preserve">
     <value>+</value>
   </data>
   <data name="TEXT_VK_APPLICATION" xml:space="preserve">
-    <value>Application</value>
+    <value>Aplikacija</value>
   </data>
   <data name="TEXT_VK_B" xml:space="preserve">
     <value>B</value>
   </data>
   <data name="TEXT_VK_BACK" xml:space="preserve">
-    <value>Back</value>
+    <value>Nazaj</value>
   </data>
   <data name="TEXT_VK_C" xml:space="preserve">
     <value>C</value>
   </data>
   <data name="TEXT_VK_CANCEL" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Prekliči</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
     <value>Caps Lock</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
-    <value>Clear</value>
+    <value>Počisti</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
     <value>Ctrl</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
-    <value>Convert</value>
+    <value>S pretvorbo</value>
   </data>
   <data name="TEXT_VK_D" xml:space="preserve">
     <value>D</value>
@@ -760,7 +814,7 @@
     <value>/</value>
   </data>
   <data name="TEXT_VK_DOWN" xml:space="preserve">
-    <value>Down</value>
+    <value>Puščica dol</value>
   </data>
   <data name="TEXT_VK_E" xml:space="preserve">
     <value>E</value>
@@ -775,7 +829,7 @@
     <value>Esc</value>
   </data>
   <data name="TEXT_VK_EXECUTE" xml:space="preserve">
-    <value>Execute</value>
+    <value>Izvedi</value>
   </data>
   <data name="TEXT_VK_F" xml:space="preserve">
     <value>F</value>
@@ -853,10 +907,10 @@
     <value>F9</value>
   </data>
   <data name="TEXT_VK_FAVORITES" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Priljubljene</value>
   </data>
   <data name="TEXT_VK_FINAL" xml:space="preserve">
-    <value>Final</value>
+    <value>Končno</value>
   </data>
   <data name="TEXT_VK_G" xml:space="preserve">
     <value>G</value>
@@ -934,13 +988,13 @@
     <value>GamepadY</value>
   </data>
   <data name="TEXT_VK_GOBACK" xml:space="preserve">
-    <value>GoBack</value>
+    <value>Pojdi nazaj</value>
   </data>
   <data name="TEXT_VK_GOFORWARD" xml:space="preserve">
-    <value>GoForward</value>
+    <value>Pojdi naprej</value>
   </data>
   <data name="TEXT_VK_GOHOME" xml:space="preserve">
-    <value>GoHome</value>
+    <value>Pojdi domov</value>
   </data>
   <data name="TEXT_VK_H" xml:space="preserve">
     <value>H</value>
@@ -952,10 +1006,10 @@
     <value>Hanja</value>
   </data>
   <data name="TEXT_VK_HELP" xml:space="preserve">
-    <value>Help</value>
+    <value>Pomoč</value>
   </data>
   <data name="TEXT_VK_HOME" xml:space="preserve">
-    <value>Home</value>
+    <value>Domov</value>
   </data>
   <data name="TEXT_VK_I" xml:space="preserve">
     <value>I</value>
@@ -976,10 +1030,10 @@
     <value>L</value>
   </data>
   <data name="TEXT_VK_LEFT" xml:space="preserve">
-    <value>Left</value>
+    <value>Puščica levo</value>
   </data>
   <data name="TEXT_VK_LEFTBUTTON" xml:space="preserve">
-    <value>LeftButton</value>
+    <value>Leva tipka</value>
   </data>
   <data name="TEXT_VK_M" xml:space="preserve">
     <value>M</value>
@@ -988,10 +1042,10 @@
     <value>Alt</value>
   </data>
   <data name="TEXT_VK_MIDDLEBUTTON" xml:space="preserve">
-    <value>MiddleButton</value>
+    <value>Srednja tipka</value>
   </data>
   <data name="TEXT_VK_MODECHANGE" xml:space="preserve">
-    <value>ModeChange</value>
+    <value>Sprememba načina</value>
   </data>
   <data name="TEXT_VK_MULTIPLY" xml:space="preserve">
     <value>*</value>
@@ -1000,34 +1054,34 @@
     <value>N</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONACCEPT" xml:space="preserve">
-    <value>NavigationAccept</value>
+    <value>Sprejmi krmarjenje</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONCANCEL" xml:space="preserve">
-    <value>NavigationCancel</value>
+    <value>Prekliči krmarjenje</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONDOWN" xml:space="preserve">
-    <value>NavigationDown</value>
+    <value>Gumb za krmarjenje dol</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONLEFT" xml:space="preserve">
-    <value>NavigationLeft</value>
+    <value>Gumb za krmarjenje levo</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONMENU" xml:space="preserve">
-    <value>NavigationMenu</value>
+    <value>Meni za krmarjenje</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONRIGHT" xml:space="preserve">
-    <value>NavigationRight</value>
+    <value>Gumb za krmarjenje desno</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONUP" xml:space="preserve">
-    <value>NavigationUp</value>
+    <value>Gumb za krmarjenje gor</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONVIEW" xml:space="preserve">
-    <value>NavigationView</value>
+    <value>Pogled krmarjenja</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>Brez pretvorbe</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Brez</value>
   </data>
   <data name="TEXT_VK_NUMBER0" xml:space="preserve">
     <value>0</value>
@@ -1063,34 +1117,34 @@
     <value>Num Lock</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD0" xml:space="preserve">
-    <value>Num 0</value>
+    <value>Št. 0</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD1" xml:space="preserve">
-    <value>Num 1</value>
+    <value>Št. 1</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD2" xml:space="preserve">
-    <value>Num 2</value>
+    <value>Št. 2</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD3" xml:space="preserve">
-    <value>Num 3</value>
+    <value>Št. 3</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD4" xml:space="preserve">
-    <value>Num 4</value>
+    <value>Št. 4</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD5" xml:space="preserve">
-    <value>Num 5</value>
+    <value>Št. 5</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD6" xml:space="preserve">
-    <value>Num 6</value>
+    <value>Št. 6</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD7" xml:space="preserve">
-    <value>Num 7</value>
+    <value>Št. 7</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD8" xml:space="preserve">
-    <value>Num 8</value>
+    <value>Št. 8</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD9" xml:space="preserve">
-    <value>Num 9</value>
+    <value>Št. 9</value>
   </data>
   <data name="TEXT_VK_O" xml:space="preserve">
     <value>O</value>
@@ -1105,10 +1159,10 @@
     <value>PageUp</value>
   </data>
   <data name="TEXT_VK_PAUSE" xml:space="preserve">
-    <value>Pause</value>
+    <value>Začasno ustavi</value>
   </data>
   <data name="TEXT_VK_PRINT" xml:space="preserve">
-    <value>Print</value>
+    <value>Natisni</value>
   </data>
   <data name="TEXT_VK_Q" xml:space="preserve">
     <value>Q</value>
@@ -1117,13 +1171,13 @@
     <value>R</value>
   </data>
   <data name="TEXT_VK_REFRESH" xml:space="preserve">
-    <value>Refresh</value>
+    <value>Osveži</value>
   </data>
   <data name="TEXT_VK_RIGHT" xml:space="preserve">
-    <value>Right</value>
+    <value>Puščica desno</value>
   </data>
   <data name="TEXT_VK_RIGHTBUTTON" xml:space="preserve">
-    <value>RightButton</value>
+    <value>Desna tipka</value>
   </data>
   <data name="TEXT_VK_S" xml:space="preserve">
     <value>S</value>
@@ -1132,28 +1186,28 @@
     <value>Scroll Lock</value>
   </data>
   <data name="TEXT_VK_SEARCH" xml:space="preserve">
-    <value>Search</value>
+    <value>Išči</value>
   </data>
   <data name="TEXT_VK_SELECT" xml:space="preserve">
-    <value>Select</value>
+    <value>Izberi</value>
   </data>
   <data name="TEXT_VK_SEPARATOR" xml:space="preserve">
-    <value>Separator</value>
+    <value>Ločilo</value>
   </data>
   <data name="TEXT_VK_SHIFT" xml:space="preserve">
     <value>Tipka Shift</value>
   </data>
   <data name="TEXT_VK_SLEEP" xml:space="preserve">
-    <value>Sleep</value>
+    <value>Stanje pripravljenosti</value>
   </data>
   <data name="TEXT_VK_SNAPSHOT" xml:space="preserve">
-    <value>Snapshot</value>
+    <value>Posnetek</value>
   </data>
   <data name="TEXT_VK_SPACE" xml:space="preserve">
     <value>Preslednica</value>
   </data>
   <data name="TEXT_VK_STOP" xml:space="preserve">
-    <value>Stop</value>
+    <value>Ustavi</value>
   </data>
   <data name="TEXT_VK_SUBTRACT" xml:space="preserve">
     <value>-</value>
@@ -1162,13 +1216,13 @@
     <value>T</value>
   </data>
   <data name="TEXT_VK_TAB" xml:space="preserve">
-    <value>Tab</value>
+    <value>Tabulatorka</value>
   </data>
   <data name="TEXT_VK_U" xml:space="preserve">
     <value>U</value>
   </data>
   <data name="TEXT_VK_UP" xml:space="preserve">
-    <value>Up</value>
+    <value>Puščica gor</value>
   </data>
   <data name="TEXT_VK_V" xml:space="preserve">
     <value>V</value>
@@ -1183,10 +1237,10 @@
     <value>X</value>
   </data>
   <data name="TEXT_VK_XBUTTON1" xml:space="preserve">
-    <value>XButton1</value>
+    <value>Dodatni gumb 1</value>
   </data>
   <data name="TEXT_VK_XBUTTON2" xml:space="preserve">
-    <value>XButton2</value>
+    <value>Dodatni gumb 2</value>
   </data>
   <data name="TEXT_VK_Y" xml:space="preserve">
     <value>Y</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>UREJEVALNIK VNOSNE METODE JE IZKLOPLJEN</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Bela</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 ura</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Svetlo siva</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 ur</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Siva</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 min.</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Temno siva</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 min.</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Črna</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 sekunda</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Koralna</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 s</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Rožnata</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>položaj %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Svetlo oranžna</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>položaj %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Kožno rjava</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Svetlo rumena</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Svetlo zelena</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Rumenozelena</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Akvamarin</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Nebesno modra</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Svetlo turkizna</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Bledo modra</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Svetlo modra</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Ledeno modra</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Vijoličasto modra</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Sivka</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Roza</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Rdeča</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Oranžna</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Rjava</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Zlata</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Rumena</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Olivno zelena</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Zelena</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Bleščeče zelena</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Zelenomodra</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Turkizna</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Modra</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Modro-siva</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Indigo</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Purpurna</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Temno rdeča</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Temno rumena</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Temno zelena</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Temno zelenomodra</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Temno modra</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Temno purpurna</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Sliva</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Zapri</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>
