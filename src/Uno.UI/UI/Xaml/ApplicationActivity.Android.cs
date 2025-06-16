@@ -9,7 +9,6 @@ using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
 using AndroidX.Activity;
-using AndroidX.Core.View;
 using DirectUI;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -267,8 +266,6 @@ namespace Microsoft.UI.Xaml
 			{
 				EdgeToEdge.Enable(this);
 			}
-
-			WindowCompat.SetDecorFitsSystemWindows(Window, FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled);
 
 			base.OnCreate(bundle);
 
