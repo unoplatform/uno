@@ -48,16 +48,21 @@ public class Given_SKCanvasElement
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
 	public async Task When_Waiting_For_Another_Thread()
 	{
+<<<<<<< HEAD
 		if (OperatingSystem.IsBrowser())
 		{
 			Assert.Inconclusive("This test on WASM throws an Uncaught ManagedError: Cannot wait on monitors on this runtime.");
 		}
 		var SUT = new TaskWaitingSKCanvasElement() { Width = 400, Height = 400 };
+=======
+		var SUT = new WaitingSKCanvasElement() { Width = 400, Height = 400 };
+>>>>>>> 399d48d261 (test: add When_Waiting_For_Another_Thread)
 		await UITestHelper.Load(SUT);
 		await Task.Delay(3000);
 		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
 	}
 
+<<<<<<< HEAD
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
 	public async Task When_Waiting_For_Another_Thread2()
@@ -87,6 +92,8 @@ public class Given_SKCanvasElement
 		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
 	}
 
+=======
+>>>>>>> 399d48d261 (test: add When_Waiting_For_Another_Thread)
 	private class BlueFillSKCanvasElement : SKCanvasElement
 	{
 		protected override void RenderOverride(SKCanvas canvas, Size area)
@@ -95,7 +102,11 @@ public class Given_SKCanvasElement
 		}
 	}
 
+<<<<<<< HEAD
 	public class TaskWaitingSKCanvasElement : SKCanvasElement
+=======
+	public class WaitingSKCanvasElement : SKCanvasElement
+>>>>>>> 399d48d261 (test: add When_Waiting_For_Another_Thread)
 	{
 		private bool _insideRenderOverride;
 		public bool RenderOverrideCalledNestedly { get; private set; }
@@ -114,6 +125,7 @@ public class Given_SKCanvasElement
 			_insideRenderOverride = false;
 		}
 	}
+<<<<<<< HEAD
 
 	public class LockWaitingSKCanvasElement(object gate) : SKCanvasElement
 	{
@@ -129,4 +141,6 @@ public class Given_SKCanvasElement
 			_insideRenderOverride = false;
 		}
 	}
+=======
+>>>>>>> 399d48d261 (test: add When_Waiting_For_Another_Thread)
 }
