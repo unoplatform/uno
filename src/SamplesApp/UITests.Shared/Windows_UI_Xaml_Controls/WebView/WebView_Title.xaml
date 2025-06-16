@@ -18,14 +18,13 @@
         <StackPanel Orientation="Horizontal">
             <TextBox
                 x:Name="UriInput"
-                Width="150"
+                Width="250"
                 Text="https://microsoft.com/" />
-            <Button>Go</Button>
+            <Button Click="OnGoClicked">Go</Button>
         </StackPanel>
         <TextBlock Grid.Row="1" Text="{Binding ElementName=Web, Path=DocumentTitle}" />
         <WebView
             x:Name="Web"
-            Grid.Row="2"
-            Source="{Binding ElementName=UriInput, Path=Text}" />
+            Grid.Row="2" />
     </not_win:Grid>
 </Page>
