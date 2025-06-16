@@ -73,7 +73,10 @@ namespace Windows.UI.ViewManagement
 #if __ANDROID__
 				_isForegroundColorSet = value.HasValue;
 #elif __IOS__
-				UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.Default;
+				if (value is null)
+				{
+					UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.Default;
+				}
 #endif
 				var foregroundType = ColorToForegroundType(value) ?? GetStatusBarForegroundType();
 				SetStatusBarForegroundType(foregroundType);

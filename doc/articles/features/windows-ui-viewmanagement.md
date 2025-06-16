@@ -8,6 +8,7 @@ uid: Uno.Features.WinUIViewManagement
 > This article covers Uno-specific information for the `Windows.UI.ViewManagement` namespace. For a full description of the feature and instructions on using it, see [Windows.UI.ViewManagement Namespace](https://learn.microsoft.com/uwp/api/windows.ui.viewmanagement).
 
 * The `Windows.UI.ViewManagement.ApplicationViewTitleBar` class allows working with the title bar of the application window.
+* The `Windows.UI.ViewManagement.StatusBar` class allows working with the status bar on mobile.
 * The `Windows.UI.ViewManagement.UISettings` class allows retrieving the current system visual settings.
 
 ## `ApplicationViewTitleBar` class
@@ -20,6 +21,23 @@ This functionality is currently supported in Chrome, Edge (Chromium), and Opera 
 
 ![Blue title bar](../Assets/features/applicationviewtitlebar/blue.png)
 ![Red title bar](../Assets/features/applicationviewtitlebar/red.png)
+
+## `StatusBar` class
+
+The `StatusBar` is located at the top of the screen on mobile devices. The properties below are implemented for both iOS and Android.
+
+You may style the status bar using the `BackgroundColor` and `ForegroundColor` properties.
+
+> [!NOTE]
+> While you can assign any color to `ForegroundColor`, the status bar will render it as either light or dark. It will automatically choose the closest match to the specified color.
+
+If you don’t explicitly set the `ForegroundColor`, the app will automatically choose between a light or dark foreground to try to maximize contrast with the `BackgroundColor` you provide.
+
+> [!IMPORTANT]
+> In order for the status bar colors to be customizable on iOS, the [`UIViewControllerBasedStatusBarAppearance` property](https://developer.apple.com/documentation/bundleresources/information-property-list/uiviewcontrollerbasedstatusbarappearance) needs to be set to false in the platform's Info.plist file.
+
+![Blue Android Status Bar](../Assets/features/statusbar/blue.png)
+![Dark blue iOS Status Bar](../Assets/features/statusbar/darkblue.png)
 
 ## `UISettings`
 

@@ -123,8 +123,6 @@
         href: xref:Uno.Tutorials.ChangeAppLanguage
       - name: How to integrate SignalR
         href: xref:Uno.Development.SignalR
-      - name: How to update StatusBar color based on dark/light theme
-        href: xref:Uno.Tutorials.StatusBarThemeColor
       - name: How to use MSAL for Azure Authentication
         href: xref:Uno.Interop.MSAL
       - name: How to authenticate with OpenID Connect

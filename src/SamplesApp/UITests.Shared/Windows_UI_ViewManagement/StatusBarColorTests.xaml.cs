@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Markup;
 
 namespace UITests.Shared.Windows_UI_ViewManagement
 {
-	[SampleControlInfo("Windows.UI.ViewManagement", "StatusBar_Color", description: "Allows changing status bar color dynamically")]
+	[SampleControlInfo("Windows.UI.ViewManagement", "StatusBar_Color", isManualTest: true, description: "Status bar can be styled at runtime for mobile targets")]
 	public sealed partial class StatusBarColorTests : UserControl
 	{
 		private StatusBar _statusBar;
