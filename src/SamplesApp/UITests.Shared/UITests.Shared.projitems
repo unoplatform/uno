@@ -4206,6 +4206,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView2_Clipping.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView2_Fixed_Height.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -8387,6 +8391,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_Input_Keyboard_Insets.xaml.cs">
       <DependentUpon>WebView_Input_Keyboard_Insets.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView2_Clipping.xaml.cs">
+      <DependentUpon>WebView2_Clipping.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView2_Fixed_Height.xaml.cs">
       <DependentUpon>WebView2_Fixed_Height.xaml</DependentUpon>
