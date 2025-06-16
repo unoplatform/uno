@@ -4238,6 +4238,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_InfiniteBounds.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_AnchorNavigation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -9542,6 +9546,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Alert.xaml.cs">
       <DependentUpon>WebView2_Alert.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_InfiniteBounds.xaml.cs">
+      <DependentUpon>WebView2_InfiniteBounds.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Basic.xaml.cs">
       <DependentUpon>WebView2_Basic.xaml</DependentUpon>
