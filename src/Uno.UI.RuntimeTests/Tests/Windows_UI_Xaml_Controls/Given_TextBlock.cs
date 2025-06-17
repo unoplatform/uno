@@ -29,6 +29,7 @@ using Combinatorial.MSTest;
 
 
 #if __SKIA__
+using Microsoft.UI.Xaml.Data;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 #endif
@@ -909,6 +910,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				previousOrigin = textBlockOrigin;
 			}
 		}
+
+#if __SKIA__
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno.hotdesign/issues/4327")]
+		public async Task When_Bound_To_TextBox_Text()
+		{
+			var textblock = new TextBlock { Foreground = new SolidColorBrush(Colors.Red) };
+			var textbox = new TextBox { Text = "0", Foreground = new SolidColorBrush(Colors.Red) };
+
+			textblock.SetBinding(TextBlock.TextProperty,
+				new Binding { Source = textbox, Path = new PropertyPath("Text"), });
+
+			await UITestHelper.Load(new StackPanel
+			{
+				textbox,
+				textblock
+			});
+
+			for (int i = 0; i < 5; i++)
+			{
+				textbox.Text = (int.TryParse(textbox.Text, out var v) ? v + 2 : 0).ToString();
+				await UITestHelper.WaitForIdle();
+				var tb1 = await UITestHelper.ScreenShot(textbox.FindFirstChild<TextBlock>());
+				var tb2 = await UITestHelper.ScreenShot(textblock);
+				for (int y = 0; y < 20; y++)
+				{
+					for (int x = 0; x < 20; x++)
+					{
+						Assert.AreEqual(tb1.GetPixel(x, y), tb2.GetPixel(x, y));
+					}
+				}
+			}
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
