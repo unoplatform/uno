@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -46,8 +47,29 @@ public class Given_SKCanvasElement
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
 	public async Task When_Waiting_For_Another_Thread()
 	{
-		var SUT = new WaitingSKCanvasElement() { Width = 400, Height = 400 };
+		var SUT = new TaskWaitingSKCanvasElement() { Width = 400, Height = 400 };
 		await UITestHelper.Load(SUT);
+		await Task.Delay(3000);
+		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
+	public async Task When_Waiting_For_Another_Thread2()
+	{
+		var gate = new object();
+		var SUT = new LockWaitingSKCanvasElement(gate) { Width = 400, Height = 400 };
+		await UITestHelper.Load(SUT);
+		_ = Task.Run(() =>
+		{
+			while (SUT.IsLoaded)
+			{
+				lock (gate)
+				{
+					Thread.Sleep(200);
+				}
+			}
+		});
 		await Task.Delay(3000);
 		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
 	}
@@ -60,7 +82,7 @@ public class Given_SKCanvasElement
 		}
 	}
 
-	public class WaitingSKCanvasElement : SKCanvasElement
+	public class TaskWaitingSKCanvasElement : SKCanvasElement
 	{
 		private bool _insideRenderOverride;
 		public bool RenderOverrideCalledNestedly { get; private set; }
@@ -76,6 +98,21 @@ public class Given_SKCanvasElement
 				tcs.SetResult();
 			});
 			tcs.Task.Wait();
+			_insideRenderOverride = false;
+		}
+	}
+
+	public class LockWaitingSKCanvasElement(object gate) : SKCanvasElement
+	{
+		private bool _insideRenderOverride;
+		public bool RenderOverrideCalledNestedly { get; private set; }
+		protected override void RenderOverride(SKCanvas canvas, Size area)
+		{
+			Invalidate(); // We need to invalidate before the lock statement
+			RenderOverrideCalledNestedly |= _insideRenderOverride;
+			_insideRenderOverride = true;
+			Monitor.Enter(gate);
+			Monitor.Exit(gate);
 			_insideRenderOverride = false;
 		}
 	}
