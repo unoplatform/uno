@@ -153,7 +153,9 @@ namespace Microsoft.UI.Xaml.Controls
 				XamlRoot.Changed += OnXamlRootChanged;
 				m_windowSizeChangedEventHandler.Disposable = Disposable.Create(() => XamlRoot.Changed -= OnXamlRootChanged);
 			}
-
+#if HAS_UNO
+			ReAttachTemplateEvents();
+#endif
 			//UNO TODO
 
 			//if (m_Mode != AppBarMode_Inline)
@@ -181,6 +183,32 @@ namespace Microsoft.UI.Xaml.Controls
 			//}
 
 			UpdateVisualState();
+		}
+
+		private void ReAttachTemplateEvents()
+		{
+			GetTemplatePart("ContentRoot", out m_tpContentRoot);
+
+			if (m_tpContentRoot is { })
+			{
+				m_tpContentRoot.SizeChanged += OnContentRootSizeChanged;
+				m_contentRootSizeChangedEventHandler.Disposable = Disposable.Create(() => m_tpContentRoot.SizeChanged -= OnContentRootSizeChanged);
+			}
+
+			GetTemplatePart("ExpandButton", out m_tpExpandButton);
+
+			if (m_tpExpandButton == null)
+			{
+				// The previous CommandBar template used "MoreButton" for this template part's name,
+				// so now we're stuck with it, as much as I'd like to converge them..
+				GetTemplatePart("MoreButton", out m_tpExpandButton);
+			}
+
+			if (m_tpExpandButton is { })
+			{
+				m_tpExpandButton.Click += OnExpandButtonClick;
+				m_expandButtonClickEventHandler.Disposable = Disposable.Create(() => m_tpExpandButton.Click -= OnExpandButtonClick);
+			}
 		}
 
 		private void OnLayoutUpdated(object? sender, object e)
@@ -296,33 +324,17 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			GetTemplatePart("LayoutRoot", out m_tpLayoutRoot);
-			GetTemplatePart("ContentRoot", out m_tpContentRoot);
 
 #if HAS_NATIVE_COMMANDBAR
 			_isNativeTemplate = Uno.UI.Extensions.DependencyObjectExtensions
 				.FindFirstChild<NativeCommandBarPresenter?>(this) != null;
 #endif
 
-			if (m_tpContentRoot is { })
-			{
-				m_tpContentRoot.SizeChanged += OnContentRootSizeChanged;
-				m_contentRootSizeChangedEventHandler.Disposable = Disposable.Create(() => m_tpContentRoot.SizeChanged -= OnContentRootSizeChanged);
-			}
-
-			GetTemplatePart("ExpandButton", out m_tpExpandButton);
-
-			if (m_tpExpandButton == null)
-			{
-				// The previous CommandBar template used "MoreButton" for this template part's name,
-				// so now we're stuck with it, as much as I'd like to converge them..
-				GetTemplatePart("MoreButton", out m_tpExpandButton);
-			}
-
+#if HAS_UNO
+			ReAttachTemplateEvents();
+#endif
 			if (m_tpExpandButton is { })
 			{
-				m_tpExpandButton.Click += OnExpandButtonClick;
-				m_expandButtonClickEventHandler.Disposable = Disposable.Create(() => m_tpExpandButton.Click -= OnExpandButtonClick);
-
 				var toolTip = new ToolTip();
 				toolTip.Content = DXamlCore.Current.GetLocalizedResourceString(TEXT_HUB_SEE_MORE);
 
