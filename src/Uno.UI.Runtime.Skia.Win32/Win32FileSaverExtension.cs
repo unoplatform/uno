@@ -13,6 +13,7 @@ using Windows.Win32.UI.Shell.Common;
 using Uno.Disposables;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers.WinUI;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -83,7 +84,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			}
 		}
 
-		hResult = iFileSaveDialog.Value->SetOkButtonLabel(picker.CommitButtonText);
+		hResult = iFileSaveDialog.Value->SetOkButtonLabel(string.IsNullOrEmpty(picker.CommitButtonText) ? ResourceAccessor.GetLocalizedStringResource("FILE_SAVER_ACCEPT_LABEL") : picker.CommitButtonText);
 		if (hResult.Failed)
 		{
 			this.LogError()?.Error($"{nameof(IFileDialog.SetOkButtonLabel)} failed: {Win32Helper.GetErrorMessage(hResult)}");
