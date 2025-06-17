@@ -427,6 +427,10 @@
 					"description": "Adds a native references where needed to use MediaElement.",
 					"helpUrl": "https://aka.platform.uno/feature-media-element"
 				},
+				"MediaPlayerElement": {
+					"description": "Adds a native references where needed to use MediaPlayerElement.",
+					"helpUrl": "https://aka.platform.uno/feature-media-element"
+				},
 				"WebView": {
 					"description": "Adds a native references where needed to use WebView and WebView2.",
 					"helpUrl": "https://aka.platform.uno/feature-webview"
