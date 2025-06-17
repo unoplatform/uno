@@ -84,6 +84,11 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private void Draw(double nativeWidth, double nativeHeight, SKSurface surface)
 	{
 		using var _ = _fpsHelper.BeginFrame();
+		while (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			rootElement.UpdateLayout();
+		}
+
 		using var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{

@@ -76,6 +76,11 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			return;
 		}
 
+		while (root.IsArrangeDirtyOrArrangeDirtyPath || root.IsMeasureDirtyOrMeasureDirtyPath)
+		{
+			root.UpdateLayout();
+		}
+
 		ExploreByTouchHelper.InvalidateRoot();
 
 		var recorder = new SKPictureRecorder();

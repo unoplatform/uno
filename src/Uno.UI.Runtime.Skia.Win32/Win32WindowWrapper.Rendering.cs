@@ -6,6 +6,7 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -42,6 +43,11 @@ internal partial class Win32WindowWrapper
 		if (clientRect.IsEmpty)
 		{
 			return;
+		}
+
+		while (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			rootElement.UpdateLayout();
 		}
 
 		if (_surface is null || _lastSize != clientRect.Size)

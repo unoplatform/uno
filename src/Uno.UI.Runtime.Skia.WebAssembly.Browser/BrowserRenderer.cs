@@ -65,6 +65,12 @@ internal partial class BrowserRenderer
 	private void RenderFrame()
 	{
 		using var _ = _fpsHelper.BeginFrame();
+
+		while (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			rootElement.UpdateLayout();
+		}
+
 		if (!_jsInfo.IsValid)
 		{
 			Initialize();

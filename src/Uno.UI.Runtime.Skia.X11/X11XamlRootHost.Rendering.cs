@@ -18,6 +18,11 @@ internal partial class X11XamlRootHost
 	{
 		if (DispatcherQueue.Main.HasThreadAccess)
 		{
+			while (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+			{
+				rootElement.UpdateLayout();
+			}
+
 			var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
