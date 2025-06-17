@@ -4,6 +4,30 @@ uid: Uno.UI.CommonIssues.Android
 
 # Issues related to Android projects
 
+## Insets not working when using WebView
+
+There is a known issue on Android with the [Edge-to-Edge](https://developer.android.com/develop/ui/views/layout/edge-to-edge) feature, where the bottom Insets do not function correctly when using a WebView. This flaw prevents the inputs from being shifted upward, which results in the keyboard covering them.
+
+> [!IMPORTANT]
+> Edge-to-Edge is enforced on devices running Android 15 with a Target SDK of 35 or higher.
+
+A workaround for this issue is to navigate to the `MainActivity.Android.cs` file in your Uno Platform application, override the `OnCreate` method, and call `WindowCompat.SetDecorFitsSystemWindows()`, setting the second parameter, decorFitsSystemWindows, to true.
+
+Your code should be structured as follows:
+
+```csharp
+public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
+{
+  protected override void OnCreate(Bundle bundle)
+  {
+      base.OnCreate(bundle);
+      WindowCompat.SetDecorFitsSystemWindows(Window, true);
+  }
+}
+```
+
+Learn more about this issue [on Google's issues tracker](https://issuetracker.google.com/issues/311256305?pli=1) website.
+
 ## ADB0020 - The package does not support the CPU architecture of this device
 
 This error may occur when deploying an application to a physical device with ARM architecture. To resolve this issue, you will need to add the following to your csproj anywhere inside the `<PropertyGroup>` tag:
