@@ -850,7 +850,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// matter because Blue apps wouldn't have had access to them.
 				// For post-WinBlue AppBars, we fire the Opening/Closing & Opened/Closed
 				// events based on our display mode state transitions.
-				//if (m_tpDisplayModesStateGroup == null)
+				if (IsOpen == isOpen)
 				{
 					if (isOpen)
 					{
