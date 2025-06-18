@@ -40,6 +40,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Default_ShowMode()
+		{
+			var flyout = new Flyout();
+			Assert.AreEqual(FlyoutShowMode.Standard, flyout.ShowMode);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Unloaded_Before_Shown()
 		{
 			var button = new Button()
