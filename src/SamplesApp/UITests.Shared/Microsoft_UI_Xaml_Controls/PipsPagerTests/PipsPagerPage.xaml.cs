@@ -58,6 +58,7 @@ namespace MUXControlsTestApp
 			TestPipsPagerNumberOfPagesComboBox.SelectionChanged += OnNumberOfPagesChanged;
 			TestPipsPagerMaxVisiblePipsComboBox.SelectionChanged += OnMaxVisiblePipsChanged;
 			TestPipsPagerOrientationComboBox.SelectionChanged += OnOrientationChanged;
+			TestPipsPagerWrapModeComboBox.SelectionChanged += OnWrapModeChanged;
 			TestPipsPager.PointerEntered += TestPipsPager_PointerEntered;
 			TestPipsPager.PointerExited += TestPipsPager_PointerExited;
 			TestPipsPager.GotFocus += TestPipsPager_GotFocus;
@@ -77,6 +78,16 @@ namespace MUXControlsTestApp
 			CurrentNumberOfPagesTextBlock.Text = GetNumberOfPages();
 			CurrentMaxVisiblePipsTextBlock.Text = $"Current max visual indicators: {TestPipsPager.MaxVisiblePips}";
 			CurrentOrientationTextBlock.Text = GetCurrentOrientation();
+		}
+
+		private void SkipToLastPage(object sender, RoutedEventArgs args)
+		{
+			TestPipsPager.SelectedPageIndex = TestPipsPager.NumberOfPages - 1;
+		}
+
+		private void SkipToFirstPage(object sender, RoutedEventArgs args)
+		{
+			TestPipsPager.SelectedPageIndex = 0;
 		}
 
 		private void OnGetPipsPagerButtonSizesClicked(object sender, RoutedEventArgs args)
@@ -101,7 +112,7 @@ namespace MUXControlsTestApp
 
 		private void OnButtonEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			if (ReferenceEquals(sender, previousPageButton))
+			if (sender == previousPageButton)
 			{
 				PreviousPageButtonIsEnabledCheckBox.IsChecked = previousPageButton?.IsEnabled;
 			}
@@ -202,6 +213,11 @@ namespace MUXControlsTestApp
 			CurrentOrientationTextBlock.Text = GetCurrentOrientation();
 		}
 
+		public void OnWrapModeChanged(object sender, SelectionChangedEventArgs e)
+		{
+			TestPipsPager.WrapMode = (sender as ComboBox).SelectedIndex == 0 ? PipsPagerWrapMode.None : PipsPagerWrapMode.Wrap;
+		}
+
 		private PipsPagerButtonVisibility ConvertComboBoxItemToVisibilityEnum(ComboBoxItem item, PipsPagerButtonVisibility defaultValue)
 		{
 			PipsPagerButtonVisibility newVisibility = defaultValue;
@@ -226,7 +242,7 @@ namespace MUXControlsTestApp
 
 		private void GoToExamplesPage(object sender, RoutedEventArgs args)
 		{
-			//Frame.Navigate(typeof(PipsPagerExamples));
+			Frame.NavigateWithoutAnimation(typeof(PipsPagerExamples));
 		}
 	}
 }
