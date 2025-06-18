@@ -128,9 +128,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	{
 		if (_xamlRoot?.VisualTree.RootElement is { } rootElement)
 		{
-			while (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath)
+			if (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath)
 			{
-				rootElement.UpdateLayout();
+				InvalidateRender();
+				return;
 			}
 
 			canvas.Clear(SKColors.Transparent);

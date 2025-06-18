@@ -27,6 +27,12 @@ internal partial class Win32WindowWrapper
 			return;
 		}
 
+		if (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			((IXamlRootHost)this).InvalidateRender();
+			return;
+		}
+
 		using var _ = _fpsHelper.BeginFrame();
 
 		this.LogTrace()?.Trace($"Render {this._renderCount++}");
@@ -43,11 +49,6 @@ internal partial class Win32WindowWrapper
 		if (clientRect.IsEmpty)
 		{
 			return;
-		}
-
-		while (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
-		{
-			rootElement.UpdateLayout();
 		}
 
 		if (_surface is null || _lastSize != clientRect.Size)

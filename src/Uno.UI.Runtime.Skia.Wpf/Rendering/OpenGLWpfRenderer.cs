@@ -168,9 +168,10 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		using var _ = _fpsHelper.BeginFrame();
 
-		while (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
 		{
-			rootElement.UpdateLayout();
+			_host.InvalidateRender();
+			return;
 		}
 
 		int width, height;

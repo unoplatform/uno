@@ -18,15 +18,16 @@ internal partial class X11XamlRootHost
 	{
 		if (DispatcherQueue.Main.HasThreadAccess)
 		{
-			while (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+			var rootElement = (this as IXamlRootHost).RootElement;
+			if (rootElement is not null && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
 			{
-				rootElement.UpdateLayout();
+				QueueAction(this, () => ((IXamlRootHost)this).InvalidateRender());
+				return;
 			}
 
 			var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				var rootElement = (this as IXamlRootHost).RootElement;
 				if (_renderer is not null && rootElement?.Visual is { } rootVisual)
 				{
 					using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
