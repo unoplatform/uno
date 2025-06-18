@@ -13,6 +13,7 @@ using Windows.Win32.UI.Shell.Common;
 using Uno.Disposables;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers.WinUI;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -95,7 +96,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 			}
 		}
 
-		hResult = iFileOpenDialog.Value->SetOkButtonLabel(picker.CommitButtonTextInternal);
+		hResult = iFileOpenDialog.Value->SetOkButtonLabel(string.IsNullOrEmpty(picker.CommitButtonTextInternal) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonTextInternal);
 		if (hResult.Failed)
 		{
 			this.LogError()?.Error($"{nameof(IFileDialog.SetOkButtonLabel)} failed: {Win32Helper.GetErrorMessage(hResult)}");
