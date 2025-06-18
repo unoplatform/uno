@@ -1228,9 +1228,8 @@ namespace Microsoft.UI.Xaml.Controls
 				if (isOpen)
 				{
 					isAppBarDismissed = true;
+					IsOpen = false;
 				}
-
-				IsOpen = false;
 			}
 
 			return isAppBarDismissed;
