@@ -21,7 +21,7 @@ internal partial class X11XamlRootHost
 			var rootElement = (this as IXamlRootHost).RootElement;
 			if (rootElement is not null && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
 			{
-				QueueAction(this, () => ((IXamlRootHost)this).InvalidateRender());
+				NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
 				return;
 			}
 
