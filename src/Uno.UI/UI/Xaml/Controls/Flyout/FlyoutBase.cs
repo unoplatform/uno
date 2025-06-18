@@ -635,7 +635,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		internal Control GetPresenter() => _popup?.Child as Control;
+		internal virtual Control GetPresenter() => _popup?.Child as Control;
 
 		internal Rect UpdateTargetPosition(Rect availableWindowRect, Size presenterSize, Rect presenterRect)
 		{

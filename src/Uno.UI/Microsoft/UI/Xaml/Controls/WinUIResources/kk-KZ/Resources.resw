@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Ақ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Ақшыл сұр</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Сұр</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Қою сұр</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Қара</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Қызғылтым-сары</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Қызғылтым</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Ақшыл қызғылт-сары</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Күйген түс</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Ашық сары</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Ақшыл жасыл</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Қанық сары</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Көгілдір</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Аспан көк</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Ашық көгілдір-жасыл</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Боз көк</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Ақшыл көк</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Мұз көк</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Көгілдір-күлгін</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Ақшыл көк</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Қызғылт</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Қызыл</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Қызғылт-сары</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Қоңыр</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Алтын түсті</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Сары</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Зәйтүн жасыл</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Жасыл</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Ашық жасыл</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Жасыл-көк</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Көгілдір-жасыл</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Көк</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Бозаң</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Күлгін көк</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Күлгін</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Қою қызыл</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Қою сары</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Қою жасыл</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Қою жасыл-көк</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Қою көк</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Қою күлгін</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Алша</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>семантикалық ұлғайту</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>қосқыш</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>элемент</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 элемент</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>%1 апаруды болдырмау</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Келесі</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Алдыңғы</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>Ойнату</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Тоқтата тұру</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Уақыт өтті</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Қалған уақыт</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Буферлеу барысы</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Іздеу</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Дыбысты өшіру</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Дыбыс деңгейі</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Қате</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>Күн </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Ай </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>Жыл </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Сағат </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Минут </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 минут</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 минут</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 секунд</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 секунд</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Тік көп кішірейту</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Тік аз кішірейту</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Қиып алу</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>күнді таңдау</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, бүгін</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Кішірейтіп көрсету</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Тік нобай</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s үшін қосымша параметрлер</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Құрылғыға тарату</value>
   </data>
@@ -660,6 +711,9 @@
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>бағдарлама жолағының ауыстырып қосу түймешігі</value>
   </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s үшін бағдарламаның пәрмендік жолы азырақ</value>
+  </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>медиа ойнатқыш</value>
   </data>
@@ -715,37 +769,37 @@
     <value>A</value>
   </data>
   <data name="TEXT_VK_ACCEPT" xml:space="preserve">
-    <value>Accept</value>
+    <value>Қабылдау</value>
   </data>
   <data name="TEXT_VK_ADD" xml:space="preserve">
     <value>+</value>
   </data>
   <data name="TEXT_VK_APPLICATION" xml:space="preserve">
-    <value>Application</value>
+    <value>Бағдарлама</value>
   </data>
   <data name="TEXT_VK_B" xml:space="preserve">
     <value>B</value>
   </data>
   <data name="TEXT_VK_BACK" xml:space="preserve">
-    <value>Back</value>
+    <value>Артқа</value>
   </data>
   <data name="TEXT_VK_C" xml:space="preserve">
     <value>C</value>
   </data>
   <data name="TEXT_VK_CANCEL" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Бас тарту</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
     <value>Caps Lock</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
-    <value>Clear</value>
+    <value>Тазарту</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
     <value>Ctrl</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
-    <value>Convert</value>
+    <value>Түрлендіру</value>
   </data>
   <data name="TEXT_VK_D" xml:space="preserve">
     <value>D</value>
@@ -760,13 +814,13 @@
     <value>/</value>
   </data>
   <data name="TEXT_VK_DOWN" xml:space="preserve">
-    <value>Down</value>
+    <value>Төмен</value>
   </data>
   <data name="TEXT_VK_E" xml:space="preserve">
     <value>E</value>
   </data>
   <data name="TEXT_VK_END" xml:space="preserve">
-    <value>End</value>
+    <value>Аяқтау</value>
   </data>
   <data name="TEXT_VK_ENTER" xml:space="preserve">
     <value>Enter</value>
@@ -775,7 +829,7 @@
     <value>Esс</value>
   </data>
   <data name="TEXT_VK_EXECUTE" xml:space="preserve">
-    <value>Execute</value>
+    <value>Орындау</value>
   </data>
   <data name="TEXT_VK_F" xml:space="preserve">
     <value>F</value>
@@ -853,10 +907,10 @@
     <value>F9</value>
   </data>
   <data name="TEXT_VK_FAVORITES" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Таңдаулылар</value>
   </data>
   <data name="TEXT_VK_FINAL" xml:space="preserve">
-    <value>Final</value>
+    <value>Түпкілікті</value>
   </data>
   <data name="TEXT_VK_G" xml:space="preserve">
     <value>G</value>
@@ -934,40 +988,40 @@
     <value>GamepadY</value>
   </data>
   <data name="TEXT_VK_GOBACK" xml:space="preserve">
-    <value>GoBack</value>
+    <value>КеріҚайту</value>
   </data>
   <data name="TEXT_VK_GOFORWARD" xml:space="preserve">
-    <value>GoForward</value>
+    <value>АлғаӨту</value>
   </data>
   <data name="TEXT_VK_GOHOME" xml:space="preserve">
-    <value>GoHome</value>
+    <value>БастыбеткеӨту</value>
   </data>
   <data name="TEXT_VK_H" xml:space="preserve">
     <value>H</value>
   </data>
   <data name="TEXT_VK_HANGUL" xml:space="preserve">
-    <value>Hangul</value>
+    <value>Хангул</value>
   </data>
   <data name="TEXT_VK_HANJA" xml:space="preserve">
-    <value>Hanja</value>
+    <value>Ханджа</value>
   </data>
   <data name="TEXT_VK_HELP" xml:space="preserve">
-    <value>Help</value>
+    <value>Анықтама</value>
   </data>
   <data name="TEXT_VK_HOME" xml:space="preserve">
-    <value>Home</value>
+    <value>Басты бет</value>
   </data>
   <data name="TEXT_VK_I" xml:space="preserve">
     <value>I</value>
   </data>
   <data name="TEXT_VK_INSERT" xml:space="preserve">
-    <value>Insert</value>
+    <value>Кірістіру</value>
   </data>
   <data name="TEXT_VK_J" xml:space="preserve">
     <value>J</value>
   </data>
   <data name="TEXT_VK_JUNJA" xml:space="preserve">
-    <value>Junja</value>
+    <value>Джунджа</value>
   </data>
   <data name="TEXT_VK_K" xml:space="preserve">
     <value>K</value>
@@ -976,10 +1030,10 @@
     <value>L</value>
   </data>
   <data name="TEXT_VK_LEFT" xml:space="preserve">
-    <value>Left</value>
+    <value>Сол жақ</value>
   </data>
   <data name="TEXT_VK_LEFTBUTTON" xml:space="preserve">
-    <value>LeftButton</value>
+    <value>СолЖақТүйме</value>
   </data>
   <data name="TEXT_VK_M" xml:space="preserve">
     <value>M</value>
@@ -988,10 +1042,10 @@
     <value>Alt</value>
   </data>
   <data name="TEXT_VK_MIDDLEBUTTON" xml:space="preserve">
-    <value>MiddleButton</value>
+    <value>ОртаңғыТүйме</value>
   </data>
   <data name="TEXT_VK_MODECHANGE" xml:space="preserve">
-    <value>ModeChange</value>
+    <value>РежимдіӨзгерту</value>
   </data>
   <data name="TEXT_VK_MULTIPLY" xml:space="preserve">
     <value>*</value>
@@ -1000,34 +1054,34 @@
     <value>N</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONACCEPT" xml:space="preserve">
-    <value>NavigationAccept</value>
+    <value>ШарлаудыҚабылдау</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONCANCEL" xml:space="preserve">
-    <value>NavigationCancel</value>
+    <value>ШарлаудыБолдырмау</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONDOWN" xml:space="preserve">
-    <value>NavigationDown</value>
+    <value>ТөменгеШарлау</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONLEFT" xml:space="preserve">
-    <value>NavigationLeft</value>
+    <value>СолЖаққаШарлау</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONMENU" xml:space="preserve">
-    <value>NavigationMenu</value>
+    <value>ШарлауМәзірі</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONRIGHT" xml:space="preserve">
-    <value>NavigationRight</value>
+    <value>ОңЖаққаШарлау</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONUP" xml:space="preserve">
-    <value>NavigationUp</value>
+    <value>ЖоғарығаШарлау</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONVIEW" xml:space="preserve">
-    <value>NavigationView</value>
+    <value>ШарлауКөрінісі</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>Түрлендірілмеген</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Ешқайсысы</value>
   </data>
   <data name="TEXT_VK_NUMBER0" xml:space="preserve">
     <value>0</value>
@@ -1063,34 +1117,34 @@
     <value>Num Lock</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD0" xml:space="preserve">
-    <value>Num 0</value>
+    <value>0-нөм</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD1" xml:space="preserve">
-    <value>Num 1</value>
+    <value>1-нөм</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD2" xml:space="preserve">
-    <value>Num 2</value>
+    <value>2-нөм</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD3" xml:space="preserve">
-    <value>Num 3</value>
+    <value>3-нөм</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD4" xml:space="preserve">
-    <value>Num 4</value>
+    <value>4-нөм</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD5" xml:space="preserve">
-    <value>Num 5</value>
+    <value>5-нөм</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD6" xml:space="preserve">
-    <value>Num 6</value>
+    <value>6-нөм</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD7" xml:space="preserve">
-    <value>Num 7</value>
+    <value>7-нөм</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD8" xml:space="preserve">
-    <value>Num 8</value>
+    <value>8-нөм</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD9" xml:space="preserve">
-    <value>Num 9</value>
+    <value>9-нөм</value>
   </data>
   <data name="TEXT_VK_O" xml:space="preserve">
     <value>O</value>
@@ -1105,10 +1159,10 @@
     <value>PageUp</value>
   </data>
   <data name="TEXT_VK_PAUSE" xml:space="preserve">
-    <value>Pause</value>
+    <value>Тоқтата тұру</value>
   </data>
   <data name="TEXT_VK_PRINT" xml:space="preserve">
-    <value>Print</value>
+    <value>Басып шығару</value>
   </data>
   <data name="TEXT_VK_Q" xml:space="preserve">
     <value>Q</value>
@@ -1117,13 +1171,13 @@
     <value>R</value>
   </data>
   <data name="TEXT_VK_REFRESH" xml:space="preserve">
-    <value>Refresh</value>
+    <value>Жаңарту</value>
   </data>
   <data name="TEXT_VK_RIGHT" xml:space="preserve">
-    <value>Right</value>
+    <value>Оң жақ</value>
   </data>
   <data name="TEXT_VK_RIGHTBUTTON" xml:space="preserve">
-    <value>RightButton</value>
+    <value>ОңЖақТүйме</value>
   </data>
   <data name="TEXT_VK_S" xml:space="preserve">
     <value>S</value>
@@ -1132,28 +1186,28 @@
     <value>Scroll Lock</value>
   </data>
   <data name="TEXT_VK_SEARCH" xml:space="preserve">
-    <value>Search</value>
+    <value>Іздеу</value>
   </data>
   <data name="TEXT_VK_SELECT" xml:space="preserve">
-    <value>Select</value>
+    <value>Таңдау</value>
   </data>
   <data name="TEXT_VK_SEPARATOR" xml:space="preserve">
-    <value>Separator</value>
+    <value>Бөлгіш</value>
   </data>
   <data name="TEXT_VK_SHIFT" xml:space="preserve">
     <value>Shift</value>
   </data>
   <data name="TEXT_VK_SLEEP" xml:space="preserve">
-    <value>Sleep</value>
+    <value>Ұйқы режимі</value>
   </data>
   <data name="TEXT_VK_SNAPSHOT" xml:space="preserve">
-    <value>Snapshot</value>
+    <value>Лездік сурет</value>
   </data>
   <data name="TEXT_VK_SPACE" xml:space="preserve">
     <value>Бос орын</value>
   </data>
   <data name="TEXT_VK_STOP" xml:space="preserve">
-    <value>Stop</value>
+    <value>Тоқтату</value>
   </data>
   <data name="TEXT_VK_SUBTRACT" xml:space="preserve">
     <value>-</value>
@@ -1168,7 +1222,7 @@
     <value>U</value>
   </data>
   <data name="TEXT_VK_UP" xml:space="preserve">
-    <value>Up</value>
+    <value>Жоғары</value>
   </data>
   <data name="TEXT_VK_V" xml:space="preserve">
     <value>V</value>
@@ -1183,7 +1237,7 @@
     <value>X</value>
   </data>
   <data name="TEXT_VK_XBUTTON1" xml:space="preserve">
-    <value>XButton1</value>
+    <value>Хтүймесі1</value>
   </data>
   <data name="TEXT_VK_XBUTTON2" xml:space="preserve">
     <value>XButton2</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ӨШІРУЛІ</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Ақ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 сағат</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Ақшыл сұр</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 сағат</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Сұр</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 минут</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Қою сұр</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 минут</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Қара</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 секунд</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Қызғылтым-сары</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 секунд</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Қызғылтым</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>орын: %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Ақшыл қызғылт-сары</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>орын: %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Күйген түс</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Ашық сары</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Ақшыл жасыл</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Қанық сары</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Көгілдір</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Аспан көк</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Ашық көгілдір-жасыл</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Боз көк</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Ақшыл көк</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Мұз көк</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Көгілдір-күлгін</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Ақшыл көк</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Қызғылт</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Қызыл</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Қызғылт-сары</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Қоңыр</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Алтын түсті</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Сары</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Зәйтүн жасыл</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Жасыл</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Ашық жасыл</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Жасыл-көк</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Көгілдір-жасыл</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Көк</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Бозаң</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Күлгін көк</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Күлгін</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Қою қызыл</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Қою сары</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Қою жасыл</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Қою жасыл-көк</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Қою көк</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Қою күлгін</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Алша</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Жабу</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

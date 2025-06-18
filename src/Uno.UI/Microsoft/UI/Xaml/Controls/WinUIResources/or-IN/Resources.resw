@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>ଧଳା</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ହାଲୁକା ଗ୍ରେ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ଧୂସର</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ଗାଢ ଧୂସର</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>କଳା</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>କୋରାଲ୍</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ଗୋଲାପ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ହାଲୁକା କମଳା</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ଟ୍ୟାନ</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ହାଲୁକା ହଳଦିଆ</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ହାଲୁକା ସବୁଜ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ଲାଇମ୍</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ପାଣିଆ</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ଆକାଶୀ ନୀଳ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ହାଲୁକା ଟୁର୍‌କ୍ଵୋସ୍</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ପାଲେ ନୀଳ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ହାଲୁକା ନୀଳ</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ଆଇସ୍‌ ନୀଳ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>ପେରିୱିଙ୍କଲ</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ଲାଭେଣ୍ଡର୍</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ଗୋଲାପୀ</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ଲାଲ୍</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>କମଳା</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ବାଦାମୀ</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ସ୍ୱର୍ଣ୍ଣ</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>ହଳଦୀଆ</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ଓଲିଭ୍ ସବୁଜ</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>ସବୁଜ</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ଉଜ୍ଵଳ ସବୁଜ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>ତିଲ୍</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ଟୁର୍‌କ୍ଵୋଇସ୍</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ନୀଳ</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ନୀଳ-ଗ୍ରେ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ଇଣ୍ଡିଗୋ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ବାଇଗଣୀ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ଗାଢ ଲାଲ୍</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>ଗାଢ ହଳଦିଆ</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ଗାଢ ସବୁଜ</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ଗାଢ ଟିଲ</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ଗାଢ ନୀଳ</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ଗାଢ ବାଇଗଣୀ</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ପ୍ଲମ୍‌</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>ସେମାଣ୍ଟିକ୍‍ ଜୁମ୍‍</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>ଟୋଗଲ୍‍ ସୁଇଚ୍‍</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>ଆଇଟମ୍‍</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 ଆଇଟମ୍‍</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>ଡ୍ରାଗିଂ %1 ବାତିଲ୍‍ କରନ୍ତୁ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>ପରବର୍ତ୍ତୀ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>ପୂର୍ବବର୍ତ୍ତୀ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>ଚାଳନ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>ବିରାମ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>ସମୟ ଶେଷ ହେଲା</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>ଅବଶିଷ୍ଟ ସମୟ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>ବଫରିଂ ପ୍ରଗତି</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>ଖୋଜିବା</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>ମୌନ</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>ଭଲ୍ୟୁମ୍</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>ତ୍ରୁଟି</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>ଦିନ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>ମାସ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>ବର୍ଷ </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>ଘଣ୍ଟା </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>ମିନିଟ୍‌ </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 ମିନିଟ୍</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 ମିନିଟ୍</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 ସେକେଣ୍ଡ</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 ସେକେଣ୍ଡ୍</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>ଭୂଲମ୍ବ ବୃହତ ହ୍ରାସ</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>ଭୂଲମ୍ବ କ୍ଷୁଦ୍ର ହ୍ରାସ</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>ଛେଦନ</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>ଏକ ତାରିଖ ଚୟନ କରନ୍ତୁ</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, ଆଜି</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>କମ୍‌ ଦେଖନ୍ତୁ</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>ଭୂଲମ୍ବ ବୃଦ୍ଧାଙ୍ଗୁଠି</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s ପାଇଁ ଅଧିକ ବିକଳ୍ପ</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>ଡିଭାଇସ୍‍କୁ କାଷ୍ଟ କରନ୍ତୁ</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>ଆପ୍ଲିକେସନ୍‌ ଟୋଗଲ୍‌ ବଟନ୍‌</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s ପାଇଁ କମ୍ ଆପ୍ ବାର୍</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>ମିଡିଆ ପ୍ଲେୟାର୍</value>
@@ -736,7 +790,7 @@
     <value>Cancel</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
-    <value>Caps Lock</value>
+    <value>କ୍ୟାପସ୍‌ ଲକ୍‌</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
     <value>ଖାଲି କରିବା</value>
@@ -745,7 +799,7 @@
     <value>Ctrl</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
-    <value>Convert</value>
+    <value>ରୂପାନ୍ତର</value>
   </data>
   <data name="TEXT_VK_D" xml:space="preserve">
     <value>D</value>
@@ -1105,7 +1159,7 @@
     <value>PageUp</value>
   </data>
   <data name="TEXT_VK_PAUSE" xml:space="preserve">
-    <value>Pause</value>
+    <value>ବିରାମ କରନ୍ତୁ</value>
   </data>
   <data name="TEXT_VK_PRINT" xml:space="preserve">
     <value>ମୁଦ୍ରଣ</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ଅଫ୍</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>ଧଳା</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 ଘଣ୍ଟା</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>ହାଲୁକା ଗ୍ରେ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 ଘଣ୍ଟା</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>ଧୂସର</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 ମିନିଟ୍</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>ଗାଢ ଧୂସର</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 ମିନିଟ୍</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>କଳା</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 ସେକେଣ୍ଡ</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>କୋରାଲ୍</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 ସେକେଣ୍ଡ୍</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>ଗୋଲାପ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>ସ୍ଥିତି %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>ହାଲୁକା କମଳା</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>ସ୍ଥିତି %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>ଟ୍ୟାନ</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>ହାଲୁକା ହଳଦିଆ</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>ହାଲୁକା ସବୁଜ</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>ଲାଇମ୍</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>ପାଣିଆ</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>ଆକାଶୀ ନୀଳ</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>ହାଲୁକା ଟୁର୍‌କ୍ଵୋସ୍</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>ପାଲେ ନୀଳ</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>ହାଲୁକା ନୀଳ</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>ଆଇସ୍‌ ନୀଳ</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>ପେରିୱିଙ୍କଲ</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>ଲାଭେଣ୍ଡର୍</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>ଗୋଲାପୀ</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>ଲାଲ୍</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>କମଳା</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>ବାଦାମୀ</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>ସ୍ୱର୍ଣ୍ଣ</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>ହଳଦୀଆ</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>ଓଲିଭ୍ ସବୁଜ</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>ସବୁଜ</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>ଉଜ୍ଵଳ ସବୁଜ</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>ତିଲ୍</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>ଟୁର୍‌କ୍ଵୋଇସ୍</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>ନୀଳ</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>ନୀଳ-ଗ୍ରେ</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>ଇଣ୍ଡିଗୋ</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>ବାଇଗଣୀ</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>ଗାଢ ଲାଲ୍</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>ଗାଢ ହଳଦିଆ</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>ଗାଢ ସବୁଜ</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>ଗାଢ ଟିଲ</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>ଗାଢ ନୀଳ</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>ଗାଢ ବାଇଗଣୀ</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>ପ୍ଲମ୍‌</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>ବନ୍ଦ କରନ୍ତୁ</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>
