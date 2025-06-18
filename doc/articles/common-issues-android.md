@@ -28,6 +28,9 @@ public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
 
 Learn more about this issue [on Google's issues tracker](https://issuetracker.google.com/issues/311256305?pli=1) website.
 
+> [!IMPORTANT]
+> Using the workaround mentioned above will deactivate some benefits of the Edge-To-Edge feature. For instance, your top navigation bar will no longer be "invisible," which removes the immersive appearance associated with edge-to-edge design.
+
 ## ADB0020 - The package does not support the CPU architecture of this device
 
 This error may occur when deploying an application to a physical device with ARM architecture. To resolve this issue, you will need to add the following to your csproj anywhere inside the `<PropertyGroup>` tag:
