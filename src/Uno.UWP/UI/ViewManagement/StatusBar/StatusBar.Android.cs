@@ -10,7 +10,6 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage;
 using Windows.UI.Core;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Windows.UI.ViewManagement
 {
@@ -126,6 +125,12 @@ namespace Windows.UI.ViewManagement
 
 		private void SetStatusBarBackgroundColor(Color? color)
 		{
+			if (color is null)
+			{
+				DisposeInsetsListener();
+				return;
+			}
+
 			if (!TryGetActivityAndDecorView(out var activity, out var decorView))
 			{
 				// The API was used too early in application lifecycle
@@ -134,8 +139,11 @@ namespace Windows.UI.ViewManagement
 
 			if ((int)Build.VERSION.SdkInt >= 35)
 			{
-				_insetsListener = new InsetsListener(this);
-				ViewCompat.SetOnApplyWindowInsetsListener(decorView, _insetsListener);
+				if (_insetsListener is null)
+				{
+					_insetsListener = new InsetsListener(this);
+					ViewCompat.SetOnApplyWindowInsetsListener(decorView, _insetsListener);
+				}
 
 				WindowCompat.SetDecorFitsSystemWindows(activity.Window, false);
 
@@ -252,12 +260,14 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		private void RemoveStatusBarBackgroundColor()
+		private void DisposeInsetsListener()
 		{
 			if (!TryGetActivityAndDecorView(out var activity, out var decorView))
+			{
+				// The API was used too early in application lifecycle
 				return;
+			}
 
-			// Undo all the insets‐listener
 			if ((int)Build.VERSION.SdkInt >= 35)
 			{
 				ViewCompat.SetOnApplyWindowInsetsListener(decorView, null);
