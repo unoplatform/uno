@@ -29,7 +29,6 @@ namespace Microsoft.UI.Xaml
 		private readonly SerialDisposable _parentLoadedDisposable = new();
 
 		private (VisualState state, VisualTransition transition) _current;
-		private bool _pendingOnOwnerElementChanged;
 
 		public event VisualStateChangedEventHandler CurrentStateChanging;
 
@@ -174,23 +173,11 @@ namespace Microsoft.UI.Xaml
 
 		private void OnOwnerElementChanged()
 		{
-			if (this.GetParent() is IFrameworkElement { IsParsing: true })
-			{
-				_pendingOnOwnerElementChanged = true;
-				return;
-			}
-
 			ExecuteOnTriggers(t => t.OnOwnerElementChanged());
 		}
 
 		internal void OnOwnerElementLoaded(object sender, RoutedEventArgs args)
 		{
-			if (_pendingOnOwnerElementChanged)
-			{
-				_pendingOnOwnerElementChanged = false;
-				OnOwnerElementChanged();
-			}
-
 			ExecuteOnTriggers(t => t.OnOwnerElementLoaded());
 		}
 
@@ -529,11 +516,6 @@ namespace Microsoft.UI.Xaml
 
 		internal void RefreshStateTriggers(bool force = false)
 		{
-			if (this.GetParent() is IFrameworkElement { IsParsing: true })
-			{
-				return;
-			}
-
 			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
 			if (newState == oldState)
