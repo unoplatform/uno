@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage;
 using Windows.UI.Core;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Windows.UI.ViewManagement
 {
@@ -133,11 +134,8 @@ namespace Windows.UI.ViewManagement
 
 			if ((int)Build.VERSION.SdkInt >= 35)
 			{
-				if (_insetsListener is null)
-				{
-					_insetsListener = new InsetsListener(this);
-					ViewCompat.SetOnApplyWindowInsetsListener(decorView, _insetsListener);
-				}
+				_insetsListener = new InsetsListener(this);
+				ViewCompat.SetOnApplyWindowInsetsListener(decorView, _insetsListener);
 
 				WindowCompat.SetDecorFitsSystemWindows(activity.Window, false);
 
@@ -251,6 +249,25 @@ namespace Windows.UI.ViewManagement
 				view.SetBackgroundColor((Android.Graphics.Color)_statusBar._backgroundColor);
 				view.SetPadding(0, statusBarInsets.Top, 0, 0); // adjust padding to avoid overlap
 				return insets;
+			}
+		}
+
+		private void RemoveStatusBarBackgroundColor()
+		{
+			if (!TryGetActivityAndDecorView(out var activity, out var decorView))
+				return;
+
+			// Undo all the insets‐listener
+			if ((int)Build.VERSION.SdkInt >= 35)
+			{
+				ViewCompat.SetOnApplyWindowInsetsListener(decorView, null);
+				WindowCompat.SetDecorFitsSystemWindows(activity.Window, true);
+				ViewCompat.RequestApplyInsets(decorView);
+
+				decorView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+				decorView.SetPadding(0, 0, 0, 0);
+
+				_insetsListener = null;
 			}
 		}
 	}

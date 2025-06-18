@@ -91,12 +91,14 @@ namespace Windows.UI.ViewManagement
 			get => _backgroundColor;
 			set
 			{
-#if __ANDROID__
-				var themeColor = SystemThemeHelper.SystemTheme == SystemTheme.Dark ? Colors.Black : Colors.White;
-				_backgroundColor = value ?? themeColor;
-#elif __IOS__
+				if (value == null)
+				{
+					_backgroundColor = null;
+					RemoveStatusBarBackgroundColor();
+					return;
+				}
+
 				_backgroundColor = value;
-#endif
 				SetStatusBarBackgroundColor(_backgroundColor);
 			}
 		}
