@@ -94,7 +94,9 @@ namespace Windows.UI.ViewManagement
 				if (value == null)
 				{
 					_backgroundColor = null;
+#if __ANDROID__
 					RemoveStatusBarBackgroundColor();
+#endif
 					return;
 				}
 
