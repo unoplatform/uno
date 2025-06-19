@@ -56,8 +56,8 @@ internal class MacOSNativeOverlappedPresenter : INativeOverlappedPresenter
 	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMaximumHeight)
 	{
 		// For unset, macOS uses FLT_MAX.
-		double maxWidth = preferredMaximumHeight ?? float.MaxValue;
-		double maxHeight = preferredMaximumWidth ?? float.MaxValue;
+		double maxWidth = preferredMaximumWidth ?? float.MaxValue;
+		double maxHeight = preferredMaximumHeight ?? float.MaxValue;
 
 		NativeUno.uno_window_set_max_size(_handle, maxWidth, maxHeight);
 	}
