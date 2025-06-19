@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -28,7 +29,19 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewProvider
 {
-	public INativeWebView CreateNativeWebView(ContentPresenter contentPresenter) => new Win32NativeWebView(owner, contentPresenter);
+	public INativeWebView CreateNativeWebView(ContentPresenter contentPresenter)
+	{
+		try
+		{
+			Assembly.Load("Microsoft.Web.WebView2.Core");
+		}
+		catch (Exception)
+		{
+			typeof(Win32Host).LogError()?.Error($"Failed to load Microsoft.Web.WebView2.Core needed for WebView support. Make sure that WebView is included in the project's UnoFeatures. For more details, see https://aka.platform.uno/webview2 and https://aka.platform.uno/using-uno-sdk.");
+			return null!;
+		}
+		return new Win32NativeWebView(owner, contentPresenter);
+	}
 }
 
 internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
