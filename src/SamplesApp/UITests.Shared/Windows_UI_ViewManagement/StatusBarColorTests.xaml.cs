@@ -110,7 +110,7 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 		{
 #if __ANDROID__ || __IOS__
-			await StatusBar.GetForCurrentView().HideAsync()
+			await StatusBar.GetForCurrentView().HideAsync();
 #else
 			Console.WriteLine("HideStatusBar: Not supported on this platform");
 #endif
