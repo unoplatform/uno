@@ -99,7 +99,7 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 1. After you are done, feel free to close the Uno Platform Studio window. You can always access it again from your IDE menu by following the steps above.
 
-## Assigning your Hot Design License
+## Assigning an Uno Platform Studio Pro License
 
 1. Now that you have completed the sign-in process, you will eventually notice, when running your new Templated Uno App in the Debugger, a small Snowflake right beside the Hot Design Flame Icon if you have been under the beta list and your access ended, even though you might have received a Hot Design License already:
 
@@ -107,7 +107,7 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 1. So now enter your Settings again, just like before for logging in for Hot Reload
 
-  ![inactive-hd-image-before-license-assignment](./studio/Assets/inactive-hd-image-before-license-assignment.png)
+  ![inactive-hd-image-before-license-assignment](./studio/Assets/inactive-hd-image-before-license-assignment.png Assets/uno-settings-main.png)
 
    Or alternatively, login in to the Uno Platform Homepage:
 
