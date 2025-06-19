@@ -91,6 +91,12 @@ namespace Windows.UI.ViewManagement
 			get => _backgroundColor;
 			set
 			{
+#if __ANDROID__
+				if (value is null && _backgroundColor is null)
+				{
+					return;
+				}
+#endif
 				_backgroundColor = value;
 				SetStatusBarBackgroundColor(_backgroundColor);
 			}
