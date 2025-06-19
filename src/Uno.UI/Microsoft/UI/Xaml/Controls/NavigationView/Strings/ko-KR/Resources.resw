@@ -145,8 +145,12 @@
     <value>뒤로</value>
     <comment>ToolTip caption for the back button</comment>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>닫기</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
   <data name="NavigationOverflowButtonName" xml:space="preserve">
-    <value>자세히</value>
+    <value>기타</value>
     <comment>Automation name for the nav view more button when panel is on top</comment>
   </data>
   <data name="NavigationOverflowButtonText" xml:space="preserve">
@@ -154,7 +158,7 @@
     <comment>Text for the nav view more button when panel is on top</comment>
   </data>
   <data name="NavigationOverflowButtonToolTip" xml:space="preserve">
-    <value>자세히</value>
+    <value>기타</value>
     <comment>ToolTip caption for the nav view more button when panel is on top</comment>
   </data>
 </root>

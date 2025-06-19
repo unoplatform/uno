@@ -145,12 +145,16 @@
     <value>ย้อนกลับ</value>
     <comment>ToolTip caption for the back button</comment>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ปิด</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
   <data name="NavigationOverflowButtonName" xml:space="preserve">
     <value>เพิ่มเติม</value>
     <comment>Automation name for the nav view more button when panel is on top</comment>
   </data>
   <data name="NavigationOverflowButtonText" xml:space="preserve">
-    <value>ดูมากขึ้น</value>
+    <value>เพิ่มเติม</value>
     <comment>Text for the nav view more button when panel is on top</comment>
   </data>
   <data name="NavigationOverflowButtonToolTip" xml:space="preserve">
