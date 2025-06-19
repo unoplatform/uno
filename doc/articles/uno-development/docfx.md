@@ -135,11 +135,13 @@ The Uno documentation repository provides two PowerShell scripts to import and t
 This script imports various external repositories (e.g., uno.wasm.bootstrap, uno.themes, etc.) into the local `articles/external` directory. By default, fixed commits are used, but you can override them using parameters.
 
 **Parameters:**
+
 - `-branches <Hashtable>`: Overrides the default commit/branch for individual repositories. Example: `@{ "uno.wasm.bootstrap" = "main" }`
 - `-contributor_git_url <string>`: Optional. Git URL of a contributor fork, e.g., `https://github.com/ContributorUserName/`.
 - `-forks_to_import <string[]>`: Optional. List of repository names to import from the contributor fork.
 
 **Example usage:**
+
 ```powershell
 # Import all default repositories
 ./import_external_docs.ps1
@@ -153,9 +155,11 @@ This script imports various external repositories (e.g., uno.wasm.bootstrap, uno
 This script updates the tools (`docfx`, `dotnet-serve`), imports the external documentation sources (unless `-NoFetch` is specified), generates the documentation, and starts a local server.
 
 **Parameters:**
+
 - `-NoFetch` (Alias: `-NF`): Skips cloning/updating the external repositories. Useful for local testing if the sources are already present.
 
 **Example usage:**
+
 ```powershell
 # With import of external sources
 ./import_external_docs_test.ps1
