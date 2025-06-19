@@ -16,6 +16,7 @@ jobs:
 
     - name: CombinedConfiguration
       value: Release|Any CPU
+
     - name: CI_Build
       value: true
 
@@ -33,6 +34,7 @@ jobs:
 
     - name: UNO_UWP_BUILD
       value: ${{ parameters.UNO_UWP_BUILD }}
+
     - name: XAML_FLAVOR_BUILD
       value: ${{ parameters.XAML_FLAVOR_BUILD }}
 
@@ -137,7 +139,7 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
-      - task: PowerShell@2
+  - task: PowerShell@2
     displayName: Authenticode Sign Packages
     inputs:
       filePath: build/Sign-Package.ps1
