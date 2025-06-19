@@ -32,7 +32,7 @@ $uno_git_url = "https://github.com/unoplatform/"
 # If branches are passed, use them to override the default ones (ref, but not dest)
 
 if ($contributor_git_url -ne $null -and -not ($contributor_git_url -is [string])) {
-    throw "The parameter 'contributor_git_urls' must be a string or null."
+    throw "The parameter 'contributor_git_url' must be a string or null."
 }
 if ($forks_to_import -ne $null -and -not ($forks_to_import -is [string[]])) {
     throw "The parameter 'forks_to_import' must be a array of string or null."
