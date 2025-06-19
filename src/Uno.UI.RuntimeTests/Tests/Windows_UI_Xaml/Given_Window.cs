@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -360,6 +361,26 @@ public class Given_Window
 		window.Close();
 
 		await TestServices.WindowHelper.WaitFor(() => window.ClosedExecuted);
+	}
+
+	[ConditionalTest(IgnoredPlatforms = ~(RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11))]
+	[RunsOnUIThread]
+	public async Task When_FullScreen_After_Activate()
+	{
+		var window = new Window();
+		var content = new Border() { Width = 100, Height = 100 };
+		window.Content = content;
+		window.Activate();
+		window.AppWindow.SetPresenter(FullScreenPresenter.Create());
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		try
+		{
+			content.XamlRoot.Bounds.Width.Should().BeGreaterThan(900);
+		}
+		finally
+		{
+			window.Close();
+		}
 	}
 
 	[TestMethod]
