@@ -15,14 +15,8 @@ namespace UITests.Windows_UI_Xaml_Controls.WebView
 
 		public void OnGoClicked(object sender, RoutedEventArgs e)
 		{
-			if (Uri.TryCreate(UriInput.Text, UriKind.Absolute, out var uri))
-			{
-				Web.Navigate(uri);
-			}
-			else
-			{
-				throw new ArgumentException("The provided URL is not valid.", nameof(UriInput));
-			}
+			var uri = new Uri(UriInput.Text, UriKind.Absolute);
+			Web.Navigate(uri);
 		}
 	}
 }
