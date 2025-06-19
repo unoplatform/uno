@@ -17,19 +17,34 @@ using Windows.UI;
 using System.Reflection;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Markup;
+using System.Threading.Tasks;
 
 namespace UITests.Shared.Windows_UI_ViewManagement
 {
 	[SampleControlInfo("Windows.UI.ViewManagement", "StatusBar_Color", isManualTest: true, description: "Status bar can be styled at runtime for mobile targets")]
 	public sealed partial class StatusBarColorTests : UserControl
 	{
-		private StatusBar _statusBar;
-
 		public StatusBarColorTests()
 		{
-			_statusBar = StatusBar.GetForCurrentView();
-
 			this.InitializeComponent();
+		}
+
+		private void SetBackground(Color? color)
+		{
+#if __ANDROID__ || __IOS__
+			StatusBar.GetForCurrentView().BackgroundColor = color;
+#else
+			Console.WriteLine($"SetBackground: {color}; Not supported on the platform");
+		}
+
+		private void SetForeground(Color? color)
+		{
+#if __ANDROID__ || __IOS__
+			StatusBar.GetForCurrentView().ForegroundColor = color;
+
+#else
+			Console.WriteLine($"SetForeground: {color}; Not supported on the platform");
+#endif
 		}
 
 		private void SetBackgroundColor_Click(object sender, RoutedEventArgs e)
@@ -37,7 +52,7 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 			try
 			{
 				var colorString = StringToColor(ColorTextBox.Text);
-				_statusBar.BackgroundColor = colorString;
+				SetBackground(colorString);
 			}
 			catch (Exception ex)
 			{
@@ -50,7 +65,7 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 			try
 			{
 				var colorString = StringToColor(ColorTextBox.Text);
-				_statusBar.ForegroundColor = colorString;
+				SetForeground(colorString);
 			}
 			catch (Exception ex)
 			{
@@ -60,22 +75,44 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 
 		private void SetForegroundWhite_Click(object sender, RoutedEventArgs e)
 		{
-			_statusBar.ForegroundColor = Colors.White;
+			SetForeground(Colors.White);
 		}
 
 		private void SetForegroundBlack_Click(object sender, RoutedEventArgs e)
 		{
-			_statusBar.ForegroundColor = Colors.Black;
+			SetForeground(Colors.Black);
 		}
 
 		private void ResetBackgroundColor_Click(object sender, RoutedEventArgs e)
 		{
-			_statusBar.BackgroundColor = null;
+			SetBackground(null);
 		}
 
 		private void ResetForegroundColor_Click(object sender, RoutedEventArgs e)
 		{
-			_statusBar.ForegroundColor = null;
+			SetForeground(null);
+		}
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+		private async void ShowStatusBar_Click(object sender, RoutedEventArgs e)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+		{
+#if __ANDROID__ || __IOS__
+			await StatusBar.GetForCurrentView().ShowAsync();
+#else
+			Console.WriteLine("ShowStatusBar: Not supported on this platform");
+#endif
+		}
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+		private async void HideStatusBar_Click(object sender, RoutedEventArgs e)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+		{
+#if __ANDROID__ || __IOS__
+			await StatusBar.GetForCurrentView().HideAsync()
+#else
+			Console.WriteLine("HideStatusBar: Not supported on this platform");
+#endif
 		}
 
 		private static Color StringToColor(string hexColorString)

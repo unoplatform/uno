@@ -25,6 +25,8 @@
 				Reset Background
 			</Button>
 			<Button Click="ResetForegroundColor_Click">Reset Foreground</Button>
+			<Button Click="ShowStatusBar_Click">Force Show StatusBar</Button>
+			<Button Click="HideStatusBar_Click">Force Hide StatusBar</Button>
 		</StackPanel>
 
 		<TextBlock Text=""
