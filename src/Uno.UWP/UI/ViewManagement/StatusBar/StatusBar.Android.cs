@@ -109,7 +109,7 @@ namespace Windows.UI.ViewManagement
 			{
 				CoreDispatcher.CheckThreadAccess();
 				_isShown = visible;
-
+				UpdateSystemUiVisibility();
 				if (visible)
 				{
 					Showing?.Invoke(this, null);
