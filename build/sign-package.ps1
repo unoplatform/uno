@@ -26,5 +26,10 @@ foreach ($fileToSign in $filesToSign)
         --azure-key-vault-url "$env:VaultSignUrl" `
         --verbosity information
 
+    if ($LASTEXITCODE -ne 0) {
+		Write-Error "Failed to sign $fileToSign"
+		exit $LASTEXITCODE
+	}
+
     Write-Host "Finished signing $fileToSign"
 }
