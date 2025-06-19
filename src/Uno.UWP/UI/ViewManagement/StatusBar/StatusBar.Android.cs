@@ -125,12 +125,6 @@ namespace Windows.UI.ViewManagement
 
 		private void SetStatusBarBackgroundColor(Color? color)
 		{
-			if (color is null)
-			{
-				DisposeInsetsListener();
-				return;
-			}
-
 			if (!TryGetActivityAndDecorView(out var activity, out var decorView))
 			{
 				// The API was used too early in application lifecycle
@@ -139,6 +133,19 @@ namespace Windows.UI.ViewManagement
 
 			if ((int)Build.VERSION.SdkInt >= 35)
 			{
+				if (color is null)
+				{
+					ViewCompat.SetOnApplyWindowInsetsListener(decorView, null);
+					WindowCompat.SetDecorFitsSystemWindows(activity.Window, true);
+					ViewCompat.RequestApplyInsets(decorView);
+
+					decorView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+					decorView.SetPadding(0, 0, 0, 0);
+
+					_insetsListener = null;
+					return;
+				}
+
 				if (_insetsListener is null)
 				{
 					_insetsListener = new InsetsListener(this);
@@ -154,6 +161,7 @@ namespace Windows.UI.ViewManagement
 			}
 			else
 			{
+				color ??= Colors.Transparent;
 				activity?.Window?.SetStatusBarColor((Android.Graphics.Color)color);
 			}
 		}
@@ -257,27 +265,6 @@ namespace Windows.UI.ViewManagement
 				view.SetBackgroundColor((Android.Graphics.Color)_statusBar._backgroundColor);
 				view.SetPadding(0, statusBarInsets.Top, 0, 0); // adjust padding to avoid overlap
 				return insets;
-			}
-		}
-
-		private void DisposeInsetsListener()
-		{
-			if (!TryGetActivityAndDecorView(out var activity, out var decorView))
-			{
-				// The API was used too early in application lifecycle
-				return;
-			}
-
-			if ((int)Build.VERSION.SdkInt >= 35)
-			{
-				ViewCompat.SetOnApplyWindowInsetsListener(decorView, null);
-				WindowCompat.SetDecorFitsSystemWindows(activity.Window, true);
-				ViewCompat.RequestApplyInsets(decorView);
-
-				decorView.SetBackgroundColor(Android.Graphics.Color.Transparent);
-				decorView.SetPadding(0, 0, 0, 0);
-
-				_insetsListener = null;
 			}
 		}
 	}
