@@ -14,21 +14,27 @@ jobs:
   variables:
     - group: uno-codesign-vault
 
-  variables:
-    CombinedConfiguration: Release|Any CPU
-    CI_Build: true
+    - name: CombinedConfiguration
+      value: Release|Any CPU
+    - name: CI_Build
+      value: true
 
     # Disable trimming for packages creation
-    PublishTrimmed: false
+    - name: PublishTrimmed
+      value: false
 
     # Disable AOT for this job
-    RunAOTCompilation: false
+    - name: RunAOTCompilation
+      value: false
 
     # Use pre-defined local nuget cache for restore
-    NUGET_PACKAGES: 'C:\NugetPackages'
+    - name: NUGET_PACKAGES
+      value: 'C:\NugetPackages'
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
-    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+    - name: UNO_UWP_BUILD
+      value: ${{ parameters.UNO_UWP_BUILD }}
+    - name: XAML_FLAVOR_BUILD
+      value: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - checkout: self
