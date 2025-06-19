@@ -286,11 +286,24 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty ShowModeProperty { get; } =
-			Microsoft.UI.Xaml.DependencyProperty.Register(
-				nameof(ShowMode), typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowMode),
-				typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-				new Microsoft.UI.Xaml.FrameworkPropertyMetadata(FlyoutShowMode.Standard));
+		/// <summary>
+		/// Gets or sets a value that indicates how a flyout behaves when shown.
+		/// </summary>
+		public FlyoutShowMode ShowMode
+		{
+			get => (FlyoutShowMode)this.GetValue(ShowModeProperty);
+			set => this.SetValue(ShowModeProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the ShowMode dependency property.
+		/// </summary>
+		public static DependencyProperty ShowModeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(ShowMode),
+				typeof(FlyoutShowMode),
+				typeof(FlyoutBase),
+				new FrameworkPropertyMetadata(FlyoutShowMode.Standard));
 
 		private void OnAllowFocusOnInteractionChanged(bool oldValue, bool newValue) =>
 			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
@@ -464,6 +477,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				FlyoutPlacementMode.RightEdgeAlignedBottom => PopupPlacementMode.RightEdgeAlignedBottom,
 				_ => PopupPlacementMode.Auto,
 			};
+
+			ShowMode = showOptions?.ShowMode ?? FlyoutShowMode.Standard;
+
+			if (ShowMode == FlyoutShowMode.Auto)
+			{
+				ShowMode = FlyoutShowMode.Standard;
+			}
 
 			OnOpening();
 
