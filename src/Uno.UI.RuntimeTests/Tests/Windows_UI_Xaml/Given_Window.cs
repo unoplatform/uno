@@ -371,15 +371,24 @@ public class Given_Window
 		var content = new Border() { Width = 100, Height = 100 };
 		window.Content = content;
 		window.Activate();
-		window.AppWindow.SetPresenter(FullScreenPresenter.Create());
 		await TestServices.WindowHelper.WaitForLoaded(content);
+		var bounds1 = window.Bounds;
+		window.Close();
+		var window2 = new Window();
+		window2.Content = content;
+		window2.Activate();
+		window2.AppWindow.SetPresenter(FullScreenPresenter.Create());
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		await Task.Delay(TimeSpan.FromMilliseconds(1000));
 		try
 		{
-			content.XamlRoot.Bounds.Width.Should().BeGreaterThan(900);
+			var bounds2 = window2.Bounds;
+			bounds1.Width.Should().BeLessThan(bounds2.Width);
+			bounds1.Height.Should().BeLessThan(bounds2.Height);
 		}
 		finally
 		{
-			window.Close();
+			window2.Close();
 		}
 	}
 
