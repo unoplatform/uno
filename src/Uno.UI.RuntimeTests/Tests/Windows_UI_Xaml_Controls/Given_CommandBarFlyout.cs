@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -38,9 +36,10 @@ public class Given_CommandBarFlyout
 		await TestServices.WindowHelper.WaitForIdle();
 
 		var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
-		var commandBarPopup = popups.FirstOrDefault(p => p.Child.FindFirstChild<CommandBarFlyoutCommandBar>() is not null);
+
+		var commandBarPopup = popups.FirstOrDefault(p => VisualTreeUtils.FindVisualChildByType<CommandBarFlyoutCommandBar>(p.Child) is not null);
 		Assert.IsNotNull(commandBarPopup);
-		var commandBar = commandBarPopup?.Child.FindFirstChild<CommandBarFlyoutCommandBar>();
+		var commandBar = VisualTreeUtils.FindVisualChildByType<CommandBarFlyoutCommandBar>(commandBarPopup?.Child);
 		Assert.IsNotNull(commandBar);
 
 		bool wasClosed = false;
