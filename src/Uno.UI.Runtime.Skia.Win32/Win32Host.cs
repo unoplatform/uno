@@ -85,7 +85,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		}
 		catch (Exception)
 		{
-			typeof(Win32Host).LogError()?.Error($"Failed to load Microsoft.Web.WebView2.Core needed for WebView support. Make sure that WebView is included in the project's UnoFeatures. For more details, see https://platform.uno/docs/articles/controls/WebView.html.");
+			typeof(Win32Host).LogError()?.Error($"Failed to load Microsoft.Web.WebView2.Core needed for WebView support. Make sure that WebView is included in the project's UnoFeatures. For more details, see https://aka.platform.uno/webview2 and https://aka.platform.uno/using-uno-sdk.");
 		}
 
 		// We used to do this ApiExtensibility with ApiExtensionAttribute and a condition that makes it only run
