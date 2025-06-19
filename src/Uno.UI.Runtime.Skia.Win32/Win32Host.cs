@@ -78,7 +78,15 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new WindowsLauncherExtension(o));
 		ApiExtensibility.Register<DragDropManager>(typeof(IDragDropExtension), manager => new Win32DragDropExtension(manager));
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new Win32NativeElementHostingExtension(o));
-		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new Win32NativeWebViewProvider(o));
+		try
+		{
+			Assembly.Load("Microsoft.Web.WebView2.Core");
+			ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new Win32NativeWebViewProvider(o));
+		}
+		catch (Exception)
+		{
+			typeof(Win32Host).LogError()?.Error($"Failed to load Microsoft.Web.WebView2.Core needed for WebView support. For more details, see https://platform.uno/docs/articles/controls/WebView.html.");
+		}
 
 		// We used to do this ApiExtensibility with ApiExtensionAttribute and a condition that makes it only run
 		// on Windows, but this causes problem on Wpf because we're registering Win32's MPE implementation even on WPF.
