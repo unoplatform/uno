@@ -99,6 +99,28 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 1. After you are done, feel free to close the Uno Platform Studio window. You can always access it again from your IDE menu by following the steps above.
 
+## Assigning an Uno Platform Studio Pro License
+
+1. Now that you have completed the sign-in process, you will eventually notice, when running your new Templated Uno App in the Debugger, a small Snowflake right beside the Hot Design Flame Icon if you have been under the beta list and your access ended, even though you might have received a Hot Design License already:
+
+  ![cold-HD-image](./studio/Assets/cold-hd-after-beta-end.png)
+
+1. So now enter your Settings again, just like before for logging in for Hot Reload
+
+  ![inactive-hd-image-before-license-assignment](./studio/Assets/inactive-hd-image-before-license-assignment.png Assets/uno-settings-main.png)
+
+   Or alternatively, login in to the Uno Platform Homepage:
+
+  ![find-uno-account-button-on-homepage](./studio/Assets/find-uno-account-button-on-homepage.png)
+
+1. After logging in, click on the left NavigationBar on `Subscriptions` (1), enter your E-Mail Address or the one of the Person, you want to grant access to this License in the Textbox (2) and then on `Assign` (3), which will light up after entering a E-Mail Address beneath it.
+
+  ![active-subscription-image](./studio/Assets/active-subscription-image.png)
+
+1. You will get a Pop-Up, that is asking you to verify you want to assign this License to this E-Mail and telling you that it will send a notification email about the License Assignment to this persons E-Mail Address. Accept this.
+
+1. Now you can close the Browser again and return to your Settings in Visual Studio, click on `Refresh` as before, and you will be greeted with a nice blue Checkmark also on Hot Design letting you know, that you are ready to start your Hot Design Journey!
+
 ## Questions
 
 For general questions about Uno Platform, refer to the [general FAQ](xref:Uno.Development.FAQ) or see the [troubleshooting section](xref:Uno.UI.CommonIssues) for common issues and solutions.
