@@ -35,6 +35,7 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 			StatusBar.GetForCurrentView().BackgroundColor = color;
 #else
 			Console.WriteLine($"SetBackground: {color}; Not supported on the platform");
+#endif
 		}
 
 		private void SetForeground(Color? color)
