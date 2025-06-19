@@ -12,6 +12,9 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   variables:
+    - group: uno-codesign-vault
+
+  variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
@@ -128,31 +131,20 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
-  - task: CopyFiles@2
-    displayName: Copy generic build packages
-    condition: always()
-    inputs:
-      SourceFolder: $(Agent.WorkFolder)/
-      Contents: |
-        NugetPackages-Artifacts*/vslatest*/*.nupkg
-        NugetPackages-Artifacts*/vslatest*/*.vsix
-        !NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet*.nupkg
-      TargetFolder: $(build.artifactstagingdirectory)/vslatest
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: true
-
-  - task: PowerShell@2
+      - task: PowerShell@2
     displayName: Authenticode Sign Packages
     inputs:
       filePath: build/Sign-Package.ps1
     env:
-      SignClientUser: $(SignClientUser)
-      SignClientSecret: $(SignClientSecret)
+      VaultSignTenantId: $(VaultSignTenantId)
+      VaultSignClientId: $(VaultSignClientId)
+      VaultSignClientSecret: $(VaultSignClientSecret)
+      VaultSignCertificate: $(VaultSignCertificate)
+      VaultSignUrl: $(VaultSignUrl)
       SignPackageName: "Uno Platform"
       SignPackageDescription: "The Uno Platform"
       ArtifactDirectory: $(build.artifactstagingdirectory)/vslatest
-    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['VaultSignClientSecret'], '')), not(eq(variables['VaultSignClientId'], '')))
 
   - task: PublishBuildArtifacts@1
     condition: always()
