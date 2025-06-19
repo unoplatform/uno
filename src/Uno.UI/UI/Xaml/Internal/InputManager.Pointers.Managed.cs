@@ -216,9 +216,9 @@ internal partial class InputManager
 				// Set us as the current dispatching
 				if (_manager._current is not null)
 				{
-					if (this.Log().IsEnabled(LogLevel.Error))
+					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().Error($"A pointer is already being processed {_manager._current} while trying to raise {this}");
+						this.Log().Debug($"A pointer is already being processed {_manager._current} while trying to raise {this}");
 					}
 					Debug.Fail($"A pointer is already being processed {_manager._current} while trying to raise {this}.");
 				}
