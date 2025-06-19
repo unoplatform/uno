@@ -11,7 +11,7 @@ namespace Uno.UI.Runtime.Skia;
 internal partial class BrowserNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private readonly ContentPresenter _presenter;
-	private static string _lastSvgClipPath = "";
+	private static string? _lastSvgClipPath;
 
 	public BrowserNativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
