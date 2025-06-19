@@ -47,8 +47,8 @@ internal class MacOSNativeOverlappedPresenter : INativeOverlappedPresenter
 
 	public void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight)
 	{
-		double minWidth = preferredMinimumHeight ?? 0.0;
-		double minHeight = preferredMinimumWidth ?? 0.0;
+		double minWidth = preferredMinimumWidth ?? 0.0;
+		double minHeight = preferredMinimumHeight ?? 0.0;
 
 		NativeUno.uno_window_set_min_size(_handle, minWidth, minHeight);
 	}
