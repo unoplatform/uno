@@ -1,4 +1,5 @@
-﻿#nullable enable
+#if false
+#nullable enable
 
 //// Copyright (c) Microsoft Corporation. All rights reserved.
 //// Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -6,11 +7,10 @@ using System;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Uno.UI.WinRT.Extensions.UI.Popups;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class ContentDialog
 	{
@@ -207,27 +207,7 @@ namespace Microsoft.UI.Xaml.Controls
 			double xOffset = 0;
 			double yOffset = 0;
 
-			if (XamlRoot is null)
-			{
-				if (this is not MessageDialogContentDialog)
-				{
-					throw new InvalidOperationException(
-						"Trying to set position of the dialog before it is associated with a visual tree. " +
-						"This can happen if the dialog's XamlRoot was not set.");
-				}
-				else
-				{
-					throw new InvalidOperationException(
-						"Trying to set position of the dialog before it is associated with a visual tree. " +
-						"Make sure to use InitializeWithWindow before calling ShowAsync.");
-				}
-			}
-
-#if !HAS_UNO
-			var xamlRootSize = XamlRoot.Size;
-#else
-			var xamlRootSize = XamlRoot.VisualTree.TrueVisibleBounds.Size;
-#endif
+			var xamlRootSize = XamlRoot?.Size ?? Xaml.Window.Current.Bounds.Size;
 
 			var flowDirection = FlowDirection;
 
@@ -308,13 +288,14 @@ namespace Microsoft.UI.Xaml.Controls
 				//}
 
 				Rect getElementBounds(FrameworkElement element)
+
 				{
 					GeneralTransform transform = element.TransformToVisual(null);
 					var width = element.ActualWidth;
 					var height = element.ActualHeight;
 
 					return transform.TransformBounds(new Rect(0, 0, width, height));
-				}
+				};
 
 				Rect layoutRootBounds = getElementBounds(m_tpLayoutRootPart);
 
@@ -432,3 +413,4 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 	}
 }
+#endif
