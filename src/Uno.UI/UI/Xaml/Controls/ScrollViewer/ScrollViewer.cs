@@ -1669,7 +1669,7 @@ namespace Microsoft.UI.Xaml.Controls
 					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 				}
 
-				args.Handled |= key is VirtualKey.PageUp or VirtualKey.Down;
+				args.Handled |= key is VirtualKey.PageUp or VirtualKey.PageDown;
 			}
 
 			// This gets the delta that should be applied when arrow keys are pressed as a function of the
