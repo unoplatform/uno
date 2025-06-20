@@ -11,6 +11,9 @@ There are several options to publish your macOS application to your customers. T
 
 ## Create an app bundle (.app)
 
+> [!NOTE]
+> There is currently an [issue](https://github.com/unoplatform/uno/issues/20777) bundling satellite assemblies (e.g. localization resources) that prevents the creation of app bundles. Updating to Uno 6.0.TDB will **ignore** the satellite assemblies and allow you to create an app bundle. A complete fix, which will include the satellite assemblies, is planned for a later Uno release.
+
 The most basic app bundle can be created with:
 
 ```bash
