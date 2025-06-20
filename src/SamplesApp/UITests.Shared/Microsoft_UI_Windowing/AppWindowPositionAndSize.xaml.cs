@@ -159,4 +159,9 @@ internal class AppWindowPositionAndSizeViewModel : ViewModelBase
 		contentDialog.PrimaryButtonText = "OK";
 		await contentDialog.ShowAsync();
 	}
+	public override string ToString()
+	{
+		return $"AppWindowPositionAndSizeViewModel(Width={Width}, Height={Height}, X={X}, Y={Y})";
+	}
+
 }
