@@ -4,16 +4,13 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
-using Uno.UI.Composition;
 using Windows.Foundation;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
-using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -29,9 +26,9 @@ namespace Microsoft.UI.Xaml.Documents
 		// > Resets SkTextBlobBuilder to its initial empty state, allowing it to be reused to build a new set of runs.
 		// The reset to the initial state happens here:
 		// https://github.com/google/skia/blob/d29cc3fe182f6e8a8539004a6a4ee8251677a6fd/src/core/SkTextBlob.cpp#L652-L656
-		private static SKTextBlobBuilder _textBlobBuilder = new();
+		private static readonly SKTextBlobBuilder _textBlobBuilder = new();
 
-		private readonly List<RenderLine> _renderLines = new();
+		private List<RenderLine> _renderLines = new();
 
 		private bool _invalidationPending;
 		private double _lastMeasuredWidth;
@@ -124,21 +121,37 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				return _lastDesiredSize;
 			}
-
 			_invalidationPending = false;
 			_lineIntervalsValid = false;
-
 			_lastMeasuredWidth = availableSize.Width;
 
 			var parent = (IBlock)_collection.GetParent();
-			var wrapping = parent.TextWrapping;
-			int maxLines = parent.MaxLines;
+			_renderLines = ParseText(
+				availableSize,
+				defaultLineHeight,
+				parent.TextWrapping,
+				parent.MaxLines,
+				(float)parent.LineHeight,
+				parent.LineStackingStrategy,
+				out _lastDesiredSize);
+			return _lastDesiredSize;
+		}
 
-			float lineHeight = (float)parent.LineHeight;
-			var lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : parent.LineStackingStrategy;
+		/// <summary>
+		/// Measures a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
+		/// </summary>
+		internal List<RenderLine> ParseText(
+			Size availableSize,
+			float defaultLineHeight,
+			TextWrapping wrapping,
+			int maxLines,
+			float lineHeight,
+			LineStackingStrategy lineStackingStrategy,
+			out Size desiredSize)
+		{
+			lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : lineStackingStrategy;
 
-			_renderLines.Clear();
-
+			var renderLines = new List<RenderLine>();
 			List<RenderSegmentSpan> lineSegmentSpans = new();
 			bool previousLineWrapped = false;
 
@@ -175,7 +188,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 					BeginSegmentFitting:
 
-						if (maxLines > 0 && _renderLines.Count == maxLines)
+						if (maxLines > 0 && renderLines.Count == maxLines)
 						{
 							goto MaxLinesHit;
 						}
@@ -367,16 +380,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 		MaxLinesHit:
 
-			if (_renderLines.Count == 0)
-			{
-				_lastDesiredSize = new Size(0, defaultLineHeight);
-			}
-			else
-			{
-				_lastDesiredSize = new Size(widestLineWidth, height);
-			}
-
-			return _lastDesiredSize;
+			desiredSize = renderLines.Count == 0 ? new Size(0, defaultLineHeight) : new Size(widestLineWidth, height);
+			return renderLines;
 
 			// Local functions
 
@@ -400,8 +405,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 			void MoveToNextLine(bool currentLineWrapped)
 			{
-				var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, _renderLines.Count == 0, currentLineWrapped);
-				_renderLines.Add(renderLine);
+				var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped);
+				renderLines.Add(renderLine);
 				lineSegmentSpans.Clear();
 
 				if (x > widestLineWidth)
@@ -1092,10 +1097,27 @@ namespace Microsoft.UI.Xaml.Documents
 			return _lineIntervals;
 		}
 
-		internal float AverageLineHeight => _renderLines.Count > 0 ? _renderLines.Average(r => r.Height) : _lastDefaultLineHeight;
+		internal void GetHyperlinkPositions(IList<(int start, int, Hyperlink hyperlink)> hyperlinks)
+		{
+			var start = 0;
+			foreach (var inline in PreorderTree)
+			{
+				switch (inline)
+				{
+					case Hyperlink hyperlink:
+						hyperlinks.Add((start, start + hyperlink.GetText().Length, hyperlink));
+						break;
+					case Span:
+						break;
+					default: // Leaf node
+						start += inline.GetText().Length;
+						break;
+				}
+			}
+		}
 
 		// RenderSegmentSpan.FullGlyphsLength includes spaces, but not \r
-		private int GlyphsLengthWithCR(RenderSegmentSpan span)
+		private static int GlyphsLengthWithCR(RenderSegmentSpan span)
 			=> span.FullGlyphsLength + (SpanEndsInNewLine(span) ? span.Segment.LineBreakLength : 0);
 
 		private static bool SpanEndsInNewLine(RenderSegmentSpan segmentSpan)
