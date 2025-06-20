@@ -1,6 +1,7 @@
 name: "🐞 Bug Report"
 description: "Report a bug encountered while developing with Uno 🚨"
-labels: [kind/bug, triage/untriaged, difficulty/tbd]
+labels: [triage/untriaged, difficulty/tbd]
+type: "Bug"
 body:
   - type: textarea
     id: current-behavior
