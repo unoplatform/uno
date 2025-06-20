@@ -1139,26 +1139,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var previousHyperLinks = _hyperlinks.SelectToList(hyperlink => hyperlink.hyperlink);
-
 			_hyperlinkOver = null;
+			var previousHyperLinks = _hyperlinks.Select(hyperlink => hyperlink.hyperlink).ToHashSet();
 			_hyperlinks.Clear();
-
-			var start = 0;
-			foreach (var inline in Inlines.PreorderTree)
+			Inlines.GetHyperlinkPositions(_hyperlinks);
+			foreach (var hyperlinkTuple in _hyperlinks)
 			{
-				switch (inline)
-				{
-					case Hyperlink hyperlink:
-						previousHyperLinks.Remove(hyperlink);
-						_hyperlinks.Add((start, start + hyperlink.GetText().Length, hyperlink));
-						break;
-					case Span span:
-						break;
-					default: // Leaf node
-						start += inline.GetText().Length;
-						break;
-				}
+				previousHyperLinks.Remove(hyperlinkTuple.hyperlink);
 			}
 
 			// Make sure to clear the pressed state of removed hyperlinks
