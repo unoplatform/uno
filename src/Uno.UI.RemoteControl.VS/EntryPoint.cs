@@ -19,6 +19,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using Uno.UI.Helpers;
+using Uno.UI.RemoteControl.Messaging;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
@@ -557,8 +558,14 @@ public partial class EntryPoint : IDisposable
 
 	private async Task OnForceHotReloadRequestedAsync(ForceHotReloadIdeMessage request)
 	{
+		var success = false;
 		try
 		{
+			if (EventTracingProvider.Instance.IsEnabled())
+			{
+				EventTracingProvider.Instance.OnForceHotReloadStart(request.CorrelationId);
+			}
+
 			// Programmatically trigger the "Apply Code Changes" command in Visual Studio.
 			// Which will trigger the hot reload.
 			_dte.ExecuteCommand("Debug.ApplyCodeChanges");
@@ -567,6 +574,7 @@ public partial class EntryPoint : IDisposable
 			if (_ideChannelClient is not null)
 			{
 				await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
+				success = true;
 			}
 		}
 		catch (Exception e) when (_ideChannelClient is not null)
@@ -575,12 +583,25 @@ public partial class EntryPoint : IDisposable
 
 			throw;
 		}
+		finally
+		{
+			if (EventTracingProvider.Instance.IsEnabled())
+			{
+				EventTracingProvider.Instance.OnForceHotReloadStop(request.CorrelationId, success);
+			}
+		}
 	}
 
 	private async Task OnUpdateFileRequestedAsync(UpdateFileIdeMessage request)
 	{
+		var success = false;
 		try
 		{
+			if (EventTracingProvider.Instance.IsEnabled())
+			{
+				EventTracingProvider.Instance.OnUpdateFileStart(request.CorrelationId, request.FileFullName, request.ForceSaveOnDisk);
+			}
+
 			if (request.FileContent is { Length: > 0 } fileContent)
 			{
 				var filePath = request.FileFullName;
@@ -628,6 +649,8 @@ public partial class EntryPoint : IDisposable
 					await _ideChannelClient.SendToDevServerAsync(
 						new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
 				}
+
+				success = true;
 			}
 		}
 		catch (Exception e) when (_ideChannelClient is not null)
@@ -636,6 +659,13 @@ public partial class EntryPoint : IDisposable
 			await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Fail(e)), _ct.Token);
 
 			throw;
+		}
+		finally
+		{
+			if (EventTracingProvider.Instance.IsEnabled())
+			{
+				EventTracingProvider.Instance.OnUpdateFileStop(request.CorrelationId, success);
+			}
 		}
 	}
 
