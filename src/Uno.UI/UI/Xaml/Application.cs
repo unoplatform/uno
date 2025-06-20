@@ -38,13 +38,17 @@ using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Windows.AppLifecycle;
+
 #elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
+using Microsoft.Windows.AppLifecycle;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Microsoft.Windows.AppLifecycle;
 #endif
 
 namespace Microsoft.UI.Xaml
@@ -60,6 +64,9 @@ namespace Microsoft.UI.Xaml
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 		private ResourceDictionary _resources = new ResourceDictionary();
+
+		[ThreadStatic]
+		private static string _argumentsOverride;
 
 		static Application()
 		{
@@ -97,9 +104,21 @@ namespace Microsoft.UI.Xaml
 			ApplicationLanguages.ApplyCulture();
 
 			InitializePartial();
+
+			var appInstance = Windows.AppLifecycle.AppInstance.GetCurrent();
+			// Set default launch activation args
+			appInstance.SetDefaultLaunchActivatedArgs(
+				AppActivationArguments.CreateLaunch(
+					new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
 		}
 
 		internal bool InitializationComplete => _initializationComplete;
+
+		internal bool WasLaunched
+		{
+			get => CoreApplication.WasLaunched;
+			private set => CoreApplication.WasLaunched = value;
+		}
 
 		partial void InitializePartial();
 
@@ -148,6 +167,8 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal bool IsSuspended { get; set; }
+
+		internal static void SetArguments(string arguments) => _argumentsOverride = arguments;
 
 		private void InitializeSystemTheme()
 		{
@@ -275,9 +296,37 @@ namespace Microsoft.UI.Xaml
 
 		static partial void StartPartial(ApplicationInitializationCallback callback);
 
-		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
+		protected virtual void OnActivated(IActivatedEventArgs args) { }
 
-		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+
+		internal void InvokeOnActivated(IActivatedEventArgs args)
+		{
+#if __SKIA__
+			// For Skia targets, we always go through the proper OnLaunched activation path
+			InvokeOnLaunched(args);
+#else
+			Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(args));
+			OnActivated(args);
+			WasLaunched = true;
+#endif
+		}
+
+		internal void InvokeOnLaunched(IActivatedEventArgs activatedArgs)
+		{
+			if (activatedArgs is not null)
+			{
+				Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(activatedArgs));
+			}
+			// OnLaunched should execute only for full apps, not for individual islands.
+			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
+			{
+				var args = new Microsoft.UI.Xaml.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable());
+				OnLaunched(args);
+			}
+
+			WasLaunched = true;
+		}
 
 		internal void InitializationCompleted()
 		{
@@ -550,7 +599,6 @@ namespace Microsoft.UI.Xaml
 		[JSImport("globalThis.eval")]
 		private static partial string Eval(string js);
 
-#if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
 			if (!string.IsNullOrEmpty(_argumentsOverride))
@@ -592,6 +640,5 @@ namespace Microsoft.UI.Xaml
 				return rawCmd.TrimStart();
 			}
 		}
-#endif
 	}
 }
