@@ -1635,14 +1635,22 @@ namespace Microsoft.UI.Xaml.Controls
 			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
 			var oldVerticalOffset = Presenter.TargetVerticalOffset;
 
+			// Check whether scrolling is allowed and focus can be moved.
+			var (shouldScroll, shouldMoveFocus) = HandleKeyDownForXYNavigation(args);
+
+			if (!shouldScroll)
+			{
+				return;
+			}
+
 			var newOffset = key switch
 			{
-				VirtualKey.Up => oldVerticalOffset - GetDelta(ActualHeight),
-				VirtualKey.Down => oldVerticalOffset + GetDelta(ActualHeight),
-				VirtualKey.Left => oldHorizontalOffset - GetDelta(ActualWidth),
-				VirtualKey.Right => oldHorizontalOffset + GetDelta(ActualWidth),
-				VirtualKey.PageUp => oldVerticalOffset - ActualHeight,
-				VirtualKey.PageDown => oldVerticalOffset + ActualHeight,
+				VirtualKey.Up => Math.Max(0, oldVerticalOffset - GetDelta(ActualHeight)),
+				VirtualKey.Down => Math.Min(oldVerticalOffset + GetDelta(ActualHeight), ScrollableHeight),
+				VirtualKey.Left => Math.Max(0, oldHorizontalOffset - GetDelta(ActualWidth)),
+				VirtualKey.Right => Math.Min(oldHorizontalOffset + GetDelta(ActualWidth), ScrollableWidth),
+				VirtualKey.PageUp => Math.Max(0, oldVerticalOffset - ActualHeight),
+				VirtualKey.PageDown => Math.Min(oldVerticalOffset + ActualHeight, ScrollableHeight),
 				VirtualKey.Home => 0,
 				VirtualKey.End => ScrollableHeight,
 				_ => double.E
@@ -1670,6 +1678,12 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				args.Handled |= key is VirtualKey.PageUp or VirtualKey.PageDown;
+			}
+
+			if (args.Handled && shouldMoveFocus)
+			{
+				// Continue bubbling the event so that the focus can be moved.
+				args.Handled = false;
 			}
 
 			// This gets the delta that should be applied when arrow keys are pressed as a function of the
