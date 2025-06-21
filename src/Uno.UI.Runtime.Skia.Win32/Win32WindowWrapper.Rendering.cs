@@ -12,17 +12,18 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private int _renderCount;
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 
+	private int _renderCount;
 	private Size? _lastSize;
 	private SKSurface? _surface;
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
+	private bool _rendering;
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
 	private void Paint()
 	{
-		if (_rendererDisposed)
+		if (_rendererDisposed || _rendering)
 		{
 			return;
 		}
@@ -70,6 +71,10 @@ internal partial class Win32WindowWrapper
 			if (XamlRoot.VisualTree.RootElement.Visual is { } rootVisual)
 			{
 				var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
+				// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
+				// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
+				// Paint() becoming reentrant which can cause crashes.
+				_rendering = true;
 				try
 				{
 					rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
@@ -79,6 +84,7 @@ internal partial class Win32WindowWrapper
 				}
 				finally
 				{
+					_rendering = false;
 					rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
 				}
 			}
