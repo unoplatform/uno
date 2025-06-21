@@ -14,8 +14,12 @@ public enum UnoFeature
 	[UnoArea(UnoArea.Core)]
 	Foldable,
 
+	// NOTE: Deprecated in favor of MediaPlayerElement, but kept for compatibility
 	[UnoArea(UnoArea.Core)]
 	MediaElement,
+
+	[UnoArea(UnoArea.Core)]
+	MediaPlayerElement,
 
 	[UnoArea(UnoArea.Core)]
 	WebView,
