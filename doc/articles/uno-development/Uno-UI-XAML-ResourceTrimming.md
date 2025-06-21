@@ -4,7 +4,7 @@ uid: Uno.Contributing.XamlResourceTrimming
 
 # XAML Resource Trimming
 
-This document provides technical details about the [XAML Resource trimming phase](../features/resources-trimming.md).
+This document provides technical details about the [XAML Resource trimming phase](xref:Uno.Features.ResourcesTrimming).
 
 ## Technical Details
 
@@ -35,7 +35,7 @@ As of Uno 3.9, the Uno.UI WebAssembly assembly is 7.5MB, trimmed down to 3.1MB f
 
 ## Using the `AdditionalLinkerHintAttribute` attribute
 
-In some scenarios (e.g. ExpandoObject), it may be needed to generate linker hints for non-DependencyObject types.
+In some scenarios (e.g. [ExpandoObject](https://learn.microsoft.com/en-us/dotnet/api/system.dynamic.expandoobject?view=net-9.0)), it may be needed to generate linker hints for non-DependencyObject types.
 
 To get a `__LinkerHints` property for an additional type, add the following in AssemblyInfo.cs:
 
