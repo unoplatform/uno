@@ -22,6 +22,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+#pragma warning disable MSTEST0042 // Do not duplicate 'DataRow' attributes - TODO: Validate if the warning is correct.
 		[DataRow(1.5d, 1, 2, "1.50")]
 		[DataRow(1.567d, 1, 2, "1.567")]
 		[DataRow(1.5602d, 1, 2, "1.5602")]
@@ -33,6 +34,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(-0d, 2, 0, "00")]
 		[DataRow(0d, 3, 1, "000.0")]
 		[DataRow(-0d, 3, 1, "000.0")]
+#pragma warning restore MSTEST0042 // Do not duplicate 'DataRow' attributes
 		public void When_FormatDouble(double value, int integerDigits, int fractionDigits, string expected)
 		{
 			var sut = MakeFormatter();
