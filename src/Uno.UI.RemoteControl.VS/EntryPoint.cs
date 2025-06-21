@@ -649,7 +649,7 @@ public partial class EntryPoint : IDisposable
 			// (and we prevent a rebuild of the application).
 			try
 			{
-				tcp = new TcpListener(IPAddress.Loopback, port);
+				tcp = new TcpListener(IPAddress.Any, port);
 				tcp.Start();
 				tcp.Stop();
 
@@ -661,7 +661,7 @@ public partial class EntryPoint : IDisposable
 			}
 		}
 
-		tcp = new TcpListener(IPAddress.Loopback, 0);
+		tcp = new TcpListener(IPAddress.Any, 0);
 		tcp.Start();
 		port = ((IPEndPoint)tcp.LocalEndpoint).Port;
 		tcp.Stop();
