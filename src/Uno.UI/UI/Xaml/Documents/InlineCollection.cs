@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Documents
 		/// when read using GetParent(). The returned value here is up to date only when this is the
 		/// InlineCollection of a TextBlock.
 		/// </remarks>
-		private Inline[] PreorderTree
+		internal Inline[] PreorderTree
 		{
 			get
 			{

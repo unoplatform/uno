@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -32,6 +33,20 @@ namespace Microsoft.UI.Xaml.Controls
 		private Size _lastInlinesArrangeWithPadding;
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
+
+		private bool _renderSelection;
+		private bool _renderCaret;
+
+		internal ParsedText ParsedText { get; private set; } = ParsedText.Empty;
+
+		internal event Action? DrawingStarted;
+		internal event Action<(Rect rect, SKCanvas canvas)>? SelectionFound;
+		internal event Action? DrawingFinished;
+		/// <summary>
+		/// The second argument is whether this caret is the one at the start (false) or the end (true)
+		/// of the selection.
+		/// </summary>
+		internal event Action<(Rect rect, SKCanvas canvas, bool endCaret)>? CaretFound;
 
 		public TextBlock()
 		{
@@ -62,8 +77,18 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
-			var defaultLineHeight = GetComputedLineHeight();
-			var desiredSize = Inlines.Measure(availableSizeWithoutPadding, defaultLineHeight);
+			ParsedText = ParsedText.ParseText(
+				availableSizeWithoutPadding,
+				Inlines.PreorderTree,
+				GetComputedLineHeight(),
+				TextWrapping,
+				MaxLines,
+				(float)LineHeight,
+				LineStackingStrategy,
+				TextAlignment,
+				TextWrapping,
+				FlowDirection,
+				out var desiredSize);
 
 			desiredSize = desiredSize.Add(padding);
 
@@ -101,20 +126,25 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateSelectionRendering();
 		}
 
-		private void UpdateSelectionRendering()
-		{
-			if (_inlines is { })
-			{
-				_inlines.RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
-			}
-		}
+		private void UpdateSelectionRendering() => RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			Visual.Compositor.InvalidateRender(Visual);
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
-			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
-			Visual.Compositor.InvalidateRender(Visual);
+			ParsedText = ParsedText.ParseText(
+				availableSizeWithoutPadding,
+				Inlines.PreorderTree,
+				GetComputedLineHeight(),
+				TextWrapping,
+				MaxLines,
+				(float)LineHeight,
+				LineStackingStrategy,
+				TextAlignment,
+				TextWrapping,
+				FlowDirection,
+				out var arrangedSize);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 
 			var result = base.ArrangeOverride(finalSize);
@@ -123,13 +153,46 @@ namespace Microsoft.UI.Xaml.Controls
 			return result;
 		}
 
+		internal bool RenderSelection
+		{
+			set
+			{
+				if (_renderSelection != value)
+				{
+					_renderSelection = value;
+					InvalidateInlineAndRequireRepaint();
+				}
+			}
+		}
+
+		internal bool RenderCaret
+		{
+			set
+			{
+				if (_renderCaret != value)
+				{
+					_renderCaret = value;
+					InvalidateInlineAndRequireRepaint();
+				}
+			}
+		}
+
+		internal void Draw(in Visual.PaintingSession session)
+		{
+			session.Canvas.Save();
+			session.Canvas.Translate((float)owner.Padding.Left, (float)owner.Padding.Top);
+			ParsedText.Draw(session, _renderCaret, _renderSelection, Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end),
+				CaretThickness, DrawingStarted, DrawingFinished, SelectionFound, CaretFound);
+			session.Canvas.Restore();
+		}
+
 		/// <summary>
 		/// Gets the line height of the TextBlock either
 		/// based on the LineHeight property or the default
 		/// font line height.
 		/// </summary>
 		/// <returns>Computed line height</returns>
-		internal float GetComputedLineHeight()
+		private float GetComputedLineHeight()
 		{
 			var lineHeight = LineHeight;
 			if (!lineHeight.IsNaN() && lineHeight > 0)
@@ -148,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => Inlines.GetIndexAt(point, false, extended);
+		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => ParsedText.GetIndexAt(point, false, extended);
 
 		// Invalidate Inlines measure and repaint text when any IBlock properties used during measuring change:
 
@@ -172,7 +235,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnSelectionChanged()
 		{
-			Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
+			InvalidateInlineAndRequireRepaint();
 
 			var start = Math.Min(Selection.start, Selection.end);
 			var end = Math.Max(Selection.start, Selection.end);
@@ -183,7 +246,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void SetupInlines()
 		{
-			_inlines.SelectionFound += t =>
+			SelectionFound += t =>
 			{
 				var canvas = t.canvas;
 				var rect = t.rect;
@@ -198,7 +261,7 @@ namespace Microsoft.UI.Xaml.Controls
 				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
 			};
 
-			_inlines.RenderSelection = IsTextSelectionEnabled;
+			RenderSelection = IsTextSelectionEnabled;
 		}
 
 		private void OnKeyDown(KeyRoutedEventArgs args)

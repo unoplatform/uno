@@ -47,7 +47,7 @@ public partial class TextBox
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
-			var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point.Position, false, true));
+			var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point.Position, false, true));
 			if (_mouseMultiTapChunk is { } mtc)
 			{
 				(int start, int length) chunk;
@@ -90,7 +90,7 @@ public partial class TextBox
 		var displayBlock = TextBoxView.DisplayBlock;
 		var position = e.GetPosition(displayBlock);
 
-		var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(position, true, true));
+		var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(position, true, true));
 		if (index < SelectionStart || index >= SelectionStart + SelectionLength)
 		{
 			// Right tapping should move the caret to the current pointer location if outside the selection
@@ -131,7 +131,7 @@ public partial class TextBox
 		else if (!currentPoint.Properties.IsRightButtonPressed) // Mouse (a pen is considered a mouse for now)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
-			var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
+			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
 
 			if (currentPoint.Properties.IsLeftButtonPressed
 				&& _lastPointerDown.point is { } p
@@ -200,7 +200,7 @@ public partial class TextBox
 
 	private void TouchTap(Point point, bool wasFocused)
 	{
-		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, true, true));
+		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true));
 
 		var tappedChunk = FindChunkAt(index, true);
 
@@ -219,8 +219,8 @@ public partial class TextBox
 			var lastNonSpanCharIndex = Text[tappedChunk.start..(tappedChunk.start + tappedChunk.length)].IndexOf(' ');
 			var rightEndIndex = lastNonSpanCharIndex == -1 ? tappedChunk.start + tappedChunk.length - 1 : tappedChunk.start + lastNonSpanCharIndex;
 			var leftEndIndex = tappedChunk.start;
-			var leftEnd = DisplayBlockInlines.GetRectForIndex(leftEndIndex);
-			var rightEnd = DisplayBlockInlines.GetRectForIndex(rightEndIndex);
+			var leftEnd = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(leftEndIndex);
+			var rightEnd = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(rightEndIndex);
 
 			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex + 1;
 
@@ -269,7 +269,7 @@ public partial class TextBox
 
 		var displayBlock = TextBoxView.DisplayBlock;
 		var point = args.GetCurrentPoint(displayBlock).Position - new Point(0, (caret.Height - 16) / 2);
-		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, false, true));
+		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, false, true));
 
 		if (_selection.length == 0)
 		{
