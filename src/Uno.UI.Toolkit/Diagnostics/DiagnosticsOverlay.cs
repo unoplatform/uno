@@ -83,6 +83,14 @@ public sealed partial class DiagnosticsOverlay : Control
 		};
 	}
 
+	public DiagnosticsOverlay()
+	{
+		// This constructor is added here because the WinAppSDK XamlReader requires a parameterless constructor for any TargetType.
+		// > Failed to create a 'System.Type' from the text 'local:DiagnosticsOverlay'. [Line: 9 Position: 3]"
+
+		throw new Exception("This constructor should not be used, use DiagnosticsOverlay.Get(XamlRoot) instead.");
+	}
+
 	private DiagnosticsOverlay(XamlRoot root)
 	{
 		_root = root;
