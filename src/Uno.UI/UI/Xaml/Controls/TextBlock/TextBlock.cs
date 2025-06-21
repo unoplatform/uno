@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// end can be less than or equal to start when the selection starts ahead and then goes back
 		// see the selection in TextBox.skia.cs for more info
-		private Range Selection
+		internal Range Selection
 		{
 			get => _selection;
 			set
@@ -1285,13 +1285,6 @@ namespace Microsoft.UI.Xaml.Controls
 			/*IsEnabled() &&*/ (IsTextSelectionEnabled || IsTabStop || FocusProperties.GetCaretBrowsingModeEnable()) &&
 			AreAllAncestorsVisible();
 
-		private record struct Range(int start, int end)
-		{
-			public Range((int start, int end) tuple) : this(tuple.start, tuple.end)
-			{
-			}
-		}
-
 		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
 		private bool IsTextTrimmable =>
 			TextTrimming != TextTrimming.None ||
@@ -1303,5 +1296,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
 		// There is a special handling for Foreground specifically there.
 		void IThemeChangeAware.OnThemeChanged() => OnForegroundChanged();
+
+		internal record struct Range(int start, int end);
 	}
 }

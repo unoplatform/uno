@@ -22,6 +22,7 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.Foundation;
@@ -252,15 +253,13 @@ public partial class TextBox
 						caret.PointerCaptureLost += ClearCaretPointerState;
 					}
 
-					var inlines = displayBlock.Inlines;
-
-					inlines.DrawingStarted += () =>
+					displayBlock.DrawingStarted += () =>
 					{
 						_lastStartCaretRect = null;
 						_lastEndCaretRect = null;
 					};
 
-					inlines.DrawingFinished += () =>
+					displayBlock.DrawingFinished += () =>
 					{
 						// Only invalidate the carets after drawing is complete
 						// to avoid modifying the children visuals while they are being enumerated.
@@ -270,7 +269,7 @@ public partial class TextBox
 						}, NativeDispatcherPriority.Normal);
 					};
 
-					inlines.CaretFound += args =>
+					displayBlock.CaretFound += args =>
 					{
 						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
 							CaretMode == CaretDisplayMode.ThumblessCaretShowing)
@@ -366,7 +365,7 @@ public partial class TextBox
 		{
 			// SelectInternal sets _selectionEndsAtTheStart and _caretXOffset on its own
 			_selection.selectionEndsAtTheStart = false;
-			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
+			_caretXOffset = (float)(TextBoxView?.DisplayBlock.ParsedText.GetRectForIndex(start + length).Left ?? 0);
 		}
 
 		var selection = (start, length, _selection.selectionEndsAtTheStart);
@@ -417,17 +416,18 @@ public partial class TextBox
 
 	private void UpdateDisplaySelection()
 	{
-		if (_isSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
+		if (_isSkiaTextBox && TextBoxView?.DisplayBlock is { } displayBlock)
 		{
-			inlines.Selection = (SelectionStart, SelectionStart + SelectionLength);
+			displayBlock.Selection = new TextBlock.Range(SelectionStart, SelectionStart + SelectionLength);
 			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
-			inlines.RenderSelection = isFocused;
+			displayBlock.RenderSelection = isFocused;
 			var caretShowing = (CaretMode is CaretDisplayMode.ThumblessCaretShowing && _selection.length == 0) || CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-			inlines.RenderCaret =
+			displayBlock.RenderCaret =
 				isFocused &&
 				caretShowing &&
 				(CaretMode is CaretDisplayMode.CaretWithThumbsBothEndsShowing || !IsReadOnly) && // If read only, we only show carets on touch.
 				!FeatureConfiguration.TextBox.HideCaret;
+			((IBlock)TextBoxView.DisplayBlock).Invalidate(false);
 		}
 	}
 
@@ -451,12 +451,12 @@ public partial class TextBox
 			var (selectionStart, selectionEnd) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, _selection.start) : (_selection.start, _selection.start + _selection.length);
 			var index = putSelectionEndInVisibleViewport ? selectionEnd : selectionStart;
 
-			var caretRect = DisplayBlockInlines.GetRectForIndex(index) with { Width = InlineCollection.CaretThickness };
+			var caretRect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(index) with { Width = TextBlock.CaretThickness };
 
 			// Because the caret is only a single-pixel wide, and because screens can't draw in fractions of a pixel,
 			// we need to add Math.Ceiling to ensure that the caret is (fully) included in the visible viewport. This
 			// Math.Ceiling sometimes horizontal overscrolling, but it's more acceptable than sometimes not showing the caret.
-			var newHorizontalOffset = horizontalOffset.AtMost(caretRect.Left).AtLeast(Math.Ceiling(caretRect.Right - sv.ViewportWidth + InlineCollection.CaretThickness));
+			var newHorizontalOffset = horizontalOffset.AtMost(caretRect.Left).AtLeast(Math.Ceiling(caretRect.Right - sv.ViewportWidth + TextBlock.CaretThickness));
 
 			var newVerticalOffset = verticalOffset.AtMost(caretRect.Top).AtLeast(caretRect.Bottom - sv.ViewportHeight);
 
@@ -989,8 +989,8 @@ public partial class TextBox
 		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
 		{
 			_caretXOffset = selectionLength >= 0 ?
-				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Left :
-				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Right;
+				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
+				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
 		}
 		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
 		_inSelectInternal = false;
@@ -1022,7 +1022,7 @@ public partial class TextBox
 			return (0, 0);
 		}
 
-		var lines = DisplayBlockInlines.GetLineIntervals();
+		var lines = TextBoxView.DisplayBlock.ParsedText.GetLineIntervals();
 		global::System.Diagnostics.CI.Assert(lines.Count > 0);
 
 		var end = selectionStart + selectionLength;
@@ -1052,7 +1052,7 @@ public partial class TextBox
 		}
 		var startLine = GetLineAt(text, selectionStart, 0);
 		var endLine = GetLineAt(text, selectionStart + selectionLength, 0);
-		var lines = DisplayBlockInlines.GetLineIntervals();
+		var lines = TextBoxView.DisplayBlock.ParsedText.GetLineIntervals();
 		var startLineIndex = lines.IndexOf(startLine);
 		var endLineIndex = lines.IndexOf(endLine);
 
@@ -1073,10 +1073,10 @@ public partial class TextBox
 			selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1) :
 			selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
 
-		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
+		var rect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength);
 		var x = _caretXOffset;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
+		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(new Point(x, y), true, true));
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length

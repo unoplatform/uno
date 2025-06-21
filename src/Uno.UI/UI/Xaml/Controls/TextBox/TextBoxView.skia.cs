@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DisplayBlock = new TextBlock
 			{
-				MinWidth = InlineCollection.CaretThickness,
+				MinWidth = TextBlock.CaretThickness,
 				Style = null, // Prevent inheriting TextBlock styles
 				IsTextBoxDisplay = true,
 			};
