@@ -845,7 +845,7 @@ partial class CommandBarFlyoutCommandBar
 		}
 	}
 
-	protected override void UpdateTemplateSettings()
+	private new void UpdateTemplateSettings()
 	{
 		//COMMANDBARFLYOUT_TRACE_INFO(this, TRACE_MSG_METH_INT, METH_NAME, this, IsOpen);
 
