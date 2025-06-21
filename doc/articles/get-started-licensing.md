@@ -84,20 +84,30 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 1. In the Uno Platform Studio window, click on **Sign in**. You’ll be redirected to your browser to enter your Uno Platform account credentials.
 
-   ![Uno Platform Settings Welcome](Assets/uno-settings-welcome.png)
+   ![Uno Platform Studio window Welcome](Assets/uno-studio-welcome.png)
 
 1. Once signed in, you’ll see a confirmation of your account along with your license details.
 
    You can then use the **Hot Reload** feature to speed up your workflow and test changes in real-time. For more information, refer to the [Hot Reload documentation](xref:Uno.Features.HotReload).
 
-   ![Uno Platform Settings signed in](Assets/uno-settings-main.png)
+   ![Uno Platform Studio window signed in](Assets/uno-studio-main.png)
 
    > [!TIP]
    > You can also access a menu where you can select **My Account** to view your account details, **Refresh** the account changes, and **Sign out**.
    >
-   > ![Uno Platform Settings Menu](Assets/uno-settings-menu.png)
+   > ![Uno Platform Studio window Menu](Assets/uno-studio-menu.png)
+
+1. If you're using a `Uno Platform Studio Pro` license, your Uno Platform Studio window will display additional tools. You can see the comparison below:
+
+   ![Uno Platform Studio window Community vs Pro](Assets/uno-studio-main-com-vs-pro.png)
 
 1. After you are done, feel free to close the Uno Platform Studio window. You can always access it again from your IDE menu by following the steps above.
+
+## Compare Uno Platform Studio Community vs Pro
+
+Discover the additional features available with `Uno Platform Studio Pro`, including Hot Design® - our next-generation visual designer for cross-platform .NET applications.
+
+Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.uno/select-subscription/) to see what you gain by upgrading.
 
 ## Assigning an Uno Platform Studio Pro License
 
