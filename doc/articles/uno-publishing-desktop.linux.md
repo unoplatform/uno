@@ -45,6 +45,8 @@ If you wish to customize your snap manifest, you will need to pass the following
 - `SnapManifest`
 - `DesktopFile`
 
+You may use absolute or relative (to the `.csproj`) paths.
+
 The `.desktop` filename MUST conform to the [Desktop File](https://specifications.freedesktop.org/desktop-entry-spec/latest) spec.
 
 If you wish, you can generate a default snap manifest and desktop file by running the command above, then tweak them.
