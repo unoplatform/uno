@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Threading;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -8,6 +9,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
@@ -121,9 +123,18 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
-		SetFullScreenMode(true);
+		if (WasShown)
+		{
+			SetFullScreenMode(true);
+		}
 
-		return Disposable.Create(() => SetFullScreenMode(false));
+		return Disposable.Create(() =>
+		{
+			if (WasShown)
+			{
+				SetFullScreenMode(false);
+			}
+		});
 	}
 
 	public override void Move(PointInt32 position)
@@ -193,10 +204,14 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	internal void SetFullScreenMode(bool on)
 	{
-		X11Helper.SetWMHints(
-			_host.RootX11Window,
-			X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE),
-			on ? 1 : 0,
-			X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN));
+		if (WasShown)
+		{
+			X11Helper.SetWMHints(
+				_host.RootX11Window,
+				X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE),
+				on ? 1 : 0,
+				X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN));
+			_ = XLib.XSync(_host.RootX11Window.Display, false);
+		}
 	}
 }
