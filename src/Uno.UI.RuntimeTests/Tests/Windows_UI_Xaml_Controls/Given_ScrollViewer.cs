@@ -6,23 +6,22 @@ using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Hosting;
-using MUXControlsTestApp.Utilities;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.Extensions;
 
 using static Private.Infrastructure.TestServices;
@@ -197,6 +196,151 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(verticalDelta, SUT.VerticalOffset);
 			Assert.AreEqual(horizontalDelta, SUT.HorizontalOffset);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Key_Press_Cant_Scroll()
+		{
+			var navigationView = new NavigationView
+			{
+				Width = 200,
+				Height = 400,
+				IsPaneOpen = true,
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+			};
+
+			var firstItem = new NavigationViewItem
+			{
+				Content = "First Item",
+			};
+			var secondItem = new NavigationViewItem
+			{
+				Content = "Second Item",
+			};
+			navigationView.MenuItems.Add(firstItem);
+			navigationView.MenuItems.Add(secondItem);
+
+			TestServices.WindowHelper.WindowContent = navigationView;
+			await TestServices.WindowHelper.WaitForLoaded(navigationView);
+
+			firstItem.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await TestServices.KeyboardHelper.Down(firstItem);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var focused = FocusManager.GetFocusedElement(navigationView.XamlRoot);
+			Assert.AreEqual(secondItem, focused);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Key_Press_Can_Scroll()
+		{
+			var navigationView = new NavigationView
+			{
+				Width = 200,
+				Height = 400,
+				IsPaneOpen = true,
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+			};
+
+			var firstItem = new NavigationViewItem
+			{
+				Content = "First Item",
+			};
+			var secondItem = new NavigationViewItem
+			{
+				Content = "Second Item",
+			};
+			navigationView.MenuItems.Add(firstItem);
+			navigationView.MenuItems.Add(secondItem);
+
+			for (int i = 0; i < 100; i++)
+			{
+				navigationView.MenuItems.Add(new NavigationViewItem() { Content = $"Item {i + 3}" });
+			}
+
+			TestServices.WindowHelper.WindowContent = navigationView;
+			await TestServices.WindowHelper.WaitForLoaded(navigationView);
+
+			var scrollViewer = VisualTreeUtils.FindVisualParentByType<ScrollViewer>(secondItem);
+			Assert.IsNotNull(scrollViewer, "ScrollViewer should be present in the NavigationView");
+
+			Assert.AreEqual(0, scrollViewer.VerticalOffset);
+
+			firstItem.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await TestServices.KeyboardHelper.Down(firstItem);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var focused = FocusManager.GetFocusedElement(navigationView.XamlRoot);
+			Assert.AreEqual(secondItem, focused);
+
+			Assert.IsFalse(scrollViewer.VerticalOffset > 0, "ScrollViewer should not have scrolled down when focusing the second item");
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Key_Press_Must_Scroll()
+		{
+			var navigationView = new NavigationView
+			{
+				Width = 200,
+				Height = 400,
+				IsPaneOpen = true,
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+			};
+
+			var firstItem = new NavigationViewItem
+			{
+				Content = "First Item",
+			};
+			var secondItem = new NavigationViewItem
+			{
+				Content = "Second Item",
+			};
+			navigationView.MenuItems.Add(firstItem);
+			navigationView.MenuItems.Add(secondItem);
+
+			for (int i = 0; i < 100; i++)
+			{
+				navigationView.MenuItems.Add(new NavigationViewItem() { Content = $"Item {i + 3}" });
+			}
+
+			TestServices.WindowHelper.WindowContent = navigationView;
+			await TestServices.WindowHelper.WaitForLoaded(navigationView);
+
+			var scrollViewer = VisualTreeUtils.FindVisualParentByType<ScrollViewer>(secondItem);
+			Assert.IsNotNull(scrollViewer, "ScrollViewer should be present in the NavigationView");
+
+			Assert.AreEqual(0, scrollViewer.VerticalOffset);
+
+			firstItem.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			for (int i = 0; i < 20; i++)
+			{
+				await TestServices.KeyboardHelper.Down(firstItem);
+			}
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var item21 = navigationView.MenuItems.OfType<NavigationViewItem>().ElementAt(20);
+			var focused = FocusManager.GetFocusedElement(navigationView.XamlRoot);
+			Assert.AreEqual(item21, focused);
+
+			Assert.IsTrue(scrollViewer.VerticalOffset > 0, "ScrollViewer should have scrolled down when focusing the 21st item.");
 		}
 
 		[TestMethod]
