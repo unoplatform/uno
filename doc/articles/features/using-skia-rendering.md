@@ -74,7 +74,7 @@ Using Skia rendering might have some limitations compared to native rendering. S
 - **IME support**: This portion of input support is also a work in progress, expect improvements in upcoming releases.
 - **Limited hardware acceleration on some platforms**: Depending on the platform, Skia may fall back to software rendering, affecting the overall performance.
 - Skia Rendering on WebAssembly is only supported on .NET 9 and later.
-- Removing `SkiaRenderer` from `UnoFeatures` inside the project's `.csproj` file to target native rendering, then setting it back after a new build will raise a runtime Exception. You will need to remove `bin` and `obj ` folders, and clear site data of the browser app in order to avoid encountering this exception.
+- Removing `SkiaRenderer` from `UnoFeatures` inside the project's `.csproj` file to target native rendering, then setting it back after a new build will raise a runtime Exception. You will need to remove `bin` and `obj` folders, and clear site data of the browser app in order to avoid encountering this exception.
 
 Skia rendering is best suited for cross-platform scenarios where a unified appearance and customized graphics are key. Some native integration scenarios may not yet be supported. If you encounter any of such scenarios, make sure to let it be known by [opening an issue](https://github.com/unoplatform/uno/issues).
 
