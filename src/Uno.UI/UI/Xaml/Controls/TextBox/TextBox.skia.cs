@@ -65,8 +65,6 @@ public partial class TextBox
 	private int _historyIndex;
 	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
-	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
-
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
 	private MenuFlyout _contextMenu;
@@ -659,7 +657,7 @@ public partial class TextBox
 			}
 
 			var oldText = text;
-			var index = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
+			var index = ctrl ? TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, false).start : selectionStart - 1;
 			text = text[..index] + text[selectionStart..];
 			selectionStart = index;
 
@@ -750,7 +748,7 @@ public partial class TextBox
 			var end = selectionStart + selectionLength;
 			if (ctrl)
 			{
-				end = FindChunkAt(end, false).start;
+				end = TextBoxView.DisplayBlock.ParsedText.GetWordAt(end, false).start;
 			}
 			else
 			{
@@ -763,7 +761,7 @@ public partial class TextBox
 		{
 			if (selectionLength == 0)
 			{
-				selectionStart = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
+				selectionStart = ctrl ? TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, false).start : selectionStart - 1;
 			}
 			else
 			{
@@ -802,7 +800,7 @@ public partial class TextBox
 				var end = selectionStart + selectionLength;
 				if (ctrl)
 				{
-					var chunk = FindChunkAt(end, true);
+					var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(end, true);
 					end = chunk.start + chunk.length;
 				}
 				else
@@ -818,7 +816,7 @@ public partial class TextBox
 				{
 					if (ctrl)
 					{
-						var chunk = FindChunkAt(selectionStart, true);
+						var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, true);
 						selectionStart = chunk.start + chunk.length;
 					}
 					else
@@ -941,7 +939,7 @@ public partial class TextBox
 			int index;
 			if (ctrl)
 			{
-				var chunk = FindChunkAt(selectionStart, true);
+				var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, true);
 				index = chunk.start + chunk.length;
 			}
 			else
@@ -1066,84 +1064,6 @@ public partial class TextBox
 	}
 
 	private InlineCollection DisplayBlockInlines => TextBoxView?.DisplayBlock.Inlines;
-
-	/// <param name="right">Where to look for a chunk to the right or left of the caret when the caret is between chunks</param>
-	private (int start, int length) FindChunkAt(int index, bool right)
-	{
-		if (Text.GetHashCode() != _cachedChunks.hashCode)
-		{
-			GenerateChunks();
-		}
-
-		var i = 0;
-		foreach (var chunk in _cachedChunks.chunks)
-		{
-			if (chunk.start < index && chunk.start + chunk.length > index
-				|| chunk.start == index && right
-				|| chunk.start + chunk.length == index && !right)
-			{
-				return chunk;
-			}
-
-			i += chunk.length;
-		}
-
-		return _cachedChunks.chunks.Count > 0 ? _cachedChunks.chunks[^1] : (0, 0);
-	}
-
-	private void GenerateChunks()
-	{
-		var text = Text;
-
-		_cachedChunks.hashCode = text.GetHashCode();
-		var chunks = _cachedChunks.chunks;
-
-		chunks.Clear();
-
-		// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
-		// \r and \t are always their own chunks
-		var length = text.Length;
-		for (var i = 0; i < length;)
-		{
-			var start = i;
-			var c = text[i];
-			if (c is '\r' or '\t')
-			{
-				i++;
-			}
-			else if (c == ' ')
-			{
-				while (i < length && text[i] == ' ')
-				{
-					i++;
-				}
-			}
-			else if (char.IsLetterOrDigit(text[i]))
-			{
-				while (i < length && char.IsLetterOrDigit(text[i]))
-				{
-					i++;
-				}
-				while (i < length && text[i] == ' ')
-				{
-					i++;
-				}
-			}
-			else
-			{
-				while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
-				{
-					i++;
-				}
-				while (i < length && text[i] == ' ')
-				{
-					i++;
-				}
-			}
-
-			chunks.Add((start, i - start));
-		}
-	}
 
 	/// <summary>
 	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.

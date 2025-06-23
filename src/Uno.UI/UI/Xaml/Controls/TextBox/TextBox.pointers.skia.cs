@@ -57,7 +57,7 @@ public partial class TextBox
 				}
 				else
 				{
-					chunk = FindChunkAt(index, true);
+					chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
 				}
 
 				if (chunk.start < mtc.start)
@@ -151,7 +151,7 @@ public partial class TextBox
 				else // _lastPointerDown.repeatedPresses == 0 or 2
 				{
 					// double tap
-					var chunk = FindChunkAt(index, true);
+					var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
 					Select(chunk.start, chunk.length);
 					_mouseMultiTapChunk = (chunk.start, chunk.length, false);
 					_lastPointerDown = (currentPoint, 1);
@@ -202,14 +202,14 @@ public partial class TextBox
 	{
 		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true));
 
-		var tappedChunk = FindChunkAt(index, true);
+		var tappedChunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
 
 		var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
 		if (tappedInsideSelection && CaretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
 			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 		}
-		else if (_selection.length == 0 && FindChunkAt(_selection.start, true) is var currentChunk && currentChunk.start <= index && index < currentChunk.start + currentChunk.length)
+		else if (_selection.length == 0 && TextBoxView.DisplayBlock.ParsedText.GetWordAt(_selection.start, true) is var currentChunk && currentChunk.start <= index && index < currentChunk.start + currentChunk.length)
 		{
 			Select(tappedChunk.start, tappedChunk.length); // touch selection doesn't go backwards (no "negative length")
 			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
