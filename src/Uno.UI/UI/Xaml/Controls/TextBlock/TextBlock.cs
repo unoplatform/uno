@@ -1095,8 +1095,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var aborted = false;
 			foreach (var hyperlink in _hyperlinks.ToList()) // .ToList() : for a strange reason on WASM the collection gets modified
 			{
-				aborted |= hyperlink.hyperlink.AbortPointerPressed(pointer);
-				aborted |= hyperlink.hyperlink.ReleasePointerOver(pointer);
+				aborted |= hyperlink.AbortPointerPressed(pointer);
+				aborted |= hyperlink.ReleasePointerOver(pointer);
 			}
 
 			aborted |= _hyperlinkOver?.ReleasePointerOver(pointer) ?? false;
@@ -1105,7 +1105,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return aborted;
 		}
 
-		private readonly ObservableCollection<(int start, int end, Hyperlink hyperlink)> _hyperlinks = new();
+		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
@@ -1120,7 +1120,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateHyperlinks()
 		{
-			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Where(h => h.hyperlink == _hyperlinkOver).Count() == 1);
+			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Count(h => h == _hyperlinkOver) == 1);
 
 			if (UseInlinesFastPath) // i.e. no Inlines
 			{
@@ -1129,7 +1129,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// Make sure to clear the pressed state of removed hyperlinks
 					foreach (var hyperlink in _hyperlinks)
 					{
-						hyperlink.hyperlink.AbortAllPointerState();
+						hyperlink.AbortAllPointerState();
 					}
 
 					_hyperlinkOver = null;
@@ -1140,12 +1140,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_hyperlinkOver = null;
-			var previousHyperLinks = _hyperlinks.Select(hyperlink => hyperlink.hyperlink).ToHashSet();
+			var previousHyperLinks = _hyperlinks.ToHashSet();
 			_hyperlinks.Clear();
-			Inlines.GetHyperlinkPositions(_hyperlinks);
 			foreach (var hyperlinkTuple in _hyperlinks)
 			{
-				previousHyperLinks.Remove(hyperlinkTuple.hyperlink);
+				previousHyperLinks.Remove(hyperlinkTuple);
 			}
 
 			// Make sure to clear the pressed state of removed hyperlinks
@@ -1229,14 +1228,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return null;
+#elif __SKIA__
+			return ParsedText.GetHyperlinkAt(e.GetCurrentPoint(this).Position);
 #else
-			var point = e.GetCurrentPoint(this).Position;
-			var characterIndex = GetCharacterIndexAtPoint(point);
-			var hyperlink = _hyperlinks
-				.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
-				.hyperlink;
-
-			return hyperlink;
+			return null;
 #endif
 		}
 		#endregion

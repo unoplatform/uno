@@ -2,6 +2,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Text;
@@ -26,7 +27,7 @@ internal readonly struct ParsedText
 	private static readonly SKTextBlobBuilder _textBlobBuilder = new();
 
 	public static readonly object InitialSelection = new SelectionDetails(0, 0, 0, 0);
-	public static readonly ParsedText Empty = new("", [], Size.Empty, TextAlignment.Left, TextWrapping.NoWrap, 20, FlowDirection.LeftToRight);
+	public static readonly ParsedText Empty = new([], [], Size.Empty, TextAlignment.Left, TextWrapping.NoWrap, 20, FlowDirection.LeftToRight);
 
 	private readonly List<RenderLine> _renderLines;
 	private readonly Size _availableSize;
@@ -35,16 +36,18 @@ internal readonly struct ParsedText
 	private readonly string _text;
 	private readonly float _defaultLineHeight; // used when the text is empty
 	private readonly FlowDirection _flowDirection;
+	private readonly Inline[] _inlines;
 
-	private ParsedText(string text, List<RenderLine> renderLines, Size availableSize, TextAlignment textTextAlignment, TextWrapping textWrapping, float defaultLineHeight, FlowDirection flowDirection)
+	private ParsedText(Inline[] inlines, List<RenderLine> renderLines, Size availableSize, TextAlignment textTextAlignment, TextWrapping textWrapping, float defaultLineHeight, FlowDirection flowDirection)
 	{
-		_text = text;
+		_inlines = inlines;
 		_renderLines = renderLines;
 		_availableSize = availableSize;
 		_textAlignment = textTextAlignment;
 		_textWrapping = textWrapping;
 		_defaultLineHeight = defaultLineHeight;
 		_flowDirection = flowDirection;
+		_text = string.Concat(inlines.Select(InlineExtensions.GetText));
 	}
 
 	#region API
@@ -301,7 +304,7 @@ internal readonly struct ParsedText
 		{
 		}
 		// Console.WriteLine($"Ramez measured {} desiredSize={desiredSize}");
-		return new(string.Concat(inlines.Select(InlineExtensions.GetText)), renderLines, availableSize, textAlignment, textWrapping, defaultLineHeight, flowDirection);
+		return new(inlines, renderLines, availableSize, textAlignment, textWrapping, defaultLineHeight, flowDirection);
 
 		// Local functions
 
@@ -635,6 +638,90 @@ internal readonly struct ParsedText
 
 	/// <remarks>Adjusted for surrogate pairs</remarks>
 	internal int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) => AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingSpace, extendedSelection));
+
+	internal Hyperlink GetHyperlinkAt(Point point)
+	{
+		var start = 0;
+		var hyperlinks = new List<(int start, int end, Hyperlink hyperlink)>();
+		foreach (var inline in _inlines)
+		{
+			switch (inline)
+			{
+				case Hyperlink h:
+					hyperlinks.Add((start, start + h.GetText().Length, h));
+					break;
+				case Span:
+					break;
+				default: // Leaf node
+					start += inline.GetText().Length;
+					break;
+			}
+		}
+		var characterIndex = GetIndexAt(point, ignoreEndingSpace: false, extendedSelection: false);
+		return hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
+			.hyperlink;
+	}
+
+	internal (int start, int length) GetWordAt(int index)
+	{
+		// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
+		// \r and \t are always their own chunks
+		var length = _text.Length;
+		for (var i = 0; i < length;)
+		{
+			var start = i;
+			var c = _text[i];
+			if (c is '\r')
+			{
+				i++;
+				if (_text[i] is '\n')
+				{
+					i++;
+				}
+			}
+			else if (c is '\n' or '\t')
+			{
+				i++;
+			}
+			else if (c == ' ')
+			{
+				while (i < length && _text[i] == ' ')
+				{
+					i++;
+				}
+			}
+			else if (char.IsLetterOrDigit(_text[i]))
+			{
+				while (i < length && char.IsLetterOrDigit(_text[i]))
+				{
+					i++;
+				}
+				while (i < length && _text[i] == ' ')
+				{
+					i++;
+				}
+			}
+			else
+			{
+				while (i < length && !char.IsLetterOrDigit(_text[i]) && _text[i] != ' ' && _text[i] != '\r')
+				{
+					i++;
+				}
+				while (i < length && _text[i] == ' ')
+				{
+					i++;
+				}
+			}
+
+			// the second condition handles the case of index == length, which happens when you e.g. click at the very end of a chunk
+			if (start <= index && index < i || i == length)
+			{
+				return (start, i - start);
+			}
+		}
+
+		throw new UnreachableException("No chunk was selected after chunking the entire input");
+	}
 
 	#endregion
 
