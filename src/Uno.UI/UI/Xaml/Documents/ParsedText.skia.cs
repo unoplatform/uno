@@ -2,7 +2,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Text;
@@ -14,7 +13,7 @@ using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Documents;
 
-internal readonly struct ParsedText
+internal readonly struct ParsedText : IParsedText
 {
 	private static readonly SKPaint _spareDrawPaint = new();
 	// This is safe as a static field.
@@ -49,8 +48,6 @@ internal readonly struct ParsedText
 		_flowDirection = flowDirection;
 		_text = string.Concat(inlines.Select(InlineExtensions.GetText));
 	}
-
-	#region API
 
 	/// <summary>
 	/// Measures a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
@@ -344,10 +341,12 @@ internal readonly struct ParsedText
 		}
 	}
 
+	#region IParsedText
+
 	/// <summary>
 	/// Renders a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 	/// </summary>
-	internal void Draw(in Visual.PaintingSession session,
+	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush)? caret, // null to skip drawing a caret
 		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection, // null to skip drawing a selection
 		float caretThickness)
@@ -564,7 +563,7 @@ internal readonly struct ParsedText
 
 	// Warning: this is only tested and currently used by TextBox
 	/// <remarks>Takes an already adjusted-for-surrogate-pairs index</remarks>
-	internal Rect GetRectForIndex(int adjustedIndex)
+	public Rect GetRectForIndex(int adjustedIndex)
 	{
 		var characterCount = 0;
 		float y = 0, x = 0;
@@ -621,9 +620,9 @@ internal readonly struct ParsedText
 	}
 
 	/// <remarks>Adjusted for surrogate pairs</remarks>
-	internal int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) => AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingSpace, extendedSelection));
+	public int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) => AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingSpace, extendedSelection));
 
-	internal Hyperlink GetHyperlinkAt(Point point)
+	public Hyperlink GetHyperlinkAt(Point point)
 	{
 		var start = 0;
 		var hyperlinks = new List<(int start, int end, Hyperlink hyperlink)>();
@@ -641,13 +640,12 @@ internal readonly struct ParsedText
 					break;
 			}
 		}
-		var characterIndex = GetIndexAt(point, ignoreEndingSpace: false, extendedSelection: false);
+		var characterIndex = ((IParsedText)this).GetIndexAt(point, ignoreEndingSpace: false, extendedSelection: false);
 		return hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
 			.hyperlink;
 	}
 
-	/// <param name="right">when on a word boundary, decides whether to return the left or the right word</param>
-	internal (int start, int length) GetWordAt(int index, bool right)
+	public (int start, int length) GetWordAt(int index, bool right)
 	{
 		var chunks = new List<(int start, int length)>();
 		{
@@ -720,7 +718,7 @@ internal readonly struct ParsedText
 	/// <summary>
 	/// The parameters here use the possibly-negative length format
 	/// </summary>
-	internal (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
+	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
 	{
 		global::System.Diagnostics.CI.Assert(index >= 0 && index <= _text.Length);
 		if (_text.Length == 0)
