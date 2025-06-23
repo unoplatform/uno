@@ -662,65 +662,75 @@ internal readonly struct ParsedText
 			.hyperlink;
 	}
 
-	internal (int start, int length) GetWordAt(int index)
+	/// <param name="right">when on a word boundary, decides whether to return the left or the right word</param>
+	internal (int start, int length) GetWordAt(int index, bool right)
 	{
-		// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
-		// \r and \t are always their own chunks
-		var length = _text.Length;
-		for (var i = 0; i < length;)
+		var chunks = new List<(int start, int length)>();
 		{
-			var start = i;
-			var c = _text[i];
-			if (c is '\r')
+			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
+			// \r\n, \r, \n and \t are always their own chunks
+			var length = _text.Length;
+			for (var i = 0; i < length;)
 			{
-				i++;
-				if (_text[i] is '\n')
+				var start = i;
+				var c = _text[i];
+				if (c is '\r' && i < (length - 1) && _text[i + 1] == '\n')
+				{
+					i += 2;
+				}
+				else if (c is '\r' or '\t' or '\n')
 				{
 					i++;
 				}
-			}
-			else if (c is '\n' or '\t')
-			{
-				i++;
-			}
-			else if (c == ' ')
-			{
-				while (i < length && _text[i] == ' ')
+				else if (c == ' ')
 				{
-					i++;
+					while (i < length && _text[i] == ' ')
+					{
+						i++;
+					}
 				}
-			}
-			else if (char.IsLetterOrDigit(_text[i]))
-			{
-				while (i < length && char.IsLetterOrDigit(_text[i]))
+				else if (char.IsLetterOrDigit(_text[i]))
 				{
-					i++;
+					while (i < length && char.IsLetterOrDigit(_text[i]))
+					{
+						i++;
+					}
+					while (i < length && _text[i] == ' ')
+					{
+						i++;
+					}
 				}
-				while (i < length && _text[i] == ' ')
+				else
 				{
-					i++;
+					while (i < length && !char.IsLetterOrDigit(_text[i]) && _text[i] != ' ' && _text[i] != '\r')
+					{
+						i++;
+					}
+					while (i < length && _text[i] == ' ')
+					{
+						i++;
+					}
 				}
-			}
-			else
-			{
-				while (i < length && !char.IsLetterOrDigit(_text[i]) && _text[i] != ' ' && _text[i] != '\r')
-				{
-					i++;
-				}
-				while (i < length && _text[i] == ' ')
-				{
-					i++;
-				}
-			}
 
-			// the second condition handles the case of index == length, which happens when you e.g. click at the very end of a chunk
-			if (start <= index && index < i || i == length)
-			{
-				return (start, i - start);
+				chunks.Add((start, i - start));
 			}
 		}
 
-		throw new UnreachableException("No chunk was selected after chunking the entire input");
+		{
+			var i = 0;
+			foreach (var chunk in chunks)
+			{
+				if (chunk.start < index && chunk.start + chunk.length > index
+					|| chunk.start == index && right
+					|| chunk.start + chunk.length == index && !right)
+				{
+					return chunk;
+				}
+
+				i += chunk.length;
+			}
+			return chunks.Count > 0 ? chunks[^1] : (0, 0);
+		}
 	}
 
 	#endregion

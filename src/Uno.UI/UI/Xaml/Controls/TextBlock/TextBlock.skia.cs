@@ -270,7 +270,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (GetCharacterIndexAtPoint(e.GetPosition(this), true) is var index and > 1)
 				{
-					var chunk = ParsedText.GetWordAt(index);
+					var chunk = ParsedText.GetWordAt(index, true);
 
 					Selection = new Range(chunk.start, chunk.start + chunk.length);
 				}
