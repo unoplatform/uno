@@ -346,17 +346,11 @@ internal readonly struct ParsedText
 	/// </summary>
 	internal void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush)? caret, // null to skip drawing a caret
-		(int selectionStart, int selectionEnd)? selection, // null to skip drawing a selection
-		float caretThickness,
-		Action? drawingStarted,
-		Action? drawingFinished,
-		Action<(Rect rect, SKCanvas canvas)>? selectionFound)
+		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection, // null to skip drawing a selection
+		float caretThickness)
 	{
-		drawingStarted?.Invoke();
-
 		if (_renderLines.Count == 0)
 		{
-			drawingFinished?.Invoke();
 			// empty, so caret is at the beginning
 			if (caret is not null)
 			{
@@ -365,7 +359,6 @@ internal readonly struct ParsedText
 				caret.Value.brush.UpdatePaint(paint, caretRect);
 				session.Canvas.DrawRect(caretRect, paint);
 			}
-			drawingFinished?.Invoke();
 
 			return;
 		}
@@ -508,7 +501,7 @@ internal readonly struct ParsedText
 				if (selection is not null)
 				{
 					var selectionDetails = CalculateSelection(selection.Value.selectionStart, selection.Value.selectionEnd);
-					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, selectionFound);
+					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, selection.Value.brush);
 					RenderText(selectionDetails, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y + baselineOffsetY, paint);
 				}
 				else
@@ -556,8 +549,6 @@ internal readonly struct ParsedText
 				ArrayPool<ushort>.Shared.Return(glyphs);
 			}
 		}
-
-		drawingFinished?.Invoke();
 
 		static void DrawDecoration(SKCanvas canvas, float x, float y, float width, float thickness, SKPaint paint)
 		{
@@ -650,7 +641,7 @@ internal readonly struct ParsedText
 	private void HandleSelection(SelectionDetails selection, int lineIndex,
 		int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset,
 		RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, float y, RenderLine line, SKCanvas canvas,
-		Action<(Rect rect, SKCanvas canvas)>? selectionFound)
+		CompositionBrush brush)
 	{
 		if (selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
 		{
@@ -703,7 +694,10 @@ internal readonly struct ParsedText
 
 			if (Math.Abs(left - right) > 0.01)
 			{
-				selectionFound?.Invoke((new Rect(new Point(left, y - line.Height), new Point(right, y)), canvas));
+				var paint = new SKPaint();
+				var rect = new SKRect(left, y - line.Height, right, y);
+				brush.UpdatePaint(paint, rect);
+				canvas.DrawRect(rect, paint);
 			}
 		}
 	}
