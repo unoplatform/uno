@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
@@ -20,7 +20,6 @@ using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
-using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Xaml.Controls;
@@ -28,12 +27,6 @@ using Uno.UI.Xaml.Core;
 using Uno.Foundation;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 
-
-#if HAS_UNO_WINUI
-using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -47,9 +40,6 @@ public partial class TextBox
 	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
-
-	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
-
 
 	private SelectionDetails _selection;
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
@@ -76,10 +66,7 @@ public partial class TextBox
 
 	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
 
-	private readonly DispatcherTimer _timer = new DispatcherTimer
-	{
-		Interval = TimeSpan.FromSeconds(0.5)
-	};
+	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
