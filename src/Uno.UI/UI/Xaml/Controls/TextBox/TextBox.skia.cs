@@ -282,6 +282,7 @@ public partial class TextBox
 			if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing)
 			{
 				_selectionStartThumbfulCaret.Hide();
+				_selectionEndThumbfulCaret.SetStemVisible(SelectionLength == 0);
 			}
 		}
 		else
