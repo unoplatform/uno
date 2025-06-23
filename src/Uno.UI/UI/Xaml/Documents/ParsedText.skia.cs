@@ -620,22 +620,6 @@ internal readonly struct ParsedText
 		return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
 	}
 
-	// Warning: this is only tested and currently used by TextBox
-	internal List<(int start, int length)> GetLineIntervals()
-	{
-		var lineIntervals = new List<(int start, int length)>(_renderLines.Count);
-
-		var start = 0;
-		foreach (var line in _renderLines)
-		{
-			var length = line.SegmentSpans.Sum(GlyphsLengthWithCR);
-			lineIntervals.Add((start, length));
-			start += length;
-		}
-
-		return lineIntervals;
-	}
-
 	/// <remarks>Adjusted for surrogate pairs</remarks>
 	internal int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) => AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingSpace, extendedSelection));
 
@@ -731,6 +715,33 @@ internal readonly struct ParsedText
 			}
 			return chunks.Count > 0 ? chunks[^1] : (0, 0);
 		}
+	}
+
+	/// <summary>
+	/// The parameters here use the possibly-negative length format
+	/// </summary>
+	internal (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
+	{
+		global::System.Diagnostics.CI.Assert(index >= 0 && index <= _text.Length);
+		if (_text.Length == 0)
+		{
+			return (0, 0, true, true, 0);
+		}
+
+		var lines = GetLineIntervals();
+		global::System.Diagnostics.CI.Assert(lines.Count > 0);
+
+		for (var i = 0; i < lines.Count; i++)
+		{
+			var line = lines[i];
+			if (line.start <= index && index < line.start + line.length)
+			{
+				return (line.start, line.length, i == 0, i == lines.Count - 1, i);
+			}
+		}
+
+		// end == Text.Length
+		return (lines[^1].start, lines[^1].length, lines.Count == 1, true, lines.Count - 1);
 	}
 
 	#endregion
@@ -957,6 +968,22 @@ internal readonly struct ParsedText
 				canvas.DrawRect(caretRect, paint);
 			}
 		}
+	}
+
+	// Warning: this is only tested and currently used by TextBox
+	private List<(int start, int length)> GetLineIntervals()
+	{
+		var lineIntervals = new List<(int start, int length)>(_renderLines.Count);
+
+		var start = 0;
+		foreach (var line in _renderLines)
+		{
+			var length = line.SegmentSpans.Sum(GlyphsLengthWithCR);
+			lineIntervals.Add((start, length));
+			start += length;
+		}
+
+		return lineIntervals;
 	}
 
 	private SelectionDetails CalculateSelection(int start, int end)
