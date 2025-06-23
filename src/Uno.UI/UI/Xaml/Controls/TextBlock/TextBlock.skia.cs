@@ -270,75 +270,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (GetCharacterIndexAtPoint(e.GetPosition(this), true) is var index and > 1)
 				{
-					var chunk = GetChunkAt(Text, index);
+					var chunk = ParsedText.GetWordAt(index);
 
 					Selection = new Range(chunk.start, chunk.start + chunk.length);
 				}
 			}
-		}
-
-		// Note: this is a very close copy of TextBox.GenerateChunks. Note how, unlike TextBox, we don't need
-		// to add any caching here, since chunked-selection in TextBlocks only occurs on double-tapping,
-		// which is a lot less frequent than the TextBox scenarios (e.g. holding ctrl+shift+<right|left>).
-		private (int start, int length) GetChunkAt(string text, int index)
-		{
-			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
-			// \r and \t are always their own chunks
-			var length = text.Length;
-			for (var i = 0; i < length;)
-			{
-				var start = i;
-				var c = text[i];
-				if (c is '\r')
-				{
-					i++;
-					if (text[i] is '\n')
-					{
-						i++;
-					}
-				}
-				else if (c is '\n' or '\t')
-				{
-					i++;
-				}
-				else if (c == ' ')
-				{
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else if (char.IsLetterOrDigit(text[i]))
-				{
-					while (i < length && char.IsLetterOrDigit(text[i]))
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else
-				{
-					while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-
-				// the second condition handles the case of index == length, which happens when you e.g. click at the very end of a chunk
-				if (start <= index && index < i || i == length)
-				{
-					return (start, i - start);
-				}
-			}
-
-			throw new UnreachableException("No chunk was selected after chunking the entire input");
 		}
 
 		// TODO: remove this context menu when TextCommandBarFlyout is implemented
