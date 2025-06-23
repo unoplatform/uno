@@ -35,18 +35,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
 
 		private bool _renderSelection;
-		private bool _renderCaret;
+		private (int index, CompositionBrush brush)? _caretPaint;
 
 		internal ParsedText ParsedText { get; private set; } = ParsedText.Empty;
 
 		internal event Action? DrawingStarted;
 		internal event Action<(Rect rect, SKCanvas canvas)>? SelectionFound;
 		internal event Action? DrawingFinished;
-		/// <summary>
-		/// The second argument is whether this caret is the one at the start (false) or the end (true)
-		/// of the selection.
-		/// </summary>
-		internal event Action<(Rect rect, SKCanvas canvas, bool endCaret)>? CaretFound;
 
 		public TextBlock()
 		{
@@ -165,13 +160,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal bool RenderCaret
+		internal (int index, CompositionBrush brush)? RenderCaret
 		{
 			set
 			{
-				if (_renderCaret != value)
+				if (_caretPaint != value)
 				{
-					_renderCaret = value;
+					_caretPaint = value;
 					InvalidateInlineAndRequireRepaint();
 				}
 			}
@@ -181,8 +176,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			session.Canvas.Save();
 			session.Canvas.Translate((float)owner.Padding.Left, (float)owner.Padding.Top);
-			ParsedText.Draw(session, _renderCaret, _renderSelection, Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end),
-				CaretThickness, DrawingStarted, DrawingFinished, SelectionFound, CaretFound);
+			ParsedText.Draw(
+				session,
+				_caretPaint,
+				(Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end)),
+				CaretThickness,
+				DrawingStarted,
+				DrawingFinished,
+				SelectionFound);
 			session.Canvas.Restore();
 		}
 
