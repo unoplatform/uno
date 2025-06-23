@@ -47,6 +47,8 @@ internal readonly struct ParsedText
 		_flowDirection = flowDirection;
 	}
 
+	#region API
+
 	/// <summary>
 	/// Measures a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 	/// </summary>
@@ -557,6 +559,82 @@ internal readonly struct ParsedText
 		}
 	}
 
+	// Warning: this is only tested and currently used by TextBox
+	/// <remarks>Takes an already adjusted-for-surrogate-pairs index</remarks>
+	internal Rect GetRectForIndex(int adjustedIndex)
+	{
+		var characterCount = 0;
+		float y = 0, x = 0;
+		var index = _text[..adjustedIndex].EnumerateRunes().Count(); // unadjust
+
+		foreach (var line in _renderLines)
+		{
+			(x, var justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, _textAlignment);
+
+			var spans = line.RenderOrderedSegmentSpans;
+			foreach (var span in spans)
+			{
+				var glyphCount = GlyphsLengthWithCR(span);
+
+				if (index < characterCount + glyphCount)
+				{
+					// we found the right span
+					var segment = span.Segment;
+					var run = (Run)segment.Inline;
+					var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
+
+					var glyphStart = span.GlyphsStart;
+					var glyphEnd = glyphStart + span.GlyphsLength;
+					for (var i = glyphStart; i < glyphEnd; i++)
+					{
+						var glyph = segment.Glyphs[i];
+						var glyphWidth = GetGlyphWidthWithSpacing(glyph, characterSpacing);
+
+						if (index == characterCount)
+						{
+							return new Rect(x, y, glyphWidth, line.Height);
+						}
+
+						x += glyphWidth;
+						characterCount++;
+					}
+
+					// we should have returned by now, so this is a case of a trailing \r and/or non-rendered trailing spaces, which are not counted in GlyphsLength
+					return new Rect(x, y, 0, line.Height);
+				}
+
+				characterCount += glyphCount;
+				x += span.Width;
+			}
+
+			y += line.Height;
+		}
+
+		// width and height default to 0 if there's nothing there
+		return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
+	}
+
+	// Warning: this is only tested and currently used by TextBox
+	internal List<(int start, int length)> GetLineIntervals()
+	{
+		var lineIntervals = new List<(int start, int length)>(_renderLines.Count);
+
+		var start = 0;
+		foreach (var line in _renderLines)
+		{
+			var length = line.SegmentSpans.Sum(GlyphsLengthWithCR);
+			lineIntervals.Add((start, length));
+			start += length;
+		}
+
+		return lineIntervals;
+	}
+
+	/// <remarks>Adjusted for surrogate pairs</remarks>
+	internal int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) => AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingSpace, extendedSelection));
+
+	#endregion
+
 	private void HandleSelection(bool renderSelection, SelectionDetails selection, int lineIndex,
 		int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset,
 		RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, float y, RenderLine line, SKCanvas canvas,
@@ -855,83 +933,6 @@ internal readonly struct ParsedText
 		} while (i < line.RenderOrderedSegmentSpans.Count);
 
 		return extendedSelection ? (span, spanX - span.Width) : null;
-	}
-
-	// Warning: this is only tested and currently used by TextBox
-	/// <remarks>Takes an already adjusted-for-surrogate-pairs index</remarks>
-	internal Rect GetRectForIndex(int adjustedIndex)
-	{
-		var characterCount = 0;
-		float y = 0, x = 0;
-		var index = _text[..adjustedIndex].EnumerateRunes().Count(); // unadjust
-
-		foreach (var line in _renderLines)
-		{
-			(x, var justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, _textAlignment);
-
-			var spans = line.RenderOrderedSegmentSpans;
-			foreach (var span in spans)
-			{
-				var glyphCount = GlyphsLengthWithCR(span);
-
-				if (index < characterCount + glyphCount)
-				{
-					// we found the right span
-					var segment = span.Segment;
-					var run = (Run)segment.Inline;
-					var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
-
-					var glyphStart = span.GlyphsStart;
-					var glyphEnd = glyphStart + span.GlyphsLength;
-					for (var i = glyphStart; i < glyphEnd; i++)
-					{
-						var glyph = segment.Glyphs[i];
-						var glyphWidth = GetGlyphWidthWithSpacing(glyph, characterSpacing);
-
-						if (index == characterCount)
-						{
-							return new Rect(x, y, glyphWidth, line.Height);
-						}
-
-						x += glyphWidth;
-						characterCount++;
-					}
-
-					// we should have returned by now, so this is a case of a trailing \r and/or non-rendered trailing spaces, which are not counted in GlyphsLength
-					return new Rect(x, y, 0, line.Height);
-				}
-
-				characterCount += glyphCount;
-				x += span.Width;
-			}
-
-			y += line.Height;
-		}
-
-		// width and height default to 0 if there's nothing there
-		return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
-	}
-
-	// Warning: this is only tested and currently used by TextBox
-	internal List<(int start, int length)> GetLineIntervals()
-	{
-		var lineIntervals = new List<(int start, int length)>(_renderLines.Count);
-
-		var start = 0;
-		foreach (var line in _renderLines)
-		{
-			var length = line.SegmentSpans.Sum(GlyphsLengthWithCR);
-			lineIntervals.Add((start, length));
-			start += length;
-		}
-
-		return lineIntervals;
-	}
-
-	/// <remarks>Adjusted for surrogate pairs</remarks>
-	internal int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection)
-	{
-		return AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingSpace, extendedSelection));
 	}
 
 	// equivalent to AdjustSelectionForSurrogatePairs for a single index
