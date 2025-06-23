@@ -849,11 +849,11 @@ public partial class TextBox
 		var end = selectionStart + selectionLength;
 		if (shift)
 		{
-			selectionLength = ctrl ? -selectionStart : GetLineAt(text, selectionStart, selectionLength).start - selectionStart;
+			selectionLength = ctrl ? -selectionStart : TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength).start - selectionStart;
 		}
 		else
 		{
-			selectionStart = ctrl ? 0 : GetLineAt(text, selectionStart, selectionLength).start;
+			selectionStart = ctrl ? 0 : TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength).start;
 			selectionLength = 0;
 		}
 		args.Handled = selectionStart != start || selectionLength != end - start;
@@ -880,7 +880,7 @@ public partial class TextBox
 			}
 			else
 			{
-				var line = GetLineAt(text, selectionStart, selectionLength);
+				var line = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
 				selectionLength = line.start + line.length - selectionStart;
 			}
 		}
@@ -892,7 +892,7 @@ public partial class TextBox
 			}
 			else
 			{
-				var line = GetLineAt(text, selectionStart, selectionLength);
+				var line = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
 				selectionStart = line.start + line.length;
 				if (line.length > 0 && selectionStart < text.Length && text[selectionStart - 1] == '\r')
 				{
@@ -988,33 +988,6 @@ public partial class TextBox
 	}
 
 	/// <summary>
-	/// The parameters here use the possibly-negative length format
-	/// </summary>
-	private (int start, int length) GetLineAt(string text, int selectionStart, int selectionLength)
-	{
-		if (Text.Length == 0)
-		{
-			return (0, 0);
-		}
-
-		var lines = TextBoxView.DisplayBlock.ParsedText.GetLineIntervals();
-		global::System.Diagnostics.CI.Assert(lines.Count > 0);
-
-		var end = selectionStart + selectionLength;
-
-		foreach (var line in lines)
-		{
-			if (line.start <= end && end < line.start + line.length)
-			{
-				return line;
-			}
-		}
-
-		// end == Text.Length
-		return lines[^1];
-	}
-
-	/// <summary>
 	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
 	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
 	/// This method cares about the second kind of lines.
@@ -1025,36 +998,55 @@ public partial class TextBox
 		{
 			return 0;
 		}
-		var startLine = GetLineAt(text, selectionStart, 0);
-		var endLine = GetLineAt(text, selectionStart + selectionLength, 0);
-		var lines = TextBoxView.DisplayBlock.ParsedText.GetLineIntervals();
-		var startLineIndex = lines.IndexOf(startLine);
-		var endLineIndex = lines.IndexOf(endLine);
 
-		if (up && shift && endLineIndex == 0)
+		var (startLineStart, startLineLength, startLineFirst, startLineLast, startLineIndex) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart);
+		var (endLineStart, endLineLength, endLineFirst, endLineLast, endLineIndex) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
+
+		if (up && shift && endLineFirst)
 		{
 			return 0; // first line, goes to the beginning
 		}
-		else if (!up && shift && endLineIndex == lines.Count - 1)
+		else if (!up && shift && endLineLast)
 		{
 			return text.Length; // last line, goes to the end
 		}
-		else if (!up && !shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
+		else if (!up && !shift && (startLineLast || endLineLast))
 		{
 			return text.Length; // last line, goes to the end
 		}
 
-		var newLineIndex = up ?
-			selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1) :
-			selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
+		int newLineIndex;
+		if (up)
+		{
+			if (selectionLength < 0 || shift)
+			{
+				newLineIndex = !endLineFirst ? endLineIndex - 1 : endLineIndex;
+			}
+			else
+			{
+				newLineIndex = !startLineFirst ? startLineIndex - 1 : startLineIndex;
+			}
+		}
+		else
+		{
+			if (selectionLength > 0 || shift)
+			{
+				newLineIndex = !endLineLast ? endLineIndex + 1 : endLineIndex;
+			}
+			else
+			{
+				newLineIndex = !startLineLast ? startLineIndex + 1 : startLineIndex;
+			}
+		}
 
 		var rect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength);
 		var x = _caretXOffset;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
 		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(new Point(x, y), true, true));
+		var (newLineStart, newLineLength, newLineFirst, newLineLast, _) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
 		if (text.Length > index - 1
 			&& index - 1 >= 0
-			&& index == lines[newLineIndex].start + lines[newLineIndex].length
+			&& index == newLineStart + newLineLength
 			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
 		{
 			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
