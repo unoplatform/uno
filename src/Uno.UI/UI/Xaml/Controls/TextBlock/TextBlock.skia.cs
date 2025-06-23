@@ -39,8 +39,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal ParsedText ParsedText { get; private set; } = ParsedText.Empty;
 
-		internal event Action? DrawingStarted;
-		internal event Action<(Rect rect, SKCanvas canvas)>? SelectionFound;
 		internal event Action? DrawingFinished;
 
 		public TextBlock()
@@ -179,12 +177,10 @@ namespace Microsoft.UI.Xaml.Controls
 			ParsedText.Draw(
 				session,
 				_caretPaint,
-				(Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end)),
-				CaretThickness,
-				DrawingStarted,
-				DrawingFinished,
-				SelectionFound);
+				(Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end), SelectionHighlightColor.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor())),
+				CaretThickness);
 			session.Canvas.Restore();
+			DrawingFinished?.Invoke()
 		}
 
 		/// <summary>
@@ -243,27 +239,7 @@ namespace Microsoft.UI.Xaml.Controls
 			SelectedText = Text[start..end];
 		}
 
-		private static SKPaint _spareSelectionFoundPaint = new SKPaint();
-
-		partial void SetupInlines()
-		{
-			SelectionFound += t =>
-			{
-				var canvas = t.canvas;
-				var rect = t.rect;
-
-				var paint = _spareSelectionFoundPaint;
-
-				paint.Reset();
-
-				paint.Color = SelectionHighlightColor.Color.ToSKColor();
-				paint.Style = SKPaintStyle.Fill;
-
-				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
-			};
-
-			RenderSelection = IsTextSelectionEnabled;
-		}
+		partial void SetupInlines() => RenderSelection = IsTextSelectionEnabled;
 
 		private void OnKeyDown(KeyRoutedEventArgs args)
 		{
