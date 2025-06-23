@@ -345,15 +345,12 @@ internal readonly struct ParsedText
 	/// Renders a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 	/// </summary>
 	internal void Draw(in Visual.PaintingSession session,
-		bool renderCaret,
-		bool renderSelection,
-		int selectionStart,
-		int selectionEnd,
+		(int index, CompositionBrush brush)? caret, // null to skip drawing a caret
+		(int selectionStart, int selectionEnd)? selection, // null to skip drawing a selection
 		float caretThickness,
 		Action? drawingStarted,
 		Action? drawingFinished,
-		Action<(Rect rect, SKCanvas canvas)>? selectionFound,
-		Action<(Rect rect, SKCanvas canvas, bool endCaret)>? caretFound)
+		Action<(Rect rect, SKCanvas canvas)>? selectionFound)
 	{
 		drawingStarted?.Invoke();
 
@@ -361,10 +358,12 @@ internal readonly struct ParsedText
 		{
 			drawingFinished?.Invoke();
 			// empty, so caret is at the beginning
-			if (renderCaret)
+			if (caret is not null)
 			{
-				caretFound?.Invoke((new Rect(new Point(0, 0), new Point(caretThickness, _defaultLineHeight)), session.Canvas, false));
-				caretFound?.Invoke((new Rect(new Point(0, 0), new Point(caretThickness, _defaultLineHeight)), session.Canvas, true));
+				var paint = new SKPaint();
+				var caretRect = new SKRect(0, 0, caretThickness, _defaultLineHeight);
+				caret.Value.brush.UpdatePaint(paint, caretRect);
+				session.Canvas.DrawRect(caretRect, paint);
 			}
 			drawingFinished?.Invoke();
 
@@ -506,9 +505,16 @@ internal readonly struct ParsedText
 				// Note that carets and text decorations never occur at the same time for now (TextBox has a caret but no
 				// decorations, TextBlock doesn't have a caret), but a RichTextBox can have both, so that should be kept in mind
 
-				var selection = CalculateSelection(selectionStart, selectionEnd);
-				HandleSelection(renderSelection, selection, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, selectionFound);
-				RenderText(renderSelection, selection, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y + baselineOffsetY, paint);
+				if (selection is not null)
+				{
+					var selectionDetails = CalculateSelection(selection.Value.selectionStart, selection.Value.selectionEnd);
+					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, selectionFound);
+					RenderText(selectionDetails, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y + baselineOffsetY, paint);
+				}
+				else
+				{
+					RenderText(null, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y + baselineOffsetY, paint);
+				}
 
 				// START decorations
 				var decorations = inline.TextDecorations;
@@ -538,7 +544,10 @@ internal readonly struct ParsedText
 				}
 				// END decorations
 
-				HandleCaret(renderCaret, caretFound, (SelectionDetails)selection, caretThickness, canvas, characterCountSoFar, lineIndex, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
+				if (caret is not null)
+				{
+					HandleCaret(caret.Value.index, caretThickness, canvas, caret.Value.brush, characterCountSoFar, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
+				}
 
 				x += justifySpaceOffset * segmentSpan.TrailingSpaces;
 				characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? segment.LineBreakLength : 0);
@@ -607,7 +616,10 @@ internal readonly struct ParsedText
 				x += span.Width;
 			}
 
-			y += line.Height;
+			if (line != _renderLines[^1])
+			{
+				y += line.Height;
+			}
 		}
 
 		// width and height default to 0 if there's nothing there
@@ -635,12 +647,12 @@ internal readonly struct ParsedText
 
 	#endregion
 
-	private void HandleSelection(bool renderSelection, SelectionDetails selection, int lineIndex,
+	private void HandleSelection(SelectionDetails selection, int lineIndex,
 		int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset,
 		RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, float y, RenderLine line, SKCanvas canvas,
 		Action<(Rect rect, SKCanvas canvas)>? selectionFound)
 	{
-		if (renderSelection && selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
+		if (selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
 		{
 			var spanStartingIndex = characterCountSoFar;
 
@@ -696,11 +708,11 @@ internal readonly struct ParsedText
 		}
 	}
 
-	private void RenderText(bool renderSelection, SelectionDetails selection, int lineIndex, int characterCountSoFar,
+	private void RenderText(SelectionDetails? selection, int lineIndex, int characterCountSoFar,
 		RenderSegmentSpan segmentSpan, FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
 		SKCanvas canvas, float y, SKPaint paint)
 	{
-		if (!renderSelection || selection is not { } bg || bg.StartLine > lineIndex || lineIndex > bg.EndLine)
+		if (selection is not { } bg || bg.StartLine > lineIndex || lineIndex > bg.EndLine)
 		{
 			if (segmentSpan.GlyphsLength > 0)
 			{
@@ -801,57 +813,57 @@ internal readonly struct ParsedText
 		}
 	}
 
-	private void HandleCaret(bool renderCaret, Action<(Rect rect, SKCanvas canvas, bool endCaret)>? caretFound,
-		SelectionDetails details, float caretThickness, SKCanvas canvas,
-		int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan,
+	private void HandleCaret(
+		int caretIndex, float caretThickness, SKCanvas canvas,
+		CompositionBrush caretBrush, int characterCountSoFar, RenderSegmentSpan segmentSpan,
 		Span<SKPoint> positions, float x, float justifySpaceOffset, float y, RenderLine line)
 	{
 		var spanStartingIndex = characterCountSoFar;
-		if (renderCaret)
 		{
-			foreach (var (l, i, caretAtSelectionEnd) in (ReadOnlySpan<(int, int, bool)>)[(details.StartLine, details.StartIndex, false), (details.EndLine, details.EndIndex, true)])
+			float caretLocation = float.MinValue;
+
+			var i = caretIndex;
+			if (i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.GlyphsLength)
 			{
-				float caretLocation = float.MinValue;
+				if (i >= spanStartingIndex + positions.Length)
+				{
+					caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length));
+				}
+				else
+				{
+					caretLocation = positions[i - spanStartingIndex].X;
+				}
+			}
+			else if (i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.FullGlyphsLength)
+			{
+				// In case of non-rendered trailing spaces, the caret should theoretically be beyond the width of the TextBox,
+				// but we still render the caret at the end of the visible area like WinUI does.
+				caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+			}
 
-				if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.GlyphsLength)
-				{
-					if (i >= spanStartingIndex + positions.Length)
-					{
-						caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length));
-					}
-					else
-					{
-						caretLocation = positions[i - spanStartingIndex].X;
-					}
-				}
-				else if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.FullGlyphsLength)
-				{
-					// In case of non-rendered trailing spaces, the caret should theoretically be beyond the width of the TextBox,
-					// but we still render the caret at the end of the visible area like WinUI does.
-					caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
-				}
-
-				if (Math.Round(caretLocation + caretThickness) > _availableSize.Width)
-				{
-					// WinUI draws the caret one-pixel early if the text takes (almost) all the available width.
-					// Try this and move the caret to the end (after the l):
-					// new TextBox
-					// {
-					// 	Width = 94,
-					// 	TextWrapping = TextWrapping.Wrap,
-					// 	Text = "abcdefghijkl",
-					// 	FontFamily = new FontFamily("/Assets/Roboto-Regular.ttf#Roboto")
-					// }
-					// and try again with
-					// 	Width = 95,
-					// Notice how the caret is drawn one pixel later in the second case even though the text is the exact same.
-					caretLocation -= caretThickness;
-				}
-
-				if (caretLocation != float.MinValue)
-				{
-					caretFound?.Invoke((new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + caretThickness, y)), canvas, caretAtSelectionEnd));
-				}
+			if (Math.Round(caretLocation + caretThickness) > _availableSize.Width)
+			{
+				// WinUI draws the caret one-pixel early if the text takes (almost) all the available width.
+				// Try this and move the caret to the end (after the l):
+				// new TextBox
+				// {
+				// 	Width = 94,
+				// 	TextWrapping = TextWrapping.Wrap,
+				// 	Text = "abcdefghijkl",
+				// 	FontFamily = new FontFamily("/Assets/Roboto-Regular.ttf#Roboto")
+				// }
+				// and try again with
+				// 	Width = 95,
+				// Notice how the caret is drawn one pixel later in the second case even though the text is the exact same.
+				caretLocation -= caretThickness;
+			}
+			if (caretLocation != float.MinValue)
+			{
+				var paint = new SKPaint();
+				var caretRect = new SKRect(caretLocation, y - line.Height, caretLocation + caretThickness, y);
+				caretBrush.UpdatePaint(paint, caretRect);
+				canvas.DrawRect(caretRect, paint);
+				canvas.DrawRect(caretRect, paint);
 			}
 		}
 	}

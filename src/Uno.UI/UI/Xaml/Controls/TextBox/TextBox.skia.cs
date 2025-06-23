@@ -71,9 +71,6 @@ public partial class TextBox
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
-	private Rect? _lastEndCaretRect;
-	private Rect? _lastStartCaretRect;
-
 	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
 	internal TextBoxView TextBoxView => _textBoxView;
@@ -240,12 +237,6 @@ public partial class TextBox
 						caret.PointerCaptureLost += ClearCaretPointerState;
 					}
 
-					displayBlock.DrawingStarted += () =>
-					{
-						_lastStartCaretRect = null;
-						_lastEndCaretRect = null;
-					};
-
 					displayBlock.DrawingFinished += () =>
 					{
 						// Only invalidate the carets after drawing is complete
@@ -254,28 +245,6 @@ public partial class TextBox
 						{
 							UpdateFlyoutPosition();
 						}, NativeDispatcherPriority.Normal);
-					};
-
-					displayBlock.CaretFound += args =>
-					{
-						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
-							CaretMode == CaretDisplayMode.ThumblessCaretShowing)
-						{
-							var caretRect = args.rect;
-							var compositor = _visual.Compositor;
-							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-
-							brush.Paint(args.canvas, args.opacity, caretRect.ToSKRect());
-						}
-
-						if (args.endCaret)
-						{
-							_lastEndCaretRect = args.rect;
-						}
-						else
-						{
-							_lastStartCaretRect = args.rect;
-						}
 					};
 				}
 			}
@@ -288,13 +257,11 @@ public partial class TextBox
 	{
 		if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
-			foreach (var (rectNullable, caret) in (ReadOnlySpan<(Rect?, CaretWithStemAndThumb)>)[(_lastStartCaretRect, _selectionStartThumbfulCaret), (_lastEndCaretRect, _selectionEndThumbfulCaret)])
+			var (selectionStart, selectionEnd) = IsBackwardSelection ? (SelectionStart + SelectionLength, SelectionLength) : (SelectionStart, SelectionStart + SelectionLength);
+			foreach (var (index, caret) in (ReadOnlySpan<(int, CaretWithStemAndThumb)>)[(selectionStart, _selectionStartThumbfulCaret), (selectionEnd, _selectionEndThumbfulCaret)])
 			{
-				if (rectNullable is not { } rect)
-				{
-					caret.Hide();
-					continue;
-				}
+				var rect = _textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
+				rect.Width = TextBlock.CaretThickness;
 				var left = rect.GetMidX() - caret.Width / 2;
 				caret.Height = rect.Height + 16;
 				var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
@@ -302,6 +269,10 @@ public partial class TextBox
 				{
 					caret.ShowAt(transform.TransformPoint(new Point(left, rect.Top)), XamlRoot);
 				}
+			}
+			if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing)
+			{
+				_selectionStartThumbfulCaret.Hide();
 			}
 		}
 		else
@@ -408,12 +379,19 @@ public partial class TextBox
 			displayBlock.Selection = new TextBlock.Range(SelectionStart, SelectionStart + SelectionLength);
 			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			displayBlock.RenderSelection = isFocused;
-			var caretShowing = (CaretMode is CaretDisplayMode.ThumblessCaretShowing && _selection.length == 0) || CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-			displayBlock.RenderCaret =
+			if (CaretMode is CaretDisplayMode.ThumblessCaretShowing &&
+				SelectionLength == 0 &&
 				isFocused &&
-				caretShowing &&
-				(CaretMode is CaretDisplayMode.CaretWithThumbsBothEndsShowing || !IsReadOnly) && // If read only, we only show carets on touch.
-				!FeatureConfiguration.TextBox.HideCaret;
+				!IsReadOnly &&
+				!FeatureConfiguration.TextBox.HideCaret)
+			{
+				var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
+				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, brush);
+			}
+			else
+			{
+				displayBlock.RenderCaret = null;
+			}
 			((IBlock)TextBoxView.DisplayBlock).Invalidate(false);
 		}
 	}
