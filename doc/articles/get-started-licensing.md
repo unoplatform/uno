@@ -120,10 +120,10 @@ Uno Platform Studio offers two subscription tiers, Community and Pro. Check out 
 ### Purchase a Pro License
 
 1. Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to view subscription options and current pricing.
-1. Choose your preferred billing cycle (monthly or annual).
+1. Choose your preferred billing cycle (monthly or yearly).
 1. Add how many licenses you want above **Buy Now** Button.
 1. Click **Buy Now** on your selected plan.
-1. If you don't have an Uno Platform account yet, you'll be prompted to create one during the checkout process.
+1. If you don't have a Uno Platform account yet, you'll be prompted to create one during the checkout process.
 1. Complete the payment process and receive your license confirmation email.
 
 ### Hot Design® 30-Day Trial
@@ -145,9 +145,9 @@ The Community version includes a 30-day trial of Hot Design®, no credit card re
 - **Cancellation**: You can cancel your subscription anytime from your [account dashboard](https://platform.uno/my-account)
 - **Billing**: Invoices are sent to your registered email address
 
-## Assigning an Uno Platform Studio Pro License
+## Assigning a Uno Platform Studio Pro License
 
-Once you have purchased an Uno Platform Studio Pro subscription, you may need to assign or activate your license:
+Once you have purchased a Uno Platform Studio Pro subscription, you may need to assign or activate your license:
 
 ### Activating Your License After Purchase
 
@@ -167,7 +167,7 @@ If you notice a small snowflake icon next to the Hot Design® flame icon when ru
 
 ### Troubleshooting License Issues
 
-1. **License Not Showing**: 
+1. **License Not Showing**:
    - Open your IDE settings and access Uno Platform Studio again
    - Click the **Refresh** button to update your account status
    - Ensure you're signed in with the correct Uno Platform account
@@ -183,7 +183,7 @@ If you notice a small snowflake icon next to the Hot Design® flame icon when ru
 
    ![Active subscription image](./studio/Assets/active-subscription-image.png)
 
-1. **Verification**: 
+1. **Verification**:
    - After assignment, return to your IDE settings
    - Click **Refresh** in the Uno Platform Studio window
    - You should see a blue checkmark on Hot Design®, indicating it's ready to use
@@ -193,7 +193,7 @@ If you notice a small snowflake icon next to the Hot Design® flame icon when ru
 
 If you encounter issues during the subscription or licensing process:
 
-1. **Payment Problems**: 
+1. **Payment Problems**:
    - Verify your payment information is correct
    - Check with your bank if the transaction was blocked
    - Try using a different payment method
