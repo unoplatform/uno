@@ -2,4 +2,4 @@ If you're a more experienced developer, you may want to skip this tutorial and j
 
 ## Create the Application
 
-To get started, we're going to use the Uno Platform solution template with the simplest set of options selected. The solution template can be accessed using either Visual Studio's New Project wizard or the command line.
+To get started, we're going to use the Uno Platform solution template with the simplest set of options selected. The solution template can be accessed using either Visual Studio's New Project wizard, command lines or any of the suggested IDEs below.
