@@ -34,8 +34,6 @@
       items:
       - name: Overview
         href: xref:Uno.UI.CommonIssues
-      - name: Sign in with Uno Platform
-        href: xref:Uno.GetStarted.Licensing
       - name: Hot Reload
         topicHref: xref:Uno.Features.HotReload#troubleshooting
       - name: Development Environments
