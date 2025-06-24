@@ -49,7 +49,7 @@ The template will create a solution with a single cross-platform project, named 
 ### [Rider](#tab/rider)
 
 > [!NOTE]
-> If you don't have the **Uno Platform Extension for Visual Studio** installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
+> If you don't have the **Uno Platform Extension for Visual Studio** installed, follow [these instructions](xref:Uno.GetStarted.Rider).
 
 - Launch **Rider** and click on **New Solution** on the Start Window
 
