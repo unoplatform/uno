@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetMobilePreviousAndCurrent);$(NetReferencePreviousAndCurrent)</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<DefineConstants>$(DefineConstants);UNO_MSAL_RUNTIME_SKIA</DefineConstants>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.MSAL.Runtime.Skia</PackageId>
+		<Description>This package provides Skia support for MSAL</Description>
+	</PropertyGroup>
+
+	<Import Project="../../targetframework-override.props" />
+	<ItemGroup>
+	  <Compile Include="..\Uno.UI.MSAL\Extensibility\Impl\DefaultMsalExtension.cs" Link="DefaultMsalExtension.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Reference.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<Choose>
+		<When Condition="$(TargetFramework.Contains('-android'))">
+			<ItemGroup>
+				<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<ProjectReference Include="..\..\Uno.UWP\Uno.Reference.csproj" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
+</Project>

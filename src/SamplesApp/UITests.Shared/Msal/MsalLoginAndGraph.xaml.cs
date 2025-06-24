@@ -1,5 +1,5 @@
 ﻿#if DEBUG // Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617
-#define DISABLE_GRAPH
+//#define DISABLE_GRAPH
 #endif
 using System;
 using System.Collections.Generic;
