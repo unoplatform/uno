@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
@@ -649,11 +650,20 @@ public partial class EntryPoint : IDisposable
 			// (and we prevent a rebuild of the application).
 			try
 			{
-				tcp = new TcpListener(IPAddress.Any, port);
+				var p = port;
+				if (IPGlobalProperties
+					.GetIPGlobalProperties()
+					.GetActiveTcpListeners()
+					.All(ep => ep.Port != p))
+				{
+					// Note: The check bellow should be sufficient to check the port number, but with Windows 26100.4351 and dotnet 9.0.300
+					//		 it will **NOT** throw an exception as we would have expected. We keep this (second) check only for safety.
+					tcp = new TcpListener(IPAddress.Any, port) { ExclusiveAddressUse = true };
 				tcp.Start();
 				tcp.Stop();
 
 				return false;
+			}
 			}
 			catch
 			{
@@ -661,7 +671,7 @@ public partial class EntryPoint : IDisposable
 			}
 		}
 
-		tcp = new TcpListener(IPAddress.Any, 0);
+		tcp = new TcpListener(IPAddress.Any, 0) { ExclusiveAddressUse = true };
 		tcp.Start();
 		port = ((IPEndPoint)tcp.LocalEndpoint).Port;
 		tcp.Stop();
