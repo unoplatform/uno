@@ -11,6 +11,7 @@
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MSAL</AssemblyName>
 		<RootNamespace>Uno.UI.MSAL</RootNamespace>
+		<PackageId>Uno.UI.MSAL</PackageId>
 
 		<!--
 		Required for Catalyst nuget restore to revalidate
