@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿// #define PRINT_FRAME_TIMES
+#nullable enable
 
 using System;
 using System.Collections.Generic;

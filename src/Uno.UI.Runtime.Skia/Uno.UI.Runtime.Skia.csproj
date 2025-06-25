@@ -15,8 +15,6 @@
 		<RootNamespace>Uno.UI.Runtime.Skia</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>

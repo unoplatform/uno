@@ -94,7 +94,7 @@ To upgrade:
     ```csharp
     public static int Main(string[] args)
     {
-        App.InitializeLogging();
+        // code omitted for brevity
 
         Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
 
@@ -111,7 +111,7 @@ To upgrade:
 
     public static async Task Main(string[] args)
     {
-        App.InitializeLogging();
+        // code omitted for brevity
 
         var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())
@@ -123,6 +123,9 @@ To upgrade:
     ```
 
     If your startup code contained a static `_app` field, you can remove it as well. You can also use the top-level program code, as found in the default Uno Platform templates.
+
+> [!NOTE]
+> Removing `SkiaRenderer` from `UnoFeatures` inside the project's `.csproj` file to target native rendering, then setting it back after a new build will raise a runtime Exception. You will need to remove `bin` and `obj` folders, and clear site data of the browser app in order to avoid encountering this exception.
 
 - In your `Platforms/iOS/Main.iOS.cs` change the following:
 
@@ -146,7 +149,7 @@ To upgrade:
 
     public static void Main(string[] args)
     {
-        App.InitializeLogging();
+        // code omitted for brevity
 
         var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())

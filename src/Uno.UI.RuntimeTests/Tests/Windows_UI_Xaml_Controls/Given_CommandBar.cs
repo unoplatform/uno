@@ -178,6 +178,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.IsOpen = true;
 			await WindowHelper.WaitForIdle();
 		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_LoadUnload_CommandBar_IsOpen_Resets_OnReload()
+		{
+			var SUT = new CommandBar
+			{
+				SecondaryCommands =
+				{
+					new AppBarButton { Label = "SecondaryCommand", Name = "SecondaryButton" }
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+
+			var moreBtn = (Button)SUT.FindName("MoreButton");
+			Assert.IsNotNull(moreBtn);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var finger = injector.GetFinger();
+			Point GetCenter(Rect rect) => new Point(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
+			finger.Press(GetCenter(moreBtn.GetAbsoluteBounds()));
+			finger.Release();
+			await Task.Delay(1000);
+			await WindowHelper.WaitForIdle();
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
+			Assert.AreEqual(1, popups.Count);
+
+			var secondary = (AppBarButton)SUT.FindName("SecondaryButton");
+			var sb = secondary.GetAbsoluteBounds();
+			finger.Press(sb.Bottom + 10, (sb.Left + sb.Right) / 2);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+
+			await UITestHelper.Load(SUT);
+			await WindowHelper.WaitForIdle();
+
+			moreBtn = (Button)SUT.FindName("MoreButton");
+			Assert.IsNotNull(moreBtn);
+
+			await Task.Delay(1000);
+			finger.Press(GetCenter(moreBtn.GetAbsoluteBounds()));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
+			Assert.AreEqual(1, popups.Count);
+		}
 	}
 
 #if __APPLE_UIKIT__

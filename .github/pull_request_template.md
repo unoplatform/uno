@@ -1,49 +1,46 @@
-GitHub Issue (If applicable): closes #
+**GitHub Issue:** closes #
 
 <!-- Link to relevant GitHub issue if applicable. All PRs should be associated with an issue (GitHub issue or internal), unless the change is documentation related. -->
 
-## PR Type
+## PR Type:
 
-What kind of change does this PR introduce?
-<!-- Please uncomment one or more that apply to this PR
+<!--
+Copy the labels that apply to this PR and paste them above:
 
-- Bugfix
-- Feature
-- Code style update (formatting)
-- Refactoring (no functional changes, no api changes)
-- Build or CI related changes
-- Documentation content changes
-- Project automation
-- Other... Please describe:
+- 🐞 Bugfix
+- ✨ Feature
+- 🎨 Code style update (formatting)
+- 🔄 Refactoring (no functional changes, no api changes)
+- 🏗️ Build or CI related changes
+- 📚 Documentation content changes
+- 🤖 Project automation
+- 💬 Other... (Please describe)
 
 -->
 
-## What is the current behavior?
+
+## What is the current behavior? 🤔
 
 <!-- Please describe the current behavior that you are modifying, or link to a relevant issue. -->
 
 
-## What is the new behavior?
+## What is the new behavior? 🚀
 
 <!-- Please describe the new behavior after your modifications. -->
 
-## PR Checklist
+## PR Checklist ✅
 
 Please check if your PR fulfills the following requirements:
 
-- [ ] Docs have been added/updated which fit [documentation template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md) (for bug fixes / features)
-- [ ] [Unit Tests and/or UI Tests](https://github.com/unoplatform/uno/blob/master/doc/articles/uno-development/working-with-the-samples-apps.md) for the changes have been added (for bug fixes / features) (if applicable)
-- [ ] Validated PR `Screenshots Compare Test Run` results.
-- [ ] Contains **NO** breaking changes
-- [ ] Associated with an issue (GitHub or internal) and uses the [automatic close keywords](https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue).
-- [ ] Commits must be following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) specification.
+- [ ] 📝 Commits must be following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) specification.
+- [ ] 🧪 Added [Runtime tests, UI tests, or a manual test sample](https://github.com/unoplatform/uno/blob/master/doc/articles/uno-development/working-with-the-samples-apps.md) for the changes have been added (for bug fixes / features) (if applicable)
+- [ ] 📚 Docs have been added/updated which fit [documentation template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md) (for bug fixes / features)
+- [ ] 🖼️ Validated PR `Screenshots Compare Test Run` results.
+- [ ] ❗ Contains **NO** breaking changes
 
 <!-- If this PR contains a breaking change, please describe the impact and migration path for existing applications below.
      Please note that breaking changes are likely to be rejected -->
 
-## Other information
+## Other information ℹ️
 
 <!-- Please provide any additional information if necessary -->
-
-Internal Issue (If applicable):
-<!-- Link to relevant internal issue if applicable. All PRs should be associated with an issue (GitHub issue or internal) -->

@@ -16,8 +16,6 @@
 		<RootNamespace>Uno.WinUI.Runtime.Skia.Linux.FrameBuffer</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>

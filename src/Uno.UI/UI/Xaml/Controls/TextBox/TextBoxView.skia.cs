@@ -107,11 +107,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void OnForegroundChanged(Brush brush)
-		{
-			DisplayBlock.Foreground = brush;
-			_overlayTextBoxViewExtension?.UpdateProperties();
-		}
+		/// <remarks>
+		/// Note that we are intentionally *not* setting the Foreground of DisplayBlock here, as it is inherited from
+		/// ContentElement in TextBox template. If it was set explicitly, the inheritance would no longer apply.
+		/// </remarks>
+		internal void OnForegroundChanged(Brush brush) => _overlayTextBoxViewExtension?.UpdateProperties();
 
 		internal void OnSelectionHighlightColorChanged(SolidColorBrush brush)
 		{

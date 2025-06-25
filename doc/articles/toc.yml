@@ -34,8 +34,6 @@
       items:
       - name: Overview
         href: xref:Uno.UI.CommonIssues
-      - name: Sign in with Uno Platform
-        href: xref:Uno.GetStarted.Licensing
       - name: Hot Reload
         topicHref: xref:Uno.Features.HotReload#troubleshooting
       - name: Development Environments
@@ -123,8 +121,6 @@
         href: xref:Uno.Tutorials.ChangeAppLanguage
       - name: How to integrate SignalR
         href: xref:Uno.Development.SignalR
-      - name: How to update StatusBar color based on dark/light theme
-        href: xref:Uno.Tutorials.StatusBarThemeColor
       - name: How to use MSAL for Azure Authentication
         href: xref:Uno.Interop.MSAL
       - name: How to authenticate with OpenID Connect
@@ -429,35 +425,7 @@
     - name: Hot Reload
       href: xref:Uno.Platform.Studio.HotReload.Overview
     - name: Hot Design
-      href: xref:Uno.HotDesign.Overview
-      items:
-      - name: Overview
-        href: xref:Uno.HotDesign.Overview
-      - name: Getting Started with Hot Design
-        href: xref:Uno.HotDesign.GetStarted.Guide
-      - name: Counter Tutorial
-        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
-      - name: Toolbar
-        href: xref:Uno.HotDesign.Toolbar
-      - name: Toolbox
-        href: xref:Uno.HotDesign.Toolbox
-      - name: Elements
-        href: xref:Uno.HotDesign.Elements
-      - name: Canvas
-        href: xref:Uno.HotDesign.Canvas
-      - name: Properties
-        href: xref:Uno.HotDesign.Properties
-        items:
-        - name: General
-          href: xref:Uno.HotDesign.Properties
-        - name: Editors
-          href: xref:Uno.HotDesign.Properties.Editors
-        - name: Advanced Flyout
-          href: xref:Uno.HotDesign.Properties.AdvancedFlyout
-        - name: Responsive Extensions
-          href: xref:Uno.HotDesign.Properties.AdvancedFlyout.ResponsiveExtensions
-        - name: Template Editor
-          href: xref:Uno.HotDesign.Properties.TemplateEditor
+      href: studio/Hot Design/toc.yml
     - name: Design-to-Code
       href: external/figma-docs/toc.yml
     - name: Feedback

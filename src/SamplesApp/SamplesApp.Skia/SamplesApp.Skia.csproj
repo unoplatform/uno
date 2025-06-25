@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetPrevious)</TargetFrameworks>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -10,8 +9,6 @@
 		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
-
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<!-- In external apps, this will flow from NuGet package props -->
 		<SupportsFontManifest>true</SupportsFontManifest>

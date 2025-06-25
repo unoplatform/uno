@@ -21,7 +21,6 @@
 
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -33,10 +32,9 @@
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" PrivateAssets="all" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.MediaPlayer.Skia.X11\SharedMediaPlayerExtension.cs" />
-		<Compile Remove="SharedMediaPlayerExtension.cs" />
 	</ItemGroup>
 
 	<Target Name="_UnoUIUnoUIMediaPlayerSkiaWin32OverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
@@ -57,5 +55,6 @@
 
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+		<EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\libvlc_init_sample.mp4" />
 	</ItemGroup>
 </Project>

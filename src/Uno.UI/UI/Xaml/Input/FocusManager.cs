@@ -179,6 +179,13 @@ namespace Microsoft.UI.Xaml.Input
 		public static object? GetFocusedElement(XamlRoot xamlRoot) => GetFocusedElementWithRootImpl(xamlRoot);
 
 		/// <summary>
+		/// Retrieves the element being focused within the XAML island container.
+		/// </summary>
+		/// <param name="xamlRoot">XAML island container where to search.</param>
+		/// <returns></returns>
+		internal static object? GetFocusingElement(XamlRoot xamlRoot) => GetFocusingElementWithRootImpl(xamlRoot);
+
+		/// <summary>
 		/// Asynchronously attempts to set focus on an element when the application is initialized.
 		/// </summary>
 		/// <param name="element">The object on which to set focus.</param>

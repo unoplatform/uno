@@ -312,8 +312,14 @@ $projects =
     # Publishing validation
     @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-desktop", "-p:TargetFrameworks=net10.0-desktop", "-p:PackageFormat=app", "-r", "osx-x64"), @("OnlyMacOS", "NetCore", "Publish")),
 
+    # Publish with no debug symbols validation
+    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:TargetFrameworks=net9.0-desktop", "-r", "win-x64", "-p:DebugSymbols=false", "-p:DebugType=None"), @("NetCore", "Publish")),
+
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
+
+    # 5.6 Android/ios/Wasm+Skia nuget package (build first before the app)
+    @(4, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp","NoBuildClean")),
 
     # 5.6 Android/ios/Wasm+Skia
     @(4, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net10.0-browserwasm"), @("macOS", "NetCore")),
@@ -351,6 +357,8 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $runOnlyOnMacOS = $buildOptions -contains "OnlyMacOS"
     $buildWithNetCore = $buildOptions -contains "NetCore"
     $usePublish = $buildOptions -contains "Publish"
+    $cleanNugetCache = $buildOptions -contains "CleanNugetTemp"
+    $NoBuildClean = $buildOptions -contains "NoBuildClean"
 
     if ($TestGroup -ne $projectTestGroup)
     {
@@ -398,7 +406,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
         dotnet $dotnetCommand $release "$projectPath" $projectOptions $extraArgs -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
  
-        dotnet clean $release $projectOptions "$projectPath"
+        if(!$NoBuildClean)
+        {
+            # Cleaning may also remove generated nuget files, even if
+            # OutputPath has been overriden, causing dependents to not find
+            # the pacage.
+            dotnet clean $release $projectOptions "$projectPath"
+        }
     }
     else
     {
@@ -416,5 +430,12 @@ for($i = 0; $i -lt $projects.Length; $i++)
 
             & $msbuild $release /r /t:Clean "$projectPath"
         }
+    }
+
+    if($cleanNugetCache)
+    {
+        # Clean the nuget cache in order to avoid missed lookups when generating test packages
+        dotnet nuget locals temp -c
+        dotnet nuget locals http-cache -c
     }
 }

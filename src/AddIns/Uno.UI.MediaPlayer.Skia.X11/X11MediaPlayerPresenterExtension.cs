@@ -12,12 +12,6 @@ using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 using Uno.WinUI.Runtime.Skia.X11;
 
-[assembly: ApiExtension(
-	typeof(IMediaPlayerPresenterExtension),
-	typeof(Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension),
-	ownerType: typeof(MediaPlayerPresenter),
-	operatingSystemCondition: "linux")]
-
 namespace Uno.UI.MediaPlayer.Skia.X11;
 
 public class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension

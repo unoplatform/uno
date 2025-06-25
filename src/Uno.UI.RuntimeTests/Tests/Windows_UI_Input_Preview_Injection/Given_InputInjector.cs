@@ -76,6 +76,7 @@ public class Given_InputInjector
 			{
 				PointerInfo = new()
 				{
+					PointerId = 42,
 					PixelLocation =
 					{
 						PositionX = (int)targetLocation.X + 100 + 2,
@@ -90,6 +91,7 @@ public class Given_InputInjector
 			{
 				PointerInfo = new()
 				{
+					PointerId = 42,
 					PixelLocation =
 					{
 						PositionX = (int)targetLocation.X + 100 + 2,

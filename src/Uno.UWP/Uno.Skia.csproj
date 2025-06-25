@@ -6,10 +6,6 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<AssemblyName>Uno</AssemblyName>
 		<RootNamespace>Windows</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;HAS_UMBRELLA_UI;HAS_UMBRELLA_BINDING;HAS_CRIPPLEDREFLECTION</DefineConstants>

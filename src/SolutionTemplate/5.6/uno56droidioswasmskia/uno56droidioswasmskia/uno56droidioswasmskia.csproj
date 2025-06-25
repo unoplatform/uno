@@ -30,7 +30,7 @@
     -->
     <UnoFeatures>
       SkiaRenderer;
-      MediaElement;
+      MediaPlayerElement;
       WebView;
     </UnoFeatures>
   </PropertyGroup>
@@ -38,6 +38,11 @@
   <ItemGroup>
     <!-- This file should not cause a duplicate content inclusion on Wasm -->
     <Content Include="TestStaticContent.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- nuget package reference validation -->
+    <PackageReference Include="Uno56NugetLibrary" />
   </ItemGroup>
 
   <Target Name="_UnoValidateSelfAssets" 

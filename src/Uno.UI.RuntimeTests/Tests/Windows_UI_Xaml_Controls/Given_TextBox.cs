@@ -151,6 +151,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
 		}
 
+		[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsEnabled_With_Text_Changes()
+		{
+			var grid = new Grid
+			{
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var textBox = new TextBox
+			{
+				Text = "Hello!",
+				Background = new SolidColorBrush(Colors.Transparent),
+				BorderThickness = new Thickness(0),
+				BorderBrush = new SolidColorBrush(Colors.Transparent),
+				Padding = new Thickness(100),
+			};
+
+			grid.Children.Add(textBox);
+
+			await UITestHelper.Load(grid);
+
+			// Get element marked "ContentElement" from template of textBox
+			var contentElement = textBox.FindFirstChild<ScrollViewer>(tb => tb.Name == "ContentElement");
+
+			var enabledScreenshot = await UITestHelper.ScreenShot(contentElement);
+
+			textBox.IsEnabled = false;
+
+			var disabledScreenshot = await UITestHelper.ScreenShot(contentElement);
+
+			await ImageAssert.AreNotEqualAsync(enabledScreenshot, disabledScreenshot);
+		}
+
 #if __ANDROID__
 		[TestMethod]
 		public void When_InputScope_Null_And_ImeOptions()

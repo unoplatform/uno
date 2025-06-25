@@ -2086,6 +2086,7 @@
 
 	<IgnoreSet baseVersion="6.0">
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.ProgressBarAutomationPeer" reason="Does not exist in WinUI" />
 		</Types>
 
 		<Events>

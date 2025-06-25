@@ -20,6 +20,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private const SKColorType colorType = SKColorType.Rgba8888;
 	private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.TopLeft;
 
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
 	private WinUI.XamlRoot? _xamlRoot;
@@ -165,6 +166,14 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			return;
 		}
 
+		using var _ = _fpsHelper.BeginFrame();
+
+		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			_host.InvalidateRender();
+			return;
+		}
+
 		int width, height;
 
 		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
@@ -230,6 +239,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, _surface.Canvas);
+				_fpsHelper.DrawFps(canvas);
 
 				if (_host.NativeOverlayLayer is { } nativeLayer)
 				{

@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Bianco</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Grigio chiaro</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Grigio</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Grigio scuro</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Nero</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Rosso corallo</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Arancione chiaro</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Marrone rossiccio</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Giallo chiaro</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Verde chiaro</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Verde limone</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Azzurro</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Celeste</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Turchese chiaro</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Blu pallido</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Azzurro</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Blu ghiaccio</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Pervinca</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavanda</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rosso</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Arancione</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Marrone</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Oro</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Giallo</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Terra bruciata</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Verde</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Verde brillante</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Verde acqua</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turchese</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blu</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Grigio blu</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indaco</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Viola</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Rosso scuro</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Giallo scuro</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Verde scuro</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Blu notte</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Blu scuro</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Viola scuro</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Prugna</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>zoom semantico</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>interruttore</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>elemento</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 elementi</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>annullare il trascinamento di %1</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Avanti</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Indietro</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>Play</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Pausa</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Tempo trascorso</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Tempo rimanente</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Stato buffering</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Ricerca</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Muto</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Volume</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Errore</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>Giorno </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Mese </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>Anno </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Ora </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Minuto </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 minuto</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 minuti</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 secondo</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>secondi: %1</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Riduzione grande verticale</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Riduzione piccola verticale</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Taglia</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>seleziona una data</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, oggi</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Meno dettagli</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Cursore verticale</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Altre opzioni per %s</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Trasmetti nel dispositivo</value>
   </data>
@@ -660,6 +711,9 @@
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>interruttore della barra dell'app</value>
   </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Meno barra dell’app per %s</value>
+  </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>Lettore multimediale</value>
   </data>
@@ -715,37 +769,37 @@
     <value>A</value>
   </data>
   <data name="TEXT_VK_ACCEPT" xml:space="preserve">
-    <value>Accept</value>
+    <value>Accetta</value>
   </data>
   <data name="TEXT_VK_ADD" xml:space="preserve">
     <value>+</value>
   </data>
   <data name="TEXT_VK_APPLICATION" xml:space="preserve">
-    <value>Application</value>
+    <value>Applicazione</value>
   </data>
   <data name="TEXT_VK_B" xml:space="preserve">
     <value>B</value>
   </data>
   <data name="TEXT_VK_BACK" xml:space="preserve">
-    <value>Back</value>
+    <value>Indietro</value>
   </data>
   <data name="TEXT_VK_C" xml:space="preserve">
     <value>C</value>
   </data>
   <data name="TEXT_VK_CANCEL" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Annulla</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
-    <value>Caps Lock</value>
+    <value>BLOC MAIUSC</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
-    <value>Clear</value>
+    <value>Cancella</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
     <value>Ctrl</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
-    <value>Convert</value>
+    <value>Converti</value>
   </data>
   <data name="TEXT_VK_D" xml:space="preserve">
     <value>D</value>
@@ -754,19 +808,19 @@
     <value>.</value>
   </data>
   <data name="TEXT_VK_DELETE" xml:space="preserve">
-    <value>Delete</value>
+    <value>Canc</value>
   </data>
   <data name="TEXT_VK_DIVIDE" xml:space="preserve">
     <value>/</value>
   </data>
   <data name="TEXT_VK_DOWN" xml:space="preserve">
-    <value>Down</value>
+    <value>Freccia GIÙ</value>
   </data>
   <data name="TEXT_VK_E" xml:space="preserve">
     <value>E</value>
   </data>
   <data name="TEXT_VK_END" xml:space="preserve">
-    <value>End</value>
+    <value>Fine</value>
   </data>
   <data name="TEXT_VK_ENTER" xml:space="preserve">
     <value>INVIO</value>
@@ -775,7 +829,7 @@
     <value>Esc</value>
   </data>
   <data name="TEXT_VK_EXECUTE" xml:space="preserve">
-    <value>Execute</value>
+    <value>Esegui</value>
   </data>
   <data name="TEXT_VK_F" xml:space="preserve">
     <value>F</value>
@@ -853,10 +907,10 @@
     <value>F9</value>
   </data>
   <data name="TEXT_VK_FAVORITES" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Preferiti</value>
   </data>
   <data name="TEXT_VK_FINAL" xml:space="preserve">
-    <value>Final</value>
+    <value>Finale</value>
   </data>
   <data name="TEXT_VK_G" xml:space="preserve">
     <value>G</value>
@@ -934,13 +988,13 @@
     <value>GamepadY</value>
   </data>
   <data name="TEXT_VK_GOBACK" xml:space="preserve">
-    <value>GoBack</value>
+    <value>VaiIndietro</value>
   </data>
   <data name="TEXT_VK_GOFORWARD" xml:space="preserve">
-    <value>GoForward</value>
+    <value>VaiAvanti</value>
   </data>
   <data name="TEXT_VK_GOHOME" xml:space="preserve">
-    <value>GoHome</value>
+    <value>VaiHome</value>
   </data>
   <data name="TEXT_VK_H" xml:space="preserve">
     <value>H</value>
@@ -952,7 +1006,7 @@
     <value>Hanja</value>
   </data>
   <data name="TEXT_VK_HELP" xml:space="preserve">
-    <value>Help</value>
+    <value>Guida</value>
   </data>
   <data name="TEXT_VK_HOME" xml:space="preserve">
     <value>Home</value>
@@ -961,7 +1015,7 @@
     <value>I</value>
   </data>
   <data name="TEXT_VK_INSERT" xml:space="preserve">
-    <value>Insert</value>
+    <value>INS</value>
   </data>
   <data name="TEXT_VK_J" xml:space="preserve">
     <value>J</value>
@@ -976,10 +1030,10 @@
     <value>L</value>
   </data>
   <data name="TEXT_VK_LEFT" xml:space="preserve">
-    <value>Left</value>
+    <value>Freccia SINISTRA</value>
   </data>
   <data name="TEXT_VK_LEFTBUTTON" xml:space="preserve">
-    <value>LeftButton</value>
+    <value>PulsanteSinistro</value>
   </data>
   <data name="TEXT_VK_M" xml:space="preserve">
     <value>M</value>
@@ -988,10 +1042,10 @@
     <value>ALT</value>
   </data>
   <data name="TEXT_VK_MIDDLEBUTTON" xml:space="preserve">
-    <value>MiddleButton</value>
+    <value>PulsanteMouse</value>
   </data>
   <data name="TEXT_VK_MODECHANGE" xml:space="preserve">
-    <value>ModeChange</value>
+    <value>CambiaModalità</value>
   </data>
   <data name="TEXT_VK_MULTIPLY" xml:space="preserve">
     <value>*</value>
@@ -1000,34 +1054,34 @@
     <value>N</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONACCEPT" xml:space="preserve">
-    <value>NavigationAccept</value>
+    <value>AccettaNavigazione</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONCANCEL" xml:space="preserve">
-    <value>NavigationCancel</value>
+    <value>AnnullaNavigazione</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONDOWN" xml:space="preserve">
-    <value>NavigationDown</value>
+    <value>NavigazioneGiù</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONLEFT" xml:space="preserve">
-    <value>NavigationLeft</value>
+    <value>NavigazioneSinistra</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONMENU" xml:space="preserve">
-    <value>NavigationMenu</value>
+    <value>MenuNavigazione</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONRIGHT" xml:space="preserve">
-    <value>NavigationRight</value>
+    <value>NavigazioneDestra</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONUP" xml:space="preserve">
-    <value>NavigationUp</value>
+    <value>NavigazioneSu</value>
   </data>
   <data name="TEXT_VK_NAVIGATIONVIEW" xml:space="preserve">
-    <value>NavigationView</value>
+    <value>VisualizzaNavigazione</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>Non convertire</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Nessuno</value>
   </data>
   <data name="TEXT_VK_NUMBER0" xml:space="preserve">
     <value>0</value>
@@ -1060,7 +1114,7 @@
     <value>9</value>
   </data>
   <data name="TEXT_VK_NUMBERKEYLOCK" xml:space="preserve">
-    <value>Num Lock</value>
+    <value>Bloc Num</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD0" xml:space="preserve">
     <value>Num 0</value>
@@ -1099,16 +1153,16 @@
     <value>P</value>
   </data>
   <data name="TEXT_VK_PAGEDOWN" xml:space="preserve">
-    <value>PageDown</value>
+    <value>PGGIÙ</value>
   </data>
   <data name="TEXT_VK_PAGEUP" xml:space="preserve">
-    <value>PageUp</value>
+    <value>PGSU</value>
   </data>
   <data name="TEXT_VK_PAUSE" xml:space="preserve">
-    <value>Pause</value>
+    <value>Pausa</value>
   </data>
   <data name="TEXT_VK_PRINT" xml:space="preserve">
-    <value>Print</value>
+    <value>Stamp</value>
   </data>
   <data name="TEXT_VK_Q" xml:space="preserve">
     <value>Q</value>
@@ -1117,34 +1171,34 @@
     <value>R</value>
   </data>
   <data name="TEXT_VK_REFRESH" xml:space="preserve">
-    <value>Refresh</value>
+    <value>Aggiorna</value>
   </data>
   <data name="TEXT_VK_RIGHT" xml:space="preserve">
-    <value>Right</value>
+    <value>Freccia DESTRA</value>
   </data>
   <data name="TEXT_VK_RIGHTBUTTON" xml:space="preserve">
-    <value>RightButton</value>
+    <value>PulsanteDestro</value>
   </data>
   <data name="TEXT_VK_S" xml:space="preserve">
     <value>S</value>
   </data>
   <data name="TEXT_VK_SCROLL" xml:space="preserve">
-    <value>Scroll Lock</value>
+    <value>BLOC SCORR</value>
   </data>
   <data name="TEXT_VK_SEARCH" xml:space="preserve">
-    <value>Search</value>
+    <value>Cerca</value>
   </data>
   <data name="TEXT_VK_SELECT" xml:space="preserve">
-    <value>Select</value>
+    <value>Seleziona</value>
   </data>
   <data name="TEXT_VK_SEPARATOR" xml:space="preserve">
-    <value>Separator</value>
+    <value>Separatore</value>
   </data>
   <data name="TEXT_VK_SHIFT" xml:space="preserve">
     <value>MAIUSC</value>
   </data>
   <data name="TEXT_VK_SLEEP" xml:space="preserve">
-    <value>Sleep</value>
+    <value>Sospendi</value>
   </data>
   <data name="TEXT_VK_SNAPSHOT" xml:space="preserve">
     <value>Snapshot</value>
@@ -1153,7 +1207,7 @@
     <value>BARRA SPAZIATRICE</value>
   </data>
   <data name="TEXT_VK_STOP" xml:space="preserve">
-    <value>Stop</value>
+    <value>Interr</value>
   </data>
   <data name="TEXT_VK_SUBTRACT" xml:space="preserve">
     <value>-</value>
@@ -1168,7 +1222,7 @@
     <value>U</value>
   </data>
   <data name="TEXT_VK_UP" xml:space="preserve">
-    <value>Up</value>
+    <value>Freccia SU</value>
   </data>
   <data name="TEXT_VK_V" xml:space="preserve">
     <value>V</value>
@@ -1183,10 +1237,10 @@
     <value>X</value>
   </data>
   <data name="TEXT_VK_XBUTTON1" xml:space="preserve">
-    <value>XButton1</value>
+    <value>PulsanteX1</value>
   </data>
   <data name="TEXT_VK_XBUTTON2" xml:space="preserve">
-    <value>XButton2</value>
+    <value>PulsanteX2</value>
   </data>
   <data name="TEXT_VK_Y" xml:space="preserve">
     <value>Y</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME DISATTIVATO</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Bianco</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 ora</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Grigio chiaro</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 ore</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Grigio</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 minuto</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Grigio scuro</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 minuti</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Nero</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 secondo</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Rosso corallo</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>secondi: %1</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Rosa</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>posizione %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Arancione chiaro</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>posizione %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Marrone rossiccio</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Giallo chiaro</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Verde chiaro</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Verde limone</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Azzurro</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Celeste</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Turchese chiaro</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Blu pallido</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Azzurro</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Blu ghiaccio</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Pervinca</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Lavanda</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Rosa</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Rosso</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Arancione</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Marrone</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Oro</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Giallo</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Terra bruciata</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Verde</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Verde brillante</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Verde acqua</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Turchese</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Blu</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Grigio blu</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Indaco</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Viola</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Rosso scuro</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Giallo scuro</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Verde scuro</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Blu notte</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Blu scuro</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Viola scuro</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Prugna</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Chiudi</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

@@ -14,12 +14,14 @@ using SkiaSharp;
 using UIKit;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit
 {
 	[Register(nameof(UnoSKMetalView))]
 	internal sealed class UnoSKMetalView : MTKView, IMTKViewDelegate
 	{
+		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 		private readonly GRContext? _context;
 		private readonly IMTLCommandQueue? _queue;
 		private readonly Action _onFrameDrawn;
@@ -120,10 +122,11 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		public void QueueRender()
 		{
 			var recorder = new SKPictureRecorder();
-			var canvas = recorder.BeginRecording(new SKRect(-9999, -9999, 9999, 9999));
+			var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
 				_owner!.OnPaintSurfaceInner(canvas);
+				_fpsHelper.Scale = (float?)AppManager.XamlRootMap.GetRootForHost(_owner)?.RasterizationScale;
 
 				var picture = recorder.EndRecording();
 
@@ -147,6 +150,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		void IMTKViewDelegate.Draw(MTKView view)
 		{
+			using var _ = _fpsHelper.BeginFrame();
 			_onFrameDrawn();
 
 #if REPORT_FPS
@@ -184,6 +188,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 					if (currentPicture is { } picture)
 					{
 						canvas.DrawPicture(picture);
+						_fpsHelper.DrawFps(canvas);
 					}
 				}
 

@@ -5,7 +5,6 @@
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<!-- We need all the intermediate assemblies -->
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>

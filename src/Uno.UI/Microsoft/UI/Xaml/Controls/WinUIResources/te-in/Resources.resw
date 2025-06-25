@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>తెలుపు</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>లేత బూడిద రంగు</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>బూడిద రంగు</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ముదురు బూడిద రంగు</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>నలుపు</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>కోరల్</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>గులాబీ రంగు</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>లేత నారింజ రంగు</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ట్యాన్</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>లేత పసుపు</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>లేత ఆకుపచ్చ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>నిమ్మపండు రంగు</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>సముద్రనీలం</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ఆకాశనీలం</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>లేత నీలం</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>లేత నీలం</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>లేత నీలం</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>మంచు నీలం</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>పెరీ వింకిల్</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>లావెండర్</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>గులాబి</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ఎరుపు</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>బ్రౌన్</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>బ్రౌన్</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>బంగారం రంగు</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>పసుపు</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ఆలివ్ ఆకుపచ్చ</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>ఆకుపచ్చ</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ప్రకాశవంతమైన ఆకుపచ్చ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>టీల్</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ఆకాశనీలం</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>నీలం</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>నీలం-బూడిద రంగు</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ఇండిగో</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>పర్పుల్</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ముదురు ఎరుపు</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>ముదురు పసుపు</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ముదురు ఆకుపచ్చ</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ముదురు నీలపు ఆకుపచ్చ</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ముదురు నీలం</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ముదురు ఊదా రంగు</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>నేరేడు రంగు</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>అర్థ జూమ్</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>టోగుల్ స్విచ్</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>అంశం</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 అంశాలు</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>%1ను లాగడాన్ని రద్దు చేయి</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>తదుపరి</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>మునుపటి</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>ప్లే చేయి</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>పాజ్ చేయి</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>పూర్తయిన సమయం</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>మిగిలి ఉన్న సమయం</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>బఫరింగ్ చేయడం ప్రోగ్రెస్ అవుతోంది</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>వెతుకు</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>మ్యూట్ చేయి</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>వాల్యూమ్</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>దోషం</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>రోజు</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>నెల</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>సంవత్సరం</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>గంట</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>నిమిషం</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 నిమిషం</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 నిమిషాలు</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 సెకను</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 సెకన్లు</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>లంబ పెద్ద తగ్గింపు</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>లంబ చిన్న తగ్గింపు</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>కత్తిరించు</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>తేదీని ఎంచుకోండి</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, నేడు</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>తక్కువ చూడండి</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>లంబ థంబ్</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s కోసం మరిన్ని ఎంపికలు</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>పరికరానికి కాస్ట్ చేయి</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>అప్లికేషన్ బార్ టోగుల్ బటన్</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s కోసం తక్కువ యాప్ బార్</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>మీడియా ప్లేయర్</value>
@@ -736,16 +790,16 @@
     <value>రద్దు చేయి</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
-    <value>Caps Lock</value>
+    <value>క్యాప్స్ లాక్</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
     <value>క్లియర్ చేయి</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
-    <value>Ctrl</value>
+    <value>కంట్రోల్</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
-    <value>Convert</value>
+    <value>మార్పిడి చేయి</value>
   </data>
   <data name="TEXT_VK_D" xml:space="preserve">
     <value>D</value>
@@ -766,10 +820,10 @@
     <value>E</value>
   </data>
   <data name="TEXT_VK_END" xml:space="preserve">
-    <value>End</value>
+    <value>ముగింపు</value>
   </data>
   <data name="TEXT_VK_ENTER" xml:space="preserve">
-    <value>Enter</value>
+    <value>ఎంటర్</value>
   </data>
   <data name="TEXT_VK_ESCAPE" xml:space="preserve">
     <value>ఎక్సేప్</value>
@@ -1024,7 +1078,7 @@
     <value>నావిగేషన్ వీక్షణ</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>మార్పిడి చేయవద్దు</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
     <value>ఏదీకాదు</value>
@@ -1060,7 +1114,7 @@
     <value>9</value>
   </data>
   <data name="TEXT_VK_NUMBERKEYLOCK" xml:space="preserve">
-    <value>Num Lock</value>
+    <value>నంబర్ లాక్</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD0" xml:space="preserve">
     <value>నం 0</value>
@@ -1105,7 +1159,7 @@
     <value>పేజీ ఎగువకు</value>
   </data>
   <data name="TEXT_VK_PAUSE" xml:space="preserve">
-    <value>Pause</value>
+    <value>పాజ్ చేయి</value>
   </data>
   <data name="TEXT_VK_PRINT" xml:space="preserve">
     <value>ప్రింట్</value>
@@ -1129,7 +1183,7 @@
     <value>S</value>
   </data>
   <data name="TEXT_VK_SCROLL" xml:space="preserve">
-    <value>Scroll Lock</value>
+    <value>స్క్రోల్ లాక్</value>
   </data>
   <data name="TEXT_VK_SEARCH" xml:space="preserve">
     <value>శోధన</value>
@@ -1141,7 +1195,7 @@
     <value>విభాజకం</value>
   </data>
   <data name="TEXT_VK_SHIFT" xml:space="preserve">
-    <value>Shift</value>
+    <value>షిఫ్ట్</value>
   </data>
   <data name="TEXT_VK_SLEEP" xml:space="preserve">
     <value>నిద్రాణ స్థితి</value>
@@ -1150,7 +1204,7 @@
     <value>స్నాప్‌షాట్</value>
   </data>
   <data name="TEXT_VK_SPACE" xml:space="preserve">
-    <value>Space</value>
+    <value>స్పేస్</value>
   </data>
   <data name="TEXT_VK_STOP" xml:space="preserve">
     <value>Space</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ఆఫ్ చేయి</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>తెలుపు</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 గంట</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>లేత బూడిద రంగు</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 గంటలు</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>బూడిద రంగు</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 నిమిషం</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>ముదురు బూడిద రంగు</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 నిమిషాలు</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>నలుపు</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 సెకను</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>కోరల్</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 సెకన్లు</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>గులాబీ రంగు</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>స్థానం %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>లేత నారింజ రంగు</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>స్థానం %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>ట్యాన్</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>లేత పసుపు</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>లేత ఆకుపచ్చ</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>నిమ్మపండు రంగు</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>సముద్రనీలం</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>ఆకాశనీలం</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>లేత నీలం</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>లేత నీలం</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>లేత నీలం</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>మంచు నీలం</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>పెరీ వింకిల్</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>లావెండర్</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>గులాబి</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>ఎరుపు</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>బ్రౌన్</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>బ్రౌన్</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>బంగారం రంగు</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>పసుపు</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>ఆలివ్ ఆకుపచ్చ</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>ఆకుపచ్చ</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>ప్రకాశవంతమైన ఆకుపచ్చ</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>టీల్</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>ఆకాశనీలం</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>నీలం</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>నీలం-బూడిద రంగు</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>ఇండిగో</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>పర్పుల్</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>ముదురు ఎరుపు</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>ముదురు పసుపు</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>ముదురు ఆకుపచ్చ</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>ముదురు నీలపు ఆకుపచ్చ</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>ముదురు నీలం</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>ముదురు ఊదా రంగు</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>నేరేడు రంగు</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>మూసివేయి</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

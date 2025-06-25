@@ -70,7 +70,7 @@ Here are the supported features:
 | `Lottie`             | Adds support for [Lottie animations](xref:Uno.Features.Lottie).                                                                                                                                                                            |
 | `Material`           | Adds support for the [Material Design Theme](xref:Uno.Themes.Material.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Material Design Toolkit](xref:Toolkit.GettingStarted.Material) library.     |
 | `MauiEmbedding`      | Adds support for [embedding Maui controls in Uno Platform applications](xref:Uno.Extensions.Maui.Overview).                                                                                                                                |
-| `MediaElement`       | Adds native references where needed to use [MediaElement](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.mediaelement).                                                                                                |
+| `MediaPlayerElement`       | Adds native references where needed to use [MediaPlayerElement](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.mediaplayerelement).                                                                                                |
 | `Mvvm`               | Adds support for the [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm) package.                                                                                                                                |
 | `MVUX`               | Adds support for [MVUX](xref:Uno.Extensions.Mvux.Overview).                                                                                                                                                                                |
 | `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
@@ -278,15 +278,21 @@ Many Uno projects and libraries make use of a `winappsdk-workaround.targets` fil
 
 By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. The supported file extensions are as shown below:
 
-- `*.crossruntime.cs` (WASM, Skia, or Reference)
 - `*.wasm.cs` (WebAssembly)
-- `*.skia.cs` (Skia)
-- `*.reference.cs` (Reference only)
-- `*.iOS.cs`, `*.iOSmacOS.cs` (iOS)
+- `*.desktop.cs` (Desktop)
+- `*.iOS.cs` (iOS)
 - `*.tvOS.cs`(tvOS)
 - `*.UIKit.cs`, `*.Apple.cs` (iOS & tvOS)
 - `*.Android.cs` (Android)
 - `*.WinAppSDK.cs` (Windows App SDK)
+
+For class libraries we also provide:
+
+- `*.reference.cs` (Reference only)
+- `*.crossruntime.cs` (WebAssembly, Desktop, or Reference)
+
+> [!NOTE]
+> For backwards compatibility, using `.skia.cs` is currently equivalent to `.desktop.cs`. This might change in the future, so we recommend using the suffixes above instead.
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
 

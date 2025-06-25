@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
@@ -12,6 +13,7 @@ using Windows.UI.ViewManagement;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.GdiPlus;
+using Windows.Win32.UI.HiDpi;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -28,6 +30,7 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.Graphics;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -90,10 +93,20 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		{
 			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => Activator.CreateInstance(mediaExtensionType, player)!);
 		}
+		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
 	}
 
-	public Win32Host(Func<Application> appBuilder)
+	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)
 	{
+	}
+
+	public Win32Host(Func<Application> appBuilder, bool preloadVlc)
+	{
+		if (preloadVlc && Type.GetType("Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.Win32") is { } mediaExtensionType)
+		{
+			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
+		}
+
 		_appBuilder = appBuilder;
 		Win32EventLoop.Schedule(() =>
 		{

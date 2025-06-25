@@ -1,25 +1,30 @@
-name: Bug Report
-description: Report a bug encountered while developing with Uno
-labels: [kind/bug, triage/untriaged, difficulty/tbd]
+name: "🐞 Bug Report"
+description: "Report a bug encountered while developing with Uno 🚨"
+labels: [triage/untriaged, difficulty/tbd]
+type: "Bug"
 body:
   - type: textarea
     id: current-behavior
     attributes:
-      label: Current behavior
-      description: Describe how the issue manifests
+      label: "Current behavior 🐛"
+      description: "Describe how the issue manifests. What went wrong?"
+    validations:
+      required: true
+
   - type: textarea
     id: expected-behavior
     attributes:
-      label: Expected behavior
-      description: Describe what the desired behavior should be.
+      label: "Expected behavior 🎯"
+      description: "Describe what the desired behavior should be. What did you expect?"
+
   - type: textarea
     id: how-to-reproduce
     attributes:
-      label: How to reproduce it (as minimally and precisely as possible)
+      label: "How to reproduce it (as minimally and precisely as possible) 🔬"
       description: |
                     Please provide a **MINIMAL REPRO PROJECT** and the **STEPS TO REPRODUCE**
 
-                    To create a minimal reproduction project:
+                    To create a minimal reproduction project: 📦 
 
                     - Create an Uno app through:
                     - `dotnet new install Uno.Templates` and `dotnet new unoapp`
@@ -29,94 +34,58 @@ body:
                     - Remove all the `obj/bin` folders and zip the folder.
                     - Attach the zip file to the issue
 
-                    If the issue is visible on WebAssembly and uses only XAML:
+                    If the issue is visible on WebAssembly and uses only XAML: 🌐
 
                     - Visit https://playground.platform.uno
                     - Add your code and data context as needed
                     - Create a link and paste it here
-
   - type: textarea
     id: workaround
     attributes:
-      label: Workaround
-      description: Please provide steps to workaround this problem if possible
-  - type: dropdown
-    id: works-uwp-winui
-    attributes:
-      label: Works on UWP/WinUI
-      description: |
-                    To make sure this is an Uno Platform specific issue, try running your sample application on Windows using the UWP or WinUI project. If it does not work on Windows either, it may be a Windows issue or it may be a documentation issue.
-                    In this case, [open a discussion](https://github.com/unoplatform/uno/discussions) instead.
-      options:
-        - 'Yes'
-        - 'No'
-
-  - type: dropdown
-    id: environment
-    attributes:
-      label: Environment
-      description: NuGet package(s)
-      multiple: true
-      options:
-        - Uno.WinUI / Uno.WinUI.WebAssembly / Uno.WinUI.Skia
-        - Uno.SourceGenerationTasks
-        - Uno.WinUI.DevServer
-        - Other
-
-  - type: textarea
-    id: nuget-versions
-    attributes:
-      label: NuGet package version(s)
+      label: "Workaround 🛠️"
+      description: "Please provide steps to workaround this problem if possible. Got a hack? Share it! 💡"
 
   - type: checkboxes
     id: renderer
     attributes:
-      label: Renderer
+      label: "Renderer 🎨"
+      description: "Select the renderer you are using. Your application is using Skia if you find `SkiaRenderer` in your `.csproj` project file."
       options:
-        - label: Skia
-        - label: Native
+        - label: "Skia"
+        - label: "Native"
 
   - type: dropdown
     id: platforms
     attributes:
-      label: Affected platforms
-      multiple: true
-      options:        
-        - WebAssembly
-        - Android
-        - iOS
-        - Desktop (Windows)
-        - Desktop (macOS)
-        - Desktop (X11)
-        - Desktop (Linux Framebuffer)
-        - Windows App SDK
-        - Build tasks
-
-  - type: dropdown
-    id: ide
-    attributes:
-      label: IDE
+      label: "Affected platforms 📱💻🖥️"
+      description: "Select the platforms for which your issue is relevant 🌍"
       multiple: true
       options:
-        - Visual Studio 2022
-        - Visual Studio Code
-        - Rider Windows
-        - Rider macOS
-        - Rider Linux
-
-  - type: input
-    id: ide-version
-    attributes:
-      label: IDE version
+        - "All platforms 🌍"
+        - "WebAssembly"
+        - "Android"
+        - "iOS"
+        - "Desktop (Windows)"
+        - "Desktop (macOS)"
+        - "Desktop (X11)"
+        - "Desktop (Linux Framebuffer)"
+        - "Windows App SDK"
+        - "Build tasks"
 
   - type: textarea
-    id: plugins
+    id: nuget-versions
     attributes:
-      label: Relevant plugins
-      description: For example, ReSharper version X
+      label: "Uno.Sdk version (and other relevant versions) 📦"
+      description: "Please provide the version of the Uno.Sdk you are using. This can be found in the `global.json` file."
+
+  - type: input
+    id: ide
+    attributes:
+      label: "IDE version 🧑‍💻"
+      description: "Please provide the full name and version of the IDE you are using, e.g. `Visual Studio 2022 17.14.2`."
 
   - type: textarea
     id: additional-info
     attributes:
-      label: Anything else we need to know?
-      description: We would love to know of any friction, apart from knowledge, that prevented you from sending in a pull-request
+      label: "Anything else we need to know? 💬"
+      description: "We would love to know of any friction, apart from knowledge, that prevented you from sending in a pull-request"

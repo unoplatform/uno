@@ -17,6 +17,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
 internal class SoftwareWpfRenderer : IWpfRenderer
 {
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
 	private WriteableBitmap? _bitmap;
@@ -47,6 +48,13 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			return;
 		}
 
+		using var _ = _fpsHelper.BeginFrame();
+
+		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			_host.InvalidateRender();
+			return;
+		}
 
 		int width, height;
 
@@ -91,6 +99,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 					rootVisual.Compositor.IsSoftwareRenderer = true;
 
 					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
+					_fpsHelper.DrawFps(canvas);
 
 					if (_host.NativeOverlayLayer is { } nativeLayer)
 					{

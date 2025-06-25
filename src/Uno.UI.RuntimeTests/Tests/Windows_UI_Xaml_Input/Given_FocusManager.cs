@@ -337,6 +337,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[Ignore("This test is flaky on CI, see #9080")]
 		public async Task When_Page_Navigates_Back_With_Outer_Before()
 		{
 			var stackPanel = new StackPanel();
@@ -565,6 +566,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			Assert.IsFalse(SUT.NavigationViewControl.IsPaneOpen);
 		}
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Focus_Same_Input_Multiple_Times()
+		{
+			const int waitAfterFocus = 600;
+			var SUT = new NavigationViewPage();
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var suggestBox = SUT.SearchBox;
+			var rootGrid = SUT.RootGrid;
+
+			for (var x = 0; x < 6; x++)
+			{
+				SUT.NavigationViewControl.IsPaneOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				suggestBox.Focus(FocusState.Pointer);
+				await Task.Delay(waitAfterFocus);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				rootGrid.Focus(FocusState.Pointer);
+				await Task.Delay(waitAfterFocus);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			// No need to assert. Test will crash when the focus logic is broken.
+		}
 
 		private async Task WaitForLoadedEvent(FocusNavigationPage page)
 		{

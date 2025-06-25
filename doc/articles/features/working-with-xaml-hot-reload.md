@@ -116,39 +116,39 @@ For existing applications, take this opportunity to update to the [latest **Uno.
         <tr>
             <td>Desktop<br /><small><code>net10.0-desktop</code></code></small></td>
             <td>✅</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
         <tr>
             <td>Desktop - WSL<br /><small><code>net10.0-desktop</code></small></td>
             <td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td><td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td><td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[2]</a></sup><sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌<sup><a href="#hr-footnotes">[2]</a></sup></td>
         </tr>
         <tr>
             <td>iOS<br /><small><code>net10.0-ios</code></small></td>
-            <td>✅</a></sup></td><td>🔳</td>
-            <td>✅🛜</a></td><td>✅🛜</td>
-            <td>🔳</a></td><td>✅</td>
+            <td>✅</a></sup></td><td>❌</td>
+            <td>🛜</a></td><td>🛜</td>
+            <td>❌</a></td><td>✅</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net10.0-android</code></small></td>
-            <td>✅</td><td>🔳</td>
+            <td>✅</td><td>❌</td>
             <td>✅</a></td><td>✅</td>
-            <td>🔳</a></td><td>✅</td>
+            <td>❌</a></td><td>✅</td>
         </tr>
         </tr>
         <tr>
             <td>WinAppSDK<br /><small><code>net10.0-windows10.x.x</code></small></td>
             <td>✅<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>WebAssembly<br /><small><code>net10.0-browserwasm</code></small></td>
             <td>✅</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
     </tbody>
 </table>
@@ -173,33 +173,33 @@ For existing applications, take this opportunity to update to the [latest **Uno.
     <tbody>
         <tr>
             <td>Desktop<br /><small><code>net10.0-desktop</code></code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
         <tr>
             <td>Desktop - WSL<br /><small><code>net10.0-desktop</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>iOS<br /><small><code>net10.0-ios</code></small></td>
             <td>✅</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌</td><td>✅</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net10.0-android</code></small></td>
             <td>✅</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌</td><td>✅</td>
         </tr>
         <tr>
             <td>WinAppSDK<br /><small><code>net10.0-windows10.x.x</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>WebAssembly<br /><small><code>net10.0-browserwasm</code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
     </tbody>
 </table>
@@ -224,33 +224,33 @@ For existing applications, take this opportunity to update to the [latest **Uno.
     <tbody>
         <tr>
             <td>Desktop<br /><small><code>net10.0-desktop</code></code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
         <tr>
             <td>Desktop - WSL<br /><small><code>net10.0-desktop</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>iOS<br /><small><code>net10.0-ios</code></small></td>
-            <td>✅🛜</td><td>✅🛜</td>
-            <td>🔳</td><td>🔳</td>
+            <td>🛜</td><td>🛜</td>
+            <td>❌</td><td>❌</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net10.0-android</code></small></td>
             <td>✅</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌</td><td>✅</td>
         </tr>
         <tr>
             <td>WinAppSDK<br /><small><code>net10.0-windows10.x.x</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>WebAssembly<br /><small><code>net10.0-browserwasm</code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
     </tbody>
 </table>
@@ -262,7 +262,7 @@ Legend:
 - ✅ Supported
 - 🛜 Supported through [SSH to a Mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
 - ⌛ Upcoming support
-- 🔳 Not supported by the environment/IDE
+- ❌ Currently not supported by the environment/IDE
 
 ### Notes
 
@@ -272,6 +272,8 @@ Legend:
 - [2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
 - [3]: Unpackaged: C# & XAML / Packaged: XAML only
 - [4]: Unpackaged: C# / Packaged: none
+- [5]: VS Code Desktop and WASM [requested](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372)
+- [6]: Rider Desktop and WASM [requested](https://youtrack.jetbrains.com/issue/RIDER-124189/MetadataUpdateHandlerAttribute-Not-Working-On-Hot-Reload)
 
 ## Supported features per Platform
 

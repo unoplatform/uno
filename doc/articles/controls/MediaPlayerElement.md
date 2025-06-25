@@ -72,12 +72,12 @@ To add video playback functionality, include the following XAML snippet:
                     AreTransportControlsEnabled="True" />
 ```
 
-Make sure to enable the required feature in your `UnoFeatures` to include the necessary packages. Add `MediaElement;` as shown below:
+Make sure to enable the required feature in your `UnoFeatures` to include the necessary packages. Add `MediaPlayerElement;` as shown below:
 
 ```diff
 <UnoFeatures>
 <!-- Existing features -->
-+  MediaElement;
++  MediaPlayerElement;
 </UnoFeatures>
 ```
 
@@ -106,6 +106,18 @@ Add the following to your AndroidManifest.xml
 <uses-permission android:name="android.permission.INTERNET" />
 <!-- Required to keep the screen on while playing -->
 <uses-permission android:name="android.permission.WAKE_LOCK" />
+```
+
+### Skia
+
+On some weaker devices, the first load of a `MediaPlayerElement` instance is extremely slow. To attempt to preload media playback resources on app startup, enable the `PreloadMediaPlayer` option in the host builder where supported.
+
+```csharp
+var host = UnoPlatformHostBuilder.Create()
+            .App(() => new App())
+            .UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
+            .UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
+            .Build();
 ```
 
 ## Future improvement

@@ -1962,6 +1962,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		private static DependencyPropertyChangedEventArgsPool _dpChangedEventArgsPool =
+			new(Uno.UI.FeatureConfiguration.DependencyProperty.DependencyPropertyChangedEventArgsPoolSize);
+
 		private void InvokeCallbacks(
 			DependencyObject actualInstanceAlias,
 			DependencyProperty property,
@@ -2034,16 +2037,19 @@ namespace Microsoft.UI.Xaml
 			// dependency property value through the cache.
 			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
 
-			DependencyPropertyChangedEventArgs? eventArgs = null;
+			var eventArgs = _dpChangedEventArgsPool.Rent();
+			eventArgs.PropertyInternal = property;
+			eventArgs.OldValueInternal = previousValue;
+			eventArgs.NewValueInternal = newValue;
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS
+			eventArgs.OldPrecedenceInternal = previousPrecedence;
+			eventArgs.NewPrecedenceInternal = newPrecedence;
+			eventArgs.BypassesPropagationInternal = bypassesPropagation;
+#endif
 
 			// Raise the changes for the callback register to the property itself
 			if (propertyMetadata.HasPropertyChanged)
 			{
-				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
-#endif
-				);
 				propertyMetadata.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
 			}
 
@@ -2055,22 +2061,12 @@ namespace Microsoft.UI.Xaml
 			// but before the registered property callbacks
 			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
-				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
-#endif
-);
 				doInternal.OnPropertyChanged2(eventArgs);
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
 			if (propertyDetails.CanRaisePropertyChanged)
 			{
-				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
-#endif
-				);
 				propertyDetails.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
 			}
 
@@ -2079,13 +2075,14 @@ namespace Microsoft.UI.Xaml
 			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
 			{
 				var callback = currentCallbacks[callbackIndex];
-				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
-#endif
-				);
 				callback.Invoke(instanceRef, property, eventArgs);
 			}
+
+			// Cleanup to avoid leaks
+			eventArgs.OldValueInternal = null;
+			eventArgs.NewValueInternal = null;
+
+			_dpChangedEventArgsPool.Return(eventArgs);
 		}
 
 		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, object? newValue)

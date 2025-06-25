@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>白</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>淡い灰色</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>灰色</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>濃い灰色</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>黒</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>さんご</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ローズ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>薄いオレンジ</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>タン</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>薄い黄</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>薄い緑</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>黄緑</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>水色</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>スカイブルー</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>薄いターコイズ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>淡い青</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>薄い青</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>アイスブルー</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>薄紫</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ラベンダー</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ピンク</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>赤</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>オレンジ</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>茶</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>金色</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>黄</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>オリーブ グリーン</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>緑</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>明るい緑</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>青緑</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ターコイズ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>青</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ブルーグレー</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>インディゴ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>紫</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>濃い赤</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>濃い黄色</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>濃い緑</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>濃い青緑</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>濃い青</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>濃い紫</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>プラム</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>semantic zoom</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>toggle switch</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>item</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 個の項目</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>%1 のドラッグを取り消す</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>次へ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>前へ</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>再生</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>一時停止</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>経過時間</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>残り時間</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>バッファーの進行状況</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>位置</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>ミュート</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>ボリューム</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>エラー</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>日 </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>月 </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>年 </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>時間</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>分</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 分</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 分</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 秒</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 秒</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>垂直方向に大きく戻る</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>垂直方向に小さく戻る</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>切り取り</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>日付を選択</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>、今日</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>表示を減らす</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>垂直方向のつまみ</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s のその他のオプション</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>デバイス キャスト</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>アプリ バーのトグル ボタン</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s のアプリ バーを減らす</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>メディア プレイヤー</value>
@@ -1108,7 +1162,7 @@
     <value>Pause</value>
   </data>
   <data name="TEXT_VK_PRINT" xml:space="preserve">
-    <value>Print</value>
+    <value>印刷</value>
   </data>
   <data name="TEXT_VK_Q" xml:space="preserve">
     <value>Q</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME オフ</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>白</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 時間</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>淡い灰色</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 時間</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>灰色</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 分</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>濃い灰色</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 分</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>黒</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 秒</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>さんご</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 秒</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>ローズ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>ポジション %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>薄いオレンジ</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>ポジション %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>タン</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>薄い黄</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>薄い緑</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>黄緑</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>水色</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>スカイブルー</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>薄いターコイズ</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>淡い青</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>薄い青</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>アイスブルー</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>薄紫</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>ラベンダー</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>ピンク</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>赤</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>オレンジ</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>茶</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>金色</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>黄</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>オリーブ グリーン</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>緑</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>明るい緑</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>青緑</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>ターコイズ</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>青</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>ブルーグレー</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>インディゴ</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>紫</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>濃い赤</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>濃い黄色</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>濃い緑</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>濃い青緑</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>濃い青</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>濃い紫</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>プラム</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>閉じる</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

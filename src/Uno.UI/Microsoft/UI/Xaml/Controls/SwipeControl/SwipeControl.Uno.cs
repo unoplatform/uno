@@ -37,6 +37,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private bool _hasRightContent;
 		private bool _hasTopContent;
 		private bool _hasBottomContent;
+		private bool _isReady; // Template applied
 
 		[Conditional("DEBUG")]
 		private static void SWIPECONTROL_TRACE_INFO(SwipeControl that, [CallerLineNumber] int TRACE_MSG_METH = -1, [CallerMemberName] string METH_NAME = null, SwipeControl _ = null)
@@ -52,12 +53,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void InitializeInteractionTracker()
 		{
-			if (m_content.RenderTransform is null || _transform is null)
+			if (m_content is not null && (m_content.RenderTransform is null || _transform is null))
 			{
 				m_content.RenderTransform = _transform = new TranslateTransform();
 			}
 
-			if (m_swipeContentStackPanel.RenderTransform is null || _swipeStackPaneltransform is null)
+			if (m_swipeContentStackPanel is not null && (m_swipeContentStackPanel.RenderTransform is null || _swipeStackPaneltransform is null))
 			{
 				m_swipeContentStackPanel.RenderTransform = _swipeStackPaneltransform = new TranslateTransform();
 			}
@@ -449,6 +450,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void UpdateTransforms()
 		{
+			if (_transform is null || _swipeStackPaneltransform is null)
+			{
+				return;
+			}
+
 			if (m_isHorizontal)
 			{
 				_transform.X = _desiredPosition.X;

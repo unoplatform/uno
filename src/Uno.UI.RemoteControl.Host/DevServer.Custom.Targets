@@ -1,9 +1,3 @@
 <Project>
-	<Target Name="UnoDumpTargetFrameworks">
-		<Message Text="This is not a Uno.SDK project, no TFM to dump." Importance="High" />
-	</Target>
-
-	<Target Name="UnoDumpRemoteControlAddIns">
-		<Message Text="This is not a Uno.SDK project, no add-in to dump." Importance="High" />
-	</Target>
+	<Import Condition="'$(UsingUnoSdk)'!='true'" Project="$(MSBuildThisFileDirectory)/DevServer.Custom.Impl.Targets" />
 </Project>

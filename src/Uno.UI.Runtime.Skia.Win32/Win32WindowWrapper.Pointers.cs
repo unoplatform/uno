@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.Win32;
@@ -139,10 +140,16 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 	{
 		var pointerId = ReadCommonWParamInfo(wParam, out var pointerInfo, out var pointerType, out var position, out var rawPosition);
 
+		var modifiers = Win32Helper.GetKeyModifiers();
+
 		PointerPointProperties properties;
 		if (msg is PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL)
 		{
-			properties = new() { MouseWheelDelta = Win32Helper.GET_WHEEL_DELTA_WPARAM(wParam) };
+			properties = new()
+			{
+				MouseWheelDelta = Win32Helper.GET_WHEEL_DELTA_WPARAM(wParam),
+				IsHorizontalMouseWheel = msg is PInvoke.WM_POINTERHWHEEL
+			};
 		}
 		else
 		{
@@ -204,7 +211,11 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 					properties.IsMiddleButtonPressed = Win32Helper.IS_POINTER_THIRDBUTTON_WPARAM(wParam);
 					properties.IsXButton1Pressed = Win32Helper.IS_POINTER_FOURTHBUTTON_WPARAM(wParam);
 					properties.IsXButton2Pressed = Win32Helper.IS_POINTER_FIFTHBUTTON_WPARAM(wParam);
-					properties.IsHorizontalMouseWheel = (wParam & (ulong)POINTER_FLAGS.POINTER_FLAG_HWHEEL) != 0;
+					// TouchPad horizontal scrolling uses WM_POINTERHWHEEL and does not set POINTER_FLAG_HWHEEL
+					// POINTER_FLAG_HWHEEL is set when mouse-scrolling with Shift held. We choose to handle this as
+					// a vertical scroll + shift instead to keep behavior consistent between platforms, specially when
+					// interacting with ScrollViewers
+					properties.IsHorizontalMouseWheel = (modifiers & VirtualKeyModifiers.Shift) == 0 && (wParam & (ulong)POINTER_FLAGS.POINTER_FLAG_HWHEEL) != 0;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(pointerType));
@@ -240,6 +251,6 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 		};
 
 		this.LogTrace()?.Trace($"WndProc received a {msgName} message.");
-		evt?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
+		evt?.Invoke(this, new PointerEventArgs(point, modifiers));
 	}
 }

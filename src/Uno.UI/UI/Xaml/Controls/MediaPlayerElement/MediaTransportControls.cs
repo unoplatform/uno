@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _isMeasureCommandBarRunning;
 		private bool _isMeasureCommandBarRequested;
 
-#pragma warning disable CS0649
+#pragma warning disable CS0414, CS0649
 		private bool m_transportControlsEnabled = true; // not-implemented
 		private bool m_controlPanelIsVisible;
 		private bool m_shouldDismissControlPanel;
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_rootHasPointerPressed;
 		private bool m_isFlyoutOpen;
 		private bool m_isInScrubMode;
-		//private bool m_isthruScrubber;
+		private bool m_isthruScrubber;
 		private bool m_positionUpdateUIOnly; // If true, update the Position slider value only - do not set underlying ME.Position DP (used to differentiate position update from user vs video playing)
 
 		private bool m_sourceLoaded;
@@ -144,8 +144,15 @@ namespace Microsoft.UI.Xaml.Controls
 			InitializeTemplateChild(TemplateParts.TimeRemainingElement, UIAKeys.UIA_MEDIA_TIME_REMAINING, out m_tpTimeRemainingElement);
 			if (InitializeTemplateChild(TemplateParts.ProgressSlider, UIAKeys.UIA_MEDIA_SEEK, out m_tpMediaPositionSlider))
 			{
-				m_tpDownloadProgressIndicator = m_tpMediaPositionSlider.GetTemplateChild<ProgressBar>(TemplateParts.DownloadProgressIndicator);
-				_progressSliderThumb = m_tpMediaPositionSlider.GetTemplateChild<Thumb>(TemplateParts.HorizontalThumb);
+#if HAS_UNO
+				// removes the "Seek" tooltip completely, which can get stuck sometimes when scrubbing.
+				ToolTipService.SetToolTip(m_tpMediaPositionSlider, null);
+#endif
+
+				if (m_tpMediaPositionSlider.TemplatedRoot is { } || m_tpMediaPositionSlider.ApplyTemplate())
+				{
+					m_tpDownloadProgressIndicator = m_tpMediaPositionSlider.GetTemplateChild<ProgressBar>(TemplateParts.DownloadProgressIndicator);
+				}
 			}
 			InitializeTemplateChild(TemplateParts.PlayPauseButton, UIAKeys.UIA_MEDIA_PLAY, out m_tpPlayPauseButton);
 			InitializeTemplateChild(TemplateParts.PlayPauseButtonOnLeft, UIAKeys.UIA_MEDIA_PLAY, out m_tpTHLeftSidePlayPauseButton);
@@ -255,6 +262,12 @@ namespace Microsoft.UI.Xaml.Controls
 			Bind(this, x => x.SizeChanged += OnSizeChanged, x => x.SizeChanged -= OnSizeChanged);
 
 			BindLoaded(m_tpCommandBar, OnCommandBarLoaded, invokeHandlerIfAlreadyLoaded: true);
+#if HAS_UNO
+			BindSizeChanged(m_tpCommandBar, OnCommandBarSizeChanged);
+			Bind(m_tpCommandBar,
+				x => x.DynamicOverflowItemsChanging += OnCommandBarDynamicOverflowItemsChanging,
+				x => x.DynamicOverflowItemsChanging -= OnCommandBarDynamicOverflowItemsChanging);
+#endif
 			BindSizeChanged(m_tpControlPanelGrid, ControlPanelGridSizeChanged);
 
 			Bind(m_tpControlPanelGrid, x => x.PointerEntered += OnControlPanelEntered, x => x.PointerExited -= OnControlPanelEntered);
@@ -267,9 +280,11 @@ namespace Microsoft.UI.Xaml.Controls
 			BindSizeChanged(_controlPanelBorder, ControlPanelBorderSizeChanged);
 
 			// Interactive parts of MTC, but outside of MediaControlsCommandBar:
-			Bind(m_tpMediaPositionSlider, x => x.ValueChanged += OnMediaPositionSliderValueChanged, x => x.ValueChanged -= OnMediaPositionSliderValueChanged);
-			Bind(_progressSliderThumb, x => x.DragCompleted += ThumbOnDragCompleted, x => x.DragCompleted -= ThumbOnDragCompleted);
-			Bind(_progressSliderThumb, x => x.DragStarted += ThumbOnDragStarted, x => x.DragStarted -= ThumbOnDragStarted);
+			Bind(m_tpMediaPositionSlider, x => x.ValueChanged += OnPositionSliderValueChanged, x => x.ValueChanged -= OnPositionSliderValueChanged);
+#if WIP || true
+			BindHandler(m_tpMediaPositionSlider, UIElement.PointerPressedEvent, (PointerEventHandler)OnPositionSliderPressed, handledEventsToo: true);
+			BindHandler(m_tpMediaPositionSlider, UIElement.PointerReleasedEvent, (PointerEventHandler)OnPositionSliderReleased, handledEventsToo: true);
+#endif
 			BindButtonClick(m_tpTHLeftSidePlayPauseButton, PlayPause);
 
 			// MediaControlsCommandBar\PrimaryCommands:
@@ -372,6 +387,14 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					addHandler(target);
 					disposables.Add(() => removeHandler(target));
+				}
+			}
+			void BindHandler<T>(T? target, RoutedEvent e, object handler, bool handledEventsToo = false) where T : UIElement
+			{
+				if (target is { })
+				{
+					target.AddHandler(e, handler, handledEventsToo);
+					disposables.Add(() => target.RemoveHandler(e, handler));
 				}
 			}
 		}
@@ -523,8 +546,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				m_shouldDismissControlPanel = false;
+				m_isthruScrubber = false;
 #if !HAS_UNO
-				//m_isthruScrubber = false;
 				//m_isVSStateChangeExternal = false;
 #endif
 			}
@@ -537,22 +560,16 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_tpCommandBar is not null)
 			{
 				m_tpCommandBar.Loaded -= OnCommandBarLoaded;
-				m_tpCommandBar.SizeChanged += Container_SizeChanged;
-				m_tpCommandBar.DynamicOverflowItemsChanging += M_tpCommandBar_DynamicOverflowItemsChanging;
-			}
-			if (_timelineContainer is not null)
-			{
-				_timelineContainer.SizeChanged += Container_SizeChanged;
 			}
 			HideMoreButtonIfNecessary();
 			HideCastButtonIfNecessary();
 		}
 
-		private void M_tpCommandBar_DynamicOverflowItemsChanging(CommandBar sender, DynamicOverflowItemsChangingEventArgs args)
+		private void OnCommandBarDynamicOverflowItemsChanging(CommandBar sender, DynamicOverflowItemsChangingEventArgs args)
 		{
 			SetMeasureCommandBar();
 		}
-		private void Container_SizeChanged(object sender, SizeChangedEventArgs args)
+		private void OnCommandBarSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			SetMeasureCommandBar();
 		}
@@ -737,11 +754,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			OnControlsBoundsChanged();
 		}
-		private static void ControlPanelBorderSizeChanged(object sender, SizeChangedEventArgs args)
+		private void ControlPanelBorderSizeChanged(object sender, SizeChangedEventArgs args)
 		{
-			if (sender is Border border)
+			if (_controlPanelBorder is { })
 			{
-				border.Clip = new RectangleGeometry
+				_controlPanelBorder.Clip = new RectangleGeometry
 				{
 					Rect = new Rect(default, args.NewSize)
 				};
@@ -1300,7 +1317,11 @@ namespace Microsoft.UI.Xaml.Controls
 				!m_isAudioOnly &&
 				!m_hasError &&
 #endif
+#if HAS_UNO // m_shouldDismissControlPanel is set when the playback state changes from buffering to playing and on VLC-backed implementations of MPE, seeking causes a sequence of buffer-play-buffer-play states which keep showing and hiding the controls. cf. https://github.com/unoplatform/uno/issues/20346
+				!m_controlPanelHasPointerOver &&
+#else
 				(m_shouldDismissControlPanel || !m_controlPanelHasPointerOver) &&
+#endif
 				!m_rootHasPointerPressed &&
 #if !HAS_UNO
 				// Do not need to check this on the Xbox only if commandbar should exist in the template.
@@ -1348,15 +1369,29 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
+		private void SetPosition(TimeSpan value, bool isScrubber = true)
+		{
+			if (_mediaPlayer?.PlaybackSession is { } session)
+			{
+				session.Position = value;
+			}
+		}
+
+		// private bool IsLiveContent() =>
+		// 	_mediaPlayer is { } &&
+		// 	m_sourceLoaded &&
+		// 	(_mediaPlayer.PlaybackSession.NaturalDuration == TimeSpan.Zero ||
+		// 	_mediaPlayer.PlaybackSession.NaturalDuration == TimeSpan.MaxValue);
+
 		private void OnSizeChanged(object sender, SizeChangedEventArgs e) // todo: maybe adjust event source
 		{
 			if (m_transportControlsEnabled)
 			{
 				SetMeasureCommandBar();
 #if !HAS_UNO
-			// If error is showing, may need to switch between long / short / shortest form
-			IFC(UpdateErrorUI());
-			IFC(UpdateVisualState());
+				// If error is showing, may need to switch between long / short / shortest form
+				IFC(UpdateErrorUI());
+				IFC(UpdateVisualState());
 #endif
 			}
 #if !HAS_UNO
@@ -1461,8 +1496,14 @@ namespace Microsoft.UI.Xaml.Controls
 		Cleanup:
 #endif
 		}
+
 		public void SetMeasureCommandBar()
 		{
+			if (!IsLoaded)
+			{
+				return;
+			}
+
 			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, MeasureCommandBar);
 		}
 		/// <summary>

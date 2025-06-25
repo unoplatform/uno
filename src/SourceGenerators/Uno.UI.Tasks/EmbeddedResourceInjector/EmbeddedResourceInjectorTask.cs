@@ -16,6 +16,7 @@ using System.Xml;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace Uno.UI.Tasks.EmbeddedResourceInjector
 {
@@ -58,7 +59,13 @@ namespace Uno.UI.Tasks.EmbeddedResourceInjector
 						resolver.AddSearchDirectory(path);
 					}
 
-					using (var asm = AssemblyDefinition.ReadAssembly(TargetAssembly, new ReaderParameters() { AssemblyResolver = resolver, ReadSymbols = true, ReadWrite = true }))
+					using (var asm = AssemblyDefinition.ReadAssembly(TargetAssembly, new()
+					{
+						AssemblyResolver = resolver,
+						ReadSymbols = true,
+						ReadWrite = true,
+						SymbolReaderProvider = new DefaultSymbolReaderProvider(throwIfNoSymbol: false),
+					}))
 					{
 						foreach (var embeddedResource in EmbeddedResources)
 						{
@@ -81,7 +88,7 @@ namespace Uno.UI.Tasks.EmbeddedResourceInjector
 							asm.MainModule.Resources.Add(new EmbeddedResource(logicalName, ManifestResourceAttributes.Public, File.ReadAllBytes(embeddedResource.GetMetadata("FullPath"))));
 						}
 
-						asm.Write(new WriterParameters() { WriteSymbols = true });
+						asm.Write(new WriterParameters() { WriteSymbols = asm.MainModule.SymbolReader is not null });
 					}
 
 					WaitForUnlockedFile(TargetAssembly);

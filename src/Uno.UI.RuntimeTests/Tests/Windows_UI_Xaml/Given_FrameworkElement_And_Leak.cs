@@ -190,6 +190,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
 		[DataRow(typeof(MediaPlayerElement), 15)]
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CommandBarFlyout_Leak", 15)]
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All, RuntimeTestPlatforms ignoredPlatforms = RuntimeTestPlatforms.None)
 		{
 			if (ignoredPlatforms.HasFlag(RuntimeTestsPlatformHelper.CurrentPlatform))
@@ -374,7 +375,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				if (item is IExtendedLeakTest extendedTest)
 				{
+					void TrackAdditionalObject(object? sender, DependencyObject e)
+					{
+						if (e is not null)
+						{
+							TrackDependencyObject(e);
+						}
+					}
+					if (item is ITrackingLeakTest leakTrackingProvider)
+					{
+						leakTrackingProvider.ObjectTrackingRequested += TrackAdditionalObject;
+					}
+
 					await extendedTest.WaitForTestToComplete();
+
+					// Unsubscribe to avoid memory leaks
+					if (item is ITrackingLeakTest leakTrackingProvider2)
+					{
+						leakTrackingProvider2.ObjectTrackingRequested -= TrackAdditionalObject;
+					}
 				}
 
 #if TRACK_REFS

@@ -36,7 +36,7 @@ If you’ve already set up **Visual Studio 2022** by following the [Get Started 
    > Ensure that the lower left IDE icon shows a check mark and says "Ready" ![A checkmark with a text saying ready](getting-started/wizard/assets/vs2022-ready-statusbar.png). This ensures that the projects have been created, and their dependencies have been restored completely.
    >
    > [!NOTE]
-   > If the notification doesn’t appear, access the Settings app by clicking on **Extensions** > **Uno Platform** > **Settings...**.
+   > If the notification doesn’t appear, access the Studio app by clicking on **Extensions** > **Uno Platform** > **Studio...**.
    >
    > ![Visual Studio 2022 Menu](Assets/uno-settings-vs.png)
 
@@ -57,9 +57,9 @@ If you’ve already set up **Visual Studio Code** by following the [Get Started 
    ![Visual Studio Code notification](Assets/uno-settings-vsc-notification.png)
 
    > [!NOTE]
-   > If the notification doesn’t appear, access the Settings app by selecting **View** > **Command Palette...** and typing `Uno Platform: Open Settings`.
+   > If the notification doesn’t appear, access the Studio app by selecting **View** > **Command Palette...** and typing `Uno Platform: Open Studio`.
    >
-   > ![Visual Studio Code Menu](Assets/uno-settings-vsc.png)
+   > ![Visual Studio Code Menu](Assets/uno-settings-vsc.jpeg)
 
 ### [**JetBrains Rider**](#tab/rider)
 
@@ -74,30 +74,143 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
    ![JetBrains Rider notification](Assets/uno-settings-rider-notification.png)
 
    > [!NOTE]
-   > If the notification doesn’t appear, access the Settings app by selecting **Tools** > **Uno Platform** > **Settings...**.
+   > If the notification doesn’t appear, access the Studio app by selecting **Tools** > **Uno Platform** > **Studio...**.
    >
    > ![JetBrains Rider Menu](Assets/uno-settings-rider.png)
 
 ---
 
-### Uno Platform Settings window
+### Uno Platform Studio window
 
-1. In the Uno Platform Settings window, click on **Sign in**. You’ll be redirected to your browser to enter your Uno Platform account credentials.
+1. In the Uno Platform Studio window, click on **Sign in**. You’ll be redirected to your browser to enter your Uno Platform account credentials.
 
-   ![Uno Platform Settings Welcome](Assets/uno-settings-welcome.png)
+   ![Uno Platform Studio window Welcome](Assets/uno-studio-welcome.png)
 
 1. Once signed in, you’ll see a confirmation of your account along with your license details.
 
    You can then use the **Hot Reload** feature to speed up your workflow and test changes in real-time. For more information, refer to the [Hot Reload documentation](xref:Uno.Features.HotReload).
 
-   ![Uno Platform Settings signed in](Assets/uno-settings-main.png)
+   ![Uno Platform Studio window signed in](Assets/uno-studio-main.png)
 
    > [!TIP]
    > You can also access a menu where you can select **My Account** to view your account details, **Refresh** the account changes, and **Sign out**.
    >
-   > ![Uno Platform Settings Menu](Assets/uno-settings-menu.png)
+   > ![Uno Platform Studio window Menu](Assets/uno-studio-menu.png)
 
-1. After you are done, feel free to close the Uno Platform Settings window. You can always access it again from your IDE menu by following the steps above.
+1. If you're using a `Uno Platform Studio Pro` license, your Uno Platform Studio window will display additional tools. You can see the comparison below:
+
+   ![Uno Platform Studio window Community vs Pro](Assets/uno-studio-main-com-vs-pro.png)
+
+1. After you are done, feel free to close the Uno Platform Studio window. You can always access it again from your IDE menu by following the steps above.
+
+## Getting Uno Platform Studio Pro License
+
+Discover the additional features available with `Uno Platform Studio Pro`, including Hot Design® - our next-generation visual designer for cross-platform .NET applications.
+
+> [!IMPORTANT]
+> Uno Platform itself remains open-source and free under Apache 2.0. The Pro subscription is specifically for Uno Platform Studio features.
+
+### Compare Plans
+
+Uno Platform Studio offers two subscription tiers, Community and Pro. Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.uno/select-subscription/) to see what you gain by upgrading.
+
+### Purchase a Pro License
+
+1. Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to view subscription options and current pricing.
+1. Choose your preferred billing cycle (monthly or yearly).
+1. Add how many licenses you want above **Buy Now** Button.
+1. Click **Buy Now** on your selected plan.
+1. If you don't have a Uno Platform account yet, you'll be prompted to create one during the checkout process.
+1. Complete the payment process and receive your license confirmation email.
+
+### Hot Design® 30-Day Trial
+
+The Community version includes a 30-day trial of Hot Design®, no credit card required:
+
+1. Create your free Uno Platform account at [platform.uno](https://platform.uno/).
+1. Sign in to your IDE following the [steps above](xref:Uno.GetStarted.Licensing#sign-in-to-your-ide-of-choice).
+1. Your 30-day Hot Design® trial will be automatically available.
+1. After the trial expires, upgrade to Pro to continue using Hot Design®.
+
+### Special Pricing
+
+- **Students and Open Source Maintainers**: Contact [info@platform.uno](mailto:info@platform.uno) for special pricing
+- **Enterprise/Custom Quotes**: Contact [info@platform.uno](mailto:info@platform.uno) for customized licensing
+
+### Subscription Management
+
+- **Cancellation**: You can cancel your subscription anytime from your [account dashboard](https://platform.uno/my-account)
+- **Billing**: Invoices are sent to your registered email address
+
+## Assigning a Uno Platform Studio Pro License
+
+Once you have purchased a Uno Platform Studio Pro subscription, you may need to assign or activate your license:
+
+### Activating Your License After Purchase
+
+1. After purchasing your Pro subscription, you should receive a confirmation email with your license details.
+
+1. Sign in to your IDE following the steps in the "Sign in to your IDE of choice" section above.
+
+1. In the Uno Platform Studio window, click **Refresh** to update your license status.
+
+1. Your Pro features, including Hot Design®, should now be available.
+
+### Checking License Status
+
+If you notice a small snowflake icon next to the Hot Design® flame icon when running your Uno app, this indicates that Hot Design® is not active:
+
+![Cold HD image](./studio/Assets/cold-hd-after-beta-end.png)
+
+### Troubleshooting License Issues
+
+1. **License Not Showing**:
+   - Open your IDE settings and access Uno Platform Studio again
+   - Click the **Refresh** button to update your account status
+   - Ensure you're signed in with the correct Uno Platform account
+
+   ![Inactive HD image before license assignment](./studio/Assets/inactive-hd-image-before-license-assignment.png)
+
+1. **License Assignment** (for team subscriptions):
+   - Log in to your Uno Platform account at [platform.uno/my-account](https://platform.uno/my-account)
+   - Navigate to the **Subscriptions** section in the left navigation bar
+   - Enter the email address of the person you want to grant access to in the text box
+   - Click **Assign** to assign the license
+   - The recipient will receive a notification email about the license assignment
+
+   ![Active subscription image](./studio/Assets/active-subscription-image.png)
+
+1. **Verification**:
+   - After assignment, return to your IDE settings
+   - Click **Refresh** in the Uno Platform Studio window
+   - You should see a blue checkmark on Hot Design®, indicating it's ready to use
+   [IMAGE]
+
+### Troubleshooting Common Issues
+
+If you encounter issues during the subscription or licensing process:
+
+1. **Payment Problems**:
+   - Verify your payment information is correct
+   - Check with your bank if the transaction was blocked
+   - Try using a different payment method
+   - Contact [info@platform.uno](mailto:info@platform.uno) for payment assistance
+
+1. **License Not Activated**:
+   - Check your email (including spam folder) for confirmation
+   - Wait up to 15 minutes for license activation
+   - Use the **Refresh** button in Uno Platform Studio
+   - Sign out and sign in again to your IDE
+
+1. **Hot Design® Trial Expired**:
+   - The 30-day trial is automatically included with Community accounts
+   - After expiration, upgrade to Pro to continue using Hot Design®
+   - Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to upgrade
+
+1. **Support**:
+   - Pro support covers Uno Platform Studio features only
+   - For general support, visit [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord)
+   - [Paid support](https://platform.uno/contact/) available for enterprise needs
 
 ## Questions
 

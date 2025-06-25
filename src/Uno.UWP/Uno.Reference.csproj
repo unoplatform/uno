@@ -15,8 +15,6 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 		
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>

@@ -17,10 +17,12 @@ using System.Diagnostics;
 using System.Numerics;
 using SamplesApp;
 using Silk.NET.OpenGL;
+using Uno.UI.Samples.Controls;
 using Uno.WinUI.Graphics3DGL;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
+	[Sample("Microsoft.UI.Composition")]
 	public class RotatingCubeGlCanvasElement() : GLCanvasElement(() => App.MainWindow)
 	{
 		private static BufferObject<float> _vbo;

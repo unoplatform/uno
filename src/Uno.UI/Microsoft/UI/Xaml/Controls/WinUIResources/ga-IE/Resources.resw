@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>Bán</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Liath éadrom</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Liath</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Liathdhorcha</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Dubh</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Coiréalach</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rósach</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Oráiste éadrom</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Crón</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Buí éadrom</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Glas éadrom</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Líoma</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Muirghorm</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Gorm na spéire</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Turcaid éadrom</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Gorm éadrom</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Gorm éadrom</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Oighearghorm</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Gormvialait</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Labhandar</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Bándearg</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Dearg</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Flannbhuí</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Donn</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Ór</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Buí</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Buíghlas</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Glas</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Gléghlas</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Téalghorm</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turcaidghorm</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Gorm</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Liathghorm</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indeagó</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Corcra</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Dorcha dearg</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Dúbhuí</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Dúghlas</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Téal dorcha</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Dorcha gorm</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Corcra dorcha</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Plumchorcra</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>zúmáil shéimeantach</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>scoránaigh lasc</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>mír</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 mír</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>cealaigh tarraingt %1</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>Ar aghaidh</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>Roimhe</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>Seinn</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>Cuir ar sos</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>Am caite</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>Am fágtha</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>Dul chun cinn maoláin</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>Cuardaigh</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>Balbhaigh</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>Airde</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>Earráid</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>Lá</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>Mí</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>Bliain</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>Uair</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>Nóiméad</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 nóiméad</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 nóiméad</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 soicind</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 soicind</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>Méadú mór ingearach</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>Méadú beag ingearach</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Gearr</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>roghnaigh dáta</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>, inniu</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>Níos lú</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>Ordóg ingearach</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Tuilleadh roghanna le haghaidh %s</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>Múnlaigh ar an ngléas</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>cnaipe scoránaithe an bharra feidhmchlár</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>Barra feidhmchlár níos lú le haghaidh %s</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>seinnteoir meán</value>
@@ -736,13 +790,13 @@
     <value>Cealaigh</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
-    <value>Caps Lock</value>
+    <value>Glas ceannlitreacha</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
     <value>Glan</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
-    <value>Ctrl</value>
+    <value>Rialú</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
     <value>Tiontaigh</value>
@@ -1024,7 +1078,7 @@
     <value>Amharc nascleanúna</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>Neamhthiontaigh</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
     <value>Dada</value>
@@ -1162,7 +1216,7 @@
     <value>T</value>
   </data>
   <data name="TEXT_VK_TAB" xml:space="preserve">
-    <value>Tab</value>
+    <value>Táb</value>
   </data>
   <data name="TEXT_VK_U" xml:space="preserve">
     <value>U</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME casta as</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>Bán</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 uair</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>Liath éadrom</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 uair</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>Liath</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 nóiméad</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>Liathdhorcha</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 nóiméad</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>Dubh</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 soicind</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>Coiréalach</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 soicind</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>Rósach</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>suíomh %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>Oráiste éadrom</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>suíomh %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>Crón</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>Buí éadrom</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>Glas éadrom</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>Líoma</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>Muirghorm</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>Gorm na spéire</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>Turcaid éadrom</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>Gorm éadrom</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>Gorm éadrom</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>Oighearghorm</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>Gormvialait</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>Labhandar</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>Bándearg</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>Dearg</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>Flannbhuí</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>Donn</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>Ór</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>Buí</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>Buíghlas</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>Glas</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>Gléghlas</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>Téalghorm</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>Turcaidghorm</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>Gorm</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>Liathghorm</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>Indeagó</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>Corcra</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>Dorcha dearg</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>Dúbhuí</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>Dúghlas</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>Téal dorcha</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>Dorcha gorm</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>Corcra dorcha</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>Plumchorcra</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Dún</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

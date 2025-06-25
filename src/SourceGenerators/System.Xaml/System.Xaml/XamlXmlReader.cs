@@ -300,17 +300,17 @@ namespace Uno.Xaml
 		public IEnumerable<XamlXmlNodeInfo> Parse ()
 		{
 			r.MoveToContent ();
-			foreach (var xi in ReadObjectElement (null, null))
+			foreach (var xi in ReadObjectElement (null, null, objectIndex: 0))
 				yield return xi;
 			yield return Node (XamlNodeType.None, null);
 		}
 
 		// Note that it could return invalid (None) node to tell the caller that it is not really an object element.
-		IEnumerable<XamlXmlNodeInfo> ReadObjectElement (XamlType parentType, XamlMember currentMember)
+		IEnumerable<XamlXmlNodeInfo> ReadObjectElement (XamlType parentType, XamlMember currentMember, int objectIndex)
 		{
 			if (r.NodeType != XmlNodeType.Element) {
 				//throw new XamlParseException (String.Format ("Element is expected, but got {0}", r.NodeType));
-				yield return Node (XamlNodeType.Value, ReadCurrentContentString(isFirstElementString: false));
+				yield return Node (XamlNodeType.Value, ReadCurrentContentString(isFirstElementString: objectIndex == 0));
 
 				if (r.NodeType != XmlNodeType.Element)
 				{
@@ -679,7 +679,7 @@ namespace Uno.Xaml
 
 			yield return Node(XamlNodeType.Value, ReadCurrentContentString(isFirstElementString: true));
 
-			foreach (var item in ReadContentElements(xt))
+			foreach (var item in ReadContentElements(xt, startingContentIndex: 1))
 			{
 				yield return item;
 			}
@@ -718,15 +718,16 @@ namespace Uno.Xaml
 			return value;
 		}
 
-		IEnumerable<XamlXmlNodeInfo> ReadContentElements(XamlType parentType)
+		IEnumerable<XamlXmlNodeInfo> ReadContentElements(XamlType parentType, int startingContentIndex)
 		{
+			int contentIndex = startingContentIndex;
 			for (
 				r.MoveToContent();
 				r.NodeType != XmlNodeType.EndElement && r.NodeType != XmlNodeType.None && !r.Name.Contains(".");
 				r.MoveToContent()
 			)
 			{
-				foreach (var ni in ReadObjectElement(parentType, XamlLanguage.UnknownContent))
+				foreach (var ni in ReadObjectElement(parentType, XamlLanguage.UnknownContent, contentIndex++))
 				{
 					if (ni.NodeType == XamlNodeType.None)
 					{
@@ -880,9 +881,10 @@ namespace Uno.Xaml
 				}
 				else
 				{
+					int contentIndex = 0;
 					for (r.MoveToContent(); r.NodeType != XmlNodeType.EndElement; r.MoveToContent())
 					{
-						foreach (var ni in ReadObjectElement(parentType, xm))
+						foreach (var ni in ReadObjectElement(parentType, xm, contentIndex++))
 						{
 							if (ni.NodeType == XamlNodeType.None)
 								throw new Exception("should not happen");
@@ -907,12 +909,13 @@ namespace Uno.Xaml
 				member = XamlLanguage.UnknownContent;
 			}
 
+			int contentIndex = 0;
 			for (
 				r.MoveToContent();
 				r.NodeType != XmlNodeType.EndElement && r.NodeType != XmlNodeType.None && !r.Name.Contains(".");
 				// nothing
 			) {
-				foreach (var ni in ReadObjectElement(parentType, member))
+				foreach (var ni in ReadObjectElement(parentType, member, contentIndex++))
 				{
 					if (ni.NodeType == XamlNodeType.None)
 					{

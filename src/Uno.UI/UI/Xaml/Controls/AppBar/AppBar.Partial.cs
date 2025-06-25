@@ -7,13 +7,10 @@
 #endif
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using DirectUI;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
-using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -23,9 +20,6 @@ using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Extensions;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
-using System.Linq;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
 using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Windows.System;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -73,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 		WeakReference<Page>? m_wpOwner;
 
 		SerialDisposable m_contentRootSizeChangedEventHandler = new SerialDisposable();
-		SerialDisposable m_windowSizeChangedEventHandler = new SerialDisposable();
+		SerialDisposable m_xamlRootChangedEventHandler = new SerialDisposable();
 		SerialDisposable m_expandButtonClickEventHandler = new SerialDisposable();
 		SerialDisposable m_displayModeStateChangedEventHandler = new SerialDisposable();
 
@@ -148,12 +142,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// TODO: Uno specific - use XamlRoot instead of Window
-			if (XamlRoot is not null)
+			if (m_xamlRootChangedEventHandler.Disposable is null && XamlRoot is not null)
 			{
 				XamlRoot.Changed += OnXamlRootChanged;
-				m_windowSizeChangedEventHandler.Disposable = Disposable.Create(() => XamlRoot.Changed -= OnXamlRootChanged);
+				m_xamlRootChangedEventHandler.Disposable = Disposable.Create(() => XamlRoot.Changed -= OnXamlRootChanged);
 			}
-
+#if HAS_UNO
+			ReAttachTemplateEvents();
+#endif
 			//UNO TODO
 
 			//if (m_Mode != AppBarMode_Inline)
@@ -181,6 +177,32 @@ namespace Microsoft.UI.Xaml.Controls
 			//}
 
 			UpdateVisualState();
+		}
+
+		private void ReAttachTemplateEvents()
+		{
+			GetTemplatePart("ContentRoot", out m_tpContentRoot);
+
+			if (m_tpContentRoot is { })
+			{
+				m_tpContentRoot.SizeChanged += OnContentRootSizeChanged;
+				m_contentRootSizeChangedEventHandler.Disposable = Disposable.Create(() => m_tpContentRoot.SizeChanged -= OnContentRootSizeChanged);
+			}
+
+			GetTemplatePart("ExpandButton", out m_tpExpandButton);
+
+			if (m_tpExpandButton == null)
+			{
+				// The previous CommandBar template used "MoreButton" for this template part's name,
+				// so now we're stuck with it, as much as I'd like to converge them..
+				GetTemplatePart("MoreButton", out m_tpExpandButton);
+			}
+
+			if (m_tpExpandButton is { })
+			{
+				m_tpExpandButton.Click += OnExpandButtonClick;
+				m_expandButtonClickEventHandler.Disposable = Disposable.Create(() => m_tpExpandButton.Click -= OnExpandButtonClick);
+			}
 		}
 
 		private void OnLayoutUpdated(object? sender, object e)
@@ -253,19 +275,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void UnregisterEvents()
 		{
-			m_contentRootSizeChangedEventHandler.Disposable = null;
-			m_windowSizeChangedEventHandler.Disposable = null;
-			m_expandButtonClickEventHandler.Disposable = null;
-			m_displayModeStateChangedEventHandler.Disposable = null;
-			m_overlayElementPointerPressedEventHandler.Disposable = null;
-
-			m_tpLayoutRoot = null;
-			m_tpContentRoot = null;
-			m_tpExpandButton = null;
-			m_tpDisplayModesStateGroupRef = null;
-
-			m_overlayClosingStoryboard = null;
-			m_overlayOpeningStoryboard = null;
+			m_xamlRootChangedEventHandler.Disposable = null;
 		}
 
 		private protected override void OnUnloaded()
@@ -285,7 +295,28 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
-			UnregisterEvents();
+			if (m_tpContentRoot is not null)
+			{
+				m_contentRootSizeChangedEventHandler.Disposable = null;
+			}
+
+			if (m_tpExpandButton is not null)
+			{
+				m_expandButtonClickEventHandler.Disposable = null;
+			}
+
+			if (m_tpDisplayModesStateGroupRef is not null)
+			{
+				m_displayModeStateChangedEventHandler.Disposable = null;
+			}
+
+			m_tpLayoutRoot = null;
+			m_tpContentRoot = null;
+			m_tpExpandButton = null;
+			m_tpDisplayModesStateGroupRef = null;
+
+			m_overlayClosingStoryboard = null;
+			m_overlayOpeningStoryboard = null;
 
 			// Clear our previous template parts.
 			m_tpLayoutRoot = null;
@@ -296,33 +327,17 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			GetTemplatePart("LayoutRoot", out m_tpLayoutRoot);
-			GetTemplatePart("ContentRoot", out m_tpContentRoot);
 
 #if HAS_NATIVE_COMMANDBAR
 			_isNativeTemplate = Uno.UI.Extensions.DependencyObjectExtensions
 				.FindFirstChild<NativeCommandBarPresenter?>(this) != null;
 #endif
 
-			if (m_tpContentRoot is { })
-			{
-				m_tpContentRoot.SizeChanged += OnContentRootSizeChanged;
-				m_contentRootSizeChangedEventHandler.Disposable = Disposable.Create(() => m_tpContentRoot.SizeChanged -= OnContentRootSizeChanged);
-			}
-
-			GetTemplatePart("ExpandButton", out m_tpExpandButton);
-
-			if (m_tpExpandButton == null)
-			{
-				// The previous CommandBar template used "MoreButton" for this template part's name,
-				// so now we're stuck with it, as much as I'd like to converge them..
-				GetTemplatePart("MoreButton", out m_tpExpandButton);
-			}
-
+#if HAS_UNO
+			ReAttachTemplateEvents();
+#endif
 			if (m_tpExpandButton is { })
 			{
-				m_tpExpandButton.Click += OnExpandButtonClick;
-				m_expandButtonClickEventHandler.Disposable = Disposable.Create(() => m_tpExpandButton.Click -= OnExpandButtonClick);
-
 				var toolTip = new ToolTip();
 				toolTip.Content = DXamlCore.Current.GetLocalizedResourceString(TEXT_HUB_SEE_MORE);
 
@@ -835,7 +850,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// matter because Blue apps wouldn't have had access to them.
 				// For post-WinBlue AppBars, we fire the Opening/Closing & Opened/Closed
 				// events based on our display mode state transitions.
-				//if (m_tpDisplayModesStateGroup == null)
+				if (IsOpen == isOpen)
 				{
 					if (isOpen)
 					{
@@ -1213,9 +1228,8 @@ namespace Microsoft.UI.Xaml.Controls
 				if (isOpen)
 				{
 					isAppBarDismissed = true;
+					IsOpen = false;
 				}
-
-				IsOpen = false;
 			}
 
 			return isAppBarDismissed;

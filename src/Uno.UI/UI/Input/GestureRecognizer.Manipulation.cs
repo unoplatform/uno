@@ -393,9 +393,8 @@ namespace Windows.UI.Input
 							new ManipulationUpdatedEventArgs(this, _currents.Identifiers, changeSet.Position, changeSet.Delta, changeSet.Cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
 						break;
 
-					case ManipulationStatus.Started when pointerRemoved && ShouldStartInertia(changeSet.Velocities):
+					case ManipulationStatus.Started when pointerRemoved && InertiaProcessor.TryStart(this, ref _inertia, changeSet):
 						_status = ManipulationStatus.Inertia;
-						_inertia = new InertiaProcessor(this, changeSet.Timestamp, changeSet.Position, changeSet.Cumulative, changeSet.Velocities);
 
 						var startingArgs = new ManipulationInertiaStartingEventArgs(this, _currents.Identifiers, changeSet.Position, changeSet.Delta, changeSet.Cumulative, changeSet.Velocities, _contacts.onStart);
 						CommitChanges(changeSet);
@@ -732,13 +731,6 @@ namespace Windows.UI.Input
 				}
 			}
 
-			private bool ShouldStartInertia(ManipulationVelocities velocities)
-				=> _inertia is null
-					&& !IsDragManipulation
-					&& (_settings & GestureSettingsHelper.Inertia) != 0
-					&& (_settings & GestureSettingsHelper.Manipulations) != 0 // On pointer removed, we should not start inertia if all manip are disabled (could happen if configured for drag but IsDragManipulation not yet true)
-					&& velocities.IsAnyAbove(_inertiaThresholds);
-
 			#region Patch pointer events
 			private void PatchSuspiciousRemovedPointer(ref PointerPoint removed)
 			{
@@ -817,7 +809,7 @@ namespace Windows.UI.Input
 
 			internal record struct ManipulationState(ulong Timestamp, Point Position, ManipulationDelta Cumulative);
 
-			private record struct ManipulationChangeSet(
+			internal record struct ManipulationChangeSet(
 				ManipulationCommit ParentCommit,
 				ulong Timestamp,
 				uint ActivePointerCount, // Number of ACTIVE pointers (unlike the PointsState.PointerCount, this only being updated during inertia)
@@ -831,7 +823,7 @@ namespace Windows.UI.Input
 			/// </summary>
 			/// <param name="SumOfDelta">The sum of all Delta since the manipulation has started (used to build next Delta to avoid precision issue that would make the Σ(Delta) to diverge from Cumulative).</param>
 			/// <param name="Timestamp">The timestamp of points used to create the commit (in microseconds).</param>
-			private readonly record struct ManipulationCommit(
+			internal readonly record struct ManipulationCommit(
 				ManipulationDelta SumOfDelta,
 				ulong Timestamp,
 				uint PointerCount);

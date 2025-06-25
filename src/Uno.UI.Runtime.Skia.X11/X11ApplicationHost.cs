@@ -1,8 +1,10 @@
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Media.Playback;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -19,6 +21,7 @@ using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
+using Uno.Media.Playback;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -72,10 +75,38 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
+
+		if (Type.GetType("Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaPresenterExtensionType
+			&& Type.GetType("Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaExtensionType)
+		{
+			var libvlcHandle = LibDl.dlopen("libvlc.so", lazy: true);
+			if (libvlcHandle != IntPtr.Zero)
+			{
+				LibDl.dlclose(libvlcHandle);
+				ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), presenter => Activator.CreateInstance(mediaPresenterExtensionType, presenter)!);
+				ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => Activator.CreateInstance(mediaExtensionType, player)!);
+			}
+			else
+			{
+				if (mediaPresenterExtensionType.Log().IsEnabled(LogLevel.Error))
+				{
+					mediaPresenterExtensionType.Log().Error("libvlc.so was not found. Therefore, MediaPlayerElement will not be available. Visit https://platform.uno/docs/articles/controls/MediaPlayerElement.html to learn more about the needed dependencies.");
+				}
+			}
+		}
 	}
 
-	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60)
+	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60) : this(appBuilder, renderFrameRate, false)
 	{
+	}
+
+	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60, bool preloadVlc = false)
+	{
+		if (preloadVlc && Type.GetType("Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaExtensionType)
+		{
+			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
+		}
+
 		_appBuilder = appBuilder;
 
 		if (RenderFrameRate != default && renderFrameRate != RenderFrameRate)
@@ -85,13 +116,13 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		RenderFrameRate = renderFrameRate;
 
 		_eventLoop = new EventLoop();
-		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; }, UI.Dispatching.NativeDispatcherPriority.Normal);
+		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
 
 		_eventLoop.Schedule(() =>
 		{
 			_isDispatcherThread = true;
-		}, UI.Dispatching.NativeDispatcherPriority.Normal);
-		CoreDispatcher.DispatchOverride = _eventLoop.Schedule;
+		});
+		CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 		// We do not have a display timer on this target, we can use
@@ -107,7 +138,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	protected override Task RunLoop()
 	{
 		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
-		_eventLoop.Schedule(StartApp, UI.Dispatching.NativeDispatcherPriority.Normal);
+		_eventLoop.Schedule(StartApp);
 
 		while (!X11XamlRootHost.AllWindowsDone())
 		{

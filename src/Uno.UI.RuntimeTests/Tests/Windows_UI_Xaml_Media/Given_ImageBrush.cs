@@ -84,9 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			await TestHelper.RetryAssert(async () =>
 			{
 				float BorderOffset =
-#if __SKIA__
-					useRectangle ? 4 : 7;
-#elif __APPLE_UIKIT__
+#if __APPLE_UIKIT__ || __SKIA__
 					6;
 #else
 					3;

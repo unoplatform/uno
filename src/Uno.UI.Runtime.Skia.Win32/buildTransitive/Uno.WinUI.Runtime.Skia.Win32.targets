@@ -7,7 +7,7 @@
 	<Target Name="_UnoSkiaWin32FeatureDefines" AfterTargets="PrepareForBuild">
 
 		<PropertyGroup>
-			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WIN32;__UNO_SKIA__;__UNO_SKIA_WIN32__</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WIN32;__DESKTOP__;__UNO_SKIA__;__UNO_SKIA_WIN32__</DefineConstants>
 		</PropertyGroup>
 
 	</Target>

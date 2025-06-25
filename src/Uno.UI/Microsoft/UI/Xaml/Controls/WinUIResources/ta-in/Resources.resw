@@ -117,6 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="5114" xml:space="preserve">
+    <value>வெள்ளை</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>வெளிர் சாம்பல்</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>சாம்பல்</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>அடர் சாம்பல்</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>கருப்பு</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>பவளம்</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ரோஸ்</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>வெளிர் ஆரஞ்சு</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>வெளிறிய மேனி நிறம்</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>வெளிர் மஞ்சள்</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>வெளிர் பச்சை</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>எலுமிச்சை</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>நீர் வண்ணம்</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>மேக நீலம்</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>வெளிர் டர்க்கோய்ஸ்</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>வெளிர் நீலம்</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>இளம் நீலம்</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ஐஸ் நீலம்</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>பெரிவிங்கிள்</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>தாழம்பூ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>இளஞ்சிவப்பு</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>சிவப்பு</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ஆரஞ்சு</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>பழுப்பு</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>தங்கம்</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>மஞ்சள்</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ஆலிவ் பச்சை</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>பச்சை</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ஒளிர் பச்சை</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>பசும்நீலம்</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>டர்க்கோய்ஸ்</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>நீலம்</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>நீலம்-சாம்பல்</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>கருநீலம்</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>கருஞ்சிவப்பு</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>அடர் சிவப்பு</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>அடர் மஞ்சள்</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>அடர் பச்சை</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>அடர் பசும்நீலம்</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>அடர் நீலம்</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>அடர் கருஞ்சிவப்பு</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>பிளம்</value>
+  </data>
   <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
     <value></value>
   </data>
@@ -162,92 +288,11 @@
   <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
     <value>சொற்பொருள் பெரிதாக்கி</value>
   </data>
-  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
-    <value>நிலைமாற்றி விசை</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
-    <value>உருப்படி</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
-    <value>%1 உருப்படிகள்</value>
-  </data>
-  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
-    <value>ரத்துசெய்யும் டிராகிங் %1</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
-    <value>அடுத்து</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
-    <value>முந்தையது</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
-    <value>இயக்கு</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
-    <value>இடைநிறுத்து</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
-    <value>நேரம் முடிந்தது</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
-    <value>மீதமுள்ள நேரம்</value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
-    <value>இடையகமாக்கல் செயல்நிலை</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
-    <value>நாடுங்கள்</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
-    <value>ஒலிதடு</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
-    <value>ஒலியளவு</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
-    <value>பிழை</value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
-    <value>நாள் </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
-    <value>மாதம் </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
-    <value>ஆண்டு </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
-    <value>மணிநேரம் </value>
-  </data>
-  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
-    <value>நிமிடம் </value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
-    <value>%1 நிமிடம்</value>
-  </data>
-  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
-    <value>%1 நிமிடங்கள்</value>
-  </data>
   <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
     <value>%1 வினாடி</value>
   </data>
   <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
     <value>%1 நொடிகள்</value>
-  </data>
-  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
-    <value>செங்குத்துப் பெரிய குறைப்பு</value>
-  </data>
-  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
-    <value>செங்குத்துச் சிறிய குறைப்பு</value>
   </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>வெட்டு</value>
@@ -290,6 +335,9 @@
   </data>
   <data name="TEXT_CALENDARDATEPICKER_DEFAULT_PLACEHOLDER_TEXT" xml:space="preserve">
     <value>தேதியைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="TEXT_CALENDARVIEW_TODAY_AUTOMATION_NAME" xml:space="preserve">
+    <value>இன்று</value>
   </data>
   <data name="TEXT_HUB_SEE_LESS" xml:space="preserve">
     <value>குறைவாகக் காண்பி</value>
@@ -588,6 +636,9 @@
   <data name="UIA_SCROLLBAR_VERTICALTHUMB" xml:space="preserve">
     <value>செங்குத்துப் பெருவிரல்</value>
   </data>
+  <data name="UIA_MORE_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s-க்கான கூடுதல் விருப்பங்கள்</value>
+  </data>
   <data name="UIA_MEDIA_CAST" xml:space="preserve">
     <value>சாதனத்திற்கு காஸ்ட்</value>
   </data>
@@ -659,6 +710,9 @@
   </data>
   <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
     <value>பயன்பாட்டுப் பட்டி நிலைமாற்று பொத்தான்</value>
+  </data>
+  <data name="UIA_LESS_BUTTON_FOR_OWNER" xml:space="preserve">
+    <value>%s-க்கு குறைவான பயன்பாட்டுப் பட்டி</value>
   </data>
   <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
     <value>மீடியா ப்ளேயர்</value>
@@ -736,13 +790,13 @@
     <value>ரத்துசெய்</value>
   </data>
   <data name="TEXT_VK_CAPITALLOCK" xml:space="preserve">
-    <value>Caps Lock</value>
+    <value>கேப்ஸ் லாக்</value>
   </data>
   <data name="TEXT_VK_CLEAR" xml:space="preserve">
     <value>அழி</value>
   </data>
   <data name="TEXT_VK_CONTROL" xml:space="preserve">
-    <value>Ctrl</value>
+    <value>கண்ட்</value>
   </data>
   <data name="TEXT_VK_CONVERT" xml:space="preserve">
     <value>மாற்று</value>
@@ -766,7 +820,7 @@
     <value>E</value>
   </data>
   <data name="TEXT_VK_END" xml:space="preserve">
-    <value>End</value>
+    <value>முடி</value>
   </data>
   <data name="TEXT_VK_ENTER" xml:space="preserve">
     <value>என்டர்</value>
@@ -1024,7 +1078,7 @@
     <value>வழிசெலுத்தல் காட்சி</value>
   </data>
   <data name="TEXT_VK_NONCONVERT" xml:space="preserve">
-    <value>NonConvert</value>
+    <value>மாறாதது</value>
   </data>
   <data name="TEXT_VK_NONE" xml:space="preserve">
     <value>எதுவுமில்லை</value>
@@ -1060,7 +1114,7 @@
     <value>9</value>
   </data>
   <data name="TEXT_VK_NUMBERKEYLOCK" xml:space="preserve">
-    <value>Num Lock</value>
+    <value>எண் பூட்டு</value>
   </data>
   <data name="TEXT_VK_NUMBERPAD0" xml:space="preserve">
     <value>எண் 0</value>
@@ -1129,7 +1183,7 @@
     <value>எஸ்</value>
   </data>
   <data name="TEXT_VK_SCROLL" xml:space="preserve">
-    <value>Scroll Lock</value>
+    <value>உருள் பூட்டு</value>
   </data>
   <data name="TEXT_VK_SEARCH" xml:space="preserve">
     <value>தேடு</value>
@@ -1395,134 +1449,31 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ஆஃப்</value>
   </data>
-  <data name="5114" xml:space="preserve">
-    <value>வெள்ளை</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOUR" xml:space="preserve">
+    <value>%1 மணிநேரம்</value>
   </data>
-  <data name="5115" xml:space="preserve">
-    <value>வெளிர் சாம்பல்</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_HOURS" xml:space="preserve">
+    <value>%1 மணிநேரம்</value>
   </data>
-  <data name="5116" xml:space="preserve">
-    <value>சாம்பல்</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTE" xml:space="preserve">
+    <value>%1 நிமிடம்</value>
   </data>
-  <data name="5117" xml:space="preserve">
-    <value>அடர் சாம்பல்</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_MINUTES" xml:space="preserve">
+    <value>%1 நிமிடங்கள்</value>
   </data>
-  <data name="5118" xml:space="preserve">
-    <value>கருப்பு</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECOND" xml:space="preserve">
+    <value>%1 வினாடி</value>
   </data>
-  <data name="5119" xml:space="preserve">
-    <value>பவளம்</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_SECONDS" xml:space="preserve">
+    <value>%1 நொடிகள்</value>
   </data>
-  <data name="5120" xml:space="preserve">
-    <value>ரோஸ்</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_2" xml:space="preserve">
+    <value>இடநிலை %1 %2</value>
   </data>
-  <data name="5121" xml:space="preserve">
-    <value>வெளிர் ஆரஞ்சு</value>
+  <data name="UIA_MEDIA_SEEKSLIDER_POSITION_3" xml:space="preserve">
+    <value>இடநிலை %1 %2 %3</value>
   </data>
-  <data name="5122" xml:space="preserve">
-    <value>வெளிறிய மேனி நிறம்</value>
-  </data>
-  <data name="5123" xml:space="preserve">
-    <value>வெளிர் மஞ்சள்</value>
-  </data>
-  <data name="5124" xml:space="preserve">
-    <value>வெளிர் பச்சை</value>
-  </data>
-  <data name="5125" xml:space="preserve">
-    <value>எலுமிச்சை</value>
-  </data>
-  <data name="5126" xml:space="preserve">
-    <value>நீர் வண்ணம்</value>
-  </data>
-  <data name="5127" xml:space="preserve">
-    <value>மேக நீலம்</value>
-  </data>
-  <data name="5128" xml:space="preserve">
-    <value>வெளிர் டர்க்கோய்ஸ்</value>
-  </data>
-  <data name="5129" xml:space="preserve">
-    <value>வெளிர் நீலம்</value>
-  </data>
-  <data name="5130" xml:space="preserve">
-    <value>இளம் நீலம்</value>
-  </data>
-  <data name="5131" xml:space="preserve">
-    <value>ஐஸ் நீலம்</value>
-  </data>
-  <data name="5132" xml:space="preserve">
-    <value>பெரிவிங்கிள்</value>
-  </data>
-  <data name="5133" xml:space="preserve">
-    <value>தாழம்பூ</value>
-  </data>
-  <data name="5134" xml:space="preserve">
-    <value>இளஞ்சிவப்பு</value>
-  </data>
-  <data name="5135" xml:space="preserve">
-    <value>சிவப்பு</value>
-  </data>
-  <data name="5136" xml:space="preserve">
-    <value>ஆரஞ்சு</value>
-  </data>
-  <data name="5137" xml:space="preserve">
-    <value>பழுப்பு</value>
-  </data>
-  <data name="5138" xml:space="preserve">
-    <value>தங்கம்</value>
-  </data>
-  <data name="5139" xml:space="preserve">
-    <value>மஞ்சள்</value>
-  </data>
-  <data name="5140" xml:space="preserve">
-    <value>ஆலிவ் பச்சை</value>
-  </data>
-  <data name="5141" xml:space="preserve">
-    <value>பச்சை</value>
-  </data>
-  <data name="5142" xml:space="preserve">
-    <value>ஒளிர் பச்சை</value>
-  </data>
-  <data name="5143" xml:space="preserve">
-    <value>பசும்நீலம்</value>
-  </data>
-  <data name="5144" xml:space="preserve">
-    <value>டர்க்கோய்ஸ்</value>
-  </data>
-  <data name="5145" xml:space="preserve">
-    <value>நீலம்</value>
-  </data>
-  <data name="5146" xml:space="preserve">
-    <value>நீலம்-சாம்பல்</value>
-  </data>
-  <data name="5147" xml:space="preserve">
-    <value>கருநீலம்</value>
-  </data>
-  <data name="5148" xml:space="preserve">
-    <value>கருஞ்சிவப்பு</value>
-  </data>
-  <data name="5149" xml:space="preserve">
-    <value>அடர் சிவப்பு</value>
-  </data>
-  <data name="5150" xml:space="preserve">
-    <value>அடர் மஞ்சள்</value>
-  </data>
-  <data name="5151" xml:space="preserve">
-    <value>அடர் பச்சை</value>
-  </data>
-  <data name="5152" xml:space="preserve">
-    <value>அடர் பசும்நீலம்</value>
-  </data>
-  <data name="5153" xml:space="preserve">
-    <value>அடர் நீலம்</value>
-  </data>
-  <data name="5154" xml:space="preserve">
-    <value>அடர் கருஞ்சிவப்பு</value>
-  </data>
-  <data name="5155" xml:space="preserve">
-    <value>பிளம்</value>
-  </data>
-  <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>மூடு</value>
-    <comment>Automation name for the nav view provided close button</comment>
+  <data name="UIA_TEXT_MAX_CHARACTER_COUNT_REACHED" xml:space="preserve">
+    <value></value>
   </data>
 </root>

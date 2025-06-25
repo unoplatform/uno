@@ -22,12 +22,14 @@ using System.Drawing;
 using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 using Combinatorial.MSTest;
 
 
 #if __SKIA__
+using Microsoft.UI.Xaml.Data;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 #endif
@@ -809,6 +811,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.DesiredSize.Height > 0);
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/289")]
+#if __ANDROID__ || __APPLE_UIKIT__
+		[Ignore("Layout logic forces DesiredSize to be smaller than availableSize, which prevents us from fixing the behaviour to match wasm and skia.")]
+#endif
+		[DataRow(TextTrimming.None)]
+#if __WASM__
+		[DataRow(TextTrimming.Clip)]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+#endif
+		public async Task When_Text_Does_Not_Fit(TextTrimming trimming)
+		{
+			var lv = new ListView()
+			{
+				Width = 200
+			};
+			ScrollViewer.SetHorizontalScrollBarVisibility(lv, ScrollBarVisibility.Visible);
+			ScrollViewer.SetHorizontalScrollMode(lv, ScrollMode.Enabled);
+			var SUT = new TextBlock
+			{
+				Text = "text that is a lot longer than the given bounds",
+				TextTrimming = trimming
+			};
+			lv.Items.Add(SUT);
+			await UITestHelper.Load(lv);
+
+			if (trimming is TextTrimming.None)
+			{
+				lv.FindFirstDescendant<ScrollViewer>().ScrollableWidth.Should().BeGreaterThan(50);
+			}
+			else
+			{
+				// Not necessarily zero because of measuring inaccuracies
+				lv.FindFirstDescendant<ScrollViewer>().ScrollableWidth.Should().BeLessThan(5);
+			}
+		}
+
 #if !__APPLE_UIKIT__ // Line height is not supported on iOS
 		[TestMethod]
 		public async Task When_Empty_TextBlock_LineHeight_Override()
@@ -870,6 +910,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				previousOrigin = textBlockOrigin;
 			}
 		}
+
+#if __SKIA__
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno.hotdesign/issues/4327")]
+		public async Task When_Bound_To_TextBox_Text()
+		{
+			var textblock = new TextBlock { Foreground = new SolidColorBrush(Colors.Red) };
+			var textbox = new TextBox { Text = "0", Foreground = new SolidColorBrush(Colors.Red) };
+
+			textblock.SetBinding(TextBlock.TextProperty,
+				new Binding { Source = textbox, Path = new PropertyPath("Text"), });
+
+			await UITestHelper.Load(new StackPanel
+			{
+				textbox,
+				textblock
+			});
+
+			for (int i = 0; i < 5; i++)
+			{
+				textbox.Text = (int.TryParse(textbox.Text, out var v) ? v + 2 : 0).ToString();
+				await UITestHelper.WaitForIdle();
+				var tb1 = await UITestHelper.ScreenShot(textbox.FindFirstChild<TextBlock>());
+				var tb2 = await UITestHelper.ScreenShot(textblock);
+				for (int y = 0; y < 20; y++)
+				{
+					for (int x = 0; x < 20; x++)
+					{
+						Assert.AreEqual(tb1.GetPixel(x, y), tb2.GetPixel(x, y));
+					}
+				}
+			}
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

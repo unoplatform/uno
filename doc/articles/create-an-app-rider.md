@@ -126,11 +126,22 @@ Set the Android debug profile in the debugger toolbar, then click the green arro
 
 ### [**WebAssembly**](#tab/wasm)
 
+> [!IMPORTANT]
+> To run WebAssembly with Rider you will need to install one of the following browsers:
+>
+> - **Google Chrome**
+> - **Microsoft Edge (Chromium-based)**
+
 Select the **MyUnoApp (WebAssembly)** debug profile then click the green arrow or the debug button.
 
 ![A view of the Rider taskbar for WebAssembly](Assets/quick-start/run-wasm-rider.png)
 
 A new browser window will automatically run your application.
+
+> [!IMPORTANT]
+> If you get an **"Error: Default system browser option is not supported for Blazor apps. Please select a Chromium-based browser."** error message, you will also need to change the project configuration in Rider for WebAssembly, to ensure it uses either Chrome or Microsoft Edge. To do this, click on the TFMs dropdown to access the Edit Configuration option. Then navigate to WebAssembly, and change the browser setting from 'Default' to 'Chrome' or 'Edge'.
+
+![Updating Rider WebAssembly Browser Configuration](Assets/quick-start/rider_webassembly_change_browser.png)
 
 > [!IMPORTANT]
 > There is currently a known issue with **Rider version 2024.2** on **macOS** that causes an **'Access to localhost was denied' error when launching applications on WebAssembly**. Until this issue is resolved, you will need to reload the browser page to successfully load the application.

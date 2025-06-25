@@ -36,7 +36,7 @@ namespace Windows.UI.Input
 		internal const long DragWithTouchMinDelayMicroseconds = 300000; // https://docs.microsoft.com/en-us/windows/uwp/design/input/drag-and-drop#open-a-context-menu-on-an-item-you-can-drag-with-touch
 
 		private readonly Logger _log;
-		private IDictionary<uint, Gesture> _gestures = new Dictionary<uint, Gesture>(_defaultGesturesSize);
+		private IDictionary<PointerIdentifier, Gesture> _gestures = new Dictionary<PointerIdentifier, Gesture>(_defaultGesturesSize);
 		private Manipulation _manipulation;
 		private GestureSettings _gestureSettings = GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
 		private bool _isManipulationOrDragEnabled;
@@ -52,6 +52,9 @@ namespace Windows.UI.Input
 		}
 
 		public bool IsActive => _gestures.Count > 0 || _manipulation != null;
+
+		internal bool IsTracking(PointerIdentifier pointer)
+			=> _gestures.ContainsKey(pointer) || _manipulation?.IsActive(pointer) is true;
 
 		/// <summary>
 		/// Defines which suspicious cases should be patched by the gesture recognizer.
@@ -82,7 +85,7 @@ namespace Windows.UI.Input
 		public void ProcessDownEvent(PointerPoint value)
 		{
 			// Sanity validation. This is pretty important as the Gesture now has an internal state for the Holding state.
-			if (_gestures.TryGetValue(value.PointerId, out var previousGesture))
+			if (_gestures.TryGetValue(value.Pointer, out var previousGesture))
 			{
 				if (_log.IsEnabled(LogLevel.Debug))
 				{
@@ -98,12 +101,12 @@ namespace Windows.UI.Input
 				// This usually means that the gesture already detected a double tap
 				if (previousGesture != null)
 				{
-					_gestures.Remove(value.PointerId);
+					_gestures.Remove(value.Pointer);
 				}
 
 				return;
 			}
-			_gestures[value.PointerId] = gesture;
+			_gestures[value.Pointer] = gesture;
 
 			// Create or update a Manipulation responsible to recognize multi-pointer and drag gestures
 			if (_isManipulationOrDragEnabled)
@@ -112,15 +115,13 @@ namespace Windows.UI.Input
 			}
 		}
 
-		public void ProcessMoveEvents(IList<PointerPoint> value) => ProcessMoveEvents(value, true);
-
-		internal void ProcessMoveEvents(IList<PointerPoint> value, bool isRelevant)
+		public void ProcessMoveEvents(IList<PointerPoint> value)
 		{
 			// Even if the pointer was considered as irrelevant, we still buffer it as it is part of the user interaction
 			// and we should considered it for the gesture recognition when processing the up.
 			foreach (var point in value)
 			{
-				if (_gestures.TryGetValue(point.PointerId, out var gesture))
+				if (_gestures.TryGetValue(point.Pointer, out var gesture))
 				{
 					gesture.ProcessMove(point);
 				}
@@ -146,7 +147,7 @@ namespace Windows.UI.Input
 
 		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
 		{
-			if (_gestures.Remove(value.PointerId, out var gesture))
+			if (_gestures.Remove(value.Pointer, out var gesture))
 			{
 				// Note: At this point we MAY be IsActive == false, which is the expected behavior (same as UWP)
 				//		 even if we will fire some events now.
@@ -181,7 +182,7 @@ namespace Windows.UI.Input
 		{
 			// Capture the list in order to avoid alteration while enumerating
 			var gestures = _gestures;
-			_gestures = new Dictionary<uint, Gesture>(_defaultGesturesSize);
+			_gestures = new Dictionary<PointerIdentifier, Gesture>(_defaultGesturesSize);
 
 			// Note: At this point we are IsActive == false, which is the expected behavior (same as UWP)
 			//		 even if we will fire some events now.
@@ -204,7 +205,7 @@ namespace Windows.UI.Input
 			}
 
 			var ret = GestureSettings.None;
-			if (_gestures.TryGetValue(pointerId.Id, out var gesture))
+			if (_gestures.TryGetValue(pointerId, out var gesture))
 			{
 				gesture.PreventGestures(events);
 				ret |= gesture.Settings;
