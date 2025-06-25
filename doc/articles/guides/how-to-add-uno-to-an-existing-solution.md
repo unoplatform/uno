@@ -17,7 +17,7 @@ In order to add an Uno Platform project to an existing solution:
             "Uno.Sdk": "6.0.146"
         },
      ```
-    - If not, copy the entire `global.json` and place it next to your existing sln.
+   - If not, copy the entire `global.json` and place it next to your existing sln.
 1. For the `Directory.Build.Props` file, Uno Platform templates use [NuGet Central Package Management](https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management) (CPM) by default, which might conflict with your existing solution.
   1. If your solution uses CPM, you'll only need to copy the `ImplicitUsings` and `Nullable` properties in your `MyProject.csproj`
   1. If your solution does not use CPM:
