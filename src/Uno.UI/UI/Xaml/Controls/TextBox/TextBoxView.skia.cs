@@ -35,7 +35,13 @@ namespace Microsoft.UI.Xaml.Controls
 			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
 			IsPasswordBox = textBox is PasswordBox;
 
-			DisplayBlock = new TextBlock { MinWidth = InlineCollection.CaretThickness, IsTextBoxDisplay = true };
+			DisplayBlock = new TextBlock
+			{
+				MinWidth = InlineCollection.CaretThickness,
+				Style = null, // Prevent inheriting TextBlock styles
+				IsTextBoxDisplay = true,
+			};
+
 			SetFlowDirectionAndTextAlignment();
 
 			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))

@@ -85,7 +85,7 @@
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\TextCommandBarFlyoutPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>            
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ExpanderTests\ExpanderColorValidationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1931,6 +1931,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text_Arabic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_ImplicitParentTextBlockStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -6446,6 +6450,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyoutSubItem_Placement.xaml.cs">
       <DependentUpon>MenuFlyoutSubItem_Placement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_ImplicitParentTextBlockStyle.xaml.cs">
+      <DependentUpon>TextBox_ImplicitParentTextBlockStyle.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Keyboard_Navigation.xaml.cs">
       <DependentUpon>TextBox_Keyboard_Navigation.xaml</DependentUpon>
