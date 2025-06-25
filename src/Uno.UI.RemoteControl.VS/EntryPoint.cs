@@ -656,11 +656,11 @@ public partial class EntryPoint : IDisposable
 					.GetActiveTcpListeners()
 					.All(ep => ep.Port != p))
 				{
-					// Note: The check bellow should be sufficient to check the port number, but with Windows 26100.4351 and dotnet 9.0.300
-					//		 it will **NOT** throw an exception as we would have expected. We keep this (second) check only for safety.
-					tcp = new TcpListener(IPAddress.Any, port) { ExclusiveAddressUse = true };
-				tcp.Start();
-				tcp.Stop();
+					// As a safety, we also try to open a socket just like how kestrell does.
+					// Note : We do NOT use a TCPListener here, as it will not throw an exception if the port is already in use **by Kestrell**.
+					var so = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+					so.Bind(new IPEndPoint(IPAddress.Any, port));
+					so.Close();
 
 				return false;
 			}
