@@ -24,10 +24,11 @@ In order to add an Uno Platform project to an existing solution:
 
 1. For the `Directory.Build.Props` file, Uno Platform templates use [NuGet Central Package Management](https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management) (CPM) by default, which might conflict with your existing solution.
 
-  1. If your solution uses CPM, you'll only need to copy the `ImplicitUsings` and `Nullable` properties in your `MyProject.csproj`
-  1. If your solution does not use CPM:
-    - If you want to start using CPM, you can migrate to use it entirely and copy the contents of Uno's `Directory.Packages.props` to your own version of that file.
-    - If you don't want to use CPM, search for each `PackageReference` in each of Uno's projects and add the versions found in Uno's `Directory.Packages.props`, if any, as it depends on the options chosen when creating the projects.
+    1. If your solution uses CPM, you'll only need to copy the `ImplicitUsings` and `Nullable` properties in your `MyProject.csproj`
+    1. If your solution does not use CPM:
+
+        - If you want to start using CPM, you can migrate to use it entirely and copy the contents of Uno's `Directory.Packages.props` to your own version of that file.
+        - If you don't want to use CPM, search for each `PackageReference` in each of Uno's projects and add the versions found in Uno's `Directory.Packages.props`, if any, as it depends on the options chosen when creating the projects.
 
 1. The other files `.vsconfig`, `.editorconfig` and `.gitignore` are completely optional and can be copied to your solution as needed.
 1. Finally, manually add the projects to your solution using right-click on the root, click **Add**, then **Existing Project**
