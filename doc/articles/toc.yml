@@ -183,7 +183,9 @@
       - name: Control Libraries
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
-        href: guides/how-to-add-platforms-existing-project.md
+        href: xref:Uno.Guides.AddAdditionalPlatforms
+      - name: New Projects in Existing Solutions
+        href: xref:Uno.Guides.AddUnoToExistingSolution
       - name: Using the Skia Desktop
         href: xref:Uno.Skia.Desktop
       - name: Linux Framebuffer
