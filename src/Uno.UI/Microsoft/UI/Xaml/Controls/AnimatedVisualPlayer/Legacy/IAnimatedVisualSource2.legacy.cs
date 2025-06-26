@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if false
+using System.Collections.Generic;
 using Windows.UI;
 using Microsoft.UI.Xaml.Controls;
 
@@ -11,3 +12,4 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		void SetColorProperty(string propertyName, Color value);
 	}
 }
+#endif
