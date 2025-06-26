@@ -9,6 +9,7 @@ using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Media.Playback;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
@@ -37,6 +38,8 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	public WebAssemblyBrowserHost(Func<Application> appBuilder)
 	{
 		_appBuilder = appBuilder;
+
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWebAssembly;
 
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 	}

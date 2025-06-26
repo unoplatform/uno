@@ -31,6 +31,7 @@ using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Graphics;
+using Uno.UI.Helpers;
 using Uno.UI.UI.Input.Internal;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -50,6 +51,8 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		{
 			typeof(Win32Host).LogError()?.Error($"{nameof(PInvoke.OleInitialize)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 		}
+
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWin32;
 
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), _ => new Win32NativeWindowFactoryExtension());
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource),
@@ -108,6 +111,8 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		{
 			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
 		}
+
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWin32;
 
 		_appBuilder = appBuilder;
 		Win32EventLoop.Schedule(() =>
