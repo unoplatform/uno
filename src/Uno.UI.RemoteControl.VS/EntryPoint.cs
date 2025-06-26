@@ -662,8 +662,8 @@ public partial class EntryPoint : IDisposable
 					so.Bind(new IPEndPoint(IPAddress.Any, port));
 					so.Close();
 
-				return false;
-			}
+					return false;
+				}
 			}
 			catch
 			{
