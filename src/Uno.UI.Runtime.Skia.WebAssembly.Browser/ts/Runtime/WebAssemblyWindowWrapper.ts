@@ -102,6 +102,21 @@ namespace Uno.UI.Runtime.Skia {
 			return WebAssemblyWindowWrapper.getInstance(owner).canvasElement.id;
 		}
 
+		public static getSearchParams(): string {
+			if (typeof URLSearchParams === "function") {
+				return new URLSearchParams(window.location.search).toString();
+			}
+			else {
+				const queryIndex = document.location.search.indexOf("?");
+
+				if (queryIndex !== -1) {
+					return document.location.search.substring(queryIndex + 1);
+				}
+
+				return "";
+			}
+		}
+
 		private resize() {
 			this.onResize(this.owner, document.documentElement.clientWidth, document.documentElement.clientHeight);
 		}
