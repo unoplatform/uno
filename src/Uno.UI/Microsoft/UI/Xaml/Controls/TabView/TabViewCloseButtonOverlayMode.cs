@@ -1,30 +1,29 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabView.idl, commit 8aaf7f8
+// MUX Reference: TabView.idl, commit 92fbfcd55
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+
+/// <summary>
+/// Defines constants that describe the behavior of the close button contained within each TabViewItem.
+/// </summary>
+public enum TabViewCloseButtonOverlayMode
 {
 	/// <summary>
-	/// Defines constants that describe the behavior of the close button contained within each TabViewItem.
+	/// Behavior is defined by the framework. Default.
+	/// This value maps to Always.
 	/// </summary>
-	public enum TabViewCloseButtonOverlayMode
-	{
-		/// <summary>
-		/// Behavior is defined by the framework. Default.
-		/// This value maps to Always.
-		/// </summary>
-		Auto = 0,
+	Auto = 0,
 
-		/// <summary>
-		/// The selected tab always shows the close button if it is closable. Unselected tabs show the close
-		/// button when the tab is closable and the user has their pointer over the tab.
-		/// </summary>
-		OnPointerOver = 1,
+	/// <summary>
+	/// The selected tab always shows the close button if it is closable. Unselected tabs show the close
+	/// button when the tab is closable and the user has their pointer over the tab.
+	/// </summary>
+	OnPointerOver = 1,
 
-		/// <summary>
-		/// The selected tab always shows the close button if it is closable.
-		/// Unselected tabs always show the close button if they are closable.
-		/// </summary>
-		Always = 2,
-	}
+	/// <summary>
+	/// The selected tab always shows the close button if it is closable.
+	/// Unselected tabs always show the close button if they are closable.
+	/// </summary>
+	Always = 2,
 }
