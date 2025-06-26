@@ -1,17 +1,17 @@
 <Project>
 
 	<Choose>
-		<!-- Some projects are platform-agnostic and should always be net9.0/net8.0 even if -->
-		<!-- we are building for android with net9.0-android/net8.0-android -->
+		<!-- Some projects are platform-agnostic and should always be net10.0/net9.0 even if -->
+		<!-- we are building for android with net10.0-android/net9.0-android -->
 		<!-- Such projects will import this props file and the TargetFrameworks property will update appropriately -->
+		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net10.0'))">
+			<PropertyGroup>
+				<TargetFrameworks>net10.0</TargetFrameworks>
+			</PropertyGroup>
+		</When>
 		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net9.0'))">
 			<PropertyGroup>
 				<TargetFrameworks>net9.0</TargetFrameworks>
-			</PropertyGroup>
-		</When>
-		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net8.0'))">
-			<PropertyGroup>
-				<TargetFrameworks>net8.0</TargetFrameworks>
 			</PropertyGroup>
 		</When>
 	</Choose>

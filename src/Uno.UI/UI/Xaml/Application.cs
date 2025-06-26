@@ -547,10 +547,10 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if __SKIA__
 		[JSImport("globalThis.eval")]
 		private static partial string Eval(string js);
 
-#if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
 			if (!string.IsNullOrEmpty(_argumentsOverride))

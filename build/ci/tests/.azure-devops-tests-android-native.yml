@@ -43,7 +43,7 @@ jobs:
 
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
-      UnoCheckParameters: '--tfm net9.0-android'
+      UnoCheckParameters: '--tfm net10.0-android'
 
   - template: ../templates/nuget-cache.yml
     parameters:
@@ -53,12 +53,12 @@ jobs:
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
-      dotnet publish -f net8.0-android -c Release -p:UnoTargetFrameworkOverride=net8.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
+      dotnet publish -f net9.0-android -c Release -p:UnoTargetFrameworkOverride=net9.0-android /p:AndroidUseAssemblyStore=false /p:AndroidEnableAssemblyCompression=false  /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Samples app
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-android/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net9.0-android/publish
       Contents: 'uno.platform.unosampleapp-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
