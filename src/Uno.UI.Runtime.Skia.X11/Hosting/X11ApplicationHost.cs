@@ -112,6 +112,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		_appBuilder = appBuilder;
 
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaX11;
+
 		if (RenderFrameRate != default && renderFrameRate != RenderFrameRate)
 		{
 			throw new InvalidOperationException($"X11's render frame rate should only be set once.");
@@ -131,7 +133,6 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		// We do not have a display timer on this target, we can use
 		// a constant timer.
 		CompositionTargetTimer.Start();
-		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaX11;
 	}
 
 	internal static int RenderFrameRate { get; private set; }
