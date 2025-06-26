@@ -1,5 +1,5 @@
 ﻿#nullable enable
-
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -118,7 +118,6 @@ partial class ScrollViewer
 
 	private DependencyObject? GetNextFocusCandidate(FocusNavigationDirection navigationDirection, bool isPageNavigation)
 	{
-		MUX_ASSERT(Presenter is not null);
 		MUX_ASSERT(navigationDirection != FocusNavigationDirection.None);
 		var scrollPresenter = Presenter;
 
@@ -166,3 +165,4 @@ partial class ScrollViewer
 		return FocusManager.FindNextElement(focusDirection, findNextElementOptions);
 	}
 }
+#endif

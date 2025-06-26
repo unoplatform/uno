@@ -202,7 +202,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
-		public async Task When_Key_Press_Cant_Scroll()
+		public async Task When_Key_Press_Cannot_Scroll()
 		{
 			var navigationView = new NavigationView
 			{
