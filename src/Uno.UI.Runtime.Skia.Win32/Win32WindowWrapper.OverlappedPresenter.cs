@@ -14,19 +14,31 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 {
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
-		SetWindowStyle(WINDOW_STYLE.WS_DLGFRAME, false);
-		_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
+		// The WasShown guards are so that if a call to ApplyFullScreenPresenter is made before
+		// the window is shown, we postpone the logic below until ShowCore is called. Otherwise,
+		// it doesn't work.
+		if (WasShown)
+		{
+			SetWindowStyle(WINDOW_STYLE.WS_DLGFRAME, false);
+			_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
+		}
 
 		return Disposable.Create(() =>
 		{
-			SetWindowStyle(WINDOW_STYLE.WS_DLGFRAME, true);
-			_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+			if (WasShown)
+			{
+				SetWindowStyle(WINDOW_STYLE.WS_DLGFRAME, true);
+				_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+			}
 		});
 	}
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		presenter.SetNative(this);
+		if (WasShown)
+		{
+			presenter.SetNative(this);
+		}
 		return base.ApplyOverlappedPresenter(presenter);
 	}
 

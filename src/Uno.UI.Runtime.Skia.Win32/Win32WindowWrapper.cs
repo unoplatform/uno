@@ -16,6 +16,7 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
@@ -389,7 +390,20 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetActiveWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
-	protected override void ShowCore() => PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+	protected override void ShowCore()
+	{
+		if (Window?.AppWindow.Presenter is FullScreenPresenter)
+		{
+			// The window takes a split second to be rerendered with the fullscreen window size but
+			// no fix has been found for this yet.
+			SetWindowStyle(WINDOW_STYLE.WS_DLGFRAME, false);
+			_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
+		}
+		else
+		{
+			PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+		}
+	}
 
 	protected override void CloseCore()
 	{
