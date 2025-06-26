@@ -477,11 +477,11 @@
 				},
 				"HttpKiota": {
 					"description": "Adds support for custom HTTP clients, including the use of Kiota with Uno.Extensions.",
-					"helpUrl": "https://aka.platform.uno/feature-http"
+					"helpUrl": "https://aka.platform.uno/extensions-http-kiota"
 				},
 				"HttpRefit": {
 					"description": "Adds support for custom HTTP clients, including the use of Refit with Uno.Extensions.",
-					"helpUrl": "https://aka.platform.uno/feature-http"
+					"helpUrl": "https://aka.platform.uno/extensions-http-refit"
 				},
 				"Localization": {
 					"description": "Adds support for Localization using Uno.Extensions.",
