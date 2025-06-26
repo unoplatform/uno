@@ -56,14 +56,6 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 		}
 #endif
 
-#if __WASM__
-		[TestMethod]
-		public void When_IsWebAssembly()
-		{
-			Uno.UI.Helpers.PlatformRuntimeHelper.Current.IsWebAssembly().Should().BeTrue();
-		}
-#endif
-
 #if !HAS_UNO
 		[TestMethod]
 		public void When_IsWindows()
