@@ -268,14 +268,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 		}
 
-		// This is here to make the method internal!
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected internal global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer(global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer peer)
-		{
-			// Uno TODO: Properly implement this.
-			return new();
-		}
-
 		[global::Uno.NotImplemented]
 		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
 		{
