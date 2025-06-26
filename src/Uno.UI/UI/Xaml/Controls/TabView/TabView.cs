@@ -1164,7 +1164,7 @@ public partial class TabView : Control
 		// If the tab being closed is the currently focused tab, we'll move focus to the next tab
 		// when the tab closes.
 		bool tabIsFocused = false;
-		var focusedElement = XamlRoot is not null ? FocusManager.GetFocusedElement(XamlRoot) as DependencyObject ?? null;
+		var focusedElement = XamlRoot is not null ? FocusManager.GetFocusedElement(XamlRoot) as DependencyObject : null;
 
 		while (focusedElement is not null)
 		{
@@ -1607,7 +1607,7 @@ public partial class TabView : Control
 
 	internal bool MoveFocus(bool moveForward)
 	{
-		var focusedControl = XamlRoot is not null ? FocusManager.GetFocusedElement(XamlRoot) as Control ?? null;
+		var focusedControl = XamlRoot is not null ? FocusManager.GetFocusedElement(XamlRoot) as Control : null;
 
 		// If there's no focused control, then we have nothing to do.
 		if (focusedControl is null)
