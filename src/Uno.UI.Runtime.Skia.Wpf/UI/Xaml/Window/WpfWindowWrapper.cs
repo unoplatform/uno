@@ -91,8 +91,8 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	private void OnHostSizeChanged(Size size)
 	{
-		Bounds = new Windows.Foundation.Rect(default, new Windows.Foundation.Size(size.Width, size.Height));
-		VisibleBounds = Bounds;
+		var bounds = new Windows.Foundation.Rect(default, new Windows.Foundation.Size(size.Width, size.Height));
+		SetBoundsAndVisibleBounds(bounds, bounds);
 	}
 
 	private void OnNativeClosing(object? sender, CancelEventArgs e)
