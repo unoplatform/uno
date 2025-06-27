@@ -110,9 +110,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var source = Enumerable.Range(0, 10).ToArray();
 			var list = new ListView { ItemsSource = source };
 			list.SelectedItem = 3;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 			list.SelectedItem = 5;
-			Assert.AreEqual(list.SelectedItem, 5);
+			Assert.AreEqual(5, list.SelectedItem);
 		}
 
 		[TestMethod]
@@ -122,9 +122,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var source = Enumerable.Range(0, 10).ToArray();
 			var list = new ListView { ItemsSource = source };
 			list.SelectedItem = 3;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 			list.SelectedItem = 17;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 		}
 
 		[TestMethod]
@@ -275,17 +275,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// select 3 (value, not index)
 			list.SelectedItem = 3;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 
 			// modifying the original source, should not be reflected on the listview
 			// since the source is not ObservableCollection or INotifyCollectionChanged
 			source[3] = 13;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 
 			// setting an invalid value for SelectedItem, should be reverted to old value
 			// and in this case, that should be the 3 from the original **unmodified** source
 			list.SelectedItem = 17;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 		}
 
 		[TestMethod]
@@ -3052,11 +3052,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			list.SelectionChanged += (s, e) =>
 			{
-				Assert.AreEqual(list.SelectedItem, "Item_1");
-				Assert.AreEqual(list.SelectedValue, "Item_1");
+				Assert.AreEqual("Item_1", list.SelectedItem);
+				Assert.AreEqual("Item_1", list.SelectedValue);
 				Assert.AreEqual(1, model.SelectedIndex);
-				Assert.AreEqual(model.SelectedItem, "Item_1");
-				Assert.AreEqual(model.SelectedValue, "Item_1");
+				Assert.AreEqual("Item_1", model.SelectedItem);
+				Assert.AreEqual("Item_1", model.SelectedValue);
 			};
 
 			// update selection
