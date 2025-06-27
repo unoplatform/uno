@@ -33,6 +33,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
 
+		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
+
 		public TextBlock()
 		{
 			UpdateLastUsedTheme();
@@ -120,8 +122,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
+<<<<<<< HEAD
 			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
+=======
+			Inlines.Arrange(availableSizeWithoutPadding);
+>>>>>>> 342628562b (fix(textblock): invalidate the inner TextVisual whenever the TextBlock changes layout)
 			ApplyFlowDirection((float)finalSize.Width);
 
 			var result = base.ArrangeOverride(finalSize);
@@ -405,8 +411,13 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void UpdateIsTextTrimmed()
 		{
 			IsTextTrimmed = IsTextTrimmable && (
+<<<<<<< HEAD
 				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
 				_lastInlinesArrangeWithPadding.Height > ActualHeight
+=======
+				(Visual.Size.X + Padding.Left + Padding.Right) > ActualWidth ||
+				(Visual.Size.Y + Padding.Top + Padding.Bottom) > ActualHeight
+>>>>>>> 342628562b (fix(textblock): invalidate the inner TextVisual whenever the TextBlock changes layout)
 			);
 		}
 
