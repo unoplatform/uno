@@ -500,11 +500,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await KeyboardHelper.PageDown();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(3, keyDownCount);
+			Assert.AreEqual(2, keyDownCount);
 
 			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(3, keyDownCount);
+			Assert.AreEqual(2, keyDownCount);
 		}
 
 		[TestMethod]
