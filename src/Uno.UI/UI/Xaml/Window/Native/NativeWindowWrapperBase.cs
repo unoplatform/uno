@@ -91,6 +91,27 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		}
 	}
 
+	/// <summary>
+	/// The same as setting <see cref="VisibleBounds"/> and <see cref="Bounds"/> but makes sure the fired events
+	/// are fired only after both properties are updated "atomically"
+	/// </summary>
+	public void SetBoundsAndVisibleBounds(Rect bounds, Rect visibleBounds)
+	{
+		var oldBounds = _bounds;
+		var oldVisibleBounds = _visibleBounds;
+		_bounds = bounds;
+		_visibleBounds = visibleBounds;
+		if (oldBounds != bounds)
+		{
+			SizeChanged?.Invoke(this, bounds.Size);
+			RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
+		}
+		if (oldVisibleBounds != visibleBounds)
+		{
+			VisibleBoundsChanged?.Invoke(this, visibleBounds);
+		}
+	}
+
 	public CoreWindowActivationState ActivationState
 	{
 		get => _activationState;
