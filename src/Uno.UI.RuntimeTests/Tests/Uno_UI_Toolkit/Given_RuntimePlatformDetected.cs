@@ -63,6 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 		{
 			Uno.UI.Toolkit.PlatformRuntimeHelper.Current.Should().Be(Uno.UI.Toolkit.UnoRuntimePlatform.Windows);
 		}
+#endif 
 
 #if __UNO__
 		[TestMethod]
