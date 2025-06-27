@@ -24,11 +24,12 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 	[RunsOnUIThread]
 	public class Given_RuntimePlatformDetected
 	{
-#if __SKIA__
+
+#if __ANDROID__
 		[TestMethod]
-		public void When_IsSkia()
+		public void When_IsAndroid()
 		{
-			Uno.UI.Helpers.PlatformRuntimeHelper.Current.IsSkia().Should().BeTrue();
+			Uno.UI.Helpers.PlatformRuntimeHelper.Current.IsAndroid().Should().BeTrue();
 		}
 #endif
 
@@ -40,14 +41,6 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 		}
 #endif
 
-#if __ANDROID__
-		[TestMethod]
-		public void When_IsAndroid()
-		{
-			Uno.UI.Helpers.PlatformRuntimeHelper.Current.IsAndroid().Should().BeTrue();
-		}
-#endif
-
 #if __MACCATALYST__
 		[TestMethod]
 		public void When_IsMacCatalyst()
@@ -56,13 +49,22 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 		}
 #endif
 
-#if !HAS_UNO
+#if __UNO_SKIA__
+		[TestMethod]
+		public void When_IsSkia()
+		{
+			Uno.UI.Helpers.PlatformRuntimeHelper.Current.IsSkia().Should().BeTrue();
+		}
+#endif
+
+#if WINDOWS10_0_18362_0_OR_GREATER
 		[TestMethod]
 		public void When_IsWindows()
 		{
 			Uno.UI.Toolkit.PlatformRuntimeHelper.Current.Should().Be(Uno.UI.Toolkit.UnoRuntimePlatform.Windows);
 		}
-#else
+
+#if __UNO__
 		[TestMethod]
 		public void When_IsUnoIsKnown()
 		{
