@@ -9,6 +9,7 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
@@ -92,15 +93,18 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	}
 
 	/// <summary>
-	/// The same as setting <see cref="VisibleBounds"/> and <see cref="Bounds"/> but makes sure the fired events
-	/// are fired only after both properties are updated "atomically"
+	/// The same as setting <see cref="VisibleBounds"/>, <see cref="Bounds"/> and <see cref="Size"/> but makes sure the
+	/// fired events are fired only after both properties are updated "atomically"
 	/// </summary>
 	public void SetBoundsAndVisibleBounds(Rect bounds, Rect visibleBounds)
 	{
+		var applicationView = ApplicationView.GetForWindowId(Window!.AppWindow.Id);
 		var oldBounds = _bounds;
 		var oldVisibleBounds = _visibleBounds;
+		var oldVisibleBounds2 = applicationView.VisibleBounds;
 		_bounds = bounds;
 		_visibleBounds = visibleBounds;
+		applicationView.VisibleBounds = visibleBounds;
 		if (oldBounds != bounds)
 		{
 			SizeChanged?.Invoke(this, bounds.Size);
@@ -109,6 +113,14 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		if (oldVisibleBounds != visibleBounds)
 		{
 			VisibleBoundsChanged?.Invoke(this, visibleBounds);
+		}
+		if (oldVisibleBounds2 != applicationView.VisibleBounds)
+		{
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Updated ApplicationView visible bounds to {applicationView.VisibleBounds}");
+			}
+			applicationView.OnVisibleBoundsChanged(applicationView, null);
 		}
 	}
 
