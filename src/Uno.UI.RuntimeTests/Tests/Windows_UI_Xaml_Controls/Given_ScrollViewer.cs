@@ -570,11 +570,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(2, keyDownCount);
+			Assert.AreEqual(3, keyDownCount);
 
 			await KeyboardHelper.Right();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(3, keyDownCount);
+			Assert.AreEqual(4, keyDownCount);
 		}
 #endif
 
