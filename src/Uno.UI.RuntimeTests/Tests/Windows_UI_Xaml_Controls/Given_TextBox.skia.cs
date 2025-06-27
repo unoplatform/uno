@@ -4335,6 +4335,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
+		[TestMethod]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20857")]
+		public async Task When_Rearranged_Without_Remeasuring()
+		{
+			var SUT1 = new TextBox { Text = "text", TextAlignment = TextAlignment.End };
+			var btn1 = new Button { Content = "button" };
+			var grid1 = new Grid
+			{
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = GridLengthHelper.OneStar },
+					new ColumnDefinition { Width = GridLengthHelper.Auto }
+				},
+				Children =
+				{
+					SUT1,
+					FluentExtensions.Apply(btn1, btn => Grid.SetColumn(btn, 1))
+				}
+			};
+			await UITestHelper.Load(grid1);
+
+			var screenshot1 = await UITestHelper.ScreenShot(SUT1);
+
+			var SUT2 = new TextBox { Text = "text", TextAlignment = TextAlignment.End };
+			var btn2 = new Button { Content = "button" };
+			btn2.Visibility = Visibility.Collapsed; // difference here
+			var grid2 = new Grid
+			{
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = GridLengthHelper.OneStar },
+					new ColumnDefinition { Width = GridLengthHelper.Auto }
+				},
+				Children =
+				{
+					SUT2,
+					FluentExtensions.Apply(btn2, btn => Grid.SetColumn(btn, 1))
+				}
+			};
+			await UITestHelper.Load(grid2);
+			btn2.Visibility = Visibility.Visible;
+			await UITestHelper.WaitForIdle();
+
+			var screenshot2 = await UITestHelper.ScreenShot(SUT2);
+			await ImageAssert.AreEqualAsync(screenshot1, screenshot2);
+		}
+
 		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
 		{
 			for (var x = rect.Left; x < rect.Right; x++)
