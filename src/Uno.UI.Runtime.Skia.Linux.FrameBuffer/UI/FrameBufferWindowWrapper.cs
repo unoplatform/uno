@@ -25,7 +25,6 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 	{
 		var bounds = new Rect(default, newWindowSize);
 		SetBoundsAndVisibleBounds(bounds, bounds);
-		VisibleBounds = new Rect(default, newWindowSize);
 		Size = new((int)newWindowSize.Width, (int)newWindowSize.Height);
 	}
 

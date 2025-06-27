@@ -76,7 +76,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 		private Rect _visibleBounds;
-		public Foundation.Rect VisibleBounds { get => VisibleBoundsOverride ?? _visibleBounds; private set => _visibleBounds = value; }
+		public Foundation.Rect VisibleBounds { get => VisibleBoundsOverride ?? _visibleBounds; internal set => _visibleBounds = value; }
 
 		/// <summary>
 		/// All other platforms: equivalent to <see cref="VisibleBounds"/>.
@@ -256,19 +256,9 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		internal void SetVisibleBounds(Rect newVisibleBounds)
+		internal void OnVisibleBoundsChanged(ApplicationView applicationView, object arg)
 		{
-			if (newVisibleBounds != VisibleBounds)
-			{
-				VisibleBounds = newVisibleBounds;
-
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
-				}
-
-				VisibleBoundsChanged?.Invoke(this, null);
-			}
+			VisibleBoundsChanged?.Invoke(applicationView, arg);
 		}
 	}
 }
