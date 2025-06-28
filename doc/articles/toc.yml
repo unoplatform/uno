@@ -10,6 +10,9 @@
         href: xref:Uno.GetStarted.vscode
       - name: Rider
         href: xref:Uno.GetStarted.Rider
+
+    - name: Sign in with Uno Platform
+      href: xref:Uno.GetStarted.Licensing
         
     - name: Create an App
       topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
