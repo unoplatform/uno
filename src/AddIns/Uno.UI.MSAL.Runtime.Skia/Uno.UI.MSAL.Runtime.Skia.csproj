@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetMobilePreviousAndCurrent);$(NetReferencePreviousAndCurrent)</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<DefineConstants>$(DefineConstants);UNO_MSAL_RUNTIME_SKIA</DefineConstants>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+
+	<Import Project="../../targetframework-override.props" />
+	<ItemGroup>
+	  <Compile Include="..\Uno.UI.MSAL\Extensibility\Impl\DefaultMsalExtension.cs" Link="DefaultMsalExtension.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Reference.csproj" />
+	</ItemGroup>
+	
+	<Choose>
+		<When Condition="$(TargetFramework.Contains('-android'))">
+			<ItemGroup>
+				<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<ProjectReference Include="..\..\Uno.UWP\Uno.Reference.csproj" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
+</Project>
