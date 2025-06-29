@@ -160,8 +160,6 @@ Once you have purchased a Uno Platform Studio Pro subscription, you may need to 
 
 If you notice a small snowflake icon next to the Hot Design® flame icon when running your Uno app, this indicates that Hot Design® is not active:
 
-![Cold HD image](./studio/Assets/cold-hd-after-beta-end.png)
-
 ### Troubleshooting License Issues
 
 1. **License Not Showing**:
@@ -169,13 +167,11 @@ If you notice a small snowflake icon next to the Hot Design® flame icon when ru
    - Click the **Refresh** button to update your account status
    - Ensure you're signed in with the correct Uno Platform account
 
-   ![Inactive HD image before license assignment](./studio/Assets/inactive-hd-image-before-license-assignment.png)
-
 1. **License Assignment** (for team subscriptions):
    - Log in to your Uno Platform account at [platform.uno/my-account](https://platform.uno/my-account)
-   - Navigate to the **Subscriptions** section in the left navigation bar
-   - Enter the email address of the person you want to grant access to in the text box
-   - Click **Assign** to assign the license
+   - Navigate to the **Subscriptions** section in the left navigation bar (1)
+   - Enter the email address of the person you want to grant access to in the text box (2)
+   - Click **Assign** to assign the license (3)
    - The recipient will receive a notification email about the license assignment
 
    ![Active subscription image](./studio/Assets/active-subscription-image.png)
@@ -184,7 +180,6 @@ If you notice a small snowflake icon next to the Hot Design® flame icon when ru
    - After assignment, return to your IDE settings
    - Click **Refresh** in the Uno Platform Studio window
    - You should see a blue checkmark on Hot Design®, indicating it's ready to use
-   [IMAGE]
 
 ### Troubleshooting Common Issues
 
