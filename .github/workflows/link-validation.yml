@@ -19,7 +19,5 @@ jobs:
           args: >
             --verbose
             --no-progress
-            ../../doc/**/*.md
-          format: json
-          output: /temp/links-check.json
+            ./doc/**/*.md
       
