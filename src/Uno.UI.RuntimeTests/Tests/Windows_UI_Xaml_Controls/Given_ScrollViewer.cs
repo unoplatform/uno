@@ -736,6 +736,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
 		}
 
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Nested_WebView_WheelChanged()
+		{
+			var webview = new WebView2
+			{
+				Height = 200,
+			};
+
+			var outer = new ScrollViewer
+			{
+				Height = 300,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Red),
+							Height = 400,
+							Width = 200
+						},
+						webview,
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Blue),
+							Height = 400,
+							Width = 200
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = outer;
+
+			await WindowHelper.WaitForLoaded(outer);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(webview.GetAbsoluteBounds().GetCenter());
+			mouse.Wheel(-50, steps: 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, outer.VerticalOffset);
+
+			mouse.Wheel(-500, steps: 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
+		}
+
 		[TestMethod]
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
