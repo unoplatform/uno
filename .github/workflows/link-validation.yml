@@ -20,3 +20,6 @@ jobs:
             --verbose
             --no-progress
             ./docs/**/*.md
+          format: json
+          output: /temp/links-check.json
+      
