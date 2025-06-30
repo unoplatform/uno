@@ -176,7 +176,6 @@ namespace Uno.UWPSyncGenerator
 								AppendImplementedMembers("methods", "Method", methods);
 								AppendImplementedMembers("events", "Event", events);
 
-44454\
 								var notImplementedProperties = GetNotImplementedMembers(properties);
 								var notImplementedMethods = GetNotImplementedMembers(methods);
 								var notImplementedEvents = GetNotImplementedMembers(events);
