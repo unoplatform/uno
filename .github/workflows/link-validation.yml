@@ -1,0 +1,22 @@
+﻿name: Check Links
+
+on:
+  pull_request:
+  push:
+    branches: [origin/dev/skha/automate-links-validation]
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    name: Check links with linkcheck
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v1.9.0
+        with:
+          args: >
+            --verbose
+            --no-progress
+            ./docs/**/*.md
