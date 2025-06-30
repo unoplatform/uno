@@ -336,7 +336,7 @@
           - name: iOS
             href: uno-development/uno-internals-ios.md
           - name: Layouting in iOS
-            href: uno-development/Uno-UI-Layouting-iOS.mdcd doc
+            href: uno-development/Uno-UI-Layouting-iOS.md
           - name: WASM
             href: uno-development/uno-internals-wasm.md
           - name: macOS
