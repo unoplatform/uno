@@ -331,7 +331,7 @@ Hot Reload displays a visual indicator to help you further monitor changes while
 To start using the **Hot Reload indicator** using the **latest stable 5.5 Uno.Sdk version or higher**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 
 <p align="center">
-  <img src="~/articles/Assets/features/hotreload/indicator-not-connected-with-flyout.png" alt="The Hot Reload indicator is not connected. A flyout message states that Hot Reload is available only to registered users and prompts the user to sign in via the Studio... button." />
+  <img src="~/articles/Assets/features/hotreload/indicator-not-connected-with-flyout.png" alt="The Hot Reload indicator is not connected. A flyout message states that Hot Reload is available only to registered users and prompts the user to sign in via the Uno Platform Studio button." />
 </p>
 
 For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk/latest) to take advantage of all the latest improvements and support. Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
