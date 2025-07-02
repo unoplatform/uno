@@ -15,8 +15,11 @@ internal static class BackButtonIntegration
 
 	internal static void Initialize()
 	{
-		// Register the back button press event handler
-		SystemNavigationManager.GetForCurrentView().BackRequested += OnBackButtonPressed;
+		if (DXamlCore.Current.BackButtonSupported)
+		{
+			// Register the back button press event handler
+			SystemNavigationManager.GetForCurrentView().BackRequested += OnBackButtonPressed;
+		}
 	}
 
 	internal static void OnBackButtonPressed(object sender, BackRequestedEventArgs args)
