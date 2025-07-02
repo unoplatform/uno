@@ -51,7 +51,7 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			for (int i = 0; i < m_indexesInOriginalVector.Count; i++)
 			{
-				if (m_indexesInOriginalVector[i] > indexInOriginalVector)
+				if (m_indexesInOriginalVector[i] >= indexInOriginalVector)
 				{
 					m_indexesInOriginalVector[i]++;
 				}
