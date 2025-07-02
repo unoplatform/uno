@@ -6,19 +6,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Elfie.Serialization;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Server.Telemetry;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor))]
 
@@ -28,10 +25,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 	{
 		private static readonly TimeSpan _waitForIdeResultTimeout = TimeSpan.FromSeconds(25);
 		private readonly IRemoteControlServer _remoteControlServer;
+		private readonly ITelemetry<ServerHotReloadProcessor> _telemetry;
 
-		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
+		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry)
 		{
 			_remoteControlServer = remoteControlServer;
+			_telemetry = telemetry;
 		}
 
 		public string Scope => WellKnownScopes.HotReload;
@@ -103,11 +102,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private async ValueTask<HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? filesPaths)
 		{
 			var previous = _current;
-			HotReloadServerOperation? current, @new;
+			HotReloadServerOperation? @new;
 			while (true)
 			{
 				@new = new HotReloadServerOperation(this, previous, filesPaths);
-				current = Interlocked.CompareExchange(ref _current, @new, previous);
+				var current = Interlocked.CompareExchange(ref _current, @new, previous);
 				if (current == previous)
 				{
 					break;
@@ -134,43 +133,78 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async ValueTask Notify(HotReloadEvent evt, HotReloadEventSource source = HotReloadEventSource.DevServer)
 		{
-			switch (evt)
+			var properties = new Dictionary<string, string>
 			{
-				// Global state events
-				case HotReloadEvent.Disabled:
-					_globalState = HotReloadState.Disabled;
-					await AbortHotReload();
-					break;
+				["Event"] = evt.ToString(),
+				["Source"] = source.ToString(),
+				["PreviousState"] = _globalState.ToString()
+			};
 
-				case HotReloadEvent.Initializing:
-					_globalState = HotReloadState.Initializing;
-					await SendUpdate();
-					break;
+			_telemetry.TrackEvent("HotReload.Notify.Start", properties, null);
 
-				case HotReloadEvent.Ready:
-					_globalState = HotReloadState.Ready;
-					await SendUpdate();
-					break;
+			try
+			{
+				switch (evt)
+				{
+					// Global state events
+					case HotReloadEvent.Disabled:
+						_globalState = HotReloadState.Disabled;
+						await AbortHotReload();
+						_telemetry.TrackEvent("HotReload.Notify.Disabled", properties, null);
+						break;
 
-				// Pending hot-reload events
-				case HotReloadEvent.ProcessingFiles:
-					await EnsureHotReloadStarted();
-					break;
+					case HotReloadEvent.Initializing:
+						_globalState = HotReloadState.Initializing;
+						await SendUpdate();
+						_telemetry.TrackEvent("HotReload.Notify.Initializing", properties, null);
+						break;
 
-				case HotReloadEvent.Completed:
-					await (await StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
-					break;
+					case HotReloadEvent.Ready:
+						_globalState = HotReloadState.Ready;
+						await SendUpdate();
+						_telemetry.TrackEvent("HotReload.Notify.Ready", properties, null);
+						break;
 
-				case HotReloadEvent.NoChanges:
-					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
-					break;
-				case HotReloadEvent.Failed:
-					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
-					break;
+					// Pending hot-reload events
+					case HotReloadEvent.ProcessingFiles:
+						await EnsureHotReloadStarted();
+						_telemetry.TrackEvent("HotReload.Notify.ProcessingFiles", properties, null);
+						break;
 
-				case HotReloadEvent.RudeEdit:
-					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
-					break;
+					case HotReloadEvent.Completed:
+						await (await StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
+						_telemetry.TrackEvent("HotReload.Notify.Completed", properties, null);
+						break;
+
+					case HotReloadEvent.NoChanges:
+						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
+						_telemetry.TrackEvent("HotReload.Notify.NoChanges", properties, null);
+						break;
+
+					case HotReloadEvent.Failed:
+						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
+						_telemetry.TrackEvent("HotReload.Notify.Failed", properties, null);
+						break;
+
+					case HotReloadEvent.RudeEdit:
+						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
+						_telemetry.TrackEvent("HotReload.Notify.RudeEdit", properties, null);
+						break;
+				}
+
+				properties["NewState"] = _globalState.ToString();
+				properties["HasCurrentOperation"] = (_current != null).ToString();
+				_telemetry.TrackEvent("HotReload.Notify.Complete", properties, null);
+			}
+			catch (Exception ex)
+			{
+				var errorProperties = new Dictionary<string, string>(properties)
+				{
+					["ErrorMessage"] = ex.Message,
+					["ErrorType"] = ex.GetType().Name
+				};
+				_telemetry.TrackEvent("HotReload.Notify.Error", errorProperties, null);
+				throw;
 			}
 		}
 
@@ -215,9 +249,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		/// </summary>
 		private class HotReloadServerOperation
 		{
-			public readonly static int DefaultAutoRetryIfNoChangesAttempts = 3;
+			private static readonly int DefaultAutoRetryIfNoChangesAttempts = 3;
 
-			public readonly static TimeSpan DefaultAutoRetryIfNoChangesDelay = TimeSpan.FromMilliseconds(500);
+			public static readonly TimeSpan DefaultAutoRetryIfNoChangesDelay = TimeSpan.FromMilliseconds(500);
 
 			// Delay to wait without any update to consider operation was aborted.
 			private static readonly TimeSpan _timeoutDelay = TimeSpan.FromSeconds(30);
