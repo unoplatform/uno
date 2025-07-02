@@ -30,8 +30,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 		private Size _lastInlinesArrangeWithPadding;
+<<<<<<< HEAD
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
+=======
+>>>>>>> 3d6a7a4b57 (chore: fix TextBlock.IsTextTrimmed)
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
 
@@ -123,11 +126,16 @@ namespace Microsoft.UI.Xaml.Controls
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 =======
 			Inlines.Arrange(availableSizeWithoutPadding);
 >>>>>>> 342628562b (fix(textblock): invalidate the inner TextVisual whenever the TextBlock changes layout)
+=======
+			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
+			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
+>>>>>>> 3d6a7a4b57 (chore: fix TextBlock.IsTextTrimmed)
 			ApplyFlowDirection((float)finalSize.Width);
 
 			var result = base.ArrangeOverride(finalSize);
@@ -412,12 +420,17 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			IsTextTrimmed = IsTextTrimmable && (
 <<<<<<< HEAD
+<<<<<<< HEAD
 				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
 				_lastInlinesArrangeWithPadding.Height > ActualHeight
 =======
 				(Visual.Size.X + Padding.Left + Padding.Right) > ActualWidth ||
 				(Visual.Size.Y + Padding.Top + Padding.Bottom) > ActualHeight
 >>>>>>> 342628562b (fix(textblock): invalidate the inner TextVisual whenever the TextBlock changes layout)
+=======
+				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
+				_lastInlinesArrangeWithPadding.Height > ActualHeight
+>>>>>>> 3d6a7a4b57 (chore: fix TextBlock.IsTextTrimmed)
 			);
 		}
 
