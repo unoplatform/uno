@@ -47,19 +47,24 @@ public class Given_BackButtonIntegration
 	public void When_Normal_Back_Handling_Handled()
 	{
 		var listener = new TestListener();
+		bool wasTriggeredLocally = false;
+		var manager = SystemNavigationManager.GetForCurrentView();
+		void OnBackRequested(object sender, BackRequestedEventArgs e)
+		{
+			wasTriggeredLocally = true;
+		}
 		try
 		{
 			listener.Handle = true;
 			BackButtonIntegration.RegisterListener(listener);
-			var manager = SystemNavigationManager.GetForCurrentView();
-			bool wasTriggeredLocally = false;
-			manager.BackRequested += (s, e) => wasTriggeredLocally = true;
+			manager.BackRequested += OnBackRequested;
 			manager.RequestBack();
 			Assert.IsTrue(listener.WasTriggered, "Listener should have been triggered on back request.");
 			Assert.IsFalse(wasTriggeredLocally, "Local handling should not be triggered after listener handles.");
 		}
 		finally
 		{
+			manager.BackRequested -= OnBackRequested;
 			BackButtonIntegration.UnregisterListener(listener);
 		}
 	}
@@ -69,19 +74,24 @@ public class Given_BackButtonIntegration
 	public void When_Normal_Back_Handling_NotHandled()
 	{
 		var listener = new TestListener();
+		bool wasTriggeredLocally = false;
+		var manager = SystemNavigationManager.GetForCurrentView();
+		void OnBackRequested(object sender, BackRequestedEventArgs e)
+		{
+			wasTriggeredLocally = true;
+		}
 		try
 		{
 			listener.Handle = false;
 			BackButtonIntegration.RegisterListener(listener);
-			var manager = SystemNavigationManager.GetForCurrentView();
-			bool wasTriggeredLocally = false;
-			manager.BackRequested += (s, e) => wasTriggeredLocally = true;
+			manager.BackRequested += OnBackRequested;
 			manager.RequestBack();
 			Assert.IsTrue(listener.WasTriggered, "Listener should have been triggered on back request.");
 			Assert.IsTrue(wasTriggeredLocally, "Local handling should be triggered when listener does not handle.");
 		}
 		finally
 		{
+			manager.BackRequested -= OnBackRequested;
 			BackButtonIntegration.UnregisterListener(listener);
 		}
 	}
