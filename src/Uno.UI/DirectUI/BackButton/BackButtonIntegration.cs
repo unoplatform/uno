@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Uno.UI.DataBinding;
 using Windows.UI.Core;
-using Windows.UI.Core.Preview;
 
 namespace DirectUI;
 
@@ -15,11 +12,15 @@ internal static class BackButtonIntegration
 
 	internal static void Initialize()
 	{
-		if (DXamlCore.Current.BackButtonSupported)
-		{
-			// Register the back button press event handler
-			SystemNavigationManager.GetForCurrentView().BackRequested += OnBackButtonPressed;
-		}
+		// Register the back button press event handler
+		SystemNavigationManager.GetForCurrentView().BackRequested += OnBackButtonPressed;
+	}
+
+	internal static bool InjectBackButtonPress()
+	{
+		var args = new BackRequestedEventArgs();
+		OnBackButtonPressed(null, args);
+		return args.Handled;
 	}
 
 	internal static void OnBackButtonPressed(object sender, BackRequestedEventArgs args)
