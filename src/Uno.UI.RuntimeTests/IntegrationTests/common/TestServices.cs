@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using DirectUI;
 
 namespace Private.Infrastructure
 {
@@ -24,8 +25,11 @@ namespace Private.Infrastructure
 			{
 			}
 
-			internal static void InjectBackButtonPress(ref bool backButtonPressHandled)
+			internal static async Task<bool> InjectBackButtonPress()
 			{
+				var handled = false;
+				await RunOnUIThread(() => handled = BackButtonIntegration.InjectBackButtonPress());
+				return handled;
 			}
 
 			public static void SetTimeZone(string tzid)
