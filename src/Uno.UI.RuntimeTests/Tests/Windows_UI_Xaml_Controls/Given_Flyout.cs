@@ -29,6 +29,8 @@ using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Combinatorial.MSTest;
+using Microsoft.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -205,6 +207,90 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				flyout.Hide();
 			}
+		}
+
+		[TestMethod]
+		public async Task BackButtonIntegration()
+		{
+			Button button = null;
+			Flyout flyout = null;
+
+			(flyout, button) = await SetupBasicFlyoutTest();
+
+			var flyoutOpenedEvent = new Event();
+			var flyoutClosedEvent = new Event();
+			var openedRegistration = TestServices.CreateSafeEventRegistration<Flyout, EventHandler<object>>("Opened");
+			var closedRegistration = TestServices.CreateSafeEventRegistration<Flyout, EventHandler<object>>("Closed");
+
+			await TestServices.RunOnUIThread(() =>
+			{
+				openedRegistration.Attach(flyout, (s, e) =>
+				{
+					flyoutOpenedEvent.Set();
+				});
+
+				closedRegistration.Attach(flyout, (s, e) =>
+				{
+					flyoutClosedEvent.Set();
+				});
+			});
+
+			await TestServices.RunOnUIThread(() =>
+			{
+				TestServices.LOG_OUTPUT("Show flyout");
+				flyout.ShowAt(button);
+			});
+			await flyoutOpenedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			bool handled = false;
+			TestServices.LOG_OUTPUT("Dismiss flyout using Back button");
+			handled = await TestServices.Utilities.InjectBackButtonPress();
+			TestServices.VERIFY_IS_TRUE(handled);
+
+			TestServices.LOG_OUTPUT("Waiting for flyout to close");
+			await flyoutClosedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			TestServices.LOG_OUTPUT("After closing a flyout, further back button presses should not get handled");
+			handled = await TestServices.Utilities.InjectBackButtonPress();
+			TestServices.VERIFY_IS_FALSE(handled);
+		}
+
+		private async Task<(Flyout flyout, Button button)> SetupBasicFlyoutTest()
+		{
+			Button button = null;
+			Flyout flyout = null;
+			var loadedEvent = new Event();
+			var loadedRegistration = TestServices.CreateSafeEventRegistration<Grid, RoutedEventHandler>("Loaded");
+
+			await TestServices.RunOnUIThread(() =>
+			{
+				var rootPanel = (Grid)(XamlReader.Load(
+					"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+					"      x:Name='root' Background='SlateBlue' Width='400' Height='200' VerticalAlignment='Top' HorizontalAlignment='Left'> " +
+					"  <Button x:Name='button' Content='button.flyout' HorizontalAlignment='Left' FontSize='25' > " +
+					"    <Button.Flyout> " +
+					"      <Flyout Placement='Top'> " +
+					"        <TextBlock FontSize='30' Text='BUTTON.FLYOUT' Margin='30' Foreground='DarkRed' x:Name='button_flyout_content'/> " +
+					"      </Flyout> " +
+					"    </Button.Flyout> " +
+					"  </Button> " +
+					"</Grid>"));
+
+				TestServices.VERIFY_IS_NOT_NULL(rootPanel);
+				loadedRegistration.Attach(rootPanel, (s, e) => { loadedEvent.Set(); });
+				TestServices.WindowHelper.WindowContent = rootPanel;
+
+				button = (Button)(rootPanel.FindName("button"));
+				TestServices.VERIFY_IS_NOT_NULL(button);
+				flyout = (Flyout)(button.Flyout);
+				TestServices.VERIFY_IS_NOT_NULL(flyout);
+			});
+
+			await loadedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
+			return (flyout, button);
 		}
 
 		[TestMethod]
