@@ -26,6 +26,7 @@ Additionally, `SKCanvasElement` has an `Invalidate` method that invalidates the 
 Since `SKCanvasElement` is just a FrameworkElement, controlling the dimensions of the drawing area is done by manipulating the layout of the element, e.g. by overriding MeasureOverride and ArrangeOverride.
 
 ## Full example
+
 For a complete example that showcases how to work with `SKCanvasElement`, see [this sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SKCanvasElementShowcase) in the Uno.Samples repository
 
 ## WinAppSDK Specifics
