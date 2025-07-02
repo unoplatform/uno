@@ -1,9 +1,14 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 ﻿using System;
 using System.Drawing;
 =======
 ﻿using System.Drawing;
 >>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
+=======
+﻿using System;
+using System.Drawing;
+>>>>>>> f74b514914 (chore: ignore test on wasm)
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -79,12 +84,18 @@ public class Given_SKCanvasElement
 	public async Task When_Waiting_For_Another_Thread2()
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f74b514914 (chore: ignore test on wasm)
 		if (OperatingSystem.IsBrowser())
 		{
 			Assert.Inconclusive("This test requires a multithreaded environment.");
 		}
+<<<<<<< HEAD
 =======
 >>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
+=======
+>>>>>>> f74b514914 (chore: ignore test on wasm)
 		var gate = new object();
 		var SUT = new LockWaitingSKCanvasElement(gate) { Width = 400, Height = 400 };
 		await UITestHelper.Load(SUT);
