@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -57,6 +58,10 @@ public class Given_SKCanvasElement
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
 	public async Task When_Waiting_For_Another_Thread2()
 	{
+		if (OperatingSystem.IsBrowser())
+		{
+			Assert.Inconclusive("This test requires a multithreaded environment.");
+		}
 		var gate = new object();
 		var SUT = new LockWaitingSKCanvasElement(gate) { Width = 400, Height = 400 };
 		await UITestHelper.Load(SUT);
