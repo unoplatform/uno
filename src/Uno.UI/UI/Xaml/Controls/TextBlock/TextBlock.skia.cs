@@ -29,6 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+		private Size _lastInlinesArrangeWithPadding;
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
 
@@ -119,7 +120,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
-			Inlines.Arrange(availableSizeWithoutPadding);
+			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
+			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 			ApplyFlowDirection((float)finalSize.Width);
 
 			var result = base.ArrangeOverride(finalSize);
@@ -403,8 +405,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void UpdateIsTextTrimmed()
 		{
 			IsTextTrimmed = IsTextTrimmable && (
-				(Visual.Size.X + Padding.Left + Padding.Right) > ActualWidth ||
-				(Visual.Size.Y + Padding.Top + Padding.Bottom) > ActualHeight
+				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
+				_lastInlinesArrangeWithPadding.Height > ActualHeight
 			);
 		}
 
