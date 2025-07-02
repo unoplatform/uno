@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core.Scaling;
 using Windows.Devices.Input;
+using Uno;
 
 namespace DirectUI
 {
@@ -118,6 +119,9 @@ namespace DirectUI
 			}
 		}
 
-		internal bool BackButtonSupported => OperatingSystem.IsAndroid();
+		internal bool BackButtonSupported =>
+			OperatingSystem.IsAndroid() ||
+			OperatingSystem.IsBrowser() ||
+			WinRTFeatureConfiguration.DebugOptions.ForceEnableBackButtonIntegration;
 	}
 }
