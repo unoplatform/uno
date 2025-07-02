@@ -686,6 +686,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20727")]
+		public async Task When_Alpha_Blending()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
+			}
+
+			// Image generated with
+			// using SkiaSharp;
+			// var width = 100;
+			// var height = 100;
+			// var bitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
+			// var idx = 0;
+			// for (int i = 0; i < height; i++)
+			// {
+			// 	for (int j = 0; j < width; j++)
+			// 	{
+			// 		bitmap.SetPixel(j, i, new SKColor(0, 127, 0, 127));
+			// 	}
+			// }
+			// using (var fs = new FileStream("when_alpha_blending.png", FileMode.OpenOrCreate))
+			// {
+			// 	bitmap.Encode(SKEncodedImageFormat.Png, 100).SaveTo(fs);
+			// }
+			var SUT = new Image { Source = new BitmapImage { UriSource = new Uri("ms-appx:///Assets/when_alpha_blending.png") } };
+			var loaded = false;
+			SUT.ImageOpened += (_, _) => loaded = true;
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.White),
+				Child = SUT
+			};
+			await UITestHelper.Load(border);
+			await UITestHelper.WaitFor(() => loaded);
+			var screenShot = await UITestHelper.ScreenShot(border);
+			ImageAssert.HasColorAt(screenShot, screenShot.Width / 2, screenShot.Height / 2, Color.FromArgb(0xFF, 0x80, 0xBF, 0x80));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Exif_Rotated_From_Stream()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
