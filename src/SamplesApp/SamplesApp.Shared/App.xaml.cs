@@ -598,6 +598,8 @@ namespace SamplesApp
 #if __ANDROID__
 			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
 #endif
+
+			Uno.WinRTFeatureConfiguration.DebugOptions.ForceEnableBackButtonIntegration = true;
 		}
 
 		/// <summary>
