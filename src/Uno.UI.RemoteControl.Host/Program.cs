@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
@@ -8,11 +9,20 @@ using Mono.Options;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
+using Uno.DevTools.Telemetry;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Host;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
+using Uno.UI.RemoteControl.Server;
+using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
+
+[assembly:Telemetry("DevServer", EventsPrefix = "uno/dev-server")]
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -85,6 +95,7 @@ namespace Uno.UI.RemoteControl.Host
 				.ConfigureServices(services =>
 				{
 					services.AddSingleton<IIdeChannel, IdeChannelServer>();
+					services.AddTelemetry();
 				});
 
 			if (solution is not null)
