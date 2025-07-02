@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
@@ -8,14 +9,122 @@ using Mono.Options;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
+using Uno.DevTools.Telemetry;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Host;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Services;
 
+[assembly:Telemetry("abc", EventsPrefix = "uno/dev-server")]
+
 namespace Uno.UI.RemoteControl.Host
 {
+	//public interface ITelemetryScope
+	//{
+	//	static abstract TelemetryKey GetKey();
+	//}
+
+	//public record TelemetryKey(string InstrumentationKey, string EventsPrefix);
+
+	//public class DevServerTelemetry : ITelemetryScope
+	//{
+	//	/// <inheritdoc />
+	//	public static TelemetryKey GetKey()
+	//		=> new("", "uno/devserver");
+	//}
+
+
+	public interface ITelemetry<T> : ITelemetry;
+
+	[AttributeUsage(AttributeTargets.Assembly)]
+	public class TelemetryAttribute(string instrumentationKey) : Attribute
+	{
+		public string InstrumentationKey { get; } = instrumentationKey;
+		
+		public string? EventsPrefix { get; set; } = string.Empty;
+	}
+
+	public record TelemetryAdapter<T>(IServiceProvider services) : ITelemetry<T>
+	{
+		private ITelemetry Inner { get; } = services.GetRequiredKeyedService<ITelemetry>(typeof(T).Assembly);
+
+		/// <inheritdoc />
+		public void Dispose()
+			=> Inner.Dispose();
+
+		/// <inheritdoc />
+		public void Flush()
+			=> Inner.Flush();
+
+		/// <inheritdoc />
+		public Task FlushAsync(CancellationToken ct)
+			=> Inner.FlushAsync(ct);
+
+		/// <inheritdoc />
+		public void ThreadBlockingTrackEvent(string eventName, IDictionary<string, string> properties, IDictionary<string, double> measurements)
+			=> Inner.ThreadBlockingTrackEvent(eventName, properties, measurements);
+
+		/// <inheritdoc />
+		public void TrackEvent(string eventName, (string key, string value)[]? properties, (string key, double value)[]? measurements)
+			=> Inner.TrackEvent(eventName, properties, measurements);
+
+		/// <inheritdoc />
+		public void TrackEvent(string eventName, IDictionary<string, string>? properties, IDictionary<string, double>? measurements)
+			=> Inner.TrackEvent(eventName, properties, measurements);
+
+		/// <inheritdoc />
+		public bool Enabled => Inner.Enabled;
+	}
+
+	public record TelemetrySession
+	{
+		public Guid Id { get; } = Guid.NewGuid();
+	}
+	
+	public static class ServiceCollectionExtensions
+	{
+		/// <summary>
+		/// Adds the telemetry session to the service collection.
+		/// </summary>
+		public static IServiceCollection AddTelemetry(this IServiceCollection services)
+		{
+			services.AddScoped<TelemetrySession>();
+			services.AddKeyedScoped<ITelemetry>(
+				KeyedService.AnyKey,
+				(svc, key) => CreateTelemetry(svc, key, svc.GetRequiredService<TelemetrySession>().Id.ToString("N")));
+			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
+
+			services.AddKeyedSingleton<ITelemetry>(
+				KeyedService.AnyKey,
+				(svc, key) =>
+				{
+					var desc = new ServiceDescriptor()
+					return CreateTelemetry(svc, key);
+				});
+			services.AddSingleton(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
+
+			return services;
+
+			static ITelemetry CreateTelemetry(IServiceProvider svc, object key, string? sessionId = null)
+				=> key switch
+				{
+					Type type => svc.GetRequiredKeyedService<ITelemetry>(type.Assembly),
+					Assembly asm when asm.GetCustomAttribute<TelemetryAttribute>() is { } config => new Telemetry(config.InstrumentationKey, config.EventsPrefix ?? $"uno/{asm.GetName().Name?.ToLowerInvariant()}", asm, sessionId),
+					Assembly => throw new InvalidOperationException($"No telemetry config found for assembly {key}."),
+					_ => throw new InvalidOperationException($"Unsupported telemetry key type {key.GetType().FullName}. Expected Assembly or Type.")
+				};
+		}
+	}
+
+	//public class Bla(ITelemetry<DevServerTelemetry> telemetry)
+	//{
+
+	//}
+
 	class Program
 	{
 		static async Task Main(string[] args)
@@ -85,6 +194,7 @@ namespace Uno.UI.RemoteControl.Host
 				.ConfigureServices(services =>
 				{
 					services.AddSingleton<IIdeChannel, IdeChannelServer>();
+					services.AddTelemetry();
 				});
 
 			if (solution is not null)
