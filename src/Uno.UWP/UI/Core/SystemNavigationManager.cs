@@ -13,6 +13,10 @@ namespace Windows.UI.Core
 
 		public static SystemNavigationManager GetForCurrentView() => Instance;
 
+		internal event EventHandler<BackRequestedEventArgs> InternalBackRequested = delegate { };
+
+		public event EventHandler<BackRequestedEventArgs> BackRequested = delegate { };
+
 		private readonly object _backRequestedLock = new object();
 		private EventHandler<BackRequestedEventArgs> _backRequested;
 
@@ -99,6 +103,11 @@ namespace Windows.UI.Core
 		internal bool RequestBack()
 		{
 			var args = new BackRequestedEventArgs();
+			InternalBackRequested?.Invoke(this, args);
+			if (!args.Handled)
+			{
+				BackRequested?.Invoke(this, args);
+			}
 
 			var handlers = _backRequested;
 			handlers?.Invoke(this, args);
