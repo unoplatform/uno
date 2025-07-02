@@ -10,6 +10,8 @@ namespace Windows.UI.Core
 
 		public static SystemNavigationManager GetForCurrentView() => Instance;
 
+		internal event EventHandler<BackRequestedEventArgs> InternalBackRequested = delegate { };
+
 		public event EventHandler<BackRequestedEventArgs> BackRequested = delegate { };
 
 		private AppViewBackButtonVisibility _appViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
@@ -44,7 +46,11 @@ namespace Windows.UI.Core
 		internal bool RequestBack()
 		{
 			var args = new BackRequestedEventArgs();
-			BackRequested?.Invoke(this, args);
+			InternalBackRequested?.Invoke(this, args);
+			if (!args.Handled)
+			{
+				BackRequested?.Invoke(this, args);
+			}
 
 			return args.Handled;
 		}

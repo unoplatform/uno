@@ -13,7 +13,7 @@ internal static class BackButtonIntegration
 	internal static void Initialize()
 	{
 		// Register the back button press event handler
-		SystemNavigationManager.GetForCurrentView().BackRequested += OnBackButtonPressed;
+		SystemNavigationManager.GetForCurrentView().InternalBackRequested += OnBackButtonPressed;
 	}
 
 	internal static bool InjectBackButtonPress()
