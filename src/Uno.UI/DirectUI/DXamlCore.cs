@@ -107,6 +107,8 @@ namespace DirectUI
 			// OnUWPWindowSizeChanged();
 		}
 
+		internal static bool IsWinRTDndOperationInProgress() => false; // TODO Uno: Not implemented for now
+
 		internal bool IsKeyboardPresent
 		{
 			get
@@ -115,5 +117,7 @@ namespace DirectUI
 				return _keyboardCapabilities.KeyboardPresent != 0;
 			}
 		}
+
+		internal bool BackButtonSupported => OperatingSystem.IsAndroid();
 	}
 }
