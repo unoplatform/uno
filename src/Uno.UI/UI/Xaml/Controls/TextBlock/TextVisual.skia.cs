@@ -18,7 +18,7 @@ using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition
 {
-	internal class TextVisual : Visual
+	internal class TextVisual : ContainerVisual
 	{
 		private readonly WeakReference<TextBlock> _owner;
 
