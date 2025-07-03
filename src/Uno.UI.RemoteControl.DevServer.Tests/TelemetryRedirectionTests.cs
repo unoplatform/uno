@@ -25,7 +25,6 @@ public class TelemetryRedirectionTests
 	}
 
 	[TestMethod]
-	[Ignore("Server not writing to telemetry yet")]
 	public async Task TelemetryRedirection_ShouldWriteToFile_WhenEnvironmentVariableIsSet()
 	{
 		// Arrange
@@ -34,7 +33,7 @@ public class TelemetryRedirectionTests
 			_logger,
 			environmentVariables: new Dictionary<string, string>()
 			{
-				{ "UNO_REMOTE_CONTROL_TELEMETRY_FILE", tempFile }
+				{ "UNO_DEVSERVER_TELEMETRY_FILE", tempFile }
 			});
 		try
 		{
@@ -46,7 +45,7 @@ public class TelemetryRedirectionTests
 
 			// Assert - Ensure file is create with content...
 			File.Exists(tempFile).Should().BeTrue("temp file should exist");
-			var fileContent = await File.ReadAllTextAsync(tempFile);
+			var fileContent = await File.ReadAllTextAsync(tempFile, CT);
 			fileContent.Should().NotBeNullOrEmpty("temp file should not be empty");
 		}
 		finally
@@ -57,4 +56,3 @@ public class TelemetryRedirectionTests
 		}
 	}
 }
-
