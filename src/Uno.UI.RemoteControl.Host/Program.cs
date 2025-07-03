@@ -8,21 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Mono.Options;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using System.ComponentModel;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
-using Uno.DevTools.Telemetry;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
-using Uno.UI.RemoteControl.Host;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
-using Uno.UI.RemoteControl.Server;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
-
-[assembly: Telemetry("DevServer", EventsPrefix = "uno/dev-server")]
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -30,49 +22,52 @@ namespace Uno.UI.RemoteControl.Host
 	{
 		static async Task Main(string[] args)
 		{
-			var httpPort = 0;
-			var parentPID = 0;
-			var solution = default(string);
-
-			var p = new OptionSet
+			ITelemetry? telemetry = null;
+			try
 			{
+				var httpPort = 0;
+				var parentPID = 0;
+				var solution = default(string);
+
+				var p = new OptionSet
 				{
-					"httpPort=", s => {
-						if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out httpPort))
-						{
-							throw new ArgumentException($"The httpPort parameter is invalid {s}");
-						}
-					}
-				},
-				{
-					"ppid=", s => {
-						if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out parentPID))
-						{
-							throw new ArgumentException($"The parent process id parameter is invalid {s}");
-						}
-					}
-				},
-				{
-					"solution=", s =>
 					{
-						if (string.IsNullOrWhiteSpace(s) || !File.Exists(s))
-						{
-							throw new ArgumentException($"The provided solution path '{s}' does not exists");
+						"httpPort=", s => {
+							if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out httpPort))
+							{
+								throw new ArgumentException($"The httpPort parameter is invalid {s}");
+							}
 						}
+					},
+					{
+						"ppid=", s => {
+							if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out parentPID))
+							{
+								throw new ArgumentException($"The parent process id parameter is invalid {s}");
+							}
+						}
+					},
+					{
+						"solution=", s =>
+						{
+							if (string.IsNullOrWhiteSpace(s) || !File.Exists(s))
+							{
+								throw new ArgumentException($"The provided solution path '{s}' does not exists");
+							}
 
-						solution = s;
+							solution = s;
+						}
 					}
+				};
+
+				p.Parse(args);
+
+				if (httpPort == 0)
+				{
+					throw new ArgumentException($"The httpPort parameter is required.");
 				}
-			};
 
-			p.Parse(args);
-
-			if (httpPort == 0)
-			{
-				throw new ArgumentException($"The httpPort parameter is required.");
-			}
-
-			const LogLevel logLevel = LogLevel.Debug;
+				const LogLevel logLevel = LogLevel.Debug;
 
 			// During init, we dump the logs to the console, until the logger is set up
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = LoggerFactory.Create(builder => builder.SetMinimumLevel(logLevel).AddConsole());
@@ -115,9 +110,53 @@ namespace Uno.UI.RemoteControl.Host
 
 			host.Services.GetService<IIdeChannel>();
 
-			using var parentObserver = ParentProcessObserver.Observe(host, parentPID);
+				// Track devserver startup
+				telemetry = host.Services.GetService<ITelemetry>();
+				var startupProperties = new Dictionary<string, string>
+				{
+					["HasSolution"] = (solution != null).ToString(),
+					["MachineName"] = Environment.MachineName,
+					["OSVersion"] = Environment.OSVersion.ToString(),
+					["ProcessorCount"] = Environment.ProcessorCount.ToString(CultureInfo.InvariantCulture)
+				};
 
-			await host.RunAsync();
+				telemetry?.TrackEvent("DevServer.Startup", startupProperties, null);
+
+				using var parentObserver = ParentProcessObserver.Observe(host, parentPID);
+
+				try
+				{
+					await host.RunAsync();
+				}
+				finally
+				{
+					// WARNING: THIS WILL WON'T WORK UNTIL THE SERVER IMPLEMENTS A KIND OF GRACEFUL SHUTDOWN
+					// (currently the server is just getting killed without any due process)
+
+					// Track devserver shutdown
+					var shutdownProperties = new Dictionary<string, string>
+					{
+						["UpTime"] = (DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()).ToString("c")
+					};
+
+					telemetry?.TrackEvent("DevServer.Shutdown", shutdownProperties, null);
+					telemetry?.Flush();
+				}
+			}
+			catch (Exception ex)
+			{
+				// Track devserver startup failure
+				var errorProperties = new Dictionary<string, string>
+				{
+					["ErrorMessage"] = ex.Message,
+					["ErrorType"] = ex.GetType().Name,
+					["StackTrace"] = ex.StackTrace ?? "",
+				};
+
+				telemetry?.TrackEvent("DevServer.StartupFailure", errorProperties, null);
+				telemetry?.Flush();
+				throw;
+			}
 		}
 	}
 }

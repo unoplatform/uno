@@ -3,6 +3,8 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Uno.UI.RemoteControl.Server.Telemetry;
 
+[assembly: Telemetry("DevServer", EventsPrefix = "uno/dev-server")]
+
 namespace Uno.UI.RemoteControl.Helpers
 {
 	internal static class ServiceCollectionExtensions
