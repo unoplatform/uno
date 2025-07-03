@@ -23,6 +23,13 @@ namespace Uno.UI.RemoteControl.Helpers
 
 			static ITelemetry CreateTelemetry(IServiceProvider svc, Assembly asm, string? sessionId = null)
 			{
+				// Check for telemetry redirection environment variable
+				var telemetryFilePath = Environment.GetEnvironmentVariable("UNO_DEVSERVER_TELEMETRY_FILE");
+				if (!string.IsNullOrEmpty(telemetryFilePath))
+				{
+					return new FileTelemetry(telemetryFilePath);
+				}
+
 				if (asm.GetCustomAttribute<TelemetryAttribute>() is { } config)
 				{
 					var telemetry = new Uno.DevTools.Telemetry.Telemetry(config.InstrumentationKey, config.EventsPrefix ?? $"uno/{asm.GetName().Name?.ToLowerInvariant()}", asm, sessionId);
