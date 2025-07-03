@@ -22,7 +22,7 @@ using Uno.UI.RemoteControl.Server;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 
-[assembly:Telemetry("DevServer", EventsPrefix = "uno/dev-server")]
+[assembly: Telemetry("DevServer", EventsPrefix = "uno/dev-server")]
 
 namespace Uno.UI.RemoteControl.Host
 {
