@@ -18,7 +18,10 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		public bool Enabled => _inner.Enabled;
 
 		public void Dispose()
-			=> _inner.Dispose();
+		{
+			_inner.Flush();
+			// Don't dispose inner here to allow shutdown events
+		}
 
 		public void Flush()
 			=> _inner.Flush();
