@@ -83,6 +83,46 @@ public class Given_SKCanvasElement
 		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
 	}
 
+	[TestMethod]
+	public async Task When_Invalidate_Called_MultipleTimes_DoesNot_Crash()
+	{
+		var SUT = new RedFillSKCanvasElement
+		{
+			Height = 200,
+			Width = 400
+		};
+
+		var blueCanvas = new BlueFillSKCanvasElement
+		{
+			Height = 200,
+			Width = 400
+		};
+
+		var stack = new StackPanel
+		{
+			VerticalAlignment = VerticalAlignment.Stretch,
+			HorizontalAlignment = HorizontalAlignment.Stretch,
+			Height = 500,
+		};
+
+		stack.Children.Add(SUT);
+		stack.Children.Add(blueCanvas);
+
+		var border = new Border
+		{
+			BorderBrush = Microsoft.UI.Colors.Green,
+			Height = 500,
+			Child = stack
+		};
+
+		await UITestHelper.Load(border);
+
+		var bitmap = await UITestHelper.ScreenShot(border);
+
+		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 200, 200), Microsoft.UI.Colors.Red);
+		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 200, 200, 200), Microsoft.UI.Colors.Blue);
+	}
+
 	private class BlueFillSKCanvasElement : SKCanvasElement
 	{
 		protected override void RenderOverride(SKCanvas canvas, Size area)
@@ -123,6 +163,15 @@ public class Given_SKCanvasElement
 			Monitor.Enter(gate);
 			Monitor.Exit(gate);
 			_insideRenderOverride = false;
+		}
+	}
+
+	private class RedFillSKCanvasElement : SKCanvasElement
+	{
+		protected override void RenderOverride(SKCanvas canvas, Size area)
+		{
+			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), new SKPaint { Color = SKColors.Red });
+			InvalidateMeasure();
 		}
 	}
 }
