@@ -84,6 +84,44 @@ public class Given_SKCanvasElement
 	}
 
 	[TestMethod]
+	public async Task When_Loading_Not_Rendereing_Unnecessarily()
+	{
+		var renderInvalidatedCount = 0;
+
+		var SUT = new RedFillSKCanvasElement
+		{
+			Height = 400,
+			Width = 400
+		};
+
+		var border = new Border
+		{
+			BorderBrush = Microsoft.UI.Colors.Green,
+			Height = 400,
+			Child = new ScrollViewer
+			{
+				VerticalAlignment = VerticalAlignment.Top,
+				Height = 400,
+				Background = Microsoft.UI.Colors.Red,
+				Content = SUT
+			}
+		};
+
+		await UITestHelper.Load(border);
+
+		SUT.XamlRoot.RenderInvalidated += () =>
+		{
+			renderInvalidatedCount++;
+		};
+
+		// Wait a short time to ensure no extra invalidations occur
+		await Task.Delay(6000);
+
+		Assert.IsTrue(renderInvalidatedCount < 4, "RenderInvalidated should not be executed indefinitely.");
+	}
+
+
+	[TestMethod]
 	public async Task When_Invalidate_Called_MultipleTimes_DoesNot_Crash()
 	{
 		var SUT = new RedFillSKCanvasElement
