@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -28,6 +29,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests;
 /// </remarks>
 public sealed class DevServerTestHelper : IAsyncDisposable
 {
+
 	private readonly ILogger _logger;
 	private Process? _devServerProcess;
 	private readonly ConcurrentQueue<string> _consoleOutput = new();
@@ -108,6 +110,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 				CreateNoWindow = true,
 				RedirectStandardOutput = true,
 				RedirectStandardError = true,
+				RedirectStandardInput = true, // Enable stdin redirection for CTRL-C sending
 				WorkingDirectory = Path.GetDirectoryName(hostDllPath) // Set working directory to ensure all dependencies are found
 			};
 
@@ -217,27 +220,33 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	}
 
 	/// <summary>
-	/// Stops the dev server.
+	/// Stops the dev server using graceful shutdown if possible.
 	/// </summary>
 	public async Task StopAsync(CancellationToken ct)
 	{
-		await _startStopSemaphore.WaitAsync(ct);
-		try
+		if (!IsRunning)
 		{
-			if (!IsRunning)
-			{
-				return;
-			}
-
-			_logger.LogInformation("Stopping dev server");
-			CleanupProcess();
-
-			// Wait a bit for graceful shutdown
-			await Task.Delay(100, ct);
+			return;
 		}
-		finally
+
+		_logger.LogInformation("Stopping dev server gracefully");
+
+		// Attempt graceful shutdown first - this method handles semaphore and cleanup internally
+		var gracefulShutdownSucceeded = await AttemptGracefulShutdown(ct);
+
+		if (!gracefulShutdownSucceeded)
 		{
-			_startStopSemaphore.Release();
+			_logger.LogWarning("Graceful shutdown failed, forcing process termination");
+			// Use semaphore for the cleanup operation
+			await _startStopSemaphore.WaitAsync(ct);
+			try
+			{
+				CleanupProcess();
+			}
+			finally
+			{
+				_startStopSemaphore.Release();
+			}
 		}
 	}
 
@@ -347,6 +356,98 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 
 		return startupIndicators.Any(indicator => consoleOutput.Contains(indicator, StringComparison.OrdinalIgnoreCase));
 	}
+
+	/// <summary>
+	/// Attempts to gracefully shutdown the dev server by sending CTRL-C signal.
+	/// When graceful shutdown succeeds, this method will properly clean up the internal state.
+	/// </summary>
+	/// <param name="ct">Cancellation token for the operation.</param>
+	/// <returns>True if graceful shutdown succeeded, false otherwise.</returns>
+	public async Task<bool> AttemptGracefulShutdown(CancellationToken ct)
+	{
+		// Use semaphore to prevent race conditions with concurrent start/stop calls
+		await _startStopSemaphore.WaitAsync(ct);
+		try
+		{
+			if (_devServerProcess == null || _devServerProcess.HasExited)
+			{
+				return true;
+			}
+
+			try
+			{
+				// Attempt platform-specific graceful shutdown
+				var signalSent = await SendGracefulShutdownSignal(_devServerProcess);
+				_logger.LogDebug("Graceful shutdown signal sent: {SignalSent}", signalSent);
+
+				// Wait for the process to exit gracefully (up to 5 seconds)
+				var gracefulShutdownTimeout = TimeSpan.FromSeconds(5);
+				var stopwatch = Stopwatch.StartNew();
+
+				while (stopwatch.Elapsed < gracefulShutdownTimeout && !_devServerProcess.HasExited)
+				{
+					ct.ThrowIfCancellationRequested();
+					await Task.Delay(100, ct);
+				}
+
+				var succeeded = _devServerProcess.HasExited;
+				_logger.LogDebug("Graceful shutdown {Result} after {ElapsedMs}ms", succeeded ? "succeeded" : "timed out", stopwatch.ElapsedMilliseconds);
+
+				// If graceful shutdown succeeded, clean up the internal state
+				if (succeeded)
+				{
+					_logger.LogInformation("Dev server stopped gracefully");
+					// Dispose the process object and reset the reference
+					_devServerProcess?.Dispose();
+					_devServerProcess = null;
+				}
+
+				return succeeded;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Error during graceful shutdown attempt");
+				return false;
+			}
+		}
+		finally
+		{
+			_startStopSemaphore.Release();
+		}
+	}
+
+	/// <summary>
+	/// Sends a graceful shutdown signal to the process by writing CTRL-C to stdin.
+	/// </summary>
+	/// <param name="process">The process to send the signal to.</param>
+	/// <returns>True if the signal was sent successfully, false otherwise.</returns>
+	private async Task<bool> SendGracefulShutdownSignal(Process process)
+	{
+		try
+		{
+			_logger.LogDebug("Sending CTRL-C via stdin to process {ProcessId}", process.Id);
+
+			// Send CTRL-C character (ASCII 3) via stdin
+			if (process.StartInfo.RedirectStandardInput)
+			{
+				await process.StandardInput.WriteAsync('\x03'); // CTRL-C character
+				await process.StandardInput.FlushAsync();
+				_logger.LogDebug("CTRL-C sent via stdin");
+				return true;
+			}
+			else
+			{
+				_logger.LogWarning("Cannot send CTRL-C via stdin - stdin is not redirected");
+				return false;
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Error sending CTRL-C via stdin");
+			return false;
+		}
+	}
+
 
 	/// <summary>
 	/// Cleans up the current process by killing it and disposing resources.

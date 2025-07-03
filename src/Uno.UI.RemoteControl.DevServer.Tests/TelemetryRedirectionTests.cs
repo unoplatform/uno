@@ -41,7 +41,9 @@ public class TelemetryRedirectionTests
 			var started = await helper.StartAsync(CT);
 			helper.EnsureStarted();
 
-			await Task.Delay(5000, CT);
+			await Task.Delay(2000, CT);
+
+			await helper.AttemptGracefulShutdown(CT);
 
 			// Assert - Ensure file is create with content...
 			File.Exists(tempFile).Should().BeTrue("temp file should exist");

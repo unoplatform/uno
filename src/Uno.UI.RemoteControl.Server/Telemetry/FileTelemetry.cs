@@ -19,7 +19,6 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 
 		private readonly string _filePath;
 		private readonly object _lock = new();
-		private bool _disposed;
 
 		public FileTelemetry(string filePath)
 		{
@@ -37,7 +36,7 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 
 		public void Dispose()
 		{
-			_disposed = true;
+			// Dont't dispose to allow post-shutdown logging
 		}
 
 		public void Flush()
@@ -81,11 +80,6 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 
 		public void TrackEvent(string eventName, IDictionary<string, string>? properties, IDictionary<string, double>? measurements)
 		{
-			if (_disposed)
-			{
-				return;
-			}
-
 			var telemetryEvent = new
 			{
 				Timestamp = DateTimeOffset.UtcNow,
