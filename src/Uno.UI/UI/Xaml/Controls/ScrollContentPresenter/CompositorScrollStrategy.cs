@@ -49,6 +49,13 @@ namespace Microsoft.UI.Xaml.Controls
 				var animation = compositor.CreateVector2KeyFrameAnimation();
 				animation.InsertKeyFrame(1.0f, target, easing);
 				animation.Duration = TimeSpan.FromSeconds(1);
+				animation.AnimationFrame += (CompositionAnimation obj) =>
+				{
+					// This is a workaround for the issue where the animation frame is not called
+					// when the target value is the same as the current value.
+					// We need to call Updated event to ensure that the scroll position is updated.
+					Updated?.Invoke(this, new(horizontalOffset, verticalOffset, options.IsIntermediate));
+				};
 
 				visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
 			}
