@@ -13,7 +13,7 @@ public sealed partial class SuspendingOperation : ISuspendingOperation
 	internal SuspendingOperation(DateTimeOffset offset, Action? onComplete)
 	{
 		Deadline = offset;
-		DeferralManager = new DeferralManager<SuspendingDeferral>(h => new SuspendingDeferral(h));
+		DeferralManager = new DeferralFactoryManager<SuspendingDeferral>(h => new SuspendingDeferral(h));
 		DeferralManager.Completed += (s, e) => onComplete?.Invoke();
 	}
 
@@ -22,7 +22,7 @@ public sealed partial class SuspendingOperation : ISuspendingOperation
 	/// </summary>
 	public DateTimeOffset Deadline { get; }
 
-	internal DeferralManager<SuspendingDeferral> DeferralManager { get; }
+	internal DeferralFactoryManager<SuspendingDeferral> DeferralManager { get; }
 
 	/// <summary>
 	/// Requests that the app suspending operation be delayed.
