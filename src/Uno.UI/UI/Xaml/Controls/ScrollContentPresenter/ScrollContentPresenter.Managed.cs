@@ -112,6 +112,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 			_strategy.Initialize(this);
+			_strategy.Updated += OnStrategyUpdated;
 		}
 
 		private protected override void OnLoaded()
@@ -255,10 +256,19 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (Content is UIElement contentElt)
 				{
+					options.IsIntermediate = isIntermediate;
 					_strategy.Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, 1, options);
 				}
 			}
 
+			return success;
+		}
+
+		private void OnStrategyUpdated(object sender, StrategyUpdateEventArgs eventArgs)
+		{
+			var (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate) = eventArgs;
+
+			var updated = true;
 			// For the OnPresenterScrolled, we cannot rely only on the `updated` flag, we must also check for the isIntermediate flag!
 			if (updated || _lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
 			{
@@ -273,8 +283,6 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
 				InvalidateViewport();
 			}
-
-			return success;
 		}
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)

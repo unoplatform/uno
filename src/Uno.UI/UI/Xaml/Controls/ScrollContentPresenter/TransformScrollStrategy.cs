@@ -28,6 +28,8 @@ namespace Microsoft.UI.Xaml.Controls
 			transform.TranslateY = -verticalOffset;
 			transform.ScaleX = zoom;
 			transform.ScaleY = zoom;
+
+			Updated?.Invoke(this, new(horizontalOffset, verticalOffset, options.IsIntermediate));
 		}
 	}
 }
