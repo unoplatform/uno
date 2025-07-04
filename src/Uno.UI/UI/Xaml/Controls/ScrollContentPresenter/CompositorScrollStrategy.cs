@@ -10,6 +10,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class CompositorScrollStrategy : IScrollStrategy
 	{
+		public event EventHandler<StrategyUpdateEventArgs>? Updated;
+
 		public static CompositorScrollStrategy Instance { get; } = new();
 
 		private CompositorScrollStrategy() { }
