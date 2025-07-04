@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using Microsoft.AspNetCore.Builder;
@@ -55,6 +56,27 @@ namespace Uno.UI.RemoteControl.Host
 								connectionContext.AddMetadata("RemotePort", context.Connection.RemotePort.ToString(NumberFormatInfo.InvariantInfo));
 								connectionContext.AddMetadata("Protocol", context.Request.Protocol);
 
+								// Track client connection in telemetry
+								var telemetry = context.RequestServices.GetService<ITelemetry>();
+								if (telemetry != null)
+								{
+									var properties = new Dictionary<string, string>
+									{
+										["ConnectionId"] = connectionContext.ConnectionId.ToString(),
+										["RemoteIpAddress"] = connectionContext.RemoteIpAddress?.ToString() ?? "unknown",
+										["UserAgent"] = connectionContext.UserAgent ?? "unknown",
+										["Protocol"] = context.Request.Protocol
+									};
+
+									// Add all metadata as properties
+									foreach (var meta in connectionContext.Metadata)
+									{
+										properties[meta.Key] = meta.Value;
+									}
+
+									telemetry.TrackEvent("Client.Connection.Opened", properties, null);
+								}
+
 								if (app.Log().IsEnabled(LogLevel.Debug))
 								{
 									app.Log().LogDebug($"Populated connection context: {connectionContext}");
@@ -81,6 +103,27 @@ namespace Uno.UI.RemoteControl.Host
 					}
 					finally
 					{
+						// Track client disconnection in telemetry
+						var connectionContext = context.RequestServices.GetService<ConnectionContext>();
+						var telemetry = context.RequestServices.GetService<ITelemetry>();
+						if (telemetry != null && connectionContext != null)
+						{
+							var connectionDuration = DateTime.UtcNow - connectionContext.ConnectedAt;
+
+							var properties = new Dictionary<string, string>
+							{
+								["ConnectionId"] = connectionContext.ConnectionId.ToString(),
+								["RemoteIpAddress"] = connectionContext.RemoteIpAddress?.ToString() ?? "unknown"
+							};
+
+							var measurements = new Dictionary<string, double>
+							{
+								["DurationSeconds"] = connectionDuration.TotalSeconds
+							};
+
+							telemetry.TrackEvent("Client.Connection.Closed", properties, measurements);
+						}
+
 						if (app.Log().IsEnabled(LogLevel.Information))
 						{
 							app.Log().LogInformation($"Disposing connection from {context.Connection.RemoteIpAddress}");

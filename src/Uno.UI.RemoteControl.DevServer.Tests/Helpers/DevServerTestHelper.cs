@@ -2,8 +2,6 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
@@ -67,7 +65,11 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// <param name="httpPort">The HTTP port to use for the dev server. If 0, a random port will be used.</param>
 	/// <param name="solutionPath">Optional path to the solution file.</param>
 	/// <param name="environmentVariables">Optional environment variables for the process.</param>
-	public DevServerTestHelper(ILogger logger, int httpPort = 0, string? solutionPath = null, IReadOnlyDictionary<string, string>? environmentVariables = null)
+	public DevServerTestHelper(
+		ILogger logger,
+		int httpPort = 0,
+		string? solutionPath = null,
+		IReadOnlyDictionary<string, string>? environmentVariables = null)
 	{
 		_logger = logger;
 		_httpPort = httpPort == 0 ? GetRandomPort() : httpPort;
@@ -109,8 +111,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = "dotnet",
-				Arguments = $"\"{hostDllPath}\" --httpPort {_httpPort}" +
-					(_solutionPath != null ? $" --solution \"{_solutionPath}\"" : ""),
+				Arguments = $"\"{hostDllPath}\" --httpPort {_httpPort}" + (_solutionPath != null ? $" --solution \"{_solutionPath}\"" : ""),
 				UseShellExecute = false,
 				CreateNoWindow = true,
 				RedirectStandardOutput = true,
@@ -131,7 +132,8 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 					}
 					else
 					{
-						_logger.LogWarning("Environment variable {Key} already exists, skipping override", variable.Key);
+						_logger.LogWarning("Environment variable {Key} already exists, skipping override",
+							variable.Key);
 					}
 				}
 			}
@@ -185,7 +187,8 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 				var consoleOutput = ConsoleOutput;
 				if (IsServerStarted(consoleOutput))
 				{
-					_logger.LogInformation("Dev server started successfully in {ElapsedMs}ms", stopwatch.ElapsedMilliseconds);
+					_logger.LogInformation("Dev server started successfully in {ElapsedMs}ms",
+						stopwatch.ElapsedMilliseconds);
 					return true;
 				}
 
@@ -197,7 +200,8 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 					var finalConsoleOutput = ConsoleOutput;
 					var finalErrorOutput = ErrorOutput;
 
-					_logger.LogError("Dev server process exited unexpectedly with code {ExitCode}. Console output: {ConsoleOutput}. Error output: {ErrorOutput}",
+					_logger.LogError(
+						"Dev server process exited unexpectedly with code {ExitCode}. Console output: {ConsoleOutput}. Error output: {ErrorOutput}",
 						_devServerProcess.ExitCode, finalConsoleOutput, finalErrorOutput);
 
 					// Clean up the failed process
@@ -211,7 +215,8 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 			// Timeout occurred - log final output and clean up
 			var timeoutConsoleOutput = ConsoleOutput;
 			var timeoutErrorOutput = ErrorOutput;
-			_logger.LogError("Timeout waiting for dev server to start after {TimeoutMs}ms. Console output: {ConsoleOutput}. Error output: {ErrorOutput}",
+			_logger.LogError(
+				"Timeout waiting for dev server to start after {TimeoutMs}ms. Console output: {ConsoleOutput}. Error output: {ErrorOutput}",
 				timeout, timeoutConsoleOutput, timeoutErrorOutput);
 
 			// Clean up the process that didn't start in time
@@ -335,7 +340,8 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 			}
 		}
 
-		_logger.LogError("Could not discover Host DLL path. Tried configurations: {Configurations}, frameworks: {Frameworks}",
+		_logger.LogError(
+			"Could not discover Host DLL path. Tried configurations: {Configurations}, frameworks: {Frameworks}",
 			string.Join(", ", configurations), string.Join(", ", frameworks));
 		return null;
 	}
@@ -351,15 +357,13 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 		// Multiple possible startup indicators to make detection more robust
 		var startupIndicators = new[]
 		{
-			"Application started",
-			"Now listening on",
+			"Application started", "Now listening on",
 			"Application is shutting down", // This might seem counterintuitive, but it indicates the app at least started
-			"Hosting environment:",
-			"Content root path:",
-			"info: Microsoft.Hosting.Lifetime"
+			"Hosting environment:", "Content root path:", "info: Microsoft.Hosting.Lifetime"
 		};
 
-		return startupIndicators.Any(indicator => consoleOutput.Contains(indicator, StringComparison.OrdinalIgnoreCase));
+		return startupIndicators.Any(indicator =>
+			consoleOutput.Contains(indicator, StringComparison.OrdinalIgnoreCase));
 	}
 
 	/// <summary>
@@ -396,7 +400,8 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 				}
 
 				var succeeded = _devServerProcess.HasExited;
-				_logger.LogDebug("Graceful shutdown {Result} after {ElapsedMs}ms", succeeded ? "succeeded" : "timed out", stopwatch.ElapsedMilliseconds);
+				_logger.LogDebug("Graceful shutdown {Result} after {ElapsedMs}ms",
+					succeeded ? "succeeded" : "timed out", stopwatch.ElapsedMilliseconds);
 
 				// If graceful shutdown succeeded, clean up the internal state
 				if (succeeded)
@@ -482,6 +487,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 				{
 					_logger.LogWarning(ex, "Error disposing dev server process during cleanup");
 				}
+
 				_devServerProcess = null;
 			}
 		}
@@ -502,6 +508,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 		{
 			return;
 		}
+
 		_isDisposed = true;
 
 		await StopAsync(CancellationToken.None);

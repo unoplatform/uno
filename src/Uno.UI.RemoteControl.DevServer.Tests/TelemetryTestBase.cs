@@ -1,11 +1,7 @@
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
-/// <summary>
-/// Base class for telemetry tests that provides common functionality and reduces code duplication.
-/// </summary>
 public abstract class TelemetryTestBase
 {
 	protected static ILogger Logger { get; private set; } = null!;
@@ -33,9 +29,10 @@ public abstract class TelemetryTestBase
 		var tempDir = Path.GetTempPath();
 		var filePath = Path.Combine(tempDir, baseFileName);
 
+		// Enable single file telemetry mode
 		var helper = new DevServerTestHelper(
 			Logger,
-			environmentVariables: new Dictionary<string, string> { { "UNO_DEVSERVER_TELEMETRY_FILE", filePath } });
+			environmentVariables: new Dictionary<string, string> { { "UNO_DEVSERVER_TELEMETRY_FILE", filePath }, });
 
 		return (helper, tempDir);
 	}
@@ -43,11 +40,15 @@ public abstract class TelemetryTestBase
 	/// <summary>
 	/// Creates a DevServerTestHelper with telemetry redirection to an exact file path.
 	/// </summary>
-	protected DevServerTestHelper CreateTelemetryHelperWithExactPath(string exactFilePath)
+	protected DevServerTestHelper CreateTelemetryHelperWithExactPath(string exactFilePath, string? solutionPath = null)
 	{
 		return new DevServerTestHelper(
 			Logger,
-			environmentVariables: new Dictionary<string, string> { { "UNO_DEVSERVER_TELEMETRY_FILE", exactFilePath } });
+			solutionPath: solutionPath,
+			environmentVariables: new Dictionary<string, string>
+			{
+				{ "UNO_DEVSERVER_TELEMETRY_FILE", exactFilePath },
+			});
 	}
 
 	/// <summary>
@@ -66,43 +67,6 @@ public abstract class TelemetryTestBase
 	}
 
 	/// <summary>
-	/// Validates that telemetry files were created and contain expected content.
-	/// </summary>
-	/// <returns>Array of found files</returns>
-	protected async Task<string[]> ValidateTelemetryFiles(string tempDir, string filePattern, bool shouldContainDevServer = true)
-	{
-		var files = Directory.GetFiles(tempDir, filePattern);
-		files.Should().NotBeEmpty("telemetry files should be created");
-
-		foreach (var file in files)
-		{
-			var fileName = Path.GetFileName(file);
-			var content = await File.ReadAllTextAsync(file, CT);
-			content.Should().NotBeNullOrEmpty($"telemetry file {fileName} should not be empty");
-
-			if (shouldContainDevServer)
-			{
-				content.Should().Contain("DevServer", $"file {fileName} should contain DevServer events");
-			}
-
-			Logger.LogInformation($"[DEBUG_LOG] Validated file: {fileName}, Content length: {content.Length}");
-		}
-
-		return files;
-	}
-
-	/// <summary>
-	/// Validates that global telemetry files were created.
-	/// </summary>
-	/// <returns>Array of global files</returns>
-	protected string[] ValidateGlobalFiles(string[] allFiles)
-	{
-		var globalFiles = allFiles.Where(f => f.Contains("_global_")).ToArray();
-		globalFiles.Should().NotBeEmpty("global telemetry file should be created");
-		return globalFiles;
-	}
-
-	/// <summary>
 	/// Cleans up telemetry test files.
 	/// </summary>
 	protected async Task CleanupTelemetryTest(DevServerTestHelper helper, string tempDir, string filePattern)
@@ -113,10 +77,7 @@ public abstract class TelemetryTestBase
 		foreach (var file in testFiles)
 		{
 			try { File.Delete(file); }
-			catch
-			{
-				/* ignore cleanup errors */
-			}
+			catch { /* ignore cleanup errors */ }
 		}
 	}
 
@@ -129,14 +90,90 @@ public abstract class TelemetryTestBase
 
 		if (File.Exists(filePath))
 		{
-			try
-			{
-				File.Delete(filePath);
-			}
-			catch
-			{
-				/* ignore cleanup errors */
-			}
+			try { File.Delete(filePath); }
+			catch { /* ignore cleanup errors */ }
 		}
 	}
+
+	protected async Task<T> WaitFor<T>(Func<CancellationToken, Task<T>> test, CancellationToken ct, int interations = 5,
+		int timeBetweenIterationsInMs = 250)
+	{
+		for (var i = 0; i < interations; i++)
+		{
+			try { return await test(ct); }
+			catch { await Task.Delay(timeBetweenIterationsInMs, ct); if (i == interations - 1) throw; }
+		}
+		throw new InvalidOperationException();
+	}
+
+	/// <summary>
+	/// Helper method to wait for a client to connect to the server with improved diagnostics.
+	/// </summary>
+	protected static async Task WaitForClientConnectionAsync(
+		RemoteControlClient client,
+		TimeSpan timeout)
+	{
+		var startTime = DateTime.UtcNow;
+		var checkInterval = TimeSpan.FromMilliseconds(200);
+		var attemptsCount = 0;
+
+		while (DateTime.UtcNow - startTime < timeout)
+		{
+			attemptsCount++;
+			if (client.Status.State == RemoteControlStatus.ConnectionState.Connected)
+			{
+				Console.WriteLine($"Client connected successfully after {attemptsCount} attempts ({(DateTime.UtcNow - startTime).TotalSeconds:F1}s)");
+				return;
+			}
+			if (attemptsCount % 10 == 0)
+			{
+				Console.WriteLine($"Waiting for client connection... Current state: {client.Status.State}, Elapsed: {(DateTime.UtcNow - startTime).TotalSeconds:F1}s");
+			}
+			await Task.Delay(checkInterval);
+		}
+		throw new TimeoutException($"Client failed to connect within {timeout.TotalSeconds} seconds. Final state: {client.Status.State}");
+	}
+
+	/// <summary>
+	/// Logs client status information for diagnostic purposes.
+	/// </summary>
+	protected static void LogClientStatus(RemoteControlClient client, string context)
+	{
+		Console.WriteLine($"[{context}] Client Status: State={client.Status.State}, Error={client.Status.Error}, KeepAlive={client.Status.KeepAlive}");
+	}
+
+	/// <summary>
+	/// Parse telemetry file content into a list of (Prefix, JsonDocument) objects.
+	/// </summary>
+	protected static List<(string Prefix, JsonDocument Json)> ParseTelemetryEvents(string fileContent)
+	{
+		return fileContent.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+			.Select(line => line.Split(':', 2, StringSplitOptions.RemoveEmptyEntries))
+			.Where(x => x.Length == 2)
+			.Select(x => (x[0].Trim(), JsonDocument.Parse(x[1])))
+			.ToList();
+	}
+
+	/// <summary>
+	/// Assert that at least one event with the given prefix exists.
+	/// </summary>
+	protected static void AssertHasPrefix(List<(string Prefix, JsonDocument Json)> events, string prefix)
+	{
+		events.Any(e => e.Prefix == prefix).Should().BeTrue($"Should contain at least one event with prefix '{prefix}'");
+	}
+
+	/// <summary>
+	/// Assert that at least one event with the given event name exists (optionally for a given prefix).
+	/// </summary>
+	protected static void AssertHasEvent(List<(string Prefix, JsonDocument Json)> events, string eventName, string? prefix = null)
+	{
+		var filtered = prefix == null ? events : events.Where(e => e.Prefix == prefix);
+		filtered.Any(e => e.Json.RootElement.TryGetProperty("EventName", out var n) && n.GetString() == eventName)
+			.Should().BeTrue($"Should contain event '{eventName}'{(prefix != null ? $" with prefix '{prefix}'" : "")}");
+	}
+
+	/// <summary>
+	/// Génère un nom de fichier de test telemetry unique et court.
+	/// </summary>
+	protected static string GetTestTelemetryFileName(string testKey) => $"telemetry_{testKey}_{Guid.NewGuid():N}.log";
 }

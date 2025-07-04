@@ -19,9 +19,9 @@ public static class AddInsExtensions
 			var telemetry = serviceProvider.GetService<ITelemetry>();
 
 			var discoveredAddIns = AddIns.Discover(solutionFile, telemetry);
-			AssemblyHelper.Load(discoveredAddIns, telemetry, throwIfLoadFailed: false);
+			var assemblies = AssemblyHelper.Load(discoveredAddIns, telemetry, throwIfLoadFailed: false);
 
-			services.AddFromAttributes();
+			services.AddFromAttributes(assemblies);
 		});
 	}
 }

@@ -22,8 +22,7 @@ public class AddIns
 		var startTime = DateTime.UtcNow;
 		var discoveryProperties = new Dictionary<string, string>
 		{
-			["SolutionFile"] = Path.GetFileName(solutionFile),
-			["SolutionDirectory"] = Path.GetDirectoryName(solutionFile) ?? ""
+			["SolutionId"] = Guid.NewGuid().ToString("N"),
 		};
 
 		telemetry?.TrackEvent("AddIn.Discovery.Start", discoveryProperties, null);

@@ -7,11 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Options;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
-using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Server.Helpers;
@@ -22,9 +20,10 @@ namespace Uno.UI.RemoteControl.Host
 {
 	class Program
 	{
+		static ITelemetry? telemetry;
+
 		static async Task Main(string[] args)
 		{
-			ITelemetry? telemetry = null;
 			var startTime = DateTime.UtcNow;
 
 			// Set up graceful shutdown handling
@@ -134,12 +133,20 @@ namespace Uno.UI.RemoteControl.Host
 				// STEP 1: Create the global service provider BEFORE WebHostBuilder
 				// This contains services that live for the entire duration of the server process
 				var globalServices = new ServiceCollection();
-				globalServices.AddSingleton<IIdeChannel, IdeChannelServer>();
+
+				// Add logging services to the global container
+				// This is necessary for services like IdeChannelServer that require ILogger<T>
+				globalServices.AddLogging(logging => logging
+					.AddConsole()
+					.SetMinimumLevel(LogLevel.Debug));
+
 				globalServices.AddGlobalTelemetry(); // Global telemetry services (Singleton)
 
 #pragma warning disable ASP0000 // Do not call ConfigureServices after calling UseKestrel.
 				var globalServiceProvider = globalServices.BuildServiceProvider();
 #pragma warning restore ASP0000
+
+				telemetry = globalServiceProvider.GetService<ITelemetry>();
 
 				// STEP 2: Create the WebHost with reference to the global service provider
 				var builder = new WebHostBuilder()
@@ -161,6 +168,8 @@ namespace Uno.UI.RemoteControl.Host
 					{
 						// Inject the global service provider into Kestrel
 						services.AddSingleton(globalServiceProvider);
+
+						services.AddSingleton<IIdeChannel, IdeChannelServer>();
 
 						// Add connection-specific telemetry services (Scoped)
 						services.AddConnectionTelemetry();
