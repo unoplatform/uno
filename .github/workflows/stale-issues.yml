@@ -1,0 +1,33 @@
+name: 'Issue Housekeeping'
+on:
+  schedule:
+    - cron: '0 0 * * *' #run daily at midnight
+
+  workflow_dispatch:
+
+permissions:
+  contents: write # only for delete-branch option
+  issues: write
+  
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          # docs: https://github.com/actions/stale?tab=readme-ov-file
+
+          stale-issue-message: 'This issue has become stale with over 1 year of inactivity and will be closed in 10 days unless a comment is provided or the stale label is removed.'
+          close-issue-message: 'This issue was closed as it has been flagged as stale and has had no activity in the last 10 days.'
+          stale-issue-label: 'Stale'
+          remove-issue-stale-when-updated: true
+
+          days-before-issue-stale: 365
+          days-before-issue-close: 10
+
+          operations-per-run: 100
+
+          # Flag older Issues first
+          ascending: true
+
+          debug-only: false
