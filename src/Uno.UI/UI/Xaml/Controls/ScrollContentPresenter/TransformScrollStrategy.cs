@@ -12,6 +12,8 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </summary>
 	internal class TransformScrollStrategy : IScrollStrategy
 	{
+		public event EventHandler<StrategyUpdateEventArgs>? Updated;
+
 		public static TransformScrollStrategy Instance { get; } = new();
 
 		private TransformScrollStrategy() { }
