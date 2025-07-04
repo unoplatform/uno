@@ -10,53 +10,37 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 {
 	/// <summary>
 	/// A telemetry implementation that writes events to a file for testing purposes.
-	/// Creates contextual file names based on the telemetry context (global vs connection).
+	/// Can use either individual files per context or a single file with prefixes.
 	/// </summary>
 	public class FileTelemetry : ITelemetry
 	{
 		private static readonly JsonSerializerOptions JsonOptions = new()
 		{
-			WriteIndented = true
+			WriteIndented = false // Use single-line JSON for easier parsing in tests
 		};
 
 		private readonly string _filePath;
+		private readonly string _contextPrefix;
 		private readonly object _lock = new();
 
 		/// <summary>
-		/// Creates a FileTelemetry instance with a fixed file path.
+		/// Creates a FileTelemetry instance with a contextual file name or prefix.
 		/// </summary>
-		/// <param name="filePath">The file path to write telemetry events to</param>
-		public FileTelemetry(string filePath)
-		{
-			_filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-			EnsureDirectoryExists(_filePath);
-		}
-
-		/// <summary>
-		/// Creates a FileTelemetry instance with a contextual file name.
-		/// </summary>
-		/// <param name="baseFilePath">The base file path (without extension)</param>
+		/// <param name="baseFilePath">The base file path (with or without extension)</param>
 		/// <param name="context">The telemetry context (e.g., "global", "connection", session ID)</param>
 		public FileTelemetry(string baseFilePath, string context)
 		{
 			if (string.IsNullOrEmpty(baseFilePath))
+			{
 				throw new ArgumentNullException(nameof(baseFilePath));
+			}
 			if (string.IsNullOrEmpty(context))
+			{
 				throw new ArgumentNullException(nameof(context));
+			}
 
-			// Generate contextual file name: base_context_timestamp.json
-			var timestamp = DateTimeOffset.UtcNow.ToString("yyyyMMdd_HHmmss", DateTimeFormatInfo.InvariantInfo);
-			var directory = Path.GetDirectoryName(baseFilePath) ?? "";
-			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(baseFilePath);
-			var extension = Path.GetExtension(baseFilePath);
-
-			// If no extension provided, default to .json
-			if (string.IsNullOrEmpty(extension))
-				extension = ".json";
-
-			var contextualFileName = $"{fileNameWithoutExt}_{context}_{timestamp}{extension}";
-			_filePath = Path.Combine(directory, contextualFileName);
-
+			_filePath = baseFilePath;
+			_contextPrefix = context; // Save the context as a prefix for events
 			EnsureDirectoryExists(_filePath);
 		}
 
@@ -73,7 +57,7 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 
 		public void Dispose()
 		{
-			// Dont't dispose to allow post-shutdown logging
+			// Don't dispose to allow post-shutdown logging
 		}
 
 		public void Flush()
@@ -81,11 +65,7 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 			// File-based telemetry doesn't need explicit flushing as we write immediately
 		}
 
-		public Task FlushAsync(CancellationToken ct)
-		{
-			// File-based telemetry doesn't need explicit flushing as we write immediately
-			return Task.CompletedTask;
-		}
+		public Task FlushAsync(CancellationToken ct) => Task.CompletedTask;
 
 		public void ThreadBlockingTrackEvent(string eventName, IDictionary<string, string> properties, IDictionary<string, double> measurements)
 		{
@@ -117,11 +97,19 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 
 		public void TrackEvent(string eventName, IDictionary<string, string>? properties, IDictionary<string, double>? measurements)
 		{
+			// Add the context prefix to properties if specified
+			var finalProperties = properties;
+			if (!string.IsNullOrEmpty(_contextPrefix))
+			{
+				// Clone properties and add context
+				finalProperties = properties != null ? new Dictionary<string, string>(properties) : new Dictionary<string, string>();
+			}
+
 			var telemetryEvent = new
 			{
-				Timestamp = DateTimeOffset.UtcNow,
+				Timestamp = DateTime.Now, // Use local time for easier follow-up
 				EventName = eventName,
-				Properties = properties,
+				Properties = finalProperties,
 				Measurements = measurements
 			};
 
@@ -131,7 +119,8 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 			{
 				try
 				{
-					File.AppendAllText(_filePath, json + Environment.NewLine);
+					var line = _contextPrefix + ": " + json + Environment.NewLine;
+					File.AppendAllText(_filePath, line);
 				}
 				catch
 				{

@@ -1,6 +1,3 @@
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
-
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
 [TestClass]

@@ -25,7 +25,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			});
 
 			// Register global telemetry service as singleton
-			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(svc, typeof(ITelemetry).Assembly));
+			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly));
 			services.AddSingleton(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
 
 			return services;
@@ -44,7 +44,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			services.AddScoped<TelemetrySession>(svc => CreateConnectionTelemetrySession(svc));
 
 			// Register connection-specific telemetry service as scoped
-			services.AddScoped<ITelemetry>(svc => CreateTelemetry(svc, typeof(ITelemetry).Assembly, svc.GetRequiredService<TelemetrySession>().Id.ToString("N")));
+			services.AddScoped<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly, svc.GetRequiredService<TelemetrySession>().Id.ToString("N")));
 			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
 
 			return services;
@@ -63,10 +63,10 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			// Register TelemetrySession as scoped with connection context integration
 			services.AddScoped<TelemetrySession>(svc => CreateTelemetrySession(svc));
 
-			services.AddScoped<ITelemetry>(svc => CreateTelemetry(svc, typeof(ITelemetry).Assembly, svc.GetRequiredService<TelemetrySession>().Id.ToString("N")));
+			services.AddScoped<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly, svc.GetRequiredService<TelemetrySession>().Id.ToString("N")));
 			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
 
-			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(svc, typeof(ITelemetry).Assembly));
+			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly));
 			services.AddSingleton(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
 
 			return services;
@@ -140,35 +140,23 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		/// <summary>
 		/// Creates a telemetry instance with optional session ID.
 		/// </summary>
-		private static ITelemetry CreateTelemetry(IServiceProvider svc, Assembly asm, string? sessionId = null)
+		private static ITelemetry CreateTelemetry(Assembly asm, string? sessionId = null)
 		{
 			// Check for telemetry redirection environment variable
 			var telemetryFilePath = Environment.GetEnvironmentVariable("UNO_DEVSERVER_TELEMETRY_FILE");
 			if (!string.IsNullOrEmpty(telemetryFilePath))
 			{
-				// Check if the file path has an extension - if so, use it as-is for backward compatibility
-				// If no extension, use contextual naming
-				var hasExtension = !string.IsNullOrEmpty(Path.GetExtension(telemetryFilePath));
-
-				if (hasExtension)
+				// New behavior: use contextual naming
+				if (string.IsNullOrEmpty(sessionId))
 				{
-					// Backward compatibility: use the exact file path provided
-					return new FileTelemetry(telemetryFilePath);
+					// Global telemetry - use contextual naming
+					return new FileTelemetry(telemetryFilePath, "global");
 				}
 				else
 				{
-					// New behavior: use contextual naming
-					if (string.IsNullOrEmpty(sessionId))
-					{
-						// Global telemetry - use contextual naming
-						return new FileTelemetry(telemetryFilePath, "global");
-					}
-					else
-					{
-						// Connection telemetry - use session ID as context
-						var shortSessionId = sessionId.Length > 8 ? sessionId.Substring(0, 8) : sessionId;
-						return new FileTelemetry(telemetryFilePath, $"connection-{shortSessionId}");
-					}
+					// Connection telemetry - use session ID as context
+					var shortSessionId = sessionId.Length > 8 ? sessionId.Substring(0, 8) : sessionId;
+					return new FileTelemetry(telemetryFilePath, $"connection-{shortSessionId}");
 				}
 			}
 
