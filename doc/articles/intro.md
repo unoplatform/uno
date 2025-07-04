@@ -27,7 +27,7 @@ Set up with your OS and IDE of choice.
 
 <!-- How-tos and Tutorials -->
 <div class="col-md-6 col-xs-12 ">
-<a href="getting-started/counterapp/get-started-counter.md">
+<a href="samples-tutorials-overview.md">
 <div class="alert alert-info alert-hover">
 
 #### How-tos and Tutorials
