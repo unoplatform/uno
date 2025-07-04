@@ -7,9 +7,9 @@ using Uno.UI.RemoteControl.Server.Telemetry;
 
 [assembly: Telemetry("DevServer", EventsPrefix = "uno/dev-server")]
 
-namespace Uno.UI.RemoteControl.Helpers
+namespace Uno.UI.RemoteControl.Server.Helpers
 {
-	internal static class ServiceCollectionExtensions
+	public static class ServiceCollectionExtensions
 	{
 		/// <summary>
 		/// Adds global telemetry services (Singleton) for the DevServer itself.

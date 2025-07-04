@@ -7,7 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Uno.UI.RemoteControl\Helpers\ServiceCollectionExtensions.cs" Link="Helpers\ServiceCollectionExtensions.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\Helpers\VersionHelper.cs" Link="Helpers/%(Filename)" />
 		<Compile Include="..\Uno.UI.RemoteControl\Messages\**\*.cs" Link="Messages/%(Filename)" />
 	</ItemGroup>

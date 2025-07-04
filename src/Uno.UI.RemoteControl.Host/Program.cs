@@ -14,6 +14,7 @@ using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
+using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 
