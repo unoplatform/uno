@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
@@ -9,6 +10,7 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 {
 	/// <summary>
 	/// A telemetry implementation that writes events to a file for testing purposes.
+	/// Creates contextual file names based on the telemetry context (global vs connection).
 	/// </summary>
 	public class FileTelemetry : ITelemetry
 	{
@@ -20,12 +22,47 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		private readonly string _filePath;
 		private readonly object _lock = new();
 
+		/// <summary>
+		/// Creates a FileTelemetry instance with a fixed file path.
+		/// </summary>
+		/// <param name="filePath">The file path to write telemetry events to</param>
 		public FileTelemetry(string filePath)
 		{
 			_filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+			EnsureDirectoryExists(_filePath);
+		}
 
-			// Ensure the directory exists
-			var directory = Path.GetDirectoryName(_filePath);
+		/// <summary>
+		/// Creates a FileTelemetry instance with a contextual file name.
+		/// </summary>
+		/// <param name="baseFilePath">The base file path (without extension)</param>
+		/// <param name="context">The telemetry context (e.g., "global", "connection", session ID)</param>
+		public FileTelemetry(string baseFilePath, string context)
+		{
+			if (string.IsNullOrEmpty(baseFilePath))
+				throw new ArgumentNullException(nameof(baseFilePath));
+			if (string.IsNullOrEmpty(context))
+				throw new ArgumentNullException(nameof(context));
+
+			// Generate contextual file name: base_context_timestamp.json
+			var timestamp = DateTimeOffset.UtcNow.ToString("yyyyMMdd_HHmmss", DateTimeFormatInfo.InvariantInfo);
+			var directory = Path.GetDirectoryName(baseFilePath) ?? "";
+			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(baseFilePath);
+			var extension = Path.GetExtension(baseFilePath);
+
+			// If no extension provided, default to .json
+			if (string.IsNullOrEmpty(extension))
+				extension = ".json";
+
+			var contextualFileName = $"{fileNameWithoutExt}_{context}_{timestamp}{extension}";
+			_filePath = Path.Combine(directory, contextualFileName);
+
+			EnsureDirectoryExists(_filePath);
+		}
+
+		private static void EnsureDirectoryExists(string filePath)
+		{
+			var directory = Path.GetDirectoryName(filePath);
 			if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
 			{
 				Directory.CreateDirectory(directory);
