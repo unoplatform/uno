@@ -308,6 +308,12 @@ public partial class ClientHotReloadProcessor
 			_onUpdated();
 		}
 
+		internal void ReportWarning(Exception exception)
+		{
+			// This is a warning that does not prevent the HR to complete.
+			// For now, we don't even surface it to the user in any way other than logs (by caller).
+		}
+
 		internal void ReportCompleted()
 		{
 			var result = (_exceptions, IgnoreReason) switch
