@@ -11,26 +11,18 @@ There are several options to publish your macOS application to your customers. T
 
 ## Create an app bundle (.app)
 
-> [!NOTE]
-> There is currently an [issue](https://github.com/unoplatform/uno/issues/20777) bundling satellite assemblies (e.g. localization resources) that prevents the creation of app bundles. Updating to Uno 6.0.TDB will **ignore** the satellite assemblies and allow you to create an app bundle. A complete fix, which will include the satellite assemblies, is planned for a later Uno release.
-
 The most basic app bundle can be created with:
 
 ```bash
-dotnet publish -f net9.0-desktop -p:PackageFormat=app
-```
-
-However, this bundle would depend on the correct version of dotnet, `net9.0` in this case, to be installed on the Mac computer. In practice macOS end-users expect app bundles to be self-contained and not require anything extraneous to execute on their Mac computer.
-
-You can create such a self-contained app bundle with:
-
-```bash
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app
+dotnet publish -f net9.0-desktop -r {{RID}} -p:PackageFormat=app
 ```
 
 Where `{{RID}}` is either `osx-x64` or `osx-arm64`.
 
 The resulting app bundle, which is a directory, will be located at `bin/Release/net9.0-desktop/{{RID}}/publish/{{APPNAME}}.app`.
+
+> [!NOTE]
+> The [structure of the app bundle](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html) requires a [custom native host](https://learn.microsoft.com/en-us/dotnet/core/tutorials/netcore-hosting) to run the app. As such, starting with Uno 6.1, the app bundles are **always** built as a self-contained executable, even if the `SelfContained` property is not set to `true` inside the project.
 
 ### Code Signing
 
@@ -40,7 +32,7 @@ The resulting app bundle, which is a directory, will be located at `bin/Release/
 To ensure the integrity of the app bundle Apple requires you to digitally sign your code. The key difference to producing a signed app bundle is to add `-p:CodesignKey={{identity}}` to specify which identity should be used to produce the signature.
 
 ```bash
-dotnet publish -f net9.0-desktop -r osx-arm64 -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey={{identity}}
+dotnet publish -f net9.0-desktop -r {{RID}} -p:PackageFormat=app -p:CodesignKey={{identity}}
 ```
 
 You can use the special identity `-` to produce an ad-hoc signature. This basically tells macOS's [Gatekeeper](https://support.apple.com/en-us/102445) that the file is safe to use **locally**, however, it does not help distribute the app bundle.
@@ -70,13 +62,13 @@ To properly sign an app bundle for publishing you need to use the `"Developer ID
 Both
 
 ```bash
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey="Developer ID Application: John Appleby (XXXXXXXXXX)"
+dotnet publish -f net9.0-desktop -r {{RID}} -p:PackageFormat=app -p:CodesignKey="Developer ID Application: John Appleby (XXXXXXXXXX)"
 ```
 
 and
 
 ```bash
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey=A148697E815F6090DE9698F8E2602773296E2689
+dotnet publish -f net9.0-desktop -r {{RID}} -p:PackageFormat=app -p:CodesignKey=A148697E815F6090DE9698F8E2602773296E2689
 ```
 
 are functionally identical and will produce a signed app bundle.
@@ -92,7 +84,7 @@ You can easily create an installer package for your app bundle. This will produc
 From the CLI run:
 
 ```bash
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=pkg -p:CodesignKey={{identity}} -p:PackageSigningKey={{installer_identity}}
+dotnet publish -f net9.0-desktop -r {{RID}} -p:PackageFormat=pkg -p:CodesignKey={{identity}} -p:PackageSigningKey={{installer_identity}}
 ```
 
 Where the following changes to the previous command are:
