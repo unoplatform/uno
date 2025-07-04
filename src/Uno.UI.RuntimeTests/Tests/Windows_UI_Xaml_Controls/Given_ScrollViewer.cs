@@ -748,6 +748,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var webview = new WebView2
 			{
 				Height = 200,
+				Background = new SolidColorBrush(Colors.Yellow),
+				Source = new Uri("https://www.platform.uno"),
 			};
 
 			var outer = new ScrollViewer
@@ -782,8 +784,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-			mouse.MoveTo(webview.GetAbsoluteBounds().GetCenter());
-			mouse.Wheel(-50, steps: 5);
+			mouse.MoveTo(outer.GetAbsoluteBounds().GetCenter());
+			mouse.Wheel(-600, steps: 5);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, outer.VerticalOffset);
