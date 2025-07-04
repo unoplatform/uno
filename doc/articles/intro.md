@@ -32,7 +32,7 @@ Set up with your OS and IDE of choice.
 
 #### How-tos and Tutorials
 
-Six complete tutorials and hundreds of real-world samples.
+Four complete tutorials and hundreds of real-world samples.
 
 </div>
 </a>
