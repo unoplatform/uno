@@ -360,7 +360,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// same size regardless of the reported top-left corner by Windows.
 		// Bounds = new Rect(windowRect.left / scale, windowRect.top / scale, windowRect.Width / scale, windowRect.Height / scale);
 		// VisibleBounds = new Rect(clientRect.left / scale, clientRect.top / scale, clientRect.Width / scale, clientRect.Height / scale);
-		VisibleBounds = Bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
+		var bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
+		SetBoundsAndVisibleBounds(bounds, bounds);
 
 		Size = new SizeInt32(windowRect.Width, windowRect.Height);
 		Position = new PointInt32(windowRect.left, windowRect.top);
