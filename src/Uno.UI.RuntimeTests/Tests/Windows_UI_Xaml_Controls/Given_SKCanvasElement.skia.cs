@@ -48,6 +48,10 @@ public class Given_SKCanvasElement
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
 	public async Task When_Waiting_For_Another_Thread()
 	{
+		if (OperatingSystem.IsBrowser())
+		{
+			Assert.Inconclusive("This test on WASM throws an Uncaught ManagedError: Cannot wait on monitors on this runtime.");
+		}
 		var SUT = new TaskWaitingSKCanvasElement() { Width = 400, Height = 400 };
 		await UITestHelper.Load(SUT);
 		await Task.Delay(3000);
