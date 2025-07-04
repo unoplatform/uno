@@ -31,7 +31,20 @@ internal partial class XamlIslandRoot : Panel
 		{
 			_contentManager.Content = value;
 
-			SetPublicRootVisual(value, null, null);
+			var coreRootScrollViewer = _contentManager.RootScrollViewer;
+			if (coreRootScrollViewer is not null)
+			{
+				coreRootScrollViewer.VerticalAlignment = VerticalAlignment.Top;
+				// Set the root ScrollViewer explicitly on the ScrollContentControl.
+				// TODO: MZ: Do we need a ScrollContentControl parent?
+				//coreRootScrollViewer.RootScrollViewer = true;
+			}
+
+			var coreContentPresenter = _contentManager.RootSVContentPresenter;
+			var coreContent = value;
+			var coreXamlIsland = this;
+
+			SetPublicRootVisual(coreContent, coreRootScrollViewer, coreContentPresenter);
 		}
 	}
 
