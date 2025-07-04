@@ -511,7 +511,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var root = r.FindName("root") as Grid;
 			var innerPanel = r.FindName("innerPanel") as StackPanel;
 
-			Assert.AreEqual(root.DataContext, "42");
+			Assert.AreEqual("42", root.DataContext);
 			Assert.IsNull(innerPanel.DataContext);
 		}
 

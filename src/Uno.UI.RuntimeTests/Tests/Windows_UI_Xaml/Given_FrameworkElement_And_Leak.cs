@@ -62,13 +62,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15,
-#if __APPLE_UIKIT__
-			LeakTestStyles.Uwp // Fluent styles disabled - #18105
-#else
-			LeakTestStyles.All
-#endif
-			)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
 #endif

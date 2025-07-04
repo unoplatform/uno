@@ -22,6 +22,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+#pragma warning disable MSTEST0042 // Do not duplicate 'DataRow' attributes - TODO: Validate if the warning is correct.
 		[DataRow(0.0015d, 1, 2, "1.50‰")]
 		[DataRow(0.001567d, 1, 2, "1.567‰")]
 		[DataRow(0.0015602d, 1, 2, "1.5602‰")]
@@ -33,6 +34,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(-0d, 2, 0, "00‰")]
 		[DataRow(0d, 3, 1, "000.0‰")]
 		[DataRow(-0d, 3, 1, "000.0‰")]
+#pragma warning restore MSTEST0042 // Do not duplicate 'DataRow' attributes
 		public void When_FormatDouble(double value, int integerDigits, int fractionDigits, string expected)
 		{
 			var sut = MakeFormatter();
@@ -44,11 +46,13 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+#pragma warning disable MSTEST0042 // Do not duplicate 'DataRow' attributes - TODO: Validate if the warning is correct.
 		[DataRow(1.234, 2, 0, "1,234‰")]
 		[DataRow(1.234, 6, 0, "001,234‰")]
 		[DataRow(1.23456, 2, 2, "1,234.56‰")]
 		[DataRow(1.2340, 6, 2, "001,234.00‰")]
 		[DataRow(1.2340, 6, 0, "001,234‰")]
+#pragma warning restore MSTEST0042 // Do not duplicate 'DataRow' attributes
 		public void When_FormatDoubleWithIsGroupSetTrue(double value, int integerDigits, int fractionDigits, string expected)
 		{
 			var sut = MakeFormatter();
