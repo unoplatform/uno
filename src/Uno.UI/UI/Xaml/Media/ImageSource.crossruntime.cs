@@ -120,7 +120,16 @@ namespace Microsoft.UI.Xaml.Media
 						{
 							if (t.IsCompletedSuccessfully)
 							{
-								OnOpened(t.Result);
+								if (DispatcherQueue.HasThreadAccess)
+								{
+									// single threaded wasm
+									OnOpened(t.Result);
+								}
+								else
+								{
+									// multi threaded wasm
+									DispatcherQueue.TryEnqueue(() => OnOpened(t.Result));
+								}
 							}
 						}, ct);
 					}
