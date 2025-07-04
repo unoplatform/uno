@@ -14,9 +14,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Reference those projects to ensure to have binaries available, but don't reference them -->
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server.Processors\Uno.UI.RemoteControl.Server.Processors.csproj" ReferenceOutputAssembly="false" />
+		
+		<!-- Normal project references - use Skia implementation of the Remote Control client -->
+		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 	</ItemGroup>
 
 </Project>

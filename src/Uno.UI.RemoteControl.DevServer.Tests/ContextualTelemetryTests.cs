@@ -1,123 +1,37 @@
-using FluentAssertions;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
-
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
 [TestClass]
-public partial class ContextualTelemetryTests : TelemetryTestBase
+public class TelemetryContextualTests : TelemetryTestBase
 {
-	[GeneratedRegex(@"test_connection_telemetry_(global|connection-[a-f0-9]{8})_\d{8}_\d{6}\.json")]
-	private static partial Regex TelemetryFileNamePattern();
-
 	[ClassInitialize]
-	public static void ClassInitialize(TestContext context)
-	{
-		InitializeLogger<ContextualTelemetryTests>();
-	}
+	public static void ClassInitialize(TestContext context) => InitializeLogger<TelemetryContextualTests>();
 
 	[TestMethod]
-	public async Task GlobalTelemetry_ShouldCreateGlobalContextFile()
+	public async Task Telemetry_GlobalOnly_WhenNoClient()
 	{
 		// Arrange
-		var (helper, tempDir) = CreateTelemetryHelper("test_telemetry");
+		var fileName = GetTestTelemetryFileName("globalonly");
+		var (helper, tempDir) = CreateTelemetryHelper(fileName);
 
 		try
 		{
 			// Act
-			var started = await RunTelemetryTestCycle(helper);
+			var started = await RunTelemetryTestCycle(helper, 3000);
+			var filePath = Path.Combine(tempDir, fileName);
+			var fileExists = File.Exists(filePath);
+			var fileContent = fileExists ? await File.ReadAllTextAsync(filePath, CT) : string.Empty;
+			var events = fileContent.Length > 0 ? ParseTelemetryEvents(fileContent) : new();
 
-			// Assert - Check that a global context file was created
-			started.Should().BeTrue("dev server should start successfully");
-
-			var globalFiles = Directory.GetFiles(tempDir, "test_telemetry_global_*.json");
-			globalFiles.Should().NotBeEmpty("global telemetry file should be created");
-
-			var globalFile = globalFiles.First();
-			var fileContent = await File.ReadAllTextAsync(globalFile, CT);
-			fileContent.Should().NotBeNullOrEmpty("global telemetry file should not be empty");
-			fileContent.Should().Contain("DevServer", "global telemetry should contain DevServer events");
-
-			Logger.LogInformation($"[DEBUG_LOG] Global telemetry file: {globalFile}");
-			Logger.LogInformation($"[DEBUG_LOG] Global telemetry content: {fileContent}");
+			// Assert
+			started.Should().BeTrue();
+			fileExists.Should().BeTrue();
+			events.Should().NotBeEmpty();
+			AssertHasPrefix(events, "global");
+			events.All(e => e.Prefix == "global").Should().BeTrue();
 		}
 		finally
 		{
-			await CleanupTelemetryTest(helper, tempDir, "test_telemetry_*.json");
-		}
-	}
-
-	[TestMethod]
-	public async Task ConnectionTelemetry_ShouldCreateConnectionContextFiles()
-	{
-		// Arrange
-		var (helper, tempDir) = CreateTelemetryHelper("test_connection_telemetry");
-
-		try
-		{
-			// Act
-			var started = await RunTelemetryTestCycle(helper, waitTimeMs: 3000);
-
-			// Assert - Check that both global and connection context files were created
-			started.Should().BeTrue("dev server should start successfully");
-
-			var allFiles = await ValidateTelemetryFiles(tempDir, "test_connection_telemetry_*.json");
-			ValidateGlobalFiles(allFiles);
-
-			// Verify file naming pattern
-			foreach (var file in allFiles)
-			{
-				var fileName = Path.GetFileName(file);
-				var isValidPattern = TelemetryFileNamePattern().IsMatch(fileName);
-				isValidPattern.Should().BeTrue($"file {fileName} should follow the contextual naming pattern");
-			}
-		}
-		finally
-		{
-			await CleanupTelemetryTest(helper, tempDir, "test_connection_telemetry_*.json");
-		}
-	}
-
-	[TestMethod]
-	public async Task TelemetryIsolation_ShouldSeparateGlobalAndConnectionEvents()
-	{
-		// Arrange
-		var (helper, tempDir) = CreateTelemetryHelper("test_isolation_telemetry");
-
-		try
-		{
-			// Act
-			var started = await RunTelemetryTestCycle(helper, waitTimeMs: 3000);
-
-			// Assert - Analyze the content of different files
-			started.Should().BeTrue("dev server should start successfully");
-
-			var allFiles = await ValidateTelemetryFiles(tempDir, "test_isolation_telemetry_*.json");
-			var globalFiles = ValidateGlobalFiles(allFiles);
-
-			// Verify global file contains server-wide events
-			foreach (var globalFile in globalFiles)
-			{
-				var globalContent = await File.ReadAllTextAsync(globalFile, CT);
-				globalContent.Should().Contain("DevServer", "global file should contain DevServer events");
-
-				Logger.LogInformation($"[DEBUG_LOG] Global file: {Path.GetFileName(globalFile)}");
-				Logger.LogInformation($"[DEBUG_LOG] Global events found: {globalContent.Contains("DevServer")}");
-			}
-
-			// Log all files for debugging
-			foreach (var file in allFiles)
-			{
-				var fileName = Path.GetFileName(file);
-				var content = await File.ReadAllTextAsync(file, CT);
-				var eventCount = content.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
-
-				Logger.LogInformation($"[DEBUG_LOG] File: {fileName}, Events: {eventCount}");
-			}
-		}
-		finally
-		{
-			await CleanupTelemetryTest(helper, tempDir, "test_isolation_telemetry_*.json");
+			await CleanupTelemetryTest(helper, tempDir, fileName);
 		}
 	}
 }

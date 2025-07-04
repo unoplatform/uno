@@ -1,16 +1,10 @@
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
-
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
 [TestClass]
 public class ScopedServiceIsolationTests : TelemetryTestBase
 {
 	[ClassInitialize]
-	public static void ClassInitialize(TestContext context)
-	{
-		InitializeLogger<ScopedServiceIsolationTests>();
-	}
+	public static void ClassInitialize(TestContext context) => InitializeLogger<ScopedServiceIsolationTests>();
 
 	[TestMethod]
 	public async Task ScopedServices_ShouldBeIsolated_BetweenConnections()
