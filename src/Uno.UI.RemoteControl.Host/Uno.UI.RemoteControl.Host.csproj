@@ -32,7 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Uno.UI.RemoteControl\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
+		<Compile Include="..\Uno.UI.RemoteControl\Helpers\**\*.cs" Exclude="..\Uno.UI.RemoteControl\Helpers\ServiceCollectionExtensions.cs" Link="Helpers/%(Filename)" />
 		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
 	</ItemGroup>
 
@@ -48,7 +48,7 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<!-- 
 			This forces the .net version to use, so the dev server will load the right core assemblies.
