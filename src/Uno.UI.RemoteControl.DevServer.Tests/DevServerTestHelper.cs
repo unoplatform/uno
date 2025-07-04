@@ -56,6 +56,11 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	public bool IsRunning => _devServerProcess != null && !_devServerProcess.HasExited;
 
 	/// <summary>
+	/// Gets the HTTP port that the dev server is using.
+	/// </summary>
+	public int Port => _httpPort;
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="DevServerTestHelper"/> class.
 	/// </summary>
 	/// <param name="logger">The logger to use for logging.</param>

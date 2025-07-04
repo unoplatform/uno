@@ -130,6 +130,17 @@ namespace Uno.UI.RemoteControl.Host
 				// During init, we dump the logs to the console, until the logger is set up
 				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = LoggerFactory.Create(builder => builder.SetMinimumLevel(logLevel).AddConsole());
 
+				// STEP 1: Create the global service provider BEFORE WebHostBuilder
+				// This contains services that live for the entire duration of the server process
+				var globalServices = new ServiceCollection();
+				globalServices.AddSingleton<IIdeChannel, IdeChannelServer>();
+				globalServices.AddGlobalTelemetry(); // Global telemetry services (Singleton)
+
+#pragma warning disable ASP0000 // Do not call ConfigureServices after calling UseKestrel.
+				var globalServiceProvider = globalServices.BuildServiceProvider();
+#pragma warning restore ASP0000
+
+				// STEP 2: Create the WebHost with reference to the global service provider
 				var builder = new WebHostBuilder()
 					.UseSetting("UseIISIntegration", false.ToString())
 					.UseKestrel()
@@ -147,8 +158,11 @@ namespace Uno.UI.RemoteControl.Host
 					})
 					.ConfigureServices(services =>
 					{
-						services.AddSingleton<IIdeChannel, IdeChannelServer>();
-						services.AddTelemetry();
+						// Inject the global service provider into Kestrel
+						services.AddSingleton(globalServiceProvider);
+
+						// Add connection-specific telemetry services (Scoped)
+						services.AddConnectionTelemetry();
 					});
 
 				if (solution is not null)
@@ -168,8 +182,9 @@ namespace Uno.UI.RemoteControl.Host
 
 				host.Services.GetService<IIdeChannel>();
 
-				// Track devserver startup
-				telemetry = host.Services.GetService<ITelemetry>();
+				// STEP 3: Use global telemetry for server-wide events
+				// Track devserver startup using global telemetry service
+				telemetry = globalServiceProvider.GetService<ITelemetry>();
 				var startupProperties = new Dictionary<string, string>
 				{
 					["HasSolution"] = (solution != null).ToString(),

@@ -37,6 +37,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	private readonly IConfiguration _configuration;
 	private readonly IIdeChannel _ideChannel;
 	private readonly IServiceProvider _serviceProvider;
+	private readonly IServiceProvider _globalServiceProvider;
 	private readonly ITelemetry? _telemetry;
 
 	public RemoteControlServer(IConfiguration configuration, IIdeChannel ideChannel, IServiceProvider serviceProvider)
@@ -44,7 +45,14 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		_configuration = configuration;
 		_ideChannel = ideChannel;
 		_serviceProvider = serviceProvider;
-		_telemetry = serviceProvider.GetService<ITelemetry>();
+
+		// Get the global service provider from the connection services
+		// This allows access to both global and connection-specific services
+		_globalServiceProvider = _serviceProvider.GetRequiredService<IServiceProvider>();
+
+		// Use connection-specific telemetry for this RemoteControlServer instance
+		// This telemetry is scoped to the current WebSocket connection
+		_telemetry = _serviceProvider.GetService<ITelemetry>();
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
