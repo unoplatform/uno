@@ -6,17 +6,11 @@ namespace Windows.UI.Core
 {
 	public sealed partial class SystemNavigationManager
 	{
-		private static SystemNavigationManager _instance;
+		internal static SystemNavigationManager Instance { get; } = new();
 
-		public static SystemNavigationManager GetForCurrentView()
-		{
-			if (_instance == null)
-			{
-				_instance = new SystemNavigationManager();
-			}
+		public static SystemNavigationManager GetForCurrentView() => Instance;
 
-			return _instance;
-		}
+		internal event EventHandler<BackRequestedEventArgs> InternalBackRequested = delegate { };
 
 		public event EventHandler<BackRequestedEventArgs> BackRequested = delegate { };
 
@@ -52,7 +46,11 @@ namespace Windows.UI.Core
 		internal bool RequestBack()
 		{
 			var args = new BackRequestedEventArgs();
-			BackRequested?.Invoke(this, args);
+			InternalBackRequested?.Invoke(this, args);
+			if (!args.Handled)
+			{
+				BackRequested?.Invoke(this, args);
+			}
 
 			return args.Handled;
 		}
