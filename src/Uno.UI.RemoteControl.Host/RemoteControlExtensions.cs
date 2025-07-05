@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using Microsoft.AspNetCore.Builder;
@@ -44,7 +45,7 @@ namespace Uno.UI.RemoteControl.Host
 							if (connectionContext != null)
 							{
 								connectionContext.RemoteIpAddress = context.Connection.RemoteIpAddress;
-								connectionContext.ConnectedAt = DateTime.UtcNow;
+								connectionContext.ConnectedAt = DateTimeOffset.UtcNow;
 
 								// Extract User-Agent from headers if available
 								if (context.Request.Headers.TryGetValue("User-Agent", out var userAgent))
@@ -109,7 +110,7 @@ namespace Uno.UI.RemoteControl.Host
 						var telemetry = context.RequestServices.GetService<ITelemetry>();
 						if (telemetry != null && connectionContext != null)
 						{
-							var connectionDuration = DateTime.UtcNow - connectionContext.ConnectedAt;
+							var connectionDuration = DateTimeOffset.UtcNow - connectionContext.ConnectedAt;
 
 							var properties = new Dictionary<string, string>
 							{

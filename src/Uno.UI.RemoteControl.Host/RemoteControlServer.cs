@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
@@ -309,7 +310,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 	private async Task ProcessDiscoveryFrame(Frame frame)
 	{
-		var startTime = DateTime.UtcNow;
+		var startTime = Stopwatch.GetTimestamp();
 		var assemblies = new List<(string path, System.Reflection.Assembly assembly)>();
 		var processorsLoaded = 0;
 		var processorsFailed = 0;
@@ -469,7 +470,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 			var completionMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = (DateTime.UtcNow - startTime).TotalMilliseconds,
+				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 				["AssembliesProcessed"] = assemblies.Count,
 				["ProcessorsLoadedCount"] = processorsLoaded,
 				["ProcessorsFailedCount"] = processorsFailed,
@@ -493,7 +494,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 			var errorMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = (DateTime.UtcNow - startTime).TotalMilliseconds,
+				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 				["AssembliesCount"] = assemblies.Count,
 				["ProcessorsLoadedCount"] = processorsLoaded,
 				["ProcessorsFailedCount"] = processorsFailed,
@@ -525,9 +526,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		}
 		else
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogDebug($"Failed to send, no connection available");
+				this.Log().LogWarning("Tried to send frame, but WebSocket is null.");
 			}
 		}
 	}
