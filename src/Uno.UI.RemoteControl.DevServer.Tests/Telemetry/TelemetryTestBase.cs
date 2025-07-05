@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
@@ -114,21 +115,21 @@ public abstract class TelemetryTestBase
 		RemoteControlClient client,
 		TimeSpan timeout)
 	{
-		var startTime = DateTime.UtcNow;
+		var startTime = Stopwatch.GetTimestamp();
 		var checkInterval = TimeSpan.FromMilliseconds(200);
 		var attemptsCount = 0;
 
-		while (DateTime.UtcNow - startTime < timeout)
+		while (Stopwatch.GetElapsedTime(startTime) < timeout)
 		{
 			attemptsCount++;
 			if (client.Status.State == RemoteControlStatus.ConnectionState.Connected)
 			{
-				Console.WriteLine($"Client connected successfully after {attemptsCount} attempts ({(DateTime.UtcNow - startTime).TotalSeconds:F1}s)");
+				Console.WriteLine($"Client connected successfully after {attemptsCount} attempts ({Stopwatch.GetElapsedTime(startTime).TotalSeconds:F1}s)");
 				return;
 			}
 			if (attemptsCount % 10 == 0)
 			{
-				Console.WriteLine($"Waiting for client connection... Current state: {client.Status.State}, Elapsed: {(DateTime.UtcNow - startTime).TotalSeconds:F1}s");
+				Console.WriteLine($"Waiting for client connection... Current state: {client.Status.State}, Elapsed: {Stopwatch.GetElapsedTime(startTime).TotalSeconds:F1}s");
 			}
 			await Task.Delay(checkInterval);
 		}

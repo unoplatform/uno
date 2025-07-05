@@ -20,7 +20,7 @@ public class AddIns
 
 	public static IImmutableList<string> Discover(string solutionFile, ITelemetry? telemetry = null)
 	{
-		var startTime = DateTime.UtcNow;
+		var startTime = Stopwatch.GetTimestamp();
 		var discoveryProperties = new Dictionary<string, string>
 		{
 			["SolutionId"] = TelemetryHashHelper.Hash(solutionFile),
@@ -130,7 +130,7 @@ public class AddIns
 			};
 			var errorMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = (DateTime.UtcNow - startTime).TotalMilliseconds,
+				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 			};
 
 			telemetry?.TrackEvent("AddIn.Discovery.Error", errorProperties, errorMeasurements);
@@ -138,7 +138,7 @@ public class AddIns
 		}
 	}
 
-	private static void TrackDiscoveryCompletion(ITelemetry? telemetry, Dictionary<string, string> baseProperties, DateTime startTime, IImmutableList<string> addIns, string result)
+	private static void TrackDiscoveryCompletion(ITelemetry? telemetry, Dictionary<string, string> baseProperties, long startTime, IImmutableList<string> addIns, string result)
 	{
 		if (telemetry == null) return;
 
@@ -151,7 +151,7 @@ public class AddIns
 		var completionMeasurements = new Dictionary<string, double>
 		{
 			["AddInCount"] = addIns.Count,
-			["DurationMs"] = (DateTime.UtcNow - startTime).TotalMilliseconds
+			["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds
 		};
 
 		telemetry.TrackEvent("AddIn.Discovery.Complete", completionProperties, completionMeasurements);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
@@ -24,7 +25,7 @@ namespace Uno.UI.RemoteControl.Host
 
 		static async Task Main(string[] args)
 		{
-			var startTime = DateTime.UtcNow;
+			var startTime = Stopwatch.GetTimestamp();
 
 			// Set up graceful shutdown handling
 			using var cancellationTokenSource = new CancellationTokenSource();
@@ -222,7 +223,7 @@ namespace Uno.UI.RemoteControl.Host
 					if (telemetry is not null)
 					{
 						// Track devserver shutdown with timing measurements
-						var uptime = DateTime.UtcNow - startTime;
+						var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
 						var shutdownProperties = new Dictionary<string, string>
 						{
 							["ShutdownType"] = shutdownRequested ? "Graceful" : "Crash",
@@ -242,7 +243,7 @@ namespace Uno.UI.RemoteControl.Host
 				if (telemetry is not null)
 				{
 					// Track devserver startup failure
-					var uptime = DateTime.UtcNow - startTime;
+					var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
 					var errorProperties = new Dictionary<string, string>
 					{
 						["ErrorMessage"] = ex.Message,
