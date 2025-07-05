@@ -4,7 +4,6 @@
 	},
 	"msbuild-sdks": {
 		"MSBuild.Sdk.Extras": "3.0.44",
-		"Microsoft.Build.NoTargets": "3.7.56",
-		"MSTest.Sdk": "3.8.3"
+		"Microsoft.Build.NoTargets": "3.7.56"
 	}
 }
