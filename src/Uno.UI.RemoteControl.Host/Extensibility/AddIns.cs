@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 
 namespace Uno.UI.RemoteControl.Host.Extensibility;
@@ -22,7 +23,8 @@ public class AddIns
 		var startTime = DateTime.UtcNow;
 		var discoveryProperties = new Dictionary<string, string>
 		{
-			["SolutionId"] = Guid.NewGuid().ToString("N"),
+			["SolutionId"] = TelemetryHashHelper.Hash(solutionFile),
+			["MachineName"] = TelemetryHashHelper.Hash(Environment.MachineName),
 		};
 
 		telemetry?.TrackEvent("AddIn.Discovery.Start", discoveryProperties, null);

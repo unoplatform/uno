@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Server.Telemetry;
 
@@ -63,8 +64,8 @@ namespace Uno.UI.RemoteControl.Host
 									var properties = new Dictionary<string, string>
 									{
 										["ConnectionId"] = connectionContext.ConnectionId.ToString(),
-										["RemoteIpAddress"] = connectionContext.RemoteIpAddress?.ToString() ?? "unknown",
-										["UserAgent"] = connectionContext.UserAgent ?? "unknown",
+										["RemoteIpAddress"] = TelemetryHashHelper.Hash(connectionContext.RemoteIpAddress),
+										["UserAgent"] = TelemetryHashHelper.Hash(connectionContext.UserAgent),
 										["Protocol"] = context.Request.Protocol
 									};
 
@@ -113,7 +114,7 @@ namespace Uno.UI.RemoteControl.Host
 							var properties = new Dictionary<string, string>
 							{
 								["ConnectionId"] = connectionContext.ConnectionId.ToString(),
-								["RemoteIpAddress"] = connectionContext.RemoteIpAddress?.ToString() ?? "unknown"
+								["RemoteIpAddress"] = TelemetryHashHelper.Hash(connectionContext.RemoteIpAddress)
 							};
 
 							var measurements = new Dictionary<string, double>

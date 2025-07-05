@@ -1,9 +1,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Text;
 
-namespace Uno.UI.RemoteControl.DevServer.Tests;
+namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
 /// <summary>
 /// Helper class for starting and managing the dev server during tests.

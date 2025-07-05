@@ -198,7 +198,7 @@ namespace Uno.UI.RemoteControl.Host
 				var startupProperties = new Dictionary<string, string>
 				{
 					["HasSolution"] = (solution != null).ToString(),
-					["MachineName"] = Environment.MachineName,
+					["MachineName"] = TelemetryHashHelper.Hash(Environment.MachineName),
 					["OSVersion"] = Environment.OSVersion.ToString(),
 					// httpPort has no analytics value here
 					// parentPid has no analytics value here
