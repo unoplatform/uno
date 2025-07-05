@@ -37,8 +37,3 @@ In your Uno Platform projects:
 ## Known issues
 
 On iOS and macOS, the indeterminate state for a CheckBox is not the right color.
-
-## Related Issues
-
-- [Support for Segoe fonts #3011](https://github.com/unoplatform/uno/issues/3011)
-- [Automated approach to maintaining glyphs #967](https://github.com/unoplatform/uno/issues/967)
