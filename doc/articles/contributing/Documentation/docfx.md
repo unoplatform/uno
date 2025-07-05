@@ -8,8 +8,6 @@ uid: Uno.Contributing.docfx
 
 Uno Platform's docs website uses [docFX](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](../../../articles) into [HTML files](xref:Uno.Documentation.Intro).
 
-## Linking to the Table of Contents
-
 ## DocFX-flavored Markdown
 
 DocFX supports extended Markdown syntaxes that are treated specially when converting to html.
@@ -195,7 +193,7 @@ Html output:
 
 Find information about how to link specific Headers inside of a markdown file in the [Anchor Links in Documentation](xref:Uno.Contributing.Documentation.Anchor-links) article.
 
-## Building docs website locally with DocFX
+## Building docs website locally with docfx
 
 Sometimes, you may want to run docfx locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation. If you've added any new documentation files, make sure to [validate the contents of the TOC](#checking-links-in-the-table-of-contents) to minimize warnings and avoid potential build errors.
 
@@ -207,7 +205,7 @@ To run docfx locally and check the resulting html:
 2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
 3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that docfx can run successfully.
 4. Open a Terminal at the Root Directory of your locally cloned Uno Repository.
-5. Install docfx globally: `dotnet tool install -g docfx`
+5. Install Docfx globally: `dotnet tool install -g docfx`
 6. Run the following command: `docfx build doc/docfx.json` and attach any nested foldername you want by adding `-o your-nested-output-path`, default: `_site`
 7. When docfx builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following options:
    a. Execute the command `docfx serve doc/docfx.json` in your terminal.
