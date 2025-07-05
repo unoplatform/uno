@@ -50,12 +50,6 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
-	/// <summary>
-	/// Vérifie et installe le template Uno si nécessaire (dotnet new install Uno.ProjectTemplates).
-	/// Cette installation automatique est surtout utile pour le CI, où le template peut ne pas être préinstallé.
-	/// En local, il est recommandé d'installer le template manuellement pour éviter les lenteurs ou erreurs d'environnement.
-	/// Si le SDK .NET requis n'est pas disponible, l'installation est ignorée avec un avertissement.
-	/// </summary>
 	public static void EnsureUnoTemplatesInstalled()
 	{
 		try
@@ -84,13 +78,15 @@ public class SolutionHelper : IDisposable
 				var (installExit, installOutput) = ProcessUtil.RunProcessAsync(installInfo).GetAwaiter().GetResult();
 				if (installExit != 0)
 				{
-					Console.WriteLine($"[WARNING] dotnet new install Uno.ProjectTemplates failed (best effort): {installOutput}");
+					Console.WriteLine(
+						$"[WARNING] dotnet new install Uno.ProjectTemplates failed (best effort): {installOutput}");
 				}
 			}
 		}
 		catch (Exception ex)
 		{
-			Console.WriteLine($"[WARNING] Unable to check or install Uno.ProjectTemplates (best effort, CI only): {ex.Message}");
+			Console.WriteLine(
+				$"[WARNING] Unable to check or install Uno.ProjectTemplates (best effort, CI only): {ex.Message}");
 		}
 	}
 
