@@ -86,7 +86,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			};
 
 			// Add connection metadata to the telemetry session
-			session.AddMetadata("RemoteIpAddress", connectionContext.RemoteIpAddress?.ToString() ?? "Unknown");
+			session.AddMetadata("RemoteIpAddress", TelemetryHashHelper.Hash(connectionContext.RemoteIpAddress?.ToString() ?? "Unknown"));
 			session.AddMetadata("ConnectedAt", connectionContext.ConnectedAt.ToString("yyyy-MM-dd HH:mm:ss UTC", DateTimeFormatInfo.InvariantInfo));
 
 			if (!string.IsNullOrEmpty(connectionContext.UserAgent))
