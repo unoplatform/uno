@@ -6,11 +6,11 @@ uid: Uno.Contributing.docfx
 
 # The Uno documentation website and docfx
 
-Uno Platform's docs website uses [docFX](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](../../../articles) into [HTML files](xref:Uno.Documentation.Intro).
+Uno Platform's docs website uses [docfx](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](../../../articles) into [HTML files](xref:Uno.Documentation.Intro).
 
-## DocFX-flavored Markdown
+## docfx-flavored Markdown
 
-DocFX supports extended Markdown syntaxes that are treated specially when converting to html.
+docfx supports extended Markdown syntaxes that are treated specially when converting to html.
 
 ### Formatted blockquotes
 
@@ -88,10 +88,10 @@ When you add a new doc file, you should also add it to [articles/toc.yml](../toc
 > This provides:
 >
 > - **Location independence:** - Files can be moved or renamed without breaking TOC links
-> - **Consistent resolution:** - DocFX resolves references based on the `uid:` in each file's YAML front matter header
+> - **Consistent resolution:** - docfx resolves references based on the `uid:` in each file's YAML front matter header
 > - **Better maintainability:** - Changes to file structure don't require TOC updates
 > [!CAUTION]
-> Files intended for `[!INCLUDE ...]` usage must not have a `uid:` in their YAML front matter. These are reusable content snippets included in multiple documents. This is a known DocFX limitation - see [issue #9947](https://github.com/dotnet/docfx/issues/9947).
+> Files intended for `[!INCLUDE ...]` usage must not have a `uid:` in their YAML front matter. These are reusable content snippets included in multiple documents. This is a known docfx limitation - see [issue #9947](https://github.com/dotnet/docfx/issues/9947).
 
 ## Nested Documentation Topics with toc.yml
 
