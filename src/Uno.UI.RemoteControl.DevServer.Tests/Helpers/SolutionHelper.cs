@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
@@ -39,29 +40,13 @@ public class SolutionHelper : IDisposable
 			RedirectStandardError = true,
 			UseShellExecute = false,
 			CreateNoWindow = true,
-			WorkingDirectory = _tempFolder, // Set working directory to ensure all dependencies are found
+			WorkingDirectory = _tempFolder,
 		};
 
-		using var process = Process.Start(startInfo);
-
-		if (process == null)
+		var (exitCode, output) = await ProcessUtil.RunProcessAsync(startInfo);
+		if (exitCode != 0)
 		{
-			throw new InvalidOperationException("Failed to start dotnet process");
-		}
-
-		var output = new StringBuilder();
-
-		process.OutputDataReceived += (_, args) => output.AppendLine(args.Data);
-		process.ErrorDataReceived += (_, args) => output.AppendLine(args.Data);
-
-		process.BeginOutputReadLine();
-		process.BeginErrorReadLine();
-
-		await process.WaitForExitAsync();
-
-		if (process.ExitCode != 0)
-		{
-			throw new InvalidOperationException($"dotnet new sln failed with exit code {process.ExitCode} / {output}");
+			throw new InvalidOperationException($"dotnet new sln failed with exit code {exitCode} / {output}");
 		}
 	}
 
@@ -75,47 +60,31 @@ public class SolutionHelper : IDisposable
 	{
 		try
 		{
-			var checkProcess = new Process
+			var checkInfo = new ProcessStartInfo
 			{
-				StartInfo = new ProcessStartInfo
+				FileName = "dotnet",
+				Arguments = "new list unoapp",
+				RedirectStandardOutput = true,
+				RedirectStandardError = true,
+				UseShellExecute = false,
+				CreateNoWindow = true
+			};
+			var (checkExit, checkOutput) = ProcessUtil.RunProcessAsync(checkInfo).GetAwaiter().GetResult();
+			if (!checkOutput.Contains("unoapp", StringComparison.OrdinalIgnoreCase))
+			{
+				var installInfo = new ProcessStartInfo
 				{
 					FileName = "dotnet",
-					Arguments = "new list unoapp",
+					Arguments = "new install Uno.ProjectTemplates",
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
 					UseShellExecute = false,
 					CreateNoWindow = true
-				}
-			};
-
-			checkProcess.Start();
-			string output = checkProcess.StandardOutput.ReadToEnd();
-			string error = checkProcess.StandardError.ReadToEnd();
-			checkProcess.WaitForExit();
-
-			if (!output.Contains("unoapp", StringComparison.OrdinalIgnoreCase))
-			{
-				// Installer le template Uno (utile surtout en CI)
-				var installProcess = new Process
-				{
-					StartInfo = new ProcessStartInfo
-					{
-						FileName = "dotnet",
-						Arguments = "new install Uno.ProjectTemplates",
-						RedirectStandardOutput = true,
-						RedirectStandardError = true,
-						UseShellExecute = false,
-						CreateNoWindow = true
-					}
 				};
-				installProcess.Start();
-				string installOutput = installProcess.StandardOutput.ReadToEnd();
-				string installError = installProcess.StandardError.ReadToEnd();
-				installProcess.WaitForExit();
-
-				if (installProcess.ExitCode != 0)
+				var (installExit, installOutput) = ProcessUtil.RunProcessAsync(installInfo).GetAwaiter().GetResult();
+				if (installExit != 0)
 				{
-					Console.WriteLine($"[WARNING] dotnet new install Uno.ProjectTemplates failed (best effort): {installOutput}\n{installError}");
+					Console.WriteLine($"[WARNING] dotnet new install Uno.ProjectTemplates failed (best effort): {installOutput}");
 				}
 			}
 		}
