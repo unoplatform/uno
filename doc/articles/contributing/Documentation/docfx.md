@@ -8,10 +8,6 @@ uid: Uno.Contributing.DocFx
 
 Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](../../../articles) into [HTML files](xref:Uno.Documentation.Intro).
 
-## Linking to the Table of Contents
-
-Normally when you add a new markdown file, you also add it to [articles/toc.yml](../../toc.yml). This allows it to show up in the left sidebar TOC on the docs website.
-
 ## DocFX-flavored Markdown
 
 DocFX supports extended Markdown syntaxes that are treated specially when converting to html.
@@ -101,8 +97,9 @@ Html output:
 
 - [How To: Anchoring Links](./anchor-links.md)
 
-## TOC checker script
+## Linking to the Table of Contents
 
+Normally when you add a new markdown file, you also add it to [articles/toc.yml](../../toc.yml). This allows it to show up in the left sidebar TOC on the docs website.
 The script [`check_toc`](../check_toc.ps1) checks for dead links in the TOC, as well as Markdown files in the `articles` folder that are not part of the TOC.
 
 > [!NOTE]
@@ -111,7 +108,7 @@ The script [`check_toc`](../check_toc.ps1) checks for dead links in the TOC, as 
 To use it, follow this Steps:
 
 1. Open a Power-Shell Terminal at the Root Directory of your locally cloned Uno Repository.
-1. Navigate to the `articles` Directory of your local Uno.UI Repository:
+2. Navigate to the `articles` Directory of your local Uno.UI Repository:
 
    ```ps
    cd doc/articles
@@ -120,12 +117,9 @@ To use it, follow this Steps:
    > [!IMPORTANT]
    > This execution Directory is important to get the correct links for the TOC!
 
-1. Run the script with `& .\check_toc.ps1`, which will create a file named `toc_additions.yml` in the same directory as it has been executed from.
+3. Run the script with `& .\check_toc.ps1`, which will create a file named `toc_additions.yml` in the same directory as it has been executed from.
 
-   > [!TIP]
-   > If you run into Issues while this, you can also use the `-Verbose` Flag, see you can see how far it's coming before the unexpected behavior.
-
-1. Open the file and add the missing links to [toc.yml](..\toc.yml) in the **appropriate** category.
+4. Open the file and add the missing links to [toc.yml](..\toc.yml) in the **appropriate** category.
 
    > [!NOTE]
    > Visual Studio 2022 does not show the generated file by default.
