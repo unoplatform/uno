@@ -140,7 +140,22 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				["PreviousState"] = _globalState.ToString()
 			};
 
-			_telemetry.TrackEvent("HotReload.Notify.Start", properties, null);
+
+			Dictionary<string, double>? measurements = null;
+			if (_current != null)
+			{
+				measurements = new Dictionary<string, double>
+				{
+					["FileCount"] = _current.FilePaths.Count
+				};
+				if (_current.CompletionTime != null)
+				{
+					var duration = (_current.CompletionTime.Value - _current.StartTime).TotalMilliseconds;
+					measurements["DurationMs"] = duration;
+				}
+			}
+
+			_telemetry.TrackEvent("HotReload.Notify.Start", properties, measurements);
 
 			try
 			{
@@ -150,51 +165,51 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					case HotReloadEvent.Disabled:
 						_globalState = HotReloadState.Disabled;
 						await AbortHotReload();
-						_telemetry.TrackEvent("HotReload.Notify.Disabled", properties, null);
+						_telemetry.TrackEvent("HotReload.Notify.Disabled", properties, measurements);
 						break;
 
 					case HotReloadEvent.Initializing:
 						_globalState = HotReloadState.Initializing;
 						await SendUpdate();
-						_telemetry.TrackEvent("HotReload.Notify.Initializing", properties, null);
+						_telemetry.TrackEvent("HotReload.Notify.Initializing", properties, measurements);
 						break;
 
 					case HotReloadEvent.Ready:
 						_globalState = HotReloadState.Ready;
 						await SendUpdate();
-						_telemetry.TrackEvent("HotReload.Notify.Ready", properties, null);
+						_telemetry.TrackEvent("HotReload.Notify.Ready", properties, measurements);
 						break;
 
 					// Pending hot-reload events
 					case HotReloadEvent.ProcessingFiles:
 						await EnsureHotReloadStarted();
-						_telemetry.TrackEvent("HotReload.Notify.ProcessingFiles", properties, null);
+						_telemetry.TrackEvent("HotReload.Notify.ProcessingFiles", properties, measurements);
 						break;
 
 					case HotReloadEvent.Completed:
 						await (await StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
-						_telemetry.TrackEvent("HotReload.Notify.Completed", properties, null);
+						_telemetry.TrackEvent("HotReload.Notify.Completed", properties, measurements);
 						break;
 
 					case HotReloadEvent.NoChanges:
 						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
-						_telemetry.TrackEvent("HotReload.Notify.NoChanges", properties, null);
+						_telemetry.TrackEvent("HotReload.Notify.NoChanges", properties, measurements);
 						break;
 
 					case HotReloadEvent.Failed:
 						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
-						_telemetry.TrackEvent("HotReload.Notify.Failed", properties, null);
+						_telemetry.TrackEvent("HotReload.Notify.Failed", properties, measurements);
 						break;
 
 					case HotReloadEvent.RudeEdit:
 						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
-						_telemetry.TrackEvent("HotReload.Notify.RudeEdit", properties, null);
+						_telemetry.TrackEvent("HotReload.Notify.RudeEdit", properties, measurements);
 						break;
 				}
 
 				properties["NewState"] = _globalState.ToString();
 				properties["HasCurrentOperation"] = (_current != null).ToString();
-				_telemetry.TrackEvent("HotReload.Notify.Complete", properties, null);
+				_telemetry.TrackEvent("HotReload.Notify.Complete", properties, measurements);
 			}
 			catch (Exception ex)
 			{
@@ -203,7 +218,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					["ErrorMessage"] = ex.Message,
 					["ErrorType"] = ex.GetType().Name
 				};
-				_telemetry.TrackEvent("HotReload.Notify.Error", errorProperties, null);
+				_telemetry.TrackEvent("HotReload.Notify.Error", errorProperties, measurements);
 				throw;
 			}
 		}
