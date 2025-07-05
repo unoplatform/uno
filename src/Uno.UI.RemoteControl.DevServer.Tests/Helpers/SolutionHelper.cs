@@ -65,6 +65,66 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
+	/// <summary>
+	/// Vérifie et installe le template Uno si nécessaire (dotnet new install Uno.ProjectTemplates).
+	/// Cette installation automatique est surtout utile pour le CI, où le template peut ne pas être préinstallé.
+	/// En local, il est recommandé d'installer le template manuellement pour éviter les lenteurs ou erreurs d'environnement.
+	/// Si le SDK .NET requis n'est pas disponible, l'installation est ignorée avec un avertissement.
+	/// </summary>
+	public static void EnsureUnoTemplatesInstalled()
+	{
+		try
+		{
+			var checkProcess = new Process
+			{
+				StartInfo = new ProcessStartInfo
+				{
+					FileName = "dotnet",
+					Arguments = "new list unoapp",
+					RedirectStandardOutput = true,
+					RedirectStandardError = true,
+					UseShellExecute = false,
+					CreateNoWindow = true
+				}
+			};
+
+			checkProcess.Start();
+			string output = checkProcess.StandardOutput.ReadToEnd();
+			string error = checkProcess.StandardError.ReadToEnd();
+			checkProcess.WaitForExit();
+
+			if (!output.Contains("unoapp", StringComparison.OrdinalIgnoreCase))
+			{
+				// Installer le template Uno (utile surtout en CI)
+				var installProcess = new Process
+				{
+					StartInfo = new ProcessStartInfo
+					{
+						FileName = "dotnet",
+						Arguments = "new install Uno.ProjectTemplates",
+						RedirectStandardOutput = true,
+						RedirectStandardError = true,
+						UseShellExecute = false,
+						CreateNoWindow = true
+					}
+				};
+				installProcess.Start();
+				string installOutput = installProcess.StandardOutput.ReadToEnd();
+				string installError = installProcess.StandardError.ReadToEnd();
+				installProcess.WaitForExit();
+
+				if (installProcess.ExitCode != 0)
+				{
+					Console.WriteLine($"[WARNING] dotnet new install Uno.ProjectTemplates failed (best effort): {installOutput}\n{installError}");
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"[WARNING] Unable to check or install Uno.ProjectTemplates (best effort, CI only): {ex.Message}");
+		}
+	}
+
 	public void Dispose()
 	{
 		isDisposed = true;

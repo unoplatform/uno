@@ -6,7 +6,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 public class TelemetryServerTests : TelemetryTestBase
 {
 	[ClassInitialize]
-	public static void ClassInitialize(TestContext context) => InitializeLogger<TelemetryServerTests>();
+	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<TelemetryServerTests>(context);
 
 	[TestMethod]
 	public async Task Telemetry_Server_LogsConnectionEvents()
