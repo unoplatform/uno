@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ public class AssemblyHelper
 
 	public static IImmutableList<Assembly> Load(IImmutableList<string> dllFiles, ITelemetry? telemetry = null, bool throwIfLoadFailed = false)
 	{
-		var startTime = DateTime.UtcNow;
+		var startTime = Stopwatch.GetTimestamp();
 		var loadingProperties = new Dictionary<string, string>
 		{
 			["AssemblyList"] = string.Join(";", dllFiles.Select(System.IO.Path.GetFileName))
@@ -60,7 +61,7 @@ public class AssemblyHelper
 
 			var completionMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = (DateTime.UtcNow - startTime).TotalMilliseconds,
+				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 				["LoadedAssemblies"] = loadedCount,
 				["FailedAssemblies"] = failedCount,
 			};
@@ -79,7 +80,7 @@ public class AssemblyHelper
 
 			var errorMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = (DateTime.UtcNow - startTime).TotalMilliseconds,
+				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 				["LoadedAssemblies"] = loadedCount,
 				["FailedAssemblies"] = failedCount,
 			};
