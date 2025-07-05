@@ -129,7 +129,9 @@ To use it, follow this Steps:
 
    > [!NOTE]
    > Visual Studio 2022 does not show the generated file by default.
-   > To open it, enable `show all Files` in the solution browser.
+   > To open it, enable `show all Files` in the solution browser:
+
+   ![check-toc-find-toc-additions-file](../../Assets/check-toc-find-toc-additions-file.gif)
 
 ## Building docs website locally with DocFX
 
