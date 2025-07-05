@@ -12,10 +12,6 @@ Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to con
 
 Normally when you add a new markdown file, you also add it to [articles/toc.yml](../../toc.yml). This allows it to show up in the left sidebar TOC on the docs website.
 
-### Checking Links in the Table of Contents
-
-To ensure that your file is correctly linked and nothing is missing, you can use the [Toc Checker](xref:Uno.Contributing.check-toc.Overview). This helps identify unreferenced files and invalid links automatically.
-
 ## DocFX-flavored Markdown
 
 DocFX supports extended Markdown syntaxes that are treated specially when converting to html.
@@ -100,9 +96,10 @@ Html output:
 
 > [!NOTE]
 > Use `---` in the Markdown sample is Important, to not include more Content in the tabbed area than actually wanted, but will not be rendered in the served documentation.
-
 > [!TIP]
 > It is possible to use `***` alternatively for the same task.
+
+- [How To: Anchoring Links](./anchor-links.md)
 
 ## TOC checker script
 
@@ -127,19 +124,16 @@ To use it, follow this Steps:
 
    > [!TIP]
    > If you run into Issues while this, you can also use the `-Verbose` Flag, see you can see how far it's coming before the unexpected behavior.
- 
+
 1. Open the file and add the missing links to [toc.yml](..\toc.yml) in the **appropriate** category.
 
    > [!NOTE]
    > Visual Studio 2022 does not show the generated file by default.
-   > To open it, see these Steps:
-   > ![check-toc-find-toc-additions](assets\check-toc-find-toc-additions-file.gif)
-
-<!-- TODO: ## Anchor links -->
+   > To open it, enable `show all Files` in the solution browser.
 
 ## Building docs website locally with DocFX
 
-Sometimes, you may want to run DocFX locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation. If you've added any new documentation files, make sure to [validate the contents of the TOC](#checking-links-in-the-table-of-contents) to minimize warnings and avoid potential build errors.
+Sometimes, you may want to run DocFX locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation.
 
 ### Run DocFX locally
 
@@ -149,7 +143,7 @@ To run DocFX locally and check the resulting html:
 2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
 3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that DocFX can run successfully.
 4. Open a Terminal at the Root Directory of your locally cloned Uno Repository.
-5. Install docfx globally: `dotnet tool install -g docfx`
+5. Install Docfx globally: `dotnet tool install -g docfx`
 6. Run the following command: `docfx build doc/docfx.json` and attach any nested foldername you want by adding `-o your-nested-output-path`, default: `_site`
 7. When DocFX builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following options:
    a. Execute the command `docfx serve doc/docfx.json` in your terminal.
