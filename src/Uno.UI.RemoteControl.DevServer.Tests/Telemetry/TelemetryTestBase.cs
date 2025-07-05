@@ -24,6 +24,25 @@ public abstract class TelemetryTestBase
 	}
 
 	/// <summary>
+	/// Initialise la télémétrie et le logger pour la classe de test concrète (générique).
+	/// </summary>
+	public static void GlobalClassInitialize<T>(TestContext context) where T : class
+	{
+		SolutionHelper.EnsureUnoTemplatesInstalled();
+		InitializeLogger<T>();
+	}
+
+	private static void InitializeLogger(Type type)
+	{
+		var loggerFactory = LoggerFactory.Create(builder =>
+		{
+			builder.AddConsole();
+			builder.AddDebug();
+		});
+		Logger = loggerFactory.CreateLogger(type);
+	}
+
+	/// <summary>
 	/// Creates a DevServerTestHelper with telemetry redirection to a temporary file.
 	/// </summary>
 	protected (DevServerTestHelper helper, string tempDir) CreateTelemetryHelper(string baseFileName)
