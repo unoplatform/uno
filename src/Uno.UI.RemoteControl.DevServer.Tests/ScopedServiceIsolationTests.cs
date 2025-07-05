@@ -7,7 +7,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests;
 public class ScopedServiceIsolationTests : TelemetryTestBase
 {
 	[ClassInitialize]
-	public static void ClassInitialize(TestContext context) => InitializeLogger<ScopedServiceIsolationTests>();
+	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<ScopedServiceIsolationTests>(context);
 
 	[TestMethod]
 	public async Task ScopedServices_ShouldBeIsolated_BetweenConnections()

@@ -4,7 +4,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 public class TelemetryContextualTests : TelemetryTestBase
 {
 	[ClassInitialize]
-	public static void ClassInitialize(TestContext context) => InitializeLogger<TelemetryContextualTests>();
+	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<TelemetryContextualTests>(context);
 
 	[TestMethod]
 	public async Task Telemetry_GlobalOnly_WhenNoClient()
