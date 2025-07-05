@@ -1,4 +1,5 @@
-﻿<h1 align=center>
+﻿<!--markdownlint-disable MD033 -->
+<h1 align=center>
  <img alt="Uno Platform Banner" align=center width="95%" src="https://github.com/user-attachments/assets/ac1b6c72-a6ed-4c3f-9e0d-a8eca96bdc4e" />
 </h1>
 
@@ -112,7 +113,7 @@ Uno Platform unifies cross-platform development by abstracting platform-specific
   * [ColorCode-Universal](https://github.com/unoplatform/uno.ColorCode-Universal)
   * [LibVLCSharp](https://github.com/videolan/libvlcsharp)
   * [MapsUI](https://github.com/Mapsui/Mapsui)
-  * [LiveCharts](https://github.com/beto-rodriguez/LiveCharts2)
+  * [LiveCharts2](https://github.com/beto-rodriguez/LiveCharts2)
   * Any WinUI project
 * Responsive Design:
   * [Visual State Manager](https://learn.microsoft.com/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
