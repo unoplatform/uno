@@ -1,8 +1,8 @@
 ---
-uid: Uno.GetStarted.NextSteps
+uid: Uno.GetStarted.AdditionalResources
 ---
 
-# Next steps
+# Additional Resources
 
 If you have already [completed the initial getting started tutorial](xref:Uno.Workshop.Counter) and you’re now ready to learn more, these resources will help you on your way.
 
