@@ -18,6 +18,7 @@ using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 
@@ -322,7 +323,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			var discoveryProperties = new Dictionary<string, string>
 			{
 				["AppInstanceId"] = msg.AppInstanceId,
-				["BasePath"] = msg.BasePath,
+				["BasePath"] = TelemetryHashHelper.Hash(msg.BasePath),
 				["IsFile"] = File.Exists(msg.BasePath).ToString()
 			};
 

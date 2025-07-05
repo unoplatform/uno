@@ -1,6 +1,7 @@
 using System.Text.Json;
+using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
-namespace Uno.UI.RemoteControl.DevServer.Tests;
+namespace Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 
 public abstract class TelemetryTestBase
 {

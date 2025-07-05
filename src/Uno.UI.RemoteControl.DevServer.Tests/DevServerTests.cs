@@ -1,3 +1,5 @@
+using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
+
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
 [TestClass]

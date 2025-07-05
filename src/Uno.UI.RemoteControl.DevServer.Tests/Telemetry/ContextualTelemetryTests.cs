@@ -1,4 +1,4 @@
-namespace Uno.UI.RemoteControl.DevServer.Tests;
+namespace Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 
 [TestClass]
 public class TelemetryContextualTests : TelemetryTestBase

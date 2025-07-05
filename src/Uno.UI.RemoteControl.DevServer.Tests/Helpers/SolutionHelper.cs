@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 
-namespace Uno.UI.RemoteControl.DevServer.Tests;
+namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
 public class SolutionHelper : IDisposable
 {
