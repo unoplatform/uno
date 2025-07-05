@@ -23,9 +23,6 @@ public abstract class TelemetryTestBase
 		Logger = loggerFactory.CreateLogger<T>();
 	}
 
-	/// <summary>
-	/// Initialise la télémétrie et le logger pour la classe de test concrète (générique).
-	/// </summary>
 	public static void GlobalClassInitialize<T>(TestContext context) where T : class
 	{
 		SolutionHelper.EnsureUnoTemplatesInstalled();
@@ -87,9 +84,6 @@ public abstract class TelemetryTestBase
 		return started;
 	}
 
-	/// <summary>
-	/// Cleans up telemetry test files.
-	/// </summary>
 	protected async Task CleanupTelemetryTest(DevServerTestHelper helper, string tempDir, string filePattern)
 	{
 		await helper.StopAsync(CT);
@@ -102,9 +96,6 @@ public abstract class TelemetryTestBase
 		}
 	}
 
-	/// <summary>
-	/// Cleans up a single telemetry test file.
-	/// </summary>
 	protected async Task CleanupTelemetryTest(DevServerTestHelper helper, string filePath)
 	{
 		await helper.StopAsync(CT);
@@ -193,8 +184,5 @@ public abstract class TelemetryTestBase
 			.Should().BeTrue($"Should contain event '{eventName}'{(prefix != null ? $" with prefix '{prefix}'" : "")}");
 	}
 
-	/// <summary>
-	/// Génère un nom de fichier de test telemetry unique et court.
-	/// </summary>
 	protected static string GetTestTelemetryFileName(string testKey) => $"telemetry_{testKey}_{Guid.NewGuid():N}.log";
 }
