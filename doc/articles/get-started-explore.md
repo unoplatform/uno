@@ -18,4 +18,4 @@ You may encounter issues while developing your app. Please see the [troubleshoot
 
 ## Next Steps
 
-Now that you have built your first application, you can head to [our tutorials](xref:Uno.Workshop.Counter) on how to work on your Uno Platform app.
+Now that you have built your first application, you can head to [our Counter tutorial](xref:Uno.Workshop.Counter) on how to work on your Uno Platform app.
