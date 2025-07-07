@@ -37,5 +37,7 @@ jobs:
           args: >
             --verbose
             --no-progress
+            --cache-exclude-status 429
             ./doc/**/*.md
             ./articles/**/*.md
+            
