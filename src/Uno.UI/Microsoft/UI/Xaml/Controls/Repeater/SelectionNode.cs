@@ -451,6 +451,13 @@ namespace Microsoft.UI.Xaml.Controls
 			// This will throw away all the children SelectionNodes
 			// causing them to be unhooked from their data source. This
 			// essentially cleans up the tree.
+			foreach (var node in m_childrenNodes)
+			{
+				if (node is not null)
+				{
+					node.UnhookCollectionChangedHandler();
+				}
+			}
 			m_childrenNodes.Clear();
 		}
 
@@ -646,6 +653,11 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							m_realizedChildrenNodeCount--;
 						}
+						if (m_childrenNodes[index] is { } node)
+						{
+							node.UnhookCollectionChangedHandler();
+						}
+
 						m_childrenNodes.RemoveAt(index);
 					}
 				}
