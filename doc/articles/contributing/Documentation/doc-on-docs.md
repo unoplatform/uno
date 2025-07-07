@@ -8,7 +8,7 @@ Good documentation is essential, and writing docs is a valued contribution that 
 
 We have a few different fill-in-the-blanks style templates, linked below.
 
-For the DocFX tool used to build the docs website, see [more info here](xref:Uno.Contributing.DocFx).
+For the DocFX tool used to build the docs website, see [more info here](xref:Uno.Contributing.docfx).
 
 ## Key links
 

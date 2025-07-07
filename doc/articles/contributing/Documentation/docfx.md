@@ -1,16 +1,16 @@
 ---
-uid: Uno.Contributing.DocFx
+uid: Uno.Contributing.docfx
 ---
 
 <!-- markdownlint-disable MD001 -->
 
-# The Uno documentation website and DocFX
+# The Uno documentation website and docfx
 
-Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](../../../articles) into [HTML files](xref:Uno.Documentation.Intro).
+Uno Platform's docs website uses [docfx](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](../../../articles) into [HTML files](xref:Uno.Documentation.Intro).
 
-## DocFX-flavored Markdown
+## docfx-flavored Markdown
 
-DocFX supports extended Markdown syntaxes that are treated specially when converting to html.
+docfx supports extended Markdown syntaxes that are treated specially when converting to html.
 
 ### Formatted blockquotes
 
@@ -95,7 +95,7 @@ Html output:
 > [!TIP]
 > It is possible to use `***` alternatively for the same task.
 
-- [How To: Anchoring Links](./anchor-links.md)
+- [How To: Anchoring Links](xref:Uno.Contributing.Documentation.Anchor-links)
 
 ## Linking to the Table of Contents
 
@@ -125,23 +125,23 @@ To use it, follow this Steps:
    > Visual Studio 2022 does not show the generated file by default.
    > To open it, enable `show all Files` in the solution browser:
 
-   ![check-toc-find-toc-additions-file](../../Assets/check-toc-find-toc-additions-file.gif)
+   ![check-toc-find-toc-additions-file](../assets/check-toc-find-toc-additions-file.gif)
 
-## Building docs website locally with DocFX
+## Building docs website locally with docfx
 
-Sometimes, you may want to run DocFX locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation.
+Sometimes, you may want to run docfx locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation.
 
-### Run DocFX locally
+### Run docfx locally
 
-To run DocFX locally and check the resulting html:
+To run docfx locally and check the resulting html:
 
 1. Open the `Uno.UI-Tools.slnf` solution filter in the `src` folder with Visual Studio.
 2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
-3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that DocFX can run successfully.
+3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that docfx can run successfully.
 4. Open a Terminal at the Root Directory of your locally cloned Uno Repository.
-5. Install Docfx globally: `dotnet tool install -g docfx`
+5. Install docfx globally: `dotnet tool install -g docfx`
 6. Run the following command: `docfx build doc/docfx.json` and attach any nested foldername you want by adding `-o your-nested-output-path`, default: `_site`
-7. When DocFX builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following options:
+7. When docfx builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following options:
    a. Execute the command `docfx serve doc/docfx.json` in your terminal.
    b. Use a [local server](#use-a-local-server).
 

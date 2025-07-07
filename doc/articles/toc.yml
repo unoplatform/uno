@@ -368,7 +368,9 @@
         - name: Adding documentation
           href: xref:Uno.Contributing.Docs
         - name: DocFX
-          href: xref:Uno.Contributing.DocFx
+          href: xref:Uno.Contributing.docfx
+        - name: Anchor Links in Documentation
+          href: xref:Uno.Contributing.Documentation.Anchor-links
       - name: Contributing to Uno.UI
         topicHref: xref:Uno.Contributing.BuildingUno
         items:
