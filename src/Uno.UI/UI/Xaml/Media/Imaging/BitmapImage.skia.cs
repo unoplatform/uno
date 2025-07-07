@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					var ignoreCache = CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
 
 					if (ignoreCache
-						|| !_bitmapImageCache.TryGetFromKey(uri, out var imageDataTask))
+						|| !_bitmapImageCache.TryGetValue(uri, out var imageDataTask))
 					{
 						imageDataTask = Task.Run(async () =>
 						{

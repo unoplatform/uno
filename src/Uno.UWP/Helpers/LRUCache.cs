@@ -59,7 +59,7 @@ namespace Uno.Helpers
 		/// <summary>
 		/// Gets a potentially cached value for the given key
 		/// </summary>
-		public bool TryGetFromKey(TKey key, out TValue? value)
+		public bool TryGetValue(TKey key, out TValue? value)
 		{
 			Scavenge();
 
@@ -97,6 +97,11 @@ namespace Uno.Helpers
 					_queue.Remove(node);
 				}
 			}
+		}
+
+		public TValue this[TKey key]
+		{
+			set => Add(key, value);
 		}
 
 		public void Add(TKey key, TValue value)
