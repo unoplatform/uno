@@ -13,30 +13,23 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-
-      - name: Install DocFX
-        run: |
-          dotnet tool update -g docfx
-        env:
-          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-          DOTNET_CLI_TELEMETRY_OPTOUT: true
-
-      - name: Add DocFX to PATH
-        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
+          
       - name: Import External Doc
         run: pwsh ./doc/import_external_docs.ps1
         
-      - name: Check if external docs exist
+      - name: Wait for external docs to exist
         run: |
-          if [ -d "./doc/articles/external" ]; then
-            echo "✅ External docs present."
-          else
-            echo "❌ External docs missing."
-          fi
-
-      - name: Generate Docs
-        run: docfx
+          for i in {1..30}; do  # 30 tries, 1 second apart (30s max)
+            if [ -d "./doc/articles/external" ]; then
+              echo "✅ External docs found."
+              exit 0
+            else
+              echo "⏳ Waiting for ./doc/articles/external to appear..."
+              sleep 1
+            fi
+          done
+          echo "❌ Timeout: external docs not found after 30 seconds."
+          exit 1
 
       - name: Check links
         uses: lycheeverse/lychee-action@v1.9.0
