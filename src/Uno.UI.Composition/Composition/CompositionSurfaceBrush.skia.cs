@@ -7,6 +7,7 @@ using Uno.UI.Composition;
 using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
+using Uno;
 using Uno.Extensions;
 using Uno.Helpers;
 
@@ -14,7 +15,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{
-		private readonly LRUCache<(SKImage, Rect, SKRect, bool, Matrix3x2), SKShader> _skImageShaderCache = new(20);
+		private readonly LRUCache<(SKImage, Rect, SKRect, bool, Matrix3x2), SKShader> _skImageShaderCache = new(WinRTFeatureConfiguration.Image.MaxImageBrushCacheCount);
 		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface;
 
 		bool ISizedBrush.IsSized => true;
@@ -112,12 +113,17 @@ namespace Microsoft.UI.Composition
 					matrix *= RelativeTransform;
 					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-					if (_skImageShaderCache.TryGetFromKey((scs.Image, backgroundArea, bounds, UsePaintColorToColorSurface, matrix), out var shader))
+					if (WinRTFeatureConfiguration.Image.EnableImageBrushCacheCount && _skImageShaderCache.TryGetValue((scs.Image, backgroundArea, bounds, UsePaintColorToColorSurface, matrix), out var shader))
 					{
 						fillPaint.Shader = shader;
 					}
 					else
 					{
+						// TODO: The logic here reads the (logical) bounds at face value and ignores external
+						// scaling applied at the time of rendering. For example, an image rendered
+						// in an area half its natural size at 2x DPI scaling should be treated as if
+						// it's being rendered at its natural size since both effects cancel out, but
+						// the logic here is blind to DPI scaling and will act as if we're downscaling.
 						SKShader imageShader;
 						if (scs.Image.Width < bounds.Width || scs.Image.Height < bounds.Height)
 						{
@@ -139,13 +145,23 @@ namespace Microsoft.UI.Composition
 							shader = imageShader;
 						}
 
-						var bitmap = new SKBitmap(new SKImageInfo((int)bounds.Width, (int)bounds.Height));
-						var canvas = new SKCanvas(bitmap);
-						canvas.DrawRect(0, 0, bounds.Width, bounds.Height, new SKPaint { Shader = shader, IsAntialias = true });
-						canvas.Flush();
-						var image = SKImage.FromBitmap(bitmap);
-						shader = fillPaint.Shader = image.ToShader(SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKFilterMode.Linear));
-						_skImageShaderCache.Add((scs.Image, backgroundArea, bounds, UsePaintColorToColorSurface, matrix), shader);
+						if (WinRTFeatureConfiguration.Image.EnableImageBrushCacheCount)
+						{
+							// Instead of using the shader directly with SKMatrix that controls scaling
+							// and transformations, we rasterize a new resized image using the shader
+							// and use that image instead of the original. Effectively, we're baking
+							// the transformation matrix into the image instead of reapplying it on
+							// the original image on every frame. This is primarily to avoid the
+							// high cost of CatmullRom when drawing a small image on a large area
+							// cf. https://github.com/unoplatform/uno/issues/20805
+							var image = scs.Image.ApplyImageFilter(SKImageFilter.CreateShader(shader), scs.Image.Info.Rect, new SKRectI(0, 0, (int)bounds.Width, (int)bounds.Height), out _, out SKPointI _);
+							shader = fillPaint.Shader = image.ToShader(SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKFilterMode.Linear));
+							_skImageShaderCache.Add((scs.Image, backgroundArea, bounds, UsePaintColorToColorSurface, matrix), shader);
+						}
+						else
+						{
+							fillPaint.Shader = shader;
+						}
 					}
 
 					fillPaint.IsAntialias = true;

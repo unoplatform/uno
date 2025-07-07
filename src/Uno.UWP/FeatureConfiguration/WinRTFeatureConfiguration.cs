@@ -22,6 +22,21 @@ public static partial class WinRTFeatureConfiguration
 		public static bool UseLegacyPrimaryLanguageOverride { get; set; } = true;
 	}
 
+	public static class Image
+	{
+		/// <summary>
+		/// On platforms that support caching the rasterized output of images and image
+		/// brushes, this sets the maximum number of entries in the cache. The value must be a
+		/// positive integer.
+		/// </summary>
+		public static int MaxImageBrushCacheCount { get; set; } = 100;
+
+		/// <summary>
+		/// On platforms that support caching BitmapImage assets, this enables caching.
+		/// </summary>
+		public static bool EnableImageBrushCacheCount { get; set; } = true;
+	}
+
 	public static class ResourceLoader
 	{
 		/// <summary>
