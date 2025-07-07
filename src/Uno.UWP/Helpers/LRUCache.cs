@@ -11,31 +11,58 @@ namespace Uno.Helpers
 {
 	internal class LRUCache<TKey, TValue> where TKey : notnull
 	{
-		private readonly int _maxEntryCount;
 		private readonly Logger _log = typeof(LRUCache<TKey, TValue>).Log();
 		private readonly Stopwatch _watch = Stopwatch.StartNew();
 		private readonly Dictionary<TKey, LinkedListNode<KeyEntry>> _table = new();
 		private readonly LinkedList<KeyEntry> _queue = new();
 		private readonly object _gate = new();
 
-		private TimeSpan _lastScavenge;
-
-		private readonly TimeSpan LowMemoryTrimInterval = TimeSpan.FromMinutes(5);
-		private readonly TimeSpan MediumMemoryTrimInterval = TimeSpan.FromMinutes(3);
-		private readonly TimeSpan HighMemoryTrimInterval = TimeSpan.FromMinutes(1);
-		private readonly TimeSpan OverLimitMemoryTrimInterval = TimeSpan.FromMinutes(.5);
-		private readonly TimeSpan ScavengeInterval = TimeSpan.FromMinutes(.5);
+		private readonly TimeSpan _lowMemoryTrimInterval = TimeSpan.FromMinutes(5);
+		private readonly TimeSpan _mediumMemoryTrimInterval = TimeSpan.FromMinutes(3);
+		private readonly TimeSpan _highMemoryTrimInterval = TimeSpan.FromMinutes(1);
+		private readonly TimeSpan _overLimitMemoryTrimInterval = TimeSpan.FromMinutes(.5);
+		private readonly TimeSpan _scavengeInterval = TimeSpan.FromMinutes(.5);
 
 		private readonly DefaultArrayPoolPlatformProvider _platformProvider = new();
 
 		/// <summary>Determines if automatic memory management is enabled</summary>
 		private readonly bool _automaticManagement;
 
+		private int _capacity;
+		private TimeSpan _lastScavenge;
+
 		private readonly record struct KeyEntry(TKey key, TValue val, TimeSpan LastUse);
 
-		public LRUCache(int maxEntryCount)
+		public int Capacity
 		{
-			_maxEntryCount = maxEntryCount;
+			get => _capacity;
+			set
+			{
+				if (value <= 0)
+				{
+					throw new ArgumentOutOfRangeException(nameof(value), value, "Capacity must be greater than zero.");
+				}
+				lock (_gate)
+				{
+					while (_queue.Count > Capacity)
+					{
+						var last = _queue.Last!.Value.key;
+						_table.Remove(last);
+						_queue.RemoveLast();
+
+						if (_log.IsEnabled(LogLevel.Trace))
+						{
+							_log.Trace($"Evicting [{last}] during downsizing {typeof(LRUCache<TKey, TValue>).Name} from {Capacity} to {value}");
+						}
+					}
+					_capacity = value;
+				}
+			}
+		}
+
+		public LRUCache(int capacity)
+		{
+			Capacity = capacity;
 			_automaticManagement = WinRTFeatureConfiguration.ArrayPool.EnableAutomaticMemoryManagement && _platformProvider.CanUseMemoryManager;
 
 			if (_automaticManagement)
@@ -108,7 +135,7 @@ namespace Uno.Helpers
 		{
 			lock (_gate)
 			{
-				if (_queue.Count == _maxEntryCount)
+				if (_queue.Count == Capacity)
 				{
 					var last = _queue.Last!.Value.key;
 					_table.Remove(last);
@@ -116,7 +143,7 @@ namespace Uno.Helpers
 
 					if (_log.IsEnabled(LogLevel.Trace))
 					{
-						_log.Trace($"{typeof(TValue).Name} is full. Evicting [{last}]");
+						_log.Trace($"{typeof(LRUCache<TKey, TValue>).Name} is full. Evicting [{last}]");
 					}
 				}
 
@@ -140,11 +167,11 @@ namespace Uno.Helpers
 
 			var threshold = _platformProvider.AppMemoryUsageLevel switch
 			{
-				AppMemoryUsageLevel.Low => LowMemoryTrimInterval,
-				AppMemoryUsageLevel.Medium => MediumMemoryTrimInterval,
-				AppMemoryUsageLevel.High => HighMemoryTrimInterval,
-				AppMemoryUsageLevel.OverLimit => OverLimitMemoryTrimInterval,
-				_ => LowMemoryTrimInterval
+				AppMemoryUsageLevel.Low => _lowMemoryTrimInterval,
+				AppMemoryUsageLevel.Medium => _mediumMemoryTrimInterval,
+				AppMemoryUsageLevel.High => _highMemoryTrimInterval,
+				AppMemoryUsageLevel.OverLimit => _overLimitMemoryTrimInterval,
+				_ => _lowMemoryTrimInterval
 			};
 
 			if (_log.IsEnabled(LogLevel.Trace))
@@ -161,10 +188,10 @@ namespace Uno.Helpers
 		{
 			if (!_automaticManagement)
 			{
-				if (_lastScavenge + ScavengeInterval < _watch.Elapsed)
+				if (_lastScavenge + _scavengeInterval < _watch.Elapsed)
 				{
 					_lastScavenge = _watch.Elapsed;
-					Trim(LowMemoryTrimInterval);
+					Trim(_lowMemoryTrimInterval);
 				}
 			}
 		}
