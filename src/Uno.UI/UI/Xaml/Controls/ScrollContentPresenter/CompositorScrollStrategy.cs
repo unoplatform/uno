@@ -41,6 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				visual.StopAnimation(nameof(Visual.AnchorPoint));
 				visual.AnchorPoint = target;
+				Updated?.Invoke(this, new(horizontalOffset, verticalOffset, options.IsIntermediate));
 			}
 			else
 			{
@@ -54,6 +55,11 @@ namespace Microsoft.UI.Xaml.Controls
 					// This is a workaround for the issue where the animation frame is not called
 					// when the target value is the same as the current value.
 					// We need to call Updated event to ensure that the scroll position is updated.
+					Updated?.Invoke(this, new(horizontalOffset, verticalOffset, true));
+				};
+
+				animation.Stopped += (e, s) =>
+				{
 					Updated?.Invoke(this, new(horizontalOffset, verticalOffset, options.IsIntermediate));
 				};
 
