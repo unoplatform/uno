@@ -8,7 +8,7 @@ Anchor links (also called **fragment links**) allow you to link directly to a sp
 
 ## How Anchor Links Work
 
-Anchor links in DocFX (and Markdig) are automatically generated from Markdown headings. For example:
+Anchor links in docfx (and Markdig) are automatically generated from Markdown headings. For example:
 
 ```markdown
 ## My Section Title
@@ -31,9 +31,9 @@ You can then link to this section using:
 
 ## Best Practices
 
-- ✅ Use anchor links to help readers jump between related sections.
-- ✅ Always verify that the anchor exists to avoid broken links.
-- 🔶 Avoid using identical headings in the same file – they will result in duplicate anchors.
+- Use anchor links to help readers jump between related sections.
+- Always verify that the anchor exists to avoid broken links.
+- Avoid using identical headings in the same file – they will result in duplicate anchors.
 
 ## Linking to Anchors in Other Files
 

@@ -9,7 +9,7 @@ This folder contains source code for the generation of uno's documentation
 
 ### Install dependencies
 
-Download and install DocFx on your computer.
+Download and install docfx on your computer.
 
 #### macOS
 

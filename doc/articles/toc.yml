@@ -393,12 +393,14 @@
             href: xref:Uno.Contributing.InteractionTracker
       - name: Guidelines for Contributing Documentation
         items:
-        - name: Adding documentation
+        - name: Contributing documentation
           href: Uno.Contributing.Docs
-        - name: DocFX
+        - name: docfx in the Uno Platform documentation
           href: xref:Uno.Contributing.docfx
         - name: Using the TOC Checker script
           href: xref:Uno.Contributing.check-toc
+        - name: Anchor Links in Documentation
+          href: xref:Uno.Contributing.Documentation.Anchor-links
       - name: Contributing to Uno.UI
         topicHref: xref:Uno.Contributing.BuildingUno
         items:

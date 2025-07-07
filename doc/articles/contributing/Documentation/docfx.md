@@ -205,7 +205,7 @@ To run docfx locally and check the resulting html:
 2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
 3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that docfx can run successfully.
 4. Open a Terminal at the Root Directory of your locally cloned Uno Repository.
-5. Install Docfx globally: `dotnet tool install -g docfx`
+5. Install docfx globally: `dotnet tool install -g docfx`
 6. Run the following command: `docfx build doc/docfx.json` and attach any nested foldername you want by adding `-o your-nested-output-path`, default: `_site`
 7. When docfx builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following options:
    a. Execute the command `docfx serve doc/docfx.json` in your terminal.

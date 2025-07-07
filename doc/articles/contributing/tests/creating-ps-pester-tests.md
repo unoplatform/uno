@@ -17,5 +17,5 @@ For more information, refer to the [Pester Test Results Documentation](https://p
 ## Related Pages
 
 - [The Uno docs website and docfx](xref:Uno.Contributing.docfx)
-- [Validating the Table of Contents](xref:Uno.Contributing.check-toc.Overview)
+- [Validating the Table of Contents](xref:Uno.Contributing.check-toc)
 - [`Installing Pester 5+`](https://pester.dev/docs/introduction/installation)
