@@ -19,18 +19,18 @@ jobs:
         
       - name: Wait for external docs to exist
         run: |
-          for i in {1..30}; do  # 30 tries, 1 second apart (30s max)
-            if [ -d "./doc/articles/external" ]; then
+          for i in {1..30}; do
+            if [ -d "./articles/external" ]; then
               echo "✅ External docs found."
               exit 0
             else
-              echo "⏳ Waiting for ./doc/articles/external to appear..."
+              echo "⏳ Waiting for ./articles/external to appear..."
               sleep 1
             fi
           done
           echo "❌ Timeout: external docs not found after 30 seconds."
           exit 1
-
+    
       - name: Check links
         uses: lycheeverse/lychee-action@v1.9.0
         with:
@@ -38,4 +38,4 @@ jobs:
             --verbose
             --no-progress
             ./doc/**/*.md
-            
+            ./articles/**/*.md
