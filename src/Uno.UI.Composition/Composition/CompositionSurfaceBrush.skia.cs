@@ -1,18 +1,20 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Uno.UI.Composition;
 using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
-using Windows.Graphics.Display;
 using Uno.Extensions;
+using Uno.Helpers;
 
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{
+		private readonly LRUCache<(SKImage, Rect, SKRect, bool, Matrix3x2), SKShader> _skImageShaderCache = new(20);
 		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface;
 
 		bool ISizedBrush.IsSized => true;
@@ -110,28 +112,40 @@ namespace Microsoft.UI.Composition
 					matrix *= RelativeTransform;
 					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-					SKShader imageShader;
-					var sigmaX = scs.Image.Width / bounds.Width;
-					var sigmaY = scs.Image.Height / bounds.Height;
-					if (scs.Image.Width < bounds.Width || scs.Image.Height < bounds.Height)
+					if (_skImageShaderCache.TryGetFromKey((scs.Image, backgroundArea, bounds, UsePaintColorToColorSurface, matrix), out var shader))
 					{
-						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
-					}
-					else // downsampling: do not use bicubic samplers which perform extremely poorly (quality wise) in this case
-					{
-						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear), matrix.ToSKMatrix());
-					}
-
-					if (UsePaintColorToColorSurface)
-					{
-						// use the set color instead of the image pixel values. This is what happens on WinUI.
-						var blendedShader = SKShader.CreateColorFilter(imageShader, SKColorFilter.CreateBlendMode(fillPaint.Color, SKBlendMode.SrcIn));
-
-						fillPaint.Shader = blendedShader;
+						fillPaint.Shader = shader;
 					}
 					else
 					{
-						fillPaint.Shader = imageShader;
+						SKShader imageShader;
+						if (scs.Image.Width < bounds.Width || scs.Image.Height < bounds.Height)
+						{
+							imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
+						}
+						else // downsampling: do not use bicubic samplers which perform extremely poorly (quality wise) in this case
+						{
+							imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear), matrix.ToSKMatrix());
+						}
+
+						if (UsePaintColorToColorSurface)
+						{
+							// use the set color instead of the image pixel values. This is what happens on WinUI.
+							var blendedShader = SKShader.CreateColorFilter(imageShader, SKColorFilter.CreateBlendMode(fillPaint.Color, SKBlendMode.SrcIn));
+							shader = blendedShader;
+						}
+						else
+						{
+							shader = imageShader;
+						}
+
+						var bitmap = new SKBitmap(new SKImageInfo((int)bounds.Width, (int)bounds.Height));
+						var canvas = new SKCanvas(bitmap);
+						canvas.DrawRect(0, 0, bounds.Width, bounds.Height, new SKPaint { Shader = shader, IsAntialias = true });
+						canvas.Flush();
+						var image = SKImage.FromBitmap(bitmap);
+						shader = fillPaint.Shader = image.ToShader(SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKFilterMode.Linear));
+						_skImageShaderCache.Add((scs.Image, backgroundArea, bounds, UsePaintColorToColorSurface, matrix), shader);
 					}
 
 					fillPaint.IsAntialias = true;
