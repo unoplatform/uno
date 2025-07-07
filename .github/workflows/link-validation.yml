@@ -14,8 +14,29 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      - name: Install DocFX
+        run: |
+          dotnet tool update -g docfx
+        env:
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+          DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+      - name: Add DocFX to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
       - name: Import External Doc
         run: pwsh ./doc/import_external_docs.ps1
+        
+      - name: Check if external docs exist
+        run: |
+          if [ -d "./doc/articles/external" ]; then
+            echo "✅ External docs present."
+          else
+            echo "❌ External docs missing."
+          fi
+
+      - name: Generate Docs
+        run: docfx
 
       - name: Check links
         uses: lycheeverse/lychee-action@v1.9.0
@@ -24,3 +45,4 @@ jobs:
             --verbose
             --no-progress
             ./doc/**/*.md
+            
