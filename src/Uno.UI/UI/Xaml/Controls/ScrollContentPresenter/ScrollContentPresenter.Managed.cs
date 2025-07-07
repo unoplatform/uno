@@ -200,14 +200,13 @@ namespace Microsoft.UI.Xaml.Controls
 			bool isIntermediate = false,
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
-			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation), isIntermediate, callerName, callerLine);
+			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation, IsIntermediate: isIntermediate), callerName, callerLine);
 
 		private bool Set(
 			double? horizontalOffset = null,
 			double? verticalOffset = null,
 			float? zoomFactor = null,
 			ScrollOptions options = default,
-			bool isIntermediate = false,
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
 		{
@@ -241,7 +240,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | inter: {isIntermediate} | opts: {options})");
+			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | opts: {options})");
 
 			if (!options.IsInertial)
 			{
@@ -256,7 +255,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (Content is UIElement contentElt)
 				{
-					options.IsIntermediate = isIntermediate;
 					_strategy.Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, 1, options);
 				}
 			}
@@ -268,21 +266,17 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate) = eventArgs;
 
-			var updated = true;
 			// For the OnPresenterScrolled, we cannot rely only on the `updated` flag, we must also check for the isIntermediate flag!
-			if (updated || _lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
+			if (_lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
 			{
 				_lastScrolledEvent = (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
 				Scroller?.OnPresenterScrolled(updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
 			}
 
-			if (updated)
-			{
-				// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
-				//		 we will apply only the final ScrollOffsets and only once.
-				ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
-				InvalidateViewport();
-			}
+			// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
+			//		 we will apply only the final ScrollOffsets and only once.
+			ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
+			InvalidateViewport();
 		}
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
@@ -369,8 +363,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: true, IsInertial: true),
-					isIntermediate: true);
+					options: new(DisableAnimation: true, IsInertial: true, IsIntermediate: true));
 			}
 			else
 			{
@@ -380,8 +373,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: true, IsInertial: true),
-					isIntermediate: true);
+					options: new(DisableAnimation: true, IsInertial: true, IsIntermediate: true));
 
 				if (!sv.IsHorizontalScrollChainingEnabled)
 				{
@@ -489,8 +481,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: false, IsInertial: true),
-					isIntermediate: true);
+					options: new(DisableAnimation: false, IsInertial: true, IsIntermediate: true));
 			}
 
 			return true;
