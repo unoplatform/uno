@@ -17,6 +17,9 @@ jobs:
       - name: Import External Doc
         run: pwsh ./doc/import_external_docs.ps1
         
+      - name: Move external inside Doc dir
+        run : mv ./articles/external ./doc/articles/      
+      
       - name: Wait for external docs to exist
         run: |
           for i in {1..30}; do
