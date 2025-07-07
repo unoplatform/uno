@@ -2,8 +2,6 @@
 
 on:
   pull_request:
-  push:
-    branches: [origin/dev/skha/automate-links-validation]
 
 jobs:
   link-check:
