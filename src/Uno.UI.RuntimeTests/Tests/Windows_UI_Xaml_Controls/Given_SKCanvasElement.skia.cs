@@ -73,6 +73,10 @@ public class Given_SKCanvasElement
 				{
 					Thread.Sleep(200);
 				}
+				// On Android, we need this additional delay because otherwise, this thread will reacquire the lock
+				// after releasing it before the UI thread has a chance to acquire the lock in
+				// LockWaitingSKCanvasElement.RenderOverride.
+				Thread.Sleep(200);
 			}
 		});
 		await Task.Delay(3000);
