@@ -9,12 +9,12 @@ using Uno.UI;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
-using Windows.System;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
+		private static readonly LRUCache<Uri, Task<ImageData>> _bitmapImageCache = new(FeatureConfiguration.Image.MaxBitmapImageCacheCount);
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					var ignoreCache = CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
 
 					if (ignoreCache
-						|| !BitmapImageCache.TryGetFromUri(uri, out Task<ImageData> imageDataTask))
+						|| !_bitmapImageCache.TryGetFromKey(uri, out var imageDataTask))
 					{
 						imageDataTask = Task.Run(async () =>
 						{
@@ -87,11 +87,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 						if (FeatureConfiguration.Image.EnableBitmapImageCache)
 						{
-							BitmapImageCache.Add(uri, imageDataTask);
+							_bitmapImageCache.Add(uri, imageDataTask);
 							// if loading failed not because of an actual failure but because
 							// the task was canceled (usually because the Uri changed), we
 							// don't want to cache the failed task
-							ct.Register(() => BitmapImageCache.Remove(uri, imageDataTask));
+							ct.Register(() => _bitmapImageCache.Remove(uri));
 						}
 					}
 
