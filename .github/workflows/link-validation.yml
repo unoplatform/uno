@@ -8,11 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Check Docs links
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
+
+      - name: Import External Doc
+        run: pwsh ./doc/import_external_docs.ps1
 
       - name: Check links
         uses: lycheeverse/lychee-action@v1.9.0
@@ -21,4 +24,3 @@ jobs:
             --verbose
             --no-progress
             ./doc/**/*.md
-      
