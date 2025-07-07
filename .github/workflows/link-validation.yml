@@ -20,20 +20,6 @@ jobs:
       - name: Move external inside Doc dir
         run : mv ./articles/external ./doc/articles/      
       
-      - name: Wait for external docs to exist
-        run: |
-          for i in {1..30}; do
-            if [ -d "./articles/external" ]; then
-              echo "✅ External docs found."
-              exit 0
-            else
-              echo "⏳ Waiting for ./articles/external to appear..."
-              sleep 1
-            fi
-          done
-          echo "❌ Timeout: external docs not found after 30 seconds."
-          exit 1
-    
       - name: Check links
         uses: lycheeverse/lychee-action@v2.4.1
         with:
@@ -42,5 +28,4 @@ jobs:
             --no-progress
             --cache-exclude-status 429
             ./doc/**/*.md
-            ./articles/**/*.md
             
