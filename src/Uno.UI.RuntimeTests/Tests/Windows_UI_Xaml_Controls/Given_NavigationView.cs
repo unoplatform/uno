@@ -37,6 +37,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Uno.UI.Toolkit.Extensions;
 using Microsoft.UI.Xaml.Media;
+using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -187,6 +188,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 #endif
+
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_NavigationView_MenuItems_Clear()
+		{
+			void AddItems(NavigationView nv, int count)
+			{
+				for (var i = 0; i < count; i++)
+				{
+					nv.MenuItems.Add(new NavigationViewItem { Content = $"Item {i}" });
+				}
+			}
+
+			var nv = new NavigationView
+			{
+				PaneDisplayMode = NavigationViewPaneDisplayMode.LeftCompact,
+				IsSettingsVisible = false
+			};
+
+			await UITestHelper.Load(nv);
+			await WindowHelper.WaitForIdle();
+
+			for (int i = 0; i < 5; i++)
+			{
+				AddItems(nv, 10);
+				Assert.AreEqual(10, nv.MenuItems.Count, "Initial count of MenuItems should be 10.");
+				nv.SelectedItem = nv.MenuItems[0];
+				await WindowHelper.WaitForIdle();
+				Action act = () => nv.MenuItems.Clear();
+				act.Should().NotThrow("Clearing MenuItems should not throw an exception.");
+				Assert.AreEqual(0, nv.MenuItems.Count, "MenuItems should be empty after clearing.");
+			}
+		}
 	}
 
 #if HAS_UNO && !HAS_UNO_WINUI
