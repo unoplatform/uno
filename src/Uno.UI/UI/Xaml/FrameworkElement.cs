@@ -973,7 +973,14 @@ namespace Microsoft.UI.Xaml
 				// Trigger ActualThemeChanged if relevant
 				if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
 				{
-					ActualThemeChanged?.Invoke(this, null);
+					try
+					{
+						ActualThemeChanged?.Invoke(this, null);
+					}
+					catch (Exception e)
+					{
+						this.LogError()?.Error("An exception was thrown during theme binding updates in response to theme changes.", e);
+					}
 				}
 			}
 		}

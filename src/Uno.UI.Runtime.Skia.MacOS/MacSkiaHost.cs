@@ -58,6 +58,12 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 			return;
 		}
 
+		// if packaged as an app bundle, set the resource path base to the Resources folder
+		if (NativeUno.uno_application_is_bundled())
+		{
+			Windows.Storage.StorageFile.ResourcePathBase = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, "..", "Resources");
+		}
+
 		InitializeDispatcher();
 	}
 

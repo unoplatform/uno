@@ -130,7 +130,12 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		{
 			if (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath)
 			{
-				InvalidateRender();
+
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					InvalidateRender();
+				});
+
 				return;
 			}
 
