@@ -6,8 +6,8 @@ using UIKit;
 using Uno.UI;
 #endif
 
-using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
-using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Controls.Legacy;
 
