@@ -21,6 +21,7 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 
 		private readonly string _filePath;
 		private readonly string _contextPrefix;
+		private readonly string? _eventsPrefix;
 		private readonly object _lock = new();
 
 		/// <summary>
@@ -28,12 +29,14 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		/// </summary>
 		/// <param name="baseFilePath">The base file path (with or without extension)</param>
 		/// <param name="context">The telemetry context (e.g., "global", "connection", session ID)</param>
-		public FileTelemetry(string baseFilePath, string context)
+		/// <param name="eventsPrefix">The events prefix to prepend to event names (e.g., "uno/dev-server")</param>
+		public FileTelemetry(string baseFilePath, string context, string? eventsPrefix = null)
 		{
 			if (string.IsNullOrEmpty(baseFilePath))
 			{
 				throw new ArgumentNullException(nameof(baseFilePath));
 			}
+
 			if (string.IsNullOrEmpty(context))
 			{
 				throw new ArgumentNullException(nameof(context));
@@ -41,6 +44,7 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 
 			_filePath = baseFilePath;
 			_contextPrefix = context; // Save the context as a prefix for events
+			_eventsPrefix = eventsPrefix;
 			EnsureDirectoryExists(_filePath);
 		}
 
@@ -51,6 +55,19 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 			{
 				Directory.CreateDirectory(directory);
 			}
+		}
+
+		/// <summary>
+		/// Applies the events prefix to the event name if configured.
+		/// </summary>
+		private string ApplyEventsPrefix(string eventName)
+		{
+			if (string.IsNullOrEmpty(_eventsPrefix))
+			{
+				return eventName;
+			}
+
+			return $"{_eventsPrefix}/{eventName}";
 		}
 
 		public bool Enabled => true;
@@ -67,12 +84,14 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 
 		public Task FlushAsync(CancellationToken ct) => Task.CompletedTask;
 
-		public void ThreadBlockingTrackEvent(string eventName, IDictionary<string, string> properties, IDictionary<string, double> measurements)
+		public void ThreadBlockingTrackEvent(string eventName, IDictionary<string, string> properties,
+			IDictionary<string, double> measurements)
 		{
 			TrackEvent(eventName, properties, measurements);
 		}
 
-		public void TrackEvent(string eventName, (string key, string value)[]? properties, (string key, double value)[]? measurements)
+		public void TrackEvent(string eventName, (string key, string value)[]? properties,
+			(string key, double value)[]? measurements)
 		{
 			var propertiesDict = properties != null ? new Dictionary<string, string>() : null;
 			if (properties != null)
@@ -95,20 +114,26 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 			TrackEvent(eventName, propertiesDict, measurementsDict);
 		}
 
-		public void TrackEvent(string eventName, IDictionary<string, string>? properties, IDictionary<string, double>? measurements)
+		public void TrackEvent(string eventName, IDictionary<string, string>? properties,
+			IDictionary<string, double>? measurements)
 		{
+			// Apply events prefix to event name
+			var prefixedEventName = ApplyEventsPrefix(eventName);
+
 			// Add the context prefix to properties if specified
 			var finalProperties = properties;
 			if (!string.IsNullOrEmpty(_contextPrefix))
 			{
 				// Clone properties and add context
-				finalProperties = properties != null ? new Dictionary<string, string>(properties) : new Dictionary<string, string>();
+				finalProperties = properties != null
+					? new Dictionary<string, string>(properties)
+					: new Dictionary<string, string>();
 			}
 
 			var telemetryEvent = new
 			{
 				Timestamp = DateTime.Now, // Use local time for easier follow-up
-				EventName = eventName,
+				EventName = prefixedEventName,
 				Properties = finalProperties,
 				Measurements = measurements
 			};

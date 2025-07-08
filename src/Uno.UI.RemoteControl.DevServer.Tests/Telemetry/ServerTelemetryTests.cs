@@ -48,7 +48,69 @@ public class TelemetryServerTests : TelemetryTestBase
 			await helper.StopAsync(CT);
 			if (File.Exists(filePath))
 			{
-				try { File.Delete(filePath); } catch { }
+				try { File.Delete(filePath); }
+				catch { }
+			}
+		}
+	}
+
+	[TestMethod]
+	public async Task Telemetry_FileTelemetry_AppliesEventsPrefix()
+	{
+		var solution = SolutionHelper!;
+
+		// Arrange
+		var fileName = GetTestTelemetryFileName("eventsprefix");
+		var tempDir = Path.GetTempPath();
+		var filePath = Path.Combine(tempDir, fileName);
+		await solution.CreateSolutionFile();
+		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile);
+
+		try
+		{
+			// Act - Start server which will trigger DevServer.Startup event
+			var started = await helper.StartAsync(CT);
+			helper.EnsureStarted();
+
+			// Wait a bit for telemetry to be written
+			await Task.Delay(1000, CT);
+			await helper.AttemptGracefulShutdown(CT);
+
+			var fileExists = File.Exists(filePath);
+			var fileContent = fileExists ? await File.ReadAllTextAsync(filePath, CT) : string.Empty;
+			var events = fileContent.Length > 0 ? ParseTelemetryEvents(fileContent) : new();
+
+			// Assert
+			started.Should().BeTrue();
+			fileExists.Should().BeTrue();
+			events.Should().NotBeEmpty();
+
+			// Verify that events have the EventsPrefix applied
+			// The EventsPrefix should be "uno/dev-server" based on the TelemetryAttribute
+			var hasEventWithPrefix = events.Any(e =>
+				e.Json.RootElement.TryGetProperty("EventName", out var eventName) &&
+				eventName.GetString()?.StartsWith("uno/dev-server/") == true);
+
+			hasEventWithPrefix.Should()
+				.BeTrue("Events should have the EventsPrefix 'uno/dev-server/' applied to event names");
+
+			// Log some events for debugging
+			Console.WriteLine($"[DEBUG_LOG] Found {events.Count} telemetry events:");
+			foreach (var (prefix, json) in events.Take(5))
+			{
+				if (json.RootElement.TryGetProperty("EventName", out var eventName))
+				{
+					Console.WriteLine($"[DEBUG_LOG] Prefix: {prefix}, EventName: {eventName.GetString()}");
+				}
+			}
+		}
+		finally
+		{
+			await helper.StopAsync(CT);
+			if (File.Exists(filePath))
+			{
+				try { File.Delete(filePath); }
+				catch { }
 			}
 		}
 	}
