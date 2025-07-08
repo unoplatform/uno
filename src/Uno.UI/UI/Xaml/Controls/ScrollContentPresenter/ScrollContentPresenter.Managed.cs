@@ -264,20 +264,35 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnStrategyUpdated(object sender, StrategyUpdateEventArgs eventArgs)
 		{
-			var (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate) = eventArgs;
-
-			// For the OnPresenterScrolled, we cannot rely only on the `updated` flag, we must also check for the isIntermediate flag!
-			if (_lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
+			if (Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess)
 			{
-				_lastScrolledEvent = (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
-				Scroller?.OnPresenterScrolled(updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
+				UpdateOffsets(eventArgs);
+			}
+			else
+			{
+				Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(() => UpdateOffsets(eventArgs));
 			}
 
-			// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
-			//		 we will apply only the final ScrollOffsets and only once.
-			ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
-			InvalidateViewport();
+			void UpdateOffsets(StrategyUpdateEventArgs eventArgs)
+			{
+				var (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate) = eventArgs;
+
+				// For the OnPresenterScrolled, we cannot rely only on the `updated` flag, we must also check for the isIntermediate flag!
+				if (_lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
+				{
+					_lastScrolledEvent = (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
+
+					Scroller?.OnPresenterScrolled(updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
+
+				}
+
+				// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
+				//		 we will apply only the final ScrollOffsets and only once.
+				ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
+				InvalidateViewport();
+			}
 		}
+
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
 		{
