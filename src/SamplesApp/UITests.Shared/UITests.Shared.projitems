@@ -85,7 +85,7 @@
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\TextCommandBarFlyoutPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>            
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ExpanderTests\ExpanderColorValidationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1931,6 +1931,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text_Arabic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_ImplicitParentTextBlockStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4206,6 +4210,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView2_Clipping.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView2_Fixed_Height.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebViewControl_JavaScript_Alert_Confirm_Prompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6439,6 +6451,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyoutSubItem_Placement.xaml.cs">
       <DependentUpon>MenuFlyoutSubItem_Placement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_ImplicitParentTextBlockStyle.xaml.cs">
+      <DependentUpon>TextBox_ImplicitParentTextBlockStyle.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Keyboard_Navigation.xaml.cs">
       <DependentUpon>TextBox_Keyboard_Navigation.xaml</DependentUpon>
     </Compile>
@@ -6565,6 +6580,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Performance\Performance_1000ButtonsContinuousRendering.xaml.cs">
       <DependentUpon>Performance_1000ButtonsContinuousRendering.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Performance\Performance_ImageLoading.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Performance\Performance_ManyImages.xaml.cs">
       <DependentUpon>Performance_ManyImages.xaml</DependentUpon>
     </Compile>
@@ -8384,6 +8400,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_Input_Keyboard_Insets.xaml.cs">
       <DependentUpon>WebView_Input_Keyboard_Insets.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView2_Clipping.xaml.cs">
+      <DependentUpon>WebView2_Clipping.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView2_Fixed_Height.xaml.cs">
+      <DependentUpon>WebView2_Fixed_Height.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\XamlUICommandTests.xaml.cs">
       <DependentUpon>XamlUICommandTests.xaml</DependentUpon>
     </Compile>
@@ -9888,6 +9910,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\closeIcon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colored-ellipse.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ColorPicker.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\when_alpha_blending.png" />
     <None Include="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colors300.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ComboBox.png" />
