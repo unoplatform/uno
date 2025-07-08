@@ -12,6 +12,22 @@ public abstract class TelemetryTestBase
 
 	protected CancellationToken CT => TestContext?.CancellationTokenSource.Token ?? CancellationToken.None;
 
+	protected SolutionHelper? SolutionHelper { get; private set; }
+
+	[TestInitialize]
+	public void TestInitialize()
+	{
+		SolutionHelper = new SolutionHelper();
+		SolutionHelper.EnsureUnoTemplatesInstalled();
+	}
+
+	[TestCleanup]
+	public void TestCleanup()
+	{
+		SolutionHelper?.Dispose();
+		SolutionHelper = null;
+	}
+
 	private static void InitializeLogger<T>() where T : class
 	{
 		var loggerFactory = LoggerFactory.Create(builder =>
@@ -25,7 +41,6 @@ public abstract class TelemetryTestBase
 
 	protected static void GlobalClassInitialize<T>(TestContext context) where T : class
 	{
-		SolutionHelper.EnsureUnoTemplatesInstalled();
 		InitializeLogger<T>();
 	}
 

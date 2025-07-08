@@ -11,11 +11,12 @@ public class TelemetryServerTests : TelemetryTestBase
 	[TestMethod]
 	public async Task Telemetry_Server_LogsConnectionEvents()
 	{
+		var solution = SolutionHelper!;
+
 		// Arrange
 		var fileName = GetTestTelemetryFileName("serverconn");
 		var tempDir = Path.GetTempPath();
 		var filePath = Path.Combine(tempDir, fileName);
-		using var solution = new SolutionHelper();
 		await solution.CreateSolutionFile();
 		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile);
 
