@@ -18,8 +18,11 @@ jobs:
         run: pwsh ./doc/import_external_docs.ps1
         
       - name: Move external inside Doc dir
-        run : mv ./articles/external ./doc/articles/      
-
+        run : mv ./articles/external ./doc/articles/
+        
+      - name: Move external inside Doc dir
+        run : mv ./articles/studio ./doc/articles/
+      
       - name: Check links
         uses: lycheeverse/lychee-action@v2.4.1
         with:
