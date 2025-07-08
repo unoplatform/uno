@@ -46,7 +46,7 @@ public class SolutionHelper : IDisposable
 		var (exitCode, output) = await ProcessUtil.RunProcessAsync(startInfo);
 		if (exitCode != 0)
 		{
-			throw new InvalidOperationException($"dotnet new sln failed with exit code {exitCode} / {output}");
+			throw new InvalidOperationException($"dotnet new unoapp failed with exit code {exitCode} / {output}");
 		}
 	}
 
@@ -58,6 +58,7 @@ public class SolutionHelper : IDisposable
 		{
 			try
 			{
+				// First, check if the unoapp template is already available
 				var checkInfo = new ProcessStartInfo
 				{
 					FileName = "dotnet",
@@ -68,8 +69,12 @@ public class SolutionHelper : IDisposable
 					CreateNoWindow = true
 				};
 				var (checkExit, checkOutput) = ProcessUtil.RunProcessAsync(checkInfo).GetAwaiter().GetResult();
+
 				if (!checkOutput.Contains("unoapp", StringComparison.OrdinalIgnoreCase))
 				{
+					Console.WriteLine("[DEBUG_LOG] unoapp template not found, attempting to install Uno.ProjectTemplates...");
+
+					// Try to install the Uno templates
 					var installInfo = new ProcessStartInfo
 					{
 						FileName = "dotnet",
@@ -79,19 +84,42 @@ public class SolutionHelper : IDisposable
 						UseShellExecute = false,
 						CreateNoWindow = true
 					};
-					var (installExit, installOutput) =
-						ProcessUtil.RunProcessAsync(installInfo).GetAwaiter().GetResult();
+					var (installExit, installOutput) = ProcessUtil.RunProcessAsync(installInfo).GetAwaiter().GetResult();
+
 					if (installExit != 0)
 					{
-						Console.WriteLine(
-							$"[WARNING] dotnet new install Uno.ProjectTemplates failed (best effort): {installOutput}");
+						throw new InvalidOperationException($"Failed to install Uno.ProjectTemplates. Exit code: {installExit}. Output: {installOutput}");
 					}
+
+					Console.WriteLine("[DEBUG_LOG] Uno.ProjectTemplates installed successfully");
+
+					// Verify the template is now available
+					var verifyInfo = new ProcessStartInfo
+					{
+						FileName = "dotnet",
+						Arguments = "new list unoapp",
+						RedirectStandardOutput = true,
+						RedirectStandardError = true,
+						UseShellExecute = false,
+						CreateNoWindow = true
+					};
+					var (verifyExit, verifyOutput) = ProcessUtil.RunProcessAsync(verifyInfo).GetAwaiter().GetResult();
+
+					if (!verifyOutput.Contains("unoapp", StringComparison.OrdinalIgnoreCase))
+					{
+						throw new InvalidOperationException($"unoapp template still not available after installation. Verify output: {verifyOutput}");
+					}
+
+					Console.WriteLine("[DEBUG_LOG] unoapp template verified as available");
+				}
+				else
+				{
+					Console.WriteLine("[DEBUG_LOG] unoapp template is already available");
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(
-					$"[WARNING] Unable to check or install Uno.ProjectTemplates (best effort, CI only): {ex.Message}");
+				throw new InvalidOperationException($"Unable to ensure Uno.ProjectTemplates are installed: {ex.Message}", ex);
 			}
 		}
 	}
