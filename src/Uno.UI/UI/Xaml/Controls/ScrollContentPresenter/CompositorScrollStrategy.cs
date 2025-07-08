@@ -37,6 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+
 			if (options is { DisableAnimation: true } or { IsInertial: true })
 			{
 				visual.StopAnimation(nameof(Visual.AnchorPoint));
@@ -52,15 +53,12 @@ namespace Microsoft.UI.Xaml.Controls
 				animation.Duration = TimeSpan.FromSeconds(1);
 				animation.AnimationFrame += (CompositionAnimation obj) =>
 				{
-					// This is a workaround for the issue where the animation frame is not called
-					// when the target value is the same as the current value.
-					// We need to call Updated event to ensure that the scroll position is updated.
-					Updated?.Invoke(this, new(horizontalOffset, verticalOffset, true));
+					Updated?.Invoke(this, new(-visual.AnchorPoint.X, -visual.AnchorPoint.Y, true));
 				};
 
 				animation.Stopped += (e, s) =>
 				{
-					Updated?.Invoke(this, new(horizontalOffset, verticalOffset, options.IsIntermediate));
+					Updated?.Invoke(this, new(-visual.AnchorPoint.X, -visual.AnchorPoint.Y, options.IsIntermediate));
 				};
 
 				visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
