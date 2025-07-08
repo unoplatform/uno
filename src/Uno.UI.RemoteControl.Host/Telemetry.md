@@ -4,7 +4,7 @@ This table lists all telemetry events emitted by the Uno DevServer, with their p
 
 | Event Name                      | Properties (string)                                                                                      | Measurements (double)                        | Sensitive / Notes                            | Scope         |
 |----------------------------------|---------------------------------------------------------------------------------------------------------|----------------------------------------------|----------------------------------------------|---------------|
-| **DevServer.Startup**            | HasSolution, MachineName🔴, OSVersion                                                                   | ProcessorCount                              | MachineName🔴 is anonymized; OSVersion is raw | Global        |
+| **DevServer.Startup**            | HasSolution, MachineName🔴                                                                              |                                              | MachineName🔴 is anonymized                  | Global        |
 | **DevServer.Shutdown**           | ShutdownType ("Graceful"/"Crash")                                                                      | UptimeSeconds                               |                                              | Global        |
 | **DevServer.StartupFailure**     | ErrorMessage, ErrorType, StackTrace                                                                     | UptimeSeconds                               | ErrorMessage/StackTrace may be sensitive (not anonymized) | Global        |
 | **AddIn.Discovery.Start**        | SolutionId🔴                                                                                             |                                              | SolutionId🔴 = hash(solution path + machine name) | Global        |
@@ -14,7 +14,7 @@ This table lists all telemetry events emitted by the Uno DevServer, with their p
 | **AddIn.Loading.Complete**       | AssemblyList, Result                                                                                    | DurationMs, LoadedAssemblies, FailedAssemblies |                                              | Global        |
 | **AddIn.Loading.Error**          | AssemblyList, ErrorMessage, ErrorType                                                                   | DurationMs, LoadedAssemblies, FailedAssemblies | ErrorMessage may be sensitive (not anonymized) | Global        |
 | **Processor.Discovery.Start**    | AppInstanceId, BasePath🔴, IsFile                                                                       |                                              | BasePath🔴 is anonymized                      | Global        |
-| **Processor.Discovery.Complete** | AppInstanceId, BasePath🔴, IsFile, Result                                                               | DurationMs, AssembliesProcessed, ProcessorsLoadedCount, ProcessorsFailedCount | BasePath🔴 is anonymized                      | Global        |
+| **Processor.Discovery.Complete** | AppInstanceId, BasePath🔴, IsFile, Result, LoadedProcessors, FailedProcessors                            | DurationMs, AssembliesProcessed, ProcessorsLoadedCount, ProcessorsFailedCount | BasePath🔴 is anonymized; LoadedProcessors/FailedProcessors: comma-separated type names | Global        |
 | **Processor.Discovery.Error**    | ErrorMessage, ErrorType                                                                                 | DurationMs, AssembliesCount, ProcessorsLoadedCount, ProcessorsFailedCount | ErrorMessage may be sensitive (not anonymized) | Global        |
 | **Client.Connection.Opened**     | (All key/value pairs from connectionContext.Metadata)🔴                                                 |                                              | Metadata fields are anonymized               | Per-connection |
 | **Client.Connection.Closed**     | ConnectionId, RemoteIpAddress🔴                                                                         | DurationSeconds                             | RemoteIpAddress🔴 is anonymized               | Per-connection |
@@ -23,7 +23,7 @@ This table lists all telemetry events emitted by the Uno DevServer, with their p
 - Only fields marked with a red dot (🔴) are anonymized using the centralized `TelemetryHashHelper` (MD5, lowercase hex, no dashes).
 - OSVersion, ErrorMessage, and StackTrace are sent as raw values and may contain sensitive information; handle with care.
 - Special values: null → "unknown", empty string → "empty".
-- Lists (AddInList, AssemblyList) contain only filenames, not full paths.
+- Lists (AddInList, AssemblyList, LoadedProcessors, FailedProcessors) contain only filenames or type names, not full paths.
 - Connection metadata is always hashed/anonymized before emission.
 - When in doubt, prefer anonymization or exclusion of these fields in production analytics.
 - The anonymization is stable and deterministic for the same input, but not reversible.

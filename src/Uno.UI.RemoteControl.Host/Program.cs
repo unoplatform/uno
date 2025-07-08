@@ -200,17 +200,11 @@ namespace Uno.UI.RemoteControl.Host
 				{
 					["HasSolution"] = (solution != null).ToString(),
 					["MachineName"] = TelemetryHashHelper.Hash(Environment.MachineName),
-					["OSVersion"] = Environment.OSVersion.ToString(),
 					// httpPort has no analytics value here
 					// parentPid has no analytics value here
 				};
 
-				var startupMeasurements = new Dictionary<string, double>()
-				{
-					["ProcessorCount"] = Environment.ProcessorCount,
-				};
-
-				telemetry?.TrackEvent("DevServer.Startup", startupProperties, startupMeasurements);
+				telemetry?.TrackEvent("DevServer.Startup", startupProperties, null);
 
 				using var parentObserver = ParentProcessObserver.Observe(host, parentPID);
 

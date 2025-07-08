@@ -24,7 +24,6 @@ public class AddIns
 		var discoveryProperties = new Dictionary<string, string>
 		{
 			["SolutionId"] = TelemetryHashHelper.Hash(solutionFile),
-			["MachineName"] = TelemetryHashHelper.Hash(Environment.MachineName),
 		};
 
 		telemetry?.TrackEvent("AddIn.Discovery.Start", discoveryProperties, null);
