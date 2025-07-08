@@ -503,12 +503,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		public async Task When_Repeater_ChangedView()
 		{
-			var sut = SUT.Create(30, new Size(100, 500));
+			var sut = SUT.Create(300, new Size(100, 500));
 
 			await sut.Load();
 
-			sut.Scroller.ChangeView(null, 1000, null, disableAnimation: false);
-			sut.MaterializedItems.Should().Contain(sut.Source[10]);
+			var items = sut.MaterializedItems.ToArray();
+
+			sut.Scroller.ChangeView(null, 1000000, null, disableAnimation: false);
+
+			// required for the animation
+			await Task.Delay(10);
+
+			sut.MaterializedItems.Should().NotBeEquivalentTo(items);
+			var lastItem = sut.Source.Last();
+			sut.MaterializedItems.Should().NotContain(lastItem);
+			sut.MaterializedItems.Count().Should().BeGreaterOrEqualTo(3);
+
+			// required for the animation to complete
+			await Task.Delay(1000);
+			sut.MaterializedItems.Should().Contain(lastItem);
 		}
 
 
