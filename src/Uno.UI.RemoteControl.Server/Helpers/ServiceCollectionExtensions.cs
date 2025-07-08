@@ -24,7 +24,8 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			// Register root telemetry session as singleton
 			services.AddSingleton<TelemetrySession>(svc => new TelemetrySession
 			{
-				SessionType = TelemetrySessionType.Root, CreatedAt = DateTime.UtcNow
+				SessionType = TelemetrySessionType.Root,
+				CreatedAt = DateTime.UtcNow
 			});
 
 			// Register global telemetry service as singleton
@@ -48,32 +49,10 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 
 			// Register connection-specific telemetry service as scoped
 			services.AddScoped<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly,
-				svc.GetRequiredService<TelemetrySession>().Id.ToString("N")));
+				svc.GetRequiredService<TelemetrySession>()));
+
+			// Register ITelemetry<T> so that it resolves CreateTelemetry with the correct type argument T
 			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
-
-			return services;
-		}
-
-		/// <summary>
-		/// Adds the telemetry session to the service collection.
-		/// This method is kept for backward compatibility and will be deprecated in favor of AddGlobalTelemetry/AddConnectionTelemetry.
-		/// </summary>
-		[Obsolete("Use AddGlobalTelemetry() and AddConnectionTelemetry() instead for better separation of concerns.")]
-		public static IServiceCollection AddTelemetry(this IServiceCollection services)
-		{
-			// Register connection context as scoped to capture per-connection metadata
-			services.AddScoped<ConnectionContext>();
-
-			// Register TelemetrySession as scoped with connection context integration
-			services.AddScoped<TelemetrySession>(svc => CreateTelemetrySession(svc));
-
-			services.AddScoped<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly,
-				svc.GetRequiredService<TelemetrySession>().Id.ToString("N")));
-			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
-
-			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly));
-			services.AddSingleton(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
-
 			return services;
 		}
 
@@ -111,47 +90,12 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		}
 
 		/// <summary>
-		/// Creates a telemetry session for backward compatibility (can be either root or connection based on context).
-		/// </summary>
-		private static TelemetrySession CreateTelemetrySession(IServiceProvider svc)
-		{
-			var connectionContext = svc.GetService<ConnectionContext>();
-			var session = new TelemetrySession
-			{
-				SessionType =
-					connectionContext != null ? TelemetrySessionType.Connection : TelemetrySessionType.Root,
-				ConnectionId = connectionContext?.ConnectionId,
-				CreatedAt = DateTime.UtcNow
-			};
-
-			// Add connection metadata to the telemetry session
-			if (connectionContext != null)
-			{
-				session.AddMetadata("RemoteIpAddress", connectionContext.RemoteIpAddress?.ToString() ?? "Unknown");
-				session.AddMetadata("ConnectedAt",
-					connectionContext.ConnectedAt.ToString("yyyy-MM-dd HH:mm:ss UTC",
-						DateTimeFormatInfo.InvariantInfo));
-
-				if (!string.IsNullOrEmpty(connectionContext.UserAgent))
-				{
-					session.AddMetadata("UserAgent", connectionContext.UserAgent);
-				}
-
-				// Copy additional metadata from connection context
-				foreach (var kvp in connectionContext.Metadata)
-				{
-					session.AddMetadata($"Connection.{kvp.Key}", kvp.Value);
-				}
-			}
-
-			return session;
-		}
-
-		/// <summary>
 		/// Creates a telemetry instance with optional session ID.
 		/// </summary>
-		private static ITelemetry CreateTelemetry(Assembly asm, string? sessionId = null)
+		internal static ITelemetry CreateTelemetry(Assembly asm, TelemetrySession? session = null)
 		{
+			var sessionId = session?.Id.ToString("N");
+
 			// Get telemetry configuration first
 			if (asm.GetCustomAttribute<TelemetryAttribute>() is not { } config)
 			{

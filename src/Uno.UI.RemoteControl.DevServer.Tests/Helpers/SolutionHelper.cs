@@ -35,7 +35,7 @@ public class SolutionHelper : IDisposable
 		var startInfo = new ProcessStartInfo
 		{
 			FileName = "dotnet",
-			Arguments = $"new unoapp -n {_solutionFileName} -o {_tempFolder}",
+			Arguments = $"new unoapp -n {_solutionFileName} -o {_tempFolder} -preset \"recommended\" -platforms \"wasm\" -platforms \"desktop\"",
 			RedirectStandardOutput = true,
 			RedirectStandardError = true,
 			UseShellExecute = false,

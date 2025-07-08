@@ -296,9 +296,22 @@ public partial class RemoteControlClient : IRemoteControlClient
 			_status.Report(ConnectionState.Connecting);
 
 			const string lastEndpointKey = "__UNO__" + nameof(RemoteControlClient) + "__last_endpoint";
-			var preferred = ApplicationData.Current.LocalSettings.Values.TryGetValue(lastEndpointKey, out var lastValue) && lastValue is string lastEp
-				? _serverAddresses.FirstOrDefault(srv => srv.endpoint.Equals(lastEp, StringComparison.OrdinalIgnoreCase)).endpoint
-				: default;
+			string? preferred;
+			try
+			{
+				preferred =
+					ApplicationData.Current.LocalSettings.Values.TryGetValue(lastEndpointKey, out var lastValue) &&
+					lastValue is string lastEp
+						? _serverAddresses
+							.FirstOrDefault(srv => srv.endpoint.Equals(lastEp, StringComparison.OrdinalIgnoreCase))
+							.endpoint
+						: default;
+			}
+			catch
+			{
+				preferred = default;
+			}
+
 			var pending = _serverAddresses
 				.Select(srv =>
 				{
@@ -345,7 +358,14 @@ public partial class RemoteControlClient : IRemoteControlClient
 				// If the connection is successful, break the loop
 				if (task is Task<Connection?> { IsCompleted: true, Result: { Socket: not null } successfulConnection })
 				{
-					ApplicationData.Current.LocalSettings.Values[lastEndpointKey] = endpoint;
+					try
+					{
+						ApplicationData.Current.LocalSettings.Values[lastEndpointKey] = endpoint;
+					}
+					catch
+					{
+						// best effort here
+					}
 
 					connection = successfulConnection;
 					break;

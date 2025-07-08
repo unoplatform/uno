@@ -6,6 +6,9 @@ using Uno.DevTools.Telemetry;
 
 namespace Uno.UI.RemoteControl.Server.Telemetry
 {
+	/// <summary>
+	/// Wrapper over Uno.Devtools.Telemetry for the local interface
+	/// </summary>
 	public class TelemetryWrapper : ITelemetry
 	{
 		private readonly Uno.DevTools.Telemetry.Telemetry _inner;
