@@ -26,6 +26,6 @@ jobs:
           args: >
             --verbose
             --no-progress
-            --cache-exclude-status 429
+            --accept 200..=204, 429
             ./doc/**/*.md
             
