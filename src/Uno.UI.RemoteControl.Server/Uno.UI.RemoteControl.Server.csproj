@@ -18,7 +18,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />
-		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.0.0-dev.24" />
+		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 	</ItemGroup>

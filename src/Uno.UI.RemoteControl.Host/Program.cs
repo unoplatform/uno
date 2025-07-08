@@ -167,9 +167,6 @@ namespace Uno.UI.RemoteControl.Host
 					})
 					.ConfigureServices(services =>
 					{
-						// Inject the global service provider into Kestrel
-						services.AddSingleton(globalServiceProvider);
-
 						services.AddSingleton<IIdeChannel, IdeChannelServer>();
 
 						// Add connection-specific telemetry services (Scoped)
@@ -195,7 +192,6 @@ namespace Uno.UI.RemoteControl.Host
 
 				// STEP 3: Use global telemetry for server-wide events
 				// Track devserver startup using global telemetry service
-				telemetry = globalServiceProvider.GetService<ITelemetry>();
 				var startupProperties = new Dictionary<string, string>
 				{
 					["HasSolution"] = (solution != null).ToString(),
