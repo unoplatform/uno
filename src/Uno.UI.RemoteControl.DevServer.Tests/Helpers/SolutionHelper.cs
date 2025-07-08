@@ -18,6 +18,11 @@ public class SolutionHelper : IDisposable
 	{
 		_solutionFileName = solutionFileName;
 		_tempFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+		if (!Directory.Exists(_tempFolder))
+		{
+			Directory.CreateDirectory(_tempFolder);
+		}
 	}
 
 	public async Task CreateSolutionFile()
@@ -25,11 +30,6 @@ public class SolutionHelper : IDisposable
 		if (isDisposed)
 		{
 			throw new ObjectDisposedException(nameof(SolutionHelper));
-		}
-
-		if (!Directory.Exists(_tempFolder))
-		{
-			Directory.CreateDirectory(_tempFolder);
 		}
 
 		var startInfo = new ProcessStartInfo
@@ -52,7 +52,7 @@ public class SolutionHelper : IDisposable
 
 	private static object _lock = new();
 
-	public static void EnsureUnoTemplatesInstalled()
+	public void EnsureUnoTemplatesInstalled()
 	{
 		lock (_lock)
 		{
@@ -66,32 +66,34 @@ public class SolutionHelper : IDisposable
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
 					UseShellExecute = false,
-					CreateNoWindow = true
+					CreateNoWindow = true,
+					WorkingDirectory = _tempFolder,
 				};
 				var (checkExit, checkOutput) = ProcessUtil.RunProcessAsync(checkInfo).GetAwaiter().GetResult();
 
-				if (!checkOutput.Contains("unoapp", StringComparison.OrdinalIgnoreCase))
+				if (checkExit != 0)
 				{
-					Console.WriteLine("[DEBUG_LOG] unoapp template not found, attempting to install Uno.ProjectTemplates...");
+					Console.WriteLine("[DEBUG_LOG] unoapp template not found, attempting to install Uno.Templates...");
 
 					// Try to install the Uno templates
 					var installInfo = new ProcessStartInfo
 					{
 						FileName = "dotnet",
-						Arguments = "new install Uno.ProjectTemplates",
+						Arguments = "new install Uno.Templates",
 						RedirectStandardOutput = true,
 						RedirectStandardError = true,
 						UseShellExecute = false,
-						CreateNoWindow = true
+						CreateNoWindow = true,
+						WorkingDirectory = _tempFolder,
 					};
 					var (installExit, installOutput) = ProcessUtil.RunProcessAsync(installInfo).GetAwaiter().GetResult();
 
 					if (installExit != 0)
 					{
-						throw new InvalidOperationException($"Failed to install Uno.ProjectTemplates. Exit code: {installExit}. Output: {installOutput}");
+						throw new InvalidOperationException($"Failed to install Uno.Templates. Exit code: {installExit}. Output: {installOutput}");
 					}
 
-					Console.WriteLine("[DEBUG_LOG] Uno.ProjectTemplates installed successfully");
+					Console.WriteLine("[DEBUG_LOG] Uno.Templates installed successfully");
 
 					// Verify the template is now available
 					var verifyInfo = new ProcessStartInfo
@@ -101,7 +103,8 @@ public class SolutionHelper : IDisposable
 						RedirectStandardOutput = true,
 						RedirectStandardError = true,
 						UseShellExecute = false,
-						CreateNoWindow = true
+						CreateNoWindow = true,
+						WorkingDirectory = _tempFolder,
 					};
 					var (verifyExit, verifyOutput) = ProcessUtil.RunProcessAsync(verifyInfo).GetAwaiter().GetResult();
 
