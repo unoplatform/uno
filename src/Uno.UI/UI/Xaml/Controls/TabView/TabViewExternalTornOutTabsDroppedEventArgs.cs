@@ -5,6 +5,13 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class TabViewExternalTornOutTabsDroppedEventArgs
 {
+	internal TabViewExternalTornOutTabsDroppedEventArgs(object item, UIElement tab, int dropIndex)
+	{
+		Items = [item];
+		Tabs = [tab];
+		DropIndex = dropIndex;
+	}
+
 	internal TabViewExternalTornOutTabsDroppedEventArgs()
 	{
 	}
