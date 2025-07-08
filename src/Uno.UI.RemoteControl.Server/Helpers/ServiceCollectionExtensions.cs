@@ -117,14 +117,18 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 				else
 				{
 					// Connection telemetry - use session ID as context
-					var shortSessionId = sessionId.Length > 8 ? sessionId.Substring(0, 8) : sessionId;
+					var shortSessionId = sessionId.Length > 8 ? sessionId[..8] : sessionId;
 					return new FileTelemetry(telemetryFilePath, $"connection-{shortSessionId}", eventsPrefix);
 				}
 			}
 
 			// Use normal telemetry
 			var telemetry =
-				new Uno.DevTools.Telemetry.Telemetry(config.InstrumentationKey, eventsPrefix, asm, sessionId);
+				new Uno.DevTools.Telemetry.Telemetry(
+					instrumentationKey: config.InstrumentationKey,
+					eventNamePrefix: eventsPrefix,
+					versionAssembly: asm,
+					sessionId: sessionId);
 			return new TelemetryWrapper(telemetry);
 		}
 	}

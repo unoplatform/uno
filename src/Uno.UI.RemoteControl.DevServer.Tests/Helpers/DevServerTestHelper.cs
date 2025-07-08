@@ -299,7 +299,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 		// Strategy 2: Try different build configurations and frameworks
 		var assemblyLocation = Path.GetDirectoryName(typeof(DevServerTestHelper).Assembly.Location)!;
 		var configurations = new[] { "Debug", "Release" };
-		var frameworks = new[] { "net8.0", "net7.0", "net6.0" };
+		var frameworks = new[] { "net9.0", "net8.0" };
 
 		foreach (var config in configurations)
 		{

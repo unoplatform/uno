@@ -31,7 +31,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			Span<byte> hashBytes = stackalloc byte[16];
 			using (var md5 = MD5.Create())
 			{
-				md5.TryComputeHash(inputBytes.Slice(0, byteCount), hashBytes, out _);
+				md5.TryComputeHash(inputBytes[..byteCount], hashBytes, out _);
 			}
 
 			Span<char> hex = stackalloc char[32];
