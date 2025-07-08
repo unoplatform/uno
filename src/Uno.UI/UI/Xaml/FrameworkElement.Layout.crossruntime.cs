@@ -216,7 +216,11 @@ namespace Microsoft.UI.Xaml
 
 			var pControl = this as Control;
 
-			if (VisualTree.GetForElement(pControl) is { } visualTree)
+			// Uno Specific: the implementation of InitializeStateTriggers on WinUI has an internal check that prevents
+			// reapplication of state triggers if they are already initialized. That part is not ported yet, so
+			// we add a check for addedVisuals here instead.
+			// if (VisualTree.GetForElement(pControl) is { } visualTree)
+			if (addedVisuals && VisualTree.GetForElement(pControl) is { } visualTree)
 			{
 				// Create VisualState StateTriggers and perform evaulation to determine initial state,
 				// if we're in the visual tree (since we need it to get our qualifier context).

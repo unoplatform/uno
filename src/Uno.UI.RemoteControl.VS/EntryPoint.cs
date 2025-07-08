@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
@@ -649,11 +650,20 @@ public partial class EntryPoint : IDisposable
 			// (and we prevent a rebuild of the application).
 			try
 			{
-				tcp = new TcpListener(IPAddress.Loopback, port);
-				tcp.Start();
-				tcp.Stop();
+				var p = port;
+				if (IPGlobalProperties
+					.GetIPGlobalProperties()
+					.GetActiveTcpListeners()
+					.All(ep => ep.Port != p))
+				{
+					// As a safety, we also try to open a socket just like how kestrell does.
+					// Note : We do NOT use a TCPListener here, as it will not throw an exception if the port is already in use **by Kestrell**.
+					var so = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+					so.Bind(new IPEndPoint(IPAddress.Any, port));
+					so.Close();
 
-				return false;
+					return false;
+				}
 			}
 			catch
 			{
@@ -661,7 +671,7 @@ public partial class EntryPoint : IDisposable
 			}
 		}
 
-		tcp = new TcpListener(IPAddress.Loopback, 0);
+		tcp = new TcpListener(IPAddress.Any, 0) { ExclusiveAddressUse = true };
 		tcp.Start();
 		port = ((IPEndPoint)tcp.LocalEndpoint).Port;
 		tcp.Stop();

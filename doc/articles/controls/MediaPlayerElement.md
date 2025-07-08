@@ -72,12 +72,12 @@ To add video playback functionality, include the following XAML snippet:
                     AreTransportControlsEnabled="True" />
 ```
 
-Make sure to enable the required feature in your `UnoFeatures` to include the necessary packages. Add `MediaElement;` as shown below:
+Make sure to enable the required feature in your `UnoFeatures` to include the necessary packages. Add `MediaPlayerElement;` as shown below:
 
 ```diff
 <UnoFeatures>
 <!-- Existing features -->
-+  MediaElement;
++  MediaPlayerElement;
 </UnoFeatures>
 ```
 

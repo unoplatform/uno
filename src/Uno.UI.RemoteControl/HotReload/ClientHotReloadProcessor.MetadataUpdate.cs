@@ -529,6 +529,14 @@ partial class ClientHotReloadProcessor
 					_log.Warn($"Found invalid MetadataUpdateOriginalTypeAttribute for {type}");
 				}
 			}
+			catch (TypeLoadException error)
+			{
+				if (_log.IsEnabled(LogLevel.Warning))
+				{
+					_log.Warn($"Type load error while processing MetadataUpdateOriginalTypeAttribute for {type}", error);
+				}
+				hr?.ReportWarning(error);
+			}
 			catch (Exception error)
 			{
 				if (_log.IsEnabled(LogLevel.Error))

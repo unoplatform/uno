@@ -127,6 +127,15 @@ public partial class Given_VisualStateManager
 		Assert.AreEqual("MyVisualState2", uc.VisualStateOnFirstMeasure?.Name);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20708")]
+	public async Task When_Custom_StateTriggers_Initial_State()
+	{
+		var SUT = new When_Custom_StateTriggers_Initial_State();
+		await UITestHelper.Load(SUT);
+		Assert.AreEqual(50, ((Rectangle)SUT.FindName("rect")).Height);
+	}
+
 	private partial class MyUserControl : UserControl
 	{
 		private bool _firstMeasure = true;

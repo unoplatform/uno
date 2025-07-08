@@ -640,7 +640,7 @@
 
                         <Path x:Name="LeftRadiusRenderArc"
                             x:Load="False"
-                            Fill="{ThemeResource CardStrokeColorDefault}"
+                            Fill="{ThemeResource TabViewBorderBrush}"
                             VerticalAlignment="Bottom"
                             Visibility="Collapsed"
                             Margin="-4,0,0,0"
@@ -660,7 +660,7 @@
                             x:Load="False"
                             Grid.Column="2"
                             Visibility="Collapsed"
-                            Fill="{ThemeResource CardStrokeColorDefault}"
+                            Fill="{ThemeResource TabViewBorderBrush}"
                             VerticalAlignment="Bottom"
                             Margin="0,0,-4,0"
                             Height="4"
