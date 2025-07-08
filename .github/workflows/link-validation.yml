@@ -20,8 +20,8 @@ jobs:
       - name: Move external inside Doc dir
         run : mv ./articles/external ./doc/articles/
         
-      - name: Move external inside Doc dir
-        run : mv ./articles/studio/Hot Design ./doc/articles/
+      - name: Move Hot Design doc inside Doc dir
+        run: mv "./articles/studio/Hot Design" ./doc/articles/
       
       - name: Check links
         uses: lycheeverse/lychee-action@v2.4.1
