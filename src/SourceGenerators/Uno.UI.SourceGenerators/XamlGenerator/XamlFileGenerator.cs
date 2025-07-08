@@ -4918,6 +4918,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case "Windows.Foundation.Point":
 						return "new Windows.Foundation.Point(" + SplitAndJoin(memberValue) + ")";
 
+					case "System.Numerics.Vector2":
+						return "new global::System.Numerics.Vector2(" + memberValue + ")";
+
 					case "System.Numerics.Vector3":
 						return "new global::System.Numerics.Vector3(" + memberValue + ")";
 
