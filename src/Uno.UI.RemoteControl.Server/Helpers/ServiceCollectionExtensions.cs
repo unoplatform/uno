@@ -143,7 +143,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		private static ITelemetry CreateTelemetry(Assembly asm, string? sessionId = null)
 		{
 			// Check for telemetry redirection environment variable
-			var telemetryFilePath = Environment.GetEnvironmentVariable("UNO_DEVSERVER_TELEMETRY_FILE");
+			var telemetryFilePath = Environment.GetEnvironmentVariable("UNO_PLATFORM_TELEMETRY_FILE");
 			if (!string.IsNullOrEmpty(telemetryFilePath))
 			{
 				// New behavior: use contextual naming
