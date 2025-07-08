@@ -14,6 +14,8 @@ using Uno.UI.Xaml.Core;
 using static Uno.UI.Xaml.Core.InputManager.PointerManager;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using static System.Net.Mime.MediaTypeNames;
+using System.Threading;
+
 
 #if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
@@ -261,16 +263,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return success;
 		}
-
+		private long _stategyUpdateRequestId;
 		private void OnStrategyUpdated(object sender, StrategyUpdateEventArgs eventArgs)
 		{
+			var request = Interlocked.Increment(ref _stategyUpdateRequestId);
 			if (Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess)
 			{
 				UpdateOffsets(eventArgs);
 			}
 			else
 			{
-				Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(() => UpdateOffsets(eventArgs));
+				DispatcherQueue.TryEnqueue(() =>
+				{
+					if (request == _stategyUpdateRequestId)
+					{
+						UpdateOffsets(eventArgs);
+					}
+				});
 			}
 
 			void UpdateOffsets(StrategyUpdateEventArgs eventArgs)
