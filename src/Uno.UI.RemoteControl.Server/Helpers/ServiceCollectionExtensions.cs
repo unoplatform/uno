@@ -128,7 +128,8 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 					instrumentationKey: config.InstrumentationKey,
 					eventNamePrefix: eventsPrefix,
 					versionAssembly: asm,
-					sessionId: sessionId);
+					sessionId: sessionId,
+					productName: asm.GetName().Name);
 			return new TelemetryWrapper(telemetry);
 		}
 	}
