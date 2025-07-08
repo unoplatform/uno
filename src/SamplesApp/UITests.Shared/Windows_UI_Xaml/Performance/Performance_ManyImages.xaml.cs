@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using SamplesApp.UITests;
 using CollectionExtensions = Uno.Extensions.CollectionExtensions;
 
@@ -33,15 +30,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 			};
 		}
 
-		private void NumberBoxValueChanged(object sender, NumberBoxValueChangedEventArgs e)
-		{
-			Update();
-		}
-
-		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			Update();
-		}
+		private void NumberBoxValueChanged(object sender, NumberBoxValueChangedEventArgs e) => Update();
+		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e) => Update();
 
 		private void Update()
 		{
