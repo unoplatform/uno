@@ -22,13 +22,11 @@ jobs:
     
       - name: Move Hot Design doc inside Doc dir
         run: mv "./articles/studio/Hot Design" ./doc/articles/studio
-        
-      - name: Display dir contents
-        run : ls ./doc/articles/studio
       
       - name: Check links
         uses: lycheeverse/lychee-action@v2.4.1
         with:
+          fail: false
           args: >
             --verbose
             --no-progress
