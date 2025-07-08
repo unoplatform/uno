@@ -1001,6 +1001,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, states.Count, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
 
+		[TestMethod]
+		public async Task When_Padding()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
+			}
+
+			var SUT = new TextBlock
+			{
+				Text = "text",
+				Padding = new Thickness(50),
+				Foreground = new SolidColorBrush(Colors.Red),
+			};
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 50, 50), Colors.Red);
+		}
+
 #if HAS_UNO // GetMouse is not available on WinUI
 		#region IsTextSelectionEnabled
 
