@@ -1,5 +1,5 @@
 ---
-uid: Uno.Tutorials.AzureStaticWepApps
+uid: Uno.Tutorials.AzureStaticWebApps
 ---
 
 # Hosting Uno Platform WebAssembly apps on Azure Static Web Apps
@@ -22,7 +22,8 @@ Here is how to publish an app from GitHub, using Uno Platform:
     dotnet new unoapp -o MyApp
     ```
 
-- If the `<TargetFramework>` value in the `MyApp.Wasm.csproj` is not `net9.0`, [follow the upgrading steps provided here](../../articles/migrating-to-uno-5.md#migrating-webassembly-from-netstandard2-0-to-net7-0-or-net8-0).
+- If the `<TargetFramework>` value in the `MyApp.Wasm.csproj` is not `net9.0`, [make sure to upgrade to latest Uno release by following these steps](xref:Uno.Development.MigratingFromPreviousReleases).
+
 - If in the `MyApp.Wasm\wwwroot`, you find a `web.config` file, delete it. This will enable brotli compression in Azure Static Web Apps.
 - Search for [Static Web Apps](https://portal.azure.com/#create/Microsoft.StaticApp) in the Azure Portal
 - Fill the required fields in the creation form:
