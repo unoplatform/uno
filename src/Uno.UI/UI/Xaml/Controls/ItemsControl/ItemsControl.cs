@@ -99,14 +99,13 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				_inProgressVectorChange = e;
+				OnItemsSourceSingleCollectionChanged(this, e.ToNotifyCollectionChangedEventArgs(), 0);
 				OnItemsChanged(e);
 			}
 			finally
 			{
 				_inProgressVectorChange = null;
 			}
-
-			OnItemsSourceSingleCollectionChanged(this, e.ToNotifyCollectionChangedEventArgs(), 0);
 		}
 
 		partial void InitializePartial();
