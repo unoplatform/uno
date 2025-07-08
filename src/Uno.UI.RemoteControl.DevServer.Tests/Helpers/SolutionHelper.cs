@@ -50,43 +50,49 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
+	private static object _lock = new();
+
 	public static void EnsureUnoTemplatesInstalled()
 	{
-		try
+		lock (_lock)
 		{
-			var checkInfo = new ProcessStartInfo
+			try
 			{
-				FileName = "dotnet",
-				Arguments = "new list unoapp",
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				UseShellExecute = false,
-				CreateNoWindow = true
-			};
-			var (checkExit, checkOutput) = ProcessUtil.RunProcessAsync(checkInfo).GetAwaiter().GetResult();
-			if (!checkOutput.Contains("unoapp", StringComparison.OrdinalIgnoreCase))
-			{
-				var installInfo = new ProcessStartInfo
+				var checkInfo = new ProcessStartInfo
 				{
 					FileName = "dotnet",
-					Arguments = "new install Uno.ProjectTemplates",
+					Arguments = "new list unoapp",
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
 					UseShellExecute = false,
 					CreateNoWindow = true
 				};
-				var (installExit, installOutput) = ProcessUtil.RunProcessAsync(installInfo).GetAwaiter().GetResult();
-				if (installExit != 0)
+				var (checkExit, checkOutput) = ProcessUtil.RunProcessAsync(checkInfo).GetAwaiter().GetResult();
+				if (!checkOutput.Contains("unoapp", StringComparison.OrdinalIgnoreCase))
 				{
-					Console.WriteLine(
-						$"[WARNING] dotnet new install Uno.ProjectTemplates failed (best effort): {installOutput}");
+					var installInfo = new ProcessStartInfo
+					{
+						FileName = "dotnet",
+						Arguments = "new install Uno.ProjectTemplates",
+						RedirectStandardOutput = true,
+						RedirectStandardError = true,
+						UseShellExecute = false,
+						CreateNoWindow = true
+					};
+					var (installExit, installOutput) =
+						ProcessUtil.RunProcessAsync(installInfo).GetAwaiter().GetResult();
+					if (installExit != 0)
+					{
+						Console.WriteLine(
+							$"[WARNING] dotnet new install Uno.ProjectTemplates failed (best effort): {installOutput}");
+					}
 				}
 			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine(
-				$"[WARNING] Unable to check or install Uno.ProjectTemplates (best effort, CI only): {ex.Message}");
+			catch (Exception ex)
+			{
+				Console.WriteLine(
+					$"[WARNING] Unable to check or install Uno.ProjectTemplates (best effort, CI only): {ex.Message}");
+			}
 		}
 	}
 
