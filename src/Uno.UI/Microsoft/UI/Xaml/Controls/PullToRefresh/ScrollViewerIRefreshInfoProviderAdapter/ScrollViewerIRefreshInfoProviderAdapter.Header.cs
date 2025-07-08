@@ -9,7 +9,7 @@ using Uno.Disposables;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
+using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 
 namespace Microsoft.UI.Private.Controls;
 

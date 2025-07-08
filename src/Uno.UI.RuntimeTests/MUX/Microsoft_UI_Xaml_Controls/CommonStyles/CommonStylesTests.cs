@@ -15,12 +15,12 @@ using Microsoft.UI.Xaml.Media;
 using PlatformConfiguration = Common.PlatformConfiguration;
 using OSVersion = Common.OSVersion;
 using System.Collections.Generic;
-using XamlControlsResources = Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources;
+using XamlControlsResources = Microsoft.UI.Xaml.Controls.XamlControlsResources;
 using Microsoft.UI.Xaml.Markup;
 using System;
 using System.Text;
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 #if USING_TAEF
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var root = (StackPanel)XamlReader.Load(
 					@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
                              xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                             xmlns:primitives='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls.Primitives'> 
+                             xmlns:primitives='using:Microsoft" +  @".UI.Xaml.Controls.Primitives'> 
                             <StackPanel.Resources>
                                 <primitives:CornerRadiusFilterConverter x:Key='TopCornerRadiusFilterConverter' Filter='Top' Scale='2'/>
                                 <primitives:CornerRadiusFilterConverter x:Key='RightCornerRadiusFilterConverter' Filter='Right'/>

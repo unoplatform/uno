@@ -19,13 +19,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
-using Layout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Layout;
-using ItemsSourceView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsSourceView;
-using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
-using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
-using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
-using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
+using Layout = Microsoft.UI.Xaml.Controls.Layout;
+using ItemsSourceView = Microsoft.UI.Xaml.Controls.ItemsSourceView;
+using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
+using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
+using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
+using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Collections.Generic;
@@ -264,7 +264,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				  @"<controls:ItemsRepeaterScrollHost Width='400' Height='600'
                      xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                      xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                     xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
+                     xmlns:controls='using:Microsoft" +  @".UI.Xaml.Controls'>
                     <controls:ItemsRepeaterScrollHost.Resources>
                         <DataTemplate x:Key='ItemTemplate' >
                             <TextBlock Text='{Binding}' Height='50'/>
@@ -416,7 +416,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					@"<controls:ItemsRepeaterScrollHost Width='400' Height='600'
                         xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
+                        xmlns:controls='using:Microsoft" +  @".UI.Xaml.Controls'>
                     <controls:ItemsRepeaterScrollHost.Resources>
                         <DataTemplate x:Key='ItemTemplate' >
                             <TextBlock Text='{Binding}' />
@@ -509,7 +509,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				  @"<controls:ItemsRepeaterScrollHost Width='400' Height='600'
                      xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                      xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                     xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
+                     xmlns:controls='using:Microsoft" +  @".UI.Xaml.Controls'>
                     <ScrollViewer Width='400' Height='400' x:Name='scrollviewer'>
                         <controls:ItemsRepeater x:Name='repeater'>
                             <DataTemplate>
@@ -572,7 +572,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				  @" <controls:ItemsRepeaterScrollHost Width='400' Height='200'
                         xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
+                        xmlns:controls='using:Microsoft" +  @".UI.Xaml.Controls'>
                         <controls:ItemsRepeaterScrollHost.Resources>
                             <DataTemplate x:Key='ItemTemplate' >
                                 <TextBlock Text='{Binding}' Height='100' Width='100'/>
@@ -640,7 +640,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                      xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                      xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
                      xmlns:local='using:MUXControlsTestApp.Samples'
-                     xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
+                     xmlns:controls='using:Microsoft" +  @".UI.Xaml.Controls'>
                         <ScrollViewer>
                             <controls:ItemsRepeater x:Name='repeater'>
                                 <controls:ItemsRepeater.ItemsSource>

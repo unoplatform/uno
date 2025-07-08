@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Microsoft.UI.Composition;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Media;
+namespace Microsoft.UI.Xaml.Media;
 
 partial class RadialGradientBrush
 {

@@ -8,7 +8,7 @@ using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class PipsPager
 {

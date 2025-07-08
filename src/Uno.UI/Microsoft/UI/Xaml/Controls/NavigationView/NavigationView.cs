@@ -11,8 +11,8 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -35,9 +35,9 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class NavigationView : ContentControl
 {
@@ -1338,7 +1338,7 @@ public partial class NavigationView : ContentControl
 		// Certain items are disallowed in a NavigationView's items list. Check for them.
 		if (args.Element is Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
 		{
-			throw new InvalidOperationException("MenuItems contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.NavigationViewItem.");
+			throw new InvalidOperationException("MenuItems contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft" +  ".UI.Xaml.Controls.NavigationViewItem.");
 		}
 #endif
 

@@ -1,4 +1,4 @@
-﻿namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+﻿namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines constants that specify in which direction a control should expand.

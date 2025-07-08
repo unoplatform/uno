@@ -7,11 +7,11 @@ using Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
-using ProgressBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar;
+using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
-using ProgressBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar;
+using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
 
 [TestClass]
 [RunsOnUIThread]

@@ -11,8 +11,8 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
-using TabView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
-using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem;
+using TabView = Microsoft.UI.Xaml.Controls.TabView;
+using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 
 using static Uno.UI.Extensions.ViewExtensions;
 using static Private.Infrastructure.TestServices;

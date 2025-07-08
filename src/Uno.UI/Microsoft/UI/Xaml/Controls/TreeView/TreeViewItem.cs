@@ -13,10 +13,10 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Automation.Peers;
-using TreeViewItemAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer;
+using TreeViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer;
 using Microsoft.UI.Input;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents the container for an item in a TreeView control.

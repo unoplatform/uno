@@ -21,8 +21,8 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
-using SplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton;
-using ToggleSplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton;
+using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
+using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {

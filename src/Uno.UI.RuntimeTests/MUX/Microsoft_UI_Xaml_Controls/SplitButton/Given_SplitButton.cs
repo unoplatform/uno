@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
-using SplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton;
+using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 

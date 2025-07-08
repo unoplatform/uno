@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using Microsoft.UI.Private.Controls;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using System.Collections.ObjectModel;
 using Uno.UI.Core;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class RadioButtons : Control

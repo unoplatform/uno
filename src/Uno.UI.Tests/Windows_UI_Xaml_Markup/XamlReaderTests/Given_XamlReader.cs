@@ -17,9 +17,9 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
-using SwipeItems = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItems;
-using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
-using SwipeMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode;
+using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
+using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
+using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
 using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
@@ -931,7 +931,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var s = GetContent(nameof(When_IList_TabView));
 			var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 
-			var tabView1 = r.FindName("tabView1") as Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
+			var tabView1 = r.FindName("tabView1") as Microsoft.UI.Xaml.Controls.TabView;
 
 			Assert.AreEqual(2, tabView1.TabItems.Count);
 		}
@@ -1608,7 +1608,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var root = (StackPanel)XamlReader.Load(
 				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:primitives='using:Microsoft" + /* UWP Don't rename */ @".UI.Xaml.Controls.Primitives'> 
+                        xmlns:primitives='using:Microsoft" +  @".UI.Xaml.Controls.Primitives'> 
                     <StackPanel.Resources>
                         <primitives:CornerRadiusFilterConverter x:Key='RightCornerRadiusFilterConverter' Filter='Right'/>
                     </StackPanel.Resources>

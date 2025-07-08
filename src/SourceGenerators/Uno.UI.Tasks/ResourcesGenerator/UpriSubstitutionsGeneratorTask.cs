@@ -49,7 +49,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 					var groups =
 						Resources
 							.Where(r => !r.ItemSpec.StartsWith("Resources", StringComparison.Ordinal) &&
-										!r.ItemSpec.StartsWith("Microsoft." + /* UWP don't rename */ "UI.Xaml.Controls.WinUIResources", StringComparison.Ordinal))
+										!r.ItemSpec.StartsWith("Microsoft." +  "UI.Xaml.Controls.WinUIResources", StringComparison.Ordinal))
 							.Select(r => (Key: RewriteKey(r.ItemSpec), Value: r.ItemSpec))
 							.ToLookup(kv => kv.Key, kv => kv.Value);
 

@@ -18,7 +18,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Xaml;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using BrushDef = (Microsoft.UI.Xaml.UIElement Def, System.IDisposable? InnerSubscription);
 
 namespace Microsoft.UI.Xaml.Shapes

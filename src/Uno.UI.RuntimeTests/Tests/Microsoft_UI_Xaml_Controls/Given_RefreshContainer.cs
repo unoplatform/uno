@@ -25,7 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		public async Task When_Stretch_Child()
 		{
 			var grid = new Grid();
-			var refreshContainer = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshContainer();
+			var refreshContainer = new Microsoft.UI.Xaml.Controls.RefreshContainer();
 			var child = new Border()
 			{
 				Background = new SolidColorBrush(Colors.Red),
@@ -79,7 +79,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				VerticalAlignment = VerticalAlignment.Stretch
 			};
-			var refreshContainer = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshContainer();
+			var refreshContainer = new Microsoft.UI.Xaml.Controls.RefreshContainer();
 			var listView = new ListView();
 			refreshContainer.Content = listView;
 			refreshContainer.RefreshRequested += OnRefreshRequested;
@@ -116,8 +116,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			deferral.Complete();
 
 			void OnRefreshRequested(
-				Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshContainer sender,
-				Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshRequestedEventArgs args)
+				Microsoft.UI.Xaml.Controls.RefreshContainer sender,
+				Microsoft.UI.Xaml.Controls.RefreshRequestedEventArgs args)
 			{
 				deferral = args.GetDeferral(); // Keep refreshing
 			}

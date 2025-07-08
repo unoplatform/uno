@@ -9,11 +9,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
-using TreeViewListAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer;
+using TreeViewListAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer;
 using DragEventArgs = Microsoft.UI.Xaml.DragEventArgs;
 using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a flattened list of tree view items so that operations such
