@@ -104,8 +104,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// Verify that the last tab is closed and the second last tab is selected
-			Assert.IsFalse(tabView.TabItems.Contains(tabToSelectAndClose), "Expected the last tab to be removed from the TabItems collection.");
-			Assert.AreEqual(expectedSelectedTabAfterClose, tabView.SelectedItem, "Expected the second last tab to be selected after closing the last tab.");
+			Assert.IsFalse(tabView.TabItems.Contains(tabToSelectAndClose), "Expected the tab to be removed from the TabItems collection.");
+			Assert.AreEqual(expectedSelectedTabAfterClose, tabView.SelectedItem, "Expected different tab to be selected after closing the selected tab.");
 
 #if HAS_RENDER_TARGET_BITMAP
 			var contentScreenshot = await UITestHelper.ScreenShot(tabView);
