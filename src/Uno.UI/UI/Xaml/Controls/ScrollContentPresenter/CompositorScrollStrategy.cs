@@ -51,15 +51,17 @@ namespace Microsoft.UI.Xaml.Controls
 				var animation = compositor.CreateVector2KeyFrameAnimation();
 				animation.InsertKeyFrame(1.0f, target, easing);
 				animation.Duration = TimeSpan.FromSeconds(1);
-				animation.AnimationFrame += (CompositionAnimation obj) =>
+				void OnFrame(CompositionAnimation? _) => Updated?.Invoke(this, new(-visual.AnchorPoint.X, -visual.AnchorPoint.Y, true));
+				void OnStopped(object? _, EventArgs __)
 				{
-					Updated?.Invoke(this, new(-visual.AnchorPoint.X, -visual.AnchorPoint.Y, true));
+					animation.AnimationFrame -= OnFrame;
+					animation.Stopped -= OnStopped;
+					
+					OnFrame(null);
 				};
 
-				animation.Stopped += (e, s) =>
-				{
-					Updated?.Invoke(this, new(-visual.AnchorPoint.X, -visual.AnchorPoint.Y, options.IsIntermediate));
-				};
+				animation.AnimationFrame += OnFrame;
+				animation.Stopped += OnStopped;
 
 				visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
 			}
