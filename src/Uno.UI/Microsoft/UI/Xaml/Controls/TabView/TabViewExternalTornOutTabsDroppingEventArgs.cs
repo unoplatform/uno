@@ -5,6 +5,13 @@
 /// </summary>
 public partial class TabViewExternalTornOutTabsDroppingEventArgs
 {
+	internal TabViewExternalTornOutTabsDroppingEventArgs(object item, UIElement tab, int dropIndex)
+	{
+		Items = [item];
+		Tabs = [tab];
+		DropIndex = dropIndex;
+	}
+
 	internal TabViewExternalTornOutTabsDroppingEventArgs()
 	{
 	}

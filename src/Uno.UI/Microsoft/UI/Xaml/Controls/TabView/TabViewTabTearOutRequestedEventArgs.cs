@@ -5,6 +5,12 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public sealed partial class TabViewTabTearOutRequestedEventArgs
 {
+	internal TabViewTabTearOutRequestedEventArgs(object item, UIElement tab)
+	{
+		Items = [item];
+		Tabs = [tab];
+	}
+
 	internal TabViewTabTearOutRequestedEventArgs()
 	{
 	}
