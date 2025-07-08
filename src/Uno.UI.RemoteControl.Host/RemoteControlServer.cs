@@ -323,7 +323,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// Track processor discovery start
 			var discoveryProperties = new Dictionary<string, string>
 			{
-				["AppInstanceId"] = msg.AppInstanceId,
+				["AppInstanceId"] = TelemetryHashHelper.Hash(msg.AppInstanceId),
 				["BasePath"] = TelemetryHashHelper.Hash(msg.BasePath),
 				["IsFile"] = File.Exists(msg.BasePath).ToString()
 			};
@@ -398,6 +398,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				}
 			}
 
+			var loadedProcessors = new List<string>();
+			var failedProcessors = new List<string>();
+
 			foreach (var asm in assemblies)
 			{
 				try
@@ -427,11 +430,17 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: true));
 									RegisterProcessor(serverProcessor);
 									processorsLoaded++;
+									loadedProcessors.Add(processor.ProcessorType.Name);
+									if (this.Log().IsEnabled(LogLevel.Debug))
+									{
+										this.Log().LogDebug("Registered server processor {ProcessorType}", processor.ProcessorType);
+									}
 								}
 								else
 								{
 									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false));
 									processorsFailed++;
+									failedProcessors.Add(processor.ProcessorType.Name);
 									if (this.Log().IsEnabled(LogLevel.Debug))
 									{
 										this.Log().LogDebug("Failed to create server processor {ProcessorType}", processor.ProcessorType);
@@ -465,7 +474,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// Track processor discovery completion
 			var completionProperties = new Dictionary<string, string>(discoveryProperties)
 			{
-				["Result"] = processorsFailed == 0 ? "Success" : "PartialFailure"
+				["Result"] = processorsFailed == 0 ? "Success" : "PartialFailure",
+				["LoadedProcessors"] = string.Join(",", loadedProcessors),
+				["FailedProcessors"] = string.Join(",", failedProcessors),
 			};
 
 			var completionMeasurements = new Dictionary<string, double>
