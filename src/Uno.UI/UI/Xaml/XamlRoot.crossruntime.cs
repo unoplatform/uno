@@ -15,6 +15,11 @@ public sealed partial class XamlRoot
 
 	internal event Action? RenderInvalidated;
 
+#if __SKIA__
+	internal event Action? PaintedFrame;
+	internal event Action? RenderedFrame;
+#endif
+
 	internal void InvalidateMeasure()
 	{
 		VisualTree.RootElement.InvalidateMeasure();
@@ -31,10 +36,12 @@ public sealed partial class XamlRoot
 #endif
 	}
 
-	internal void InvalidateRender()
-	{
-		RenderInvalidated?.Invoke();
-	}
+	internal void InvalidateRender() => RenderInvalidated?.Invoke();
+
+#if __SKIA__
+	internal void InvokePaintedFrame() => PaintedFrame?.Invoke();
+	internal void InvokeRenderedFrame() => RenderedFrame?.Invoke();
+#endif
 
 	internal void QueueInvalidateRender()
 	{
