@@ -21,7 +21,7 @@ jobs:
         run : mv ./articles/external ./doc/articles/
         
       - name: Move external inside Doc dir
-        run : mv ./articles/studio ./doc/articles/
+        run : mv ./articles/studio/Hot Design ./doc/articles/
       
       - name: Check links
         uses: lycheeverse/lychee-action@v2.4.1
