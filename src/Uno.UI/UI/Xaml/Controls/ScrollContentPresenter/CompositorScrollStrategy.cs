@@ -56,9 +56,9 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					animation.AnimationFrame -= OnFrame;
 					animation.Stopped -= OnStopped;
-					
+
 					OnFrame(null);
-				};
+				}
 
 				animation.AnimationFrame += OnFrame;
 				animation.Stopped += OnStopped;
