@@ -12,7 +12,7 @@ public abstract class TelemetryTestBase
 
 	protected CancellationToken CT => TestContext?.CancellationTokenSource.Token ?? CancellationToken.None;
 
-	protected static void InitializeLogger<T>() where T : class
+	private static void InitializeLogger<T>() where T : class
 	{
 		var loggerFactory = LoggerFactory.Create(builder =>
 		{
@@ -23,7 +23,7 @@ public abstract class TelemetryTestBase
 		Logger = loggerFactory.CreateLogger<T>();
 	}
 
-	public static void GlobalClassInitialize<T>(TestContext context) where T : class
+	protected static void GlobalClassInitialize<T>(TestContext context) where T : class
 	{
 		SolutionHelper.EnsureUnoTemplatesInstalled();
 		InitializeLogger<T>();
