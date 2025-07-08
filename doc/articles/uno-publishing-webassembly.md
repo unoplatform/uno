@@ -48,5 +48,5 @@ Once done, you can head over to [publishing section](xref:uno.publishing.webasse
 Publishing your app can be done to different servers and cloud providers.
 
 - [How to host a WebAssembly App](xref:Uno.Development.HostWebAssemblyApp)
-- [Publishing to Azure Static Apps](xref:Uno.Tutorials.AzureStaticWepApps)
+- [Publishing to Azure Static Apps](xref:Uno.Tutorials.AzureStaticWebApps)
 - [Server locally using dotnet-serve](https://github.com/natemcmaster/dotnet-serve)
