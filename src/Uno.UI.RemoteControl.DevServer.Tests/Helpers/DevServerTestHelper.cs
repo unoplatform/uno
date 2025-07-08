@@ -123,16 +123,14 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 			{
 				foreach (var variable in _environmentVariables)
 				{
-					// Only add if not already present to preserve existing values
-					if (!startInfo.Environment.ContainsKey(variable.Key))
+					// For testing purposes, allow overriding environment variables
+					// This is especially important for telemetry redirection in tests
+					if (startInfo.Environment.ContainsKey(variable.Key))
 					{
-						startInfo.Environment[variable.Key] = variable.Value;
-					}
-					else
-					{
-						_logger.LogWarning("Environment variable {Key} already exists, skipping override",
+						_logger.LogWarning("Environment variable {Key} already exists, overriding for test",
 							variable.Key);
 					}
+					startInfo.Environment[variable.Key] = variable.Value;
 				}
 			}
 
