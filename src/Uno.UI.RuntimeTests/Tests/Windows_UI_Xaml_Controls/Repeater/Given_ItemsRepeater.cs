@@ -497,6 +497,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Fails due to async native scrolling.")]
+#endif
+
+		public async Task When_Repeater_ChangedView()
+		{
+			var sut = SUT.Create(30, new Size(100, 500));
+
+			await sut.Load();
+
+			sut.Scroller.ChangeView(null, 1000, null, disableAnimation: false);
+			sut.MaterializedItems.Should().Contain(sut.Source[10]);
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
