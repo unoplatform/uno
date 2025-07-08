@@ -48,6 +48,10 @@ public class Given_SKCanvasElement
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
 	public async Task When_Waiting_For_Another_Thread()
 	{
+		if (OperatingSystem.IsBrowser())
+		{
+			Assert.Inconclusive("This test on WASM throws an Uncaught ManagedError: Cannot wait on monitors on this runtime.");
+		}
 		var SUT = new TaskWaitingSKCanvasElement() { Width = 400, Height = 400 };
 		await UITestHelper.Load(SUT);
 		await Task.Delay(3000);
@@ -73,6 +77,10 @@ public class Given_SKCanvasElement
 				{
 					Thread.Sleep(200);
 				}
+				// On Android, we need this additional delay because otherwise, this thread will reacquire the lock
+				// after releasing it before the UI thread has a chance to acquire the lock in
+				// LockWaitingSKCanvasElement.RenderOverride.
+				Thread.Sleep(200);
 			}
 		});
 		await Task.Delay(3000);
