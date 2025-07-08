@@ -104,7 +104,7 @@
       - name: Overview
         href: xref:Uno.Tutorials.Intro
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
-        href: xref:Uno.Tutorials.AzureStaticWepApps
+        href: xref:Uno.Tutorials.AzureStaticWebApps
       - name: How to use Windows Community Toolkit
         topicHref: xref:Uno.Development.CommunityToolkit
         items:
