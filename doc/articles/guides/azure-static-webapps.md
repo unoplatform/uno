@@ -1,5 +1,5 @@
 ---
-uid: Uno.Tutorials.AzureStaticWepApps
+uid: Uno.Tutorials.AzureStaticWebApps
 ---
 
 # Hosting Uno Platform WebAssembly apps on Azure Static Web Apps
@@ -22,7 +22,8 @@ Here is how to publish an app from GitHub, using Uno Platform:
     dotnet new unoapp -o MyApp
     ```
 
-- If the `<TargetFramework>` value in the `MyApp.Wasm.csproj` is not `net5.0`, [follow the upgrading steps provided here](../../articles/migrating-from-previous-releases.md#migrating-webassembly-projects-to-net-5).
+- If the `<TargetFramework>` value in the `MyApp.Wasm.csproj` is not `net9.0`, [make sure to upgrade to latest Uno release by following these steps](xref:Uno.Development.MigratingFromPreviousReleases).
+
 - If in the `MyApp.Wasm\wwwroot`, you find a `web.config` file, delete it. This will enable brotli compression in Azure Static Web Apps.
 - Search for [Static Web Apps](https://portal.azure.com/#create/Microsoft.StaticApp) in the Azure Portal
 - Fill the required fields in the creation form:
@@ -35,16 +36,16 @@ Here is how to publish an app from GitHub, using Uno Platform:
 
     ![visual-studio-installer-web](../Assets/aswa-settings.png)
 
-- The click on **Review+Create** button. Azure will automatically create a new **GitHub Actions Workflow** in your repository. The workflow will automatically be started and will fail for this first run, as some parameters need to be adjusted.
+- Then click on **Review+Create** button. Azure will automatically create a new **GitHub Actions Workflow** in your repository. The workflow will automatically be started and will fail for this first run, as some parameters need to be adjusted.
 - In your repository’s newly added github workflow (in `.github/workflows`), add the following two steps, after the checkout step:
 
     ```yaml
     - name: Setup dotnet
-      uses: actions/setup-dotnet@v1.7.2
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '6.0.402'
+        dotnet-version: '9.0.x'
 
-    - run: |
+    - run: 
         cd src/MyApp.Wasm
         dotnet build -c Release
     ```
@@ -52,7 +53,7 @@ Here is how to publish an app from GitHub, using Uno Platform:
 - In the Deploy step that was automatically added, change the `app_location` parameter to the following:
 
     ```yaml
-    app_location: "src/MyApp.Wasm/bin/Debug/net5.0/dist"
+    app_location: "src/MyApp.Wasm/bin/Debug/net9.0/dist"
     ```
 
 - Once changed, the application will be built and deployed on your Azure Static Web App instance.
