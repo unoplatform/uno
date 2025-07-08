@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Uno.UI.Samples.Controls;
@@ -8,7 +9,9 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using SamplesApp.UITests;
+using SkiaSharp;
 using Uno.Disposables;
+using Uno.WinUI.Graphics2DSK;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -48,8 +51,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 			int imagesLoaded = 0;
 
 			var grid = new Grid();
-			grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+			grid.RowDefinitions.Add(new RowDefinition { Height = GridLengthHelper.OneStar });
+			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper.OneStar });
 			Content = grid;
 
 			var sp = new StackPanel();
@@ -85,6 +88,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 			}
 
 #if __SKIA__
+			grid.Children.Add(new InvalidatingSKCanvasElement());
 			Loaded += (s, e) =>
 			{
 				Action onRenderedFrame = default;
@@ -105,5 +109,12 @@ namespace UITests.Windows_UI_Xaml.Performance
 			};
 #endif
 		}
+
+#if __SKIA__
+		private class InvalidatingSKCanvasElement : SKCanvasElement
+		{
+			protected override void RenderOverride(SKCanvas canvas, Size area) => Invalidate();
+		}
+#endif
 	}
 }
