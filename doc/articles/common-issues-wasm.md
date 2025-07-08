@@ -12,7 +12,7 @@ If you're getting the following message in the browser debugger:
 [MONO] DllImport unable to load library 'libSkiaSharp'.
 ```
 
-here are a few ways to fix this:
+Here are a few ways to fix this:
 
 - Make sure that you've run [`uno-check`](xref:UnoCheck.UsingUnoCheck) and that the `dotnet workload list` shows the `wasm-tools` workload. If you're using Visual Studio, make sure to restart it if you've installed workloads.
 - If you've run `dotnet publish`, make sure to use the `bin\Release\netX.0-browserwasm\publish\wwwroot` folder to serve your app. Make sure to visit [our publishing docs](xref:uno.publishing.overview) for more information.
