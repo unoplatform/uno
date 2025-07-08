@@ -53,60 +53,6 @@ public partial class TabView : Control
 	// TODO (WinUI): what is the right number and should this be customizable?
 	private const double c_scrollAmount = 50.0;
 
-	public partial class TabViewTabTearOutWindowRequestedEventArgs : EventArgs
-	{
-		public List<object> Items { get; }
-		public List<UIElement> Tabs { get; }
-
-		public TabViewTabTearOutWindowRequestedEventArgs(object item, UIElement tab)
-		{
-			Items = new List<object> { item };
-			Tabs = new List<UIElement> { tab };
-		}
-	}
-
-	public partial class TabViewTabTearOutRequestedEventArgs : EventArgs
-	{
-		public List<object> Items { get; }
-		public List<UIElement> Tabs { get; }
-
-		public TabViewTabTearOutRequestedEventArgs(object item, UIElement tab)
-		{
-			Items = new List<object> { item };
-			Tabs = new List<UIElement> { tab };
-		}
-	}
-
-	public partial class TabViewExternalTornOutTabsDroppingEventArgs : EventArgs
-	{
-		public List<object> Items { get; }
-		public List<UIElement> Tabs { get; }
-		public int DropIndex { get; }
-
-		public TabViewExternalTornOutTabsDroppingEventArgs(object item, UIElement tab, int dropIndex)
-		{
-			Items = new List<object> { item };
-			Tabs = new List<UIElement> { tab };
-			DropIndex = dropIndex;
-		}
-
-		public bool AllowDrop { get; set; }
-	}
-
-	public partial class TabViewExternalTornOutTabsDroppedEventArgs : EventArgs
-	{
-		public List<object> Items { get; }
-		public List<UIElement> Tabs { get; }
-		public int DropIndex { get; }
-
-		public TabViewExternalTornOutTabsDroppedEventArgs(object item, UIElement tab, int dropIndex)
-		{
-			Items = new List<object> { item };
-			Tabs = new List<UIElement> { tab };
-			DropIndex = dropIndex;
-		}
-	}
-
 	public TabView()
 	{
 		var items = new ObservableVector<object>();
