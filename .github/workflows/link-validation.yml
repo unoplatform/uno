@@ -19,13 +19,13 @@ jobs:
         
       - name: Move external inside Doc dir
         run : mv ./articles/external ./doc/articles/      
-      
+
       - name: Check links
         uses: lycheeverse/lychee-action@v2.4.1
         with:
           args: >
             --verbose
             --no-progress
-            --accept 200..=204, 429
+            --accept 200..=204,429
             ./doc/**/*.md
             
