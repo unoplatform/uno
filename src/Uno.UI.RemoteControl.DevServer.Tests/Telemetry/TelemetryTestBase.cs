@@ -50,7 +50,7 @@ public abstract class TelemetryTestBase
 		// Enable single file telemetry mode
 		var helper = new DevServerTestHelper(
 			Logger,
-			environmentVariables: new Dictionary<string, string> { { "UNO_DEVSERVER_TELEMETRY_FILE", filePath }, });
+			environmentVariables: new Dictionary<string, string> { { "UNO_PLATFORM_TELEMETRY_FILE", filePath }, });
 
 		return (helper, tempDir);
 	}
@@ -65,7 +65,7 @@ public abstract class TelemetryTestBase
 			solutionPath: solutionPath,
 			environmentVariables: new Dictionary<string, string>
 			{
-				{ "UNO_DEVSERVER_TELEMETRY_FILE", exactFilePath },
+				{ "UNO_PLATFORM_TELEMETRY_FILE", exactFilePath },
 			});
 	}
 
