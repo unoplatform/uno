@@ -1,10 +1,5 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SkiaSharp;
 using Uno.UI.Composition;
 
@@ -15,13 +10,7 @@ namespace Microsoft.UI.Composition
 		private SKPaint? _sourcePaint;
 		private SKPaint? _maskPaint;
 
-		bool IOnlineBrush.IsOnline
-		{
-			get
-			{
-				return Source is IOnlineBrush { IsOnline: true } || Mask is IOnlineBrush { IsOnline: true };
-			}
-		}
+		bool IOnlineBrush.IsOnline => Source is IOnlineBrush { IsOnline: true } || Mask is IOnlineBrush { IsOnline: true };
 
 		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
 
@@ -35,9 +24,36 @@ namespace Microsoft.UI.Composition
 			paint.Shader = SKShader.CreateCompose(_sourcePaint.Shader, _maskPaint.Shader, SKBlendMode.DstIn);
 		}
 
+		internal override void Render(SKCanvas canvas, SKRect bounds)
+		{
+			if (Source is null || Mask is null)
+			{
+				return;
+			}
+			_spareResultPaint.Reset();
+			_spareResultPaint.BlendMode = SKBlendMode.DstOver;
+			_spareResultPaint2.Reset();
+			_spareResultPaint.BlendMode = SKBlendMode.DstIn;
+			// The first SaveLayer call along with DrawColor(Transparent) basically create a clean secondary drawing surface
+			// but without having to call SKSurface.Create and having to deal with all the details like HWA.
+			canvas.SaveLayer(new SKCanvasSaveLayerRec { Bounds = bounds });
+			// From skia docs: SkRect bounds suggests but does not define the SkSurface size. To clip drawing to a specific rectangle, use clipRect().
+			canvas.ClipRect(bounds);
+			canvas.DrawColor(SKColors.Transparent);
+			Source.Render(canvas, bounds);
+			// The second SaveLayer call with SKBlendMode.DstIn creates the masking effect
+			canvas.SaveLayer(new SKCanvasSaveLayerRec { Bounds = bounds, Paint = _spareResultPaint2 });
+			Mask.Render(canvas, bounds);
+			canvas.Restore();
+			canvas.Restore();
+		}
+
+		internal override bool SupportsRender => true;
+
 		internal override bool CanPaint() => (Source?.CanPaint() ?? false) || (Mask?.CanPaint() ?? false);
 
-		private static SKPaint _spareResultPaint = new SKPaint();
+		private static readonly SKPaint _spareResultPaint = new SKPaint();
+		private static readonly SKPaint _spareResultPaint2 = new SKPaint();
 
 		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{

@@ -1603,6 +1603,22 @@ $$"""
 
 	internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 	{
+		UpdateFilter(bounds);
+		paint.Shader = null;
+		paint.ImageFilter = _filter;
+	}
+
+	internal override void Render(SKCanvas canvas, SKRect bounds)
+	{
+		UpdateFilter(bounds);
+		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
+		canvas.Restore();
+	}
+
+	internal override bool SupportsRender => true;
+
+	private void UpdateFilter(SKRect bounds)
+	{
 		if (_currentBounds != bounds || _filter is null || Compositor.IsSoftwareRenderer != _currentCompMode)
 		{
 			_isCurrentInputBackdrop = false;
@@ -1612,9 +1628,6 @@ $$"""
 			_currentBounds = bounds;
 			_currentCompMode = Compositor.IsSoftwareRenderer;
 		}
-
-		paint.Shader = null;
-		paint.ImageFilter = _filter;
 	}
 
 	private protected override void DisposeInternal()

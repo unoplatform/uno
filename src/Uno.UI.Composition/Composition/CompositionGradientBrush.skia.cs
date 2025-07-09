@@ -7,6 +7,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionGradientBrush
 	{
+		private static readonly SKPaint _tempPaint = new();
 		private bool _isColorStopsValid;
 
 		private SKColor[]? _colors;
@@ -26,13 +27,23 @@ namespace Microsoft.UI.Composition
 				UpdateColorStops(ColorStops);
 			}
 
-			UpdatePaintCore(paint, bounds);
+			var (shader, color) = GetPaintingParameters(bounds);
+			paint.Shader = shader;
+			paint.Color = color;
 		}
 
-		private protected virtual void UpdatePaintCore(SKPaint paint, SKRect bounds)
+		internal override void Render(SKCanvas canvas, SKRect bounds)
 		{
-
+			var (shader, color) = GetPaintingParameters(bounds);
+			_tempPaint.Reset();
+			_tempPaint.Shader = shader;
+			_tempPaint.Color = color;
+			canvas.DrawRect(bounds, _tempPaint);
 		}
+
+		internal override bool SupportsRender => true;
+
+		private protected virtual (SKShader? shader, SKColor color) GetPaintingParameters(SKRect bounds) => (null, SKColors.Transparent);
 
 		private protected SKMatrix CreateTransformMatrix(SKRect bounds)
 		{
