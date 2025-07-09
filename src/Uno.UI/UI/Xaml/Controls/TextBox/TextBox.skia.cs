@@ -228,8 +228,6 @@ public partial class TextBox
 		TextBoxView?.SetFlowDirectionAndTextAlignment();
 	}
 
-	private static SKPaint _spareCaretPaint = new SKPaint();
-
 	private void UpdateTextBoxView()
 	{
 		_textBoxView ??= new TextBoxView(this);
@@ -280,14 +278,8 @@ public partial class TextBox
 							var caretRect = args.rect;
 							var compositor = _visual.Compositor;
 							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-							var caretPaint = _spareCaretPaint;
 
-							caretPaint.Reset();
-
-							brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
-							args.canvas.DrawRect(
-								new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
-									(float)caretRect.Bottom), caretPaint);
+							brush.Render(args.canvas, caretRect.ToSKRect());
 						}
 
 						if (args.endCaret)

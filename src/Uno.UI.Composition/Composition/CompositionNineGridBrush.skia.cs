@@ -26,6 +26,22 @@ namespace Microsoft.UI.Composition
 
 		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
+			UpdateOfflineSurface(bounds);
+			paint.IsAntialias = true;
+			paint.IsDither = true;
+			paint.Shader = _offlineSurface?.Snapshot().ToShader();
+		}
+
+		internal override void Render(SKCanvas canvas, SKRect bounds)
+		{
+			UpdateOfflineSurface(bounds);
+			canvas.DrawSurface(_offlineSurface, 0, 0);
+		}
+
+		internal override bool SupportsRender => true;
+
+		private void UpdateOfflineSurface(SKRect bounds)
+		{
 			// TODO: Properly implement offline rendering, this is a temporary workaround
 
 			SKRect sourceBounds;
@@ -81,11 +97,6 @@ namespace Microsoft.UI.Composition
 				}
 
 				_offlineSurface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, new SKSamplingOptions(SKCubicResampler.CatmullRom).Filter, _filterPaint);
-
-				paint.IsAntialias = true;
-				paint.IsDither = true;
-
-				paint.Shader = _offlineSurface?.Snapshot().ToShader();
 			}
 		}
 

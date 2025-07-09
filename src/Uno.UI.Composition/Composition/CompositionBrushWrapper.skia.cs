@@ -20,10 +20,8 @@ internal partial class CompositionBrushWrapper : CompositionBrush
 		WrappedBrush = wrappedBrush;
 	}
 
-	internal override void UpdatePaint(SKPaint paint, SKRect bounds)
-	{
-		WrappedBrush?.UpdatePaint(paint, bounds);
-	}
-
+	internal override void UpdatePaint(SKPaint paint, SKRect bounds) => WrappedBrush?.UpdatePaint(paint, bounds);
+	internal override void Render(SKCanvas canvas, SKRect bounds) => _wrappedBrush?.Render(canvas, bounds);
+	internal override bool SupportsRender => WrappedBrush?.SupportsRender ?? true;
 	internal override bool CanPaint() => WrappedBrush?.CanPaint() ?? false;
 }

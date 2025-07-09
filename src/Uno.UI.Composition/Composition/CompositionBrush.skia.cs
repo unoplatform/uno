@@ -24,9 +24,9 @@ namespace Microsoft.UI.Composition
 		internal virtual bool RequiresRepaintOnEveryFrame => false;
 
 		/// <summary>
-		/// Uses <see cref="Render"/> during the render cycle instead of using <see cref="UpdatePaint"/>
-		/// to fill an SKPaint with what needs to be drawn ahead of time
-		/// and then using that SKPaint later during the render cycle.
+		/// Indicates support for a fast path that uses <see cref="Render"/> during the render cycle
+		/// instead of using <see cref="UpdatePaint"/> to fill an SKPaint with what needs to be drawn
+		/// ahead of time and then using that SKPaint later during the render cycle.
 		/// This cannot be true for all brushes since some brushes don't draw their own content but
 		/// are effectively arbitrary shaders that read pixels and map them to new values
 		/// </summary>
