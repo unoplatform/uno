@@ -72,20 +72,17 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			// Add connection metadata to the telemetry session only if connectionContext is available
 			if (connectionContext != null)
 			{
-				session.AddMetadata("RemoteIpAddress",
-					TelemetryHashHelper.Hash(connectionContext.RemoteIpAddress?.ToString() ?? "Unknown"));
 				session.AddMetadata("ConnectedAt",
 					connectionContext.ConnectedAt.ToString("yyyy-MM-dd HH:mm:ss UTC", DateTimeFormatInfo.InvariantInfo));
 
-				if (!string.IsNullOrEmpty(connectionContext.UserAgent))
-				{
-					session.AddMetadata("UserAgent", connectionContext.UserAgent);
-				}
-
-				// Copy additional metadata from connection context
+				// Copy additional metadata from connection context (excluding network details)
 				foreach (var kvp in connectionContext.Metadata)
 				{
-					session.AddMetadata($"Connection.{kvp.Key}", kvp.Value);
+					// Skip network-related metadata that's not useful
+					if (kvp.Key != "LocalPort" && kvp.Key != "RemotePort")
+					{
+						session.AddMetadata($"Connection.{kvp.Key}", kvp.Value);
+					}
 				}
 			}
 

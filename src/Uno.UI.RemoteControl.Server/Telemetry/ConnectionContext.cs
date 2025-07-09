@@ -16,19 +16,9 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		public Guid ConnectionId { get; } = Guid.NewGuid();
 
 		/// <summary>
-		/// Gets or sets the remote IP address of the client.
-		/// </summary>
-		public IPAddress? RemoteIpAddress { get; set; }
-
-		/// <summary>
 		/// Gets or sets the timestamp when the connection was established.
 		/// </summary>
 		public DateTimeOffset ConnectedAt { get; set; } = DateTimeOffset.UtcNow;
-
-		/// <summary>
-		/// Gets or sets the user agent string from the WebSocket request headers.
-		/// </summary>
-		public string? UserAgent { get; set; }
 
 		/// <summary>
 		/// Gets or sets additional connection metadata.
@@ -52,7 +42,7 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		/// <returns>A string describing the connection</returns>
 		public override string ToString()
 		{
-			return $"Connection {ConnectionId:N} from {RemoteIpAddress} at {ConnectedAt:yyyy-MM-dd HH:mm:ss} UTC";
+			return $"Connection {ConnectionId:N} at {ConnectedAt:yyyy-MM-dd HH:mm:ss} UTC";
 		}
 	}
 }

@@ -44,18 +44,9 @@ namespace Uno.UI.RemoteControl.Host
 							var connectionContext = context.RequestServices.GetService<ConnectionContext>();
 							if (connectionContext != null)
 							{
-								connectionContext.RemoteIpAddress = context.Connection.RemoteIpAddress;
 								connectionContext.ConnectedAt = DateTimeOffset.UtcNow;
 
-								// Extract User-Agent from headers if available
-								if (context.Request.Headers.TryGetValue("User-Agent", out var userAgent))
-								{
-									connectionContext.UserAgent = userAgent.ToString();
-								}
-
-								// Add additional connection metadata
-								connectionContext.AddMetadata("LocalPort", context.Connection.LocalPort.ToString(NumberFormatInfo.InvariantInfo));
-								connectionContext.AddMetadata("RemotePort", context.Connection.RemotePort.ToString(NumberFormatInfo.InvariantInfo));
+								// Add essential connection metadata
 								connectionContext.AddMetadata("Protocol", context.Request.Protocol);
 
 								// Track client connection in telemetry
@@ -65,8 +56,6 @@ namespace Uno.UI.RemoteControl.Host
 									var properties = new Dictionary<string, string>
 									{
 										["ConnectionId"] = connectionContext.ConnectionId.ToString(),
-										["RemoteIpAddress"] = TelemetryHashHelper.Hash(connectionContext.RemoteIpAddress),
-										["UserAgent"] = TelemetryHashHelper.Hash(connectionContext.UserAgent),
 										["Protocol"] = context.Request.Protocol
 									};
 
@@ -114,8 +103,7 @@ namespace Uno.UI.RemoteControl.Host
 
 							var properties = new Dictionary<string, string>
 							{
-								["ConnectionId"] = connectionContext.ConnectionId.ToString(),
-								["RemoteIpAddress"] = TelemetryHashHelper.Hash(connectionContext.RemoteIpAddress)
+								["ConnectionId"] = connectionContext.ConnectionId.ToString()
 							};
 
 							var measurements = new Dictionary<string, double>
