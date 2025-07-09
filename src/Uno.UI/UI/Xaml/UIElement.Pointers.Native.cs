@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml;
+
 partial class UIElement
 {
 	private bool OnNativePointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default) => OnPointerEnter(args);

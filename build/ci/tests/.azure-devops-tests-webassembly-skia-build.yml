@@ -30,20 +30,20 @@ jobs:
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-windows.yml
     parameters:
-      UnoCheckParameters: '--tfm net9.0-browserwasm'
+      UnoCheckParameters: '--tfm net10.0-browserwasm'
  
   - template: ../templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net9.0 -p:UnoTargetFrameworkOverride=net9.0 -p:PreBuildUnoUITasks=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-wasm-browser.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0 -p:UnoTargetFrameworkOverride=net10.0 -p:PreBuildUnoUITasks=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-wasm-browser.binlog
     displayName: Build Wasm Skia Head
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish WebAssembly Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/bin/Release/net9.0/publish/wwwroot
+      targetPath: $(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/bin/Release/net10.0/publish/wwwroot
       artifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
 
   - task: PublishBuildArtifacts@1
