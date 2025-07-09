@@ -31,8 +31,7 @@ public class AddIns
 		try
 		{
 			// Note: We include the targets "on the fly" so if a project uses Microsoft.NET.Sdk instead of Uno.Sdk, we will still have the targets defined.
-			var targetsFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-				"DevServer.Custom.Targets");
+			var targetsFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "DevServer.Custom.Targets");
 
 			var tmp = Path.GetTempFileName();
 			var wd = Path.GetDirectoryName(solutionFile);

@@ -34,15 +34,18 @@ internal class ParentProcessObserver
 				catch (ArgumentException)
 				{
 					log.LogWarning($"Parent process {ppid} not found, initiating graceful shutdown...");
-					telemetry?.TrackEvent("DevServer.ParentProcessLost",
-						new Dictionary<string, string> { ["ShutdownType"] = "GracefulAttempt" }, null);
+					telemetry?.TrackEvent(
+						"DevServer.ParentProcessLost",
+						default(Dictionary<string, string>),
+						null);
 
 					gracefulShutdown();
 
 					await Task.Delay(5_500, ct);
 					telemetry?.TrackEvent(
 						"DevServer.ParentProcessLost.ForcedExit",
-						new Dictionary<string, string> { ["ShutdownType"] = "ForcedAfterGracefulTimeout" }, null);
+						default(Dictionary<string, string>),
+						null);
 
 					await Task.Delay(250, ct); // Give time for analytics to log something
 					Environment.Exit(4);
