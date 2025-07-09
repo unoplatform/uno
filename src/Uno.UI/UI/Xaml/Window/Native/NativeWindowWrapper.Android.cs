@@ -125,6 +125,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		var insetsTypes = WindowInsetsCompat.Type.SystemBars() | WindowInsetsCompat.Type.DisplayCutout(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
 		Rect windowBounds;
 		Rect visibleBounds;
+		Thickness statusBarInset = new Thickness(0);
 
 		var decorView = activity.Window.DecorView;
 		var fitsSystemWindows = decorView.FitsSystemWindows;
@@ -136,6 +137,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			// avoid doubling top inset when setting BackgroundColor
 			if (StatusBar.GetForCurrentView().BackgroundColor is { } && (int)Android.OS.Build.VERSION.SdkInt >= 35)
 			{
+				statusBarInset.Top = windowInsets?.GetInsets(WindowInsets.Type.StatusBars()).ToThickness().Top ?? 0d;
 				insets.Top = 0;
 			}
 
@@ -144,7 +146,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 				this.Log().LogDebug($"Insets: {insets}");
 			}
 
-			windowBounds = new Rect(default, GetWindowSize());
+			windowBounds = new Rect(default, GetWindowSize().Subtract(statusBarInset));
 			visibleBounds = windowBounds.DeflateBy(insets);
 		}
 		else
