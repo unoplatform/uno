@@ -10,14 +10,10 @@ namespace Uno.UI.RemoteControl.Host.Extensibility;
 
 public static class AddInsExtensions
 {
-	public static IWebHostBuilder ConfigureAddIns(this IWebHostBuilder builder, string solutionFile)
+	public static IWebHostBuilder ConfigureAddIns(this IWebHostBuilder builder, string solutionFile, ITelemetry? telemetry = null)
 	{
 		return builder.ConfigureServices(services =>
 		{
-			// Get telemetry service for add-in discovery and loading
-			var serviceProvider = services.BuildServiceProvider();
-			var telemetry = serviceProvider.GetService<ITelemetry>();
-
 			var discoveredAddIns = AddIns.Discover(solutionFile, telemetry);
 			var assemblies = AssemblyHelper.Load(discoveredAddIns, telemetry, throwIfLoadFailed: false);
 

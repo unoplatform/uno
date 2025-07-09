@@ -176,7 +176,7 @@ namespace Uno.UI.RemoteControl.Host
 				if (solution is not null)
 				{
 					// For backward compatibility, we allow to not have a solution file specified.
-					builder.ConfigureAddIns(solution);
+					builder.ConfigureAddIns(solution, telemetry);
 				}
 				else
 				{
