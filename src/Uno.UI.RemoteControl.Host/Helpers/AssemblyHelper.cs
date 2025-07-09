@@ -25,7 +25,6 @@ public class AssemblyHelper
 		telemetry?.TrackEvent("AddIn.Loading.Start", loadingProperties, null);
 
 		var assemblies = ImmutableList.CreateBuilder<Assembly>();
-		var loadedCount = 0;
 		var failedCount = 0;
 
 		try
@@ -37,7 +36,6 @@ public class AssemblyHelper
 					_log.Log(LogLevel.Debug, $"Loading add-in assembly '{dll}'.");
 
 					assemblies.Add(Assembly.LoadFrom(dll));
-					loadedCount++;
 				}
 				catch (Exception err)
 				{
@@ -62,7 +60,6 @@ public class AssemblyHelper
 			var completionMeasurements = new Dictionary<string, double>
 			{
 				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["LoadedAssemblies"] = loadedCount,
 				["FailedAssemblies"] = failedCount,
 			};
 
@@ -81,7 +78,6 @@ public class AssemblyHelper
 			var errorMeasurements = new Dictionary<string, double>
 			{
 				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["LoadedAssemblies"] = loadedCount,
 				["FailedAssemblies"] = failedCount,
 			};
 
