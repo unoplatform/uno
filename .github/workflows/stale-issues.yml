@@ -1,4 +1,4 @@
-name: 'Issue Housekeeping'
+name: 'Close Stale Issues'
 on:
   schedule:
     - cron: '0 0 * * *' #run daily at midnight
