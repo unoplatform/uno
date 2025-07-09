@@ -33,9 +33,8 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
 
-		private static SKPaint _sparePaintFillPaint = new SKPaint();
-		private static SKPaint _sparePaintStrokePaint = new SKPaint();
-		private static SKPath _sparePaintPath = new SKPath();
+		private static readonly SKPaint _sparePaint = new SKPaint();
+		private static readonly SKPath _sparePath = new SKPath();
 
 		internal override void Paint(in Visual.PaintingSession session)
 		{
@@ -43,51 +42,35 @@ namespace Microsoft.UI.Composition
 			{
 				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
-					var fillPaint = _sparePaintFillPaint;
-
+					var fillPaint = _sparePaint;
 					fillPaint.Reset();
-
 					PrepareTempPaint(fillPaint, isStroke: false, session.OpacityColorFilter);
-
-					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
-					{
-						fillPaint.Color = colorFromTransition.ToSKColor();
-					}
-					else
-					{
-						fill.UpdatePaint(fillPaint, finalFillGeometryWithTransformations.Bounds);
-					}
-
-					if (fill is CompositionBrushWrapper wrapper)
-					{
-						fill = wrapper.WrappedBrush;
-					}
 
 					if (Geometry is not null && (Geometry.TrimStart != default || Geometry.TrimEnd != default))
 					{
 						fillPaint.PathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
 					}
 
-					if (fill is CompositionEffectBrush { HasBackdropBrushInput: true })
+					var fillPath = _sparePath;
+					fillPath.Rewind();
+					finalFillGeometryWithTransformations.GetFillPath(fillPaint, fillPath);
+
+					session.Canvas.ClipPath(fillPath);
+					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
-						session.Canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = fillPaint.ImageFilter });
-						session.Canvas.Restore();
+						session.Canvas.DrawColor(colorFromTransition.ToSKColor(session.Opacity));
 					}
 					else
 					{
-						finalFillGeometryWithTransformations.CanvasDrawPath(session.Canvas, fillPaint);
+						fill.Render(session.Canvas, finalFillGeometryWithTransformations.Bounds);
 					}
+					session.Canvas.Restore();
 				}
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					var fillPaint = _sparePaintFillPaint;
-					var strokePaint = _sparePaintStrokePaint;
-
-					fillPaint.Reset();
+					var strokePaint = _sparePaint;
 					strokePaint.Reset();
-
-					PrepareTempPaint(fillPaint, isStroke: false, session.OpacityColorFilter);
 					PrepareTempPaint(strokePaint, isStroke: true, session.OpacityColorFilter);
 
 					// Set stroke thickness
@@ -124,16 +107,14 @@ namespace Microsoft.UI.Composition
 					// On Windows, the stroke is simply 1px, it doesn't scale with the height.
 					// So, to get a correct stroke geometry, we must apply the transformations first.
 
-					var strokeFillPath = _sparePaintPath;
-
+					var strokeFillPath = _sparePath;
 					strokeFillPath.Rewind();
-
 					// Get the stroke geometry, after scaling has been applied.
 					geometryWithTransformations.GetFillPath(strokePaint, strokeFillPath);
 
-					stroke.UpdatePaint(fillPaint, strokeFillPath.Bounds);
-
-					session.Canvas.DrawPath(strokeFillPath, fillPaint);
+					session.Canvas.ClipPath(strokeFillPath);
+					stroke.Render(session.Canvas, strokeFillPath.Bounds);
+					session.Canvas.Restore();
 				}
 			}
 		}
