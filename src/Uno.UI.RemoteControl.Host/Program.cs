@@ -169,6 +169,9 @@ namespace Uno.UI.RemoteControl.Host
 					{
 						services.AddSingleton<IIdeChannel, IdeChannelServer>();
 
+						// Add the global service provider to the DI container
+						services.AddSingleton<IServiceProvider>(provider => globalServiceProvider);
+
 						// Add connection-specific telemetry services (Scoped)
 						services.AddConnectionTelemetry();
 					});

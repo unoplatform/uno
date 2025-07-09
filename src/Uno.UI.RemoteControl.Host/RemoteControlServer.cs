@@ -50,7 +50,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 		// Get the global service provider from the connection services
 		// This allows access to both global and connection-specific services
-		_globalServiceProvider = _serviceProvider.GetRequiredService<IServiceProvider>();
+		_globalServiceProvider = _serviceProvider.GetService<IServiceProvider>() ?? _serviceProvider;
 
 		// Use connection-specific telemetry for this RemoteControlServer instance
 		// This telemetry is scoped to the current WebSocket connection

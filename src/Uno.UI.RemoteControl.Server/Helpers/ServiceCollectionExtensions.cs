@@ -61,29 +61,32 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		/// </summary>
 		private static TelemetrySession CreateConnectionTelemetrySession(IServiceProvider svc)
 		{
-			var connectionContext = svc.GetRequiredService<ConnectionContext>();
+			var connectionContext = svc.GetService<ConnectionContext>();
 			var session = new TelemetrySession
 			{
 				SessionType = TelemetrySessionType.Connection,
-				ConnectionId = connectionContext.ConnectionId,
+				ConnectionId = connectionContext?.ConnectionId ?? Guid.NewGuid(),
 				CreatedAt = DateTime.UtcNow
 			};
 
-			// Add connection metadata to the telemetry session
-			session.AddMetadata("RemoteIpAddress",
-				TelemetryHashHelper.Hash(connectionContext.RemoteIpAddress?.ToString() ?? "Unknown"));
-			session.AddMetadata("ConnectedAt",
-				connectionContext.ConnectedAt.ToString("yyyy-MM-dd HH:mm:ss UTC", DateTimeFormatInfo.InvariantInfo));
-
-			if (!string.IsNullOrEmpty(connectionContext.UserAgent))
+			// Add connection metadata to the telemetry session only if connectionContext is available
+			if (connectionContext != null)
 			{
-				session.AddMetadata("UserAgent", connectionContext.UserAgent);
-			}
+				session.AddMetadata("RemoteIpAddress",
+					TelemetryHashHelper.Hash(connectionContext.RemoteIpAddress?.ToString() ?? "Unknown"));
+				session.AddMetadata("ConnectedAt",
+					connectionContext.ConnectedAt.ToString("yyyy-MM-dd HH:mm:ss UTC", DateTimeFormatInfo.InvariantInfo));
 
-			// Copy additional metadata from connection context
-			foreach (var kvp in connectionContext.Metadata)
-			{
-				session.AddMetadata($"Connection.{kvp.Key}", kvp.Value);
+				if (!string.IsNullOrEmpty(connectionContext.UserAgent))
+				{
+					session.AddMetadata("UserAgent", connectionContext.UserAgent);
+				}
+
+				// Copy additional metadata from connection context
+				foreach (var kvp in connectionContext.Metadata)
+				{
+					session.AddMetadata($"Connection.{kvp.Key}", kvp.Value);
+				}
 			}
 
 			return session;
