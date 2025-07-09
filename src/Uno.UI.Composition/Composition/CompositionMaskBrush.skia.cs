@@ -31,18 +31,17 @@ namespace Microsoft.UI.Composition
 				return;
 			}
 			_spareResultPaint.Reset();
-			_spareResultPaint.BlendMode = SKBlendMode.DstOver;
+			_spareResultPaint.BlendMode = SKBlendMode.SrcOver;
 			_spareResultPaint2.Reset();
-			_spareResultPaint.BlendMode = SKBlendMode.DstIn;
+			_spareResultPaint2.BlendMode = SKBlendMode.DstIn;
 			// The first SaveLayer call along with DrawColor(Transparent) basically create a clean secondary drawing surface
 			// but without having to call SKSurface.Create and having to deal with all the details like HWA.
-			canvas.SaveLayer(new SKCanvasSaveLayerRec { Bounds = bounds });
-			// From skia docs: SkRect bounds suggests but does not define the SkSurface size. To clip drawing to a specific rectangle, use clipRect().
+			canvas.SaveLayer(new SKCanvasSaveLayerRec { Paint = _spareResultPaint });
 			canvas.ClipRect(bounds);
 			canvas.DrawColor(SKColors.Transparent);
 			Source.Render(canvas, bounds);
 			// The second SaveLayer call with SKBlendMode.DstIn creates the masking effect
-			canvas.SaveLayer(new SKCanvasSaveLayerRec { Bounds = bounds, Paint = _spareResultPaint2 });
+			canvas.SaveLayer(new SKCanvasSaveLayerRec { Paint = _spareResultPaint2 });
 			Mask.Render(canvas, bounds);
 			canvas.Restore();
 			canvas.Restore();
