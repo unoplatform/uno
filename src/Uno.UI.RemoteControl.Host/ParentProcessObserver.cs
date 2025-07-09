@@ -1,36 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Uno.UI.RemoteControl.Server.Telemetry;
 
 namespace Uno.UI.RemoteControl.Host;
 
 internal class ParentProcessObserver
 {
-	internal static IDisposable? Observe(Microsoft.AspNetCore.Hosting.IWebHost host, int ppid)
+	internal static Task ObserveAsync(int ppid, Action gracefulShutdown, ITelemetry? telemetry, CancellationToken ct)
 	{
-		if (ppid != 0)
+		if (ppid == 0)
 		{
-			return new Timer(ParentProcessWatchDog, ppid, 10_000, 10_000);
+			return Task.CompletedTask; // Nothing to monitor
 		}
 
-		return null;
-	}
+		var log = typeof(ParentProcessObserver).Log();
 
-	static void ParentProcessWatchDog(object? state)
-	{
-		var ppid = (int)state!;
-		try
+		return Task.Run(async () =>
 		{
-			if (ppid != 0)
+			log.LogInformation("Monitoring parent process " + ppid + " for termination.");
+			while (!ct.IsCancellationRequested)
 			{
-				Process.GetProcessById(ppid);
+				await Task.Delay(7_500, ct);
+
+				try
+				{
+					Process.GetProcessById(ppid); // will throw an exception if process doesn't exists
+				}
+				catch (ArgumentException)
+				{
+					log.LogWarning($"Parent process {ppid} not found, initiating graceful shutdown...");
+					telemetry?.TrackEvent("DevServer.ParentProcessLost",
+						new Dictionary<string, string> { ["ShutdownType"] = "GracefulAttempt" }, null);
+
+					gracefulShutdown();
+
+					await Task.Delay(5_500, ct);
+					telemetry?.TrackEvent(
+						"DevServer.ParentProcessLost.ForcedExit",
+						new Dictionary<string, string> { ["ShutdownType"] = "ForcedAfterGracefulTimeout" }, null);
+
+					await Task.Delay(250, ct); // Give time for analytics to log something
+					Environment.Exit(4);
+				}
 			}
-		}
-		catch (ArgumentException)
-		{
-			Console.Error.WriteLine($"Parent process {ppid} not found, exiting...");
-			Environment.Exit(4);
-		}
+		}, ct);
 	}
 }

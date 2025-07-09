@@ -80,9 +80,10 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// </summary>
 	/// <param name="ct">Cancellation token to cancel the operation.</param>
 	/// <param name="timeout">The timeout in milliseconds to wait for the server to start. Default is 30 seconds.</param>
+	/// <param name="extraArgs"></param>
 	/// <returns>True if the server started successfully, false otherwise.</returns>
 	/// <exception cref="OperationCanceledException">Thrown when the operation is cancelled.</exception>
-	public async Task<bool> StartAsync(CancellationToken ct, int timeout = 30000)
+	public async Task<bool> StartAsync(CancellationToken ct, int timeout = 30000, string? extraArgs = null)
 	{
 		// Use semaphore to prevent race conditions with concurrent start/stop calls
 		await _startStopSemaphore.WaitAsync(ct);
@@ -109,7 +110,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = "dotnet",
-				Arguments = $"\"{hostDllPath}\" --httpPort {_httpPort}" + (_solutionPath != null ? $" --solution \"{_solutionPath}\"" : ""),
+				Arguments = $"\"{hostDllPath}\" --httpPort {_httpPort}" + (_solutionPath != null ? $" --solution \"{_solutionPath}\"" : "") + (extraArgs != null ? $" {extraArgs}" : ""),
 				UseShellExecute = false,
 				CreateNoWindow = true,
 				RedirectStandardOutput = true,
@@ -522,4 +523,6 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 			throw new ApplicationException("Dev server not started : " + _devServerProcess?.ExitCode);
 		}
 	}
+
+	public int? GetProcessId() => _devServerProcess?.Id;
 }

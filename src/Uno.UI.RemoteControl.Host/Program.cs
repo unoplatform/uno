@@ -202,7 +202,15 @@ namespace Uno.UI.RemoteControl.Host
 
 				telemetry?.TrackEvent("DevServer.Startup", startupProperties, null);
 
-				using var parentObserver = ParentProcessObserver.Observe(host, parentPID);
+				_ = ParentProcessObserver.ObserveAsync(
+					parentPID,
+					() =>
+					{
+						shutdownRequested = true;
+						cancellationTokenSource.Cancel();
+					},
+					telemetry,
+					cancellationTokenSource.Token);
 
 				try
 				{
