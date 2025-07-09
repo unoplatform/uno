@@ -21,6 +21,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Messaging.Messages;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
@@ -240,6 +241,24 @@ public partial class EntryPoint : IDisposable
 		_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
 
 		_closing = true;
+		// Graceful shutdown: send ShutdownIdeMessage to DevServer if possible
+		if (_ideChannelClient != null)
+		{
+			_debugAction?.Invoke($"Sending graceful shutdown message to DevServer via IDE channel...");
+			_ = _ideChannelClient.SendToDevServerAsync(new ShutdownIdeMessage(), CancellationToken.None)
+				.ContinueWith(t =>
+				{
+					if (t.IsFaulted)
+					{
+						_debugAction?.Invoke($"Failed to send graceful shutdown message: {t.Exception?.Flatten()}");
+					}
+					else
+					{
+						_debugAction?.Invoke($"Graceful shutdown message sent.");
+					}
+				}, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.Default);
+		}
+
 		if (_devServer is { process: var devServer })
 		{
 			try

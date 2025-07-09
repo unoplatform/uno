@@ -271,6 +271,17 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				this.Log().LogTrace("Unknown Frame [{Scope} / {Name}]", message.Scope, message.GetType().Name);
 			}
 		}
+
+		// Handle graceful shutdown from any channel (IDE or client)
+		if (message.Scope == WellKnownScopes.DevServerChannel)
+		{
+			if (message is ShutdownIdeMessage)
+			{
+				this.Log().LogInformation("Received ShutdownIdeMessage (IDE). Initiating graceful shutdown.");
+				Dispose();
+				return;
+			}
+		}
 	}
 
 	private async Task ProcessPingFrame(Frame frame)

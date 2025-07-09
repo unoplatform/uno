@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json;
-using Windows.ApplicationModel;
 using Microsoft.UI.Xaml;
 using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
+using Windows.ApplicationModel;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 

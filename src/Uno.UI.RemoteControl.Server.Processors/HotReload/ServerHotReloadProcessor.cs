@@ -31,7 +31,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 	{
 		private static readonly TimeSpan _waitForIdeResultTimeout = TimeSpan.FromSeconds(25);
 		private readonly IRemoteControlServer _remoteControlServer;
-		private readonly ITelemetry<ServerHotReloadProcessor> _telemetry;
+		private readonly ITelemetry _telemetry;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry)
 		{

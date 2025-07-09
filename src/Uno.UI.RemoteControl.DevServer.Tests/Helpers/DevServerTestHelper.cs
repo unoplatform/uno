@@ -35,6 +35,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	private readonly IReadOnlyDictionary<string, string>? _environmentVariables;
 	private readonly SemaphoreSlim _startStopSemaphore = new(1, 1);
 	private bool _isDisposed;
+	private readonly Guid _ideChannelGuid = Guid.NewGuid();
 
 	/// <summary>
 	/// Gets the captured console output from the dev server.
@@ -49,12 +50,17 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// <summary>
 	/// Gets a value indicating whether the dev server is running.
 	/// </summary>
-	public bool IsRunning => _devServerProcess != null && !_devServerProcess.HasExited;
+	public bool IsRunning => _devServerProcess is { HasExited: false };
 
 	/// <summary>
 	/// Gets the HTTP port that the dev server is using.
 	/// </summary>
 	public int Port => _httpPort;
+
+	/// <summary>
+	/// Gets the IDE channel GUID for integration tests.
+	/// </summary>
+	public Guid IdeChannelGuid => _ideChannelGuid;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DevServerTestHelper"/> class.
@@ -109,7 +115,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 			var startInfo = new ProcessStartInfo
 			{
 				FileName = "dotnet",
-				Arguments = $"\"{hostDllPath}\" --httpPort {_httpPort}" + (_solutionPath != null ? $" --solution \"{_solutionPath}\"" : ""),
+				Arguments = $"\"{hostDllPath}\" --httpPort {_httpPort} --ideChannel {_ideChannelGuid}" + (_solutionPath != null ? $" --solution \"{_solutionPath}\"" : ""),
 				UseShellExecute = false,
 				CreateNoWindow = true,
 				RedirectStandardOutput = true,
