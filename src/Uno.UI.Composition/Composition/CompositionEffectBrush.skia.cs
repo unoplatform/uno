@@ -1478,21 +1478,10 @@ $$"""
 							srcBounds = bounds with { Right = size.X, Bottom = size.Y };
 						}
 
-						SKPaint paint = new SKPaint() { IsAntialias = true };
-						brush.UpdatePaint(paint, srcBounds);
-
-						if (paint.Shader is { } shader)
-						{
-							return SKImageFilter.CreateShader(shader, false, srcBounds);
-						}
-						else if (paint.ImageFilter is { } imageFilter)
-						{
-							return SKImageFilter.CreateMerge([imageFilter], srcBounds);
-						}
-						else
-						{
-							return SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(paint.Color, SKBlendMode.Src), null, srcBounds);
-						}
+						// Creating a static SKPictureRecorder to be reused for all calls causes a segfault for some reason
+						var recorder = new SKPictureRecorder();
+						brush.Render(recorder.BeginRecording(srcBounds), srcBounds);
+						return SKImageFilter.CreatePicture(recorder.EndRecording());
 					}
 
 					return null;
