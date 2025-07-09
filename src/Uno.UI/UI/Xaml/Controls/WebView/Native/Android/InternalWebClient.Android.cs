@@ -6,6 +6,7 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.Webkit;
 using Microsoft.Web.WebView2.Core;
+using Uno.Foundation.Logging;
 using Windows.Web;
 
 namespace Uno.UI.Xaml.Controls;
@@ -20,11 +21,19 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	//_owner is to not have duplicate event call
 	private WebErrorStatus _webErrorStatus = WebErrorStatus.Unknown;
 
+	// Track whether NavigationCompleted was already raised for this navigation
+	private bool _navigationCompletedRaised;
+
+	// Track the last navigation URL for anchor detection
+	private string _lastNavigationUrl;
+
 	internal InternalClient(CoreWebView2 coreWebView, NativeWebViewWrapper webViewWrapper)
 	{
 		_coreWebView = coreWebView;
 		_nativeWebViewWrapper = webViewWrapper;
 	}
+
+	private bool IsAnchorNavigation(string url) => WebViewUtils.IsAnchorNavigation(_lastNavigationUrl, url);
 
 	public override void DoUpdateVisitedHistory(Android.Webkit.WebView view, string url, bool isReload)
 	{
@@ -33,9 +42,22 @@ internal class InternalClient : Android.Webkit.WebViewClient
 		_nativeWebViewWrapper.DocumentTitle = view.Title;
 
 		_nativeWebViewWrapper.RefreshHistoryProperties();
-		_coreWebView.RaiseHistoryChanged();
-	}
 
+		// Ensure Source is updated before raising HistoryChanged for proper anchor navigation
+		if (!_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url))
+		{
+			_coreWebView.Source = url;
+			_coreWebView.RaiseHistoryChanged();
+
+			if (!IsAnchorNavigation(url) && !_navigationCompletedRaised)
+			{
+				var uri = new Uri(url);
+				_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+				_navigationCompletedRaised = true;
+				_lastNavigationUrl = url;
+			}
+		}
+	}
 
 #pragma warning disable CS0672 // Member overrides obsolete member
 	public override bool ShouldOverrideUrlLoading(Android.Webkit.WebView view, string url)
@@ -47,7 +69,41 @@ internal class InternalClient : Android.Webkit.WebViewClient
 			return true;
 		}
 
-		_coreWebView.RaiseNavigationStarting(url, out var cancel);
+		// Don't raise NavigationStarting for anchor navigation
+		if (IsAnchorNavigation(url))
+		{
+			return false;
+		}
+
+		// For navigation starting events, ensure we use the proper URI format
+		// Convert data URIs back to file URIs when appropriate
+		object navigationData = url;
+		if (url.StartsWith("data:text/html;charset=utf-8;base64,", StringComparison.OrdinalIgnoreCase))
+		{
+			try
+			{
+				// Try to decode the base64 content to see if it contains a file URI
+				var base64 = url.Substring("data:text/html;charset=utf-8;base64,".Length);
+				var content = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(base64));
+
+				// If the decoded content looks like a file URI, use it instead
+				if (content.StartsWith("file:///", StringComparison.OrdinalIgnoreCase))
+				{
+					navigationData = new Uri(content);
+				}
+			}
+			catch
+			{
+				// If decoding fails, stick with the original URL
+				this.Log().Warn($"Failed to decode base64 content from URL: {url}. Using original URL for navigation.");
+			}
+		}
+		else
+		{
+			navigationData = new Uri(url);
+		}
+
+		_coreWebView.RaiseNavigationStarting(navigationData, out var cancel);
 
 		return cancel;
 	}
@@ -57,6 +113,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 		base.OnPageStarted(view, url, favicon);
 		//Reset Webview Success on page started so that if we have successful navigation we don't send an webView error if a previous error happened.
 		_coreWebViewSuccess = true;
+		_navigationCompletedRaised = false; // Reset for new navigation
 	}
 
 #pragma warning disable 0672, 618, CA1422
@@ -73,9 +130,14 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	{
 		_nativeWebViewWrapper.DocumentTitle = view.Title;
 
-		var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
+		// Only raise NavigationCompleted if it wasn't already raised in DoUpdateVisitedHistory
+		// This helps avoid duplicate NavigationCompleted events
+		if (!_navigationCompletedRaised)
+		{
+			var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
+			_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
+		}
 
-		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 		base.OnPageFinished(view, url);
 	}
 
