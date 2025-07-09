@@ -26,7 +26,6 @@ namespace Microsoft.UI.Composition
 			{
 				UpdateColorStops(ColorStops);
 			}
-
 			var (shader, color) = GetPaintingParameters(bounds);
 			paint.Shader = shader;
 			paint.Color = color;
@@ -34,6 +33,10 @@ namespace Microsoft.UI.Composition
 
 		internal override void Render(SKCanvas canvas, SKRect bounds)
 		{
+			if (!_isColorStopsValid)
+			{
+				UpdateColorStops(ColorStops);
+			}
 			var (shader, color) = GetPaintingParameters(bounds);
 			_tempPaint.Reset();
 			_tempPaint.Shader = shader;
