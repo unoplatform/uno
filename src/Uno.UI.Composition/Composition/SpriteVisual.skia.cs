@@ -9,39 +9,30 @@ namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
-		private readonly SKPaint _paint
-			= new SKPaint()
-			{
-				IsAntialias = true,
-			};
+		private readonly SKPaint _paint = new() { IsAntialias = true };
 
-		partial void OnBrushChangedPartial(CompositionBrush? brush)
-		{
-			UpdatePaint();
-		}
+		partial void OnBrushChangedPartial(CompositionBrush? brush) => UpdatePaint();
 
 		private void UpdatePaint()
 		{
-			Brush?.UpdatePaint(_paint, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
-		}
-
-		/// <param name="color">color to set SKPaint to, null to reset</param>
-		internal void SetPaintColor(Color? color)
-		{
-			if (color is { } c)
+			if (!Brush?.SupportsRender ?? false)
 			{
-				_paint.Color = c.ToSKColor();
+				Brush?.UpdatePaint(_paint, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
 			}
-			else
-			{
-				_paint.Color = SKColors.Black; // resets to default, equivalent to `_paint.Color = new SKPaint().Color`
-			}
-			UpdatePaint();
 		}
 
 		internal override void Paint(in PaintingSession session)
 		{
-			base.Paint(in session);
+			if (Brush is null)
+			{
+				return;
+			}
+
+			if (Brush.SupportsRender)
+			{
+				Brush.Render(session.Canvas, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
+				return;
+			}
 
 			if (Brush is IOnlineBrush onlineBrush && onlineBrush.IsOnline)
 			{

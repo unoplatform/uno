@@ -11,6 +11,15 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{
+		private static readonly SKPaint _tempPaint = new();
+		private SKColor? _monochromeColor;
+
+		internal SKColor? MonochromeColor
+		{
+			get => _monochromeColor;
+			set => SetObjectProperty(ref _monochromeColor, value);
+		}
+
 		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface;
 
 		bool ISizedBrush.IsSized => true;
@@ -78,9 +87,47 @@ namespace Microsoft.UI.Composition
 
 		internal override void UpdatePaint(SKPaint fillPaint, SKRect bounds)
 		{
+			if (GetPaintingParameters(bounds) is var (image, matrix, colorFilter))
+			{
+				fillPaint.Shader = SKShader.CreateImage(image, SKShaderTileMode.Decal, SKShaderTileMode.Decal,
+					new SKSamplingOptions(SKFilterMode.Linear), matrix);
+				if (colorFilter is not null)
+				{
+					fillPaint.ColorFilter = colorFilter;
+				}
+			}
+		}
+
+		internal override void Render(SKCanvas canvas, SKRect bounds)
+		{
+			if (GetPaintingParameters(bounds) is var (image, matrix, colorFilter))
+			{
+				canvas.Save();
+				canvas.Concat(matrix);
+				SKPaint? paint = null;
+				if (colorFilter is not null)
+				{
+					_tempPaint.Reset();
+					_tempPaint.ColorFilter = colorFilter;
+					paint = _tempPaint;
+				}
+				// Ideally, we would use a CatmullRom sampler when upscaling (i.e. bounds.Size > scs.Image.Size) and
+				// a Lanczos sampler when downscaling. However, profiling shows that CatmullRom chokes when the
+				// drawing are (i.e. bounds) is large and the improvement over linear sampling is almost imperceptible.
+				// For downsampling, Lanczos is slightly better than linear filtering with mipmapping but chokes when
+				// the downscaling ratio is too big. Linear filtering with mipmapping is mostly okay but in the most
+				// extreme cases with tons of images it's quite a bit slower than a linear filter without improving
+				// the output that much.
+				canvas.DrawImage(image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear), paint);
+				canvas.Restore();
+			}
+		}
+
+		private (SKImage image, SKMatrix matrix, SKColorFilter? colorFilter)? GetPaintingParameters(SKRect bounds)
+		{
 			if (bounds.IsEmpty)
 			{
-				return;
+				return null;
 			}
 
 			if (TryGetSkiaCompositionSurface(Surface, out var scs))
@@ -89,54 +136,27 @@ namespace Microsoft.UI.Composition
 
 				if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
 				{
-					fillPaint.Shader = null;
+					return null;
 				}
-				else
-				{
-					// Relevant doc snippet from WPF: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/brush-transformation-overview#differences-between-the-transform-and-relativetransform-properties
-					// When you apply a transform to a brush's RelativeTransform property, that transform is applied to the brush before its output is mapped to the painted area. The following list describes the order in which a brush’s contents are processed and transformed.
-					//  * Process the brush’s contents. For a GradientBrush, this means determining the gradient area. For a TileBrush, the Viewbox is mapped to the Viewport. This becomes the brush’s output.
-					// 	* Project the brush’s output onto the 1 x 1 transformation rectangle.
-					// 	* Apply the brush’s RelativeTransform, if it has one.
-					// 	* Project the transformed output onto the area to paint.
-					// 	* Apply the brush’s Transform, if it has one.
-					var matrix = Matrix3x2.Identity;
-					matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width), (float)(backgroundArea.Height / scs.Image.Height));
-					matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
-					matrix *= TransformMatrix;
-					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height).Inverse();
-					matrix *= RelativeTransform;
-					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-					// TODO: The logic here reads the (logical) bounds at face value and ignores external
-					// scaling applied at the time of rendering. For example, an image rendered
-					// in an area half its natural size at 2x DPI scaling should be treated as if
-					// it's being rendered at its natural size since both effects cancel out, but
-					// the logic here is blind to DPI scaling and will act as if we're downscaling.
-					SKShader imageShader;
-					if (scs.Image.Width < bounds.Width || scs.Image.Height < bounds.Height)
-					{
-						// upsampling. Using CatmullRom yields imperceptibly better results, but it's an order of magnitude or two slower
-						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKFilterMode.Linear), matrix.ToSKMatrix());
-					}
-					else // downsampling: do not use bicubic samplers which perform extremely poorly (quality wise) in this case
-					{
-						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear), matrix.ToSKMatrix());
-					}
+				// Relevant doc snippet from WPF: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/brush-transformation-overview#differences-between-the-transform-and-relativetransform-properties
+				// When you apply a transform to a brush's RelativeTransform property, that transform is applied to the brush before its output is mapped to the painted area. The following list describes the order in which a brush’s contents are processed and transformed.
+				//  * Process the brush’s contents. For a GradientBrush, this means determining the gradient area. For a TileBrush, the Viewbox is mapped to the Viewport. This becomes the brush’s output.
+				// 	* Project the brush’s output onto the 1 x 1 transformation rectangle.
+				// 	* Apply the brush’s RelativeTransform, if it has one.
+				// 	* Project the transformed output onto the area to paint.
+				// 	* Apply the brush’s Transform, if it has one.
+				var matrix = Matrix3x2.Identity;
+				matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width), (float)(backgroundArea.Height / scs.Image.Height));
+				matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+				matrix *= TransformMatrix;
+				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height).Inverse();
+				matrix *= RelativeTransform;
+				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-					if (UsePaintColorToColorSurface)
-					{
-						// use the set color instead of the image pixel values. This is what happens on WinUI.
-						var blendedShader = SKShader.CreateColorFilter(imageShader, SKColorFilter.CreateBlendMode(fillPaint.Color, SKBlendMode.SrcIn));
-						fillPaint.Shader = blendedShader;
-					}
-					else
-					{
-						fillPaint.Shader = imageShader;
-					}
+				var colorFilter = MonochromeColor is { } color ? SKColorFilter.CreateBlendMode(color, SKBlendMode.SrcIn) : null;
 
-					fillPaint.IsAntialias = true;
-				}
+				return (scs.Image, matrix.ToSKMatrix(), colorFilter);
 			}
 			else if (Surface is ISkiaSurface skiaSurface)
 			{
@@ -147,26 +167,27 @@ namespace Microsoft.UI.Composition
 					var matrix = TransformMatrix * Matrix3x2.CreateScale(1 / skiaSurface.Surface.Canvas.TotalMatrix.ScaleX);
 					var image = skiaSurface.Surface.Snapshot();
 
-					fillPaint.Shader = SKShader.CreateImage(image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
-					fillPaint.IsAntialias = true;
+					return (image, matrix.ToSKMatrix(), null);
 				}
 				else
 				{
-					fillPaint.Shader = null;
+					return null;
 				}
 			}
 			else
 			{
-				fillPaint.Shader = null;
+				return null;
 			}
 		}
-
-		internal bool UsePaintColorToColorSurface { private get; set; }
 
 		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
 			if (Surface is ISkiaSurface skiaSurface)
 				skiaSurface.UpdateSurface(session);
 		}
+
+		// There is a very significant performance improvement in using SKCanvas.DrawImage(image)
+		// instead of SKCanvas.DrawRect(SKShader.CreateImage(image)).
+		internal override bool SupportsRender => true;
 	}
 }
