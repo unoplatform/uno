@@ -4923,10 +4923,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return "new Windows.Foundation.Point(" + SplitAndJoin(memberValue) + ")";
 
 					case "System.Numerics.Vector2":
-						return "new global::System.Numerics.Vector2(" + memberValue + ")";
+						return "new global::System.Numerics.Vector2(" + SplitAndJoin(memberValue) + ")";
 
 					case "System.Numerics.Vector3":
-						return "new global::System.Numerics.Vector3(" + memberValue + ")";
+						return "new global::System.Numerics.Vector3(" + SplitAndJoin(memberValue) + ")";
 
 					case "Microsoft.UI.Xaml.Input.InputScope":
 						return "new global::Microsoft.UI.Xaml.Input.InputScope { Names = { new global::Microsoft.UI.Xaml.Input.InputScopeName { NameValue = global::Microsoft.UI.Xaml.Input.InputScopeNameValue." + memberValue + "} } }";
