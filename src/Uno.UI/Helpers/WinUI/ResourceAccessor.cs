@@ -68,11 +68,11 @@ namespace Uno.UI.Helpers.WinUI
 			{
 				if (SharedHelpers.IsInFrameworkPackage())
 				{
-					return new Uri("ms-resource://" + MUXCONTROLS_PACKAGE_NAME + "/Files/Microsoft" +  ".UI.Xaml/Assets/" + assetName + ".png");
+					return new Uri("ms-resource://" + MUXCONTROLS_PACKAGE_NAME + "/Files/Microsoft.UI.Xaml/Assets/" + assetName + ".png");
 				}
 				else
 				{
-					return new Uri("ms-resource:///Files/Microsoft" +  ".UI.Xaml/Assets/" + assetName + ".png");
+					return new Uri("ms-resource:///Files/Microsoft.UI.Xaml/Assets/" + assetName + ".png");
 				}
 			}
 
