@@ -62,7 +62,7 @@ namespace Microsoft.UI.Composition
 					}
 					else
 					{
-						fill.Render(session.Canvas, finalFillGeometryWithTransformations.Bounds);
+						fill.Paint(session.Canvas, finalFillGeometryWithTransformations.Bounds);
 					}
 					session.Canvas.Restore();
 				}
@@ -113,7 +113,7 @@ namespace Microsoft.UI.Composition
 					geometryWithTransformations.GetFillPath(strokePaint, strokeFillPath);
 
 					session.Canvas.ClipPath(strokeFillPath);
-					stroke.Render(session.Canvas, strokeFillPath.Bounds);
+					stroke.Paint(session.Canvas, strokeFillPath.Bounds);
 					session.Canvas.Restore();
 				}
 			}

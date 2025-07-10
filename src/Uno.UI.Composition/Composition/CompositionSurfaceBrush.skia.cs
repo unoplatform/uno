@@ -85,20 +85,7 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || (Surface as ISkiaSurface)?.Surface is not null;
 
-		internal override void UpdatePaint(SKPaint fillPaint, SKRect bounds)
-		{
-			if (GetPaintingParameters(bounds) is var (image, matrix, colorFilter))
-			{
-				fillPaint.Shader = SKShader.CreateImage(image, SKShaderTileMode.Decal, SKShaderTileMode.Decal,
-					new SKSamplingOptions(SKFilterMode.Linear), matrix);
-				if (colorFilter is not null)
-				{
-					fillPaint.ColorFilter = colorFilter;
-				}
-			}
-		}
-
-		internal override void Render(SKCanvas canvas, SKRect bounds)
+		internal override void Paint(SKCanvas canvas, SKRect bounds)
 		{
 			if (GetPaintingParameters(bounds) is var (image, matrix, colorFilter))
 			{
@@ -185,9 +172,5 @@ namespace Microsoft.UI.Composition
 			if (Surface is ISkiaSurface skiaSurface)
 				skiaSurface.UpdateSurface(session);
 		}
-
-		// There is a very significant performance improvement in using SKCanvas.DrawImage(image)
-		// instead of SKCanvas.DrawRect(SKShader.CreateImage(image)).
-		internal override bool SupportsRender => true;
 	}
 }

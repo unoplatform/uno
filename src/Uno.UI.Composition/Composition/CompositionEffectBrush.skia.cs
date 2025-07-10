@@ -1480,7 +1480,7 @@ $$"""
 
 						// Creating a static SKPictureRecorder to be reused for all calls causes a segfault for some reason
 						var recorder = new SKPictureRecorder();
-						brush.Render(recorder.BeginRecording(srcBounds), srcBounds);
+						brush.Paint(recorder.BeginRecording(srcBounds), srcBounds);
 						return SKImageFilter.CreatePicture(recorder.EndRecording());
 					}
 
@@ -1590,21 +1590,12 @@ $$"""
 		}
 	}
 
-	internal override void UpdatePaint(SKPaint paint, SKRect bounds)
+	internal override void Paint(SKCanvas canvas, SKRect bounds)
 	{
 		UpdateFilter(bounds);
-		paint.Shader = null;
-		paint.ImageFilter = _filter;
-	}
-
-	internal override void Render(SKCanvas canvas, SKRect bounds)
-	{
-		UpdateFilter(bounds);
-		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
+		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });
 		canvas.Restore();
 	}
-
-	internal override bool SupportsRender => true;
 
 	private void UpdateFilter(SKRect bounds)
 	{

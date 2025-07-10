@@ -20,18 +20,7 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => true;
 
-		internal override sealed void UpdatePaint(SKPaint paint, SKRect bounds)
-		{
-			if (!_isColorStopsValid)
-			{
-				UpdateColorStops(ColorStops);
-			}
-			var (shader, color) = GetPaintingParameters(bounds);
-			paint.Shader = shader;
-			paint.Color = color;
-		}
-
-		internal override void Render(SKCanvas canvas, SKRect bounds)
+		internal override void Paint(SKCanvas canvas, SKRect bounds)
 		{
 			if (!_isColorStopsValid)
 			{
@@ -43,8 +32,6 @@ namespace Microsoft.UI.Composition
 			_tempPaint.Color = color;
 			canvas.DrawRect(bounds, _tempPaint);
 		}
-
-		internal override bool SupportsRender => true;
 
 		private protected virtual (SKShader? shader, SKColor color) GetPaintingParameters(SKRect bounds) => (null, SKColors.Transparent);
 

@@ -14,17 +14,7 @@ namespace Microsoft.UI.Composition
 
 		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
 
-		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
-		{
-			_sourcePaint ??= paint.Clone();
-			_maskPaint ??= paint.Clone();
-
-			Source?.UpdatePaint(_sourcePaint, bounds);
-			Mask?.UpdatePaint(_maskPaint, bounds);
-			paint.Shader = SKShader.CreateCompose(_sourcePaint.Shader, _maskPaint.Shader, SKBlendMode.DstIn);
-		}
-
-		internal override void Render(SKCanvas canvas, SKRect bounds)
+		internal override void Paint(SKCanvas canvas, SKRect bounds)
 		{
 			if (Source is null || Mask is null)
 			{
@@ -39,15 +29,13 @@ namespace Microsoft.UI.Composition
 			canvas.SaveLayer(new SKCanvasSaveLayerRec { Paint = _spareResultPaint });
 			canvas.ClipRect(bounds);
 			canvas.DrawColor(SKColors.Transparent);
-			Source.Render(canvas, bounds);
+			Source.Paint(canvas, bounds);
 			// The second SaveLayer call with SKBlendMode.DstIn creates the masking effect
 			canvas.SaveLayer(new SKCanvasSaveLayerRec { Paint = _spareResultPaint2 });
-			Mask.Render(canvas, bounds);
+			Mask.Paint(canvas, bounds);
 			canvas.Restore();
 			canvas.Restore();
 		}
-
-		internal override bool SupportsRender => true;
 
 		internal override bool CanPaint() => (Source?.CanPaint() ?? false) || (Mask?.CanPaint() ?? false);
 
