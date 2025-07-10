@@ -61,7 +61,7 @@ namespace Microsoft.UI.Composition
 					finalFillGeometryWithTransformations.GetFillPath(fillPaint, fillPath);
 
 					session.Canvas.Save();
-					session.Canvas.ClipPath(fillPath);
+					session.Canvas.ClipPath(fillPath, antialias: true);
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
 						_spareColorPaint.Color = colorFromTransition.ToSKColor(session.Opacity);
@@ -118,7 +118,7 @@ namespace Microsoft.UI.Composition
 					// Get the stroke geometry, after scaling has been applied.
 					geometryWithTransformations.GetFillPath(strokePaint, strokeFillPath);
 
-					session.Canvas.ClipPath(strokeFillPath);
+					session.Canvas.ClipPath(strokeFillPath, antialias: true);
 					stroke.Paint(session.Canvas, session.Opacity, strokeFillPath.Bounds);
 					session.Canvas.Restore();
 				}
