@@ -449,6 +449,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			AnalyzerSuppressionsGenerator.GenerateTrimExclusions(writer);
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
 			{
+				BuildComponentFieldsInitializers(writer);
+
 				if (IsApplication(controlBaseType))
 				{
 					BuildApplicationInitializerBody(writer, topLevelControl);
@@ -924,6 +926,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									writer.AppendLineIndented($"global::System.Object {CurrentResourceOwner};");
 									writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 
+									using (writer.BlockInvariant($"public {className}()"))
+									{
+										BuildComponentFieldsInitializers(writer);
+									}
+
 #if USE_NEW_TP_CODEGEN
 									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)"))
 #else
@@ -1025,14 +1032,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var isWindow = IsWindow(controlBaseType);
 
-			if (hasXBindExpressions || hasResourceExtensions)
+			if (hasXBindExpressions || hasResourceExtensions || _isHotReloadEnabled)
 			{
 				var activator = $"new {GetBindingsTypeNames(_xClassName.ClassName).bindingsClassName}(this)";
 
 				writer.AppendLineIndented($"Bindings = {activator};");
 			}
 
-			if ((isFrameworkElement || isWindow) && (hasXBindExpressions || hasResourceExtensions))
+			if ((isFrameworkElement || isWindow) && (hasXBindExpressions || hasResourceExtensions || _isHotReloadEnabled))
 			{
 				// Casting to FrameworkElement or Window is important to avoid issues when there
 				// is a member named Loading or Activated that shadows the ones from FrameworkElement/Window
@@ -1043,7 +1050,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					setupCallbackSignature = "private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)";
 					writer.AppendLineIndented("((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;");
 
-					if (hasXBindExpressions)
+					if (hasXBindExpressions || _isHotReloadEnabled)
 					{
 						teardownCallbackSignature = "private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)";
 						writer.AppendLineIndented("((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;");
@@ -1184,9 +1191,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var componentName = current.MemberName;
 				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
 
-				var isWeak = current.IsWeakReference ? "true" : "false";
-				var accessors = _isHotReloadEnabled ? " { get; }" : ""; // We use property for HR so we can remove them without causing rude edit.
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder{accessors} = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
+				var accessors = _isHotReloadEnabled ? " { get; set; }" : ";"; // We use property for HR so we can remove them without causing rude edit.
+				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder{accessors}");
 
 				using (writer.BlockInvariant($"private {typeName} {componentName}"))
 				{
@@ -1200,6 +1206,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineIndented($"{componentName}_Holder.Instance = value;");
 					}
 				}
+			}
+		}
+
+		private void BuildComponentFieldsInitializers(IIndentedStringBuilder writer)
+		{
+			foreach (var current in CurrentScope.Components.OrderBy(c => c.MemberName, StringComparer.Ordinal))
+			{
+				var componentName = current.MemberName;
+				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
+
+				var isWeak = current.IsWeakReference ? "true" : "false";
+				writer.AppendLineIndented($"private {componentName}_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
 			}
 		}
 
