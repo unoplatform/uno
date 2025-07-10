@@ -323,8 +323,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// Track processor discovery start
 			var discoveryProperties = new Dictionary<string, string>
 			{
-				["AppInstanceId"] = TelemetryHashHelper.Hash(msg.AppInstanceId),
-				["BasePath"] = TelemetryHashHelper.Hash(msg.BasePath),
+				["AppInstanceId"] = msg.AppInstanceId,
 				["IsFile"] = File.Exists(msg.BasePath).ToString()
 			};
 

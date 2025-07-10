@@ -201,9 +201,6 @@ namespace Uno.UI.RemoteControl.Host
 				var startupProperties = new Dictionary<string, string>
 				{
 					["HasSolution"] = (solution != null).ToString(),
-					["MachineName"] = TelemetryHashHelper.Hash(Environment.MachineName),
-					// httpPort has no analytics value here
-					// parentPid has no analytics value here
 				};
 
 				telemetry?.TrackEvent("DevServer.Startup", startupProperties, null);
