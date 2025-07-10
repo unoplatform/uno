@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
@@ -49,5 +50,36 @@ public class Given_CommandBarFlyout
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.IsTrue(commandBar.IsOpen, "CommandBarFlyout should remain open when AlwaysExpanded is true.");
 		Assert.IsFalse(wasClosed, "CommandBarFlyout should not close when AlwaysExpanded is true.");
+	}
+
+	[TestMethod]
+	public async Task When_CommandBarFlyout_Without_Secondary_Commands()
+	{
+		var commandBarFlyout = new CommandBarFlyout();
+		commandBarFlyout.PrimaryCommands.Add(new AppBarButton { Icon = new SymbolIcon(Symbol.Home), Label = "Primary Command" });
+
+		var button = new Button
+		{
+			Content = "Open CommandBarFlyout",
+		};
+
+		FlyoutBase.SetAttachedFlyout(button, commandBarFlyout);
+
+		TestServices.WindowHelper.WindowContent = button;
+		await TestServices.WindowHelper.WaitForLoaded(button);
+
+		FlyoutBase.ShowAttachedFlyout(button);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+
+		var commandBarPopup = popups.FirstOrDefault(p => VisualTreeUtils.FindVisualChildByType<CommandBarFlyoutCommandBar>(p.Child) is not null);
+		Assert.IsNotNull(commandBarPopup);
+		var commandBar = VisualTreeUtils.FindVisualChildByType<CommandBarFlyoutCommandBar>(commandBarPopup?.Child);
+		Assert.IsNotNull(commandBar);
+
+		var state = VisualStateManager.GetCurrentState(commandBar, "PrimaryLabelStates");
+		Assert.AreEqual("HasPrimaryLabels", state.Name);
+		Assert.AreEqual(Visibility.Visible, commandBar.CommandBarTemplateSettings.EffectiveOverflowButtonVisibility);
 	}
 }
