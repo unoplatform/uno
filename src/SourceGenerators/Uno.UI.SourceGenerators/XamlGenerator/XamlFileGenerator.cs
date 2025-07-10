@@ -449,8 +449,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			AnalyzerSuppressionsGenerator.GenerateTrimExclusions(writer);
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
 			{
-				BuildComponentFieldsInitializers(writer);
-
 				if (IsApplication(controlBaseType))
 				{
 					BuildApplicationInitializerBody(writer, topLevelControl);
@@ -926,11 +924,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									writer.AppendLineIndented($"global::System.Object {CurrentResourceOwner};");
 									writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 
-									using (writer.BlockInvariant($"public {className}()"))
-									{
-										BuildComponentFieldsInitializers(writer);
-									}
-
 #if USE_NEW_TP_CODEGEN
 									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)"))
 #else
@@ -1190,33 +1183,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var componentName = current.MemberName;
 				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
-
-				var accessors = _isHotReloadEnabled ? " { get; set; }" : ";"; // We use property for HR so we can remove them without causing rude edit.
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder{accessors}");
-
-				using (writer.BlockInvariant($"private {typeName} {componentName}"))
-				{
-					using (writer.BlockInvariant("get"))
-					{
-						writer.AppendLineIndented($"return ({typeName}){componentName}_Holder.Instance;");
-					}
-
-					using (writer.BlockInvariant("set"))
-					{
-						writer.AppendLineIndented($"{componentName}_Holder.Instance = value;");
-					}
-				}
-			}
-		}
-
-		private void BuildComponentFieldsInitializers(IIndentedStringBuilder writer)
-		{
-			foreach (var current in CurrentScope.Components.OrderBy(c => c.MemberName, StringComparer.Ordinal))
-			{
-				var componentName = current.MemberName;
-
 				var isWeak = current.IsWeakReference ? "true" : "false";
-				writer.AppendLineIndented($"private {componentName}_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
+
+				if (_isHotReloadEnabled)
+				{
+					// We use a property for HR so we can remove them without causing rude edit.
+					// We also avoid property initializer as they are known to cause issue with HR: https://github.com/dotnet/roslyn/issues/79320
+					writer.AppendMultiLineIndented($$"""
+						private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder { get; set; }
+						private {{typeName}} {{componentName}}
+						{
+							get => ({{typeName}})({{componentName}}_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}})).Instance;
+							set => ({{componentName}}_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}})).Instance = value;
+						}
+					""");
+				}
+				else
+				{
+					writer.AppendMultiLineIndented($$"""
+							private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}});
+							private {{typeName}} {{componentName}}
+							{
+								get => ({{typeName}}){{componentName}}_Holder.Instance;
+								set => {{componentName}}_Holder.Instance = value;
+							}
+						""");
+				}
 			}
 		}
 
