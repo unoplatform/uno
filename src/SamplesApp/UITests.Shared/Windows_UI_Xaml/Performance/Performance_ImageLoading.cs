@@ -54,8 +54,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 			int imagesLoaded = 0;
 
 			var grid = new Grid();
-			grid.RowDefinitions.Add(new RowDefinition { Height = GridLengthHelper.OneStar });
-			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper.OneStar });
+			grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1.0f, GridUnitType.Star) });
+			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.0f, GridUnitType.Star) });
 			Content = grid;
 
 			var sp = new StackPanel();
