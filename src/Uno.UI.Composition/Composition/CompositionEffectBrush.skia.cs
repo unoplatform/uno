@@ -15,7 +15,6 @@ namespace Microsoft.UI.Composition;
 
 public partial class CompositionEffectBrush : CompositionBrush
 {
-	private static readonly SKPaint _tempPaint = new();
 	private bool _isCurrentInputBackdrop;
 	private bool? _currentCompMode;
 
@@ -1593,10 +1592,7 @@ $$"""
 	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		UpdateFilter(bounds);
-		_tempPaint.Reset();
-		_tempPaint.IsAntialias = true;
-		_tempPaint.ColorFilter = opacity.ToColorFilter();
-		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Paint = _tempPaint });
+		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });
 		canvas.Restore();
 	}
 

@@ -10,6 +10,12 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
+		private static readonly SKPaint _spareHitTestPaint = new();
+		private static readonly SKPath _spareHitTestPath = new();
+		// We don't call SKPaint.Reset() after usage, so make sure
+		// that only SKPaint.Color is being set
+		private static readonly SKPaint _spareColorPaint = new();
+
 		private CompositionGeometry? _fillGeometry;
 
 		private SkiaGeometrySource2D? _geometryWithTransformations;
@@ -54,10 +60,12 @@ namespace Microsoft.UI.Composition
 					fillPath.Rewind();
 					finalFillGeometryWithTransformations.GetFillPath(fillPaint, fillPath);
 
+					session.Canvas.Save();
 					session.Canvas.ClipPath(fillPath);
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
-						session.Canvas.DrawColor(colorFromTransition.ToSKColor(session.Opacity));
+						_spareColorPaint.Color = colorFromTransition.ToSKColor(session.Opacity);
+						session.Canvas.DrawRect(fillPath.Bounds, _spareColorPaint);
 					}
 					else
 					{
@@ -157,9 +165,6 @@ namespace Microsoft.UI.Composition
 					break;
 			}
 		}
-
-		private static SKPaint _spareHitTestPaint = new SKPaint();
-		private static SKPath _spareHitTestPath = new SKPath();
 
 		internal override bool HitTest(Point point)
 		{
