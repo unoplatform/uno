@@ -59,8 +59,8 @@ namespace TestRepro
 					new global::TestRepro.MyStackPanel
 					{
 						IsParsing = true,
-						Vec2 = new global::System.Numerics.Vector2(1,2),
-						Vec3 = new global::System.Numerics.Vector3(3,4,5),
+						Vec2 = new global::System.Numerics.Vector2(1, 2),
+						Vec3 = new global::System.Numerics.Vector3(3, 4, 5),
 						// Source 0\MainPage.xaml (Line 9:4)
 					}
 					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
