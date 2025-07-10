@@ -5,16 +5,11 @@ using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition
 {
-	public partial class CompositionMaskBrush : CompositionBrush, IOnlineBrush
+	public partial class CompositionMaskBrush : CompositionBrush
 	{
-		private SKPaint? _sourcePaint;
-		private SKPaint? _maskPaint;
+		internal override bool RequiresRepaintOnEveryFrame => Source is not null && Mask is not null && (Source.RequiresRepaintOnEveryFrame || Mask.RequiresRepaintOnEveryFrame);
 
-		bool IOnlineBrush.IsOnline => Source is IOnlineBrush { IsOnline: true } || Mask is IOnlineBrush { IsOnline: true };
-
-		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
-
-		internal override void Paint(SKCanvas canvas, SKRect bounds)
+		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{
 			if (Source is null || Mask is null)
 			{
@@ -29,10 +24,10 @@ namespace Microsoft.UI.Composition
 			canvas.SaveLayer(new SKCanvasSaveLayerRec { Paint = _spareResultPaint });
 			canvas.ClipRect(bounds);
 			canvas.DrawColor(SKColors.Transparent);
-			Source.Paint(canvas, bounds);
+			Source.Paint(canvas, opacity, bounds);
 			// The second SaveLayer call with SKBlendMode.DstIn creates the masking effect
 			canvas.SaveLayer(new SKCanvasSaveLayerRec { Paint = _spareResultPaint2 });
-			Mask.Paint(canvas, bounds);
+			Mask.Paint(canvas, opacity, bounds);
 			canvas.Restore();
 			canvas.Restore();
 		}
@@ -41,26 +36,5 @@ namespace Microsoft.UI.Composition
 
 		private static readonly SKPaint _spareResultPaint = new SKPaint();
 		private static readonly SKPaint _spareResultPaint2 = new SKPaint();
-
-		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
-		{
-			var resultPaint = _spareResultPaint;
-
-			resultPaint.Reset();
-
-			resultPaint.IsAntialias = true;
-
-			UpdatePaint(resultPaint, bounds);
-
-			session.Canvas?.DrawRect(bounds, resultPaint);
-		}
-
-		private protected override void DisposeInternal()
-		{
-			base.DisposeInternal();
-
-			_sourcePaint?.Dispose();
-			_maskPaint?.Dispose();
-		}
 	}
 }

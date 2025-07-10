@@ -6,11 +6,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionBrush
 	{
-		/// <summary>
-		/// Only used when <see cref="SupportsRender"/> is true and is not
-		/// supported by all brushes.
-		/// </summary>
-		internal virtual void Paint(SKCanvas canvas, SKRect bounds) { }
+		internal virtual void Paint(SKCanvas canvas, float opacity, SKRect bounds) { }
 
 		internal virtual bool CanPaint() => false;
 

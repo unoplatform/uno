@@ -20,7 +20,7 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => true;
 
-		internal override void Paint(SKCanvas canvas, SKRect bounds)
+		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{
 			if (!_isColorStopsValid)
 			{

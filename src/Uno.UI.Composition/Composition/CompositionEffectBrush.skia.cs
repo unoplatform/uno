@@ -995,9 +995,8 @@ $$"""
 
 			if (mode == SKShaderTileMode.Repeat)
 			{
-				var srcBounds = source is CompositionEffectSourceParameter param && GetSourceParameter(param.Name) is ISizedBrush sizedBrush && sizedBrush.IsSized ?
-					(sizedBrush.Size is Vector2 size ?
-					new SKRect(0, 0, size.X, size.Y) : bounds)
+				var srcBounds = source is CompositionEffectSourceParameter param && GetSourceParameter(param.Name) is ISizedBrush { Size: { } size }
+					? new SKRect(0, 0, size.X, size.Y)
 					: bounds;
 
 				return SKImageFilter.CreateTile(srcBounds, bounds, sourceFilter);
@@ -1473,14 +1472,14 @@ $$"""
 						_isCurrentInputBackdrop = false;
 
 						SKRect srcBounds = bounds;
-						if (tryUsingSourceSize && brush is ISizedBrush { IsSized: true, Size: Vector2 size })
+						if (tryUsingSourceSize && brush is ISizedBrush { Size: Vector2 size })
 						{
 							srcBounds = bounds with { Right = size.X, Bottom = size.Y };
 						}
 
 						// Creating a static SKPictureRecorder to be reused for all calls causes a segfault for some reason
 						var recorder = new SKPictureRecorder();
-						brush.Paint(recorder.BeginRecording(srcBounds), srcBounds);
+						brush.Paint(recorder.BeginRecording(srcBounds), 1, srcBounds);
 						return SKImageFilter.CreatePicture(recorder.EndRecording());
 					}
 
@@ -1590,7 +1589,7 @@ $$"""
 		}
 	}
 
-	internal override void Paint(SKCanvas canvas, SKRect bounds)
+	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		UpdateFilter(bounds);
 		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });

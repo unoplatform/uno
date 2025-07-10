@@ -1,41 +1,28 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using SkiaSharp;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition
 {
-	public partial class CompositionNineGridBrush : CompositionBrush, IOnlineBrush
+	public partial class CompositionNineGridBrush : CompositionBrush
 	{
-		private SKPaint _sourcePaint = new SKPaint() { IsAntialias = true };
-		private SKImage? _sourceImage;
-		private SKSurface? _surface;
-		private SKSurface? _offlineSurface;
-		private SKPaint? _filterPaint = new SKPaint() { IsAntialias = true, IsDither = true };
+		private SKBitmap? _bitmap;
+		private SKCanvas? _bitmapCanvas;
 		private SKRectI _insetRect;
 
-		bool IOnlineBrush.IsOnline => true; // TODO: `Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline`, Implement this after offline rendering is properly implemented
+		internal override bool RequiresRepaintOnEveryFrame => Source?.RequiresRepaintOnEveryFrame ?? false;
 
-		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
-
-		internal override void Paint(SKCanvas canvas, SKRect bounds)
+		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{
-			UpdateOfflineSurface(bounds);
-			canvas.DrawSurface(_offlineSurface, 0, 0);
-		}
-
-		private void UpdateOfflineSurface(SKRect bounds)
-		{
-			// TODO: Properly implement offline rendering, this is a temporary workaround
+			if (Source is null)
+			{
+				return;
+			}
 
 			SKRect sourceBounds;
-			if (Source is ISizedBrush sizedBrush && sizedBrush.IsSized && sizedBrush.Size is Vector2 sourceSize)
+			if (Source is ISizedBrush sizedBrush && sizedBrush.Size is Vector2 sourceSize)
 			{
 				sourceBounds = new(0, 0, sourceSize.X, sourceSize.Y);
 			}
@@ -44,111 +31,40 @@ namespace Microsoft.UI.Composition
 				sourceBounds = bounds;
 			}
 
-			if ((Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline) || _sourcePaint.Shader is null || _sourceImage is null || _offlineSurface is null || _offlineSurface.Canvas.DeviceClipBounds != bounds)
+			var newSize = new SKSizeI((int)sourceBounds.Width, (int)sourceBounds.Height);
+			if (_bitmap is null || _bitmapCanvas is null || _bitmap.Info.Size != newSize)
 			{
-				Source?.UpdatePaint(_sourcePaint, sourceBounds);
-
-				if (_offlineSurface is null || _offlineSurface.Canvas.DeviceClipBounds != sourceBounds)
-				{
-					_offlineSurface?.Dispose();
-					_offlineSurface = SKSurface.Create(new SKImageInfo((int)bounds.Width, (int)bounds.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul));
-				}
-
-				if (_offlineSurface is not null)
-				{
-					_offlineSurface.Canvas.Clear();
-					_offlineSurface.Canvas.DrawRect(sourceBounds, _sourcePaint);
-					_offlineSurface.Canvas.Flush();
-
-					if (_sourceImage is null || _sourceImage.Info.Rect != sourceBounds)
-					{
-						_sourceImage?.Dispose();
-						_sourceImage = SKImage.Create(new SKImageInfo((int)sourceBounds.Width, (int)sourceBounds.Height));
-					}
-
-					var img = _offlineSurface.Snapshot();
-					img?.ReadPixels(_sourceImage.PeekPixels());
-					img?.Dispose();
-
-					_offlineSurface.Canvas.Clear();
-				}
-			}
-
-			if (_sourceImage is not null)
-			{
-				_insetRect.Top = (int)(TopInset * TopInsetScale);
-				_insetRect.Bottom = (int)(sourceBounds.Height - (BottomInset * BottomInsetScale));
-				_insetRect.Right = (int)(sourceBounds.Width - (RightInset * RightInsetScale));
-				_insetRect.Left = (int)(LeftInset * LeftInsetScale);
-
-				if (IsCenterHollow)
-				{
-					_offlineSurface?.Canvas.ClipRect(_insetRect, SKClipOperation.Difference, true);
-				}
-
-				_offlineSurface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, new SKSamplingOptions(SKCubicResampler.CatmullRom).Filter, _filterPaint);
-			}
-		}
-
-		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
-		{
-			SKRect sourceBounds;
-			if (Source is ISizedBrush sizedBrush && sizedBrush.IsSized && sizedBrush.Size is Vector2 sourceSize)
-			{
-				sourceBounds = new(0, 0, sourceSize.X, sourceSize.Y);
+				_bitmap?.Dispose();
+				_bitmapCanvas?.Dispose();
+				_bitmap = new SKBitmap(new SKImageInfo(newSize.Width, newSize.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul));
+				_bitmapCanvas = new SKCanvas(_bitmap);
 			}
 			else
 			{
-				sourceBounds = bounds;
+				_bitmapCanvas.Clear(SKColors.Transparent);
 			}
 
-			if ((Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline) || _sourcePaint.Shader is null || _sourceImage is null || _surface is null || _surface.Canvas.DeviceClipBounds != sourceBounds)
+			Source.Paint(_bitmapCanvas, opacity, sourceBounds);
+			_bitmapCanvas.Flush();
+
+			_insetRect.Top = (int)(TopInset * TopInsetScale);
+			_insetRect.Bottom = (int)(sourceBounds.Height - (BottomInset * BottomInsetScale));
+			_insetRect.Right = (int)(sourceBounds.Width - (RightInset * RightInsetScale));
+			_insetRect.Left = (int)(LeftInset * LeftInsetScale);
+
+			if (IsCenterHollow)
 			{
-				Source?.UpdatePaint(_sourcePaint, sourceBounds);
-
-				if (_surface is null || _surface.Canvas.DeviceClipBounds != sourceBounds)
-				{
-					_surface?.Dispose();
-					_surface = SKSurface.Create(new SKImageInfo((int)sourceBounds.Width, (int)sourceBounds.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul));
-				}
-
-				if (_surface is not null)
-				{
-					var canvas = _surface.Canvas;
-					canvas.Clear();
-					canvas.DrawRect(sourceBounds, _sourcePaint);
-					canvas.Flush();
-					_sourceImage?.Dispose();
-					_sourceImage = _surface.Snapshot();
-				}
+				canvas.Save();
+				canvas.ClipRect(_insetRect, SKClipOperation.Difference, true);
+				canvas.DrawBitmapNinePatch(_bitmap, _insetRect, bounds);
+				canvas.Restore();
 			}
-
-			if (_sourceImage is not null)
+			else
 			{
-				_insetRect.Top = (int)(TopInset * TopInsetScale);
-				_insetRect.Bottom = (int)(sourceBounds.Height - (BottomInset * BottomInsetScale));
-				_insetRect.Right = (int)(sourceBounds.Width - (RightInset * RightInsetScale));
-				_insetRect.Left = (int)(LeftInset * LeftInsetScale);
-
-				if (IsCenterHollow)
-				{
-					session.Canvas?.ClipRect(_insetRect, SKClipOperation.Difference, true);
-				}
-
-				session.Canvas?.DrawImageNinePatch(_sourceImage, _insetRect, bounds, _filterPaint);
+				canvas.DrawBitmapNinePatch(_bitmap, _insetRect, bounds);
 			}
 		}
 
 		internal override bool CanPaint() => Source?.CanPaint() ?? false;
-
-		private protected override void DisposeInternal()
-		{
-			base.DisposeInternal();
-
-			_sourcePaint?.Dispose();
-			_sourceImage?.Dispose();
-			_surface?.Dispose();
-			_filterPaint?.Dispose();
-		}
 	}
 }

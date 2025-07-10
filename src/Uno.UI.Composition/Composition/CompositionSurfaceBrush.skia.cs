@@ -9,7 +9,7 @@ using Uno.Extensions;
 
 namespace Microsoft.UI.Composition
 {
-	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
+	public partial class CompositionSurfaceBrush : CompositionBrush, ISizedBrush
 	{
 		private static readonly SKPaint _tempPaint = new();
 		private SKColor? _monochromeColor;
@@ -20,16 +20,12 @@ namespace Microsoft.UI.Composition
 			set => SetObjectProperty(ref _monochromeColor, value);
 		}
 
-		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface;
-
-		bool ISizedBrush.IsSized => true;
-
-		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
+		internal override bool RequiresRepaintOnEveryFrame => Surface is ISkiaSurface;
 
 		Vector2? ISizedBrush.Size => Surface switch
 		{
 			SkiaCompositionSurface { Image: SKImage img } => new(img.Width, img.Height),
-			ISkiaSurface { Surface: SKSurface surface } => new(surface.Canvas.DeviceClipBounds.Width / surface.Canvas.TotalMatrix.ScaleX, surface.Canvas.DeviceClipBounds.Height / surface.Canvas.TotalMatrix.ScaleY),
+			ISkiaSurface skiaSurface => skiaSurface.Size,
 			ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: SKImage img } } => new(img.Width, img.Height),
 			_ => null
 		};
@@ -83,47 +79,28 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
-		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || (Surface as ISkiaSurface)?.Surface is not null;
+		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || Surface is ISkiaSurface;
 
-		internal override void Paint(SKCanvas canvas, SKRect bounds)
-		{
-			if (GetPaintingParameters(bounds) is var (image, matrix, colorFilter))
-			{
-				canvas.Save();
-				canvas.Concat(matrix);
-				SKPaint? paint = null;
-				if (colorFilter is not null)
-				{
-					_tempPaint.Reset();
-					_tempPaint.ColorFilter = colorFilter;
-					paint = _tempPaint;
-				}
-				// Ideally, we would use a CatmullRom sampler when upscaling (i.e. bounds.Size > scs.Image.Size) and
-				// a Lanczos sampler when downscaling. However, profiling shows that CatmullRom chokes when the
-				// drawing are (i.e. bounds) is large and the improvement over linear sampling is almost imperceptible.
-				// For downsampling, Lanczos is slightly better than linear filtering with mipmapping but chokes when
-				// the downscaling ratio is too big. Linear filtering with mipmapping is mostly okay but in the most
-				// extreme cases with tons of images it's quite a bit slower than a linear filter without improving
-				// the output that much.
-				canvas.DrawImage(image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear), paint);
-				canvas.Restore();
-			}
-		}
-
-		private (SKImage image, SKMatrix matrix, SKColorFilter? colorFilter)? GetPaintingParameters(SKRect bounds)
+		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{
 			if (bounds.IsEmpty)
 			{
-				return null;
+				return;
 			}
 
-			if (TryGetSkiaCompositionSurface(Surface, out var scs))
+			if (Surface is ISkiaSurface skiaSurface)
+			{
+				canvas.ClipRect(bounds);
+				skiaSurface.Paint(canvas, opacity);
+				canvas.Restore();
+			}
+			else if (TryGetSkiaCompositionSurface(Surface, out var scs))
 			{
 				var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), bounds);
 
 				if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
 				{
-					return null;
+					return;
 				}
 
 				// Relevant doc snippet from WPF: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/brush-transformation-overview#differences-between-the-transform-and-relativetransform-properties
@@ -134,43 +111,34 @@ namespace Microsoft.UI.Composition
 				// 	* Project the transformed output onto the area to paint.
 				// 	* Apply the brush’s Transform, if it has one.
 				var matrix = Matrix3x2.Identity;
-				matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width), (float)(backgroundArea.Height / scs.Image.Height));
+				matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width),
+					(float)(backgroundArea.Height / scs.Image.Height));
 				matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
 				matrix *= TransformMatrix;
 				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height).Inverse();
 				matrix *= RelativeTransform;
 				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-				var colorFilter = MonochromeColor is { } color ? SKColorFilter.CreateBlendMode(color, SKBlendMode.SrcIn) : null;
-
-				return (scs.Image, matrix.ToSKMatrix(), colorFilter);
-			}
-			else if (Surface is ISkiaSurface skiaSurface)
-			{
-				skiaSurface.UpdateSurface();
-
-				if (skiaSurface.Surface is not null)
+				SKPaint? paint = null;
+				if (MonochromeColor is { } color)
 				{
-					var matrix = TransformMatrix * Matrix3x2.CreateScale(1 / skiaSurface.Surface.Canvas.TotalMatrix.ScaleX);
-					var image = skiaSurface.Surface.Snapshot();
-
-					return (image, matrix.ToSKMatrix(), null);
+					_tempPaint.Reset();
+					_tempPaint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.SrcIn);
+					paint = _tempPaint;
 				}
-				else
-				{
-					return null;
-				}
-			}
-			else
-			{
-				return null;
-			}
-		}
 
-		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
-		{
-			if (Surface is ISkiaSurface skiaSurface)
-				skiaSurface.UpdateSurface(session);
+				canvas.Save();
+				canvas.Concat(matrix.ToSKMatrix());
+				// Ideally, we would use a CatmullRom sampler when upscaling (i.e. bounds.Size > scs.Image.Size) and
+				// a Lanczos sampler when downscaling. However, profiling shows that CatmullRom chokes when the
+				// drawing are (i.e. bounds) is large and the improvement over linear sampling is almost imperceptible.
+				// For downsampling, Lanczos is slightly better than linear filtering with mipmapping but chokes when
+				// the downscaling ratio is too big. Linear filtering with mipmapping is mostly okay but in the most
+				// extreme cases with tons of images it's quite a bit slower than a linear filter without improving
+				// the output that much.
+				canvas.DrawImage(scs.Image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear), paint);
+				canvas.Restore();
+			}
 		}
 	}
 }

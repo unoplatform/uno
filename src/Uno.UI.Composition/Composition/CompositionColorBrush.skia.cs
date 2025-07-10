@@ -8,11 +8,12 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionColorBrush
 	{
+		// We don't call SKPaint.Reset() after usage, so make sure
+		// that only SKPaint.Color is being set
 		private static readonly SKPaint _tempPaint = new();
 
-		internal override void Paint(SKCanvas canvas, SKRect bounds)
+		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{
-			_tempPaint.Reset();
 			_tempPaint.Color = Color.ToSKColor();
 			canvas.DrawRect(bounds, _tempPaint);
 		}
