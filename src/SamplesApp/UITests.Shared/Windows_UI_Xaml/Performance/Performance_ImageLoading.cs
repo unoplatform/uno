@@ -9,9 +9,12 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using SamplesApp.UITests;
-using SkiaSharp;
 using Uno.Disposables;
+
+#if __SKIA__
+using SkiaSharp;
 using Uno.WinUI.Graphics2DSK;
+#endif
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
