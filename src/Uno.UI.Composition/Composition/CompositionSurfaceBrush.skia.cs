@@ -90,6 +90,7 @@ namespace Microsoft.UI.Composition
 
 			if (Surface is ISkiaSurface skiaSurface)
 			{
+				canvas.Save();
 				canvas.ClipRect(bounds, antialias: true);
 				skiaSurface.Paint(canvas, opacity);
 				canvas.Restore();
