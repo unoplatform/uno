@@ -52,6 +52,7 @@ public class Given_CommandBarFlyout
 		Assert.IsFalse(wasClosed, "CommandBarFlyout should not close when AlwaysExpanded is true.");
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	public async Task When_CommandBarFlyout_Without_Secondary_Commands()
 	{
@@ -82,4 +83,5 @@ public class Given_CommandBarFlyout
 		Assert.AreEqual("HasPrimaryLabels", state.Name);
 		Assert.AreEqual(Visibility.Visible, commandBar.CommandBarTemplateSettings.EffectiveOverflowButtonVisibility);
 	}
+#endif
 }
