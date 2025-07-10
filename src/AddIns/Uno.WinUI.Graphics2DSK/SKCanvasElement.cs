@@ -37,7 +37,7 @@ public abstract class SKCanvasElement : FrameworkElement
 			// We save and restore the canvas state ourselves so that the inheritor doesn't accidentally forget to.
 			session.Canvas.Save();
 			// clipping here guarantees that drawing doesn't get outside the intended area
-			session.Canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
+			session.Canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y), antialias: true);
 			owner.RenderOverride(session.Canvas, Size.ToSize());
 			session.Canvas.Restore();
 		}

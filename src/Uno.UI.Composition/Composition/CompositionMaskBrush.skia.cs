@@ -16,13 +16,15 @@ namespace Microsoft.UI.Composition
 				return;
 			}
 			_spareResultPaint.Reset();
+			_spareResultPaint.IsAntialias = true;
 			_spareResultPaint.BlendMode = SKBlendMode.SrcOver;
 			_spareResultPaint2.Reset();
+			_spareResultPaint2.IsAntialias = true;
 			_spareResultPaint2.BlendMode = SKBlendMode.DstIn;
 			// The first SaveLayer call along with DrawColor(Transparent) basically create a clean secondary drawing surface
 			// but without having to call SKSurface.Create and having to deal with all the details like HWA.
 			canvas.SaveLayer(new SKCanvasSaveLayerRec { Paint = _spareResultPaint });
-			canvas.ClipRect(bounds);
+			canvas.ClipRect(bounds, antialias: true);
 			canvas.DrawColor(SKColors.Transparent);
 			Source.Paint(canvas, opacity, bounds);
 			// The second SaveLayer call with SKBlendMode.DstIn creates the masking effect

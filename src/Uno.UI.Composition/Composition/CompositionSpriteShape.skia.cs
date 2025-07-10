@@ -43,8 +43,7 @@ namespace Microsoft.UI.Composition
 				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
 					var fillPaint = _sparePaint;
-					fillPaint.Reset();
-					PrepareTempPaint(fillPaint, isStroke: false, session.OpacityColorFilter);
+					PrepareTempPaint(fillPaint, isStroke: false);
 
 					if (Geometry is not null && (Geometry.TrimStart != default || Geometry.TrimEnd != default))
 					{
@@ -70,8 +69,7 @@ namespace Microsoft.UI.Composition
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
 					var strokePaint = _sparePaint;
-					strokePaint.Reset();
-					PrepareTempPaint(strokePaint, isStroke: true, session.OpacityColorFilter);
+					PrepareTempPaint(strokePaint, isStroke: true);
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
@@ -119,18 +117,12 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		private static void PrepareTempPaint(SKPaint paint, bool isStroke, SKColorFilter? colorFilter)
+		private static void PrepareTempPaint(SKPaint paint, bool isStroke)
 		{
+			paint.Reset();
 			paint.IsAntialias = true;
-			paint.ColorFilter = colorFilter;
-
 			paint.IsStroke = isStroke;
-
-			// uno-specific defaults
 			paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
-			paint.IsAntialias = true;
-
-			paint.ColorFilter = colorFilter;
 		}
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
@@ -183,10 +175,7 @@ namespace Microsoft.UI.Composition
 				if (StrokeBrush is { } && StrokeThickness > 0)
 				{
 					var strokePaint = _spareHitTestPaint;
-
-					strokePaint.Reset();
-
-					PrepareTempPaint(strokePaint, isStroke: true, null);
+					PrepareTempPaint(strokePaint, isStroke: true);
 
 					strokePaint.StrokeWidth = StrokeThickness;
 

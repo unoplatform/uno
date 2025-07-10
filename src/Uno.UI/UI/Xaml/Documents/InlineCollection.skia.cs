@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Documents
 		/// The second argument is whether this caret is the one at the start (false) or the end (true)
 		/// of the selection.
 		/// </summary>
-		internal event Action<(Rect rect, SKCanvas canvas, bool endCaret)>? CaretFound;
+		internal event Action<(Rect rect, SKCanvas canvas, float opacity, bool endCaret)>? CaretFound;
 
 		internal (int start, int end) Selection
 		{
@@ -459,8 +459,8 @@ namespace Microsoft.UI.Xaml.Documents
 				// empty, so caret is at the beginning
 				if (RenderCaret)
 				{
-					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, false));
-					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, true));
+					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, session.Opacity, false));
+					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, session.Opacity, true));
 				}
 				DrawingFinished?.Invoke();
 
@@ -635,7 +635,7 @@ namespace Microsoft.UI.Xaml.Documents
 					}
 					// END decorations
 
-					HandleCaret(canvas, characterCountSoFar, lineIndex, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
+					HandleCaret(canvas, session.Opacity, characterCountSoFar, lineIndex, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
 					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? segment.LineBreakLength : 0);
@@ -817,7 +817,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
-		private void HandleCaret(SKCanvas canvas, int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan,
+		private void HandleCaret(SKCanvas canvas, float opacity, int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan,
 			Span<SKPoint> positions, float x, float justifySpaceOffset, float y, RenderLine line)
 		{
 			var spanStartingIndex = characterCountSoFar;
@@ -864,7 +864,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 					if (caretLocation != float.MinValue)
 					{
-						CaretFound?.Invoke((new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)), canvas, caretAtSelectionEnd));
+						CaretFound?.Invoke((new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)), canvas, opacity, caretAtSelectionEnd));
 					}
 				}
 			}

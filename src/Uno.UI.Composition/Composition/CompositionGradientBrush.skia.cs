@@ -28,8 +28,10 @@ namespace Microsoft.UI.Composition
 			}
 			var (shader, color) = GetPaintingParameters(bounds);
 			_tempPaint.Reset();
+			_tempPaint.IsAntialias = true;
 			_tempPaint.Shader = shader;
 			_tempPaint.Color = color;
+			_tempPaint.ColorFilter = opacity.ToColorFilter();
 			canvas.DrawRect(bounds, _tempPaint);
 		}
 

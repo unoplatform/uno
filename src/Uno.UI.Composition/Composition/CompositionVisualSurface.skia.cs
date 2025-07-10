@@ -16,7 +16,7 @@ namespace Microsoft.UI.Composition
 			{
 				int save = canvas.Save();
 				// Note that this is applied before the SourceOffset translates the canvas' matrix, so
-				canvas.ClipRect(new SKRect(0, 0, (this as ISkiaSurface).Size.X, (this as ISkiaSurface).Size.X));
+				canvas.ClipRect(new SKRect(0, 0, (this as ISkiaSurface).Size.X, (this as ISkiaSurface).Size.X), antialias: true);
 
 				SourceVisual.RenderRootVisual(canvas, SourceOffset);
 				canvas.RestoreToCount(save);

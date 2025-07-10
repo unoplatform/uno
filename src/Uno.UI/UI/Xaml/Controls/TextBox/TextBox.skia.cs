@@ -279,7 +279,7 @@ public partial class TextBox
 							var compositor = _visual.Compositor;
 							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
 
-							brush.Paint(args.canvas, 1, caretRect.ToSKRect());
+							brush.Paint(args.canvas, args.opacity, caretRect.ToSKRect());
 						}
 
 						if (args.endCaret)

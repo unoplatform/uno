@@ -90,7 +90,7 @@ namespace Microsoft.UI.Composition
 
 			if (Surface is ISkiaSurface skiaSurface)
 			{
-				canvas.ClipRect(bounds);
+				canvas.ClipRect(bounds, antialias: true);
 				skiaSurface.Paint(canvas, opacity);
 				canvas.Restore();
 			}
@@ -119,12 +119,15 @@ namespace Microsoft.UI.Composition
 				matrix *= RelativeTransform;
 				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-				SKPaint? paint = null;
+				_tempPaint.Reset();
+				_tempPaint.IsAntialias = true;
 				if (MonochromeColor is { } color)
 				{
-					_tempPaint.Reset();
-					_tempPaint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.SrcIn);
-					paint = _tempPaint;
+					_tempPaint.ColorFilter = SKColorFilter.CreateBlendMode(color.WithAlpha((byte)(color.Alpha * opacity)), SKBlendMode.SrcIn);
+				}
+				else
+				{
+					_tempPaint.ColorFilter = opacity.ToColorFilter();
 				}
 
 				canvas.Save();
@@ -136,7 +139,7 @@ namespace Microsoft.UI.Composition
 				// the downscaling ratio is too big. Linear filtering with mipmapping is mostly okay but in the most
 				// extreme cases with tons of images it's quite a bit slower than a linear filter without improving
 				// the output that much.
-				canvas.DrawImage(scs.Image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear), paint);
+				canvas.DrawImage(scs.Image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear), _tempPaint);
 				canvas.Restore();
 			}
 		}
