@@ -4492,7 +4492,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// It might be possible to improve it further, but that seems to do the job for now.
 			// We can optimize further if future performance measures shows it being problematic.
 			// What this method does is:
-			// Given a xamlString like "muxc:SomeControl", converts it to Microsoft .UI.Xaml.Controls.SomeControl.
+			// Given a xamlString like "muxc:SomeControl", converts it to Microsoft.UI.Xaml.Controls.SomeControl.
 			// Note that the given xamlString can be a more complex expression involving multiple namespaces.
 			static string ReplaceNamespace(string xamlString, NamespaceDeclaration ns)
 			{

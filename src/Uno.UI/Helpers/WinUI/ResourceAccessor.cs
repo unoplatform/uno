@@ -21,7 +21,7 @@ namespace Uno.UI.Helpers.WinUI
 	internal partial class ResourceAccessor
 	{
 #if !IS_UNO
-		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft" +  ".UI.Xaml.3.0";
+		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft.UI.Xaml.3.0";
 
 		private static ResourceMap s_resourceMap = GetPackageResourceMap();
 		private static ResourceContext s_resourceContext = ResourceContext.GetForViewIndependentUse();
@@ -49,7 +49,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_resourceMap.GetSubtree(c_resourceLoc);
 		}
 #else
-		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft" +  ".UI.Xaml.3.0";
+		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft.UI.Xaml.3.0";
 		private const string c_resourceLoc = "Uno.UI/Resources";
 #endif
 
