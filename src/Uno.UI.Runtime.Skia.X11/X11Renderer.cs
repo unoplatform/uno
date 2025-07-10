@@ -72,6 +72,7 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 		_airspaceHelper.XShapeClip(nativeClippingPath);
 		Flush();
 		_ = XLib.XFlush(display);
+		host.RootElement?.XamlRoot?.InvokeRenderedFrame();
 	}
 
 	protected abstract SKSurface UpdateSize(int width, int height, int depth);

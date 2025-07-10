@@ -16,6 +16,7 @@ public sealed partial class XamlRoot
 	internal event Action? RenderInvalidated;
 
 #if __SKIA__
+	// For profiling purposes only. Do not depend on these events.
 	internal event Action? PaintedFrame;
 	internal event Action? RenderedFrame;
 #endif
