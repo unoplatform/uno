@@ -1214,7 +1214,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var current in CurrentScope.Components.OrderBy(c => c.MemberName, StringComparer.Ordinal))
 			{
 				var componentName = current.MemberName;
-				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
 
 				var isWeak = current.IsWeakReference ? "true" : "false";
 				writer.AppendLineIndented($"private {componentName}_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
