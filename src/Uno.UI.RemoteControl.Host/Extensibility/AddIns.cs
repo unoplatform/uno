@@ -119,12 +119,12 @@ public class AddIns
 		{
 			var errorProperties = new Dictionary<string, string>
 			{
-				["ErrorMessage"] = ex.Message,
-				["ErrorType"] = ex.GetType().Name,
+				["devserver/DiscoveryErrorMessage"] = ex.Message,
+				["devserver/DiscoveryErrorType"] = ex.GetType().Name,
 			};
 			var errorMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["devserver/DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 			};
 
 			telemetry?.TrackEvent("AddIn.Discovery.Error", errorProperties, errorMeasurements);
@@ -138,14 +138,14 @@ public class AddIns
 
 		var completionProperties = new Dictionary<string, string>
 		{
-			["Result"] = result,
-			["AddInList"] = string.Join(";", addIns.Select(Path.GetFileName))
+			["devserver/DiscoveryResult"] = result,
+			["devserver/DiscoveryAddInList"] = string.Join(";", addIns.Select(Path.GetFileName))
 		};
 
 		var completionMeasurements = new Dictionary<string, double>
 		{
-			["AddInCount"] = addIns.Count,
-			["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds
+			["devserver/DiscoveryAddInCount"] = addIns.Count,
+			["devserver/DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds
 		};
 
 		telemetry.TrackEvent("AddIn.Discovery.Complete", completionProperties, completionMeasurements);

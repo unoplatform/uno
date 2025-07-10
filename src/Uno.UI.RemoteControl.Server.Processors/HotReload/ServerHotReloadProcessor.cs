@@ -135,9 +135,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			var properties = new Dictionary<string, string>
 			{
-				["Event"] = evt.ToString(),
-				["Source"] = source.ToString(),
-				["PreviousState"] = _globalState.ToString()
+				["hotreload/Event"] = evt.ToString(),
+				["hotreload/Source"] = source.ToString(),
+				["hotreload/PreviousState"] = _globalState.ToString()
 			};
 
 
@@ -146,12 +146,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				measurements = new Dictionary<string, double>
 				{
-					["FileCount"] = _current.FilePaths.Count
+					["hotreload/FileCount"] = _current.FilePaths.Count
 				};
 				if (_current.CompletionTime != null)
 				{
 					var duration = (_current.CompletionTime.Value - _current.StartTime).TotalMilliseconds;
-					measurements["DurationMs"] = duration;
+					measurements["hotreload/DurationMs"] = duration;
 				}
 			}
 
@@ -207,16 +207,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						break;
 				}
 
-				properties["NewState"] = _globalState.ToString();
-				properties["HasCurrentOperation"] = (_current != null).ToString();
+				properties["hotreload/NewState"] = _globalState.ToString();
+				properties["hotreload/HasCurrentOperation"] = (_current != null).ToString();
 				_telemetry.TrackEvent("HotReload.Notify.Complete", properties, measurements);
 			}
 			catch (Exception ex)
 			{
 				var errorProperties = new Dictionary<string, string>(properties)
 				{
-					["ErrorMessage"] = ex.Message,
-					["ErrorType"] = ex.GetType().Name
+					["hotreload/ErrorMessage"] = ex.Message,
+					["hotreload/ErrorType"] = ex.GetType().Name
 				};
 				_telemetry.TrackEvent("HotReload.Notify.Error", errorProperties, measurements);
 				throw;

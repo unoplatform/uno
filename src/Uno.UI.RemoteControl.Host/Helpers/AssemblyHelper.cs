@@ -17,12 +17,8 @@ public class AssemblyHelper
 	public static IImmutableList<Assembly> Load(IImmutableList<string> dllFiles, ITelemetry? telemetry = null, bool throwIfLoadFailed = false)
 	{
 		var startTime = Stopwatch.GetTimestamp();
-		var loadingProperties = new Dictionary<string, string>
-		{
-			["AssemblyList"] = string.Join(";", dllFiles.Select(System.IO.Path.GetFileName))
-		};
 
-		telemetry?.TrackEvent("AddIn.Loading.Start", loadingProperties, null);
+		telemetry?.TrackEvent("AddIn.Loading.Start", default(Dictionary<string, string>), null);
 
 		var assemblies = ImmutableList.CreateBuilder<Assembly>();
 		var failedCount = 0;
@@ -52,15 +48,15 @@ public class AssemblyHelper
 			var result = assemblies.ToImmutable();
 
 			// Track completion
-			var completionProperties = new Dictionary<string, string>(loadingProperties)
+			var completionProperties = new Dictionary<string, string>
 			{
-				["Result"] = failedCount == 0 ? "Success" : "PartialFailure",
+				["devserver/AssemblyLoad/Result"] = failedCount == 0 ? "Success" : "PartialFailure",
 			};
 
 			var completionMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["FailedAssemblies"] = failedCount,
+				["devserver/AssemblyLoad/DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["devserver/AssemblyLoad/FailedAssemblies"] = failedCount,
 			};
 
 			telemetry?.TrackEvent("AddIn.Loading.Complete", completionProperties, completionMeasurements);
@@ -69,16 +65,16 @@ public class AssemblyHelper
 		}
 		catch (Exception ex)
 		{
-			var errorProperties = new Dictionary<string, string>(loadingProperties)
+			var errorProperties = new Dictionary<string, string>
 			{
-				["ErrorMessage"] = ex.Message,
-				["ErrorType"] = ex.GetType().Name,
+				["devserver/AssemblyLoad/ErrorMessage"] = ex.Message,
+				["devserver/AssemblyLoad/ErrorType"] = ex.GetType().Name,
 			};
 
 			var errorMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["FailedAssemblies"] = failedCount,
+				["devserver/AssemblyLoad/DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["devserver/AssemblyLoad/FailedAssembliesCount"] = failedCount,
 			};
 
 			telemetry?.TrackEvent("AddIn.Loading.Error", errorProperties, errorMeasurements);

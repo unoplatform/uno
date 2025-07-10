@@ -200,7 +200,7 @@ namespace Uno.UI.RemoteControl.Host
 				// Track devserver startup using global telemetry service
 				var startupProperties = new Dictionary<string, string>
 				{
-					["HasSolution"] = (solution != null).ToString(),
+					["devserver/Startup/HasSolution"] = (solution != null).ToString(),
 				};
 
 				telemetry?.TrackEvent("DevServer.Startup", startupProperties, null);
@@ -227,11 +227,11 @@ namespace Uno.UI.RemoteControl.Host
 						var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
 						var shutdownProperties = new Dictionary<string, string>
 						{
-							["ShutdownType"] = shutdownRequested ? "Graceful" : "Crash",
+							["devserver/ShutdownType"] = shutdownRequested ? "Graceful" : "Crash",
 						};
 						var shutdownMeasurements = new Dictionary<string, double>
 						{
-							["UptimeSeconds"] = uptime.TotalSeconds,
+							["devserver/UptimeSeconds"] = uptime.TotalSeconds,
 						};
 
 						telemetry.TrackEvent("DevServer.Shutdown", shutdownProperties, shutdownMeasurements);
@@ -247,13 +247,13 @@ namespace Uno.UI.RemoteControl.Host
 					var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
 					var errorProperties = new Dictionary<string, string>
 					{
-						["ErrorMessage"] = ex.Message,
-						["ErrorType"] = ex.GetType().Name,
-						["StackTrace"] = ex.StackTrace ?? "",
+						["devserver/Startup/ErrorMessage"] = ex.Message,
+						["devserver/Startup/ErrorType"] = ex.GetType().Name,
+						["devserver/Startup/StackTrace"] = ex.StackTrace ?? "",
 					};
 					var errorMeasurements = new Dictionary<string, double>
 					{
-						["UptimeSeconds"] = uptime.TotalSeconds,
+						["devserver/UptimeSeconds"] = uptime.TotalSeconds,
 					};
 
 					telemetry.TrackEvent("DevServer.StartupFailure", errorProperties, errorMeasurements);

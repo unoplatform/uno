@@ -323,8 +323,8 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// Track processor discovery start
 			var discoveryProperties = new Dictionary<string, string>
 			{
-				["AppInstanceId"] = msg.AppInstanceId,
-				["IsFile"] = File.Exists(msg.BasePath).ToString()
+				["devserver/AppInstanceId"] = msg.AppInstanceId,
+				["devserver/Discovery/IsFile"] = File.Exists(msg.BasePath).ToString()
 			};
 
 			_telemetry?.TrackEvent("Processor.Discovery.Start", discoveryProperties, null);
@@ -398,7 +398,6 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				}
 			}
 
-			var loadedProcessors = new List<string>();
 			var failedProcessors = new List<string>();
 
 			foreach (var asm in assemblies)
@@ -444,7 +443,6 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: true));
 									RegisterProcessor(serverProcessor);
 									processorsLoaded++;
-									loadedProcessors.Add(processor.ProcessorType.Name);
 									if (this.Log().IsEnabled(LogLevel.Debug))
 									{
 										this.Log().LogDebug("Successfully registered server processor {ProcessorType}", processor.ProcessorType);
@@ -489,17 +487,16 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// Track processor discovery completion
 			var completionProperties = new Dictionary<string, string>(discoveryProperties)
 			{
-				["Result"] = processorsFailed == 0 ? "Success" : "PartialFailure",
-				["LoadedProcessors"] = string.Join(",", loadedProcessors),
-				["FailedProcessors"] = string.Join(",", failedProcessors),
+				["devserver/Discovery/Result"] = processorsFailed == 0 ? "Success" : "PartialFailure",
+				["devserver/Discovery/FailedProcessors"] = string.Join(",", failedProcessors),
 			};
 
 			var completionMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["AssembliesProcessed"] = assemblies.Count,
-				["ProcessorsLoadedCount"] = processorsLoaded,
-				["ProcessorsFailedCount"] = processorsFailed,
+				["devserver/Discovery/DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["devserver/Discovery/AssembliesProcessed"] = assemblies.Count,
+				["devserver/Discovery/ProcessorsLoadedCount"] = processorsLoaded,
+				["devserver/Discovery/ProcessorsFailedCount"] = processorsFailed,
 			};
 
 			_telemetry?.TrackEvent("Processor.Discovery.Complete", completionProperties, completionMeasurements);
@@ -514,16 +511,16 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// Track processor discovery error
 			var errorProperties = new Dictionary<string, string>
 			{
-				["ErrorMessage"] = exc.Message,
-				["ErrorType"] = exc.GetType().Name,
+				["devserver/Discovery/ErrorMessage"] = exc.Message,
+				["devserver/Discovery/ErrorType"] = exc.GetType().Name,
 			};
 
 			var errorMeasurements = new Dictionary<string, double>
 			{
-				["DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["AssembliesCount"] = assemblies.Count,
-				["ProcessorsLoadedCount"] = processorsLoaded,
-				["ProcessorsFailedCount"] = processorsFailed,
+				["devserver/Discovery/DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["devserver/Discovery/AssembliesCount"] = assemblies.Count,
+				["devserver/Discovery/ProcessorsLoadedCount"] = processorsLoaded,
+				["devserver/Discovery/ProcessorsFailedCount"] = processorsFailed,
 			};
 
 			_telemetry?.TrackEvent("Processor.Discovery.Error", errorProperties, errorMeasurements);
