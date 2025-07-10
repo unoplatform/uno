@@ -126,7 +126,7 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 				// Clone properties and add context
 				finalProperties = properties != null
 					? new Dictionary<string, string>(properties)
-					: new Dictionary<string, string>();
+					: [];
 			}
 
 			var telemetryEvent = new

@@ -170,7 +170,7 @@ namespace Uno.UI.RemoteControl.Host
 						services.AddSingleton<IIdeChannel, IdeChannelServer>();
 
 						// Add the global service provider to the DI container
-						services.AddSingleton<IServiceProvider>(provider => globalServiceProvider);
+						services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
 
 						// Add connection-specific telemetry services (Scoped)
 						services.AddConnectionTelemetry();
@@ -192,6 +192,9 @@ namespace Uno.UI.RemoteControl.Host
 				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
 
 				host.Services.GetService<IIdeChannel>();
+
+				// Display DevServer version banner
+				DisplayVersionBanner();
 
 				// STEP 3: Use global telemetry for server-wide events
 				// Track devserver startup using global telemetry service
@@ -260,6 +263,47 @@ namespace Uno.UI.RemoteControl.Host
 					await telemetry.FlushAsync(CancellationToken.None);
 					throw;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Displays a banner with the DevServer version information when it starts up.
+		/// </summary>
+		private static void DisplayVersionBanner()
+		{
+			try
+			{
+				var assembly = typeof(Program).Assembly;
+				var version = assembly.GetName().Version?.ToString() ?? "Unknown";
+				var assemblyName = assembly.GetName().Name ?? "Uno.UI.RemoteControl.Host";
+				var location = assembly.Location;
+
+				Console.WriteLine();
+				Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
+				Console.WriteLine("║                    Uno Platform DevServer                   ║");
+				Console.WriteLine("╠══════════════════════════════════════════════════════════════╣");
+				Console.WriteLine($"║ Version: {version,-47} ║");
+				Console.WriteLine($"║ Assembly: {assemblyName,-46} ║");
+				if (!string.IsNullOrEmpty(location))
+				{
+					var shortLocation = location.Length > 45 ? $"...{location.AsSpan(location.Length - 42)}" : location;
+					Console.WriteLine($"║ Location: {shortLocation,-46} ║");
+				}
+				Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
+				Console.WriteLine();
+			}
+			catch (Exception ex)
+			{
+				// Fallback in case of any issues with version extraction
+				Console.WriteLine();
+				Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
+				Console.WriteLine("║                    Uno Platform DevServer                   ║");
+				Console.WriteLine("║                         Started                              ║");
+				Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
+				Console.WriteLine();
+
+				// Log the error for debugging purposes
+				Console.WriteLine($"Warning: Could not extract version information: {ex.Message}");
 			}
 		}
 	}

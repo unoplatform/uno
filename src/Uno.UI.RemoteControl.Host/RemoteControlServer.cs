@@ -50,10 +50,10 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 		// Get the global service provider from the connection services
 		// This allows access to both global and connection-specific services
-		_globalServiceProvider = _serviceProvider.GetService<IServiceProvider>() ?? _serviceProvider;
+		_globalServiceProvider = _serviceProvider.GetKeyedService<IServiceProvider>("global") ?? _serviceProvider;
 
 		// Use connection-specific telemetry for this RemoteControlServer instance
-		// This telemetry is scoped to the current WebSocket connection
+		// This telemetry is scoped to the current WebSocket connection (Kestrel request)
 		_telemetry = _serviceProvider.GetService<ITelemetry>();
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -371,7 +371,8 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 					basePath = msg.BasePath;
 				}
 
-				foreach (var file in Directory.GetFiles(basePath, "Uno.*.dll"))
+				// Local default Uno Processors (matched by assembly name)
+				foreach (var file in Directory.GetFiles(basePath, "Uno.*.Processor*.dll"))
 				{
 					if (Path.GetFileNameWithoutExtension(file).Equals(serverAssemblyName, StringComparison.OrdinalIgnoreCase))
 					{
@@ -425,7 +426,21 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 							try
 							{
-								if (ActivatorUtilities.CreateInstance(_serviceProvider, processor.ProcessorType, parameters: new[] { this }) is IServerProcessor serverProcessor)
+								// Log detailed processor instantiation attempt
+								if (this.Log().IsEnabled(LogLevel.Information))
+								{
+									this.Log().LogInformation(
+										"Attempting to instantiate processor {ProcessorType} from assembly {AssemblyPath}",
+										processor.ProcessorType.FullName,
+										asm.path);
+									this.Log().LogInformation(
+										"Processor assembly location: {AssemblyLocation}",
+										processor.ProcessorType.Assembly.Location);
+								}
+
+								// Use the connection-scoped service provider directly
+								// It should have all necessary dependencies registered via AddConnectionTelemetry()
+								if (ActivatorUtilities.CreateInstance(_serviceProvider, processor.ProcessorType, parameters: [this]) is IServerProcessor serverProcessor)
 								{
 									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: true));
 									RegisterProcessor(serverProcessor);
@@ -433,7 +448,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 									loadedProcessors.Add(processor.ProcessorType.Name);
 									if (this.Log().IsEnabled(LogLevel.Debug))
 									{
-										this.Log().LogDebug("Registered server processor {ProcessorType}", processor.ProcessorType);
+										this.Log().LogDebug("Successfully registered server processor {ProcessorType}", processor.ProcessorType);
 									}
 								}
 								else
@@ -441,9 +456,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false));
 									processorsFailed++;
 									failedProcessors.Add(processor.ProcessorType.Name);
-									if (this.Log().IsEnabled(LogLevel.Debug))
+									if (this.Log().IsEnabled(LogLevel.Warning))
 									{
-										this.Log().LogDebug("Failed to create server processor {ProcessorType}", processor.ProcessorType);
+										this.Log().LogWarning("Failed to create server processor {ProcessorType} - ActivatorUtilities returned null", processor.ProcessorType);
 									}
 								}
 							}
@@ -453,7 +468,8 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 								processorsFailed++;
 								if (this.Log().IsEnabled(LogLevel.Error))
 								{
-									this.Log().LogError(error, "Failed to create server processor {ProcessorType}", processor.ProcessorType);
+									this.Log().LogError(error, "Failed to create server processor {ProcessorType} from assembly {AssemblyPath}", processor.ProcessorType.FullName, asm.path);
+									this.Log().LogError("Processor assembly location: {AssemblyLocation}", processor.ProcessorType.Assembly.Location);
 								}
 							}
 						}

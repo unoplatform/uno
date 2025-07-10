@@ -30,7 +30,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 
 			// Register global telemetry service as singleton
 			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly));
-			services.AddSingleton(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
+			services.AddSingleton(typeof(ITelemetry<>), typeof(TelemetryGenericAdapter<>));
 
 			return services;
 		}
@@ -52,7 +52,8 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 				svc.GetRequiredService<TelemetrySession>()));
 
 			// Register ITelemetry<T> so that it resolves CreateTelemetry with the correct type argument T
-			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryAdapter<>));
+			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryGenericAdapter<>));
+
 			return services;
 		}
 
@@ -130,7 +131,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 					versionAssembly: asm,
 					sessionId: sessionId,
 					productName: asm.GetName().Name);
-			return new TelemetryWrapper(telemetry);
+			return new TelemetryAdapter(telemetry);
 		}
 	}
 }

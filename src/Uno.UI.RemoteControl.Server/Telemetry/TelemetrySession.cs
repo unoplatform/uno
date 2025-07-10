@@ -53,13 +53,13 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		/// Gets the collection of child sessions.
 		/// </summary>
 		public IReadOnlyList<TelemetrySession> ChildSessions => _childSessions.AsReadOnly();
-		private readonly List<TelemetrySession> _childSessions = new();
+		private readonly List<TelemetrySession> _childSessions = [];
 
 		/// <summary>
 		/// Gets or sets metadata about the connection (platform, client type, etc.).
 		/// </summary>
 		public IReadOnlyDictionary<string, string> Metadata => _metadata.AsReadOnly();
-		private readonly Dictionary<string, string> _metadata = new();
+		private readonly Dictionary<string, string> _metadata = [];
 
 		/// <summary>
 		/// Creates a child session for a connection.

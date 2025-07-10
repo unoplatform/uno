@@ -19,19 +19,13 @@ using Uno.UI.RemoteControl.Server.Telemetry;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor))]
 
-#if DEBUG
-[assembly: Telemetry("81286976-e3a4-49fb-b03b-30315092dbc4", EventsPrefix = "uno/dev-server/hot-reload")]
-#else
-[assembly: Telemetry("9a44058e-1913-4721-a979-9582ab8bedce", EventsPrefix = "uno/dev-server/hot-reload")]
-#endif
-
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
 		private static readonly TimeSpan _waitForIdeResultTimeout = TimeSpan.FromSeconds(25);
 		private readonly IRemoteControlServer _remoteControlServer;
-		private readonly ITelemetry<ServerHotReloadProcessor> _telemetry;
+		private readonly ITelemetry _telemetry;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry)
 		{

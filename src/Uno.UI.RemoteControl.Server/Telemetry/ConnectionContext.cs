@@ -24,7 +24,7 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		/// Gets or sets additional connection metadata.
 		/// </summary>
 		public IReadOnlyDictionary<string, string> Metadata => _metadata.AsReadOnly();
-		private readonly Dictionary<string, string> _metadata = new();
+		private readonly Dictionary<string, string> _metadata = [];
 
 		/// <summary>
 		/// Adds metadata to this connection context.
@@ -40,9 +40,6 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		/// Gets a string representation of the connection context for logging.
 		/// </summary>
 		/// <returns>A string describing the connection</returns>
-		public override string ToString()
-		{
-			return $"Connection {ConnectionId:N} at {ConnectedAt:yyyy-MM-dd HH:mm:ss} UTC";
-		}
+		public override string ToString() => $"Connection {ConnectionId:N} at {ConnectedAt:yyyy-MM-dd HH:mm:ss} UTC";
 	}
 }
