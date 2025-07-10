@@ -13,33 +13,19 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		/// <summary>
 		/// Gets the unique identifier for this connection.
 		/// </summary>
-		public Guid ConnectionId { get; } = Guid.NewGuid();
+		public string ConnectionId { get; } = Guid.NewGuid().ToString("N");
 
 		/// <summary>
 		/// Gets or sets the timestamp when the connection was established.
 		/// </summary>
 		public DateTimeOffset ConnectedAt { get; set; } = DateTimeOffset.UtcNow;
 
-		/// <summary>
-		/// Gets or sets additional connection metadata.
-		/// </summary>
-		public IReadOnlyDictionary<string, string> Metadata => _metadata.AsReadOnly();
-		private readonly Dictionary<string, string> _metadata = [];
-
-		/// <summary>
-		/// Adds metadata to this connection context.
-		/// </summary>
-		/// <param name="key">The metadata key</param>
-		/// <param name="value">The metadata value</param>
-		public void AddMetadata(string key, string value)
-		{
-			_metadata[key] = value;
-		}
+		public string SolutionPath { get; set; } = string.Empty;
 
 		/// <summary>
 		/// Gets a string representation of the connection context for logging.
 		/// </summary>
 		/// <returns>A string describing the connection</returns>
-		public override string ToString() => $"Connection {ConnectionId:N} at {ConnectedAt:yyyy-MM-dd HH:mm:ss} UTC";
+		public override string ToString() => $"Connection {ConnectionId} at {ConnectedAt:yyyy-MM-dd HH:mm:ss} UTC";
 	}
 }

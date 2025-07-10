@@ -46,24 +46,14 @@ namespace Uno.UI.RemoteControl.Host
 							{
 								connectionContext.ConnectedAt = DateTimeOffset.UtcNow;
 
-								// Add essential connection metadata
-								connectionContext.AddMetadata("Protocol", context.Request.Protocol);
-
 								// Track client connection in telemetry
 								var telemetry = context.RequestServices.GetService<ITelemetry>();
 								if (telemetry != null)
 								{
 									var properties = new Dictionary<string, string>
 									{
-										["ConnectionId"] = connectionContext.ConnectionId.ToString(),
-										["Protocol"] = context.Request.Protocol
+										["ConnectionId"] = connectionContext.ConnectionId,
 									};
-
-									// Add all metadata as properties
-									foreach (var meta in connectionContext.Metadata)
-									{
-										properties[meta.Key] = meta.Value;
-									}
 
 									telemetry.TrackEvent("Client.Connection.Opened", properties, null);
 								}
@@ -103,7 +93,7 @@ namespace Uno.UI.RemoteControl.Host
 
 							var properties = new Dictionary<string, string>
 							{
-								["ConnectionId"] = connectionContext.ConnectionId.ToString()
+								["ConnectionId"] = connectionContext.ConnectionId
 							};
 
 							var measurements = new Dictionary<string, double>

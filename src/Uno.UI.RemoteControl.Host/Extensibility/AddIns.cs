@@ -21,12 +21,8 @@ public class AddIns
 	public static IImmutableList<string> Discover(string solutionFile, ITelemetry? telemetry = null)
 	{
 		var startTime = Stopwatch.GetTimestamp();
-		var discoveryProperties = new Dictionary<string, string>
-		{
-			["SolutionId"] = TelemetryHashHelper.Hash(solutionFile),
-		};
 
-		telemetry?.TrackEvent("AddIn.Discovery.Start", discoveryProperties, null);
+		telemetry?.TrackEvent("AddIn.Discovery.Start", default(Dictionary<string, string>), null);
 
 		try
 		{
@@ -65,7 +61,7 @@ public class AddIns
 				}
 
 				var emptyResult = ImmutableArray<string>.Empty;
-				TrackDiscoveryCompletion(telemetry, discoveryProperties, startTime, emptyResult, "NoTargetFrameworks");
+				TrackDiscoveryCompletion(telemetry, startTime, emptyResult, "NoTargetFrameworks");
 				return emptyResult;
 			}
 
@@ -105,7 +101,7 @@ public class AddIns
 				var addIns = Read(tmp);
 				if (!addIns.IsEmpty)
 				{
-					TrackDiscoveryCompletion(telemetry, discoveryProperties, startTime, addIns, "Success");
+					TrackDiscoveryCompletion(telemetry, startTime, addIns, "Success");
 					return addIns;
 				}
 			}
@@ -116,12 +112,12 @@ public class AddIns
 			}
 
 			var noAddInsResult = ImmutableArray<string>.Empty;
-			TrackDiscoveryCompletion(telemetry, discoveryProperties, startTime, noAddInsResult, "NoAddInsFound");
+			TrackDiscoveryCompletion(telemetry, startTime, noAddInsResult, "NoAddInsFound");
 			return noAddInsResult;
 		}
 		catch (Exception ex)
 		{
-			var errorProperties = new Dictionary<string, string>(discoveryProperties)
+			var errorProperties = new Dictionary<string, string>
 			{
 				["ErrorMessage"] = ex.Message,
 				["ErrorType"] = ex.GetType().Name,
@@ -136,11 +132,11 @@ public class AddIns
 		}
 	}
 
-	private static void TrackDiscoveryCompletion(ITelemetry? telemetry, Dictionary<string, string> baseProperties, long startTime, IImmutableList<string> addIns, string result)
+	private static void TrackDiscoveryCompletion(ITelemetry? telemetry, long startTime, IImmutableList<string> addIns, string result)
 	{
 		if (telemetry == null) return;
 
-		var completionProperties = new Dictionary<string, string>(baseProperties)
+		var completionProperties = new Dictionary<string, string>
 		{
 			["Result"] = result,
 			["AddInList"] = string.Join(";", addIns.Select(Path.GetFileName))

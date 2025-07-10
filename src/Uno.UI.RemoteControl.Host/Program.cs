@@ -21,11 +21,11 @@ namespace Uno.UI.RemoteControl.Host
 {
 	class Program
 	{
-		static ITelemetry? telemetry;
-
 		static async Task Main(string[] args)
 		{
 			var startTime = Stopwatch.GetTimestamp();
+
+			ITelemetry? telemetry = null;
 
 			// Set up graceful shutdown handling
 			using var cancellationTokenSource = new CancellationTokenSource();
@@ -147,7 +147,7 @@ namespace Uno.UI.RemoteControl.Host
 				var globalServiceProvider = globalServices.BuildServiceProvider();
 #pragma warning restore ASP0000
 
-				telemetry = globalServiceProvider.GetService<ITelemetry>();
+				telemetry = globalServiceProvider.GetRequiredService<ITelemetry>();
 
 				// STEP 2: Create the WebHost with reference to the global service provider
 				var builder = new WebHostBuilder()
@@ -173,7 +173,7 @@ namespace Uno.UI.RemoteControl.Host
 						services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
 
 						// Add connection-specific telemetry services (Scoped)
-						services.AddConnectionTelemetry();
+						services.AddConnectionTelemetry(solution);
 					});
 
 				if (solution is not null)

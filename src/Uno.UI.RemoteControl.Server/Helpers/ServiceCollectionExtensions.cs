@@ -25,11 +25,11 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			services.AddSingleton<TelemetrySession>(svc => new TelemetrySession
 			{
 				SessionType = TelemetrySessionType.Root,
-				CreatedAt = DateTime.UtcNow
+				ConnectionId = "global",
 			});
 
 			// Register global telemetry service as singleton
-			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly));
+			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly, svc.GetRequiredService<TelemetrySession>()));
 			services.AddSingleton(typeof(ITelemetry<>), typeof(TelemetryGenericAdapter<>));
 
 			return services;
@@ -39,13 +39,13 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		/// Adds connection-specific telemetry services (Scoped) for individual WebSocket connections.
 		/// These services are created per connection and disposed when the connection closes.
 		/// </summary>
-		public static IServiceCollection AddConnectionTelemetry(this IServiceCollection services)
+		public static IServiceCollection AddConnectionTelemetry(this IServiceCollection services, string? solutionPath)
 		{
 			// Register connection context as scoped to capture per-connection metadata
 			services.AddScoped<ConnectionContext>();
 
 			// Register TelemetrySession as scoped with connection context integration
-			services.AddScoped<TelemetrySession>(svc => CreateConnectionTelemetrySession(svc));
+			services.AddScoped<TelemetrySession>(svc => CreateConnectionTelemetrySession(svc, solutionPath));
 
 			// Register connection-specific telemetry service as scoped
 			services.AddScoped<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly,
@@ -60,32 +60,15 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		/// <summary>
 		/// Creates a connection-specific telemetry session with metadata from ConnectionContext.
 		/// </summary>
-		private static TelemetrySession CreateConnectionTelemetrySession(IServiceProvider svc)
+		private static TelemetrySession CreateConnectionTelemetrySession(IServiceProvider svc, string? solutionPath)
 		{
-			var connectionContext = svc.GetService<ConnectionContext>();
+			var connectionContext = svc.GetRequiredService<ConnectionContext>();
 			var session = new TelemetrySession
 			{
 				SessionType = TelemetrySessionType.Connection,
-				ConnectionId = connectionContext?.ConnectionId ?? Guid.NewGuid(),
-				CreatedAt = DateTime.UtcNow
+				ConnectionId = connectionContext.ConnectionId,
+				SolutionPath = solutionPath,
 			};
-
-			// Add connection metadata to the telemetry session only if connectionContext is available
-			if (connectionContext != null)
-			{
-				session.AddMetadata("ConnectedAt",
-					connectionContext.ConnectedAt.ToString("yyyy-MM-dd HH:mm:ss UTC", DateTimeFormatInfo.InvariantInfo));
-
-				// Copy additional metadata from connection context (excluding network details)
-				foreach (var kvp in connectionContext.Metadata)
-				{
-					// Skip network-related metadata that's not useful
-					if (kvp.Key != "LocalPort" && kvp.Key != "RemotePort")
-					{
-						session.AddMetadata($"Connection.{kvp.Key}", kvp.Value);
-					}
-				}
-			}
 
 			return session;
 		}
@@ -93,9 +76,9 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		/// <summary>
 		/// Creates a telemetry instance with optional session ID.
 		/// </summary>
-		internal static ITelemetry CreateTelemetry(Assembly asm, TelemetrySession? session = null)
+		internal static ITelemetry CreateTelemetry(Assembly asm, TelemetrySession session)
 		{
-			var sessionId = session?.Id.ToString("N");
+			var sessionId = session.Id;
 
 			// Get telemetry configuration first
 			if (asm.GetCustomAttribute<TelemetryAttribute>() is not { } config)
@@ -110,7 +93,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			if (!string.IsNullOrEmpty(telemetryFilePath))
 			{
 				// New behavior: use contextual naming with events prefix
-				if (string.IsNullOrEmpty(sessionId))
+				if (session.SessionType is TelemetrySessionType.Root)
 				{
 					// Global telemetry - use contextual naming
 					return new FileTelemetry(telemetryFilePath, "global", eventsPrefix);
@@ -123,11 +106,14 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 				}
 			}
 
+			var path = Path.GetDirectoryName(session.SolutionPath) ?? string.Empty;
+
 			// Use normal telemetry
 			var telemetry =
 				new Uno.DevTools.Telemetry.Telemetry(
 					instrumentationKey: config.InstrumentationKey,
 					eventNamePrefix: eventsPrefix,
+					currentDirectoryProvider: () => path,
 					versionAssembly: asm,
 					sessionId: sessionId,
 					productName: asm.GetName().Name);
