@@ -3330,7 +3330,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariantIndented("// Load {0}", member.Value);
 							}
-							else if (member.Member.Name == "Uid")
+							else if (member.Member.Name == "Uid"
+								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
 							{
 								uidMember = member;
 								writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXUid({closureName}, \"{objectUid}\");");
@@ -5859,7 +5860,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string? GetObjectUid(XamlObjectDefinition objectDefinition)
 		{
 			string? objectUid = null;
-			var localizedObject = FindMember(objectDefinition, "Uid");
+			var localizedObject = FindMember(objectDefinition, "Uid", XamlConstants.XamlXmlNamespace);
 			if (localizedObject?.Value != null)
 			{
 				objectUid = localizedObject.Value.ToString();
