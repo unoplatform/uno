@@ -84,11 +84,12 @@ public class Given_SKCanvasElement
 	}
 
 	[TestMethod]
-	public async Task When_Loading_Not_Rendereing_Unnecessarily()
+	[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/1380")]
+	public async Task When_Loading_Not_Rendering_Unnecessarily()
 	{
 		var renderInvalidatedCount = 0;
 
-		var SUT = new RedFillSKCanvasElement
+		var SUT = new InvalidateOnRenderSKCanvasElement
 		{
 			Height = 400,
 			Width = 400
@@ -122,9 +123,10 @@ public class Given_SKCanvasElement
 
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/1380")]
 	public async Task When_Invalidate_Called_MultipleTimes_DoesNot_Crash()
 	{
-		var SUT = new RedFillSKCanvasElement
+		var SUT = new InvalidateOnRenderSKCanvasElement
 		{
 			Height = 200,
 			Width = 400
@@ -146,16 +148,9 @@ public class Given_SKCanvasElement
 		stack.Children.Add(SUT);
 		stack.Children.Add(blueCanvas);
 
-		var border = new Border
-		{
-			BorderBrush = Microsoft.UI.Colors.Green,
-			Height = 500,
-			Child = stack
-		};
+		await UITestHelper.Load(stack);
 
-		await UITestHelper.Load(border);
-
-		var bitmap = await UITestHelper.ScreenShot(border);
+		var bitmap = await UITestHelper.ScreenShot(stack);
 
 		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 200, 200), Microsoft.UI.Colors.Red);
 		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 200, 200, 200), Microsoft.UI.Colors.Blue);
@@ -204,7 +199,7 @@ public class Given_SKCanvasElement
 		}
 	}
 
-	private class RedFillSKCanvasElement : SKCanvasElement
+	private class InvalidateOnRenderSKCanvasElement : SKCanvasElement
 	{
 		protected override void RenderOverride(SKCanvas canvas, Size area)
 		{
