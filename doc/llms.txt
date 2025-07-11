@@ -1,11 +1,11 @@
 # Uno Platform
 
-The Uno Platform is an Open-Source platform for building single codebase native mobile, web (using WebAssembly), desktop, and embedded apps quickly.
+The Uno Platform is an Open-Source .NET platform for building single codebase, cross-platform applications for mobile, web (using WebAssembly), desktop, and embedded apps quickly.
 
 Important notes:
-- The core framework is Apache 2 - licensed and free since its release in 2018; optional enterprise support and advanced tooling (such as Hot Design) are offered under paid plans
+- The core framework is free and open-source under Apache 2 license, since its release in 2018; optional enterprise support and advanced tooling (such as Hot Design) are offered under paid plans
 - Skia (using a full screen canvas) and Native (using native elements) renderers are available
-- Uno Platform uses the WinUI and WinRT API definitions, but does not use WinAppSDK/WinUI. WinAppSDK is only used when running the `net9.0-windows` target, for the other targets only Uno Platform code is used
+- Uno Platform uses the WinUI and WinRT API definitions, but does not use WinAppSDK/WinUI. WinAppSDK is only used when running the `netX.0-windows` target, for the other targets only Uno Platform code is used
 - Uno Platform uses official .NET mobile bindings directly but does not use MAUI
 - Uno Platform offers a comprehensive C# and XAML Hot Reload Support, under the free plan
 - Uno Platform apps can run on iOS/iPadOS, Android, macOS, Windows, Linux and Browsers supporting WebAssembly
@@ -17,7 +17,6 @@ Important notes:
 [Getting Started](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/get-started.md)
 [how-uno-works](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/how-uno-works.md)
 [why-uno-platform](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/concepts/overview/why-uno-platform.md)
-[dotnet new templates docs](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/get-started-dotnet-new.md)
 
 [Uno Check](https://raw.githubusercontent.com/unoplatform/uno.check/refs/heads/main/doc/using-uno-check.md)
 
@@ -31,6 +30,7 @@ Important notes:
 [VSCode Mobile debug](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/create-an-app-vscode.md)
 [VSCode Support for omnisharp and C# devkit](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/get-started-vscode.md)
 [VS Code Extension](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/get-started-vscode.md)
+[dotnet new templates docs](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/get-started-dotnet-new.md)
 
 [Hot Reload Docs](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/studio/Hot Reload/hot-reload-overview.md)
 
