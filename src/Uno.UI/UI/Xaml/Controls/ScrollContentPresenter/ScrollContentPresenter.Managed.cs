@@ -40,7 +40,6 @@ namespace Microsoft.UI.Xaml.Controls
 			? typeof(ScrollContentPresenter).Log().Trace
 			: null;
 
-		private /*readonly - partial*/ IScrollStrategy _strategy;
 		private GestureRecognizer.Manipulation? _touchInertia;
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
 #nullable restore
@@ -115,15 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void InitializePartial()
 		{
 #if __SKIA__
-			if (Uno.UI.FeatureConfiguration.ScrollContentPresenter.UseLegacyScrollStrategy)
-			{
-				_strategy = TransformScrollStrategy.Instance;
-				_strategy.Initialize(this);
-			}
-			else
-			{
-				Visual.Clip = Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
-			}
+			Visual.Clip = Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
 #endif
 		}
 
@@ -314,13 +305,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)
 		{
-			if (Uno.UI.FeatureConfiguration.ScrollContentPresenter.UseLegacyScrollStrategy)
-			{
-				_strategy.Update(view, horizontalOffset, verticalOffset, zoom, options);
-
-				return;
-			}
-
 			var target = new Vector2((float)-horizontalOffset, (float)-verticalOffset);
 			var visual = view.Visual;
 
@@ -656,5 +640,17 @@ namespace Microsoft.UI.Xaml.Controls
 			Right = 1 << 4
 		}
 	}
+
+	/// <summary>
+	/// Options for the ScrollContentPrensenter.Update
+	/// </summary>
+	/// <param name="DisableAnimation">Request to disable the animation.</param>
+	/// <param name="LinearAnimationDuration">
+	/// Requests to use a linear animation with a specific duration instead of the default animation strategy.
+	/// This is for the for inertia processor with touch scrolling where the total duration is calculated based on the velocity.
+	/// </param>
+	/// <param name="IsInertial">Indicates that the scroll is coming from an inertia processor.</param>
+	/// <param name="IsIntermediate">Indicates that the scroll is an intermediate value, not the final one.</param>
+	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsInertial = false, bool IsIntermediate = false);
 }
 #endif
