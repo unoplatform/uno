@@ -8,7 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal interface IScrollStrategy
 	{
-		event EventHandler<StrategyUpdateEventArgs>? Updated;
 		void Initialize(ScrollContentPresenter presenter);
 		void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options);
 	}
@@ -22,6 +21,5 @@ namespace Microsoft.UI.Xaml.Controls
 	/// This is for the for inertia processor with touch scrolling where the total duration is calculated based on the velocity.
 	/// </param>
 	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsInertial = false, bool IsIntermediate = false);
-	internal record StrategyUpdateEventArgs(double HorizontalOffset, double VerticalOffset, bool IsIntermediate = false);
 }
 #endif
