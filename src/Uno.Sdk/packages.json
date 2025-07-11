@@ -81,7 +81,7 @@
 	},
 	{
 	  "group": "sdkextras",
-	  "version": "5.5-dev.26",
+	  "version": "6.0.5",
 	  "packages": [
 		"Uno.Sdk.Extras"
 	  ]
