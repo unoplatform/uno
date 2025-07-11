@@ -15,6 +15,11 @@ using static Uno.UI.Xaml.Core.InputManager.PointerManager;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using static System.Net.Mime.MediaTypeNames;
 using System.Threading;
+using System.Numerics;
+using Microsoft.UI.Composition;
+
+
+
 
 
 #if HAS_UNO_WINUI
@@ -110,11 +115,16 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void InitializePartial()
 		{
 #if __SKIA__
-			_strategy = CompositorScrollStrategy.Instance;
+			if (Uno.UI.FeatureConfiguration.ScrollContentPresenter.UseLegacyScrollStrategy)
+			{
+				_strategy = TransformScrollStrategy.Instance;
+				_strategy.Initialize(this);
+			}
+			else
+			{
+				Visual.Clip = Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
+			}
 #endif
-
-			_strategy.Initialize(this);
-			_strategy.Updated += OnStrategyUpdated;
 		}
 
 		private protected override void OnLoaded()
@@ -179,14 +189,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (oldValue is UIElement oldElt)
 			{
-				_strategy.Update(oldElt, 0, 0, 1, new(DisableAnimation: true));
+				Update(oldElt, 0, 0, 1, new(DisableAnimation: true));
 			}
 
 			base.OnContentChanged(oldValue, newValue);
 
 			if (newValue is UIElement newElt)
 			{
-				_strategy.Update(newElt, HorizontalOffset, VerticalOffset, 1, new(DisableAnimation: true));
+				Update(newElt, HorizontalOffset, VerticalOffset, 1, new(DisableAnimation: true));
 			}
 		}
 
@@ -257,19 +267,21 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (Content is UIElement contentElt)
 				{
-					_strategy.Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, 1, options);
+					Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, 1, options);
 				}
 			}
 
 			return success;
 		}
+
 		private long _stategyUpdateRequestId;
-		private void OnStrategyUpdated(object sender, StrategyUpdateEventArgs eventArgs)
+		private void Updated(double horizontalOffset, double verticalOffset, bool isIntermediate = false)
 		{
 			var request = Interlocked.Increment(ref _stategyUpdateRequestId);
+
 			if (Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess)
 			{
-				UpdateOffsets(eventArgs);
+				UpdateOffsets(horizontalOffset, verticalOffset, isIntermediate);
 			}
 			else
 			{
@@ -277,15 +289,13 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (request == _stategyUpdateRequestId)
 					{
-						UpdateOffsets(eventArgs);
+						UpdateOffsets(horizontalOffset, verticalOffset, isIntermediate);
 					}
 				});
 			}
 
-			void UpdateOffsets(StrategyUpdateEventArgs eventArgs)
+			void UpdateOffsets(double updatedHorizontalOffset, double updatedVerticalOffset, bool isIntermediate = false)
 			{
-				var (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate) = eventArgs;
-
 				// For the OnPresenterScrolled, we cannot rely only on the `updated` flag, we must also check for the isIntermediate flag!
 				if (_lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
 				{
@@ -299,6 +309,60 @@ namespace Microsoft.UI.Xaml.Controls
 				//		 we will apply only the final ScrollOffsets and only once.
 				ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
 				InvalidateViewport();
+			}
+		}
+
+		private void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)
+		{
+			if (Uno.UI.FeatureConfiguration.ScrollContentPresenter.UseLegacyScrollStrategy)
+			{
+				_strategy.Update(view, horizontalOffset, verticalOffset, zoom, options);
+
+				return;
+			}
+
+			var target = new Vector2((float)-horizontalOffset, (float)-verticalOffset);
+			var visual = view.Visual;
+
+			// No matter the `options.DisableAnimation`, if we have an animation running
+			if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
+				// ... that is animating to (almost) the same target value
+				&& Vector2.DistanceSquared(visual.AnchorPoint, target) < 4
+				// ... and which is about to complete
+				&& controller.Remaining < TimeSpan.FromMilliseconds(50))
+			{
+				// We keep the animation running, making sure that we are not abruptly stopping scrolling animation
+				// due to completion of the inertia processor a bit earlier than the animation itself.
+				return;
+			}
+
+
+			if (options is { DisableAnimation: true } or { IsInertial: true })
+			{
+				visual.StopAnimation(nameof(Visual.AnchorPoint));
+				visual.AnchorPoint = target;
+				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
+			}
+			else
+			{
+				var compositor = visual.Compositor;
+				var easing = CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10);
+				var animation = compositor.CreateVector2KeyFrameAnimation();
+				animation.InsertKeyFrame(1.0f, target, easing);
+				animation.Duration = TimeSpan.FromSeconds(1);
+				void OnFrame(CompositionAnimation? _) => Updated(-visual.AnchorPoint.X, -visual.AnchorPoint.Y, true);
+				void OnStopped(object? _, EventArgs __)
+				{
+					animation.AnimationFrame -= OnFrame;
+					animation.Stopped -= OnStopped;
+
+					Updated(-visual.AnchorPoint.X, -visual.AnchorPoint.Y, false);
+				}
+
+				animation.AnimationFrame += OnFrame;
+				animation.Stopped += OnStopped;
+
+				visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
 			}
 		}
 
