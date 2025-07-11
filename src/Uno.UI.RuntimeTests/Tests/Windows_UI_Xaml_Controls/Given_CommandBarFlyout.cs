@@ -74,9 +74,7 @@ public class Given_CommandBarFlyout
 
 		var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
 
-		var commandBarPopup = popups.FirstOrDefault(p => VisualTreeUtils.FindVisualChildByType<CommandBarFlyoutCommandBar>(p.Child) is not null);
-		Assert.IsNotNull(commandBarPopup);
-		var commandBar = VisualTreeUtils.FindVisualChildByType<CommandBarFlyoutCommandBar>(commandBarPopup?.Child);
+		var commandBar = popups.Select(p => (p.Child as FlyoutPresenter).Content as CommandBarFlyoutCommandBar).FirstOrDefault();
 		Assert.IsNotNull(commandBar);
 
 		var state = VisualStateManager.GetCurrentState(commandBar, "PrimaryLabelStates");
