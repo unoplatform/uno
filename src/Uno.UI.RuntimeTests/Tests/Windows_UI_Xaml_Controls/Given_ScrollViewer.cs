@@ -726,13 +726,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Wheel(-50, steps: 5);
 			await WindowHelper.WaitForIdle();
 
+			// waiting for wheel animation
+			await Task.Delay(500);
+
 			Assert.AreEqual(0, outer.VerticalOffset);
-			Assert.IsTrue(inner.VerticalOffset > 0);
+			Assert.IsTrue(inner.VerticalOffset > 0, "Inner Vertical Offset is not greater than 0");
 
 			mouse.Wheel(-500, steps: 5);
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
+			// waiting for wheel animation
+			await Task.Delay(500);
+
+			var expectedOffset = outer.ScrollableHeight / 2;
+			Assert.IsTrue(outer.VerticalOffset > expectedOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
 			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
 		}
 
@@ -788,7 +795,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Wheel(-600, steps: 5);
 			await WindowHelper.WaitForIdle();
 
+
+			// waiting for wheel animation
+			await Task.Delay(500);
+
 			Assert.AreEqual(0, outer.VerticalOffset);
+
+			// waiting for wheel animation
+			await Task.Delay(500);
 
 			mouse.Wheel(-500, steps: 5);
 			await WindowHelper.WaitForIdle();
