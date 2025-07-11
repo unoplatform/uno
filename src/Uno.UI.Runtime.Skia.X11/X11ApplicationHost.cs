@@ -79,11 +79,10 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		if (Type.GetType("Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaPresenterExtensionType
 			&& Type.GetType("Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaExtensionType)
 		{
-			// Load the library in lazy mode to limit the performance impact on startup
-			var libvlcHandle = dlopen("libvlc.so", /* RTLD_LAZY */ 0x4);
+			var libvlcHandle = LibDl.dlopen("libvlc.so", lazy: true);
 			if (libvlcHandle != IntPtr.Zero)
 			{
-				_ = dlclose(libvlcHandle);
+				LibDl.dlclose(libvlcHandle);
 				ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), presenter => Activator.CreateInstance(mediaPresenterExtensionType, presenter)!);
 				ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => Activator.CreateInstance(mediaExtensionType, player)!);
 			}
@@ -96,12 +95,6 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			}
 		}
 	}
-
-	[LibraryImport("libdl.so.2", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial IntPtr dlopen(string path, int mode);
-
-	[LibraryImport("libdl.so.2")]
-	internal static partial int dlclose(IntPtr handle);
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60) : this(appBuilder, renderFrameRate, false)
 	{
