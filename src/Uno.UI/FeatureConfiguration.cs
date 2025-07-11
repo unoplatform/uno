@@ -1031,10 +1031,5 @@ namespace Uno.UI
 #endif
 		}
 
-
-		public static class ScrollContentPresenter
-		{
-			public static bool UseLegacyScrollStrategy { get; set; }
-		}
 	}
 }

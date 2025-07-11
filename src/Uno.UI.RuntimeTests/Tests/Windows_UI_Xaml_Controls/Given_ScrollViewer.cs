@@ -819,7 +819,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
 			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
-			// we don't end up to invoke IScrollStrategy.Set again and again (preventing the CompositorScrollStrategy to properly process its animation)
+			// we don't end up to invoke ScrollContentPresenter.Set again and again (preventing the ScrollContentPresenter.Update methohd to properly process its animation)
 
 			FrameworkElement content;
 			var sut = new ScrollViewer
@@ -835,16 +835,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var bounds = await UITestHelper.Load(sut);
 
-			// First make sure that this test can effectively test something!
-			var strategy = sut.Presenter?.GetType().GetField("_strategy", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(sut.Presenter);
-#if __SKIA__
-			Assert.AreEqual(CompositorScrollStrategy.Instance, strategy);
-#else
-			if (strategy is null || strategy.GetType().Name != "CompositorScrollStrategy")
-			{
-				Assert.Inconclusive("This test is valid only on platforms that uses the CompositorScrollStrategy.");
-			}
-#endif
 			var visual = ElementCompositionPreview.GetElementVisual(content);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
@@ -856,7 +846,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(bounds.GetCenter());
 			mouse.Wheel(-400, steps: 1);
 
-			// Here we assume that CompositorScrollStrategy is using KeyFrameAnimation. If no longer the case, the test can be updated!
+			// Here we assume that ScrollContentPresenter is using KeyFrameAnimation. If no longer the case, the test can be updated!
 			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
 			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
 
