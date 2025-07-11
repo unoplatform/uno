@@ -28,8 +28,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var root = (StackPanel)XamlReader.Load(
 					@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
                              xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                             xmlns:primitives='using:Microsoft" +  @".UI.Xaml.Controls.Primitives'
-                             xmlns:controls='using:Microsoft" +  @".UI.Xaml.Controls'> 
+                             xmlns:primitives='using:Microsoft.UI.Xaml.Controls.Primitives'
+                             xmlns:controls='using:Microsoft.UI.Xaml.Controls'> 
                              <controls:Expander x:Name ='ExpandedExpander' AutomationProperties.Name='ExpandedExpander' IsExpanded='True' Margin='12' HorizontalAlignment='Left'>
                                 <controls:Expander.Header>
                                     <Grid>

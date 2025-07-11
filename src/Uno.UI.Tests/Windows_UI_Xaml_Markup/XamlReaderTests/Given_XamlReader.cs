@@ -1608,7 +1608,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var root = (StackPanel)XamlReader.Load(
 				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:primitives='using:Microsoft" +  @".UI.Xaml.Controls.Primitives'> 
+                        xmlns:primitives='using:Microsoft.UI.Xaml.Controls.Primitives'> 
                     <StackPanel.Resources>
                         <primitives:CornerRadiusFilterConverter x:Key='RightCornerRadiusFilterConverter' Filter='Right'/>
                     </StackPanel.Resources>
