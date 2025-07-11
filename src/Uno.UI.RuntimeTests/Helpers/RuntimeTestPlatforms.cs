@@ -1,5 +1,8 @@
-﻿namespace Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
 
+namespace Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[Flags]
 public enum RuntimeTestPlatforms
 {
 	None = 0,

@@ -257,6 +257,9 @@ public partial class Given_HotReloadWorkspace
 			}
 
 			var arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {Process.GetCurrentProcess().Id} --metadata-updates true";
+
+			Console.WriteLine($"Starting RCHost: {arguments}");
+
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,
