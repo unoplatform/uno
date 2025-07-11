@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
+using MUIC = Microsoft.UI.Content;
 
 namespace Microsoft.UI.Xaml;
 
@@ -115,4 +116,10 @@ public sealed partial class XamlRoot
 
 		return VisualTree.PopupRoot.OpenPopup(popup);
 	}
+
+	//UNO TODO: Properly implement ContentIslandEnvironment from WinUI source
+	public MUIC.ContentIslandEnvironment ContentIslandEnvironment => new MUIC.ContentIslandEnvironment();
+
+	//UNO TODO: Properly implement ContentCoordinateConverter from WinUI source
+	public MUIC.ContentCoordinateConverter CoordinateConverter => new MUIC.ContentCoordinateConverter();
 }
