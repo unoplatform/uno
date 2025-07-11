@@ -4,11 +4,11 @@ uid: Uno.UI.CommonIssues.Wasm
 
 # Issues related to WebAssembly projects
 
-## WebAssembly: DllImport unable to load library 'libSkiaSharp'.
+## WebAssembly: DllImport unable to load library 'libSkiaSharp'
 
 If you're getting the following message in the browser debugger:
 
-```
+```text
 [MONO] DllImport unable to load library 'libSkiaSharp'.
 ```
 
