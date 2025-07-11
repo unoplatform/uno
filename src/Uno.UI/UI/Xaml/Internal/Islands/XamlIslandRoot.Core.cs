@@ -104,7 +104,11 @@ internal partial class XamlIslandRoot
 		return finalSize;
 	}
 
-	public Size GetSize() => new Size(ActualWidth, ActualHeight);
+	/// <remarks>
+	/// The Width and Height are set in DesktopWindow.cs immediately after native window
+	/// size changes.
+	/// </remarks>
+	public Size GetSize() => new Size(Width, Height);
 
 	public new bool IsVisible() => _isVisible;
 
