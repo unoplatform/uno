@@ -291,7 +291,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			var isHttps = false;
 			if (OperatingSystem.IsBrowser())
 			{
-				isHttps = WebAssemblyImports.GetWindowLocationProtocol().StartsWith("https", StringComparison.OrdinalIgnoreCase);
+				isHttps = string.Equals(WebAssemblyImports.EvalString("window.location.protocol"), "https:", StringComparison.OrdinalIgnoreCase);
 			}
 
 			_status.Report(ConnectionState.Connecting);
@@ -432,7 +432,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					{
 						var originParts = endpoint.Split('-');
 
-						var currentHost = WebAssemblyImports.GetWindowLocationHostname();
+						var currentHost = WebAssemblyImports.EvalString("window.location.hostname");
 						var targetParts = currentHost.Split('-');
 
 						endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
