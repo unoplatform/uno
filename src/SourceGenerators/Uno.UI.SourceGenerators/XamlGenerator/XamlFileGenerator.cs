@@ -1025,14 +1025,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var isWindow = IsWindow(controlBaseType);
 
-			if (hasXBindExpressions || hasResourceExtensions)
+			if (hasXBindExpressions || hasResourceExtensions || _isHotReloadEnabled)
 			{
 				var activator = $"new {GetBindingsTypeNames(_xClassName.ClassName).bindingsClassName}(this)";
 
 				writer.AppendLineIndented($"Bindings = {activator};");
 			}
 
-			if ((isFrameworkElement || isWindow) && (hasXBindExpressions || hasResourceExtensions))
+			if ((isFrameworkElement || isWindow) && (hasXBindExpressions || hasResourceExtensions || _isHotReloadEnabled))
 			{
 				// Casting to FrameworkElement or Window is important to avoid issues when there
 				// is a member named Loading or Activated that shadows the ones from FrameworkElement/Window
@@ -1043,7 +1043,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					setupCallbackSignature = "private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)";
 					writer.AppendLineIndented("((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;");
 
-					if (hasXBindExpressions)
+					if (hasXBindExpressions || _isHotReloadEnabled)
 					{
 						teardownCallbackSignature = "private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)";
 						writer.AppendLineIndented("((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;");
@@ -1183,22 +1183,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var componentName = current.MemberName;
 				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
-
 				var isWeak = current.IsWeakReference ? "true" : "false";
-				var accessors = _isHotReloadEnabled ? " { get; }" : ""; // We use property for HR so we can remove them without causing rude edit.
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder{accessors} = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
 
-				using (writer.BlockInvariant($"private {typeName} {componentName}"))
+				if (_isHotReloadEnabled)
 				{
-					using (writer.BlockInvariant("get"))
-					{
-						writer.AppendLineIndented($"return ({typeName}){componentName}_Holder.Instance;");
-					}
-
-					using (writer.BlockInvariant("set"))
-					{
-						writer.AppendLineIndented($"{componentName}_Holder.Instance = value;");
-					}
+					// We use a property for HR so we can remove them without causing rude edit.
+					// We also avoid property initializer as they are known to cause issue with HR: https://github.com/dotnet/roslyn/issues/79320
+					writer.AppendMultiLineIndented($$"""
+						private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder { get; set; }
+						private {{typeName}} {{componentName}}
+						{
+							get => ({{typeName}})({{componentName}}_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}})).Instance;
+							set => ({{componentName}}_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}})).Instance = value;
+						}
+					""");
+				}
+				else
+				{
+					writer.AppendMultiLineIndented($$"""
+							private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}});
+							private {{typeName}} {{componentName}}
+							{
+								get => ({{typeName}}){{componentName}}_Holder.Instance;
+								set => {{componentName}}_Holder.Instance = value;
+							}
+						""");
 				}
 			}
 		}
