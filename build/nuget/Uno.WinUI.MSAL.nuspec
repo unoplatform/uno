@@ -13,58 +13,58 @@
 		<dependencies>
 			<group targetFramework="net9.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			<group targetFramework="net8.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 
 			<!-- BEGIN UWP-specific
 			<group targetFramework="UAP10.0.19041">
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			END UWP-specific -->
 
 
 			<!-- BEGIN WinUI-specific -->
 			<group targetFramework="net8.0-windows10.0.19041.0">
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			<!-- END WinUI-specific -->
 			
 
 			<group targetFramework="net8.0-android30.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			<group targetFramework="net8.0-ios17.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			<group targetFramework="net8.0-tvos17.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			<group targetFramework="net8.0-maccatalyst17.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			<group targetFramework="net9.0-android30.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			<group targetFramework="net9.0-ios18.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			<group targetFramework="net9.0-tvos18.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 			<group targetFramework="net9.0-maccatalyst18.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
+				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
 		</dependencies>
 	</metadata>
