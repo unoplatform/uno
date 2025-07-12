@@ -11,7 +11,7 @@ go unnoticed. As [part of our continuous integration process](https://github.com
 
 This process only diffs against previous versions of Uno, not against the WinUI assemblies, so it doesn't pick up all forms of mismatches. There are [some inconsistencies](https://github.com/unoplatform/uno/pull/1300) dating from before SyncGenerator was added. At some point it might be a good idea to extend SyncGenerator tool to try to report them all (or even automatically fix them)
 
-Breaking changes must be marked as such when committed using the [Conventional Commits formatting](../../uno-development/git-conventional-commits.md).
+Breaking changes must be marked as such when committed using the [Conventional Commits formatting](xref:Uno.Contributing.ConventionalCommits).
 
 ## When are binary breaking changes acceptable?
 
@@ -21,7 +21,7 @@ Changes that break compatibility with the public API surface of WinUI are genera
 
 ### Restoring cross-platform compatibility - ok, but discuss with core team
 
-In some cases, Uno's existing API is close to WinUI, but not identical. (Hypothetical example: a property with type `DependencyObject[]` on Uno, but type `IList<DependencyObject>` on WinUI.) This is mostly the case for older code that was written before the use of [generated `NotImplemented` stubs](../../uno-development/uno-internals-overview.md#generated-notimplemented-stubs) and the `PackageDiff` tool, which act in combination to prevent these kinds of errors when implementing new features.
+In some cases, Uno's existing API is close to WinUI, but not identical. (Hypothetical example: a property with type `DependencyObject[]` on Uno, but type `IList<DependencyObject>` on WinUI.) This is mostly the case for older code that was written before the use of [generated `NotImplemented` stubs](xref:Uno.Contributing.Overview#generated-notimplemented-stubs) and the `PackageDiff` tool, which act in combination to prevent these kinds of errors when implementing new features.
 
 In these cases, we do want to align Uno with WinUI, even at the expense of a breaking change. However, we tend to be more careful with when we merge these changes, compared to other bugfixes. We prefer to 'batch' many such breaking changes into a single stable release cycle, rather than wear out consumers' patience with a steady trickle of breaking changes each release.
 
@@ -33,13 +33,13 @@ Note that some cases may be sufficiently benign that the breaking change is acce
 
 The diff tool guards against all changes to Uno's public API surface, including functionality that has no equivalent in WinUI's API surface.
 
-In the cases where these Uno-only APIs are exposed intentionally (example: the [`VisibleBoundsPadding` behavior](../../features/VisibleBoundsPadding.md)), we would usually reject breaking changes, unless there were a very compelling reason for them.
+In the cases where these Uno-only APIs are exposed intentionally (example: the [`VisibleBoundsPadding` behavior](xref:Uno.Features.VisibleBoundsPadding)), we would usually reject breaking changes, unless there were a very compelling reason for them.
 
 In other cases, this might be functionality that's inadvertently exposed - in other words, functionality that was made public when it should really have been internal. Here the validity of the breaking change should be considered on a case-by-case basis, taking into account the risk of breaking existing Uno app code (and conversely, the possibility for the Uno-only APIs to collide with 'brownfield' WinUI code). Again, the principle of 'batching' breaking changes applies.
 
 ## Adding breaking changes to the allow list
 
-Where a breaking change is acceptable according to the above criteria, and after discussion with the core team where appropriate, it can be marked as such using the [build/PackageDiffIgnore.xml](https://github.com/unoplatform/uno/blob/master/build/PackageDiffIgnore.xml) file.
+Where a breaking change is acceptable according to the above criteria, and after discussion with the core team where appropriate, it can be marked as such using the [build/PackageDiffIgnore.xml](../../../../build/PackageDiffIgnore.xml) file.
 
 Please refer to the documentation of the [Uno.PackageDiff tool](https://github.com/unoplatform/uno.PackageDiff) for more information.
 

@@ -38,7 +38,7 @@ private void GetGamepads()
                 myGamepads.Add(gamepad);
             }
         }
-    }   
+    }
 }
 ```
 
@@ -67,4 +67,4 @@ if (GamepadButtons.A == (reading.Buttons & GamepadButtons.A))
 
 ## See Gamepad in action
 
-* To see this API in action, visit out Gallery and look for Gamepad [here](https://gallery.platform.uno/).
+* To see this API in action, [visit out Gallery and look for Gamepad](https://gallery.platform.uno/).

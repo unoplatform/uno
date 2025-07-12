@@ -159,7 +159,7 @@ function enableSearch() {
      * This function posts the message to the worker if the string has at least
      * three characters.
      *
-     * @param worker The search worker used by DocFx (lunr)
+     * @param worker The search worker used by docfx (lunr)
      * @param searchQuery The string to post to the worker.
      */
     function postSearchQuery(worker, searchQuery) {

@@ -16,19 +16,19 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 - you can put the app in the required state programmatically, and
 - you can verify the correct behavior programmatically (eg by checking DesiredSize, ActualWidth/ActualHeight etc).
 
-  For more on general testing strategy in Uno.UI, see [Guidelines for creating tests](../contributing/guidelines/creating-tests.md).
+  For more on general testing strategy in Uno.UI, see [Guidelines for creating tests](xref:Uno.Contributing.Tests.CreatingTests).
 
 > [!NOTE]
-> [Platform runtime unit tests](../contributing/guidelines/creating-tests.md) are generally preferred to UI tests as their execution performance is generally faster than UI Tests.
+> [Platform runtime unit tests](xref:Uno.Contributing.Tests.CreatingTests) are generally preferred to UI tests as their execution performance is generally faster than UI Tests.
 
 ## Running UI tests locally
 
 1. Ensure [your environment is configured](xref:Uno.GetStarted.vs2022) for the platform you want to run on.
 1. Ensure `UnoTargetFrameworkOverride` is set to `net7.0-android` for testing on Android, `net7.0-ios` for testing on iOS, and `net7.0` for testing on Wasm.
-1. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
-1. [Build and run the SamplesApp](working-with-the-samples-apps.md) at least once.
+1. Open Uno.UI with the [correct target override and solution filter](xref:Uno.Contributing.BuildingUno) for the platform you want to run on.
+1. [Build and run the SamplesApp](xref:Uno.Contributing.SamplesApp) at least once.
 1. Only Android and WASM are supported from Visual Studio for Windows. (Running tests on iOS using a Mac is possible, see additional instructions below.)
-1. If testing on WebAssembly, ensure that [`WebAssemblyDefaultUri`](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.UITests/Constants.cs) matches Url used when the sample app was launched in the step above. Visual Studio may change the Url on demand to avoid conflicts with already running sites on the same machine.
+1. If testing on WebAssembly, ensure that [`WebAssemblyDefaultUri`](../../../../src/SamplesApp/SamplesApp.UITests/Constants.cs) matches Url used when the sample app was launched in the step above. Visual Studio may change the Url on demand to avoid conflicts with already running sites on the same machine.
 1. Open the [Test Explorer](https://learn.microsoft.com/visualstudio/test/run-unit-tests-with-test-explorer) in Visual Studio.
 1. UI tests are grouped under 'SamplesApp.UITests'. From the Test Explorer you can run all tests, debug a single test, etc.
 
@@ -47,8 +47,8 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 
 ## Adding a new test
 
-1. Typically the first step is to [add a sample to the SamplesApp](working-with-the-samples-apps.md) that reproduces the bug you're fixing or demonstrates the functionality you're adding, unless you can do so with an existing sample.
-2. The UI test fixtures themselves are located in [SamplesApp.UITests](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.UITests). Locate the test class corresponding to the control or class you want to create a test for. If you need to add a new test class, create the file as `Namespace_In_Snake_Case/ControlNameTests/ControlName_Tests.cs`. The class should inherit from `SampleControlUITestBase` and be marked with the `[TestFixture]` attribute.
+1. Typically the first step is to [add a sample to the SamplesApp](xref:Uno.Contributing.SamplesApp) that reproduces the bug you're fixing or demonstrates the functionality you're adding, unless you can do so with an existing sample.
+2. The UI test fixtures themselves are located in [SamplesApp.UITests](../../../../src/SamplesApp/SamplesApp.UITests). Locate the test class corresponding to the control or class you want to create a test for. If you need to add a new test class, create the file as `Namespace_In_Snake_Case/ControlNameTests/ControlName_Tests.cs`. The class should inherit from `SampleControlUITestBase` and be marked with the `[TestFixture]` attribute.
 3. Add your test, making sure to include the `[Test]` and `[AutoRetry]` attributes. (The `[AutoRetry]` attributes indicates that the test should be retried if it fails. Currently it's required for all tests.)
 
 ## Selectively ignore tests per platform
