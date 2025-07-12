@@ -28,8 +28,7 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWin
 	{
 		var bounds = new Rect(default, new Size(width, height));
 
-		Bounds = bounds;
-		VisibleBounds = bounds;
+		SetBoundsAndVisibleBounds(bounds, bounds);
 		Size = new((int)(bounds.Width * RasterizationScale), (int)(bounds.Height * RasterizationScale));
 	}
 }

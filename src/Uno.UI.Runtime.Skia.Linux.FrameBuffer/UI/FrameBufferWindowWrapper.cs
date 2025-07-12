@@ -23,8 +23,8 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
-		Bounds = new Rect(default, newWindowSize);
-		VisibleBounds = new Rect(default, newWindowSize);
+		var bounds = new Rect(default, newWindowSize);
+		SetBoundsAndVisibleBounds(bounds, bounds);
 		Size = new((int)newWindowSize.Width, (int)newWindowSize.Height);
 	}
 
