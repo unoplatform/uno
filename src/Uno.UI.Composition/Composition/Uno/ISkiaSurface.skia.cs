@@ -1,14 +1,13 @@
 ﻿#nullable enable
 
-using Microsoft.UI.Composition;
+using System.Numerics;
 using SkiaSharp;
 
 namespace Uno.UI.Composition
 {
 	internal interface ISkiaSurface
 	{
-		internal SKSurface? Surface { get; }
-		internal void UpdateSurface(bool recreateSurface = false);
-		internal void UpdateSurface(in Visual.PaintingSession session);
+		internal void Paint(SKCanvas canvas, float opacity);
+		internal Vector2 Size { get; }
 	}
 }

@@ -7,7 +7,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionRadialGradientBrush : CompositionGradientBrush
 	{
-		private protected override void UpdatePaintCore(SKPaint paint, SKRect bounds)
+		private protected override (SKShader? shader, SKColor color) GetPaintingParameters(SKRect bounds)
 		{
 			var center = EllipseCenter.ToSKPoint();
 			var gradientOrigin = GradientOriginOffset.ToSKPoint();
@@ -39,13 +39,6 @@ namespace Microsoft.UI.Composition
 			// SkiaSharp does not allow explicit definition of RadiusX and RadiusY.
 			// Compute transformation matrix to compensate.
 			ComputeRadiusAndScale(center, radius.X, radius.Y, out float gradientRadius, out SKMatrix matrix);
-
-			// Clean up old shader
-			if (paint.Shader != null)
-			{
-				paint.Shader.Dispose();
-				paint.Shader = null;
-			}
 
 			if (gradientRadius > 0)
 			{
@@ -81,8 +74,7 @@ namespace Microsoft.UI.Composition
 					);
 				}
 
-				paint.Shader = shader;
-				paint.Color = SKColors.Black;
+				return (shader, SKColors.Black);
 			}
 			else
 			{
@@ -92,9 +84,8 @@ namespace Microsoft.UI.Composition
 				// If there are no gradient stops available, use transparent.
 
 				SKColor color = GetLastColorOrTransparent();
-
 				double alpha = (color.Alpha / 255.0);
-				paint.Color = color.WithAlpha((byte)(alpha * 255));
+				return (null, color.WithAlpha((byte)(alpha * 255)));
 			}
 		}
 

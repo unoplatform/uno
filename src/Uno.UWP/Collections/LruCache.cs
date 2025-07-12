@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Cache;
@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Uno.Collections;
 
+
+// TODO: Remove this in the next major release. Use LRUCache instead
 public partial class LruCache<TKey, TValue>
 {
 	// essentially, a KeyValuePair where the value is mutable

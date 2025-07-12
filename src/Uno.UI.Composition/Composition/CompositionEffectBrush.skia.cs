@@ -995,9 +995,8 @@ $$"""
 
 			if (mode == SKShaderTileMode.Repeat)
 			{
-				var srcBounds = source is CompositionEffectSourceParameter param && GetSourceParameter(param.Name) is ISizedBrush sizedBrush && sizedBrush.IsSized ?
-					(sizedBrush.Size is Vector2 size ?
-					new SKRect(0, 0, size.X, size.Y) : bounds)
+				var srcBounds = source is CompositionEffectSourceParameter param && GetSourceParameter(param.Name) is ISizedBrush { Size: { } size }
+					? new SKRect(0, 0, size.X, size.Y)
 					: bounds;
 
 				return SKImageFilter.CreateTile(srcBounds, bounds, sourceFilter);
@@ -1473,26 +1472,15 @@ $$"""
 						_isCurrentInputBackdrop = false;
 
 						SKRect srcBounds = bounds;
-						if (tryUsingSourceSize && brush is ISizedBrush { IsSized: true, Size: Vector2 size })
+						if (tryUsingSourceSize && brush is ISizedBrush { Size: Vector2 size })
 						{
 							srcBounds = bounds with { Right = size.X, Bottom = size.Y };
 						}
 
-						SKPaint paint = new SKPaint() { IsAntialias = true };
-						brush.UpdatePaint(paint, srcBounds);
-
-						if (paint.Shader is { } shader)
-						{
-							return SKImageFilter.CreateShader(shader, false, srcBounds);
-						}
-						else if (paint.ImageFilter is { } imageFilter)
-						{
-							return SKImageFilter.CreateMerge([imageFilter], srcBounds);
-						}
-						else
-						{
-							return SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(paint.Color, SKBlendMode.Src), null, srcBounds);
-						}
+						// Creating a static SKPictureRecorder to be reused for all calls causes a segfault for some reason
+						var recorder = new SKPictureRecorder();
+						brush.Paint(recorder.BeginRecording(srcBounds), 1, srcBounds);
+						return SKImageFilter.CreatePicture(recorder.EndRecording());
 					}
 
 					return null;
@@ -1601,7 +1589,14 @@ $$"""
 		}
 	}
 
-	internal override void UpdatePaint(SKPaint paint, SKRect bounds)
+	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
+	{
+		UpdateFilter(bounds);
+		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });
+		canvas.Restore();
+	}
+
+	private void UpdateFilter(SKRect bounds)
 	{
 		if (_currentBounds != bounds || _filter is null || Compositor.IsSoftwareRenderer != _currentCompMode)
 		{
@@ -1612,9 +1607,6 @@ $$"""
 			_currentBounds = bounds;
 			_currentCompMode = Compositor.IsSoftwareRenderer;
 		}
-
-		paint.Shader = null;
-		paint.ImageFilter = _filter;
 	}
 
 	private protected override void DisposeInternal()

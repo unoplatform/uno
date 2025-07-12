@@ -27,11 +27,6 @@ namespace Microsoft.UI.Composition
 				case nameof(Brush):
 					OnBrushChangedPartial(Brush);
 					break;
-#if __SKIA__
-				case nameof(Size):
-					UpdatePaint();
-					break;
-#endif
 				default:
 					break;
 			}

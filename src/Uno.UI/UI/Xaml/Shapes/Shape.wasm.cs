@@ -15,6 +15,7 @@ using Uno;
 using Uno.Collections;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Helpers;
 using Uno.UI;
 using Uno.UI.Xaml;
 
@@ -25,7 +26,7 @@ namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
-		private static readonly LruCache<string, Rect> _bboxCache = new(FeatureConfiguration.Shape.WasmDefaultBBoxCacheSize);
+		private static readonly LRUCache<string, Rect> _bboxCache = new(FeatureConfiguration.Shape.WasmDefaultBBoxCacheSize);
 
 		internal static int BBoxCacheSize
 		{

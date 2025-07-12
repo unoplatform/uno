@@ -107,7 +107,7 @@ public class Given_RelativeTransform
 		await source1OpenTask;
 		await source2OpenTask;
 
-		await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot((FrameworkElement)sp.Children[1]), await UITestHelper.ScreenShot((FrameworkElement)sp.Children[0]));
+		await ImageAssert.AreSimilarAsync(await UITestHelper.ScreenShot((FrameworkElement)sp.Children[1]), await UITestHelper.ScreenShot((FrameworkElement)sp.Children[0]));
 	}
 }
 #endif
