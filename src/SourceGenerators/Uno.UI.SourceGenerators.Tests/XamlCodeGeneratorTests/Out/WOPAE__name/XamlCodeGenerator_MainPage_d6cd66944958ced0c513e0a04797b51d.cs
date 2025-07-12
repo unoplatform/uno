@@ -164,42 +164,24 @@ namespace TestRepro
 		{
 			this.Bindings.StopTracking();
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-		{
-			get
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
 			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+				set => _component_0_Holder.Instance = value;
 			}
-			set
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_1
 			{
-				_component_0_Holder.Instance = value;
+				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_1_Holder.Instance;
+				set => _component_1_Holder.Instance = value;
 			}
-		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_1
-		{
-			get
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_2
 			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_1_Holder.Instance;
+				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_2_Holder.Instance;
+				set => _component_2_Holder.Instance = value;
 			}
-			set
-			{
-				_component_1_Holder.Instance = value;
-			}
-		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_2
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_2_Holder.Instance;
-			}
-			set
-			{
-				_component_2_Holder.Instance = value;
-			}
-		}
 		private interface IMainPage_Bindings
 		{
 			void Initialize();

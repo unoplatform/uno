@@ -148,18 +148,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				_topLevelSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-		{
-			get
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
 			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+				set => _component_0_Holder.Instance = value;
 			}
-			set
-			{
-				_component_0_Holder.Instance = value;
-			}
-		}
 		private interface IBinding_Xaml_Object_With_Common_Properties_Bindings
 		{
 			void Initialize();
