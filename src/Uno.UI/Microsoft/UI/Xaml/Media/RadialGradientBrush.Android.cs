@@ -7,7 +7,7 @@ using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 using Rect = Windows.Foundation.Rect;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{

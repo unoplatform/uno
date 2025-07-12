@@ -587,7 +587,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Children =
 				{
 					new TextBlock{Text = "Hello world"},
-					new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater
+					new Microsoft.UI.Xaml.Controls.ItemsRepeater
 						{
 							ItemsSource="0123456789",
 							ItemTemplate = new DataTemplate(() => new Border
@@ -602,7 +602,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 									Foreground = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse)
 								}.Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
 							}),
-							Layout = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}
+							Layout = new Microsoft.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}
 						}
 						.Apply(ir => Grid.SetRow(ir, 1))
 				}

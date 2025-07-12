@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Private.Infrastructure;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -30,7 +30,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
 
-using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
+using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {

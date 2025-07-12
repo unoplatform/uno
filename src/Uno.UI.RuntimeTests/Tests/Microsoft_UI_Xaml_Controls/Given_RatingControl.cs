@@ -4,8 +4,8 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using RatingControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl;
+using Microsoft.UI.Xaml.Controls;
+using RatingControl = Microsoft.UI.Xaml.Controls.RatingControl;
 
 #if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;

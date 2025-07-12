@@ -3,7 +3,7 @@
 
 // MUX Reference ItemsViewTestHooks.cpp, tag winui3/release/1.5.0
 
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Private.Controls;

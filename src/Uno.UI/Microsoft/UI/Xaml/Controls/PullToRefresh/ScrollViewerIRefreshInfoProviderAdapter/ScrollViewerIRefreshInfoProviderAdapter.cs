@@ -4,7 +4,7 @@
 // MUX Reference ScrollViewerIRefreshInfoProviderAdapter.cpp, commit de78834
 
 using System;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
@@ -13,8 +13,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
-using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
+using static Microsoft.UI.Xaml.Controls._Tracing;
+using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 
 #pragma warning disable CS0105 // Ignore duplicate namespace for WinUI build
 using Microsoft.UI.Xaml.Controls;

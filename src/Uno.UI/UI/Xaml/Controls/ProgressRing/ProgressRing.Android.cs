@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml.Media;
 using Android.Views;
 
-using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using AndroidX.Core.Graphics;
 
 namespace Uno.UI.Controls.Legacy;

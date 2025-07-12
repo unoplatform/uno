@@ -12,7 +12,7 @@ using Windows.Foundation.Metadata;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation;
 using Uno.UI.Samples.Controls;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.RadioMenuFlyoutItemTests
 {

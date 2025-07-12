@@ -7,8 +7,8 @@ using CoreGraphics;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml;
 
-using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
-using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Controls.Legacy;
 

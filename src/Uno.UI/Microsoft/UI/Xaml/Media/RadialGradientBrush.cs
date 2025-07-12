@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno;
 using Windows.Foundation.Collections;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(GradientStops))]
 	public sealed partial class RadialGradientBrush : XamlCompositionBrushBase

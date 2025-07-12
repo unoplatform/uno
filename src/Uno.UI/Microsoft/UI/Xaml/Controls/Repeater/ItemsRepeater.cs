@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
@@ -20,9 +20,9 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(ItemTemplate))]
 	public partial class ItemsRepeater : FrameworkElement, IPanel
@@ -76,7 +76,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private ItemsRepeaterElementClearingEventArgs m_elementClearingArgs;
 		private ItemsRepeaterElementIndexChangedEventArgs m_elementIndexChangedArgs;
 
-		//public Microsoft/* UWP don't rename */.UI.Xaml.Controls.IElementFactoryShim ItemTemplateShim() { return m_itemTemplateWrapper; };
+		//public Microsoft.UI.Xaml.Controls.IElementFactoryShim ItemTemplateShim() { return m_itemTemplateWrapper; };
 		internal ViewManager ViewManager => m_viewManager;
 		internal AnimationManager AnimationManager => m_animationManager;
 
@@ -88,7 +88,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		ItemsSourceView m_itemsSourceView;
 
-		Microsoft/* UWP don't rename */.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper;
+		Microsoft.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper;
 
 		VirtualizingLayoutContext m_layoutContext;
 		object m_layoutState;

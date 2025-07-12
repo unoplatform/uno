@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml;
 using Uno.UI.Controls.Legacy.Primitives;
 
-using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Controls.Legacy;
 

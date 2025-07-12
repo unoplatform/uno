@@ -25,7 +25,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Foundation.Logging;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;

@@ -16,7 +16,7 @@ using Uno.UI.Helpers.WinUI;
 using Windows.Globalization.NumberFormatting;
 using Windows.System;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class NumberBox
 {

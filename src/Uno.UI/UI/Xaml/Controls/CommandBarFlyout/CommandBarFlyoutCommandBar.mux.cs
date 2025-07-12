@@ -20,10 +20,10 @@ using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Helpers.WinUI.ResourceAccessor;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class CommandBarFlyoutCommandBar
 {

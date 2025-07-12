@@ -2,7 +2,7 @@
 using Windows.UI.Xaml.Controls;
 #endif
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a control that lets a user enter a star rating.

@@ -1,4 +1,4 @@
-﻿using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 
 using WUXProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
 

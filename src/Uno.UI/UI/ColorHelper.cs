@@ -3,7 +3,7 @@
 using System;
 using System.ComponentModel;
 using Uno.Extensions;
-using WindowsColor = Windows/*Intentional space for WinUI upgrade tool*/.UI.Color;
+using WindowsColor = Windows.UI.Color;
 
 #if IS_UNO_UI_PROJECT
 namespace Microsoft.UI;

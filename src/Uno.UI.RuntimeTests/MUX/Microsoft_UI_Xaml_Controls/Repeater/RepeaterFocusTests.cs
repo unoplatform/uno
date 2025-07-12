@@ -23,13 +23,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
-using ElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactory;
-using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
-using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
-using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
-using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
+using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
+using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
+using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
+using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
+using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.RuntimeTests;
 using System.Threading.Tasks;

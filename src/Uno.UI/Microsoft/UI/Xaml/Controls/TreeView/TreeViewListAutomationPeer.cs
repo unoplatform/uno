@@ -5,9 +5,9 @@
 using System;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
-using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
+using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes TreeViewList types to Microsoft UI Automation.

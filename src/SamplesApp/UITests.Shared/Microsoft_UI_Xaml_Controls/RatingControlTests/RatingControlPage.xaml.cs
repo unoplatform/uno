@@ -21,9 +21,9 @@ using Microsoft.UI.Xaml.Hosting;
 using System.Numerics;
 using Windows.UI;
 using Windows.Foundation.Metadata;
-using RatingControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl;
-using RatingItemImageInfo = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingItemImageInfo;
-using RatingItemFontInfo = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingItemFontInfo;
+using RatingControl = Microsoft.UI.Xaml.Controls.RatingControl;
+using RatingItemImageInfo = Microsoft.UI.Xaml.Controls.RatingItemImageInfo;
+using RatingItemFontInfo = Microsoft.UI.Xaml.Controls.RatingItemFontInfo;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
