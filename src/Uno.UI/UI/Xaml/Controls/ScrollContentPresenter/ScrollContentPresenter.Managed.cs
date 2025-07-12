@@ -334,13 +334,13 @@ namespace Microsoft.UI.Xaml.Controls
 				var animation = compositor.CreateVector2KeyFrameAnimation();
 				animation.InsertKeyFrame(1.0f, target, easing);
 				animation.Duration = TimeSpan.FromSeconds(1);
-				void OnFrame(CompositionAnimation? _) => Updated(-visual.AnchorPoint.X, -visual.AnchorPoint.Y, true);
+				void OnFrame(CompositionAnimation? _) => Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), true);
 				void OnStopped(object? _, EventArgs __)
 				{
 					animation.AnimationFrame -= OnFrame;
 					animation.Stopped -= OnStopped;
 
-					Updated(-visual.AnchorPoint.X, -visual.AnchorPoint.Y, false);
+					Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), false);
 				}
 
 				animation.AnimationFrame += OnFrame;
