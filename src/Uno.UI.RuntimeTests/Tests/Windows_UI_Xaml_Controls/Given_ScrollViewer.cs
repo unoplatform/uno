@@ -726,14 +726,88 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Wheel(-50, steps: 5);
 			await WindowHelper.WaitForIdle();
 
+			// waiting for wheel animation
+			await Task.Delay(500);
+
 			Assert.AreEqual(0, outer.VerticalOffset);
-			Assert.IsTrue(inner.VerticalOffset > 0);
+			Assert.IsTrue(inner.VerticalOffset > 0, "Inner Vertical Offset is not greater than 0");
+
+			mouse.Wheel(-500, steps: 5);
+			await WindowHelper.WaitForIdle();
+
+			// waiting for wheel animation
+			await Task.Delay(500);
+
+			var expectedOffset = outer.ScrollableHeight / 2;
+			Assert.IsTrue(outer.VerticalOffset > expectedOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
+			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
+		}
+
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Nested_WebView_WheelChanged()
+		{
+			var webview = new WebView2
+			{
+				Height = 200,
+				Background = new SolidColorBrush(Colors.Yellow),
+				Source = new Uri("https://www.platform.uno"),
+			};
+
+			var outer = new ScrollViewer
+			{
+				Height = 300,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Red),
+							Height = 400,
+							Width = 200
+						},
+						webview,
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Blue),
+							Height = 400,
+							Width = 200
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = outer;
+
+			await WindowHelper.WaitForLoaded(outer);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(outer.GetAbsoluteBounds().GetCenter());
+			mouse.Wheel(-600, steps: 5);
+			await WindowHelper.WaitForIdle();
+
+
+			// waiting for wheel animation
+			await Task.Delay(500);
+
+			Assert.AreEqual(0, outer.VerticalOffset);
+
+			// waiting for wheel animation
+			await Task.Delay(500);
 
 			mouse.Wheel(-500, steps: 5);
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
-			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
 		}
 
 		[TestMethod]
@@ -745,7 +819,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
 			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
-			// we don't end up to invoke IScrollStrategy.Set again and again (preventing the CompositorScrollStrategy to properly process its animation)
+			// we don't end up to invoke ScrollContentPresenter.Set again and again (preventing the ScrollContentPresenter.Update methohd to properly process its animation)
 
 			FrameworkElement content;
 			var sut = new ScrollViewer
@@ -761,16 +835,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var bounds = await UITestHelper.Load(sut);
 
-			// First make sure that this test can effectively test something!
-			var strategy = sut.Presenter?.GetType().GetField("_strategy", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(sut.Presenter);
-#if __SKIA__
-			Assert.AreEqual(CompositorScrollStrategy.Instance, strategy);
-#else
-			if (strategy is null || strategy.GetType().Name != "CompositorScrollStrategy")
-			{
-				Assert.Inconclusive("This test is valid only on platforms that uses the CompositorScrollStrategy.");
-			}
-#endif
 			var visual = ElementCompositionPreview.GetElementVisual(content);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
@@ -782,7 +846,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(bounds.GetCenter());
 			mouse.Wheel(-400, steps: 1);
 
-			// Here we assume that CompositorScrollStrategy is using KeyFrameAnimation. If no longer the case, the test can be updated!
+			// Here we assume that ScrollContentPresenter is using KeyFrameAnimation. If no longer the case, the test can be updated!
 			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
 			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
 

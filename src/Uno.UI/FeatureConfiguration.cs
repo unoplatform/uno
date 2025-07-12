@@ -1030,5 +1030,6 @@ namespace Uno.UI
 			public static bool EnableUno19516Workaround { get; set; } = true;
 #endif
 		}
+
 	}
 }
