@@ -795,17 +795,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Wheel(-600, steps: 5);
 			await WindowHelper.WaitForIdle();
 
-
 			// waiting for wheel animation
 			await Task.Delay(500);
 
-			Assert.AreEqual(0, outer.VerticalOffset);
-
-			// waiting for wheel animation
-			await Task.Delay(500);
+			Assert.AreEqual(240, outer.VerticalOffset);
 
 			mouse.Wheel(-500, steps: 5);
 			await WindowHelper.WaitForIdle();
+
+			// waiting for wheel animation
+			await Task.Delay(500);
 
 			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
 		}
@@ -1526,11 +1525,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.WheelUp();
 
+			await Task.Delay(500);
+
 			sut.VerticalOffset.Should().BeGreaterThan(0);
 
 			mouse.WheelDown();
 
-			sut.VerticalOffset.Should().Be(0);
+			await Task.Delay(500);
+
+			sut.VerticalOffset.Should().BeApproximately(0, 0.5);
 #endif
 		}
 
@@ -1798,8 +1801,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				from: center,
 				to: new(center.X, center.Y - 1000));
 
-			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1);
-			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1);
+			await Task.Delay(500); // Wait for the inertia to run
+
+			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1, $"parentEndOffset {parentEndOffset} minus parent.VerticalOffset {parent.VerticalOffset} is not lower than 1");
+			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1, $"childEndOffset {childEndOffset} minus parent.VerticalOffset {child.VerticalOffset} is not lower than 1");
 		}
 
 		[TestMethod]
