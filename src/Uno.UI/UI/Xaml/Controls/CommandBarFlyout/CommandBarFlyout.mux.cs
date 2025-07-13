@@ -208,7 +208,15 @@ partial class CommandBarFlyout
 							// If we don't have IFlyoutBase5 available, then we assume a standard show mode.
 							if (ShowMode == FlyoutShowMode.Standard)
 							{
-								commandBar.IsOpen = true;
+#if HAS_UNO
+								// In case of Uno Platform, the callback is executed too early, before CommandBarFlyoutCommandBar.OnApplyTemplate.
+								// This causes unexpected behavior https://github.com/unoplatform/uno/issues/20984. To avoid this, we schedule the IsOpen change
+								// on the next tick.
+								DispatcherQueue.TryEnqueue(() =>
+								{
+									commandBar.IsOpen = true;
+								});
+#endif
 							}
 						}
 					}
