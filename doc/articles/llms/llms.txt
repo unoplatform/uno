@@ -5,9 +5,9 @@ The Uno Platform is an Open-Source .NET platform for building single-codebase, c
 Important notes:
 - The core framework is free and open-source under the Apache 2 license, since its release in 2018; optional enterprise support and advanced tooling (such as Hot Design) are offered under paid plans
 - Skia (using a full-screen canvas) and Native (using native elements) renderers are available
-- Uno Platform uses the WinUI and WinRT API definitions, but does not use WinAppSDK/WinUI. WinAppSDK is only used when running the `netX.0-windows` target, for the other targets, only Uno Platform code is used
+- Uno Platform uses the WinUI (UI APIs) and WinRT (non-UI APIs) API definitions, but does not use WinAppSDK/WinUI. WinAppSDK is only used when running the `netX.0-windows` target, for the other targets, only Uno Platform code is used
 - Uno Platform uses official .NET mobile bindings directly, but does not use MAUI
-- Uno Platform offers a comprehensive C# and XAML Hot Reload Support, under the free plan
+- Uno Platform offers a comprehensive C# and XAML Hot Reload support, under the free plan
 - Uno Platform apps can run on iOS/iPadOS, Android, macOS, Windows, Linux, and Browsers supporting WebAssembly
 
 ## Docs
@@ -136,10 +136,10 @@ Important notes:
 [uno-figma-doc-design-to-code](https://raw.githubusercontent.com/unoplatform/figma-docs/refs/heads/main/get-started/design-to-code.md)
 [Design-to-Code](https://raw.githubusercontent.com/unoplatform/figma-docs/refs/heads/main/get-started.md)
 
-## Uno.WinRT
+## Uno.WinRT (non-UI APIs)
 
+[Uno.WinRT](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/features/using-winrt.md): Overview of non-UI APIs provided by Uno Platform
 [application-data](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/features/applicationdata.md)
-[storing-settings](https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/articles/features/applicationdata.md)
 
 ## How Tos
 [uno-samples-list](https://raw.githubusercontent.com/unoplatform/uno.samples/refs/heads/master/doc/samples.md)
