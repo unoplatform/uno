@@ -79,7 +79,7 @@ internal partial class Win32WindowWrapper
 				{
 					rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
 					var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(clientRect.Width, clientRect.Height, rootVisual, _surface.Canvas);
-					XamlRoot.InvokePaintedFrame();
+					XamlRoot.InvokeFramePainted();
 					_fpsHelper.DrawFps(canvas);
 					RenderingNegativePathReevaluated?.Invoke(this, path);
 				}
@@ -98,6 +98,6 @@ internal partial class Win32WindowWrapper
 		_surface.Flush();
 		// this may call WM_ERASEBKGND
 		_renderer.CopyPixels(clientRect.Width, clientRect.Height);
-		XamlRoot.InvokeRenderedFrame();
+		XamlRoot.InvokeFrameRendered();
 	}
 }

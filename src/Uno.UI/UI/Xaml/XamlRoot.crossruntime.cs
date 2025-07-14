@@ -17,8 +17,8 @@ public sealed partial class XamlRoot
 
 #if __SKIA__
 	// For profiling purposes only. Do not depend on these events.
-	internal event Action? PaintedFrame;
-	internal event Action? RenderedFrame;
+	internal event Action? FramePainted;
+	internal event Action? FrameRendered;
 #endif
 
 	internal void InvalidateMeasure()
@@ -40,8 +40,23 @@ public sealed partial class XamlRoot
 	internal void InvalidateRender() => RenderInvalidated?.Invoke();
 
 #if __SKIA__
-	internal void InvokePaintedFrame() => PaintedFrame?.Invoke();
-	internal void InvokeRenderedFrame() => RenderedFrame?.Invoke();
+	internal void InvokeFramePainted()
+	{
+		NativeDispatcher.CheckThreadAccess();
+		FramePainted?.Invoke();
+	}
+
+	internal void InvokeFrameRendered()
+	{
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			FrameRendered?.Invoke();
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(() => FrameRendered?.Invoke(), NativeDispatcherPriority.High);
+		}
+	}
 #endif
 
 	internal void QueueInvalidateRender()

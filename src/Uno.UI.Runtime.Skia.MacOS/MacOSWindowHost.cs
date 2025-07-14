@@ -111,7 +111,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 						_lastSvgClipPath = clip;
 					}
 				}
-				RootElement?.XamlRoot?.InvokePaintedFrame();
+				RootElement?.XamlRoot?.InvokeFramePainted();
 			}
 		}
 
@@ -149,7 +149,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		Draw(nativeWidth, nativeHeight, surface);
 
 		_context?.Flush();
-		RootElement?.XamlRoot?.InvokeRenderedFrame();
+		RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 
 	private unsafe void SoftDraw(double nativeWidth, double nativeHeight, nint* data, int* rowBytes, int* size)
@@ -192,7 +192,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		*data = _bitmap.GetPixels(out var bitmapSize);
 		*size = (int)bitmapSize;
 		*rowBytes = _rowBytes;
-		RootElement?.XamlRoot?.InvokeRenderedFrame();
+		RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 
 	// Window management

@@ -147,14 +147,14 @@ internal partial class BrowserRenderer
 				// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
 				negativePath.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), negativePath);
 				BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!negativePath.IsEmpty ? negativePath.ToSvgPathData() : "");
-				_host.RootElement?.XamlRoot?.InvokePaintedFrame();
+				_host.RootElement?.XamlRoot?.InvokeFramePainted();
 			}
 		}
 
 		// update the control
 		_canvas?.Flush();
 		_context.Flush();
-		_host.RootElement?.XamlRoot?.InvokeRenderedFrame();
+		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{

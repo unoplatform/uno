@@ -104,11 +104,11 @@ namespace UITests.Windows_UI_Xaml.Performance
 							Foreground = new SolidColorBrush(Colors.Black),
 							Text = $"Rendered first frame after all images loaded in {Stopwatch.GetElapsedTime(start).TotalMilliseconds}ms from sample creation"
 						});
-						XamlRoot.RenderedFrame -= onRenderedFrame;
+						XamlRoot.FrameRendered -= onRenderedFrame;
 					}
 				};
-				XamlRoot.RenderedFrame += onRenderedFrame;
-				Unloaded += (_, _) => XamlRoot.RenderedFrame -= onRenderedFrame;
+				XamlRoot.FrameRendered += onRenderedFrame;
+				Unloaded += (_, _) => XamlRoot.FrameRendered -= onRenderedFrame;
 			};
 #endif
 		}

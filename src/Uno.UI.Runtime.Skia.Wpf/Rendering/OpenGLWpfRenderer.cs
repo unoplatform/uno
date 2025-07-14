@@ -253,7 +253,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 						this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
 					}
 				}
-				_host.RootElement?.XamlRoot?.InvokePaintedFrame();
+				_host.RootElement?.XamlRoot?.InvokeFramePainted();
 			}
 		}
 
@@ -270,7 +270,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			drawingContext.DrawImage(_backBuffer, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
 		}
-		_host.RootElement?.XamlRoot?.InvokeRenderedFrame();
+		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 
 	public void Dispose() => Release();

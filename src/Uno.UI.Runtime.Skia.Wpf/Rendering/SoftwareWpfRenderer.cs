@@ -114,7 +114,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 						}
 					}
 
-					_host.RootElement?.XamlRoot?.InvokePaintedFrame();
+					_host.RootElement?.XamlRoot?.InvokeFramePainted();
 				}
 				finally
 				{
@@ -127,6 +127,6 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 		_bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
 		_bitmap.Unlock();
 		drawingContext.DrawImage(_bitmap, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
-		_host.RootElement?.XamlRoot?.InvokeRenderedFrame();
+		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 }
