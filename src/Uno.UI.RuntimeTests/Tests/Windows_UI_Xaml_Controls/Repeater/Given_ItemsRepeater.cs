@@ -512,7 +512,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.Scroller.ChangeView(null, 1000000, null, disableAnimation: false);
 
 			// required for the animation
-			await Task.Delay(10);
+			await Task.Delay(200);
 
 			sut.MaterializedItems.Should().NotBeEquivalentTo(items);
 			var lastItem = sut.Source.Last();
