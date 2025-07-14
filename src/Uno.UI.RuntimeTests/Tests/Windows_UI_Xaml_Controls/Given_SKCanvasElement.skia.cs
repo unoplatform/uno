@@ -1,14 +1,5 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-﻿using System;
+using System;
 using System.Drawing;
-=======
-﻿using System.Drawing;
->>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
-=======
-﻿using System;
-using System.Drawing;
->>>>>>> f74b514914 (chore: ignore test on wasm)
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -57,45 +48,24 @@ public class Given_SKCanvasElement
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
 	public async Task When_Waiting_For_Another_Thread()
 	{
-<<<<<<< HEAD
-<<<<<<< HEAD
 		if (OperatingSystem.IsBrowser())
 		{
 			Assert.Inconclusive("This test on WASM throws an Uncaught ManagedError: Cannot wait on monitors on this runtime.");
 		}
 		var SUT = new TaskWaitingSKCanvasElement() { Width = 400, Height = 400 };
-=======
-		var SUT = new WaitingSKCanvasElement() { Width = 400, Height = 400 };
->>>>>>> 399d48d261 (test: add When_Waiting_For_Another_Thread)
-=======
-		var SUT = new TaskWaitingSKCanvasElement() { Width = 400, Height = 400 };
->>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
 		await UITestHelper.Load(SUT);
 		await Task.Delay(3000);
 		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
 	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
 	public async Task When_Waiting_For_Another_Thread2()
 	{
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f74b514914 (chore: ignore test on wasm)
 		if (OperatingSystem.IsBrowser())
 		{
 			Assert.Inconclusive("This test requires a multithreaded environment.");
 		}
-<<<<<<< HEAD
-=======
->>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
-=======
->>>>>>> f74b514914 (chore: ignore test on wasm)
 		var gate = new object();
 		var SUT = new LockWaitingSKCanvasElement(gate) { Width = 400, Height = 400 };
 		await UITestHelper.Load(SUT);
@@ -107,24 +77,16 @@ public class Given_SKCanvasElement
 				{
 					Thread.Sleep(200);
 				}
-<<<<<<< HEAD
 				// On Android, we need this additional delay because otherwise, this thread will reacquire the lock
 				// after releasing it before the UI thread has a chance to acquire the lock in
 				// LockWaitingSKCanvasElement.RenderOverride.
 				Thread.Sleep(200);
-=======
->>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
 			}
 		});
 		await Task.Delay(3000);
 		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
 	}
 
-<<<<<<< HEAD
-=======
->>>>>>> 399d48d261 (test: add When_Waiting_For_Another_Thread)
-=======
->>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
 	private class BlueFillSKCanvasElement : SKCanvasElement
 	{
 		protected override void RenderOverride(SKCanvas canvas, Size area)
@@ -133,15 +95,7 @@ public class Given_SKCanvasElement
 		}
 	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	public class TaskWaitingSKCanvasElement : SKCanvasElement
-=======
-	public class WaitingSKCanvasElement : SKCanvasElement
->>>>>>> 399d48d261 (test: add When_Waiting_For_Another_Thread)
-=======
-	public class TaskWaitingSKCanvasElement : SKCanvasElement
->>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
 	{
 		private bool _insideRenderOverride;
 		public bool RenderOverrideCalledNestedly { get; private set; }
@@ -160,11 +114,6 @@ public class Given_SKCanvasElement
 			_insideRenderOverride = false;
 		}
 	}
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
-
 	public class LockWaitingSKCanvasElement(object gate) : SKCanvasElement
 	{
 		private bool _insideRenderOverride;
@@ -179,9 +128,4 @@ public class Given_SKCanvasElement
 			_insideRenderOverride = false;
 		}
 	}
-<<<<<<< HEAD
-=======
->>>>>>> 399d48d261 (test: add When_Waiting_For_Another_Thread)
-=======
->>>>>>> c41eeb383c (test: add When_Waiting_For_Another_Thread2)
 }

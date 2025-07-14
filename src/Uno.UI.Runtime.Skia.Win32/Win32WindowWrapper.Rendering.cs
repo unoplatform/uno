@@ -74,13 +74,6 @@ internal partial class Win32WindowWrapper
 				// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
 				// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
 				// Paint() becoming reentrant which can cause crashes.
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-				// See also https://github.com/unoplatform/brain-products-private/issues/14
->>>>>>> 271513eae2 (fix(win32): prevent render cycle from being reentrant in some cases)
-=======
->>>>>>> a06229b9df (chore: remove client issue)
 				_rendering = true;
 				try
 				{
