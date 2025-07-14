@@ -4,7 +4,7 @@
 // Imported in uno on 2021/03/21 from commit 307bd99682cccaa128483036b764c0b7c862d666
 // https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeItem.h
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SwipeItem
 	{

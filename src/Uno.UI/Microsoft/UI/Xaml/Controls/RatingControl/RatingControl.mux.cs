@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using RatingControlAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.RatingControlAutomationPeer;
+using RatingControlAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer;
 using Windows.Foundation.Metadata;
 using System.Numerics;
 using Windows.UI.ViewManagement;
@@ -22,7 +22,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Input;
 #endif
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class RatingControl
 {

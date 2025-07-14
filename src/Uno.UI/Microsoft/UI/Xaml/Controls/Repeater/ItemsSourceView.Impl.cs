@@ -17,10 +17,10 @@ using INotifyCollectionChanged = global::System.Collections.Specialized.INotifyC
 using NotifyCollectionChangedAction = global::System.Collections.Specialized.NotifyCollectionChangedAction;
 // Conflicting types
 using NotifyCollectionChangedEventArgs = global::System.Collections.Specialized.NotifyCollectionChangedEventArgs;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using Uno.Extensions;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ItemsSourceView
 {

@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	// UNO Docs:
 	// In WinUI 2.6. RadioMenuFlyoutItem derives publically from MenuFlyoutItem, but secretly from ToggleMenuFlyoutItem.

@@ -7,9 +7,9 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FlowLayout : VirtualizingLayout, IFlowLayoutAlgorithmDelegates
 	{

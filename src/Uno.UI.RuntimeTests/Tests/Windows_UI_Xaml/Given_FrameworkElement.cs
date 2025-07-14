@@ -23,10 +23,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Foundation.Metadata;
-
-
-
-
+using Microsoft.UI.Xaml.Markup;
 
 
 #if __APPLE_UIKIT__
@@ -590,7 +587,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Children =
 				{
 					new TextBlock{Text = "Hello world"},
-					new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater
+					new Microsoft.UI.Xaml.Controls.ItemsRepeater
 						{
 							ItemsSource="0123456789",
 							ItemTemplate = new DataTemplate(() => new Border
@@ -605,7 +602,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 									Foreground = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse)
 								}.Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
 							}),
-							Layout = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}
+							Layout = new Microsoft.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}
 						}
 						.Apply(ir => Grid.SetRow(ir, 1))
 				}
@@ -1223,6 +1220,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Parent Loaded", events[8]);
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20914")]
+		public async Task When_VisualStateTriggers_Reapplied()
+		{
+			var button = (Button)XamlReader.Load(
+			"""
+			<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				   IsEnabled="False">
+				<Button.Style>
+					<Style TargetType="Button">
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="Button">
+									<ContentControl>
+										<VisualStateManager.VisualStateGroups>
+											<VisualStateGroup x:Name="CommonStates">
+												<VisualState x:Name="Normal">
+													<VisualState.Setters>
+													</VisualState.Setters>
+												</VisualState>
+			
+												<VisualState x:Name="Disabled">
+													<VisualState.Setters>
+														<Setter Target="Root.Background" Value="Red" />
+													</VisualState.Setters>
+												</VisualState>
+											</VisualStateGroup>
+										</VisualStateManager.VisualStateGroups>
+			
+										<Grid x:Name="Root" Background="Blue">
+											<ContentPresenter x:Name="ContentPresenter" Content="Button Content" />
+										</Grid>
+									</ContentControl>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</Button.Style>
+			</Button>
+			""");
+
+			await UITestHelper.Load(button);
+			Assert.AreEqual(Colors.Red, ((SolidColorBrush)((Grid)button.FindName("Root")).Background).Color);
+			using (ThemeHelper.UseDarkTheme())
+			{
+				await UITestHelper.WaitForIdle();
+				Assert.AreEqual(Colors.Red, ((SolidColorBrush)((Grid)button.FindName("Root")).Background).Color);
+			}
+		}
 	}
 
 	public partial class ControlLoggingEventsSequence : StackPanel

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.UI.Windowing;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -27,6 +28,10 @@ internal partial class X11XamlRootHost
 	private X11KeyboardInputSource? _keyboardSource;
 	private X11DragDropExtension? _dragDrop;
 	private X11DisplayInformationExtension? _displayInformationExtension;
+
+	// We have to defer SetFullScreen calls until after the first Expose. Otherwise the calls don't take effect.
+	// This unfortunately means there's a split second between showing the window and going fullscreen.
+	private bool _firstExpose = true;
 
 	private void InitializeX11EventsThread()
 	{
@@ -141,9 +146,9 @@ internal partial class X11XamlRootHost
 
 			foreach (var @event in GetEvents(x11Window.Display))
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				// if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"XLIB EVENT: {@event.type}");
+					Console.WriteLine($"XLIB EVENT: {@event.type}");
 				}
 
 				_ = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
@@ -208,6 +213,11 @@ internal partial class X11XamlRootHost
 							break;
 						case XEventName.Expose:
 							((IXamlRootHost)this).InvalidateRender();
+							if (_firstExpose && _window.AppWindow.Presenter is FullScreenPresenter)
+							{
+								_wrapper.SetFullScreenMode(true);
+							}
+							_firstExpose = false;
 							break;
 						case XEventName.MotionNotify:
 							_pointerSource?.ProcessMotionNotifyEvent(@event.MotionEvent);

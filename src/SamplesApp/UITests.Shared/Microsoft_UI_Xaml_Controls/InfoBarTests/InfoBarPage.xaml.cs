@@ -10,10 +10,10 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-using IconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource;
-using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
+using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
+using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 
 using Uno.UI.Samples.Controls;
 

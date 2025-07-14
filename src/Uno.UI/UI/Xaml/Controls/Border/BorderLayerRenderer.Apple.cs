@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml;
 using _Color = UIKit.UIColor;
 using _Image = UIKit.UIImage;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
 namespace Uno.UI.Xaml.Controls;
 

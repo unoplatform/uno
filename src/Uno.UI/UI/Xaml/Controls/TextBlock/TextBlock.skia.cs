@@ -24,19 +24,18 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
 	{
-		private readonly TextVisual _textVisual;
 		private Action? _selectionHighlightColorChanged;
 		private MenuFlyout? _contextMenu;
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+		private Size _lastInlinesArrangeWithPadding;
+
+		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
 
 		public TextBlock()
 		{
 			UpdateLastUsedTheme();
-			_textVisual = new TextVisual(Visual.Compositor, this);
-
-			Visual.Children.InsertAtBottom(_textVisual);
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 
@@ -55,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			_textVisual.Comment = $"{Visual.Comment}#text";
+			Visual.Comment = $"{Visual.Comment}#text";
 		}
 #endif
 
@@ -112,23 +111,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ApplyFlowDirection(float width)
 		{
-			if (this.FlowDirection == FlowDirection.RightToLeft)
-			{
-				_textVisual.TransformMatrix = new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, width, 0.0f));
-			}
-			else
-			{
-				_textVisual.TransformMatrix = Matrix4x4.Identity;
-			}
+			Visual.TransformMatrix = FlowDirection == FlowDirection.RightToLeft
+				? new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, width, 0.0f))
+				: Matrix4x4.Identity;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
-			var arrangedSizeWithoutPadding = Inlines.Arrange(availableSizeWithoutPadding);
-			_textVisual.Size = new Vector2((float)arrangedSizeWithoutPadding.Width, (float)arrangedSizeWithoutPadding.Height);
-			_textVisual.Offset = new Vector3((float)padding.Left, (float)padding.Top, 0);
+			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
+			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 			ApplyFlowDirection((float)finalSize.Width);
 
 			var result = base.ArrangeOverride(finalSize);
@@ -178,7 +171,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void InvalidateInlineAndRequireRepaint()
 		{
 			Inlines.InvalidateMeasure();
-			_textVisual.Compositor.InvalidateRender(_textVisual);
+			Visual.Compositor.InvalidateRender(Visual);
 		}
 
 		partial void InvalidateTextBlockPartial() => InvalidateInlineAndRequireRepaint();
@@ -412,8 +405,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void UpdateIsTextTrimmed()
 		{
 			IsTextTrimmed = IsTextTrimmable && (
-				(_textVisual.Size.X + Padding.Left + Padding.Right) > ActualWidth ||
-				(_textVisual.Size.Y + Padding.Top + Padding.Bottom) > ActualHeight
+				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
+				_lastInlinesArrangeWithPadding.Height > ActualHeight
 			);
 		}
 

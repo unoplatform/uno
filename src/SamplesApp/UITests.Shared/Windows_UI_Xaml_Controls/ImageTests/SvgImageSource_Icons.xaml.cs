@@ -52,7 +52,7 @@ public sealed partial class SvgImageSource_Icons : Page, IWaitableSample
 		flyout.Items.Add(
 			new MenuFlyoutItem
 			{
-				Icon = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
+				Icon = new Microsoft.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
 				Text = "This menu item should have a HOME icon",
 			});
 
@@ -76,7 +76,7 @@ public sealed partial class SvgImageSource_Icons : Page, IWaitableSample
 			{
 				(s2 as MenuFlyout).Items.Add(new MenuFlyoutItem
 				{
-					Icon = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
+					Icon = new Microsoft.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
 					Text = "This menu item should have a HOME icon",
 				});
 			};

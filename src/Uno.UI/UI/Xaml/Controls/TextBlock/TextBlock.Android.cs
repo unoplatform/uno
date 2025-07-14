@@ -30,7 +30,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 using Uno.Collections;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls

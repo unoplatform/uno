@@ -16,7 +16,7 @@ using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.UI;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 #if __APPLE_UIKIT__
 using UIKit;

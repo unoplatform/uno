@@ -13,7 +13,7 @@ using Combinatorial.MSTest;
 
 
 #if !HAS_UNO_WINUI && !WINAPPSDK
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO

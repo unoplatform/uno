@@ -27,7 +27,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 			//		async () => await InvokeScriptAsync(MyWebView2, CancellationToken.None, GetReloadJavascript(), new string[] { "" })
 			//	);
 			//}
-			//public static async Task<string> InvokeScriptAsync(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 webView, CancellationToken ct, string script, string[] arguments)
+			//public static async Task<string> InvokeScriptAsync(Microsoft.UI.Xaml.Controls.WebView2 webView, CancellationToken ct, string script, string[] arguments)
 			//{
 			//	
 			//	//return await webView.CoreWebView2.ExecuteScriptAsync(script, arguments).AsTask(ct);

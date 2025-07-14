@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
-using SwipeMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode;
+using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
 
 namespace MUXControlsTestApp
 {
@@ -42,7 +42,7 @@ namespace MUXControlsTestApp
 
 			// Using swipecontrol inside datatemplate prevents us from setting that:
 			// Swipecontrol is in horizontal mode, can not add vertical swipe items...
-			//DefaultSwipeItemsVertical.Mode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode.Reveal;
+			//DefaultSwipeItemsVertical.Mode = Microsoft.UI.Xaml.Controls.SwipeMode.Reveal;
 			//DefaultSwipeItemsVertical.Add(DefaultSwipeItemVertical);
 
 			SwipeItemsChildSum.Text = (DefaultSwipeItemsHorizontal.Count + DefaultSwipeItemsVertical.Count).ToString();

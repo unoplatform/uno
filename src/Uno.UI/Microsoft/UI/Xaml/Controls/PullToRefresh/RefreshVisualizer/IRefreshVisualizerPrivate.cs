@@ -4,7 +4,7 @@
 
 #nullable enable
 
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Private.Controls;
 

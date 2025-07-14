@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
 using Microsoft.UI.Xaml;
 using Uno.UI.Common;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
 

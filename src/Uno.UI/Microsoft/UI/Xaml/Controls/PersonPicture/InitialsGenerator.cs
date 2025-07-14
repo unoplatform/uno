@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using Windows.ApplicationModel.Contacts;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Value indicating the general character set for a given character.

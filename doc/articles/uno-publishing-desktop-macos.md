@@ -29,6 +29,9 @@ Where `{{RID}}` is either `osx-x64` or `osx-arm64`.
 
 The resulting app bundle, which is a directory, will be located at `bin/Release/net10.0-desktop/{{RID}}/publish/{{APPNAME}}.app`.
 
+> [!NOTE]
+> The [structure of the app bundle](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html) requires a [custom native host](https://learn.microsoft.com/en-us/dotnet/core/tutorials/netcore-hosting) to run the app. As such, starting with Uno 6.1, the app bundles are **always** built as a self-contained executable, even if the `SelfContained` property is not set to `true` inside the project.
+
 ### Code Signing
 
 > [!IMPORTANT]

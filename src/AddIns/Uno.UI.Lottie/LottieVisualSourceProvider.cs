@@ -10,7 +10,7 @@ using Microsoft.Toolkit.Uwp.UI.Lottie;
 #endif
 
 #pragma warning disable 105
-using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #pragma warning restore 105
 
 [assembly: ApiExtension(typeof(ILottieVisualSourceProvider), typeof(Uno.UI.Lottie.LottieVisualSourceProvider))]

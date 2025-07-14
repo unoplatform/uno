@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Media;
 
 using AutomationPeer = Microsoft.UI.Xaml.Automation.Peers.AutomationPeer;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuBarItem : Control

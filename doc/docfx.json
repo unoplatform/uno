@@ -22,7 +22,8 @@
 					"articles/**.png",
 					"articles/**.jpg",
 					"articles/**.gif",
-					"articles/**.svg"
+					"articles/**.svg",
+					"articles/llms/**"
 				]
             }
         ],

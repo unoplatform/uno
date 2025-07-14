@@ -40,9 +40,9 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
 
-[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Windows" /* Keep to avoid renaming */ + ".UI")]
+[assembly: Microsoft.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Windows" /* Keep to avoid renaming */ + ".UI")]
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 // This attribute is aligned with https://github.com/dotnet/maui/blob/312948086267cf6c529dfeb2ec0eeae7e7aa57ae/src/Graphics/src/Graphics/XmlnsDefinitionAttribute.cs#L8
 // Visual studio now expects this attribute to be present in order to provide intellisense for the types

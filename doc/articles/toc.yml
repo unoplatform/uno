@@ -10,6 +10,9 @@
         href: xref:Uno.GetStarted.vscode
       - name: Rider
         href: xref:Uno.GetStarted.Rider
+
+    - name: Sign in with Uno Platform
+      href: xref:Uno.GetStarted.Licensing
         
     - name: Create an App
       topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
@@ -101,7 +104,7 @@
       - name: Overview
         href: xref:Uno.Tutorials.Intro
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
-        href: xref:Uno.Tutorials.AzureStaticWepApps
+        href: xref:Uno.Tutorials.AzureStaticWebApps
       - name: How to use Windows Community Toolkit
         topicHref: xref:Uno.Development.CommunityToolkit
         items:
@@ -183,7 +186,9 @@
       - name: Control Libraries
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
-        href: guides/how-to-add-platforms-existing-project.md
+        href: xref:Uno.Guides.AddAdditionalPlatforms
+      - name: New Projects in Existing Solutions
+        href: xref:Uno.Guides.AddUnoToExistingSolution
       - name: Using the Skia Desktop
         href: xref:Uno.Skia.Desktop
       - name: Linux Framebuffer

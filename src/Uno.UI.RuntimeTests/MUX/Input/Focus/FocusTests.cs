@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
-using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;

@@ -5,7 +5,7 @@
 using System;
 using Windows.Foundation;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides data for the TeachingTip.Closing event.

@@ -2,7 +2,7 @@
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ColumnMajorUniformToLargestGridLayout : NonVirtualizingLayout
 	{

@@ -20,13 +20,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using NavigationViewDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewDisplayMode;
-using NavigationViewPaneDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
-using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
-using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewItemHeader = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemHeader;
-using NavigationViewItemSeparator = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemSeparator;
-using NavigationViewBackButtonVisible = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewDisplayMode;
+using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
+using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewItemHeader = Microsoft.UI.Xaml.Controls.NavigationViewItemHeader;
+using NavigationViewItemSeparator = Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator;
+using NavigationViewBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible;
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Composition;
@@ -705,7 +705,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 					<DataTemplate
 						xmlns ='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
 						xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-						xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
+						xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
 						<controls:NavigationViewItem
 							Content='Item'>
 							<controls:NavigationViewItem.Icon>
@@ -874,10 +874,10 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				var navView = new NavigationView();
 
-				var muxItem = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem { Content = "MUX Item" };
+				var muxItem = new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = "MUX Item" };
 				navView.MenuItems.Add(muxItem);
 
-				navView.MenuItems.Add(new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemSeparator());
+				navView.MenuItems.Add(new Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator());
 
 				// No errors should occur here when we only use MUX items
 				navView.UpdateLayout();

@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media.Animation;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Extensions;

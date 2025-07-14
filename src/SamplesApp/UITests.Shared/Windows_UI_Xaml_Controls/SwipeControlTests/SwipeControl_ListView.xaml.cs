@@ -9,8 +9,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
-using SwipeItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItem;
-using SwipeItemInvokedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
+using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
+using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
 
 namespace UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 {

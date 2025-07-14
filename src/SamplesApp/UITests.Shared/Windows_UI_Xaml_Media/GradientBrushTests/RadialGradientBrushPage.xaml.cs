@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
 namespace MUXControlsTestApp
 {

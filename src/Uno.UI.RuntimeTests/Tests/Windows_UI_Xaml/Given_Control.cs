@@ -15,7 +15,7 @@ using Windows.Foundation;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Helpers;
 
-using Expander = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Expander;
+using Expander = Microsoft.UI.Xaml.Controls.Expander;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {

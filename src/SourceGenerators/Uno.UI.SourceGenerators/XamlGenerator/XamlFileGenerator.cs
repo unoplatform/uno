@@ -1025,14 +1025,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var isWindow = IsWindow(controlBaseType);
 
-			if (hasXBindExpressions || hasResourceExtensions)
+			if (hasXBindExpressions || hasResourceExtensions || _isHotReloadEnabled)
 			{
 				var activator = $"new {GetBindingsTypeNames(_xClassName.ClassName).bindingsClassName}(this)";
 
 				writer.AppendLineIndented($"Bindings = {activator};");
 			}
 
-			if ((isFrameworkElement || isWindow) && (hasXBindExpressions || hasResourceExtensions))
+			if ((isFrameworkElement || isWindow) && (hasXBindExpressions || hasResourceExtensions || _isHotReloadEnabled))
 			{
 				// Casting to FrameworkElement or Window is important to avoid issues when there
 				// is a member named Loading or Activated that shadows the ones from FrameworkElement/Window
@@ -1043,7 +1043,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					setupCallbackSignature = "private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)";
 					writer.AppendLineIndented("((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;");
 
-					if (hasXBindExpressions)
+					if (hasXBindExpressions || _isHotReloadEnabled)
 					{
 						teardownCallbackSignature = "private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)";
 						writer.AppendLineIndented("((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;");
@@ -1183,22 +1183,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var componentName = current.MemberName;
 				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
-
 				var isWeak = current.IsWeakReference ? "true" : "false";
-				var accessors = _isHotReloadEnabled ? " { get; }" : ""; // We use property for HR so we can remove them without causing rude edit.
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder{accessors} = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
 
-				using (writer.BlockInvariant($"private {typeName} {componentName}"))
+				if (_isHotReloadEnabled)
 				{
-					using (writer.BlockInvariant("get"))
-					{
-						writer.AppendLineIndented($"return ({typeName}){componentName}_Holder.Instance;");
-					}
-
-					using (writer.BlockInvariant("set"))
-					{
-						writer.AppendLineIndented($"{componentName}_Holder.Instance = value;");
-					}
+					// We use a property for HR so we can remove them without causing rude edit.
+					// We also avoid property initializer as they are known to cause issue with HR: https://github.com/dotnet/roslyn/issues/79320
+					writer.AppendMultiLineIndented($$"""
+						private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder { get; set; }
+						private {{typeName}} {{componentName}}
+						{
+							get => ({{typeName}})({{componentName}}_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}})).Instance;
+							set => ({{componentName}}_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}})).Instance = value;
+						}
+					""");
+				}
+				else
+				{
+					writer.AppendMultiLineIndented($$"""
+							private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}});
+							private {{typeName}} {{componentName}}
+							{
+								get => ({{typeName}}){{componentName}}_Holder.Instance;
+								set => {{componentName}}_Holder.Instance = value;
+							}
+						""");
 				}
 			}
 		}
@@ -1710,9 +1719,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var type = GetType(topLevelControl.Type);
 
-			if (type.GetFullyQualifiedTypeExcludingGlobal().Equals("Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.XamlControlsResources", StringComparison.Ordinal))
+			if (type.GetFullyQualifiedTypeExcludingGlobal().Equals("Microsoft.UI.Xaml.Controls.XamlControlsResources", StringComparison.Ordinal))
 			{
-				using (writer.BlockInvariant($"new global::Microsoft" + /* UWP don't rename */ $".UI.Xaml.Controls.XamlControlsResourcesV2()"))
+				using (writer.BlockInvariant($"new global::Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2()"))
 				{
 					BuildLiteralProperties(writer, topLevelControl);
 				}
@@ -4492,7 +4501,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// It might be possible to improve it further, but that seems to do the job for now.
 			// We can optimize further if future performance measures shows it being problematic.
 			// What this method does is:
-			// Given a xamlString like "muxc:SomeControl", converts it to Microsoft .UI.Xaml.Controls.SomeControl.
+			// Given a xamlString like "muxc:SomeControl", converts it to Microsoft.UI.Xaml.Controls.SomeControl.
 			// Note that the given xamlString can be a more complex expression involving multiple namespaces.
 			static string ReplaceNamespace(string xamlString, NamespaceDeclaration ns)
 			{
@@ -4918,8 +4927,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case "Windows.Foundation.Point":
 						return "new Windows.Foundation.Point(" + SplitAndJoin(memberValue) + ")";
 
+					case "System.Numerics.Vector2":
+						return "new global::System.Numerics.Vector2(" + SplitAndJoin(memberValue) + ")";
+
 					case "System.Numerics.Vector3":
-						return "new global::System.Numerics.Vector3(" + memberValue + ")";
+						return "new global::System.Numerics.Vector3(" + SplitAndJoin(memberValue) + ")";
 
 					case "Microsoft.UI.Xaml.Input.InputScope":
 						return "new global::Microsoft.UI.Xaml.Input.InputScope { Names = { new global::Microsoft.UI.Xaml.Input.InputScopeName { NameValue = global::Microsoft.UI.Xaml.Input.InputScopeNameValue." + memberValue + "} } }";

@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Globalization.NumberFormatting;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class NumberBox
 {

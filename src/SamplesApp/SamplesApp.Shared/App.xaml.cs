@@ -39,7 +39,7 @@ using Uno.UI.Helpers;
 #if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
-using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using SampleControl.Presentation;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;

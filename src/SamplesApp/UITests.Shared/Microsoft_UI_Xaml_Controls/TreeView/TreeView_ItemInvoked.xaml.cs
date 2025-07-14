@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
@@ -28,9 +28,9 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 			Tree.ItemInvoked += OnItemInvoked;
 		}
 
-		private void OnItemInvoked(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItemInvokedEventArgs args)
+		private void OnItemInvoked(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs args)
 		{
-			StatusTextBlock.Text = $"{DateTime.UtcNow.ToLongTimeString()}: {(args.InvokedItem as Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode)?.Content}";
+			StatusTextBlock.Text = $"{DateTime.UtcNow.ToLongTimeString()}: {(args.InvokedItem as Microsoft.UI.Xaml.Controls.TreeViewNode)?.Content}";
 		}
 	}
 }

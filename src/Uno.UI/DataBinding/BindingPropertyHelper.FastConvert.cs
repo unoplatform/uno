@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using Microsoft.UI.Text;
 using FontWeight = Windows.UI.Text.FontWeight;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 
 #if __ANDROID__
@@ -273,6 +274,16 @@ namespace Uno.UI.DataBinding
 			}
 
 			if (FastStringToRect(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToVector2(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToVector3(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -610,6 +621,38 @@ namespace Uno.UI.DataBinding
 				if (fields.Count == 4)
 				{
 					output = new Windows.Foundation.Rect(fields[0], fields[1], fields[2], fields[3]);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToVector2(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(Vector2))
+			{
+				var fields = GetFloatValues(input);
+
+				if (fields.Count == 2)
+				{
+					output = new Vector2(fields[0], fields[1]);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToVector3(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(Vector3))
+			{
+				var fields = GetFloatValues(input);
+
+				if (fields.Count == 3)
+				{
+					output = new Vector3(fields[0], fields[1], fields[2]);
 					return true;
 				}
 			}

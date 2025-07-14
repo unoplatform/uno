@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class PersonPicture : Control
 {
@@ -149,7 +149,7 @@ public partial class PersonPicture : Control
 
 	protected override AutomationPeer OnCreateAutomationPeer()
 	{
-		return new Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer(this);
+		return new Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer(this);
 	}
 
 	protected override void OnApplyTemplate()
