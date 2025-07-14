@@ -25,6 +25,11 @@ namespace Windows.UI.ViewManagement
 		partial void InitializePartial()
 		{
 			NSNotificationCenter.DefaultCenter.AddObserver(
+				UIApplication.DidBecomeActiveNotification,
+				_ => SetStatusBarBackgroundColor(_backgroundColor)
+			);
+			
+			NSNotificationCenter.DefaultCenter.AddObserver(
 				UIApplication.DidChangeStatusBarOrientationNotification,
 				_ => SetStatusBarBackgroundColor(_backgroundColor)
 			);
