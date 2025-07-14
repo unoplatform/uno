@@ -164,6 +164,28 @@
 		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
 	</ItemGroup>
 
+	<!--
+	  Work around: https://github.com/dotnet/sdk/issues/48949
+	  -->
+	<ItemGroup Condition=" $(NETCoreSdkVersion.StartsWith('10.0.100-preview.5.')) ">
+
+		<KnownFrameworkReference Update="Microsoft.WindowsDesktop.App">
+			<DefaultRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</DefaultRuntimeFrameworkVersion>
+			<LatestRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</LatestRuntimeFrameworkVersion>
+			<TargetingPackVersion>10.0.0-preview.5.25277.114</TargetingPackVersion>
+		</KnownFrameworkReference>
+		<KnownFrameworkReference Update="Microsoft.WindowsDesktop.App.WPF">
+			<DefaultRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</DefaultRuntimeFrameworkVersion>
+			<LatestRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</LatestRuntimeFrameworkVersion>
+			<TargetingPackVersion>10.0.0-preview.5.25277.114</TargetingPackVersion>
+		</KnownFrameworkReference>
+		<KnownFrameworkReference Update="Microsoft.WindowsDesktop.App.WindowsForms">
+			<DefaultRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</DefaultRuntimeFrameworkVersion>
+			<LatestRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</LatestRuntimeFrameworkVersion>
+			<TargetingPackVersion>10.0.0-preview.5.25277.114</TargetingPackVersion>
+		</KnownFrameworkReference>
+	</ItemGroup>
+
 	<Target Name="ValidateSolutionPath" BeforeTargets="Build">
 		<Error Condition="$(MSBuildThisFileDirectory.Contains(' '))"
 			 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
