@@ -37,6 +37,7 @@ internal partial class X11XamlRootHost
 					var height = attributes.height;
 					var nativeClippingPath = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, canvas);
 					var picture = _recorder.EndRecording();
+					rootElement.XamlRoot?.InvokeFramePainted();
 
 					var scale = rootElement.XamlRoot is { } root
 						? root.RasterizationScale
@@ -55,6 +56,7 @@ internal partial class X11XamlRootHost
 							if (_nextRenderParams is { } renderParams)
 							{
 								_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.Scale);
+								NativeDispatcher.Main.Enqueue(() => rootElement.XamlRoot?.InvokeFrameRendered());
 							}
 						});
 					}

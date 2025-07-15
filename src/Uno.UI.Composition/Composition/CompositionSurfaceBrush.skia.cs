@@ -1,28 +1,31 @@
 ﻿#nullable enable
 
-using System;
 using System.Numerics;
 using Uno.UI.Composition;
 using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
-using Windows.Graphics.Display;
 using Uno.Extensions;
 
 namespace Microsoft.UI.Composition
 {
-	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
+	public partial class CompositionSurfaceBrush : CompositionBrush, ISizedBrush
 	{
-		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface;
+		private static readonly SKPaint _tempPaint = new();
+		private SKColor? _monochromeColor;
 
-		bool ISizedBrush.IsSized => true;
+		internal SKColor? MonochromeColor
+		{
+			get => _monochromeColor;
+			set => SetObjectProperty(ref _monochromeColor, value);
+		}
 
-		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
+		internal override bool RequiresRepaintOnEveryFrame => Surface is ISkiaSurface;
 
 		Vector2? ISizedBrush.Size => Surface switch
 		{
 			SkiaCompositionSurface { Image: SKImage img } => new(img.Width, img.Height),
-			ISkiaSurface { Surface: SKSurface surface } => new(surface.Canvas.DeviceClipBounds.Width / surface.Canvas.TotalMatrix.ScaleX, surface.Canvas.DeviceClipBounds.Height / surface.Canvas.TotalMatrix.ScaleY),
+			ISkiaSurface skiaSurface => skiaSurface.Size,
 			ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: SKImage img } } => new(img.Width, img.Height),
 			_ => null
 		};
@@ -76,96 +79,70 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
-		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || (Surface as ISkiaSurface)?.Surface is not null;
+		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || Surface is ISkiaSurface;
 
-		internal override void UpdatePaint(SKPaint fillPaint, SKRect bounds)
+		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{
 			if (bounds.IsEmpty)
 			{
 				return;
 			}
 
-			if (TryGetSkiaCompositionSurface(Surface, out var scs))
+			if (Surface is ISkiaSurface skiaSurface)
+			{
+				canvas.Save();
+				canvas.ClipRect(bounds, antialias: true);
+				skiaSurface.Paint(canvas, opacity);
+				canvas.Restore();
+			}
+			else if (TryGetSkiaCompositionSurface(Surface, out var scs))
 			{
 				var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), bounds);
 
 				if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
 				{
-					fillPaint.Shader = null;
+					return;
+				}
+
+				// Relevant doc snippet from WPF: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/brush-transformation-overview#differences-between-the-transform-and-relativetransform-properties
+				// When you apply a transform to a brush's RelativeTransform property, that transform is applied to the brush before its output is mapped to the painted area. The following list describes the order in which a brush’s contents are processed and transformed.
+				//  * Process the brush’s contents. For a GradientBrush, this means determining the gradient area. For a TileBrush, the Viewbox is mapped to the Viewport. This becomes the brush’s output.
+				// 	* Project the brush’s output onto the 1 x 1 transformation rectangle.
+				// 	* Apply the brush’s RelativeTransform, if it has one.
+				// 	* Project the transformed output onto the area to paint.
+				// 	* Apply the brush’s Transform, if it has one.
+				var matrix = Matrix3x2.Identity;
+				matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width),
+					(float)(backgroundArea.Height / scs.Image.Height));
+				matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+				matrix *= TransformMatrix;
+				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height).Inverse();
+				matrix *= RelativeTransform;
+				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
+
+				_tempPaint.Reset();
+				_tempPaint.IsAntialias = true;
+				if (MonochromeColor is { } color)
+				{
+					_tempPaint.ColorFilter = SKColorFilter.CreateBlendMode(color.WithAlpha((byte)(color.Alpha * opacity)), SKBlendMode.SrcIn);
 				}
 				else
 				{
-					// Relevant doc snippet from WPF: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/brush-transformation-overview#differences-between-the-transform-and-relativetransform-properties
-					// When you apply a transform to a brush's RelativeTransform property, that transform is applied to the brush before its output is mapped to the painted area. The following list describes the order in which a brush’s contents are processed and transformed.
-					//  * Process the brush’s contents. For a GradientBrush, this means determining the gradient area. For a TileBrush, the Viewbox is mapped to the Viewport. This becomes the brush’s output.
-					// 	* Project the brush’s output onto the 1 x 1 transformation rectangle.
-					// 	* Apply the brush’s RelativeTransform, if it has one.
-					// 	* Project the transformed output onto the area to paint.
-					// 	* Apply the brush’s Transform, if it has one.
-					var matrix = Matrix3x2.Identity;
-					matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width), (float)(backgroundArea.Height / scs.Image.Height));
-					matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
-					matrix *= TransformMatrix;
-					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height).Inverse();
-					matrix *= RelativeTransform;
-					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
-
-					SKShader imageShader;
-					var sigmaX = scs.Image.Width / bounds.Width;
-					var sigmaY = scs.Image.Height / bounds.Height;
-					if (scs.Image.Width < bounds.Width || scs.Image.Height < bounds.Height)
-					{
-						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
-					}
-					else // downsampling: do not use bicubic samplers which perform extremely poorly (quality wise) in this case
-					{
-						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear), matrix.ToSKMatrix());
-					}
-
-					if (UsePaintColorToColorSurface)
-					{
-						// use the set color instead of the image pixel values. This is what happens on WinUI.
-						var blendedShader = SKShader.CreateColorFilter(imageShader, SKColorFilter.CreateBlendMode(fillPaint.Color, SKBlendMode.SrcIn));
-
-						fillPaint.Shader = blendedShader;
-					}
-					else
-					{
-						fillPaint.Shader = imageShader;
-					}
-
-					fillPaint.IsAntialias = true;
+					_tempPaint.ColorFilter = opacity.ToColorFilter();
 				}
+
+				canvas.Save();
+				canvas.Concat(matrix.ToSKMatrix());
+				// Ideally, we would use a CatmullRom sampler when upscaling (i.e. bounds.Size > scs.Image.Size) and
+				// a Lanczos sampler when downscaling. However, profiling shows that CatmullRom chokes when the
+				// drawing are (i.e. bounds) is large and the improvement over linear sampling is almost imperceptible.
+				// For downsampling, Lanczos is slightly better than linear filtering with mipmapping but chokes when
+				// the downscaling ratio is too big. Linear filtering with mipmapping is mostly okay but in the most
+				// extreme cases with tons of images it's quite a bit slower than a linear filter without improving
+				// the output that much.
+				canvas.DrawImage(scs.Image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear), _tempPaint);
+				canvas.Restore();
 			}
-			else if (Surface is ISkiaSurface skiaSurface)
-			{
-				skiaSurface.UpdateSurface();
-
-				if (skiaSurface.Surface is not null)
-				{
-					var matrix = TransformMatrix * Matrix3x2.CreateScale(1 / skiaSurface.Surface.Canvas.TotalMatrix.ScaleX);
-					var image = skiaSurface.Surface.Snapshot();
-
-					fillPaint.Shader = SKShader.CreateImage(image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
-					fillPaint.IsAntialias = true;
-				}
-				else
-				{
-					fillPaint.Shader = null;
-				}
-			}
-			else
-			{
-				fillPaint.Shader = null;
-			}
-		}
-
-		internal bool UsePaintColorToColorSurface { private get; set; }
-
-		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
-		{
-			if (Surface is ISkiaSurface skiaSurface)
-				skiaSurface.UpdateSurface(session);
 		}
 	}
 }
