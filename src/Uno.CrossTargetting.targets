@@ -99,7 +99,7 @@
 
 	<PropertyGroup Condition="$(IsCatalyst)">
 		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
-		<SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAppleUIKit)">
