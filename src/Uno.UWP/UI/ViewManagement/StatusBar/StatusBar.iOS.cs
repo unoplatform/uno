@@ -28,7 +28,7 @@ namespace Windows.UI.ViewManagement
 				UIApplication.DidBecomeActiveNotification,
 				_ => SetStatusBarBackgroundColor(_backgroundColor)
 			);
-			
+
 			NSNotificationCenter.DefaultCenter.AddObserver(
 				UIApplication.DidChangeStatusBarOrientationNotification,
 				_ => SetStatusBarBackgroundColor(_backgroundColor)
