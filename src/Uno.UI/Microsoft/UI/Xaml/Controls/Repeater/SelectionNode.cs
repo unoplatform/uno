@@ -12,17 +12,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_manager = manager;
 			m_parent = parent;
-			// TODO: MZ: What?
-			//m_source = manager;
-			//m_dataSource = manager;
 			m_source = null;
 			m_dataSource = null;
 		}
 
+#if !HAS_UNO // Finalizer is intentionally not included in Uno Platform. we are unhooking the handlers explicitly instead of relying on shared_ptr.
 		~SelectionNode()
 		{
 			UnhookCollectionChangedHandler();
 		}
+#endif
 
 		internal object Source
 		{
@@ -451,6 +450,16 @@ namespace Microsoft.UI.Xaml.Controls
 			// This will throw away all the children SelectionNodes
 			// causing them to be unhooked from their data source. This
 			// essentially cleans up the tree.
+#if HAS_UNO // In Uno Platform we are unhooking the handlers explicitly instead of relying on shared_ptr.
+			foreach (var node in m_childrenNodes)
+			{
+				if (node is not null)
+				{
+					node.UnhookCollectionChangedHandler();
+				}
+			}
+#endif
+
 			m_childrenNodes.Clear();
 		}
 
@@ -646,6 +655,14 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							m_realizedChildrenNodeCount--;
 						}
+
+#if HAS_UNO // In Uno Platform we are unhooking the handlers explicitly instead of relying on shared_ptr.
+						if (m_childrenNodes[index] is { } node)
+						{
+							node.UnhookCollectionChangedHandler();
+						}
+#endif
+
 						m_childrenNodes.RemoveAt(index);
 					}
 				}
