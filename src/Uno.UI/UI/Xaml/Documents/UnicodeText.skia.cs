@@ -47,6 +47,7 @@ internal readonly struct UnicodeText : IParsedText
 
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
+	private readonly bool _rtl;
 	private readonly List<(float lineHeight, List<ShapedLineBrokenBidiRun> runs)> _lines;
 
 	static UnicodeText()
@@ -67,6 +68,7 @@ internal readonly struct UnicodeText : IParsedText
 		FlowDirection flowDirection,
 		out Size desiredSize)
 	{
+		_rtl = flowDirection == FlowDirection.RightToLeft;
 		_size = availableSize;
 		_textAlignment = textAlignment;
 
@@ -244,28 +246,30 @@ internal readonly struct UnicodeText : IParsedText
 		{
 			var currentFontDetails = run.textElement.FontDetails;
 			var currentFontFallbackSplitStart = run.start;
-			for (int i = run.start; i < run.end; i++)
+			for (int i = run.start; i < run.end; i += char.IsSurrogate(run.textElement.Text, i) ? 2 : 1)
 			{
 				// TODO: Should the fallback font be used for the rest of the run, or only for the individual codepoint that's
 				// missing from the primary font?
-				var codepoint = char.ConvertToUtf32(run.textElement.Text, i);
-				if (!currentFontDetails.SKFont.ContainsGlyph(codepoint))
+				FontDetails newFontDetails;
+				if (char.ConvertToUtf32(run.textElement.Text, i) is var codepoint && !run.textElement.FontDetails.SKFont.ContainsGlyph(codepoint))
 				{
-					if (SKFontManager.Default.MatchCharacter(codepoint) is { } fallbackTypeface &&
-						FontDetailsCache.GetFont(fallbackTypeface.FamilyName, (float)run.textElement.FontSize, run.textElement.FontWeight, run.textElement.FontStretch, run.textElement.FontStyle).details is var fallbackFontDetails &&
-						fallbackFontDetails != currentFontDetails)
+					newFontDetails = SKFontManager.Default.MatchCharacter(codepoint) is { } fallbackTypeface
+						? FontDetailsCache.GetFont(fallbackTypeface.FamilyName, (float)run.textElement.FontSize, run.textElement.FontWeight, run.textElement.FontStretch, run.textElement.FontStyle).details
+						: currentFontDetails;
+				}
+				else
+				{
+					newFontDetails = run.textElement.FontDetails;
+				}
+
+				if (newFontDetails != currentFontDetails)
+				{
+					if (currentFontFallbackSplitStart != run.start)
 					{
-						if (currentFontFallbackSplitStart != run.start)
-						{
-							list.Add(new ShapedLineBrokenBidiRun(run.textElement, currentFontFallbackSplitStart, i, ShapeRun(run.textElement.Text[currentFontFallbackSplitStart..i], run.rtl, currentFontDetails.Font), currentFontDetails, run.rtl, run.visualOrderMajor));
-						}
-						currentFontDetails = fallbackFontDetails;
-						currentFontFallbackSplitStart = i;
-						if (char.IsSurrogate(run.textElement.Text, i))
-						{
-							i++;
-						}
+						list.Add(new ShapedLineBrokenBidiRun(run.textElement, currentFontFallbackSplitStart, i, ShapeRun(run.textElement.Text[currentFontFallbackSplitStart..i], run.rtl, currentFontDetails.Font), currentFontDetails, run.rtl, run.visualOrderMajor));
 					}
+					currentFontDetails = newFontDetails;
+					currentFontFallbackSplitStart = i;
 				}
 			}
 			list.Add(new ShapedLineBrokenBidiRun(run.textElement, currentFontFallbackSplitStart, run.end, ShapeRun(run.textElement.Text[run.start..run.end], run.rtl, currentFontDetails.Font), currentFontDetails, run.rtl, run.visualOrderMajor));
