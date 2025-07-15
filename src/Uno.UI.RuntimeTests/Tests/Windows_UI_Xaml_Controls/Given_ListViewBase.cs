@@ -1505,6 +1505,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(list);
 
 			ScrollTo(list, 10000); // Scroll to end
+			await Task.Delay(200);
 
 			ListViewItem lastItem = null;
 			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
@@ -1564,6 +1565,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			ScrollTo(list, 1000000); // Scroll to end
+			await Task.Delay(200);
 
 			await WindowHelper.WaitForIdle();
 
@@ -2186,12 +2188,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(scroll);
 
 			ScrollTo(list, scroll.ExtentHeight / 2); // Scroll to middle
+			await Task.Delay(200); // Allow the scroll to complete
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(10, $"materialized {materialized}");
 
 			ScrollTo(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+			await Task.Delay(200); // Allow the scroll to complete
 
 			await WindowHelper.WaitForIdle();
 
@@ -4345,6 +4349,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __WASM__
 		[Ignore("https://github.com/unoplatform/uno/issues/15093")]
 #endif
+		// For this test to work, make sure you are running the SampleApp with LightTheme enabled.
 		public async Task When_ThemeChange()
 		{
 			const double TotalHeight = 500; // The ListView height.
@@ -4387,6 +4392,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight;
 
 				ScrollTo(SUT, scrollPosition);
+				await Task.Delay(500);
 				await WindowHelper.WaitForIdle();
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
