@@ -21,6 +21,7 @@ using SwipeItems = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItems;
 using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
 using SwipeMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode;
 using Uno.UI.Tests.Helpers;
+using System.Numerics;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -1621,6 +1622,32 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var rightRadiusGrid = (Grid)root.FindName("RightRadiusGrid");
 
 			Assert.AreEqual(new CornerRadius(0, 6, 6, 0), rightRadiusGrid.CornerRadius);
+		}
+
+		[TestMethod]
+		public void When_Vector3_Property()
+		{
+			var xaml =
+				"""
+				<VectorPropertyControl xmlns='Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests' Vec3="1,4,100" />
+				""";
+			var control = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as VectorPropertyControl;
+
+			Assert.IsNotNull(control);
+			Assert.AreEqual(new Vector3(1, 4, 100), control.Vec3);
+		}
+
+		[TestMethod]
+		public void When_Vector2_Property()
+		{
+			var xaml =
+				"""
+				<VectorPropertyControl xmlns='Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests' Vec2="31,4" />
+				""";
+			var control = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as VectorPropertyControl;
+
+			Assert.IsNotNull(control);
+			Assert.AreEqual(new Vector2(31, 4), control.Vec2);
 		}
 
 		private string GetContent(string testName)
