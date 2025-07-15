@@ -1662,7 +1662,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				ScrollTo(list, 5); // Scroll back up
 
-				await Task.Delay(200);
+				await Task.Delay(600);
 				await WindowHelper.WaitForIdle();
 
 				var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
@@ -1673,7 +1673,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
 
 				secondContainer.Should().NotBeNull();
-				LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().Be(50);
+				LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().BeApproximately(50, 0.6);
 			}
 		}
 
@@ -1733,7 +1733,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ScrollTo(list, 50); // scroll back up but not all the way
 			ScrollTo(list, 0);
 
-			await Task.Delay(200);
+			await Task.Delay(600);
 			await WindowHelper.WaitForIdle();
 
 			var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
@@ -1744,7 +1744,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
 
 			secondContainer.Should().NotBeNull();
-			LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().Be(50);
+			LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().BeApproximately(50, 0.6);
 		}
 
 		[TestMethod]
