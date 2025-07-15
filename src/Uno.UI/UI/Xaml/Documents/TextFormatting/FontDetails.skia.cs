@@ -11,6 +11,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
 internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX, SKFontMetrics SKFontMetrics, Font Font, bool CanChange)
 {
+	private (float textScaleX, float textScaleY)? _textScale;
 	// TODO: Investigate best value to use here. SKShaper uses a constant 512 scale, Avalonia uses default font scale. Not 100% sure how much difference it
 	// makes here but it affects subpixel rendering accuracy. Performance does not seem to be affected by changing this value.
 	private const int FontScale = 512;
@@ -27,6 +28,22 @@ internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX,
 	internal SKFont SKFont { get; private set; } = SKFont;
 	internal float SKFontScaleX { get; private set; } = SKFontScaleX;
 	internal SKFontMetrics SKFontMetrics { get; private set; } = SKFontMetrics;
+
+	internal (float textScaleX, float textScaleY) TextScale
+	{
+		get
+		{
+			if (_textScale is null)
+			{
+				Font.GetScale(out var fontScaleX, out var fontScaleY);
+				var textSizeY = SKFontSize / fontScaleY;
+				var textSizeX = SKFontSize * SKFontScaleX / fontScaleX;
+				_textScale = (textSizeX, textSizeY);
+			}
+			return _textScale.Value;
+		}
+	}
+
 	internal Font Font { get; private set; } = Font;
 	internal bool CanChange { get; private set; } = CanChange;
 
@@ -60,6 +77,7 @@ internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX,
 		// this method should only be called once.
 		global::System.Diagnostics.Debug.Assert(CanChange);
 		CanChange = false;
+		_textScale = null;
 
 		if (skTypeFace is not null)
 		{

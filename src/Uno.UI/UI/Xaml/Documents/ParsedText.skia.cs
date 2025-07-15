@@ -56,7 +56,6 @@ internal readonly struct ParsedText : IParsedText
 		Size availableSize,
 		Inline[] inlines, // traversed pre-orderly
 		float defaultLineHeight,
-		TextWrapping wrapping,
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
@@ -71,7 +70,7 @@ internal readonly struct ParsedText : IParsedText
 		List<RenderSegmentSpan> lineSegmentSpans = new();
 		bool previousLineWrapped = false;
 
-		float availableWidth = wrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
+		float availableWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		float widestLineWidth = 0, widestLineHeight = 0;
 
 		float x = 0;
@@ -225,7 +224,7 @@ internal readonly struct ParsedText : IParsedText
 
 					// There is no content on the line so wrap the segment according to the wrapping mode.
 
-					if (wrapping == TextWrapping.WrapWholeWords)
+					if (textWrapping == TextWrapping.WrapWholeWords)
 					{
 						// Put the whole segment on the line and move to the next line.
 

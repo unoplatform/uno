@@ -294,7 +294,6 @@ namespace Microsoft.UI.Xaml.Documents
 					var hbGlyph = hbGlyphs[i];
 					var hbPos = hbPositions[i];
 
-					// We add special handling for tabs, which don't get rendered correctly, and treated as an unknown glyph
 					TextFormatting.GlyphInfo glyph = new(
 						(ushort)hbGlyph.Codepoint,
 						clusterStart + (int)hbGlyph.Cluster,
