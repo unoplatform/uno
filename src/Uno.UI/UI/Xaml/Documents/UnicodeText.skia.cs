@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
+using Windows.UI.Text;
 using HarfBuzzSharp;
 using Icu;
 using Microsoft.UI.Composition;
@@ -16,9 +17,37 @@ namespace Microsoft.UI.Xaml.Documents;
 
 internal readonly struct UnicodeText : IParsedText
 {
+	// A readonly snapshot of a TextElement that is referenced by individual text runs after splitting. It's a class
+	// and not a struct because we don't want to copy the same TextElement for each run.
+	private class ReadonlyTextElementCopy
+	{
+		public string Text { get; }
+		public FlowDirection FlowDirection { get; }
+		public FontDetails FontDetails { get; }
+		public double FontSize { get; }
+		public FontWeight FontWeight { get; }
+		public FontStretch FontStretch { get; }
+		public FontStyle FontStyle { get; }
+
+		public ReadonlyTextElementCopy(Run run)
+		{
+			Text = run.Text;
+			FlowDirection = run.FlowDirection;
+			FontDetails = run.FontInfo;
+			FontSize = run.FontSize;
+			FontWeight = run.FontWeight;
+			FontStretch = run.FontStretch;
+			FontStyle = run.FontStyle;
+		}
+	}
+	// A BidiRun run split at line break boundaries
+	private readonly record struct LineBrokenBidiRun(ReadonlyTextElementCopy textElement, int start, int end, bool rtl, int visualOrderMajor);
+	// FontDetails might be different from textElement.FontDetails because of font fallback
+	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyTextElementCopy textElement, int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int visualOrderMajor);
+
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
-	private readonly List<(float lineHeight, List<(int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int visualOrderMajor, int visualOrderMinor)> runs)> _lines;
+	private readonly List<(float lineHeight, List<ShapedLineBrokenBidiRun> runs)> _lines;
 
 	static UnicodeText()
 	{
@@ -48,8 +77,8 @@ internal readonly struct UnicodeText : IParsedText
 			return;
 		}
 		// TODO: multiple inlines
-		var runInline = (Run)inlines[0];
-		var text = runInline.Text;
+		var textElement = new ReadonlyTextElementCopy((Run)inlines[0]);
+		var text = textElement.Text;
 		if (text.Length == 0)
 		{
 			_lines = new();
@@ -57,11 +86,11 @@ internal readonly struct UnicodeText : IParsedText
 			return;
 		}
 
-		var logicallyOrderedLineBrokenRuns = SplitTextIntoBidiRunsBrokenAtLineBoundaries(text, flowDirection);
-		var shapedLogicallyOrderedLineBrokenRuns = logicallyOrderedLineBrokenRuns.Select(run => (run.start, run.end, ShapeRun(text[run.start..run.end], run.rtl, runInline.FontInfo.Font), runInline.FontInfo, run.rtl, run.visualOrderMajor, run.visualOrderMinor)).ToList();
+		var logicallyOrderedLineBrokenRuns = SplitTextIntoBidiRunsBrokenAtLineBoundaries(textElement);
+		var shapedLogicallyOrderedLineBrokenRuns = ShapedLogicallyOrderedLineBrokenRuns(logicallyOrderedLineBrokenRuns);
 		var lines = textWrapping == TextWrapping.NoWrap
 			? [shapedLogicallyOrderedLineBrokenRuns]
-			: SplitIntoLines(text, shapedLogicallyOrderedLineBrokenRuns, runInline.FontInfo, (float)availableSize.Width, (float)availableSize.Width, textWrapping == TextWrapping.Wrap);
+			: SplitIntoLines(text, shapedLogicallyOrderedLineBrokenRuns, textElement.FontDetails, (float)availableSize.Width, (float)availableSize.Width, textWrapping == TextWrapping.Wrap);
 
 		// TODO: line stacking strategy
 		_lines = lines.Select(runs =>
@@ -73,23 +102,24 @@ internal readonly struct UnicodeText : IParsedText
 		var desiredWidth = _lines.Sum(l => l.runs.Sum(r => RunWidth(r.glyphs, r.fontDetails)));
 		desiredSize = new Size(desiredWidth, desiredHeight);
 
-		Console.WriteLine($"{desiredWidth}x{desiredHeight} ----------------------------------");
-		for (var index = 0; index < _lines.Count; index++)
-		{
-			var line = _lines[index];
-			Console.WriteLine($"LINE {{index}} height {line.lineHeight} ----------");
-			foreach (var (start, end, glyphs, fontDetails, rtl, visualOrderMajor, visualOrderMinor) in line.runs)
-			{
-				Console.WriteLine($"Run {visualOrderMajor}.{visualOrderMinor} rtl={rtl}: [{text[start..end]}]");
-			}
-		}
-		Console.WriteLine("END ORDERED LINE BROKEN RUNS ----------------------------------");
+		// Console.WriteLine($"{desiredWidth}x{desiredHeight} ----------------------------------");
+		// for (var index = 0; index < _lines.Count; index++)
+		// {
+		// 	var line = _lines[index];
+		// 	Console.WriteLine($"LINE {{index}} height {line.lineHeight} ----------");
+		// 	foreach (var (start, end, glyphs, fontDetails, rtl, visualOrderMajor, visualOrderMinor) in line.runs)
+		// 	{
+		// 		Console.WriteLine($"Run {visualOrderMajor}.{visualOrderMinor} rtl={rtl}: [{text[start..end]}]");
+		// 	}
+		// }
+		// Console.WriteLine("END ORDERED LINE BROKEN RUNS ----------------------------------");
 	}
 
-	private static List<(int start, int end, bool rtl, int visualOrderMajor, int visualOrderMinor)> SplitTextIntoBidiRunsBrokenAtLineBoundaries(string text, FlowDirection flowDirection)
+	private static List<LineBrokenBidiRun> SplitTextIntoBidiRunsBrokenAtLineBoundaries(ReadonlyTextElementCopy textElement)
 	{
+		var text = textElement.Text;
 		var bidi = new BiDi();
-		bidi.SetPara(text, flowDirection == FlowDirection.LeftToRight ? BiDi.DEFAULT_LTR : BiDi.DEFAULT_RTL, null);
+		bidi.SetPara(text, textElement.FlowDirection == FlowDirection.LeftToRight ? BiDi.DEFAULT_LTR : BiDi.DEFAULT_RTL, null);
 		var runCount = bidi.CountRuns();
 		var logicallyOrderedRuns = new (int start, int end, bool rtl, int visualOrder)[runCount];
 		for (var i = 0; i < runCount; i++)
@@ -167,16 +197,16 @@ internal readonly struct UnicodeText : IParsedText
 		// We take the intersecion of line boundary runs and bidi runs. a Line boundary can have multiple bidi runs and
 		// a bidi run can have multiple line boundaries, so neither of the run types is a superset of the other.
 		Debug.Assert(lineBoundaries[0].Start == 0 && logicallyOrderedRuns[0].start == 0);
-		var logicallyOrderedLineBrokenRuns = new List<(int start, int end, bool rtl, int visualOrderMajor, int visualOrderMinor)>();
+		var logicallyOrderedLineBrokenRuns = new List<LineBrokenBidiRun>();
 		var currentLineBoundaryIndex = 0;
 		var currentBidiRunIndex = 0;
 		var lineRun = lineBoundaries[currentLineBoundaryIndex];
-		(int start, int end, bool rtl, int visualOrderMajor, int visualOrderMinor) currentBidiRun = (logicallyOrderedRuns[currentBidiRunIndex].start, logicallyOrderedRuns[currentBidiRunIndex].end, logicallyOrderedRuns[currentBidiRunIndex].rtl, logicallyOrderedRuns[currentBidiRunIndex].visualOrder, 0);
+		(int start, int end, bool rtl, int visualOrderMajor) currentBidiRun = (logicallyOrderedRuns[currentBidiRunIndex].start, logicallyOrderedRuns[currentBidiRunIndex].end, logicallyOrderedRuns[currentBidiRunIndex].rtl, logicallyOrderedRuns[currentBidiRunIndex].visualOrder);
 		while (currentBidiRunIndex < logicallyOrderedRuns.Length && currentLineBoundaryIndex < lineBoundaries.Length)
 		{
 			if (lineRun.End >= currentBidiRun.end)
 			{
-				logicallyOrderedLineBrokenRuns.Add((currentBidiRun.start, currentBidiRun.end, currentBidiRun.rtl, currentBidiRun.visualOrderMajor, currentBidiRun.visualOrderMinor));
+				logicallyOrderedLineBrokenRuns.Add(new LineBrokenBidiRun(textElement, currentBidiRun.start, currentBidiRun.end, currentBidiRun.rtl, currentBidiRun.visualOrderMajor));
 				if (lineRun.End == currentBidiRun.end)
 				{
 					currentLineBoundaryIndex++;
@@ -188,13 +218,13 @@ internal readonly struct UnicodeText : IParsedText
 				currentBidiRunIndex++;
 				if (currentBidiRunIndex < logicallyOrderedRuns.Length)
 				{
-					currentBidiRun = (logicallyOrderedRuns[currentBidiRunIndex].start, logicallyOrderedRuns[currentBidiRunIndex].end, logicallyOrderedRuns[currentBidiRunIndex].rtl, logicallyOrderedRuns[currentBidiRunIndex].visualOrder, 0);
+					currentBidiRun = (logicallyOrderedRuns[currentBidiRunIndex].start, logicallyOrderedRuns[currentBidiRunIndex].end, logicallyOrderedRuns[currentBidiRunIndex].rtl, logicallyOrderedRuns[currentBidiRunIndex].visualOrder);
 				}
 			}
 			else
 			{
-				logicallyOrderedLineBrokenRuns.Add((currentBidiRun.start, lineRun.End, currentBidiRun.rtl, currentBidiRun.visualOrderMajor, currentBidiRun.visualOrderMinor));
-				currentBidiRun = currentBidiRun with { start = lineRun.End, visualOrderMinor = currentBidiRun.rtl ? currentBidiRun.visualOrderMinor - 1 : currentBidiRun.visualOrderMinor + 1 };
+				logicallyOrderedLineBrokenRuns.Add(new LineBrokenBidiRun(textElement, currentBidiRun.start, lineRun.End, currentBidiRun.rtl, currentBidiRun.visualOrderMajor));
+				currentBidiRun = currentBidiRun with { start = lineRun.End };
 				currentLineBoundaryIndex++;
 				if (currentLineBoundaryIndex < lineBoundaries.Length)
 				{
@@ -207,29 +237,66 @@ internal readonly struct UnicodeText : IParsedText
 		return logicallyOrderedLineBrokenRuns;
 	}
 
-	private static (GlyphInfo info, GlyphPosition position)[] ShapeRun(string textRun, bool rtl, Font font)
+	private static List<ShapedLineBrokenBidiRun> ShapedLogicallyOrderedLineBrokenRuns(List<LineBrokenBidiRun> logicallyOrderedLineBrokenRuns)
 	{
-		using var buffer = new Buffer();
-		buffer.AddUtf16(textRun);
-		buffer.GuessSegmentProperties();
-		buffer.Direction = rtl ? Direction.RightToLeft : Direction.LeftToRight;
-		// TODO: ligatures
-		font.Shape(buffer, new Feature(new Tag('l', 'i', 'g', 'a'), 0));
-		var positions = buffer.GetGlyphPositionSpan();
-		var infos = buffer.GetGlyphInfoSpan();
-		var count = buffer.Length;
-		var ret = new (GlyphInfo, GlyphPosition)[count];
-		for (var i = 0; i < count; i++)
+		var list = new List<ShapedLineBrokenBidiRun>();
+		foreach (var run in logicallyOrderedLineBrokenRuns)
 		{
-			ret[i] = (infos[i], positions[i]);
+			var currentFontDetails = run.textElement.FontDetails;
+			var currentFontFallbackSplitStart = run.start;
+			for (int i = run.start; i < run.end; i++)
+			{
+				// TODO: Should the fallback font be used for the rest of the run, or only for the individual codepoint that's
+				// missing from the primary font?
+				var codepoint = char.ConvertToUtf32(run.textElement.Text, i);
+				if (!currentFontDetails.SKFont.ContainsGlyph(codepoint))
+				{
+					if (SKFontManager.Default.MatchCharacter(codepoint) is { } fallbackTypeface &&
+						FontDetailsCache.GetFont(fallbackTypeface.FamilyName, (float)run.textElement.FontSize, run.textElement.FontWeight, run.textElement.FontStretch, run.textElement.FontStyle).details is var fallbackFontDetails &&
+						fallbackFontDetails != currentFontDetails)
+					{
+						if (currentFontFallbackSplitStart != run.start)
+						{
+							list.Add(new ShapedLineBrokenBidiRun(run.textElement, currentFontFallbackSplitStart, i, ShapeRun(run.textElement.Text[currentFontFallbackSplitStart..i], run.rtl, currentFontDetails.Font), currentFontDetails, run.rtl, run.visualOrderMajor));
+						}
+						currentFontDetails = fallbackFontDetails;
+						currentFontFallbackSplitStart = i;
+						if (char.IsSurrogate(run.textElement.Text, i))
+						{
+							i++;
+						}
+					}
+				}
+			}
+			list.Add(new ShapedLineBrokenBidiRun(run.textElement, currentFontFallbackSplitStart, run.end, ShapeRun(run.textElement.Text[run.start..run.end], run.rtl, currentFontDetails.Font), currentFontDetails, run.rtl, run.visualOrderMajor));
 		}
-		return ret;
+
+		return list;
+
+		static (GlyphInfo info, GlyphPosition position)[] ShapeRun(string textRun, bool rtl, Font font)
+		{
+			using var buffer = new Buffer();
+			buffer.AddUtf16(textRun);
+			buffer.GuessSegmentProperties();
+			buffer.Direction = rtl ? Direction.RightToLeft : Direction.LeftToRight;
+			// TODO: ligatures
+			font.Shape(buffer, new Feature(new Tag('l', 'i', 'g', 'a'), 0));
+			var positions = buffer.GetGlyphPositionSpan();
+			var infos = buffer.GetGlyphInfoSpan();
+			var count = buffer.Length;
+			var ret = new (GlyphInfo, GlyphPosition)[count];
+			for (var i = 0; i < count; i++)
+			{
+				ret[i] = (infos[i], positions[i]);
+			}
+			return ret;
+		}
 	}
 
-	private List<List<(int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int visualOrderMajor, int visualOrderMinor)>> SplitIntoLines(string text, List<(int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int visualOrderMajor, int visualOrderMinor)> shapedLogicallyOrderedLineBrokenRuns, FontDetails runInlineFontInfo, float firstLineWidth, float lineWidth, bool breakMidWordWhenWordLargerThanEntireLine)
+	private static List<List<ShapedLineBrokenBidiRun>> SplitIntoLines(string text, List<ShapedLineBrokenBidiRun> shapedLogicallyOrderedLineBrokenRuns, FontDetails runInlineFontInfo, float firstLineWidth, float lineWidth, bool breakMidWordWhenWordLargerThanEntireLine)
 	{
-		var ret = new List<List<(int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int visualOrderMajor, int visualOrderMinor)>>();
-		var currentLineList = new List<(int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int visualOrderMajor, int visualOrderMinor)>();
+		var ret = new List<List<ShapedLineBrokenBidiRun>>();
+		var currentLineList = new List<ShapedLineBrokenBidiRun>();
 		var remainingLineWidth = firstLineWidth;
 		for (int i = 0; i < shapedLogicallyOrderedLineBrokenRuns.Count;)
 		{
@@ -245,7 +312,7 @@ internal readonly struct UnicodeText : IParsedText
 					i++;
 				}
 				ret.Add(currentLineList);
-				currentLineList = new List<(int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int visualOrderMajor, int visualOrderMinor)>();
+				currentLineList = new List<ShapedLineBrokenBidiRun>();
 				remainingLineWidth = lineWidth;
 			}
 			else
@@ -297,17 +364,20 @@ internal readonly struct UnicodeText : IParsedText
 		}
 	}
 
-	private readonly struct RunOrderComparer : IComparer<(int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs,
-		FontDetails fontDetails, bool rtl, int visualOrderMajor, int visualOrderMinor)>
+	private readonly struct RunOrderComparer : IComparer<ShapedLineBrokenBidiRun>
 	{
-		public int Compare(
-			(int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int
-				visualOrderMajor, int visualOrderMinor) run1,
-			(int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int
-				visualOrderMajor, int visualOrderMinor) run2)
+		public int Compare(ShapedLineBrokenBidiRun run1, ShapedLineBrokenBidiRun run2)
 		{
-			var less = run1.visualOrderMajor < run2.visualOrderMajor || (run1.visualOrderMajor == run2.visualOrderMajor && run1.visualOrderMinor < run2.visualOrderMinor);
-			return less ? -1 : 1;
+			if (run1.visualOrderMajor != run2.visualOrderMajor)
+			{
+				return run1.visualOrderMajor - run2.visualOrderMajor;
+			}
+			else
+			{
+				// the two runs come from the same BiDi run
+				Debug.Assert(run1.rtl == run2.rtl);
+				return run1.rtl ? run2.start - run1.start : run1.start - run2.start;
+			}
 		}
 	}
 
