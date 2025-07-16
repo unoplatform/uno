@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -13,10 +11,8 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
-using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
-using System.Runtime.InteropServices.JavaScript;
 using System.Diagnostics.CodeAnalysis;
 
 
@@ -38,8 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Items))]
 	public partial class ItemsControl : Control, IItemsControl
 	{
-		protected IVectorChangedEventArgs _inProgressVectorChange;
-
 		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
 		private readonly SerialDisposable _notifyCollectionGroupsChanged = new SerialDisposable();
 		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
@@ -96,17 +90,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs e)
 		{
-			try
-			{
-				_inProgressVectorChange = e;
-				OnItemsSourceSingleCollectionChanged(this, e.ToNotifyCollectionChangedEventArgs(), 0);
-				OnItemsChanged(e);
-			}
-			finally
-			{
-				_inProgressVectorChange = null;
-			}
-			//OnItemsSourceSingleCollectionChanged(this, e.ToNotifyCollectionChangedEventArgs(), 0);
+			OnItemsSourceSingleCollectionChanged(this, e.ToNotifyCollectionChangedEventArgs(), 0);
+			OnItemsChanged(e);
 		}
 
 		partial void InitializePartial();
@@ -1488,14 +1473,12 @@ namespace Microsoft.UI.Xaml.Controls
 				return itemContainer;
 			}
 
-			int adjustedIndex = GetInProgressAdjustedIndex(index);
-
-			if (adjustedIndex < 0)
+			if (index < 0)
 			{
 				return null;
 			}
 
-			var containerFromIndex = ContainerFromIndexInner(adjustedIndex);
+			var containerFromIndex = ContainerFromIndexInner(index);
 			EnsureContainerItemsControlProperty(containerFromIndex);
 			return containerFromIndex;
 		}
@@ -1515,45 +1498,6 @@ namespace Microsoft.UI.Xaml.Controls
 		internal virtual DependencyObject ContainerFromIndexInner(int index)
 		{
 			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), index));
-		}
-
-		protected int GetInProgressAdjustedIndex(int index)
-		{
-			int adjustedIndex = index;
-
-			if (_inProgressVectorChange != null)
-			{
-				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
-				{
-					if (index >= _inProgressVectorChange.Index)
-					{
-						// All items after the removed item have still a higher index.
-						adjustedIndex = index + 1;
-					}
-				}
-				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
-				{
-					if (index == _inProgressVectorChange.Index)
-					{
-						return -1;
-					}
-					else if (index > _inProgressVectorChange.Index)
-					{
-						// All items after the added item have still a lower index.
-						adjustedIndex = index - 1;
-					}
-				}
-				else if (
-					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
-					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
-				{
-					// In case the item is not its own container, the new one is not assigned
-					// yet and we return null.
-					adjustedIndex = -1;
-				}
-			}
-
-			return adjustedIndex;
 		}
 
 		/// <summary>
