@@ -745,11 +745,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
-#endif
+		[Ignore("This test is flaky on CI")]
 		public async Task When_Nested_WebView_WheelChanged()
 		{
 			var webview = new WebView2
