@@ -28,6 +28,8 @@ public abstract class SKCanvasElement : FrameworkElement
 		}
 	}
 
+	public static bool IsSupportedOnCurrentPlatform() => ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>();
+
 	protected SKCanvasElement()
 	{
 		if (!ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>())
