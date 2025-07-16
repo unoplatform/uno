@@ -5,29 +5,28 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DirectUI;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.Disposables;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation;
-using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
+using Windows.System;
+using Windows.UI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Helpers.WinUI.LocalizedResource;
-using Uno.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Input;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Windows.System;
-using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Media;
-using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Shapes;
+using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -97,17 +96,22 @@ partial class AppBar
 
 		//register for XamlRoot.Changed events
 		var xamlRoot = XamlRoot.GetForElement(this);
+
 		if (m_xamlRootChangedEventHandler.Disposable is null && xamlRoot is not null)
 		{
 			xamlRoot.Changed += OnXamlRootChanged;
 			m_xamlRootChangedEventHandler.Disposable = Disposable.Create(() => xamlRoot.Changed -= OnXamlRootChanged);
 		}
 
+		if (xamlRoot is null)
+		{
+			throw new InvalidOperationException("XamlRoot should be set in AppBar.OnLoaded.");
+		}
+
 		// register the app bar if it is floating
 		if (m_Mode == AppBarMode.Floating)
 		{
-			var xamlRootImpl = xamlRoot;
-			var applicationBarService = xamlRootImpl.GetApplicationBarService();
+			var applicationBarService = xamlRoot.GetApplicationBarService();
 			MUX_ASSERT(applicationBarService is not null);
 			applicationBarService.RegisterApplicationBar(this, m_Mode);
 		}
@@ -115,8 +119,7 @@ partial class AppBar
 		// If it's a top or bottom bar, make sure the bounds are correct if we haven't set them yet
 		if (m_Mode == AppBarMode.Top || m_Mode == AppBarMode.Bottom)
 		{
-			var xamlRootImpl = xamlRoot;
-			var applicationBarService = xamlRootImpl.GetApplicationBarService();
+			var applicationBarService = xamlRoot.GetApplicationBarService();
 			MUX_ASSERT(applicationBarService is not null);
 			applicationBarService.OnBoundsChanged();
 		}
@@ -159,7 +162,7 @@ partial class AppBar
 		BackButtonIntegration.UnregisterListener(this);
 	}
 
-	private void OnLayoutUpdated(object sender, object args)
+	private void OnLayoutUpdated(object? sender, object args)
 	{
 		if (m_layoutTransitionElement is not null)
 		{
@@ -696,7 +699,7 @@ partial class AppBar
 	{
 		if (m_Mode != AppBarMode.Inline)
 		{
-			var applicationBarService;
+			ApplicationBarService? applicationBarService = null;
 			if (XamlRoot.GetImplementationForElement(this) is { } xamlRoot)
 			{
 				applicationBarService = xamlRoot.GetApplicationBarService();
@@ -729,7 +732,7 @@ partial class AppBar
 
 		if (m_Mode != AppBarMode.Inline)
 		{
-			ApplicationBarService? applicationBarService;
+			ApplicationBarService? applicationBarService = null;
 			if (XamlRoot.GetImplementationForElement(this) is { } xamlRoot)
 			{
 				applicationBarService = xamlRoot.GetApplicationBarService();
@@ -913,7 +916,7 @@ partial class AppBar
 		return this.IsAncestorOf(pElement);
 	}
 
-	protected bool IsExpandButton(UIElement element) => 
+	protected bool IsExpandButton(UIElement element) =>
 		m_tpExpandButton is { } && element == m_tpExpandButton;
 
 	private void OnExpandButtonClick(object sender, RoutedEventArgs e)
@@ -1109,7 +1112,7 @@ partial class AppBar
 		double contentHeight = ContentHeight;
 
 		// Subtract layout bounds to avoid using the System Tray area to open the AppBar.
-		Point bottomOfExpandedAppBar = transform.TransformPoint(new (0, contentHeight));
+		Point bottomOfExpandedAppBar = transform.TransformPoint(new(0, contentHeight));
 
 		Rect windowBounds = DXamlCore.Current.GetContentBoundsForElement(this);
 		Rect layoutBounds = DXamlCore.Current.GetContentLayoutBoundsForElement(this);
@@ -1349,14 +1352,17 @@ partial class AppBar
 		// which is lower in z-order than these other roots.
 		if (ShouldUseParentedLTE())
 		{
-			IDependencyObject parent;
-			VisualTreeHelper.GetParentStatic(this, &parent);
-			IFCEXPECT_RETURN(parent);
+			DependencyObject parent;
+			var parent = VisualTreeHelper.GetParent(this);
+			if (parent is null)
+			{
+				throw new InvalidOperationException("AppBar must have a parent element to create LTEs.");
+			}
 
-			SetPtrValueWithQI(m_parentElementForLTEs, parent);
+			m_parentElementForLTEs = parent;
 		}
 
-		if (m_overlayElement)
+		if (m_overlayElement is not null)
 		{
 			// Create an LTE for our overlay element.
 			(CoreImports.LayoutTransitionElement_Create(
@@ -1372,7 +1378,7 @@ partial class AppBar
 				DependencyObject overlayLTEPeer;
 				DXamlCore.GetCurrent().GetPeer(m_overlayLayoutTransitionElement, &overlayLTEPeer);
 
-				wf.Rect windowBounds = default;
+				Rect windowBounds = default;
 				DXamlCore.GetCurrent().GetContentBoundsForElement(GetHandle(), &windowBounds);
 
 				CompositeTransform compositeTransform;
@@ -1383,10 +1389,10 @@ partial class AppBar
 
 				overlayLTEPeer.Cast<UIElement>().RenderTransform = compositeTransform;
 
-				xaml_media.IGeneralTransform transformToVisual;
+				IGeneralTransform transformToVisual;
 				m_overlayElement.Cast<FrameworkElement>().TransformToVisual(null, &transformToVisual);
 
-				wf.Point offsetFromRoot = default;
+				Point offsetFromRoot = default;
 				transformToVisual.TransformPoint({ 0, 0 }, &offsetFromRoot);
 
 				var flowDirection = FlowDirection_LeftToRight;
@@ -1424,9 +1430,9 @@ partial class AppBar
 
 	private void PositionLTEs()
 	{
-		MUX_ASSERT(m_layoutTransitionElement);
+		MUX_ASSERT(m_layoutTransitionElement is not null);
 
-		IDependencyObject parentDO;
+		DependencyObject parentDO;
 		UIElement parent;
 
 		VisualTreeHelper.GetParent(this, &parentDO);
@@ -1436,10 +1442,10 @@ partial class AppBar
 		{
 			parentDO.As(&parent);
 
-			xaml_media.IGeneralTransform transform;
+			IGeneralTransform transform;
 			TransformToVisual(parent.Cast<UIElement>(), &transform);
 
-			wf.Point offset = default;
+			Point offset = default;
 			transform.TransformPoint({ 0, 0 }, &offset);
 
 			CoreImports.LayoutTransitionElement_SetDestinationOffset(m_layoutTransitionElement, offset.X, offset.Y);
@@ -1476,34 +1482,32 @@ partial class AppBar
 		m_parentElementForLTEs.Clear();
 	}
 
-	private void OnOverlayElementPointerPressed(object /*pSender*/, xaml_input.IPointerRoutedEventArgs* pArgs)
+	private void OnOverlayElementPointerPressed(object sender, PointerRoutedEventArgs pArgs)
 	{
-		MUX_ASSERT(m_Mode == AppBarMode_Inline);
+		MUX_ASSERT(m_Mode == AppBarMode.Inline);
 
 		TryDismissInlineAppBar();
 		pArgs.Handled = true;
-
-		return S_OK;
 	}
 
 	private void TryQueryDisplayModesStatesGroup()
 	{
-		if (!m_tpDisplayModesStateGroup)
+		if (m_tpDisplayModesStateGroup is null)
 		{
-			IVisualStateGroup displayModesStateGroup;
-			GetTemplatePart<IVisualStateGroup>("DisplayModeStates", displayModesStateGroup.ReleaseAndGetAddressOf());
+			VisualStateGroup displayModesStateGroup = GetTemplateChild<VisualStateGroup>("DisplayModeStates");
 			m_tpDisplayModesStateGroup = displayModesStateGroup;
 
-			if (m_tpDisplayModesStateGroup)
+			if (m_tpDisplayModesStateGroup is not null)
 			{
-				m_displayModeStateChangedEventHandler.AttachEventHandler(m_tpDisplayModesStateGroup, std.bind(&AppBar.OnDisplayModesStateChanged, this, _1, _2));
+				m_tpDisplayModesStateGroup.CurrentStateChanged += OnDisplayModesStateChanged;
+				m_displayModeStateChangedEventHandler.Disposable = Disposable.Create(() => m_tpDisplayModesStateGroup.CurrentStateChanged -= OnDisplayModesStateChanged);
 			}
 		}
 	}
 
 	private bool ShouldUseParentedLTE()
 	{
-		IDependencyObject rootDO;
+		DependencyObject rootDO;
 		if (SUCCEEDED(VisualTreeHelper.GetRootStatic(this, &rootDO)) && rootDO)
 		{
 			PopupRoot popupRoot;
@@ -1536,7 +1540,7 @@ partial class AppBar
 			put_IsOpen(false);
 			*pHandled = true;
 
-			if (m_Mode != AppBarMode_Inline)
+			if (m_Mode != AppBarMode.Inline)
 			{
 				IApplicationBarService applicationBarService;
 				if (var xamlRoot = XamlRoot.GetImplementationForElementStatic(this))
@@ -1574,35 +1578,32 @@ partial class AppBar
 			else
 			{
 				// Make sure we've stopped our animations.
-				if (m_overlayOpeningStoryboard)
+				if (m_overlayOpeningStoryboard is not null)
 				{
 					m_overlayOpeningStoryboard.Stop();
 				}
 
-				if (m_overlayClosingStoryboard)
+				if (m_overlayClosingStoryboard is not null)
 				{
 					m_overlayClosingStoryboard.Stop();
 				}
 			}
 
-			if (m_overlayElement)
+			if (m_overlayElement is not null)
 			{
 				UpdateOverlayElementBrush();
 			}
 		}
-
-		return S_OK;
 	}
 
-	private void
-	AppBar.UpdateOverlayElementBrush()
+	private void UpdateOverlayElementBrush()
 	{
-		MUX_ASSERT(m_overlayElement);
+		MUX_ASSERT(m_overlayElement is not null);
 
 		if (m_isOverlayVisible)
 		{
 			// Create a theme resource for the overlay brush.
-			var core = DXamlCore.GetCurrent().GetHandle();
+			var core = DXamlCore.Current.GetHandle();
 			var dictionary = core.GetThemeResources();
 
 			xstring_ptr themeBrush;
@@ -1630,30 +1631,26 @@ partial class AppBar
 		{
 			SolidColorBrush transparentBrush;
 			transparentBrush = new();
-			transparentBrush.Color = { 0, 0, 0, 0 }
+			transparentBrush.Color = Color.FromArgb(0, 0, 0, 0);
 			;
 
-			Rectangle overlayAsRect;
-			m_overlayElement.As(&overlayAsRect);
-			overlayAsRect.Cast<Rectangle>().Fill = transparentBrush;
+			Rectangle overlayAsRect = m_overlayElement;
+			overlayAsRect.Fill = transparentBrush;
 		}
-
-		return S_OK;
 	}
 
 	private void UpdateTargetForOverlayAnimations()
 	{
 		MUX_ASSERT(m_layoutTransitionElement is not null);
-		MUX_ASSERT(m_isOverlayVisible is not null);
+		MUX_ASSERT(m_isOverlayVisible);
 
 		if (m_overlayOpeningStoryboard is not null)
 		{
 			m_overlayOpeningStoryboard.Stop();
 
 			Storyboard.SetTarget(
-				(CTimeline*)(m_overlayOpeningStoryboard.Cast<Storyboard>().GetHandle()),
-				m_overlayLayoutTransitionElement)
-				);
+				(Timeline)(m_overlayOpeningStoryboard),
+				m_overlayLayoutTransitionElement));
 		}
 
 		if (m_overlayClosingStoryboard is not null)
@@ -1661,9 +1658,8 @@ partial class AppBar
 			m_overlayClosingStoryboard.Stop();
 
 			Storyboard.SetTarget(
-				(CTimeline*)(m_overlayClosingStoryboard.Cast<Storyboard>().GetHandle()),
-				m_overlayLayoutTransitionElement)
-				);
+				(Timeline)(m_overlayClosingStoryboard),
+				m_overlayLayoutTransitionElement));
 		}
 	}
 

@@ -6,6 +6,7 @@
 
 using Uno.UI.Xaml.Input;
 using Microsoft.UI.Xaml;
+using System;
 
 namespace Uno.UI.Xaml.Controls
 {
@@ -19,5 +20,7 @@ namespace Uno.UI.Xaml.Controls
 		{
 			return new TabStopProcessingResult();
 		}
+
+		internal void SetXamlRoot(XamlRoot xamlRoot) => throw new NotImplementedException();
 	}
 }
