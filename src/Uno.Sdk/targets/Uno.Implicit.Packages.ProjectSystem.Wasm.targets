@@ -34,10 +34,6 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skiarenderer;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
-	</ItemGroup>
-	
 	<ItemGroup Condition="
 			   (
 				   $(UnoFeatures.Contains(';lottie;')) 
