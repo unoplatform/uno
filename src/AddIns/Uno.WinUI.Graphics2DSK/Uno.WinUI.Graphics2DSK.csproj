@@ -1,28 +1,51 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+	<Choose>
+		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net9.0'))">
+			<PropertyGroup>
+				<TargetFrameworks>$(NetCurrent);$(NetWinAppSDKPreviousAndCurrent)</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net8.0'))">
+			<PropertyGroup>
+				<TargetFrameworks>$(NetPrevious);$(NetWinAppSDKPreviousAndCurrent)</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<When Condition="$(UnoTargetFrameworkOverride) != ''">
+			<PropertyGroup>
+				<TargetFrameworks>$(NetSkiaPreviousAndCurrent);$(NetWinAppSDKPreviousAndCurrent)</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+	</Choose>
 
+	<PropertyGroup>
 		<RootNamespace>Uno.WinUI.Graphics2DSK</RootNamespace>
 		<GeneratePackageOnBuild Condition="'$(UNO_UWP_BUILD)'!='true' And '$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 
 		<Nullable>enable</Nullable>
 		
-		<!-- Required as the project name does not end with `.Skia` when building for netcoremobile targets -->
-		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
 	</PropertyGroup>
-
-	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">
 		<!-- This project will be referenced by other projects that reference Uno.UI.Skia and Uno.UI.Composition.Skia
 	 	 so it's important to add the PrivateAssets part below to keep the references here from competing
 	 	 against those references -->
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" PrivateAssets="all" />
 		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.Reference.csproj" PrivateAssets="all" />
+	</ItemGroup>
+	<PropertyGroup Condition="$(TargetFramework.Contains('windows10'))">
+		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
+		<UseRidGraph>true</UseRidGraph>
+		<WindowsPackageType>None</WindowsPackageType>
+		<EnableMsixTooling>true</EnableMsixTooling>
+	</PropertyGroup>
+	<ItemGroup Condition="$(TargetFramework.Contains('windows10'))">
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

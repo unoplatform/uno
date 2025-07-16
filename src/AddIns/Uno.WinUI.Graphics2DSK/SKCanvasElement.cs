@@ -3,8 +3,11 @@ using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
+
+#if !WINAPPSDK
 using Uno.Foundation.Extensibility;
 using Uno.UI.Graphics;
+#endif
 
 namespace Uno.WinUI.Graphics2DSK;
 
@@ -14,6 +17,7 @@ namespace Uno.WinUI.Graphics2DSK;
 /// <remarks>This is only available on skia-based targets.</remarks>
 public abstract class SKCanvasElement : FrameworkElement
 {
+#if !WINAPPSDK
 	private SKCanvasVisualBase? _skCanvasVisual;
 
 	private protected override ContainerVisual CreateElementVisual()
@@ -27,21 +31,32 @@ public abstract class SKCanvasElement : FrameworkElement
 			throw new InvalidOperationException($"Failed to create an instance of {nameof(SKCanvasVisualBase)}");
 		}
 	}
-
-	public static bool IsSupportedOnCurrentPlatform() => ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>();
+#endif
 
 	protected SKCanvasElement()
 	{
+#if !WINAPPSDK
 		if (!ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>())
+#endif
 		{
 			throw new PlatformNotSupportedException($"This platform does not support {nameof(SKCanvasElement)}");
 		}
 	}
 
+#if WINAPPSDK
+	public static bool IsSupportedOnCurrentPlatform() => false;
+#else
+	public static bool IsSupportedOnCurrentPlatform() => ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>();
+#endif
+
 	/// <summary>
 	/// Invalidates the element and triggers a redraw.
 	/// </summary>
+#if WINAPPSDK
+	public void Invalidate() { }
+#else
 	public void Invalidate() => _skCanvasVisual?.Invalidate();
+#endif
 
 	/// <summary>
 	/// The SkiaSharp drawing logic goes here.
