@@ -275,7 +275,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if !HAS_INPUT_INJECTOR
+#if !__SKIA__
 		[Ignore("This test is not supported on this platform.")]
 #endif
 		public async Task When_Tapped_Empty_Space()
