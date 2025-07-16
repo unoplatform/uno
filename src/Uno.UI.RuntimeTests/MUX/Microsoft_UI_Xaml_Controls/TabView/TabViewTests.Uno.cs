@@ -7,6 +7,8 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -106,10 +108,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			// Verify that the last tab is closed and the second last tab is selected
 			Assert.IsFalse(tabView.TabItems.Contains(tabToSelectAndClose), "Expected the tab to be removed from the TabItems collection.");
 			Assert.AreEqual(expectedSelectedTabAfterClose, tabView.SelectedItem, "Expected different tab to be selected after closing the selected tab.");
+			Assert.IsTrue(expectedSelectedTabAfterClose.IsSelected, "Expected tab is not selected.");
 
-#if HAS_RENDER_TARGET_BITMAP
-			var contentScreenshot = await UITestHelper.ScreenShot(tabView);
-			ImageAssert.HasColorAt(contentScreenshot, contentScreenshot.Width / 2, contentScreenshot.Height / 2, expectedColor);
+#if HAS_UNO
+			var presenter = tabView.FindFirstDescendant<ContentPresenter>("TabContentPresenter");
+			Assert.AreEqual(presenter.Content, expectedSelectedTabAfterClose.Content);
 #endif
 		}
 	}
