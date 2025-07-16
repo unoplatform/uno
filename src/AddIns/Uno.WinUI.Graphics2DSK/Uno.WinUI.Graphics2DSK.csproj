@@ -18,7 +18,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
+		<!-- This project will be referenced by other projects that reference Uno.UI.Skia and Uno.UI.Composition.Skia
+	 	 so it's important to add the PrivateAssets part below to keep the references here from competing
+	 	 against those references -->
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.Reference.csproj" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
