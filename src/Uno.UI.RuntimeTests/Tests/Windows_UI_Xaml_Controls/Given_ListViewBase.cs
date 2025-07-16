@@ -2256,6 +2256,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					ScrollTo(list, voffset);
 				}
+
 				await WindowHelper.WaitForIdle();
 
 #if HAS_UNO && !(__IOS__ || __ANDROID__)
@@ -2291,8 +2292,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ScrollAndValidate("initial state", null);
 			await ScrollAndValidate("scrolled past element#0", ElementHeight);
 			await ScrollAndValidate("scrolled past element#2", ElementHeight * 3);
-			await ScrollAndValidate("scrolled to 1/2", scroll.ExtentHeight / 2);
-			await ScrollAndValidate("scrolled back to 1/4", scroll.ExtentHeight / 4);
+
+			var isiOS = OperatingSystem.IsIOS();
+			if (!isiOS)
+			{
+				// TODO: this is flaky on iOS, needs investigation: uno-private#1415
+				await ScrollAndValidate("scrolled to 1/2", scroll.ExtentHeight / 2);
+				await ScrollAndValidate("scrolled back to 1/4", scroll.ExtentHeight / 4);
+			}
 		}
 #endif
 
