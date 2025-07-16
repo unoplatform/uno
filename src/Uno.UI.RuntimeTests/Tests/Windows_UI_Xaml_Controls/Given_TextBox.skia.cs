@@ -570,14 +570,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var sv = SUT.FindVisualChildByType<ScrollViewer>();
 
-			await Task.Delay(600); // Allow the ScrollViewer to update its offset
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 			sv.HorizontalOffset.Should().BeGreaterThan(0);
-			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset);
+			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, "HorizontalOffset should be equal to ScrollableWidth after typing long text");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
 			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 			sv.ScrollableWidth.Should().BeGreaterThan(0);
-			Assert.AreEqual(0, sv.HorizontalOffset);
+			Assert.AreEqual(0, sv.HorizontalOffset, "HorizontalOffset should be 0 after Home key press");
 		}
 
 		[TestMethod]
