@@ -306,7 +306,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			Assert.IsTrue(losingFocus, "Button should lose focus");
 
 			await TestServices.WindowHelper.WaitFor(
-				() => FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot) != button);
+				() => !object.ReferenceEquals(FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot), button));
 		}
 
 		[TestMethod]
