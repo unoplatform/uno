@@ -4,11 +4,6 @@ using Microsoft.UI.Composition;
 
 namespace Uno.UI.Graphics;
 
-internal interface SKCanvasVisualBaseFactory
-{
-	SKCanvasVisualBase CreateInstance(Action<object, Size> renderCallback, Compositor compositor);
-}
-
 internal abstract class SKCanvasVisualBase : ContainerVisual
 {
 	/// <param name="renderCallback">The first parameter of the action must be an SkiaSharp.SKCanvas instance.</param>

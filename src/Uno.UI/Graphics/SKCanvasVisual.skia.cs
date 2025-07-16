@@ -6,13 +6,6 @@ using SkiaSharp;
 
 namespace Uno.UI.Graphics;
 
-internal class SKCanvasVisualFactory : SKCanvasVisualBaseFactory
-{
-	public SKCanvasVisualFactory(object owner) { }
-
-	public SKCanvasVisualBase CreateInstance(Action<object, Size> renderCallback, Compositor compositor) => new SKCanvasVisual(renderCallback, compositor);
-}
-
 internal class SKCanvasVisual(Action<object, Size> renderCallback, Compositor compositor) : SKCanvasVisualBase(renderCallback, compositor)
 {
 	internal override void Paint(in PaintingSession session)

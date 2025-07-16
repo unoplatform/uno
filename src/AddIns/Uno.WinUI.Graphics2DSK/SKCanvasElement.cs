@@ -39,7 +39,7 @@ public abstract class SKCanvasElement : FrameworkElement
 		if (!ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>())
 #endif
 		{
-			throw new PlatformNotSupportedException($"This platform does not support {nameof(SKCanvasElement)}");
+			throw new PlatformNotSupportedException($"This platform does not support {nameof(SKCanvasElement)}. For more information: https://aka.platform.uno/skcanvaselement");
 		}
 	}
 
