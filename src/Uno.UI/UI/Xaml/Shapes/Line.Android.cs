@@ -3,6 +3,8 @@ using System;
 using Uno.Media;
 using Uno.UI;
 
+using APath = Android.Graphics.Path;
+
 namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Line : Shape
@@ -15,7 +17,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private Android.Graphics.Path GetPath()
+		private APath GetPath()
 		{
 			var output = GetOrCreatePath();
 

@@ -2,6 +2,8 @@
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 
+using APath = Android.Graphics.Path;
+
 namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Path : Shape
@@ -13,7 +15,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private Android.Graphics.Path? GetPath()
+		private APath? GetPath()
 		{
 			return Data?.ToStreamGeometry()?.ToPath();
 		}

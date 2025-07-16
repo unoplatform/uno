@@ -5,12 +5,13 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 using Canvas = Android.Graphics.Canvas;
+using APath = Android.Graphics.Path;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Shape
 	{
-		private Android.Graphics.Path _path;
+		private APath _path;
 		private global::Windows.Foundation.Rect _drawArea;
 		protected global::Windows.Foundation.Rect _logicalRenderingArea;
 		private static Paint _strokePaint;
@@ -54,7 +55,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		}
 
 		private protected void Render(
-			Android.Graphics.Path path,
+			APath path,
 			global::Windows.Foundation.Size? size = null,
 			double scaleX = 1d,
 			double scaleY = 1d,
@@ -166,7 +167,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 		}
 
-		private global::Windows.Foundation.Rect GetPathBoundingBox(Android.Graphics.Path path)
+		private global::Windows.Foundation.Rect GetPathBoundingBox(APath path)
 		{
 			// This method should return the bounding box, *not including* control points.
 			// On Android, there doesn't seem to be an easy built-in way to do that, since ComputeBounds will include control points.
@@ -215,10 +216,10 @@ namespace Microsoft.UI.Xaml.Shapes
 				height: maxY - minY);
 		}
 
-		protected Android.Graphics.Path GetOrCreatePath()
+		protected APath GetOrCreatePath()
 		{
 			_path?.Reset();
-			return _path ?? new Android.Graphics.Path();
+			return _path ?? new APath();
 		}
 
 		protected global::Windows.Foundation.Rect TransformToLogical(global::Windows.Foundation.Rect renderingArea)
@@ -238,7 +239,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			return logicalRenderingArea;
 		}
 
-		protected global::Windows.Foundation.Size BasicArrangeOverride(global::Windows.Foundation.Size finalSize, Action<Android.Graphics.Path> action)
+		protected global::Windows.Foundation.Size BasicArrangeOverride(global::Windows.Foundation.Size finalSize, Action<APath> action)
 		{
 			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
 
@@ -249,7 +250,7 @@ namespace Microsoft.UI.Xaml.Shapes
 				if (!_logicalRenderingArea.Equals(logicalRenderingArea))
 				{
 					_logicalRenderingArea = logicalRenderingArea;
-					Android.Graphics.Path path = GetOrCreatePath();
+					APath path = GetOrCreatePath();
 					action(path);
 					Render(path);
 				}

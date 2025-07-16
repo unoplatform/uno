@@ -5,6 +5,10 @@ using Windows.Foundation;
 using UIKit;
 #endif
 
+#if __ANDROID__
+using APath = Android.Graphics.Path;
+#endif  // __ANDROID__
+
 namespace Microsoft.UI.Xaml.Media
 {
 	public partial class RectangleGeometry : Geometry
@@ -43,7 +47,7 @@ namespace Microsoft.UI.Xaml.Media
 		#region Geometry implementation (not implemented)
 
 #if __ANDROID__
-		public override Android.Graphics.Path ToPath()
+		public override APath ToPath()
 		{
 			throw new NotImplementedException();
 		}

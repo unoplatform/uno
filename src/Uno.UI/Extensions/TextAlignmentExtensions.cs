@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml;
 
+#if __ANDROID__
+using Android.Views;
+#endif  // __ANDROID__
+
 namespace Microsoft.UI.Xaml
 {
 	internal static class TextAlignmentExtensions
@@ -32,14 +36,14 @@ namespace Microsoft.UI.Xaml
 			switch (textAlignment)
 			{
 				case TextAlignment.Center:
-					return Android.Views.GravityFlags.Center;
+					return GravityFlags.Center;
 				case TextAlignment.Right:
-					return Android.Views.GravityFlags.Right;
+					return GravityFlags.Right;
 				case TextAlignment.Justify:
-					return Android.Views.GravityFlags.FillHorizontal;
+					return GravityFlags.FillHorizontal;
 				case TextAlignment.Left:
 				default:
-					return Android.Views.GravityFlags.Left;
+					return GravityFlags.Left;
 			}
 		}
 

@@ -18,6 +18,7 @@ using Windows.Networking.NetworkOperators;
 using Android.Views.Animations;
 
 using Point = Windows.Foundation.Point;
+using DisplayMetrics = Android.Util.DisplayMetrics;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -2762,7 +2763,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// The time (in ms) it should take for each pixel. For instance, if returned value is 2 ms,
 			// it means scrolling 1000 pixels with LinearInterpolation should take 2 seconds.
-			protected override float CalculateSpeedPerPixel(Android.Util.DisplayMetrics displayMetrics)
+			protected override float CalculateSpeedPerPixel(DisplayMetrics displayMetrics)
 			{
 				var scrollLength = _layout.ScrollOrientation == Orientation.Horizontal
 					? _layout.ComputeHorizontalScrollRange(_state)

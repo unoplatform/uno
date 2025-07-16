@@ -1,5 +1,6 @@
 ﻿using Uno.Media;
 using Windows.Foundation;
+using APath = Android.Graphics.Path;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -13,7 +14,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private Android.Graphics.Path GetPath()
+		private APath GetPath()
 		{
 			var coords = Points;
 

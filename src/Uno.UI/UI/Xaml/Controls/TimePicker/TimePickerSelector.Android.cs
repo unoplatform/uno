@@ -6,18 +6,20 @@ using Uno.UI.Extensions;
 using Windows.Globalization;
 using Microsoft.UI.Xaml.Data;
 
+using TimePicker = Android.Widget.TimePicker;
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector : ContentControl
 	{
-		private Android.Widget.TimePicker _picker;
+		private TimePicker _picker;
 		private TimeSpan _initialTime;
 
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			_picker = this.FindFirstChild<Android.Widget.TimePicker>();
+			_picker = this.FindFirstChild<TimePicker>();
 
 			if (_picker != null)
 			{

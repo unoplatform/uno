@@ -18,6 +18,7 @@ using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
 using Microsoft.UI.Xaml.Markup;
+using Canvas = Android.Graphics.Canvas;
 
 namespace Microsoft.UI.Xaml
 {
@@ -211,7 +212,7 @@ namespace Microsoft.UI.Xaml
 		/// This method is called from the OnDraw of elements supporting rounded corners:
 		/// Border, Rectangle, Panel...
 		/// </summary>
-		private protected void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
+		private protected void AdjustCornerRadius(Canvas canvas, CornerRadius cornerRadius)
 		{
 			if (cornerRadius != CornerRadius.None)
 			{

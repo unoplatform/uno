@@ -17,6 +17,7 @@ using Uno.UI.Xaml.Media;
 
 using ExifInterface = Android.Media.ExifInterface;
 using Orientation = Android.Media.Orientation;
+using ImageView = Android.Widget.ImageView;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -36,7 +37,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// <param name="uri">The image uri</param>
 		/// <param name="targetSize">An optional target decoding size</param>
 		/// <returns>A Bitmap instance</returns>
-		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView? imageView, global::System.Drawing.Size? targetSize);
+		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, ImageView? imageView, global::System.Drawing.Size? targetSize);
 
 		/// <summary>
 		/// Provides a optional external image loader.
@@ -230,7 +231,7 @@ namespace Microsoft.UI.Xaml.Media
 			return RespectExifOrientation(exifInterface, bitmap);
 		}
 
-		internal async Task<ImageData> Open(CancellationToken ct, Android.Widget.ImageView? targetImage, int? targetWidth = null, int? targetHeight = null)
+		internal async Task<ImageData> Open(CancellationToken ct, ImageView? targetImage, int? targetWidth = null, int? targetHeight = null)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
