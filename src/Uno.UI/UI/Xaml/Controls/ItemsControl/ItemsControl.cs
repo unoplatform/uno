@@ -106,6 +106,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_inProgressVectorChange = null;
 			}
+			//OnItemsSourceSingleCollectionChanged(this, e.ToNotifyCollectionChangedEventArgs(), 0);
 		}
 
 		partial void InitializePartial();
@@ -1469,43 +1470,6 @@ namespace Microsoft.UI.Xaml.Controls
 				return Items.IndexOf(container);
 			}
 
-			if (_inProgressVectorChange != null)
-			{
-				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
-				{
-					if (index == _inProgressVectorChange.Index)
-					{
-						// Removed item no longer exists.
-						return -1;
-					}
-					else if (index > _inProgressVectorChange.Index)
-					{
-						// All items after the removed item have a lower new index.
-						return index - 1;
-					}
-				}
-				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
-				{
-					if (index >= _inProgressVectorChange.Index)
-					{
-						// All items after the added item have a higher new index.
-						return index + 1;
-					}
-				}
-				else if (
-					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
-					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
-				{
-					// In these cases, we return the index only if the item is its own container
-					// and the container is in fact the new item, not the old one
-					var item = ItemFromIndex(index);
-					if (IsItemItsOwnContainer(item) && Equals(item, container))
-					{
-						return index;
-					}
-					return -1;
-				}
-			}
 			return index;
 		}
 
