@@ -15,8 +15,6 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using System.Diagnostics.CodeAnalysis;
 
-
-
 #if __ANDROID__
 using _View = Android.Views.View;
 using _ViewGroup = Android.Views.ViewGroup;
@@ -1410,7 +1408,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (index > -1)
 			{
 				var item = ItemFromIndex(index);
-				return item;
+				if (!IsItemItsOwnContainer(item) ||
+					Equals(item, container))
+				{
+					return item;
+				}
 			}
 			else
 			{
@@ -1454,8 +1456,17 @@ namespace Microsoft.UI.Xaml.Controls
 				// If the container is actually an item, we can return its index
 				return Items.IndexOf(container);
 			}
+			else
+			{
+				var item = ItemFromIndex(index);
+				if (!IsItemItsOwnContainer(item) ||
+					Equals(container, item))
+				{
+					return index;
+				}
+			}
 
-			return index;
+			return -1;
 		}
 
 		internal virtual int IndexFromContainerInner(DependencyObject container)

@@ -2552,7 +2552,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Item change
 			var oldItem = items[1];
-			var newItem = new ListViewItem();
+			var newItem = new ListViewItem() { Content = "New" };
 
 			list.ItemsChangedAction = () =>
 			{
