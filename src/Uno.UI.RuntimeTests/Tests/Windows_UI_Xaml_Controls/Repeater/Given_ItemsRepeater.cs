@@ -508,20 +508,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			var items = sut.MaterializedItems.ToArray();
 
+			var lastItem = sut.Source.Last();
+			sut.MaterializedItems.Should().NotContain(lastItem);
+
 			sut.Scroller.ChangeView(null, 1000000, null, disableAnimation: false);
 
 			// required for the animation
 			await Task.Delay(200);
 
 			sut.MaterializedItems.Should().NotBeEquivalentTo(items);
-			var lastItem = sut.Source.Last();
-
-			if (!OperatingSystem.IsIOS())
-			{
-				// iOS materializes items faster
-				sut.MaterializedItems.Should().NotContain(lastItem);
-			}
-
 			sut.MaterializedItems.Count().Should().BeGreaterOrEqualTo(3);
 
 			// required for the animation to complete
