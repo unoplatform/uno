@@ -15,6 +15,14 @@ using GlyphInfo = HarfBuzzSharp.GlyphInfo;
 
 namespace Microsoft.UI.Xaml.Documents;
 
+// Excerpt from https://www.unicode.org/reports/tr9/tr9-6.html:
+// The Bidirectional Algorithm takes a stream of text as input, and proceeds in three main phases:
+//  * Separation of the input text into paragraphs. The rest of the algorithm affects only the text between paragraph separators.
+// 	* Resolution of the embedding levels of the text. In this phase, the directional character types, plus the explicit format codes, are used to produce resolved embedding levels.
+// 	* Reordering the text for display on a line-by-line basis using the resolved embedding levels, once the text has been broken into lines.
+// The algorithm only reorders text within a paragraph; characters in one paragraph have no effect on characters in a different paragraph. Paragraphs are divided by the Paragraph Separator or appropriate Newline Function (see Section 4.3, Directionality and Unicode Technical Report #13, “Unicode Newline Guidelines,” found on the CD-ROM or the up-to-date version on the Unicode web site on the handling of CR, LF, and CRLF). Paragraphs may also be determined by higher-level protocols: for example, the text in two different cells of a table will be in different paragraphs.
+
+
 internal readonly struct UnicodeText : IParsedText
 {
 	// A readonly snapshot of a TextElement that is referenced by individual text runs after splitting. It's a class
@@ -41,9 +49,9 @@ internal readonly struct UnicodeText : IParsedText
 		}
 	}
 	// A BidiRun run split at line break boundaries
-	private readonly record struct LineBrokenBidiRun(ReadonlyTextElementCopy textElement, int start, int end, bool rtl, int visualOrderMajor);
+	private readonly record struct LineBrokenBidiRun(ReadonlyTextElementCopy textElement, int start, int end, bool rtl);
 	// FontDetails might be different from textElement.FontDetails because of font fallback
-	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyTextElementCopy textElement, int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl, int visualOrderMajor);
+	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyTextElementCopy textElement, int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl);
 
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
@@ -123,12 +131,12 @@ internal readonly struct UnicodeText : IParsedText
 		var bidi = new BiDi();
 		bidi.SetPara(text, textElement.FlowDirection == FlowDirection.LeftToRight ? BiDi.DEFAULT_LTR : BiDi.DEFAULT_RTL, null);
 		var runCount = bidi.CountRuns();
-		var logicallyOrderedRuns = new (int start, int end, bool rtl, int visualOrder)[runCount];
+		var logicallyOrderedRuns = new LineBrokenBidiRun[runCount];
 		for (var i = 0; i < runCount; i++)
 		{
 			var level = bidi.GetVisualRun(i, out var logicalStart, out var length);
 			Debug.Assert(level is BiDi.BiDiDirection.RTL or BiDi.BiDiDirection.LTR);
-			logicallyOrderedRuns[i] = (logicalStart, logicalStart + length, level == BiDi.BiDiDirection.RTL, i);
+			logicallyOrderedRuns[i] = new LineBrokenBidiRun(textElement, logicalStart, logicalStart + length, level == BiDi.BiDiDirection.RTL);
 		}
 #if DEBUG
 		Debug.Assert(logicallyOrderedRuns[0].start == 0);
@@ -203,12 +211,12 @@ internal readonly struct UnicodeText : IParsedText
 		var currentLineBoundaryIndex = 0;
 		var currentBidiRunIndex = 0;
 		var lineRun = lineBoundaries[currentLineBoundaryIndex];
-		(int start, int end, bool rtl, int visualOrderMajor) currentBidiRun = (logicallyOrderedRuns[currentBidiRunIndex].start, logicallyOrderedRuns[currentBidiRunIndex].end, logicallyOrderedRuns[currentBidiRunIndex].rtl, logicallyOrderedRuns[currentBidiRunIndex].visualOrder);
+		var currentBidiRun = logicallyOrderedRuns[currentBidiRunIndex];
 		while (currentBidiRunIndex < logicallyOrderedRuns.Length && currentLineBoundaryIndex < lineBoundaries.Length)
 		{
 			if (lineRun.End >= currentBidiRun.end)
 			{
-				logicallyOrderedLineBrokenRuns.Add(new LineBrokenBidiRun(textElement, currentBidiRun.start, currentBidiRun.end, currentBidiRun.rtl, currentBidiRun.visualOrderMajor));
+				logicallyOrderedLineBrokenRuns.Add(currentBidiRun);
 				if (lineRun.End == currentBidiRun.end)
 				{
 					currentLineBoundaryIndex++;
@@ -220,12 +228,12 @@ internal readonly struct UnicodeText : IParsedText
 				currentBidiRunIndex++;
 				if (currentBidiRunIndex < logicallyOrderedRuns.Length)
 				{
-					currentBidiRun = (logicallyOrderedRuns[currentBidiRunIndex].start, logicallyOrderedRuns[currentBidiRunIndex].end, logicallyOrderedRuns[currentBidiRunIndex].rtl, logicallyOrderedRuns[currentBidiRunIndex].visualOrder);
+					currentBidiRun = logicallyOrderedRuns[currentBidiRunIndex];
 				}
 			}
 			else
 			{
-				logicallyOrderedLineBrokenRuns.Add(new LineBrokenBidiRun(textElement, currentBidiRun.start, lineRun.End, currentBidiRun.rtl, currentBidiRun.visualOrderMajor));
+				logicallyOrderedLineBrokenRuns.Add(currentBidiRun with { end = lineRun.End });
 				currentBidiRun = currentBidiRun with { start = lineRun.End };
 				currentLineBoundaryIndex++;
 				if (currentLineBoundaryIndex < lineBoundaries.Length)
@@ -266,13 +274,13 @@ internal readonly struct UnicodeText : IParsedText
 				{
 					if (currentFontFallbackSplitStart != run.start)
 					{
-						list.Add(new ShapedLineBrokenBidiRun(run.textElement, currentFontFallbackSplitStart, i, ShapeRun(run.textElement.Text[currentFontFallbackSplitStart..i], run.rtl, currentFontDetails.Font), currentFontDetails, run.rtl, run.visualOrderMajor));
+						list.Add(new ShapedLineBrokenBidiRun(run.textElement, currentFontFallbackSplitStart, i, ShapeRun(run.textElement.Text[currentFontFallbackSplitStart..i], run.rtl, currentFontDetails.Font), currentFontDetails, run.rtl));
 					}
 					currentFontDetails = newFontDetails;
 					currentFontFallbackSplitStart = i;
 				}
 			}
-			list.Add(new ShapedLineBrokenBidiRun(run.textElement, currentFontFallbackSplitStart, run.end, ShapeRun(run.textElement.Text[run.start..run.end], run.rtl, currentFontDetails.Font), currentFontDetails, run.rtl, run.visualOrderMajor));
+			list.Add(new ShapedLineBrokenBidiRun(run.textElement, currentFontFallbackSplitStart, run.end, ShapeRun(run.textElement.Text[run.start..run.end], run.rtl, currentFontDetails.Font), currentFontDetails, run.rtl));
 		}
 
 		return list;
@@ -344,8 +352,8 @@ internal readonly struct UnicodeText : IParsedText
 			var line = _lines[index];
 			currentLineY += line.lineHeight;
 			float currentLineX = 0;
-			var runs = line.runs.Order(new RunOrderComparer());
-			foreach (var run in runs)
+			// var runs = line.runs.Order(new RunOrderComparer());
+			foreach (var run in line.runs)
 			{
 				using (var textBlobBuilder = new SKTextBlobBuilder())
 				{
@@ -364,23 +372,6 @@ internal readonly struct UnicodeText : IParsedText
 					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, currentLineY, new SKPaint { Color = SKColors.Red });
 					currentLineX += x;
 				}
-			}
-		}
-	}
-
-	private readonly struct RunOrderComparer : IComparer<ShapedLineBrokenBidiRun>
-	{
-		public int Compare(ShapedLineBrokenBidiRun run1, ShapedLineBrokenBidiRun run2)
-		{
-			if (run1.visualOrderMajor != run2.visualOrderMajor)
-			{
-				return run1.visualOrderMajor - run2.visualOrderMajor;
-			}
-			else
-			{
-				// the two runs come from the same BiDi run
-				Debug.Assert(run1.rtl == run2.rtl);
-				return run1.rtl ? run2.start - run1.start : run1.start - run2.start;
 			}
 		}
 	}
