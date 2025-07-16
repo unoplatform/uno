@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -287,11 +288,11 @@ public partial class RemoteControlClient : IRemoteControlClient
 				return default;
 			}
 
-#if __WASM__
-			var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").Equals("true", StringComparison.OrdinalIgnoreCase);
-#else
-			const bool isHttps = false;
-#endif
+			var isHttps = false;
+			if (OperatingSystem.IsBrowser())
+			{
+				isHttps = string.Equals(WebAssemblyImports.EvalString("window.location.protocol"), "https:", StringComparison.OrdinalIgnoreCase);
+			}
 
 			_status.Report(ConnectionState.Connecting);
 
@@ -445,17 +446,18 @@ public partial class RemoteControlClient : IRemoteControlClient
 			}
 			else if (port == 443)
 			{
-#if __WASM__
-				if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
+				if (OperatingSystem.IsBrowser())
 				{
-					var originParts = endpoint.Split('-');
+					if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
+					{
+						var originParts = endpoint.Split('-');
 
-					var currentHost = Foundation.WebAssemblyRuntime.InvokeJS("window.location.hostname");
-					var targetParts = currentHost.Split('-');
+						var currentHost = WebAssemblyImports.EvalString("window.location.hostname");
+						var targetParts = currentHost.Split('-');
 
-					endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
+						endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
+					}
 				}
-#endif
 
 				serverUri = new Uri($"wss://{endpoint}/rc");
 			}
