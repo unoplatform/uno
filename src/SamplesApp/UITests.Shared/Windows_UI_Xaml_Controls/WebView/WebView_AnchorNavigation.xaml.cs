@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[Sample(Description = "This sample tests that anchor navigation raises the proper events. The 2 uris received from the NavigationStarting and NavigationCompleted must update whether you tap the NavigateToAnchor button or tap on anchors from the web content.")]
+	[Sample(Description = "This sample tests that anchor navigation raises the proper events. The 2 uris received from the NavigationStarting and NavigationCompleted must NOT update whether you tap the NavigateToAnchor button or tap on anchors from the web content. This matches the behavior of the WinUI WebView2 implementation.")]
 	public sealed partial class WebView_AnchorNavigation : UserControl
 	{
 		public WebView_AnchorNavigation()

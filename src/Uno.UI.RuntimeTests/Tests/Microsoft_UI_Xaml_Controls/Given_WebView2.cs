@@ -505,7 +505,7 @@ public class Given_WebView2
 			e.Handled = handled;
 		};
 		webView.CoreWebView2.Navigate(uri.ToString());
-		Assert.IsNull(webView.Source);
+		Assert.IsNotNull(webView.Source);
 		await TestServices.WindowHelper.WaitFor(() => scheme == "notsupported", 3000);
 		if (handled)
 		{

@@ -60,13 +60,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 
 			// navigate to anchor
 			_app.FastTap(navigateToAnchorButton);
-			_app.WaitForText(navigationCompletedTextBlock, "https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html#section-1");
+			_app.WaitForText(navigationCompletedTextBlock, "https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html");
 
 			TakeScreenshot("navigate to anchor");
 
 			// user click in the browser itself
 			_app.FastTap(clickAnchorButton);
-			_app.WaitForText(navigationCompletedTextBlock, "https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html#page-4");
+			_app.WaitForText(navigationCompletedTextBlock, "https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html");
 
 			TakeScreenshot("click anchor");
 		}
