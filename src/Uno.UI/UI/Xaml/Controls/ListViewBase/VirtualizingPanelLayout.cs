@@ -11,7 +11,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno;
 #if __ANDROID__
-using Android.Views;
+using AView = Android.Views.View;
 #endif  // __ANDROID__
 
 namespace Microsoft.UI.Xaml.Controls
@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 #if __ANDROID__
-			protected override void MeasureChild(View view, int widthSpec, int heightSpec)
+			protected override void MeasureChild(AView view, int widthSpec, int heightSpec)
 			{
 				view.Measure(widthSpec, heightSpec);
 			}

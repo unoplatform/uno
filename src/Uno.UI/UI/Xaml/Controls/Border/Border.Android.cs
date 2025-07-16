@@ -15,13 +15,13 @@ using Android.Graphics;
 using Android.Views;
 using Uno.UI.Xaml.Controls;
 
-using Canvas = Android.Graphics.Canvas;
+using ACanvas = Android.Graphics.Canvas;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class Border
 {
-	protected override void OnDraw(Canvas canvas) => AdjustCornerRadius(canvas, CornerRadius);
+	protected override void OnDraw(ACanvas canvas) => AdjustCornerRadius(canvas, CornerRadius);
 
 	bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
 	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;

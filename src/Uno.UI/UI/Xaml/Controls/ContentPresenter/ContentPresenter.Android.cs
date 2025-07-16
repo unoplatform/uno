@@ -17,6 +17,8 @@ using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 
+using ACanvas = Android.Graphics.Canvas;
+
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class ContentPresenter
@@ -42,7 +44,7 @@ partial class ContentPresenter
 
 	partial void UnregisterContentTemplateRoot() => this.RemoveViewAndDispose(ContentTemplateRoot);
 
-	protected override void OnDraw(Canvas canvas)
+	protected override void OnDraw(ACanvas canvas)
 	{
 		AdjustCornerRadius(canvas, CornerRadius);
 	}

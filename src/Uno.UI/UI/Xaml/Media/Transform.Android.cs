@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			if (targetMatrix == null)
 			{
-				targetMatrix = new Matrix();
+				targetMatrix = new AMatrix();
 			}
 
 			targetMatrix.SetValues(new[]

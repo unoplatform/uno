@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private Path GetPath()
+		private APath GetPath()
 		{
 			var coords = Points;
 
