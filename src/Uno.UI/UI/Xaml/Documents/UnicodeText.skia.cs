@@ -31,6 +31,8 @@ internal readonly struct UnicodeText : IParsedText
 	// and not a struct because we don't want to copy the same TextElement for each run.
 	private class ReadonlyTextElementCopy
 	{
+		public int StartIndex { get; }
+		public int EndIndex { get; }
 		public string Text { get; }
 		public FlowDirection FlowDirection { get; }
 		public FontDetails FontDetails { get; }
@@ -39,33 +41,43 @@ internal readonly struct UnicodeText : IParsedText
 		public FontStretch FontStretch { get; }
 		public FontStyle FontStyle { get; }
 
-		public ReadonlyTextElementCopy(Run run)
+		public ReadonlyTextElementCopy(Inline inline, int startIndex)
 		{
-			Text = run.Text;
-			FlowDirection = run.FlowDirection;
-			FontDetails = run.FontInfo;
-			FontSize = run.FontSize;
-			FontWeight = run.FontWeight;
-			FontStretch = run.FontStretch;
-			FontStyle = run.FontStyle;
+			Debug.Assert(inline is Run or LineBreak);
+			Text = inline.GetText();
+			FlowDirection = (inline as Run)?.FlowDirection ?? FlowDirection.LeftToRight;
+			FontDetails = inline.FontInfo;
+			FontSize = inline.FontSize;
+			FontWeight = inline.FontWeight;
+			FontStretch = inline.FontStretch;
+			FontStyle = inline.FontStyle;
+			StartIndex = startIndex;
+			EndIndex = startIndex + Text.Length;
 		}
 	}
 	// A BidiRun run split at line break boundaries
 	private readonly record struct BidiRun(ReadonlyTextElementCopy textElement, int start, int end, bool rtl);
 	// FontDetails might be different from textElement.FontDetails because of font fallback
-	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyTextElementCopy textElement, int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl);
-	private record LayoutedGlyphDetails(GlyphInfo info, GlyphPosition position, float xPosInRun, float y, int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun parentRun);
-	private record LayoutedLineBrokenBidiRun(ReadonlyTextElementCopy textElement, int start, int end, float x, float y, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, int indexInLine)
+	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyTextElementCopy textElement, int textElementIndex, int start, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl);
+	private record LayoutedGlyphDetails(GlyphInfo info, GlyphPosition position, float xPosInRun, Cluster? cluster, LayoutedLineBrokenBidiRun parentRun)
+	{
+		public Cluster? cluster { get; set; } = cluster;
+	}
+
+	private record LayoutedLineBrokenBidiRun(ReadonlyTextElementCopy textElement, int textElementIndex, int startInTextElement, int endInTextElement, float x, float y, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, LayoutedLine line, int indexInLine)
 	{
 		public float width { get; set; } = width;
+		public LayoutedLine line { get; set; } = line;
 	}
-	private record LayoutedLine(float lineHeight, int lineIndex, List<LayoutedLineBrokenBidiRun> runs);
+	private record LayoutedLine(float lineHeight, int lineIndex, float y, List<LayoutedLineBrokenBidiRun> runs);
+	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
 	private readonly bool _rtl;
+	private readonly List<ReadonlyTextElementCopy> _textElements;
 	private readonly List<LayoutedLine> _lines;
-	private readonly LayoutedGlyphDetails[] _textIndexToGlyph;
+	private readonly Cluster[] _textIndexToGlyph;
 
 	private static readonly ubidi_setLineDelegate SetLine;
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -85,7 +97,7 @@ internal readonly struct UnicodeText : IParsedText
 
 	internal UnicodeText(
 		Size availableSize,
-		Inline[] inlines, // traversed pre-orderly
+		Inline[] inlines, // only leaf nodes
 		float defaultLineHeight,
 		int maxLines,
 		float lineHeight,
@@ -99,15 +111,29 @@ internal readonly struct UnicodeText : IParsedText
 		_size = availableSize;
 		_textAlignment = textAlignment;
 
-		if (inlines.Length == 0)
+		_textElements = new();
+		var acc = 0;
+		foreach (var inline in inlines)
+		{
+			var copy = new ReadonlyTextElementCopy(inline, acc);
+			var length = copy.Text.Length;
+			if (length != 0)
+			{
+				_textElements.Add(copy);
+				acc += length;
+			}
+		}
+
+		if (_textElements.Count == 0)
 		{
 			_lines = new();
 			desiredSize = new Size(0, defaultLineHeight);
 			_textIndexToGlyph = [];
+			_textElements = [];
 			return;
 		}
 		// TODO: multiple inlines
-		var textElement = new ReadonlyTextElementCopy((Run)inlines[0]);
+		var textElement = _textElements[0];
 		var text = textElement.Text;
 		if (text.Length == 0)
 		{
@@ -118,9 +144,10 @@ internal readonly struct UnicodeText : IParsedText
 		}
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
-		var unlayoutedLines = SplitTextIntoLines(textElement, lineWidth, lineWidth);
+		var unlayoutedLines = SplitTextIntoLines(textElement, 0, lineWidth, lineWidth);
 		_lines = LayoutLines(unlayoutedLines);
-		_textIndexToGlyph = CreateSourceTextFromAndToGlyphMapping(_lines);
+		_textIndexToGlyph = new Cluster[inlines.Sum(i => i.GetText().Length)];
+		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
@@ -128,7 +155,7 @@ internal readonly struct UnicodeText : IParsedText
 	}
 
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
-	private static List<List<ShapedLineBrokenBidiRun>> SplitTextIntoLines(ReadonlyTextElementCopy textElement, float firstLineWidth, float lineWidth)
+	private static List<List<ShapedLineBrokenBidiRun>> SplitTextIntoLines(ReadonlyTextElementCopy textElement, int textElementIndex, float firstLineWidth, float lineWidth)
 	{
 		var text = textElement.Text;
 		var bidi = new BiDi();
@@ -264,7 +291,7 @@ internal readonly struct UnicodeText : IParsedText
 			{
 				var level = lineBidi.GetVisualRun(i, out var logicalStart, out var length);
 				Debug.Assert(level is BiDi.BiDiDirection.RTL or BiDi.BiDiDirection.LTR);
-				runs.Add(new ShapedLineBrokenBidiRun(textElement, lineStart + logicalStart, lineStart + logicalStart + length, ShapeRun(textElement.Text[(lineStart + logicalStart)..(lineStart + logicalStart + length)], level is BiDi.BiDiDirection.RTL, textElement.FontDetails.Font), textElement.FontDetails, level is BiDi.BiDiDirection.RTL));
+				runs.Add(new ShapedLineBrokenBidiRun(textElement, textElementIndex, lineStart + logicalStart, lineStart + logicalStart + length, ShapeRun(textElement.Text[(lineStart + logicalStart)..(lineStart + logicalStart + length)], level is BiDi.BiDiDirection.RTL, textElement.FontDetails.Font), textElement.FontDetails, level is BiDi.BiDiDirection.RTL));
 			}
 			ret.Add(runs);
 		}
@@ -305,13 +332,13 @@ internal readonly struct UnicodeText : IParsedText
 				var run = line[runIndex];
 				float runX = 0;
 				var glyphs = new LayoutedGlyphDetails[run.glyphs.Length];
-				var layoutedRun = new LayoutedLineBrokenBidiRun(run.textElement, run.start, run.end, currentLineX, currentLineY, default, glyphs, run.fontDetails, run.rtl, runIndex);
+				var layoutedRun = new LayoutedLineBrokenBidiRun(run.textElement, run.textElementIndex, run.start, run.end, currentLineX, currentLineY, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
 				layoutedRuns.Add(layoutedRun);
 				for (var i = 0; i < glyphs.Length; i++)
 				{
 					var glyph = run.glyphs[i];
-					glyphs[i] = new LayoutedGlyphDetails(glyph.info, glyph.position, runX, currentLineY, default, default, layoutedRun);
-					runX += glyph.position.XAdvance * run.fontDetails.TextScale.textScaleX;
+					glyphs[i] = new LayoutedGlyphDetails(glyph.info, glyph.position, runX, default, layoutedRun);
+					runX += GlyphWidth(glyph.info, glyph.position, run.fontDetails);
 				}
 
 				layoutedRun.width = runX;
@@ -320,16 +347,52 @@ internal readonly struct UnicodeText : IParsedText
 
 			// TODO: line stacking strategy
 			var lineHeight = line.Max(r => r.fontDetails.LineHeight);
+			var layoutedLine = new LayoutedLine(lineHeight, lineIndex, currentLineY, layoutedRuns);
+			layoutedLines.Add(layoutedLine);
+			layoutedRuns.ForEach(r => r.line = layoutedLine);
 			currentLineY += lineHeight;
-			layoutedLines.Add(new LayoutedLine(lineHeight, lineIndex, layoutedRuns));
 		}
 
 		return layoutedLines;
 	}
 
-	private LayoutedGlyphDetails[] CreateSourceTextFromAndToGlyphMapping(List<LayoutedLine> lines)
+	// TODO: we're using harfbuzz clusters as the units for clustering/"atomization" but should we use Unicode's text segmentation algorithm instead?
+	// and how are they different? It seems from the HarfBuzz docs that HarfBuzz clustering by default approximates Unicode's text segmentation
+	// https://harfbuzz.github.io/working-with-harfbuzz-clusters.html
+	// https://unicode.org/reports/tr29
+	private void CreateSourceTextFromAndToGlyphMapping(List<LayoutedLine> lines, Cluster[] textIndexToGlyphMap)
 	{
-		return [];
+		foreach (var line in lines)
+		{
+			foreach (var run in line.runs)
+			{
+				var runGlyphLength = run.glyphs.Length;
+				var runStart = run.startInTextElement + run.textElement.StartIndex;
+				var runLength = run.endInTextElement - run.startInTextElement;
+
+				Cluster? previousCluster = null;
+				for (var index = run.rtl ? 0 : runGlyphLength - 1; (run.rtl && index < runGlyphLength) || (!run.rtl && index >= 0); index += run.rtl ? 1 : -1)
+				{
+					var glyphDetails = run.glyphs[index];
+					if (((run.rtl && index < runGlyphLength - 1) || (!run.rtl && index > 0)) && glyphDetails.info.Cluster == run.glyphs[index + (run.rtl ? 1 : -1)].info.Cluster)
+					{
+						continue;
+					}
+					var (startGlyphIndex, endGlyphIndex) = (index, previousCluster?.glyphInRunIndexStart ?? runGlyphLength);
+					if (run.rtl)
+					{
+						(startGlyphIndex, endGlyphIndex) = (endGlyphIndex, startGlyphIndex);
+					}
+					var cluster = new Cluster(runStart + (int)glyphDetails.info.Cluster, previousCluster?.sourceTextStart ?? (runStart + runLength), run, startGlyphIndex, endGlyphIndex);
+					glyphDetails.cluster = cluster;
+					previousCluster = cluster;
+					for (var i = cluster.sourceTextStart; i < cluster.sourceTextEnd; i++)
+					{
+						textIndexToGlyphMap[i] = cluster;
+					}
+				}
+			}
+		}
 	}
 
 	public void Draw(in Visual.PaintingSession session, (int index, CompositionBrush brush)? caret,
@@ -349,7 +412,7 @@ internal readonly struct UnicodeText : IParsedText
 					{
 						var glyph = run.glyphs[i];
 						glyphs[i] = (ushort)glyph.info.Codepoint;
-						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.y + glyph.position.YOffset * run.fontDetails.TextScale.textScaleY);
+						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.YOffset * run.fontDetails.TextScale.textScaleY);
 					}
 
 					textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
@@ -360,9 +423,27 @@ internal readonly struct UnicodeText : IParsedText
 		}
 	}
 
-	private static float RunWidth((GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails details) => glyphs.Sum(g => g.position.XAdvance * details.TextScale.textScaleX);
+	private static float RunWidth((GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails details) => glyphs.Sum(g => GlyphWidth(g.info, g.position, details));
+	private static float GlyphWidth(GlyphInfo info, GlyphPosition position, FontDetails details) => position.XAdvance * details.TextScale.textScaleX;
 
-	public Rect GetRectForIndex(int adjustedIndex) => throw new System.NotImplementedException();
+	/// <remarks>
+	/// Might return Rect.Empty if the index is a non-renderable code-point.
+	/// </remarks>
+	public Rect GetRectForIndex(int index)
+	{
+		var cluster = _textIndexToGlyph[index];
+		var glyphs = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart..cluster.glyphInRunIndexEnd];
+		if (glyphs.Length == 0)
+		{
+			return Rect.Empty;
+		}
+
+		var x = glyphs[0].xPosInRun + cluster.layoutedRun.x;
+		var y = cluster.layoutedRun.line.y;
+		var width = glyphs.Sum(g => GlyphWidth(g.info, g.position, cluster.layoutedRun.fontDetails));
+		var height = cluster.layoutedRun.line.lineHeight;
+		return new Rect(x, y, width, height);
+	}
 
 	public int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) => throw new System.NotImplementedException();
 
