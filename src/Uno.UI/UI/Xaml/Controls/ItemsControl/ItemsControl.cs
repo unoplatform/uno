@@ -11,6 +11,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using System.Diagnostics.CodeAnalysis;

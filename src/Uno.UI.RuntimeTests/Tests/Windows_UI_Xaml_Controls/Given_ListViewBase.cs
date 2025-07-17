@@ -2825,21 +2825,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(items[0], list.ItemFromContainer(container0));
 				Assert.AreEqual(0, list.IndexFromContainer(container0));
 
-				// Test old container/index/item
+				// Test old container for old item
 				Assert.IsNull(list.ContainerFromItem(oldItem));
-				Assert.IsNull(list.ItemFromContainer(oldContainer));
-				Assert.AreEqual(-1, list.IndexFromContainer(oldContainer));
 
-#if HAS_UNO
-				// Test new container/index/item
-				// In UWP the container for the new item is returned, but its
-				// content is not yet set.
-				// We match the situation with Reset and return nulls.
+				// Container for new item should abe available
 				var container1 = (ListViewItem)list.ContainerFromItem(items[1]);
-				Assert.IsNull(container1);
+				Assert.IsNotNull(container1);
 				var containerIndex1 = list.ContainerFromIndex(1);
-				Assert.IsNull(containerIndex1);
-#endif
+				Assert.IsNotNull(containerIndex1);
 
 				// Test container/index/item right after changed
 				var container2 = (ListViewItem)list.ContainerFromItem(items[2]);
