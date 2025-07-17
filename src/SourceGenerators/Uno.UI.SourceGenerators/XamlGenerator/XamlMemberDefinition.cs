@@ -47,5 +47,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public int LinePosition { get; set; }
 
 		public XamlObjectDefinition? Owner { get; }
+
+		public string Key => Member.Name switch
+		{
+			"_UnknownContent" => Owner?.Key ?? "__",
+			var name => $"{Owner?.Key ?? "_"}_{NamingHelper.GetShortName(name)}"
+		};
 	}
 }
