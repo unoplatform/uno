@@ -3952,15 +3952,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType)
 		{
-			var id = 0;
-			var effectiveName = name;
-			while (CurrentScope.Subclasses.ContainsKey(effectiveName))
-			{
-				effectiveName = $"{name}_Δ{id++}";
-			}
-			CurrentScope.Subclasses[effectiveName] = new Subclass(owner, returnType, GetDefaultBindMode());
-			
-			return effectiveName;
+			return NamingHelper.AddUnique(CurrentScope.Subclasses, name, new Subclass(owner, returnType, GetDefaultBindMode()));
 		}
 
 		/// <summary>
