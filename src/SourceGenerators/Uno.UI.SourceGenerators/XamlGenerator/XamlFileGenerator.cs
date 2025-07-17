@@ -3066,7 +3066,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing || !objectUid.IsNullOrEmpty())
 			{
-				string closureName;
 				if (!useGenericApply && objectDefinitionType is null)
 				{
 					throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(objectDefinition.Type));
