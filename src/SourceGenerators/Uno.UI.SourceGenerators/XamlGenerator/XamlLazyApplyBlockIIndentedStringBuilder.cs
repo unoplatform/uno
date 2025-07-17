@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno;
 using Uno.Extensions;
+using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -63,15 +64,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_appliedType = appliedType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::System.Object";
 
 			// Note: We trim the scope.ClassName sor for Template methods path will be relative to the scope class itself inst of the full path.
-			var desiredMethodName = $"ApplyTo_{declaringObject.Key.TrimStart(scope.ClassName).TrimStart('_')}";
-			var effectiveMethodName = desiredMethodName;
-			var i = 0;
-			while (scope.ExplicitApplyMethodNames.Contains(effectiveMethodName))
-			{
-				effectiveMethodName = $"{desiredMethodName}_Δ{++i}";
-			}
-			scope.ExplicitApplyMethodNames.Add(effectiveMethodName);
-			_exposeContextMethod = effectiveMethodName;
+			_exposeContextMethod = NamingHelper.AddUnique(
+				scope.ExplicitApplyMethodNames,
+				$"ApplyTo_{declaringObject.Key.TrimStart(scope.ClassName).TrimStart('_')}");
 		}
 
 		private void TryWriteApply()
