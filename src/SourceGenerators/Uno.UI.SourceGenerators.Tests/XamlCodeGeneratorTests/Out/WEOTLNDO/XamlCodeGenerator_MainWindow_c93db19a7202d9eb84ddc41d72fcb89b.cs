@@ -60,7 +60,7 @@ namespace TestRepro
 			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
 			// Class TestRepro.MainWindow
-			var Closed_Handler = new __MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_TestReproMainWindow.ApplyMethod_1_Closed_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+			var Closed_Handler = new __MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_TestReproMainWindow.ApplyTo_Wi_Δ1_Closed_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
 			/* second level */ __p1.Closed += Closed_Handler.Invoke;
 			}
 			))
@@ -77,7 +77,7 @@ namespace TestRepro
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_TestReproMainWindow
 		{
-				public class ApplyMethod_1_Closed_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				public class ApplyTo_Wi_Δ1_Closed_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.WindowEventArgs args)
 					{

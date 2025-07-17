@@ -54,7 +54,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event.SC0().Build(__owner)
+					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event.__Pa_ReͰ0_DaTe().Build(__owner)
 					)				;
 			}
 			)
@@ -89,7 +89,8 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			public class SC0
+			[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+			public class __Pa_ReͰ0_DaTe
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				private const string __baseUri_prefix_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
@@ -138,7 +139,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 									__that._component_0 = __p1;
 									global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
 									global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-									var Invoked_Handler = new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_MyProject__ResourcesSC0_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event.ApplyMethod_3_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+									var Invoked_Handler = new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_MyProject__Resources__Pa_ReͰ0_DaTe_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event.ApplyTo_Ͱ0_Bo_ReͰ1_SwItͰ0_SwIt_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
 									/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
 									}
 									))
@@ -198,9 +199,9 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 				}
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-				private class __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_MyProject__ResourcesSC0_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event
+				private class __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_MyProject__Resources__Pa_ReͰ0_DaTe_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event
 				{
-						public class ApplyMethod_3_Invoked_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+						public class ApplyTo_Ͱ0_Bo_ReͰ1_SwItͰ0_SwIt_Invoked_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 						{
 							public void Invoke(global::Microsoft.UI.Xaml.Controls.SwipeItem sender, global::Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
 							{
