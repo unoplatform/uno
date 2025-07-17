@@ -133,7 +133,7 @@ internal readonly struct UnicodeText : IParsedText
 	{
 		var text = textElement.Text;
 		var bidi = new BiDi();
-		bidi.SetPara(text, textElement.FlowDirection == FlowDirection.LeftToRight ? BiDi.DEFAULT_LTR : BiDi.DEFAULT_RTL, null);
+		bidi.SetPara(text, (byte)(textElement.FlowDirection == FlowDirection.LeftToRight ? 0 : 1), null);
 		var runCount = bidi.CountRuns();
 		var logicallyOrderedRuns = new BidiRun[runCount];
 		// TODO: paragraphs
@@ -143,6 +143,7 @@ internal readonly struct UnicodeText : IParsedText
 			Debug.Assert(level is BiDi.BiDiDirection.RTL or BiDi.BiDiDirection.LTR);
 			logicallyOrderedRuns[i] = new BidiRun(textElement, logicalStart, logicalStart + length, level == BiDi.BiDiDirection.RTL);
 		}
+		logicallyOrderedRuns = logicallyOrderedRuns.OrderBy(r => r.start).ToArray();
 #if DEBUG
 		Debug.Assert(logicallyOrderedRuns[0].start == 0);
 		for (int i = 0; i < runCount - 1; i++)
@@ -151,7 +152,6 @@ internal readonly struct UnicodeText : IParsedText
 		}
 		Debug.Assert(logicallyOrderedRuns[^1].end != logicallyOrderedRuns[^1].start && logicallyOrderedRuns[^1].end == text.Length);
 #endif
-		logicallyOrderedRuns = logicallyOrderedRuns.OrderBy(r => r.start).ToArray();
 
 		// TODO: locale?
 		var lineBoundaries = BreakIterator.GetBoundaries(BreakIterator.UBreakIteratorType.LINE, new Locale("en", "US"), text).ToArray();
