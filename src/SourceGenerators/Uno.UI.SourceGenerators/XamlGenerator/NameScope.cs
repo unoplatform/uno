@@ -56,6 +56,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public List<string> ExplicitApplyMethods { get; } = [];
 
+		public List<string> ExplicitApplyMethodNames { get; } = [];
+
 		/// <summary>
 		/// Set of method builders to be generated for the current scope.
 		/// This is usually used to avoid delegates like for event handlers.
