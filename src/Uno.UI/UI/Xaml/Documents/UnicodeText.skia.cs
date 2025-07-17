@@ -177,7 +177,7 @@ internal readonly struct UnicodeText : IParsedText
 			var glyphs = ShapeRun(bidiRun.textElement.Text[bidiRun.start..bidiRun.end], bidiRun.rtl,
 				textElement.FontDetails.Font);
 			var runWidth = RunWidth(glyphs, textElement.FontDetails);
-			if (bidiRun.end <= nextLineBreakingOpportunity || remainingLineWidth >= runWidth)
+			if (remainingLineWidth >= runWidth)
 			{
 				currentLineEnd = bidiRun.end;
 				remainingLineWidth -= runWidth;
@@ -187,7 +187,14 @@ internal readonly struct UnicodeText : IParsedText
 					nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
 				}
 			}
-			else if (bidiRun.end > nextLineBreakingOpportunity)
+			else if (bidiRun.end <= nextLineBreakingOpportunity)
+			{
+				lineEnds.Add(currentLineEnd);
+				currentLineEnd = -1;
+				remainingLineWidth = lineWidth;
+				index--;
+			}
+			else // bidiRun.end > nextLineBreakingOpportunity && remainingLineWidth < runWidth
 			{
 				// TODO: end-of-line space hanging
 
