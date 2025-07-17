@@ -17,6 +17,7 @@ using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
+using Microsoft.UI.Xaml.Documents;
 
 #nullable enable
 
@@ -405,6 +406,7 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void UpdateIsTextTrimmed()
 		{
 			IsTextTrimmed = IsTextTrimmable && (
+				Inlines.IsTrimmedByMaxLines() ||
 				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
 				_lastInlinesArrangeWithPadding.Height > ActualHeight
 			);
