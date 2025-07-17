@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
@@ -7,6 +6,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	[TestClass]
 	public class Given_FontFamily
 	{
+#if __WASM__
+
 		[TestMethod]
 		public void With_Pure_Name()
 		{
@@ -50,6 +51,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var fontFamily = new FontFamily(fontFamilyPath);
 			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
+#endif
+		[TestMethod]
+		[RunsOnUIThread]
+		public void Symbol_Fonts_Fallback()
+		{
+			var fontFamily = new FontFamily("Segoe Fluent Icons");
+			Assert.AreEqual(FeatureConfiguration.Font.SymbolsFont, fontFamily.Source);
+			fontFamily = new FontFamily("Segoe UI Symbol");
+			Assert.AreEqual(FeatureConfiguration.Font.SymbolsFont, fontFamily.Source);
+			fontFamily = new FontFamily("Segoe MDL2 Assets");
+			Assert.AreEqual(FeatureConfiguration.Font.SymbolsFont, fontFamily.Source);
+			fontFamily = new FontFamily("Symbols");
+			Assert.AreEqual(FeatureConfiguration.Font.SymbolsFont, fontFamily.Source);
+		}
 	}
 }
-#endif
