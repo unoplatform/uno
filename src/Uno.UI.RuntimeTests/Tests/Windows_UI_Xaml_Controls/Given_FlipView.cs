@@ -201,11 +201,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			itemsSource.RemoveAt(2);
 
-#if __ANDROID__
 			await WindowHelper.WaitForResultEqual(0, () => flipView.SelectedIndex);
-#else
-			await WindowHelper.WaitForResultEqual(-1, () => flipView.SelectedIndex);
-#endif
+
 			itemsSource.Clear();
 
 			await WindowHelper.WaitForResultEqual(-1, () => flipView.SelectedIndex);
