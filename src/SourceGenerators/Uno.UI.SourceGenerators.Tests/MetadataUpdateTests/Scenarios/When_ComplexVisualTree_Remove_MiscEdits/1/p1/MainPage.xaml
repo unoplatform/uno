@@ -1,0 +1,95 @@
+﻿<Page
+	x:Class="Test01.MainPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:Test01"
+	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d">
+
+	<Page.Resources>
+		<DataTemplate x:Key="MyDataTemplate">
+			<ContentControl Content="{Binding}">
+				<ContentControl.ContentTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding}" />
+					</DataTemplate>
+				</ContentControl.ContentTemplate>
+			</ContentControl>
+		</DataTemplate>
+	</Page.Resources>
+
+
+	<!--<StackPanel>-->
+		<Grid>
+			<!--<Border>-->
+				<StackPanel>
+					<StackPanel.Resources>
+						<DataTemplate x:Key="MyOtherDataTemplate">
+							<TextBlock Text="{Binding}" />
+						</DataTemplate>
+					</StackPanel.Resources>
+					<Grid>
+						<Border>
+							<ListView
+								ItemsSource="abcdef"
+								Header="The list-view"
+								ItemTemplate="{StaticResource MyDataTemplate}">
+								<ListView.HeaderTemplate>
+									<DataTemplate>
+										<TextBlock FontSize="36" Text="{Binding}" />
+									</DataTemplate>
+								</ListView.HeaderTemplate>
+								<!--<ListView.ItemTemplate>
+									<DataTemplate>
+										<Grid>
+											<ContentControl Content="{Binding}">
+												<ContentControl.ContentTemplate>
+													<DataTemplate>
+														<TextBlock Text="{Binding}" />
+													</DataTemplate>
+												</ContentControl.ContentTemplate>
+											</ContentControl>
+										</Grid>
+									</DataTemplate>
+								</ListView.ItemTemplate>-->
+							</ListView>
+						</Border>
+						
+						<Border>
+							<ContentControl
+								Content="Hello world"
+								ContentTemplate="{StaticResource MyOtherDataTemplate}" />
+						</Border>
+						<Border>
+							<ContentControl Content="Bonjour le monde">
+								<ContentControl.ContentTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding}" />
+									</DataTemplate>
+								</ContentControl.ContentTemplate>
+							</ContentControl>
+						</Border>
+						<Button Content="Item 3" />
+						<Button Content="Item 4" />
+						<Button Content="Item 1" Click="MyClickButtonHandler" />
+						<Button Content="Item 2" Click="MyAltClickButtonHandler" />
+						<Button Content="Item 5" />
+
+						<Border>
+							<ComboBox>
+								<ComboBoxItem Content="My item 1" />
+								<ComboBoxItem Content="My item 2" />
+								<ComboBoxItem Content="My item 3" />
+								<ComboBoxItem Content="My item 4" />
+								<ComboBoxItem Content="My item 5" />
+								<ComboBoxItem Content="My item 6" />
+							</ComboBox>
+						</Border>
+			</Grid>
+				</StackPanel>
+			<!--</Border>-->
+		</Grid>
+	<!--</StackPanel>-->
+</Page>
