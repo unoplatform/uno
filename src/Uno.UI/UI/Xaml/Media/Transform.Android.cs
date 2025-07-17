@@ -2,7 +2,6 @@
 using System.Numerics;
 using Uno.UI;
 using Windows.Foundation;
-using AMatrix = Android.Graphics.Matrix;
 
 namespace Microsoft.UI.Xaml.Media
 {

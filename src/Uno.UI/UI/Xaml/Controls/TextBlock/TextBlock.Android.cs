@@ -34,12 +34,6 @@ using Uno.Collections;
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-using ABuild = Android.OS.Build;
-using AColor = Android.Graphics.Color;
-using ALayout = Android.Text.Layout;
-using ALayoutAlignment = Android.Text.Layout.Alignment;
-using ARect = Android.Graphics.Rect;
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement

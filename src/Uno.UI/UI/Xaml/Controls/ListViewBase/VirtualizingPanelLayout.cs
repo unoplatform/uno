@@ -10,9 +10,6 @@ using System.Linq;
 using Uno.Extensions;
 using Uno.UI;
 using Uno;
-#if __ANDROID__
-using AView = Android.Views.View;
-#endif  // __ANDROID__
 
 namespace Microsoft.UI.Xaml.Controls
 {

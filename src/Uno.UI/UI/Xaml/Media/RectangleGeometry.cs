@@ -5,10 +5,6 @@ using Windows.Foundation;
 using UIKit;
 #endif
 
-#if __ANDROID__
-using APath = Android.Graphics.Path;
-#endif  // __ANDROID__
-
 namespace Microsoft.UI.Xaml.Media
 {
 	public partial class RectangleGeometry : Geometry

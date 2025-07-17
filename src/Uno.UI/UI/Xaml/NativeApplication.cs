@@ -19,7 +19,6 @@ using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
-using AApplication = Android.App.Application;
 
 namespace Microsoft.UI.Xaml
 {

@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 
 #elif __ANDROID__
 
-		internal static Android.Views.GravityFlags ToGravity(this TextAlignment textAlignment)
+		internal static GravityFlags ToGravity(this TextAlignment textAlignment)
 		{
 			switch (textAlignment)
 			{

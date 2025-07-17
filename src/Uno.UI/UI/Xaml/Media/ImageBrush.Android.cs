@@ -16,7 +16,6 @@ using Windows.UI.Core;
 using Uno.UI;
 
 using Rect = Windows.Foundation.Rect;
-using AMatrix = Android.Graphics.Matrix;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -136,7 +135,7 @@ namespace Microsoft.UI.Xaml.Media
 			var paint = new Paint();
 
 			//Draw the output bitmap to the screen
-			var rect = new Android.Graphics.Rect(0, 0, (int)drawRect.Width, (int)drawRect.Height);
+			var rect = new ARect(0, 0, (int)drawRect.Width, (int)drawRect.Height);
 			destinationCanvas.DrawBitmap(output, rect, rect, paint);
 		}
 
@@ -178,7 +177,7 @@ namespace Microsoft.UI.Xaml.Media
 				return null;
 			}
 
-			var outputBitmap = Bitmap.CreateBitmap((int)drawRect.Width, (int)drawRect.Height, Android.Graphics.Bitmap.Config.Argb8888);
+			var outputBitmap = Bitmap.CreateBitmap((int)drawRect.Width, (int)drawRect.Height, ABitmap.Config.Argb8888);
 
 			//and a temporary canvas that will draw into the bitmap
 			using (var bitmapCanvas = new Canvas(outputBitmap))

@@ -5,7 +5,6 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 using Canvas = Android.Graphics.Canvas;
-using APath = Android.Graphics.Path;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -74,7 +73,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 			_path = path;
 
-			var matrix = new Android.Graphics.Matrix();
+			var matrix = new AMatrix();
 
 			matrix.SetScale((float)scaleX * (float)ViewHelper.Scale, (float)scaleY * (float)ViewHelper.Scale);
 			matrix.PostTranslate(ViewHelper.LogicalToPhysicalPixels(renderOriginX), ViewHelper.LogicalToPhysicalPixels(renderOriginY));

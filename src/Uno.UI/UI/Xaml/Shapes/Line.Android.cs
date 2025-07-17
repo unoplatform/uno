@@ -3,8 +3,6 @@ using System;
 using Uno.Media;
 using Uno.UI;
 
-using APath = Android.Graphics.Path;
-
 namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Line : Shape

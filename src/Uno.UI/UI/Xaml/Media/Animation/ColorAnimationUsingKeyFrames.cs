@@ -304,7 +304,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				var i = index;
 
 #if __ANDROID__
-				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+				if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
 				{
 					animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
 				}

@@ -1,6 +1,5 @@
 ﻿using Uno.Media;
 using Windows.Foundation;
-using APath = Android.Graphics.Path;
 
 namespace Microsoft.UI.Xaml.Shapes
 {

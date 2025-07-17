@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml.Media
 				return bitmap;
 			}
 
-			var matrix = new Android.Graphics.Matrix();
+			var matrix = new AMatrix();
 			matrix.PostRotate(rotationAngle);
 
 			var createdBitmap = Bitmap.CreateBitmap(bitmap, x: 0, y: 0, width: bitmap.Width, height: bitmap.Height, matrix, true);
@@ -300,7 +300,7 @@ namespace Microsoft.UI.Xaml.Media
 					// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
 					if (IsContactUri(AbsoluteUri))
 					{
-						if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
+						if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, AUri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
 						{
 							return _imageData = ImageData.Empty;
 						}

@@ -2,8 +2,6 @@
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 
-using APath = Android.Graphics.Path;
-
 namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Path : Shape

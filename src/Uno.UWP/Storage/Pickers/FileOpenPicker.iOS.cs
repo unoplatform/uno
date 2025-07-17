@@ -68,7 +68,7 @@ namespace Windows.Storage.Pickers
 					return new UIImagePickerController()
 					{
 						SourceType = UIImagePickerControllerSourceType.PhotoLibrary,
-						MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary),
+						MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary) ?? [],
 						ImagePickerControllerDelegate = new ImageOpenPickerDelegate(completionSource)
 					};
 
