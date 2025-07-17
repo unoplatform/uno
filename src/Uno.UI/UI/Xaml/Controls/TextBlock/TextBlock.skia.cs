@@ -406,7 +406,7 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void UpdateIsTextTrimmed()
 		{
 			IsTextTrimmed = IsTextTrimmable && (
-				Inlines.IsTrimmedByMaxLines() ||
+				Inlines.OverflowMaxLines ||
 				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
 				_lastInlinesArrangeWithPadding.Height > ActualHeight
 			);

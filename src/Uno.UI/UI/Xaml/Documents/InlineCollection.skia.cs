@@ -40,7 +40,6 @@ namespace Microsoft.UI.Xaml.Documents
 		private Size _lastArrangedSize;
 		private List<(int start, int length)> _lineIntervals;
 		private bool _lineIntervalsValid;
-		private bool _isTrimmedByMaxLines;
 
 		private SelectionDetails _selection = new(0, 0, 0, 0);
 		private bool _renderSelection;
@@ -69,6 +68,8 @@ namespace Microsoft.UI.Xaml.Documents
 				}
 			}
 		}
+
+		internal bool OverflowMaxLines { get; private set; }
 
 		internal event Action? DrawingStarted;
 		internal event Action<(Rect rect, SKCanvas canvas)>? SelectionFound;
@@ -178,7 +179,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 						if (maxLines > 0 && _renderLines.Count == maxLines)
 						{
-							_isTrimmedByMaxLines = run.Segments.IndexOf(segment) != run.Segments.Count - 1;
+							OverflowMaxLines = run.Segments[^1] != segment;
 							goto MaxLinesHit;
 						}
 
@@ -1095,8 +1096,6 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		internal float AverageLineHeight => _renderLines.Count > 0 ? _renderLines.Average(r => r.Height) : _lastDefaultLineHeight;
-
-		internal bool IsTrimmedByMaxLines() => _isTrimmedByMaxLines;
 
 		// RenderSegmentSpan.FullGlyphsLength includes spaces, but not \r
 		private int GlyphsLengthWithCR(RenderSegmentSpan span)
