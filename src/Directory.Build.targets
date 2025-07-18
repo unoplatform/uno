@@ -167,22 +167,21 @@
 	<!--
 	  Work around: https://github.com/dotnet/sdk/issues/48949
 	  -->
-	<ItemGroup Condition=" $(NETCoreSdkVersion.StartsWith('10.0.100-preview.5.')) ">
-
+	<ItemGroup Condition=" $(NETCoreSdkVersion.StartsWith('10.0.100-preview.6.')) ">
 		<KnownFrameworkReference Update="Microsoft.WindowsDesktop.App">
-			<DefaultRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</DefaultRuntimeFrameworkVersion>
-			<LatestRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</LatestRuntimeFrameworkVersion>
-			<TargetingPackVersion>10.0.0-preview.5.25277.114</TargetingPackVersion>
+			<DefaultRuntimeFrameworkVersion>10.0.0-preview.6.25358.103</DefaultRuntimeFrameworkVersion>
+			<LatestRuntimeFrameworkVersion>10.0.0-preview.6.25358.103</LatestRuntimeFrameworkVersion>
+			<TargetingPackVersion>10.0.0-preview.6.25358.103</TargetingPackVersion>
 		</KnownFrameworkReference>
 		<KnownFrameworkReference Update="Microsoft.WindowsDesktop.App.WPF">
-			<DefaultRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</DefaultRuntimeFrameworkVersion>
-			<LatestRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</LatestRuntimeFrameworkVersion>
-			<TargetingPackVersion>10.0.0-preview.5.25277.114</TargetingPackVersion>
+			<DefaultRuntimeFrameworkVersion>10.0.0-preview.6.25358.103</DefaultRuntimeFrameworkVersion>
+			<LatestRuntimeFrameworkVersion>10.0.0-preview.6.25358.103</LatestRuntimeFrameworkVersion>
+			<TargetingPackVersion>10.0.0-preview.6.25358.103</TargetingPackVersion>
 		</KnownFrameworkReference>
 		<KnownFrameworkReference Update="Microsoft.WindowsDesktop.App.WindowsForms">
-			<DefaultRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</DefaultRuntimeFrameworkVersion>
-			<LatestRuntimeFrameworkVersion>10.0.0-preview.5.25277.114</LatestRuntimeFrameworkVersion>
-			<TargetingPackVersion>10.0.0-preview.5.25277.114</TargetingPackVersion>
+			<DefaultRuntimeFrameworkVersion>10.0.0-preview.6.25358.103</DefaultRuntimeFrameworkVersion>
+			<LatestRuntimeFrameworkVersion>10.0.0-preview.6.25358.103</LatestRuntimeFrameworkVersion>
+			<TargetingPackVersion>10.0.0-preview.6.25358.103</TargetingPackVersion>
 		</KnownFrameworkReference>
 	</ItemGroup>
 

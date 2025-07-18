@@ -737,7 +737,7 @@ public
 				}
 				else
 				{
-					tcs.TrySetResult(result as NSString);
+					tcs.TrySetResult((result as NSString) ?? "");
 				}
 			});
 

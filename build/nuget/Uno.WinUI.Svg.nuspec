@@ -68,7 +68,7 @@
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net10.0-ios18.4">
+			<group targetFramework="net10.0-ios18.5">
 				<dependency id="Svg.Custom" version="3.0.0" />
 				<dependency id="Svg.Model" version="3.0.0" />
 				<dependency id="SkiaSharp.Views.Uno" version="3.119.0" />
@@ -76,7 +76,7 @@
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net10.0-tvos18.4">
+			<group targetFramework="net10.0-tvos18.5">
 				<dependency id="Svg.Custom" version="3.0.0" />
 				<dependency id="Svg.Model" version="3.0.0" />
 				<dependency id="SkiaSharp.Views.Uno" version="3.119.0" />
@@ -84,7 +84,7 @@
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net10.0-maccatalyst18.4">
+			<group targetFramework="net10.0-maccatalyst18.5">
 				<dependency id="Svg.Custom" version="3.0.0" />
 				<dependency id="Svg.Model" version="3.0.0" />
 				<dependency id="SkiaSharp.Views.Uno" version="3.119.0" />
@@ -95,13 +95,13 @@
 		</dependencies>
 
 		<references>
-			<group targetFramework="net10.0-ios18.4">
+			<group targetFramework="net10.0-ios18.5">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
-			<group targetFramework="net10.0-tvos18.4">
+			<group targetFramework="net10.0-tvos18.5">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
-			<group targetFramework="net10.0-maccatalyst18.4">
+			<group targetFramework="net10.0-maccatalyst18.5">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
 			<group targetFramework="net10.0-android">
@@ -138,9 +138,9 @@
 		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.Svg.dll" target="lib\net9.0-maccatalyst18.0" />
 
 		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net10.0-android\Uno.UI.Svg.dll" target="lib\net10.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net10.0-ios18.4\Uno.UI.Svg.dll" target="lib\net10.0-ios18.4" />
-		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net10.0-tvos18.4\Uno.UI.Svg.dll" target="lib\net10.0-tvos18.4" />
-		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net10.0-maccatalyst18.4\Uno.UI.Svg.dll" target="lib\net10.0-maccatalyst18.4" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net10.0-ios18.5\Uno.UI.Svg.dll" target="lib\net10.0-ios18.5" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net10.0-tvos18.5\Uno.UI.Svg.dll" target="lib\net10.0-tvos18.5" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net10.0-maccatalyst18.5\Uno.UI.Svg.dll" target="lib\net10.0-maccatalyst18.5" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.Svg\buildTransitive\*" target="buildTransitive" />
