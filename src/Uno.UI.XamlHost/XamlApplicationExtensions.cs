@@ -4,6 +4,8 @@
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Win32.UI.XamlHost/XamlApplicationExtensions.cs
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Uno.UI.Xaml.Core;
 using WUX = Microsoft.UI.Xaml;
@@ -60,7 +62,7 @@ public static partial class XamlApplicationExtensions
 				_metadataContainer = GetCurrentProvider();
 				if (_metadataContainer == null)
 				{
-					var providers = MetadataProviderDiscovery.DiscoverMetadataProviders().ToList();
+					var providers = GetDiscoverMetadataProviders();
 					_metadataContainer = GetCurrentProvider();
 					if (_metadataContainer == null)
 					{
@@ -87,5 +89,8 @@ public static partial class XamlApplicationExtensions
 		}
 
 		return _metadataContainer;
+
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Optional Fallback for when GetCurrentProvider() returns null")]
+		static List<WUX.Markup.IXamlMetadataProvider> GetDiscoverMetadataProviders() => MetadataProviderDiscovery.DiscoverMetadataProviders().ToList();
 	}
 }
