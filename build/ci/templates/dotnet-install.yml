@@ -1,8 +1,8 @@
 steps:
   - bash: |
       rm global.json
-      cp build/ci/net9/global.json global.json
-    displayName: "Using .NET 9 global.json"
+      cp build/ci/net10/global.json global.json
+    displayName: "Using .NET 10 global.json"
 
   - pwsh: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)/.dotnet"
