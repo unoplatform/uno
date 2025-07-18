@@ -67,7 +67,6 @@ public class NamingHelper
 			else
 			{
 				allowLower = true; // We ignore the char, but if's an _ we allow lower next time
-				i++;
 			}
 
 			i++;
