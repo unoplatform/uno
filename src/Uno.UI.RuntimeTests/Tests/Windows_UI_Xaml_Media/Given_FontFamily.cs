@@ -52,6 +52,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
 #endif
+
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public void Symbol_Fonts_Fallback()
@@ -65,5 +67,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			fontFamily = new FontFamily("Symbols");
 			Assert.AreEqual(FeatureConfiguration.Font.SymbolsFont, fontFamily.Source);
 		}
+#endif
 	}
 }
