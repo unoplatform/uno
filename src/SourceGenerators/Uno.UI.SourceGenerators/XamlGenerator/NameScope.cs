@@ -54,7 +54,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public List<string> XBindTryGetMethodDeclarations { get; } = [];
 
-		public List<string> ExplicitApplyMethods { get; } = [];
+		public List<string> ExplicitApplyMethods { get; } = []; // TODO: Merge with CallbackMethods
+
+		public List<string> ExplicitApplyMethodNames { get; } = [];
 
 		/// <summary>
 		/// Set of method builders to be generated for the current scope.

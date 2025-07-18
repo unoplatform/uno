@@ -135,64 +135,64 @@ namespace TestRepro
 		}
 		partial void OnInitializeCompleted();
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private bool __is__ApplyMethod_0_Click_Initialized ;
+			private bool __is__ApplyTo_PaͰ0_GrͰ0_Bu_Click_Initialized ;
 		
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private void __ApplyMethod_0_Click_Initialize(bool init)
+			private void __ApplyTo_PaͰ0_GrͰ0_Bu_Click_Initialize(bool init)
 			{
-				if (__is__ApplyMethod_0_Click_Initialized || _component_0 is null)
+				if (__is__ApplyTo_PaͰ0_GrͰ0_Bu_Click_Initialized || _component_0 is null)
 				{
 					if (!init)
 					{
-						__is__ApplyMethod_0_Click_Initialized = false;
+						__is__ApplyTo_PaͰ0_GrͰ0_Bu_Click_Initialized = false;
 						// Note: _component_0 will be collected, no needs to unsubscribe
 					}
 					
 					return;
 				}
 		
-				_component_0.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.ApplyMethod_0_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
-				__is__ApplyMethod_0_Click_Initialized = true;
+				_component_0.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.ApplyTo_PaͰ0_GrͰ0_Bu_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
+				__is__ApplyTo_PaͰ0_GrͰ0_Bu_Click_Initialized = true;
 			}
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private bool __is__ApplyMethod_1_Click_Initialized ;
+			private bool __is__ApplyTo_PaͰ0_GrͰ1_Bu_Click_Initialized ;
 		
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private void __ApplyMethod_1_Click_Initialize(bool init)
+			private void __ApplyTo_PaͰ0_GrͰ1_Bu_Click_Initialize(bool init)
 			{
-				if (__is__ApplyMethod_1_Click_Initialized || _component_1 is null)
+				if (__is__ApplyTo_PaͰ0_GrͰ1_Bu_Click_Initialized || _component_1 is null)
 				{
 					if (!init)
 					{
-						__is__ApplyMethod_1_Click_Initialized = false;
+						__is__ApplyTo_PaͰ0_GrͰ1_Bu_Click_Initialized = false;
 						// Note: _component_1 will be collected, no needs to unsubscribe
 					}
 					
 					return;
 				}
 		
-				_component_1.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.ApplyMethod_1_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
-				__is__ApplyMethod_1_Click_Initialized = true;
+				_component_1.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.ApplyTo_PaͰ0_GrͰ1_Bu_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
+				__is__ApplyTo_PaͰ0_GrͰ1_Bu_Click_Initialized = true;
 			}
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private bool __is__ApplyMethod_2_Click_Initialized ;
+			private bool __is__ApplyTo_PaͰ0_GrͰ2_Bu_Click_Initialized ;
 		
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private void __ApplyMethod_2_Click_Initialize(bool init)
+			private void __ApplyTo_PaͰ0_GrͰ2_Bu_Click_Initialize(bool init)
 			{
-				if (__is__ApplyMethod_2_Click_Initialized || _component_2 is null)
+				if (__is__ApplyTo_PaͰ0_GrͰ2_Bu_Click_Initialized || _component_2 is null)
 				{
 					if (!init)
 					{
-						__is__ApplyMethod_2_Click_Initialized = false;
+						__is__ApplyTo_PaͰ0_GrͰ2_Bu_Click_Initialized = false;
 						// Note: _component_2 will be collected, no needs to unsubscribe
 					}
 					
 					return;
 				}
 		
-				_component_2.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.ApplyMethod_2_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
-				__is__ApplyMethod_2_Click_Initialized = true;
+				_component_2.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.ApplyTo_PaͰ0_GrͰ2_Bu_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
+				__is__ApplyTo_PaͰ0_GrͰ2_Bu_Click_Initialized = true;
 			}
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 		{
@@ -207,7 +207,7 @@ namespace TestRepro
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage
 		{
-				public class ApplyMethod_0_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				public class ApplyTo_PaͰ0_GrͰ0_Bu_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 					{
@@ -215,7 +215,7 @@ namespace TestRepro
 					}
 				}
 
-				public class ApplyMethod_1_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				public class ApplyTo_PaͰ0_GrͰ1_Bu_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 					{
@@ -223,7 +223,7 @@ namespace TestRepro
 					}
 				}
 
-				public class ApplyMethod_2_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				public class ApplyTo_PaͰ0_GrͰ2_Bu_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 					{
@@ -294,9 +294,9 @@ namespace TestRepro
 				owner._component_0.ApplyXBind();
 				owner._component_1.ApplyXBind();
 				owner._component_2.ApplyXBind();
-				owner.__ApplyMethod_0_Click_Initialize(true);
-				owner.__ApplyMethod_1_Click_Initialize(true);
-				owner.__ApplyMethod_2_Click_Initialize(true);
+				owner.__ApplyTo_PaͰ0_GrͰ0_Bu_Click_Initialize(true);
+				owner.__ApplyTo_PaͰ0_GrͰ1_Bu_Click_Initialize(true);
+				owner.__ApplyTo_PaͰ0_GrͰ2_Bu_Click_Initialize(true);
 			}
 			void IMainPage_Bindings.UpdateResources()
 			{
