@@ -133,19 +133,32 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		{
 			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
 
-			// avoid doubling top inset when setting BackgroundColor
-			if (StatusBar.GetForCurrentView().BackgroundColor is { } && (int)Android.OS.Build.VERSION.SdkInt >= 35)
-			{
-				insets.Top = 0;
-			}
-
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Insets: {insets}");
 			}
 
-			windowBounds = new Rect(default, GetWindowSize());
-			visibleBounds = windowBounds.DeflateBy(insets);
+			if (StatusBar.GetForCurrentView().BackgroundColor is { } && (int)Android.OS.Build.VERSION.SdkInt >= 35)
+			{
+				// quick refresher:
+				// - windowBounds: size of the rendered area, its location is ignored/unused
+				// - visibleBounds: area WITHIN windowBounds that isn't occluded/blocked by system overlays (status-bar, navigation-bar, etc.)
+				//		^ since VB calculated from WB, it is important that WB doesn't have an location/offset to be inherited by VB.
+
+				// see: StatusBar.SetStatusBarBackgroundColor (StatusBar.Android.cs)
+				// Setting a non-null StatusBar.Background in v35, will add a padding to the decor-view.
+				// This will move down the coordinates system for both windowBounds and visibleBounds,
+				// their zero(0,0) will be (0, inset.top) on the physical display.
+
+				var size = GetWindowSize();
+				windowBounds = new Rect(0, 0, size.Width, size.Height - insets.Top); // exclude top inset from rendering area
+				visibleBounds = windowBounds.DeflateBy(insets with { Top = 0 }); // apply the rest of the insets, skipping Top that is already excluded
+			}
+			else
+			{
+				windowBounds = new Rect(default, GetWindowSize());
+				visibleBounds = windowBounds.DeflateBy(insets);
+			}
 		}
 		else
 		{
