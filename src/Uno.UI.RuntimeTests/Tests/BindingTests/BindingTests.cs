@@ -207,6 +207,39 @@ public partial class BindingTests
 		wrapper.Data.Text = "asd";
 		Assert.IsFalse(failed);
 	}
+
+	[TestMethod]
+	public async Task When_XBind_Resurrection_20625()
+	{
+		// This is a repro of #20625.
+		// x:Bind once suspended and then restored/resumed would not work.
+		// This was due the inner subscription SerialDisposable was disposed on suspension,
+		// and any new disposable assigned to it, on resuming, would be disposed immediately...
+
+		var setup = new XBind_Resurrection();
+		var sut = setup.TestBlock;
+		var vm = setup.ViewModel;
+
+		// load the test setup
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+		// quick sanity check to dicsern xbind failure from not working outright or from reloading it
+		vm.MyValue = 1;
+		Assert.AreEqual(vm.MyValue, sut.Tag, "XBind is just not working...");
+
+		// unload the view
+		var unloaded = new TaskCompletionSource();
+		setup.Unloaded += (s, e) => unloaded.TrySetResult();
+		await UITestHelper.Load(new Border(), x => x.IsLoaded);
+		await unloaded.Task;
+
+		// reload the view
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+		// check the xbind again
+		vm.MyValue = 2;
+		Assert.AreEqual(vm.MyValue, sut.Tag, "XBind is no longer working after unloading and reloading the root control...");
+	}
 }
 partial class BindingTests
 {

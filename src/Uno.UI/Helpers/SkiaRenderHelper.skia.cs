@@ -23,13 +23,11 @@ internal static class SkiaRenderHelper
 		{
 			return new SKPath();
 		}
-		var initialCanvasTransform = canvas.TotalMatrix;
-		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
 		var parentClipPath = new SKPath();
 		parentClipPath.AddRect(new SKRect(0, 0, width, height));
 		var outPath = new SKPath();
 		rootVisual.GetNativeViewPath(parentClipPath, outPath);
-		outPath.Transform(initialCanvasTransform, outPath);
+		outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
 		return outPath;
 	}
 

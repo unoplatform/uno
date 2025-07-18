@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Data
 		private readonly Type _targetOwnerType;
 
 		private ManagedWeakReference _dataContext;
-		private SerialDisposable _subscription = new SerialDisposable();
+		private readonly SerialDisposable _subscription = new SerialDisposable();
 
 		private BindingPath _bindingPath;
 		private bool _disposed;
@@ -297,7 +297,7 @@ namespace Microsoft.UI.Xaml.Data
 			if (!_isBindingSuspended)
 			{
 				_isBindingSuspended = true;
-				_subscription.Dispose();
+				_subscription.Disposable = null;
 			}
 		}
 

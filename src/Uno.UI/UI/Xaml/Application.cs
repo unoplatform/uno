@@ -45,6 +45,7 @@ using UIKit;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Uno.Foundation;
 #endif
 
 namespace Microsoft.UI.Xaml
@@ -548,9 +549,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if __SKIA__
-		[JSImport("globalThis.eval")]
-		private static partial string Eval(string js);
-
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
 			if (!string.IsNullOrEmpty(_argumentsOverride))
@@ -560,7 +558,7 @@ namespace Microsoft.UI.Xaml
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{
-				return Uri.UnescapeDataString(new Uri(Eval("window.location.href")).Query.TrimStart('?'));
+				return Uri.UnescapeDataString(new Uri(WebAssemblyImports.EvalString("window.location.href")).Query.TrimStart('?'));
 			}
 			else
 			{
