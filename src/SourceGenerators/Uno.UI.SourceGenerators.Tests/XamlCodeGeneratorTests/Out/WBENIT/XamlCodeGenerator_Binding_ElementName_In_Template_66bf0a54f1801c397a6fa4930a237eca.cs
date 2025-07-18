@@ -105,17 +105,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.ContentControl topLevel
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ContentControl)_topLevelSubject.ElementInstance;
-			}
-			set
-			{
-				_topLevelSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.ContentControl)_topLevelSubject.ElementInstance;
+			set => _topLevelSubject.ElementInstance = value;
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
@@ -186,19 +180,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 						set => _component_0_Holder.Instance = value;
 					}
-				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 				private global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
 				{
-					get
-					{
-						return (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
-					}
-					set
-					{
-						_innerTextBlockSubject.ElementInstance = value;
-					}
+					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
+					set => _innerTextBlockSubject.ElementInstance = value;
 				}
-				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: "topLevel");
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: "topLevel");
 				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
 					_component_0.UpdateResourceBindings();

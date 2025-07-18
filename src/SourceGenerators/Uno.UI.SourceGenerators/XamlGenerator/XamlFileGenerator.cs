@@ -833,38 +833,60 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildBackingFields(IIndentedStringBuilder writer)
 		{
-			var rAccessor = _isHotReloadEnabled ? " { get; set; }" : null; // We use property for HR so we can remove them without causing rude edit.
-
 			TryAnnotateWithGeneratorSource(writer);
 			foreach (var backingFieldDefinition in CurrentScope.BackingFields.Distinct().OrderBy(f => f.Name, StringComparer.Ordinal))
 			{
 				var sanitizedFieldName = SanitizeResourceName(backingFieldDefinition.Name);
-
 				if (sanitizedFieldName != null)
 				{
 					CurrentScope.ReferencedElementNames.Remove(sanitizedFieldName);
 				}
 
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{sanitizedFieldName}Subject{rAccessor} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();");
-
-				using (writer.BlockInvariant($"{FormatAccessibility(backingFieldDefinition.Accessibility)} {backingFieldDefinition.GlobalizedTypeName} {sanitizedFieldName}"))
+				if (_isHotReloadEnabled)
 				{
-					using (writer.BlockInvariant("get"))
-					{
-						writer.AppendLineIndented($"return ({backingFieldDefinition.GlobalizedTypeName})_{sanitizedFieldName}Subject.ElementInstance;");
-					}
-
-					using (writer.BlockInvariant("set"))
-					{
-						writer.AppendLineIndented($"_{sanitizedFieldName}Subject.ElementInstance = value;");
-					}
+					// We use a property for HR so we can remove them without causing rude edit.
+					// We also avoid property initializer as they are known to cause issue with HR: https://github.com/dotnet/roslyn/issues/79320
+					writer.AppendMultiLineIndented($$"""
+						private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{sanitizedFieldName}}Subject { get; set; }
+						{{FormatAccessibility(backingFieldDefinition.Accessibility)}} {{backingFieldDefinition.GlobalizedTypeName}} {{sanitizedFieldName}}
+						{
+							get => ({{backingFieldDefinition.GlobalizedTypeName}})(_{{sanitizedFieldName}}Subject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
+							set => (_{{sanitizedFieldName}}Subject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
+						}
+						""");
+				}
+				else
+				{
+					writer.AppendMultiLineIndented($$"""
+						private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{sanitizedFieldName}}Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+						{{FormatAccessibility(backingFieldDefinition.Accessibility)}} {{backingFieldDefinition.GlobalizedTypeName}} {{sanitizedFieldName}}
+						{
+							get => ({{backingFieldDefinition.GlobalizedTypeName}})_{{sanitizedFieldName}}Subject.ElementInstance;
+							set => _{{sanitizedFieldName}}Subject.ElementInstance = value;
+						}
+						""");
 				}
 			}
 
 			foreach (var remainingReference in CurrentScope.ReferencedElementNames.OrderBy(f => f, StringComparer.Ordinal))
 			{
 				// Create load-time subjects for ElementName references not in local scope
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{remainingReference}Subject{rAccessor} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: \"{remainingReference}\");");
+				if (_isHotReloadEnabled)
+				{
+					// We use a property for HR so we can remove them without causing rude edit.
+					// We also avoid property initializer as they are known to cause issue with HR: https://github.com/dotnet/roslyn/issues/79320
+					writer.AppendMultiLineIndented($$"""
+						private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{remainingReference}}SubjectBackingPseudoField { get; set; }
+						private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{remainingReference}}Subject
+						{
+							get => _{{remainingReference}}SubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: "{{remainingReference}}");
+						}
+						""");
+				}
+				else
+				{
+					writer.AppendLineIndented($"private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _{remainingReference}Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: \"{remainingReference}\");");
+				}
 			}
 		}
 

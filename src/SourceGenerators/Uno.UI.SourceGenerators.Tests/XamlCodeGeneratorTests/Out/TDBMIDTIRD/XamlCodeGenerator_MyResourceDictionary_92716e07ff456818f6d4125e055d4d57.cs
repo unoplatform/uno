@@ -124,17 +124,11 @@ namespace TestRepro
 						get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 						set => _component_0_Holder.Instance = value;
 					}
-				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 				private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 				{
-					get
-					{
-						return (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;
-					}
-					set
-					{
-						_tbSubject.ElementInstance = value;
-					}
+					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;
+					set => _tbSubject.ElementInstance = value;
 				}
 				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
@@ -216,7 +210,7 @@ namespace MyProject
 							new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 							{
 								return 
-									new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 									new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD.__ReDiͰ0_DaTe_Δ0().Build(__owner)
+									new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 									new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD.__ReDiͰ0_DaTe_Δ1().Build(__owner)
 									)								;
 							}
 							)
@@ -307,17 +301,11 @@ namespace MyProject.__Resources
 					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 					set => _component_0_Holder.Instance = value;
 				}
-			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+			private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 			private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 			{
-				get
-				{
-					return (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;
-				}
-				set
-				{
-					_tbSubject.ElementInstance = value;
-				}
+				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;
+				set => _tbSubject.ElementInstance = value;
 			}
 			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 			{
@@ -339,7 +327,7 @@ namespace MyProject.__Resources
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		public class __ReDiͰ0_DaTe_Δ0
+		public class __ReDiͰ0_DaTe_Δ1
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -400,17 +388,11 @@ namespace MyProject.__Resources
 					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 					set => _component_0_Holder.Instance = value;
 				}
-			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+			private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 			private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 			{
-				get
-				{
-					return (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;
-				}
-				set
-				{
-					_tbSubject.ElementInstance = value;
-				}
+				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;
+				set => _tbSubject.ElementInstance = value;
 			}
 			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 			{

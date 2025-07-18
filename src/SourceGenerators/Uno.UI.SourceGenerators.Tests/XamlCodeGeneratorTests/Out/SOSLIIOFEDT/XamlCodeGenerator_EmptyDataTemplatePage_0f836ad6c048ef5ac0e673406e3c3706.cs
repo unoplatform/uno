@@ -165,17 +165,11 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 1, 3);
 			__p1.CreationComplete();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject { get; set; }
 		private global::Microsoft.UI.Xaml.Controls.Button ButtonWithEmptyDataTemplate
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_ButtonWithEmptyDataTemplateSubject.ElementInstance;
-			}
-			set
-			{
-				_ButtonWithEmptyDataTemplateSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Button)(_ButtonWithEmptyDataTemplateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
+			set => (_ButtonWithEmptyDataTemplateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
