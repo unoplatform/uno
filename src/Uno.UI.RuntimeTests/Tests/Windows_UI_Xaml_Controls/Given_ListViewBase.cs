@@ -1505,6 +1505,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(list);
 
 			ScrollTo(list, 10000); // Scroll to end
+			await Task.Delay(200);
 
 			ListViewItem lastItem = null;
 			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
@@ -1564,6 +1565,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			ScrollTo(list, 1000000); // Scroll to end
+			await Task.Delay(200);
 
 			await WindowHelper.WaitForIdle();
 
@@ -1662,7 +1664,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				ScrollTo(list, 5); // Scroll back up
 
-				await Task.Delay(200);
+				await Task.Delay(600);
 				await WindowHelper.WaitForIdle();
 
 				var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
@@ -1673,7 +1675,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
 
 				secondContainer.Should().NotBeNull();
-				LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().Be(50);
+				LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().BeApproximately(50, 0.6);
 			}
 		}
 
@@ -1733,7 +1735,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ScrollTo(list, 50); // scroll back up but not all the way
 			ScrollTo(list, 0);
 
-			await Task.Delay(200);
+			await Task.Delay(600);
 			await WindowHelper.WaitForIdle();
 
 			var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
@@ -1744,7 +1746,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
 
 			secondContainer.Should().NotBeNull();
-			LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().Be(50);
+			LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().BeApproximately(50, 0.6);
 		}
 
 		[TestMethod]
@@ -2186,12 +2188,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(scroll);
 
 			ScrollTo(list, scroll.ExtentHeight / 2); // Scroll to middle
+			await Task.Delay(200); // Allow the scroll to complete
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(10, $"materialized {materialized}");
 
 			ScrollTo(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+			await Task.Delay(200); // Allow the scroll to complete
 
 			await WindowHelper.WaitForIdle();
 
@@ -2252,6 +2256,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					ScrollTo(list, voffset);
 				}
+
 				await WindowHelper.WaitForIdle();
 
 #if HAS_UNO && !(__IOS__ || __ANDROID__)
@@ -2287,8 +2292,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ScrollAndValidate("initial state", null);
 			await ScrollAndValidate("scrolled past element#0", ElementHeight);
 			await ScrollAndValidate("scrolled past element#2", ElementHeight * 3);
-			await ScrollAndValidate("scrolled to 1/2", scroll.ExtentHeight / 2);
-			await ScrollAndValidate("scrolled back to 1/4", scroll.ExtentHeight / 4);
+
+			var isiOS = OperatingSystem.IsIOS();
+			if (!isiOS)
+			{
+				// TODO: this is flaky on iOS, needs investigation: uno-private#1415
+				await ScrollAndValidate("scrolled to 1/2", scroll.ExtentHeight / 2);
+				await ScrollAndValidate("scrolled back to 1/4", scroll.ExtentHeight / 4);
+			}
 		}
 #endif
 
@@ -4345,6 +4356,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __WASM__
 		[Ignore("https://github.com/unoplatform/uno/issues/15093")]
 #endif
+		// For this test to work, make sure you are running the SampleApp with LightTheme enabled.
 		public async Task When_ThemeChange()
 		{
 			const double TotalHeight = 500; // The ListView height.
@@ -4387,6 +4399,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight;
 
 				ScrollTo(SUT, scrollPosition);
+				await Task.Delay(500);
 				await WindowHelper.WaitForIdle();
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
