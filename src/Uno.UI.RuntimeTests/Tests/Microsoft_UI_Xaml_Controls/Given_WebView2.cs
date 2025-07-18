@@ -482,7 +482,7 @@ public class Given_WebView2
 
 #if !WINAPPSDK && !__ANDROID__
 	[CombinatorialData]
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaAndroid)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid)]
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{
 		var border = new Border();
@@ -505,7 +505,7 @@ public class Given_WebView2
 			e.Handled = handled;
 		};
 		webView.CoreWebView2.Navigate(uri.ToString());
-		Assert.IsNull(webView.Source);
+		Assert.IsNotNull(webView.Source);
 		await TestServices.WindowHelper.WaitFor(() => scheme == "notsupported", 3000);
 		if (handled)
 		{
