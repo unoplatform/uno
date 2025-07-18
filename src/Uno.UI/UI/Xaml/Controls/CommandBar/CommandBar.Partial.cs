@@ -1332,37 +1332,62 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		//		CommandBar::HasBottomLabel(BOOLEAN* hasBottomLabel)
-		//{
-		//    xaml_controls::CommandBarDefaultLabelPosition defaultLabelPosition = xaml_controls::CommandBarDefaultLabelPosition_Bottom;
-		//    *hasBottomLabel = FALSE;
+		private bool HasLabelAtPosition(CommandBarDefaultLabelPosition labelPosition)
+		{
+			if (m_tpDynamicPrimaryCommands is null)
+			{
+				return false;
+			}
 
-		//    IFC_RETURN(get_DefaultLabelPosition(&defaultLabelPosition));
+			bool hasLabelAtPosition = false;
 
-		//    if (defaultLabelPosition == xaml_controls::CommandBarDefaultLabelPosition_Bottom)
-		//    {
-		//        UINT32 primaryItemsCount = 0;
-		//		IFC_RETURN(m_tpDynamicPrimaryCommands.Get()->get_Size(&primaryItemsCount));
-		//        for (UINT32 i = 0; i<primaryItemsCount; ++i)
-		//        {
-		//            ctl::ComPtr<xaml_controls::ICommandBarElement> element;
-		//		IFC_RETURN(m_tpDynamicPrimaryCommands.Get()->GetAt(i, &element));
+			CommandBarDefaultLabelPosition defaultLabelPosition = DefaultLabelPosition;
 
-		//            auto elementAsLabeledElement = element.AsOrNull<xaml_controls::ICommandBarLabeledElement>();
-		//            if (elementAsLabeledElement)
-		//            {
-		//                IFC_RETURN(elementAsLabeledElement->GetHasBottomLabel(hasBottomLabel));
+			if (defaultLabelPosition == labelPosition)
+			{
+				int primaryItemsCount = m_tpDynamicPrimaryCommands.Count;
 
-		//                if (* hasBottomLabel)
-		//                {
-		//                    break;
-		//                }
-		//}
-		//        }
-		//    }
+				for (int i = 0; i < primaryItemsCount; ++i)
+				{
+					var element = m_tpDynamicPrimaryCommands[i];
 
-		//    return S_OK;
-		//}
+					var elementAsUIE = element as UIElement;
+
+					if (elementAsUIE is not null)
+					{
+						Visibility visibility = elementAsUIE.Visibility;
+						if (visibility == Visibility.Collapsed)
+						{
+							continue;
+						}
+					}
+
+					var elementAsLabeledElement = element as ICommandBarLabeledElement;
+
+					if (elementAsLabeledElement is not null)
+					{
+						bool hasBottomOrRightLabel = false;
+
+						if (labelPosition == CommandBarDefaultLabelPosition.Bottom)
+						{
+							hasBottomOrRightLabel = elementAsLabeledElement.GetHasBottomLabel();
+						}
+						else
+						{
+							hasBottomOrRightLabel = elementAsLabeledElement.GetHasRightLabel();
+						}
+
+						if (hasBottomOrRightLabel)
+						{
+							hasLabelAtPosition = true;
+							break;
+						}
+					}
+				}
+			}
+
+			return hasLabelAtPosition;
+		}
 
 
 		private bool IsGamepadNavigationDirection(VirtualKey key)
@@ -1845,7 +1870,19 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						var compactVerticalDelta = appBarTemplateSettings.CompactVerticalDelta;
 
-						shouldShowOverflowButton = !compactVerticalDelta.IsZero();
+						if (!compactVerticalDelta.IsZero())
+						{
+							shouldShowOverflowButton = true;
+						}
+						else
+						{
+							var hasBottomLabel = HasLabelAtPosition(CommandBarDefaultLabelPosition.Bottom);
+
+							if (hasBottomLabel)
+							{
+								shouldShowOverflowButton = true;
+							}
+						}
 					}
 				}
 			}
