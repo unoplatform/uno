@@ -114,7 +114,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						_source.AppendLine();
 
 						blockDisposable.Dispose();
-						//TODO: _scope.CallbackMethods.Add(sb => sb.Append(_inner.ToString()));
 						_scope.ExplicitApplyMethods.Add(_inner.ToString());
 					}
 					else
