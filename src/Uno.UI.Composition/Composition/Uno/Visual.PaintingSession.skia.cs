@@ -44,12 +44,6 @@ public partial class Visual
 
 		public readonly float Opacity;
 
-		public SKColorFilter OpacityColorFilter => Opacity == 1.0f ?
-			null :
-			_opacityToColorFilter[(byte)(0xFF * Opacity)] ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * Opacity)), SKBlendMode.Modulate);
-
-		private static readonly SKColorFilter[] _opacityToColorFilter = new SKColorFilter[256];
-
 		private readonly int _saveCount;
 	}
 }

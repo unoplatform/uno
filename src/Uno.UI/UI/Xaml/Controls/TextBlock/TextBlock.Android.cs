@@ -19,6 +19,7 @@ using Android.Text.Style;
 using Android.Widget;
 using Android.Views;
 using System.Collections.Specialized;
+using System.Text.Encodings.Web;
 using Microsoft.UI.Xaml.Automation;
 using Android.Graphics.Drawables;
 using static Uno.UI.ViewHelper;
@@ -30,6 +31,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 using Uno.Collections;
+using Uno.Helpers;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -60,6 +62,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly static Java.Lang.String EmptyString = new Java.Lang.String();
 		private static Java.Lang.Reflect.Constructor _maxLinedStaticLayout;
 		private static Java.Lang.Object _textDirectionHeuristics;
+
+		private static LRUCache<string, Java.Lang.String> _javaStringCache = new LRUCache<string, Java.Lang.String>(Uno.UI.FeatureConfiguration.TextBlock.JavaStringCachedCapacity);
 
 		static TextBlock()
 		{
@@ -277,7 +281,16 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (FeatureConfiguration.TextBlock.IsJavaStringCachedEnabled)
 				{
-					return JavaStringCache.GetNativeString(Text);
+					if (_javaStringCache.TryGetValue(Text, out var javaString))
+					{
+						return javaString;
+					}
+					else
+					{
+						var value = new Java.Lang.String(Text);
+						_javaStringCache.Add(Text, value);
+						return value;
+					}
 				}
 				else
 				{

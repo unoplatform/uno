@@ -127,8 +127,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			{
 				_owner!.OnPaintSurfaceInner(canvas);
 				_fpsHelper.Scale = (float?)AppManager.XamlRootMap.GetRootForHost(_owner)?.RasterizationScale;
-
 				var picture = recorder.EndRecording();
+				_owner.RootElement?.XamlRoot?.InvokeFramePainted();
 
 				Interlocked.Exchange(ref _picture, picture);
 			}
@@ -213,6 +213,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				((IDisposable?)drawable)?.Dispose();
 				((IDisposable?)canvas)?.Dispose();
 				((IDisposable?)surface)?.Dispose();
+				_owner?.RootElement?.XamlRoot?.InvokeFrameRendered();
 			}
 
 			_link.Paused = ReferenceEquals(currentPicture, Volatile.Read(ref _picture))
