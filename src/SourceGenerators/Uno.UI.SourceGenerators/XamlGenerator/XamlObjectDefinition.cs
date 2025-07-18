@@ -72,8 +72,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return $"{owner.Key}_ø_{NamingHelper.GetShortName(Type.Name)}"; // Should not happen
-
-			
 		}
 	}
 }

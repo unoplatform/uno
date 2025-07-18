@@ -3893,7 +3893,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, XamlObjectDefinition declaringObject, INamedTypeSymbol? appliedType)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			
+
 			//
 			// Since we're using strings to generate the code, we can't know ahead of time if
 			// content will be generated only by looking at the Xaml object model.
