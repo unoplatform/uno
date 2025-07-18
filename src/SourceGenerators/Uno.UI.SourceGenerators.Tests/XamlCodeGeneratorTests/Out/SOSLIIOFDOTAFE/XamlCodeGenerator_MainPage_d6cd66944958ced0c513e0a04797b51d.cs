@@ -304,41 +304,23 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);
 			__p1.CreationComplete();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject { get; set; }
 		private global::Microsoft.UI.Xaml.VisualState NarrowState
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.VisualState)_NarrowStateSubject.ElementInstance;
-			}
-			set
-			{
-				_NarrowStateSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.VisualState)(_NarrowStateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
+			set => (_NarrowStateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject { get; set; }
 		private global::Microsoft.UI.Xaml.Controls.ListView TheListView
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ListView)_TheListViewSubject.ElementInstance;
-			}
-			set
-			{
-				_TheListViewSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.ListView)(_TheListViewSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
+			set => (_TheListViewSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject { get; set; }
 		private global::Microsoft.UI.Xaml.VisualState WideState
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.VisualState)_WideStateSubject.ElementInstance;
-			}
-			set
-			{
-				_WideStateSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.VisualState)(_WideStateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
+			set => (_WideStateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
