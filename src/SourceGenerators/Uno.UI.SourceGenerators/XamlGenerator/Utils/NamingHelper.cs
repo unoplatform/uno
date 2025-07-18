@@ -17,7 +17,7 @@ public class NamingHelper
 			effective = $"{desiredName}_Δ{++i}";
 		}
 		names.Add(effective);
-		
+
 		return effective;
 	}
 
