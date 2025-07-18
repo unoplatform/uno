@@ -69,6 +69,8 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
+		internal bool OverflowMaxLines { get; private set; }
+
 		internal event Action? DrawingStarted;
 		internal event Action<(Rect rect, SKCanvas canvas)>? SelectionFound;
 		internal event Action? DrawingFinished;
@@ -177,6 +179,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 						if (maxLines > 0 && _renderLines.Count == maxLines)
 						{
+							OverflowMaxLines = run.Segments[^1] != segment;
 							goto MaxLinesHit;
 						}
 
