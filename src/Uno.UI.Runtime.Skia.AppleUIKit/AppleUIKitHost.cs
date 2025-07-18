@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using UIKit;
+using Uno.UI.Helpers;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Extensions;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
@@ -23,6 +24,8 @@ internal class AppleUIKitHost : SkiaHost, ISkiaApplicationHost
 	{
 		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
 		_uiApplicationDelegateOverride = uiApplicationDelegateOverride;
+
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaAppleUIKit;
 	}
 
 	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }
