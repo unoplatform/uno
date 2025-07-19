@@ -24,8 +24,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
-using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
-using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
+using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Combinatorial.MSTest;
@@ -1464,7 +1464,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_SplitButton_Flyout_XamlRoot()
 		{
 			var flyout = new Flyout();
-			var host = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
+			var host = new Microsoft.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
 			host.Flyout = flyout;
 			TestServices.WindowHelper.WindowContent = host;
 			await TestServices.WindowHelper.WaitForIdle();

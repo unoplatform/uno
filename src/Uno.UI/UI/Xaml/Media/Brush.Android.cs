@@ -13,7 +13,7 @@ using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.UI.Xaml.Media

@@ -31,7 +31,7 @@ using Uno.UI.Xaml.Controls;
 using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Windows.UI.Tests.Enterprise

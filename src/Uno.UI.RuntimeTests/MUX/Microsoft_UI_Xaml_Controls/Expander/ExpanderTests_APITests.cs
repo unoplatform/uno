@@ -10,12 +10,12 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Common;
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class ExpanderTests : MUXApiTestBase
@@ -28,8 +28,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.MUXControls.ApiTests
 				var root = (StackPanel)XamlReader.Load(
 					@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
                              xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                             xmlns:primitives='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls.Primitives'
-                             xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'> 
+                             xmlns:primitives='using:Microsoft.UI.Xaml.Controls.Primitives'
+                             xmlns:controls='using:Microsoft.UI.Xaml.Controls'> 
                              <controls:Expander x:Name ='ExpandedExpander' AutomationProperties.Name='ExpandedExpander' IsExpanded='True' Margin='12' HorizontalAlignment='Left'>
                                 <controls:Expander.Header>
                                     <Grid>

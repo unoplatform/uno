@@ -10,7 +10,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 
 #if HAS_UNO && !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;

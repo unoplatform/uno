@@ -80,18 +80,12 @@ namespace TestRepro
 		{
 			this.Bindings.UpdateResources();
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::TestRepro.BasePage _component_0
-		{
-			get
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::TestRepro.BasePage _component_0
 			{
-				return (global::TestRepro.BasePage)_component_0_Holder.Instance;
+				get => (global::TestRepro.BasePage)_component_0_Holder.Instance;
+				set => _component_0_Holder.Instance = value;
 			}
-			set
-			{
-				_component_0_Holder.Instance = value;
-			}
-		}
 		private interface IMainPage_Bindings
 		{
 			void Initialize();

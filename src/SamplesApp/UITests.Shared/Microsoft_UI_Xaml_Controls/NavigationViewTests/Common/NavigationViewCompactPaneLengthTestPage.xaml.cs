@@ -3,16 +3,16 @@
 
 #pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 
-using NavigationViewPaneDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
-using NavigationViewBackButtonVisible = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewBackButtonVisible;
-using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationViewBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 
@@ -114,7 +114,7 @@ namespace MUXControlsTestApp
 
 		}
 
-		private void NavView_ItemInvoked(object sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs e)
+		private void NavView_ItemInvoked(object sender, Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs e)
 		{
 			if (e.InvokedItem as string == "Home")
 			{

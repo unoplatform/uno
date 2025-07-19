@@ -10,10 +10,10 @@ using Windows.UI;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Automation;
 
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
-using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
+using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {

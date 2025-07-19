@@ -1,4 +1,4 @@
-﻿namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+﻿namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines values that specify how the spin buttons used to increment or decrement the Value of a NumberBox are displayed.

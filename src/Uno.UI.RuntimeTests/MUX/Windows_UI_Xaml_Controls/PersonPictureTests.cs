@@ -23,7 +23,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using PersonPicture = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PersonPicture;
+using PersonPicture = Microsoft.UI.Xaml.Controls.PersonPicture;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {

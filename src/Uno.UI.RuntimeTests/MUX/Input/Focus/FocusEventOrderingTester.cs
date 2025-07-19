@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
+namespace Microsoft.UI.Xaml.Tests.Common
 {
 	public sealed class FocusEventOrderingTester : IDisposable
 	{

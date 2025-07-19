@@ -14,15 +14,15 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.ObjectModel;
 
-using TreeViewSelectionMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewSelectionMode;
-using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
-using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
-using TreeViewItemInvokedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItemInvokedEventArgs;
-using TreeViewExpandingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewExpandingEventArgs;
-using TreeViewDragItemsStartingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs;
-using TreeViewDragItemsCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs;
-using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
-using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
+using TreeViewSelectionMode = Microsoft.UI.Xaml.Controls.TreeViewSelectionMode;
+using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
+using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
+using TreeViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs;
+using TreeViewExpandingEventArgs = Microsoft.UI.Xaml.Controls.TreeViewExpandingEventArgs;
+using TreeViewDragItemsStartingEventArgs = Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs;
+using TreeViewDragItemsCompletedEventArgs = Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs;
+using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
+using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
 //using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
 using System.Threading.Tasks;
 

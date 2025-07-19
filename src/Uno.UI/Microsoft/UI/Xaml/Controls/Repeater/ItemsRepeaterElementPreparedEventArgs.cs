@@ -3,7 +3,7 @@
 
 using Microsoft.UI.Xaml;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsRepeaterElementPreparedEventArgs
 	{

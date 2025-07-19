@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Data;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
-using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {

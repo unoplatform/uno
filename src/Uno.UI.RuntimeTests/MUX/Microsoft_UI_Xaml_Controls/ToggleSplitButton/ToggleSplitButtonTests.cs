@@ -15,8 +15,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		[RunsOnUIThread]
 		public async Task VerifyFontFamilyForChevron()
 		{
-			Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton toggleSplitButton = null;
-			toggleSplitButton = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton();
+			Microsoft.UI.Xaml.Controls.ToggleSplitButton toggleSplitButton = null;
+			toggleSplitButton = new Microsoft.UI.Xaml.Controls.ToggleSplitButton();
 			TestServices.WindowHelper.WindowContent = toggleSplitButton;
 			await TestServices.WindowHelper.WaitForIdle();
 

@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes TreeViewItem data types to Microsoft UI Automation.
@@ -47,7 +47,7 @@ public partial class TreeViewItemDataAutomationPeer : ItemAutomationPeer, IExpan
 	}
 
 	/// <summary>
-	/// Collapses the associated Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.
+	/// Collapses the associated Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.
 	/// </summary>
 	public void Collapse()
 	{
@@ -61,7 +61,7 @@ public partial class TreeViewItemDataAutomationPeer : ItemAutomationPeer, IExpan
 	}
 
 	/// <summary>
-	/// Expands the associated Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.
+	/// Expands the associated Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.
 	/// </summary>
 	public void Expand()
 	{

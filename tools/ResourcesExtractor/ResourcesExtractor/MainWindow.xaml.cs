@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft/* UWP don't rename */.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Windows.Storage;
 using Windows.System;
 

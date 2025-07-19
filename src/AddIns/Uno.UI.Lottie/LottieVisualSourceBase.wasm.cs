@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Threading;
 using System.Runtime.InteropServices.JavaScript;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;

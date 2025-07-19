@@ -8,7 +8,7 @@ using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class MonochromaticOverlayPresenter : Grid
 	{

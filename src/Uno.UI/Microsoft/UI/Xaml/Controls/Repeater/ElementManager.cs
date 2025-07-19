@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal static partial class CollectionExtensions
 	{

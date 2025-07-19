@@ -4,7 +4,7 @@
 
 using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides event data for the NavigationView.ItemInvoked event.

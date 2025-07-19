@@ -12,11 +12,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using CommandBarFlyoutCommandBar = Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar;
 using System.Numerics;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class CommandBarFlyout
 {
@@ -208,7 +208,15 @@ partial class CommandBarFlyout
 							// If we don't have IFlyoutBase5 available, then we assume a standard show mode.
 							if (ShowMode == FlyoutShowMode.Standard)
 							{
-								commandBar.IsOpen = true;
+#if HAS_UNO
+								// In case of Uno Platform, the callback is executed too early, before CommandBarFlyoutCommandBar.OnApplyTemplate.
+								// This causes unexpected behavior https://github.com/unoplatform/uno/issues/20984. To avoid this, we schedule the IsOpen change
+								// on the next tick.
+								DispatcherQueue.TryEnqueue(() =>
+								{
+									commandBar.IsOpen = true;
+								});
+#endif
 							}
 						}
 					}

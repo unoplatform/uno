@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
-using PersonPicture = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PersonPicture;
+using PersonPicture = Microsoft.UI.Xaml.Controls.PersonPicture;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 

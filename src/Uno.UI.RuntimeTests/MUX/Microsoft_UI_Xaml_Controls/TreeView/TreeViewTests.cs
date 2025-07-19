@@ -26,12 +26,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
-using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
-using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
-using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
-using TreeViewSelectionMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewSelectionMode;
-using TreeViewSelectionChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs;
+using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
+using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
+using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
+using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
+using TreeViewSelectionMode = Microsoft.UI.Xaml.Controls.TreeViewSelectionMode;
+using TreeViewSelectionChangedEventArgs = Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs;
 using Uno.UI.RuntimeTests;
 using Private.Infrastructure;
 using System.Threading.Tasks;

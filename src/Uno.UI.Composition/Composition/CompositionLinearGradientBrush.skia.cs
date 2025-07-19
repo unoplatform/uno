@@ -6,7 +6,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionLinearGradientBrush
 	{
-		private protected override void UpdatePaintCore(SKPaint paint, SKRect bounds)
+		private protected override (SKShader? shader, SKColor color) GetPaintingParameters(SKRect bounds)
 		{
 			var startPoint = StartPoint.ToSKPoint();
 			var endPoint = EndPoint.ToSKPoint();
@@ -29,7 +29,6 @@ namespace Microsoft.UI.Composition
 
 			endPoint.X += bounds.Left;
 			endPoint.Y += bounds.Top;
-			//
 
 			// Create linear gradient shader.
 			var shader = SKShader.CreateLinearGradient(
@@ -37,15 +36,7 @@ namespace Microsoft.UI.Composition
 				Colors, ColorPositions,
 				TileMode, transform);
 
-			// Clean up old shader
-			if (paint.Shader != null)
-			{
-				paint.Shader.Dispose();
-				paint.Shader = null;
-			}
-
-			paint.Shader = shader;
-			paint.Color = SKColors.Black;
+			return (shader, SKColors.Black);
 		}
 	}
 }

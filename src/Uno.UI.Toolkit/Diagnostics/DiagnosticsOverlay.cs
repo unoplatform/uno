@@ -20,6 +20,11 @@ namespace Uno.Diagnostics.UI;
 /// <summary>
 /// An overlay layer used to inject analytics and diagnostics indicators into the UI.
 /// </summary>
+// https://github.com/microsoft/microsoft-ui-xaml/issues/7206
+// Required, because WinUI will trim class not used in xaml and without this attribute, causing the XamlReader to throw:
+// > Microsoft.UI.Xaml.Markup.XamlParseException: 'The text associated with this error code could not be found.
+// > Failed to create a 'System.Type' from the text 'local:DiagnosticsOverlay'. [Line: 9 Position: 3]'
+[Microsoft.UI.Xaml.Data.Bindable]
 [TemplatePart(Name = ToolbarPartName, Type = typeof(FrameworkElement))]
 [TemplatePart(Name = ElementsPanelPartName, Type = typeof(Panel))]
 [TemplatePart(Name = AnchorPartName, Type = typeof(UIElement))]
@@ -81,14 +86,6 @@ public sealed partial class DiagnosticsOverlay : Control
 				overlay.Value.EnqueueUpdate();
 			}
 		};
-	}
-
-	public DiagnosticsOverlay()
-	{
-		// This constructor is added here because the WinAppSDK XamlReader requires a parameterless constructor for any TargetType.
-		// > Failed to create a 'System.Type' from the text 'local:DiagnosticsOverlay'. [Line: 9 Position: 3]"
-
-		throw new Exception("This constructor should not be used, use DiagnosticsOverlay.Get(XamlRoot) instead.");
 	}
 
 	private DiagnosticsOverlay(XamlRoot root)

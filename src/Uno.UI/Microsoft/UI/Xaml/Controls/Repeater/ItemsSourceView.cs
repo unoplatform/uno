@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Specialized;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 // In the source C++ code, this class is implemented in InspectingDataSource
 // and its constructor is then set to return InspectingDataSource instead.

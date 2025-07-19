@@ -4,7 +4,7 @@
 // MUX Reference SingleSelector.cpp, tag winui3/release/1.5.0
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls;

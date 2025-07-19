@@ -5,8 +5,8 @@
 
 using System;
 using Common;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;

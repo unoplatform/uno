@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Uno.UI.Xaml.Rendering;
 using Uno.UI.Xaml.Core.Rendering;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI;
