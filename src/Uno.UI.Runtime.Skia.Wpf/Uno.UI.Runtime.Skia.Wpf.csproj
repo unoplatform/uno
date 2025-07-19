@@ -14,8 +14,8 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
-		<!-- Ignore NU5104 for net10.0 Microsoft.Win32.SystemEvents -->
-		<NoWarn>$(NoWarn);NU5104</NoWarn>
+		<!-- Ignore NU5104 & NU1510 for net10.0 Microsoft.Win32.SystemEvents -->
+		<NoWarn>$(NoWarn);NU5104;NU1510</NoWarn>
 	</PropertyGroup>	
 
 	<ItemGroup>
