@@ -98,6 +98,8 @@
     - name: Chefs
       href: external/uno.chefs/doc/toc.yml
       topicHref: xref:Uno.Chefs.Overview
+    - name: ToDo-App
+      href: external/uno.samples/reference/todo/toc.yml
     - name: Tutorials
       topicHref: xref:Uno.Tutorials.Intro
       items:
