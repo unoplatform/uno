@@ -82,7 +82,7 @@ Here are the supported features:
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, and Android. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
 | `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
-| `WebView`            | Adds support for the [WebView2 control](xref:Uno.Controls.WebView2).
+| `WebView`            | Adds support for the [WebView2 control](xref:Uno.Controls.WebView2).|
 
 ## Implicit Packages
 
@@ -161,11 +161,11 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
         Mvvm;
         SkiaRenderer;
       </UnoFeatures>
-      
+
       <UnoToolkitVersion>6.3.6</UnoToolkitVersion>
       <MicrosoftLoggingVersion>9.0.1</MicrosoftLoggingVersion>
       <CommunityToolkitMvvmVersion>8.4.0</CommunityToolkitMvvmVersion>
-  </PropertyGroup>    
+  </PropertyGroup>
 </Project>
 ```
 
@@ -245,7 +245,7 @@ As a result, the csproj file is on disk and will show the file as modified in yo
 
 Note that we are currently tracking these Visual Studio issues, make sure to upvote them:
 
-- `net8.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
+- `net8.0-browserwasm` must be first for WebAssembly debugging to work ([Link to the issue on Visual Studio developer community](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
 - [WinAppSDK Unpackaged profile cannot be selected properly when a net8.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
 
 ## Disabling Default Items

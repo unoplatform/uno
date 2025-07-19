@@ -12,9 +12,9 @@ This article explains how to build Uno.UI locally, for instance, if you wish to 
   - Select the **ASP.NET and Web Development** workload
   - Select the **.NET Multi-Platform App UI development** workload
   - Select the **.NET desktop development** workload
-  - To build the UWP flavor of Uno, you'll need **UWP Development**, install all recent UWP SDKs, starting from 10.0.19041 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.targets))
-- Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.netcoremobile.csproj))
-- Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET Android/iOS workloads
+  - To build the UWP flavor of Uno, you'll need **UWP Development**, install all recent UWP SDKs, starting from 10.0.19041 (or above or equal to `TargetPlatformVersion` line [in this file](../../../../src/Uno.CrossTargetting.targets))
+- Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](../../../../src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.netcoremobile.csproj))
+- Run [Uno.Check](xref:UnoCheck.UsingUnoCheck) on your dev machine to setup .NET Android/iOS workloads
 - Install the latest [.NET SDK](https://aka.ms/dotnet/download) from Microsoft.
 
 ## Recommended Windows hardware
@@ -54,7 +54,7 @@ The step-by-step process is:
    - For Skia, you can right-click on the corresponding `Uno.UI.Runtime.Skia.[Win32|X11|macOS|iOS|Android|Wpf]` project
 1. Optionally adjust additional parameters in `crosstargeting_override.props`, such as `UnoDisableNetAnalyzers`, which can improve the build time during debugging sessions.
 
-Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
+Once you've built successfully, for the next steps, [consult the guide here](xref:Uno.Contributing.DebuggingUno) for debugging Uno.UI.
 
 > [!IMPORTANT]
 > You will need to repeat the above steps 2. and subsequent when changing the active `UnoTargetFrameworkOverride` value.
@@ -78,7 +78,7 @@ Note that long paths may be required when building Uno, and invalid paths errors
 It's recommended to build using the single-target approach, but it's also possible to build for all targets at once, if you wish.
 
 1. If you've previously followed the single-target steps, comment out the `<UnoTargetFrameworkOverride />` line in your `crosstargeting_override.props` file.
-2. Open the [Uno.UI.sln](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.sln)
+2. Open the [Uno.UI.sln](../../../../src/Uno.UI.sln)
 3. Select the `Uno.UI` project
 4. Build
 
@@ -106,14 +106,14 @@ In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>
 
 ### Using the Package Diff tool
 
-Refer to the [guidelines for breaking changes](../contributing/guidelines/breaking-changes.md) document.
+Refer to the [guidelines for breaking changes](xref:Uno.Contributing.BreakingChanges) document.
 
 ### Updating the Nuget packages used by the Uno.UI solution
 
-The versions used are centralized in the [Directory.Build.targets](https://github.com/unoplatform/uno/blob/master/src/Directory.Build.targets) file, and all the
+The versions used are centralized in the [Directory.Build.targets](../../../../src/Directory.Build.targets) file, and all the
 locations where `<PackageReference />` are used.
 
-When updating the versions of NuGet packages, make sure to update all the .nuspec files in the [`build/nuget` folder](https://github.com/unoplatform/uno/tree/master/build/nuget).
+When updating the versions of NuGet packages, make sure to update all the .nuspec files in the [`build/nuget` folder](../../../../build/nuget).
 
 ### Running the SyncGenerator tool
 
@@ -126,8 +126,8 @@ The tool needs to be run on Windows because of its dependency on the Windows SDK
 To run the synchronization tool:
 
 - Open a `Developer Command Prompt for Visual Studio` (2019 or 2022)
-- Go to the `uno\build` folder (not the `uno\src\build` folder)
-- Run the `run-api-sync-tool.cmd` script; make sure to follow the instructions
+- Run [`uno\build\run-api-sync-tool.cmd`](../../../../build/run-api-sync-tool.cmd) (! not the `uno\src\build` folder !) you can do so by following the link on this text.
+- make sure to follow the instructions <!-- TODO: Add those "Instructions" here -->
 
 Note that the tool needs to be run manually and is not run as part of the CI.
 

@@ -6,7 +6,7 @@ uid: Uno.Contributing.ListViewBase
 
 This document describes the internal operations of Uno's `ListViewBase` implementation(s) in detail, aimed at contributors.
 
-Before reading it, you should first read the documentation of [ListViewBase aimed at Uno app developers](../controls/ListViewBase.md), which covers the high-level differences between Uno's implementation and UWP's implementation.
+Before reading it, you should first read the documentation of [ListViewBase aimed at Uno app developers](xref:Uno.Controls.ListViewBase), which covers the high-level differences between Uno's implementation and UWP's implementation.
 
 ## Introduction
 
@@ -48,7 +48,7 @@ Architecturally, the Android and iOS implementations share a similar high-level 
 
 (As an aside, this division of labor has no equivalent in `ListView`, but a somewhat similar approach is taken by WinUI's newer [`ItemsRepeater`](https://learn.microsoft.com/windows/winui/api/microsoft.ui.xaml.controls.itemsrepeater) control, also available in Uno.)
 
-[This diagram](../controls/ListViewBase.md#difference-in-the-visual-tree) shows how the `NativeListViewBase` view is incorporated into the visual tree, and the resulting difference from WinUI. The key differences are:
+[This diagram](xref:Uno.Controls.ListViewBase#difference-in-the-visual-tree) shows how the `NativeListViewBase` view is incorporated into the visual tree, and the resulting difference from UWP. The key differences are:
 
 - the scrolling container is the `NativeListViewBase` itself, not the `ScrollViewer`. Thus, the `ItemsPresenter` is **outside** the scrollable region. Additionally, there's no ScrollContentPresenter; instead, there's a ListViewBaseScrollContentPresenter. (It was implemented this way back when ScrollContentPresenter inherited directly from the native scroll container.)
 - the `ItemsStackPanel` (or `ItemsWrapGrid`) is not actually present in the visual tree. These items' panels are created, and their configured values (eg, `Orientation`) are used to set the behavior of the list, but they are not actually loaded into the visual hierarchy or measured and arranged. They just act as a facade for the native layouter.
