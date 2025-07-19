@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -37,6 +38,7 @@ internal static class MetadataProviderDiscovery
 	/// Probes working directory for all available metadata providers
 	/// </summary>
 	/// <returns>List of UWP XAML metadata providers</returns>
+	[RequiresUnreferencedCode("Loads assemblies from various directories")]
 	internal static IEnumerable<WUX.Markup.IXamlMetadataProvider> DiscoverMetadataProviders()
 	{
 		if (MetadataProviderFactory is null)
@@ -48,7 +50,7 @@ internal static class MetadataProviderDiscovery
 		return _metadataProviders;
 	}
 
-
+	[RequiresUnreferencedCode("Loads assemblies from various directories; see also GetAssemblies")]
 	private static IEnumerable<WUX.Markup.IXamlMetadataProvider> DiscoverMetadataProvidersPrivate()
 	{
 		// Get all assemblies loaded in app domain and placed side-by-side from all DLL and EXE
@@ -80,6 +82,7 @@ internal static class MetadataProviderDiscovery
 		}
 	}
 
+	[RequiresUnreferencedCode("Loads assemblies from directories")]
 	private static IEnumerable<Assembly> GetAssemblies()
 	{
 		yield return Assembly.GetExecutingAssembly();
@@ -104,6 +107,7 @@ internal static class MetadataProviderDiscovery
 		}
 	}
 
+	[RequiresUnreferencedCode("When loading assemblies from a directory, 'unreferenced code' is kinda the point, no?")]
 	private static IEnumerable<Assembly> GetAssemblies(DirectoryInfo folder, string fileFilter)
 	{
 		foreach (var file in folder.EnumerateFiles(fileFilter))
@@ -135,6 +139,7 @@ internal static class MetadataProviderDiscovery
 	/// </summary>
 	/// <param name="assembly">Target assembly to load types from</param>
 	/// <returns>The set of <seealso cref="WUX.Markup.IXamlMetadataProvider"/> found</returns>
+	[RequiresUnreferencedCode("LoadTypesFromAssembly() codepath involves reading assemblies on-disk")]
 	private static IEnumerable<WUX.Markup.IXamlMetadataProvider> LoadTypesFromAssembly(Assembly assembly)
 	{
 		// Load types inside the executing assembly
@@ -157,6 +162,7 @@ internal static class MetadataProviderDiscovery
 
 	// Algorithm from StackOverflow answer here:
 	// http://stackoverflow.com/questions/7889228/how-to-prevent-reflectiontypeloadexception-when-calling-assembly-gettypes
+	[RequiresUnreferencedCode("GetLoadableTypes() codepath involves reading assemblies on-disk")]
 	private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
 	{
 		if (assembly == null)

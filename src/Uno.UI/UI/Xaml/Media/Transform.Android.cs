@@ -12,13 +12,13 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		private bool _isAnimating;
 
-		internal Android.Graphics.Matrix ToNativeMatrix(Android.Graphics.Matrix targetMatrix = null, Point origin = new Point(), Size size = new Size())
+		internal AMatrix ToNativeMatrix(AMatrix targetMatrix = null, Point origin = new Point(), Size size = new Size())
 		{
 			var matrix = ToMatrix(origin, size);
 
 			if (targetMatrix == null)
 			{
-				targetMatrix = new Android.Graphics.Matrix();
+				targetMatrix = new AMatrix();
 			}
 
 			targetMatrix.SetValues(new[]

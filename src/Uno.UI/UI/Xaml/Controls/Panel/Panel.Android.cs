@@ -18,6 +18,8 @@ using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
 
+using ACanvas = Android.Graphics.Canvas;
+
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class Panel : IEnumerable
@@ -51,7 +53,7 @@ partial class Panel : IEnumerable
 		base.OnChildViewAdded(child);
 	}
 
-	protected override void OnDraw(Android.Graphics.Canvas canvas)
+	protected override void OnDraw(ACanvas canvas)
 	{
 		AdjustCornerRadius(canvas, CornerRadiusInternal);
 	}

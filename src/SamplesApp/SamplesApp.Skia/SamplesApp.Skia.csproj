@@ -52,8 +52,6 @@
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" />
 
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
 		<PackageReference Include="MSTest.TestFramework" />
@@ -96,7 +94,7 @@
 		<ItemGroup>
 			<!--
 			This removes the transitive dependency to WPF which has a requirement to
-			have net8.0-windows and not net8.0.
+			have net9.0-windows and not net9.0.
 			-->
 			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
 		</ItemGroup>

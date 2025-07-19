@@ -11,6 +11,6 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)
-			=> base.BasicArrangeOverride(finalSize, path => { path.AddRoundRect(_logicalRenderingArea.ToRectF(), (float)RadiusX, (float)RadiusY, Android.Graphics.Path.Direction.Cw); });
+			=> base.BasicArrangeOverride(finalSize, path => { path.AddRoundRect(_logicalRenderingArea.ToRectF(), (float)RadiusX, (float)RadiusY, APath.Direction.Cw); });
 	}
 }
