@@ -24,12 +24,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
-using ItemsSourceView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsSourceView;
-using ElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactory;
-using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
-using RepeaterAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.RepeaterAutomationPeer;
+using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
+using ItemsSourceView = Microsoft.UI.Xaml.Controls.ItemsSourceView;
+using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
+using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
+using RepeaterAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.RepeaterAutomationPeer;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {

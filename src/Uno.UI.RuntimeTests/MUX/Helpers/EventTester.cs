@@ -17,7 +17,7 @@ using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 using MUXControlsTestApp.Utilities;
 using Uno.UI;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
+namespace Microsoft.UI.Xaml.Tests.Common
 {
 	[Flags]
 	public enum EventTesterOptions : int

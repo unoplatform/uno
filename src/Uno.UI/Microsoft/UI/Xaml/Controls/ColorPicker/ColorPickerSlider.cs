@@ -12,9 +12,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 
-using ColorPickerSliderAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer;
+using ColorPickerSliderAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ColorPickerSlider : Slider
 	{

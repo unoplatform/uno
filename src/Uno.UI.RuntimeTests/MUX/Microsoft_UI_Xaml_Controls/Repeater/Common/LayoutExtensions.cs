@@ -4,10 +4,10 @@
 using System;
 using Microsoft.UI.Xaml.Controls;
 
-using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
-using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
-//using UniformGridLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayout;
-using FlowLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FlowLayout;
+using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
+using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
+//using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
+using FlowLayout = Microsoft.UI.Xaml.Controls.FlowLayout;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {

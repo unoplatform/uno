@@ -11,12 +11,12 @@ using Windows.UI;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Automation;
 
-using TabView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
-using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem;
-using TabViewTabCloseRequestedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs;
-using TabViewTabDragStartingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabDragStartingEventArgs;
-using TabViewTabDragCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs;
-using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
+using TabView = Microsoft.UI.Xaml.Controls.TabView;
+using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
+using TabViewTabCloseRequestedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs;
+using TabViewTabDragStartingEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs;
+using TabViewTabDragCompletedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs;
+using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 using System.Collections.ObjectModel;
 using Windows.Devices.PointOfService;
 using Windows.ApplicationModel.DataTransfer;
@@ -208,9 +208,9 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			{
 				switch (TabWidthComboBox.SelectedIndex)
 				{
-					case 0: Tabs.TabWidthMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewWidthMode.Equal; break;
-					case 1: Tabs.TabWidthMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewWidthMode.SizeToContent; break;
-					case 2: Tabs.TabWidthMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewWidthMode.Compact; break;
+					case 0: Tabs.TabWidthMode = Microsoft.UI.Xaml.Controls.TabViewWidthMode.Equal; break;
+					case 1: Tabs.TabWidthMode = Microsoft.UI.Xaml.Controls.TabViewWidthMode.SizeToContent; break;
+					case 2: Tabs.TabWidthMode = Microsoft.UI.Xaml.Controls.TabViewWidthMode.Compact; break;
 				}
 			}
 		}
@@ -221,9 +221,9 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			{
 				switch (CloseButtonOverlayModeCombobox.SelectedIndex)
 				{
-					case 0: Tabs.CloseButtonOverlayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewCloseButtonOverlayMode.Auto; break;
-					case 1: Tabs.CloseButtonOverlayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewCloseButtonOverlayMode.OnPointerOver; break;
-					case 2: Tabs.CloseButtonOverlayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewCloseButtonOverlayMode.Always; break;
+					case 0: Tabs.CloseButtonOverlayMode = Microsoft.UI.Xaml.Controls.TabViewCloseButtonOverlayMode.Auto; break;
+					case 1: Tabs.CloseButtonOverlayMode = Microsoft.UI.Xaml.Controls.TabViewCloseButtonOverlayMode.OnPointerOver; break;
+					case 2: Tabs.CloseButtonOverlayMode = Microsoft.UI.Xaml.Controls.TabViewCloseButtonOverlayMode.Always; break;
 				}
 			}
 		}
@@ -233,7 +233,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			SelectedIndexTextBlock.Text = Tabs.SelectedIndex.ToString();
 		}
 
-		private void TabViewTabCloseRequested(object sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs e)
+		private void TabViewTabCloseRequested(object sender, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs e)
 		{
 			if ((bool)HandleTabCloseRequestedCheckBox.IsChecked)
 			{
@@ -241,7 +241,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			}
 		}
 
-		private void FirstTab_CloseRequested(object sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs e)
+		private void FirstTab_CloseRequested(object sender, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs e)
 		{
 			if ((bool)HandleTabItemCloseRequestedCheckBox.IsChecked)
 			{
@@ -249,7 +249,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			}
 		}
 
-		private void TabViewTabDroppedOutside(object sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs e)
+		private void TabViewTabDroppedOutside(object sender, Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs e)
 		{
 			TabViewItem tab = e.Tab;
 			if (tab != null)

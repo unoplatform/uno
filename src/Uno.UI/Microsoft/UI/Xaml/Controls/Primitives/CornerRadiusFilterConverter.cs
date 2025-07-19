@@ -8,7 +8,7 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Converts an existing CornerRadius struct to a new CornerRadius struct, with filters applied

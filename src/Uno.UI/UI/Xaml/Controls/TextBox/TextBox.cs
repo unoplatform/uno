@@ -258,7 +258,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_contentElement is { })
 			{
-				_contentElement.SetProtectedCursor(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursor.Create(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape.IBeam));
+				_contentElement.SetProtectedCursor(Microsoft.UI.Input.InputSystemCursor.Create(Microsoft.UI.Input.InputSystemCursorShape.IBeam));
 			}
 
 			UpdateTextBoxView();

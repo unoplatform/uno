@@ -223,7 +223,7 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel lp)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft.UI.Xaml.Controls.LayoutPanel lp)
 			{
 				padding = lp.Padding;
 				return true;
@@ -283,7 +283,7 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel lp)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft.UI.Xaml.Controls.LayoutPanel lp)
 			{
 				lp.Padding = padding;
 				return true;
@@ -400,7 +400,7 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel lp)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft.UI.Xaml.Controls.LayoutPanel lp)
 			{
 				lp.BorderThickness = borderThickness;
 				return true;
@@ -447,7 +447,7 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel lp)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft.UI.Xaml.Controls.LayoutPanel lp)
 			{
 				cornerRadius = lp.CornerRadius;
 				return true;

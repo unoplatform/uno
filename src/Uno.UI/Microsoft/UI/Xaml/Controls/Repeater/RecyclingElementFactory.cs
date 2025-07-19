@@ -8,7 +8,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Templates))]
 	public partial class RecyclingElementFactory : ElementFactory

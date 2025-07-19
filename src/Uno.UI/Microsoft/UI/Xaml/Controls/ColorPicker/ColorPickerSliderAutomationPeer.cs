@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Metadata;
@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 #endif
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class ColorPickerSliderAutomationPeer : SliderAutomationPeer, IValueProvider
 	{

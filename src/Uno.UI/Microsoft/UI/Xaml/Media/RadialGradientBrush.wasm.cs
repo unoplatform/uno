@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Wasm;
 using Uno.Extensions;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{

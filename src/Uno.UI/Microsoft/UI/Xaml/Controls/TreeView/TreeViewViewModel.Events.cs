@@ -4,7 +4,7 @@
 
 using Windows.Foundation;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 internal partial class TreeViewViewModel
 {

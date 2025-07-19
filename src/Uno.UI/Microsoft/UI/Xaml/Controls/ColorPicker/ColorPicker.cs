@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Controls.Primitives;
 #endif
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ColorPicker : Control
 	{

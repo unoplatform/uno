@@ -3,7 +3,7 @@
 // MUX Reference: TabViewItem.cpp, commit 27052f7
 
 using System.Numerics;
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -24,7 +24,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Represents a single tab within a TabView.
@@ -181,7 +181,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		{
 			if (SharedHelpers.IsThemeShadowAvailable())
 			// TODO Uno: Can't access XamlControlsResources from Uno.UI
-			//&& !Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources.IsUsingControlsResourcesVersion2)
+			//&& !Microsoft.UI.Xaml.Controls.XamlControlsResources.IsUsingControlsResourcesVersion2)
 			{
 				if (IsSelected && !m_isDragging)
 				{

@@ -1,4 +1,4 @@
-﻿namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+﻿namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines values that specify the input validation behavior of a NumberBox when invalid input is entered.

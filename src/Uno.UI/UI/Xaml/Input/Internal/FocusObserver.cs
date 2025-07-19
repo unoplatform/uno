@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Xaml.Input.FocusConversionFunctions;
 
 namespace Uno.UI.Xaml.Input;

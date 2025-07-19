@@ -134,11 +134,16 @@ namespace TestRepro
 
 			Bindings = new MainPage_Bindings(this);
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 		{
 			this.Bindings.UpdateResources();
+		}
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -397,18 +402,12 @@ namespace TestRepro
 					}
 					return __rootInstance;
 				}
-				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-				private global::Microsoft.UI.Xaml.Controls.Button _component_0
-				{
-					get
+					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; }
+					private global::Microsoft.UI.Xaml.Controls.Button _component_0
 					{
-						return (global::Microsoft.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
+						get => (global::Microsoft.UI.Xaml.Controls.Button)(_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
+						set => (_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
 					}
-					set
-					{
-						_component_0_Holder.Instance = value;
-					}
-				}
 				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
 					_component_0.UpdateResourceBindings();
@@ -503,30 +502,18 @@ namespace TestRepro
 				}
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.ListView _component_0
-		{
-			get
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; }
+			private global::Microsoft.UI.Xaml.Controls.ListView _component_0
 			{
-				return (global::Microsoft.UI.Xaml.Controls.ListView)_component_0_Holder.Instance;
+				get => (global::Microsoft.UI.Xaml.Controls.ListView)(_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
+				set => (_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
 			}
-			set
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder { get; set; }
+			private global::Microsoft.UI.Xaml.Controls.Page _component_1
 			{
-				_component_0_Holder.Instance = value;
+				get => (global::Microsoft.UI.Xaml.Controls.Page)(_component_1_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
+				set => (_component_1_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
 			}
-		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Page _component_1
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
-			}
-			set
-			{
-				_component_1_Holder.Instance = value;
-			}
-		}
 		private interface IMainPage_Bindings
 		{
 			void Initialize();

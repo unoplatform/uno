@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 using Uno.UI.RuntimeTests;
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 #if USING_TAEF
@@ -32,16 +32,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
-	using ElementFactoryGetArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryGetArgs;
-	using ElementFactoryRecycleArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryRecycleArgs;
-	using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-	using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
-	using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
-	using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+	using ElementFactoryGetArgs = Microsoft.UI.Xaml.Controls.ElementFactoryGetArgs;
+	using ElementFactoryRecycleArgs = Microsoft.UI.Xaml.Controls.ElementFactoryRecycleArgs;
+	using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+	using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
+	using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
+	using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
 	using RepeaterTestHooks = Microsoft.UI.Private.Controls.RepeaterTestHooks;
-	using SelectTemplateEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectTemplateEventArgs;
-	using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
-	using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
+	using SelectTemplateEventArgs = Microsoft.UI.Xaml.Controls.SelectTemplateEventArgs;
+	using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
+	using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
 
 	[TestClass]
 	[RequiresFullWindow]

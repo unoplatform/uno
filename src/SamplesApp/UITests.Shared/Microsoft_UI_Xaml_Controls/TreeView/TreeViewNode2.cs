@@ -5,7 +5,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 
-using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
+using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {

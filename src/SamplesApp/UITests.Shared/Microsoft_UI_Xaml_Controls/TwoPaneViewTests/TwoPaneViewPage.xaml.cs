@@ -11,12 +11,12 @@ using Windows.Graphics.Display;
 using Uno.UI.Samples.Controls;
 
 #if HAS_UNO
-using TwoPaneView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView;
-using TwoPaneViewMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewMode;
-using TwoPaneViewPriority = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewPriority;
-using TwoPaneViewWideModeConfiguration = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration;
-using TwoPaneViewTallModeConfiguration = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration;
-using DisplayRegionHelperTestApi = Microsoft/* UWP don't rename */.UI.Xaml.Controls.DisplayRegionHelperTestApi;
+using TwoPaneView = Microsoft.UI.Xaml.Controls.TwoPaneView;
+using TwoPaneViewMode = Microsoft.UI.Xaml.Controls.TwoPaneViewMode;
+using TwoPaneViewPriority = Microsoft.UI.Xaml.Controls.TwoPaneViewPriority;
+using TwoPaneViewWideModeConfiguration = Microsoft.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration;
+using TwoPaneViewTallModeConfiguration = Microsoft.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration;
+using DisplayRegionHelperTestApi = Microsoft.UI.Xaml.Controls.DisplayRegionHelperTestApi;
 #endif
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests

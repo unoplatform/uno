@@ -10,7 +10,7 @@ using Windows.UI;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	internal static class ColorHelpers
 	{

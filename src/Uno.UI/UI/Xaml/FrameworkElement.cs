@@ -16,7 +16,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno;
 using Uno.Disposables;
 using Windows.UI.Core;

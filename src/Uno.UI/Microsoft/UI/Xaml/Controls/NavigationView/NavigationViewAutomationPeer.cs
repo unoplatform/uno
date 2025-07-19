@@ -1,11 +1,11 @@
 ﻿// MUX reference NavigationViewAutomationPeer.cpp, commit 8f1a682
 
 using System;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+namespace Microsoft.UI.Xaml.Automation.Peers;
 
 public partial class NavigationViewAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
 {

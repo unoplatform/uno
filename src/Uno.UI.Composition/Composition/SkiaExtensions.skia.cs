@@ -12,6 +12,8 @@ namespace Microsoft.UI.Composition
 {
 	public static class SkiaExtensions
 	{
+		private static readonly SKColorFilter?[] _opacityToColorFilter = new SKColorFilter?[256];
+
 		public static SKRect ToSKRect(this Rect rect)
 			=> new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom);
 
@@ -140,6 +142,13 @@ namespace Microsoft.UI.Composition
 			}
 
 			return bmp!;
+		}
+
+		internal static SKColorFilter? ToColorFilter(this float opacity)
+		{
+			return opacity == 1.0f ?
+			null :
+			_opacityToColorFilter[(byte)(0xFF * opacity)] ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * opacity)), SKBlendMode.Modulate);
 		}
 	}
 }

@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 
-using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
+using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 using IAdapterAnimationHandler = Microsoft.UI.Private.Controls.IAdapterAnimationHandler;
 
 namespace MUXControlsTestApp

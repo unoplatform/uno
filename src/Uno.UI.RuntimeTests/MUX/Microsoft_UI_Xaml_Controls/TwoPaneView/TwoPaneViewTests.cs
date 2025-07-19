@@ -19,11 +19,11 @@ using Microsoft.UI.Xaml.Shapes;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
-using TwoPaneView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView;
-using TwoPaneViewPriority = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewPriority;
-using TwoPaneViewMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewMode;
-using TwoPaneViewWideModeConfiguration = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration;
-using TwoPaneViewTallModeConfiguration = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration;
+using TwoPaneView = Microsoft.UI.Xaml.Controls.TwoPaneView;
+using TwoPaneViewPriority = Microsoft.UI.Xaml.Controls.TwoPaneViewPriority;
+using TwoPaneViewMode = Microsoft.UI.Xaml.Controls.TwoPaneViewMode;
+using TwoPaneViewWideModeConfiguration = Microsoft.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration;
+using TwoPaneViewTallModeConfiguration = Microsoft.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration;
 
 //using WEX.TestExecution;
 //using WEX.TestExecution.Markup;

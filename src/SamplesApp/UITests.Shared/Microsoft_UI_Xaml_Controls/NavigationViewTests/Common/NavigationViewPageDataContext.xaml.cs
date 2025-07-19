@@ -10,9 +10,9 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Automation;
 using Windows.ApplicationModel.Core;
 
-using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
-using NavigationViewSelectionChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs;
-using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
+using NavigationViewSelectionChangedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs;
+using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
@@ -71,7 +71,7 @@ namespace MUXControlsTestApp
 			};
 		}
 
-		private void NavigationView_ItemInvoked(NavigationView sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs args)
+		private void NavigationView_ItemInvoked(NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs args)
 		{
 			if (_pages != null && _pages.Length == 0)
 			{

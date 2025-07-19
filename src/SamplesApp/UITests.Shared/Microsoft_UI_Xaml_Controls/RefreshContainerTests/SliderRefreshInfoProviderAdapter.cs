@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 
-using RefreshInteractionRatioChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs;
+using RefreshInteractionRatioChangedEventArgs = Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs;
 using IRefreshInfoProvider = Microsoft.UI.Private.Controls.IRefreshInfoProvider;
 using PullToRefreshHelperTestApi = Microsoft.UI.Private.Controls.PullToRefreshHelperTestApi;
 

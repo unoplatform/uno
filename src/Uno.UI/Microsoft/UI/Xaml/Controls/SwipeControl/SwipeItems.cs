@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SwipeItems : DependencyObject, IEnumerable<SwipeItem>, IList<SwipeItem>, IObservableVector<SwipeItem>
 	{

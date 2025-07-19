@@ -3,7 +3,7 @@
 
 // MUX Reference ToggleSplitButton.cpp, tag winui3/release/1.4.2
 
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 #pragma warning restore 105
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToggleSplitButton : SplitButton
 	{

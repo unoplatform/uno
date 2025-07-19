@@ -7,7 +7,7 @@
 using System;
 using Microsoft.UI.Xaml.Data;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 internal class CustomProperty : ICustomProperty
 {

@@ -26,7 +26,7 @@ using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
@@ -45,6 +45,7 @@ using UIKit;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Uno.Foundation;
 #endif
 
 namespace Microsoft.UI.Xaml
@@ -547,9 +548,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		[JSImport("globalThis.eval")]
-		private static partial string Eval(string js);
-
 #if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
@@ -560,7 +558,7 @@ namespace Microsoft.UI.Xaml
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{
-				return Uri.UnescapeDataString(new Uri(Eval("window.location.href")).Query.TrimStart('?'));
+				return Uri.UnescapeDataString(new Uri(WebAssemblyImports.EvalString("window.location.href")).Query.TrimStart('?'));
 			}
 			else
 			{

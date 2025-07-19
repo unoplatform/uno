@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,23 +19,24 @@ public static class ServiceCollectionServiceExtensions
 	/// </summary>
 	/// <param name="svc">The service collection on which services should be registered.</param>
 	/// <returns>The service collection for fluent usage.</returns>
-	public static IServiceCollection AddFromAttributes(this IServiceCollection svc)
+	public static IServiceCollection AddFromAttributes(this IServiceCollection svc, IReadOnlyList<Assembly>? assemblies = null)
 		=> svc
-			.AddFromServiceAttributes()
-			.AddFromServiceExtensionAttributes();
+			.AddFromServiceAttributes(assemblies)
+			.AddFromServiceExtensionAttributes(assemblies);
 
 	/// <summary>
 	/// Register services configured with the <see cref="ServiceAttribute"/> attribute from all loaded assemblies.
 	/// </summary>
 	/// <param name="svc">The service collection on which services should be registered.</param>
 	/// <returns>The service collection for fluent usage.</returns>
-	public static IServiceCollection AddFromServiceAttributes(this IServiceCollection svc)
+	public static IServiceCollection AddFromServiceAttributes(this IServiceCollection svc, IReadOnlyList<Assembly>? assemblies)
 	{
 		var attribute = typeof(ServiceAttribute);
-		var services = AppDomain
-			.CurrentDomain
-			.GetAssemblies()
-			.SelectMany(assembly => assembly.GetCustomAttributesData())
+		var assembliesToCheck = assemblies
+			?? AppDomain.CurrentDomain.GetAssemblies();
+
+		var services = assembliesToCheck
+			.SelectMany(a => a.GetCustomAttributesData())
 			.Select(attrData => attrData.TryCreate(attribute) as ServiceAttribute)
 			.Where(attr => attr is not null)
 			.ToImmutableList();
@@ -52,12 +55,12 @@ public static class ServiceCollectionServiceExtensions
 	/// </summary>
 	/// <param name="svc">The service collection on which services should be registered.</param>
 	/// <returns>The service collection for fluent usage.</returns>
-	public static IServiceCollection AddFromServiceExtensionAttributes(this IServiceCollection svc)
+	public static IServiceCollection AddFromServiceExtensionAttributes(this IServiceCollection svc, IReadOnlyList<Assembly>? assemblies)
 	{
 		var attribute = typeof(ServiceCollectionExtensionAttribute);
-		var extensions = AppDomain
-			.CurrentDomain
-			.GetAssemblies()
+		var assembliesToCheck = assemblies
+			?? AppDomain.CurrentDomain.GetAssemblies();
+		var extensions = assembliesToCheck
 			.SelectMany(assembly => assembly.GetCustomAttributesData())
 			.Select(attrData => attrData.TryCreate(attribute) as ServiceCollectionExtensionAttribute)
 			.Where(attr => attr is not null)

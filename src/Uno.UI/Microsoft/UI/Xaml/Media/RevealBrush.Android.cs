@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Rect = Windows.Foundation.Rect;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Media;
+namespace Microsoft.UI.Xaml.Media;
 
 public partial class RevealBrush : XamlCompositionBrushBase
 {

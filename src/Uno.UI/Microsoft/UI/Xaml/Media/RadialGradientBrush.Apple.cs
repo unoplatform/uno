@@ -6,7 +6,7 @@ using CoreGraphics;
 using Uno.Extensions;
 using ObjCRuntime;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{

@@ -4,7 +4,7 @@
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// An InfoBar is an inline notification for essential app-wide messages.

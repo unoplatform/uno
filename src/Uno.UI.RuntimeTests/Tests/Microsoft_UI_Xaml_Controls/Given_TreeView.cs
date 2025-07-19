@@ -31,15 +31,15 @@ using UIKit;
 using Uno.UI;
 #endif
 
-using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
-using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
-using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
-using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
+using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
+using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
+using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
+using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
 using Combinatorial.MSTest;
 
 #if HAS_UNO
 using Windows.Foundation.Metadata;
-using TreeNodeSelectionState = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeNodeSelectionState;
+using TreeNodeSelectionState = Microsoft.UI.Xaml.Controls.TreeNodeSelectionState;
 #endif
 
 using static Private.Infrastructure.TestServices;
@@ -416,7 +416,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			treeView.SelectedItem = treeView.RootNodes[1];
 
-			var listControl = treeView.FindFirstDescendant<Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList>("ListControl");
+			var listControl = treeView.FindFirstDescendant<Microsoft.UI.Xaml.Controls.TreeViewList>("ListControl");
 			// Yes, that's how it behaves on WinUI :/
 			Assert.AreEqual(-1, listControl.SelectedIndex);
 		}

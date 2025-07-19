@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Represents a panel that arranges its items horizontally if there is available space, otherwise vertically.
