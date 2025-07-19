@@ -14,11 +14,11 @@ using Microsoft.UI.Xaml.Tests.Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Windows.System;
-using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
+using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 using FocusHelper = Uno.UI.RuntimeTests.MUX.Input.Focus.FocusHelper;
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Common;
 #endif
 
 namespace Uno.UI.RuntimeTests.MUX.Input.KeyboardAccelerators;

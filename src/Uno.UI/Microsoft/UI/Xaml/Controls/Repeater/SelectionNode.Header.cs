@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal enum SelectionState
 	{
@@ -19,7 +19,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		// For inner nodes (any node whose children are data sources)
 		private List<SelectionNode> m_childrenNodes = new List<SelectionNode>();
 		// Don't take a ref.
-		// TODO?
 		private SelectionNode m_parent = null;
 
 		// For parents of leaf nodes (any node whose children are not data sources)

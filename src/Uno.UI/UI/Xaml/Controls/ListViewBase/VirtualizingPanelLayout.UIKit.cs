@@ -23,8 +23,8 @@ using Windows.Foundation;
 using ObjCRuntime;
 
 #if USE_CUSTOM_LAYOUT_ATTRIBUTES
-using _LayoutAttributes = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
-using LayoutInfoDictionary = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, Microsoft/* UWP don't rename */.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes>;
+using _LayoutAttributes = Microsoft.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
+using LayoutInfoDictionary = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, Microsoft.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes>;
 #else
 using _LayoutAttributes = UIKit.UICollectionViewLayoutAttributes;
 using LayoutInfoDictionary = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, UIKit.UICollectionViewLayoutAttributes>;

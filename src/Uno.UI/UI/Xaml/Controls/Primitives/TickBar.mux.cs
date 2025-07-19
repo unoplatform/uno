@@ -10,7 +10,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Shapes;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Core.Scaling;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;

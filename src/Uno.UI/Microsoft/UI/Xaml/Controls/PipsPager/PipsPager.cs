@@ -10,7 +10,7 @@ using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 #if !HAS_UNO_WINUI // Avoid duplicate using for WinUI build
 using Microsoft.UI.Xaml.Automation.Peers;
 #endif
@@ -18,10 +18,10 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 
-using ButtonVisibility = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPagerButtonVisibility;
+using ButtonVisibility = Microsoft.UI.Xaml.Controls.PipsPagerButtonVisibility;
 using System.Globalization;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a control that enables navigation within linearly paginated content using

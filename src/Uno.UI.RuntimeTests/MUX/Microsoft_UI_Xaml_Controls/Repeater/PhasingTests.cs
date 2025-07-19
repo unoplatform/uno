@@ -24,11 +24,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
-using ElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactory;
-using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
-using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
-using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
+using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
+using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
+using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
+using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using RepeaterTestHooks = Microsoft.UI.Private.Controls.RepeaterTestHooks;
 using Uno.UI.RuntimeTests;
 using Private.Infrastructure;
@@ -36,8 +36,8 @@ using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
-	using ElementFactoryGetArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryGetArgs;
-	using ElementFactoryRecycleArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryRecycleArgs;
+	using ElementFactoryGetArgs = Microsoft.UI.Xaml.Controls.ElementFactoryGetArgs;
+	using ElementFactoryRecycleArgs = Microsoft.UI.Xaml.Controls.ElementFactoryRecycleArgs;
 
 	// Bug 17377723: crash in CControlTemplate::CreateXBindConnector in RS5.
 	[TestClass]

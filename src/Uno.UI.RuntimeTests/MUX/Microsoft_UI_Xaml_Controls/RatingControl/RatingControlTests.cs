@@ -24,9 +24,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using RatingControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl;
-using RatingItemFontInfo = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingItemFontInfo;
-using RatingItemImageInfo = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingItemImageInfo;
+using RatingControl = Microsoft.UI.Xaml.Controls.RatingControl;
+using RatingItemFontInfo = Microsoft.UI.Xaml.Controls.RatingItemFontInfo;
+using RatingItemImageInfo = Microsoft.UI.Xaml.Controls.RatingItemImageInfo;
 using Private.Infrastructure;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests

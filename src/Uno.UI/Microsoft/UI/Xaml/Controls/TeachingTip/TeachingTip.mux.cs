@@ -19,7 +19,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -33,7 +33,7 @@ using Microsoft.UI.Composition;
 using Windows.UI.Xaml.Automation.Peers;
 #endif
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class TeachingTip : ContentControl
 {

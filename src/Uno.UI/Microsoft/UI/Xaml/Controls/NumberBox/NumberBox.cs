@@ -1,4 +1,4 @@
-﻿namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+﻿namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a control that can be used to display and edit numbers.

@@ -15,11 +15,11 @@ using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 
-using TabView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
-using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem;
-using TabViewTabCloseRequestedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs;
-using TabViewTabDragStartingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabDragStartingEventArgs;
-using TabViewTabDragCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs;
+using TabView = Microsoft.UI.Xaml.Controls.TabView;
+using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
+using TabViewTabCloseRequestedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs;
+using TabViewTabDragStartingEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs;
+using TabViewTabDragCompletedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs;
 
 using static Uno.UI.Extensions.ViewExtensions;
 using static Uno.UI.Extensions.PrettyPrint;

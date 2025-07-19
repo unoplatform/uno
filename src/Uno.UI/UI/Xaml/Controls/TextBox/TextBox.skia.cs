@@ -24,6 +24,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
+using Uno.Foundation;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -92,13 +94,10 @@ public partial class TextBox
 	static TextBox()
 	{
 		_platformCtrlKey =
-			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && Eval("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
+			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && WebAssemblyImports.EvalBool("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
 			? VirtualKeyModifiers.Windows
 			: VirtualKeyModifiers.Control;
 	}
-
-	[JSImport("globalThis.eval")]
-	private static partial bool Eval(string js);
 
 	internal CaretDisplayMode CaretMode
 	{
@@ -228,8 +227,6 @@ public partial class TextBox
 		TextBoxView?.SetFlowDirectionAndTextAlignment();
 	}
 
-	private static SKPaint _spareCaretPaint = new SKPaint();
-
 	private void UpdateTextBoxView()
 	{
 		_textBoxView ??= new TextBoxView(this);
@@ -280,14 +277,8 @@ public partial class TextBox
 							var caretRect = args.rect;
 							var compositor = _visual.Compositor;
 							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-							var caretPaint = _spareCaretPaint;
 
-							caretPaint.Reset();
-
-							brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
-							args.canvas.DrawRect(
-								new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
-									(float)caretRect.Bottom), caretPaint);
+							brush.Paint(args.canvas, args.opacity, caretRect.ToSKRect());
 						}
 
 						if (args.endCaret)

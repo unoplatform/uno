@@ -4,9 +4,9 @@
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class RepeaterAutomationPeer : FrameworkElementAutomationPeer
 	{

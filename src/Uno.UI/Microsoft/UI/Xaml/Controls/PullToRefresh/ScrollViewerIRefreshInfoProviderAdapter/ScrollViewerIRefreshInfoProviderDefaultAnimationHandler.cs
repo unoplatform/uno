@@ -11,12 +11,12 @@ using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using Uno.Disposables;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers.WinUI;
 
-using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
+using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 
 namespace Microsoft.UI.Private.Controls;
 

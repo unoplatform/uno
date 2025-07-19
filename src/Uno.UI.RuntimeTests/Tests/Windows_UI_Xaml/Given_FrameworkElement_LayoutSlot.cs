@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
 #if HAS_UNO && !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml

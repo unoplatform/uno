@@ -361,7 +361,8 @@ namespace Uno.UI.Samples.Tests
 					TestName = testName,
 					Duration = duration,
 					TestResult = testResult,
-					Message = error?.ToString() ?? message
+					Message = error?.ToString() ?? message,
+					ConsoleOutput = console,
 				});
 
 			void Update()
@@ -505,8 +506,14 @@ namespace Uno.UI.Samples.Tests
 
 					var messageNode = doc.CreateElement("message");
 					failureNode.AppendChild(messageNode);
-
 					messageNode.InnerText = run.Message;
+				}
+
+				if (run.ConsoleOutput is not null)
+				{
+					var outputNode = doc.CreateElement("output");
+					testCaseNode.AppendChild(outputNode);
+					outputNode.InnerText = run.ConsoleOutput;
 				}
 			}
 

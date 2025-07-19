@@ -7,7 +7,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an object that enables the hosting of web content.

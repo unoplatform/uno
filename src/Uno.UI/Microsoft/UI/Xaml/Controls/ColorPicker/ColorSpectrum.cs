@@ -27,7 +27,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ColorSpectrum : Control
 	{

@@ -16,6 +16,13 @@ public class ProcessorsDiscovery : IMessage
 
 	string IMessage.Name => Name;
 
+	/// <summary>
+	/// The dll of the processor(s) to load
+	/// </summary>
+	/// <remarks>
+	/// If you specify simply a _path_, it will automatically search for Uno.*.Processors.dll in this path
+	/// to load default Uno processors.
+	/// </remarks>
 	public string BasePath { get; }
 
 	public string AppInstanceId { get; }

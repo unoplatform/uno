@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
@@ -18,6 +18,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

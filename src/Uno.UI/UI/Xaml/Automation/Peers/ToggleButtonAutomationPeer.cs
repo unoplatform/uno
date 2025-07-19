@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ToggleButtonAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 using Microsoft.UI.Xaml.Controls.Primitives;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 

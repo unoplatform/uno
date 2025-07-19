@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXC = Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ProgressBar : RangeBase
 {

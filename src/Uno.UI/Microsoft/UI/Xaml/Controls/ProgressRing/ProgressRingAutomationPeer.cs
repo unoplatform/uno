@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class ProgressRingAutomationPeer : AutomationPeer
 	{

@@ -21,11 +21,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
-//using LayoutPanel = Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel;
-//using UniformGridLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayout;
-using NonVirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NonVirtualizingLayout;
-using NonVirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NonVirtualizingLayoutContext;
+using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
+//using LayoutPanel = Microsoft.UI.Xaml.Controls.LayoutPanel;
+//using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
+using NonVirtualizingLayout = Microsoft.UI.Xaml.Controls.NonVirtualizingLayout;
+using NonVirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {

@@ -22,18 +22,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
-using FontIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIconSource;
-using BitmapIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.BitmapIconSource;
-using ImageIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIconSource;
-using PathIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PathIconSource;
+using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
+using BitmapIconSource = Microsoft.UI.Xaml.Controls.BitmapIconSource;
+using ImageIconSource = Microsoft.UI.Xaml.Controls.ImageIconSource;
+using PathIconSource = Microsoft.UI.Xaml.Controls.PathIconSource;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
+using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {

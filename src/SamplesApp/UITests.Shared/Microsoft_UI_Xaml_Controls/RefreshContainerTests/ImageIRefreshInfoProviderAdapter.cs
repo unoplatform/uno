@@ -13,8 +13,8 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 
-using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
-using RefreshInteractionRatioChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs;
+using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
+using RefreshInteractionRatioChangedEventArgs = Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs;
 using IAdapterAnimationHandler = Microsoft.UI.Private.Controls.IAdapterAnimationHandler;
 using IRefreshInfoProvider = Microsoft.UI.Private.Controls.IRefreshInfoProvider;
 using IRefreshInfoProviderAdapter = Microsoft.UI.Private.Controls.IRefreshInfoProviderAdapter;

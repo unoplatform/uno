@@ -177,30 +177,18 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 					}
 					return __rootInstance;
 				}
-				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-				private global::Microsoft.UI.Xaml.Controls.SwipeItem _component_0
-				{
-					get
+					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+					private global::Microsoft.UI.Xaml.Controls.SwipeItem _component_0
 					{
-						return (global::Microsoft.UI.Xaml.Controls.SwipeItem)_component_0_Holder.Instance;
+						get => (global::Microsoft.UI.Xaml.Controls.SwipeItem)_component_0_Holder.Instance;
+						set => _component_0_Holder.Instance = value;
 					}
-					set
+					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+					private global::Microsoft.UI.Xaml.Controls.Border _component_1
 					{
-						_component_0_Holder.Instance = value;
+						get => (global::Microsoft.UI.Xaml.Controls.Border)_component_1_Holder.Instance;
+						set => _component_1_Holder.Instance = value;
 					}
-				}
-				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-				private global::Microsoft.UI.Xaml.Controls.Border _component_1
-				{
-					get
-					{
-						return (global::Microsoft.UI.Xaml.Controls.Border)_component_1_Holder.Instance;
-					}
-					set
-					{
-						_component_1_Holder.Instance = value;
-					}
-				}
 				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
 					_component_0.UpdateResourceBindings(resourceContextProvider: _component_1);

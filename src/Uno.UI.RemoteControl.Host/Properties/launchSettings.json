@@ -1,8 +1,11 @@
 {
-  "profiles": {
-    "Uno.UI.RemoteControl.Host": {
-      "commandName": "Project",
-      "commandLineArgs": "--httpPort 53487"
-    }
-  }
+	"profiles": {
+		"Uno.UI.RemoteControl.Host": {
+			"commandName": "Project",
+			"commandLineArgs": "--httpPort 53487",
+			"environmentVariables": {
+				"UNO_PLATFORM_TELEMETRY_FILE": "./telemetry.log"
+			}
+		}
+	}
 }

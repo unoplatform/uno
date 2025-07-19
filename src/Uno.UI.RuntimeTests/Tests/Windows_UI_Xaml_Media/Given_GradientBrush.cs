@@ -12,7 +12,7 @@ using static Private.Infrastructure.TestServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 
 #if HAS_UNO && !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 #endif
 
 [TestClass]

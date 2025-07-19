@@ -20,10 +20,10 @@ using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Helpers.WinUI.ResourceAccessor;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class CommandBarFlyoutCommandBar
 {
@@ -411,8 +411,8 @@ partial class CommandBarFlyoutCommandBar
 
 	private void AttachItemEventHandlers()
 	{
-		m_itemLoadedRevokerVector.Dispose();
-		m_itemSizeChangedRevokerVector.Dispose();
+		m_itemLoadedRevokerVector.Clear();
+		m_itemSizeChangedRevokerVector.Clear();
 
 		foreach (var command in PrimaryCommands)
 		{
@@ -467,7 +467,8 @@ partial class CommandBarFlyoutCommandBar
 		m_secondaryItemsRootPreviewKeyDownRevoker.Disposable = null;
 		m_secondaryItemsRootSizeChangedRevoker.Disposable = null;
 		m_firstItemLoadedRevoker.Disposable = null;
-		m_itemLoadedRevokerVector.Dispose();
+		m_itemLoadedRevokerVector.Clear();
+		m_itemSizeChangedRevokerVector.Clear();
 		m_openingStoryboardCompletedRevoker.Disposable = null;
 		m_closingStoryboardCompletedCallbackRevoker.Disposable = null;
 		m_expandedUpToCollapsedStoryboardRevoker.Disposable = null;
@@ -868,6 +869,7 @@ partial class CommandBarFlyoutCommandBar
 
 			Size infiniteSize = new(double.PositiveInfinity, double.PositiveInfinity);
 			m_primaryItemsRoot.Measure(infiniteSize);
+
 			Size primaryItemsRootDesiredSize = m_primaryItemsRoot.DesiredSize;
 			double collapsedWidth = Math.Min(maxWidth, primaryItemsRootDesiredSize.Width);
 

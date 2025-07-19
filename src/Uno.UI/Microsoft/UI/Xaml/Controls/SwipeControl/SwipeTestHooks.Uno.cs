@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class SwipeTestHooks
 	{

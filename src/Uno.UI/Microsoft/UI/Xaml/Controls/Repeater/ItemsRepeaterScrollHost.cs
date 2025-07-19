@@ -13,10 +13,10 @@ using Microsoft.UI.Private.Controls;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using Microsoft.UI.Xaml.Markup;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(ScrollViewer))]
 	public partial class ItemsRepeaterScrollHost : FrameworkElement, IScrollAnchorProvider, IRepeaterScrollingSurface

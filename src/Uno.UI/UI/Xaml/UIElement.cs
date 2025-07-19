@@ -1467,7 +1467,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void SetProtectedCursor(Microsoft /* UWP don't rename */.UI.Input.InputCursor cursor)
+		internal void SetProtectedCursor(Microsoft.UI.Input.InputCursor cursor)
 		{
 			ProtectedCursor = cursor;
 		}

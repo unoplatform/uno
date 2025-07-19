@@ -4,7 +4,7 @@
 
 using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides data for the NavigationView.SelectionChanged event.

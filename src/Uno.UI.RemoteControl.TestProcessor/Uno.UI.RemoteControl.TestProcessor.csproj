@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
+	</ItemGroup>
+
+</Project>

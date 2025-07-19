@@ -1,7 +1,7 @@
-﻿using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class MenuBarItemAutomationPeer : FrameworkElementAutomationPeer
 	{

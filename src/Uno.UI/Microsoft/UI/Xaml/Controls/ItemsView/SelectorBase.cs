@@ -3,7 +3,7 @@
 
 // MUX Reference SelectorBase.cpp, tag winui3/release/1.5.0
 
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 

@@ -11,4 +11,5 @@ internal record TestCaseResult
 	public string? TestName { get; init; }
 	public TimeSpan Duration { get; init; }
 	public string? Message { get; init; }
+	public string? ConsoleOutput { get; init; }
 }

@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// Represents the ListView corresponding to the TabStrip within the TabView.
