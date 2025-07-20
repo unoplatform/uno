@@ -2093,9 +2093,6 @@
 		</Events>
 
 		<Fields>
-			<!-- BEGIN ListViewBase selection changes -->
-			<Member fullName="Windows.Foundation.Collections.IVectorChangedEventArgs Microsoft.UI.Xaml.Controls.ItemsControl::_inProgressVectorChange" reason="Not public in WinUI" />
-			<!-- END ListViewBase selection changes -->
 		</Fields>
 
 		<Properties>
@@ -2114,6 +2111,25 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBarToggleButton.get_TemplateSettingsProperty()" reason="Not public in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.CommandBar.FindParentCommandBarForElement(Microsoft.UI.Xaml.Controls.ICommandBarElement element, Microsoft.UI.Xaml.Controls.CommandBar&amp; parentCmdBar)" reason="Not public in WinUI" />
 			<!-- END AppBarButton-->
+		</Methods>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="6.1">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+			<!-- BEGIN ListViewBase selection changes -->
+			<Member fullName="Windows.Foundation.Collections.IVectorChangedEventArgs Microsoft.UI.Xaml.Controls.ItemsControl::_inProgressVectorChange" reason="Not public in WinUI" />
+			<!-- END ListViewBase selection changes -->
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
 			<!-- BEGIN ListViewBase selection changes -->
 			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ItemsControl.GetInProgressAdjustedIndex(System.Int32 index)" reason="Not public in WinUI" />
 			<!-- END ListViewBase selection changes -->
