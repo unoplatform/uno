@@ -101,7 +101,7 @@ namespace TestRepro
 							{
 								IsParsing = true,
 								Name = "inner2",
-								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, (__owner) => 								new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.__PaͰ0_StPaͰ0_GrͰ1_Bu_TeͰ0_CoTe().Build(__owner)
+								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, (__owner) => 								new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.__PaΞ0_StPaΞ0_GrΞ1_Bu_TeΞ0_CoTe().Build(__owner)
 								)								,
 								// Source 0\MainPage.xaml (Line 15:5)
 							}
@@ -299,7 +299,7 @@ namespace TestRepro
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-			public class __PaͰ0_StPaͰ0_GrͰ1_Bu_TeͰ0_CoTe
+			public class __PaΞ0_StPaΞ0_GrΞ1_Bu_TeΞ0_CoTe
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";

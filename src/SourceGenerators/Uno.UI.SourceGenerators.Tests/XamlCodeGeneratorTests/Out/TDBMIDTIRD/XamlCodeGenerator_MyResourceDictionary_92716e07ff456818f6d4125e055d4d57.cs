@@ -48,7 +48,7 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionary.__ReDiͰ0_DaTe().Build(__owner)
+					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionary.__ReDiΞ0_DaTe().Build(__owner)
 					)				;
 			}
 			)
@@ -63,7 +63,7 @@ namespace TestRepro
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-			public class __ReDiͰ0_DaTe
+			public class __ReDiΞ0_DaTe
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -189,7 +189,7 @@ namespace MyProject
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			private object Get_1(object __ResourceOwner_1) =>
-				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 				new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD.__ReDiͰ0_DaTe().Build(__owner)
+				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 				new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD.__ReDiΞ0_DaTe().Build(__owner)
 				)				;
 
 			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
@@ -210,7 +210,7 @@ namespace MyProject
 							new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 							{
 								return 
-									new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 									new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD.__ReDiͰ0_DaTe_Δ1().Build(__owner)
+									new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 									new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD.__ReDiΞ0_DaTe_Δ1().Build(__owner)
 									)								;
 							}
 							)
@@ -240,7 +240,7 @@ namespace MyProject.__Resources
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		public class __ReDiͰ0_DaTe
+		public class __ReDiΞ0_DaTe
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -327,7 +327,7 @@ namespace MyProject.__Resources
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		public class __ReDiͰ0_DaTe_Δ1
+		public class __ReDiΞ0_DaTe_Δ1
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
