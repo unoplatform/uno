@@ -436,7 +436,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 		[AutoRetry]
 		public void When_Overflow_MaxLines_IsTextTrimmed_Changed()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_IsTextTrimmedChanged");
+			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_IsTextTrimmed");
 
 			var run = _app.Marked("IsTextTrimmed");
 			var slider = _app.Marked("WidthSlider");
