@@ -67,7 +67,7 @@ namespace TestRepro
 				Text = "use me",
 				// Source 0\MainPage.xaml (Line 9:3)
 			}
-			.GenericApply(__that, __nameScope, ApplyTo_Pa_ReͰ2_TeBl)
+			.GenericApply(__that, __nameScope, ApplyTo_Pa_ReΞ2_TeBl)
 			;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
@@ -77,7 +77,7 @@ namespace TestRepro
 				Text = "Some content",
 				// Source 0\MainPage.xaml (Line 11:4)
 			}
-			.GenericApply(__that, __nameScope, ApplyTo_PaͰ0_TeBl)
+			.GenericApply(__that, __nameScope, ApplyTo_PaΞ0_TeBl)
 			;
 			
 			this
@@ -101,14 +101,14 @@ namespace TestRepro
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_Pa_ReͰ2_TeBl(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_Pa_ReΞ2_TeBl(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 9, 3);
 			__p1.CreationComplete();
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_PaͰ0_TeBl(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_PaΞ0_TeBl(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 11, 4);
 			__p1.CreationComplete();

@@ -62,13 +62,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.FirstOrDefault(member => member.idx >= 0);
 			if (ownerMember is { value: not null })
 			{
-				return $"{ownerMember.value.Key}Ͱ{ownerMember.idx}_{NamingHelper.GetShortName(Type.Name)}";
+				return $"{ownerMember.value.Key}Ξ{ownerMember.idx}_{NamingHelper.GetShortName(Type.Name)}";
 			}
 
 			var ownerObjectIdx = owner.Objects.IndexOf(this);
 			if (ownerObjectIdx >= 0)
 			{
-				return $"{owner.Key}ϟ{ownerObjectIdx}_{NamingHelper.GetShortName(Type.Name)}";
+				return $"{owner.Key}Λ{ownerObjectIdx}_{NamingHelper.GetShortName(Type.Name)}";
 			}
 
 			return $"{owner.Key}_ø_{NamingHelper.GetShortName(Type.Name)}"; // Should not happen

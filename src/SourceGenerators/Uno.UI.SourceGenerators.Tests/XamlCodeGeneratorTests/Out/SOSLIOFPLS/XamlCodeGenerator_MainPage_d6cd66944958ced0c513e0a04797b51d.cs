@@ -69,7 +69,7 @@ namespace TestRepro
 							,
 						}
 					}
-					.GenericApply(__that, __nameScope, ApplyTo_Pa_ReͰ0_St)
+					.GenericApply(__that, __nameScope, ApplyTo_Pa_ReΞ0_St)
 				;
 			}
 			)
@@ -95,7 +95,7 @@ namespace TestRepro
 							,
 						}
 					}
-					.GenericApply(__that, __nameScope, ApplyTo_Pa_ReͰ1_St)
+					.GenericApply(__that, __nameScope, ApplyTo_Pa_ReΞ1_St)
 				;
 			}
 			)
@@ -107,7 +107,7 @@ namespace TestRepro
 				IsParsing = true,
 				// Source 0\MainPage.xaml (Line 14:4)
 			}
-			.GenericApply(__that, __nameScope, ApplyTo_PaͰ0_LiVi)
+			.GenericApply(__that, __nameScope, ApplyTo_PaΞ0_LiVi)
 			;
 			
 			this
@@ -131,19 +131,19 @@ namespace TestRepro
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_Pa_ReͰ0_St(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_Pa_ReΞ0_St(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L7:6");
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_Pa_ReͰ1_St(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_Pa_ReΞ1_St(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L10:6");
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_PaͰ0_LiVi(global::Microsoft.UI.Xaml.Controls.ListView __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_PaΞ0_LiVi(global::Microsoft.UI.Xaml.Controls.ListView __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 14, 4);
 			__p1.CreationComplete();
