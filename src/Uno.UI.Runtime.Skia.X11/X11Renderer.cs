@@ -48,6 +48,8 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 			return;
 		}
 
+		MakeCurrent();
+
 		if (_lastSize != newSize || _surface is null || _airspaceHelper is null)
 		{
 			_lastSize = newSize;
@@ -56,8 +58,6 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 			_airspaceHelper?.Dispose();
 			_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
 		}
-
-		MakeCurrent();
 
 		var canvas = _surface.Canvas;
 
