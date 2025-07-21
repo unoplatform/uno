@@ -167,7 +167,7 @@
 	<!--
 	  Work around: https://github.com/dotnet/sdk/issues/48949
 	  -->
-	<ItemGroup Condition=" $(NETCoreSdkVersion.StartsWith('10.0.100-preview.6.')) ">
+	<ItemGroup Condition=" $(NETCoreSdkVersion.StartsWith('10.0.100-preview.6.')) And $(TargetFramework.StartsWith('net10.0')) ">
 		<KnownFrameworkReference Update="Microsoft.WindowsDesktop.App">
 			<DefaultRuntimeFrameworkVersion>10.0.0-preview.6.25358.103</DefaultRuntimeFrameworkVersion>
 			<LatestRuntimeFrameworkVersion>10.0.0-preview.6.25358.103</LatestRuntimeFrameworkVersion>
