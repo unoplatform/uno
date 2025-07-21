@@ -434,6 +434,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private Size UpdateLayout(ref LayoutBuilder layout, Size availableSize, bool exactWidth)
 		{
+			_overflowMaxLines = false;
+
 			// Normally this is a no-op since it's called in Measure. We call it again to prevent a crash in the edge case where Text changes in between calling Measure and Arrange.
 			Update();
 			var newLayout = CreateLayoutBuilder(layout, availableSize, exactWidth);
