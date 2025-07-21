@@ -1002,6 +1002,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_IsTextTrimmed()
+		{
+			var sut = new TextBlock
+			{
+				TextTrimming = TextTrimming.CharacterEllipsis,
+				MaxLines = 3,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Lorem ipsum dolor sit amet consectetur. Porta habitasse iaculis non egestas posuere in tincidunt. Risus nunc a  urna est nunc ac mattis eget. Faucibus ullamcorper ipsum faucibus in tristique lacus. Justo cursus arcu ut tristique.",
+			};
+
+			var sp = new StackPanel
+			{
+				Width = 80,
+				Children =
+				{
+					sut
+				}
+			};
+
+			var states = new List<bool>();
+			sut.IsTextTrimmedChanged += (s, e) => states.Add(sut.IsTextTrimmed);
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForLoaded(sp);
+			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
+
+			Assert.IsTrue(sut.IsTextTrimmed, "IsTextTrimmed should be trimmed.");
+			Assert.IsTrue(states.Count == 1 && states[0] == true, $"IsTextTrimmedChanged should only proc once for IsTextTrimmed=true. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+		}
+
+		[TestMethod]
 		public async Task When_Padding()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
