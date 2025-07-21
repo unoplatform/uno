@@ -127,6 +127,7 @@ namespace Microsoft.UI.Xaml.Documents
 				return _lastDesiredSize;
 			}
 
+			OverflowMaxLines = false;
 			_invalidationPending = false;
 			_lineIntervalsValid = false;
 

@@ -10,10 +10,5 @@ namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 		{
 			this.InitializeComponent();
 		}
-
-		private void TextBlock_IsTextTrimmedChanged_Event(TextBlock sender, IsTextTrimmedChangedEventArgs args)
-		{
-
-		}
 	}
 }

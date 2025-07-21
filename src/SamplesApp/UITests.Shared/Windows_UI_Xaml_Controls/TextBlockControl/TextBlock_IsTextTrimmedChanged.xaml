@@ -7,12 +7,31 @@
 			 d:DesignHeight="800"
 			 d:DesignWidth="800">
 
-	<StackPanel Width="80">
-		<TextBlock IsTextTrimmedChanged="TextBlock_IsTextTrimmedChanged_Event"
-				   TextWrapping="Wrap"
-				   MaxLines="3"
-				   TextTrimming="CharacterEllipsis"
-				   x:Name="MyTextBlock"
-				   Text="Lorem ipsum dolor sit amet consectetur. Porta habitasse iaculis non egestas posuere in tincidunt. Risus nunc a  urna est nunc ac mattis eget. Faucibus ullamcorper ipsum faucibus in tristique lacus. Justo cursus arcu ut tristique." />
+	<StackPanel Spacing="20"
+				Padding="20">
+		<Slider x:Name="WidthSlider"
+				Minimum="0"
+				Maximum="25"
+				Value="0" />
+		<TextBlock>
+			<Run Text="MaxLines: " />
+			<Run Text="{Binding ElementName=WidthSlider, Path=Value}" />
+		</TextBlock>
+
+		<StackPanel Background="LightGray"
+					Width="80">
+
+			<TextBlock x:Name="LongText"
+					   Text="Lorem ipsum dolor sit amet consectetur. Porta habitasse iaculis non egestas posuere in tincidunt. Risus nunc a  urna est nunc ac mattis eget. Faucibus ullamcorper ipsum faucibus in tristique lacus. Justo cursus arcu ut tristique."
+					   TextWrapping="Wrap"
+					   MaxLines="{Binding ElementName=WidthSlider, Path=Value}"
+					   TextTrimming="CharacterEllipsis" />
+
+		</StackPanel>
+
+		<TextBlock x:Name="TrimmedStatus">
+			<Run Text="IsTextTrimmed: " />
+			<Run x:Name="IsTextTrimmed" Text="{Binding ElementName=LongText, Path=IsTextTrimmed}" />
+		</TextBlock>
 	</StackPanel>
 </UserControl>
