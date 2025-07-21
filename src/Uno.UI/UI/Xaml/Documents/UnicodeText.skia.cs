@@ -55,25 +55,13 @@ internal readonly struct UnicodeText : IParsedText
 			EndIndex = startIndex + Text.Length;
 		}
 	}
+
 	// A BidiRun run split at line break boundaries
-	private readonly record struct BidiRun(ReadonlyInlineCopy inline, int startInInline, int endInInline, bool rtl) : IComparable<BidiRun>
-	{
-		public int CompareTo(BidiRun other)
-		{
-			if (this.inline != other.inline)
-			{
-				return this.inline.StartIndex - other.inline.StartIndex;
-			}
-			else
-			{
-				Debug.Assert(this.startInInline != other.startInInline);
-				return this.startInInline - other.startInInline;
-			}
-		}
-	}
+	private readonly record struct BidiRun(ReadonlyInlineCopy inline, int startInInline, int endInInline, bool rtl, FontDetails fontDetails);
 
 	// FontDetails might be different from inline.FontDetails because of font fallback
-	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyInlineCopy Inline, int inlineIndex, int startInInline, int end, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl);
+	// glyphs are always ordered LTR even in RTL text
+	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyInlineCopy Inline, int inlineIndex, int startInInline, int endInInline, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl);
 	private record LayoutedGlyphDetails(GlyphInfo info, GlyphPosition position, float xPosInRun, Cluster? cluster, LayoutedLineBrokenBidiRun parentRun)
 	{
 		public Cluster? cluster { get; set; } = cluster;
@@ -199,13 +187,50 @@ internal readonly struct UnicodeText : IParsedText
 			{
 				throw new InvalidOperationException("LibICU's ubidi_setLine returned an error: " + error);
 			}
+
 			var runs = new List<ShapedLineBrokenBidiRun>();
-			var c = lineBidi.CountRuns();
-			for (var i = 0; i < c; i++)
+			var runCount = lineBidi.CountRuns();
+			for (var runIndex = 0; runIndex < runCount; runIndex++)
 			{
-				var level = lineBidi.GetVisualRun(i, out var logicalStart, out var length);
+				var beginningIndexInRunList = runs.Count;
+				var level = lineBidi.GetVisualRun(runIndex, out var logicalStart, out var length);
 				Debug.Assert(level is BiDi.BiDiDirection.RTL or BiDi.BiDiDirection.LTR);
-				runs.Add(new ShapedLineBrokenBidiRun(inline, textElementIndex, lineStart + logicalStart, lineStart + logicalStart + length, ShapeRun(inline.Text[(lineStart + logicalStart)..(lineStart + logicalStart + length)], level is BiDi.BiDiDirection.RTL, inline.FontDetails.Font), inline.FontDetails, level is BiDi.BiDiDirection.RTL));
+
+				var currentFontDetails = inline.FontDetails;
+				var currentFontSplitStart = logicalStart;
+				for (var i = logicalStart; i < logicalStart + length; i += char.IsSurrogate(inline.Text, lineStart + i) ? 2 : 1)
+				{
+					FontDetails newFontDetails;
+					if (char.ConvertToUtf32(inline.Text, lineStart + i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
+					{
+						newFontDetails = SKFontManager.Default.MatchCharacter(codepoint) is { } fallbackTypeface
+							? FontDetailsCache.GetFont(fallbackTypeface.FamilyName, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle).details
+							: inline.FontDetails;
+					}
+					else
+					{
+						newFontDetails = inline.FontDetails;
+					}
+
+					if (newFontDetails != currentFontDetails)
+					{
+						if (i != logicalStart)
+						{
+							runs.Add(new ShapedLineBrokenBidiRun(inline, textElementIndex, lineStart + currentFontSplitStart, lineStart + i, ShapeRun(inline.Text[(lineStart + currentFontSplitStart)..(lineStart + i)], level is BiDi.BiDiDirection.RTL, currentFontDetails.Font), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+						}
+						currentFontDetails = newFontDetails;
+						currentFontSplitStart = i;
+					}
+				}
+				runs.Add(new ShapedLineBrokenBidiRun(inline, textElementIndex, lineStart + currentFontSplitStart, lineStart + logicalStart + length, ShapeRun(inline.Text[(lineStart + currentFontSplitStart)..(lineStart + logicalStart + length)], level is BiDi.BiDiDirection.RTL, currentFontDetails.Font), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+				// swap runs if rtl
+				if (level is BiDi.BiDiDirection.RTL)
+				{
+					for (var i = 0; i < (runs.Count - beginningIndexInRunList) / 2; i++)
+					{
+						(runs[beginningIndexInRunList + i], runs[^(1 + i)]) = (runs[^(1 + i)], runs[beginningIndexInRunList + i]);
+					}
+				}
 			}
 			ret.Add(runs);
 		}
@@ -213,18 +238,17 @@ internal readonly struct UnicodeText : IParsedText
 		return ret;
 	}
 
-	private static List<int> ApplyLineBreaking(ReadonlyInlineCopy inline, float firstLineWidth, float lineWidth, List<int> lineBreakingOpportunities, BidiRun[] logicallyOrderedRuns)
+	private static List<int> ApplyLineBreaking(ReadonlyInlineCopy inline, float firstLineWidth, float lineWidth, List<int> lineBreakingOpportunities, List<BidiRun> logicallyOrderedRuns)
 	{
 		var lineEnds = new List<int>();
 		var currentLineEnd = -1;
 		var nextLineBreakingOpportunityIndex = 0;
 		var nextLineBreakingOpportunity = lineBreakingOpportunities[0];
 		var remainingLineWidth = firstLineWidth;
-		for (var index = 0; index < logicallyOrderedRuns.Length;)
+		for (var index = 0; index < logicallyOrderedRuns.Count;)
 		{
 			var bidiRun = logicallyOrderedRuns[index];
-			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl,
-				inline.FontDetails.Font);
+			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
 			var runWidth = RunWidth(glyphs, inline.FontDetails);
 			if (remainingLineWidth >= runWidth)
 			{
@@ -249,7 +273,7 @@ internal readonly struct UnicodeText : IParsedText
 
 				// Find the maximal substring of this bidi run that can fit on the line
 				var partOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
-				var partOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[partOnThisLine.startInInline..partOnThisLine.endInInline], partOnThisLine.rtl, inline.FontDetails.Font);
+				var partOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[partOnThisLine.startInInline..partOnThisLine.endInInline], partOnThisLine.rtl, partOnThisLine.fontDetails.Font);
 				var partOnThisLineWidth = RunWidth(partOnThisLineGlyphs, inline.FontDetails);
 				if (partOnThisLineWidth > remainingLineWidth)
 				{
@@ -263,7 +287,7 @@ internal readonly struct UnicodeText : IParsedText
 					while (true)
 					{
 						var attemptPartOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
-						var attemptPartOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[attemptPartOnThisLine.startInInline..attemptPartOnThisLine.endInInline], attemptPartOnThisLine.rtl, inline.FontDetails.Font);
+						var attemptPartOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[attemptPartOnThisLine.startInInline..attemptPartOnThisLine.endInInline], attemptPartOnThisLine.rtl, attemptPartOnThisLine.fontDetails.Font);
 						var attemptPartOnThisLineWidth = RunWidth(attemptPartOnThisLineGlyphs, inline.FontDetails);
 						if (attemptPartOnThisLineWidth > remainingLineWidth)
 						{
@@ -316,19 +340,48 @@ internal readonly struct UnicodeText : IParsedText
 		return lineBreakingOpportunities;
 	}
 
-	private static BidiRun[] SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, BiDi bidi)
+	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, BiDi bidi)
 	{
 		var runCount = bidi.CountRuns();
-		var logicallyOrderedRuns = new BidiRun[runCount];
+		var logicallyOrderedRuns = new List<BidiRun>(runCount);
 		// TODO: paragraphs
-		for (var i = 0; i < runCount; i++)
+		for (var runIndex = 0; runIndex < runCount; runIndex++)
 		{
 			// using bidi.GetLogicalRun instead returned weird results especially in rtl text.
-			var level = bidi.GetVisualRun(i, out var logicalStart, out var length);
+			var level = bidi.GetVisualRun(runIndex, out var logicalStart, out var length);
 			Debug.Assert(level is BiDi.BiDiDirection.RTL or BiDi.BiDiDirection.LTR);
-			logicallyOrderedRuns[i] = new BidiRun(inline, logicalStart, logicalStart + length, level == BiDi.BiDiDirection.RTL);
+
+			var currentFontDetails = inline.FontDetails;
+			var currentFontSplitStart = logicalStart;
+			for (var i = logicalStart; i < logicalStart + length; i += char.IsSurrogate(inline.Text, i) ? 2 : 1)
+			{
+				FontDetails newFontDetails;
+				if (char.ConvertToUtf32(inline.Text, i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
+				{
+					newFontDetails = SKFontManager.Default.MatchCharacter(codepoint) is { } fallbackTypeface
+						? FontDetailsCache.GetFont(fallbackTypeface.FamilyName, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle).details
+						: inline.FontDetails;
+				}
+				else
+				{
+					newFontDetails = inline.FontDetails;
+				}
+
+				if (newFontDetails != currentFontDetails)
+				{
+					if (i != logicalStart)
+					{
+						logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, i, level == BiDi.BiDiDirection.RTL, currentFontDetails));
+					}
+					currentFontDetails = newFontDetails;
+					currentFontSplitStart = i;
+				}
+			}
+			logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, logicalStart + length, level == BiDi.BiDiDirection.RTL, currentFontDetails));
 		}
-		Array.Sort(logicallyOrderedRuns);
+
+		logicallyOrderedRuns.Sort((run, bidiRun) => run.startInInline - bidiRun.startInInline);
+
 #if DEBUG
 		Debug.Assert(logicallyOrderedRuns[0].startInInline == 0);
 		for (var i = 0; i < runCount - 1; i++)
@@ -337,6 +390,7 @@ internal readonly struct UnicodeText : IParsedText
 		}
 		Debug.Assert(logicallyOrderedRuns[^1].endInInline != logicallyOrderedRuns[^1].startInInline && logicallyOrderedRuns[^1].endInInline == inline.Text.Length);
 #endif
+
 		return logicallyOrderedRuns;
 	}
 
@@ -373,7 +427,7 @@ internal readonly struct UnicodeText : IParsedText
 				var run = line[runIndex];
 				float runX = 0;
 				var glyphs = new LayoutedGlyphDetails[run.glyphs.Length];
-				var layoutedRun = new LayoutedLineBrokenBidiRun(run.Inline, run.inlineIndex, run.startInInline, run.end, currentLineX, currentLineY, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
+				var layoutedRun = new LayoutedLineBrokenBidiRun(run.Inline, run.inlineIndex, run.startInInline, run.endInInline, currentLineX, currentLineY, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
 				layoutedRuns.Add(layoutedRun);
 				for (var i = 0; i < glyphs.Length; i++)
 				{
@@ -419,11 +473,9 @@ internal readonly struct UnicodeText : IParsedText
 					{
 						continue;
 					}
-					var (startGlyphIndex, endGlyphIndex) = (index, previousCluster?.glyphInRunIndexStart ?? runGlyphLength);
-					if (run.rtl)
-					{
-						(startGlyphIndex, endGlyphIndex) = (endGlyphIndex, startGlyphIndex);
-					}
+					var (startGlyphIndex, endGlyphIndex) = run.rtl
+						? (previousCluster?.glyphInRunIndexEnd ?? 0, index + 1)
+						: (index, previousCluster?.glyphInRunIndexStart ?? runGlyphLength);
 					var cluster = new Cluster(runStart + (int)glyphDetails.info.Cluster, previousCluster?.sourceTextStart ?? (runStart + runLength), run, startGlyphIndex, endGlyphIndex);
 					glyphDetails.cluster = cluster;
 					previousCluster = cluster;
@@ -457,7 +509,7 @@ internal readonly struct UnicodeText : IParsedText
 					}
 
 					textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
-					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.lineHeight, new SKPaint { Color = SKColors.Red });
+					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.lineHeight - run.fontDetails.SKFontMetrics.Descent, new SKPaint { Color = SKColors.Red });
 					currentLineX += run.width;
 				}
 			}
