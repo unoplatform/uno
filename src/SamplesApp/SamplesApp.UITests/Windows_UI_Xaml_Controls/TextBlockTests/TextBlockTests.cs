@@ -436,26 +436,26 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 		[AutoRetry]
 		public void When_Overflow_MaxLines_IsTextTrimmed_Changed()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_IsTextTrimmed");
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_IsTextTrimmed");
 
-			var run = _app.Marked("IsTextTrimmed");
 			var slider = _app.Marked("WidthSlider");
+			var tb = _app.Marked("LongText");
 
 			slider.SetDependencyPropertyValue("Value", "3");
-			var text = run.GetDependencyPropertyValue<bool>("Text");
-			text.Should().BeTrue();
+			var isTextTrimmed = tb.GetDependencyPropertyValue<bool>("IsTextTrimmed");
+			isTextTrimmed.Should().BeTrue();
 
 			slider.SetDependencyPropertyValue("Value", "23");
-			text = run.GetDependencyPropertyValue<bool>("Text");
-			text.Should().BeFalse();
+			isTextTrimmed = tb.GetDependencyPropertyValue<bool>("IsTextTrimmed");
+			isTextTrimmed.Should().BeFalse();
 
 			slider.SetDependencyPropertyValue("Value", "10");
-			text = run.GetDependencyPropertyValue<bool>("Text");
-			text.Should().BeTrue();
+			isTextTrimmed = tb.GetDependencyPropertyValue<bool>("IsTextTrimmed");
+			isTextTrimmed.Should().BeTrue();
 
 			slider.SetDependencyPropertyValue("Value", "0");
-			text = run.GetDependencyPropertyValue<bool>("Text");
-			text.Should().BeFalse();
+			isTextTrimmed = tb.GetDependencyPropertyValue<bool>("IsTextTrimmed");
+			isTextTrimmed.Should().BeFalse();
 		}
 
 		[Test]
