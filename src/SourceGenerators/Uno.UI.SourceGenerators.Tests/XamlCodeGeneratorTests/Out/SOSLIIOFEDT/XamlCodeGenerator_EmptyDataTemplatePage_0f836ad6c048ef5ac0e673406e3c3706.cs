@@ -165,28 +165,40 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 1, 3);
 			__p1.CreationComplete();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject { get; set; }
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubjectBackingPseudoField { get; set; }
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject
+		{
+			get => _ButtonWithEmptyDataTemplateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		}
 		private global::Microsoft.UI.Xaml.Controls.Button ButtonWithEmptyDataTemplate
 		{
-			get => (global::Microsoft.UI.Xaml.Controls.Button)(_ButtonWithEmptyDataTemplateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
-			set => (_ButtonWithEmptyDataTemplateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_ButtonWithEmptyDataTemplateSubject.ElementInstance;
+			set => _ButtonWithEmptyDataTemplateSubject.ElementInstance = value;
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706_TestReproEmptyDataTemplatePage
 		{
 		}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_HolderBackingPseudoField { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder
+			{
+				get => _component_0_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			}
 			private global::Microsoft.UI.Xaml.Controls.ListView _component_0
 			{
-				get => (global::Microsoft.UI.Xaml.Controls.ListView)(_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
-				set => (_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
+				get => (global::Microsoft.UI.Xaml.Controls.ListView)_component_0_Holder.Instance;
+				set => _component_0_Holder.Instance = value;
 			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_HolderBackingPseudoField { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder
+			{
+				get => _component_1_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			}
 			private global::Microsoft.UI.Xaml.Controls.Page _component_1
 			{
-				get => (global::Microsoft.UI.Xaml.Controls.Page)(_component_1_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
-				set => (_component_1_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
+				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
+				set => _component_1_Holder.Instance = value;
 			}
 		private interface IEmptyDataTemplatePage_Bindings
 		{
