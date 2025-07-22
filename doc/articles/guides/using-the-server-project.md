@@ -4,7 +4,7 @@ uid: Uno.Guides.UsingTheServerProject
 
 # The ASP.NET Core Server Project
 
-As part of the uno platform templates, the server option is provided to allow the hosting of both an API server as well as a WebAssembly app. This allows to create an API and endpoints. It can also be used as the data server and you can also choose to implement the authentication server code in it.
+As part of the uno platform templates, the server option is provided to allow the hosting of both an API server as well as a WebAssembly app. This allows you to create an API and endpoints. It can also be used as the data server and you can also choose to implement the authentication server code in it.
 
 You will find [more information](xref:Uno.GettingStarted.UsingWizard#server) on how to use it from the solution wizard or `dotnet new` templates.
 
@@ -43,7 +43,7 @@ Launching with the debugger is pending on [this issue](https://github.com/unopla
 - Select the "ReplaceMe.Server" project in the top right debugger selector
 - Start the app
 
-> ![Important]
+> ![IMPORTANT]
 > WebAssembly Debugging is [not yet supported](https://github.com/unoplatform/uno/issues/15226) in Rider.
 > [!IMPORTANT]
 > See the section below on HTTPS to ensure that debugging works properly
@@ -53,10 +53,10 @@ Launching with the debugger is pending on [this issue](https://github.com/unopla
 As the app will run with https by default, you will get an error about "Mixed Content" not being supported.
 
 To fix this when using Chrome or Edge:
-- When the browser window opens for the first time, open click on the keylock or section at the left of the address bar
+- When the browser window opens for the first time, click on the keylock or section at the left of the address bar
   ![The security popup window with security options](../Assets/uno-guide-server-mixed-content-enable.png)
 - Click the **Permissions for this site** option
-- In the window that opened, search for **Insecure content** the select **Allow**. This will enable Hot Reload and Hot Design for this specific url/port.
+- In the window that opened, search for **Insecure content** then select **Allow**. This will enable Hot Reload and Hot Design for this specific url/port.
   ![Allow mixed content option](../Assets/uno-guide-server-mixed-content-allowed.png)
 - Close the browser window, ensure that the debugger has stopped in your IDE
 
