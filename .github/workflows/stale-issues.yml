@@ -24,7 +24,7 @@ jobs:
           days-before-issue-stale: 365
           days-before-issue-close: 10
 
-          operations-per-run: 10
+          operations-per-run: 100
 
           # Flag older Issues first
           ascending: true
