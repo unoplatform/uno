@@ -304,23 +304,35 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);
 			__p1.CreationComplete();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject { get; set; }
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubjectBackingPseudoField { get; set; }
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject
+		{
+			get => _NarrowStateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		}
 		private global::Microsoft.UI.Xaml.VisualState NarrowState
 		{
-			get => (global::Microsoft.UI.Xaml.VisualState)(_NarrowStateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
-			set => (_NarrowStateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
+			get => (global::Microsoft.UI.Xaml.VisualState)_NarrowStateSubject.ElementInstance;
+			set => _NarrowStateSubject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject { get; set; }
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubjectBackingPseudoField { get; set; }
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject
+		{
+			get => _TheListViewSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		}
 		private global::Microsoft.UI.Xaml.Controls.ListView TheListView
 		{
-			get => (global::Microsoft.UI.Xaml.Controls.ListView)(_TheListViewSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
-			set => (_TheListViewSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
+			get => (global::Microsoft.UI.Xaml.Controls.ListView)_TheListViewSubject.ElementInstance;
+			set => _TheListViewSubject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject { get; set; }
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubjectBackingPseudoField { get; set; }
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject
+		{
+			get => _WideStateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		}
 		private global::Microsoft.UI.Xaml.VisualState WideState
 		{
-			get => (global::Microsoft.UI.Xaml.VisualState)(_WideStateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
-			set => (_WideStateSubject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
+			get => (global::Microsoft.UI.Xaml.VisualState)_WideStateSubject.ElementInstance;
+			set => _WideStateSubject.ElementInstance = value;
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
@@ -385,11 +397,15 @@ namespace TestRepro
 					}
 					return __rootInstance;
 				}
-					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; }
+					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_HolderBackingPseudoField { get; set; }
+					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder
+					{
+						get => _component_0_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+					}
 					private global::Microsoft.UI.Xaml.Controls.Button _component_0
 					{
-						get => (global::Microsoft.UI.Xaml.Controls.Button)(_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
-						set => (_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
+						get => (global::Microsoft.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
+						set => _component_0_Holder.Instance = value;
 					}
 				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
@@ -486,17 +502,25 @@ namespace TestRepro
 				}
 			}
 		}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_HolderBackingPseudoField { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder
+			{
+				get => _component_0_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			}
 			private global::Microsoft.UI.Xaml.Controls.ListView _component_0
 			{
-				get => (global::Microsoft.UI.Xaml.Controls.ListView)(_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
-				set => (_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
+				get => (global::Microsoft.UI.Xaml.Controls.ListView)_component_0_Holder.Instance;
+				set => _component_0_Holder.Instance = value;
 			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_HolderBackingPseudoField { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder
+			{
+				get => _component_1_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			}
 			private global::Microsoft.UI.Xaml.Controls.Page _component_1
 			{
-				get => (global::Microsoft.UI.Xaml.Controls.Page)(_component_1_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
-				set => (_component_1_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
+				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
+				set => _component_1_Holder.Instance = value;
 			}
 		private interface IMainPage_Bindings
 		{
