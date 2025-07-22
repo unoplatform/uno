@@ -2,7 +2,6 @@
  <img align=center width="25%" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png" />
 </h1>
 
-
 ## **Pixel-Perfect. Multi-Platform. C# & Windows XAML. Today.**
 
 [![NuGet](https://img.shields.io/nuget/v/uno.sdk.svg?style=flat&color=159bff)](https://www.nuget.org/packages/uno.sdk/)
@@ -16,6 +15,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
 # What is the Uno Platform?
+
 The Uno Platform is an Open-source platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
 
 It allows C# and WinUI XAML and/or C# code to run on all target platforms, while allowing you to control every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinUI APIs, such as **Microsoft.UI.Xaml** to build your UI, and WinRT to get cross platform access to non-UI APIs (sensors, file system, devices, etc...), to enable WinUI applications to run on all platforms with native performance.
@@ -34,6 +34,7 @@ For a larger example and features demo:
 * Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser.
 
 # Uno Platform Features
+
 * Supported platforms:
     * Windows 10 and Windows 11
     * Windows 7 (via Skia Desktop)
@@ -47,7 +48,7 @@ For a larger example and features demo:
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS, and Android.
 * Cross Platform Controls:
     * [Control Templating](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/control-templates)
-    * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
+    * [Data Templating](https://learn.microsoft.com/windows/uwp/data-binding)
     * [Styling](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-styles)
     * [Rich Animations](https://learn.microsoft.com/windows/uwp/design/motion/xaml-animation)
     * [Composition API](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/composition)
@@ -65,7 +66,7 @@ For a larger example and features demo:
     * [ColorCode-Universal](https://github.com/unoplatform/uno.ColorCode-Universal)
     * [LibVLCSharp](https://github.com/videolan/libvlcsharp)
     * [MapsUI](https://github.com/Mapsui/Mapsui)
-    * [LiveCharts](https://github.com/beto-rodriguez/LiveCharts2)
+    * [LiveCharts2](https://github.com/beto-rodriguez/LiveCharts2)
     * Any WinUI project
 * Responsive Design:
     * [Visual State Manager](https://learn.microsoft.com/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
@@ -74,7 +75,7 @@ For a larger example and features demo:
 * Platform Specific:
     * Native controls and properties via [conditional XAML](doc/articles/platform-specific-xaml.md)
     * Any of the existing Xamarin iOS/Android libraries available
-
+<!--TODO: Add Information about the v6 SkiaRenderer Feature and Hot Design? -->
 # Live WebAssembly Apps
 
 Here's a list of live apps made with the Uno Platform for WebAssembly.
@@ -82,7 +83,10 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 * The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/unoplatform/uno.Playground)).
 * The [Uno Gallery](https://gallery.platform.uno) demonstrates the use of Fluent and Material guidelines.
 * The [NuGet Package Explorer](https://nuget.info) ([Source](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)).
-* The [Uno Calculator](https://calculator.platform.uno), a simple yet powerful iOS/Android/WebAssembly C# port of the calculator that ships with Windows ([Source](https://github.com/unoplatform/calculator)). Also try the [iOS version](https://apps.apple.com/app/id1464736591),  the [Android version](https://play.google.com/store/apps/details?id=uno.platform.calculator) and [Linux version](https://snapcraft.io/uno-calculator).
+* The [Uno Calculator](https://calculator.platform.uno), a simple yet powerful iOS/Android/WebAssembly C# port of the calculator that ships with Windows ([Source](https://github.com/unoplatform/calculator)), but is also available on other Platforms:
+    * [iOS version](https://apps.apple.com/app/id1464736591)
+    * [Android version](https://play.google.com/store/apps/details?id=uno.platform.calculator)
+    * [Linux version](https://snapcraft.io/uno-calculator).
 * The [Community Toolkit Labs App](https://toolkitlabs.dev/)
 * [SkiaSharp fork for the Uno Platform](https://skiasharp-wasm.platform.uno/), Skia is a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library ([Source](https://github.com/unoplatform/Uno.SkiaSharp)).
 * The [Uno.WindowsCommunityToolkit](https://windowstoolkit-wasm.platform.uno/) ([Source](https://github.com/unoplatform/uno.WindowsCommunityToolkit)).
@@ -106,6 +110,7 @@ Contribute to Uno in your browser using [GitPod.io](https://gitpod.io), follow [
  [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno)
 
 # Contributors
+
 Thanks go to these wonderful people (List made with [contrib.rocks](https://contrib.rocks)):
 
 [![Uno Platform Contributors](https://contrib.rocks/image?repo=unoplatform/uno&max=500)](https://github.com/unoplatform/uno/graphs/contributors)
