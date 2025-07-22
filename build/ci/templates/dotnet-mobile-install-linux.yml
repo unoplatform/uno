@@ -21,16 +21,7 @@ steps:
       UnoCheckParameters: ${{ parameters.UnoCheckParameters }}
 
   - bash: |
-      set -o xtrace
-      echo "env vars"
-      set
-      echo "% " dotnet --version
-      dotnet --version
-      echo "% " dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json
-      dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json -v diag
-      echo PATH=$PATH
-      echo which uno-check=`which uno-check`
-      echo "% " uno-check --verbose --ci --non-interactive --fix --skip gtk3 --skip dotnetnewunotemplates --skip androidemulator --skip maui --skip unosdk --pre-major ${{ parameters.UnoCheckParameters }}
+      dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json
       uno-check --verbose --ci --non-interactive --fix --skip gtk3 --skip dotnetnewunotemplates --skip androidemulator --skip maui --skip unosdk --pre-major ${{ parameters.UnoCheckParameters }}
     displayName: Install .NET Workloads
     retryCountOnTaskFailure: 3

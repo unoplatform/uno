@@ -18,7 +18,7 @@ jobs:
   cancelTimeoutInMinutes: 1
 
   pool:
-    vmImage: ${{ parameters.vmLinuxPool }}
+    vmImage: ${{ parameters.vmLinuxImage }}
 
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
