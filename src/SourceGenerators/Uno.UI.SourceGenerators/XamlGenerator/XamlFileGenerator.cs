@@ -836,10 +836,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			foreach (var backingFieldDefinition in CurrentScope.BackingFields.Distinct().OrderBy(f => f.Name, StringComparer.Ordinal))
 			{
-				var sanitizedFieldName = SanitizeResourceName(backingFieldDefinition.Name);
-				if (sanitizedFieldName != null)
+				var fieldName = SanitizeResourceName(backingFieldDefinition.Name);
+				if (fieldName != null)
 				{
-					CurrentScope.ReferencedElementNames.Remove(sanitizedFieldName);
+					CurrentScope.ReferencedElementNames.Remove(fieldName);
 				}
 
 				if (_isHotReloadEnabled)
@@ -847,22 +847,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// We use a property for HR so we can remove them without causing rude edit.
 					// We also avoid property initializer as they are known to cause issue with HR: https://github.com/dotnet/roslyn/issues/79320
 					writer.AppendMultiLineIndented($$"""
-						private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{sanitizedFieldName}}Subject { get; set; }
-						{{FormatAccessibility(backingFieldDefinition.Accessibility)}} {{backingFieldDefinition.GlobalizedTypeName}} {{sanitizedFieldName}}
+						private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{fieldName}}SubjectBackingPseudoField { get; set; }
+						private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{fieldName}}Subject
 						{
-							get => ({{backingFieldDefinition.GlobalizedTypeName}})(_{{sanitizedFieldName}}Subject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance;
-							set => (_{{sanitizedFieldName}}Subject ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject()).ElementInstance = value;
+							get => _{{fieldName}}SubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+						}
+						{{FormatAccessibility(backingFieldDefinition.Accessibility)}} {{backingFieldDefinition.GlobalizedTypeName}} {{fieldName}}
+						{
+							get => ({{backingFieldDefinition.GlobalizedTypeName}})_{{fieldName}}Subject.ElementInstance;
+							set => _{{fieldName}}Subject.ElementInstance = value;
 						}
 						""");
 				}
 				else
 				{
 					writer.AppendMultiLineIndented($$"""
-						private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{sanitizedFieldName}}Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-						{{FormatAccessibility(backingFieldDefinition.Accessibility)}} {{backingFieldDefinition.GlobalizedTypeName}} {{sanitizedFieldName}}
+						private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{fieldName}}Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+						{{FormatAccessibility(backingFieldDefinition.Accessibility)}} {{backingFieldDefinition.GlobalizedTypeName}} {{fieldName}}
 						{
-							get => ({{backingFieldDefinition.GlobalizedTypeName}})_{{sanitizedFieldName}}Subject.ElementInstance;
-							set => _{{sanitizedFieldName}}Subject.ElementInstance = value;
+							get => ({{backingFieldDefinition.GlobalizedTypeName}})_{{fieldName}}Subject.ElementInstance;
+							set => _{{fieldName}}Subject.ElementInstance = value;
 						}
 						""");
 				}
@@ -1210,11 +1214,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// We use a property for HR so we can remove them without causing rude edit.
 					// We also avoid property initializer as they are known to cause issue with HR: https://github.com/dotnet/roslyn/issues/79320
 					writer.AppendMultiLineIndented($$"""
-						private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder { get; set; }
+						private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_HolderBackingPseudoField { get; set; }
+						private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder
+						{
+							get => {{componentName}}_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}});
+						}
 						private {{typeName}} {{componentName}}
 						{
-							get => ({{typeName}})({{componentName}}_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}})).Instance;
-							set => ({{componentName}}_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}})).Instance = value;
+							get => ({{typeName}}){{componentName}}_Holder.Instance;
+							set => {{componentName}}_Holder.Instance = value;
 						}
 					""");
 				}
@@ -6367,6 +6375,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| hasLoadMarkup)
 			{
 				var nameMember = FindMember(definition, "Name");
+				var nameField = nameMember is { Value: string name } ? SanitizeResourceName(name) : null;
 
 				var elementStubBaseType = Generation.ElementStubSymbol.Value.BaseType;
 				if (!(targetType?.Is(elementStubBaseType) ?? false))
@@ -6414,7 +6423,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							// Set the element name to the stub, then when the stub will be replaced
 							// the actual target control will override it.
 							innerWriter.AppendLineIndented(
-								$"_{nameMember.Value}Subject.ElementInstance = {innerWriter.AppliedParameterName};"
+								$"_{nameField}Subject.ElementInstance = {innerWriter.AppliedParameterName};"
 							);
 						}
 
