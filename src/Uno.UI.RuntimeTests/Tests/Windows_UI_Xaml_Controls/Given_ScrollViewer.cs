@@ -1481,7 +1481,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
 		[RunsOnUIThread]
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
