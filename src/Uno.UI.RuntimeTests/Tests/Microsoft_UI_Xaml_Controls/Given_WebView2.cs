@@ -336,7 +336,7 @@ public class Given_WebView2
 			};
 			webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
 			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
-			await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
+			await TestServices.WindowHelper.WaitFor(() => !string.IsNullOrEmpty(message), 2000);
 
 			if (RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaX11) // On X11 we double escape. This makes sense because in site.js, we stringify a string. Other webkit-based implementations get this wrong
 			{
