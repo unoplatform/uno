@@ -22,8 +22,14 @@ steps:
 
   - bash: |
       set -o xtrace
+      echo "env vars"
+      set
       echo "% " dotnet --version
       dotnet --version
+      wget https://www.nuget.org/api/v2/package/System.CommandLine/2.0.0-beta5.25306.1 -O hack.zip
+      unzip hack.zip lib/net8.0/System.CommandLine.dll
+      mv /agent/_work/1/s/.dotnet/sdk/10.0.100-preview.6.25358.103/System.CommandLine{.dll,.dll.bk}
+      mv lib/net8.0/System.CommandLine.dll /agent/_work/1/s/.dotnet/sdk/10.0.100-preview.6.25358.103/System.CommandLine.dll
       echo "% " dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json
       dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json -v diag
       echo PATH=$PATH
