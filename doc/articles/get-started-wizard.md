@@ -5,7 +5,7 @@ uid: Uno.GetStarted.Wizard
 <!-- markdownlint-disable MD026 -->
 # Welcome! Important Next Steps
 
-Create a simple cross-platform Counter application. (Time to complete < 5 min) 
+Create a simple cross-platform Counter application. (Time to complete < 5 min)
 
 <!-- markdownlint-disable MD001 -->
 
@@ -26,7 +26,7 @@ Use Hot Design (visual designer) to design and develop the app.
 </div>
 </div>
 
-Prefer to start from code? Choose one of the 4 variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX). 
+Prefer to start from code? Choose one of the 4 variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX).
 
 #### XAML + MVUX
 
