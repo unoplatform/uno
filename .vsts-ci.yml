@@ -53,7 +53,7 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   windows2019HostedVMImage: 'windows-2019'
   windows2022HostedVMImage: 'windows-2022'
-  windowsScaledPool: 'Windows2022-20241021-1'
+  windowsScaledPool: 'Windows2022-20250720-1'
   linuxVMImage: 'ubuntu-22.04'
   linuxScaledPool: 'Ubuntu2204-20230918'
   macOSVMImage: 'macOS-15'
