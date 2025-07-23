@@ -254,80 +254,91 @@ internal readonly struct UnicodeText : IParsedText
 		for (var index = 0; stack.Count > 0 || index < logicallyOrderedRuns.Count;)
 		{
 			var bidiRun = stack.Count > 0 ? stack.Pop() : logicallyOrderedRuns[index++];
-			var nextLineBreakingOpportunityIsLineBreak = IsLineBreak(bidiRun.inline.Text, nextLineBreakingOpportunity);
-			if (bidiRun.endInInline > nextLineBreakingOpportunity && nextLineBreakingOpportunityIsLineBreak)
+			var testLineBreakingOpportunityIndex = nextLineBreakingOpportunityIndex;
+			// TODO: could we get away with something faster?
+			while (testLineBreakingOpportunityIndex < bidiRun.endInInline && testLineBreakingOpportunityIndex < lineBreakingOpportunities.Count - 1)
 			{
-				stack.Push(bidiRun with { startInInline = nextLineBreakingOpportunity });
-				stack.Push(bidiRun with { endInInline = nextLineBreakingOpportunity });
-			}
-			else
-			{
-				var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
-				var runWidth = RunWidth(glyphs, inline.FontDetails);
-				if (remainingLineWidth >= runWidth)
+				var testLineBreakingOpportunity = lineBreakingOpportunities[testLineBreakingOpportunityIndex];
+				if (IsLineBreak(bidiRun.inline.Text, testLineBreakingOpportunity))
 				{
-					currentLineEnd = bidiRun.endInInline;
-					remainingLineWidth -= runWidth;
-
-					while (nextLineBreakingOpportunity <= bidiRun.endInInline && nextLineBreakingOpportunityIndex < lineBreakingOpportunities.Count - 1)
-					{
-						if (nextLineBreakingOpportunityIsLineBreak)
-						{
-							currentLineEnd = nextLineBreakingOpportunity;
-							MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
-						}
-
-						nextLineBreakingOpportunityIndex++;
-						nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
-
-						if (nextLineBreakingOpportunityIsLineBreak)
-						{
-							break;
-						}
-					}
-				}
-				else if (currentLineEnd != -1 && bidiRun.endInInline <= nextLineBreakingOpportunity)
-				{
-					MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
+					stack.Push(bidiRun with { startInInline = testLineBreakingOpportunity });
+					bidiRun = bidiRun with { endInInline = testLineBreakingOpportunity };
+					break;
 				}
 				else
 				{
-					// TODO: end-of-line space hanging
+					testLineBreakingOpportunityIndex++;
+				}
+			}
 
-					// Find the maximal substring of this bidi run that can fit on the line
-					var partOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
-					var partOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[partOnThisLine.startInInline..partOnThisLine.endInInline], partOnThisLine.rtl, partOnThisLine.fontDetails.Font);
-					var partOnThisLineWidth = RunWidth(partOnThisLineGlyphs, inline.FontDetails);
-					if (partOnThisLineWidth > remainingLineWidth)
+			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+			var runWidth = RunWidth(glyphs, inline.FontDetails);
+			if (remainingLineWidth >= runWidth)
+			{
+				currentLineEnd = bidiRun.endInInline;
+				remainingLineWidth -= runWidth;
+
+				while (nextLineBreakingOpportunity <= bidiRun.endInInline && nextLineBreakingOpportunityIndex < lineBreakingOpportunities.Count - 1)
+				{
+					var nextLineBreakingOpportunityIsLineBreak = IsLineBreak(bidiRun.inline.Text, nextLineBreakingOpportunity);
+					if (nextLineBreakingOpportunityIsLineBreak)
 					{
+						currentLineEnd = nextLineBreakingOpportunity;
 						MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
 					}
-					else
-					{
-						nextLineBreakingOpportunityIndex++;
-						nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
 
-						while (true)
+					nextLineBreakingOpportunityIndex++;
+					nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
+
+					if (nextLineBreakingOpportunityIsLineBreak)
+					{
+						break;
+					}
+				}
+			}
+			else if (currentLineEnd != -1 && bidiRun.endInInline <= nextLineBreakingOpportunity)
+			{
+				MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
+				stack.Push(bidiRun);
+			}
+			else
+			{
+				// TODO: end-of-line space hanging
+
+				// Find the maximal substring of this bidi run that can fit on the line
+				var partOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
+				var partOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[partOnThisLine.startInInline..partOnThisLine.endInInline], partOnThisLine.rtl, partOnThisLine.fontDetails.Font);
+				var partOnThisLineWidth = RunWidth(partOnThisLineGlyphs, inline.FontDetails);
+				if (currentLineEnd != -1 && partOnThisLineWidth > remainingLineWidth)
+				{
+					MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
+					stack.Push(bidiRun);
+				}
+				else
+				{
+					nextLineBreakingOpportunityIndex++;
+					nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
+
+					while (true)
+					{
+						var attemptPartOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
+						var attemptPartOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[attemptPartOnThisLine.startInInline..attemptPartOnThisLine.endInInline], attemptPartOnThisLine.rtl, attemptPartOnThisLine.fontDetails.Font);
+						var attemptPartOnThisLineWidth = RunWidth(attemptPartOnThisLineGlyphs, inline.FontDetails);
+						if (attemptPartOnThisLineWidth > remainingLineWidth)
 						{
-							var attemptPartOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
-							var attemptPartOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[attemptPartOnThisLine.startInInline..attemptPartOnThisLine.endInInline], attemptPartOnThisLine.rtl, attemptPartOnThisLine.fontDetails.Font);
-							var attemptPartOnThisLineWidth = RunWidth(attemptPartOnThisLineGlyphs, inline.FontDetails);
-							if (attemptPartOnThisLineWidth > remainingLineWidth)
-							{
-								break;
-							}
-							else
-							{
-								partOnThisLine = attemptPartOnThisLine;
-								nextLineBreakingOpportunityIndex++;
-								nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
-							}
+							break;
 						}
-
-						currentLineEnd = partOnThisLine.endInInline;
-						MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
-						stack.Push(bidiRun with { startInInline = partOnThisLine.endInInline });
+						else
+						{
+							partOnThisLine = attemptPartOnThisLine;
+							nextLineBreakingOpportunityIndex++;
+							nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
+						}
 					}
+
+					currentLineEnd = partOnThisLine.endInInline;
+					MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
+					stack.Push(bidiRun with { startInInline = partOnThisLine.endInInline });
 				}
 			}
 		}
