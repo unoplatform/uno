@@ -14,6 +14,7 @@ using System.Diagnostics.CodeAnalysis;
 
 #if __ANDROID__
 using Android.OS;
+using Environment = global::System.Environment;
 #endif
 
 namespace Windows.Globalization;
