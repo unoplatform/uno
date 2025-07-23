@@ -594,15 +594,29 @@ internal readonly struct UnicodeText : IParsedText
 
 			if (line.runs[0] is var firstRun && firstRun.x > p.X)
 			{
-				return extendedSelection
-					? firstRun.inline.StartIndex + (firstRun.rtl ? firstRun.inInlineIndexEnd : firstRun.inline.StartIndex)
-					: -1;
+				if (!extendedSelection)
+				{
+					return -1;
+				}
+				else
+				{
+					return _rtl
+						? firstRun.inInlineIndexEnd + firstRun.inline.StartIndex - TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.inInlineIndexStart, firstRun.inInlineIndexEnd)
+						: firstRun.inInlineIndexStart + firstRun.inline.StartIndex;
+				}
 			}
 			if (line.runs[^1] is var lastRun && lastRun.x + lastRun.width < p.X)
 			{
-				return extendedSelection
-					? lastRun.inline.StartIndex + (lastRun.rtl ? firstRun.inline.StartIndex : firstRun.inInlineIndexEnd)
-					: -1;
+				if (!extendedSelection)
+				{
+					return -1;
+				}
+				else
+				{
+					return _rtl
+						? lastRun.inline.StartIndex + lastRun.inInlineIndexStart
+						: lastRun.inline.StartIndex + lastRun.inInlineIndexEnd - TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.inInlineIndexStart, firstRun.inInlineIndexEnd);
+				}
 			}
 
 			foreach (var run in line.runs)
@@ -634,6 +648,18 @@ internal readonly struct UnicodeText : IParsedText
 	public (int start, int length) GetWordAt(int index, bool right) => throw new System.NotImplementedException();
 
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index) => throw new System.NotImplementedException();
+
+	private static int TrailingWhiteSpaceCount(string str, int start, int end)
+	{
+		for (var i = end - 1; i >= start; i--)
+		{
+			if (str[i] != ' ' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n')
+			{
+				return end - 1 - i;
+			}
+		}
+		return end - start;
+	}
 
 	private static bool IsLineBreak(string text, int indexAfterLineBreakOpportunity)
 	{
