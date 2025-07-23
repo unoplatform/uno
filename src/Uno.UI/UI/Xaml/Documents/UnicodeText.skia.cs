@@ -568,6 +568,7 @@ internal readonly struct UnicodeText : IParsedText
 
 	public int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection)
 	{
+		// TODO: ignoreEndingSpace
 		if (_lines.Count == 0 || p.Y < 0)
 		{
 			return extendedSelection ? 0 : -1;
@@ -591,16 +592,17 @@ internal readonly struct UnicodeText : IParsedText
 				return extendedSelection ? _textLength : -1;
 			}
 
-			// TODO: rethink of a cleaner and faster way to do this
-			if (line.runs[0] is var firstRun && line.runs[^1] is var lastRun && (firstRun.x > p.X || lastRun.x + lastRun.width < p.X))
+			if (line.runs[0] is var firstRun && firstRun.x > p.X)
 			{
-				if (!extendedSelection)
-				{
-					return 0;
-				}
-				return _rtl && firstRun.x > p.X || !_rtl && lastRun.x + lastRun.width < p.X
-					? line.runs.Max(r => r.inInlineIndexEnd + r.inline.StartIndex)
-					: line.runs.Min(r => r.inInlineIndexStart + r.inline.StartIndex);
+				return extendedSelection
+					? firstRun.inline.StartIndex + (firstRun.rtl ? firstRun.inInlineIndexEnd : firstRun.inline.StartIndex)
+					: -1;
+			}
+			if (line.runs[^1] is var lastRun && lastRun.x + lastRun.width < p.X)
+			{
+				return extendedSelection
+					? lastRun.inline.StartIndex + (lastRun.rtl ? firstRun.inline.StartIndex : firstRun.inInlineIndexEnd)
+					: -1;
 			}
 
 			foreach (var run in line.runs)
@@ -617,7 +619,7 @@ internal readonly struct UnicodeText : IParsedText
 					if (globalGlyphX <= p.X && globalGlyphX + width >= p.X)
 					{
 						var closerToLeft = p.X - globalGlyphX < globalGlyphX + width - p.X;
-						return closerToLeft && !run.rtl || !closerToLeft && run.rtl ? glyph.cluster!.sourceTextStart : glyph.cluster!.sourceTextEnd;
+						return (closerToLeft && !run.rtl) || (!closerToLeft && run.rtl) ? glyph.cluster!.sourceTextStart : glyph.cluster!.sourceTextEnd;
 					}
 				}
 			}
