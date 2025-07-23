@@ -250,65 +250,84 @@ internal readonly struct UnicodeText : IParsedText
 		var nextLineBreakingOpportunityIndex = 0;
 		var nextLineBreakingOpportunity = lineBreakingOpportunities[0];
 		var remainingLineWidth = firstLineWidth;
-		for (var index = 0; index < logicallyOrderedRuns.Count;)
+		var stack = new Stack<BidiRun>();
+		for (var index = 0; stack.Count > 0 || index < logicallyOrderedRuns.Count;)
 		{
-			var bidiRun = logicallyOrderedRuns[index];
-			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
-			var runWidth = RunWidth(glyphs, inline.FontDetails);
-			if (remainingLineWidth >= runWidth)
+			var bidiRun = stack.Count > 0 ? stack.Pop() : logicallyOrderedRuns[index++];
+			var nextLineBreakingOpportunityIsLineBreak = IsLineBreak(bidiRun.inline.Text, nextLineBreakingOpportunity);
+			if (bidiRun.endInInline > nextLineBreakingOpportunity && nextLineBreakingOpportunityIsLineBreak)
 			{
-				currentLineEnd = bidiRun.endInInline;
-				remainingLineWidth -= runWidth;
-				while (nextLineBreakingOpportunity <= bidiRun.endInInline && nextLineBreakingOpportunityIndex < lineBreakingOpportunities.Count - 1)
-				{
-					nextLineBreakingOpportunityIndex++;
-					nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
-				}
-				index++;
-			}
-			else if (currentLineEnd != -1 && bidiRun.endInInline <= nextLineBreakingOpportunity)
-			{
-				lineEnds.Add(currentLineEnd);
-				currentLineEnd = -1;
-				remainingLineWidth = lineWidth;
+				stack.Push(bidiRun with { startInInline = nextLineBreakingOpportunity });
+				stack.Push(bidiRun with { endInInline = nextLineBreakingOpportunity });
 			}
 			else
 			{
-				// TODO: end-of-line space hanging
+				var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+				var runWidth = RunWidth(glyphs, inline.FontDetails);
+				if (remainingLineWidth >= runWidth)
+				{
+					currentLineEnd = bidiRun.endInInline;
+					remainingLineWidth -= runWidth;
 
-				// Find the maximal substring of this bidi run that can fit on the line
-				var partOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
-				var partOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[partOnThisLine.startInInline..partOnThisLine.endInInline], partOnThisLine.rtl, partOnThisLine.fontDetails.Font);
-				var partOnThisLineWidth = RunWidth(partOnThisLineGlyphs, inline.FontDetails);
-				if (partOnThisLineWidth > remainingLineWidth)
+					while (nextLineBreakingOpportunity <= bidiRun.endInInline && nextLineBreakingOpportunityIndex < lineBreakingOpportunities.Count - 1)
+					{
+						if (nextLineBreakingOpportunityIsLineBreak)
+						{
+							currentLineEnd = nextLineBreakingOpportunity;
+							MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
+						}
+
+						nextLineBreakingOpportunityIndex++;
+						nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
+
+						if (nextLineBreakingOpportunityIsLineBreak)
+						{
+							break;
+						}
+					}
+				}
+				else if (currentLineEnd != -1 && bidiRun.endInInline <= nextLineBreakingOpportunity)
 				{
 					MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
 				}
 				else
 				{
-					nextLineBreakingOpportunityIndex++;
-					nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
+					// TODO: end-of-line space hanging
 
-					while (true)
+					// Find the maximal substring of this bidi run that can fit on the line
+					var partOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
+					var partOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[partOnThisLine.startInInline..partOnThisLine.endInInline], partOnThisLine.rtl, partOnThisLine.fontDetails.Font);
+					var partOnThisLineWidth = RunWidth(partOnThisLineGlyphs, inline.FontDetails);
+					if (partOnThisLineWidth > remainingLineWidth)
 					{
-						var attemptPartOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
-						var attemptPartOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[attemptPartOnThisLine.startInInline..attemptPartOnThisLine.endInInline], attemptPartOnThisLine.rtl, attemptPartOnThisLine.fontDetails.Font);
-						var attemptPartOnThisLineWidth = RunWidth(attemptPartOnThisLineGlyphs, inline.FontDetails);
-						if (attemptPartOnThisLineWidth > remainingLineWidth)
-						{
-							break;
-						}
-						else
-						{
-							partOnThisLine = attemptPartOnThisLine;
-							nextLineBreakingOpportunityIndex++;
-							nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
-						}
+						MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
 					}
+					else
+					{
+						nextLineBreakingOpportunityIndex++;
+						nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
 
-					currentLineEnd = partOnThisLine.endInInline;
-					MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
-					logicallyOrderedRuns[index] = bidiRun with { startInInline = partOnThisLine.endInInline };
+						while (true)
+						{
+							var attemptPartOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
+							var attemptPartOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[attemptPartOnThisLine.startInInline..attemptPartOnThisLine.endInInline], attemptPartOnThisLine.rtl, attemptPartOnThisLine.fontDetails.Font);
+							var attemptPartOnThisLineWidth = RunWidth(attemptPartOnThisLineGlyphs, inline.FontDetails);
+							if (attemptPartOnThisLineWidth > remainingLineWidth)
+							{
+								break;
+							}
+							else
+							{
+								partOnThisLine = attemptPartOnThisLine;
+								nextLineBreakingOpportunityIndex++;
+								nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
+							}
+						}
+
+						currentLineEnd = partOnThisLine.endInInline;
+						MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
+						stack.Push(bidiRun with { startInInline = partOnThisLine.endInInline });
+					}
 				}
 			}
 		}
@@ -401,8 +420,9 @@ internal readonly struct UnicodeText : IParsedText
 
 	private static (GlyphInfo info, GlyphPosition position)[] ShapeRun(string textRun, bool rtl, Font font)
 	{
+		Debug.Assert(textRun.Length < 2 || !textRun[..^2].Contains("\r\n"));
 		using var buffer = new Buffer();
-		buffer.AddUtf16(textRun);
+		buffer.AddUtf16(textRun, 0, textRun is [.., '\r', '\n'] ? textRun.Length - 1 : textRun.Length);
 		buffer.GuessSegmentProperties();
 		buffer.Direction = rtl ? Direction.RightToLeft : Direction.LeftToRight;
 		// TODO: ligatures
@@ -414,6 +434,11 @@ internal readonly struct UnicodeText : IParsedText
 		for (var i = 0; i < count; i++)
 		{
 			ret[i] = (infos[i], positions[i]);
+		}
+
+		if (IsLineBreak(textRun, textRun.Length) && infos[^1].Cluster == textRun.Length - 2)
+		{
+			ret[^1] = (infos[^1] with { Codepoint = 0 }, positions[^1] with { XAdvance = 0 });
 		}
 		return ret;
 	}
@@ -607,4 +632,30 @@ internal readonly struct UnicodeText : IParsedText
 	public (int start, int length) GetWordAt(int index, bool right) => throw new System.NotImplementedException();
 
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index) => throw new System.NotImplementedException();
+
+	private static bool IsLineBreak(string text, int indexAfterLineBreakOpportunity)
+	{
+		// https://www.unicode.org/standard/reports/tr13/tr13-5.html
+
+		if (indexAfterLineBreakOpportunity >= 2 && text[indexAfterLineBreakOpportunity - 2] == '\r' || text[indexAfterLineBreakOpportunity - 1] == '\n')
+		{
+			return true;
+		}
+
+		switch (text[indexAfterLineBreakOpportunity - 1])
+		{
+			case '\u000A':
+			case '\u000B':
+			case '\u000C':
+			case '\u000D':
+			case '\u0085':
+			case '\u2028':
+			case '\u2029': // Paragraph separator (should apply paragraph formatting, i.e. paragraph spacing/indentation on new line, unlike other line
+						   // breaks - could matter if/when Paragraph.TextIndent/RichTextBlock.TextIndent is implemented (UWP/WinUI conformance to this
+						   // behavior was not tested).
+				return true;
+			default:
+				return false;
+		}
+	}
 }
