@@ -21,7 +21,7 @@ Here are a few ways to fix this:
 
 When running a webassembly app under WebAssembly with HTTPS the following error may happen:
 
-```
+```text
 Mixed Content: The page at 'https://localhost:5002' was loaded over HTTPS, but attempted to 
 connect to the insecure WebSocket endpoint 'ws://XXXX:59867/rc'. This request has been blocked;
 this endpoint must be available over WSS.
