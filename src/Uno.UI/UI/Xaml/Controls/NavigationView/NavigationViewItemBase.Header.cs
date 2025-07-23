@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemBase.h, commit 574e5ed
+// MUX reference NavigationViewItemBase.h, commit 65718e2813
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -27,7 +27,9 @@ public partial class NavigationViewItemBase
 	/// Flag to keep track of whether this item was created by the custom internal NavigationViewItemsFactory.
 	/// This is required in order to achieve proper recycling
 	/// </summary>
-	internal bool CreatedByNavigationViewItemsFactory { get; set; } = false;
+	internal bool CreatedByNavigationViewItemsFactory { get; set; }
+
+	internal bool IsInNavigationViewOwnedRepeater { get; set; }
 
 	protected NavigationView m_navigationView = null;
 
