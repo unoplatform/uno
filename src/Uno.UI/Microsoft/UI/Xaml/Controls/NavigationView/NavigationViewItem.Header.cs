@@ -1,4 +1,4 @@
-﻿// MUX reference NavigationViewItem.h, commit d3fef08fd
+﻿// MUX reference NavigationViewItem.h, commit 65718e2813
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
@@ -57,4 +57,8 @@ public partial class NavigationViewItem
 	private bool m_isRepeaterParentedToFlyout;
 	// used to bypass all Chevron visual state logic in order to keep it unloaded 
 	private bool m_hasHadChildren;
+
+	// NavigationView needs to force collapse top level items when the pane closes.
+	// This bool is used to remember which items need to be restored to expanded state when the pane is opened again.
+	private bool m_restoreToExpandedState;
 }
