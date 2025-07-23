@@ -124,7 +124,7 @@ public static partial class ApplicationLanguages
 			=> string.IsNullOrEmpty(name) ? "en-US" : name;
 
 #if __ANDROID__
-		string lt = null;
+		string? lt = null;
 		var config = ContextHelper.Current?.Resources?.Configuration;
 		if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
 		{
