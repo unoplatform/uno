@@ -30,6 +30,8 @@ public abstract class SKCanvasElement : FrameworkElement
 	/// </remarks>
 	protected abstract void RenderOverride(SKCanvas canvas, Size area);
 
+	internal override bool IsViewHit() => true;
+
 	private class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : ContainerVisual(compositor)
 	{
 		internal override void Paint(in PaintingSession session)
