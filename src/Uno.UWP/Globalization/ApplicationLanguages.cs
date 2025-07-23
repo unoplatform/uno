@@ -12,6 +12,10 @@ using System.Collections.Generic;
 using Windows.System.UserProfile;
 using System.Diagnostics.CodeAnalysis;
 
+#if __ANDROID__
+using Android.OS;
+#endif
+
 namespace Windows.Globalization;
 
 public static partial class ApplicationLanguages
