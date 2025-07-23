@@ -18,7 +18,7 @@ public
 #endif
 	class UnoTimePickerDialog : TimePickerDialog
 {
-	private Android.Widget.TimePicker _picker;
+	private ATimePicker _picker;
 	private int _minuteIncrement = 1;
 	private int _hourOfDay;
 	private int _minute;
@@ -65,7 +65,7 @@ public
 
 	public override void SetView(View view)
 	{
-		_picker = (Android.Widget.TimePicker)view;
+		_picker = (ATimePicker)view;
 		base.SetView(_picker);
 	}
 

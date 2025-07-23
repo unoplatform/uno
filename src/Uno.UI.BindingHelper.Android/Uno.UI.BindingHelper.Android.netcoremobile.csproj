@@ -26,8 +26,8 @@
 	</PropertyGroup>
 
 	<!-- This condition isn't always true. -->
-	<!-- Docs generation build uses UnoTargetFrameworkOverride=net8.0, so this project will build with net8.0 instead of net8.0-android -->
-	<!-- If we attempted to always build with net8.0-android, we will go through the annoyance of installing android workload in docs generation CI job -->
+	<!-- Docs generation build uses UnoTargetFrameworkOverride=net9.0, so this project will build with net9.0 instead of net9.0-android -->
+	<!-- If we attempted to always build with net9.0-android, we will go through the annoyance of installing android workload in docs generation CI job -->
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />

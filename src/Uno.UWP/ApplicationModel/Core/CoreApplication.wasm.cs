@@ -9,6 +9,7 @@ using static __Windows.ApplicationModel.Core.CoreApplicationNative;
 using System.Diagnostics;
 
 namespace Windows.ApplicationModel.Core;
+
 partial class CoreApplication
 {
 	private static ICoreApplicationExtension? _coreApplicationExtension;

@@ -50,7 +50,7 @@ jobs:
 
   - template: ../templates/dotnet-mobile-install-windows.yml
     parameters:
-      UnoCheckParameters: '--tfm net9.0-ios --tfm net9.0-maccatalyst --tfm net9.0-android --tfm net9.0-tvos'
+      UnoCheckParameters: '--tfm net10.0-ios --tfm net10.0-maccatalyst --tfm net10.0-android --tfm net10.0-tvos'
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later

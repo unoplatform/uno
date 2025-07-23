@@ -59,8 +59,8 @@ The following conditional symbols are predefined for each Uno platform:
 | tvOS            | `__TVOS__`         | |
 | Catalyst        | `__MACCATALYST__`  | |
 | iOS or tvOS or Catalyst | `__APPLE_UIKIT__` | |
-| WebAssembly     | `__WASM__`         | Only available in the `net9.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
-| Desktop         | `__DESKTOP__`      | Only available in the `net9.0-desktop` target framework. |
+| WebAssembly     | `__WASM__`         | Only available in the `net10.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
+| Desktop         | `__DESKTOP__`      | Only available in the `net10.0-desktop` target framework. |
 | Skia            | `__UNO_SKIA__`     | Only available with `SkiaRenderer` feature. |
 | _Non-Windows_   | `__UNO__`          | To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
 
@@ -69,7 +69,7 @@ The following conditional symbols are predefined for each Uno platform:
 
 ### Windows-specific code
 
-On `net9.0-windows10.0.xxxxx` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `__UNO__` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
+On `net10.0-windows10.0.xxxxx` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `__UNO__` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
 
 Apps generated with the default `unoapp` solution template use **Windows App SDK** when targeting Windows. While this is the recommended path for new Windows apps, some solutions instead use **UWP** to target Windows. Both app models define a different conditional symbol:
 
@@ -102,14 +102,14 @@ Heavy usage of `#if` conditionals in shared code makes it hard to read and compr
 
 Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk`, a set of implicit file name conventions can be used to target specific platforms:
 
-* `*.wasm.cs` is built only for `net9.0-browserwasm`
-* `*.desktop.cs` is built only for `net9.0-desktop`
-* `*.iOS.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst`
-* `*.tvOS.cs` is built only for `net9.0-tvos`
-* `*.UIKit.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst` and `net9.0-tvos`
-* `*.Apple.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst` and `net9.0-tvos`
-* `*.Android.cs` is built only for `net9.0-android`
-* `*.WinAppSDK.cs` is built only for `net9.0-windows10` (eg. `net9.0-windows10.0.22621`)
+* `*.wasm.cs` is built only for `net10.0-browserwasm`
+* `*.desktop.cs` is built only for `net10.0-desktop`
+* `*.iOS.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst`
+* `*.tvOS.cs` is built only for `net10.0-tvos`
+* `*.UIKit.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst` and `net10.0-tvos`
+* `*.Apple.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst` and `net10.0-tvos`
+* `*.Android.cs` is built only for `net10.0-android`
+* `*.WinAppSDK.cs` is built only for `net10.0-windows10` (eg. `net10.0-windows10.0.22621`)
 
 In addition, for class libraries:
 

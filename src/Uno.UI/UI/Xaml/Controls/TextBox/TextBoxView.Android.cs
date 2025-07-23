@@ -52,9 +52,9 @@ namespace Microsoft.UI.Xaml.Controls
 			_isInitialized = true;
 
 			// This ensures the TextBoxView gets resized as Text changes
-			LayoutParameters = new Android.Views.ViewGroup.LayoutParams(
-				 Android.Views.ViewGroup.LayoutParams.WrapContent,
-				 Android.Views.ViewGroup.LayoutParams.WrapContent
+			LayoutParameters = new AViewGroup.LayoutParams(
+				 AViewGroup.LayoutParams.WrapContent,
+				 AViewGroup.LayoutParams.WrapContent
 			);
 
 			_inputTypes = (InputType, InputType);
@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override bool OnTextContextMenuItem(int id)
 		{
-			if (id == Android.Resource.Id.Paste)
+			if (id == AResource.Id.Paste)
 			{
 				var args = new TextControlPasteEventArgs();
 				Owner?.RaisePaste(args);
@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 						if (BlendMode.SrcAtop != null)
 						{
 							var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat(
-								(Android.Graphics.Color)color,
+								(AColor)color,
 								BlendModeCompat.SrcAtop!);
 							drawable?.SetColorFilter(colorFilter);
 						}
@@ -233,7 +233,7 @@ namespace Microsoft.UI.Xaml.Controls
 						var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
 						var editor = _editorField.Get(editText);
 
-						var colorFilter = new PorterDuffColorFilter((Android.Graphics.Color)color, PorterDuff.Mode.SrcIn);
+						var colorFilter = new PorterDuffColorFilter((AColor)color, PorterDuff.Mode.SrcIn);
 
 						if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
 						{

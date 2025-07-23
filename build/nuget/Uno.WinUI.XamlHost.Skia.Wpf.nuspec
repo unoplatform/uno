@@ -11,11 +11,11 @@
 		<copyright>Uno Platform</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
-			<group targetFramework="net9.0">
+			<group targetFramework="net10.0">
 				<dependency id="Uno.WinUI.XamlHost" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Runtime.Skia.Wpf" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net9.0">
 				<dependency id="Uno.WinUI.XamlHost" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Runtime.Skia.Wpf" version="to-be-set-by-ci" />
 			</group>
@@ -24,8 +24,8 @@
 
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="..\..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net10.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net10.0-windows" />
 		<file src="..\..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net9.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net9.0-windows" />
-		<file src="..\..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net8.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net8.0-windows" />
 	</files>
 
 </package>

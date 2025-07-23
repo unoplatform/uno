@@ -1,8 +1,8 @@
 steps:
   - bash: |
       rm global.json
-      cp build/ci/net9/global.json global.json
-    displayName: "Using .NET 9 global.json"
+      cp build/ci/net10/global.json global.json
+    displayName: "Using .NET 10 global.json"
 
   - pwsh: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)/.dotnet"
@@ -13,6 +13,16 @@ steps:
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)\.dotnet"
     displayName: "Set DOTNET_INSTALL_DIR for Windows"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
+
+  - task: UseDotNet@2
+    displayName: 'Install .NET 9 Runtime'
+    retryCountOnTaskFailure: 3
+    inputs:
+      packageType: sdk
+      useGlobalJson: false
+      includePreviewVersions: false
+      version: 9.0.300
+      installationPath: $(DOTNET_INSTALL_DIR)
 
   - task: UseDotNet@2
     displayName: 'Use .NET SDK'

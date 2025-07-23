@@ -19,7 +19,7 @@ To build your app from the CLI, on Windows, Linux, or macOS:
 - Publish the app using:
 
   ```shell
-  dotnet publish -f net9.0-android -c Release -o ./publish
+  dotnet publish -f net10.0-android -c Release -o ./publish
   ```
 
 - Once the build is done, the output `.apk` and `.aab` files are located in the `./publish` folder.

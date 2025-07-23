@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Controls
 				InitializeSnapHelper();
 			}
 
-			_shouldRecalibrateFlingVelocity = (int)Android.OS.Build.VERSION.SdkInt >= 28; // Android.OS.BuildVersionCodes.P
+			_shouldRecalibrateFlingVelocity = (int)ABuild.VERSION.SdkInt >= 28; // Android.OS.BuildVersionCodes.P
 
 			// // This is required for animations not to be cut off by transformed ancestor views. (#1333)
 			SetClipChildren(false);
@@ -81,7 +81,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void InitializeScrollbars()
 		{
 			// Force scrollbars to initialize since we're not inflating from xml
-			if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.Kitkat)
+			if (ABuild.VERSION.SdkInt <= ABuildVersionCodes.Kitkat)
 			{
 				var styledAttributes = Context.Theme.ObtainStyledAttributes(Resource.Styleable.View);
 				InitializeScrollbars(styledAttributes);

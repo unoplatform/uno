@@ -58,10 +58,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<!--
+		Enable only when requiring specific versions of the compiler, otherwise, use the one
+		bundled with the SDK.
 		<MicrosoftNetCompilersToolsetVersion>4.14.0</MicrosoftNetCompilersToolsetVersion>
+		-->
 	</PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(MicrosoftNetCompilersToolsetVersion)' != ''">
     <!--This override is used to validate the use of specific version of the C# Compiler-->
 	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
@@ -70,7 +74,7 @@
 
 	<PropertyGroup>
 		<!-- When updating this in the future, please also update CSharpLangVersion constant in src\Uno.UWPSyncGenerator\Generator.cs -->
-		<LangVersion>12.0</LangVersion>
+		<LangVersion>13.0</LangVersion>
 	</PropertyGroup>
 
 	<!--

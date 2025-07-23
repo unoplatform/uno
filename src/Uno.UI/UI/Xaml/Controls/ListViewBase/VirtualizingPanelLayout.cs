@@ -291,7 +291,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 #if __ANDROID__
-			protected override void MeasureChild(Android.Views.View view, int widthSpec, int heightSpec)
+			protected override void MeasureChild(AView view, int widthSpec, int heightSpec)
 			{
 				view.Measure(widthSpec, heightSpec);
 			}
