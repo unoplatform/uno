@@ -9,32 +9,26 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
-using System.Linq;
 using System.Numerics;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.UI;
-using Uno.UI.DataBinding;
-using Uno.UI.Extensions;
-using Uno.UI.Helpers.WinUI;
-using Windows.ApplicationModel.Core;
-using Windows.Foundation;
-using Windows.System;
-using Windows.System.Profile;
 using Microsoft.UI.Composition;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.UI.DataBinding;
+using Uno.UI.Helpers.WinUI;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation;
+using Windows.System;
+using Windows.System.Profile;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -101,19 +95,26 @@ public partial class NavigationView : ContentControl
 	private const int c_backButtonWidth = 40;
 	private const int c_paneToggleButtonHeight = 40;
 	private const int c_paneToggleButtonWidth = 40;
-	private const int c_toggleButtonHeightWhenShouldPreserveNavigationViewRS3Behavior = 56;
+	private const int c_toggleButtonHeightWithNoBackButton = 56;
 	private const int c_backButtonRowDefinition = 1;
 	private const float c_paneElevationTranslationZ = 32;
+	private const double c_paneOverlayShadowDepth = 16.0;
 
 	private const int c_mainMenuBlockIndex = 0;
 	private const int c_footerMenuBlockIndex = 1;
 
 	private const string c_shadowCaster = "ShadowCaster";
 	private const string c_shadowCasterEaseOutStoryboard = "ShadowCasterEaseOutStoryboard";
+	private const string c_paneOverlayShadowDepthName = "PaneOverlayShadowDepth";
 
 	private int itemNotFound = -1;
 
 	private static Size c_infSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
+
+	// Change to 'true' to turn on debugging outputs in Output window
+	private bool s_IsDebugOutputEnabled;
+	private bool s_IsVerboseDebugOutputEnabled;
+
 
 	~NavigationView()
 	{
@@ -199,7 +200,7 @@ public partial class NavigationView : ContentControl
 		{
 			m_selectionChangedRevoker.Disposable = null;
 			m_autoSuggestBoxQuerySubmittedRevoker.Disposable = null;
-			ClearAllNavigationViewItemRevokers();
+			ClearAllNavigationViewItemBaseRevokers();
 		}
 	}
 
@@ -224,10 +225,10 @@ public partial class NavigationView : ContentControl
 		var footerItems = new ObservableCollection<object>();
 		SetValue(FooterMenuItemsProperty, footerItems);
 
-		WeakReference<NavigationView> weakThis = new WeakReference<NavigationView>(this);
+		var weakThis = WeakReferencePool.RentSelfWeakReference(this);
 		m_topDataProvider.OnRawDataChanged(args =>
 		{
-			if (weakThis.TryGetTarget(out var target))
+			if (weakThis.IsAlive && weakThis.Target is NavigationView target)
 			{
 				target.OnTopNavDataSourceChanged(args);
 			}
@@ -430,13 +431,10 @@ public partial class NavigationView : ContentControl
 
 				SetPaneToggleButtonAutomationName();
 
-				if (SharedHelpers.IsRS3OrHigher())
-				{
-					KeyboardAccelerator keyboardAccelerator = new KeyboardAccelerator();
-					keyboardAccelerator.Key = VirtualKey.Back;
-					keyboardAccelerator.Modifiers = VirtualKeyModifiers.Windows;
-					paneToggleButton.KeyboardAccelerators.Add(keyboardAccelerator);
-				}
+				KeyboardAccelerator keyboardAccelerator = new KeyboardAccelerator();
+				keyboardAccelerator.Key = VirtualKey.Back;
+				keyboardAccelerator.Modifiers = VirtualKeyModifiers.Windows;
+				paneToggleButton.KeyboardAccelerators.Add(keyboardAccelerator);
 			}
 
 			m_leftNavPaneHeaderContentBorder = (ContentControl)GetTemplateChild(c_leftNavPaneHeaderContentBorder);
@@ -458,17 +456,14 @@ public partial class NavigationView : ContentControl
 				var splitViewDisplayModeChangedSubscription = splitView.RegisterPropertyChangedCallback(SplitView.DisplayModeProperty, OnSplitViewClosedCompactChanged);
 				m_splitViewDisplayModeChangedRevoker.Disposable = Disposable.Create(() => splitView.UnregisterPropertyChangedCallback(SplitView.DisplayModeProperty, splitViewDisplayModeChangedSubscription));
 
-				if (SharedHelpers.IsRS3OrHigher()) // These events are new to RS3/v5 API
-				{
-					splitView.PaneClosed += OnSplitViewPaneClosed;
-					m_splitViewPaneClosedRevoker.Disposable = Disposable.Create(() => splitView.PaneClosed -= OnSplitViewPaneClosed);
-					splitView.PaneClosing += OnSplitViewPaneClosing;
-					m_splitViewPaneClosingRevoker.Disposable = Disposable.Create(() => splitView.PaneClosing -= OnSplitViewPaneClosing);
-					splitView.PaneOpened += OnSplitViewPaneOpened;
-					m_splitViewPaneOpenedRevoker.Disposable = Disposable.Create(() => splitView.PaneOpened -= OnSplitViewPaneOpened);
-					splitView.PaneOpening += OnSplitViewPaneOpening;
-					m_splitViewPaneOpeningRevoker.Disposable = Disposable.Create(() => splitView.PaneOpening -= OnSplitViewPaneOpening);
-				}
+				splitView.PaneClosed += OnSplitViewPaneClosed;
+				m_splitViewPaneClosedRevoker.Disposable = Disposable.Create(() => splitView.PaneClosed -= OnSplitViewPaneClosed);
+				splitView.PaneClosing += OnSplitViewPaneClosing;
+				m_splitViewPaneClosingRevoker.Disposable = Disposable.Create(() => splitView.PaneClosing -= OnSplitViewPaneClosing);
+				splitView.PaneOpened += OnSplitViewPaneOpened;
+				m_splitViewPaneOpenedRevoker.Disposable = Disposable.Create(() => splitView.PaneOpened -= OnSplitViewPaneOpened);
+				splitView.PaneOpening += OnSplitViewPaneOpening;
+				m_splitViewPaneOpeningRevoker.Disposable = Disposable.Create(() => splitView.PaneOpening -= OnSplitViewPaneOpening);
 
 				UpdateIsClosedCompact();
 			}
@@ -486,7 +481,7 @@ public partial class NavigationView : ContentControl
 				if (leftNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
 #if IS_UNO
@@ -519,7 +514,7 @@ public partial class NavigationView : ContentControl
 				if (topNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
 #if IS_UNO
@@ -553,7 +548,7 @@ public partial class NavigationView : ContentControl
 				if (topNavListOverflowRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
 #if IS_UNO
@@ -590,11 +585,8 @@ public partial class NavigationView : ContentControl
 				var flyoutBase = topNavOverflowButton.Flyout;
 				if (flyoutBase != null)
 				{
-					FlyoutBase topNavOverflowButtonAsFlyoutBase6 = flyoutBase;
-					if (topNavOverflowButtonAsFlyoutBase6 != null)
-					{
-						topNavOverflowButtonAsFlyoutBase6.ShouldConstrainToRootBounds = false;
-					}
+					flyoutBase.ShouldConstrainToRootBounds = false;
+
 					flyoutBase.Closing += OnFlyoutClosing;
 					m_flyoutClosingRevoker.Disposable = Disposable.Create(() => flyoutBase.Closing -= OnFlyoutClosing);
 				}
@@ -611,7 +603,7 @@ public partial class NavigationView : ContentControl
 				if (leftFooterMenuNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
 #if IS_UNO
@@ -645,10 +637,10 @@ public partial class NavigationView : ContentControl
 				if (topFooterMenuNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if IS_UNO
+#if IS_UNO // TODO MZ: Still needed?
 				//TODO: Uno specific - remove when #4689 is fixed
 				topFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
@@ -718,19 +710,23 @@ public partial class NavigationView : ContentControl
 			}
 
 			// Register for changes in title bar layout
-			var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-			if (coreTitleBar != null)
+			if (SharedHelpers.TryGetCurrentCoreApplicationView() is { } currentView)
 			{
-				m_coreTitleBar = coreTitleBar;
-				coreTitleBar.LayoutMetricsChanged += OnTitleBarMetricsChanged;
-				m_titleBarMetricsChangedRevoker.Disposable = Disposable.Create(() => coreTitleBar.LayoutMetricsChanged -= OnTitleBarMetricsChanged);
-				coreTitleBar.IsVisibleChanged += OnTitleBarIsVisibleChanged;
-				m_titleBarIsVisibleChangedRevoker.Disposable = Disposable.Create(() => coreTitleBar.IsVisibleChanged -= OnTitleBarIsVisibleChanged);
-
-				if (ShouldPreserveNavigationViewRS4Behavior())
+				if (auto coreTitleBar = currentView.TitleBar())
+			var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+				if (coreTitleBar != null)
 				{
-					m_togglePaneTopPadding = (FrameworkElement)GetTemplateChild(c_togglePaneTopPadding);
-					m_contentPaneTopPadding = (FrameworkElement)GetTemplateChild(c_contentPaneTopPadding);
+					m_coreTitleBar = coreTitleBar;
+					coreTitleBar.LayoutMetricsChanged += OnTitleBarMetricsChanged;
+					m_titleBarMetricsChangedRevoker.Disposable = Disposable.Create(() => coreTitleBar.LayoutMetricsChanged -= OnTitleBarMetricsChanged);
+					coreTitleBar.IsVisibleChanged += OnTitleBarIsVisibleChanged;
+					m_titleBarIsVisibleChangedRevoker.Disposable = Disposable.Create(() => coreTitleBar.IsVisibleChanged -= OnTitleBarIsVisibleChanged);
+
+					if (m_topNavGrid is null)
+					{
+						m_togglePaneTopPadding = (FrameworkElement)GetTemplateChild(c_togglePaneTopPadding);
+						m_contentPaneTopPadding = (FrameworkElement)GetTemplateChild(c_contentPaneTopPadding);
+					}
 				}
 			}
 
@@ -772,36 +768,26 @@ public partial class NavigationView : ContentControl
 				m_itemsContainerSizeChangedRevoker.Disposable = Disposable.Create(() => m_itemsContainer.SizeChanged -= OnItemsContainerSizeChanged);
 			}
 
-			if (SharedHelpers.IsRS2OrHigher())
+			// Get hold of the outermost grid and enable XYKeyboardNavigationMode
+			// However, we only want this to work in the content pane + the hamburger button (which is not inside the splitview)
+			// so disable it on the grid in the content area of the SplitView
+			var rootGrid = GetTemplateChild(c_rootGridName) as Grid;
+			if (rootGrid != null)
 			{
-				// Get hold of the outermost grid and enable XYKeyboardNavigationMode
-				// However, we only want this to work in the content pane + the hamburger button (which is not inside the splitview)
-				// so disable it on the grid in the content area of the SplitView
-				var rootGrid = GetTemplateChild(c_rootGridName) as Grid;
-				if (rootGrid != null)
-				{
-					rootGrid.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Enabled;
-				}
+				rootGrid.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Enabled;
+			}
 
-				var contentGrid = GetTemplateChild(c_contentGridName) as Grid;
-				if (contentGrid != null)
-				{
-					contentGrid.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Disabled;
-				}
+			var contentGrid = GetTemplateChild(c_contentGridName) as Grid;
+			if (contentGrid != null)
+			{
+				contentGrid.XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Disabled;
 			}
 
 			AccessKeyInvoked += OnAccessKeyInvoked;
 			m_accessKeyInvokedRevoker.Disposable = Disposable.Create(() => AccessKeyInvoked -= OnAccessKeyInvoked);
 
-			if (SharedHelpers.Is21H1OrHigher())
-			{
-				m_shadowCaster = GetTemplateChild<Grid>(c_shadowCaster);
-				m_shadowCasterEaseOutStoryboard = GetTemplateChild<Storyboard>(c_shadowCasterEaseOutStoryboard);
-			}
-			else
-			{
-				UpdatePaneShadow();
-			}
+			m_shadowCaster = GetTemplateChild<Grid>(c_shadowCaster);
+			m_shadowCasterEaseOutStoryboard = GetTemplateChild<Storyboard>(c_shadowCasterEaseOutStoryboard);
 
 			m_appliedTemplate = true;
 
@@ -861,7 +847,7 @@ public partial class NavigationView : ContentControl
 		else
 		{
 			UpdateTopNavRepeatersItemSource(null);
-			UpdateLeftRepeaterItemSource(itemsSource);
+			UpdateLeftRepeaterItemSource(m_menuItemsSource);
 		}
 	}
 
@@ -1051,6 +1037,11 @@ public partial class NavigationView : ContentControl
 				SelectandMoveOverflowItem(SelectedItem, selectedIndex, false /*closeFlyout*/);
 			}
 		}
+	}
+
+	private void OnNavigationViewItemBaseVisibilityPropertyChanged(DependencyObject sender, DependencyProperty args)
+	{
+		UpdatePaneLayout();
 	}
 
 	private void OnNavigationViewItemIsSelectedPropertyChanged(DependencyObject sender, DependencyProperty args)
@@ -1333,20 +1324,12 @@ public partial class NavigationView : ContentControl
 
 	internal void OnRepeaterElementPrepared(ItemsRepeater ir, ItemsRepeaterElementPreparedEventArgs args)
 	{
-#if !HAS_UNO_WINUI
-		// This validation is only relevant outside of the Windows build where WUXC and MUXC have distinct types.
-		// Certain items are disallowed in a NavigationView's items list. Check for them.
-		if (args.Element is Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
-		{
-			throw new InvalidOperationException("MenuItems contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
-		}
-#endif
-
 		if (args.Element is NavigationViewItemBase nvib)
 		{
 			var nvibImpl = nvib;
 			nvibImpl.SetNavigationViewParent(this);
 			nvibImpl.IsTopLevelItem = IsTopLevelItem(nvib);
+			nvibImpl.IsInNavigationViewOwnedRepeater = true;
 
 			NavigationViewRepeaterPosition GetPosition(ItemsRepeater ir)
 			{
@@ -1387,6 +1370,8 @@ public partial class NavigationView : ContentControl
 
 			// Apply any custom container styling
 			ApplyCustomMenuItemContainerStyling(nvib, ir, args.Index);
+
+			SetNavigationViewItemBaseRevokers(nvib);
 
 			if (args.Element is NavigationViewItem nvi)
 			{
@@ -1465,11 +1450,8 @@ public partial class NavigationView : ContentControl
 			var nvibImpl = nvib;
 			nvibImpl.Depth = 0;
 			nvibImpl.IsTopLevelItem = false;
-			if (nvib is NavigationViewItem nvi)
-			{
-				// Revoke all the events that we were listing to on the item
-				ClearNavigationViewItemRevokers(nvi);
-			}
+			nvibImpl.IsInNavigationViewOwnedRepeater = false;
+			ClearNavigationViewItemBaseRevokers(nvib);
 		}
 	}
 
@@ -1694,7 +1676,7 @@ public partial class NavigationView : ContentControl
 			}
 
 			var totalAvailableHeight = GetTotalAvailableHeight();
-
+CONTINUE HERE
 			// Only continue if we have a positive amount of space to manage.
 			if (totalAvailableHeight > 0)
 			{
