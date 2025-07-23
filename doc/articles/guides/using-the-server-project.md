@@ -53,13 +53,18 @@ Launching with the debugger is pending on [this issue](https://github.com/unopla
 As the app will run with https by default, you will get an error about "Mixed Content" not being supported.
 
 To fix this when using Chrome or Edge:
-- When the browser window opens for the first time, click on the keylock or section at the left of the address bar
+- When the browser window opens for the first time, click on the padlock or section at the left of the address bar
   ![The security popup window with security options](../Assets/uno-guide-server-mixed-content-enable.png)
 - Click the **Permissions for this site** option
 - In the window that opened, search for **Insecure content** then select **Allow**. This will enable Hot Reload and Hot Design for this specific url/port.
   ![Allow mixed content option](../Assets/uno-guide-server-mixed-content-allowed.png)
 - Close the browser window, ensure that the debugger has stopped in your IDE
 
+You may also need to [trust the developer certificates](https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-9.0&tabs=visual-studio%2Clinux-sles#trust-the-aspnet-core-https-development-certificate):
+
+```
+dotnet dev-certs https --trust
+```
 
 ## Enabling HTTPS for the app project
 
