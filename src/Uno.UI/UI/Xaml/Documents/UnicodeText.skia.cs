@@ -61,17 +61,19 @@ internal readonly struct UnicodeText : IParsedText
 
 	// FontDetails might be different from inline.FontDetails because of font fallback
 	// glyphs are always ordered LTR even in RTL text
-	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyInlineCopy Inline, int inlineIndex, int startInInline, int endInInline, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl);
+	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyInlineCopy Inline, int inlineIndex, int inInlineIndexStart, int inInlineIndexEnd, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl);
 	private record LayoutedGlyphDetails(GlyphInfo info, GlyphPosition position, float xPosInRun, Cluster? cluster, LayoutedLineBrokenBidiRun parentRun)
 	{
 		public Cluster? cluster { get; set; } = cluster;
 	}
 
-	private record LayoutedLineBrokenBidiRun(ReadonlyInlineCopy inline, int inlineIndex, int startInInline, int endInInline, float x, float y, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, LayoutedLine line, int indexInLine)
+	private record LayoutedLineBrokenBidiRun(ReadonlyInlineCopy inline, int inlineIndex, int inInlineIndexStart, int inInlineIndexEnd, float x, float y, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, LayoutedLine line, int indexInLine)
 	{
 		public float width { get; set; } = width;
 		public LayoutedLine line { get; set; } = line;
 	}
+	// runs are always sorted LTR even in RTL text
+	// Each line must have at least one run except the very last line.
 	private record LayoutedLine(float lineHeight, int lineIndex, float y, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
@@ -81,6 +83,8 @@ internal readonly struct UnicodeText : IParsedText
 	private readonly List<ReadonlyInlineCopy> _inlines;
 	private readonly List<LayoutedLine> _lines;
 	private readonly Cluster[] _textIndexToGlyph;
+	private readonly Size _desiredSize;
+	private readonly int _textLength;
 
 	private static readonly FieldInfo _biDiFieldInfo = typeof(BiDi).GetField("_biDi", BindingFlags.NonPublic | BindingFlags.Instance)!;
 	private static readonly ubidi_setLineDelegate _setLine;
@@ -127,6 +131,7 @@ internal readonly struct UnicodeText : IParsedText
 				acc += length;
 			}
 		}
+		_textLength = acc;
 
 		if (_inlines.Count == 0)
 		{
@@ -155,7 +160,7 @@ internal readonly struct UnicodeText : IParsedText
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
-		desiredSize = new Size(desiredWidth, desiredHeight);
+		_desiredSize = desiredSize = new Size(desiredWidth, desiredHeight);
 	}
 
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
@@ -427,7 +432,7 @@ internal readonly struct UnicodeText : IParsedText
 				var run = line[runIndex];
 				float runX = 0;
 				var glyphs = new LayoutedGlyphDetails[run.glyphs.Length];
-				var layoutedRun = new LayoutedLineBrokenBidiRun(run.Inline, run.inlineIndex, run.startInInline, run.endInInline, currentLineX, currentLineY, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
+				var layoutedRun = new LayoutedLineBrokenBidiRun(run.Inline, run.inlineIndex, run.inInlineIndexStart, run.inInlineIndexEnd, currentLineX, currentLineY, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
 				layoutedRuns.Add(layoutedRun);
 				for (var i = 0; i < glyphs.Length; i++)
 				{
@@ -462,8 +467,8 @@ internal readonly struct UnicodeText : IParsedText
 			foreach (var run in line.runs)
 			{
 				var runGlyphLength = run.glyphs.Length;
-				var runStart = run.startInInline + run.inline.StartIndex;
-				var runLength = run.endInInline - run.startInInline;
+				var runStart = run.inInlineIndexStart + run.inline.StartIndex;
+				var runLength = run.inInlineIndexEnd - run.inInlineIndexStart;
 
 				Cluster? previousCluster = null;
 				for (var index = run.rtl ? 0 : runGlyphLength - 1; (run.rtl && index < runGlyphLength) || (!run.rtl && index >= 0); index += run.rtl ? 1 : -1)
@@ -477,13 +482,18 @@ internal readonly struct UnicodeText : IParsedText
 						? (previousCluster?.glyphInRunIndexEnd ?? 0, index + 1)
 						: (index, previousCluster?.glyphInRunIndexStart ?? runGlyphLength);
 					var cluster = new Cluster(runStart + (int)glyphDetails.info.Cluster, previousCluster?.sourceTextStart ?? (runStart + runLength), run, startGlyphIndex, endGlyphIndex);
-					glyphDetails.cluster = cluster;
 					previousCluster = cluster;
+					for (var i = startGlyphIndex; i < endGlyphIndex; i++)
+					{
+						run.glyphs[i].cluster = cluster;
+					}
 					for (var i = cluster.sourceTextStart; i < cluster.sourceTextEnd; i++)
 					{
 						textIndexToGlyphMap[i] = cluster;
 					}
 				}
+
+				Debug.Assert(run.glyphs.All(g => g.cluster is not null));
 			}
 		}
 	}
@@ -531,7 +541,66 @@ internal readonly struct UnicodeText : IParsedText
 		return new Rect(x, y, width, height);
 	}
 
-	public int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) => throw new System.NotImplementedException();
+	public int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection)
+	{
+		if (_lines.Count == 0 || p.Y < 0)
+		{
+			return extendedSelection ? 0 : -1;
+		}
+
+		if (_desiredSize.Height < p.Y)
+		{
+			return extendedSelection ? _textLength : -1;
+		}
+
+		foreach (var line in _lines)
+		{
+			if (line.y > p.Y || line.y + line.lineHeight < p.Y)
+			{
+				continue;
+			}
+
+			if (line.runs.Count == 0)
+			{
+				Debug.Assert(line == _lines[^1]);
+				return extendedSelection ? _textLength : -1;
+			}
+
+			// TODO: rethink of a cleaner and faster way to do this
+			if (line.runs[0] is var firstRun && line.runs[^1] is var lastRun && (firstRun.x > p.X || lastRun.x + lastRun.width < p.X))
+			{
+				if (!extendedSelection)
+				{
+					return 0;
+				}
+				return _rtl && firstRun.x > p.X || !_rtl && lastRun.x + lastRun.width < p.X
+					? line.runs.Max(r => r.inInlineIndexEnd + r.inline.StartIndex)
+					: line.runs.Min(r => r.inInlineIndexStart + r.inline.StartIndex);
+			}
+
+			foreach (var run in line.runs)
+			{
+				if (run.x > p.X || run.x + run.width < p.X)
+				{
+					continue;
+				}
+
+				foreach (var glyph in run.glyphs)
+				{
+					var globalGlyphX = glyph.xPosInRun + run.x;
+					var width = GlyphWidth(glyph.position, run.fontDetails);
+					if (globalGlyphX <= p.X && globalGlyphX + width >= p.X)
+					{
+						var closerToLeft = p.X - globalGlyphX < globalGlyphX + width - p.X;
+						return closerToLeft && !run.rtl || !closerToLeft && run.rtl ? glyph.cluster!.sourceTextStart : glyph.cluster!.sourceTextEnd;
+					}
+				}
+			}
+		}
+
+		Debug.Assert(false, "This should be unreachable");
+		return -1;
+	}
 
 	public Hyperlink GetHyperlinkAt(Point point) => throw new System.NotImplementedException();
 
