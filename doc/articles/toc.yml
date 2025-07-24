@@ -317,6 +317,8 @@
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
           href: xref:uno.articles.features.illinker
+        - name: Skia Native Libraries Trimming
+          href: features/skia-libraries-trimming.md
         - name: Working with String Resource Trimming
           href: features/upri-trimming.md
         - name: Working with XAML Trimming
