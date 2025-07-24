@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.WinUI.Graphics2DSK</AssemblyName>
+		<RootNamespace>Uno.WinUI.Graphics2DSK</RootNamespace>
+		<GeneratePackageOnBuild Condition="'$(UNO_UWP_BUILD)'!='true' And '$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+
+		<Nullable>enable</Nullable>
+		
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.netcoremobile.csproj" PrivateAssets="all" />
+	</ItemGroup>
+	
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+</Project>

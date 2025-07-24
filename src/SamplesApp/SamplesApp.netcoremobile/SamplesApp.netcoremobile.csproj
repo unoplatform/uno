@@ -184,6 +184,7 @@
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.37" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
+				<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.netcoremobile.csproj" />
 			</ItemGroup>
 			
 			<ItemGroup>
