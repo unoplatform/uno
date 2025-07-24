@@ -89,7 +89,6 @@ internal record UnitTestMethodInfo
 			string? firstNonSatisfiedMatch = null;
 			foreach (ConditionBaseAttribute attribute in group)
 			{
-				// Mode property is internal in MSTest, thus we cannot use it here.
 				bool shouldRun = attribute.Mode == ConditionMode.Include ? attribute.ShouldRun : !attribute.ShouldRun;
 				if (shouldRun)
 				{
