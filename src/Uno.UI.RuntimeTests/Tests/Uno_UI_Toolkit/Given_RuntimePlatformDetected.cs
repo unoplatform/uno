@@ -60,7 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 		[TestMethod]
 		public void When_IsWindows()
 		{
-			Uno.UI.Toolkit.PlatformRuntimeHelper.Current.Should().Be(Uno.UI.Toolkit.UnoRuntimePlatform.Windows);
+			Uno.UI.Toolkit.PlatformRuntimeHelper.Current.Should().Be(Uno.UI.Toolkit.UnoRuntimePlatform.NativeWinUI);
 		}
 #else
 		[TestMethod]
