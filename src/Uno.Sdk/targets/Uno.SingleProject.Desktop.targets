@@ -65,6 +65,28 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="_UnoRemoveSkiaNativeLibraries"
+			AfterTargets="ResolvePackageAssets"
+			Condition="'$(UnoIncludeAllSkiaNativeLibraries)'!='true' AND '$(RuntimeIdentifier)'==''">
+
+		<PropertyGroup>
+			<UnoSkiaNativeLibraries Condition="'$(UnoSkiaNativeLibraries)'==''">win-arm64;win-x64;osx;linux-arm;linux-arm64;linux-x64</UnoSkiaNativeLibraries>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_UnoSkiaAllNativeLibraries Include="@(RuntimeTargetsCopyLocalItems)"
+				Condition="'%(Filename)'=='libSkiaSharp' OR '%(Filename)'=='libHarfBuzzSharp'" />
+
+			<_UnoSkiaNativeLibrariesToKeep Include="@(_UnoSkiaAllNativeLibraries)"
+				Condition="$(UnoSkiaNativeLibraries.Contains('%(RuntimeIdentifier)'))" />
+
+			<_UnoSkiaNativeLibrariesToRemove Include="@(_UnoSkiaAllNativeLibraries)" Exclude="@(_UnoSkiaNativeLibrariesToKeep)" />
+
+			<RuntimeTargetsCopyLocalItems Remove="@(_UnoSkiaNativeLibrariesToRemove)" />
+		</ItemGroup>
+
+	</Target>
+
 	<!-- 
 		Removes the WebView2 WPF reference by default. When using `.UseWindows()`, 
 		setting `UnoUseWebView2WPF` to true is required by the user
