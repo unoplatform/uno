@@ -16,7 +16,7 @@ Create a simple cross-platform Counter application. (Time to complete < 5 min)
 <a href="studio/Hot Design/hot-design-getstarted-counter-tutorial.md">
 <div class="alert alert-info alert-hover">
 
-#### Hot Design
+#### Hot Design®
 
 Use Hot Design, Uno Platform's visual designer, to design and develop the app.
 
