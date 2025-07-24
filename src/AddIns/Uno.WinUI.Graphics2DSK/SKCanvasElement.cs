@@ -4,7 +4,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 
-#if !WINAPPSDK
+#if REFERENCE
 using Uno.Foundation.Extensibility;
 using Uno.UI.Graphics;
 #endif
@@ -15,9 +15,9 @@ namespace Uno.WinUI.Graphics2DSK;
 /// A <see cref="FrameworkElement"/> that exposes the ability to draw directly on the window using SkiaSharp.
 /// </summary>
 /// <remarks>This is only available on skia-based targets.</remarks>
-public abstract class SKCanvasElement : FrameworkElement
+public abstract partial class SKCanvasElement : FrameworkElement
 {
-#if !WINAPPSDK
+#if REFERENCE
 	private SKCanvasVisualBase? _skCanvasVisual;
 
 	private protected override ContainerVisual CreateElementVisual()
@@ -35,7 +35,7 @@ public abstract class SKCanvasElement : FrameworkElement
 
 	protected SKCanvasElement()
 	{
-#if !WINAPPSDK
+#if REFERENCE
 		if (!ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>())
 #endif
 		{
@@ -43,19 +43,21 @@ public abstract class SKCanvasElement : FrameworkElement
 		}
 	}
 
-#if WINAPPSDK
-	public static bool IsSupportedOnCurrentPlatform() => false;
-#else
+#if REFERENCE
 	public static bool IsSupportedOnCurrentPlatform() => ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>();
+#else
+	public static bool IsSupportedOnCurrentPlatform() => false;
 #endif
 
 	/// <summary>
 	/// Invalidates the element and triggers a redraw.
 	/// </summary>
-#if WINAPPSDK
-	public void Invalidate() { }
-#else
+#if REFERENCE
 	public void Invalidate() => _skCanvasVisual?.Invalidate();
+#else
+#pragma warning disable CS0109 // Member does not hide an inherited member; new keyword is not required
+	public new void Invalidate() { }
+#pragma warning restore CS0109 // Member does not hide an inherited member; new keyword is not required
 #endif
 
 	/// <summary>
