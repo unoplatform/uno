@@ -18,8 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" PrivateAssets="all" />
-		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.netcoremobile.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" />
 	</ItemGroup>
 	
 
