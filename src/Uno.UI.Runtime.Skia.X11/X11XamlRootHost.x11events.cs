@@ -146,7 +146,7 @@ internal partial class X11XamlRootHost
 
 			foreach (var @event in GetEvents(x11Window.Display))
 			{
-				// if (this.Log().IsEnabled(LogLevel.Trace))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
 					Console.WriteLine($"XLIB EVENT: {@event.type}");
 				}

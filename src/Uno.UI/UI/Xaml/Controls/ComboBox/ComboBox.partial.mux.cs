@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using DirectUI;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -909,16 +910,19 @@ partial class ComboBox
 		IsSelectionBoxHighlighted = value;
 	}
 
-	private void OnOpen()
-	{
-
 #if HAS_UNO
-		// Force a refresh of the popup's ItemPresenter
+	private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
+	{
+		// With virtualization, the base.UpdateItems won't handle the updates
+		// (because ShouldItemsControlManageChildren is false), so we make an
+		// explicit call to Refresh here instead.
+		base.UpdateItems(args);
 		Refresh();
-
-		RestoreSelectedItem();
+	}
 #endif
 
+	private void OnOpen()
+	{
 		// TODO Uno: BackButton support
 		//if (DXamlCore.Current.BackButtonSupported)
 		//{

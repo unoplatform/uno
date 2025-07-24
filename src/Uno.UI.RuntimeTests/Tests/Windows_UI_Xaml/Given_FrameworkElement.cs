@@ -390,7 +390,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("+Infinity")]
 		[DataRow("	Infinity")]
 		[DataRow("-Infinity ")]
-		[DataRow("	Infinity")]
+		[DataRow("+	Infinity")]
 #if !WINAPPSDK
 		[Ignore]
 #endif

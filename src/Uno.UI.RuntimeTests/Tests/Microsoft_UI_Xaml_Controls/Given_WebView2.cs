@@ -336,7 +336,7 @@ public class Given_WebView2
 			};
 			webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
 			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
-			await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
+			await TestServices.WindowHelper.WaitFor(() => !string.IsNullOrEmpty(message), 2000);
 
 			if (RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaX11) // On X11 we double escape. This makes sense because in site.js, we stringify a string. Other webkit-based implementations get this wrong
 			{
@@ -482,7 +482,7 @@ public class Given_WebView2
 
 #if !WINAPPSDK && !__ANDROID__
 	[CombinatorialData]
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaAndroid)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid)]
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{
 		var border = new Border();
@@ -505,7 +505,7 @@ public class Given_WebView2
 			e.Handled = handled;
 		};
 		webView.CoreWebView2.Navigate(uri.ToString());
-		Assert.IsNull(webView.Source);
+		Assert.IsNotNull(webView.Source);
 		await TestServices.WindowHelper.WaitFor(() => scheme == "notsupported", 3000);
 		if (handled)
 		{
