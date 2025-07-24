@@ -9,14 +9,12 @@ namespace Uno.UI.Helpers;
 public enum UnoRuntimePlatform
 {
 	Unknown = 0,
-
 	NativeWinUI = 1 << 0,
 	NativeWasm = 1 << 1,
 	NativeAndroid = 1 << 2,
 	NativeIOS = 1 << 3,
 	NativeMacCatalyst = 1 << 4,
 	NativeTvOS = 1 << 5,
-
 	// Skia platforms
 	SkiaWpf = 1 << 6,
 	SkiaWin32 = 1 << 7,
