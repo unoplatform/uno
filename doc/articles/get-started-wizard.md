@@ -20,11 +20,13 @@ Create a simple cross-platform Counter application. (Time to complete < 5 min)
 
 Use Hot Design®, Uno Platform's visual designer, to design and develop the app.
 
-![Welcome-Hot Design-Counter](https://github.com/user-attachments/assets/c98336a2-85ed-44d7-9ea1-e9f3d9be84b6)
-
 </div>
 </a>
 </div>
+</div>
+
+<div class="row">
+![Welcome-Hot Design-Counter](https://github.com/user-attachments/assets/c98336a2-85ed-44d7-9ea1-e9f3d9be84b6)
 </div>
 
 Prefer to start from code? Choose one of the 4 variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX).
