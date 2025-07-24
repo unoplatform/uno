@@ -21,4 +21,5 @@ public enum UnoRuntimePlatform
 	SkiaMacCatalyst = 1 << 14,
 	SkiaTvOS = 1 << 15,
 	SkiaFrameBuffer = 1 << 16,
+	SkiaAppleUIKit = 1 << 17
 }
