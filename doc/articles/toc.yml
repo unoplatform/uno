@@ -201,6 +201,8 @@
         href: logging.md
       - name: AppManifest (WebAssembly)
         href: wasm-appmanifest.md
+      - name: Using the server project
+        href: xref:Uno.Guides.UsingTheServerProject
       - name: Hosting a WebAssembly app
         href: xref:Uno.Development.HostWebAssemblyApp
 
