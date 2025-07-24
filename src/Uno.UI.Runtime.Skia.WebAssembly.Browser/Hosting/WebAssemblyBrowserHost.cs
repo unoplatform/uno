@@ -38,7 +38,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	{
 		_appBuilder = appBuilder;
 
-		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWebAssembly;
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWasm;
 
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 	}
