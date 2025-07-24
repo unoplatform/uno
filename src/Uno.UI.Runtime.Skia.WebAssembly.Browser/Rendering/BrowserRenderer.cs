@@ -66,12 +66,6 @@ internal partial class BrowserRenderer
 	{
 		using var _ = _fpsHelper.BeginFrame();
 
-		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
-		{
-			InvalidateRender();
-			return;
-		}
-
 		if (!_jsInfo.IsValid)
 		{
 			Initialize();
@@ -173,6 +167,11 @@ internal partial class BrowserRenderer
 			// on a timed callback and it won't requeue immediately like a standard
 			// dispatcher dispatch would.
 			NativeDispatcher.Main.SynchronousDispatchRendering();
+		}
+
+		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			InvalidateRender();
 		}
 	}
 
