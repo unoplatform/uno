@@ -6,6 +6,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Markup;
+using Uno.UI.Helpers;
 using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
@@ -40,6 +41,8 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			this.Style = _style;
 			this.DataContextChanged += UnoXamlHost_DataContextChanged;
 			this.Loaded += OnLoaded;
+
+			PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaIslands;
 		}
 
 		private void UnoXamlHost_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

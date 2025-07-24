@@ -35,7 +35,7 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 		_dispatcher = dispatcher;
 		_appBuilder = appBuilder;
 
-		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWpfIslands;
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWpf;
 	}
 
 	internal WpfHost(Func<WinUIApplication> appBuilder, Func<WpfApplication>? wpfAppBuilder)
@@ -46,7 +46,7 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 		_dispatcher = _wpfApp.Dispatcher;
 		_appBuilder = appBuilder;
 
-		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWpfIslands;
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWpf;
 	}
 
 	internal static WpfHost? Current => _current;
