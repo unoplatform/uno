@@ -14,17 +14,16 @@ public static class PlatformRuntimeHelper
 
 	private static UnoRuntimePlatform GetPlatform() =>
 #if __ANDROID__
-		UnoRuntimePlatform.Android;
+		UnoRuntimePlatform.NativeAndroid;
 #elif __IOS__
-		UnoRuntimePlatform.iOS;
+		UnoRuntimePlatform.NativeIOS;
 #elif __MACCATALYST__
-		UnoRuntimePlatform.MacCatalyst;
+		UnoRuntimePlatform.NativeMacCatalyst;
 #elif __WASM__
-		UnoRuntimePlatform.WebAssembly;
+		UnoRuntimePlatform.NativeWasm;
 #elif __SKIA__
 		SkiaPlatform;
 #else
 		UnoRuntimePlatform.Unknown;
 #endif
-
 }
