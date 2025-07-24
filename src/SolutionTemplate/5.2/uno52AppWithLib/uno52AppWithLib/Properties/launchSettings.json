@@ -42,7 +42,7 @@
     },
     "uno52AppWithLib (Desktop WSL2)": {
       "commandName": "WSL2",
-      "commandLineArgs": "{ProjectDir}/bin/Debug/net8.0-desktop/uno52AppWithLib.dll",
+      "commandLineArgs": "{ProjectDir}/bin/Debug/net10.0-desktop/uno52AppWithLib.dll",
       "distributionName": "",
       "compatibleTargetFramework": "desktop"
     }

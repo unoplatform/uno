@@ -1,8 +1,8 @@
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) or '$(EnableWindowsTargeting)' == 'true'">$(TargetFrameworks);$(DotNetVersion)-windows10.0.19041</TargetFrameworks>
-    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);$(DotNetVersion)-android;$(DotNetVersion)-ios;$(DotNetVersion)-maccatalyst</TargetFrameworks>
-    <TargetFrameworks>$(TargetFrameworks);$(DotNetVersion)</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) or '$(EnableWindowsTargeting)' == 'true'">$(TargetFrameworks);$(DotNetPreviousVersion)-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);$(DotNetPreviousVersion)-android;$(DotNetPreviousVersion)-ios;$(DotNetPreviousVersion)-maccatalyst</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);$(DotNetPreviousVersion)</TargetFrameworks>
     <TargetFrameworks Condition="'$(OverrideTargetFramework)'!=''">$(OverrideTargetFramework)</TargetFrameworks>
 
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
@@ -59,7 +59,7 @@
 
   <Target Name="_UnoValidateAssemblyResources"
           BeforeTargets="AfterBuild"
-          Condition="'$(TargetFramework)'=='$(DotNetVersion)-windows10.0.19041'">
+          Condition="'$(TargetFramework)'=='$(DotNetPreviousVersion)-windows10.0.19041'">
 
     <!-- Related to https://github.com/unoplatform/uno/issues/15492 to ensure that library assets are properly generated -->
     <Error Text="Missing uno51blank\AppResources.xaml"

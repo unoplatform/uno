@@ -1,6 +1,6 @@
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
-    <TargetFrameworks>net9.0;net9.0-ios;net9.0-maccatalyst;net9.0-android;net9.0-windows10.0.26100;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
+    <TargetFrameworks>$(DotNetCurrentVersion);$(DotNetCurrentVersion)-ios;$(DotNetCurrentVersion)-maccatalyst;$(DotNetCurrentVersion)-android;$(DotNetCurrentVersion)-windows10.0.26100;$(DotNetCurrentVersion)-browserwasm;$(DotNetCurrentVersion)-desktop</TargetFrameworks>
     <UnoSingleProject>true</UnoSingleProject>
     <OutputType>Library</OutputType>
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->

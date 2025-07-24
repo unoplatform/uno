@@ -3,6 +3,11 @@
 	<!-- File is intentionally empty and not referencing parent Directory.Build.props -->
 	<!-- We don't want our Directory.Build.props in src to affect building the templates. -->
 
+	<PropertyGroup>
+		<DotNetPreviousVersion Condition=" '$(DotNetPreviousVersion)' == '' ">net9.0</DotNetPreviousVersion>
+		<DotNetCurrentVersion Condition=" '$(DotNetCurrentVersion)' == '' ">net10.0</DotNetCurrentVersion>
+	</PropertyGroup>
+
 	<!-- Starting from .NET 9 SDK Preview 6, vulnerability checks are happening for transitive dependencies -->
 	<!-- https://devblogs.microsoft.com/nuget/nugetaudit-2-0-elevating-security-and-trust-in-package-management/ -->
 	<!-- Currently, these warnings are annoying false positives -->

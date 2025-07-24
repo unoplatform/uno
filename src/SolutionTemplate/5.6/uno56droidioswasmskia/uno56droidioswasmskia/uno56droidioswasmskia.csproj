@@ -1,6 +1,6 @@
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
-    <TargetFrameworks>net9.0-browserwasm;net9.0-ios;net9.0-android;net9.0-desktop</TargetFrameworks>
+    <TargetFrameworks>$(DotNetCurrentVersion)-browserwasm;$(DotNetCurrentVersion)-ios;$(DotNetCurrentVersion)-android;$(DotNetCurrentVersion)-desktop</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
@@ -47,7 +47,7 @@
 
   <Target Name="_UnoValidateSelfAssets" 
           BeforeTargets="AfterBuild" 
-          Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041'">
+          Condition="'$(TargetFramework)'=='$(DotNetCurrentVersion)-windows10.0.19041'">
 
     <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
     <Error Text="Missing asset $(OutputPath)\Assets\SharedAssets.md"

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.Build.NoTargets">
   <PropertyGroup>
     <!-- NOTE: The TargetFramework is required by MSBuild but not used as this project is not built. -->
-    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <TargetFramework>$(DotNetPreviousVersion)</TargetFramework>
     <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
 
