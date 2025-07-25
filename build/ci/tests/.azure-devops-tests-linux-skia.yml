@@ -39,6 +39,10 @@ jobs:
 
   - template: ../templates/linux-install-deps.yml
 
+  - template: ../templates/dotnet-install.yml
+    parameters:
+      haveCheckout: false
+
   - script: |
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
         xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-linux-screenshots'
