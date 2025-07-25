@@ -5,8 +5,10 @@ using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
+#if HAS_UNO
 using Uno.UI.Xaml;
 using Private.Infrastructure;
+#endif
 
 namespace Uno.UI.RuntimeTests.Helpers
 {
