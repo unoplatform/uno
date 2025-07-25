@@ -134,7 +134,7 @@ namespace Uno.UI
 			: base(handle, transfer)
 		{
 			InitializeBinder();
-			ContextHelper.Current = this;
+			ContextHelper.CurrentSafe = this;
 			Initialize();
 
 #if !IS_UNO
@@ -146,7 +146,7 @@ namespace Uno.UI
 		public BaseActivity()
 		{
 			InitializeBinder();
-			ContextHelper.Current = this;
+			ContextHelper.CurrentSafe = this;
 			Initialize();
 
 #if !IS_UNO
