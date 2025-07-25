@@ -34,6 +34,8 @@ namespace Windows.UI.ViewManagement
 		private IReadOnlyList<Rect> _defaultSpanningRects;
 		private IApplicationViewSpanningRects _applicationViewSpanningRects;
 
+		private Rect _visibleBounds;
+
 		[global::Uno.NotImplemented]
 		public int Id => 1;
 
@@ -75,32 +77,7 @@ namespace Windows.UI.ViewManagement
 			return true;
 		}
 
-		private Rect _visibleBounds;
-		public Foundation.Rect VisibleBounds { get => VisibleBoundsOverride ?? _visibleBounds; internal set => _visibleBounds = value; }
-
-		/// <summary>
-		/// All other platforms: equivalent to <see cref="VisibleBounds"/>.
-		///
-		/// Android: returns the visible bounds taking the status bar into account. The status bar is not removed from <see cref="VisibleBounds"/>
-		/// on Android when it's opaque, on the grounds that the root managed view is already arranged below the status bar in y-direction by
-		/// default (unlike iOS), but in some cases the correct total height is needed, hence this property.
-		/// </summary>
-		internal Rect TrueVisibleBounds =>
-#if __ANDROID__
-			VisibleBoundsOverride ?? _trueVisibleBounds;
-#else
-			VisibleBounds;
-#endif
-
-		/// <summary>
-		/// If set, overrides the 'real' visible bounds. Used for testing visible bounds-related behavior on devices that have no native
-		/// 'unsafe area'.
-		/// </summary>
-		internal Rect? VisibleBoundsOverride
-		{
-			get;
-			set;
-		}
+		public Foundation.Rect VisibleBounds => _visibleBounds;
 
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
 
@@ -256,9 +233,13 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		internal void OnVisibleBoundsChanged(ApplicationView applicationView, object arg)
+		internal void SetVisibleBounds(Rect visibleBounds)
 		{
-			VisibleBoundsChanged?.Invoke(applicationView, arg);
+			if (_visibleBounds != visibleBounds)
+			{
+				_visibleBounds = visibleBounds;
+				VisibleBoundsChanged?.Invoke(this, null);
+			}
 		}
 	}
 }

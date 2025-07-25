@@ -98,29 +98,17 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	/// </summary>
 	public void SetBoundsAndVisibleBounds(Rect bounds, Rect visibleBounds)
 	{
-		var applicationView = ApplicationView.GetForWindowId(Window!.AppWindow.Id);
-		var oldBounds = _bounds;
-		var oldVisibleBounds = _visibleBounds;
-		var oldVisibleBounds2 = applicationView.VisibleBounds;
-		_bounds = bounds;
-		_visibleBounds = visibleBounds;
-		applicationView.VisibleBounds = visibleBounds;
-		if (oldBounds != bounds)
+		if (_visibleBounds != visibleBounds)
 		{
-			SizeChanged?.Invoke(this, bounds.Size);
-			RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
-		}
-		if (oldVisibleBounds != visibleBounds)
-		{
+			_visibleBounds = visibleBounds;
 			VisibleBoundsChanged?.Invoke(this, visibleBounds);
 		}
-		if (oldVisibleBounds2 != applicationView.VisibleBounds)
+
+		if (_bounds != bounds)
 		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Updated ApplicationView visible bounds to {applicationView.VisibleBounds}");
-			}
-			applicationView.OnVisibleBoundsChanged(applicationView, null);
+			_bounds = bounds;
+			SizeChanged?.Invoke(this, bounds.Size);
+			RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
 		}
 	}
 
