@@ -6,7 +6,7 @@ namespace Uno.UI.Graphics;
 
 internal class SKCanvasVisualFactory : SKCanvasVisualBaseFactory
 {
-	public SKCanvasVisualFactory(object owner) { }
+	public SKCanvasVisualFactory() { }
 
 	public SKCanvasVisualBase CreateInstance(Action<object, Size> renderCallback, Compositor compositor) => new SKCanvasVisual(renderCallback, compositor);
 }

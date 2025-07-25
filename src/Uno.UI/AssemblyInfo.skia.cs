@@ -17,5 +17,3 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("SamplesApp.Skia.Generic")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp.Skia")]
 
-[assembly: ApiExtension(typeof(SKCanvasVisualBaseFactory), typeof(SKCanvasVisualFactory))]
-

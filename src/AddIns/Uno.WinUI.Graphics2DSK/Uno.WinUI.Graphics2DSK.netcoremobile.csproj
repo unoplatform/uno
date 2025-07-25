@@ -7,7 +7,6 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.WinUI.Graphics2DSK</AssemblyName>
 		<RootNamespace>Uno.WinUI.Graphics2DSK</RootNamespace>
-		<GeneratePackageOnBuild Condition="'$(UNO_UWP_BUILD)'!='true' And '$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 
 		<Nullable>enable</Nullable>
 		

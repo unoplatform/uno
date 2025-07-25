@@ -18,12 +18,12 @@ namespace UITests.Shared.Windows_UI_Composition
 			if (SKCanvasElement.IsSupportedOnCurrentPlatform())
 			{
 				Slider slider;
-				sp.Children.Add(new Grid
+				grid.Children.Add(new Grid
 				{
 					RowDefinitions =
 					{
 						new RowDefinition { Height = GridLength.Auto },
-						new RowDefinition { Height = new GridLength(1, GridUnitType.Pixel) }
+						new RowDefinition { Height = new GridLength(1.0f, GridUnitType.Star) }
 					},
 					Children =
 					{
@@ -38,7 +38,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			}
 			else
 			{
-				sp.Children.Add(new TextBlock { Text = "This sample is not supported on this platform." });
+				grid.Children.Add(new TextBlock { Text = "This sample is not supported on this platform." });
 			}
 		}
 	}
