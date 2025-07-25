@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPager.properties.cpp, tag winui3/release/1.4.2
+// MUX reference PipsPager.properties.cpp, tag winui3/release/1.8-stable
 
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -212,6 +212,24 @@ public partial class PipsPager
 			typeof(PipsPagerTemplateSettings),
 			typeof(PipsPager),
 			new FrameworkPropertyMetadata(null, OnPropertyChanged));
+
+	/// <summary>
+	/// Gets or sets the wrap mode, which determines how the items in the pager are wrapped.
+	/// </summary>
+	public PipsPagerWrapMode WrapMode
+	{
+		get => (PipsPagerWrapMode)this.GetValue(WrapModeProperty);
+		set => SetValue(WrapModeProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the <see cref="WrapMode"/> dependency property, which determines how the items in the pager are wrapped.
+	/// </summary>
+	public static DependencyProperty WrapModeProperty { get; } =
+		DependencyProperty.Register(
+			nameof(WrapMode), typeof(PipsPagerWrapMode),
+			typeof(PipsPager),
+			new FrameworkPropertyMetadata(default(PipsPagerWrapMode)));
 
 	private static void OnPropertyChanged(
 		DependencyObject sender,
