@@ -16,8 +16,6 @@ internal record UnitTestMethodInfo
 	private readonly List<object?[]> _casesParameters;
 	private readonly IList<PointerDeviceType> _injectedPointerTypes;
 
-	private readonly bool _ignoredBecauseOfConditionalTestAttribute;
-
 	public UnitTestMethodInfo(object testClassInstance, MethodInfo method)
 	{
 		Method = method;
