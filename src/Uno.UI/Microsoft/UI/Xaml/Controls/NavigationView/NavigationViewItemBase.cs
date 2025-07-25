@@ -5,11 +5,14 @@
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class NavigationViewItemBase : ContentControl
 {
+	internal SerialDisposable EventRevoker { get; } = new();
+
 	public NavigationViewItemBase()
 	{
 		Loaded += OnLoaded;

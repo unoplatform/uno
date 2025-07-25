@@ -190,7 +190,7 @@ public partial class NavigationView
 
 	private TopNavigationViewLayoutState m_topNavigationMode = TopNavigationViewLayoutState.Uninitialized;
 
-	private readonly List<NavigationViewItem> m_itemsWithRevokerObjects = new List<NavigationViewItem>();
+	private readonly List<NavigationViewItemBase> m_itemsWithRevokerObjects = new List<NavigationViewItem>();
 
 	// A threshold to stop recovery from overflow to normal happens immediately on resize.
 	private float m_topNavigationRecoveryGracePeriodWidth = 5.0f;
