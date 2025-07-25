@@ -1001,9 +1001,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		// captures the pointer, so when the pointer is released, NVMI's Tapped will trigger first, flipping
 		// IsExpanded. So, flipping it here again undoes the change. Now, if the chevron itself it clicked, we will
 		// bubble up to OnNavigationViewItemTapped, which will take care of IsExpanded.
-#if !HAS_UNO // TODO MZ: Still needed?
 		IsExpanded = !IsExpanded;
-#endif
 	}
 
 	private void OnFlyoutClosing(object sender, FlyoutBaseClosingEventArgs args)

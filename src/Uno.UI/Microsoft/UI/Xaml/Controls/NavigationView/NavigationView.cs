@@ -5326,7 +5326,7 @@ public partial class NavigationView : ContentControl
 					shadowCaster.Shadow = new ThemeShadow();
 
 					var translation = shadowCaster.Translation;
-					var shadowDepth = (float)SharedHelpers.FindInApplicationResources(c_paneOverlayShadowDepthName, c_paneOverlayShadowDepth);
+					var shadowDepth = (float)Convert.ChangeType(SharedHelpers.FindInApplicationResources(c_paneOverlayShadowDepthName, c_paneOverlayShadowDepth), typeof(float));
 
 					shadowCaster.Translation = new Vector3(translation.X, translation.Y, shadowDepth);
 				}
