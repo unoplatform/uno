@@ -21,7 +21,7 @@
 		<DefineConstants>$(DefineConstants);REFERENCE</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" PrivateAssets="all" />
 	</ItemGroup>
 	
 
