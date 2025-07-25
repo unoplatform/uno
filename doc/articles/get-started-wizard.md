@@ -9,7 +9,6 @@ Create a simple cross-platform Counter application. (Time to complete < 5 min)
 
 <!-- markdownlint-disable MD001 -->
 
-
 <!-- Centered first item -->
 <div class="row" style="display: flex; justify-content: center; align-items: center;">
 <div class="col-md-6 col-xs-12">
