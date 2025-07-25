@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return availableSize;
 			}
 
-			var visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds ?? default;
+			var visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 			if (availableSize.Width > visibleBounds.Width)
 			{
@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Rect CalculateDialogPlacement(Size desiredSize, Size finalSize)
 		{
-			Rect visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds ?? default;
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 			var maximumWidth = Math.Min(visibleBounds.Width, finalSize.Width);
 			var maximumHeight = Math.Min(visibleBounds.Height, finalSize.Height);

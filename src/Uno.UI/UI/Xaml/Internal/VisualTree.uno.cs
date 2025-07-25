@@ -12,12 +12,14 @@ namespace Uno.UI.Xaml.Core;
 
 internal partial class VisualTree : IWeakReferenceProvider
 {
+	private Rect _visibleBounds;
+	private Rect? _visibleBoundsOverride;
+
 	private const int UnoTopZIndex = int.MaxValue - 100;
 	private const int FocusVisualZIndex = UnoTopZIndex + 1;
 	internal const int TextBoxTouchKnobPopupZIndex = FocusVisualZIndex + 1;
 
 	private ManagedWeakReference? _selfWeakReference;
-	private Windows.UI.ViewManagement.ApplicationView? _applicationView;
 
 	public Canvas? FocusVisualRoot { get; private set; }
 
@@ -37,102 +39,53 @@ internal partial class VisualTree : IWeakReferenceProvider
 	ManagedWeakReference IWeakReferenceProvider.WeakReference =>
 		_selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 
-	//internal Size Size
-	//{
-	//	get
-	//	{
-	//		if (RootElement is XamlIsland xamlIsland)
-	//		{
-	//			// If the size is set explicitly, prefer this, as ActualSize property values may be
-	//			// a frame behind.
-	//			if (!double.IsNaN(xamlIsland.Width) && !double.IsNaN(xamlIsland.Height))
-	//			{
-	//				return new(xamlIsland.Width, xamlIsland.Height);
-	//			}
-
-	//			var actualSize = xamlIsland.ActualSize;
-	//			return new Size(actualSize.X, actualSize.Y);
-	//		}
-	//		else if (RootElement is RootVisual rootVisual)
-	//		{
-	//			if (Window.CurrentSafe is null)
-	//			{
-	//				throw new InvalidOperationException("Window.Current must be set.");
-	//			}
-
-	//			return Window.CurrentSafe.Bounds.Size;
-	//		}
-	//		else
-	//		{
-	//			throw new InvalidOperationException("Invalid VisualTree root type");
-	//		}
-	//	}
-	//}
-
 	internal Rect VisibleBounds
 	{
-		get
+		get => VisibleBoundsOverride ?? _visibleBounds;
+		set
 		{
-			if (GetApplicationViewForOwnerWindow() is ApplicationView applicationView)
+			if (_visibleBounds != value)
 			{
-				return applicationView.VisibleBounds;
+				_visibleBounds = value;
+
+				VisibleBoundsChanged?.Invoke(this, EventArgs.Empty);
 			}
-			else
+		}
+	}
+
+	/// <summary>
+	/// If set, overrides the 'real' visible bounds. Used for testing visible bounds-related behavior on devices that have no native
+	/// 'unsafe area'.
+	/// </summary>
+	internal Rect? VisibleBoundsOverride
+	{
+		get => _visibleBoundsOverride;
+		set
+		{
+			if (_visibleBoundsOverride != value)
 			{
-				var size = Size;
-				return new Rect(0, 0, size.Width, size.Height);
+				_visibleBoundsOverride = value;
+
+				VisibleBoundsChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 	}
 
 	internal event EventHandler? VisibleBoundsChanged;
 
-	internal Rect TrueVisibleBounds
+	private void OnVisibleBoundsChanged(object sender, EventArgs e)
 	{
-		get
-		{
-			if (GetApplicationViewForOwnerWindow() is ApplicationView applicationView)
-			{
-				return applicationView.TrueVisibleBounds;
-			}
-			else
-			{
-				var size = Size;
-				return new Rect(0, 0, size.Width, size.Height);
-			}
-		}
-	}
+		VisibleBoundsChanged?.Invoke(sender, e);
 
-	private ApplicationView? GetApplicationViewForOwnerWindow()
-	{
-		if (_applicationView is not null)
+		if (RootElement is XamlIslandRoot { OwnerWindow: { } ownerWindow } _)
 		{
-			return _applicationView;
+			// Notify the XamlIslandRoot that the visible bounds have changed.
+			ApplicationView.GetOrCreateForWindowId(ownerWindow.AppWindow.Id).SetVisibleBounds(VisibleBounds);
 		}
-
-		if (RootElement is XamlIslandRoot xamlIsland)
+		else if (RootElement is RootVisual window)
 		{
-			if (xamlIsland.OwnerWindow is Window ownerWindow)
-			{
-				_applicationView = ApplicationView.GetForWindowId(ownerWindow.AppWindow.Id);
-				return _applicationView;
-			}
+			// Notify the Window that the visible bounds have changed.
+			ApplicationView.GetForCurrentViewSafe().SetVisibleBounds(VisibleBounds);
 		}
-		else if (RootElement is RootVisual)
-		{
-			if (Window.CurrentSafe is null)
-			{
-				throw new InvalidOperationException("Window.Current must be set.");
-			}
-
-			_applicationView = ApplicationView.GetForCurrentViewSafe();
-			return _applicationView;
-		}
-		else
-		{
-			throw new InvalidOperationException("Invalid VisualTree root type");
-		}
-
-		return null;
 	}
 }
