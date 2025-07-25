@@ -1162,9 +1162,9 @@
       <StaticResource x:Key="MenuBarItemBorderBrushPressed" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="MenuBarItemBorderBrushSelected" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="NavigationViewBackButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+      <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
       <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="SolidBackgroundFillColorTransparent" />
-      <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="ControlFillColorTransparentBrush" />
+      <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="SolidBackgroundFillColorTransparent" />
       <StaticResource x:Key="NavigationViewContentBackground" ResourceKey="LayerFillColorDefaultBrush" />
       <StaticResource x:Key="NavigationViewItemBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="NavigationViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
@@ -1202,6 +1202,7 @@
       <StaticResource x:Key="NavigationViewItemBorderBrushSelectedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="NavigationViewItemBorderBrushSelectedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="NavigationViewItemBorderBrushSelectedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="NavigationViewItemIconBackground" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="NavigationViewItemSeparatorForeground" ResourceKey="DividerStrokeColorDefaultBrush" />
       <StaticResource x:Key="NavigationViewItemHeaderForeground" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="NavigationViewSelectionIndicatorForeground" ResourceKey="AccentFillColorDefaultBrush" />
@@ -1210,12 +1211,12 @@
       <StaticResource x:Key="TopNavigationViewItemForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
-      <StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelected" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundSelected" ResourceKey="TextFillColorPrimaryBrush" />
-      <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
-      <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPressed" ResourceKey="TextFillColorTertiaryBrush" />
+      <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemSeparatorForeground" ResourceKey="DividerStrokeColorDefaultBrush" />
@@ -3007,9 +3008,9 @@
       <StaticResource x:Key="MenuBarItemBorderBrushPressed" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="MenuBarItemBorderBrushSelected" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="NavigationViewBackButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SolidBackgroundFillColorBaseBrush" />
+      <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
       <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="SolidBackgroundFillColorTransparent" />
-      <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="ControlFillColorTransparentBrush" />
+      <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="SolidBackgroundFillColorTransparent" />
       <StaticResource x:Key="NavigationViewContentBackground" ResourceKey="LayerFillColorDefaultBrush" />
       <StaticResource x:Key="NavigationViewItemBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="NavigationViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
@@ -3047,6 +3048,7 @@
       <StaticResource x:Key="NavigationViewItemBorderBrushSelectedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="NavigationViewItemBorderBrushSelectedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="NavigationViewItemBorderBrushSelectedDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="NavigationViewItemIconBackground" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="NavigationViewItemSeparatorForeground" ResourceKey="DividerStrokeColorDefaultBrush" />
       <StaticResource x:Key="NavigationViewItemHeaderForeground" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="NavigationViewSelectionIndicatorForeground" ResourceKey="AccentFillColorDefaultBrush" />
@@ -3056,10 +3058,10 @@
       <StaticResource x:Key="TopNavigationViewItemForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <StaticResource x:Key="TopNavigationViewItemForegroundSelected" ResourceKey="TextFillColorPrimaryBrush" />
-      <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
-      <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPressed" ResourceKey="TextFillColorTertiaryBrush" />
-      <StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TopNavigationViewItemForegroundSelectedPressed" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelected" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
@@ -4840,9 +4842,9 @@
       <StaticResource x:Key="MenuBarItemBorderBrushPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
       <StaticResource x:Key="MenuBarItemBorderBrushSelected" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
       <StaticResource x:Key="NavigationViewBackButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
+      <StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="{ThemeResource SystemColorWindowColor}" />
-      <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
+      <StaticResource x:Key="NavigationViewTopPaneBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <SolidColorBrush x:Key="NavigationViewContentBackground" Color="{ThemeResource SystemColorWindowColor}" />
       <StaticResource x:Key="NavigationViewItemBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="NavigationViewItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
@@ -4880,7 +4882,8 @@
       <StaticResource x:Key="NavigationViewItemBorderBrushSelectedPointerOver" ResourceKey="SystemControlHighlightAltTransparentRevealBorderBrush" />
       <StaticResource x:Key="NavigationViewItemBorderBrushSelectedPressed" ResourceKey="SystemControlHighlightAltTransparentRevealBorderBrush" />
       <StaticResource x:Key="NavigationViewItemBorderBrushSelectedDisabled" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="NavigationViewItemSeparatorForeground" ResourceKey="SystemControlForegroundBaseLowBrush" />
+      <StaticResource x:Key="NavigationViewItemIconBackground" ResourceKey="SystemControlTransparentBrush" />
+      <StaticResource x:Key="NavigationViewItemSeparatorForeground" ResourceKey="SystemColorWindowTextColorBrush" />
       <StaticResource x:Key="NavigationViewItemHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="{ThemeResource SystemColorHighlightTextColor}" />
       <StaticResource x:Key="NavigationViewContentGridBorderBrush" ResourceKey="SystemControlTransparentBrush" />
@@ -4896,7 +4899,7 @@
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelected" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="TopNavigationViewItemSeparatorForeground" ResourceKey="SystemControlForegroundBaseLowBrush" />
+      <StaticResource x:Key="TopNavigationViewItemSeparatorForeground" ResourceKey="SystemColorWindowTextColorBrush" />
       <StaticResource x:Key="NavigationViewButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
       <StaticResource x:Key="NavigationViewButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
       <StaticResource x:Key="NavigationViewButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -17946,10 +17949,12 @@
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="Content" Value="&#xE72B;" />
+    <Setter Property="Margin" Value="4,2" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -17962,6 +17967,9 @@
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource NavigationViewButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="Content.(controls:AnimatedIcon.State)" Value="PointerOver" />
+                  </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pressed">
                   <Storyboard>
@@ -17972,6 +17980,9 @@
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource NavigationViewButtonForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="Content.(controls:AnimatedIcon.State)" Value="Pressed" />
+                  </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Disabled">
                   <Storyboard>
@@ -17982,24 +17993,27 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <FontIcon x:Name="Content" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Glyph="{TemplateBinding Content}" MirroredWhenRightToLeft="True" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
+            <controls:AnimatedIcon x:Name="Content" Height="16" Width="16" local:AnimatedIcon.State="Normal" MirroredWhenRightToLeft="True" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" xmlns:local="using:Microsoft.UI.Xaml.Controls">
+              <animatedvisuals:AnimatedBackVisualSource />
+              <controls:AnimatedIcon.FallbackIconSource>
+                <controls:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}" Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" MirroredWhenRightToLeft="True" />
+              </controls:AnimatedIcon.FallbackIconSource>
+            </controls:AnimatedIcon>
           </Grid>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
   <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
-    <Setter Property="FontSize" Value="20" />
-    <Setter Property="Height" Value="32" />
-    <Setter Property="Width" Value="32" />
+    <Setter Property="Margin" Value="4,2,0,2" />
   </Style>
   <x:Double x:Key="NavigationBackButtonWidth">40</x:Double>
-  <x:Double x:Key="NavigationBackButtonHeight">40</x:Double>
+  <x:Double x:Key="NavigationBackButtonHeight">36</x:Double>
   <Style TargetType="controls:NavigationView">
     <Setter Property="PaneToggleButtonStyle" Value="{StaticResource PaneToggleButtonStyle}" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="CompactPaneLength" Value="{ThemeResource NavigationViewCompactPaneLength}" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:NavigationView">
@@ -18079,6 +18093,7 @@
                     <Setter Target="ShadowCaster.Width" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompactPaneLength}" />
                     <Setter Target="PaneTitleTextBlock.Visibility" Value="Collapsed" />
                     <Setter Target="PaneHeaderContentBorder.Visibility" Value="Collapsed" />
+                    <Setter Target="PaneContentGrid.HorizontalAlignment" Value="Left" />
                     <Setter Target="PaneCustomContentBorder.HorizontalAlignment" Value="Left" />
                     <Setter Target="FooterContentBorder.HorizontalAlignment" Value="Left" />
                   </VisualState.Setters>
@@ -18177,7 +18192,7 @@
                 <RowDefinition Height="*" />
               </Grid.RowDefinitions>
               <!-- DisplayMode top -->
-              <StackPanel x:Name="TopNavArea" Background="{ThemeResource NavigationViewTopPaneBackground}" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Canvas.ZIndex="1" contract4Present:XYFocusKeyboardNavigation="Enabled">
+              <StackPanel x:Name="TopNavArea" Background="{ThemeResource NavigationViewTopPaneBackground}" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Canvas.ZIndex="1" XYFocusKeyboardNavigation="Enabled">
                 <Grid x:Name="TopNavTopPadding" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.TopPadding}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.TopPaneVisibility}" />
                 <Grid x:Name="TopNavGrid" Height="{ThemeResource NavigationViewTopPaneHeight}" Margin="{ThemeResource TopNavigationViewTopNavGridMargin}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.TopPaneVisibility}" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}">
                   <Grid.ColumnDefinitions>
@@ -18206,7 +18221,7 @@
                   </controls:ItemsRepeaterScrollHost>
                   <Button x:Name="TopNavOverflowButton" Grid.Column="4" Content="More" Margin="{ThemeResource TopNavigationViewOverflowButtonMargin}" Style="{StaticResource NavigationViewOverflowButtonStyleWhenPaneOnTop}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OverflowButtonVisibility}">
                     <Button.Flyout>
-                      <Flyout contract7NotPresent:Placement="Bottom" contract7Present:Placement="BottomEdgeAlignedRight" ElementSoundMode="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ElementSoundMode}">
+                      <Flyout Placement="BottomEdgeAlignedRight" ElementSoundMode="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ElementSoundMode}">
                         <Flyout.FlyoutPresenterStyle>
                           <Style TargetType="FlyoutPresenter">
                             <Setter Property="Padding" Value="{ThemeResource TopNavigationViewOverflowMenuPadding}" />
@@ -18215,12 +18230,12 @@
                             <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
                             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
                             <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
-                            <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+                            <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
                             <Setter Property="Template">
                               <Setter.Value>
                                 <ControlTemplate TargetType="FlyoutPresenter">
                                   <ScrollViewer x:Name="ScrollViewer" ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" AutomationProperties.AccessibilityView="Raw">
-                                    <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Padding="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource OverlayCornerRadius}" />
+                                    <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Padding="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" CornerRadius="{TemplateBinding CornerRadius}" />
                                   </ScrollViewer>
                                 </ControlTemplate>
                               </Setter.Value>
@@ -18254,9 +18269,9 @@
                 <Border x:Name="TopNavContentOverlayAreaGrid" Child="{TemplateBinding ContentOverlay}" />
               </StackPanel>
               <!-- Displaymode (compact/minimal/normal) left -->
-              <SplitView x:Name="RootSplitView" Background="{TemplateBinding Background}" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" BorderThickness="{ThemeResource NavigationViewBorderThickness}" CompactPaneLength="{TemplateBinding CompactPaneLength}" DisplayMode="Inline" IsPaneOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaneOpen, Mode=TwoWay}" IsTabStop="False" OpenPaneLength="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}" Grid.Row="1" contract7Present:CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}">
+              <SplitView x:Name="RootSplitView" Background="{TemplateBinding Background}" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" BorderThickness="{ThemeResource NavigationViewBorderThickness}" CompactPaneLength="{TemplateBinding CompactPaneLength}" DisplayMode="Inline" IsPaneOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaneOpen, Mode=TwoWay}" IsTabStop="False" OpenPaneLength="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}" Grid.Row="1" CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}">
                 <SplitView.Pane>
-                  <Grid x:Name="PaneContentGrid" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" HorizontalAlignment="Left" Margin="{ThemeResource NavigationViewPaneContentGridMargin}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.LeftPaneVisibility}">
+                  <Grid x:Name="PaneContentGrid" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" Margin="{ThemeResource NavigationViewPaneContentGridMargin}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.LeftPaneVisibility}">
                     <Grid.RowDefinitions>
                       <RowDefinition Height="Auto" />
                       <RowDefinition Height="0" />
@@ -18280,7 +18295,7 @@
                       </Grid.ColumnDefinitions>
                       <ContentControl x:Name="PaneHeaderContentBorder" IsTabStop="False" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Column="2" />
                     </Grid>
-                    <Grid x:Name="AutoSuggestArea" Grid.Row="3" Height="{ThemeResource NavigationViewAutoSuggestAreaHeight}" Margin="0,0,0,8" VerticalAlignment="Center">
+                    <Grid x:Name="AutoSuggestArea" Grid.Row="3" MinHeight="{ThemeResource NavigationViewAutoSuggestAreaHeight}" Margin="0,0,0,8" VerticalAlignment="Center">
                       <ContentControl x:Name="PaneAutoSuggestBoxPresenter" Margin="{ThemeResource NavigationViewAutoSuggestBoxMargin}" IsTabStop="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" />
                       <Button x:Name="PaneAutoSuggestButton" Visibility="Collapsed" Style="{ThemeResource NavigationViewPaneSearchButtonStyle}" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.SmallerPaneToggleButtonWidth}">
                         <Button.Resources>
@@ -18342,7 +18357,7 @@
                       <ContentControl x:Name="FooterContentBorder" IsTabStop="False" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="0,0,0,4" Grid.Row="2" />
                       <!-- FooterItems -->
                       <controls:ItemsRepeaterScrollHost Grid.Row="3">
-                        <ScrollViewer x:Name="FooterItemsScrollViewer" VerticalScrollBarVisibility="Auto" contract7Present:VerticalAnchorRatio="1">
+                        <ScrollViewer x:Name="FooterItemsScrollViewer" VerticalScrollBarVisibility="Auto" VerticalAnchorRatio="1">
                           <controls:ItemsRepeater x:Name="FooterMenuItemsHost" AutomationProperties.AccessibilityView="Content">
                             <controls:ItemsRepeater.Layout>
                               <controls:StackLayout />
@@ -18354,7 +18369,7 @@
                   </Grid>
                 </SplitView.Pane>
                 <SplitView.Content>
-                  <Grid x:Name="ContentGrid" BorderBrush="{ThemeResource NavigationViewContentGridBorderBrush}" BorderThickness="{ThemeResource NavigationViewContentGridBorderThickness}" Background="{ThemeResource NavigationViewContentBackground}" Margin="{ThemeResource NavigationViewContentMargin}" contract7Present:CornerRadius="{ThemeResource NavigationViewContentGridCornerRadius}">
+                  <Grid x:Name="ContentGrid" BorderBrush="{ThemeResource NavigationViewContentGridBorderBrush}" BorderThickness="{ThemeResource NavigationViewContentGridBorderThickness}" Background="{ThemeResource NavigationViewContentBackground}" Margin="{ThemeResource NavigationViewContentMargin}" CornerRadius="{ThemeResource NavigationViewContentGridCornerRadius}">
                     <Grid.RowDefinitions>
                       <RowDefinition Height="Auto" />
                       <RowDefinition Height="Auto" />
@@ -18377,9 +18392,9 @@
                 </Grid.RenderTransform>
               </Grid>
             </Grid>
-            <!-- Button grid -->
             <!-- TODO: Uno Specific: Canvas.ZIndex is not implemented, so the
 						button Grid is moved below the content SplitView in the template -->
+            <!-- Button grid -->
             <Grid x:Name="PaneToggleButtonGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.ZIndex="100">
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -18422,7 +18437,7 @@
     <Setter Property="UseSystemFocusVisuals" Value="True" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="TabNavigation" Value="Once" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:NavigationViewItem">
@@ -18442,8 +18457,7 @@
                   <VisualState.Setters>
                     <Setter Target="NavigationViewItemPresenter.Margin" Value="{ThemeResource TopNavigationViewItemMargin}" />
                     <Setter Target="NavigationViewItemPresenter.Style" Value="{StaticResource MUX_NavigationViewItemPresenterStyleWhenOnTopPane}" />
-                    <contract7NotPresent:Setter Target="ChildrenFlyout.Placement" Value="Bottom" />
-                    <contract7Present:Setter Target="ChildrenFlyout.Placement" Value="BottomEdgeAlignedLeft" />
+                    <Setter Target="ChildrenFlyout.Placement" Value="BottomEdgeAlignedLeft" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="OnTopNavigationOverflow">
@@ -18453,14 +18467,14 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <primitives:NavigationViewItemPresenter x:Name="NavigationViewItemPresenter" Icon="{TemplateBinding Icon}" InfoBadge="{TemplateBinding InfoBadge}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" VerticalAlignment="{TemplateBinding VerticalAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" primitiveContract7Present:CornerRadius="{TemplateBinding CornerRadius}" IsTabStop="false" Control.IsTemplateFocusTarget="True" />
+            <primitives:NavigationViewItemPresenter x:Name="NavigationViewItemPresenter" Icon="{TemplateBinding Icon}" InfoBadge="{TemplateBinding InfoBadge}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" VerticalAlignment="{TemplateBinding VerticalAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" CornerRadius="{TemplateBinding CornerRadius}" IsTabStop="false" Control.IsTemplateFocusTarget="True" />
             <controls:ItemsRepeater x:Load="False" Grid.Row="1" Visibility="Collapsed" x:Name="NavigationViewItemMenuItemsHost">
               <controls:ItemsRepeater.Layout>
                 <controls:StackLayout Orientation="Vertical" />
               </controls:ItemsRepeater.Layout>
             </controls:ItemsRepeater>
             <FlyoutBase.AttachedFlyout>
-              <Flyout x:Name="ChildrenFlyout" contract7NotPresent:Placement="Right" contract7Present:Placement="RightEdgeAlignedTop">
+              <Flyout x:Name="ChildrenFlyout" Placement="RightEdgeAlignedTop">
                 <Flyout.FlyoutPresenterStyle>
                   <Style TargetType="FlyoutPresenter">
                     <Setter Property="Padding" Value="{ThemeResource NavigationViewItemChildrenMenuFlyoutPadding}" />
@@ -18471,12 +18485,12 @@
                     <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
                     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
                     <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
-                    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+                    <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
                     <Setter Property="Template">
                       <Setter.Value>
                         <ControlTemplate TargetType="FlyoutPresenter">
                           <ScrollViewer x:Name="ScrollViewer" ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" AutomationProperties.AccessibilityView="Raw">
-                            <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Padding="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource OverlayCornerRadius}" />
+                            <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Padding="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" CornerRadius="{TemplateBinding CornerRadius}" />
                           </ScrollViewer>
                         </ControlTemplate>
                       </Setter.Value>
@@ -18601,6 +18615,7 @@
   <Thickness x:Key="TopNavigationViewAutoSuggestBoxMargin">4,0</Thickness>
   <x:Double x:Key="PaneToggleButtonHeight">36</x:Double>
   <x:Double x:Key="PaneToggleButtonWidth">40</x:Double>
+  <x:Double x:Key="PaneOverlayShadowDepth">16</x:Double>
   <x:Double x:Key="NavigationViewCompactPaneLength">48</x:Double>
   <x:Double x:Key="NavigationViewIconBoxWidth">40</x:Double>
   <x:Double x:Key="NavigationViewTopPaneHeight">48</x:Double>
@@ -18676,11 +18691,11 @@
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
     <Setter Property="BorderThickness" Value="{ThemeResource NavigationViewToggleBorderThickness}" />
     <Setter Property="Padding" Value="{ThemeResource NavigationViewItemButtonMargin}" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Grid x:Name="LayoutRoot" Height="{TemplateBinding MinHeight}" Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}" HorizontalAlignment="Stretch" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource OverlayCornerRadius}">
+          <Grid x:Name="LayoutRoot" Height="{TemplateBinding MinHeight}" Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}" HorizontalAlignment="Stretch" CornerRadius="{TemplateBinding CornerRadius}">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="Auto" />
               <ColumnDefinition Width="*" />
@@ -18738,7 +18753,8 @@
     <Setter Property="MinHeight" Value="36" />
     <Setter Property="HorizontalAlignment" Value="Center" />
     <Setter Property="FocusVisualMargin" Value="-4,0" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="IsTextScaleFactorEnabled" Value="False" />
   </Style>
   <Style x:Key="NavigationViewOverflowButtonStyleWhenPaneOnTop" TargetType="Button">
     <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
@@ -18839,19 +18855,12 @@
     <Setter Property="BorderThickness" Value="{StaticResource NavigationViewItemBorderThickness}" />
     <Setter Property="UseSystemFocusVisuals" Value="True" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
-          <Grid x:Name="LayoutRoot" MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}" Background="{TemplateBinding Background}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource OverlayCornerRadius}" Margin="{ThemeResource NavigationViewItemButtonMargin}" Control.IsTemplateFocusTarget="True">
-            <Grid.Resources>
-              <contract7NotPresent:Storyboard x:Name="ExpandCollapseRotateExpandedStoryboard">
-                <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" From="0.0" To="180.0" Duration="0:0:0.1" />
-              </contract7NotPresent:Storyboard>
-              <contract7NotPresent:Storyboard x:Name="ExpandCollapseRotateCollapsedStoryboard">
-                <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" From="180.0" To="0.0" Duration="0:0:0.1" />
-              </contract7NotPresent:Storyboard>
-            </Grid.Resources>
+          <Grid x:Name="LayoutRoot" MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" Margin="{ThemeResource NavigationViewItemButtonMargin}" Control.IsTemplateFocusTarget="True">
+            <Grid.Resources />
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="PointerStates">
                 <VisualState x:Name="Normal" />
@@ -18926,14 +18935,12 @@
                   <VisualState.Setters>
                     <Setter Target="ExpandCollapseChevron.Visibility" Value="Visible" />
                     <Setter Target="ExpandCollapseChevronIcon.Visibility" Value="Visible" />
-                    <contract7NotPresent:Setter Target="ExpandCollapseChevronRotateTransform.Angle" Value="180" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="ChevronVisibleClosed">
                   <VisualState.Setters>
                     <Setter Target="ExpandCollapseChevron.Visibility" Value="Visible" />
                     <Setter Target="ExpandCollapseChevronIcon.Visibility" Value="Visible" />
-                    <contract7NotPresent:Setter Target="ExpandCollapseChevronRotateTransform.Angle" Value="0" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -19002,7 +19009,7 @@
             <Grid x:Name="PresenterContentRootGrid">
               <!-- Wrap SelectionIndicator in a grid so that its offset is 0,0 - this enables the offset animation. -->
               <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
-                <Rectangle x:Name="SelectionIndicator" Width="{ThemeResource NavigationViewSelectionIndicatorWidth}" Height="{ThemeResource NavigationViewSelectionIndicatorHeight}" Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}" Opacity="0.0" contract7Present:RadiusX="{ThemeResource NavigationViewSelectionIndicatorRadius}" contract7Present:RadiusY="{ThemeResource NavigationViewSelectionIndicatorRadius}" />
+                <Rectangle x:Name="SelectionIndicator" Width="{ThemeResource NavigationViewSelectionIndicatorWidth}" Height="{ThemeResource NavigationViewSelectionIndicatorHeight}" Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}" Opacity="0.0" RadiusX="{ThemeResource NavigationViewSelectionIndicatorRadius}" RadiusY="{ThemeResource NavigationViewSelectionIndicatorRadius}" />
               </Grid>
               <Grid x:Name="ContentGrid" MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}" Margin="0,0,14,0" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
@@ -19013,7 +19020,7 @@
                 </Grid.ColumnDefinitions>
                 <Border x:Name="IconColumn" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.SmallerIconWidth}">
                   <Viewbox x:Name="IconBox" Height="{ThemeResource NavigationViewItemOnLeftIconBoxHeight}" HorizontalAlignment="Center" Margin="{ThemeResource NavigationViewItemOnLeftIconBoxMargin}">
-                    <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
+                    <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" Background="{ThemeResource NavigationViewItemIconBackground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
                   </Viewbox>
                 </Border>
                 <ContentPresenter x:Name="ContentPresenter" Grid.Column="1" Margin="{ThemeResource NavigationViewItemContentPresenterMargin}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Padding="{TemplateBinding Padding}" AutomationProperties.AccessibilityView="Raw" />
@@ -19023,9 +19030,7 @@
                     <controls:AnimatedIcon.FallbackIconSource>
                       <controls:FontIconSource Foreground="{ThemeResource NavigationViewItemForeground}" FontSize="{ThemeResource NavigationViewItemExpandedGlyphFontSize}" Glyph="{StaticResource NavigationViewItemExpandedGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                     </controls:AnimatedIcon.FallbackIconSource>
-                    <controls:AnimatedIcon.RenderTransform>
-                      <contract7NotPresent:RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0" />
-                    </controls:AnimatedIcon.RenderTransform>
+                    <controls:AnimatedIcon.RenderTransform />
                   </controls:AnimatedIcon>
                 </Grid>
                 <ContentPresenter x:Name="InfoBadgePresenter" Grid.Column="2" VerticalAlignment="Center" Content="{TemplateBinding InfoBadge}" />
@@ -19046,11 +19051,11 @@
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
     <Setter Property="UseSystemFocusVisuals" Value="True" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:NavigationViewItem">
-          <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" Margin="{ThemeResource NavigationViewItemButtonMargin}" Height="{StaticResource TopNavigationViewSettingsButtonHeight}" Width="{StaticResource TopNavigationViewSettingsButtonHeight}" Control.IsTemplateFocusTarget="True">
+          <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" Margin="{ThemeResource NavigationViewItemButtonMargin}" Height="{StaticResource TopNavigationViewSettingsButtonHeight}" Width="{StaticResource TopNavigationViewSettingsButtonHeight}" Control.IsTemplateFocusTarget="True">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="PointerStates">
                 <VisualState x:Name="Normal" />
@@ -19115,7 +19120,7 @@
                 <RowDefinition Height="*" />
               </Grid.RowDefinitions>
               <Viewbox x:Name="IconBox" Grid.Row="1" Grid.Column="1" Height="16" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
+                <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" Background="{ThemeResource NavigationViewItemIconBackground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
               </Viewbox>
               <ContentPresenter x:Name="InfoBadgePresenter" Grid.Column="2" VerticalAlignment="Center" Content="{TemplateBinding InfoBadge}" />
             </Grid>
@@ -19126,19 +19131,12 @@
   </Style>
   <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="MUX_NavigationViewItemPresenterStyleWhenOnTopPane">
     <Setter Property="Foreground" Value="{ThemeResource TopNavigationViewItemForeground}" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
-          <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
-            <Grid.Resources>
-              <contract7NotPresent:Storyboard x:Name="ExpandCollapseRotateExpandedStoryboard">
-                <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" From="0.0" To="180.0" Duration="0:0:0.1" />
-              </contract7NotPresent:Storyboard>
-              <contract7NotPresent:Storyboard x:Name="ExpandCollapseRotateCollapsedStoryboard">
-                <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" From="180.0" To="0.0" Duration="0:0:0.1" />
-              </contract7NotPresent:Storyboard>
-            </Grid.Resources>
+          <Grid x:Name="LayoutRoot" Margin="{StaticResource NavigationViewItemButtonMargin}" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True" CornerRadius="{TemplateBinding CornerRadius}">
+            <Grid.Resources />
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="PointerStates">
                 <VisualState x:Name="Normal" />
@@ -19231,13 +19229,11 @@
                 <VisualState x:Name="ChevronVisibleOpen">
                   <VisualState.Setters>
                     <Setter Target="ExpandCollapseChevron.Visibility" Value="Visible" />
-                    <contract7NotPresent:Setter Target="ExpandCollapseChevronRotateTransform.Angle" Value="180" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="ChevronVisibleClosed">
                   <VisualState.Setters>
                     <Setter Target="ExpandCollapseChevron.Visibility" Value="Visible" />
-                    <contract7NotPresent:Setter Target="ExpandCollapseChevronRotateTransform.Angle" Value="0" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -19298,7 +19294,7 @@
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
               <Viewbox x:Name="IconBox" Height="16" Width="16" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
+                <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" Background="{ThemeResource NavigationViewItemIconBackground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
               </Viewbox>
               <ContentPresenter x:Name="ContentPresenter" Grid.Column="1" Margin="{ThemeResource TopNavigationViewItemContentPresenterMargin}" TextWrapping="NoWrap" Foreground="{TemplateBinding Foreground}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" VerticalAlignment="Center" AutomationProperties.AccessibilityView="Raw" />
               <Grid x:Name="ExpandCollapseChevron" Grid.Column="2" Visibility="Collapsed" HorizontalAlignment="Right" Width="40" Margin="{ThemeResource TopNavigationViewItemExpandChevronMargin}" Background="Transparent">
@@ -19307,15 +19303,13 @@
                   <controls:AnimatedIcon.FallbackIconSource>
                     <controls:FontIconSource Foreground="{ThemeResource NavigationViewItemForeground}" FontSize="{ThemeResource NavigationViewItemExpandedGlyphFontSize}" Glyph="{StaticResource NavigationViewItemExpandedGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                   </controls:AnimatedIcon.FallbackIconSource>
-                  <controls:AnimatedIcon.RenderTransform>
-                    <contract7NotPresent:RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0" />
-                  </controls:AnimatedIcon.RenderTransform>
+                  <controls:AnimatedIcon.RenderTransform />
                 </controls:AnimatedIcon>
               </Grid>
               <ContentPresenter x:Name="InfoBadgePresenter" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-16,0,2,13" Content="{TemplateBinding InfoBadge}" />
             </Grid>
             <Grid x:Name="SelectionIndicatorGrid" Margin="16,0,16,4" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-              <Rectangle x:Name="SelectionIndicator" Height="3" Width="16" Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}" Opacity="0" contract7Present:RadiusX="2" contract7Present:RadiusY="2" contract7NotPresent:RadiusX="2" contract7NotPresent:RadiusY="2" />
+              <Rectangle x:Name="SelectionIndicator" Height="3" Width="16" Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}" Opacity="0" RadiusX="2" RadiusY="2" />
             </Grid>
           </Grid>
         </ControlTemplate>
@@ -19327,15 +19321,8 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
-          <Grid x:Name="LayoutRoot" Height="36" Margin="{StaticResource NavigationViewItemButtonMargin}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True">
-            <Grid.Resources>
-              <contract7NotPresent:Storyboard x:Name="ExpandCollapseRotateExpandedStoryboard">
-                <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" From="0.0" To="180.0" Duration="0:0:0.1" />
-              </contract7NotPresent:Storyboard>
-              <contract7NotPresent:Storyboard x:Name="ExpandCollapseRotateCollapsedStoryboard">
-                <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" From="180.0" To="0.0" Duration="0:0:0.1" />
-              </contract7NotPresent:Storyboard>
-            </Grid.Resources>
+          <Grid x:Name="LayoutRoot" Height="36" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True">
+            <Grid.Resources />
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="PointerStates">
                 <VisualState x:Name="Normal" />
@@ -19411,13 +19398,11 @@
                 <VisualState x:Name="ChevronVisibleOpen">
                   <VisualState.Setters>
                     <Setter Target="ExpandCollapseChevron.Visibility" Value="Visible" />
-                    <contract7NotPresent:Setter Target="ExpandCollapseChevronRotateTransform.Angle" Value="180" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="ChevronVisibleClosed">
                   <VisualState.Setters>
                     <Setter Target="ExpandCollapseChevron.Visibility" Value="Visible" />
-                    <contract7NotPresent:Setter Target="ExpandCollapseChevronRotateTransform.Angle" Value="0" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -19468,7 +19453,7 @@
             <Grid x:Name="PresenterContentRootGrid">
               <!-- Wrap SelectionIndicator in a grid so that its offset is 0,0 - this enables the offset animation. -->
               <Grid Margin="4,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                <Rectangle x:Name="SelectionIndicator" Width="2" Height="24" Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}" Opacity="0.0" contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+                <Rectangle x:Name="SelectionIndicator" Width="2" Height="24" Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}" Opacity="0.0" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
               </Grid>
               <Grid x:Name="ContentGrid" Margin="0,0,14,0">
                 <Grid.ColumnDefinitions>
@@ -19478,7 +19463,7 @@
                   <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Viewbox x:Name="IconBox" Height="16" Width="16" Margin="16,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                  <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
+                  <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" Background="{ThemeResource NavigationViewItemIconBackground}" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls" />
                 </Viewbox>
                 <ContentPresenter x:Name="ContentPresenter" Grid.Column="1" Margin="{ThemeResource TopNavigationViewItemOnOverflowContentPresenterMargin}" Foreground="{TemplateBinding Foreground}" TextWrapping="NoWrap" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" VerticalAlignment="Center" AutomationProperties.AccessibilityView="Raw" />
                 <Grid x:Load="False" x:Name="ExpandCollapseChevron" Grid.Column="3" Visibility="Collapsed" HorizontalAlignment="Right" Width="40" Margin="{ThemeResource TopNavigationViewItemOnOverflowExpandChevronMargin}" Padding="{ThemeResource TopNavigationViewItemOnOverflowExpandChevronPadding}" Background="Transparent">
@@ -19487,9 +19472,7 @@
                     <controls:AnimatedIcon.FallbackIconSource>
                       <controls:FontIconSource Foreground="{ThemeResource NavigationViewItemForeground}" FontSize="{ThemeResource NavigationViewItemExpandedGlyphFontSize}" Glyph="{StaticResource NavigationViewItemExpandedGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}" />
                     </controls:AnimatedIcon.FallbackIconSource>
-                    <controls:AnimatedIcon.RenderTransform>
-                      <contract7NotPresent:RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0" />
-                    </controls:AnimatedIcon.RenderTransform>
+                    <controls:AnimatedIcon.RenderTransform />
                   </controls:AnimatedIcon>
                 </Grid>
                 <ContentPresenter x:Name="InfoBadgePresenter" Grid.Column="2" VerticalAlignment="Center" Content="{TemplateBinding InfoBadge}" />
