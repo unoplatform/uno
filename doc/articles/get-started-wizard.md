@@ -25,7 +25,9 @@ Use Hot Design®, Uno Platform's visual designer, to design and develop the app.
 </div>
 
 <div class="row">
-![Welcome-Hot Design-Counter](https://github.com/user-attachments/assets/c98336a2-85ed-44d7-9ea1-e9f3d9be84b6)
+
+![Welcome-Hot Design-Counter](Assets/getting-started-hot-design.gif)
+
 </div>
 
 Prefer to start from code? Choose one of the 4 variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX).
