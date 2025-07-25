@@ -1050,6 +1050,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Uno specific 
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+
 		//TODO: Uno specific - remove when #4689 is fixed
 		internal event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> UnoBeforeElementPrepared;
 
@@ -1058,6 +1060,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var args = new ItemsRepeaterElementPreparedEventArgs(element, index);
 			UnoBeforeElementPrepared?.Invoke(this, args);
 		}
+#endif
 
 		#endregion
 	}
