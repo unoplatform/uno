@@ -31,6 +31,8 @@ public abstract partial class SKCanvasElement : FrameworkElement
 			throw new InvalidOperationException($"Failed to create an instance of {nameof(SKCanvasVisualBase)}");
 		}
 	}
+
+	internal override bool IsViewHit() => true;
 #endif
 
 	protected SKCanvasElement()
