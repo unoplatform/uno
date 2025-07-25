@@ -9,8 +9,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class NavigationViewItem
 {
-	internal SerialDisposable EventRevoker { get; } = new();
-
 	internal ItemsRepeater GetRepeater() => m_repeater;
 
 	private readonly SerialDisposable m_splitViewIsPaneOpenChangedRevoker = new();

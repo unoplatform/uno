@@ -111,11 +111,6 @@ public partial class NavigationView : ContentControl
 
 	private static Size c_infSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
-	// Change to 'true' to turn on debugging outputs in Output window
-	private bool s_IsDebugOutputEnabled;
-	private bool s_IsVerboseDebugOutputEnabled;
-
-
 	~NavigationView()
 	{
 		UnhookEventsAndClearFields(true);
@@ -712,9 +707,7 @@ public partial class NavigationView : ContentControl
 			// Register for changes in title bar layout
 			if (SharedHelpers.TryGetCurrentCoreApplicationView() is { } currentView)
 			{
-				if (auto coreTitleBar = currentView.TitleBar())
-			var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-				if (coreTitleBar != null)
+				if (currentView.TitleBar is { } coreTitleBar)
 				{
 					m_coreTitleBar = coreTitleBar;
 					coreTitleBar.LayoutMetricsChanged += OnTitleBarMetricsChanged;
@@ -2924,7 +2917,7 @@ public partial class NavigationView : ContentControl
 		}
 	}
 
-	private void OnNavigationViewItemClicked(NavigationViewItem sender)
+	internal void OnNavigationViewItemClicked(NavigationViewItem sender)
 	{
 		OnNavigationViewItemInvoked(sender);
 		sender.Focus(FocusState.Pointer);
@@ -3255,7 +3248,7 @@ public partial class NavigationView : ContentControl
 								}
 							}
 
-							for (var nvib in containersWithTabFocusOff)
+							foreach (var nvib in containersWithTabFocusOff)
 							{
 								nvib.IsTabStop = true;
 							}
@@ -3821,36 +3814,39 @@ public partial class NavigationView : ContentControl
 
 	private void SetNavigationViewItemBaseRevokers(NavigationViewItemBase nvib)
 	{
-		nvib.EventRevoker.Disposable = null;
+		nvib.EventRevokers?.Dispose();
+		nvib.EventRevokers = new CompositeDisposable();
 		var visibilitySubscription = nvib.RegisterPropertyChangedCallback(NavigationViewItemBase.VisibilityProperty, OnNavigationViewItemBaseVisibilityPropertyChanged);
-		nvib.EventRevoker.Disposable = Disposable.Create(() =>
+		nvib.EventRevokers.Add(Disposable.Create(() =>
 		{
 			nvib.UnregisterPropertyChangedCallback(NavigationViewItemBase.VisibilityProperty, visibilitySubscription);
-		});
+		}));
 		m_itemsWithRevokerObjects.Add(nvib);
 	}
 
 	private void SetNavigationViewItemRevokers(NavigationViewItem nvi)
 	{
-		nvi.EventRevoker.Disposable = null;
-		nvi.KeyDown += OnNavigationViewItemKeyDown;
-		nvi.GotFocus += OnNavigationViewItemOnGotFocus;
-		var isSelectedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, OnNavigationViewItemIsSelectedPropertyChanged);
-		var isExpandedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, OnNavigationViewItemExpandedPropertyChanged);
-		nvi.EventRevoker.Disposable = Disposable.Create(() =>
+		if (nvi.EventRevokers is { } revokers)
 		{
-			nvi.KeyDown -= OnNavigationViewItemKeyDown;
-			nvi.GotFocus -= OnNavigationViewItemOnGotFocus;
-			nvi.UnregisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, isSelectedSubscription);
-			nvi.UnregisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, isExpandedSubscription);
-		});
+			nvi.KeyDown += OnNavigationViewItemKeyDown;
+			nvi.GotFocus += OnNavigationViewItemOnGotFocus;
+			var isSelectedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, OnNavigationViewItemIsSelectedPropertyChanged);
+			var isExpandedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, OnNavigationViewItemExpandedPropertyChanged);
+			revokers.Add(Disposable.Create(() =>
+			{
+				nvi.KeyDown -= OnNavigationViewItemKeyDown;
+				nvi.GotFocus -= OnNavigationViewItemOnGotFocus;
+				nvi.UnregisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, isSelectedSubscription);
+				nvi.UnregisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, isExpandedSubscription);
+			}));
+		}
 	}
 
 	private void ClearNavigationViewItemBaseRevokers(NavigationViewItemBase nvib)
 	{
 		RevokeNavigationViewItemBaseRevokers(nvib);
 
-		nvib.EventRevoker.Disposable = null;
+		nvib.EventRevokers = null;
 		m_itemsWithRevokerObjects.Remove(nvib);
 	}
 
@@ -3878,7 +3874,7 @@ public partial class NavigationView : ContentControl
 
 	private void RevokeNavigationViewItemBaseRevokers(NavigationViewItemBase nvib)
 	{
-		nvib.EventRevoker.Disposable = null;
+		nvib.EventRevokers?.Dispose();
 	}
 
 	private void InvalidateTopNavPrimaryLayout()
@@ -4620,14 +4616,13 @@ public partial class NavigationView : ContentControl
 		}
 		else if (!m_isOpenPaneForInteraction && !isPaneOpen)
 		{
-			var splitView = m_rootSplitView;
-			if (splitView != null)
+			if (m_rootSplitView is { } splitViewInner)
 			{
 				// splitview.IsPaneOpen and nav.IsPaneOpen is two way binding. If nav.IsPaneOpen=false and splitView.IsPaneOpen=true,
 				// then the pane has been closed by API and we treat it as a forced close.
 				// If, however, splitView.IsPaneOpen=false, then nav.IsPaneOpen is just following the SplitView here and the pane
 				// was closed, for example, due to app window resizing. We don't set the force flag in this situation.
-				m_wasForceClosed = splitView.IsPaneOpen;
+				m_wasForceClosed = splitViewInner.IsPaneOpen;
 			}
 
 			else
@@ -5198,16 +5193,16 @@ public partial class NavigationView : ContentControl
 				fe.Height = topPadding;
 			}
 
-			if (m_contentPaneTopPadding is { } fe)
+			if (m_contentPaneTopPadding is { } fe2)
 			{
-				fe.Height = topPadding;
+				fe2.Height = topPadding;
 			}
 		}
 
-		var paneTitleHolderFrameworkElement = m_paneTitleHolderFrameworkElement.get();
+		var paneTitleHolderFrameworkElement = m_paneTitleHolderFrameworkElement;
 		var paneToggleButton = m_paneToggleButton;
 
-		bool setPaneTitleHolderFrameworkElementMargin = paneTitleHolderFrameworkElement && paneTitleHolderFrameworkElement.Visibility == Visibility.Visible;
+		bool setPaneTitleHolderFrameworkElementMargin = paneTitleHolderFrameworkElement is not null && paneTitleHolderFrameworkElement.Visibility == Visibility.Visible;
 		bool setPaneToggleButtonMargin = !setPaneTitleHolderFrameworkElementMargin && paneToggleButton is not null && paneToggleButton.Visibility == Visibility.Visible;
 
 		if (setPaneTitleHolderFrameworkElementMargin || setPaneToggleButtonMargin)
