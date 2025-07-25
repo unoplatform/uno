@@ -210,7 +210,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		InvalidateParentChildrenPicture();
 	}
 
-	private void InvalidateParentChildrenPicture()
+	internal void InvalidateParentChildrenPicture()
 	{
 		var parent = this.Parent;
 		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
@@ -452,8 +452,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 						child.Render(in childSession, applyChildOptimization: false);
 					}
 				}
-				visual._childrenPicture = recorder.EndRecording();
-				session.Canvas.DrawPicture(visual._childrenPicture);
+
+				var picture = recorder.EndRecording();
+				session.Canvas.DrawPicture(picture);
+
+				// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
+				// In such case, we should not cache this picture. Not only it is outdated, it will also lead to a corrupted state,
+				// where subtree rendering is skipped with the cached picture,
+				// and its descendant can't invalidate the cached picture since they area already on a ChildrenSKPictureInvalid path.
+				if ((visual._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+				{
+					visual._childrenPicture = picture;
+				}
 			}
 		}
 	}
