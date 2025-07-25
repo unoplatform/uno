@@ -8,6 +8,8 @@ using System.Diagnostics;
 using Uno.UI.Helpers;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
+using Uno.UI.Xaml.Core;
+using System.Threading;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -33,6 +35,7 @@ internal partial class BrowserRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
 	private SKCanvas? _canvas;
+	private SKPicture? _picture;
 
 	private SKSizeI? _lastSize;
 
@@ -60,7 +63,43 @@ internal partial class BrowserRenderer
 		_jsInfo = NativeMethods.CreateContext(this, _nativeSwapChainPanel, WebAssemblyWindowWrapper.Instance?.CanvasId ?? "invalid");
 	}
 
-	internal void InvalidateRender() => NativeMethods.Invalidate(_nativeSwapChainPanel);
+	internal void InvalidateRender()
+	{
+		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			return;
+		}
+
+		var recorder = new SKPictureRecorder();
+		var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+		using (new SKAutoCanvasRestore(canvas, true))
+		{
+			canvas.Clear(SKColors.Transparent);
+			var scale = DisplayInformation.GetForCurrentViewSafe()!.RawPixelsPerViewPixel;
+			_fpsHelper.Scale = (float)scale;
+			canvas.Scale((float)scale);
+			if (_host.RootElement?.Visual is { } rootVisual)
+			{
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(
+					(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width),
+					(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height),
+					rootVisual, canvas);
+
+				// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
+				// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
+				// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
+				negativePath.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), negativePath);
+				BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!negativePath.IsEmpty ? negativePath.ToSvgPathData() : "");
+			}
+
+			var picture = recorder.EndRecording();
+
+			Interlocked.Exchange(ref _picture, picture);
+			_host.RootElement?.XamlRoot?.InvokeFramePainted();
+		}
+
+		NativeMethods.Invalidate(_nativeSwapChainPanel);
+	}
 
 	private void RenderFrame()
 	{
@@ -124,25 +163,16 @@ internal partial class BrowserRenderer
 			if (!_isWindowInitialized)
 			{
 				_isWindowInitialized = true;
-				// Microsoft.UI.Xaml.Window.Current.OnNativeWindowCreated();
 			}
 		}
+
+		var currentPicture = _picture;
 
 		using (new SKAutoCanvasRestore(_canvas, true))
 		{
 			_surface.Canvas.Clear(SKColors.Transparent);
-			_surface.Canvas.Scale((float)scale);
-			if (_host.RootElement?.Visual is { } rootVisual)
-			{
-				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(_renderTarget.Width, _renderTarget.Height, rootVisual, _canvas);
-				_fpsHelper.DrawFps(_canvas);
-				// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
-				// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
-				// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
-				negativePath.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), negativePath);
-				BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!negativePath.IsEmpty ? negativePath.ToSvgPathData() : "");
-				_host.RootElement?.XamlRoot?.InvokeFramePainted();
-			}
+			_surface.Canvas.DrawPicture(currentPicture);
+			_fpsHelper.DrawFps(_surface.Canvas);
 		}
 
 		// update the control
@@ -167,11 +197,6 @@ internal partial class BrowserRenderer
 			// on a timed callback and it won't requeue immediately like a standard
 			// dispatcher dispatch would.
 			NativeDispatcher.Main.SynchronousDispatchRendering();
-		}
-
-		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
-		{
-			InvalidateRender();
 		}
 	}
 
