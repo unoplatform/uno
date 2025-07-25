@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewItemsFactory.cpp, commit f6b2101
+// MUX Reference NavigationViewItemsFactory.cpp, commit 65718e2813
 
 using System;
 using System.Collections.Generic;
@@ -17,19 +17,18 @@ internal class NavigationViewItemsFactory : ElementFactory
 
 	internal void UserElementFactory(object newValue)
 	{
-		m_itemTemplateWrapper = newValue as IElementFactoryShim;
-		if (m_itemTemplateWrapper == null)
+		if (newValue is DataTemplate dataTemplate)
 		{
-			// ItemTemplate set does not implement IElementFactoryShim. We also 
-			// want to support DataTemplate and DataTemplateSelectors automagically.
-			if (newValue is DataTemplate dataTemplate)
-			{
-				m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
-			}
-			else if (newValue is DataTemplateSelector selector)
-			{
-				m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
-			}
+			m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
+		}
+		else if (newValue is DataTemplateSelector selector)
+		{
+			m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
+		}
+
+		else if (newValue is IElementFactory customElementFactory)
+		{
+			m_itemTemplateWrapper = customElementFactory;
 		}
 
 		navigationViewItemPool = new List<NavigationViewItem>();
@@ -91,7 +90,6 @@ internal class NavigationViewItemsFactory : ElementFactory
 				var tempArgs = new ElementFactoryRecycleArgs();
 				tempArgs.Element = newContent as UIElement;
 				m_itemTemplateWrapper.RecycleElement(tempArgs);
-
 
 				nviImpl.Content = args.Data;
 				nviImpl.ContentTemplate = itemTemplateWrapper.Template;
