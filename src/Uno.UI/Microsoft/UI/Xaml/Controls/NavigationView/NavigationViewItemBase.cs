@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class NavigationViewItemBase : ContentControl
 {
-	internal SerialDisposable EventRevoker { get; } = new();
+	internal CompositeDisposable EventRevokers { get; set; }
 
 	public NavigationViewItemBase()
 	{
