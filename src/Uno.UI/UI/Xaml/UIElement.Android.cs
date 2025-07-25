@@ -18,6 +18,7 @@ using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
 using Microsoft.UI.Xaml.Markup;
+using Canvas = Android.Graphics.Canvas;
 
 namespace Microsoft.UI.Xaml
 {
@@ -211,7 +212,7 @@ namespace Microsoft.UI.Xaml
 		/// This method is called from the OnDraw of elements supporting rounded corners:
 		/// Border, Rectangle, Panel...
 		/// </summary>
-		private protected void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
+		private protected void AdjustCornerRadius(Canvas canvas, CornerRadius cornerRadius)
 		{
 			if (cornerRadius != CornerRadius.None)
 			{
@@ -345,7 +346,7 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
-			var newNativeVisibility = newValue == Visibility.Visible ? Android.Views.ViewStates.Visible : Android.Views.ViewStates.Gone;
+			var newNativeVisibility = newValue == Visibility.Visible ? ViewStates.Visible : ViewStates.Gone;
 
 			var bindableView = ((object)this) as Uno.UI.Controls.BindableView;
 

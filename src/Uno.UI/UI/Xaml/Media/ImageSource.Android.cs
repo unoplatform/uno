@@ -17,6 +17,7 @@ using Uno.UI.Xaml.Media;
 
 using ExifInterface = Android.Media.ExifInterface;
 using Orientation = Android.Media.Orientation;
+using AImageView = Android.Widget.ImageView;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -36,7 +37,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// <param name="uri">The image uri</param>
 		/// <param name="targetSize">An optional target decoding size</param>
 		/// <returns>A Bitmap instance</returns>
-		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView? imageView, global::System.Drawing.Size? targetSize);
+		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, AImageView? imageView, global::System.Drawing.Size? targetSize);
 
 		/// <summary>
 		/// Provides a optional external image loader.
@@ -188,7 +189,7 @@ namespace Microsoft.UI.Xaml.Media
 				return bitmap;
 			}
 
-			var matrix = new Android.Graphics.Matrix();
+			var matrix = new AMatrix();
 			matrix.PostRotate(rotationAngle);
 
 			var createdBitmap = Bitmap.CreateBitmap(bitmap, x: 0, y: 0, width: bitmap.Width, height: bitmap.Height, matrix, true);
@@ -230,7 +231,7 @@ namespace Microsoft.UI.Xaml.Media
 			return RespectExifOrientation(exifInterface, bitmap);
 		}
 
-		internal async Task<ImageData> Open(CancellationToken ct, Android.Widget.ImageView? targetImage, int? targetWidth = null, int? targetHeight = null)
+		internal async Task<ImageData> Open(CancellationToken ct, AImageView? targetImage, int? targetWidth = null, int? targetHeight = null)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
@@ -299,7 +300,7 @@ namespace Microsoft.UI.Xaml.Media
 					// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
 					if (IsContactUri(AbsoluteUri))
 					{
-						if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
+						if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, AUri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
 						{
 							return _imageData = ImageData.Empty;
 						}

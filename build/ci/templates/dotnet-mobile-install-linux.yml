@@ -21,7 +21,15 @@ steps:
       UnoCheckParameters: ${{ parameters.UnoCheckParameters }}
 
   - bash: |
+      # run 'dotnet tool update' against net9, as it may behave improperly on net10
+      mv global.json global.json.bk
+      cp build/ci/net9/global.json .
+      dotnet --info
+
       dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json
       uno-check --verbose --ci --non-interactive --fix --skip gtk3 --skip dotnetnewunotemplates --skip androidemulator --skip maui --skip unosdk --pre-major ${{ parameters.UnoCheckParameters }}
+
+      rm global.json
+      mv global.json.bk global.json
     displayName: Install .NET Workloads
     retryCountOnTaskFailure: 3

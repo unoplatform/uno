@@ -4,6 +4,7 @@
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Win32.UI.XamlHost/UWPTypeFactory.cs
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.XamlHost;
@@ -23,6 +24,7 @@ static partial class UnoTypeFactory
 	/// <param name="xamlTypeName">UWP XAML type name</param>
 	/// <exception cref="InvalidOperationException">Condition.</exception>
 	/// <returns>Instance of UWP XAML type described by xamlTypeName string</returns>
+	[RequiresUnreferencedCode("Resolving xamlTypeName may require probing assemblies on-disk.  Can this become an AssemblyQualifiedTypeName for use with Type.GetType()?")]
 	public static WUX.FrameworkElement CreateXamlContentByType(string xamlTypeName)
 	{
 		WUX.Markup.IXamlType xamlType = null;
@@ -62,6 +64,8 @@ static partial class UnoTypeFactory
 	/// </summary>
 	/// <param name="typeName">Full type name, with namespace, without assembly</param>
 	/// <returns>If found, <see cref="Type" />; otherwise, null..</returns>
+	[RequiresUnreferencedCode("Assembly.GetType(string) requires RequiresUnreferencedCode")]
+	[return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 	private static Type FindBuiltInType(string typeName)
 	{
 		var currentAppDomain = AppDomain.CurrentDomain;

@@ -45,7 +45,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					// which do not build using the RuntimeIdentifier being set. For instance, a head
 					// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
 					// dependent projects, causing the HR engine to search for pdb/dlls in
-					// the bin/Debug/net8.0/iossimulator/*.dll path instead of its original path.
+					// the bin/Debug/net9.0/iossimulator/*.dll path instead of its original path.
 
 					return false;
 				}
