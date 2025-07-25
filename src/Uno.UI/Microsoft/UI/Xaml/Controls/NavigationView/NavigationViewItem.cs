@@ -995,7 +995,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		}
 	}
 
-	internal void OnExpandCollapseChevronPointerReleased(object sender, TappedRoutedEventArgs args)
+	internal void OnExpandCollapseChevronPointerReleased()
 	{
 		// TODO Uno specific - OnExpandCollapseChevronTapped is not necessary because NavigationViewMenuItem explicitly
 		// captures the pointer, so when the pointer is released, NVMI's Tapped will trigger first, flipping
