@@ -1,13 +1,13 @@
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
-    <TargetFrameworks>net9.0-browserwasm;net9.0-desktop;net9.0</TargetFrameworks>
-    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net9.0-android;net9.0-ios;net9.0-maccatalyst;net9.0-desktop</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks>$(DotNetCurrentVersion)-browserwasm;$(DotNetCurrentVersion)-desktop;$(DotNetCurrentVersion)</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);$(DotNetCurrentVersion)-android;$(DotNetCurrentVersion)-ios;$(DotNetCurrentVersion)-maccatalyst;$(DotNetCurrentVersion)-desktop</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(DotNetCurrentVersion)-windows10.0.19041</TargetFrameworks>
 
     <!-- Disable android on msbuild .NET Framework until android 35 is supported -->
-    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-android',''))</TargetFrameworks>
-    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-ios',''))</TargetFrameworks>
-    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-maccatalyst',''))</TargetFrameworks>
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('$(DotNetCurrentVersion)-android',''))</TargetFrameworks>
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('$(DotNetCurrentVersion)-ios',''))</TargetFrameworks>
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('$(DotNetCurrentVersion)-maccatalyst',''))</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
@@ -54,7 +54,7 @@
           BeforeTargets="AfterBuild" Condition=" $(_IsPublishing) != 'true' ">
 
       <ItemGroup
-          Condition=" '$(TargetFramework)' == 'net9.0-windows10.0.19041' OR '$(TargetFramework)' == 'net9.0-desktop' ">
+          Condition=" '$(TargetFramework)' == '$(DotNetCurrentVersion)-windows10.0.19041' OR '$(TargetFramework)' == '$(DotNetCurrentVersion)-desktop' ">
         <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
         <_AssetsToValidate Include="$(OutputPath)Assets\SharedAssets.md" />
         <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.png" />
@@ -76,7 +76,7 @@
       </ItemGroup>
 
       <ItemGroup
-          Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
+          Condition="'$(TargetFramework)'=='$(DotNetCurrentVersion)-browserwasm'">
         <_AssetsToValidate Include="$(OutputPath)wwwroot\$(WasmShellOutputPackagePath)\Assets\SharedAssets.md" />
         <_AssetsToValidate Include="$(OutputPath)wwwroot\$(WasmShellOutputPackagePath)\Assets\json_file_asset.json" />
         <_AssetsToValidate Include="$(OutputPath)wwwroot\$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.png" />
@@ -112,7 +112,7 @@
 
     <!-- Validate assets file -->
 
-    <ItemGroup Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
+    <ItemGroup Condition="'$(TargetFramework)'=='$(DotNetCurrentVersion)-browserwasm'">
       <_StaticAssetsToValidate Include="uno53lib-test.xml" />
       <_StaticAssetsToValidate Include="uno53lib_icon_lib.png" />
     </ItemGroup>
@@ -137,7 +137,7 @@
           BeforeTargets="AfterPublish" Condition=" $(_IsPublishing) == 'true' ">
 
       <ItemGroup
-          Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
+          Condition="'$(TargetFramework)'=='$(DotNetCurrentVersion)-browserwasm'">
         <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\SharedAssets.md" />
         <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\json_file_asset.json" />
         <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.png" />

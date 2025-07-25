@@ -4,10 +4,6 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
-## Uno Platform 6.1
-
-Uno Platform 6.1 does not contain breaking changes that require attention when upgrading.
-
 ## Uno Platform 6.0
 
 Uno Platform 6.0 contains breaking changes required to provide a consistent experience when using the Skia rendering feature, as well as the removal of the UWP API set support and the GTK desktop runtime support.
@@ -45,7 +41,7 @@ Uno Platform 5.4 contains breaking changes for Uno.Extensions.
 
 Uno Platform 5.4 updates to WinAppSDK 1.6 if you are using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk), which requires a temporary version adjustment until newer versions of the .NET 8 SDKs are released.
 
-In your project, you may need to add the following lines (or uncomment them if you kept them from our templates) to get the `net8.0-windowsXX` target to build:
+In your project, you may need to add the following lines (or uncomment them if you kept them from our templates) to get the `net9.0-windowsXX` target to build:
 
 ```xml
 <PropertyGroup>

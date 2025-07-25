@@ -81,7 +81,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if __APPLE_UIKIT__
 			((UIKit.UIView)element).Hidden = true;
 #elif __ANDROID__
-			((Android.Views.View)element).Visibility = Android.Views.ViewStates.Invisible;
+			((AView)element).Visibility = ViewStates.Invisible;
 #endif
 
 			if (_onLoadedisAnimating)
@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if __APPLE_UIKIT__
 				((UIKit.UIView)child).Hidden = false;
 #elif __ANDROID__
-				((Android.Views.View)child).Visibility = Android.Views.ViewStates.Visible;
+				((AView)child).Visibility = ViewStates.Visible;
 #endif
 
 				if (child.Transitions.Safe().Any() || !_elements.Contains(child))

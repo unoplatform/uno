@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Media
 				return null;
 			}
 
-			var colors = GradientStops.SelectToArray(s => ((Android.Graphics.Color)GetColorWithOpacity(s.Color)).ToArgb());
+			var colors = GradientStops.SelectToArray(s => ((AColor)GetColorWithOpacity(s.Color)).ToArgb());
 			var locations = GradientStops.SelectToArray(s => (float)s.Offset);
 
 			var transform = RelativeTransform?.ToNativeMatrix(size: size);

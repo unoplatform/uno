@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<!-- Ensure that the app logs the console -->
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 
 		<!-- in-solution build -->
@@ -36,7 +36,6 @@
 		
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
 		
-		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
@@ -44,7 +43,7 @@
 		<PackageReference Include="HarfBuzzSharp" Version="8.3.1.1" />
 		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<PackageReference Include="Uno.Fonts.OpenSans" />
+		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.7.1" />
 
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />

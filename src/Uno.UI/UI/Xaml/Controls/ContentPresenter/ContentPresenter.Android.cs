@@ -42,7 +42,7 @@ partial class ContentPresenter
 
 	partial void UnregisterContentTemplateRoot() => this.RemoveViewAndDispose(ContentTemplateRoot);
 
-	protected override void OnDraw(Android.Graphics.Canvas canvas)
+	protected override void OnDraw(ACanvas canvas)
 	{
 		AdjustCornerRadius(canvas, CornerRadius);
 	}

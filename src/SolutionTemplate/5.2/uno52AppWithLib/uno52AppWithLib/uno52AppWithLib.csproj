@@ -1,13 +1,13 @@
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
-    <TargetFrameworks>net8.0-browserwasm;net8.0-desktop;net8.0</TargetFrameworks>
-    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net8.0-android;net8.0-ios;net8.0-maccatalyst;net8.0-desktop</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks>$(DotNetPreviousVersion)-browserwasm;$(DotNetPreviousVersion)-desktop;$(DotNetPreviousVersion)</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);$(DotNetPreviousVersion)-android;$(DotNetPreviousVersion)-ios;$(DotNetPreviousVersion)-maccatalyst;$(DotNetPreviousVersion)-desktop</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(DotNetPreviousVersion)-windows10.0.19041</TargetFrameworks>
 
     <!-- Disable android on msbuild .NET Framework until android 35 is supported -->
-    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net8.0-android',''))</TargetFrameworks>
-    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net8.0-ios',''))</TargetFrameworks>
-    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net8.0-maccatalyst',''))</TargetFrameworks>
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('$(DotNetPreviousVersion)-android',''))</TargetFrameworks>
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('$(DotNetPreviousVersion)-ios',''))</TargetFrameworks>
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('$(DotNetPreviousVersion)-maccatalyst',''))</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
@@ -52,7 +52,7 @@
           BeforeTargets="AfterBuild">
 
       <ItemGroup
-          Condition=" '$(TargetFramework)' == 'net8.0-windows10.0.19041' OR '$(TargetFramework)' == 'net8.0-desktop' ">
+          Condition=" '$(TargetFramework)' == '$(DotNetPreviousVersion)-windows10.0.19041' OR '$(TargetFramework)' == '$(DotNetPreviousVersion)-desktop' ">
         <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
         <_AssetsToValidate Include="$(OutputPath)Assets\SharedAssets.md" />
         <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.png" />
@@ -74,7 +74,7 @@
       </ItemGroup>
 
       <ItemGroup
-          Condition="'$(TargetFramework)'=='net8.0-browserwasm'">
+          Condition="'$(TargetFramework)'=='$(DotNetPreviousVersion)-browserwasm'">
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\SharedAssets.md" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\json_file_asset.json" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.png" />

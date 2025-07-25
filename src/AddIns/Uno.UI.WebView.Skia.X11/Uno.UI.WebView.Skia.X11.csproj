@@ -13,6 +13,12 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.WebView.Skia.X11</PackageId>
 		<Description>This package provides support for WebView for Uno Platform Skia+X11 apps</Description>
 
+		<!--
+		  "A stable release of a package should not have a prerelease dependency."
+		  because of WebkitGtkSharp 3.24.24.117-develop
+		  -->
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
+
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>

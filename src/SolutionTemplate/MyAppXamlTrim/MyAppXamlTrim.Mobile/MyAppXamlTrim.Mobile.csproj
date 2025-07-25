@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks>$(DotNetPreviousVersion)-android;$(DotNetPreviousVersion)-ios;$(DotNetPreviousVersion)-maccatalyst</TargetFrameworks>
     <!-- Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401-->
     <SingleProject>true</SingleProject>
     <OutputType>Exe</OutputType>

@@ -77,7 +77,7 @@ public partial class RefreshContainer : ContentControl
 
 		if (_refreshControl != null)
 		{
-			_refreshControl.Content = Content as Android.Views.View;
+			_refreshControl.Content = Content as AView;
 		}
 	}
 
@@ -115,14 +115,14 @@ public partial class RefreshContainer : ContentControl
 
 		if (visualizer.Foreground is SolidColorBrush foregroundBrush)
 		{
-			var androidIndicatorColor = (int)(Android.Graphics.Color)foregroundBrush.ColorWithOpacity;
+			var androidIndicatorColor = (int)(AColor)foregroundBrush.ColorWithOpacity;
 			var indicatorColorScheme = new[] { androidIndicatorColor };
 			_refreshControl.SetColorSchemeColors(indicatorColorScheme);
 		}
 
 		if (visualizer.Background is SolidColorBrush backgroundBrush)
 		{
-			var androidBackgroundColor = (int)(Android.Graphics.Color)backgroundBrush.ColorWithOpacity;
+			var androidBackgroundColor = (int)(AColor)backgroundBrush.ColorWithOpacity;
 			_refreshControl.SetProgressBackgroundColorSchemeColor(androidBackgroundColor);
 		}
 	}

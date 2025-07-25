@@ -7,6 +7,6 @@ namespace Microsoft.UI.Xaml.Shapes
 	{
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)
-			=> base.BasicArrangeOverride(finalSize, path => { path.AddOval(_logicalRenderingArea.ToRectF(), Android.Graphics.Path.Direction.Cw); });
+			=> base.BasicArrangeOverride(finalSize, path => { path.AddOval(_logicalRenderingArea.ToRectF(), APath.Direction.Cw); });
 	}
 }
