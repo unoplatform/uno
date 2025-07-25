@@ -148,7 +148,7 @@ internal partial class X11XamlRootHost
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					Console.WriteLine($"XLIB EVENT: {@event.type}");
+					this.Log().Trace($"XLIB EVENT: {@event.type}");
 				}
 
 				_ = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
