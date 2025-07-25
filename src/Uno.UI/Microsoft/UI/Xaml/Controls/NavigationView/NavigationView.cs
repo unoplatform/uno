@@ -479,7 +479,7 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if IS_UNO
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				//TODO: Uno specific - remove when #4689 is fixed
 				leftNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
@@ -512,7 +512,7 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if IS_UNO
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				//TODO: Uno specific - remove when #4689 is fixed
 				topNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
@@ -546,7 +546,7 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if IS_UNO
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				//TODO: Uno specific - remove when #4689 is fixed
 				topNavListOverflowRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
@@ -601,7 +601,7 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if IS_UNO
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				//TODO: Uno specific - remove when #4689 is fixed
 				leftFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
@@ -635,7 +635,7 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if IS_UNO // TODO MZ: Still needed?
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				//TODO: Uno specific - remove when #4689 is fixed
 				topFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
@@ -5326,9 +5326,9 @@ public partial class NavigationView : ContentControl
 					shadowCaster.Shadow = new ThemeShadow();
 
 					var translation = shadowCaster.Translation;
-					var shadowDepth = (float)Convert.ChangeType(SharedHelpers.FindInApplicationResources(c_paneOverlayShadowDepthName, c_paneOverlayShadowDepth), typeof(float));
+					double shadowDepth = (double)SharedHelpers.FindInApplicationResources(c_paneOverlayShadowDepthName, c_paneOverlayShadowDepth);
 
-					shadowCaster.Translation = new Vector3(translation.X, translation.Y, shadowDepth);
+					shadowCaster.Translation = new Vector3(translation.X, translation.Y, (float)shadowDepth);
 				}
 			}
 		}

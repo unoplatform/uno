@@ -41,7 +41,5 @@
 
 		internal static DependencyProperty IsVirtualizationEnabledProperty { get; } =
 			DependencyProperty.Register(nameof(IsVirtualizationEnabled), typeof(bool), typeof(StackLayout), new FrameworkPropertyMetadata(true, OnDependencyPropertyChanged));
-
-
 	}
 }
