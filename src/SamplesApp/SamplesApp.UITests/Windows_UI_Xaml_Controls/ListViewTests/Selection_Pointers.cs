@@ -40,7 +40,8 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 #endif
 #if IS_RUNTIME_UI_TESTS
 	// https://github.com/unoplatform/uno/issues/9080
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.Skia)]
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia)]
 #else
 	[Test]
 	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080

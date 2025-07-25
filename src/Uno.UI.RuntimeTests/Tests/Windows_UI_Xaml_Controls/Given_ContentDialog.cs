@@ -119,7 +119,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaAndroid)] // Very flaky on Skia Android #9080
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)] // Very flaky on Skia Android #9080
 		public async Task When_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -151,7 +152,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.Native)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.Native)]
 		public async Task When_Uncapped_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog(unconstrained: true)

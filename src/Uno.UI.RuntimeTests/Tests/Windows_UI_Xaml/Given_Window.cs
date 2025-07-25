@@ -363,7 +363,8 @@ public class Given_Window
 		await TestServices.WindowHelper.WaitFor(() => window.ClosedExecuted);
 	}
 
-	[ConditionalTest(IgnoredPlatforms = ~(RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11))]
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
 	[RunsOnUIThread]
 	public async Task When_FullScreen_After_Activate()
 	{
