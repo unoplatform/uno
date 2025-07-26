@@ -54,7 +54,7 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(					)					.GenericApply(__that, __nameScope, (ApplyMethod_0))
+					new global::Microsoft.UI.Xaml.DataTemplate(					)					.GenericApply(__that, __nameScope, ApplyTo_Pa_ReΞ0_DaTe)
 				;
 			}
 			)
@@ -72,26 +72,26 @@ namespace TestRepro
 						IsParsing = true,
 						// Source 0\EmptyDataTemplatePage.xaml (Line 12:4)
 					}
-					.GenericApply(__that, __nameScope, (ApplyMethod_1))
+					.GenericApply(__that, __nameScope, ApplyTo_PaΞ0_StPaΞ0_LiVi)
 					,
 					new global::Microsoft.UI.Xaml.Controls.Button
 					{
 						IsParsing = true,
 						Name = "ButtonWithEmptyDataTemplate",
-						ContentTemplate = 						new global::Microsoft.UI.Xaml.DataTemplate(						)						.GenericApply(__that, __nameScope, (ApplyMethod_2))
+						ContentTemplate = 						new global::Microsoft.UI.Xaml.DataTemplate(						)						.GenericApply(__that, __nameScope, ApplyTo_PaΞ0_StPaΞ1_Bu_CoTeΞ0_DaTe)
 						,
 						// Source 0\EmptyDataTemplatePage.xaml (Line 13:4)
 					}
-					.GenericApply(__that, __nameScope, (ApplyMethod_3))
+					.GenericApply(__that, __nameScope, ApplyTo_PaΞ0_StPaΞ1_Bu)
 					,
 				}
 			}
-			.GenericApply(__that, __nameScope, (ApplyMethod_4))
+			.GenericApply(__that, __nameScope, ApplyTo_PaΞ0_StPa)
 			;
 			
 			this
-			.GenericApply(__that, __nameScope, (ApplyMethod_5))
-			.GenericApply(__that, __nameScope, (ApplyMethod_6))
+			.GenericApply(__that, __nameScope, ApplyTo_Pa)
+			.GenericApply(__that, __nameScope, ApplyTo_Pa_Δ1)
 			;
 			OnInitializeCompleted();
 
@@ -110,13 +110,13 @@ namespace TestRepro
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyMethod_0(global::System.Object __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_Pa_ReΞ0_DaTe(global::Microsoft.UI.Xaml.DataTemplate __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/EmptyDataTemplatePage.xaml#L7:4");
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyMethod_1(global::Microsoft.UI.Xaml.Controls.ListView __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_PaΞ0_StPaΞ0_LiVi(global::Microsoft.UI.Xaml.Controls.ListView __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			/* _isTopLevelDictionary:False */
 			__that._component_0 = __p1;
@@ -126,13 +126,13 @@ namespace TestRepro
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyMethod_2(global::System.Object __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_PaΞ0_StPaΞ1_Bu_CoTeΞ0_DaTe(global::Microsoft.UI.Xaml.DataTemplate __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/EmptyDataTemplatePage.xaml#L15:6");
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyMethod_3(global::Microsoft.UI.Xaml.Controls.Button __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_PaΞ0_StPaΞ1_Bu(global::Microsoft.UI.Xaml.Controls.Button __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			__nameScope.RegisterName("ButtonWithEmptyDataTemplate", __p1);
 			__that.ButtonWithEmptyDataTemplate = __p1;
@@ -141,14 +141,14 @@ namespace TestRepro
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyMethod_4(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_PaΞ0_StPa(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 11, 3);
 			__p1.CreationComplete();
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyMethod_5(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_Pa(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			// Source 0\EmptyDataTemplatePage.xaml (Line 1:3)
 			
@@ -156,7 +156,7 @@ namespace TestRepro
 		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyMethod_6(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_Pa_Δ1(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			/* _isTopLevelDictionary:False */
 			__that._component_1 = __p1;
@@ -165,34 +165,40 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 1, 3);
 			__p1.CreationComplete();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubjectBackingPseudoField { get; set; }
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject
+		{
+			get => _ButtonWithEmptyDataTemplateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		}
 		private global::Microsoft.UI.Xaml.Controls.Button ButtonWithEmptyDataTemplate
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_ButtonWithEmptyDataTemplateSubject.ElementInstance;
-			}
-			set
-			{
-				_ButtonWithEmptyDataTemplateSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_ButtonWithEmptyDataTemplateSubject.ElementInstance;
+			set => _ButtonWithEmptyDataTemplateSubject.ElementInstance = value;
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706_TestReproEmptyDataTemplatePage
 		{
 		}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_HolderBackingPseudoField { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder
+			{
+				get => _component_0_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			}
 			private global::Microsoft.UI.Xaml.Controls.ListView _component_0
 			{
-				get => (global::Microsoft.UI.Xaml.Controls.ListView)(_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
-				set => (_component_0_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
+				get => (global::Microsoft.UI.Xaml.Controls.ListView)_component_0_Holder.Instance;
+				set => _component_0_Holder.Instance = value;
 			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_HolderBackingPseudoField { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder
+			{
+				get => _component_1_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			}
 			private global::Microsoft.UI.Xaml.Controls.Page _component_1
 			{
-				get => (global::Microsoft.UI.Xaml.Controls.Page)(_component_1_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance;
-				set => (_component_1_Holder ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true)).Instance = value;
+				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
+				set => _component_1_Holder.Instance = value;
 			}
 		private interface IEmptyDataTemplatePage_Bindings
 		{
