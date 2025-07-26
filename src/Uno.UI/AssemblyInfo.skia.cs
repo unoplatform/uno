@@ -1,4 +1,6 @@
 using global::System.Runtime.CompilerServices;
+using Uno.Foundation.Extensibility;
+using Uno.UI.Graphics;
 
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]
@@ -14,3 +16,4 @@ using global::System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia.Generic")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp.Skia")]
+
