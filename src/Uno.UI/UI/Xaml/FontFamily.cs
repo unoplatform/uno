@@ -16,6 +16,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			// A workaround before font fallback is supported. Issue: https://github.com/unoplatform/uno/issues/10148 
 			if (familyName.Contains("Segoe Fluent Icons", StringComparison.InvariantCultureIgnoreCase) ||
+				familyName.Contains("Segoe UI Symbol", StringComparison.InvariantCultureIgnoreCase) ||
 				familyName.Contains("Segoe MDL2 Assets", StringComparison.InvariantCultureIgnoreCase) ||
 				familyName.Equals("Symbols", StringComparison.InvariantCultureIgnoreCase))
 			{
