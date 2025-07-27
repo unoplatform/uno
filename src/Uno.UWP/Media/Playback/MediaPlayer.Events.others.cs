@@ -58,6 +58,12 @@ namespace Windows.Media.Playback
 		void RaiseVolumeChanged()
 			=> VolumeChanged?.Invoke(this, null);
 
+		void RaiseExternalVolumeChanged(double newVolume)
+		{
+			_volume = Math.Clamp(newVolume, 0.0, 1.0);
+			VolumeChanged?.Invoke(this, null);
+		}
+
 		void RaisePositionChanged()
 			=> PlaybackSession.Position = _extension?.Position ?? TimeSpan.Zero;
 
@@ -117,6 +123,9 @@ namespace Windows.Media.Playback
 
 			void IMediaPlayerEventsExtension.RaiseVolumeChanged()
 				=> _owner.RaiseVolumeChanged();
+
+			void IMediaPlayerEventsExtension.RaiseExternalVolumeChanged(double newVolume)
+				=> _owner.RaiseExternalVolumeChanged(newVolume);
 
 			public void RaisePositionChanged()
 				=> _owner.RaisePositionChanged();
