@@ -195,7 +195,7 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 		VlcPlayer.Buffering += (o, a) => weakRef.GetTarget()?.OnBuffering(o, a);
 		VlcPlayer.Paused += (o, a) => weakRef.GetTarget()?.OnPaused(o, a);
 		VlcPlayer.TimeChanged += (o, a) => weakRef.GetTarget()?.OnTimeChanged(o, a); // PositionChanged fires way too frequently (probably every frame). We use TimeChanged instead.
-		VlcPlayer.VolumeChanged += (o, a) => weakRef.GetTarget()?.OnVlcVolumeChanged(o, a); // PositionChanged fires way too frequently (probably every frame). We use TimeChanged instead.
+		VlcPlayer.VolumeChanged += (o, a) => weakRef.GetTarget()?.OnVlcVolumeChanged(o, a);
 
 		_vlcPlayerVolume = VlcPlayer.Volume;
 		OnVolumeChanged(); // Initialize the volume to the current value
