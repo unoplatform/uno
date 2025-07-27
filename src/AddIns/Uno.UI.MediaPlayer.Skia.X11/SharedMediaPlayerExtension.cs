@@ -39,7 +39,7 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 	private int _playlistIndex = -1; // -1 if no playlist or empty playlist, otherwise the 0-based index of the current track in the playlist
 	private MediaPlaybackList? _playlist; // only set and used if the current _player.Source is a playlist
 
-	private double _vlcPlayerVolume;
+	private int _vlcPlayerVolume;
 
 	// the current effective url (e.g. current video in playlist) that is set natively
 	// DO NOT READ OR WRITE THIS. It's only used to RaiseSourceChanged.
@@ -195,8 +195,10 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 		VlcPlayer.Buffering += (o, a) => weakRef.GetTarget()?.OnBuffering(o, a);
 		VlcPlayer.Paused += (o, a) => weakRef.GetTarget()?.OnPaused(o, a);
 		VlcPlayer.TimeChanged += (o, a) => weakRef.GetTarget()?.OnTimeChanged(o, a); // PositionChanged fires way too frequently (probably every frame). We use TimeChanged instead.
+		VlcPlayer.VolumeChanged += (o, a) => weakRef.GetTarget()?.OnVlcVolumeChanged(o, a); // PositionChanged fires way too frequently (probably every frame). We use TimeChanged instead.
 
 		_vlcPlayerVolume = VlcPlayer.Volume;
+		OnVolumeChanged(); // Initialize the volume to the current value
 
 		// For some reason, subscribing to VolumeChanged, even with an empty lambda, causes
 		// a native crash. Here's the crazy part: this only happens when a debugger is attached.
@@ -209,6 +211,7 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 		_timerDisposable = Disposable.Create(() => timer.Tick -= timerOnTick);
 		timer.Start();
 	}
+
 
 	~SharedMediaPlayerExtension()
 	{
@@ -334,7 +337,11 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 
 	public void ToggleMute() => VlcPlayer.Mute = Player.IsMuted;
 
-	public void OnVolumeChanged() => VlcPlayer.Volume = (int)Math.Round(Player.Volume);
+	public void OnVolumeChanged()
+	{
+		_vlcPlayerVolume = (int)Math.Round(Player.Volume * 100);
+		VlcPlayer.Volume = _vlcPlayerVolume;
+	}
 
 	public void OnOptionChanged(string name, object value) { }
 
@@ -466,12 +473,12 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 
 	private void OnTick()
 	{
-		var volume = VlcPlayer.Volume;
-		if (_vlcPlayerVolume != volume)
-		{
-			_vlcPlayerVolume = volume;
-			Events?.RaiseVolumeChanged();
-		}
+		//var volume = VlcPlayer.Volume;
+		//if (_vlcPlayerVolume != volume)
+		//{
+		//	_vlcPlayerVolume = volume;
+		//	Events?.RaiseVolumeChanged();
+		//}
 
 		// This is primarily to update the Buffering status, since libVLC doesn't
 		// expose a BufferingEnded event.
@@ -495,5 +502,19 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 			case VLCState.NothingSpecial:
 				break;
 		}
+	}
+
+	private void OnVlcVolumeChanged(object? o, MediaPlayerVolumeChangedEventArgs args)
+	{
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			var volume = VlcPlayer.Volume;
+			if (_vlcPlayerVolume != volume && volume != -1)
+			{
+				_vlcPlayerVolume = volume;
+				double newVolume = volume / 100.0; // VlcPlayer.Volume is in [0, 100]
+				Events?.RaiseExternalVolumeChanged(newVolume);
+			}
+		});
 	}
 }

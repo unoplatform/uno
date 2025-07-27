@@ -256,7 +256,7 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 
 	public void OnVolumeChanged()
 	{
-		NativeUno.uno_mediaplayer_set_volume(_nativePlayer, (float)(_player.Volume / 100));
+		NativeUno.uno_mediaplayer_set_volume(_nativePlayer, (float)_player.Volume);
 	}
 
 	public void Pause()
