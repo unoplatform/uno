@@ -26,6 +26,11 @@ namespace Uno.Media.Playback
 		void RaiseVolumeChanged();
 
 		/// <summary>
+		///	Raises the <see cref="MediaPlayer.VolumeChanged"/> event
+		/// </summary>
+		void RaiseExternalVolumeChanged(double newVolume);
+
+		/// <summary>
 		///	Raises the <see cref="MediaPlayer.MediaEnded"/> event
 		/// </summary>
 		void RaiseMediaEnded();
