@@ -126,7 +126,7 @@ namespace Windows.Media.Playback
 
 			void IMediaPlayerEventsExtension.RaiseExternalVolumeChanged(double newVolume)
 				=> _owner.RaiseExternalVolumeChanged(newVolume);
-			
+
 			public void RaisePositionChanged()
 				=> _owner.RaisePositionChanged();
 
