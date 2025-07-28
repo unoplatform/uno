@@ -187,13 +187,13 @@ Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 
 Additionally, here are some specific hints about the migration to Android 12:
 
 - If you are building with Android 12 on Azure Devops Hosted Agents (macOS or Windows), you'll need two updates:
-  - Use the JDK 11, using the following step:
+  - Use the JDK 17, using the following step:
 
     ```yml
     - pwsh: |
-        echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
-        echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
-    displayName: Select JDK 11
+        echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_17_X64)"
+        echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_17_X64)"
+    displayName: Select JDK 17
     ```
 
   - You may need to add the following property to your Android csproj:
