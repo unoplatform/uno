@@ -29,7 +29,7 @@ partial class RatingControl
 #if __SKIA__ // TODO Uno: Expression animation is only supported on Skia
 	private const float c_horizontalScaleAnimationCenterPoint = 0.5f;
 #endif
-	private const float c_verticalScaleAnimationCenterPoint = 0.8f;
+	private const float c_verticalScaleAnimationCenterPoint = 0.5f;
 	private readonly Thickness c_focusVisualMargin = new Thickness(-8, -7, -8, 0);
 	private const int c_defaultRatingFontSizeForRendering = 32; // (32 = 2 * [default fontsize] -- because of double size rendering), remove when MSFT #10030063 is done
 	private const int c_defaultItemSpacing = 8;
@@ -398,9 +398,9 @@ partial class RatingControl
 		uiElementVisual.StartAnimation("Scale.X", ea);
 		uiElementVisual.StartAnimation("Scale.Y", ea);
 
-		// Star size = 16. 0.5 and 0.8 are just arbitrary center point chosen in design spec
+		// Star size = 16. 0.5 is just arbitrary center point chosen in design spec
 		// 32 = star size * 2 because of the rendering at double size we do
-		uiElementVisual.CenterPoint = new Vector3(c_defaultRatingFontSizeForRendering * c_horizontalScaleAnimationCenterPoint, c_defaultRatingFontSizeForRendering * c_verticalScaleAnimationCenterPoint, 0.0f);
+		uiElementVisual.AnchorPoint = new Vector2(c_defaultRatingFontSizeForRendering * c_horizontalScaleAnimationCenterPoint, c_defaultRatingFontSizeForRendering * c_verticalScaleAnimationCenterPoint);
 #endif
 	}
 
@@ -438,7 +438,7 @@ partial class RatingControl
 			if (image != null)
 			{
 				image.Source = GetAppropriateImageSource(type);
-				image.Width = RenderingRatingFontSize(); // 
+				image.Width = RenderingRatingFontSize(); //
 				image.Height = RenderingRatingFontSize(); // MSFT #10030063 Replacing with Rating size DPs
 			}
 		}
