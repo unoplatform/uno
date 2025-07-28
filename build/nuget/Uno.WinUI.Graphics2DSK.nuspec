@@ -23,9 +23,6 @@
 			<group targetFramework="net8.0-windows10.0.19041.0">
 				<dependency id="Microsoft.WindowsAppSDK" version="1.5.240227000" />
 			</group>
-			<group targetFramework="net9.0-windows10.0.19041.0">
-				<dependency id="Microsoft.WindowsAppSDK" version="1.5.240227000" />
-			</group>
 
 			<group targetFramework="net8.0-android30.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
@@ -61,7 +58,6 @@
         <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0" />
 
         <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net8.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net8.0-windows10.0.19041.0" />
-        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-windows10.0.19041.0" />
 
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net8.0-android\Uno.WinUI.Graphics2DSK.*" target="lib\net8.0-android" />
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net8.0-ios17.0\Uno.WinUI.Graphics2DSK.*" target="lib\net8.0-ios17.0" />
