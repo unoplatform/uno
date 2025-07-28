@@ -130,11 +130,11 @@
     <comment>Automation name and tooltip text for the next page button</comment>
   </data>
   <data name="PagerControlPageText" xml:space="preserve">
-    <value>Faqe</value>
+    <value>Faqja</value>
     <comment>Name used for UIA to announce controls, e.g. "Page 5"</comment>
   </data>
   <data name="PagerControlPrefixText" xml:space="preserve">
-    <value>Faqe</value>
+    <value>Faqja</value>
     <comment>Text indicating "Page" 2 of 4</comment>
   </data>
   <data name="PagerControlPreviousPageButtonText" xml:space="preserve">

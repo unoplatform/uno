@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PagerControlFirstPageButtonText" xml:space="preserve">
-    <value>ទំព័រទីមួយ</value>
+    <value>ទំព័រដំបូង</value>
     <comment>Automation name and tooltip text for the first page button </comment>
   </data>
   <data name="PagerControlLastPageButtonText" xml:space="preserve">
-    <value>ទំព័រចុងក្រោយបង្អស់</value>
+    <value>ទំព័រចុងក្រោយ</value>
     <comment>Automation name and tooltip text for the last page button</comment>
   </data>
   <data name="PagerControlNextPageButtonText" xml:space="preserve">

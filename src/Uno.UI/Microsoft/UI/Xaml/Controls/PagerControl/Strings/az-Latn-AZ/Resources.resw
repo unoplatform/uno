@@ -122,7 +122,7 @@
     <comment>Automation name and tooltip text for the first page button </comment>
   </data>
   <data name="PagerControlLastPageButtonText" xml:space="preserve">
-    <value>Axırıncı səhifə</value>
+    <value>Sonuncu səhifə</value>
     <comment>Automation name and tooltip text for the last page button</comment>
   </data>
   <data name="PagerControlNextPageButtonText" xml:space="preserve">

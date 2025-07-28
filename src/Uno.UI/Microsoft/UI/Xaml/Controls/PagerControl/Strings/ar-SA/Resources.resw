@@ -130,11 +130,11 @@
     <comment>Automation name and tooltip text for the next page button</comment>
   </data>
   <data name="PagerControlPageText" xml:space="preserve">
-    <value>صفحة</value>
+    <value>الصفحة</value>
     <comment>Name used for UIA to announce controls, e.g. "Page 5"</comment>
   </data>
   <data name="PagerControlPrefixText" xml:space="preserve">
-    <value>صفحة</value>
+    <value>الصفحة</value>
     <comment>Text indicating "Page" 2 of 4</comment>
   </data>
   <data name="PagerControlPreviousPageButtonText" xml:space="preserve">
@@ -142,7 +142,7 @@
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PagerControlSuffixText" xml:space="preserve">
-    <value>من أصل</value>
+    <value>من</value>
     <comment>Text indicating Page 2 "of" 4</comment>
   </data>
 </root>
