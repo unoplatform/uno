@@ -23,6 +23,7 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
 using Uno.UI.Toolkit.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
@@ -673,6 +674,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands)] // Flaky on Skia WPF Islands #9080
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
@@ -1482,6 +1484,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR

@@ -1409,10 +1409,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(dropDownClosedFired, "DropDownClosed event was not fired");
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
 		public Task When_ComboBox_ScrollIntoView_SelectedItem() => When_ComboBox_ScrollIntoView_Selection(viaIndex: false);
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
 		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
 
 		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)

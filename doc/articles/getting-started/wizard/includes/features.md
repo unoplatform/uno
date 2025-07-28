@@ -32,6 +32,8 @@ This is included by default in the recommended preset, but not in the blank pres
 dotnet new unoapp -server
 ```
 
+You can read more about the server project [here](xref:Uno.Guides.UsingTheServerProject).
+
 #### PWA Manifest
 
 Includes a PWA ([Progressive Web Apps](https://learn.microsoft.com/microsoft-edge/progressive-web-apps-chromium)) manifest that enables easy installation of the WASM web-target as an app in the running device.

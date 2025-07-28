@@ -33,6 +33,8 @@ public partial class ContainerVisual : Visual
 				parent = parent.Parent;
 			}
 
+			InvalidateParentChildrenPicture();
+
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)
 			{
@@ -53,6 +55,8 @@ public partial class ContainerVisual : Visual
 	internal IntPtr Handle { get; private set; }
 
 	internal WeakReference? Owner { get; set; }
+
+	internal string? OwnerDebugName => Owner?.Target?.GetType().Name;
 
 	/// <summary>
 	/// Layout clipping is usually applied in the element's coordinate space.

@@ -40,10 +40,7 @@
 	</Target>
 
 	<ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)UnoNativeMac/build/$(Configuration)/libUnoNativeMac.*"
-				PackagePath="runtimes/osx/native"
-				Pack="true"
-				Visible="False" />
+		<None Include="$(MSBuildThisFileDirectory)UnoNativeMac/build/$(Configuration)/libUnoNativeMac.*" PackagePath="runtimes/osx/native" Pack="true" Visible="False" />
 	</ItemGroup>
 
 	<ItemGroup>
