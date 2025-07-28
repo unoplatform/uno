@@ -23,7 +23,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Name of the root class for all sub-classes
 		/// </summary>
 		/// <remarks>All sub-classes will be generated nested to this class, which is flagged with CreateNewOnMetadataUpdate attribute to avoid issues with HR.</remarks>
-		public string SubClassesRoot => $"__{FileUniqueId}_{string.Join("_", [Name, .. Parents.Select(scope => scope.Name)])}";
+		public string SubClassesRoot => $"__{FileUniqueId}"; // Note: The SubClassesRoot is no longer relative to the current scope!
 
 		/// <summary>
 		/// Used to detect duplicate x:Name and report error for those.

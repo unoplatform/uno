@@ -909,7 +909,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return name;
 		}
 
-		private void BuildChildSubclasses(IIndentedStringBuilder writer, bool isTopLevel = false)
+		private void BuildChildSubclasses(IIndentedStringBuilder writer, bool isTopLevel = false, bool isSubSub = false)
 		{
 			_isInChildSubclass = true;
 			TryAnnotateWithGeneratorSource(writer);
@@ -922,9 +922,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return;
 			}
 
-			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-			writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
-			using (writer.BlockInvariant($"{(isTopLevel ? "internal" : "private")} class {CurrentScope.SubClassesRoot}"))
+			if (!isSubSub)
+			{
+				writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+			}
+			using (isSubSub ? null : writer.BlockInvariant($"{(isTopLevel ? "internal" : "private")} class {CurrentScope.SubClassesRoot}"))
 			{
 				foreach (var kvp in CurrentScope.Subclasses)
 				{
@@ -948,11 +951,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									writer.AppendLineIndented($"global::System.Object {CurrentResourceOwner};");
 									writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 
-#if USE_NEW_TP_CODEGEN
 									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)"))
-#else
-									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner})"))
-#endif
 									{
 										writer.AppendLineIndented($"var __that = this;");
 										writer.AppendLineIndented($"this.{CurrentResourceOwner} = {CurrentResourceOwner};");
@@ -990,10 +989,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								BuildExplicitApplyMethods(writer);
 
-								BuildChildSubclasses(writer);
-
 								BuildXBindTryGetDeclarations(writer);
 							}
+
+							// We generate the sub-sub-class registered by the sub-class of the current scope, but we generate them directly on the root-sub-class!
+							// This is required for HR as roslyn tends to detect class move between sub-classes (even if unrelated at all),
+							// having all of them at the root (with class name matching logical tree path) prevents such problem.
+							BuildChildSubclasses(writer, isSubSub: true);
 						}
 					}
 				}
@@ -1009,11 +1011,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// The "OriginalSourceLocation" can be used like DebugParseContext (set via SetBaseUri) but for elements that aren't FrameworkElements
 		/// </summary>
-		private void TrySetOriginalSourceLocation(IIndentedStringBuilder writer, string element, int lineNumber, int linePosition)
+		private void TrySetOriginalSourceLocation(IIndentedStringBuilder writer, string element, IXamlLocation location)
 		{
 			if (_isHotReloadEnabled)
 			{
-				writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{lineNumber}:{linePosition}\");");
+				writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{location.LineNumber}:{location.LinePosition}\");");
 			}
 		}
 
@@ -1792,7 +1794,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								if (_isHotReloadEnabled)
 								{
-									TrySetOriginalSourceLocation(writer, "this", topLevelControl.LineNumber, topLevelControl.LinePosition);
+									TrySetOriginalSourceLocation(writer, "this", topLevelControl);
 								}
 
 								BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: false, dictIdentifier: "this");
@@ -3529,7 +3531,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (IsNotFrameworkElementButNeedsSourceLocation(objectDefinition) && _isHotReloadEnabled)
 					{
-						TrySetOriginalSourceLocation(writer, $"{writer.AppliedParameterName}", objectDefinition.LineNumber, objectDefinition.LinePosition);
+						TrySetOriginalSourceLocation(writer, $"{writer.AppliedParameterName}", objectDefinition);
 					}
 
 					if (_isUiAutomationMappingEnabled)
@@ -5993,42 +5995,81 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (TrySetDefaultBindMode(xamlObjectDefinition))
 			{
-				if (IsNewScope(xamlObjectDefinition))
+				if (IsNewScope(xamlObjectDefinition)) // a.k.a. IsTemplate()
 				{
-					writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}(");
-
 					// The unknown content is what's inside the DataTemplate element, but for the location we want the position of the "DataTemplate" element.
-					var contentOwner = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
+					var contentDefinition = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == XamlConstants.UnknownContent);
 					var contentLocation = (IXamlLocation)xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key") ?? xamlObjectDefinition;
 
-					if (contentOwner is not null || _isHotReloadEnabled) // If Hot Reload is enabled, we still need to attach the source location, even on empty elements
+					// This case is to support the layout switching for the ListViewBaseLayout, which is not
+					// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
+					var contentType = typeName == "ListViewBaseLayoutTemplate"
+						? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout"
+						: "_View";
+
+					if (_isHotReloadEnabled)
 					{
-						if (contentOwner is not null)
+						// If hot reload is enabled, we want to pre-generate a sub-type and a factory method even if the template is empty,
+						// so variation of code is smaller compared to not provide any method to the ctor of the template.
+						// For this we inject a fake _UnknownMember with a single `null` content object.
+						contentDefinition ??= new XamlMemberDefinition(
+							new XamlMember(
+								XamlConstants.UnknownContent,
+								new XamlType(XamlConstants.BaseXamlNamespace, "UIElement", new List<XamlType>(), new XamlSchemaContext()),
+								false),
+							xamlObjectDefinition.LineNumber,
+							xamlObjectDefinition.LinePosition,
+							xamlObjectDefinition)
 						{
-							var resourceOwner = CurrentResourceOwnerName;
-#if USE_NEW_TP_CODEGEN
-							writer.Append($"{resourceOwner}, (__owner, __settings) => ");
-#else
-							writer.Append($"{resourceOwner}, (__owner) => ");
-#endif
-							// This case is to support the layout switching for the ListViewBaseLayout, which is not
-							// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
-							var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
-							BuildChildThroughSubclass(writer, contentOwner, returnType);
-						}
+							Objects =
+							{
+								new XamlObjectDefinition(
+									new XamlType(XamlConstants.BaseXamlNamespace, "NullExtension", [], new()),
+									xamlObjectDefinition.LineNumber,
+									xamlObjectDefinition.LinePosition,
+									xamlObjectDefinition,
+									[])
+							}
+						};
+					}
 
-						writer.AppendIndented(")");
+					string GetCacheBrokerForHotReload()
+						=> _isHotReloadEnabled
+							? $"\"{_fileDefinition.Checksum}\".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload"
+							: string.Empty;
 
-						if (_isHotReloadEnabled)
-						{
-							using var applyWriter = CreateApplyBlock(writer, xamlObjectDefinition);
-							TrySetOriginalSourceLocation(applyWriter, applyWriter.AppliedParameterName, contentLocation.LineNumber, contentLocation.LinePosition);
-						}
-
+					if (contentDefinition is null)
+					{
+						// Note: When HR enabled, we still generate a factory method so we will be able to add content later in it.
+						writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}(/* This template does not have a content for this platform */)");
 					}
 					else
 					{
-						writer.AppendIndented("/* This template does not have a content for this platform */)");
+						// To prevent conflicting names whenever we are working with dictionaries, subClass index is a Guid in those cases
+						var isTopLevel = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal);
+						var namespacePrefix = isTopLevel ? "__Resources." : "";
+						var subclassName = RegisterChildSubclass(contentDefinition.Key, contentDefinition, contentType);
+						var buildMethod = NamingHelper.AddUnique(CurrentScope.ExplicitApplyMethodNames, $"Build_{subclassName.TrimStart('_')}");
+
+						writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}({CurrentResourceOwnerName}, {buildMethod})");
+
+						CurrentScope.CallbackMethods.Add(sb => TryAnnotateWithGeneratorSource(sb)
+							.AppendMultiLineIndented($$"""
+								private static {{contentType}} {{buildMethod}}(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+								{
+									{{GetCacheBrokerForHotReload()}}
+									return new {{namespacePrefix}}{{CurrentScope.SubClassesRoot}}.{{subclassName}}().Build(__owner, __settings);
+								}
+								"""));
+					}
+
+					writer.AppendLine();
+
+					if (_isHotReloadEnabled)
+					{
+						// Sets the location for the <Data|Control|...>Template
+						using var applyWriter = CreateApplyBlock(writer, xamlObjectDefinition);
+						TrySetOriginalSourceLocation(applyWriter, applyWriter.AppliedParameterName, contentLocation);
 					}
 				}
 				else if (typeName == "NullExtension")
@@ -6137,7 +6178,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									using (var applyWriter = CreateApplyBlock(writer, xamlObjectDefinition, Generation.StyleSymbol.Value)) // TODO: Validate if the FindType(xamlObjectDefinition) resolves properly and remove the redundant parameter Generation.StyleSymbol.Value
 									{
-										TrySetOriginalSourceLocation(applyWriter, applyWriter.AppliedParameterName, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition);
+										TrySetOriginalSourceLocation(applyWriter, applyWriter.AppliedParameterName, xamlObjectDefinition);
 									}
 								}
 							}
@@ -6607,28 +6648,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, string returnType)
-		{
-			TryAnnotateWithGeneratorSource(writer);
-
-			var isTopLevel = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal);
-
-			// To prevent conflicting names whenever we are working with dictionaries, subClass index is a Guid in those cases
-			var namespacePrefix = isTopLevel ? "__Resources." : "";
-			var subClassesRoot = CurrentScope.SubClassesRoot;
-			var subclassName = contentOwner.Key;
-
-			subclassName = RegisterChildSubclass(subclassName, contentOwner, returnType);
-
-			var activator = $"new {namespacePrefix}{subClassesRoot}.{subclassName}()";
-
-#if USE_NEW_TP_CODEGEN
-			writer.AppendLineIndented($"{activator}.Build(__owner, __settings)");
-#else
-			writer.AppendLineIndented($"{activator}.Build(__owner)");
-#endif
-		}
-
 		private string GenerateConstructorParameters(INamedTypeSymbol? type)
 		{
 			if (IsType(type, Generation.AndroidViewSymbol.Value))
@@ -6920,12 +6939,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// If flag is set, decorate the generated code with a marker of the current method. Useful for pinpointing the source of a bug or other undesired behavior.
 		/// </summary>
-		private void TryAnnotateWithGeneratorSource(IIndentedStringBuilder writer, string? suffix = null, [CallerMemberName] string? callerName = null, [CallerLineNumber] int lineNumber = 0)
+		private IIndentedStringBuilder TryAnnotateWithGeneratorSource(IIndentedStringBuilder writer, string? suffix = null, [CallerMemberName] string? callerName = null, [CallerLineNumber] int lineNumber = 0)
 		{
 			if (_shouldAnnotateGeneratedXaml)
 			{
 				writer.Append(GetGeneratorSourceAnnotation(callerName, lineNumber, suffix));
 			}
+
+			return writer;
 		}
 
 		private void TryAnnotateWithGeneratorSource(ref string str, string? suffix = null, [CallerMemberName] string? callerName = null, [CallerLineNumber] int lineNumber = 0)

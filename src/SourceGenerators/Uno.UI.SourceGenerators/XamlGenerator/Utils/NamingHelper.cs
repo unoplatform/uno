@@ -36,17 +36,19 @@ public class NamingHelper
 
 	/// <summary>
 	/// Gets a short name for the given XAML type name, eg.
-	/// * ListView => LiVi
-	/// * MyLongControlName123 => MyLoCoNa123
+	/// * ListView => LisVie
+	/// * MyLongControlName123 => MyLonConNam123
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
 	public static string GetShortName(string name)
 	{
+		const int consecutiveLower = 2;
+		
 		var sb = new StringBuilder();
 		var i = 0;
 		var len = name?.Length ?? 0;
-		var allowLower = true;
+		var allowedLower = consecutiveLower;
 
 		while (i < len)
 		{
@@ -55,18 +57,18 @@ public class NamingHelper
 				var c = name![i];
 				if (char.IsUpper(c) || char.IsDigit(c))
 				{
-					allowLower = true;
+					allowedLower = consecutiveLower;
 					sb.Append(c);
 				}
-				else if (allowLower)
+				else if (allowedLower > 0)
 				{
-					allowLower = false;
+					allowedLower--;
 					sb.Append(c);
 				}
 			}
 			else
 			{
-				allowLower = true; // We ignore the char, but if's an _ we allow lower next time
+				allowedLower = consecutiveLower; // We ignore the char, but if's an _ we allow lower next time
 			}
 
 			i++;

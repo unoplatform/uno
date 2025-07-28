@@ -48,22 +48,27 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionary.__ReDiΞ0_DaTe().Build(__owner)
-					)				;
+					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+				;
 			}
 			)
 			;
 		}
 
+		private static _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		{
+			
+			return new __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);
+		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionary
+		private class __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57
 		{
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-			public class __ReDiΞ0_DaTe
+			public class __ResDicΞ0_DatTem
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -72,7 +77,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1)
+				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -189,8 +194,8 @@ namespace MyProject
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			private object Get_1(object __ResourceOwner_1) =>
-				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 				new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD.__ReDiΞ0_DaTe().Build(__owner)
-				)				;
+				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+				;
 
 			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
 
@@ -210,8 +215,8 @@ namespace MyProject
 							new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 							{
 								return 
-									new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 									new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD.__ReDiΞ0_DaTe_Δ1().Build(__owner)
-									)								;
+									new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem_Δ1)
+								;
 							}
 							)
 							,
@@ -228,19 +233,29 @@ namespace MyProject
 		}
 
 		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.Instance.GetResourceDictionary();
+		private static _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		{
+			
+			return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);
+		}
+		private static _View Build_ResDicΞ0_DatTem_Δ1(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		{
+			
+			return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem_Δ1().Build(__owner, __settings);
+		}
 	}
 }
 namespace MyProject.__Resources
 {
 	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	internal class __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD
+	internal class __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57
 	{
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		public class __ReDiΞ0_DaTe
+		public class __ResDicΞ0_DatTem
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -249,7 +264,7 @@ namespace MyProject.__Resources
 			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			global::System.Object __ResourceOwner_1;
 			_View __rootInstance = null;
-			public _View Build(object __ResourceOwner_1)
+			public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 			{
 				var __that = this;
 				this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -327,7 +342,7 @@ namespace MyProject.__Resources
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		public class __ReDiΞ0_DaTe_Δ1
+		public class __ResDicΞ0_DatTem_Δ1
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -336,7 +351,7 @@ namespace MyProject.__Resources
 			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			global::System.Object __ResourceOwner_1;
 			_View __rootInstance = null;
-			public _View Build(object __ResourceOwner_1)
+			public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 			{
 				var __that = this;
 				this.__ResourceOwner_1 = __ResourceOwner_1;
