@@ -142,7 +142,7 @@
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PagerControlSuffixText" xml:space="preserve">
-    <value>o</value>
+    <value>o te</value>
     <comment>Text indicating Page 2 "of" 4</comment>
   </data>
 </root>

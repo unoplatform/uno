@@ -118,27 +118,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PagerControlFirstPageButtonText" xml:space="preserve">
-    <value>પ્રથમ પૃષ્ઠ</value>
+    <value>પહેલું પેજ</value>
     <comment>Automation name and tooltip text for the first page button </comment>
   </data>
   <data name="PagerControlLastPageButtonText" xml:space="preserve">
-    <value>છેલ્લું પૃષ્ઠ</value>
+    <value>છેલ્લું પેજ</value>
     <comment>Automation name and tooltip text for the last page button</comment>
   </data>
   <data name="PagerControlNextPageButtonText" xml:space="preserve">
-    <value>આગલું પૃષ્ઠ</value>
+    <value>આગલું પેજ</value>
     <comment>Automation name and tooltip text for the next page button</comment>
   </data>
   <data name="PagerControlPageText" xml:space="preserve">
-    <value>પૃષ્ઠ</value>
+    <value>પેજ</value>
     <comment>Name used for UIA to announce controls, e.g. "Page 5"</comment>
   </data>
   <data name="PagerControlPrefixText" xml:space="preserve">
-    <value>પૃષ્ઠ</value>
+    <value>પેજ</value>
     <comment>Text indicating "Page" 2 of 4</comment>
   </data>
   <data name="PagerControlPreviousPageButtonText" xml:space="preserve">
-    <value>પાછલું પૃષ્ઠ</value>
+    <value>પાછલું પેજ</value>
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PagerControlSuffixText" xml:space="preserve">

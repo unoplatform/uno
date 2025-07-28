@@ -138,11 +138,11 @@
     <comment>Text indicating "Page" 2 of 4</comment>
   </data>
   <data name="PagerControlPreviousPageButtonText" xml:space="preserve">
-    <value>পূৰ্ববৰ্তী পৃষ্ঠা</value>
+    <value>পূৰ্বৱৰ্তী পৃষ্ঠা</value>
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PagerControlSuffixText" xml:space="preserve">
-    <value>ইয়াৰ</value>
+    <value>ৰ</value>
     <comment>Text indicating Page 2 "of" 4</comment>
   </data>
 </root>

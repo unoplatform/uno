@@ -138,7 +138,7 @@
     <comment>Text indicating "Page" 2 of 4</comment>
   </data>
   <data name="PagerControlPreviousPageButtonText" xml:space="preserve">
-    <value>Алдынғы бет</value>
+    <value>Алдыңғы бет</value>
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PagerControlSuffixText" xml:space="preserve">

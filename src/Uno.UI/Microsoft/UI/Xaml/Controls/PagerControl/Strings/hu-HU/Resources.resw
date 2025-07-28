@@ -126,19 +126,19 @@
     <comment>Automation name and tooltip text for the last page button</comment>
   </data>
   <data name="PagerControlNextPageButtonText" xml:space="preserve">
-    <value>Következő oldal</value>
+    <value>Következő lap</value>
     <comment>Automation name and tooltip text for the next page button</comment>
   </data>
   <data name="PagerControlPageText" xml:space="preserve">
-    <value>oldal</value>
+    <value>Lap</value>
     <comment>Name used for UIA to announce controls, e.g. "Page 5"</comment>
   </data>
   <data name="PagerControlPrefixText" xml:space="preserve">
-    <value>oldal</value>
+    <value>Lap</value>
     <comment>Text indicating "Page" 2 of 4</comment>
   </data>
   <data name="PagerControlPreviousPageButtonText" xml:space="preserve">
-    <value>Előző oldal</value>
+    <value>Előző lap</value>
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PagerControlSuffixText" xml:space="preserve">

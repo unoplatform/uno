@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PagerControlFirstPageButtonText" xml:space="preserve">
-    <value>ആദ്യ പേജ്</value>
+    <value>ആദ്യത്തെ പേജ്</value>
     <comment>Automation name and tooltip text for the first page button </comment>
   </data>
   <data name="PagerControlLastPageButtonText" xml:space="preserve">
@@ -142,7 +142,7 @@
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PagerControlSuffixText" xml:space="preserve">
-    <value>ഇതിന്റെ</value>
+    <value>എന്നതിന്റെ</value>
     <comment>Text indicating Page 2 "of" 4</comment>
   </data>
 </root>
