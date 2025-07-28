@@ -4,7 +4,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 
-#if REFERENCE
+#if CROSSRUNTIME
 using Uno.Foundation.Extensibility;
 using Uno.UI.Graphics;
 #endif
@@ -17,7 +17,7 @@ namespace Uno.WinUI.Graphics2DSK;
 /// <remarks>This is only available on skia-based targets.</remarks>
 public abstract partial class SKCanvasElement : FrameworkElement
 {
-#if REFERENCE
+#if CROSSRUNTIME
 	private SKCanvasVisualBase? _skCanvasVisual;
 
 	private protected override ContainerVisual CreateElementVisual()
@@ -37,15 +37,13 @@ public abstract partial class SKCanvasElement : FrameworkElement
 
 	protected SKCanvasElement()
 	{
-#if REFERENCE
-		if (!ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>())
-#endif
+		if (!IsSupportedOnCurrentPlatform())
 		{
 			throw new PlatformNotSupportedException($"This platform does not support {nameof(SKCanvasElement)}. For more information: https://aka.platform.uno/skcanvaselement");
 		}
 	}
 
-#if REFERENCE
+#if CROSSRUNTIME
 	public static bool IsSupportedOnCurrentPlatform() => ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>();
 #else
 	public static bool IsSupportedOnCurrentPlatform() => false;
@@ -54,7 +52,7 @@ public abstract partial class SKCanvasElement : FrameworkElement
 	/// <summary>
 	/// Invalidates the element and triggers a redraw.
 	/// </summary>
-#if REFERENCE
+#if CROSSRUNTIME
 	public void Invalidate() => _skCanvasVisual?.Invalidate();
 #else
 #pragma warning disable CS0109 // Member does not hide an inherited member; new keyword is not required

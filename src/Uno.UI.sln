@@ -366,7 +366,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.RemoteControl.DevSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.RemoteControl.TestProcessor", "Uno.UI.RemoteControl.TestProcessor\Uno.UI.RemoteControl.TestProcessor.csproj", "{FB2B1EA8-D4D0-41D0-B50B-B1B54AD38118}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.WinUI.Graphics2DSK.Reference", "AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Reference.csproj", "{C3DB62F4-68D8-40DE-A1AA-31C90CEC8362}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.WinUI.Graphics2DSK.Crossruntime", "AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj", "{C3DB62F4-68D8-40DE-A1AA-31C90CEC8362}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.WinUI.Graphics2DSK.netcoremobile", "AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.netcoremobile.csproj", "{1208C778-EF59-4FB3-964C-EB7AF49C05DB}"
 EndProject
@@ -6496,6 +6496,7 @@ Global
 		{38DDD2F7-C1AE-FD59-849A-B5DC5BF33329} = {E872CD33-A455-4DC4-8A87-5FEEC1C39A44}
 		{898F19BB-3D62-4ACA-973A-7A4C0B72CDB5} = {E8E628C1-3BAF-4C67-AF41-78B1B30AC8CC}
 		{FB2B1EA8-D4D0-41D0-B50B-B1B54AD38118} = {E8E628C1-3BAF-4C67-AF41-78B1B30AC8CC}
+		{C3DB62F4-68D8-40DE-A1AA-31C90CEC8362} = {E872CD33-A455-4DC4-8A87-5FEEC1C39A44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B2608F4-D82B-4B72-B399-33E822DF01D0}

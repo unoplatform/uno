@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetReferencePreviousAndCurrent)</TargetFrameworks>
+		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
 	</PropertyGroup>
 	<Import Project="../../targetframework-override.props" />
 
@@ -17,7 +18,7 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<DefineConstants>$(DefineConstants);REFERENCE</DefineConstants>
+		<DefineConstants>$(DefineConstants);CROSSRUNTIME</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" PrivateAssets="all" />
