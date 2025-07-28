@@ -60,7 +60,7 @@ namespace Windows.Media.Playback
 
 		void RaiseExternalVolumeChanged(double newVolume)
 		{
-			_volume = newVolume;
+			_volume = Math.Clamp(newVolume, 0.0, 1.0);
 			VolumeChanged?.Invoke(this, null);
 		}
 

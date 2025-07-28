@@ -58,7 +58,7 @@ namespace Windows.Media.Playback
 			get => _volume;
 			set
 			{
-				_volume = value;
+				_volume = Math.Clamp(value, 0.0, 1.0);
 				OnVolumeChanged();
 				VolumeChanged?.Invoke(this, _volume);
 			}

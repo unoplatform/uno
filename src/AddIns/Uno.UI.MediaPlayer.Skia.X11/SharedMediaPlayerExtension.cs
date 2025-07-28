@@ -39,7 +39,7 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 	private int _playlistIndex = -1; // -1 if no playlist or empty playlist, otherwise the 0-based index of the current track in the playlist
 	private MediaPlaybackList? _playlist; // only set and used if the current _player.Source is a playlist
 
-	private int _vlcPlayerVolume;
+	private int _vlcPlayerVolume = 100;
 
 	// the current effective url (e.g. current video in playlist) that is set natively
 	// DO NOT READ OR WRITE THIS. It's only used to RaiseSourceChanged.
@@ -197,8 +197,12 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 		VlcPlayer.TimeChanged += (o, a) => weakRef.GetTarget()?.OnTimeChanged(o, a); // PositionChanged fires way too frequently (probably every frame). We use TimeChanged instead.
 		VlcPlayer.VolumeChanged += (o, a) => weakRef.GetTarget()?.OnVlcVolumeChanged(o, a);
 
-		_vlcPlayerVolume = VlcPlayer.Volume;
-		OnVolumeChanged(); // Initialize the volume to the current value
+		if (PlatformHelper.IsWindows)
+		{
+			// Update the player volume from VLC volume, since all VLC instances have
+			// shared volume control on Windows.
+			OnVlcVolumeChanged(null, null!);
+		}
 
 		// We need to start a timer to update the playback state, since libVLC doesn't
 		// provide a way to get the end of buffering without polling.
@@ -498,7 +502,7 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	private void OnVlcVolumeChanged(object? o, MediaPlayerVolumeChangedEventArgs args)
+	private void OnVlcVolumeChanged(object? _, MediaPlayerVolumeChangedEventArgs _1)
 	{
 		NativeDispatcher.Main.Enqueue(() =>
 		{
