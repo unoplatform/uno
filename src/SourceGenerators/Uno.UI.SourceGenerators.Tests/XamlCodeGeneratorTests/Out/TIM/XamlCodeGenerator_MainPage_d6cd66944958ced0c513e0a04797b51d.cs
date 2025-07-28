@@ -151,7 +151,7 @@ namespace TestRepro
 					return;
 				}
 		
-				_component_0.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d.ApplyTo_PagΞ0_GriΞ0_But_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
+				_component_0.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_GriΞ0_But_Cli_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
 				__is__ApplyTo_PagΞ0_GriΞ0_But_Click_Initialized = true;
 			}
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -171,7 +171,7 @@ namespace TestRepro
 					return;
 				}
 		
-				_component_1.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d.ApplyTo_PagΞ0_GriΞ1_But_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
+				_component_1.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_GriΞ1_But_Cli_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
 				__is__ApplyTo_PagΞ0_GriΞ1_But_Click_Initialized = true;
 			}
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -191,7 +191,7 @@ namespace TestRepro
 					return;
 				}
 		
-				_component_2.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d.ApplyTo_PagΞ0_GriΞ2_But_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
+				_component_2.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_GriΞ2_But_Cli_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
 				__is__ApplyTo_PagΞ0_GriΞ2_But_Click_Initialized = true;
 			}
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
@@ -207,7 +207,7 @@ namespace TestRepro
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MainPage_d6cd66944958ced0c513e0a04797b51d
 		{
-				public class ApplyTo_PagΞ0_GriΞ0_But_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				public class __PagΞ0_GriΞ0_But_Cli_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 					{
@@ -215,7 +215,7 @@ namespace TestRepro
 					}
 				}
 
-				public class ApplyTo_PagΞ0_GriΞ1_But_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				public class __PagΞ0_GriΞ1_But_Cli_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 					{
@@ -223,7 +223,7 @@ namespace TestRepro
 					}
 				}
 
-				public class ApplyTo_PagΞ0_GriΞ2_But_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				public class __PagΞ0_GriΞ2_But_Cli_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 					{

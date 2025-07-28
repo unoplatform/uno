@@ -3697,7 +3697,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				};
 
 				var handler = RegisterChildSubclass(
-					$"{parentApply}_{member.Member.Name}_Handler",
+					$"{member.Key}_{member.Member.Name}_Handler",
 					(name, subWriter) => subWriter.AppendMultiLineIndented($$"""
 							public class {{name}}(global::Uno.UI.DataBinding.ManagedWeakReference target)
 							{
