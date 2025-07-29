@@ -1826,7 +1826,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				writer.AppendLine();
 			}
-			
+
 			return initializerName;
 		}
 
@@ -2680,7 +2680,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						writer.Append($"{dictIdentifier}[");
+						writer.AppendIndented($"{dictIdentifier}[");
 						using (TryTernaryForLinkerHint(writer, resource))
 						{
 							writer.Append(wrappedKey);
