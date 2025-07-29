@@ -51,7 +51,7 @@ By default, the `ComboBox` popup will not extend under the status bar even if it
 
 ### Constraining by visible bounds
 
-By default we constrain popups by the visible bounds of the application view. This ensures the popup does not flow below the system UI (e.g. mobile device status bar or navigation bar). If you desire this behavior, you can set the `ConstrainByVisibleBounds` property to `false`. Please note that in such a case you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
+By default we don't constrain popups by the visible bounds of the application view on Skia renderer targets. This is different from native renderer where popups are automatically padded by the visible bounds, which ensures the popup does not flow below the system UI (e.g. mobile device status bar or navigation bar). The `ConstrainByVisibleBounds` property allows you to control this behavior. Please note that in case the property is set to `false` (which is the default for Skia renderer), you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
 
 ### Native popups (Android)
 
