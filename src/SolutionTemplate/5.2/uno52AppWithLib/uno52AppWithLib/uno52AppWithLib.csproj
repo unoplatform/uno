@@ -73,29 +73,47 @@
         <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\Svg\myimage.svg" />
       </ItemGroup>
 
+      <PropertyGroup
+          Condition=" '$(TargetFramework)'=='$(DotNetPreviousVersion)-browserwasm' ">
+        <_WwwRoot Condition=" $([System.IO.Path]::IsPathRooted($(WasmShellOutputPackagePath))) ">$(WasmShellOutputPackagePath)</_WwwRoot>
+        <_WwwRoot Condition=" '$(_WwwRoot)' == '' ">$(OutputPath)wwwroot\$(WasmShellOutputPackagePath)\</_WwwRoot>
+      </PropertyGroup>
+
+      <Error Text="Expected output path `$(_WwwRoot)` does not exist!"
+          Condition=" '$(TargetFramework)'=='$(DotNetPreviousVersion)-browserwasm' And !Exists($(_WwwRoot))" />
+
       <ItemGroup
           Condition="'$(TargetFramework)'=='$(DotNetPreviousVersion)-browserwasm'">
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\SharedAssets.md" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\json_file_asset.json" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-100.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-125.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-150.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-200.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-300.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-400.png" />
+        <_AssetsToValidate Include="$(_WwwRoot)\Assets\SharedAssets.md" />
+        <_AssetsToValidate Include="$(_WwwRoot)\Assets\json_file_asset.json" />
+        <_AssetsToValidate Include="$(_WwwRoot)\Assets\Icons\icon_foreground.png" />
+        <_AssetsToValidate Include="$(_WwwRoot)\Assets\Icons\icon_foreground.scale-100.png" />
+        <_AssetsToValidate Include="$(_WwwRoot)\Assets\Icons\icon_foreground.scale-125.png" />
+        <_AssetsToValidate Include="$(_WwwRoot)\Assets\Icons\icon_foreground.scale-150.png" />
+        <_AssetsToValidate Include="$(_WwwRoot)\Assets\Icons\icon_foreground.scale-200.png" />
+        <_AssetsToValidate Include="$(_WwwRoot)\Assets\Icons\icon_foreground.scale-300.png" />
+        <_AssetsToValidate Include="$(_WwwRoot)\Assets\Icons\icon_foreground.scale-400.png" />
 
         <!-- wwwroot -->
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\..\staticwebapp.config.json" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\..\web.config" />
+        <_AssetsToValidate Include="$(_WwwRoot)\..\staticwebapp.config.json" />
+        <_AssetsToValidate Include="$(_WwwRoot)\..\web.config" />
 
         <!-- Validate json files handling -->
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\test_root_asset.json" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\test_root_asset_not_included.json" MustNotExist="true" />
+        <_AssetsToValidate Include="$(_WwwRoot)\test_root_asset.json" />
+        <_AssetsToValidate Include="$(_WwwRoot)\test_root_asset_not_included.json" MustNotExist="true" />
 
         <!-- Transitive library asset -->
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52lib\Assets\test.xml" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52lib\Assets\icon_lib.png" />
+        <!--
+          From `uno53AppWithLib.csproj`:
+
+          > Transitive library asset are not included in the output folder, as they're referenced
+          > in-place by `uno53AppWithLib.staticwebassets.runtime.json`
+
+          Skip the same files that uno53AppWithLib.csproj skips.
+
+        <_AssetsToValidate Include="$(_WwwRoot)\uno52lib\Assets\test.xml" />
+        <_AssetsToValidate Include="$(_WwwRoot)\uno52lib\Assets\icon_lib.png" />
+        -->
       </ItemGroup>
 
     <Error Text="Missing asset %(_AssetsToValidate.Identity)"
