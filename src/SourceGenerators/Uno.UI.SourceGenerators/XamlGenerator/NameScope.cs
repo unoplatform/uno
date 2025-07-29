@@ -58,12 +58,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<string> XBindTryGetMethodDeclarations { get; } = [];
 
 		public int ComponentCount => Components.Count;
+
 		/// <summary>
 		/// Set of method builders to be generated for the current scope.
 		/// This is usually used to avoid delegates like for event handlers.
 		/// </summary>
 		public IImmutableList<Action<IIndentedStringBuilder>> Methods => _methods.Values.ToImmutableList();
 
+		/// <summary>
+		/// Registers a method to be generated in the current scope.
+		/// </summary>
+		/// <param name="name">The suggested method name.</param>
+		/// <param name="methodBuilder">Method builder accepting the effective name of the method as parameter.</param>
+		/// <returns>The effective method name.</returns>
 		public string RegisterMethod(string name, Action<string, IIndentedStringBuilder> methodBuilder)
 		{
 			return name = NamingHelper.AddUnique(_methods, name, BuildMethod);
