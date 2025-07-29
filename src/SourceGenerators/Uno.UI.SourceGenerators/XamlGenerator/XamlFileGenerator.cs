@@ -3709,7 +3709,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						"""));
 
 				RegisterXBindEventInitializer(
-					$"__{parentApply}_{member.Member.Name}_Initialize",
+					$"__{member.Key}_{member.Member.Name}_Initialize",
 					(name, subWriter) => subWriter.AppendMultiLineIndented($$"""
 							[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 							{{Field("bool", $"__is{name}d")}}
@@ -3742,7 +3742,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// The sub-class prevents fuzzy matching of delegates by HR.
 				//
 				var subClass = RegisterChildSubclass(
-					$"{parentApply}_{member.Member.Name}_Handler",
+					$"{member.Key}_{member.Member.Name}_Handler",
 					(name, subWriter) => subWriter.AppendMultiLineIndented($$"""
 							public class {{name}}(global::Uno.UI.DataBinding.ManagedWeakReference target)
 							{
