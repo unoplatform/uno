@@ -32,6 +32,14 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 			// TODO: This used to be Assert.Equals which **always** throws at runtime and everything was green.
 			// It's likely that Dispose is never called, or the exception is swallowed.
 			// This means that this assert might not be doing what it's supposed to do!
+			// This assert is also wrong altogether.
+			// The test flow should be:
+			// 1. Create instance of the test class
+			// 2. Invoke the first test case.
+			// 3. Dispose
+			// 4. Repeat for the other two test cases.
+			// So, Dispose should be called three times. First with value 1, then 2, then 3.
+			// So it's unlikely that Dispose is ever called.
 			Assert.AreEqual(3, TestSucces_Count);
 	}
 }
