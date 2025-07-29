@@ -6,10 +6,10 @@ uid: Uno.Controls.SKCanvasElement
 
 When creating an Uno Platform application, developers might want to create elaborate 2D graphics using a library such as [Skia](https://skia.org) or [Cairo](https://www.cairographics.org), rather than using, for example, a simple [Canvas](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.canvas). To support this use case, SkiaSharp comes with an [SKXamlCanvas](https://learn.microsoft.com/dotnet/api/skiasharp.views.windows.skxamlcanvas) element that allows for drawing in an area using SkiaSharp.
 
-On Uno Platform Skia targets, we can utilize the pre-existing internal Skia canvas used to render the application window instead of creating additional Skia surfaces. Unlike `SKXamlCanvas` which doesn't support hardware acceleration on Skia targets yet, hardware acceleration comes out of the box if the Uno application is already using OpenGL to render. Moreover, `SKXamlCanvas` has to make additional buffer copying, which can be skipped with this implementation.
+On Uno Platform targets with Skia rendering, we can utilize the pre-existing internal Skia canvas used to render the application window instead of creating additional Skia surfaces. Unlike `SKXamlCanvas` which doesn't support hardware acceleration on Skia targets yet, hardware acceleration comes out of the box if the Uno application is already using OpenGL to render. Moreover, `SKXamlCanvas` has to make additional buffer copying, which can be skipped with this implementation.
 
 > [!IMPORTANT]
-> This functionality is only available on Skia targets.
+> . The `Uno.WinUI.Graphics2DSK` package which provides the `SKCanvasElement` class is referenced for you by Uno.Sdk automatically when the `Skia` or `SkiaRenderer` features are present, and is always referenced on the netX.0-desktop target. However, the class is only supported (i.e. `SKCanvasElement.IsSupportedOnCurrentPlatform` returns true) on the netX.0-desktop target and on other targets that use skia rendering, for example netX.0-android with the `SkiaRenderer` feature.
 
 ## SKCanvasElement
 
@@ -24,6 +24,14 @@ When adding your drawing logic in `RenderOverride` on the provided canvas, you c
 Additionally, `SKCanvasElement` has an `Invalidate` method that invalidates the `SKCanvasElement` and triggers a redraw. The drawing of the `SKCanvasElement` is often cached and will not be updated unless `Invalidate` is called.
 
 Since `SKCanvasElement` is just a FrameworkElement, controlling the dimensions of the drawing area is done by manipulating the layout of the element, e.g. by overriding MeasureOverride and ArrangeOverride.
+
+Finally, since `SKCanvasElement` makes use of the Skia-based rendering infrastructure and is therefore only supported when skia rendering is used, there's a static method that provides a check at runtime for whether `SKCanvasElement` can function on the current platform.
+
+```csharp
+public static bool IsSupportedOnCurrentPlatform();
+```
+
+Attempting to create an `SKCanvasElement` instance when `IsSupportedOnCurrentPlatform` returns false throws an exception.
 
 ## Full example
 
