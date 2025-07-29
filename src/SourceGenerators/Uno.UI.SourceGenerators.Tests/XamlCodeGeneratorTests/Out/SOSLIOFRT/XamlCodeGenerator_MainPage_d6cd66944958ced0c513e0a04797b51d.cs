@@ -48,19 +48,13 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[
-			"ImportantNumber"
-			] = 
+			Resources["ImportantNumber"] = 
 			12d
 			;
-			Resources[
-			"ImportantMessage"
-			] = 
+			Resources["ImportantMessage"] = 
 			"Do more testing"
 			;
-			Resources[
-			"MyTextBlockResource"
-			] = 
+			Resources["MyTextBlockResource"] = 
 			new global::Microsoft.UI.Xaml.Controls.TextBlock
 			{
 				IsParsing = true,

@@ -42,9 +42,7 @@ namespace TestRepro
 		private const string __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
 		public void InitializeComponent()
 		{
-			this[
-			"myTemplate"
-			] = 
+			this["myTemplate"] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
@@ -212,16 +210,8 @@ namespace MyProject
 						new global::Microsoft.UI.Xaml.ResourceDictionary
 						{
 							IsParsing = true,
-							[
-							"myTemplate"
-							] = 
-							new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-							{
-								return 
-									new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem_Δ1)
-								;
-							}
-							)
+							["myTemplate"] = 
+							new global::Uno.UI.Xaml.WeakResourceInitializer(this, Get_1)
 							,
 						}
 						;
@@ -237,12 +227,6 @@ namespace MyProject
 			{
 				
 				return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);
-			}
-
-			private static _View Build_ResDicΞ0_DatTem_Δ1(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
-			{
-				
-				return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem_Δ1().Build(__owner, __settings);
 			}
 
 		}
@@ -339,95 +323,6 @@ namespace MyProject.__Resources
 			}
 
 			private static bool TryGetInstance_xBind_2(global::TestRepro.MyModel ___tctx, out object o)
-			{
-				o = null;
-				o = ___tctx.MyString;
-				return true;
-			}
-		}
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		public class __ResDicΞ0_DatTem_Δ1
-		{
-			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
-			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-			global::System.Object __ResourceOwner_1;
-			_View __rootInstance = null;
-			public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
-			{
-				var __that = this;
-				this.__ResourceOwner_1 = __ResourceOwner_1;
-				this.__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.TextBlock
-				{
-					IsParsing = true,
-					Name = "tb",
-					// Source 0\MyResourceDictionary.xaml (Line 12:5)
-				}
-				.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-				{
-				/* _isTopLevelDictionary:True */
-				__that._component_0 = __p1;
-				__nameScope.RegisterName("tb", __p1);
-				__that.tb = __p1;
-				__p1.SetBinding(
-					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-					new Microsoft.UI.Xaml.Data.Binding()
-					{
-						Mode = BindingMode.OneWay,
-					}
-						.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_3(___tctx, out var bindResult3) ? (true, bindResult3) : (false, default)) : (false, default), null , new [] {"MyString"}))
-				);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57);
-				__p1.CreationComplete();
-				}
-				))
-				;
-				if (__rootInstance is FrameworkElement __fe)
-				{
-					__fe.Loading += __UpdateBindingsAndResources;
-					__fe.Unloaded += __StopTracking;
-				}
-				if (__rootInstance is DependencyObject d)
-				{
-					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
-					{
-						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
-					}
-					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
-				}
-				return __rootInstance;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
-				set => _component_0_Holder.Instance = value;
-			}
-			private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-			private global::Microsoft.UI.Xaml.Controls.TextBlock tb
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;
-				set => _tbSubject.ElementInstance = value;
-			}
-			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
-			{
-				_component_0.UpdateResourceBindings();
-				_component_0.ApplyXBind();
-			}
-
-			private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
-			{
-				_component_0.SuspendXBind();
-			}
-
-			private static bool TryGetInstance_xBind_3(global::TestRepro.MyModel ___tctx, out object o)
 			{
 				o = null;
 				o = ___tctx.MyString;

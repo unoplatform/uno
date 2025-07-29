@@ -68,13 +68,9 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.ResourceDictionary
 						{
 							IsParsing = true,
-							[
-							"PrimaryColor"
-							] = 
+							["PrimaryColor"] = 
 							global::Microsoft.UI.Colors.Yellow							,
-							[
-							"SecondaryColor"
-							] = 
+							["SecondaryColor"] = 
 							global::Microsoft.UI.Colors.Red							,
 						}
 						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 

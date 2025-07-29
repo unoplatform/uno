@@ -48,9 +48,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[
-			"Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter"
-			] = 
+			Resources["Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter"] = 
 			new global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter
 			{
 				// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 11:10)

@@ -48,9 +48,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[
-			"RootResource"
-			] = 
+			Resources["RootResource"] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
@@ -114,17 +112,13 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 					{
 						IsParsing = true,
 						Resources = {
-						[
-						"SiblingResource"
-						] = 
+						["SiblingResource"] = 
 						new global::Microsoft.UI.Xaml.Controls.FontIconSource
 						{
 							// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 14:7)
 						}
 						,
-						[
-						"FailingResource"
-						] = 
+						["FailingResource"] = 
 						new global::Uno.UI.Xaml.WeakResourceInitializer(__ResourceOwner_1, __ResourceOwner_2 => 
 						{
 							return 

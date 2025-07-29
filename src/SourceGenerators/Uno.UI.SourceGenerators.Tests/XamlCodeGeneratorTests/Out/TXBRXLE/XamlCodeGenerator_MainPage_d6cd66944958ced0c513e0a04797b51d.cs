@@ -48,9 +48,7 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[
-			"NullableBoolConverter"
-			] = 
+			Resources["NullableBoolConverter"] = 
 			new global::TestRepro.NullableBoolConverter
 			{
 				// Source 0\MainPage.xaml (Line 10:4)

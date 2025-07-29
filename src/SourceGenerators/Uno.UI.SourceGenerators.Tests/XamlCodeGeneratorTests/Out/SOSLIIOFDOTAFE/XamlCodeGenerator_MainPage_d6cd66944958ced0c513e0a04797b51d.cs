@@ -48,9 +48,7 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[
-			typeof(global::Microsoft.UI.Xaml.Controls.TextBlock)
-			] = 
+			Resources[typeof(global::Microsoft.UI.Xaml.Controls.TextBlock)] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
@@ -74,9 +72,7 @@ namespace TestRepro
 			}
 			)
 			;
-			Resources[
-			"MyCustomButtonStyle"
-			] = 
+			Resources["MyCustomButtonStyle"] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
@@ -100,9 +96,7 @@ namespace TestRepro
 			}
 			)
 			;
-			Resources[
-			"MyItemTemplate"
-			] = 
+			Resources["MyItemTemplate"] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
