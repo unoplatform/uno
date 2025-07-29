@@ -36,23 +36,6 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
 
 $projects =
 @(
-    # 5.0 and earlier
-    @(0, "UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Wasm/UnoAppWinUILinuxValidation.Wasm.csproj", @(), @()),
-    @(0, "UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer.csproj", @(), @()),
-
-    # 5.1 Blank
-    @(0, "5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", @(), @()),
-    @(0, "5.1/uno51blank/uno51blank.Skia.WPF/uno51blank.Skia.WPF.csproj", @(), @()),
-    @(0, "5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", @(), @()),
-
-    # 5.1 Recommended
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.WPF/uno51recommended.Skia.WPF.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", @(), @()),
-
     # 5.2 Blank
     @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @(), @()),
 
