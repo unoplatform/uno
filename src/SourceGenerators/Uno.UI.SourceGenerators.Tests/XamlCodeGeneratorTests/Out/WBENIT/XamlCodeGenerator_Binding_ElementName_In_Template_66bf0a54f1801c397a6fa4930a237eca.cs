@@ -110,6 +110,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			
 			return new __Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca.__PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem().Build(__owner, __settings);
 		}
+
 		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.ContentControl topLevel
 		{
@@ -179,12 +180,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 					}
 					return __rootInstance;
 				}
-					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-					private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-					{
-						get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
-						set => _component_0_Holder.Instance = value;
-					}
+				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
+				{
+					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+					set => _component_0_Holder.Instance = value;
+				}
 				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 				private global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
 				{
@@ -196,9 +197,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				{
 					_component_0.UpdateResourceBindings();
 				}
+
 				private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 				{
 				}
+
 			}
 		}
 	}

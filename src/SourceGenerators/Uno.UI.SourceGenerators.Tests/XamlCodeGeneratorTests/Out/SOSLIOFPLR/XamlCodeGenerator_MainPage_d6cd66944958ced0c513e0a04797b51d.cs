@@ -133,37 +133,37 @@ namespace TestRepro
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_Pag_ResΞ2_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
-		{
-			"d65e560961295873ce5fb238ed21e219474df252".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
-			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__Pag_ResΞ2_DatTem().Build(__owner, __settings);
-		}
-		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
-		{
-			this.Bindings.UpdateResources();
-		}
-		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
-		{
-			this.Bindings.StopTracking();
-		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag_ResΞ0_Sty(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L7:6");
 		}
+
+
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag_ResΞ1_Sty(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L10:6");
 		}
+
+
+		private static _View Build_Pag_ResΞ2_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		{
+			"d65e560961295873ce5fb238ed21e219474df252".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
+			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__Pag_ResΞ2_DatTem().Build(__owner, __settings);
+		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag_ResΞ2_DatTem(global::Microsoft.UI.Xaml.DataTemplate __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L13:6");
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_PagΞ0_LisVie(global::Microsoft.UI.Xaml.Controls.ListView __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -171,6 +171,7 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 20, 4);
 			__p1.CreationComplete();
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -179,6 +180,7 @@ namespace TestRepro
 			
 			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag_Δ1(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -190,6 +192,17 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);
 			__p1.CreationComplete();
 		}
+
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
+
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
+		}
+
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MainPage_d6cd66944958ced0c513e0a04797b51d
@@ -263,13 +276,7 @@ namespace TestRepro
 						get => (global::Microsoft.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
 						set => _component_0_Holder.Instance = value;
 					}
-				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
-				{
-					_component_0.UpdateResourceBindings();
-				}
-				private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
-				{
-				}
+					
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 				private void ApplyTo_Ξ0_StaPanΞ0_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -284,6 +291,7 @@ namespace TestRepro
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 15, 10);
 					__p1.CreationComplete();
 				}
+
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 				private void ApplyTo_Ξ0_StaPanΞ1_But(global::Microsoft.UI.Xaml.Controls.Button __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -294,6 +302,7 @@ namespace TestRepro
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 16, 10);
 					__p1.CreationComplete();
 				}
+
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 				private void ApplyTo_Ξ0_StaPan(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -301,6 +310,16 @@ namespace TestRepro
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 14, 8);
 					__p1.CreationComplete();
 				}
+
+				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+				{
+					_component_0.UpdateResourceBindings();
+				}
+
+				private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+				{
+				}
+
 			}
 		}
 			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_HolderBackingPseudoField { get; set; }
@@ -313,6 +332,7 @@ namespace TestRepro
 				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_0_Holder.Instance;
 				set => _component_0_Holder.Instance = value;
 			}
+			
 		private interface IMainPage_Bindings
 		{
 			void Initialize();

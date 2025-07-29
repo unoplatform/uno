@@ -251,15 +251,18 @@ namespace TestRepro
 			
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem().Build(__owner, __settings);
 		}
+
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 		{
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
 		}
+
 		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			this.Bindings.StopTracking();
 		}
+
 		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner1
 		{
@@ -376,18 +379,18 @@ namespace TestRepro
 				}
 			}
 		}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Grid _component_0
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.Grid)_component_0_Holder.Instance;
-				set => _component_0_Holder.Instance = value;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
-			private global::Microsoft.UI.Xaml.ElementStub _component_1
-			{
-				get => (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
-				set => _component_1_Holder.Instance = value;
-			}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.Grid _component_0
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.Grid)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
+		private global::Microsoft.UI.Xaml.ElementStub _component_1
+		{
+			get => (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
+			set => _component_1_Holder.Instance = value;
+		}
 		private interface IMainPage_Bindings
 		{
 			void Initialize();

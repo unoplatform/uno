@@ -60,6 +60,7 @@ namespace TestRepro
 			
 			return new __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);
 		}
+
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57
@@ -123,12 +124,12 @@ namespace TestRepro
 					}
 					return __rootInstance;
 				}
-					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-					private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-					{
-						get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
-						set => _component_0_Holder.Instance = value;
-					}
+				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
+				{
+					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+					set => _component_0_Holder.Instance = value;
+				}
 				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 				private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 				{
@@ -140,10 +141,12 @@ namespace TestRepro
 					_component_0.UpdateResourceBindings();
 					_component_0.ApplyXBind();
 				}
+
 				private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 				{
 					_component_0.SuspendXBind();
 				}
+
 				private static bool TryGetInstance_xBind_1(global::TestRepro.MyModel ___tctx, out object o)
 				{
 					o = null;
@@ -230,19 +233,21 @@ namespace MyProject
 			}
 
 			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
+			private static _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+			{
+				
+				return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);
+			}
+
+			private static _View Build_ResDicΞ0_DatTem_Δ1(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+			{
+				
+				return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem_Δ1().Build(__owner, __settings);
+			}
+
 		}
 
 		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.Instance.GetResourceDictionary();
-		private static _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
-		{
-			
-			return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);
-		}
-		private static _View Build_ResDicΞ0_DatTem_Δ1(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
-		{
-			
-			return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem_Δ1().Build(__owner, __settings);
-		}
 	}
 }
 namespace MyProject.__Resources
@@ -310,12 +315,12 @@ namespace MyProject.__Resources
 				}
 				return __rootInstance;
 			}
-				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-				private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-				{
-					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
-					set => _component_0_Holder.Instance = value;
-				}
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
+			{
+				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+				set => _component_0_Holder.Instance = value;
+			}
 			private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 			private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 			{
@@ -327,10 +332,12 @@ namespace MyProject.__Resources
 				_component_0.UpdateResourceBindings();
 				_component_0.ApplyXBind();
 			}
+
 			private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 			{
 				_component_0.SuspendXBind();
 			}
+
 			private static bool TryGetInstance_xBind_2(global::TestRepro.MyModel ___tctx, out object o)
 			{
 				o = null;
@@ -397,12 +404,12 @@ namespace MyProject.__Resources
 				}
 				return __rootInstance;
 			}
-				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-				private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-				{
-					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
-					set => _component_0_Holder.Instance = value;
-				}
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
+			{
+				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+				set => _component_0_Holder.Instance = value;
+			}
 			private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 			private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 			{
@@ -414,10 +421,12 @@ namespace MyProject.__Resources
 				_component_0.UpdateResourceBindings();
 				_component_0.ApplyXBind();
 			}
+
 			private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 			{
 				_component_0.SuspendXBind();
 			}
+
 			private static bool TryGetInstance_xBind_3(global::TestRepro.MyModel ___tctx, out object o)
 			{
 				o = null;

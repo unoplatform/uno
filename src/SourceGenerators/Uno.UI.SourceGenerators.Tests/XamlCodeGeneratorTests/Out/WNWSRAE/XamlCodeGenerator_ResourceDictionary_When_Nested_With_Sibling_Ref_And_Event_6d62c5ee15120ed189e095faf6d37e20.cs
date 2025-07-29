@@ -87,6 +87,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			
 			return new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
 		}
+
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20
@@ -144,7 +145,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 									__that._component_0 = __p1;
 									global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
 									global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-									var Invoked_Handler = new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20.ApplyTo_Ξ0_Bor_ResΞ1_SwiIteΞ0_SwiIte_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+									var Invoked_Handler = new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20.__Pag_ResΞ0_DatTemΞ0_Bor_ResΞ1_SwiIteΞ0_SwiIte_Inv_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
 									/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
 									}
 									))
@@ -183,27 +184,29 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 					}
 					return __rootInstance;
 				}
-					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-					private global::Microsoft.UI.Xaml.Controls.SwipeItem _component_0
-					{
-						get => (global::Microsoft.UI.Xaml.Controls.SwipeItem)_component_0_Holder.Instance;
-						set => _component_0_Holder.Instance = value;
-					}
-					private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-					private global::Microsoft.UI.Xaml.Controls.Border _component_1
-					{
-						get => (global::Microsoft.UI.Xaml.Controls.Border)_component_1_Holder.Instance;
-						set => _component_1_Holder.Instance = value;
-					}
+				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Microsoft.UI.Xaml.Controls.SwipeItem _component_0
+				{
+					get => (global::Microsoft.UI.Xaml.Controls.SwipeItem)_component_0_Holder.Instance;
+					set => _component_0_Holder.Instance = value;
+				}
+				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Microsoft.UI.Xaml.Controls.Border _component_1
+				{
+					get => (global::Microsoft.UI.Xaml.Controls.Border)_component_1_Holder.Instance;
+					set => _component_1_Holder.Instance = value;
+				}
 				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
 					_component_0.UpdateResourceBindings(resourceContextProvider: _component_1);
 				}
+
 				private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 				{
 				}
+
 			}
-				public class ApplyTo_Ξ0_Bor_ResΞ1_SwiIteΞ0_SwiIte_Invoked_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				public class __Pag_ResΞ0_DatTemΞ0_Bor_ResΞ1_SwiIteΞ0_SwiIte_Inv_Invoked_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 				{
 					public void Invoke(global::Microsoft.UI.Xaml.Controls.SwipeItem sender, global::Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
 					{

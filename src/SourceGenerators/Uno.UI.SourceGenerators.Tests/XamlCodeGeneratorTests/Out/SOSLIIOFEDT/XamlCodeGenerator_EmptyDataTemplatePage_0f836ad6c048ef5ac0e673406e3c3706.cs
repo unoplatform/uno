@@ -107,25 +107,14 @@ namespace TestRepro
 			"5d034cfbcd11ff7f7f6cfe08e1339adcec1279e4".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
 		}
-		private static _View Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
-		{
-			"5d034cfbcd11ff7f7f6cfe08e1339adcec1279e4".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
-			return new __EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706.__PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem().Build(__owner, __settings);
-		}
-		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
-		{
-			this.Bindings.UpdateResources();
-		}
-		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
-		{
-			this.Bindings.StopTracking();
-		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag_ResΞ0_DatTem(global::Microsoft.UI.Xaml.DataTemplate __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/EmptyDataTemplatePage.xaml#L7:4");
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_PagΞ0_StaPanΞ0_LisVie(global::Microsoft.UI.Xaml.Controls.ListView __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -136,12 +125,20 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 12, 4);
 			__p1.CreationComplete();
 		}
+
+		private static _View Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		{
+			"5d034cfbcd11ff7f7f6cfe08e1339adcec1279e4".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
+			return new __EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706.__PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem().Build(__owner, __settings);
+		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem(global::Microsoft.UI.Xaml.DataTemplate __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/EmptyDataTemplatePage.xaml#L15:6");
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_PagΞ0_StaPanΞ1_But(global::Microsoft.UI.Xaml.Controls.Button __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -151,6 +148,7 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 13, 4);
 			__p1.CreationComplete();
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_PagΞ0_StaPan(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -158,6 +156,7 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 11, 3);
 			__p1.CreationComplete();
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -166,6 +165,7 @@ namespace TestRepro
 			
 			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag_Δ1(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -177,6 +177,17 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 1, 3);
 			__p1.CreationComplete();
 		}
+
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
+
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
+		}
+
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubjectBackingPseudoField { get; set; }
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject
 		{
@@ -264,6 +275,7 @@ namespace TestRepro
 				get => (global::Microsoft.UI.Xaml.Controls.ListView)_component_0_Holder.Instance;
 				set => _component_0_Holder.Instance = value;
 			}
+			
 			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_HolderBackingPseudoField { get; set; }
 			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder
 			{
@@ -274,6 +286,7 @@ namespace TestRepro
 				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
 				set => _component_1_Holder.Instance = value;
 			}
+			
 		private interface IEmptyDataTemplatePage_Bindings
 		{
 			void Initialize();

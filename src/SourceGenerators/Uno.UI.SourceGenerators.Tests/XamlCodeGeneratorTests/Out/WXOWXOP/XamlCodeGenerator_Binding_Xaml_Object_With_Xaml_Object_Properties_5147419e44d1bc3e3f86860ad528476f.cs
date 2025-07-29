@@ -128,18 +128,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		{
 			this.Bindings.UpdateResources();
 		}
+
 		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.TextBlock topLevel
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_topLevelSubject.ElementInstance;
 			set => _topLevelSubject.ElementInstance = value;
 		}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
-				set => _component_0_Holder.Instance = value;
-			}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
+		}
 		private interface IBinding_Xaml_Object_With_Xaml_Object_Properties_Bindings
 		{
 			void Initialize();

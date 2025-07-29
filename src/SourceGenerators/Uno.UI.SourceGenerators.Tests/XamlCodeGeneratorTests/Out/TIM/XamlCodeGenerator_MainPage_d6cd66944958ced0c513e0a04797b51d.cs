@@ -135,16 +135,16 @@ namespace TestRepro
 		}
 		partial void OnInitializeCompleted();
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private bool __is__ApplyTo_PagΞ0_GriΞ0_But_Click_Initialized ;
+			private bool __is__PagΞ0_GriΞ0_But_Cli_Click_Initialized ;
 		
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private void __ApplyTo_PagΞ0_GriΞ0_But_Click_Initialize(bool init)
+			private void __PagΞ0_GriΞ0_But_Cli_Click_Initialize(bool init)
 			{
-				if (__is__ApplyTo_PagΞ0_GriΞ0_But_Click_Initialized || _component_0 is null)
+				if (__is__PagΞ0_GriΞ0_But_Cli_Click_Initialized || _component_0 is null)
 				{
 					if (!init)
 					{
-						__is__ApplyTo_PagΞ0_GriΞ0_But_Click_Initialized = false;
+						__is__PagΞ0_GriΞ0_But_Cli_Click_Initialized = false;
 						// Note: _component_0 will be collected, no needs to unsubscribe
 					}
 					
@@ -152,19 +152,20 @@ namespace TestRepro
 				}
 		
 				_component_0.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_GriΞ0_But_Cli_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
-				__is__ApplyTo_PagΞ0_GriΞ0_But_Click_Initialized = true;
+				__is__PagΞ0_GriΞ0_But_Cli_Click_Initialized = true;
 			}
+
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private bool __is__ApplyTo_PagΞ0_GriΞ1_But_Click_Initialized ;
+			private bool __is__PagΞ0_GriΞ1_But_Cli_Click_Initialized ;
 		
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private void __ApplyTo_PagΞ0_GriΞ1_But_Click_Initialize(bool init)
+			private void __PagΞ0_GriΞ1_But_Cli_Click_Initialize(bool init)
 			{
-				if (__is__ApplyTo_PagΞ0_GriΞ1_But_Click_Initialized || _component_1 is null)
+				if (__is__PagΞ0_GriΞ1_But_Cli_Click_Initialized || _component_1 is null)
 				{
 					if (!init)
 					{
-						__is__ApplyTo_PagΞ0_GriΞ1_But_Click_Initialized = false;
+						__is__PagΞ0_GriΞ1_But_Cli_Click_Initialized = false;
 						// Note: _component_1 will be collected, no needs to unsubscribe
 					}
 					
@@ -172,19 +173,20 @@ namespace TestRepro
 				}
 		
 				_component_1.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_GriΞ1_But_Cli_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
-				__is__ApplyTo_PagΞ0_GriΞ1_But_Click_Initialized = true;
+				__is__PagΞ0_GriΞ1_But_Cli_Click_Initialized = true;
 			}
+
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private bool __is__ApplyTo_PagΞ0_GriΞ2_But_Click_Initialized ;
+			private bool __is__PagΞ0_GriΞ2_But_Cli_Click_Initialized ;
 		
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private void __ApplyTo_PagΞ0_GriΞ2_But_Click_Initialize(bool init)
+			private void __PagΞ0_GriΞ2_But_Cli_Click_Initialize(bool init)
 			{
-				if (__is__ApplyTo_PagΞ0_GriΞ2_But_Click_Initialized || _component_2 is null)
+				if (__is__PagΞ0_GriΞ2_But_Cli_Click_Initialized || _component_2 is null)
 				{
 					if (!init)
 					{
-						__is__ApplyTo_PagΞ0_GriΞ2_But_Click_Initialized = false;
+						__is__PagΞ0_GriΞ2_But_Cli_Click_Initialized = false;
 						// Note: _component_2 will be collected, no needs to unsubscribe
 					}
 					
@@ -192,17 +194,20 @@ namespace TestRepro
 				}
 		
 				_component_2.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_GriΞ2_But_Cli_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
-				__is__ApplyTo_PagΞ0_GriΞ2_But_Click_Initialized = true;
+				__is__PagΞ0_GriΞ2_But_Cli_Click_Initialized = true;
 			}
+
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 		{
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
 		}
+
 		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			this.Bindings.StopTracking();
 		}
+
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MainPage_d6cd66944958ced0c513e0a04797b51d
@@ -232,30 +237,30 @@ namespace TestRepro
 				}
 
 		}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Button _component_0
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
-				set => _component_0_Holder.Instance = value;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Button _component_1
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.Button)_component_1_Holder.Instance;
-				set => _component_1_Holder.Instance = value;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Button _component_2
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
-				set => _component_2_Holder.Instance = value;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_3_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Page _component_3
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_3_Holder.Instance;
-				set => _component_3_Holder.Instance = value;
-			}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.Button _component_0
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.Button _component_1
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_component_1_Holder.Instance;
+			set => _component_1_Holder.Instance = value;
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.Button _component_2
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
+			set => _component_2_Holder.Instance = value;
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_3_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.Page _component_3
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.Page)_component_3_Holder.Instance;
+			set => _component_3_Holder.Instance = value;
+		}
 		private interface IMainPage_Bindings
 		{
 			void Initialize();
@@ -294,9 +299,9 @@ namespace TestRepro
 				owner._component_0.ApplyXBind();
 				owner._component_1.ApplyXBind();
 				owner._component_2.ApplyXBind();
-				owner.__ApplyTo_PagΞ0_GriΞ0_But_Click_Initialize(true);
-				owner.__ApplyTo_PagΞ0_GriΞ1_But_Click_Initialize(true);
-				owner.__ApplyTo_PagΞ0_GriΞ2_But_Click_Initialize(true);
+				owner.__PagΞ0_GriΞ0_But_Cli_Click_Initialize(true);
+				owner.__PagΞ0_GriΞ1_But_Cli_Click_Initialize(true);
+				owner.__PagΞ0_GriΞ2_But_Cli_Click_Initialize(true);
 			}
 			void IMainPage_Bindings.UpdateResources()
 			{

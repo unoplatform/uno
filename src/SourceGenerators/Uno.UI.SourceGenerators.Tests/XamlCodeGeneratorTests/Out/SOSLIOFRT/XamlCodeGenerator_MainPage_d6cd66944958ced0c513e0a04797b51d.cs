@@ -91,14 +91,6 @@ namespace TestRepro
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
-		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
-		{
-			this.Bindings.UpdateResources();
-		}
-		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
-		{
-			this.Bindings.StopTracking();
-		}
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag_ResΞ2_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -106,6 +98,7 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 9, 3);
 			__p1.CreationComplete();
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_PagΞ0_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -113,6 +106,7 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 11, 4);
 			__p1.CreationComplete();
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -121,6 +115,7 @@ namespace TestRepro
 			
 			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 		}
+
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag_Δ1(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
@@ -132,6 +127,17 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);
 			__p1.CreationComplete();
 		}
+
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
+
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
+		}
+
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MainPage_d6cd66944958ced0c513e0a04797b51d
@@ -147,6 +153,7 @@ namespace TestRepro
 				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_0_Holder.Instance;
 				set => _component_0_Holder.Instance = value;
 			}
+			
 		private interface IMainPage_Bindings
 		{
 			void Initialize();
