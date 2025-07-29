@@ -216,6 +216,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.IsOpen = false;
 		}
 
+		[TestMethod]
+		[CombinatorialData]
+		public async Task When_ConstrainedByVisibleBounds(bool constrain)
+		{
+			var constrainedPreviously = FeatureConfiguration.Popup.ConstrainByVisibleBounds;
+			var visibleBoundsDisposable = ScreenHelper.OverrideVisibleBounds(new Thickness(100, 100, 100, 100), false);
+			try
+			{
+				FeatureConfiguration.Popup.ConstrainByVisibleBounds = constrain;
+
+				var content = new Border
+				{
+					Background = new SolidColorBrush(Windows.UI.Colors.Red),
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					VerticalAlignment = VerticalAlignment.Stretch,
+				};
+				var popup = new Popup
+				{
+					Child = content
+				};
+
+				popup.DesiredPlacement = PopupPlacementMode.Auto;
+				popup.PlacementTarget = (FrameworkElement)WindowHelper.XamlRoot.Content;
+				popup.XamlRoot = WindowHelper.XamlRoot;
+
+				popup.IsOpen = true;
+
+				await WindowHelper.WaitForLoaded(content);
+
+				var xamlRoot = WindowHelper.XamlRoot;
+
+
+				if (constrain)
+				{
+					var constrainedHeight = xamlRoot.VisualTree.VisibleBounds.Height;
+					var constrainedWidth = xamlRoot.VisualTree.VisibleBounds.Width;
+					Assert.AreEqual(constrainedHeight, content.ActualHeight);
+					Assert.AreEqual(constrainedWidth, content.ActualWidth);
+				}
+				else
+				{
+					var unconstrainedHeight = xamlRoot.VisualTree.Size.Height;
+					var unconstrainedWidth = xamlRoot.VisualTree.Size.Width;
+					Assert.AreEqual(unconstrainedHeight, content.ActualHeight);
+					Assert.AreEqual(unconstrainedWidth, content.ActualWidth);
+				}
+			}
+			finally
+			{
+				visibleBoundsDisposable?.Dispose();
+				FeatureConfiguration.Popup.ConstrainByVisibleBounds = constrainedPreviously;
+			}
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		public async Task When_Escape_Handled()
