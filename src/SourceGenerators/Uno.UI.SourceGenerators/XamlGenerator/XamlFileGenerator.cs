@@ -1424,6 +1424,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							writer.AppendLineInvariantIndented("private readonly {0} {1};", XamlCodeGeneration.ParseContextPropertyType, XamlCodeGeneration.ParseContextPropertyName);
 							writer.AppendLineInvariantIndented("internal static {0} {1}() => (({2})Instance).{3};", XamlCodeGeneration.ParseContextPropertyType, XamlCodeGeneration.ParseContextGetterMethod, SingletonClassName, XamlCodeGeneration.ParseContextPropertyName);
 							writer.AppendLine();
+
+							// Constructor
 							using (writer.BlockInvariant("public {0}()", SingletonClassName))
 							{
 								var outerProperty = "{0}{1}.GlobalStaticResources.{2}".InvariantCultureFormat(
@@ -1436,13 +1438,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							writer.AppendLine();
 
 							// Build initializer methods for resource retrieval
-							BuildTopLevelResourceDictionaryInitializers(writer, topLevelControl);
+							var initializers = BuildTopLevelResourceDictionaryInitializers(writer, topLevelControl);
 
 							var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
-
 							foreach (var dict in (themeDictionaryMember?.Objects).Safe())
 							{
-								BuildTopLevelResourceDictionaryInitializers(writer, dict);
+								initializers.AddRange(BuildTopLevelResourceDictionaryInitializers(writer, dict));
 							}
 
 							TryAnnotateWithGeneratorSource(writer, suffix: "DictionaryProperty");
@@ -1455,7 +1456,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									using (writer.BlockInvariant("if (_{0}_ResourceDictionary == null)", _fileUniqueId))
 									{
 										writer.AppendLineInvariantIndented("_{0}_ResourceDictionary = ", _fileUniqueId);
-										InitializeAndBuildResourceDictionary(writer, topLevelControl, setIsParsing: true);
+										InitializeAndBuildResourceDictionary(writer, topLevelControl, setIsParsing: true, initializers);
 										writer.AppendLineIndented(";");
 										var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
 										writer.AppendLineInvariantIndented("_{0}_ResourceDictionary.Source = new global::System.Uri(\"{1}{2}\");", _fileUniqueId, XamlFilePathHelper.LocalResourcePrefix, url);
@@ -1493,12 +1494,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		/// <param name="writer">The writer to use</param>
 		/// <param name="dictionaryObject">The <see cref="XamlObjectDefinition"/> associated with the dictionary.</param>
-		private void BuildTopLevelResourceDictionaryInitializers(IIndentedStringBuilder writer, XamlObjectDefinition dictionaryObject)
+		private IDictionary<XamlObjectDefinition, string> BuildTopLevelResourceDictionaryInitializers(IIndentedStringBuilder writer, XamlObjectDefinition dictionaryObject)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var resourcesRoot = FindImplicitContentMember(dictionaryObject);
 			var theme = GetDictionaryResourceKey(dictionaryObject);
 			var resources = (resourcesRoot?.Objects).Safe();
+			var initializers = new Dictionary<XamlObjectDefinition, string>();
 
 			// Pre-populate initializer names (though this is probably no longer necessary...?)
 			var index = _dictionaryPropertyIndex;
@@ -1553,10 +1555,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Method name was not created correctly for {key} (theme={theme}).");
 					}
 					writer.AppendLineInvariantIndented("// Method for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
-					BuildSingleTimeInitializer(writer, initializerName, () => BuildChild(writer, resourcesRoot, resource));
+					var singleTimeInitializer = BuildSingleTimeInitializer(writer, initializerName, () => BuildChild(writer, resourcesRoot, resource));
+					initializers[resource] = singleTimeInitializer;
 				}
 			}
 			_themeDictionaryCurrentlyBuilding = former;
+
+			return initializers;
 		}
 
 		/// <summary>
@@ -1709,7 +1714,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Initialize a new ResourceDictionary instance and populate its items and properties.
 		/// </summary>
-		private void InitializeAndBuildResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool setIsParsing)
+		private void InitializeAndBuildResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool setIsParsing, IDictionary<XamlObjectDefinition, string>? initializers = default)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 
@@ -1731,7 +1736,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
 					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
-					BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
+					BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true, initializers: initializers);
 				}
 			}
 		}
@@ -1807,7 +1812,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Build single initializer for resource retrieval
 		/// </summary>
-		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string initializerName, Action propertyBodyBuilder)
+		private string BuildSingleTimeInitializer(IIndentedStringBuilder writer, string initializerName, Action propertyBodyBuilder)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			using (ResourceOwnerScope())
@@ -1821,6 +1826,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				writer.AppendLine();
 			}
+			
+			return initializerName;
 		}
 
 		private void BuildSourceLineInfo(IIndentedStringBuilder writer, XamlObjectDefinition definition)
@@ -2642,7 +2649,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="writer">The StringBuilder</param>
 		/// <param name="resourcesRoot">The xaml member within which resources are declared</param>
 		/// <param name="isInInitializer">Whether we're within an object initializer</param>
-		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlMemberDefinition? resourcesRoot, bool isInInitializer, string? dictIdentifier = null)
+		/// <param name="initializers"></param>
+		/// <param name="dictIdentifier"></param>
+		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlMemberDefinition? resourcesRoot, bool isInInitializer, string? dictIdentifier = null, IDictionary<XamlObjectDefinition, string>? initializers = default)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var closingPunctuation = isInInitializer ? "," : ";";
@@ -2662,22 +2671,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (isInInitializer)
 					{
-						writer.AppendLineIndented("[");
+						writer.AppendIndented("[");
 						using (TryTernaryForLinkerHint(writer, resource))
 						{
-							writer.AppendLineIndented(wrappedKey);
+							writer.Append(wrappedKey);
 						}
-						writer.AppendLineIndented("] = ");
+						writer.Append("] = ");
 					}
 					else
 					{
-						writer.AppendLineInvariantIndented("{0}[", dictIdentifier);
+						writer.Append($"{dictIdentifier}[");
 						using (TryTernaryForLinkerHint(writer, resource))
 						{
-							writer.AppendLineIndented(wrappedKey);
+							writer.Append(wrappedKey);
 						}
-						writer.AppendLineIndented("] = ");
+						writer.Append("] = ");
 					}
+					writer.AppendLine();
 
 					if (resource.Type.Name == "StaticResource")
 					{
@@ -2699,7 +2709,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						using (TryTernaryForLinkerHint(writer, resource))
 						{
-							writer.AppendLineInvariantIndented("new global::Uno.UI.Xaml.WeakResourceInitializer(this, {0})", initializerName);
+							writer.AppendLineInvariantIndented($"new global::Uno.UI.Xaml.WeakResourceInitializer(this, {initializerName})");
+						}
+					}
+					else if (initializers?.TryGetValue(resource, out var initializerMethod) is true)
+					{
+						using (TryTernaryForLinkerHint(writer, resource))
+						{
+							writer.AppendLineInvariantIndented($"new global::Uno.UI.Xaml.WeakResourceInitializer(this, {initializerMethod})");
 						}
 					}
 					else
