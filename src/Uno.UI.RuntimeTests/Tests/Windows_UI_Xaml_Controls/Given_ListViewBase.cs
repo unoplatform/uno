@@ -4709,6 +4709,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif __WASM__
+		[Ignore("Failing on WASM: https://github.com/unoplatform/uno/issues/17742")]
+#endif
+		public async Task When_UpdateLayout_In_DragDropping_2()
+		{
+			var SUT = new ListView
+			{
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true,
+				ItemsSource = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(x => $"{(char)('A' + x)}"))
+			};
+			var border = new Border
+			{
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Pink),
+			};
+			var setup = new StackPanel { border, SUT };
+
+			await UITestHelper.Load(setup, x => x.IsLoaded && SUT.ContainerFromIndex(2) is { });
+			await WindowHelper.WaitForIdle();
+
+			var count = SUT.ItemsPanelRoot.Children.Count;
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var borderRect = border.GetAbsoluteBoundsRect();
+			var container0Rect = (SUT.ContainerFromIndex(0) as ListViewItem ?? throw new InvalidOperationException("failed to get container 0")).GetAbsoluteBoundsRect();
+			var container2Rect = (SUT.ContainerFromIndex(2) as ListViewItem ?? throw new InvalidOperationException("failed to get container 2")).GetAbsoluteBoundsRect();
+
+			// drag(pick-up) item#2 'C'
+			mouse.MoveTo(container2Rect.GetCenter());
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// drag(move) 'C' over to position 0
+			mouse.MoveTo(container0Rect.GetCenter(), 1);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+			var countDragMove = SUT.ItemsPanelRoot.Children.Count;
+
+			// drag(leave) 'C' out of the ListView, onto the Border
+			mouse.MoveTo(container0Rect.GetCenter(), 1);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+			var countDragLeave = SUT.ItemsPanelRoot.Children.Count;
+
+			// drag(enter,move) 'C' over to position 0
+			mouse.MoveTo(container0Rect.GetCenter(), 1);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+			var countDragEnter = SUT.ItemsPanelRoot.Children.Count;
+
+			Assert.AreEqual(count, countDragMove, "[DragMove]: invalid number of containers");
+			Assert.AreEqual(count, countDragLeave, "[DragLeave]: invalid number of containers");
+			Assert.AreEqual(count, countDragEnter, "[DragEnter]: invalid number of containers");
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
 		[Ignore("Failing on WASM https://github.com/unoplatform/uno/issues/17742")]
 #endif
 		public async Task When_DragDrop_ItemsSource_Is_Subclass_Of_ObservableCollection()
