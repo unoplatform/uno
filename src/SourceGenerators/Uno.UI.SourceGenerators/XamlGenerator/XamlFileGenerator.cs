@@ -1084,7 +1084,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				});
 				if (!string.IsNullOrEmpty(teardownCallbackSignature))
 				{
-					CurrentScope.RegisterMethod("__StopTracking", (_ , eventWriter) =>
+					CurrentScope.RegisterMethod("__StopTracking", (_, eventWriter) =>
 					{
 						using (eventWriter.BlockInvariant(teardownCallbackSignature))
 						{
