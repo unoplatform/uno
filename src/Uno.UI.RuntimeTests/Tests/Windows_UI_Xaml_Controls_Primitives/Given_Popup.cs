@@ -247,7 +247,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 				var xamlRoot = WindowHelper.XamlRoot;
 
-
 				if (constrain)
 				{
 					var constrainedHeight = xamlRoot.VisualTree.VisibleBounds.Height;

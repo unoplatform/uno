@@ -200,8 +200,8 @@ partial class PopupPanel
 					}
 					else
 					{
-						// For skia-ios/droid, we let the flyout to occupy the entire area available,
-						// as dictated by the root skia-canvas. This extends into status bar, and bottom bar if present.
+						// When ConstrainByVisibleBounds is false, we let the flyout to occupy the entire area available,
+						// as dictated by the root skia-canvas. This extends into the status bar, and bottom bar if present.
 						childDesiredSize = m_unclippedDesiredSize;
 					}
 
