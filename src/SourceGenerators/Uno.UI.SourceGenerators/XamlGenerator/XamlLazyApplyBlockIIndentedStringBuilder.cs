@@ -24,13 +24,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string? _xamlApplyPrefix;
 		private readonly string? _delegateType;
 		private readonly bool _exposeContext;
-		private readonly string _exposeContextMethod;
+		private readonly string? _exposeContextMethod;
 		private readonly string _appliedType;
 
 		/// <summary>
 		/// Name of the callback method generated in the scope that is being used for this apply, if any.
 		/// </summary>
-		public string? MethodName => _exposeContext ? _exposeContextMethod : null;
+		public string? MethodName => _exposeContextMethod;
 
 		/// <summary>
 		/// The name of the element on which this apply method will be applied.
@@ -63,10 +63,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_exposeContext = exposeContext;
 			_appliedType = appliedType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::System.Object";
 
-			// Note: We trim the scope.ClassName sor for Template methods path will be relative to the scope class itself inst of the full path.
-			_exposeContextMethod = NamingHelper.AddUnique(
-				scope.ExplicitApplyMethodNames,
-				$"ApplyTo_{declaringObject.Key.TrimStart(scope.ClassName).TrimStart('_')}");
+			_exposeContextMethod = _xamlApplyPrefix is null && exposeContext
+				? _scope.RegisterMethod(
+					$"ApplyTo_{declaringObject.Key.TrimStart(scope.ClassName).TrimStart('_')}", // Note: We trim the scope.ClassName sor for Template methods path will be relative to the scope class itself inst of the full path.
+					(_, sb) => sb.AppendMultiLineIndented(_inner.ToString()))
+				: null; // DUmped inline (delegate)
 		}
 
 		private void TryWriteApply()
@@ -79,7 +80,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var delegateString = !_delegateType.IsNullOrEmpty() ? "(" + _delegateType + ")" : "";
 
-				if (_xamlApplyPrefix != null)
+				if (_xamlApplyPrefix is not null)
 				{
 					_inner.Indent(_source.CurrentLevel);
 					blockDisposable = _source.BlockInvariant($".{_xamlApplyPrefix}_XamlApply({delegateString}({AppliedParameterName} => ");
@@ -114,7 +115,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						_source.AppendLine();
 
 						blockDisposable.Dispose();
-						_scope.ExplicitApplyMethods.Add(_inner.ToString());
 					}
 					else
 					{

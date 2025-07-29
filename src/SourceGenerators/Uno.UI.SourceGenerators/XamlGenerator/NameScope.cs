@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Uno.Extensions;
+using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -17,6 +18,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	/// <param name="ClassName"></param>
 	internal record NameScope(ImmutableStack<NameScope> Parents, string FileUniqueId, string Namespace, string ClassName)
 	{
+		private readonly Dictionary<string, Action<IIndentedStringBuilder>> _methods = new();
+
 		public string Name => $"{Namespace.Replace(".", "")}{ClassName}";
 
 		/// <summary>
@@ -54,16 +57,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public List<string> XBindTryGetMethodDeclarations { get; } = [];
 
-		public List<string> ExplicitApplyMethods { get; } = []; // TODO: Merge with CallbackMethods
-
-		public List<string> ExplicitApplyMethodNames { get; } = [];
-
+		public int ComponentCount => Components.Count;
 		/// <summary>
 		/// Set of method builders to be generated for the current scope.
 		/// This is usually used to avoid delegates like for event handlers.
 		/// </summary>
-		public List<Action<IIndentedStringBuilder>> CallbackMethods { get; } = [];
+		public IImmutableList<Action<IIndentedStringBuilder>> Methods => _methods.Values.ToImmutableList();
 
-		public int ComponentCount => Components.Count;
+		public string RegisterMethod(string name, Action<string, IIndentedStringBuilder> methodBuilder)
+		{
+			return name = NamingHelper.AddUnique(_methods, name, BuildMethod);
+
+			void BuildMethod(IIndentedStringBuilder builder)
+				=> methodBuilder(name, builder);
+		}
 	}
 }

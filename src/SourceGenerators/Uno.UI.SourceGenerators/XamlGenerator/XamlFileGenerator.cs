@@ -382,9 +382,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							BuildPartials(writer);
 
-							BuildCallbackMethods(writer);
-
-							BuildExplicitApplyMethods(writer);
+							BuildMethods(writer);
 
 							BuildBackingFields(writer);
 
@@ -806,15 +804,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildExplicitApplyMethods(IIndentedStringBuilder writer)
-		{
-			TryAnnotateWithGeneratorSource(writer);
-			foreach (var applyMethod in CurrentScope.ExplicitApplyMethods)
-			{
-				writer.AppendMultiLineIndented(applyMethod);
-			}
-		}
-
 		private void BuildXBindTryGetDeclarations(IIndentedStringBuilder writer)
 		{
 			foreach (var xBindMethodDeclaration in CurrentScope.XBindTryGetMethodDeclarations)
@@ -823,11 +812,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildCallbackMethods(IIndentedStringBuilder writer)
+		private void BuildMethods(IIndentedStringBuilder writer)
 		{
-			foreach (var callback in CurrentScope.CallbackMethods)
+			TryAnnotateWithGeneratorSource(writer);
+			foreach (var callback in CurrentScope.Methods)
 			{
 				callback(writer);
+				writer.AppendLine();
 			}
 		}
 
@@ -985,9 +976,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								BuildBackingFields(writer);
 
-								BuildCallbackMethods(writer);
-
-								BuildExplicitApplyMethods(writer);
+								BuildMethods(writer);
 
 								BuildXBindTryGetDeclarations(writer);
 							}
@@ -1081,7 +1070,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented("((global::Microsoft.UI.Xaml.Window)this).Activated += __UpdateBindingsAndResources;");
 				}
 
-				CurrentScope.CallbackMethods.Add(eventWriter =>
+				CurrentScope.RegisterMethod("__UpdateBindingsAndResources", (_, eventWriter) =>
 				{
 					using (eventWriter.BlockInvariant(setupCallbackSignature))
 					{
@@ -1095,7 +1084,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				});
 				if (!string.IsNullOrEmpty(teardownCallbackSignature))
 				{
-					CurrentScope.CallbackMethods.Add(eventWriter =>
+					CurrentScope.RegisterMethod("__StopTracking", (_ , eventWriter) =>
 					{
 						using (eventWriter.BlockInvariant(teardownCallbackSignature))
 						{
@@ -1118,7 +1107,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented("__fe.Loading += __UpdateBindingsAndResources;");
 					writer.AppendLineIndented("__fe.Unloaded += __StopTracking;");
 
-					CurrentScope.CallbackMethods.Add(eventWriter =>
+					CurrentScope.RegisterMethod("__UpdateBindingsAndResources", (_, eventWriter) =>
 					{
 						using (writer.BlockInvariant("private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)"))
 						{
@@ -1127,7 +1116,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							BuildxBindEventHandlerInitializers(eventWriter, CurrentScope.xBindEventsHandlers);
 						}
 					});
-					CurrentScope.CallbackMethods.Add(eventWriter =>
+					CurrentScope.RegisterMethod("__StopTracking", (_, eventWriter) =>
 					{
 						using (writer.BlockInvariant("private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)"))
 						{
@@ -1226,17 +1215,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							get => ({{typeName}}){{componentName}}_Holder.Instance;
 							set => {{componentName}}_Holder.Instance = value;
 						}
+						
 					""");
 				}
 				else
 				{
 					writer.AppendMultiLineIndented($$"""
-							private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}});
-							private {{typeName}} {{componentName}}
-							{
-								get => ({{typeName}}){{componentName}}_Holder.Instance;
-								set => {{componentName}}_Holder.Instance = value;
-							}
+						private global::Microsoft.UI.Xaml.Markup.ComponentHolder {{componentName}}_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {{isWeak}});
+						private {{typeName}} {{componentName}}
+						{
+							get => ({{typeName}}){{componentName}}_Holder.Instance;
+							set => {{componentName}}_Holder.Instance = value;
+						}
+						
 						""");
 				}
 			}
@@ -1479,6 +1470,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							writer.AppendLine();
 							writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.ResourceDictionary {0}.GetResourceDictionary() => {1}_ResourceDictionary;", DictionaryProviderInterfaceName, _fileUniqueId);
+
+							BuildMethods(writer);
 						}
 						writer.AppendLine();
 						writer.AppendLineInvariantIndented("internal static global::Microsoft.UI.Xaml.ResourceDictionary {0}_ResourceDictionary => {1}.Instance.GetResourceDictionary();", _fileUniqueId, SingletonClassName);
@@ -1488,8 +1481,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 
 						BuildXBindTryGetDeclarations(writer);
-
-						BuildCallbackMethods(writer);
 					}
 				}
 
@@ -1804,7 +1795,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							writer.AppendLine();
 
-							BuildCallbackMethods(writer);
+							BuildMethods(writer);
 							BuildChildSubclasses(writer);
 							BuildXBindTryGetDeclarations(writer);
 						}
@@ -1890,7 +1881,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				writer.AppendLineIndented("Loading += __UpdateNamedResources;");
 
-				CurrentScope.CallbackMethods.Add(eventWriter =>
+				CurrentScope.RegisterMethod("__UpdateNamedResources", (_, eventWriter) =>
 				{
 					using (eventWriter.BlockInvariant("private void __UpdateNamedResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)"))
 					{
@@ -3709,7 +3700,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						"""));
 
 				RegisterXBindEventInitializer(
-					$"__{member.Key}_{member.Member.Name}_Initialize",
+					$"{member.Key}_{member.Member.Name}_Initialize",
 					(name, subWriter) => subWriter.AppendMultiLineIndented($$"""
 							[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 							{{Field("bool", $"__is{name}d")}}
@@ -6049,18 +6040,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var isTopLevel = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal);
 						var namespacePrefix = isTopLevel ? "__Resources." : "";
 						var subclassName = RegisterChildSubclass(contentDefinition.Key, contentDefinition, contentType);
-						var buildMethod = NamingHelper.AddUnique(CurrentScope.ExplicitApplyMethodNames, $"Build_{subclassName.TrimStart('_')}");
-
-						writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}({CurrentResourceOwnerName}, {buildMethod})");
-
-						CurrentScope.CallbackMethods.Add(sb => TryAnnotateWithGeneratorSource(sb)
-							.AppendMultiLineIndented($$"""
-								private static {{contentType}} {{buildMethod}}(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+						var buildMethod = CurrentScope.RegisterMethod(
+							$"Build_{subclassName.TrimStart('_')}",
+							(name, sb) => TryAnnotateWithGeneratorSource(sb).AppendMultiLineIndented($$"""
+								private static {{contentType}} {{name}}(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 								{
 									{{GetCacheBrokerForHotReload()}}
 									return new {{namespacePrefix}}{{CurrentScope.SubClassesRoot}}.{{subclassName}}().Build(__owner, __settings);
 								}
 								"""));
+
+						writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}({CurrentResourceOwnerName}, {buildMethod})");
 					}
 
 					writer.AppendLine();
@@ -6894,7 +6884,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var definition = new XBindEventInitializerDefinition(methodName, build);
 
 			CurrentScope.xBindEventsHandlers.Add(definition);
-			CurrentScope.CallbackMethods.Add(writer => build(methodName, writer));
+			CurrentScope.RegisterMethod(methodName, build);
 
 			if (CurrentXLoadScope is { } xLoadScope)
 			{
