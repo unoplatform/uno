@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CallKit;
 using Foundation;
 using UIKit;
+using Windows.System;
 
 namespace Windows.ApplicationModel.Calls
 {
@@ -38,7 +39,7 @@ namespace Windows.ApplicationModel.Calls
 		internal static void RaiseCallStateChanged() => CallStateChanged?.Invoke(null, null);
 
 		private static void ShowPhoneCallUIImpl(string phoneNumber, string displayName)
-			=> Task.Run(() => UIApplication.SharedApplication.OpenUrlAsync(new NSUrl($"tel:{phoneNumber}"), new UIApplicationOpenUrlOptions()));
+			=> Task.Run(() => Launcher.LaunchUriAsync(new Uri($"tel:{phoneNumber}")));
 
 	}
 }
