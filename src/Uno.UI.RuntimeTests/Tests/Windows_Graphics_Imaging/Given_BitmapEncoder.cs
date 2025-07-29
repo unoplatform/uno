@@ -9,8 +9,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 	[TestClass]
 	public class Given_BitmapEncoder
 	{
-		[DataTestMethod]
-		[DynamicData(nameof(GetEncoders), DynamicDataSourceType.Method)]
+		[TestMethod]
+		[DynamicData(nameof(GetEncoders))]
 		public async Task When_CreateAsync_With(Guid encoderId, bool notImplementedException)
 		{
 			Exception excption = default;

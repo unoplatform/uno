@@ -414,7 +414,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
-	[DynamicData(nameof(GetAlignments), DynamicDataSourceType.Method)]
+	[DynamicData(nameof(GetAlignments))]
 	public async Task When_Content_Aligned_Position_And_Size(AlignmentTestConfiguration configuration)
 	{
 		var contentPresenter = new ContentPresenter()
