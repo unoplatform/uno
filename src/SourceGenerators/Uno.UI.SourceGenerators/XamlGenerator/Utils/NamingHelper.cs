@@ -44,7 +44,7 @@ public class NamingHelper
 	public static string GetShortName(string name)
 	{
 		const int consecutiveLower = 2;
-		
+
 		var sb = new StringBuilder();
 		var i = 0;
 		var len = name?.Length ?? 0;
