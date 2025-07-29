@@ -185,7 +185,7 @@ partial class PopupPanel
 						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Full:
-					if (FeatureConfiguration.Popup.ConstrainToVisibleBounds)
+					if (FeatureConfiguration.Popup.ConstrainByVisibleBounds)
 					{
 #if !__APPLE_UIKIT__
 						childDesiredSize = visibleBounds.Size;

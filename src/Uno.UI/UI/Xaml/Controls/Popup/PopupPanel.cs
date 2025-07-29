@@ -158,7 +158,7 @@ internal partial class PopupPanel : Panel
 			// TODO: For now, the layouting logic for managed DatePickerFlyout or TimePickerFlyout does not correctly work
 			// against the placement target approach.
 			var isFlyoutManagedDatePicker =
-					(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
+				(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
 #if __ANDROID__ || __IOS__
 				&& (Popup.AssociatedFlyout is not NativeDatePickerFlyout && Popup.AssociatedFlyout is not NativeTimePickerFlyout)
 #endif
