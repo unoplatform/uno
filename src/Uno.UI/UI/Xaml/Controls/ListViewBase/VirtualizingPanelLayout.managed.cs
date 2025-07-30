@@ -899,12 +899,22 @@ namespace Microsoft.UI.Xaml.Controls
 		private void ScrapLayout()
 		{
 			var firstVisibleItem = GetFirstMaterializedIndexPath();
-			if (GetAndUpdateReorderingIndex() is { } reorderIndex && reorderIndex == firstVisibleItem)
+			var seed = GetDynamicSeedIndex(firstVisibleItem);
+			var offset = GetContentStart();
+
+			// Generally the _materializedLines are sorted, so normally offsetting -1 to the firstVisibleItem index
+			// should give us an unmaterialized item ahead of current viewport (or null if out of bounds).
+			// However, when an drag-n-drop reorder is in progress, the _materializedLines may be unsorted.
+			// In such case, we take the lowest index from the materialized, and substract 1 from it to get the unmaterialized index ahead of viewport.
+			// note: _pendingReorder can be null while the drad-n-drop is still in progress if the cursor leave the items panel.
+			if (seed is { } s &&
+				_materializedLines.SelectMany(line => line.Items).Select(x => x.index).Min() is { } lowest &&
+				s >= lowest)
 			{
-				firstVisibleItem = _materializedLines.SelectMany(line => line.Items).Skip(1).FirstOrDefault().index;
+				seed = GetNextUnmaterializedItem(Backward, lowest);
 			}
 
-			SetDynamicSeed(GetDynamicSeedIndex(firstVisibleItem), GetContentStart());
+			SetDynamicSeed(seed, offset);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
