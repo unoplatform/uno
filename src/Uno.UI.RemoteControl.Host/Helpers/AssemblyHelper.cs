@@ -18,7 +18,7 @@ public class AssemblyHelper
 	{
 		var startTime = Stopwatch.GetTimestamp();
 
-		telemetry?.TrackEvent("loading-start", default(Dictionary<string, string>), null);
+		telemetry?.TrackEvent("addin-loading-start", default(Dictionary<string, string>), null);
 
 		var assemblies = ImmutableList.CreateBuilder<Assembly>();
 		var failedCount = 0;
@@ -59,7 +59,7 @@ public class AssemblyHelper
 				["AssemblyLoadFailedAssemblies"] = failedCount,
 			};
 
-			telemetry?.TrackEvent("loading-complete", completionProperties, completionMeasurements);
+			telemetry?.TrackEvent("addin-loading-complete", completionProperties, completionMeasurements);
 
 			return result;
 		}
@@ -77,7 +77,7 @@ public class AssemblyHelper
 				["AssemblyLoadFailedAssembliesCount"] = failedCount,
 			};
 
-			telemetry?.TrackEvent("loading-error", errorProperties, errorMeasurements);
+			telemetry?.TrackEvent("addin-loading-error", errorProperties, errorMeasurements);
 			throw;
 		}
 	}

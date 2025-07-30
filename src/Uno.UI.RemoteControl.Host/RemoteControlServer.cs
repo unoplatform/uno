@@ -327,7 +327,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				["DiscoveryIsFile"] = File.Exists(msg.BasePath).ToString()
 			};
 
-			_telemetry?.TrackEvent("discovery-start", discoveryProperties, null);
+			_telemetry?.TrackEvent("processor-discovery-start", discoveryProperties, null);
 
 			if (!_appInstanceIds.Contains(msg.AppInstanceId))
 			{
@@ -499,7 +499,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				["DiscoveryProcessorsFailedCount"] = processorsFailed,
 			};
 
-			_telemetry?.TrackEvent("discovery-complete", completionProperties, completionMeasurements);
+			_telemetry?.TrackEvent("processor-discovery-complete", completionProperties, completionMeasurements);
 		}
 		catch (Exception exc)
 		{
@@ -523,7 +523,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				["DiscoveryProcessorsFailedCount"] = processorsFailed,
 			};
 
-			_telemetry?.TrackEvent("discovery-error", errorProperties, errorMeasurements);
+			_telemetry?.TrackEvent("processor-discovery-error", errorProperties, errorMeasurements);
 		}
 		finally
 		{

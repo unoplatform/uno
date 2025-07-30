@@ -55,7 +55,7 @@ namespace Uno.UI.RemoteControl.Host
 										["ConnectionId"] = connectionContext.ConnectionId,
 									};
 
-									telemetry.TrackEvent("connection-opened", properties, null);
+									telemetry.TrackEvent("client-connection-opened", properties, null);
 								}
 
 								if (app.Log().IsEnabled(LogLevel.Debug))
@@ -101,7 +101,7 @@ namespace Uno.UI.RemoteControl.Host
 								["ConnectionDurationSeconds"] = connectionDuration.TotalSeconds
 							};
 
-							telemetry.TrackEvent("connection-closed", properties, measurements);
+							telemetry.TrackEvent("client-connection-closed", properties, measurements);
 						}
 
 						if (app.Log().IsEnabled(LogLevel.Information))

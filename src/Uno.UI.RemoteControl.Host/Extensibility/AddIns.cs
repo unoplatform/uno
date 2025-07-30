@@ -22,7 +22,7 @@ public class AddIns
 	{
 		var startTime = Stopwatch.GetTimestamp();
 
-		telemetry?.TrackEvent("discovery-start", default(Dictionary<string, string>), null);
+		telemetry?.TrackEvent("addin-discovery-start", default(Dictionary<string, string>), null);
 
 		try
 		{
@@ -127,7 +127,7 @@ public class AddIns
 				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 			};
 
-			telemetry?.TrackEvent("discovery-error", errorProperties, errorMeasurements);
+			telemetry?.TrackEvent("addin-discovery-error", errorProperties, errorMeasurements);
 			throw;
 		}
 	}
@@ -148,7 +148,7 @@ public class AddIns
 			["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds
 		};
 
-		telemetry.TrackEvent("discovery-complete", completionProperties, completionMeasurements);
+		telemetry.TrackEvent("addin-discovery-complete", completionProperties, completionMeasurements);
 	}
 
 	private static ImmutableList<string> Read(string file)

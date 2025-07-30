@@ -2,6 +2,8 @@
 
 This document summarizes all Hot Reload telemetry events emitted by the server (`ServerHotReloadProcessor.Notify`).
 
+Event name prefix: uno/dev-server/hot-reload
+
 | Event Name              | Main Properties  (with hotreload/ prefix)             | Measurements (with hotreload/ prefix) |
 |-------------------------|-------------------------------------------------------|---------------------------------------|
 | notify-start            | Event, Source, PreviousState                          | FileCount                             |
