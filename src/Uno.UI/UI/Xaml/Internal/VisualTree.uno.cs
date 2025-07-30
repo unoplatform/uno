@@ -48,7 +48,7 @@ internal partial class VisualTree : IWeakReferenceProvider
 			{
 				_visibleBounds = value;
 
-				VisibleBoundsChanged?.Invoke(this, EventArgs.Empty);
+				OnVisibleBoundsChanged();
 			}
 		}
 	}
@@ -66,16 +66,16 @@ internal partial class VisualTree : IWeakReferenceProvider
 			{
 				_visibleBoundsOverride = value;
 
-				VisibleBoundsChanged?.Invoke(this, EventArgs.Empty);
+				OnVisibleBoundsChanged();
 			}
 		}
 	}
 
 	internal event EventHandler? VisibleBoundsChanged;
 
-	private void OnVisibleBoundsChanged(object sender, EventArgs e)
+	private void OnVisibleBoundsChanged()
 	{
-		VisibleBoundsChanged?.Invoke(sender, e);
+		VisibleBoundsChanged?.Invoke(this, EventArgs.Empty);
 
 		if (RootElement is XamlIslandRoot { OwnerWindow: { } ownerWindow } _)
 		{
