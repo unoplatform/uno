@@ -216,6 +216,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.IsOpen = false;
 		}
 
+#if HAS_UNO // FeatureConfiguration is Uno-only
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // On iOS native the flyout sizing is not handled differently, so the results are different.
 		[CombinatorialData]
@@ -269,6 +270,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				FeatureConfiguration.Popup.ConstrainByVisibleBounds = constrainedPreviously;
 			}
 		}
+#endif
 
 #if HAS_UNO
 		[TestMethod]
