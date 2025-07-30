@@ -361,6 +361,14 @@ namespace Uno.UI
 			/// This is mainly useful for debugging purposes, we do not recommend using this in production code.
 			/// </summary>
 			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
+
+			/// <summary>
+			/// By default, popups are constrained by the visible bounds on native renderer, but unconstrained on Skia renderer.
+			/// </summary>
+			public static bool ConstrainByVisibleBounds { get; set; }
+#if !__SKIA__
+				= true;
+#endif
 		}
 
 		public static class ProgressRing
