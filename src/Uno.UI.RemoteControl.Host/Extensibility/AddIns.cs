@@ -22,7 +22,7 @@ public class AddIns
 	{
 		var startTime = Stopwatch.GetTimestamp();
 
-		telemetry?.TrackEvent("AddIn.Discovery.Start", default(Dictionary<string, string>), null);
+		telemetry?.TrackEvent("discovery-start", default(Dictionary<string, string>), null);
 
 		try
 		{
@@ -119,15 +119,15 @@ public class AddIns
 		{
 			var errorProperties = new Dictionary<string, string>
 			{
-				["devserver/DiscoveryErrorMessage"] = ex.Message,
-				["devserver/DiscoveryErrorType"] = ex.GetType().Name,
+				["DiscoveryErrorMessage"] = ex.Message,
+				["DiscoveryErrorType"] = ex.GetType().Name,
 			};
 			var errorMeasurements = new Dictionary<string, double>
 			{
-				["devserver/DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
 			};
 
-			telemetry?.TrackEvent("AddIn.Discovery.Error", errorProperties, errorMeasurements);
+			telemetry?.TrackEvent("discovery-error", errorProperties, errorMeasurements);
 			throw;
 		}
 	}
@@ -138,17 +138,17 @@ public class AddIns
 
 		var completionProperties = new Dictionary<string, string>
 		{
-			["devserver/DiscoveryResult"] = result,
-			["devserver/DiscoveryAddInList"] = string.Join(";", addIns.Select(Path.GetFileName))
+			["DiscoveryResult"] = result,
+			["DiscoveryAddInList"] = string.Join(";", addIns.Select(Path.GetFileName))
 		};
 
 		var completionMeasurements = new Dictionary<string, double>
 		{
-			["devserver/DiscoveryAddInCount"] = addIns.Count,
-			["devserver/DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds
+			["DiscoveryAddInCount"] = addIns.Count,
+			["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds
 		};
 
-		telemetry.TrackEvent("AddIn.Discovery.Complete", completionProperties, completionMeasurements);
+		telemetry.TrackEvent("discovery-complete", completionProperties, completionMeasurements);
 	}
 
 	private static ImmutableList<string> Read(string file)
