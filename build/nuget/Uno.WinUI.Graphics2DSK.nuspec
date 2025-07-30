@@ -54,7 +54,6 @@
         <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0" />
 
         <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-windows10.0.19041.0" />
-        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-windows10.0.19041.0" />
 
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-android\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-android" />
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-ios18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-ios18.0" />
