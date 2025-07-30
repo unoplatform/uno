@@ -43,13 +43,13 @@ namespace Uno.UI.Tests.Collections
 		[TestMethod]
 		public void Ctor_IDictionary_NullDictionary_ThrowsArgumentNullException()
 		{
-			Assert.ThrowsException<ArgumentNullException>(() => new HashtableEx((HashtableEx)null)); // Dictionary is null
+			Assert.ThrowsExactly<ArgumentNullException>(() => new HashtableEx((HashtableEx)null)); // Dictionary is null
 		}
 
 		[TestMethod]
 		public void Ctor_IDictionary_HashCodeProvider_Comparer_NullDictionary_ThrowsArgumentNullException()
 		{
-			Assert.ThrowsException<ArgumentNullException>(() => new HashtableEx(null, StringComparer.OrdinalIgnoreCase)); // Dictionary is null
+			Assert.ThrowsExactly<ArgumentNullException>(() => new HashtableEx(null, StringComparer.OrdinalIgnoreCase)); // Dictionary is null
 		}
 
 		[TestMethod]
@@ -78,8 +78,8 @@ namespace Uno.UI.Tests.Collections
 		[TestMethod]
 		public void Ctor_Int_Invalid()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(-1)); // Capacity < 0
-			Assert.ThrowsException<ArgumentException>(() => new HashtableEx(int.MaxValue)); // Capacity / load factor > int.MaxValue
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(-1)); // Capacity < 0
+			Assert.ThrowsExactly<ArgumentException>(() => new HashtableEx(int.MaxValue)); // Capacity / load factor > int.MaxValue
 		}
 
 		[TestMethod]
@@ -102,14 +102,14 @@ namespace Uno.UI.Tests.Collections
 		[TestMethod]
 		public void Ctor_IDictionary_Int_Invalid()
 		{
-			Assert.ThrowsException<ArgumentNullException>(() => new HashtableEx(null, 1f)); // Dictionary is null
+			Assert.ThrowsExactly<ArgumentNullException>(() => new HashtableEx(null, 1f)); // Dictionary is null
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), 0.09f)); // Load factor < 0.1f
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), 1.01f)); // Load factor > 1f
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), 0.09f)); // Load factor < 0.1f
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), 1.01f)); // Load factor > 1f
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.NaN)); // Load factor is NaN
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.PositiveInfinity)); // Load factor is infinity
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.NegativeInfinity)); // Load factor is infinity
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.NaN)); // Load factor is NaN
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.PositiveInfinity)); // Load factor is infinity
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.NegativeInfinity)); // Load factor is infinity
 		}
 
 		[TestMethod]
@@ -153,7 +153,7 @@ namespace Uno.UI.Tests.Collections
 		[TestMethod]
 		public void Ctor_IDictionary_IEqualityComparer_NullDictionary_ThrowsArgumentNullException()
 		{
-			Assert.ThrowsException<ArgumentNullException>(() => new HashtableEx((HashtableEx)null, null)); // Dictionary is null
+			Assert.ThrowsExactly<ArgumentNullException>(() => new HashtableEx((HashtableEx)null, null)); // Dictionary is null
 		}
 
 		[TestMethod]
@@ -201,15 +201,15 @@ namespace Uno.UI.Tests.Collections
 		[TestMethod]
 		public void Ctor_Int_Int_Invalid()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(-1, 1f)); // Capacity < 0
-			Assert.ThrowsException<ArgumentException>(() => new HashtableEx(int.MaxValue, 0.1f)); // Capacity / load factor > int.MaxValue
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(-1, 1f)); // Capacity < 0
+			Assert.ThrowsExactly<ArgumentException>(() => new HashtableEx(int.MaxValue, 0.1f)); // Capacity / load factor > int.MaxValue
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, 0.09f)); // Load factor < 0.1f
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, 1.01f)); // Load factor > 1f
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, 0.09f)); // Load factor < 0.1f
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, 1.01f)); // Load factor > 1f
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.NaN)); // Load factor is NaN
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.PositiveInfinity)); // Load factor is infinity
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.NegativeInfinity)); // Load factor is infinity
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.NaN)); // Load factor is NaN
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.PositiveInfinity)); // Load factor is infinity
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.NegativeInfinity)); // Load factor is infinity
 		}
 
 		[TestMethod]
@@ -232,8 +232,8 @@ namespace Uno.UI.Tests.Collections
 		[TestMethod]
 		public void Ctor_Int_IEqualityComparer_Invalid()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(-1, null)); // Capacity < 0
-			Assert.ThrowsException<ArgumentException>(() => new HashtableEx(int.MaxValue, null)); // Capacity / load factor > int.MaxValue
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(-1, null)); // Capacity < 0
+			Assert.ThrowsExactly<ArgumentException>(() => new HashtableEx(int.MaxValue, null)); // Capacity / load factor > int.MaxValue
 		}
 
 		[TestMethod]
@@ -262,14 +262,14 @@ namespace Uno.UI.Tests.Collections
 		[TestMethod]
 		public void Ctor_IDictionary_LoadFactor_IEqualityComparer_Invalid()
 		{
-			Assert.ThrowsException<ArgumentNullException>(() => new HashtableEx(null, 1f, null)); // Dictionary is null
+			Assert.ThrowsExactly<ArgumentNullException>(() => new HashtableEx(null, 1f, null)); // Dictionary is null
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), 0.09f, null)); // Load factor < 0.1f
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), 1.01f, null)); // Load factor > 1f
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), 0.09f, null)); // Load factor < 0.1f
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), 1.01f, null)); // Load factor > 1f
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.NaN, null)); // Load factor is NaN
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.PositiveInfinity, null)); // Load factor is infinity
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.NegativeInfinity, null)); // Load factor is infinity
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.NaN, null)); // Load factor is NaN
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.PositiveInfinity, null)); // Load factor is infinity
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(new HashtableEx(), float.NegativeInfinity, null)); // Load factor is infinity
 		}
 
 		[TestMethod]
@@ -293,15 +293,15 @@ namespace Uno.UI.Tests.Collections
 		[TestMethod]
 		public void Ctor_Capacity_LoadFactor_IEqualityComparer_Invalid()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(-1, 1f, null)); // Capacity < 0
-			Assert.ThrowsException<ArgumentException>(() => new HashtableEx(int.MaxValue, 0.1f, null)); // Capacity / load factor > int.MaxValue
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(-1, 1f, null)); // Capacity < 0
+			Assert.ThrowsExactly<ArgumentException>(() => new HashtableEx(int.MaxValue, 0.1f, null)); // Capacity / load factor > int.MaxValue
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, 0.09f, null)); // Load factor < 0.1f
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, 1.01f, null)); // Load factor > 1f
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, 0.09f, null)); // Load factor < 0.1f
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, 1.01f, null)); // Load factor > 1f
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.NaN, null)); // Load factor is NaN
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.PositiveInfinity, null)); // Load factor is infinity
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.NegativeInfinity, null)); // Load factor is infinity
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.NaN, null)); // Load factor is NaN
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.PositiveInfinity, null)); // Load factor is infinity
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new HashtableEx(100, float.NegativeInfinity, null)); // Load factor is infinity
 		}
 
 		[TestMethod]
@@ -551,8 +551,8 @@ namespace Uno.UI.Tests.Collections
 			var hash1 = new HashtableEx();
 			Helpers.PerformActionOnAllHashtableWrappers(hash1, hash2 =>
 			{
-				Assert.ThrowsException<ArgumentNullException>(() => hash2.ContainsKey(null)); // Key is null
-				Assert.ThrowsException<ArgumentNullException>(() => hash2.Contains(null)); // Key is null
+				Assert.ThrowsExactly<ArgumentNullException>(() => hash2.ContainsKey(null)); // Key is null
+				Assert.ThrowsExactly<ArgumentNullException>(() => hash2.Contains(null)); // Key is null
 			});
 		}
 

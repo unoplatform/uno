@@ -61,8 +61,8 @@
 	</Target>
 
 	<PropertyGroup>
-		<MSTestVersion>3.9.3</MSTestVersion>
-		<MicrosoftTestingPlatformVersion>1.7.3</MicrosoftTestingPlatformVersion>
+		<MSTestVersion>3.10.0</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>1.8.0</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
 	</PropertyGroup>

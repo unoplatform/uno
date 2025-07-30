@@ -596,18 +596,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertEx.AssertContainsColorBrushResource(rd, "LiteralColorBrush", Colors.Fuchsia);
 			AssertEx.AssertContainsColorBrushResource(rd, "ThemedLiteralColorBrush", Colors.DarkOrchid);
 
-			Assert.ThrowsException<InvalidOperationException>(() =>
+			Assert.ThrowsExactly<InvalidOperationException>(() =>
 			{
 				var _ = rd["LazyResource"];
 			});
 
-			Assert.ThrowsException<InvalidOperationException>(() =>
+			Assert.ThrowsExactly<InvalidOperationException>(() =>
 			{
 				var _ = rd["ThemedLazyResource"];
 			});
 
 			Assert.IsTrue(rd.ThemeDictionaries.ContainsKey("Nope"));
-			Assert.ThrowsException<InvalidOperationException>(() =>
+			Assert.ThrowsExactly<InvalidOperationException>(() =>
 			{
 				var _ = rd.ThemeDictionaries["Nope"];
 			});

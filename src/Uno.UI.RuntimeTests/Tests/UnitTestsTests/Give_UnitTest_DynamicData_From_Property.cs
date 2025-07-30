@@ -9,8 +9,8 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 	{
 		static int TestSucces_Count;
 
-		[DataTestMethod]
-		[DynamicData(nameof(Data), DynamicDataSourceType.Property)]
+		[TestMethod]
+		[DynamicData(nameof(Data))]
 		public void When_Get_Arguments_From_Property(int a, int b, int expected)
 		{
 			var actual = a + b;
@@ -28,9 +28,20 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 			}
 		}
 
-#pragma warning disable MSTEST0029 // Public methods should be test methods - https://github.com/microsoft/testfx/issues/4660
 		public void Dispose() =>
-			Assert.Equals(TestSucces_Count, 3);
-#pragma warning restore MSTEST0029 // Public methods should be test methods
+			// TODO: This used to be Assert.Equals which **always** throws at runtime and everything was green.
+			// This is because Dispose is never called, and the assert is not be doing what it's supposed to do!
+			// This assert is also wrong altogether.
+			// The correct test flow *should* be:
+			// 1. Create instance of the test class
+			// 2. Invoke the first test case.
+			// 3. Dispose
+			// 4. Repeat for the other two test cases.
+			// So, Dispose should be called three times. First with value 1, then 2, then 3.
+			// The current behavior is:
+			// 1. Create a single instance of the test class.
+			// 2. Invoke all test cases.
+			// 3. Dispose is never called.
+			Assert.AreEqual(3, TestSucces_Count);
 	}
 }

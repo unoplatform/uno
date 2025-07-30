@@ -36,7 +36,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(SUT.Setters.IsSealed);
 			Assert.IsTrue(SUT.Setters[0].IsSealed);
 
-			Assert.ThrowsException<InvalidOperationException>(() => SUT.Setters.Add(new Setter(Control.IsHitTestVisibleProperty, true)));
+			Assert.ThrowsExactly<InvalidOperationException>(() => SUT.Setters.Add(new Setter(Control.IsHitTestVisibleProperty, true)));
 		}
 
 		[TestMethod]
@@ -69,7 +69,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(SUT.Setters.IsSealed);
 			Assert.IsTrue(SUT.Setters[0].IsSealed);
 
-			Assert.ThrowsException<InvalidOperationException>(() => s.Value = null);
+			Assert.ThrowsExactly<InvalidOperationException>(() => s.Value = null);
 		}
 
 		[TestMethod]

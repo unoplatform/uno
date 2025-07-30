@@ -622,7 +622,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		[DataTestMethod]
+		[TestMethod]
 		[CombinatorialData]
 		[Ignore("Test is failing on all targets https://github.com/unoplatform/uno/issues/17984")]
 		public async Task When_BackButton_Pressed(bool isCloseButtonEnabled)

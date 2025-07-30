@@ -10,7 +10,7 @@ namespace Uno.UI.SourceGenerators.Tests.MetadataUpdateTests;
 public class Given_HotReloadService
 {
 	[TestMethod]
-	[DynamicData(nameof(GetScenarios), DynamicDataSourceType.Method)]
+	[DynamicData(nameof(GetScenarios))]
 	public async Task HR(string name, Scenario? scenario, Project[]? projects)
 	{
 		if (scenario != null)

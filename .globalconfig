@@ -189,4 +189,5 @@ dotnet_diagnostic.MSTEST0031.severity = warning
 dotnet_diagnostic.MSTEST0032.severity = warning
 
 # MSTEST0037: Use proper 'Assert' methods
-dotnet_diagnostic.MSTEST0037.severity = warning
+# Temporarily disabled until https://github.com/microsoft/testfx/issues/6223 is released.
+dotnet_diagnostic.MSTEST0037.severity = suggestion
