@@ -921,6 +921,12 @@ namespace Uno.UI
 				set { }
 #endif
 			}
+
+			/// <summary>
+			/// Force the use of Metal (true) or Software (false) rendering on macOS.
+			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
+			/// </summary>
+			public static bool? UseMetalOnMacOS { get; set; }
 		}
 
 		public static class DependencyProperty
