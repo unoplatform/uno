@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PagerControlFirstPageButtonText" xml:space="preserve">
-    <value>መጀመሪያ ገጽ</value>
+    <value>የመጀመሪያ ገጽ</value>
     <comment>Automation name and tooltip text for the first page button </comment>
   </data>
   <data name="PagerControlLastPageButtonText" xml:space="preserve">
@@ -126,7 +126,7 @@
     <comment>Automation name and tooltip text for the last page button</comment>
   </data>
   <data name="PagerControlNextPageButtonText" xml:space="preserve">
-    <value>የሚቀጥለው ገጽ</value>
+    <value>ቀጣይ ገጽ</value>
     <comment>Automation name and tooltip text for the next page button</comment>
   </data>
   <data name="PagerControlPageText" xml:space="preserve">
@@ -138,7 +138,7 @@
     <comment>Text indicating "Page" 2 of 4</comment>
   </data>
   <data name="PagerControlPreviousPageButtonText" xml:space="preserve">
-    <value>የቀደሞው ገጽ</value>
+    <value>ቀዳሚ ገጽ</value>
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PagerControlSuffixText" xml:space="preserve">

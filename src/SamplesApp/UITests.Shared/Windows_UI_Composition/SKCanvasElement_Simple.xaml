@@ -7,15 +7,5 @@
              xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              mc:Ignorable="skia">
 
-	<Grid>
-		<skia:Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<Slider Grid.Row="0" x:Name="slider" Header="Sample" Minimum="0" Maximum="{x:Bind MaxSampleIndex}" />
-			<local:SKCanvasElementImpl Grid.Row="1" Sample="{x:Bind slider.Value, Mode=OneWay}" />
-		</skia:Grid>
-		<not_skia:TextBlock Text="This sample is only supported on skia." />
-	</Grid>
+	<Grid x:Name="grid" />
 </UserControl>

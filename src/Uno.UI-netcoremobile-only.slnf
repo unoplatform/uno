@@ -8,6 +8,7 @@
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.netcoremobile.csproj",
       "AddIns\\Uno.UI.Foldable\\Uno.UI.Foldable.netcoremobile.csproj",
       "AddIns\\Uno.UI.Maps\\Uno.UI.Maps.netcoremobile.csproj",
+      "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.netcoremobile.csproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
