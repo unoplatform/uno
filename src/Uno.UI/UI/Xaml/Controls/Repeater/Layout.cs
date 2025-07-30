@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// We rely on the GC to manage registrations
 		// but in the case of layouts, for ItemView for instance, actual instances
 		// may be placed directly in dictionaries, such as:
-		// https://github.com/unoplatform/uno/blob/c992ed058d1479cce8e6bca58acbf82cc54ce938/src/Uno.UI/Microsoft/UI/Xaml/Controls/ItemsView/ItemsView.xaml#L12-L16
+		// https://github.com/unoplatform/uno/blob/c992ed058d1479cce8e6bca58acbf82cc54ce938/src/Uno.UI/UI/Xaml/Controls/ItemsView/ItemsView.xaml#L12-L16
 		// To avoid memory leaks, it's best to use the two register methods.
 
 		private WeakEventHelper.WeakEventCollection _measureInvalidatedHandlers;
