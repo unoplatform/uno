@@ -32,7 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Uno.UI\UI\Input\*.cs" />
+		<Compile Include="..\Uno.UI\UI\Input\WinRT\*.cs" />
 		<Compile Include="..\Uno.UI\UI\Colors.cs" />
 		<Compile Include="..\Uno.UI\UI\ColorHelper.cs" />
 		<Compile Include="..\Uno.UI\UI\Text\FontWeights.cs" />
