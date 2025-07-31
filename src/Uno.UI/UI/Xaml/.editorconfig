@@ -6,3 +6,5 @@ indent_size = 4
 charset = utf-8-bom
 insert_final_newline = true
 trim_trailing_whitespace = true
+[*.cs]
+dotnet_diagnostic.CA1805.severity = none 

@@ -20,4 +20,4 @@ For example, let's look into winrt.h for en-US. The two relevant entries are:
 
 So, now if you do `Console.WriteLine(MAKELANGID(0x09, 0x01).ToString("X"));`, you'll get 409, so it's en-US is defined in `Languages` enum as `en_us = 0x409`.
 
-The result of this tool is added in [`src\Uno.UI\Microsoft\UI\Xaml\Controls\WinUIResources`](https://github.com/unoplatform/uno/tree/aba02b0fdaa2b529e19e4751843aed1cfc969fbf/src/Uno.UI/Microsoft/UI/Xaml/Controls/WinUIResources)
+The result of this tool is added in [`src\Uno.UI\UI\Xaml\Controls\WinUIResources`](https://github.com/unoplatform/uno/tree/aba02b0fdaa2b529e19e4751843aed1cfc969fbf/src/Uno.UI/UI/Xaml/Controls/WinUIResources)

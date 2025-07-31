@@ -42,7 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="$(PlatformItemsBasePath)Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
+		<EmbeddedResource Include="$(PlatformItemsBasePath)UI\Xaml\Controls\ProgressRing\*.json" />
 		<PRIResource Include="$(PlatformItemsBasePath)**\*.resw" />
 	</ItemGroup>
 
