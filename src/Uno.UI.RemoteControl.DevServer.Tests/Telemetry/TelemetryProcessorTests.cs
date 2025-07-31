@@ -88,8 +88,8 @@ public class TelemetryProcessorTests : TelemetryTestBase
 				.BeTrue("Connection telemetry should be present");
 
 			// Check for processor discovery events
-			AssertHasEvent(events, "uno/dev-server/Processor.Discovery.Start");
-			AssertHasEvent(events, "uno/dev-server/Processor.Discovery.Complete");
+			AssertHasEvent(events, "uno/dev-server/processor-discovery-start");
+			AssertHasEvent(events, "uno/dev-server/processor-discovery-complete");
 
 			// Log all events for debugging
 			Logger.LogInformation("Found {Count} telemetry events:", events.Count);
@@ -106,7 +106,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			// This event name will have the prefix defined in the TestProcessor assembly
 			var processorEvents = events.Where(e =>
 				e.Json.RootElement.TryGetProperty("EventName", out var name) &&
-				name.GetString()?.Contains("TelemetryTest.Initialized") == true)
+				name.GetString()?.Contains("telemetry-test-initialized") == true)
 				.ToList();
 			var processorEvent = processorEvents.Single();
 
@@ -217,8 +217,8 @@ public class TelemetryProcessorTests : TelemetryTestBase
 				.BeTrue("Connection telemetry should be present");
 
 			// Check for processor discovery events
-			AssertHasEvent(events, "uno/dev-server/Processor.Discovery.Start");
-			AssertHasEvent(events, "uno/dev-server/Processor.Discovery.Complete");
+			AssertHasEvent(events, "uno/dev-server/processor-discovery-start");
+			AssertHasEvent(events, "uno/dev-server/processor-discovery-complete");
 
 			// Log all events for debugging to help identify HotReload processor events
 			Logger.LogInformation("Found {Count} telemetry events:", events.Count);
@@ -235,7 +235,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			// The fact that discovery completed successfully means ServerHotReloadProcessor was instantiated without DI issues
 			var discoveryCompleteEvents = events.Where(e =>
 				e.Json.RootElement.TryGetProperty("EventName", out var name) &&
-				name.GetString() == "uno/dev-server/Processor.Discovery.Complete")
+				name.GetString() == "uno/dev-server/processor-discovery-complete")
 				.ToList();
 
 			discoveryCompleteEvents.Should().NotBeEmpty("Discovery should complete successfully, indicating DI resolution worked");

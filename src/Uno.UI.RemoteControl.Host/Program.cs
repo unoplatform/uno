@@ -200,10 +200,10 @@ namespace Uno.UI.RemoteControl.Host
 				// Track devserver startup using global telemetry service
 				var startupProperties = new Dictionary<string, string>
 				{
-					["devserver/Startup/HasSolution"] = (solution != null).ToString(),
+					["StartupHasSolution"] = (solution != null).ToString(),
 				};
 
-				telemetry?.TrackEvent("DevServer.Startup", startupProperties, null);
+				telemetry?.TrackEvent("startup", startupProperties, null);
 
 				_ = ParentProcessObserver.ObserveAsync(
 					parentPID,
@@ -227,14 +227,14 @@ namespace Uno.UI.RemoteControl.Host
 						var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
 						var shutdownProperties = new Dictionary<string, string>
 						{
-							["devserver/ShutdownType"] = shutdownRequested ? "Graceful" : "Crash",
+							["ShutdownType"] = shutdownRequested ? "Graceful" : "Crash",
 						};
 						var shutdownMeasurements = new Dictionary<string, double>
 						{
-							["devserver/UptimeSeconds"] = uptime.TotalSeconds,
+							["UptimeSeconds"] = uptime.TotalSeconds,
 						};
 
-						telemetry.TrackEvent("DevServer.Shutdown", shutdownProperties, shutdownMeasurements);
+						telemetry.TrackEvent("shutdown", shutdownProperties, shutdownMeasurements);
 						await telemetry.FlushAsync(CancellationToken.None);
 					}
 				}
@@ -247,16 +247,16 @@ namespace Uno.UI.RemoteControl.Host
 					var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
 					var errorProperties = new Dictionary<string, string>
 					{
-						["devserver/Startup/ErrorMessage"] = ex.Message,
-						["devserver/Startup/ErrorType"] = ex.GetType().Name,
-						["devserver/Startup/StackTrace"] = ex.StackTrace ?? "",
+						["StartupErrorMessage"] = ex.Message,
+						["StartupErrorType"] = ex.GetType().Name,
+						["StartupStackTrace"] = ex.StackTrace ?? "",
 					};
 					var errorMeasurements = new Dictionary<string, double>
 					{
-						["devserver/UptimeSeconds"] = uptime.TotalSeconds,
+						["UptimeSeconds"] = uptime.TotalSeconds,
 					};
 
-					telemetry.TrackEvent("DevServer.StartupFailure", errorProperties, errorMeasurements);
+					telemetry.TrackEvent("startup-failure", errorProperties, errorMeasurements);
 					await telemetry.FlushAsync(CancellationToken.None);
 					throw;
 				}

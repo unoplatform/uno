@@ -135,9 +135,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			var properties = new Dictionary<string, string>
 			{
-				["hotreload/Event"] = evt.ToString(),
-				["hotreload/Source"] = source.ToString(),
-				["hotreload/PreviousState"] = _globalState.ToString()
+				["Event"] = evt.ToString(),
+				["Source"] = source.ToString(),
+				["PreviousState"] = _globalState.ToString()
 			};
 
 
@@ -146,16 +146,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				measurements = new Dictionary<string, double>
 				{
-					["hotreload/FileCount"] = _current.FilePaths.Count
+					["FileCount"] = _current.FilePaths.Count
 				};
 				if (_current.CompletionTime != null)
 				{
 					var duration = (_current.CompletionTime.Value - _current.StartTime).TotalMilliseconds;
-					measurements["hotreload/DurationMs"] = duration;
+					measurements["DurationMs"] = duration;
 				}
 			}
 
-			_telemetry.TrackEvent("HotReload.Notify.Start", properties, measurements);
+			_telemetry.TrackEvent("notify-start", properties, measurements);
 
 			try
 			{
@@ -165,60 +165,60 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					case HotReloadEvent.Disabled:
 						_globalState = HotReloadState.Disabled;
 						await AbortHotReload();
-						_telemetry.TrackEvent("HotReload.Notify.Disabled", properties, measurements);
+						_telemetry.TrackEvent("notify-disabled", properties, measurements);
 						break;
 
 					case HotReloadEvent.Initializing:
 						_globalState = HotReloadState.Initializing;
 						await SendUpdate();
-						_telemetry.TrackEvent("HotReload.Notify.Initializing", properties, measurements);
+						_telemetry.TrackEvent("notify-initializing", properties, measurements);
 						break;
 
 					case HotReloadEvent.Ready:
 						_globalState = HotReloadState.Ready;
 						await SendUpdate();
-						_telemetry.TrackEvent("HotReload.Notify.Ready", properties, measurements);
+						_telemetry.TrackEvent("notify-ready", properties, measurements);
 						break;
 
 					// Pending hot-reload events
 					case HotReloadEvent.ProcessingFiles:
 						await EnsureHotReloadStarted();
-						_telemetry.TrackEvent("HotReload.Notify.ProcessingFiles", properties, measurements);
+						_telemetry.TrackEvent("notify-processing-files", properties, measurements);
 						break;
 
 					case HotReloadEvent.Completed:
 						await (await StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
-						_telemetry.TrackEvent("HotReload.Notify.Completed", properties, measurements);
+						_telemetry.TrackEvent("notify-completed", properties, measurements);
 						break;
 
 					case HotReloadEvent.NoChanges:
 						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
-						_telemetry.TrackEvent("HotReload.Notify.NoChanges", properties, measurements);
+						_telemetry.TrackEvent("notify-no-changes", properties, measurements);
 						break;
 
 					case HotReloadEvent.Failed:
 						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
-						_telemetry.TrackEvent("HotReload.Notify.Failed", properties, measurements);
+						_telemetry.TrackEvent("notify-failed", properties, measurements);
 						break;
 
 					case HotReloadEvent.RudeEdit:
 						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
-						_telemetry.TrackEvent("HotReload.Notify.RudeEdit", properties, measurements);
+						_telemetry.TrackEvent("notify-rude-edit", properties, measurements);
 						break;
 				}
 
-				properties["hotreload/NewState"] = _globalState.ToString();
-				properties["hotreload/HasCurrentOperation"] = (_current != null).ToString();
-				_telemetry.TrackEvent("HotReload.Notify.Complete", properties, measurements);
+				properties["NewState"] = _globalState.ToString();
+				properties["HasCurrentOperation"] = (_current != null).ToString();
+				_telemetry.TrackEvent("notify-complete", properties, measurements);
 			}
 			catch (Exception ex)
 			{
 				var errorProperties = new Dictionary<string, string>(properties)
 				{
-					["hotreload/ErrorMessage"] = ex.Message,
-					["hotreload/ErrorType"] = ex.GetType().Name
+					["ErrorMessage"] = ex.Message,
+					["ErrorType"] = ex.GetType().Name
 				};
-				_telemetry.TrackEvent("HotReload.Notify.Error", errorProperties, measurements);
+				_telemetry.TrackEvent("notify-error", errorProperties, measurements);
 				throw;
 			}
 		}

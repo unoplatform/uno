@@ -44,6 +44,6 @@ public class ParentProcessObserverTelemetryTests : TelemetryTestBase
 		File.Exists(telemetryFile).Should().BeTrue("telemetry file should exist");
 		var content = await File.ReadAllTextAsync(telemetryFile, CT);
 		var events = ParseTelemetryEvents(content);
-		AssertHasEvent(events, "uno/dev-server/DevServer.ParentProcessLost");
+		AssertHasEvent(events, "uno/dev-server/parent-process-lost");
 	}
 }

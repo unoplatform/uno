@@ -18,7 +18,7 @@ public class AssemblyHelper
 	{
 		var startTime = Stopwatch.GetTimestamp();
 
-		telemetry?.TrackEvent("AddIn.Loading.Start", default(Dictionary<string, string>), null);
+		telemetry?.TrackEvent("addin-loading-start", default(Dictionary<string, string>), null);
 
 		var assemblies = ImmutableList.CreateBuilder<Assembly>();
 		var failedCount = 0;
@@ -50,16 +50,16 @@ public class AssemblyHelper
 			// Track completion
 			var completionProperties = new Dictionary<string, string>
 			{
-				["devserver/AssemblyLoad/Result"] = failedCount == 0 ? "Success" : "PartialFailure",
+				["AssemblyLoadResult"] = failedCount == 0 ? "Success" : "PartialFailure",
 			};
 
 			var completionMeasurements = new Dictionary<string, double>
 			{
-				["devserver/AssemblyLoad/DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["devserver/AssemblyLoad/FailedAssemblies"] = failedCount,
+				["AssemblyLoadDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["AssemblyLoadFailedAssemblies"] = failedCount,
 			};
 
-			telemetry?.TrackEvent("AddIn.Loading.Complete", completionProperties, completionMeasurements);
+			telemetry?.TrackEvent("addin-loading-complete", completionProperties, completionMeasurements);
 
 			return result;
 		}
@@ -67,17 +67,17 @@ public class AssemblyHelper
 		{
 			var errorProperties = new Dictionary<string, string>
 			{
-				["devserver/AssemblyLoad/ErrorMessage"] = ex.Message,
-				["devserver/AssemblyLoad/ErrorType"] = ex.GetType().Name,
+				["AssemblyLoadErrorMessage"] = ex.Message,
+				["AssemblyLoadErrorType"] = ex.GetType().Name,
 			};
 
 			var errorMeasurements = new Dictionary<string, double>
 			{
-				["devserver/AssemblyLoad/DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["devserver/AssemblyLoad/FailedAssembliesCount"] = failedCount,
+				["AssemblyLoadDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["AssemblyLoadFailedAssembliesCount"] = failedCount,
 			};
 
-			telemetry?.TrackEvent("AddIn.Loading.Error", errorProperties, errorMeasurements);
+			telemetry?.TrackEvent("addin-loading-error", errorProperties, errorMeasurements);
 			throw;
 		}
 	}
