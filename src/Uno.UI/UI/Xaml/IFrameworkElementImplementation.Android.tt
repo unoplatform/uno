@@ -362,7 +362,7 @@ namespace <#= mixin.NamespaceName #>
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
-			var newNativeVisibility = newValue == Visibility.Visible ? Android.Views.ViewStates.Visible : Android.Views.ViewStates.Gone;
+			var newNativeVisibility = newValue == Visibility.Visible ? ViewStates.Visible : ViewStates.Gone;
 
 			var bindableView = ((object)this) as Uno.UI.Controls.BindableView;
 

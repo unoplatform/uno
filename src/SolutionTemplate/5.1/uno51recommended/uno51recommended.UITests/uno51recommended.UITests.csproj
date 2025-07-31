@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <TargetFramework>$(DotNetPreviousVersion)</TargetFramework>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 

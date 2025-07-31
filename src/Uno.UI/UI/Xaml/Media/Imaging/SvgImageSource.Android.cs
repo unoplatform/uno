@@ -50,7 +50,7 @@ partial class SvgImageSource
 				// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
 				if (IsContactUri(AbsoluteUri))
 				{
-					if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
+					if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, AUri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
 					{
 						return ImageData.Empty;
 					}

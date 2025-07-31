@@ -35,8 +35,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			// TODO: GPU-bound color animations - https://github.com/unoplatform/uno/issues/2947
 
-			var startingColor = (Android.Graphics.Color)(Color)startingValue;
-			var targetColor = (Android.Graphics.Color)(Color)targetValue;
+			var startingColor = (AColor)(Color)startingValue;
+			var targetColor = (AColor)(Color)targetValue;
 			var valueAnimator = ValueAnimator.OfArgb(startingColor, targetColor);
 			return new NativeValueAnimatorAdapter(valueAnimator);
 		}

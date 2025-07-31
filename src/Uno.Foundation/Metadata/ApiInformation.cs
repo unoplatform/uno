@@ -12,6 +12,11 @@ namespace Windows.Foundation.Metadata;
 /// </summary>
 public partial class ApiInformation
 {
+	const DynamicallyAccessedMemberTypes PublicMembers = DynamicallyAccessedMemberTypes.PublicEvents |
+		DynamicallyAccessedMemberTypes.PublicFields |
+		DynamicallyAccessedMemberTypes.PublicMethods |
+		DynamicallyAccessedMemberTypes.PublicProperties;
+
 	private static HashSet<string> _notImplementedOnce = new HashSet<string>();
 	private static readonly object _gate = new object();
 	private static Dictionary<string, bool> _isTypePresent = new Dictionary<string, bool>();
@@ -38,7 +43,9 @@ public partial class ApiInformation
 
 	private static bool IsImplementedByUno(MemberInfo? member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
 
-	public static bool IsTypePresent(string typeName)
+	public static bool IsTypePresent(
+			[DynamicallyAccessedMembers(PublicMembers)]
+			string typeName)
 	{
 		lock (_gate)
 		{
@@ -56,21 +63,34 @@ public partial class ApiInformation
 		=> IsImplementedByUno(type?.GetMethod(methodName));
 
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetField may return null, normal flow of operation")]
-	public static bool IsMethodPresent(string typeName, string methodName)
+	public static bool IsMethodPresent(
+			[DynamicallyAccessedMembers(PublicMembers)]
+			string typeName,
+			string methodName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetMethod(methodName));
 
-	public static bool IsMethodPresent(string typeName, string methodName, uint inputParameterCount)
+	public static bool IsMethodPresent(
+			[DynamicallyAccessedMembers(PublicMembers)]
+			string typeName,
+			string methodName,
+			uint inputParameterCount)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetMethods()
 			?.FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount));
 
-	internal static bool IsEventPresent(Type type, string methodName)
+	internal static bool IsEventPresent(
+			[DynamicallyAccessedMembers(PublicMembers)]
+			Type type,
+			string methodName)
 		=> IsImplementedByUno(type?.GetEvent(methodName));
 
-	public static bool IsEventPresent(string typeName, string eventName)
+	public static bool IsEventPresent(
+			[DynamicallyAccessedMembers(PublicMembers)]
+			string typeName,
+			string eventName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetEvent(eventName));
@@ -80,12 +100,18 @@ public partial class ApiInformation
 		=> IsImplementedByUno(type?.GetProperty(methodName));
 
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetProperty may return null, normal flow of operation")]
-	public static bool IsPropertyPresent(string typeName, string propertyName)
+	public static bool IsPropertyPresent(
+			[DynamicallyAccessedMembers(PublicMembers)]
+			string typeName,
+			string propertyName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetProperty(propertyName));
 
-	public static bool IsReadOnlyPropertyPresent(string typeName, string propertyName)
+	public static bool IsReadOnlyPropertyPresent(
+			[DynamicallyAccessedMembers(PublicMembers)]
+			string typeName,
+			string propertyName)
 	{
 		var property = GetValidType(typeName)
 			?.GetProperty(propertyName);
@@ -98,7 +124,10 @@ public partial class ApiInformation
 		return false;
 	}
 
-	public static bool IsWriteablePropertyPresent(string typeName, string propertyName)
+	public static bool IsWriteablePropertyPresent(
+			[DynamicallyAccessedMembers(PublicMembers)]
+			string typeName,
+			string propertyName)
 	{
 		var property = GetValidType(typeName)
 			?.GetProperty(propertyName);
@@ -114,7 +143,7 @@ public partial class ApiInformation
 	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetField may return null, normal flow of operation")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetField may return null, normal flow of operation")]
 	public static bool IsEnumNamedValuePresent(
-		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] string enumTypeName,
+		[DynamicallyAccessedMembers(PublicMembers)] string enumTypeName,
 		string valueName)
 		=> GetValidType(enumTypeName)?.GetField(valueName) != null;
 
@@ -134,7 +163,10 @@ public partial class ApiInformation
 	public static LogLevel NotImplementedLogLevel { get; set; } = LogLevel.Debug;
 
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
-	private static Type? GetValidType(string typeName)
+	[return: DynamicallyAccessedMembers(PublicMembers)]
+	private static Type? GetValidType(
+			[DynamicallyAccessedMembers(PublicMembers)]
+			string typeName)
 	{
 		lock (_assemblies)
 		{
@@ -150,7 +182,7 @@ public partial class ApiInformation
 				var assemblyName = parts[1].Trim();
 				var assembly = _assemblies.FirstOrDefault(a => a.FullName?.Split(',')[0] == assemblyName);
 
-				type = assembly?.GetType(fullyQualifierName);
+				type = AssemblyGetType(assembly, fullyQualifierName);
 
 				if (type != null)
 				{
@@ -163,7 +195,7 @@ public partial class ApiInformation
 			{
 				foreach (var assembly in _assemblies)
 				{
-					type = assembly.GetType(typeName);
+					type = AssemblyGetType(assembly, typeName);
 
 					if (type != null)
 					{
@@ -172,6 +204,13 @@ public partial class ApiInformation
 						return type;
 					}
 				}
+			}
+
+			[UnconditionalSuppressMessage("Trimming", "IL2073", Justification = "Assume that if Assembly.GetType() returns an assembly, it is un-trimmed, and thus has everything.")]
+			[return: DynamicallyAccessedMembers(PublicMembers)]
+			Type? AssemblyGetType(Assembly? assembly, string type)
+			{
+				return assembly?.GetType(type);
 			}
 
 			return null;

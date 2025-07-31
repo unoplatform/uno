@@ -36,23 +36,6 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
 
 $projects =
 @(
-    # 5.0 and earlier
-    @(0, "UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Wasm/UnoAppWinUILinuxValidation.Wasm.csproj", @(), @()),
-    @(0, "UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer.csproj", @(), @()),
-
-    # 5.1 Blank
-    @(0, "5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", @(), @()),
-    @(0, "5.1/uno51blank/uno51blank.Skia.WPF/uno51blank.Skia.WPF.csproj", @(), @()),
-    @(0, "5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", @(), @()),
-
-    # 5.1 Recommended
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.WPF/uno51recommended.Skia.WPF.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", @(), @()),
-
     # 5.2 Blank
     @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @(), @()),
 
@@ -76,7 +59,7 @@ $projects =
 
     # 5.3 Blank with net9
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
 
     # 5.3 lib
     @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @()),
@@ -86,7 +69,7 @@ $projects =
 
     # 5.3 blank publish testing
     # Disabled for LXD setup issues
-    # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
+    # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net10.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
 
     # 5.6 Android/ios/Wasm+Skia nuget package first
     @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY/src/PackageCache"), @("CleanNugetTemp","NoBuildClean")),

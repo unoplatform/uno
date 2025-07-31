@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				state.BackgroundDrawable = new GradientDrawable();
 				state.BackgroundDrawable.SetShape(ShapeType.Rectangle);
-				Android.Graphics.Color androidColor = Colors.Transparent;
+				AColor androidColor = Colors.Transparent;
 
 				state.BackgroundDrawable.SetColor(androidColor);
 

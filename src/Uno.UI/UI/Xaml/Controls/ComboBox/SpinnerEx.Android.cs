@@ -5,9 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Android.Widget;
+
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class SpinnerEx : Android.Widget.Spinner
+	public partial class SpinnerEx : Spinner
 	{
 		public event EventHandler<int> IndexClicked;
 

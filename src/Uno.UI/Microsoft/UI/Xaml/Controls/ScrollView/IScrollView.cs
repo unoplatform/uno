@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
+
 internal interface IScrollView
 {
 	Visibility ComputedHorizontalScrollBarVisibility { get; }
