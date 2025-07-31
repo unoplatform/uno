@@ -63,7 +63,7 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 				return;
 			}
 
-			 // Check for anchor navigation first, before processing as a regular navigation
+			// Check for anchor navigation first, before processing as a regular navigation
 			if (requestUrl != null && GetIsAnchorNavigation(requestUrl))
 			{
 				unoWKWebView.OnAnchorNavigation(requestUrl);
