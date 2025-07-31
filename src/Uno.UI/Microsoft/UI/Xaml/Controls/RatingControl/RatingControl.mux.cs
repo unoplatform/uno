@@ -27,9 +27,10 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class RatingControl
 {
 #if __SKIA__ // TODO Uno: Expression animation is only supported on Skia
-	private const float c_horizontalScaleAnimationCenterPoint = 0.5f;
+	private const float c_scaleAnimationCenterPoint = 0.5f;
+#else
+	private const float c_scaleAnimationCenterPoint = 0.8f;
 #endif
-	private const float c_verticalScaleAnimationCenterPoint = 0.8f;
 	private readonly Thickness c_focusVisualMargin = new Thickness(-8, -7, -8, 0);
 	private const int c_defaultRatingFontSizeForRendering = 32; // (32 = 2 * [default fontsize] -- because of double size rendering), remove when MSFT #10030063 is done
 	private const int c_defaultItemSpacing = 8;
@@ -135,14 +136,14 @@ partial class RatingControl
 	private void UpdateCaptionMargins()
 	{
 		// We manually set margins to caption text to make it center-aligned with the stars
-		// because star vertical center is 0.8 instead of the normal 0.5.
+		// because star vertical center is rendered as 0.8 on native instead of the normal 0.5.
 		// When text scale changes we need to update top margin to make the text follow start center.
 		var captionTextBlock = m_captionTextBlock;
 		if (captionTextBlock != null)
 		{
 			double textScaleFactor = GetUISettings().TextScaleFactor;
 			Thickness margin = captionTextBlock.Margin;
-			margin.Top = c_defaultCaptionTopMargin - (ActualRatingFontSize() * c_verticalScaleAnimationCenterPoint);
+			margin.Top = c_defaultCaptionTopMargin - (ActualRatingFontSize() * c_scaleAnimationCenterPoint);
 
 			captionTextBlock.Margin(margin);
 		}
@@ -398,9 +399,10 @@ partial class RatingControl
 		uiElementVisual.StartAnimation("Scale.X", ea);
 		uiElementVisual.StartAnimation("Scale.Y", ea);
 
-		// Star size = 16. 0.5 and 0.8 are just arbitrary center point chosen in design spec
+		// Star size = 16. 0.5 is just arbitrary center point chosen in design spec
 		// 32 = star size * 2 because of the rendering at double size we do
-		uiElementVisual.CenterPoint = new Vector3(c_defaultRatingFontSizeForRendering * c_horizontalScaleAnimationCenterPoint, c_defaultRatingFontSizeForRendering * c_verticalScaleAnimationCenterPoint, 0.0f);
+		var scaledStarSize = c_defaultRatingFontSizeForRendering * c_scaleAnimationCenterPoint;
+		uiElementVisual.AnchorPoint = new Vector2(scaledStarSize);
 #endif
 	}
 
@@ -438,7 +440,7 @@ partial class RatingControl
 			if (image != null)
 			{
 				image.Source = GetAppropriateImageSource(type);
-				image.Width = RenderingRatingFontSize(); // 
+				image.Width = RenderingRatingFontSize(); //
 				image.Height = RenderingRatingFontSize(); // MSFT #10030063 Replacing with Rating size DPs
 			}
 		}
