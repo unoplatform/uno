@@ -47,13 +47,13 @@ internal partial class VisualTree : IWeakReferenceProvider
 			{
 				return VisibleBoundsOverride.Value;
 			}
-			else if (RootElement is XamlIslandRoot { OwnerWindow: { } ownerWindow })
+			else if (Windows.ApplicationModel.Core.CoreApplication.IsFullFledgedApp)
 			{
 				return _visibleBounds;
 			}
 			else
 			{
-				// For Uno islands, always return the full size.
+				// For Uno islands, return the full size.
 				return new Rect(0, 0, Size.Width, Size.Height);
 			}
 		}
