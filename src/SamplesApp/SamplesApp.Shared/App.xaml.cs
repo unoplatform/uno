@@ -71,7 +71,7 @@ namespace SamplesApp
 		private static Microsoft.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
-#if __SKIA__
+#if __SKIA__ && !UNO_ISLANDS
 		private bool _gotOnLaunched;
 #endif
 
@@ -106,7 +106,7 @@ namespace SamplesApp
 			this.Suspending += OnSuspending;
 			this.Resuming += OnResuming;
 #endif
-#if __SKIA__
+#if __SKIA__ && !UNO_ISLANDS
 			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low, () =>
 			{
 				Assert.IsTrue(_gotOnLaunched);
@@ -127,7 +127,7 @@ namespace SamplesApp
 #endif
 		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ && !UNO_ISLANDS
 			_gotOnLaunched = true;
 #endif
 			EnsureMainWindow();
