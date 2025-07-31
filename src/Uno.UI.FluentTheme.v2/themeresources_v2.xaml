@@ -20727,16 +20727,23 @@
     </Setter>
   </Style>
   <Style TargetType="controls:RatingControl">
-    <Setter Property="Height" Value="32" />
+    <Setter Property="MinHeight" Value="32" />
     <!-- 9794813: retire these two properties as customisation points once all resource keys available -->
     <Setter Property="Foreground" Value="{ThemeResource RatingControlCaptionForeground}" />
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
     <Setter Property="ItemInfo" Value="{ThemeResource MUX_RatingControlDefaultFontInfo}" />
+    <!-- I've picked values so that these LOOK like the redlines, but these
+         values are not actually from the redlines because the redlines don't
+         consistently pick "distance from glyph"/"distance from edge of textbox"
+         so it's not possible to actually just have a consistent sizing model
+         here based on the redlines. -->
+    <Setter Property="FocusVisualMargin" Value="-8,-7,-8,0" />
+    <Setter Property="IsFocusEngagementEnabled" Value="True" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:RatingControl">
-          <Grid x:Name="LayoutRoot">
+          <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Disabled">
@@ -20771,19 +20778,26 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="-20,-20,-20,-20">
-              <StackPanel x:Name="RatingBackgroundStackPanel" Orientation="Horizontal" Background="Transparent" Margin="20,20,0,20" />
-              <TextBlock x:Name="Caption" Height="32" Margin="4,9,20,0" TextLineBounds="TrimToBaseline" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource RatingControlCaptionForeground}" VerticalAlignment="Center" IsHitTestVisible="False" AutomationProperties.AccessibilityView="Raw" AutomationProperties.Name="RatingCaption" Text="{TemplateBinding Caption}" />
+            <StackPanel x:Name="CaptionStackPanel" Orientation="Horizontal" Grid.Row="0" Margin="-20,-20,-20,-20">
+              <StackPanel x:Name="RatingBackgroundStackPanel" Orientation="Horizontal" Background="Transparent" Margin="20,20,0,20">
+                <StackPanel.RenderTransform>
+                  <TranslateTransform x:Name="RatingBackgroundStackPanelTranslateTransform" />
+                </StackPanel.RenderTransform>
+              </StackPanel>
+              <TextBlock x:Name="Caption" Margin="4,0,20,0" TextLineBounds="Tight" FontSize="12" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" IsHitTestVisible="False" AutomationProperties.AccessibilityView="Raw" AutomationProperties.Name="RatingCaption" Text="{TemplateBinding Caption}" />
               <!-- 4 = 8 item spacing +4 of magic redline spacing -8 to compensate for scale of the last RatingItem -->
               <!-- NB: The redlines say 8px, but it's really 12 px because:
                                 Designer note: The value between the last glyph and first text character is 12px.
                                 (There's 4px of whitespace accounted for in the text area in the redline) -->
-              <!-- TODO MSFT: 9925444 Fix vertical alignment in all text scenarios -->
             </StackPanel>
             <ContentPresenter x:Name="ForegroundContentPresenter" IsHitTestVisible="False" Grid.Row="0">
               <!-- Margin is on the StackPanel because ContentPresenter clips differently such that moving the reverse margin up won't work -->
               <StackPanel Orientation="Horizontal" Margin="-40,-40,-40,-40">
-                <StackPanel x:Name="RatingForegroundStackPanel" Orientation="Horizontal" IsHitTestVisible="False" Margin="40,40,40,40" />
+                <StackPanel x:Name="RatingForegroundStackPanel" Orientation="Horizontal" IsHitTestVisible="False" Margin="40,40,40,40">
+                  <StackPanel.RenderTransform>
+                    <TranslateTransform x:Name="RatingForegroundStackPanelTranslateTransform" />
+                  </StackPanel.RenderTransform>
+                </StackPanel>
               </StackPanel>
             </ContentPresenter>
           </Grid>
@@ -20791,13 +20805,16 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <x:Double x:Key="RatingControlFontSizeForRendering">32</x:Double>
+  <x:Double x:Key="RatingControlItemSpacing">8</x:Double>
+  <x:Double x:Key="RatingControlCaptionTopMargin">-12.5</x:Double>
   <DataTemplate x:Key="BackgroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
-    <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="32" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
+    <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="{StaticResource RatingControlFontSizeForRendering}" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
   </DataTemplate>
   <DataTemplate x:Key="ForegroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
-    <TextBlock Margin="-8,-8,0,0" FontSize="32" Text="&#xE735;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
+    <TextBlock Margin="-8,-8,0,0" FontSize="{StaticResource RatingControlFontSizeForRendering}" Text="&#xE735;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
   </DataTemplate>
   <DataTemplate x:Key="BackgroundImageDefaultTemplate">
     <Image Margin="-8,-8,0,0" AutomationProperties.AccessibilityView="Raw" />

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference RatingControl.cpp, tag winui3/release/1.5.3, commit 2a60e27c591846556fa9ec4d8f305afdf0f96dc1
+// MUX Reference RatingControl.cpp, tag winui3/release/1.7.3, commit 65718e2813a90f
 
 using System;
 using Uno.UI.Helpers.WinUI;
@@ -27,21 +27,21 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class RatingControl
 {
 #if __SKIA__ // TODO Uno: Expression animation is only supported on Skia
-	private const float c_horizontalScaleAnimationCenterPoint = 0.5f;
+	private const float c_scaleAnimationCenterPointXValue = 16.0f;
+	private const float c_scaleAnimationCenterPointYValue = 16.0f;
 #endif
-	private const float c_verticalScaleAnimationCenterPoint = 0.8f;
-	private readonly Thickness c_focusVisualMargin = new Thickness(-8, -7, -8, 0);
-	private const int c_defaultRatingFontSizeForRendering = 32; // (32 = 2 * [default fontsize] -- because of double size rendering), remove when MSFT #10030063 is done
-	private const int c_defaultItemSpacing = 8;
+
+	private const int c_captionSpacing = 12;
 
 	private const float c_mouseOverScale = 0.8f;
 	// private const float c_touchOverScale = 1.0f; // Unused even in WinUI code
 	private const float c_noPointerOverMagicNumber = -100;
 
-	// 22 = 20(compensate for the -20 margin on StackPanel) + 2(magic number makes the text and star center-aligned)
-	private const float c_defaultCaptionTopMargin = 22;
-
 	private const int c_noValueSetSentinel = -1;
+
+	private const string c_fontSizeForRenderingKey = "RatingControlFontSizeForRendering";
+	private const string c_itemSpacingKey = "RatingControlItemSpacing";
+	private const string c_captionTopMarginKey = "RatingControlCaptionTopMargin";
 
 	/// <summary>
 	/// Initializes a new instance of the RatingControl class.
@@ -108,13 +108,13 @@ partial class RatingControl
 	// RecycleEvents(true /* useSafeGet */);
 	//}
 
-	private float RenderingRatingFontSize()
+	private double RenderingRatingFontSize()
 	{
 		// MSFT #10030063 Replacing with Rating size DPs
-		return (float)(c_defaultRatingFontSizeForRendering * GetUISettings().TextScaleFactor);
+		return m_scaledFontSizeForRendering;
 	}
 
-	private float ActualRatingFontSize()
+	private double ActualRatingFontSize()
 	{
 		return RenderingRatingFontSize() / 2;
 	}
@@ -122,30 +122,9 @@ partial class RatingControl
 	// TODO MSFT #10030063: Convert to itemspacing DP
 	private double ItemSpacing()
 	{
-		// Stars are rendered 2x size and we use expression animation to shrink them down to desired size,
-		// which will create those spacings (not system margin).
-		// Since text scale factor won't affect system margins,
-		// when stars get bigger, the spacing will become smaller.
-		// Therefore we should include TextScaleFactor when calculating item spacing
-		// in order to get correct total width and star center positions.
-		double defaultFontSize = c_defaultRatingFontSizeForRendering / 2;
-		return c_defaultItemSpacing - (GetUISettings().TextScaleFactor - 1.0) * defaultFontSize / 2;
-	}
+		EnsureResourcesLoaded();
 
-	private void UpdateCaptionMargins()
-	{
-		// We manually set margins to caption text to make it center-aligned with the stars
-		// because star vertical center is 0.8 instead of the normal 0.5.
-		// When text scale changes we need to update top margin to make the text follow start center.
-		var captionTextBlock = m_captionTextBlock;
-		if (captionTextBlock != null)
-		{
-			double textScaleFactor = GetUISettings().TextScaleFactor;
-			Thickness margin = captionTextBlock.Margin;
-			margin.Top = c_defaultCaptionTopMargin - (ActualRatingFontSize() * c_verticalScaleAnimationCenterPoint);
-
-			captionTextBlock.Margin(margin);
-		}
+		return m_itemSpacing;
 	}
 
 	protected override void OnApplyTemplate()
@@ -155,12 +134,16 @@ partial class RatingControl
 		// Retrieve pointers to stable controls 
 		//IControlProtected thisAsControlProtected = this;
 
+		if (GetTemplateChild<StackPanel>("CaptionStackPanel") is StackPanel captionStackPanel)
+		{
+			m_captionStackPanel = captionStackPanel;
+		}
+
 		var captionTextBlock = (TextBlock)GetTemplateChild("Caption");
 		if (captionTextBlock != null)
 		{
 			m_captionTextBlock = captionTextBlock;
 			captionTextBlock.SizeChanged += OnCaptionSizeChanged;
-			UpdateCaptionMargins();
 		}
 
 		var backgroundStackPanel = (StackPanel)GetTemplateChild("RatingBackgroundStackPanel");
@@ -179,20 +162,15 @@ partial class RatingControl
 
 		m_foregroundStackPanel = (StackPanel)GetTemplateChild("RatingForegroundStackPanel");
 
+		m_backgroundStackPanelTranslateTransform = GetTemplateChild<TranslateTransform>("RatingBackgroundStackPanelTranslateTransform");
+		m_foregroundStackPanelTranslateTransform = GetTemplateChild<TranslateTransform>("RatingForegroundStackPanelTranslateTransform");
+
 		// FUTURE: Ideally these would be in template overrides:
 
 		// IsFocusEngagementEnabled means the control has to be "engaged" with 
 		// using the A button before it actually receives key input from gamepad.
 		FocusEngaged += OnFocusEngaged;
 		FocusDisengaged += OnFocusDisengaged;
-		IsFocusEngagementEnabled = true;
-
-		// I've picked values so that these LOOK like the redlines, but these
-		// values are not actually from the redlines because the redlines don't
-		// consistently pick "distance from glyph"/"distance from edge of textbox"
-		// so it's not possible to actually just have a consistent sizing model
-		// here based on the redlines.
-		FocusVisualMargin = c_focusVisualMargin;
 
 		IsEnabledChanged += OnIsEnabledChanged;
 		m_fontFamilyChangedToken = RegisterPropertyChangedCallback(Control.FontFamilyProperty, OnFontFamilyChanged);
@@ -206,7 +184,6 @@ partial class RatingControl
 		m_sharedPointerPropertySet.InsertScalar("pointerScalar", c_mouseOverScale);
 
 		StampOutRatingItems();
-		GetUISettings().TextScaleFactorChanged += OnTextScaleFactorChanged;
 	}
 
 	private double CoerceValueBetweenMinAndMax(double value)
@@ -246,6 +223,31 @@ partial class RatingControl
 			return;
 		}
 
+
+		// Before anything else, we need to retrieve the scaled font size.
+		// Note that this is NOT the font size multiplied by the font scale factor,
+		// as large font sizes are scaled less than small font sizes.
+		// There isn't an API to retrieve this, so in lieu of that, we'll create a TextBlock
+		// with the desired properties, measure it at infinity, and see what its desired width is.
+
+		if (IsItemInfoPresentAndFontInfo())
+		{
+			EnsureResourcesLoaded();
+
+			var textBlock = new TextBlock();
+			textBlock.FontFamily = FontFamily;
+			textBlock.Text = GetAppropriateGlyph(RatingControlStates.Set);
+			textBlock.FontSize = m_fontSizeForRendering;
+			textBlock.Measure(new(double.PositiveInfinity, double.PositiveInfinity));
+			m_scaledFontSizeForRendering = textBlock.DesiredSize.Width;
+		}
+		else if (IsItemInfoPresentAndImageInfo())
+		{
+			// If we're using images rather than glyphs, then there's no text scaling
+			// that will be happening.
+			m_scaledFontSizeForRendering = m_fontSizeForRendering;
+		}
+
 		// Background initialization:
 
 		m_backgroundStackPanel.Children.Clear();
@@ -270,6 +272,50 @@ partial class RatingControl
 			PopulateStackPanelWithItems("ForegroundImageDefaultTemplate", m_foregroundStackPanel, RatingControlStates.Set);
 		}
 
+		// The scale transform and margin cause the stars to be positioned at the top of the RatingControl.
+		// We want them in the middle, so to achieve that, we'll additionally apply a y-transform that will
+		// put the center of the stars in the center of the RatingControl.
+		var yTranslation = (ActualHeight - ActualRatingFontSize()) / 2;
+
+		if (m_backgroundStackPanelTranslateTransform is { } backgroundStackPanelTranslateTransform)
+		{
+			backgroundStackPanelTranslateTransform.Y = yTranslation;
+		}
+
+		if (m_foregroundStackPanelTranslateTransform is { } foregroundStackPanelTranslateTransform)
+		{
+			foregroundStackPanelTranslateTransform.Y = yTranslation;
+		}
+
+		// If we have at least one item, we'll use the first item of the foreground stack panel as a representative element to determine some values.
+		if (MaxRating >= 1)
+		{
+			var firstItem = (UIElement)m_foregroundStackPanel.Children[0];
+			firstItem.Measure(new(double.PositiveInfinity, double.PositiveInfinity));
+			var defaultItemSpacing = firstItem.DesiredSize.Width - ActualRatingFontSize();
+			var netItemSpacing = ItemSpacing() - defaultItemSpacing;
+
+			// We want the caption to be a set distance away from the right-hand side of the last item,
+			// so we'll give it a left margin that accounts for the built-in item spacing.
+			if (m_captionTextBlock is { } captionTextBlock)
+			{
+				var margin = captionTextBlock.Margin;
+				margin.Left = c_captionSpacing - defaultItemSpacing;
+				captionTextBlock.Margin(margin);
+			}
+
+			// If we have at least two items, we'll need to apply the item spacing.
+			// We'll calculate the default item spacing using the first item, and then
+			// subtract it from the desired item spacing to get the Spacing property
+			// to apply to the stack panels.
+			if (MaxRating >= 2)
+			{
+				m_backgroundStackPanel.Spacing = netItemSpacing;
+				m_foregroundStackPanel.Spacing = netItemSpacing;
+			}
+		}
+
+
 		UpdateRatingItemsAppearance();
 	}
 
@@ -278,7 +324,7 @@ partial class RatingControl
 		var captionTextBlock = m_captionTextBlock;
 		if (captionTextBlock != null)
 		{
-			ResetControlWidth();
+			ResetControlSize();
 		}
 	}
 
@@ -339,8 +385,8 @@ partial class RatingControl
 			foreach (var uiElement in m_foregroundStackPanel.Children)
 			{
 				// Handle clips on stars
-				float width = RenderingRatingFontSize();
-				if (i + 1 > value)
+				var width = RenderingRatingFontSize();
+				if ((double)i + 1 > value)
 				{
 					if (i < value)
 					{
@@ -367,7 +413,7 @@ partial class RatingControl
 				i++;
 			}
 
-			ResetControlWidth();
+			ResetControlSize();
 		}
 	}
 
@@ -398,9 +444,9 @@ partial class RatingControl
 		uiElementVisual.StartAnimation("Scale.X", ea);
 		uiElementVisual.StartAnimation("Scale.Y", ea);
 
-		// Star size = 16. 0.5 and 0.8 are just arbitrary center point chosen in design spec
-		// 32 = star size * 2 because of the rendering at double size we do
-		uiElementVisual.CenterPoint = new Vector3(c_defaultRatingFontSizeForRendering * c_horizontalScaleAnimationCenterPoint, c_defaultRatingFontSizeForRendering * c_verticalScaleAnimationCenterPoint, 0.0f);
+		EnsureResourcesLoaded();
+
+		uiElementVisual.CenterPoint = new(c_scaleAnimationCenterPointXValue, c_scaleAnimationCenterPointYValue, 0.0f);
 #endif
 	}
 
@@ -408,6 +454,8 @@ partial class RatingControl
 	{
 		object lookup = Application.Current.Resources.Lookup(templateName);
 		var dt = lookup as DataTemplate;
+
+		EnsureResourcesLoaded();
 
 		for (int i = 0; i < MaxRating; i++)
 		{
@@ -430,6 +478,7 @@ partial class RatingControl
 			{
 				textBlock.FontFamily = FontFamily;
 				textBlock.Text = GetAppropriateGlyph(type);
+				textBlock.FontSize = m_fontSizeForRendering;
 			}
 		}
 		else if (IsItemInfoPresentAndImageInfo())
@@ -438,8 +487,8 @@ partial class RatingControl
 			if (image != null)
 			{
 				image.Source = GetAppropriateImageSource(type);
-				image.Width = RenderingRatingFontSize(); // 
-				image.Height = RenderingRatingFontSize(); // MSFT #10030063 Replacing with Rating size DPs
+				image.Width = m_fontSizeForRendering; // 
+				image.Height = m_fontSizeForRendering; // MSFT #10030063 Replacing with Rating size DPs
 			}
 		}
 		else
@@ -539,11 +588,10 @@ partial class RatingControl
 		return image;
 	}
 
-	private void ResetControlWidth()
+	private void ResetControlSize()
 	{
-		double newWidth = CalculateTotalRatingControlWidth();
-		Control thisAsControl = this;
-		thisAsControl.Width = newWidth;
+		Width = CalculateTotalRatingControlWidth();
+		Height = m_fontSizeForRendering;
 	}
 
 	private void ChangeRatingBy(double change, bool originatedFromMouse)
@@ -806,7 +854,12 @@ partial class RatingControl
 
 	private void OnCaptionSizeChanged(object sender, SizeChangedEventArgs args)
 	{
-		ResetControlWidth();
+		// The caption's size changing means that the text scale factor has been updated and applied.
+		// As such, we should re-run sizing and layout when this occurs.
+		m_scaledFontSizeForRendering = -1;
+
+		StampOutRatingItems();
+		ResetControlSize();
 	}
 
 	private void OnPointerCancelledBackgroundStackPanel(object sender, PointerRoutedEventArgs args)
@@ -828,13 +881,16 @@ partial class RatingControl
 	{
 		if (!IsReadOnly)
 		{
-			var point = args.GetCurrentPoint(m_backgroundStackPanel);
-			float xPosition = (float)point.Position.X;
+			if (m_backgroundStackPanel is { } backgroundStackPanel)
+			{
+				var point = args.GetCurrentPoint(backgroundStackPanel);
+				var xPosition = point.Position.X;
 
-			m_mousePercentage = (double)(xPosition) / CalculateActualRatingWidth();
+				m_mousePercentage = (xPosition - m_firstItemOffset) / CalculateActualRatingWidth();
 
-			UpdateRatingItemsAppearance();
-			args.Handled = true;
+				UpdateRatingItemsAppearance();
+				args.Handled = true;
+			}
 		}
 	}
 
@@ -843,6 +899,17 @@ partial class RatingControl
 		if (!IsReadOnly)
 		{
 			m_isPointerOver = true;
+
+			if (m_backgroundStackPanel is { } backgroundStackPanel)
+			{
+				if (MaxRating >= 1)
+				{
+					var firstItem = (UIElement)backgroundStackPanel.Children[0];
+					var firstItemOffsetPoint = firstItem.TransformToVisual(backgroundStackPanel).TransformPoint(new(0, 0));
+					m_firstItemOffset = firstItemOffsetPoint.X;
+				}
+			}
+
 			args.Handled = true;
 		}
 	}
@@ -913,23 +980,20 @@ partial class RatingControl
 
 	private double CalculateTotalRatingControlWidth()
 	{
-		double ratingStarsWidth = CalculateActualRatingWidth();
-		var captionAsWinRT = (string)GetValue(CaptionProperty);
-		double textSpacing = 0.0;
+		double totalWidth = CalculateActualRatingWidth();
 
-		if (captionAsWinRT?.Length > 0)
+		// If we have a non-empty caption, we also need to account for both its width and the spacing that comes before it.
+		if (m_captionTextBlock is { } captionTextBlock)
 		{
-			textSpacing = ItemSpacing();
+			var captionAsWinRT = (string)GetValue(CaptionProperty);
+
+			if (!string.IsNullOrEmpty(captionAsWinRT))
+			{
+				totalWidth += c_captionSpacing + captionTextBlock.ActualWidth;
+			}
 		}
 
-		double captionWidth = 0.0;
-
-		if (m_captionTextBlock != null)
-		{
-			captionWidth = m_captionTextBlock.ActualWidth;
-		}
-
-		return ratingStarsWidth + textSpacing + captionWidth;
+		return totalWidth;
 	}
 
 #if __SKIA__ // TODO Uno: Expression animation is only supported on Skia
@@ -947,7 +1011,7 @@ partial class RatingControl
 		// TODO: MSFT replace hardcoding
 		// MSFT #10030063
 		// (max rating * rating size) + ((max rating - 1) * item spacing)
-		return (MaxRating * ActualRatingFontSize()) + ((MaxRating - 1) * ItemSpacing());
+		return ((double)MaxRating * ActualRatingFontSize()) + (((double)MaxRating - 1) * ItemSpacing());
 	}
 
 	// IControlOverrides
@@ -1173,24 +1237,54 @@ partial class RatingControl
 		IsEnabledChanged -= OnIsEnabledChanged;
 	}
 
-	private void OnTextScaleFactorChanged(UISettings setting, object args)
+	private void EnsureResourcesLoaded()
 	{
-		// OnTextScaleFactorChanged happens in non-UI thread, use dispatcher to call StampOutRatingItems in UI thread.
-		var strongThis = this;
-
-		m_dispatcherHelper.RunAsync(() =>
+		if (!m_resourcesLoaded)
 		{
-			strongThis.StampOutRatingItems();
-			strongThis.UpdateCaptionMargins();
-		});
-	}
+			var fontSizeForRenderingKey = c_fontSizeForRenderingKey;
+			var itemSpacingKey = c_itemSpacingKey;
+			var captionTopMarginKey = c_captionTopMarginKey;
 
+			if (Resources.HasKey(fontSizeForRenderingKey))
+			{
+				m_fontSizeForRendering = (double)Resources.Lookup(fontSizeForRenderingKey);
+			}
+			else if (Application.Current.Resources.HasKey(fontSizeForRenderingKey))
+			{
+				m_fontSizeForRendering = (double)Application.Current.Resources.Lookup(fontSizeForRenderingKey);
+			}
+			else
+			{
+				m_fontSizeForRendering = c_defaultFontSizeForRendering;
+			}
 
-	private UISettings _uiSettings;
+			if (Resources.HasKey(itemSpacingKey))
+			{
+				m_itemSpacing = (double)Resources.Lookup(itemSpacingKey);
+			}
+			else if (Application.Current.Resources.HasKey(itemSpacingKey))
+			{
+				m_itemSpacing = (double)Application.Current.Resources.Lookup(itemSpacingKey);
+			}
+			else
+			{
+				m_itemSpacing = c_defaultItemSpacing;
+			}
 
-	private UISettings GetUISettings()
-	{
-		_uiSettings = _uiSettings ?? new UISettings();
-		return _uiSettings;
+			if (Resources.HasKey(captionTopMarginKey))
+			{
+				m_captionTopMargin = (double)Resources.Lookup(captionTopMarginKey);
+			}
+			else if (Application.Current.Resources.HasKey(captionTopMarginKey))
+			{
+				m_captionTopMargin = (double)Application.Current.Resources.Lookup(captionTopMarginKey);
+			}
+			else
+			{
+				m_captionTopMargin = c_defaultCaptionTopMargin;
+			}
+
+			m_resourcesLoaded = true;
+		}
 	}
 }
