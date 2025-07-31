@@ -63,7 +63,15 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 				return;
 			}
 
-			// For link activations, always check navigation start
+			// Check for anchor navigation first, before processing as a regular navigation
+			if (requestUrl != null && GetIsAnchorNavigation(requestUrl))
+			{
+				unoWKWebView.OnAnchorNavigation(requestUrl);
+				decisionHandler(WKNavigationActionPolicy.Allow);
+				return;
+			}
+
+			// For link activations, check navigation start for non-anchor navigations
 			if (navigationAction.NavigationType == WKNavigationType.LinkActivated)
 			{
 				if (unoWKWebView.OnStarted(requestUrl, stopLoadingOnCanceled: true))
@@ -71,14 +79,6 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 					decisionHandler(WKNavigationActionPolicy.Cancel);
 					return;
 				}
-			}
-
-			// If this is an anchor navigation, handle it specially
-			if (requestUrl != null && GetIsAnchorNavigation(requestUrl))
-			{
-				unoWKWebView.OnAnchorNavigation(requestUrl);
-				decisionHandler(WKNavigationActionPolicy.Allow);
-				return;
 			}
 
 			// For all other cases, allow the navigation
