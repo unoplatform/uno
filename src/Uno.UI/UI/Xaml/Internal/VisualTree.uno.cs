@@ -41,7 +41,22 @@ internal partial class VisualTree : IWeakReferenceProvider
 
 	internal Rect VisibleBounds
 	{
-		get => VisibleBoundsOverride ?? _visibleBounds;
+		get
+		{
+			if (VisibleBoundsOverride is not null)
+			{
+				return VisibleBoundsOverride.Value;
+			}
+			else if (RootElement is XamlIslandRoot { OwnerWindow: { } ownerWindow })
+			{
+				return _visibleBounds;
+			}
+			else
+			{
+				// For Uno islands, always return the full size.
+				return new Rect(0, 0, Size.Width, Size.Height);
+			}
+		}
 		set
 		{
 			if (_visibleBounds != value)
