@@ -1,13 +1,13 @@
-﻿using SkiaSharp;
-using MUX = Microsoft.UI.Xaml;
-using Uno.Foundation.Logging;
-using Windows.Graphics.Display;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
-using Uno.UI.Hosting;
-using System.Diagnostics;
-using Uno.UI.Helpers;
+using System.Threading;
 using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
+using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
+using Uno.UI.Hosting;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -33,6 +33,8 @@ internal partial class BrowserRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
 	private SKCanvas? _canvas;
+	private SKPicture? _picture;
+	private SKPath? _clipPath;
 
 	private SKSizeI? _lastSize;
 
@@ -60,17 +62,31 @@ internal partial class BrowserRenderer
 		_jsInfo = NativeMethods.CreateContext(this, _nativeSwapChainPanel, WebAssemblyWindowWrapper.Instance?.CanvasId ?? "invalid");
 	}
 
-	internal void InvalidateRender() => NativeMethods.Invalidate(_nativeSwapChainPanel);
+	internal void InvalidateRender()
+	{
+		if (_host.RootElement is not { } rootElement || (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			// Try again next tick
+			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
+			return;
+		}
+
+		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
+			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width),
+			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height),
+			rootElement.Visual,
+			invertPath: false);
+		_host.RootElement?.XamlRoot?.InvokeFramePainted();
+
+		Interlocked.Exchange(ref _picture, picture);
+		Interlocked.Exchange(ref _clipPath, path);
+
+		NativeMethods.Invalidate(_nativeSwapChainPanel);
+	}
 
 	private void RenderFrame()
 	{
 		using var _ = _fpsHelper.BeginFrame();
-
-		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
-		{
-			InvalidateRender();
-			return;
-		}
 
 		if (!_jsInfo.IsValid)
 		{
@@ -134,21 +150,21 @@ internal partial class BrowserRenderer
 			}
 		}
 
+		var currentPicture = _picture;
+		var currentClipPath = _clipPath;
+
 		using (new SKAutoCanvasRestore(_canvas, true))
 		{
 			_surface.Canvas.Clear(SKColors.Transparent);
 			_surface.Canvas.Scale((float)scale);
-			if (_host.RootElement?.Visual is { } rootVisual)
-			{
-				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(_renderTarget.Width, _renderTarget.Height, rootVisual, _canvas);
-				_fpsHelper.DrawFps(_canvas);
-				// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
-				// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
-				// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
-				negativePath.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), negativePath);
-				BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!negativePath.IsEmpty ? negativePath.ToSvgPathData() : "");
-				_host.RootElement?.XamlRoot?.InvokeFramePainted();
-			}
+			_surface.Canvas.DrawPicture(currentPicture);
+			_fpsHelper.DrawFps(_canvas);
+
+			// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
+			// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
+			// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
+			currentClipPath?.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), currentClipPath);
+			BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(currentClipPath is not null && !currentClipPath.IsEmpty ? currentClipPath.ToSvgPathData() : "");
 		}
 
 		// update the control
