@@ -7,41 +7,52 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper
 {
+	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, ContainerVisual rootVisual, bool invertPath)
+	{
+		using var recorder = new SKPictureRecorder();
+		using var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+		using var _ = new SKAutoCanvasRestore(canvas, true);
+		canvas.Clear(SKColors.Transparent);
+		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, canvas, invertPath);
+		var picture = recorder.EndRecording();
+
+		return (picture, path);
+	}
+
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
 	/// Takes the current TotalMatrix of the surface's canvas into account
 	/// </summary>
-	public static SKPath RenderRootVisualAndReturnNegativePath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
+	public static SKPath RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas, bool invertPath)
 	{
 		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
-		if (!ContentPresenter.HasNativeElements())
+		SKPath outPath = new SKPath();
+		if (ContentPresenter.HasNativeElements())
 		{
-			return new SKPath();
+			var parentClipPath = new SKPath();
+			parentClipPath.AddRect(new SKRect(0, 0, width, height));
+			rootVisual.GetNativeViewPath(parentClipPath, outPath);
+			outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
 		}
-		var parentClipPath = new SKPath();
-		parentClipPath.AddRect(new SKRect(0, 0, width, height));
-		var outPath = new SKPath();
-		rootVisual.GetNativeViewPath(parentClipPath, outPath);
-		outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
-		return outPath;
-	}
 
-	/// <summary>
-	/// Does a rendering cycle and returns a path that represents the total area that was drawn
-	/// minus the native view areas.
-	/// </summary>
-	public static SKPath RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
-	{
-		var outPath = new SKPath();
-		outPath.AddRect(new SKRect(0, 0, width, height));
-		outPath.Transform(canvas.TotalMatrix, outPath);
-		outPath.Op(RenderRootVisualAndReturnNegativePath(width, height, rootVisual, canvas), SKPathOp.Difference, outPath);
-		return outPath;
+		if (invertPath)
+		{
+			var invertedPath = new SKPath();
+			invertedPath.AddRect(new SKRect(0, 0, width, height));
+			invertedPath.Transform(canvas.TotalMatrix, invertedPath);
+			invertedPath.Op(outPath, SKPathOp.Difference, invertedPath);
+			return invertedPath;
+		}
+		else
+		{
+			return outPath;
+		}
 	}
 
 	public class FpsHelper
