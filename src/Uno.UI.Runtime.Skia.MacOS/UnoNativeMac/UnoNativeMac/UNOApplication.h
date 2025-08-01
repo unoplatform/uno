@@ -23,6 +23,9 @@ bool uno_application_open_url(const char *url);
 bool uno_application_query_url_support(const char *url);
 bool uno_application_is_bundled(void);
 
+typedef void (*application_start_fn_ptr)(void);
+application_start_fn_ptr uno_get_application_start_callback(void);
+
 typedef bool (*application_can_exit_fn_ptr)(void);
 application_can_exit_fn_ptr uno_get_application_can_exit_callback(void);
 void uno_set_application_can_exit_callback(application_can_exit_fn_ptr p);
