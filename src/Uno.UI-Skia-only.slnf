@@ -18,6 +18,7 @@
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Skia.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Wasm.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Windows.csproj",
+      "AddIns\\Uno.UI.MSAL.Runtime.Skia\\Uno.UI.MSAL.Runtime.Skia.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.netcoremobile.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Reference.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Skia.csproj",
