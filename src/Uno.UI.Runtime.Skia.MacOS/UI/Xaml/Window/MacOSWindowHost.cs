@@ -34,6 +34,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly GRContext? _context;
 	private SKBitmap? _bitmap;
 	private SKSurface? _surface;
+	private SKPicture? _picture;
 	private int _rowBytes;
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
@@ -81,42 +82,23 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		SizeChanged?.Invoke(this, new Size(nativeWidth, nativeHeight));
 	}
 
-	private void Draw(double nativeWidth, double nativeHeight, SKSurface surface)
+	private void Draw(SKSurface surface)
 	{
-		using var _ = _fpsHelper.BeginFrame();
-		if (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		using var currentPicture = _picture;
+		// if (currentPicture is not null)
 		{
-			((IXamlRootHost)this).InvalidateRender();
-			return;
-		}
-
-		using var canvas = surface.Canvas;
-		using (new SKAutoCanvasRestore(canvas, true))
-		{
-			canvas.Clear(SKColors.White);
-
-			if (RootElement?.Visual is { } rootVisual)
+			using var _ = _fpsHelper.BeginFrame();
+			using var canvas = surface.Canvas;
+			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				int width = (int)nativeWidth;
-				int height = (int)nativeHeight;
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
-				_fpsHelper.DrawFps(canvas);
-				var clip = path.IsEmpty ? null : path.ToSvgPathData();
-				if (clip != _lastSvgClipPath)
-				{
-					// if too early it's possible that the native element has not been arranged yet
-					// so the position and dimension of the element are not yet correct (0,0,0,0)
-					if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
-					{
-						_lastSvgClipPath = clip;
-					}
-				}
-				RootElement?.XamlRoot?.InvokeFramePainted();
+				surface.Canvas.Clear(SKColors.Transparent);
+				if (currentPicture is not null)
+					surface.Canvas.DrawPicture(currentPicture);
+				_fpsHelper.DrawFps(surface.Canvas);
 			}
+			canvas.Flush();
+			surface.Flush();
 		}
-
-		canvas.Flush();
-		surface.Flush();
 	}
 
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
@@ -146,7 +128,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		surface.Canvas.Scale(scale, scale);
 
-		Draw(nativeWidth, nativeHeight, surface);
+		Draw(surface);
 
 		_context?.Flush();
 		RootElement?.XamlRoot?.InvokeFrameRendered();
@@ -187,7 +169,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_rowBytes = info.RowBytes;
 		}
 
-		Draw(nativeWidth, nativeHeight, _surface!);
+		Draw(_surface!);
 
 		*data = _bitmap.GetPixels(out var bitmapSize);
 		*size = (int)bitmapSize;
@@ -225,6 +207,45 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			this.Log().Trace($"Window {_nativeWindow.Handle} invalidated.");
 		}
+
+		if (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
+			NativeUno.uno_window_invalidate(_nativeWindow.Handle);
+			return;
+		}
+
+		var recorder = new SKPictureRecorder();
+		var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+		using (new SKAutoCanvasRestore(canvas, true))
+		{
+			canvas.Clear(SKColors.White);
+
+			if (RootElement?.Visual is { } rootVisual)
+			{
+				var bounds = Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds;
+				int width = (int)bounds.Width;
+				int height = (int)bounds.Height;
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, canvas);
+				_fpsHelper.DrawFps(canvas);
+				var clip = path.IsEmpty ? null : path.ToSvgPathData();
+				if (clip != _lastSvgClipPath)
+				{
+					// if too early it's possible that the native element has not been arranged yet
+					// so the position and dimension of the element are not yet correct (0,0,0,0)
+					if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+					{
+						_lastSvgClipPath = clip;
+					}
+				}
+			}
+
+			var picture = recorder.EndRecording();
+			var old = Interlocked.Exchange(ref _picture, picture);
+			// old?.Dispose();
+			RootElement?.XamlRoot?.InvokeFramePainted();
+		}
+
 		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 		NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 	}
