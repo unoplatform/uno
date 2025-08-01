@@ -1,6 +1,8 @@
+﻿using System;
 ﻿using System.Transactions;
 using Foundation;
 using Microsoft.UI.Xaml;
+using ObjCRuntime;
 using UIKit;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
@@ -24,6 +26,20 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 		return true;
 	}
 
+	public override bool RespondsToSelector(Selector? sel)
+	{
+		// if the app is not a multi-window app, then we cannot override the GetConfiguration method
+		if (sel?.Name == UnoUISceneDelegate.GetConfigurationSelectorName && !UnoUISceneDelegate.HasSceneManifest())
+		{
+			return false;
+		}
+
+		return base.RespondsToSelector(sel);
+	}
+
+	public override UISceneConfiguration GetConfiguration(UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options) =>
+		new(UnoUISceneDelegate.UnoSceneConfigurationKey, connectingSceneSession.Role);
+
 	private void SubscribeBackgroundNotifications()
 	{
 		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
@@ -44,8 +60,6 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 
 	private void OnEnteredBackground(NSNotification notification)
 	{
-		NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(false);
-
 		Application.Current?.RaiseEnteredBackground(() => Application.Current.RaiseSuspending());
 	}
 
@@ -53,17 +67,17 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 	{
 		this.LogDebug()?.LogDebug($"Application leaving background");
 		Application.Current?.RaiseResuming();
-		Application.Current?.RaiseLeavingBackground(() => NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(true));
+		//Application.Current?.RaiseLeavingBackground(() => NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(true));
 	}
 
 	private void OnActivated(NSNotification notification)
 	{
 		this.LogDebug()?.LogDebug($"Application activated");
-		NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+		//NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 	}
 
 	private void OnDeactivated(NSNotification notification)
 	{
-		NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+		//NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 	}
 }
