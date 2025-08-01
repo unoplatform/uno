@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "Uno.UI.sln",
+    "path": "Uno.UI.slnx",
     "projects": [
       "..\\build\\Uno.UI.Build.csproj",
       "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
