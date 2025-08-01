@@ -922,8 +922,6 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
-		internal void OnVisibleBoundChanged() => VisibleBoundsChanged?.Invoke(this, EventArgs.Empty);
-
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		private bool IsMainVisualTree()
 			=> RootVisual != null;
