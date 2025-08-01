@@ -105,23 +105,24 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		try
 		{
 			// Initialize with Metal unless software rendering is requested
-			var metal = RenderSurfaceType != RenderSurfaceType.Software;
+			var metal = FeatureConfiguration.Rendering.UseMetalOnMacOS != false;
 
 			// Create the native NSApplication and a main window
 			var result = NativeUno.uno_app_initialize(ref metal);
 
-			switch (RenderSurfaceType)
+			switch (FeatureConfiguration.Rendering.UseMetalOnMacOS)
 			{
-				case RenderSurfaceType.Auto:
+				case null:
 					RenderSurfaceType = metal ? RenderSurfaceType.Metal : RenderSurfaceType.Software;
 					break;
-				case RenderSurfaceType.Metal:
+				case true:
 					if (!metal)
 					{
 						throw new NotSupportedException("Metal is not supported on this hardware or configuration. Try enabling the software-based renderer. See https://aka.platform.uno/skia-macos");
 					}
+					RenderSurfaceType = RenderSurfaceType.Metal;
 					break;
-				case RenderSurfaceType.Software:
+				case false:
 					if (metal)
 					{
 						if (this.Log().IsEnabled(LogLevel.Warning))
@@ -129,6 +130,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 							this.Log().Warn("Metal is supported on this hardware but software rendering was requested.");
 						}
 					}
+					RenderSurfaceType = RenderSurfaceType.Software;
 					break;
 			}
 			return result;
