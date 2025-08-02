@@ -236,6 +236,29 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_RequestedTheme_Set_Explicitly()
+	{
+		AssertSupportsMultipleWindows();
+
+		var darkThemeDisposable = ThemeHelper.UseDarkTheme();
+		try
+		{
+			var sut = new Window();
+			sut.Content = new Border() { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
+			sut.Activate();
+			await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
+
+			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
+		}
+		finally
+		{
+			// Reset the theme to avoid affecting other tests
+			darkThemeDisposable.Dispose();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Window_Close_Programmatically_Does_Not_Trigger_AppWindow_Closing()
 	{
 		AssertSupportsMultipleWindows();
