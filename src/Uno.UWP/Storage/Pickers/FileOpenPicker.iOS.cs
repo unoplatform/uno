@@ -80,8 +80,8 @@ namespace Windows.Storage.Pickers
 					}
 					else
 					{
-						var isImageSupported = mediaTypesFromPhotoLibrary.Contains(UTType.Image);
-						var isVideoSupported = mediaTypesFromPhotoLibrary.Contains(UTType.Movie);
+						var isImageSupported = mediaTypesFromPhotoLibrary.Contains(UTType.Image.ToString());
+						var isVideoSupported = mediaTypesFromPhotoLibrary.Contains(UTType.Movie.ToString());
 
 						if (isImageSupported && FilterHasImage(FileTypeFilter))
 						{
