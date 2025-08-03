@@ -65,7 +65,7 @@ namespace Windows.Storage.Pickers
 			{
 				case PickerLocationId.PicturesLibrary when multiple is false || iOS14AndAbove is false:
 				case PickerLocationId.VideosLibrary when multiple is false || iOS14AndAbove is false:
-					var controlller = new UIImagePickerController()
+					var controller = new UIImagePickerController()
 					{
 						SourceType = UIImagePickerControllerSourceType.PhotoLibrary,
 						ImagePickerControllerDelegate = new ImageOpenPickerDelegate(completionSource)
@@ -94,9 +94,9 @@ namespace Windows.Storage.Pickers
 						}
 					}
 
-					controlller.MediaTypes = [.. types];
+					controller.MediaTypes = [.. types];
 
-					return controlller;
+					return controller;
 
 				case PickerLocationId.PicturesLibrary when multiple is true && iOS14AndAbove is true:
 					var imageConfiguration = new PHPickerConfiguration
