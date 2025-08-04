@@ -25,7 +25,7 @@ See [this article](working-with-the-samples-apps.md) for more information on wor
 It is also possible to debug Uno.UI code in an application outside the Uno.UI solution. The Uno.UI build process has an opt-in mechanism to overwrite the contents of the NuGet cache, causing the application to use your local build of Uno.
 
 > [!NOTE]
-> This will ***overwrite your local NuGet cache***.
+> This will ___overwrite your local NuGet cache___.
 
 This is useful when debugging a problem that can't easily be reproduced outside the context of the app where it was discovered.
 
@@ -34,11 +34,6 @@ It can even speed up your development loop when working on a new feature or fixi
 First, update `global.json` of the app you will be debugging to instead use a `-dev.xxx` version:
 
 ```diff
-diff --git a/global.json b/global.json
-index 509ebab..a2bb2f7 100644
---- a/global.json
-+++ b/global.json
-@@ -1,9 +1,9 @@
  {
    // To update the version of Uno please update the version of the Uno.Sdk here. See https://aka.platform.uno/upgrade-uno-packages for more information.
    "msbuild-sdks": {
@@ -47,7 +42,7 @@ index 509ebab..a2bb2f7 100644
    },
 ```
 
-TODO: *How* should one map e.g. `Uno.Sdk: 6.1.23` to the closest corresponding `-dev.xxx` version?
+The versions of Uno.Sdk are listed on [NuGet.org](https://www.nuget.org/packages/Uno.Sdk/). Typically, you want to use the latest one, in order to match the most recent commit on the `master` branch of uno.
 
 Once `global.json` has been updated, restore your app's solution:
 
@@ -72,7 +67,7 @@ Then, here are the steps to use a local build of Uno.UI in another application:
 1. Open the solution containing the application you wish to debug to ensure the package is restored and cached.
 1. Prepare the application
 1. Make a copy of `src/crosstargeting_override.props.sample` and name it as `src/crosstargeting_override.props`.
-1. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->` and set the `$(UnoNugetOverrideVersion)` value to the value determined in the previous section, e.g. `6.2.0-dev.171`.
+1. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->` and set the `$(UnoNugetOverrideVersion)` value to the value determined in the previous section, e.g. `6.2.0-dev.171`.  You want to use the `UnoVersion*` version here. *Do not mix it up with `Uno.Sdk` version*.
 1. Open the appropriate Uno.UI solution filter and build the following:
    - For iOS/Android native, you can right-click on the `Uno.UI` project
    - For WebAssembly/native, you can right-click on the `Uno.UI.Runtime.WebAssembly` project
