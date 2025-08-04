@@ -96,7 +96,11 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 			int width = (int)nativeWidth;
 			int height = (int)nativeHeight;
-			canvas.DrawPicture(currentPicture);
+			if (currentPicture is not null)
+			{
+				canvas.DrawPicture(currentPicture);
+			}
+
 			_fpsHelper.DrawFps(canvas);
 
 			var clip = currentClipPath is null || currentClipPath.IsEmpty == true ? null : currentClipPath.ToSvgPathData();
