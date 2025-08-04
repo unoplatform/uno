@@ -428,9 +428,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
-		[Java.Interop.Export]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName!;
+		public static string GetTypeAssemblyFullName(string type) =>
+			throw new NotSupportedException("`static` methods with [Export] are not supported on NativeAOT.");
 
 		internal class ClippedRelativeLayout : RelativeLayout
 		{

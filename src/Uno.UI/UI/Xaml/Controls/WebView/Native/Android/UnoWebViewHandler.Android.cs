@@ -3,7 +3,7 @@ using Java.Interop;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class UnoWebViewHandler : Java.Lang.Object
+internal class UnoWebViewHandler : Java.Lang.Object, IUnoWebViewHandlerJavascriptInterface
 {
 	private readonly NativeWebViewWrapper _nativeWebView;
 
@@ -12,7 +12,6 @@ internal class UnoWebViewHandler : Java.Lang.Object
 		_nativeWebView = wrapper;
 	}
 
-	[Export]
 	[JavascriptInterface]
-	public void postMessage(string message) => _nativeWebView?.OnWebMessageReceived(message);
+	public void PostMessage(string message) => _nativeWebView?.OnWebMessageReceived(message);
 }
