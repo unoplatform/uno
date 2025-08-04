@@ -3,6 +3,7 @@
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 	<Import Project="../../targetframework-override.props" />
+	<Import Project="..\..\..\build\nuget\uno.winui.cross-runtime.targets"/>
 
 	<PropertyGroup>
 		<AssemblyName>Uno.WinUI.Graphics2DSK</AssemblyName>
