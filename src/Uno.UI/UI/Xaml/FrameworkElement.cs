@@ -420,7 +420,10 @@ namespace Microsoft.UI.Xaml
 		{
 			this.StoreTryEnableHardReferences();
 
-			SyncRootRequestedTheme();
+			if (RequestedTheme is not ElementTheme.Default)
+			{
+				SyncRootRequestedTheme();
+			}
 
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 			ApplyStyles();
