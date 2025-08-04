@@ -77,9 +77,9 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	private void OnHostSizeChanged(Size size)
 	{
+		var bounds = new Rect(default, size);
 		// in logical pixels
-		Bounds = new Rect(default, size);
-		VisibleBounds = Bounds;
+		SetBoundsAndVisibleBounds(bounds, bounds);
 		// in physical pixels
 		int w = (int)(size.Width * RasterizationScale);
 		int h = (int)(size.Height * RasterizationScale);

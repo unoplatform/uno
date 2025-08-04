@@ -5,6 +5,10 @@ using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
+#if HAS_UNO
+using Uno.UI.Xaml;
+using Private.Infrastructure;
+#endif
 
 namespace Uno.UI.RuntimeTests.Helpers
 {
@@ -26,17 +30,17 @@ namespace Uno.UI.RuntimeTests.Helpers
 			// Not supported on Windows
 			return null;
 #else
+			var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 			var fullBounds = Window.Current.Bounds;
-			var applicationView = ApplicationView.GetForCurrentView();
-			if (skipIfHasNativeUnsafeArea && fullBounds != applicationView.VisibleBounds)
+			if (skipIfHasNativeUnsafeArea && fullBounds != visualTree.VisibleBounds)
 			{
 				return null;
 			}
 			var height = fullBounds.Height - unsafeArea.Top - unsafeArea.Bottom;
 			var width = fullBounds.Width - unsafeArea.Left - unsafeArea.Right;
 			var overriddenVisibleBounds = new Rect(unsafeArea.Left, unsafeArea.Top, width, height);
-			applicationView.VisibleBoundsOverride = overriddenVisibleBounds;
-			return Disposable.Create(() => applicationView.VisibleBoundsOverride = null);
+			visualTree.VisibleBoundsOverride = overriddenVisibleBounds;
+			return Disposable.Create(() => visualTree.VisibleBoundsOverride = null);
 #endif
 		}
 
