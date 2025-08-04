@@ -238,7 +238,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, _surface.Canvas);
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface.Canvas, false);
 				_fpsHelper.DrawFps(canvas);
 
 				if (_host.NativeOverlayLayer is { } nativeLayer)

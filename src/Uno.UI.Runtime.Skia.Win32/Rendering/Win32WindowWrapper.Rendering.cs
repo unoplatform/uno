@@ -78,7 +78,7 @@ internal partial class Win32WindowWrapper
 				try
 				{
 					rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
-					var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(clientRect.Width, clientRect.Height, rootVisual, _surface.Canvas);
+					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(clientRect.Width, clientRect.Height, rootVisual, _surface.Canvas, false);
 					XamlRoot.InvokeFramePainted();
 					_fpsHelper.DrawFps(canvas);
 					RenderingNegativePathReevaluated?.Invoke(this, path);
