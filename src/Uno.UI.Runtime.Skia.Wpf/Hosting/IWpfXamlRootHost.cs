@@ -14,7 +14,7 @@ internal interface IWpfXamlRootHost : IXamlRootHost
 
 	RenderSurfaceType? RenderSurfaceType { get; }
 
-	SKPicture? Picture { get; set; }
+	SKPicture? Picture { get; }
 
-	SKPath? ClipPath { get; set; }
+	SKPath? ClipPath { get; }
 }
