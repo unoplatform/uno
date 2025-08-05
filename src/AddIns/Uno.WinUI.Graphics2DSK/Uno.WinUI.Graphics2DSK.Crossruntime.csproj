@@ -4,7 +4,7 @@
 		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
 	</PropertyGroup>
 	<Import Project="../../targetframework-override.props" />
-	<Import Project="..\..\..\build\nuget\uno.winui.cross-runtime.targets"/>
+	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.WinUI.Graphics2DSK</AssemblyName>
