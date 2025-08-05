@@ -420,6 +420,11 @@ namespace Microsoft.UI.Xaml
 		{
 			this.StoreTryEnableHardReferences();
 
+			if (RequestedTheme is not ElementTheme.Default)
+			{
+				SyncRootRequestedTheme();
+			}
+
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 			ApplyStyles();
 
@@ -557,13 +562,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 		{
-			if (XamlRoot?.Content == this) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
-			{
-				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
-				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
-				// This will also explicitly change the Application.Current.RequestedTheme, which does not happen in case of UWP.
-				Application.Current.SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(newValue));
-			}
+			SyncRootRequestedTheme();
 
 			if (ActualThemeChanged != null)
 			{
@@ -577,6 +576,14 @@ namespace Microsoft.UI.Xaml
 				{
 					ActualThemeChanged?.Invoke(this, null);
 				}
+			}
+		}
+
+		private void SyncRootRequestedTheme()
+		{
+			if (XamlRoot?.Content == this) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
+			{
+				Application.Current.SyncRequestedThemeFromXamlRoot(XamlRoot);
 			}
 		}
 
