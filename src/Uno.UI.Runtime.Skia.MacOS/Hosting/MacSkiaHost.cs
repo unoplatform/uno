@@ -105,7 +105,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		try
 		{
 			// Initialize with Metal unless software rendering is requested
-			var metal = FeatureConfiguration.Rendering.UseMetalOnMacOS != false;
+			var metal = FeatureConfiguration.Rendering.UseMetalOnMacOS ?? true;
 
 			// Create the native NSApplication and a main window
 			var result = NativeUno.uno_app_initialize(ref metal);
