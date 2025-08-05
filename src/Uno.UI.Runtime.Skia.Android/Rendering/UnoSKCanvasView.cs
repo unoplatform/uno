@@ -73,13 +73,17 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		ExploreByTouchHelper.InvalidateRoot();
 
-		var scale = DisplayInformation.GetForCurrentViewSafe()!.RawPixelsPerViewPixel;
 		var path = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(int)window.Bounds.Width,
 			(int)window.Bounds.Height,
-			scale,
-			root.Visual,
-			_fpsHelper);
+			root,
+			invertPath: false);
+
+		var scale = root.XamlRoot is { } xamlRoot
+			? xamlRoot.RasterizationScale
+			: 1.0f;
+
+		_fpsHelper.Scale = (float)scale;
 
 		if (ApplicationActivity.Instance.NativeLayerHost is { } nativeLayerHost)
 		{
@@ -90,7 +94,6 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 		var picture = recorder.EndRecording();
 
 		Interlocked.Exchange(ref _picture, picture);
-		NativeDispatcher.Main.Enqueue(() => root.XamlRoot?.InvokeFramePainted());
 
 		// Request the call of IRenderer.OnDrawFrame for one frame
 		RequestRender();
@@ -189,8 +192,6 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
-			using var _ = surfaceView._fpsHelper.BeginFrame();
-
 			var currentPicture = Volatile.Read(ref surfaceView._picture);
 
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
@@ -256,7 +257,9 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			{
 				SkiaRenderHelper.RenderPicture(
 					surface,
-					currentPicture);
+					currentPicture,
+					SKColors.Transparent,
+					surfaceView._fpsHelper);
 			}
 
 			if (!_hardwareAccelerated)
