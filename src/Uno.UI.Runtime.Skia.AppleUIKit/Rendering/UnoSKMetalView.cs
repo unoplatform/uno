@@ -150,7 +150,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		void IMTKViewDelegate.Draw(MTKView view)
 		{
-			using var _ = _fpsHelper.BeginFrame();
 			_onFrameDrawn();
 
 #if REPORT_FPS
@@ -181,16 +180,11 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 				canvas = surface.Canvas;
 
-				// Paint
-				using (new SKAutoCanvasRestore(canvas, true))
-				{
-					// start drawing
-					if (currentPicture is { } picture)
-					{
-						canvas.DrawPicture(picture);
-						_fpsHelper.DrawFps(canvas);
-					}
-				}
+				SkiaRenderHelper.RenderPicture(
+					surface,
+					currentPicture,
+					SKColors.Transparent,
+					_fpsHelper);
 
 				// Flush
 				_context!.Flush(submit: true);

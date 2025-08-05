@@ -74,7 +74,7 @@ internal partial class BrowserRenderer
 		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width),
 			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height),
-			RootElement,
+			_host.RootElement,
 			invertPath: false);
 
 		Interlocked.Exchange(ref _picture, picture);
@@ -85,8 +85,6 @@ internal partial class BrowserRenderer
 
 	private void RenderFrame()
 	{
-		using var _ = _fpsHelper.BeginFrame();
-
 		if (!_jsInfo.IsValid)
 		{
 			Initialize();
@@ -154,8 +152,8 @@ internal partial class BrowserRenderer
 
 		SkiaRenderHelper.RenderPicture(
 			_surface,
-			(float)scale,
 			currentPicture,
+			SKColors.Transparent,
 			_fpsHelper);
 
 		// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
