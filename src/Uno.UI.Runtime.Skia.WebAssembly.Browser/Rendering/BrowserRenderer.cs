@@ -64,7 +64,7 @@ internal partial class BrowserRenderer
 
 	internal void InvalidateRender()
 	{
-		if (_host.RootElement is not { } rootElement || (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		if (!SkiaRenderHelper.CanRecordPicture(_host.RootElement))
 		{
 			// Try again next tick
 			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
@@ -74,9 +74,8 @@ internal partial class BrowserRenderer
 		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width),
 			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height),
-			rootElement.Visual,
+			RootElement,
 			invertPath: false);
-		_host.RootElement?.XamlRoot?.InvokeFramePainted();
 
 		Interlocked.Exchange(ref _picture, picture);
 		Interlocked.Exchange(ref _clipPath, path);
