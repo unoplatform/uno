@@ -2,42 +2,57 @@
 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
 using Uno.UI.Xaml.Core;
+using static Uno.UI.Helpers.SkiaRenderHelper;
 
 namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper
 {
-	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, ContainerVisual rootVisual, bool invertPath)
+	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
+		rootElement is null ||
+		rootElement.IsArrangeDirtyOrArrangeDirtyPath ||
+		rootElement.IsMeasureDirtyOrMeasureDirtyPath;
+
+	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, FpsHelper fpsHelper, bool invertPath)
 	{
+		var xamlRoot = rootElement.XamlRoot;
+		var scale = (float)(xamlRoot?.RasterizationScale ?? 1.0f);
+
 		using var recorder = new SKPictureRecorder();
 		using var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 		using var _ = new SKAutoCanvasRestore(canvas, true);
 		canvas.Clear(SKColors.Transparent);
-		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, canvas, invertPath);
+		canvas.Scale(scale);
+		var path = RenderRootVisualAndReturnPath(width, height, rootElement.Visual, canvas, invertPath);
+
+		fpsHelper.Scale = scale;
+		fpsHelper.DrawFps(canvas);
+
 		var picture = recorder.EndRecording();
+
+		xamlRoot?.InvokeFramePainted();
 
 		return (picture, path);
 	}
 
-	internal static void RenderPicture(SKSurface surface, float scale, SKPicture? picture, FpsHelper fpsHelper)
+	internal static void RenderPicture(SKSurface surface, SKPicture? picture)
 	{
 		var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(SKColors.Transparent);
-			canvas.Scale(scale);
 			if (picture is not null)
 			{
 				// This might happen if we get render request before the first frame is painted
 				canvas.DrawPicture(picture);
 			}
-			fpsHelper.DrawFps(canvas);
 		}
 
 		// update the control

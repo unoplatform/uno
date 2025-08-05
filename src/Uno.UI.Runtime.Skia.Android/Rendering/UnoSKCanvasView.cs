@@ -1,24 +1,12 @@
 ﻿using System;
 using System.Threading;
-using Android.Content;
-using Android.Graphics;
-using Android.Opengl;
-using Android.OS;
-using Android.Runtime;
-using Android.Util;
-using Android.Views;
-using Android.Views.Autofill;
-using Android.Views.InputMethods;
-using AndroidX.Core.Graphics;
-using AndroidX.Core.View;
-using Javax.Microedition.Khronos.Opengles;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Windows.Graphics.Display;
-using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -77,7 +65,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			return;
 		}
 
-		if (root.IsArrangeDirtyOrArrangeDirtyPath || root.IsMeasureDirtyOrMeasureDirtyPath)
+		if (!SkiaRenderHelper.CanRecordPicture(root))
 		{
 			NativeDispatcher.Main.Enqueue(InvalidateRender);
 			return;
@@ -85,30 +73,27 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		ExploreByTouchHelper.InvalidateRoot();
 
-		var recorder = new SKPictureRecorder();
-		var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
-		using (new SKAutoCanvasRestore(canvas, true))
+		var scale = DisplayInformation.GetForCurrentViewSafe()!.RawPixelsPerViewPixel;
+		var path = SkiaRenderHelper.RecordPictureAndReturnPath(
+			(int)window.Bounds.Width,
+			(int)window.Bounds.Height,
+			scale,
+			root.Visual,
+			_fpsHelper);
+
+		if (ApplicationActivity.Instance.NativeLayerHost is { } nativeLayerHost)
 		{
-			canvas.Clear(SKColors.Transparent);
-			var scale = DisplayInformation.GetForCurrentViewSafe()!.RawPixelsPerViewPixel;
-			_fpsHelper.Scale = (float)scale;
-			canvas.Scale((float)scale);
-			var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath((int)window.Bounds.Width,
-				(int)window.Bounds.Height, root.Visual, canvas);
-			if (ApplicationActivity.Instance.NativeLayerHost is { } nativeLayerHost)
-			{
-				nativeLayerHost.Path = negativePath;
-				nativeLayerHost.Invalidate();
-			}
-
-			var picture = recorder.EndRecording();
-
-			Interlocked.Exchange(ref _picture, picture);
-			NativeDispatcher.Main.Enqueue(() => root.XamlRoot?.InvokeFramePainted());
-
-			// Request the call of IRenderer.OnDrawFrame for one frame
-			RequestRender();
+			nativeLayerHost.Path = path;
+			nativeLayerHost.Invalidate();
 		}
+
+		var picture = recorder.EndRecording();
+
+		Interlocked.Exchange(ref _picture, picture);
+		NativeDispatcher.Main.Enqueue(() => root.XamlRoot?.InvokeFramePainted());
+
+		// Request the call of IRenderer.OnDrawFrame for one frame
+		RequestRender();
 	}
 
 	public override bool OnCheckIsTextEditor()
@@ -265,17 +250,14 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 				_softwareSurface = SKSurface.Create(info);
 			}
 
-			var canvas = _hardwareAccelerated ? _glBackedSurface.Canvas : _softwareSurface!.Canvas;
+			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
 
-			using (new SKAutoCanvasRestore(canvas, true))
+			if (surface is not null)
 			{
-				// start drawing
-				canvas.DrawPicture(currentPicture);
-				surfaceView._fpsHelper.DrawFps(canvas);
+				SkiaRenderHelper.RenderPicture(
+					surface,
+					currentPicture);
 			}
-
-			// flush the SkiaSharp contents to GL
-			canvas.Flush();
 
 			if (!_hardwareAccelerated)
 			{
