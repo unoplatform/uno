@@ -20,7 +20,7 @@ internal static class SkiaRenderHelper
 		rootElement.IsArrangeDirtyOrArrangeDirtyPath ||
 		rootElement.IsMeasureDirtyOrMeasureDirtyPath;
 
-	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, FpsHelper fpsHelper, bool invertPath)
+	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath)
 	{
 		var xamlRoot = rootElement.XamlRoot;
 		var scale = (float)(xamlRoot?.RasterizationScale ?? 1.0f);
@@ -32,9 +32,6 @@ internal static class SkiaRenderHelper
 		canvas.Scale(scale);
 		var path = RenderRootVisualAndReturnPath(width, height, rootElement.Visual, canvas, invertPath);
 
-		fpsHelper.Scale = scale;
-		fpsHelper.DrawFps(canvas);
-
 		var picture = recorder.EndRecording();
 
 		xamlRoot?.InvokeFramePainted();
@@ -42,17 +39,20 @@ internal static class SkiaRenderHelper
 		return (picture, path);
 	}
 
-	internal static void RenderPicture(SKSurface surface, SKPicture? picture)
+	internal static void RenderPicture(SKSurface surface, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
 	{
+		using var fpsHelperDisposable = fpsHelper.BeginFrame();
 		var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
-			canvas.Clear(SKColors.Transparent);
+			canvas.Clear(background);
 			if (picture is not null)
 			{
 				// This might happen if we get render request before the first frame is painted
 				canvas.DrawPicture(picture);
 			}
+
+			fpsHelper.DrawFps(canvas);
 		}
 
 		// update the control

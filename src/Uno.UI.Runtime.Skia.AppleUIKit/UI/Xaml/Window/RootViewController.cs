@@ -152,9 +152,9 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	}
 #endif
 
-	private void UpdateNativeClipping(SKPath path)
+	private void UpdateNativeClipping(SKPath? path)
 	{
-		if (!path.IsEmpty)
+		if (path is not null && !path.IsEmpty)
 		{
 			var svgPath = path.ToSvgPathData();
 			if (svgPath != _lastSvgClipPath)
