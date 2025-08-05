@@ -63,8 +63,8 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	private readonly SerialDisposable _backgroundDisposable = new();
 
-	private SKPicture _picture;
-	private SKPath _clipPath;
+	private SKPicture? _picture;
+	private SKPath? _clipPath;
 
 	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
 	{
@@ -94,8 +94,8 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	public WpfControl RenderLayer => _renderLayer;
 	public WpfControl BottomLayer => _renderLayer;
 
-	public SKPicture Picture => _picture;
-	public SKPath ClipPath => _clipPath;
+	SKPicture? IWpfXamlRootHost.Picture => _picture;
+	SKPath? IWpfXamlRootHost.ClipPath => _clipPath;
 
 	internal void InitializeRenderer()
 	{
