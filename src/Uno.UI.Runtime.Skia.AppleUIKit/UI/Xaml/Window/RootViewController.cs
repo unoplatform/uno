@@ -15,6 +15,7 @@ using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
+using System.Threading;
 
 #if __IOS__
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
@@ -28,11 +29,15 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
+
 	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
+	private SKPicture? _picture;
+	private SKPath? _clipPath;
 
 	public RootViewController()
 	{
@@ -124,33 +129,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	}
 #endif
 
-	internal void OnPaintSurfaceInner(SKCanvas canvas)
+	internal void OnPaintSurfaceInner(SKSurface surface)
 	{
-		if (_xamlRoot?.VisualTree.RootElement is { } rootElement)
-		{
-			if (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath)
-			{
-
-				NativeDispatcher.Main.Enqueue(() =>
-				{
-					InvalidateRender();
-				});
-
-				return;
-			}
-
-			canvas.Clear(SKColors.Transparent);
-
-			canvas.SetMatrix(SKMatrix.CreateScale((float)_xamlRoot.RasterizationScale, (float)_xamlRoot.RasterizationScale));
-
-			if (rootElement.Visual is { } rootVisual)
-			{
-				int width = (int)View!.Frame.Width;
-				int height = (int)View!.Frame.Height;
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, canvas);
-				UpdateNativeClipping(path);
-			}
-		}
+		SkiaRenderHelper.RenderPicture(surface, _picture);
+		UpdateNativeClipping(_clipPath);
 	}
 
 #if !__TVOS__
@@ -303,12 +285,30 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		return coord;
 	}
 
-	public void InvalidateRender() =>
+	public void InvalidateRender()
+	{
+		if (!SkiaRenderHelper.CanRecordPicture(RootElement))
+		{
+			NativeDispatcher.Main.Enqueue(InvalidateRender);
+			return;
+		}
+
+		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
+			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width),
+			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height),
+			RootElement,
+			_fpsHelper,
+			invertPath: false);
+
+		Interlocked.Exchange(ref _picture, picture);
+		Interlocked.Exchange(ref _clipPath, path);
+
 #if !__TVOS__
 		_skCanvasView?.QueueRender();
 #else
 		_skCanvasView?.LayoutSubviews();
 #endif
+	}
 
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;
 
