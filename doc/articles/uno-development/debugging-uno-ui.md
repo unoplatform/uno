@@ -25,7 +25,7 @@ See [this article](working-with-the-samples-apps.md) for more information on wor
 It is also possible to debug Uno.UI code in an application outside the Uno.UI solution. The Uno.UI build process has an opt-in mechanism to overwrite the contents of the NuGet cache, causing the application to use your local build of Uno.
 
 > [!NOTE]
-> This will ___overwrite your local NuGet cache___.
+> This will **overwrite your local NuGet cache**.
 
 This is useful when debugging a problem that can't easily be reproduced outside the context of the app where it was discovered.
 
@@ -50,7 +50,7 @@ Once `global.json` has been updated, restore your app's solution:
 dotnet restore
 ```
 
-Next, determine the *`$(UnoNugetOverrideVersion)` value* for your selected `-dev.xxx` version:
+Next, determine the _`$(UnoNugetOverrideVersion)` value_ for your selected `-dev.xxx` version:
 
 1. View the specified `Uno.Sdk` package version on NuGet.org, e.g. <https://www.nuget.org/packages/Uno.Sdk/6.2.0-dev.59>
 1. Select the **README** tab.
@@ -67,7 +67,7 @@ Then, here are the steps to use a local build of Uno.UI in another application:
 1. Open the solution containing the application you wish to debug to ensure the package is restored and cached.
 1. Prepare the application
 1. Make a copy of `src/crosstargeting_override.props.sample` and name it as `src/crosstargeting_override.props`.
-1. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->` and set the `$(UnoNugetOverrideVersion)` value to the value determined in the previous section, e.g. `6.2.0-dev.171`.  You want to use the `UnoVersion*` version here. *Do not mix it up with `Uno.Sdk` version*.
+1. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->` and set the `$(UnoNugetOverrideVersion)` value to the value determined in the previous section, e.g. `6.2.0-dev.171`.  You want to use the `UnoVersion*` version here. _Do not mix it up with `Uno.Sdk` version_.
 1. Open the appropriate Uno.UI solution filter and build the following:
    - For iOS/Android native, you can right-click on the `Uno.UI` project
    - For WebAssembly/native, you can right-click on the `Uno.UI.Runtime.WebAssembly` project
