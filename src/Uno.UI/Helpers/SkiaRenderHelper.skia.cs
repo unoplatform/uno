@@ -25,6 +25,26 @@ internal static class SkiaRenderHelper
 		return (picture, path);
 	}
 
+	internal static void RenderPicture(SKSurface surface, float scale, SKPicture? picture, FpsHelper fpsHelper)
+	{
+		var canvas = surface.Canvas;
+		using (new SKAutoCanvasRestore(canvas, true))
+		{
+			canvas.Clear(SKColors.Transparent);
+			canvas.Scale(scale);
+			if (picture is not null)
+			{
+				// This might happen if we get render request before the first frame is painted
+				canvas.DrawPicture(picture);
+			}
+			fpsHelper.DrawFps(canvas);
+		}
+
+		// update the control
+		canvas.Flush();
+		surface.Flush();
+	}
+
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
 	/// Takes the current TotalMatrix of the surface's canvas into account

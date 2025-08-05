@@ -82,41 +82,29 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		SizeChanged?.Invoke(this, _nativeWindowSize);
 	}
 
-	private void Draw(double nativeWidth, double nativeHeight, SKSurface surface)
+	private void Draw(double nativeWidth, double nativeHeight, float scale, SKSurface surface)
 	{
 		using var _ = _fpsHelper.BeginFrame();
 
 		var currentPicture = _picture;
 		var currentClipPath = _clipPath;
 
-		using var canvas = surface.Canvas;
-		using (new SKAutoCanvasRestore(canvas, true))
+		SkiaRenderHelper.RenderPicture(
+			surface,
+			scale,
+			currentPicture,
+			_fpsHelper);
+
+		var clip = currentClipPath is null || currentClipPath.IsEmpty == true ? null : currentClipPath.ToSvgPathData();
+		if (clip != _lastSvgClipPath)
 		{
-			canvas.Clear(SKColors.Transparent);
-
-			int width = (int)nativeWidth;
-			int height = (int)nativeHeight;
-			if (currentPicture is not null)
+			// if too early it's possible that the native element has not been arranged yet
+			// so the position and dimension of the element are not yet correct (0,0,0,0)
+			if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
 			{
-				canvas.DrawPicture(currentPicture);
-			}
-
-			_fpsHelper.DrawFps(canvas);
-
-			var clip = currentClipPath is null || currentClipPath.IsEmpty == true ? null : currentClipPath.ToSvgPathData();
-			if (clip != _lastSvgClipPath)
-			{
-				// if too early it's possible that the native element has not been arranged yet
-				// so the position and dimension of the element are not yet correct (0,0,0,0)
-				if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
-				{
-					_lastSvgClipPath = clip;
-				}
+				_lastSvgClipPath = clip;
 			}
 		}
-
-		canvas.Flush();
-		surface.Flush();
 	}
 
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
@@ -144,9 +132,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		using var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture));
 		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
 
-		surface.Canvas.Scale(scale, scale);
-
-		Draw(nativeWidth, nativeHeight, surface);
+		Draw(nativeWidth, nativeHeight, scale, surface);
 
 		_context?.Flush();
 		RootElement?.XamlRoot?.InvokeFrameRendered();
@@ -183,11 +169,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
 			_bitmap = new SKBitmap(info);
 			_surface = SKSurface.Create(info, _bitmap.GetPixels());
-			_surface.Canvas.Scale(scale, scale);
 			_rowBytes = info.RowBytes;
 		}
 
-		Draw(nativeWidth, nativeHeight, _surface!);
+		Draw(nativeWidth, nativeHeight, scale, _surface!);
 
 		*data = _bitmap.GetPixels(out var bitmapSize);
 		*size = (int)bitmapSize;

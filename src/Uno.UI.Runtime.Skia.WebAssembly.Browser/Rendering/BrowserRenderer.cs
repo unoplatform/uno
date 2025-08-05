@@ -153,22 +153,18 @@ internal partial class BrowserRenderer
 		var currentPicture = _picture;
 		var currentClipPath = _clipPath;
 
-		using (new SKAutoCanvasRestore(_canvas, true))
-		{
-			_surface.Canvas.Clear(SKColors.Transparent);
-			_surface.Canvas.Scale((float)scale);
-			_surface.Canvas.DrawPicture(currentPicture);
-			_fpsHelper.DrawFps(_canvas);
+		SkiaRenderHelper.RenderPicture(
+			_surface,
+			(float)scale,
+			currentPicture,
+			_fpsHelper);
 
-			// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
-			// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
-			// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
-			currentClipPath?.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), currentClipPath);
-			BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(currentClipPath is not null && !currentClipPath.IsEmpty ? currentClipPath.ToSvgPathData() : "");
-		}
+		// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
+		// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
+		// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
+		currentClipPath?.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), currentClipPath);
+		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(currentClipPath is not null && !currentClipPath.IsEmpty ? currentClipPath.ToSvgPathData() : "");
 
-		// update the control
-		_canvas?.Flush();
 		_context.Flush();
 		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
 
