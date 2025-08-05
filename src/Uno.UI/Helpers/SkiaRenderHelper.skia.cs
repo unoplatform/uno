@@ -16,9 +16,9 @@ namespace Uno.UI.Helpers;
 internal static class SkiaRenderHelper
 {
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
-		rootElement is null ||
-		rootElement.IsArrangeDirtyOrArrangeDirtyPath ||
-		rootElement.IsMeasureDirtyOrMeasureDirtyPath;
+		rootElement is not null &&
+		!rootElement.IsArrangeDirtyOrArrangeDirtyPath &&
+		!rootElement.IsMeasureDirtyOrMeasureDirtyPath;
 
 	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath)
 	{

@@ -58,8 +58,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private SKColor _background;
 	private bool _isFirstEraseBkgnd = true;
 
-	private SKPicture _picture;
-	private SKPath _clipPath;
+	private SKPicture? _picture;
+	private SKPath? _clipPath;
 
 	static unsafe Win32WindowWrapper()
 	{

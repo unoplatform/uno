@@ -219,7 +219,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(int)_nativeWindowSize.Width,
 			(int)_nativeWindowSize.Height,
-			rootElement.Visual,
+			rootElement,
 			invertPath: false);
 
 		Interlocked.Exchange(ref _picture, picture);
