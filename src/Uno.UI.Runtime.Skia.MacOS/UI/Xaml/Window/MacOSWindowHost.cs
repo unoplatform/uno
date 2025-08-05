@@ -84,15 +84,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	private void Draw(double nativeWidth, double nativeHeight, float scale, SKSurface surface)
 	{
-		using var _ = _fpsHelper.BeginFrame();
-
 		var currentPicture = _picture;
 		var currentClipPath = _clipPath;
 
 		SkiaRenderHelper.RenderPicture(
 			surface,
-			scale,
 			currentPicture,
+			SKColors.Transparent,
 			_fpsHelper);
 
 		var clip = currentClipPath is null || currentClipPath.IsEmpty == true ? null : currentClipPath.ToSvgPathData();
