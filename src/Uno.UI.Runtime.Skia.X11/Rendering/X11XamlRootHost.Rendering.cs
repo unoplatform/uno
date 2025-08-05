@@ -19,13 +19,13 @@ internal partial class X11XamlRootHost
 		if (DispatcherQueue.Main.HasThreadAccess)
 		{
 			var rootElement = (this as IXamlRootHost).RootElement;
-			if (rootElement is not null && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+			if (!SkiaRenderHelper.CanRecordPicture(rootElement))
 			{
 				NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
 				return;
 			}
 
-			if (_renderer is not null && rootElement?.Visual is { } rootVisual)
+			if (_renderer is not null)
 			{
 				using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
 				XWindowAttributes attributes = default;
@@ -33,8 +33,7 @@ internal partial class X11XamlRootHost
 				var width = attributes.width;
 				var height = attributes.height;
 
-				var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(width, height, rootVisual, invertPath: true);
-				rootElement.XamlRoot?.InvokeFramePainted();
+				var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(width, height, rootElement, invertPath: true);
 
 				var scale = rootElement.XamlRoot is { } root
 					? root.RasterizationScale
