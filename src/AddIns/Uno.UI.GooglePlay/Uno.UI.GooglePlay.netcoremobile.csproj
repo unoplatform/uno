@@ -23,7 +23,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.14" />
+		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.18" />
 
 		<ProjectReference Include="..\..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj">

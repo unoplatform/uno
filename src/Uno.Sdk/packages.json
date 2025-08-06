@@ -245,7 +245,7 @@
 	},
 	{
 		"group": "AndroidXNavigation",
-		"version": "2.8.5.1",
+		"version": "2.9.2",
 		"packages": [
 			"Xamarin.AndroidX.Navigation.UI",
 			"Xamarin.AndroidX.Navigation.Fragment",

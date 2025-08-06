@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
-		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.8" />
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>

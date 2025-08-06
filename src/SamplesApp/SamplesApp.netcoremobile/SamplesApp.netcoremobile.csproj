@@ -184,7 +184,7 @@
 			</PropertyGroup>
 			
 			<ItemGroup>
-				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.37" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
