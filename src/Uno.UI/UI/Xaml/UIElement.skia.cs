@@ -331,7 +331,6 @@ namespace Microsoft.UI.Xaml
 			var visual = Visual;
 			visual.Offset = new Vector3((float)rect.X, (float)rect.Y, 0) + _translation;
 			visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
-			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 			if (_renderTransform is null && !GetFlowDirectionTransform().IsIdentity)
 			{
 				_renderTransform = new NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
