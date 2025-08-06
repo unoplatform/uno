@@ -357,8 +357,7 @@ internal readonly struct ParsedText : IParsedText
 			{
 				var paint = new SKPaint();
 				var caretRect = new SKRect(0, 0, caretThickness, _defaultLineHeight);
-				caret.Value.brush.UpdatePaint(paint, caretRect);
-				session.Canvas.DrawRect(caretRect, paint);
+				caret.Value.brush.Paint(session.Canvas, session.Opacity, caretRect);
 			}
 
 			return;
@@ -502,7 +501,7 @@ internal readonly struct ParsedText : IParsedText
 				if (selection is not null)
 				{
 					var selectionDetails = CalculateSelection(selection.Value.selectionStart, selection.Value.selectionEnd);
-					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, selection.Value.brush);
+					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, selection.Value.brush, session.Opacity);
 					RenderText(selectionDetails, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y + baselineOffsetY, paint);
 				}
 				else
@@ -540,7 +539,7 @@ internal readonly struct ParsedText : IParsedText
 
 				if (caret is not null)
 				{
-					HandleCaret(caret.Value.index, caretThickness, canvas, caret.Value.brush, characterCountSoFar, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
+					HandleCaret(caret.Value.index, caretThickness, canvas, caret.Value.brush, session.Opacity, characterCountSoFar, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
 				}
 
 				x += justifySpaceOffset * segmentSpan.TrailingSpaces;
@@ -746,7 +745,7 @@ internal readonly struct ParsedText : IParsedText
 	private void HandleSelection(SelectionDetails selection, int lineIndex,
 		int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset,
 		RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, float y, RenderLine line, SKCanvas canvas,
-		CompositionBrush brush)
+		CompositionBrush brush, float opacity)
 	{
 		if (selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
 		{
@@ -799,10 +798,8 @@ internal readonly struct ParsedText : IParsedText
 
 			if (Math.Abs(left - right) > 0.01)
 			{
-				var paint = new SKPaint();
 				var rect = new SKRect(left, y - line.Height, right, y);
-				brush.UpdatePaint(paint, rect);
-				canvas.DrawRect(rect, paint);
+				brush.Paint(canvas, opacity, rect);
 			}
 		}
 	}
@@ -912,9 +909,8 @@ internal readonly struct ParsedText : IParsedText
 		}
 	}
 
-	private void HandleCaret(
-		int caretIndex, float caretThickness, SKCanvas canvas,
-		CompositionBrush caretBrush, int characterCountSoFar, RenderSegmentSpan segmentSpan,
+	private void HandleCaret(int caretIndex, float caretThickness, SKCanvas canvas,
+		CompositionBrush caretBrush, float opacity, int characterCountSoFar, RenderSegmentSpan segmentSpan,
 		Span<SKPoint> positions, float x, float justifySpaceOffset, float y, RenderLine line)
 	{
 		var spanStartingIndex = characterCountSoFar;
@@ -958,11 +954,8 @@ internal readonly struct ParsedText : IParsedText
 			}
 			if (caretLocation != float.MinValue)
 			{
-				var paint = new SKPaint();
 				var caretRect = new SKRect(caretLocation, y - line.Height, caretLocation + caretThickness, y);
-				caretBrush.UpdatePaint(paint, caretRect);
-				canvas.DrawRect(caretRect, paint);
-				canvas.DrawRect(caretRect, paint);
+				caretBrush.Paint(canvas, opacity, caretRect);
 			}
 		}
 	}

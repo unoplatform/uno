@@ -25,6 +25,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
 	{
+		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
+		internal const float CaretThickness = 1;
+
 		private Action? _selectionHighlightColorChanged;
 		private MenuFlyout? _contextMenu;
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
@@ -171,14 +174,14 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void Draw(in Visual.PaintingSession session)
 		{
 			session.Canvas.Save();
-			session.Canvas.Translate((float)owner.Padding.Left, (float)owner.Padding.Top);
+			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
 			ParsedText.Draw(
 				session,
 				_caretPaint,
 				(Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end), SelectionHighlightColor.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor())),
 				CaretThickness);
 			session.Canvas.Restore();
-			DrawingFinished?.Invoke()
+			DrawingFinished?.Invoke();
 		}
 
 		/// <summary>
@@ -212,7 +215,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void InvalidateInlineAndRequireRepaint()
 		{
-			Inlines.InvalidateMeasure();
 			Visual.Compositor.InvalidateRender(Visual);
 		}
 
