@@ -42,7 +42,7 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 	public RenderSurfaceType? RenderSurfaceType { get; set; }
 
 	SKPicture? IWpfXamlRootHost.Picture => _picture;
-	
+
 	SKPath? IWpfXamlRootHost.ClipPath => _clipPath;
 
 	public bool IgnorePixelScaling
