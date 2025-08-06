@@ -108,6 +108,8 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			.ObserveWillResignActive(DismissPopups);
 	}
 
+	internal SKPicture? Picture => _picture;
+
 	private void DismissPopups(object? sender, object? args)
 	{
 		if (_xamlRoot is not null)
@@ -125,15 +127,20 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 #if __TVOS__
 	private void OnPaintSurface(object? sender, SkiaEventArgs e)
 	{
-		OnPaintSurfaceInner(e.Surface.Canvas);
+		OnPaintSurfaceInner(e.Surface);
 	}
-#endif
 
-	internal void OnPaintSurfaceInner(SKSurface surface)
+	private void OnPaintSurfaceInner(SKSurface surface)
 	{
-		SkiaRenderHelper.RenderPicture(surface, _picture);
+		SkiaRenderHelper.RenderPicture(
+			surface,
+			_picture,
+			SKColors.Transparent,
+			_fpsHelper);
+
 		UpdateNativeClipping(_clipPath);
 	}
+#endif
 
 #if !__TVOS__
 	private void OnFrameDrawn()
@@ -297,11 +304,12 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width),
 			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height),
 			RootElement,
-			_fpsHelper,
 			invertPath: false);
 
 		Interlocked.Exchange(ref _picture, picture);
 		Interlocked.Exchange(ref _clipPath, path);
+
+		UpdateNativeClipping(_clipPath);
 
 #if !__TVOS__
 		_skCanvasView?.QueueRender();
