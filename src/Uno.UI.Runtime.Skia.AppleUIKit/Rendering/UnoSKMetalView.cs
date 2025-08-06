@@ -196,7 +196,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				_owner?.RootElement?.XamlRoot?.InvokeFrameRendered();
 			}
 
-			_link.Paused = ReferenceEquals(currentPicture, Volatile.Read(ref _picture))
+			var newPicture = _owner?.Picture;
+			_link.Paused = ReferenceEquals(currentPicture, newPicture)
 				&& !CompositionTarget.IsRenderingActive;
 		}
 	}
