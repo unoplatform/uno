@@ -1,4 +1,5 @@
-﻿using Android.Webkit;
+﻿#nullable enable
+using Android.Webkit;
 using Java.Interop;
 
 namespace Uno.UI.Xaml.Controls;
@@ -13,5 +14,5 @@ internal class UnoWebViewHandler : Java.Lang.Object, IUnoWebViewHandlerJavascrip
 	}
 
 	[JavascriptInterface]
-	public void PostMessage(string message) => _nativeWebView?.OnWebMessageReceived(message);
+	public void PostMessage(string? message) => _nativeWebView?.OnWebMessageReceived(message);
 }

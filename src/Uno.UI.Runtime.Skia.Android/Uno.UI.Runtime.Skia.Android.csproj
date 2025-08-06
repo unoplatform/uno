@@ -22,6 +22,12 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<DefineConstants>$(DefineConstants);ANDROID_SKIA</DefineConstants>
+		<!--
+		  Ignore warnings from generated code:
+		  - obj/**/generated/src/Uno.UI.IUnoWebViewHandlerJavascriptInterface.cs
+		  - obj/**/generated/src/__NamespaceMapping__.cs
+		 -->
+		<NoWarn>$(NoWarn);IDE0055</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -44,6 +50,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<AndroidJavaSource Include="..\Uno.UI.BindingHelper.Android\Uno\UI\UnoWebViewHandlerJavascriptInterface.java" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp.Views" />
@@ -56,7 +66,6 @@
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
