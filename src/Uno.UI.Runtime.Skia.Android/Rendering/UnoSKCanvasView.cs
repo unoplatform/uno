@@ -1,5 +1,17 @@
 ﻿using System;
 using System.Threading;
+using Android.Content;
+using Android.Graphics;
+using Android.Opengl;
+using Android.OS;
+using Android.Runtime;
+using Android.Util;
+using Android.Views;
+using Android.Views.Autofill;
+using Android.Views.InputMethods;
+using AndroidX.Core.Graphics;
+using AndroidX.Core.View;
+using Javax.Microedition.Khronos.Opengles;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
@@ -73,7 +85,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		ExploreByTouchHelper.InvalidateRoot();
 
-		var path = SkiaRenderHelper.RecordPictureAndReturnPath(
+		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(int)window.Bounds.Width,
 			(int)window.Bounds.Height,
 			root,
@@ -90,8 +102,6 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			nativeLayerHost.Path = path;
 			nativeLayerHost.Invalidate();
 		}
-
-		var picture = recorder.EndRecording();
 
 		Interlocked.Exchange(ref _picture, picture);
 
