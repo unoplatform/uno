@@ -67,7 +67,7 @@ internal partial class BrowserRenderer
 		if (!SkiaRenderHelper.CanRecordPicture(_host.RootElement))
 		{
 			// Try again next tick
-			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
+			NativeDispatcher.Main.Enqueue(() => InvalidateRender());
 			return;
 		}
 
