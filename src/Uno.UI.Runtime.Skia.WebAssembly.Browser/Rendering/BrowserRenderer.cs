@@ -72,10 +72,16 @@ internal partial class BrowserRenderer
 		}
 
 		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width),
-			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height),
+			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width * (_host.RootElement.XamlRoot?.RasterizationScale ?? 1.0f)),
+			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height * (_host.RootElement.XamlRoot?.RasterizationScale ?? 1.0f)),
 			_host.RootElement,
 			invertPath: false);
+
+		var scale = _host.RootElement.XamlRoot?.RasterizationScale ?? 1.0f;
+		//// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
+		//// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
+		//// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
+		path?.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), path);
 
 		Interlocked.Exchange(ref _picture, picture);
 		Interlocked.Exchange(ref _clipPath, path);
@@ -156,10 +162,6 @@ internal partial class BrowserRenderer
 			SKColors.Transparent,
 			_fpsHelper);
 
-		// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
-		// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
-		// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
-		currentClipPath?.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), currentClipPath);
 		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(currentClipPath is not null && !currentClipPath.IsEmpty ? currentClipPath.ToSvgPathData() : "");
 
 		_context.Flush();
