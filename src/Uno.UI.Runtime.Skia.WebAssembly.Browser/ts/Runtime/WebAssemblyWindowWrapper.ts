@@ -103,7 +103,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		private resize() {
-			this.onResize(this.owner, document.documentElement.clientWidth, document.documentElement.clientHeight);
+			this.onResize(this.owner, document.documentElement.clientWidth, document.documentElement.clientHeight, globalThis.devicePixelRatio);
 		}
 
 		public static setCursor(cssCursor: string) {
