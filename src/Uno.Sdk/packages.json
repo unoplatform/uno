@@ -210,7 +210,7 @@
 	},
 	{
 		"group": "AndroidXAppCompat",
-		"version": "1.7.1",
+		"version": "1.7.0.7",
 		"packages": [
 			"Xamarin.AndroidX.AppCompat"
 		]
@@ -245,7 +245,7 @@
 	},
 	{
 		"group": "AndroidXNavigation",
-		"version": "2.9.2",
+		"version": "2.9.0",
 		"packages": [
 			"Xamarin.AndroidX.Navigation.UI",
 			"Xamarin.AndroidX.Navigation.Fragment",

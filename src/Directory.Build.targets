@@ -154,18 +154,18 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">
-		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.7.1" />
+		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.7.0.7" />
 		<PackageReference Update="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.4.0.2" />
-		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.9.2" />
+		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.9.0" />
 		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.28" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
-		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.7.1" />
+		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.7.0.7" />
 		<PackageReference Update="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.4.0.2" />
-		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.9.2" />
+		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.9.0" />
 		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.28" />
 	</ItemGroup>
 
