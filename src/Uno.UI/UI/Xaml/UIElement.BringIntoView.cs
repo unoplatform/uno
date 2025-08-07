@@ -68,4 +68,15 @@ public partial class UIElement
 
 		RaiseEvent(BringIntoViewRequestedEvent, args);
 	}
+
+	internal void SetEntireSubtreeDirty()
+	{
+		// TODO Uno: Implementation should be different. For now we invalidate the entire visual tree.
+		XamlRoot?.QueueInvalidateRender();
+		//if (!m_isEntireSubtreeDirty)
+		//{
+		//	NWSetDirtyFlagsAndPropagate(DirtyFlags::Render, FALSE);
+		//	m_isEntireSubtreeDirty = TRUE;
+		//}
+	}
 }
