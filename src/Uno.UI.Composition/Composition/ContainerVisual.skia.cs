@@ -33,7 +33,7 @@ public partial class ContainerVisual : Visual
 				parent = parent.Parent;
 			}
 
-			InvalidateParentChildrenPicture();
+			InvalidateParentChildrenPicture(true);
 
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)
