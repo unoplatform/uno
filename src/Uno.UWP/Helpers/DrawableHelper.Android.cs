@@ -109,7 +109,7 @@ namespace Uno.Helpers
 			{
 				// Makes the drawable compatible with DrawableCompat pre-Lollipop.
 				drawable = DrawableCompat.Wrap(drawable);
-				drawable = drawable.Mutate();
+				drawable = drawable?.Mutate();
 			}
 
 			return drawable;

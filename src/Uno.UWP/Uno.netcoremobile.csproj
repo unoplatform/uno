@@ -36,6 +36,7 @@
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.10" />
+		<PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="1.0.1.33" />
 	</ItemGroup>
 
 	<ItemGroup>
