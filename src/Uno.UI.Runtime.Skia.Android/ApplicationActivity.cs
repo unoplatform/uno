@@ -453,7 +453,7 @@ namespace Microsoft.UI.Xaml
 					{
 						_path = value;
 						_svgClipPath = svgClipPath;
-						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath);
+						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath)!;
 						Invalidate();
 					}
 				}
