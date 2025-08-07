@@ -1492,10 +1492,10 @@ namespace Microsoft.UI.Xaml
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
 			}
 		}
-		
+
 		internal void SetEntireSubtreeDirty()
 		{
-	#if __SKIA__
+#if __SKIA__
 			// TODO Uno: Implementation should be different. For now we invalidate the entire visual tree.
 			XamlRoot?.QueueInvalidateRender();
 			//if (!m_isEntireSubtreeDirty)
@@ -1503,7 +1503,7 @@ namespace Microsoft.UI.Xaml
 			//	NWSetDirtyFlagsAndPropagate(DirtyFlags::Render, FALSE);
 			//	m_isEntireSubtreeDirty = TRUE;
 			//}
-	#endif
+#endif
 		}
 	}
 }
