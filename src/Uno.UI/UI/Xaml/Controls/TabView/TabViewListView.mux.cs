@@ -105,7 +105,6 @@ public partial class TabViewListView : ListView
 
 	private void UpdateBottomBorderVisualState()
 	{
-
 		VisualStateManager.GoToState(
 			this,
 			SelectedIndex == 0 ? "LeftBottomBorderLineShort" : "LeftBottomBorderLineNormal",

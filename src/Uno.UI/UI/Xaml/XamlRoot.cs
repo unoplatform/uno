@@ -116,10 +116,4 @@ public sealed partial class XamlRoot
 
 		return VisualTree.PopupRoot.OpenPopup(popup);
 	}
-
-	//UNO TODO: Properly implement ContentIslandEnvironment from WinUI source
-	public MUIC.ContentIslandEnvironment ContentIslandEnvironment => new MUIC.ContentIslandEnvironment();
-
-	//UNO TODO: Properly implement ContentCoordinateConverter from WinUI source
-	public MUIC.ContentCoordinateConverter CoordinateConverter => new MUIC.ContentCoordinateConverter();
 }
