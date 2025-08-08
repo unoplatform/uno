@@ -15,14 +15,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		public bool SwipeEnabled { get; set; }
 
-		public ExtendedViewPager(Android.Content.Context context)
+		public ExtendedViewPager(Context context)
 			: base(context)
 		{
 			Initialize();
 		}
 
 		[Register(".ctor", "(Landroid/content/Context;Landroid/util/AttributeSet;)V", "")]
-		public ExtendedViewPager(Android.Content.Context context, IAttributeSet attrs)
+		public ExtendedViewPager(Context context, IAttributeSet attrs)
 			: base(context, attrs)
 		{
 			Initialize();

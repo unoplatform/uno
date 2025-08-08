@@ -241,7 +241,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				else
 				{
 #if __ANDROID__
-					if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+					if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
 					{
 						_animator.AnimationPause += OnAnimatorAnimationPause;
 					}
