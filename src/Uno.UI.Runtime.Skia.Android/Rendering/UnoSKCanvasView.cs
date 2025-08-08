@@ -79,7 +79,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		if (!SkiaRenderHelper.CanRecordPicture(root))
 		{
-			NativeDispatcher.Main.Enqueue(InvalidateRender);
+			root?.XamlRoot?.QueueInvalidateRender();
 			return;
 		}
 
