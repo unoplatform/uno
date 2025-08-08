@@ -1,82 +1,59 @@
-﻿interface Window {
-	DeviceMotionEvent():void;
+﻿declare class Accelerometer {
+	constructor(config: any);
+	addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+	removeEventListener(type: "reading", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+	start(): void;
+	stop(): void;
+	x: number;
+	y: number;
+	z: number;
+}
+
+interface Window {
+	Accelerometer: Accelerometer;
 }
 
 namespace Windows.Devices.Sensors {
 
 	export class Accelerometer {
 
-		private static dispatchReading: (x:number, y:number, z:number) => number;
+		private static dispatchReading: (x: number, y: number, z: number) => number;
+		private static accelerometer: any;
 
 		public static initialize(): boolean {
-			if (window.DeviceMotionEvent) {
-				const exports = (<any>globalThis).DotnetExports?.Uno?.Uno?.Devices?.Sensors?.Accelerometer;
-
-				if (exports !== undefined) {
-					Accelerometer.dispatchReading = exports.DispatchReading;
+			try {
+				if (typeof window.Accelerometer === "function") {
+					if ((<any>globalThis).DotnetExports !== undefined) {
+						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Accelerometer.DispatchReading;
+					} else {
+						throw `Accelerometer: Unable to find dotnet exports`;
+					}
+					let AccelerometerClass: any = window.Accelerometer;
+					this.accelerometer = new AccelerometerClass({ frequency: 60 });
+					return true;
 				}
-				else {
-					throw `Accelerometer: Unable to find dotnet exports`;
-				}
-
-				// Check if accelerometer sensor is actually available
-				return Accelerometer.testSensorAvailability();
+			} catch (error) {
+				//sensor not available
+				console.log("Accelerometer could not be initialized.");
 			}
 			return false;
 		}
 
-		private static testSensorAvailability(): boolean {
-			try {
-				// Primary approach: Use device/platform detection heuristics first
-				// Check if we're on a device that typically has accelerometers
-				const userAgent = navigator.userAgent.toLowerCase();
-				const isMobile = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(userAgent);
-				const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-				
-				// Desktop browsers typically don't have accelerometers
-				// Even if the Generic Sensor API is available, hardware likely isn't present
-				if (!isMobile && !hasTouch) {
-					return false;
-				}
-
-				// For mobile/tablet devices, verify that sensor APIs are available
-				// Try Generic Sensor API first (modern approach)
-				if ('Accelerometer' in window) {
-					try {
-						// Test if we can create an Accelerometer instance
-						const testSensor = new (window as any).Accelerometer({ frequency: 1 });
-						testSensor.start();
-						testSensor.stop();
-						return true;
-					} catch (error) {
-						// Sensor not available or permission denied, fall through to DeviceMotionEvent check
-					}
-				}
-
-				// Fallback to DeviceMotionEvent for mobile devices
-				// If we reach here, we're on a mobile/touch device but Generic Sensor API failed
-				// Mobile devices virtually always have accelerometers, so assume it's available
-				return true;
-				
-			} catch (error) {
-				console.log("Accelerometer sensor availability test failed:", error);
-				return false;
-			}
-		}
-
 		public static startReading() {
-			window.addEventListener("devicemotion", Accelerometer.readingChangedHandler);
+			this.accelerometer.addEventListener("reading", Accelerometer.readingChangedHandler);
+			this.accelerometer.start();
 		}
 
 		public static stopReading() {
-			window.removeEventListener("devicemotion", Accelerometer.readingChangedHandler);
+			this.accelerometer.removeEventListener("reading", Accelerometer.readingChangedHandler);
+			this.accelerometer.stop();
 		}
 
 		private static readingChangedHandler(event: any) {
 			Accelerometer.dispatchReading(
-				event.accelerationIncludingGravity.x,
-				event.accelerationIncludingGravity.y,
-				event.accelerationIncludingGravity.z);
+				Accelerometer.accelerometer.x,
+				Accelerometer.accelerometer.y,
+				Accelerometer.accelerometer.z);
 		}
 	}
 }
