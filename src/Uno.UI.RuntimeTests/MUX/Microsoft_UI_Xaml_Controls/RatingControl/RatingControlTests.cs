@@ -139,8 +139,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestProperty("IsolationLevel", "Method")] // This test alters the application resources, so it's isolated from other tests.
 		public async Task VerifySizeIsChangeableFromResource()
 		{
-			ManualResetEvent loadedEvent = new(false);
-			ManualResetEvent unloadedEvent = new(false);
+			UnoManualResetEvent loadedEvent = new(false);
+			UnoManualResetEvent unloadedEvent = new(false);
 			double originalWidth = 0;
 			double previousWidth = 0;
 
@@ -160,7 +160,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = ratingControl;
 			});
 
-			loadedEvent.WaitOne();
+			await loadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = null;
 			});
 
-			unloadedEvent.WaitOne();
+			await unloadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = ratingControl;
 			});
 
-			loadedEvent.WaitOne();
+			await loadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -197,7 +197,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = null;
 			});
 
-			unloadedEvent.WaitOne();
+			await unloadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -218,7 +218,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = ratingControl;
 			});
 
-			loadedEvent.WaitOne();
+			await loadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -226,7 +226,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = null;
 			});
 
-			unloadedEvent.WaitOne();
+			await unloadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -249,7 +249,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = ratingControl;
 			});
 
-			loadedEvent.WaitOne();
+			await loadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -257,7 +257,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = null;
 			});
 
-			unloadedEvent.WaitOne();
+			await unloadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -277,7 +277,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = ratingControl;
 			});
 
-			loadedEvent.WaitOne();
+			await loadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
@@ -285,7 +285,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = null;
 			});
 
-			unloadedEvent.WaitOne();
+			await unloadedEvent.WaitOne();
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
