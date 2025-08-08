@@ -19,12 +19,16 @@ function renderAffix() {
                 scrollspy.activate(target);
             }
         });
-
+        
+        const currentUrl = window.location.href;
         const contribution = $('.contribution');
-        const contributionDiv = contribution.get(0).outerHTML;
+        
         contribution.remove();
-        $('.sideaffix').append(contributionDiv);
-
+        
+        if (!currentUrl.includes("articles/implemented"))  {
+            const contributionDiv = contribution.get(0).outerHTML;
+            $('.sideaffix').append(contributionDiv);
+        }
     }
 
     function getHierarchy() {
