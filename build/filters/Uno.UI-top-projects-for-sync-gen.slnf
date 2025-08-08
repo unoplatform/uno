@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "..\\..\\src\\Uno.UI.sln",
+    "path": "..\\..\\src\\Uno.UI.slnx",
     "projects": [
       "Uno.UI\\Uno.UI.netcoremobile.csproj",
       "Uno.UI\\Uno.UI.Skia.csproj",
