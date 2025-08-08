@@ -12,6 +12,7 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
+using Uno.UI.Xaml.Core;
 using MUX = Microsoft.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
@@ -157,7 +158,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		if (!SkiaRenderHelper.CanRecordPicture(_winUIWindow.RootElement))
 		{
 			// Try again next tick
-			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender(), NativeDispatcherPriority.Idle);
+			_winUIWindow.RootElement?.XamlRoot?.QueueInvalidateRender();
 			return;
 		}
 

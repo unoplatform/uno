@@ -16,6 +16,8 @@ using Windows.Graphics.Display;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
+using Uno.UI.Xaml.Core;
+
 
 #if __IOS__
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
@@ -296,7 +298,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	{
 		if (!SkiaRenderHelper.CanRecordPicture(RootElement))
 		{
-			NativeDispatcher.Main.Enqueue(InvalidateRender, NativeDispatcherPriority.Idle);
+			RootElement?.XamlRoot?.QueueInvalidateRender();
 			return;
 		}
 

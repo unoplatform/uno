@@ -540,7 +540,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		if (!SkiaRenderHelper.CanRecordPicture(Window?.RootElement))
 		{
 			// Try again next tick
-			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
+			Window?.RootElement?.XamlRoot?.QueueInvalidateRender();
 			return;
 		}
 
