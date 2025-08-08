@@ -82,7 +82,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		SizeChanged?.Invoke(this, _nativeWindowSize);
 	}
 
-	private void Draw(double nativeWidth, double nativeHeight, float scale, SKSurface surface)
+	private void Draw(SKSurface surface)
 	{
 		var currentPicture = _picture;
 		var currentClipPath = _clipPath;
@@ -130,7 +130,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		using var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture));
 		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
 
-		Draw(nativeWidth, nativeHeight, scale, surface);
+		Draw(surface);
 
 		_context?.Flush();
 		RootElement?.XamlRoot?.InvokeFrameRendered();
@@ -170,7 +170,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_rowBytes = info.RowBytes;
 		}
 
-		Draw(nativeWidth, nativeHeight, scale, _surface!);
+		Draw(_surface!);
 
 		*data = _bitmap.GetPixels(out var bitmapSize);
 		*size = (int)bitmapSize;
