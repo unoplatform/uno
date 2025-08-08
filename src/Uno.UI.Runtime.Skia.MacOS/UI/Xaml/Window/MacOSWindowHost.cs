@@ -204,10 +204,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		if (_winUIWindow.RootElement is not { } rootElement || (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		if (!SkiaRenderHelper.CanRecordPicture(_winUIWindow.RootElement))
 		{
 			// Try again next tick
-			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
+			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender(), NativeDispatcherPriority.Idle);
 			return;
 		}
 
@@ -219,13 +219,11 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(int)_nativeWindowSize.Width,
 			(int)_nativeWindowSize.Height,
-			rootElement,
+			_winUIWindow.RootElement,
 			invertPath: false);
 
 		Interlocked.Exchange(ref _picture, picture);
 		Interlocked.Exchange(ref _clipPath, path);
-
-		RootElement?.XamlRoot?.InvokeFramePainted();
 
 		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 
