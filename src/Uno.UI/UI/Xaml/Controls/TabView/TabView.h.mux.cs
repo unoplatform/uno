@@ -83,7 +83,7 @@ public partial class TabView
 
 	private string m_tabCloseButtonTooltipText;
 
-	private new Size m_previousAvailableSize;  // TODO:MZ: Avoid new here
+	private new Size m_previousAvailableSize;
 
 	private bool m_isItemBeingDragged;
 	private bool m_isItemDraggedOver;
