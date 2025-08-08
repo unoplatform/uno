@@ -21,7 +21,7 @@ internal partial class X11XamlRootHost
 			var rootElement = (this as IXamlRootHost).RootElement;
 			if (!SkiaRenderHelper.CanRecordPicture(rootElement))
 			{
-				NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
+				rootElement?.XamlRoot?.QueueInvalidateRender();
 				return;
 			}
 

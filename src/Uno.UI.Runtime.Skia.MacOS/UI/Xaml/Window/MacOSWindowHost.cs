@@ -207,7 +207,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		if (!SkiaRenderHelper.CanRecordPicture(_winUIWindow.RootElement))
 		{
 			// Try again next tick
-			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender(), NativeDispatcherPriority.Idle);
+			_winUIWindow.RootElement?.XamlRoot?.QueueInvalidateRender();
 			return;
 		}
 
