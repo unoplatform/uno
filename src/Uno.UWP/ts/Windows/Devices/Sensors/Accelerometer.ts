@@ -27,7 +27,20 @@ namespace Windows.Devices.Sensors {
 
 		private static testSensorAvailability(): boolean {
 			try {
-				// First, try the Generic Sensor API if available (modern approach)
+				// Primary approach: Use device/platform detection heuristics first
+				// Check if we're on a device that typically has accelerometers
+				const userAgent = navigator.userAgent.toLowerCase();
+				const isMobile = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(userAgent);
+				const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+				
+				// Desktop browsers typically don't have accelerometers
+				// Even if the Generic Sensor API is available, hardware likely isn't present
+				if (!isMobile && !hasTouch) {
+					return false;
+				}
+
+				// For mobile/tablet devices, verify that sensor APIs are available
+				// Try Generic Sensor API first (modern approach)
 				if ('Accelerometer' in window) {
 					try {
 						// Test if we can create an Accelerometer instance
@@ -36,24 +49,13 @@ namespace Windows.Devices.Sensors {
 						testSensor.stop();
 						return true;
 					} catch (error) {
-						// Sensor not available or permission denied, fall through to legacy check
+						// Sensor not available or permission denied, fall through to DeviceMotionEvent check
 					}
 				}
 
-				// Legacy approach: Use device/platform detection heuristics
-				// Check if we're on a device that typically has accelerometers
-				const userAgent = navigator.userAgent.toLowerCase();
-				const isMobile = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(userAgent);
-				const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-				
-				// Desktop browsers typically don't have accelerometers
-				// Exception: some laptops have accelerometers, but they're rare
-				if (!isMobile && !hasTouch) {
-					return false;
-				}
-
-				// For mobile devices, assume accelerometer is available if DeviceMotionEvent exists
-				// This is a reasonable assumption since mobile devices virtually always have accelerometers
+				// Fallback to DeviceMotionEvent for mobile devices
+				// If we reach here, we're on a mobile/touch device but Generic Sensor API failed
+				// Mobile devices virtually always have accelerometers, so assume it's available
 				return true;
 				
 			} catch (error) {
