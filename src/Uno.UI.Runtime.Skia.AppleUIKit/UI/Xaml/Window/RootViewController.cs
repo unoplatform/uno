@@ -296,7 +296,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	{
 		if (!SkiaRenderHelper.CanRecordPicture(RootElement))
 		{
-			NativeDispatcher.Main.Enqueue(InvalidateRender);
+			NativeDispatcher.Main.Enqueue(InvalidateRender, NativeDispatcherPriority.Idle);
 			return;
 		}
 

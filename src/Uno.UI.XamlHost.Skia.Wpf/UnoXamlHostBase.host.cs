@@ -126,7 +126,7 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 		if (!SkiaRenderHelper.CanRecordPicture(rootElement))
 		{
 			// Try again next tick
-			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
+			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender(), NativeDispatcherPriority.Idle);
 			return;
 		}
 
