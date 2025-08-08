@@ -1,5 +1,5 @@
 package Uno.UI;
 
-public interface UnoWebViewHandlerJavascriptInterface {
-	void postMessage(String message);
+public abstract class UnoWebViewHandlerJavascriptInterface {
+	public abstract void postMessage(String message);
 }

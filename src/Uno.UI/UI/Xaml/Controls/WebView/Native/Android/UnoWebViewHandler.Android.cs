@@ -4,7 +4,7 @@ using Java.Interop;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class UnoWebViewHandler : Java.Lang.Object, IUnoWebViewHandlerJavascriptInterface
+internal class UnoWebViewHandler : UnoWebViewHandlerJavascriptInterface
 {
 	private readonly NativeWebViewWrapper _nativeWebView;
 
@@ -14,5 +14,5 @@ internal class UnoWebViewHandler : Java.Lang.Object, IUnoWebViewHandlerJavascrip
 	}
 
 	[JavascriptInterface]
-	public void PostMessage(string? message) => _nativeWebView?.OnWebMessageReceived(message);
+	public override void PostMessage(string? message) => _nativeWebView?.OnWebMessageReceived(message);
 }
