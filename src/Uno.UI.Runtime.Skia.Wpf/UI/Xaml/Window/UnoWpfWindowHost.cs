@@ -157,7 +157,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		if (!SkiaRenderHelper.CanRecordPicture(_winUIWindow.RootElement))
 		{
 			// Try again next tick
-			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
+			NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender(), NativeDispatcherPriority.Idle);
 			return;
 		}
 
