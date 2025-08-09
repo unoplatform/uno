@@ -149,7 +149,7 @@ namespace Uno.UI
 		private void MeasureInsets(PopupWindow sender, WindowInsetsCompat insets)
 		{
 			var size = insets.GetInsets(WindowInsetsCompat.Type.SystemBars())
-				.ToThickness();
+				!.ToThickness();
 
 			var systemInsets = PhysicalToLogicalPixels(size);
 
@@ -240,9 +240,9 @@ namespace Uno.UI
 			// event hook
 			public void OnGlobalLayout() => _globalListener?.Invoke(this);
 
-			public WindowInsetsCompat OnApplyWindowInsets(View v, WindowInsetsCompat insets)
+			public WindowInsetsCompat? OnApplyWindowInsets(View? v, WindowInsetsCompat? insets)
 			{
-				_insetsListener?.Invoke(this, insets);
+				_insetsListener?.Invoke(this, insets!);
 
 				return insets;
 			}
