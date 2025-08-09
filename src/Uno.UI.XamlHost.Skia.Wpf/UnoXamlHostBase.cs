@@ -44,7 +44,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			{
 				if (global::System.Windows.Application.Current is { } app)
 				{
-					app.Dispatcher.BeginInvoke(d, p == Dispatching.NativeDispatcherPriority.Idle ? DispatcherPriority.SystemIdle : DispatcherPriority.Normal);
+					app.Dispatcher.BeginInvoke(d, p == Dispatching.NativeDispatcherPriority.Idle ? DispatcherPriority.ApplicationIdle : DispatcherPriority.Normal);
 				}
 				else
 				{

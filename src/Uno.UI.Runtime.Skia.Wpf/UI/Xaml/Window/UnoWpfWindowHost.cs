@@ -1,20 +1,24 @@
 ﻿#nullable enable
 
+using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
+using Uno.UI.Xaml.Core;
+using MUX = Microsoft.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
 using WpfControl = System.Windows.Controls.Control;
-using WpfWindow = System.Windows.Window;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
-using MUX = Microsoft.UI.Xaml;
+using WpfWindow = System.Windows.Window;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
@@ -60,6 +64,9 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	private readonly SerialDisposable _backgroundDisposable = new();
 
+	private SKPicture? _picture;
+	private SKPath? _clipPath;
+
 	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
 	{
 		_wpfWindow = wpfWindow;
@@ -87,6 +94,9 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	public WpfControl RenderLayer => _renderLayer;
 	public WpfControl BottomLayer => _renderLayer;
+
+	SKPicture? IWpfXamlRootHost.Picture => _picture;
+	SKPath? IWpfXamlRootHost.ClipPath => _clipPath;
 
 	internal void InitializeRenderer()
 	{
@@ -145,6 +155,22 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
+		if (!SkiaRenderHelper.CanRecordPicture(_winUIWindow.RootElement))
+		{
+			// Try again next tick
+			_winUIWindow.RootElement?.XamlRoot?.QueueInvalidateRender();
+			return;
+		}
+
+		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
+			(int)(_winUIWindow.Bounds.Width),
+			(int)(_winUIWindow.Bounds.Height),
+			_winUIWindow.RootElement,
+			invertPath: false);
+
+		Interlocked.Exchange(ref _picture, picture);
+		Interlocked.Exchange(ref _clipPath, path);
+
 		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 		_renderLayer.InvalidateVisual();
 		InvalidateVisual();
