@@ -144,149 +144,172 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			double originalWidth = 0;
 			double previousWidth = 0;
 
+			// Store original resource values for cleanup
+			object originalFontSize = null;
+			object originalItemSpacing = null;
+
 			RunOnUIThread.Execute(() =>
 			{
-				var ratingControl = new RatingControl();
+				// Store original values
+				originalFontSize = Application.Current.Resources["RatingControlFontSizeForRendering"];
+				originalItemSpacing = Application.Current.Resources["RatingControlItemSpacing"];
+			});
 
-				ratingControl.Loaded += (sender, e) =>
+			try
+			{
+				RunOnUIThread.Execute(() =>
 				{
-					originalWidth = ratingControl.ActualWidth;
-					previousWidth = originalWidth;
-					loadedEvent.Set();
-				};
+					var ratingControl = new RatingControl();
 
-				ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
+					ratingControl.Loaded += (sender, e) =>
+					{
+						originalWidth = ratingControl.ActualWidth;
+						previousWidth = originalWidth;
+						loadedEvent.Set();
+					};
 
-				Content = ratingControl;
-			});
+					ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
 
-			await loadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
+					Content = ratingControl;
+				});
 
-			RunOnUIThread.Execute(() =>
-			{
-				Content = null;
-			});
+				await loadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
 
-			await unloadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
-
-			RunOnUIThread.Execute(() =>
-			{
-				Application.Current.Resources["RatingControlFontSizeForRendering"] = 20.0;
-
-				var ratingControl = new RatingControl();
-
-				ratingControl.Loaded += (sender, e) =>
+				RunOnUIThread.Execute(() =>
 				{
-					Verify.IsLessThan(ratingControl.ActualWidth, previousWidth);
-					previousWidth = ratingControl.ActualWidth;
-					loadedEvent.Set();
-				};
+					Content = null;
+				});
 
-				ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
+				await unloadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
 
-				Content = ratingControl;
-			});
-
-			await loadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
-
-			RunOnUIThread.Execute(() =>
-			{
-				Content = null;
-			});
-
-			await unloadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
-
-			RunOnUIThread.Execute(() =>
-			{
-				Application.Current.Resources["RatingControlItemSpacing"] = 20.0;
-
-				var ratingControl = new RatingControl();
-
-				ratingControl.Loaded += (sender, e) =>
+				RunOnUIThread.Execute(() =>
 				{
-					Verify.IsGreaterThan(ratingControl.ActualWidth, previousWidth);
-					previousWidth = ratingControl.ActualWidth;
-					loadedEvent.Set();
-				};
+					Application.Current.Resources["RatingControlFontSizeForRendering"] = 20.0;
 
-				ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
+					var ratingControl = new RatingControl();
 
-				Content = ratingControl;
-			});
+					ratingControl.Loaded += (sender, e) =>
+					{
+						Verify.IsLessThan(ratingControl.ActualWidth, previousWidth);
+						previousWidth = ratingControl.ActualWidth;
+						loadedEvent.Set();
+					};
 
-			await loadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
+					ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
 
-			RunOnUIThread.Execute(() =>
-			{
-				Content = null;
-			});
+					Content = ratingControl;
+				});
 
-			await unloadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
+				await loadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
-			{
-				Application.Current.Resources["RatingControlFontSizeForRendering"] = 48.0;
-				Application.Current.Resources.Remove("RatingControlItemSpacing");
-
-				var ratingControl = new RatingControl();
-
-				ratingControl.Loaded += (sender, e) =>
+				RunOnUIThread.Execute(() =>
 				{
-					Verify.IsGreaterThan(ratingControl.ActualWidth, originalWidth);
-					Verify.IsGreaterThan(ratingControl.ActualWidth, previousWidth);
-					previousWidth = ratingControl.ActualWidth;
-					loadedEvent.Set();
-				};
+					Content = null;
+				});
 
-				ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
+				await unloadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
 
-				Content = ratingControl;
-			});
-
-			await loadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
-
-			RunOnUIThread.Execute(() =>
-			{
-				Content = null;
-			});
-
-			await unloadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
-
-			RunOnUIThread.Execute(() =>
-			{
-				Application.Current.Resources["RatingControlItemSpacing"] = 2.0;
-
-				var ratingControl = new RatingControl();
-
-				ratingControl.Loaded += (sender, e) =>
+				RunOnUIThread.Execute(() =>
 				{
-					Verify.IsLessThan(ratingControl.ActualWidth, previousWidth);
-					loadedEvent.Set();
-				};
+					Application.Current.Resources["RatingControlItemSpacing"] = 20.0;
 
-				ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
+					var ratingControl = new RatingControl();
 
-				Content = ratingControl;
-			});
+					ratingControl.Loaded += (sender, e) =>
+					{
+						Verify.IsGreaterThan(ratingControl.ActualWidth, previousWidth);
+						previousWidth = ratingControl.ActualWidth;
+						loadedEvent.Set();
+					};
 
-			await loadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
+					ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
 
-			RunOnUIThread.Execute(() =>
+					Content = ratingControl;
+				});
+
+				await loadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				RunOnUIThread.Execute(() =>
+				{
+					Content = null;
+				});
+
+				await unloadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				RunOnUIThread.Execute(() =>
+				{
+					Application.Current.Resources["RatingControlFontSizeForRendering"] = 48.0;
+					Application.Current.Resources.Remove("RatingControlItemSpacing");
+
+					var ratingControl = new RatingControl();
+
+					ratingControl.Loaded += (sender, e) =>
+					{
+						Verify.IsGreaterThan(ratingControl.ActualWidth, originalWidth);
+						Verify.IsGreaterThan(ratingControl.ActualWidth, previousWidth);
+						previousWidth = ratingControl.ActualWidth;
+						loadedEvent.Set();
+					};
+
+					ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
+
+					Content = ratingControl;
+				});
+
+				await loadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				RunOnUIThread.Execute(() =>
+				{
+					Content = null;
+				});
+
+				await unloadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				RunOnUIThread.Execute(() =>
+				{
+					Application.Current.Resources["RatingControlItemSpacing"] = 2.0;
+
+					var ratingControl = new RatingControl();
+
+					ratingControl.Loaded += (sender, e) =>
+					{
+						Verify.IsLessThan(ratingControl.ActualWidth, previousWidth);
+						loadedEvent.Set();
+					};
+
+					ratingControl.Unloaded += (sender, e) => unloadedEvent.Set();
+
+					Content = ratingControl;
+				});
+
+				await loadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				RunOnUIThread.Execute(() =>
+				{
+					Content = null;
+				});
+
+				await unloadedEvent.WaitOne();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			finally
 			{
-				Content = null;
-			});
-
-			await unloadedEvent.WaitOne();
-			await TestServices.WindowHelper.WaitForIdle();
+				// Restore original resource values
+				RunOnUIThread.Execute(() =>
+				{
+					Application.Current.Resources["RatingControlFontSizeForRendering"] = originalFontSize;
+					Application.Current.Resources["RatingControlItemSpacing"] = originalItemSpacing;
+				});
+			}
 		}
 	}
 }
