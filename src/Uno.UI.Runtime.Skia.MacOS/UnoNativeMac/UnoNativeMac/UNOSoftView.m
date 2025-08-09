@@ -50,6 +50,8 @@
 #endif
 
     CGRect rect = CGRectMake(0, 0, width, height);
+    CGSize content = [self.window contentRectForFrameRect: rect].size;
+    rect = CGRectMake(0, content.height - rect.size.height, rect.size.width, rect.size.height);
     CGContextDrawImage(NSGraphicsContext.currentContext.CGContext, rect, image);
 
     CGImageRelease(image);
