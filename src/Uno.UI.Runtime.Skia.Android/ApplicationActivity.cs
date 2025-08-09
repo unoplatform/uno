@@ -6,6 +6,7 @@ using Android.Content.PM;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
@@ -54,7 +55,7 @@ namespace Microsoft.UI.Xaml
 
 		internal ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
-		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
+		public ApplicationActivity(IntPtr ptr, JniHandleOwnership owner) : base(ptr, owner)
 		{
 			Initialize();
 		}

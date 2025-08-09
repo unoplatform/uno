@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Because Controls don't have backgrounds (the background element is part of their template),
 			// we cast elevation shadows using their rectangular bounds.
 			// Note that because it uses the rectangular bounds of the Control, it won't consider rounded corners.
-			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
+			if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Lollipop)
 			{
 				OutlineProvider = ViewOutlineProvider.Bounds;
 			}

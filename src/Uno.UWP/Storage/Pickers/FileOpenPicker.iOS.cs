@@ -71,7 +71,7 @@ namespace Windows.Storage.Pickers
 						ImagePickerControllerDelegate = new ImageOpenPickerDelegate(completionSource)
 					};
 
-					var mediaTypesFromPhotoLibrary = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary);
+					var mediaTypesFromPhotoLibrary = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary) ?? [];
 					var types = new List<string>();
 
 					if (FileTypeFilter.Count == 0 || FileTypeFilter.Contains("*"))

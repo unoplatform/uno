@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Media
 					TintColor.R,
 					TintColor.G,
 					TintColor.B);
-			Android.Graphics.Color tintColor = tintColorWithOpacity;
+			AColor tintColor = tintColorWithOpacity;
 			state.BlurView?.SetOverlayColor(tintColor, invalidate);
 		}
 

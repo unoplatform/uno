@@ -114,13 +114,13 @@ partial class NativeTimePickerFlyout : TimePickerFlyout
 
 	public class OnSetTimeListener : Java.Lang.Object, IOnTimeSetListener
 	{
-		private Action<Android.Widget.TimePicker, int, int> _action;
+		private Action<ATimePicker, int, int> _action;
 
-		public OnSetTimeListener(Action<Android.Widget.TimePicker, int, int> action)
+		public OnSetTimeListener(Action<ATimePicker, int, int> action)
 		{
 			_action = action;
 		}
 
-		public void OnTimeSet(Android.Widget.TimePicker view, int hourOfDay, int minute) => _action(view, hourOfDay, minute);
+		public void OnTimeSet(ATimePicker view, int hourOfDay, int minute) => _action(view, hourOfDay, minute);
 	}
 }

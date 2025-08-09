@@ -46,8 +46,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			View uiControl = GetUIControl();
 
-			var nativeButton = uiControl as Android.Widget.Button;
-			if (nativeButton is Android.Widget.Button)
+			var nativeButton = uiControl as AButton;
+			if (nativeButton is AButton)
 			{
 				_isEnabledSubscription.Disposable =
 					DependencyObjectExtensions.RegisterDisposablePropertyChangedCallback(

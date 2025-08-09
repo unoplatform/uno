@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Android.App;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
@@ -10,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public abstract class NativePage : BaseActivity
 	{
-		public NativePage(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
+		public NativePage(IntPtr ptr, JniHandleOwnership owner) : base(ptr, owner)
 		{
 		}
 
@@ -24,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			InitializeComponent();
 
-			var decorView = (ContextHelper.Current as Android.App.Activity)!.Window!.DecorView;
+			var decorView = (ContextHelper.Current as Activity)!.Window!.DecorView;
 
 #pragma warning disable 618
 #pragma warning disable CA1422 // Validate platform compatibility

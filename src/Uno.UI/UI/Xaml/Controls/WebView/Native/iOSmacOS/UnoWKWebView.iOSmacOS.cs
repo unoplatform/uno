@@ -281,7 +281,7 @@ public
 			if (!cancel)
 			{
 #if __APPLE_UIKIT__
-				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
+				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target!))
 #else
 				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
 #endif
@@ -807,7 +807,7 @@ public
 				}
 				else
 				{
-					tcs.TrySetResult(result as NSString);
+					tcs.TrySetResult((result as NSString) ?? "");
 				}
 			});
 

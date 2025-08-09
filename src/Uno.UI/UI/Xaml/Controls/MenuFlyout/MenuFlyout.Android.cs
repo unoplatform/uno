@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private View GetActualTarget()
 		{
 			if (Target is AppBarButton appBarButton
-			&& ((Android.Views.View)Target).Parent == null // View.Parent (IViewParent) is the visual parent (hidden using `new` modifier).
+			&& ((AView)Target).Parent == null // View.Parent (IViewParent) is the visual parent (hidden using `new` modifier).
 			&& Target.Parent is CommandBar commandBar // FrameworkElement.Parent (DependencyObject) is the logical parent.
 			&& commandBar.FindViewById(appBarButton.GetHashCode()) is View actionMenuItemView)
 			{
