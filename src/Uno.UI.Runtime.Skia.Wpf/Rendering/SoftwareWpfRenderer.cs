@@ -7,10 +7,9 @@ using System.Windows.Media.Imaging;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Helpers;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Visibility = System.Windows.Visibility;
-using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
@@ -48,14 +47,6 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			return;
 		}
 
-		using var _ = _fpsHelper.BeginFrame();
-
-		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
-		{
-			_host.InvalidateRender();
-			return;
-		}
-
 		int width, height;
 
 		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
@@ -88,9 +79,6 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 		_bitmap.Lock();
 		using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
 		{
-			var canvas = surface.Canvas;
-			canvas.Clear(BackgroundColor);
-			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
@@ -98,13 +86,16 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 				{
 					rootVisual.Compositor.IsSoftwareRenderer = true;
 
-					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
-					_fpsHelper.DrawFps(canvas);
+					SkiaRenderHelper.RenderPicture(
+						surface,
+						_host.Picture,
+						BackgroundColor,
+						_fpsHelper);
 
 					if (_host.NativeOverlayLayer is { } nativeLayer)
 					{
 						nativeLayer.Clip ??= new PathGeometry();
-						((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
+						((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(_host.ClipPath?.ToSvgPathData());
 					}
 					else
 					{
@@ -113,8 +104,6 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 							this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
 						}
 					}
-
-					_host.RootElement?.XamlRoot?.InvokeFramePainted();
 				}
 				finally
 				{
@@ -127,6 +116,5 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 		_bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
 		_bitmap.Unlock();
 		drawingContext.DrawImage(_bitmap, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
-		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 }
