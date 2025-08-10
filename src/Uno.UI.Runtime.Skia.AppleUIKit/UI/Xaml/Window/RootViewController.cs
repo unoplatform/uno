@@ -31,6 +31,10 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
+#if __TVOS__
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
+#endif
+
 	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
@@ -136,8 +140,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			_picture,
 			SKColors.Transparent,
 			_fpsHelper);
-
-		UpdateNativeClipping(_clipPath);
 	}
 #endif
 
