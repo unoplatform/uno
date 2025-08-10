@@ -31,15 +31,12 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-
 	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
 	private SKPicture? _picture;
-	private SKPath? _clipPath;
 
 	public RootViewController()
 	{
@@ -309,9 +306,8 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			invertPath: false);
 
 		Interlocked.Exchange(ref _picture, picture);
-		Interlocked.Exchange(ref _clipPath, path);
 
-		UpdateNativeClipping(_clipPath);
+		UpdateNativeClipping(path);
 
 #if !__TVOS__
 		_skCanvasView?.QueueRender();
