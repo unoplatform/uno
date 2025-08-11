@@ -16,6 +16,19 @@ onmessage = async (e) => {
 			imageBitmap.width,
 			imageBitmap.height
 		);
+		
+		// Due to a bug in Skia on WASM, we need the pixels to be
+		// alpha-premultiplied because using SKAlphaType.Unpremul is not working
+		// correctly (see also https://github.com/unoplatform/uno/issues/20727),
+		// so we multiply the RGB values by the alpha by hand instead.
+		// This is somehow a LOT faster than doing it with webgl in a fragment shader
+		const buffer = imageData.data;
+		for (let i = 0; i < buffer.byteLength; i += 4) {
+			const a = buffer[i + 3];
+			buffer[i] = (buffer[i] * a) / 255;
+			buffer[i + 1] = (buffer[i + 1] * a) / 255;
+			buffer[i + 2] = (buffer[i + 2] * a) / 255;
+		}
 		postMessage({
 			seqNo: seqNo,
 			response: {
