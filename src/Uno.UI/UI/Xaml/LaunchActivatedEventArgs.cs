@@ -17,6 +17,11 @@ namespace Microsoft.UI.Xaml
 			UWPLaunchActivatedEventArgs = new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(kind, arguments);
 		}
 
+		internal LaunchActivatedEventArgs(global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs uwpLaunchActivatedEventArgs)
+		{
+			UWPLaunchActivatedEventArgs = uwpLaunchActivatedEventArgs;
+		}
+
 		public string? Arguments { get; }
 
 		public global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs UWPLaunchActivatedEventArgs { get; }
