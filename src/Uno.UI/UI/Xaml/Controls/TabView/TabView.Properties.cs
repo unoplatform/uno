@@ -99,7 +99,7 @@ public partial class TabView
 	/// <summary>
 	/// Identifies the CanTearOutTabs dependency property.
 	/// </summary>
-	public static readonly DependencyProperty CanTearOutTabsProperty =
+	public static readonly DependencyProperty CanTearOutTabsProperty { get; } =
 		DependencyProperty.Register(nameof(CanTearOutTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(false));
 
 	/// <summary>
