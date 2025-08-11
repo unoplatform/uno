@@ -450,7 +450,7 @@ partial class CommandBarFlyoutCommandBar
 
 				void OnItemSizeChanged(object? sender, SizeChangedEventArgs args)
 				{
-					UpdateItemVisualState(sender as Control, true /* isPrimaryControl */);
+					UpdateItemVisualState(sender as Control, false /* isPrimaryControl */);
 					UpdateTemplateSettings();
 				}
 				commandAsFE.SizeChanged += OnItemSizeChanged;
