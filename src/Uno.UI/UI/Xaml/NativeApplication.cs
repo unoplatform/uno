@@ -152,9 +152,15 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
+#if NET10_0_OR_GREATER
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) =>
 			throw new NotSupportedException("`static` methods with [Export] are not supported on NativeAOT.");
+#else   // !NET10_0_OR_GREATER
+		[Export(nameof(GetTypeAssemblyFullName))]
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
+#endif  // !NET10_0_OR_GREATER
 
 		private class ActivityCallbacks : Java.Lang.Object, IActivityLifecycleCallbacks
 		{
