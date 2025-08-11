@@ -6583,7 +6583,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							var def = new XamlMemberDefinition(
 								new XamlMember(name,
-									elementStubType,
+									_elementStubXamlType,
 									false
 								), 0, 0,
 								owner
