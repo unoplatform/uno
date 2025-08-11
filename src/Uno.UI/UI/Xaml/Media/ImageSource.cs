@@ -159,9 +159,11 @@ namespace Microsoft.UI.Xaml.Media
 				return null;
 			}
 
+			var path = uri.IsAbsoluteUri ? uri.LocalPath : uri.OriginalString;
+
 			if (__LinkerHints.Is_Microsoft_UI_Xaml_Media_Imaging_SvgImageSource_Available
-				&& (uri.LocalPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) ||
-					uri.LocalPath.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
+				&& (path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) ||
+					path.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
 			)
 			{
 				return new SvgImageSource(uri);
