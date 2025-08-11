@@ -47,8 +47,6 @@ This is included by default in both the blank and recommended presets.
 dotnet new unoapp -pwa
 ```
 
-When using Uno Platform project templates, the PWA manifest and related configuration are automatically set up. For advanced PWA configuration or when using the Uno.Wasm.Bootstrap directly without templates, see the [detailed PWA documentation](xref:UnoWasmBootstrap.Features.PWA).
-
 #### Visual Studio Code debugging
 
 Enables Uno Platform debugging in Visual Studio Code. This is included by default in both the blank and recommended presets.
