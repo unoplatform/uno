@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
+[Microsoft.UI.Xaml.Data.Bindable]
 public partial class PersonPictureTemplateSettings : DependencyObject
 {
 	public ImageBrush ActualImageBrush
