@@ -1,77 +1,77 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls/dev/Repeater/FlowLayoutState.cpp, tag winui3/release/1.7.3, commit 65718e2813a90
 
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class FlowLayoutState
 {
-	public partial class FlowLayoutState
+	private const int BufferSize = 100;
+
+	private readonly FlowLayoutAlgorithm m_flowAlgorithm = new FlowLayoutAlgorithm();
+	private double[] m_lineSizeEstimationBuffer = new double[BufferSize];
+	private double[] m_itemsPerLineEstimationBuffer = new double[BufferSize];
+	private double m_totalLineSize;
+	private int m_totalLinesMeasured;
+	private double m_totalItemsPerLine;
+	private Size m_specialElementDesiredSize;
+
+	internal FlowLayoutAlgorithm FlowAlgorithm => m_flowAlgorithm;
+	internal double TotalLineSize => m_totalLineSize;
+	internal int TotalLinesMeasured => m_totalLinesMeasured;
+	internal double TotalItemsPerLine => m_totalItemsPerLine;
+	internal Size SpecialElementDesiredSize
 	{
-		private const int BufferSize = 100;
+		get => m_specialElementDesiredSize;
+		set => m_specialElementDesiredSize = value;
+	}
 
-		private readonly FlowLayoutAlgorithm m_flowAlgorithm = new FlowLayoutAlgorithm();
-		private double[] m_lineSizeEstimationBuffer = new double[BufferSize];
-		private double[] m_itemsPerLineEstimationBuffer = new double[BufferSize];
-		private double m_totalLineSize;
-		private int m_totalLinesMeasured;
-		private double m_totalItemsPerLine;
-		private Size m_specialElementDesiredSize;
+	internal double Uno_LastKnownAverageLineSize;
 
-		internal FlowLayoutAlgorithm FlowAlgorithm => m_flowAlgorithm;
-		internal double TotalLineSize => m_totalLineSize;
-		internal int TotalLinesMeasured => m_totalLinesMeasured;
-		internal double TotalItemsPerLine => m_totalItemsPerLine;
-		internal Size SpecialElementDesiredSize
+	internal void InitializeForContext(VirtualizingLayoutContext context, IFlowLayoutAlgorithmDelegates callbacks)
+	{
+		m_flowAlgorithm.InitializeForContext(context, callbacks);
+
+		if (m_lineSizeEstimationBuffer.Length == 0)
 		{
-			get => m_specialElementDesiredSize;
-			set => m_specialElementDesiredSize = value;
+			Array.Resize(ref m_lineSizeEstimationBuffer, BufferSize);
+			Array.Resize(ref m_itemsPerLineEstimationBuffer, BufferSize);
 		}
 
-		internal double Uno_LastKnownAverageLineSize;
+		context.LayoutStateCore = this;
+	}
 
-		internal void InitializeForContext(VirtualizingLayoutContext context, IFlowLayoutAlgorithmDelegates callbacks)
+	internal void UninitializeForContext(VirtualizingLayoutContext context)
+	{
+		m_flowAlgorithm.UninitializeForContext(context);
+	}
+
+	internal void OnLineArranged(int startIndex, int countInLine, double lineSize, VirtualizingLayoutContext context)
+	{
+		// If we do not have any estimation information, use the line for estimation. 
+		// If we do have some estimation information, don't account for the last line which is quite likely
+		// different from the rest of the lines and can throw off estimation.
+		if (m_totalLinesMeasured == 0 || startIndex + countInLine != context.ItemCount)
 		{
-			m_flowAlgorithm.InitializeForContext(context, callbacks);
+			int estimationBufferIndex = startIndex % m_lineSizeEstimationBuffer.Length;
+			bool alreadyMeasured = m_lineSizeEstimationBuffer[estimationBufferIndex] != 0;
 
-			if (m_lineSizeEstimationBuffer.Length == 0)
+			if (!alreadyMeasured)
 			{
-				Array.Resize(ref m_lineSizeEstimationBuffer, BufferSize);
-				Array.Resize(ref m_itemsPerLineEstimationBuffer, BufferSize);
+				++m_totalLinesMeasured;
 			}
 
-			context.LayoutStateCore = this;
-		}
+			m_totalLineSize -= m_lineSizeEstimationBuffer[estimationBufferIndex];
+			m_totalLineSize += lineSize;
+			m_lineSizeEstimationBuffer[estimationBufferIndex] = lineSize;
 
-		internal void UninitializeForContext(VirtualizingLayoutContext context)
-		{
-			m_flowAlgorithm.UninitializeForContext(context);
-		}
-
-		internal void OnLineArranged(int startIndex, int countInLine, double lineSize, VirtualizingLayoutContext context)
-		{
-			// If we do not have any estimation information, use the line for estimation. 
-			// If we do have some estimation information, don't account for the last line which is quite likely
-			// different from the rest of the lines and can throw off estimation.
-			if (m_totalLinesMeasured == 0 || startIndex + countInLine != context.ItemCount)
-			{
-				int estimationBufferIndex = startIndex % m_lineSizeEstimationBuffer.Length;
-				bool alreadyMeasured = m_lineSizeEstimationBuffer[estimationBufferIndex] != 0;
-
-				if (!alreadyMeasured)
-				{
-					++m_totalLinesMeasured;
-				}
-
-				m_totalLineSize -= m_lineSizeEstimationBuffer[estimationBufferIndex];
-				m_totalLineSize += lineSize;
-				m_lineSizeEstimationBuffer[estimationBufferIndex] = lineSize;
-
-				m_totalItemsPerLine -= m_itemsPerLineEstimationBuffer[estimationBufferIndex];
-				m_totalItemsPerLine += countInLine;
-				m_itemsPerLineEstimationBuffer[estimationBufferIndex] = countInLine;
-			}
+			m_totalItemsPerLine -= m_itemsPerLineEstimationBuffer[estimationBufferIndex];
+			m_totalItemsPerLine += countInLine;
+			m_itemsPerLineEstimationBuffer[estimationBufferIndex] = countInLine;
 		}
 	}
 }

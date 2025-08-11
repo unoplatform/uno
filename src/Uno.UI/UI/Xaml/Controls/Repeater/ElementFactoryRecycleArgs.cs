@@ -1,11 +1,10 @@
 ﻿using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
-{
-	public partial class ElementFactoryRecycleArgs
-	{
-		public UIElement Parent { get; set; }
+namespace Microsoft.UI.Xaml.Controls;
 
-		public UIElement Element { get; set; }
-	}
+public partial class ElementFactoryRecycleArgs
+{
+	public UIElement Parent { get; set; }
+
+	public UIElement Element { get; set; }
 }
