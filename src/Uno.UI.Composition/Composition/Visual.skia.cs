@@ -580,8 +580,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				totalMatrix = TotalMatrix * rootTransform;
 			}
 
-			// this avoids the matrix copying in canvas.SetMatrix()
-			UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+			if (!_totalMatrix.isLocalMatrixIdentity)
+			{
+				// this avoids the matrix copying in canvas.SetMatrix()
+				UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+			}
 		}
 #if DEBUG
 		else
