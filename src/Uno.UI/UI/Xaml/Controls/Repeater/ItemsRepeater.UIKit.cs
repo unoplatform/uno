@@ -1,6 +1,7 @@
 using UIKit;
 
 namespace Microsoft.UI.Xaml.Controls;
+
 public partial class ItemsRepeater
 {
 	public override void AddSubview(UIView view)

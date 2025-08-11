@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				return new Android.Graphics.Color(this.TextColors.DefaultColor);
+				return new AColor(this.TextColors.DefaultColor);
 			}
 			set
 			{

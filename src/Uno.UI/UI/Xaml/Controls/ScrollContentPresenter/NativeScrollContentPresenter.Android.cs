@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void InitializeScrollbars()
 		{
 			// Force scrollbars to initialize since we're not inflating from xml
-			if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.Kitkat)
+			if (ABuild.VERSION.SdkInt <= ABuildVersionCodes.Kitkat)
 			{
 				var styledAttributes = Context.Theme.ObtainStyledAttributes(Uno.UI.Resource.Styleable.View);
 				InitializeScrollbars(styledAttributes);

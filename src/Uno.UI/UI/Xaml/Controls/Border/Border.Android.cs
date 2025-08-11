@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Border
 {
-	protected override void OnDraw(Android.Graphics.Canvas canvas) => AdjustCornerRadius(canvas, CornerRadius);
+	protected override void OnDraw(ACanvas canvas) => AdjustCornerRadius(canvas, CornerRadius);
 
 	bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
 	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;

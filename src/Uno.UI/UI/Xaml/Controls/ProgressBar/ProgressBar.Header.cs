@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Shapes;
 using MUXC = Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
+
 public partial class ProgressBar
 {
 	private MUXC.Grid m_layoutRoot;
