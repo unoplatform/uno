@@ -5,11 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using Windows.Foundation;
 using Windows.UI.Text;
 using HarfBuzzSharp;
 using Icu;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using SkiaSharp;
 using Buffer = HarfBuzzSharp.Buffer;
@@ -61,13 +63,13 @@ internal readonly struct UnicodeText : IParsedText
 
 	// FontDetails might be different from inline.FontDetails because of font fallback
 	// glyphs are always ordered LTR even in RTL text
-	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyInlineCopy Inline, int inlineIndex, int inInlineIndexStart, int inInlineIndexEnd, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl);
+	private readonly record struct ShapedLineBrokenBidiRun(ReadonlyInlineCopy Inline, int startInInline, int endInInline, (GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails fontDetails, bool rtl);
 	private record LayoutedGlyphDetails(GlyphInfo info, GlyphPosition position, float xPosInRun, Cluster? cluster, LayoutedLineBrokenBidiRun parentRun)
 	{
 		public Cluster? cluster { get; set; } = cluster;
 	}
 
-	private record LayoutedLineBrokenBidiRun(ReadonlyInlineCopy inline, int inlineIndex, int inInlineIndexStart, int inInlineIndexEnd, float x, float y, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, LayoutedLine line, int indexInLine)
+	private record LayoutedLineBrokenBidiRun(ReadonlyInlineCopy inline, int startInInline, int endInInline, float x, float y, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, LayoutedLine line, int indexInLine)
 	{
 		public float width { get; set; } = width;
 		public LayoutedLine line { get; set; } = line;
@@ -85,6 +87,7 @@ internal readonly struct UnicodeText : IParsedText
 	private readonly Cluster[] _textIndexToGlyph;
 	private readonly Size _desiredSize;
 	private readonly int _textLength;
+	private readonly string _text;
 
 	private static readonly FieldInfo _biDiFieldInfo = typeof(BiDi).GetField("_biDi", BindingFlags.NonPublic | BindingFlags.Instance)!;
 	private static readonly ubidi_setLineDelegate _setLine;
@@ -120,18 +123,21 @@ internal readonly struct UnicodeText : IParsedText
 		_textAlignment = textAlignment;
 
 		_inlines = new();
-		var acc = 0;
+		var textBuilder = new StringBuilder();
+		var lastEnd = 0;
 		foreach (var inline in inlines)
 		{
-			var copy = new ReadonlyInlineCopy(inline, acc, flowDirection);
+			var copy = new ReadonlyInlineCopy(inline, lastEnd, flowDirection);
 			var length = copy.Text.Length;
 			if (length != 0)
 			{
 				_inlines.Add(copy);
-				acc += length;
 			}
+			textBuilder.Append(copy.Text);
+			lastEnd = copy.EndIndex;
 		}
-		_textLength = acc;
+		_text = textBuilder.ToString();
+		_textLength = _text.Length;
 
 		if (_inlines.Count == 0)
 		{
@@ -141,10 +147,7 @@ internal readonly struct UnicodeText : IParsedText
 			_inlines = [];
 			return;
 		}
-		// TODO: multiple inlines
-		var firstInline = _inlines[0];
-		var text = firstInline.Text;
-		if (text.Length == 0)
+		if (_textLength == 0)
 		{
 			_lines = new();
 			desiredSize = new Size(0, defaultLineHeight);
@@ -153,8 +156,8 @@ internal readonly struct UnicodeText : IParsedText
 		}
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
-		var unlayoutedLines = SplitTextIntoLines(firstInline, 0, lineWidth, lineWidth);
-		_lines = LayoutLines(unlayoutedLines);
+		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth);
+		_lines = LayoutLines(unlayoutedLines, defaultLineHeight);
 		_textIndexToGlyph = new Cluster[inlines.Sum(i => i.GetText().Length)];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
@@ -164,196 +167,248 @@ internal readonly struct UnicodeText : IParsedText
 	}
 
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
-	private static List<List<ShapedLineBrokenBidiRun>> SplitTextIntoLines(ReadonlyInlineCopy inline, int textElementIndex, float firstLineWidth, float lineWidth)
+	private static List<List<ShapedLineBrokenBidiRun>> SplitTextIntoLines(bool rtl, List<ReadonlyInlineCopy> inlines, float lineWidth)
 	{
-		var text = inline.Text;
-		var bidi = new BiDi();
-		bidi.SetPara(text, (byte)(inline.FlowDirection == FlowDirection.LeftToRight ? 0 : 1), null);
-
-		var logicallyOrderedRuns = SplitTextIntoLogicallyOrderedBidiRuns(inline, bidi);
-		var lineBreakingOpportunities = GetLineBreakingOpportunities(text);
-		var lineEnds = ApplyLineBreaking(inline, firstLineWidth, lineWidth, lineBreakingOpportunities, logicallyOrderedRuns);
-		var lines = ApplyBidiReordering(inline, textElementIndex, lineEnds, bidi);
-
-		return lines;
-	}
-
-	private static List<List<ShapedLineBrokenBidiRun>> ApplyBidiReordering(ReadonlyInlineCopy inline, int textElementIndex, List<int> lineEnds, BiDi bidi)
-	{
-		var ret = new List<List<ShapedLineBrokenBidiRun>>();
-		for (var lineIndex = 0; lineIndex < lineEnds.Count; lineIndex++)
+		var logicallyOrderedRuns = new List<BidiRun>();
+		var logicallyOrderedLineBreakingOpportunities = new List<(int indexInInline, ReadonlyInlineCopy inline)>();
+		foreach (var inline in inlines)
 		{
-			var lineEnd = lineEnds[lineIndex];
-			var lineStart = lineIndex > 0 ? lineEnds[lineIndex - 1] : 0;
-			// The delegate for SetLine is incorrectly implemented and causes a segfault so we roll our own
-			using var lineBidi = new BiDi();
-			_setLine((IntPtr)_biDiFieldInfo.GetValue(bidi)!, lineStart, lineEnd, (IntPtr)_biDiFieldInfo.GetValue(lineBidi)!, out var error);
-			if (error != ErrorCode.ZERO_ERROR)
-			{
-				throw new InvalidOperationException("LibICU's ubidi_setLine returned an error: " + error);
-			}
-
-			var runs = new List<ShapedLineBrokenBidiRun>();
-			var runCount = lineBidi.CountRuns();
-			for (var runIndex = 0; runIndex < runCount; runIndex++)
-			{
-				var beginningIndexInRunList = runs.Count;
-				var level = lineBidi.GetVisualRun(runIndex, out var logicalStart, out var length);
-				Debug.Assert(level is BiDi.BiDiDirection.RTL or BiDi.BiDiDirection.LTR);
-
-				var currentFontDetails = inline.FontDetails;
-				var currentFontSplitStart = logicalStart;
-				for (var i = logicalStart; i < logicalStart + length; i += char.IsSurrogate(inline.Text, lineStart + i) ? 2 : 1)
-				{
-					FontDetails newFontDetails;
-					if (char.ConvertToUtf32(inline.Text, lineStart + i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
-					{
-						newFontDetails = SKFontManager.Default.MatchCharacter(codepoint) is { } fallbackTypeface
-							? FontDetailsCache.GetFont(fallbackTypeface.FamilyName, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle).details
-							: inline.FontDetails;
-					}
-					else
-					{
-						newFontDetails = inline.FontDetails;
-					}
-
-					if (newFontDetails != currentFontDetails)
-					{
-						if (i != logicalStart)
-						{
-							runs.Add(new ShapedLineBrokenBidiRun(inline, textElementIndex, lineStart + currentFontSplitStart, lineStart + i, ShapeRun(inline.Text[(lineStart + currentFontSplitStart)..(lineStart + i)], level is BiDi.BiDiDirection.RTL, currentFontDetails.Font), currentFontDetails, level is BiDi.BiDiDirection.RTL));
-						}
-						currentFontDetails = newFontDetails;
-						currentFontSplitStart = i;
-					}
-				}
-				runs.Add(new ShapedLineBrokenBidiRun(inline, textElementIndex, lineStart + currentFontSplitStart, lineStart + logicalStart + length, ShapeRun(inline.Text[(lineStart + currentFontSplitStart)..(lineStart + logicalStart + length)], level is BiDi.BiDiDirection.RTL, currentFontDetails.Font), currentFontDetails, level is BiDi.BiDiDirection.RTL));
-				// swap runs if rtl
-				if (level is BiDi.BiDiDirection.RTL)
-				{
-					for (var i = 0; i < (runs.Count - beginningIndexInRunList) / 2; i++)
-					{
-						(runs[beginningIndexInRunList + i], runs[^(1 + i)]) = (runs[^(1 + i)], runs[beginningIndexInRunList + i]);
-					}
-				}
-			}
-			ret.Add(runs);
+			var text = inline.Text;
+			var bidi = new BiDi();
+			bidi.SetPara(text, (byte)(inline.FlowDirection == FlowDirection.LeftToRight ? 0 : 1), null);
+			logicallyOrderedRuns.AddRange(SplitTextIntoLogicallyOrderedBidiRuns(inline, bidi));
+			logicallyOrderedLineBreakingOpportunities.AddRange(GetLineBreakingOpportunities(text).Select(b => (b, inline)));
 		}
 
-		return ret;
+		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidth, logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities);
+		var linesWithBidiReordering = ApplyBidiReordering(rtl, inlines, linesWithLogicallyOrderedRuns);
+
+		return linesWithBidiReordering;
 	}
 
-	private static List<int> ApplyLineBreaking(ReadonlyInlineCopy inline, float firstLineWidth, float lineWidth, List<int> lineBreakingOpportunities, List<BidiRun> logicallyOrderedRuns)
+	private static List<List<ShapedLineBrokenBidiRun>> ApplyBidiReordering(bool rtl, List<ReadonlyInlineCopy> linesBeforeBidiReordering, List<List<BidiRun>> linesWithLogicallyOrderedRuns)
 	{
-		var lineEnds = new List<int>();
-		var currentLineEnd = -1;
+		var shapedLines = new List<List<ShapedLineBrokenBidiRun>>();
+		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
+		{
+			var line = linesWithLogicallyOrderedRuns[lineIndex];
+			if (line.Count == 0)
+			{
+				shapedLines.Add(new());
+				continue;
+			}
+
+			var lineRuns = new Deque<ShapedLineBrokenBidiRun>();
+			foreach (var group in line.GroupBy(r => r.inline))
+			{
+				var inline = group.Key;
+				var groupAsArray = group.ToArray();
+				var startInInline = groupAsArray[0].startInInline;
+				var endInInline = groupAsArray[^1].endInInline;
+
+				var sameInlineRuns = new List<ShapedLineBrokenBidiRun>();
+
+				var bidi = new BiDi();
+				bidi.SetPara(inline.Text[startInInline..endInInline], (byte)(inline.FlowDirection is FlowDirection.RightToLeft ? 1 : 0), null);
+				var runCount = bidi.CountRuns();
+				for (var runIndex = 0; runIndex < runCount; runIndex++)
+				{
+					var level = bidi.GetVisualRun(runIndex, out var logicalStart, out var length);
+					Debug.Assert(level is BiDi.BiDiDirection.RTL or BiDi.BiDiDirection.LTR);
+
+					var sameInlineRunsLengthBeforeFontSplitting = sameInlineRuns.Count;
+					var currentFontDetails = inline.FontDetails;
+					var currentFontSplitStart = logicalStart;
+					for (var i = logicalStart; i < logicalStart + length; i += char.IsSurrogate(inline.Text, startInInline + i) ? 2 : 1)
+					{
+						FontDetails newFontDetails;
+						if (char.ConvertToUtf32(inline.Text, startInInline + i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
+						{
+							newFontDetails = SKFontManager.Default.MatchCharacter(codepoint) is { } fallbackTypeface
+								? FontDetailsCache.GetFont(fallbackTypeface.FamilyName, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle).details
+								: inline.FontDetails;
+						}
+						else
+						{
+							newFontDetails = inline.FontDetails;
+						}
+
+						if (newFontDetails != currentFontDetails)
+						{
+							if (i != logicalStart)
+							{
+								sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + i, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + i)], level is BiDi.BiDiDirection.RTL, currentFontDetails.Font), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+							}
+							currentFontDetails = newFontDetails;
+							currentFontSplitStart = i;
+						}
+					}
+					sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + logicalStart + length, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + logicalStart + length)], level is BiDi.BiDiDirection.RTL, currentFontDetails.Font), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+					// swap runs if rtl since we always process characters in a single bidi run in logical order
+					if (level is BiDi.BiDiDirection.RTL)
+					{
+						for (var i = 0; i < (sameInlineRuns.Count - sameInlineRunsLengthBeforeFontSplitting) / 2; i++)
+						{
+							(sameInlineRuns[sameInlineRunsLengthBeforeFontSplitting + i], sameInlineRuns[^(1 + i)]) = (sameInlineRuns[^(1 + i)], sameInlineRuns[sameInlineRunsLengthBeforeFontSplitting + i]);
+						}
+					}
+				}
+				if (rtl)
+				{
+					for (int i = sameInlineRuns.Count - 1; i >= 0; i--)
+					{
+						lineRuns.AddToFront(sameInlineRuns[i]);
+					}
+				}
+				else
+				{
+					for (int i = 0; i < sameInlineRuns.Count; i++)
+					{
+						lineRuns.AddToBack(sameInlineRuns[i]);
+					}
+				}
+			}
+			shapedLines.Add(lineRuns.ToList());
+		}
+
+		return shapedLines;
+	}
+
+	private static List<List<BidiRun>> ApplyLineBreaking(float lineWidth, List<BidiRun> logicallyOrderedRuns, List<(int indexInInline, ReadonlyInlineCopy inline)> logicallyOrderedLineBreakingOpportunities)
+	{
+		var lines = new List<List<BidiRun>>();
+		var currentLine = new List<BidiRun>();
+
 		var nextLineBreakingOpportunityIndex = 0;
-		var nextLineBreakingOpportunity = lineBreakingOpportunities[0];
-		var remainingLineWidth = firstLineWidth;
+		var nextLineBreakingOpportunity = logicallyOrderedLineBreakingOpportunities[0];
+
+		var remainingLineWidth = lineWidth;
 		var stack = new Stack<BidiRun>();
 		for (var index = 0; stack.Count > 0 || index < logicallyOrderedRuns.Count;)
 		{
 			var bidiRun = stack.Count > 0 ? stack.Pop() : logicallyOrderedRuns[index++];
-			var testLineBreakingOpportunityIndex = nextLineBreakingOpportunityIndex;
-			// TODO: could we get away with something faster?
-			while (testLineBreakingOpportunityIndex < bidiRun.endInInline && testLineBreakingOpportunityIndex < lineBreakingOpportunities.Count - 1)
+			// Each inline must end in a line breaking opportunity
+			if (bidiRun.inline != nextLineBreakingOpportunity.inline || bidiRun.startInInline >= nextLineBreakingOpportunity.indexInInline)
 			{
-				var testLineBreakingOpportunity = lineBreakingOpportunities[testLineBreakingOpportunityIndex];
-				if (IsLineBreak(bidiRun.inline.Text, testLineBreakingOpportunity))
+				nextLineBreakingOpportunityIndex++;
+				nextLineBreakingOpportunity = logicallyOrderedLineBreakingOpportunities[nextLineBreakingOpportunityIndex];
+				stack.Push(bidiRun);
+				continue;
+			}
+
+			Debug.Assert(nextLineBreakingOpportunityIndex < logicallyOrderedLineBreakingOpportunities.Count && (bidiRun.inline.StartIndex < nextLineBreakingOpportunity.inline.StartIndex || (bidiRun.inline == nextLineBreakingOpportunity.inline && bidiRun.startInInline < nextLineBreakingOpportunity.indexInInline)));
+
+			// TODO: end-of-line space hanging
+			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+			var runWidth = RunWidth(glyphs, bidiRun.inline.FontDetails);
+
+			if (bidiRun.inline != nextLineBreakingOpportunity.inline || bidiRun.endInInline < nextLineBreakingOpportunity.indexInInline)
+			{
+				// no line breaking opportunity in run
+				if (currentLine.Count == 0 || runWidth <= remainingLineWidth)
 				{
-					stack.Push(bidiRun with { startInInline = testLineBreakingOpportunity });
-					bidiRun = bidiRun with { endInInline = testLineBreakingOpportunity };
-					break;
+					currentLine.Add(bidiRun);
+					remainingLineWidth -= runWidth;
 				}
 				else
 				{
-					testLineBreakingOpportunityIndex++;
+					MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
+					stack.Push(bidiRun);
 				}
+				continue;
 			}
 
-			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
-			var runWidth = RunWidth(glyphs, inline.FontDetails);
-			if (remainingLineWidth >= runWidth)
+			Debug.Assert(nextLineBreakingOpportunityIndex < logicallyOrderedLineBreakingOpportunities.Count && bidiRun.inline == nextLineBreakingOpportunity.inline && bidiRun.startInInline < nextLineBreakingOpportunity.indexInInline && bidiRun.endInInline >= nextLineBreakingOpportunity.indexInInline);
+
+			if (IsLineBreak(bidiRun.inline.Text, nextLineBreakingOpportunity.indexInInline))
 			{
-				currentLineEnd = bidiRun.endInInline;
-				remainingLineWidth -= runWidth;
-
-				while (nextLineBreakingOpportunity <= bidiRun.endInInline && nextLineBreakingOpportunityIndex < lineBreakingOpportunities.Count - 1)
+				if (currentLine.Count != 0 && !(runWidth <= remainingLineWidth))
 				{
-					var nextLineBreakingOpportunityIsLineBreak = IsLineBreak(bidiRun.inline.Text, nextLineBreakingOpportunity);
-					if (nextLineBreakingOpportunityIsLineBreak)
+					MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
+				}
+
+				currentLine.Add(bidiRun with { endInInline = nextLineBreakingOpportunity.indexInInline });
+				if (bidiRun.endInInline != nextLineBreakingOpportunity.indexInInline)
+				{
+					stack.Push(bidiRun with { startInInline = nextLineBreakingOpportunity.indexInInline });
+				}
+				MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
+				continue;
+			}
+
+			if (runWidth <= remainingLineWidth)
+			{
+				currentLine.Add(bidiRun);
+				remainingLineWidth -= runWidth;
+				continue;
+			}
+
+			// Can't fill whole BidiRun on this line, so let's take the longest prefix of it that does
+			var biggestFittingPrefixEnd = -1;
+			float biggestFittingPrefixWidth = -1;
+			{
+				var testOpportunityIndex = nextLineBreakingOpportunityIndex;
+				var testOpportunity = logicallyOrderedLineBreakingOpportunities[testOpportunityIndex];
+				while (testOpportunity.inline == bidiRun.inline && testOpportunity.indexInInline <= bidiRun.endInInline)
+				{
+					var testGlyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..testOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+					var testWidth = RunWidth(testGlyphs, bidiRun.inline.FontDetails);
+					if (testWidth <= remainingLineWidth)
 					{
-						currentLineEnd = nextLineBreakingOpportunity;
-						MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
+						if (testWidth > biggestFittingPrefixWidth)
+						{
+							biggestFittingPrefixEnd = testOpportunity.indexInInline;
+							biggestFittingPrefixWidth = testWidth;
+						}
+						testOpportunityIndex++;
+						testOpportunity = logicallyOrderedLineBreakingOpportunities[testOpportunityIndex];
 					}
-
-					nextLineBreakingOpportunityIndex++;
-					nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
-
-					if (nextLineBreakingOpportunityIsLineBreak)
+					else
 					{
 						break;
 					}
 				}
 			}
-			else if (currentLineEnd != -1 && bidiRun.endInInline <= nextLineBreakingOpportunity)
+
+			if (biggestFittingPrefixEnd == -1 && currentLine.Count == 0)
 			{
-				MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
-				stack.Push(bidiRun);
+				biggestFittingPrefixEnd = nextLineBreakingOpportunity.indexInInline;
+				var g = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..nextLineBreakingOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+				biggestFittingPrefixWidth = RunWidth(g, bidiRun.inline.FontDetails);
+			}
+
+			if (biggestFittingPrefixEnd != -1)
+			{
+				currentLine.Add(bidiRun with { endInInline = biggestFittingPrefixEnd });
+				if (bidiRun.endInInline != biggestFittingPrefixEnd)
+				{
+					stack.Push(bidiRun with { startInInline = biggestFittingPrefixEnd });
+				}
 			}
 			else
 			{
-				// TODO: end-of-line space hanging
-
-				// Find the maximal substring of this bidi run that can fit on the line
-				var partOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
-				var partOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[partOnThisLine.startInInline..partOnThisLine.endInInline], partOnThisLine.rtl, partOnThisLine.fontDetails.Font);
-				var partOnThisLineWidth = RunWidth(partOnThisLineGlyphs, inline.FontDetails);
-				if (currentLineEnd != -1 && partOnThisLineWidth > remainingLineWidth)
-				{
-					MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
-					stack.Push(bidiRun);
-				}
-				else
-				{
-					nextLineBreakingOpportunityIndex++;
-					nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
-
-					while (true)
-					{
-						var attemptPartOnThisLine = bidiRun with { endInInline = nextLineBreakingOpportunity };
-						var attemptPartOnThisLineGlyphs = ShapeRun(bidiRun.inline.Text[attemptPartOnThisLine.startInInline..attemptPartOnThisLine.endInInline], attemptPartOnThisLine.rtl, attemptPartOnThisLine.fontDetails.Font);
-						var attemptPartOnThisLineWidth = RunWidth(attemptPartOnThisLineGlyphs, inline.FontDetails);
-						if (attemptPartOnThisLineWidth > remainingLineWidth)
-						{
-							break;
-						}
-						else
-						{
-							partOnThisLine = attemptPartOnThisLine;
-							nextLineBreakingOpportunityIndex++;
-							nextLineBreakingOpportunity = lineBreakingOpportunities[nextLineBreakingOpportunityIndex];
-						}
-					}
-
-					currentLineEnd = partOnThisLine.endInInline;
-					MoveToNextLine(lineWidth, lineEnds, ref currentLineEnd, ref remainingLineWidth);
-					stack.Push(bidiRun with { startInInline = partOnThisLine.endInInline });
-				}
+				stack.Push(bidiRun);
 			}
+			MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
 		}
 
-		if (currentLineEnd != -1)
+		lines.Add(currentLine);
+
+#if DEBUG
+		Debug.Assert(lines.Count > 0);
+		// all the lines have content except possibly the last line, because we only move to a new line when we hit a line break
+		foreach (var line in lines)
 		{
-			lineEnds.Add(currentLineEnd);
+			Debug.Assert(line.Count > 0 || line == lines[^1]);
 		}
+#endif
 
-		return lineEnds;
+		return lines;
 
-		static void MoveToNextLine(float lineWidth, List<int> lineEnds, ref int currentLineEnd, ref float remainingLineWidth)
+		static void MoveToNextLine(List<List<BidiRun>> lines, ref List<BidiRun> currentLine, ref float remainingLineWidth, float lineWidth)
 		{
-			lineEnds.Add(currentLineEnd);
-			currentLineEnd = -1;
+			lines.Add(currentLine);
+			currentLine = new List<BidiRun>();
 			remainingLineWidth = lineWidth;
 		}
 	}
@@ -454,7 +509,7 @@ internal readonly struct UnicodeText : IParsedText
 		return ret;
 	}
 
-	private static List<LayoutedLine> LayoutLines(List<List<ShapedLineBrokenBidiRun>> lines)
+	private static List<LayoutedLine> LayoutLines(List<List<ShapedLineBrokenBidiRun>> lines, float defaultLineHeight)
 	{
 		var layoutedLines = new List<LayoutedLine>();
 		float currentLineY = 0;
@@ -462,31 +517,39 @@ internal readonly struct UnicodeText : IParsedText
 		{
 			var line = lines[lineIndex];
 			var layoutedRuns = new List<LayoutedLineBrokenBidiRun>(line.Count);
-			float currentLineX = 0;
-			for (var runIndex = 0; runIndex < line.Count; runIndex++)
+			LayoutedLine layoutedLine;
+			if (line.Count == 0)
 			{
-				var run = line[runIndex];
-				float runX = 0;
-				var glyphs = new LayoutedGlyphDetails[run.glyphs.Length];
-				var layoutedRun = new LayoutedLineBrokenBidiRun(run.Inline, run.inlineIndex, run.inInlineIndexStart, run.inInlineIndexEnd, currentLineX, currentLineY, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
-				layoutedRuns.Add(layoutedRun);
-				for (var i = 0; i < glyphs.Length; i++)
+				layoutedLine = new LayoutedLine(defaultLineHeight, lineIndex, currentLineY, new());
+			}
+			else
+			{
+				float currentLineX = 0;
+				for (var runIndex = 0; runIndex < line.Count; runIndex++)
 				{
-					var glyph = run.glyphs[i];
-					glyphs[i] = new LayoutedGlyphDetails(glyph.info, glyph.position, runX, default, layoutedRun);
-					runX += GlyphWidth(glyph.position, run.fontDetails);
+					var run = line[runIndex];
+					float runX = 0;
+					var glyphs = new LayoutedGlyphDetails[run.glyphs.Length];
+					var layoutedRun = new LayoutedLineBrokenBidiRun(run.Inline, run.startInInline, run.endInInline, currentLineX, currentLineY, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
+					layoutedRuns.Add(layoutedRun);
+					for (var i = 0; i < glyphs.Length; i++)
+					{
+						var glyph = run.glyphs[i];
+						glyphs[i] = new LayoutedGlyphDetails(glyph.info, glyph.position, runX, default, layoutedRun);
+						runX += GlyphWidth(glyph.position, run.fontDetails);
+					}
+
+					layoutedRun.width = runX;
+					currentLineX += runX;
 				}
 
-				layoutedRun.width = runX;
-				currentLineX += runX;
+				// TODO: line stacking strategy
+				var lineHeight = line.Max(r => r.fontDetails.LineHeight);
+				layoutedLine = new LayoutedLine(lineHeight, lineIndex, currentLineY, layoutedRuns);
 			}
-
-			// TODO: line stacking strategy
-			var lineHeight = line.Max(r => r.fontDetails.LineHeight);
-			var layoutedLine = new LayoutedLine(lineHeight, lineIndex, currentLineY, layoutedRuns);
 			layoutedLines.Add(layoutedLine);
 			layoutedRuns.ForEach(r => r.line = layoutedLine);
-			currentLineY += lineHeight;
+			currentLineY += layoutedLine.lineHeight;
 		}
 
 		return layoutedLines;
@@ -503,8 +566,8 @@ internal readonly struct UnicodeText : IParsedText
 			foreach (var run in line.runs)
 			{
 				var runGlyphLength = run.glyphs.Length;
-				var runStart = run.inInlineIndexStart + run.inline.StartIndex;
-				var runLength = run.inInlineIndexEnd - run.inInlineIndexStart;
+				var runStart = run.startInInline + run.inline.StartIndex;
+				var runLength = run.endInInline - run.startInInline;
 
 				Cluster? previousCluster = null;
 				for (var index = run.rtl ? 0 : runGlyphLength - 1; (run.rtl && index < runGlyphLength) || (!run.rtl && index >= 0); index += run.rtl ? 1 : -1)
@@ -612,8 +675,8 @@ internal readonly struct UnicodeText : IParsedText
 				else
 				{
 					return _rtl
-						? firstRun.inInlineIndexEnd + firstRun.inline.StartIndex - TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.inInlineIndexStart, firstRun.inInlineIndexEnd)
-						: firstRun.inInlineIndexStart + firstRun.inline.StartIndex;
+						? firstRun.endInInline + firstRun.inline.StartIndex - TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.startInInline, firstRun.endInInline)
+						: firstRun.startInInline + firstRun.inline.StartIndex;
 				}
 			}
 			if (line.runs[^1] is var lastRun && lastRun.x + lastRun.width < p.X)
@@ -625,8 +688,8 @@ internal readonly struct UnicodeText : IParsedText
 				else
 				{
 					return _rtl
-						? lastRun.inline.StartIndex + lastRun.inInlineIndexStart
-						: lastRun.inline.StartIndex + lastRun.inInlineIndexEnd - TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.inInlineIndexStart, firstRun.inInlineIndexEnd);
+						? lastRun.inline.StartIndex + lastRun.startInInline
+						: lastRun.inline.StartIndex + lastRun.endInInline - TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.startInInline, firstRun.endInInline);
 				}
 			}
 
