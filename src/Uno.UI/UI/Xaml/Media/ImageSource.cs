@@ -159,6 +159,11 @@ namespace Microsoft.UI.Xaml.Media
 				return null;
 			}
 
+			if (!uri.IsAbsoluteUri && TryCreateUriFromString(uri.OriginalString) is { } adjustedUri)
+			{
+				uri = adjustedUri;
+			}
+
 			var path = uri.IsAbsoluteUri ? uri.LocalPath : uri.OriginalString;
 
 			if (__LinkerHints.Is_Microsoft_UI_Xaml_Media_Imaging_SvgImageSource_Available
