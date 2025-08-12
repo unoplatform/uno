@@ -35,8 +35,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
-	private SKPicture? _picture;
-	private SKPath? _clipPath;
 
 	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow, XamlRoot xamlRoot)
 	{
@@ -82,8 +80,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	private void Draw(SKSurface surface)
 	{
-		var currentPicture = _picture;
-		var currentClipPath = _clipPath;
+		if (_xamlRoot.LastRenderedFrame is not { } lastRenderedFrame)
+		{
+			return;
+		}
+
+		var currentPicture = lastRenderedFrame.frame;
+		var currentClipPath = lastRenderedFrame.nativeElementClipPath;
 
 		SkiaRenderHelper.RenderPicture(
 			surface,
@@ -91,7 +94,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			SKColors.Transparent,
 			_fpsHelper);
 
-		var clip = currentClipPath is null || currentClipPath.IsEmpty == true ? null : currentClipPath.ToSvgPathData();
+		var clip = currentClipPath.IsEmpty ? null : currentClipPath.ToSvgPathData();
 		if (clip != _lastSvgClipPath)
 		{
 			// if too early it's possible that the native element has not been arranged yet
@@ -200,33 +203,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	public UIElement? RootElement => _winUIWindow.RootElement;
 
-	void IXamlRootHost.InvalidateRender()
-	{
-		if (!SkiaRenderHelper.CanRecordPicture(_winUIWindow.RootElement))
-		{
-			// Try again next tick
-			_winUIWindow.RootElement?.XamlRoot?.QueueInvalidateRender();
-			return;
-		}
-
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Window {_nativeWindow.Handle} invalidated.");
-		}
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)_nativeWindowSize.Width,
-			(int)_nativeWindowSize.Height,
-			_winUIWindow.RootElement,
-			invertPath: false);
-
-		Interlocked.Exchange(ref _picture, picture);
-		Interlocked.Exchange(ref _clipPath, path);
-
-		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
-
-		NativeUno.uno_window_invalidate(_nativeWindow.Handle);
-	}
+	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 
 	public static void Register(nint handle, XamlRoot xamlRoot, MacOSWindowHost host)
 	{

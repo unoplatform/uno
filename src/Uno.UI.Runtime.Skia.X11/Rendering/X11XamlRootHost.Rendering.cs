@@ -3,7 +3,6 @@ using Microsoft.UI.Dispatching;
 using SkiaSharp;
 using Uno.Helpers;
 using Uno.UI.Dispatching;
-using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -18,30 +17,19 @@ internal partial class X11XamlRootHost
 	{
 		if (DispatcherQueue.Main.HasThreadAccess)
 		{
-			var rootElement = (this as IXamlRootHost).RootElement;
-			if (!SkiaRenderHelper.CanRecordPicture(rootElement))
-			{
-				rootElement?.XamlRoot?.QueueInvalidateRender();
-				return;
-			}
-
-			if (_renderer is not null)
+			if (_renderer is not null && (this as IXamlRootHost).RootElement is { XamlRoot.LastRenderedFrame: { } lastRenderedFrame } rootElement)
 			{
 				using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
 				XWindowAttributes attributes = default;
 				_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
-				var width = attributes.width;
-				var height = attributes.height;
 
-				var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(width, height, rootElement, invertPath: true);
-
-				var scale = rootElement.XamlRoot is { } root
+				var scale = rootElement?.XamlRoot is { } root
 					? root.RasterizationScale
 					: 1;
 
 				lock (_nextRenderParamsLock)
 				{
-					_nextRenderParams = new RenderParams(picture, path, (float)scale);
+					_nextRenderParams = new RenderParams(lastRenderedFrame.frame, lastRenderedFrame.nativeElementClipPath, (float)scale);
 				}
 
 				if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
@@ -52,7 +40,7 @@ internal partial class X11XamlRootHost
 						if (_nextRenderParams is { } renderParams)
 						{
 							_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.Scale);
-							NativeDispatcher.Main.Enqueue(() => rootElement.XamlRoot?.InvokeFrameRendered());
+							NativeDispatcher.Main.Enqueue(() => rootElement!.XamlRoot?.InvokeFrameRendered());
 						}
 					});
 				}

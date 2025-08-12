@@ -22,7 +22,8 @@ internal class XamlIslandRootScale : RootScale
 		var rootElement = visualTree.RootElement;
 		if (rootElement is not null && scaleChanged)
 		{
-			rootElement.SetEntireSubtreeDirty();
+			// TODO Uno: Uncomment once method is present
+			//rootElement.SetEntireSubtreeDirty();
 		}
 
 		//const auto connectedAnimationRoot = visualTree->GetConnectedAnimationRoot();

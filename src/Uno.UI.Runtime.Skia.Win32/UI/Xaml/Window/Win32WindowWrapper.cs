@@ -6,19 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.JavaScript;
-using System.Threading;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using SkiaSharp;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.Helpers.Theming;
-using Uno.UI.Dispatching;
-using Uno.UI.Helpers;
-using Uno.UI.Hosting;
-using Uno.UI.NativeElementHosting;
-using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
@@ -29,6 +16,16 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using SkiaSharp;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
+using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -55,9 +52,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
 	private bool _isFirstEraseBkgnd = true;
-
-	private SKPicture? _picture;
-	private SKPath? _clipPath;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -535,24 +529,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	unsafe void IXamlRootHost.InvalidateRender()
 	{
-		if (!SkiaRenderHelper.CanRecordPicture(Window?.RootElement))
-		{
-			// Try again next tick
-			Window?.RootElement?.XamlRoot?.QueueInvalidateRender();
-			return;
-		}
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(Window.Bounds.Width),
-			(int)(Window.Bounds.Height),
-			Window.RootElement,
-			invertPath: false);
-
-		Interlocked.Exchange(ref _picture, picture);
-		Interlocked.Exchange(ref _clipPath, path);
-
-		RenderingNegativePathReevaluated?.Invoke(this, path);
-
 		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}

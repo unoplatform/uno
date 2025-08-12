@@ -141,14 +141,13 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 #if REPORT_FPS
 			_drawFpsLogger.ReportFrame();
 #endif
-			var currentPicture = _owner?.Picture;
 
 			var size = DrawableSize;
 
 			var width = (int)size.Width;
 			var height = (int)size.Height;
 
-			if (width <= 0 || height <= 0)
+			if (width <= 0 || height <= 0 || _owner?.RootElement?.XamlRoot?.LastRenderedFrame is not { } lastRenderedFrame)
 			{
 				return;
 			}
@@ -167,7 +166,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 				SkiaRenderHelper.RenderPicture(
 					surface,
-					currentPicture,
+					lastRenderedFrame.frame,
 					SKColors.Transparent,
 					_fpsHelper);
 
@@ -195,9 +194,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				_owner?.RootElement?.XamlRoot?.InvokeFrameRendered();
 			}
 
-			var newPicture = _owner?.Picture;
-			_link.Paused = ReferenceEquals(currentPicture, newPicture)
-				&& !CompositionTarget.IsRenderingActive;
+			_link.Paused = !CompositionTarget.IsRenderingActive;
 		}
 	}
 }

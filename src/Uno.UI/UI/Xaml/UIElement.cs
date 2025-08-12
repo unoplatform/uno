@@ -881,12 +881,6 @@ namespace Microsoft.UI.Xaml
 				else if (root.IsArrangeDirtyOrArrangeDirtyPath)
 				{
 					root.Arrange(bounds);
-#if !IS_UNIT_TESTS
-					// Workaround: Without this, the managed Skia TextBox breaks.
-					// For example, keyboard selection or double clicking to select breaks
-					// It's probably an issue with TextBox implementation itself, but for now we workaround it here.
-					root.XamlRoot.InvalidateRender();
-#endif
 				}
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				else if (eventManager.HasPendingViewportChangedEvents)
@@ -1500,19 +1494,6 @@ namespace Microsoft.UI.Xaml
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
 			}
-		}
-
-		internal void SetEntireSubtreeDirty()
-		{
-#if __SKIA__
-			// TODO Uno: Implementation should be different. For now we invalidate the entire visual tree.
-			XamlRoot?.QueueInvalidateRender();
-			//if (!m_isEntireSubtreeDirty)
-			//{
-			//	NWSetDirtyFlagsAndPropagate(DirtyFlags::Render, FALSE);
-			//	m_isEntireSubtreeDirty = TRUE;
-			//}
-#endif
 		}
 	}
 }

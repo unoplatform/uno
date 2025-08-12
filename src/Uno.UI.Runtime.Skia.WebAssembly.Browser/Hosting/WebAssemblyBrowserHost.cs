@@ -78,6 +78,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 			// Force initialization of the DisplayInformation
 			DisplayInformation.GetForCurrentView();
+			((IXamlRootHost)this).RootElement!.XamlRoot!.FrameRenderingOptions = (false, false);
 		}
 
 		try

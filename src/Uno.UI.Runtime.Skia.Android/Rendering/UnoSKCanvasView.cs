@@ -25,7 +25,6 @@ namespace Uno.UI.Runtime.Skia.Android;
 internal sealed partial class UnoSKCanvasView : GLSurfaceView
 {
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-	private SKPicture? _picture;
 
 	internal UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	internal TextInputPlugin TextInputPlugin { get; }
@@ -78,39 +77,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 	internal void InvalidateRender()
 	{
-		if (Microsoft.UI.Xaml.Window.CurrentSafe is not { RootElement: { } root } window)
-		{
-			return;
-		}
-
-		if (!SkiaRenderHelper.CanRecordPicture(root))
-		{
-			root?.XamlRoot?.QueueInvalidateRender();
-			return;
-		}
-
 		ExploreByTouchHelper.InvalidateRoot();
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)window.Bounds.Width,
-			(int)window.Bounds.Height,
-			root,
-			invertPath: false);
-
-		var scale = root.XamlRoot is { } xamlRoot
-			? xamlRoot.RasterizationScale
-			: 1.0f;
-
-		_fpsHelper.Scale = (float)scale;
-
-		if (ApplicationActivity.NativeLayerHost is { } nativeLayerHost)
-		{
-			nativeLayerHost.Path = path;
-			nativeLayerHost.Invalidate();
-		}
-
-		Interlocked.Exchange(ref _picture, picture);
-
 		// Request the call of IRenderer.OnDrawFrame for one frame
 		RequestRender();
 	}
@@ -208,14 +175,20 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
-			var currentPicture = Volatile.Read(ref surfaceView._picture);
-
-			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
-
-			if (currentPicture is null)
+			if (Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement?.XamlRoot?.LastRenderedFrame is not { } lastRenderedFrame)
 			{
 				return;
 			}
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (ApplicationActivity.NativeLayerHost is { } nativeLayerHost)
+				{
+					nativeLayerHost.Path = lastRenderedFrame.nativeElementClipPath;
+					nativeLayerHost.Invalidate();
+				}
+			}, NativeDispatcherPriority.High);
+
+			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
 
 			// create the contexts if not done already
 			if (_context == null)
@@ -273,7 +246,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 			{
 				SkiaRenderHelper.RenderPicture(
 					surface,
-					currentPicture,
+					lastRenderedFrame.frame,
 					SKColors.Transparent,
 					surfaceView._fpsHelper);
 			}
@@ -289,7 +262,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 			_context!.Flush();
 
-			if (!CompositionTarget.IsRenderingActive && ReferenceEquals(currentPicture, Volatile.Read(ref surfaceView._picture)))
+			if (!CompositionTarget.IsRenderingActive)
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{

@@ -11,16 +11,6 @@ namespace Microsoft.UI.Xaml;
 
 public sealed partial class XamlRoot
 {
-	private bool _renderQueued;
-
-	internal event Action? RenderInvalidated;
-
-#if __SKIA__
-	// For profiling purposes only. Do not depend on these events.
-	internal event Action? FramePainted;
-	internal event Action? FrameRendered;
-#endif
-
 	internal void InvalidateMeasure()
 	{
 		VisualTree.RootElement.InvalidateMeasure();
@@ -35,49 +25,6 @@ public sealed partial class XamlRoot
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		CoreServices.RequestAdditionalFrame();
 #endif
-	}
-
-	internal void InvalidateRender() => RenderInvalidated?.Invoke();
-
-#if __SKIA__
-	internal void InvokeFramePainted()
-	{
-		NativeDispatcher.CheckThreadAccess();
-		FramePainted?.Invoke();
-	}
-
-	internal void InvokeFrameRendered()
-	{
-		if (NativeDispatcher.Main.HasThreadAccess)
-		{
-			FrameRendered?.Invoke();
-		}
-		else
-		{
-			NativeDispatcher.Main.Enqueue(() => FrameRendered?.Invoke(), NativeDispatcherPriority.High);
-		}
-	}
-#endif
-
-	internal void QueueInvalidateRender()
-	{
-		if (!CompositionTarget.IsRenderingActive)
-		{
-			if (!_renderQueued)
-			{
-				_renderQueued = true;
-
-				NativeDispatcher.Main.Enqueue(() =>
-				{
-					if (_renderQueued)
-					{
-						_renderQueued = false;
-
-						InvalidateRender();
-					}
-				}, NativeDispatcherPriority.Idle); // Idle is necessary to avoid starving the Normal queue on some platforms (specifically skia/android), otherwise When_Child_Empty_List times out
-			}
-		}
 	}
 
 	/// <summary>
