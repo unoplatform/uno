@@ -33,6 +33,7 @@ using Uno.UI;
 [assembly: UsesPermission("android.permission.SET_WALLPAPER")]
 [assembly: UsesPermission("android.permission.READ_CONTACTS")]
 [assembly: UsesPermission("android.permission.INTERNET")]
+[assembly: UsesPermission("android.permission.POST_NOTIFICATIONS")]
 
 [assembly: UsesFeature("android.software.leanback", Required = false)]
 [assembly: UsesFeature("android.hardware.touchscreen", Required = false)]
@@ -118,6 +119,8 @@ namespace SamplesApp.Droid
 			ApiExtensibility.Register(typeof(IStoreContextExtension), o => new global::Uno.UI.GooglePlay.StoreContextExtension(o));
 			ApiExtensibility.Register(typeof(INativeHingeAngleSensor), o => new FoldableHingeAngleSensor(o));
 			ApiExtensibility.Register(typeof(IApplicationViewSpanningRects), o => new FoldableApplicationViewSpanningRects(o));
+
+			ApiExtensibility.Register(typeof(IToastNotificationSampleProvider), o => new SamplesApp.Skia.SampleProviders.ToastNotificationSampleProvider());
 		}
 	}
 }
