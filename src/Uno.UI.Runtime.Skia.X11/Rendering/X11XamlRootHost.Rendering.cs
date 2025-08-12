@@ -15,43 +15,33 @@ internal partial class X11XamlRootHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		if (DispatcherQueue.Main.HasThreadAccess)
+		if (_renderer is not null && (this as IXamlRootHost).RootElement is { XamlRoot.LastRenderedFrame: { } lastRenderedFrame } rootElement)
 		{
-			if (_renderer is not null && (this as IXamlRootHost).RootElement is { XamlRoot.LastRenderedFrame: { } lastRenderedFrame } rootElement)
+			using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
+			XWindowAttributes attributes = default;
+			_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
+
+			var scale = rootElement?.XamlRoot is { } root
+				? root.RasterizationScale
+				: 1;
+
+			lock (_nextRenderParamsLock)
 			{
-				using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
-				XWindowAttributes attributes = default;
-				_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
-
-				var scale = rootElement?.XamlRoot is { } root
-					? root.RasterizationScale
-					: 1;
-
-				lock (_nextRenderParamsLock)
-				{
-					_nextRenderParams = new RenderParams(lastRenderedFrame.frame, lastRenderedFrame.nativeElementClipPath, (float)scale);
-				}
-
-				if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
-				{
-					_renderingEventLoop.Schedule(() =>
-					{
-						Volatile.Write(ref _renderingScheduled, 0);
-						if (_nextRenderParams is { } renderParams)
-						{
-							_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.Scale);
-							NativeDispatcher.Main.Enqueue(() => rootElement!.XamlRoot?.InvokeFrameRendered());
-						}
-					});
-				}
+				_nextRenderParams = new RenderParams(lastRenderedFrame.frame, lastRenderedFrame.nativeElementClipPath, (float)scale);
 			}
-		}
-		else
-		{
-			// We need to be on the dispatcher to render the UI
-			// Requeue to request a full update (including possible
-			// window size changes)
-			NativeDispatcher.Main.DispatchRendering();
+
+			if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
+			{
+				_renderingEventLoop.Schedule(() =>
+				{
+					Volatile.Write(ref _renderingScheduled, 0);
+					if (_nextRenderParams is { } renderParams)
+					{
+						_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.Scale);
+						NativeDispatcher.Main.Enqueue(() => rootElement!.XamlRoot?.InvokeFrameRendered());
+					}
+				});
+			}
 		}
 	}
 
