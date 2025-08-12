@@ -54,8 +54,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			CoreApplication.SetInvalidateRender(OnInvalidateRender, OnSetContinuousRender);
-
-			NativeDispatcher.Main.Rendered += OnRendered;
 		}
 
 #if REPORT_FPS
@@ -63,34 +61,6 @@ namespace Microsoft.UI.Xaml
 #endif
 		private long _lastRender = Stopwatch.GetTimestamp();
 
-		private void OnRendered()
-		{
-			if (CompositionTargetTimer.IsRunning
-				&& Stopwatch.GetElapsedTime(_lastRender) < TimeSpan.FromSeconds(1 / FeatureConfiguration.CompositionTarget.FrameRate))
-			{
-				// Throttle rendering to the expected frame rate
-				return;
-			}
-
-			_lastRender = Stopwatch.GetTimestamp();
-
-#if REPORT_FPS
-			_renderFpsLogger.ReportFrame();
-#endif
-
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"OnRendered");
-			}
-
-			foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
-			{
-				if (cRoot?.XamlRoot is { } xRoot)
-				{
-					xRoot.InvalidateRender();
-				}
-			}
-		}
 
 		private void OnSetContinuousRender(object? compositionTarget, bool enabled)
 		{

@@ -49,22 +49,19 @@ partial class XamlRoot
 
 	internal void QueueInvalidateRender()
 	{
-		if (!CompositionTarget.IsRenderingActive)
+		if (!_renderQueued)
 		{
-			if (!_renderQueued)
+			_renderQueued = true;
+
+			NativeDispatcher.Main.Enqueue(() =>
 			{
-				_renderQueued = true;
-
-				NativeDispatcher.Main.Enqueue(() =>
+				if (_renderQueued)
 				{
-					if (_renderQueued)
-					{
-						_renderQueued = false;
+					_renderQueued = false;
 
-						InvalidateRender();
-					}
-				}, NativeDispatcherPriority.Idle); // Idle is necessary to avoid starving the Normal queue on some platforms (specifically skia/android), otherwise When_Child_Empty_List times out
-			}
+					InvalidateRender();
+				}
+			}, NativeDispatcherPriority.Idle); // Idle is necessary to avoid starving the Normal queue on some platforms (specifically skia/android), otherwise When_Child_Empty_List times out
 		}
 	}
 

@@ -23,9 +23,10 @@ internal partial class CompositionTargetTimer
 
 	private static void UpdateTimer()
 	{
+		// TODO: CompositionTarget.IsRenderingActive;
 		if (CompositionTarget.IsRenderingActive)
 		{
-			_renderTimer ??= new Timer(_ => NativeDispatcher.Main.DispatchRendering());
+			_renderTimer ??= new Timer(_ => { /* TODO */ });
 			_renderTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1 / FeatureConfiguration.CompositionTarget.FrameRate));
 		}
 		else
