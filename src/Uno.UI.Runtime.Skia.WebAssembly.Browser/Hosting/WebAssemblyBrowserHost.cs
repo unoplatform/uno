@@ -54,6 +54,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 		NativeMethods.PersistBootstrapperLoader();
 
+		XamlRoot.FrameRenderingOptions = (false, false);
 		_renderer = new BrowserRenderer(this);
 	}
 
@@ -78,7 +79,6 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 			// Force initialization of the DisplayInformation
 			DisplayInformation.GetForCurrentView();
-			((IXamlRootHost)this).RootElement!.XamlRoot!.FrameRenderingOptions = (false, false);
 		}
 
 		try
@@ -101,7 +101,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		Window.CurrentSafe!.RootElement?.XamlRoot?.InvalidateOverlays();
 	}
 
-	UIElement? IXamlRootHost.RootElement => Window.Current!.RootElement;
+	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe!.RootElement;
 
 	private static partial class NativeMethods
 	{

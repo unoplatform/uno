@@ -29,7 +29,7 @@ partial class XamlRoot
 		}
 	}
 
-	internal (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
+	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
 
 	internal event Action? RenderInvalidated;
 
