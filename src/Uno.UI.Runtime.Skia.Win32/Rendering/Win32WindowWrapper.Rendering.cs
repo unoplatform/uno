@@ -52,7 +52,7 @@ internal partial class Win32WindowWrapper
 			_surface = _renderer.UpdateSize(clientRect.Width, clientRect.Height);
 		}
 
-		if (XamlRoot?.VisualTree.RootElement.Visual is { } rootVisual)
+		if (XamlRoot?.VisualTree.RootElement.Visual is { } rootVisual && XamlRoot?.VisualTree.RootElement.XamlRoot?.LastRenderedFrame is { } lastRenderedFrame)
 		{
 			var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
 			// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
@@ -65,7 +65,7 @@ internal partial class Win32WindowWrapper
 
 				SkiaRenderHelper.RenderPicture(
 					_surface,
-					_picture,
+					lastRenderedFrame.frame,
 					_background,
 					_fpsHelper);
 			}
@@ -74,6 +74,8 @@ internal partial class Win32WindowWrapper
 				_rendering = false;
 				rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
 			}
+
+			RenderingNegativePathReevaluated?.Invoke(this, lastRenderedFrame.nativeElementClipPath);
 		}
 
 		// this may call WM_ERASEBKGND
