@@ -335,18 +335,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			retainedMessage = retainedTypes.JoinBy(";");
 			//var retained = _holders.Select(x => x.Key).ToArray();
 #endif
-			if (OperatingSystem.IsIOS())
-			{
-				// On iOS, the collection of objects does not seem to be reliable enough
-				// to always go to zero during runtime tests. If the count of active objects
-				// is arbitrarily below the half of the number of top-level objects.
-				// created, we can assume that enough objects were collected entirely.
-				Assert.IsTrue(activeControls < count, retainedMessage);
-			}
-			else
-			{
-				Assert.AreEqual(0, activeControls, retainedMessage);
-			}
+
+#if __APPLE_UIKIT__
+			// On iOS, the collection of objects does not seem to be reliable enough
+			// to always go to zero during runtime tests. If the count of active objects
+			// is arbitrarily below the half of the number of top-level objects.
+			// created, we can assume that enough objects were collected entirely.
+			Assert.IsTrue(activeControls < count, retainedMessage);
+#else
+			Assert.AreEqual(0, activeControls, retainedMessage);
+#endif
 
 #if __APPLE_UIKIT__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
