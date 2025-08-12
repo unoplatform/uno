@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading;
+using Windows.Foundation;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Controls;
@@ -14,11 +15,13 @@ namespace Microsoft.UI.Xaml;
 
 partial class XamlRoot
 {
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private bool _renderQueued;
 	private FocusManager? _focusManager;
-	private (SKPicture frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
-	private object _frameGate = new();
-	internal (SKPicture frame, SKPath nativeElementClipPath)? LastRenderedFrame
+	private (SKPicture frame, SKPath nativeElementClipPath, Size size)? _lastRenderedFrame;
+	private Size _lastCanvasSize = Size.Empty;
+	private readonly object _frameGate = new();
+	internal (SKPicture frame, SKPath nativeElementClipPath, Size size)? LastRenderedFrame
 	{
 		get
 		{
@@ -65,7 +68,7 @@ partial class XamlRoot
 		}
 	}
 
-	internal void InvalidateRender()
+	private void InvalidateRender()
 	{
 		NativeDispatcher.CheckThreadAccess();
 
@@ -79,15 +82,40 @@ partial class XamlRoot
 
 		lock (_frameGate)
 		{
-			_lastRenderedFrame = SkiaRenderHelper.RecordPictureAndReturnPath(
+			var lastRenderedFrame = SkiaRenderHelper.RecordPictureAndReturnPath(
 				(int)(Bounds.Width * RasterizationScale),
 				(int)(Bounds.Height * RasterizationScale),
 				rootElement,
 				invertPath: FrameRenderingOptions.invertNativeElementClipPath,
 				applyScaling: FrameRenderingOptions.applyScalingToNativeElementClipPath);
+			_lastRenderedFrame = (lastRenderedFrame.Item1, lastRenderedFrame.Item2, Bounds.Size);
 		}
 
 		RenderInvalidated?.Invoke();
+	}
+
+	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
+	{
+		if (LastRenderedFrame is not { } lastRenderedFrame)
+		{
+			return new SKPath();
+		}
+		else
+		{
+			if (canvas is null || _lastCanvasSize != lastRenderedFrame.size)
+			{
+				canvas = resizeFunc(lastRenderedFrame.size);
+				_lastCanvasSize = lastRenderedFrame.size;
+			}
+
+			SkiaRenderHelper.RenderPicture(
+				canvas,
+				lastRenderedFrame.frame,
+				SKColors.Transparent,
+				_fpsHelper);
+
+			return lastRenderedFrame.nativeElementClipPath;
+		}
 	}
 
 	internal void InvokeFramePainted()
