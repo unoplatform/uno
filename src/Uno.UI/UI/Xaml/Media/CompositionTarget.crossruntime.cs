@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using Uno.UI;
 using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Media;
@@ -11,32 +8,21 @@ public partial class CompositionTarget
 	private static Action _renderingActiveChanged;
 	private static bool _isRenderingActive;
 
+	private static event EventHandler<object> _rendering;
+
 	public static event EventHandler<object> Rendering
 	{
 		add
 		{
 			NativeDispatcher.CheckThreadAccess();
-
-			var currentlyRaisingEvents = NativeDispatcher.Main.IsRendering;
-			NativeDispatcher.Main.Rendering += value;
-			NativeDispatcher.Main.RenderingEventArgsGenerator ??= (d => new RenderingEventArgs(d));
-
-			IsRenderingActive = NativeDispatcher.Main.IsRendering;
-
-			if (!currentlyRaisingEvents)
-			{
-				// Queue the first render, so that the native surfaces
-				// timers can pick up the subsquent renders.
-				NativeDispatcher.Main.DispatchRendering();
-			}
+			_rendering += value;
+			IsRenderingActive = true;
 		}
 		remove
 		{
 			NativeDispatcher.CheckThreadAccess();
-
-			NativeDispatcher.Main.Rendering -= value;
-
-			IsRenderingActive = NativeDispatcher.Main.IsRendering;
+			_rendering -= value;
+			IsRenderingActive = _rendering is not null;
 		}
 	}
 
