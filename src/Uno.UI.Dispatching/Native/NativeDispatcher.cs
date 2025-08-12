@@ -81,12 +81,6 @@ namespace Uno.UI.Dispatching
 			// Currently, we have a singleton NativeDispatcher.
 			// We want DispatchItems to be static to avoid delegate allocations.
 			var @this = NativeDispatcher.Main;
-			if (@this.Rendering != null)
-			{
-				Debug.Assert(@this.RenderingEventArgsGenerator != null);
-
-				@this.Rendering.Invoke(null, @this.RenderingEventArgsGenerator.Invoke(Stopwatch.GetElapsedTime(@this._startTime)));
-			}
 
 			Action? action = null;
 
@@ -140,43 +134,12 @@ namespace Uno.UI.Dispatching
 					dispatcher.Log().Error("NativeDispatcher unhandled exception", exception);
 				}
 			}
-			else if (!dispatcher.IsRendering && dispatcher.Log().IsEnabled(LogLevel.Debug))
+			else if (dispatcher.Log().IsEnabled(LogLevel.Debug))
 			{
 				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
 		}
 #endif
-		internal void SynchronousDispatchRendering()
-			=> SynchronousDispatchRenderingPartial();
-
-		partial void SynchronousDispatchRenderingPartial();
-
-#if REPORT_FPS
-		static FrameRateLogger _dispatchRenderingLogger = new FrameRateLogger(typeof(NativeDispatcher), "DispatchRendering");
-#endif
-
-		internal void DispatchRendering()
-		{
-			if (IsRendering)
-			{
-#if REPORT_FPS
-				_dispatchRenderingLogger.ReportFrame();
-#endif
-				Enqueue(() =>
-				{
-					RaiseRendered();
-				});
-			}
-		}
-
-		private void RaiseRendered()
-		{
-			if (Rendering != null)
-			{
-				// If we raised the Rendering event we can render composition tree.
-				Rendered?.Invoke();
-			}
-		}
 
 		internal void Enqueue(Action handler, NativeDispatcherPriority priority = NativeDispatcherPriority.Normal)
 		{
@@ -472,23 +435,12 @@ namespace Uno.UI.Dispatching
 								_queues[(int)NativeDispatcherPriority.Normal].Count +
 								_queues[(int)NativeDispatcherPriority.Low].Count == 0;
 
-		internal bool IsRendering => Rendering != null;
-
 		/// <summary>
 		/// Gets the dispatcher for the main thread.
 		/// </summary>
 		internal static NativeDispatcher Main { get; } = new NativeDispatcher();
 
 		// Dispatching for the CompositionTarget.Rendering event
-		internal event EventHandler<object>? Rendering;
-
-#pragma warning disable CS0067
-		// Dispatching for the compositor to actually render the frame only called
-		// when there are subscribers to Rendering
-		internal event Action? Rendered;
-#pragma warning restore CS0067
-
-		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
 
 		public static class TraceProvider
 		{
