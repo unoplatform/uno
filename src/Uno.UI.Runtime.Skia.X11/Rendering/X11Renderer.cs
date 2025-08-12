@@ -13,7 +13,6 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 	private Size _lastSize;
 	private SKSurface? _surface;
 	private X11AirspaceRenderHelper? _airspaceHelper;
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 
 	public void SetBackgroundColor(SKColor color) => _background = color;
 
@@ -56,13 +55,14 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 			_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
 		}
 
-		_fpsHelper.Scale = scale;
-
-		SkiaRenderHelper.RenderPicture(
-			_surface,
-			picture,
-			_background,
-			_fpsHelper);
+		var nativeElementClipPath = host.RootElement!.XamlRoot!.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		{
+			_surface?.Dispose();
+			_surface = UpdateSize(width, height, attributes.depth);
+			_airspaceHelper?.Dispose();
+			_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
+			return _surface.Canvas;
+		});
 
 		_airspaceHelper.XShapeClip(nativeClippingPath);
 		Flush();

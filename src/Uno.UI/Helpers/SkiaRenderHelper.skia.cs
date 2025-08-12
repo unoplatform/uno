@@ -38,10 +38,9 @@ internal static class SkiaRenderHelper
 		return (picture, path);
 	}
 
-	internal static void RenderPicture(SKSurface surface, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
+	internal static void RenderPicture(SKCanvas canvas, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
 	{
 		using var fpsHelperDisposable = fpsHelper.BeginFrame();
-		var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(background);
@@ -56,7 +55,6 @@ internal static class SkiaRenderHelper
 
 		// update the control
 		canvas.Flush();
-		surface.Flush();
 	}
 
 	/// <summary>
