@@ -102,6 +102,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_visibilityCallback = visibilityCallback;
 		_configureCallback = configureCallback;
 
+		xamlRoot.FrameRenderingOptions = (true, true);
+
 		_closed = new TaskCompletionSource();
 		Closed = _closed.Task;
 

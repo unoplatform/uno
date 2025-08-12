@@ -81,7 +81,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 		_bitmap.Lock();
 		using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
 		{
-			if (_host.RootElement?.Visual is { } rootVisual)
+			if (_host.RootElement is { Visual: { } rootVisual, XamlRoot.LastRenderedFrame: { } lastRenderedFrame })
 			{
 				var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
 				try
@@ -90,14 +90,14 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 					SkiaRenderHelper.RenderPicture(
 						surface,
-						_host.Picture,
+						lastRenderedFrame.frame,
 						BackgroundColor,
 						_fpsHelper);
 
 					if (_host.NativeOverlayLayer is { } nativeLayer)
 					{
 						nativeLayer.Clip ??= new PathGeometry();
-						((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(_host.ClipPath?.ToSvgPathData());
+						((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(lastRenderedFrame.nativeElementClipPath.ToSvgPathData());
 					}
 					else
 					{
