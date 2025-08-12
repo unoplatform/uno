@@ -17,7 +17,7 @@ export PATH="$HOME/.dotnet:$PATH"
 
 Install required workloads for WebAssembly development:
 ```bash
-dotnet workload install wasm-tools wasm-tools-net8
+dotnet workload install wasm-tools wasm-tools-net9
 ```
 - Takes 2.5 minutes. NEVER CANCEL. Set timeout to 10+ minutes.
 
@@ -41,10 +41,10 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 <Project>
   <PropertyGroup>
     <!-- Choose one target framework: -->
-    <UnoTargetFrameworkOverride>net8.0</UnoTargetFrameworkOverride>              <!-- WebAssembly/Skia -->
-    <!-- <UnoTargetFrameworkOverride>net8.0-windows10.0.19041.0</UnoTargetFrameworkOverride>  Windows -->
-    <!-- <UnoTargetFrameworkOverride>net8.0-android</UnoTargetFrameworkOverride>  Android -->
-    <!-- <UnoTargetFrameworkOverride>net8.0-ios</UnoTargetFrameworkOverride>      iOS -->
+    <UnoTargetFrameworkOverride>net9.0</UnoTargetFrameworkOverride>              <!-- WebAssembly/Skia -->
+    <!-- <UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>  Windows -->
+    <!-- <UnoTargetFrameworkOverride>net9.0-android</UnoTargetFrameworkOverride>  Android -->
+    <!-- <UnoTargetFrameworkOverride>net9.0-ios</UnoTargetFrameworkOverride>      iOS -->
     
     <!-- Performance optimizations for development: -->
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
@@ -54,9 +54,9 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 ```
 
 3. **Open the corresponding solution filter**:
-- **WebAssembly**: `Uno.UI-Wasm-only.slnf`
-- **Skia (Linux/macOS/Windows)**: `Uno.UI-Skia-only.slnf`
-- **Mobile platforms**: `Uno.UI-netcore-mobile-only.slnf`
+- **WebAssembly (native)**: `Uno.UI-Wasm-only.slnf`
+- **Skia (all platforms including WASM, Android, iOS Skia variants)**: `Uno.UI-Skia-only.slnf`
+- **Mobile platforms (native Android, iOS)**: `Uno.UI-netcore-mobile-only.slnf`
 - **Windows**: `Uno.UI-Windows-only.slnf`
 - **Unit Tests only**: `Uno.UI-UnitTests-only.slnf`
 
@@ -150,11 +150,11 @@ Uno.UI.sln                       - Full solution (heavy, avoid)
 
 | Target Framework | Platform | Solution Filter |
 |------------------|----------|-----------------|
-| `net8.0` or `net9.0` | WebAssembly, Skia | `Uno.UI-Wasm-only.slnf`, `Uno.UI-Skia-only.slnf` |
-| `net8.0-windows10.0.19041.0` | Windows | `Uno.UI-Windows-only.slnf` |
-| `net8.0-android` | Android | `Uno.UI-netcore-mobile-only.slnf` |
-| `net8.0-ios` | iOS | `Uno.UI-netcore-mobile-only.slnf` |
-| `net8.0-maccatalyst` | macOS Catalyst | `Uno.UI-netcore-mobile-only.slnf` |
+| `net9.0` | WebAssembly, Skia | `Uno.UI-Wasm-only.slnf`, `Uno.UI-Skia-only.slnf` |
+| `net9.0-windows10.0.19041.0` | Windows | `Uno.UI-Windows-only.slnf` |
+| `net9.0-android` | Android | `Uno.UI-netcore-mobile-only.slnf` |
+| `net9.0-ios` | iOS | `Uno.UI-netcore-mobile-only.slnf` |
+| `net9.0-maccatalyst` | macOS Catalyst | `Uno.UI-netcore-mobile-only.slnf` |
 
 ### Common Build Issues
 
