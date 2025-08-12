@@ -31,4 +31,28 @@ partial class CompositionClip
 		=> null;
 
 	internal virtual SKPath? GetClipPath(Visual visual) => null;
+	/// <summary>
+	/// Optionally overridable if the clip path can be provided as a rounded rect.
+	/// </summary>
+	private protected virtual SKRoundRect? GetClipRoundedRect(Visual visual) => null;
+	/// <summary>
+	/// Optionally overridable if the clip path can be provided as a rect.
+	/// </summary>
+	private protected virtual SKRect? GetClipRect(Visual visual) => null;
+
+	internal void ApplyClip(Visual visual, SKCanvas canvas)
+	{
+		if (GetClipRect(visual) is { } clipRect)
+		{
+			canvas.ClipRect(clipRect, antialias: true);
+		}
+		else if (GetClipRoundedRect(visual) is { } roundedRect)
+		{
+			canvas.ClipRoundRect(roundedRect, antialias: true);
+		}
+		else if (GetClipPath(visual) is { } clipPath)
+		{
+			canvas.ClipPath(clipPath, antialias: true);
+		}
+	}
 }

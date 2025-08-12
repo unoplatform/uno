@@ -416,10 +416,20 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		static void PostPaintingClipStep(Visual visual, SKCanvas canvas)
 		{
+#if DEBUG
+			canvas.Save();
 			if (visual.GetPostPaintingClipping() is { } postClip)
 			{
 				canvas.ClipPath(postClip, antialias: true);
 			}
+
+			var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
+			canvas.Restore();
+#endif
+			visual.ApplyPostPaintingClipping(canvas);
+#if DEBUG
+			Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
+#endif
 		}
 
 		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
@@ -541,6 +551,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
 	private protected virtual SKPath? GetPostPaintingClipping() => null;
+	/// <summary>This can be overriden if some Visuals can apply the clipping more optimally than generating a path
+	/// and then applying the clip. Specifically, if the clipping is a simple rectangle, creating an SKPath with the
+	/// rectangle might be a lot more overhead than just calling SKCanvas.ClipRect, specifically on WASM.</summary>
+	private protected virtual void ApplyPostPaintingClipping(SKCanvas canvas)
+	{
+		if (GetPostPaintingClipping() is { } postClip)
+		{
+			canvas.ClipPath(postClip, antialias: true);
+		}
+	}
 
 	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
 	// NOTE: Returning List<Visual> so that enumerating doesn't cause boxing.
