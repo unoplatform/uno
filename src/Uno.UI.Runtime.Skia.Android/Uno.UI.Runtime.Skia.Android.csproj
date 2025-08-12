@@ -22,6 +22,12 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<DefineConstants>$(DefineConstants);ANDROID_SKIA</DefineConstants>
+		<!--
+		  Ignore warnings from generated code:
+		  - obj/**/generated/src/Uno.UI.IUnoWebViewHandlerJavascriptInterface.cs
+		  - obj/**/generated/src/__NamespaceMapping__.cs
+		 -->
+		<NoWarn>$(NoWarn);IDE0055</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -42,6 +48,10 @@
 		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\NativeWindowWrapper.Android.cs" Link="UI\Xaml\Window\NativeWindowWrapper.Android.cs" />
 		<Compile Include="..\Uno.UI\DelegateActivity.Android.cs" Link="UI\Xaml\Window\DelegateActivity.Android.cs" />
 		<Compile Include="..\Uno.UI\OnActivityResultArgs.Android.cs" Link="UI\Xaml\Window\OnActivityResultArgs.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AndroidJavaSource Include="..\Uno.UI.BindingHelper.Android\Uno\UI\UnoWebViewHandlerJavascriptInterface.java" />
 	</ItemGroup>
 
 	<ItemGroup>
