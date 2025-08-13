@@ -986,6 +986,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 50, 50), Colors.Red);
 		}
 
+#if __SKIA__
+		[TestMethod]
+		public async Task When_RenderTransform_Rearrange()
+		{
+			var sut = new TextBlock()
+			{
+				Text = "AsdAsd",
+				RenderTransform = new CompositeTransform { ScaleX = 2, ScaleY = 2 },
+			};
+
+			await UITestHelper.Load(sut);
+
+			var a = sut.Visual.TransformMatrix;
+
+			sut.InvalidateArrange();
+			await UITestHelper.WaitForIdle();
+
+			var b = sut.Visual.TransformMatrix;
+
+			Assert.AreEqual(a, b, "Visual.TransformMatrix should remain unchanged after re-arrange.");
+		}
+#endif
+
 #if HAS_UNO // GetMouse is not available on WinUI
 		#region IsTextSelectionEnabled
 
