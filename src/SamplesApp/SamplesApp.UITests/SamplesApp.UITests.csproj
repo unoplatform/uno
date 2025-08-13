@@ -27,7 +27,6 @@
 		<PackageReference Include="Uno.UITest.Helpers" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 		<PackageReference Include="Microsoft.Testing.Extensions.HangDump" />
 		<PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" />
 	</ItemGroup>

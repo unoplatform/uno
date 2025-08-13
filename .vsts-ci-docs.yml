@@ -17,12 +17,12 @@ pr:
       - legacy/*
 
 variables:
-  windowsScaledPool: 'Windows2022-20241021-1'
+  windowsScaledPool: 'Windows2022-20250720-1'
   linuxVMImage: 'ubuntu-22.04'
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
-  GlobalUnoCheckVersion: '1.31.0-dev.12'
+  GlobalUnoCheckVersion: '1.32.0-dev.45'
 
 stages:
 - template: build/ci/.azure-devops-stages-docs.yml

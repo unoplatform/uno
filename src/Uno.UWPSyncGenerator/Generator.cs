@@ -147,14 +147,14 @@ namespace Uno.UWPSyncGenerator
 
 			var topProject = @"..\..\..\Uno.UI\Uno.UI";
 
-			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-ios17.0");
-			_tvOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-tvos17.0");
-			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-android");
-			_unitTestsCompilation = await LoadProject($@"{topProject}.Tests.csproj", "net8.0");
+			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-ios17.0");
+			_tvOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-tvos17.0");
+			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-android");
+			_unitTestsCompilation = await LoadProject($@"{topProject}.Tests.csproj", "net9.0");
 
-			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net8.0");
-			_wasmCompilation = await LoadProject($@"{topProject}.Wasm.csproj", "net8.0");
-			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net8.0");
+			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net9.0");
+			_wasmCompilation = await LoadProject($@"{topProject}.Wasm.csproj", "net9.0");
+			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net9.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_tvOSBaseSymbol = _tvOSCompilation.GetTypeByMetadataName("UIKit.UIView");
