@@ -33,7 +33,7 @@ Develop fully native applications for a wide range of platforms from a single co
 * **Mobile (iOS & Android)**: Build native, pixel-perfect UIs with C# and XAML.
 * **Web (WebAssembly)**: Reuse existing C# and XAML skills to build fast web applications.
 * **Desktop (Windows & macOS)**: Leverage WinUI for modern Windows applications and develop for macOS using AppKit or with Desktop Skia.
-* **Linux**: Deploy to Linux desktops using Skia for a consistent UI.
+* **Linux**: Deploy to Linux desktops using Skia (X11/Framebuffer) for a consistent UI.
 
 #### 🛠️ Toolkit & Extensions
 
@@ -82,7 +82,7 @@ Get your development environment ready and create your first app in minutes.
 
 ## 🛠️ How It Works
 
-Uno Platform unifies cross-platform development by abstracting platform-specific implementations behind the WinUI 3 API.
+Uno Platform unifies cross-platform development by abstracting platform-specific implementations behind the WinUI 3 API surface.
 
 1. **Develop**: You write your application in a single project using C# and XAML (or C# Markup) within your preferred environment (Visual Studio, JetBrains Rider, VS Code) on Windows, macOS, or Linux.
 2. **Render**: Uno Platform renders your UI using one of two methods:
