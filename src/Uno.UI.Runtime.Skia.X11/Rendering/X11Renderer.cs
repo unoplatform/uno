@@ -24,6 +24,9 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 			this.Log().Trace($"Render {_renderCount++}");
 		}
 
+		using var fpsHelperDisposable = _fpsHelper.BeginFrame();
+		_fpsHelper.Scale = scale;
+
 		var display = x11Window.Display;
 		var window = x11Window.Window;
 		using var lockDisposable = X11Helper.XLock(display);
@@ -56,13 +59,15 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 			_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
 		}
 
-		_fpsHelper.Scale = scale;
+		var canvas = _surface.Canvas;
 
-		SkiaRenderHelper.RenderPicture(
-			_surface,
-			picture,
-			_background,
-			_fpsHelper);
+		var saveCount = canvas.Save();
+		canvas.Clear(_background);
+		canvas.Scale(scale);
+		canvas.DrawPicture(picture);
+		_fpsHelper.DrawFps(canvas);
+		canvas.RestoreToCount(saveCount);
+		canvas.Flush();
 
 		_airspaceHelper.XShapeClip(nativeClippingPath);
 		Flush();
