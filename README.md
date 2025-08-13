@@ -32,24 +32,23 @@ Develop fully native applications for a wide range of platforms from a single co
 
 * **Mobile (iOS & Android)**: Build native, pixel-perfect UIs with C# and XAML.
 * **Web (WebAssembly)**: Reuse existing C# and XAML skills to build fast web applications.
-* **Desktop (Windows & macOS)**: Leverage WinUI for modern Windows applications and develop for macOS using AppKit or with Desktop Skia.
-* **Linux**: Deploy to Linux desktops using Skia (X11/Framebuffer) for a consistent UI.
+* **Desktop (Windows, macOS & Linux)**: Uno Platform uses **Skia** for rendering across all desktop platforms, ensuring high-performance, hardware-accelerated graphics and animations. On Windows, Skia runs within a Win32 shell, on macOS within an AppKit shell (Metal when available), and on Linux within an X11 shell or directly to the Framebuffer for embedded scenarios.
 
 #### 🛠️ Toolkit & Extensions
 
-* **UI Controls**: Access hundreds of UI components from WinUI, Windows Community Toolkit, Uno Toolkit, third-party vendors, and even .NET MAUI controls.
-* **Theming**: Easily theme your app with Material, Fluent, or Cupertino styles using minimal code.
-* **State Management**: Choose between the familiar MVVM pattern or the modern MVUX approach for declarative and scalable state management.
-* **Extensions**: Utilize ready-to-use libraries for common functionalities like navigation, logging, and dependency injection.
-* **Non-UI Cross-Platform APIs**: Access a comprehensive set of APIs to interact with native device features such as sensors and secure storage.
+* **UI Controls**: Access [hundreds of UI components from WinUI](https://aka.platform.uno/using-uno-ui), [Windows Community Toolkit](https://aka.platform.uno/install-uno-community-toolkit), [Uno Toolkit](https://aka.platform.uno/uno-toolkit), [third-party vendors](https://aka.platform.uno/supported-libraries), and even .NET [MAUI controls](https://aka.platform.uno/maui-embedding).
+* **Theming**: Easily theme your app with [Material, Fluent, or Cupertino styles](https://aka.platform.uno/uno-themes) using minimal code.
+* **State Management**: Choose between the familiar MVVM pattern or the modern [MVUX](https://aka.platform.uno/mvux) approach for declarative and scalable state management.
+* **Extensions**: Utilize [ready-to-use libraries](https://aka.platform.uno/uno-extensions) for common functionalities like navigation, logging, and dependency injection.
+* **Non-UI Cross-Platform APIs**: Access a [comprehensive set of APIs](https://aka.platform.uno/using-uno-ui) to interact with native device features such as sensors and secure storage.
 
-### Uno Platform Studio:
+### Uno Platform Studio
 
 An optional premium toolkit that integrates with Visual Studio, VS Code, and JetBrains Rider to offer an unparalleled development loop.
 
-* **Hot Design**: A next-generation visual designer that transforms your live app into a design surface with a single click.
-* **Hot Reload**: Instantly modify XAML and C# on a running app, allowing for rapid iteration without losing the app's state.
-* **Design-to-Code**: Export Figma designs to clean, responsive XAML or C# markup in seconds.
+* **[Hot Design](https://aka.platform.uno/hot-design)**: A next-generation visual designer that transforms your live app into a design surface with a single click.
+* **[Hot Reload](https://aka.platform.uno/hot-reload)**: Instantly modify XAML and C# on a running app, allowing for rapid iteration without losing the app's state.
+* **[Design-to-Code](https://aka.platform.uno/Design-to-Code)**: Export Figma designs to clean, responsive XAML or C# markup in seconds.
 <img alt="Uno Platform Studio - Hot Design" align=center width="95%" src="https://github.com/user-attachments/assets/0962dbac-2130-4d2d-b187-71974160ddbe" />
 
 ---
@@ -58,25 +57,15 @@ An optional premium toolkit that integrates with Visual Studio, VS Code, and Jet
 
 Get your development environment ready and create your first app in minutes.
 
-1. **Check Your Environment**: Use our command-line tool to automatically check, install, and configure all required workloads and dependencies.
-
-   ```cmd
-   dotnet tool install --global Uno.Check
-   uno-check
-   ```
+1. **Check Your Environment**: Use our Uno.Check command-line tool to automatically check, install, and configure all required workloads and dependencies.
 
 2. **Create Your App**: Use the Template Wizard in your IDE or the command line to quickly create and configure new Uno Platform projects with the appropriate settings for your target platforms.
 
-   ```cmd
-   dotnet new install Uno.Templates
-   dotnet new unoapp -o MyApp
-   ```
-
     ![Uno Platform New Project Wizard](https://github.com/user-attachments/assets/fc67df45-30e2-43d7-8323-890686f1e9bf)
 
-3. **Build and Run**: Open the `MyApp.sln` file and run the desired target.
+3. **Build and Run**
 
-➡️ For detailed guides, visit the **[Official Uno Platform Documentation](https://aka.platform.uno/get-started)**.
+➡️ For detailed guides, visit the **[Official Uno Platform Documentation](https://aka.platform.uno/get-started)** on how to get started with Uno Platform.
 
 ---
 
@@ -84,7 +73,7 @@ Get your development environment ready and create your first app in minutes.
 
 Uno Platform unifies cross-platform development by abstracting platform-specific implementations behind the WinUI 3 API surface.
 
-1. **Develop**: You write your application in a single project using C# and XAML (or C# Markup) within your preferred environment (Visual Studio, JetBrains Rider, VS Code) on Windows, macOS, or Linux.
+1. **Develop**: You write your application in a single project using C# and XAML (or C# Markup) within your preferred environment (Visual Studio, JetBrains Rider, Visual Studio Code) on Windows, macOS, or Linux.
 2. **Render**: Uno Platform renders your UI using one of two methods:
     * **Unified Skia Rendering**: A Skia-based engine draws your UI on a canvas, ensuring consistent performance, smooth animations, and pixel-perfect visuals across all targets.
     * **Native Rendering**: The XAML UI is translated into native platform controls (e.g., UIKit on iOS), providing a platform-native look and feel when desired.
@@ -142,6 +131,10 @@ Uno Platform unifies cross-platform development by abstracting platform-specific
 ![YouTube Followers](https://img.shields.io/youtube/channel/subscribers/UC8GkqD6hsSkwYof6n2Wk1hg?label=Follow%20%40UnoPlatform&style=flat&color=f85977&logo=Youtube)
 
 * **[Official Documentation](https://aka.platform.uno/uno-docs-intro)**: The complete guide to Uno Platform.
+* **[Uno Platform Studio](https://aka.platform.uno/studio)**: Details for the set of productivity tools Uno Platform Studio, that includes:
+  * **[Hot Design](https://aka.platform.uno/hot-design)**
+  * **[Hot Reload](https://aka.platform.uno/hot-reload)**
+  * **[Design-to-Code](https://aka.platform.uno/Design-to-Code)**
 * **[Uno Playground](https://playground.platform.uno/)**: Experiment with code snippets and see live previews.
 * **[Uno Gallery](https://gallery.platform.uno/)**: Explore various UI themes and components in action.
 * **[Workshops & Code Samples](https://aka.platform.uno/samples-tutorials)**: Access practical tutorials and sample projects to accelerate learning.
