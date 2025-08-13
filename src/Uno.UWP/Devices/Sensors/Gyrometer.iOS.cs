@@ -66,7 +66,7 @@ namespace Windows.Devices.Sensors
 
 		private double UpdateGyrometer(uint value) => value / 1000.0;
 
-		private void GyrometerUpdateReceived(CMGyroData data, NSError error)
+		private void GyrometerUpdateReceived(CMGyroData? data, NSError? error)
 		{
 			if (data == null)
 			{

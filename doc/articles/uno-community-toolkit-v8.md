@@ -65,7 +65,7 @@ When using the Uno Platform solution templates, add the following to your applic
     > ```xml
     > <TargetFrameworks>
     >   <!-- Code for other TargetFrameworks omitted for brevity -->
-    >   net9.0-windows10.0.22621;
+    >   net10.0-windows10.0.22621;
     > </TargetFrameworks>
     > ```
     >

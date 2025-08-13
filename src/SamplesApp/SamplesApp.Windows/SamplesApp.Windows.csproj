@@ -48,9 +48,6 @@
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
 		<Manifest Include="$(ApplicationManifest)" />
-
-		<!-- https://github.com/NuGet/Home/issues/7344 -->
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 	</ItemGroup>
 
 	<!--

@@ -204,7 +204,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 				return;
 			}
 
-			_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
+			_inputPane.OccludedRect = ((NSValue?)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey))?.CGRectValue ?? default;
 		}
 		catch (Exception ex)
 		{
