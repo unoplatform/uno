@@ -48,6 +48,7 @@ public partial class Compositor
 				else
 				{
 					_runningTargets[target] = 1;
+					target.RequestNewFrame();
 				}
 
 				if (this.Log().IsTraceEnabled())
@@ -200,7 +201,7 @@ public partial class Compositor
 		// TODO: this should be in XamlRoot.PaintFrame
 		if (_runningAnimations.Count > 0 || transitionsCount > 0)
 		{
-			InvalidateRender(rootVisual);
+			rootVisual.CompositionTarget?.RequestNewFrame();
 		}
 	}
 
