@@ -122,7 +122,7 @@ dotnet_diagnostic.CA1859.severity = none
 dotnet_diagnostic.CA1860.severity = none
 
 # CA1863: Use composite format
-# TODO: Enable when we are .NET 8+ to avoid conditional code between net7.0 and net8.0
+# TODO: Enable when we are .NET 8+ to avoid conditional code between net7.0 and net9.0
 dotnet_diagnostic.CA1863.severity = none
 
 dotnet_code_quality.CA1822.api_surface = private, internal

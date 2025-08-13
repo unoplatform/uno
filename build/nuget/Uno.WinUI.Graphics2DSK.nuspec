@@ -15,33 +15,17 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="3.119.0" />
 			</group>
-			<group targetFramework="net8.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="3.119.0" />
-			</group>
 
-			<group targetFramework="net8.0-windows10.0.19041.0">
+			<group targetFramework="net9.0-windows10.0.19041.0">
 				<dependency id="Microsoft.WindowsAppSDK" version="1.5.240227000" />
 				<dependency id="SkiaSharp" version="3.119.0" />
 			</group>
 
-			<group targetFramework="net8.0-android30.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="3.119.0" />
-			</group>
-			<group targetFramework="net8.0-ios17.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="3.119.0" />
-			</group>
-			<group targetFramework="net8.0-tvos17.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="3.119.0" />
-			</group>
-			<group targetFramework="net8.0-maccatalyst17.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="3.119.0" />
-			</group>
 			<group targetFramework="net9.0-android30.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="SkiaSharp" version="3.119.0" />
+			</group>
+			<group targetFramework="net10.0-android36.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="3.119.0" />
 			</group>
@@ -49,11 +33,23 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="3.119.0" />
 			</group>
+			<group targetFramework="net10.0-ios18.5">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="SkiaSharp" version="3.119.0" />
+			</group>
 			<group targetFramework="net9.0-tvos18.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="3.119.0" />
 			</group>
+			<group targetFramework="net10.0-tvos18.5">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="SkiaSharp" version="3.119.0" />
+			</group>
 			<group targetFramework="net9.0-maccatalyst18.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="SkiaSharp" version="3.119.0" />
+			</group>
+			<group targetFramework="net10.0-maccatalyst18.5">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="3.119.0" />
 			</group>
@@ -63,21 +59,20 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
-        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net8.0\Uno.WinUI.Graphics2DSK.*" target="lib\net8.0" />
         <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0" />
+        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0" />
 
-        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net8.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net8.0-windows10.0.19041.0" />
         <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-windows10.0.19041.0" />
-
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net8.0-android\Uno.WinUI.Graphics2DSK.*" target="lib\net8.0-android" />
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net8.0-ios17.0\Uno.WinUI.Graphics2DSK.*" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net8.0-tvos17.0\Uno.WinUI.Graphics2DSK.*" target="lib\net8.0-tvos17.0" />
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net8.0-maccatalyst17.0\Uno.WinUI.Graphics2DSK.*" target="lib\net8.0-maccatalyst17.0" />
 
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-android\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-android" />
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-ios18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-tvos18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-tvos18.0" />
 		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-maccatalyst18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-maccatalyst18.0" />
+
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0-android\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-android" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0-ios18.5\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-ios18.5" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0-tvos18.5\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-tvos18.5" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0-maccatalyst18.5\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-maccatalyst18.5" />
 	</files>
 
 </package>

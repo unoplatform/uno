@@ -31,7 +31,7 @@ jobs:
   - template: ../templates/jdk-setup.yml
 
   # We need just the .NET 8 runtime (not the SDK).
-  # Building with .NET 9 SDK is fine, but running the app when the TFM is net8.0 requires the .NET 8 runtime
+  # Building with .NET 9 SDK is fine, but running the app when the TFM is net9.0 requires the .NET 8 runtime
   - task: UseDotNet@2
     displayName: Install .NET 8 SDK
     inputs:

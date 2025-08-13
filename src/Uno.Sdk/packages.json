@@ -33,14 +33,14 @@
 	},
 	{
 		"group": "WasmBootstrap",
-		"version": "8.0.23",
+		"version": "9.0.16",
 		"packages": [
 			"Uno.Wasm.Bootstrap",
 			"Uno.Wasm.Bootstrap.DevServer",
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.16"
+			"net10.0": "9.0.16"
 		}
 	},
 	{
@@ -136,22 +136,22 @@
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "8.0.1",
+		"version": "9.0.4",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.4"
+			"net10.0": "9.0.4"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "8.0.15",
+		"version": "9.0.4",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.4"
+			"net10.0": "9.0.4"
 		}
 	},
 	{
@@ -263,14 +263,14 @@
 	},
 	{
 		"group": "Maui",
-		"version": "8.0.100",
+		"version": "9.0.60",
 		"packages": [
 			"Microsoft.Maui.Controls",
 			"Microsoft.Maui.Controls.Compatibility",
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.60"
+			"net10.0": "9.0.60"
 		}
 	},
 	{
