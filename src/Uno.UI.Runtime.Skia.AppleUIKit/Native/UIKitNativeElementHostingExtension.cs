@@ -2,6 +2,8 @@
 using Microsoft.UI.Xaml.Controls;
 using UIKit;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Rect = Windows.Foundation.Rect;
 using Size = Windows.Foundation.Size;
 
@@ -16,7 +18,7 @@ internal sealed class UIKitNativeElementHostingExtension : ContentPresenter.INat
 		_presenter = presenter;
 	}
 
-	private UIView? OverlayLayer => _presenter.XamlRoot is { } xamlRoot ? AppManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer : null;
+	private UIView? OverlayLayer => _presenter.XamlRoot is { } xamlRoot ? (XamlRootMap.GetHostForRoot(xamlRoot) as IAppleUIKitXamlRootHost)?.NativeOverlayLayer : null;
 
 	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
 	{

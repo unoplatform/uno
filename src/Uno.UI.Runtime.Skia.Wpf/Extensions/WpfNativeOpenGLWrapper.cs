@@ -3,6 +3,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Uno.UI.Hosting;
 
 #if WINDOWS_UWP || WINAPPSDK
 using Microsoft.UI.Xaml;
@@ -69,7 +70,7 @@ internal class WpfNativeOpenGLWrapper
 #if WINDOWS_UWP || WINAPPSDK
 		var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_getWindowFunc());
 #else
-		if (WpfManager.XamlRootMap.GetHostForRoot(xamlRoot) is not WpfControl wpfControl || WpfWindow.GetWindow(wpfControl) is not { } wpfWindow)
+		if (XamlRootMap.GetHostForRoot(xamlRoot) is not WpfControl wpfControl || WpfWindow.GetWindow(wpfControl) is not { } wpfWindow)
 		{
 			throw new InvalidOperationException($"The XamlRoot and the XamlRootMap must be initialized before constructing a {_type.Name}.");
 		}

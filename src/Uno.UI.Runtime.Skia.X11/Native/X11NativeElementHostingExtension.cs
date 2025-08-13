@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -30,7 +31,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		// This implicitly means that we expect that the XamlRoot must be set by the time we need to do any
 		// X11 calls (like attaching).
 		_display = new Lazy<IntPtr>(
-			() => ((X11XamlRootHost)X11Manager.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RootX11Window.Display);
+			() => ((X11XamlRootHost)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RootX11Window.Display);
 	}
 
 	private XamlRoot? XamlRoot => _presenter.XamlRoot;
@@ -41,7 +42,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	{
 		if (content is X11NativeWindow nativeWindow
 			&& XamlRoot is { } xamlRoot
-			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
+			&& XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			using var lockDiposable = X11Helper.XLock(Display);
 
@@ -52,8 +53,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			HideWindowFromTaskBar(nativeWindow);
 
-			xamlRoot.RenderInvalidated += UpdateLayout;
-			xamlRoot.QueueInvalidateRender(); // to force initial layout and clipping
+			xamlRoot.FramePainted += UpdateLayout;
+			_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual); // to force initial layout and clipping
 		}
 		else
 		{
@@ -120,7 +121,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	{
 		if (content is X11NativeWindow nativeWindow
 			&& XamlRoot is { } xamlRoot
-			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
+			&& XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			using var lockDiposable = X11Helper.XLock(Display);
 			host.UnregisterInputFromNativeSubwindow(nativeWindow.WindowId);
@@ -133,7 +134,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_lastClipRect = null;
 			_lastArrangeRect = null;
 
-			xamlRoot.RenderInvalidated -= UpdateLayout;
+			xamlRoot.FramePainted -= UpdateLayout;
 		}
 		else
 		{
@@ -146,7 +147,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		_lastArrangeRect = arrangeRect;
 		_lastClipRect = clipRect;
 		_layoutDirty = true;
-		XamlRoot?.QueueInvalidateRender();
+		_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual);
 		// we don't update the layout right now. We wait for the next render to happen, as
 		// xlib calls are expensive and it's better to update the layout once at the end when multiple arrange
 		// calls are fired sequentially.
@@ -163,7 +164,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_lastArrangeRect is { } arrangeRect &&
 			_lastClipRect is { } clipRect &&
 			XamlRoot is { } xamlRoot &&
-			X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
+			XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			using var lockDiposable = X11Helper.XLock(Display);
 			if (arrangeRect.Width <= 0 || arrangeRect.Height <= 0)

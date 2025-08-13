@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.Threading;
 using Windows.Foundation;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Input;
@@ -10,12 +9,15 @@ using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
 
 namespace Microsoft.UI.Xaml;
 
 partial class XamlRoot
 {
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
+	// TODO: prevent this from being bottlenecked by the dispatcher queue, and read the native refresh rate instead of hardcoding it
+	private readonly DispatcherTimer _renderTimer = new() { Interval = TimeSpan.FromMilliseconds(1 / 60.0) };
 	private bool _renderQueued;
 	private FocusManager? _focusManager;
 	private (SKPicture frame, SKPath nativeElementClipPath, Size size)? _lastRenderedFrame;
@@ -34,11 +36,7 @@ partial class XamlRoot
 
 	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
 
-	internal event Action? RenderInvalidated;
-
-	// For profiling purposes only. Do not depend on these events.
 	internal event Action? FramePainted;
-	internal event Action? FrameRendered;
 
 	internal void InvalidateOverlays()
 	{
@@ -50,35 +48,17 @@ partial class XamlRoot
 		}
 	}
 
-	internal void QueueInvalidateRender()
-	{
-		if (!_renderQueued)
-		{
-			_renderQueued = true;
-
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				if (_renderQueued)
-				{
-					_renderQueued = false;
-
-					InvalidateRender();
-				}
-			}, NativeDispatcherPriority.Idle); // Idle is necessary to avoid starving the Normal queue on some platforms (specifically skia/android), otherwise When_Child_Empty_List times out
-		}
-	}
-
-	private void InvalidateRender()
+	private void PaintFrame()
 	{
 		NativeDispatcher.CheckThreadAccess();
 
 		var rootElement = VisualTree.RootElement;
-		if (!SkiaRenderHelper.CanRecordPicture(rootElement))
-		{
-			// Try again next tick
-			QueueInvalidateRender();
-			return;
-		}
+		// TODO
+		// if (!SkiaRenderHelper.CanRecordPicture(rootElement))
+		// {
+		// 	// Try again next tick
+		// 	return;
+		// }
 
 		lock (_frameGate)
 		{
@@ -91,11 +71,14 @@ partial class XamlRoot
 			_lastRenderedFrame = (lastRenderedFrame.Item1, lastRenderedFrame.Item2, Bounds.Size);
 		}
 
-		RenderInvalidated?.Invoke();
+		FramePainted?.Invoke();
+		XamlRootMap.GetHostForRoot(this)!.InvalidateRender();
 	}
 
 	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
+		CompositionTarget.InvokeRendering();
+
 		if (LastRenderedFrame is not { } lastRenderedFrame)
 		{
 			return new SKPath();
@@ -118,21 +101,14 @@ partial class XamlRoot
 		}
 	}
 
-	internal void InvokeFramePainted()
-	{
-		NativeDispatcher.CheckThreadAccess();
-		FramePainted?.Invoke();
-	}
+	internal void RequestNewFrame() => _renderQueued = true;
 
-	internal void InvokeFrameRendered()
+	private void OnRenderTimerTick()
 	{
-		if (NativeDispatcher.Main.HasThreadAccess)
+		if (_renderQueued)
 		{
-			FrameRendered?.Invoke();
-		}
-		else
-		{
-			NativeDispatcher.Main.Enqueue(() => FrameRendered?.Invoke(), NativeDispatcherPriority.High);
+			PaintFrame();
+			_renderQueued = false;
 		}
 	}
 }

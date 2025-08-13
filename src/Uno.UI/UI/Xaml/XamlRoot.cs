@@ -23,6 +23,10 @@ public sealed partial class XamlRoot
 	internal XamlRoot(VisualTree visualTree)
 	{
 		VisualTree = visualTree;
+#if __SKIA__
+		_renderTimer.Tick += (_, _) => OnRenderTimerTick();
+		_renderTimer.Start();
+#endif
 	}
 
 	/// <summary>

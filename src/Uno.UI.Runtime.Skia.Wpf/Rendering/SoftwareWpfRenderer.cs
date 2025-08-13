@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Visibility = System.Windows.Visibility;
 using WpfControl = global::System.Windows.Controls.Control;
@@ -46,7 +47,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			return;
 		}
 
-		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		_xamlRoot ??= XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 
 		_bitmap?.Lock();
 		var surface = _bitmap is not null ? SKSurface.Create(new SKImageInfo(_bitmap.PixelWidth, _bitmap.PixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul), _bitmap.BackBuffer, _bitmap.BackBufferStride) : null;
