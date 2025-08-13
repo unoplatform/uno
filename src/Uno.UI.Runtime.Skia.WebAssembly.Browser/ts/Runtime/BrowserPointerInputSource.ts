@@ -119,7 +119,7 @@
 				wheelDeltaY = 0;
 			}
 
-			let result = BrowserPointerInputSource._exports.OnNativeEvent(
+			const result = BrowserPointerInputSource._exports.OnNativeEvent(
 				this._source,
 				event, //byte @event, // ONE of NativePointerEvent
 				evt.timeStamp, //double timestamp,
@@ -140,7 +140,7 @@
 			// pointer events may have some side effects (like changing focus or opening a context menu on right clicking)
 			// We blanket-disable all the native behaviour so we don't have to whack-a-mole all the edge cases.
 			// We only allow wheel events with ctrl key pressed to allow zooming in/out.
-			let isZooming = evt instanceof WheelEvent && evt.ctrlKey;
+			const isZooming = evt instanceof WheelEvent && evt.ctrlKey;
 			if (result == HtmlEventDispatchResult.PreventDefault ||
 				!isZooming) {
 				evt.preventDefault();
