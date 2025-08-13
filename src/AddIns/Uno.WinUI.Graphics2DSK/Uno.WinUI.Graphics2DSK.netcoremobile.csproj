@@ -3,6 +3,7 @@
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 	<Import Project="../../targetframework-override.props" />
+    <!-- Required to ensure that we're including an explicit reference to Mono.Android in order to have Java Stubs being generated properly -->
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<PropertyGroup>
