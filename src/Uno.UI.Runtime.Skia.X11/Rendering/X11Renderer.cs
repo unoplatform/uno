@@ -16,7 +16,7 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 
 	public void SetBackgroundColor(SKColor color) => _background = color;
 
-	public void Render(SKPicture picture, SKPath nativeClippingPath, float scale)
+	public void Render()
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -64,7 +64,7 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 			return _surface.Canvas;
 		});
 
-		_airspaceHelper.XShapeClip(nativeClippingPath);
+		_airspaceHelper.XShapeClip(nativeElementClipPath);
 		Flush();
 		_ = XLib.XFlush(display);
 	}

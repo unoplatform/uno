@@ -157,10 +157,6 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
-			// We do not have a display timer on this target, we can use
-			// a constant timer.
-			CompositionTargetTimer.Start();
-
 			FrameBufferInputProvider.Instance.Initialize();
 
 			_renderer = new Renderer(this);
