@@ -36,8 +36,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
 
-	private static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
-
 	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow, XamlRoot xamlRoot)
 	{
 		_nativeWindow = nativeWindow ?? throw new ArgumentNullException(nameof(nativeWindow));
@@ -123,7 +121,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		_context?.Flush();
-		RootElement?.XamlRoot?.InvokeFrameRendered();
 		target?.Dispose();
 		surface?.Dispose();
 	}
@@ -178,7 +175,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			*size = (int)bitmapSize;
 			*rowBytes = _rowBytes;
 		}
-		RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 
 	// Window management

@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
@@ -166,7 +167,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			return;
 		}
 
-		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		_xamlRoot ??= XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 
 #pragma warning disable CA1806 // Do not ignore method results
 		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);

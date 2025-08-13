@@ -4,7 +4,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using UIKit;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
+using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
@@ -302,5 +304,5 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	}
 
 	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
-		AppManager.XamlRootMap.GetHostForRoot(xamlRoot)?.TextInputLayer;
+		(XamlRootMap.GetHostForRoot(xamlRoot) as IAppleUIKitXamlRootHost)?.TextInputLayer;
 }

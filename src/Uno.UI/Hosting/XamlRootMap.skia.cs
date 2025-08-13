@@ -7,16 +7,16 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Hosting;
 
-internal class XamlRootMap<THost> where THost : IXamlRootHost
+internal static class XamlRootMap
 {
-	private readonly Dictionary<XamlRoot, THost> _map = new();
-	private readonly Dictionary<THost, XamlRoot> _reverseMap = new();
+	private static readonly Dictionary<XamlRoot, IXamlRootHost> _map = new();
+	private static readonly Dictionary<IXamlRootHost, XamlRoot> _reverseMap = new();
 
-	internal event EventHandler<XamlRoot>? Registered;
+	internal static event EventHandler<XamlRoot>? Registered;
 
-	internal event EventHandler<XamlRoot>? Unregistered;
+	internal static event EventHandler<XamlRoot>? Unregistered;
 
-	internal void Register(XamlRoot xamlRoot, THost host)
+	internal static void Register(XamlRoot xamlRoot, IXamlRootHost host)
 	{
 		if (xamlRoot is null)
 		{
@@ -37,11 +37,10 @@ internal class XamlRootMap<THost> where THost : IXamlRootHost
 		_reverseMap[host] = xamlRoot;
 		xamlRoot.VisualTree.ContentRoot.SetHost(host); // Note: This might be a duplicated call but it's supported by ContentRoot and safe
 
-		xamlRoot.RenderInvalidated += host.InvalidateRender;
-		Registered?.Invoke(this, xamlRoot);
+		Registered?.Invoke(null, xamlRoot);
 	}
 
-	internal void Unregister(XamlRoot xamlRoot)
+	internal static void Unregister(XamlRoot xamlRoot)
 	{
 		if (xamlRoot is null)
 		{
@@ -51,16 +50,15 @@ internal class XamlRootMap<THost> where THost : IXamlRootHost
 		var host = GetHostForRoot(xamlRoot);
 		if (host is not null)
 		{
-			xamlRoot.RenderInvalidated -= host.InvalidateRender;
 			_map.Remove(xamlRoot);
 			_reverseMap.Remove(host);
-			Unregistered?.Invoke(this, xamlRoot);
+			Unregistered?.Invoke(null, xamlRoot);
 		}
 	}
 
-	internal THost? GetHostForRoot(XamlRoot xamlRoot) =>
+	internal static IXamlRootHost? GetHostForRoot(XamlRoot xamlRoot) =>
 		_map.TryGetValue(xamlRoot, out var host) ? host : default;
 
-	internal XamlRoot? GetRootForHost(THost host) =>
+	internal static XamlRoot? GetRootForHost(IXamlRootHost host) =>
 		_reverseMap.TryGetValue(host, out var xamlRoot) ? xamlRoot : default;
 }

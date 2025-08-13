@@ -31,7 +31,7 @@ internal class WebAssemblyWindowFactoryExtension : INativeWindowFactoryExtension
 
 		_initialWindow = window;
 		WebAssemblyWindowWrapper.Instance.SetWindow(window, xamlRoot);
-		WebAssemblyManager.XamlRootMap.Register(xamlRoot, _host);
+		XamlRootMap.Register(xamlRoot, _host);
 
 		return WebAssemblyWindowWrapper.Instance;
 	}
