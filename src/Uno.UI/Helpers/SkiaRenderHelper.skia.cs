@@ -17,7 +17,8 @@ internal static class SkiaRenderHelper
 {
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is not null &&
-		(!FeatureConfiguration.Rendering.GenerateNewFramesOnlyWhenUITreeIsArranged || rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false });
+		!rootElement.IsArrangeDirtyOrArrangeDirtyPath &&
+		!rootElement.IsMeasureDirtyOrMeasureDirtyPath;
 
 	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath)
 	{
