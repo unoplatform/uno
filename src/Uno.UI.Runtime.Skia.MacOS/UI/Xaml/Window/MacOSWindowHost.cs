@@ -121,7 +121,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		_context?.Flush();
-		RootElement?.XamlRoot?.InvokeFrameRendered();
 		target?.Dispose();
 		surface?.Dispose();
 	}
@@ -176,7 +175,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			*size = (int)bitmapSize;
 			*rowBytes = _rowBytes;
 		}
-		RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 
 	// Window management

@@ -33,8 +33,6 @@ internal static class SkiaRenderHelper
 		var path = CalculateClippingPath(width, height, rootElement.Visual, canvas, invertPath, applyScaling);
 		var picture = recorder.EndRecording();
 
-		xamlRoot?.InvokeFramePainted();
-
 		return (picture, path);
 	}
 

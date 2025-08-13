@@ -3,6 +3,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Uno.UI.Hosting;
 
 #if WINDOWS_UWP || WINAPPSDK
 using Microsoft.UI.Xaml;
