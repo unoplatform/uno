@@ -191,7 +191,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				((IDisposable?)drawable)?.Dispose();
 				((IDisposable?)canvas)?.Dispose();
 				((IDisposable?)surface)?.Dispose();
-				_owner?.RootElement?.XamlRoot?.InvokeFrameRendered();
 			}
 
 			_link.Paused = !CompositionTarget.IsRenderingActive;

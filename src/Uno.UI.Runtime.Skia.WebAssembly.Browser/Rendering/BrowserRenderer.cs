@@ -13,10 +13,8 @@ namespace Uno.UI.Runtime.Skia;
 
 internal partial class BrowserRenderer
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly IXamlRootHost _host;
 	private int _renderCount;
-	private DisplayInformation? _displayInformation;
 	private bool _isWindowInitialized;
 
 	private const int ResourceCacheBytes = 256 * 1024 * 1024; // 256 MB
@@ -33,8 +31,6 @@ internal partial class BrowserRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
 	private SKCanvas? _canvas;
-
-	private SKSizeI? _lastSize;
 
 	public BrowserRenderer(IXamlRootHost host)
 	{
@@ -86,24 +82,8 @@ internal partial class BrowserRenderer
 			_context.SetResourceCacheLimit(ResourceCacheBytes);
 		}
 
-		_displayInformation ??= DisplayInformation.GetForCurrentView();
-
-		var scale = _displayInformation.RawPixelsPerViewPixel;
-
-		// get the new surface size
-		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width), (int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height));
-
-		// manage the drawing surface
-		if (_surface == null || _canvas == null || _renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
+		var currentClipPath = _host.RootElement!.XamlRoot!.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"Render size {newCanvasSize.Width}x{newCanvasSize.Height}, Window size: {Microsoft.UI.Xaml.Window.Current!.Bounds}, Scale: {scale}");
-			}
-
-			// create or update the dimensions
-			_lastSize = newCanvasSize;
-
 			_glInfo = new GRGlFramebufferInfo(_jsInfo.FboId, colorType.ToGlSizedFormat());
 
 			// destroy the old surface
@@ -113,7 +93,7 @@ internal partial class BrowserRenderer
 
 			// re-create the render target
 			_renderTarget?.Dispose();
-			_renderTarget = new GRBackendRenderTarget((int)(newCanvasSize.Width * scale), (int)(newCanvasSize.Height * scale), _jsInfo.Samples, _jsInfo.Stencil, _glInfo);
+			_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, _jsInfo.Samples, _jsInfo.Stencil, _glInfo);
 
 			// create the surface
 			_surface = SKSurface.Create(_context, _renderTarget, surfaceOrigin, colorType);
@@ -124,40 +104,17 @@ internal partial class BrowserRenderer
 				_isWindowInitialized = true;
 				// Microsoft.UI.Xaml.Window.Current.OnNativeWindowCreated();
 			}
-		}
 
-		if (Microsoft.UI.Xaml.Window.CurrentSafe.RootElement!.XamlRoot!.LastRenderedFrame is { } lastRenderedFrame)
-		{
-			SkiaRenderHelper.RenderPicture(
-				_surface,
-				lastRenderedFrame.frame,
-				SKColors.Transparent,
-				_fpsHelper);
-
-			var currentClipPath = lastRenderedFrame.nativeElementClipPath;
-			BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!currentClipPath.IsEmpty ? currentClipPath.ToSvgPathData() : "");
-		}
+			return _canvas;
+		});
 
 		_context.Flush();
-		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
+
+		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!currentClipPath.IsEmpty ? currentClipPath.ToSvgPathData() : "");
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"Render time: {_renderStopwatch.Elapsed}");
-		}
-
-		if (CompositionTarget.IsRenderingActive)
-		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"Dispatch next rendering");
-			}
-
-			// Force a loop of the dispatcher, so that the Rendering Event
-			// even can be raised. It is done synchronously because we're already
-			// on a timed callback and it won't requeue immediately like a standard
-			// dispatcher dispatch would.
-			NativeDispatcher.Main.SynchronousDispatchRendering();
 		}
 	}
 

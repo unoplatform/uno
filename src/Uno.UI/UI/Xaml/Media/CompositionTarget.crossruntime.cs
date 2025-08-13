@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Diagnostics;
+using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Media;
 
 public partial class CompositionTarget
 {
+	private static readonly long _start = Stopwatch.GetTimestamp();
 	private static Action _renderingActiveChanged;
 	private static bool _isRenderingActive;
 
@@ -47,4 +50,23 @@ public partial class CompositionTarget
 			}
 		}
 	}
+
+	internal static void InvokeRendering()
+	{
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+			}, NativeDispatcherPriority.High);
+		}
+	}
+
+#if __SKIA__
+	void ICompositionTarget.RequestNewFrame() => ContentRoot?.XamlRoot?.RequestNewFrame();
+#endif
 }

@@ -133,11 +133,11 @@ public class Given_AcrylicBrush
 
 		await UITestHelper.Load(sp);
 
-		var renderInvalidateCount = 0;
-		sp.XamlRoot.RenderInvalidated += () => renderInvalidateCount++;
+		var framePaintedCount = 0;
+		sp.XamlRoot.FramePainted += () => framePaintedCount++;
 
 		await Task.Delay(TimeSpan.FromSeconds(5));
-		renderInvalidateCount.Should().BeLessThan(100);
+		framePaintedCount.Should().BeLessThan(100);
 	}
 }
 #endif

@@ -271,8 +271,6 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 				surfaceView.RenderMode = Rendermode.WhenDirty;
 			}
-
-			Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement?.XamlRoot?.InvokeFrameRendered();
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)

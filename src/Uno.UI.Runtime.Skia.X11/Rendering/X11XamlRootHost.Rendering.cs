@@ -38,7 +38,6 @@ internal partial class X11XamlRootHost
 					if (_nextRenderParams is { } renderParams)
 					{
 						_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.Scale);
-						NativeDispatcher.Main.Enqueue(() => rootElement!.XamlRoot?.InvokeFrameRendered());
 					}
 				});
 			}
