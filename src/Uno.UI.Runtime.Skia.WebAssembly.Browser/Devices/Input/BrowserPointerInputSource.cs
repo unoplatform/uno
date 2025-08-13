@@ -150,7 +150,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 					throw new ArgumentOutOfRangeException(nameof(@event), $"Unknown event ({@event}-{evt}).");
 			}
 
-			return (byte)(args.Handled ? HtmlEventDispatchResult.PreventDefault : HtmlEventDispatchResult.Ok);
+			return args.Handled ? HtmlEventDispatchResult.PreventDefault : HtmlEventDispatchResult.Ok;
 		}
 		catch (Exception error)
 		{
