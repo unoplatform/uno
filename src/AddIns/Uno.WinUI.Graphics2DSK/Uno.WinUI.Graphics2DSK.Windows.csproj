@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPreviousWinAppSDK)</TargetFrameworks>
+		<TargetFrameworks>$(NetWinAppSDKPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 	<Import Project="../../targetframework-override.props" />
 
