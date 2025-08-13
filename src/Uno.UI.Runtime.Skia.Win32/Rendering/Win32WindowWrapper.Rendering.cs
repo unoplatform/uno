@@ -6,7 +6,6 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
-using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -25,12 +24,6 @@ internal partial class Win32WindowWrapper
 	{
 		if (_rendererDisposed || _rendering)
 		{
-			return;
-		}
-
-		if (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
-		{
-			((IXamlRootHost)this).InvalidateRender();
 			return;
 		}
 

@@ -18,7 +18,6 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Windows.Graphics.Display;
-using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -74,12 +73,6 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 	{
 		if (Microsoft.UI.Xaml.Window.CurrentSafe is not { RootElement: { } root } window)
 		{
-			return;
-		}
-
-		if (root.IsArrangeDirtyOrArrangeDirtyPath || root.IsMeasureDirtyOrMeasureDirtyPath)
-		{
-			NativeDispatcher.Main.Enqueue(InvalidateRender);
 			return;
 		}
 
