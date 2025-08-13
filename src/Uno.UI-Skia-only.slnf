@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "Uno.UI.sln",
+    "path": "Uno.UI.slnx",
     "projects": [
       "AddIns\\Uno.UI.Foldable\\Uno.UI.Foldable.netcoremobile.csproj",
       "AddIns\\Uno.UI.GooglePlay\\Uno.UI.GooglePlay.netcoremobile.csproj",

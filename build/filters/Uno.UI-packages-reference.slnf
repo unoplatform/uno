@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "..\\..\\src\\Uno.UI.sln",
+    "path": "..\\..\\src\\Uno.UI.slnx",
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Reference.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Reference.csproj",

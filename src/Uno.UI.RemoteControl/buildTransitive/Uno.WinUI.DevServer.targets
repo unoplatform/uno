@@ -12,7 +12,7 @@
 
 	<PropertyGroup>
 		<!-- Keep the inner path with '/' separator -->
-		<UnoRemoteControlProcessorsPath Condition="'$(SolutionFileName)'!='Uno.UI.sln'">$(MSBuildThisFileDirectory)../tools/rc/processors</UnoRemoteControlProcessorsPath>
+		<UnoRemoteControlProcessorsPath Condition="'$(SolutionFileName)'!='Uno.UI.slnx'">$(MSBuildThisFileDirectory)../tools/rc/processors</UnoRemoteControlProcessorsPath>
 	</PropertyGroup>
 
 	<Target Name="GetRemoteControlHostPath">

@@ -63,7 +63,7 @@
 				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup"
 				Condition="'$(DesignTimeBuild)' != 'true'">
 
-		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
+		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.slnx' and '$(MSBuildRuntimeType)'!='Core'" />
 
 		<PropertyGroup>
 			<!-- String resources -->

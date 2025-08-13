@@ -43,7 +43,7 @@
         └──────────────────────────────────────────────────────────┴──────────────────────────────┴───────────────────────────────────────────────┘
 
         Only one target can be built, and the corresponding solution filter file must
-        be loaded in Visual Studio (see next to Uno.UI.sln).
+        be loaded in Visual Studio (see next to Uno.UI.slnx).
 
         *** WARNING ***
         Note that changing that property while the solution is opened leads to
