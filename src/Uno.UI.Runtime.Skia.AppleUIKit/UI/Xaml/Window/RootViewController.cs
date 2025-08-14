@@ -128,17 +128,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	{
 		if (_xamlRoot?.VisualTree.RootElement is { } rootElement)
 		{
-			if (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath)
-			{
-
-				NativeDispatcher.Main.Enqueue(() =>
-				{
-					InvalidateRender();
-				});
-
-				return;
-			}
-
 			canvas.Clear(SKColors.Transparent);
 
 			canvas.SetMatrix(SKMatrix.CreateScale((float)_xamlRoot.RasterizationScale, (float)_xamlRoot.RasterizationScale));

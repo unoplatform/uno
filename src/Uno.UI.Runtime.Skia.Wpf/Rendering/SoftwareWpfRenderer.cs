@@ -50,12 +50,6 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 		using var _ = _fpsHelper.BeginFrame();
 
-		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
-		{
-			_host.InvalidateRender();
-			return;
-		}
-
 		int width, height;
 
 		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
