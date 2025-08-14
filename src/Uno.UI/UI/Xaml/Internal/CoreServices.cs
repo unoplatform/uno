@@ -106,6 +106,8 @@ namespace Uno.UI.Xaml.Core
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					root.UpdateLayout();
 				}
+
+				root.XamlRoot?.OnPaintFrameOpportunity();
 			}
 		}
 #endif
