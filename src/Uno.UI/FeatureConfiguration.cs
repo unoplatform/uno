@@ -954,13 +954,6 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
-
-			/// <summary>
-			/// Wait until the UI tree is completely arranged (i.e. all <see cref="UIElement.InvalidateMeasure"/>
-			/// and <see cref="UIElement.InvalidateArrange"/> calls have been processed) to update the UI and generate
-			/// new render frames.
-			/// </summary>
-			public static bool GenerateNewFramesOnlyWhenUITreeIsArranged { get; set; }
 		}
 
 		public static class DependencyProperty
