@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using System.Timers;
+using System.Threading;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
@@ -25,9 +25,7 @@ public sealed partial class XamlRoot
 	{
 		VisualTree = visualTree;
 #if __SKIA__
-		_renderTimer = new Timer(TimeSpan.FromSeconds(1 / 60.0));
-		_renderTimer.AutoReset = false;
-		_renderTimer.Elapsed += (_, _) => OnRenderTimerTick();
+		_renderTimer = new Timer(_ => OnRenderTimerTick());
 #endif
 	}
 
