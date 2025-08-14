@@ -12,7 +12,6 @@ using SkiaSharp;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
-using Timer = System.Timers.Timer;
 
 namespace Microsoft.UI.Xaml;
 
@@ -22,9 +21,11 @@ partial class XamlRoot
 	// TODO: prevent this from being bottlenecked by the dispatcher queue, and read the native refresh rate instead of hardcoding it
 	private readonly Timer _renderTimer;
 	private readonly object _frameGate = new();
+	private readonly object _renderQueuingGate = new();
 	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
-	private bool _renderQueued;
 	private Size _lastCanvasSize = Size.Empty;
+	private bool _renderQueued; // only reset on the UI thread, set not necessarily on the UI thread
+	private bool _paintedAheadOfTime;
 
 	private FocusManager? _focusManager;
 
@@ -48,12 +49,6 @@ partial class XamlRoot
 		NativeDispatcher.CheckThreadAccess();
 
 		var rootElement = VisualTree.RootElement;
-		// TODO
-		// if (!SkiaRenderHelper.CanRecordPicture(rootElement))
-		// {
-		// 	// Try again next tick
-		// 	return;
-		// }
 
 		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(int)(Bounds.Width * RasterizationScale),
@@ -105,29 +100,79 @@ partial class XamlRoot
 
 	internal void RequestNewFrame()
 	{
-		if (!Interlocked.Exchange(ref _renderQueued, true))
+		lock (_renderQueuingGate)
 		{
-			// TODO: How do we prevent lagging over time? i.e. we do not want to wait 1/fps for the next
-			// PaintFrame, we only want to wait the "remainder" of the time slice.
-			// (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? lastRenderedFrameNullable;
-			// lock (_frameGate)
-			// {
-			// 	lastRenderedFrameNullable = _lastRenderedFrame;
-			// }
-			// var dueTime = lastRenderedFrameNullable is not { } lastRenderedFrame
-			// 	? TimeSpan.Zero
-			// 	: TimeSpan.FromTicks(Math.Max(0, Stopwatch.GetTimestamp() - lastRenderedFrame.timestamp));
-			_renderTimer.Enabled = true;
+			if (!_renderQueued)
+			{
+				_renderQueued = true;
+				long? lastTimestampNullable;
+				lock (_frameGate)
+				{
+					lastTimestampNullable = _lastRenderedFrame?.timestamp;
+				}
+				var timestamp = Stopwatch.GetTimestamp();
+				if (lastTimestampNullable is { } lastTimestamp)
+				{
+					_renderTimer.Change(TimeSpan.FromTicks(Math.Min(TimeSpan.FromSeconds(1 / 60.0).Ticks, Math.Max(0, timestamp - lastTimestamp))), Timeout.InfiniteTimeSpan);
+				}
+				else
+				{
+					_renderTimer.Change(TimeSpan.FromSeconds(1 / 60.0), Timeout.InfiniteTimeSpan);
+				}
+			}
 		}
 	}
 
 	private void OnRenderTimerTick()
 	{
-		if (Interlocked.Exchange(ref _renderQueued, false))
+		var shouldDispatch = false;
+		bool shouldTickAgain;
+		lock (_renderQueuingGate)
 		{
-			// Very few things enqueue on High and all of them are rendering-related, so this is near guaranteed to
-			// be ahead of everything else in the dispatcher queue.
-			NativeDispatcher.Main.Enqueue(() => PaintFrame(), NativeDispatcherPriority.High);
+			shouldTickAgain = _renderQueued && _paintedAheadOfTime;
+			if (!_paintedAheadOfTime && _renderQueued)
+			{
+				_renderQueued = false;
+				shouldDispatch = true;
+			}
+			_paintedAheadOfTime = false;
+		}
+
+		if (shouldTickAgain)
+		{
+			_renderTimer.Change(TimeSpan.FromSeconds(1 / 60.0), Timeout.InfiniteTimeSpan);
+		}
+
+		if (shouldDispatch)
+		{
+			NativeDispatcher.Main.Enqueue(PaintFrame, NativeDispatcherPriority.High);
+		}
+	}
+
+	internal void OnPaintFrameOpportunity()
+	{
+		// If we get an opportunity to get call PaintFrame earlier than the timer tick, then we do that
+		// but skip the PaintFrame call in the next timer tick so that overall we're still keeping
+		// the rate of PaintFrame calls the same.
+		NativeDispatcher.CheckThreadAccess();
+
+		var shouldPaint = false;
+		if (SkiaRenderHelper.CanRecordPicture(VisualTree.RootElement))
+		{
+			lock (_renderQueuingGate)
+			{
+				if (_renderQueued && !_paintedAheadOfTime)
+				{
+					_paintedAheadOfTime = true;
+					_renderQueued = false;
+					shouldPaint = true;
+				}
+			}
+		}
+
+		if (shouldPaint)
+		{
+			PaintFrame();
 		}
 	}
 }
