@@ -262,7 +262,7 @@ dotnet build project.csproj -t:UnoCreateDiskImage -p:_IsPublishing=true -restore
 It's possible to notarize an app bundle, package or disk image after it has been created. This is useful for fat app bundles, which require an extra merge step, as well as allowing further customization (that would break a digital signature) after an app bundle is created.
 
 ```bash
-dotnet build project.csproj -t:UnoCreateDiskImage -p:_IsPublishing=true -restore:false -f:net9.0-desktop -p:InputFilePath={{file-to-notarize}} -p:PackageFormat={{file-format}} ...
+dotnet build project.csproj -t:UnoNotarize -p:_IsPublishing=true -restore:false -f:net9.0-desktop -p:InputFilePath={{file-to-notarize}} -p:PackageFormat={{file-format}} ...
 ```
 
 See the following notarization section for each format.
