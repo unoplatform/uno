@@ -1,13 +1,13 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices.JavaScript;
-using System.Threading;
-using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
+﻿using SkiaSharp;
+using MUX = Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
-using Uno.UI.Dispatching;
-using Uno.UI.Helpers;
-using Uno.UI.Hosting;
 using Windows.Graphics.Display;
+using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.Hosting;
+using System.Diagnostics;
+using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -33,8 +33,6 @@ internal partial class BrowserRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
 	private SKCanvas? _canvas;
-	private SKPicture? _picture;
-	private SKPath? _clipPath;
 
 	private SKSizeI? _lastSize;
 
@@ -62,35 +60,18 @@ internal partial class BrowserRenderer
 		_jsInfo = NativeMethods.CreateContext(this, _nativeSwapChainPanel, WebAssemblyWindowWrapper.Instance?.CanvasId ?? "invalid");
 	}
 
-	internal void InvalidateRender()
-	{
-		if (!SkiaRenderHelper.CanRecordPicture(_host.RootElement))
-		{
-			// Try again next tick
-			_host.RootElement?.XamlRoot?.QueueInvalidateRender();
-			return;
-		}
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width * (_host.RootElement.XamlRoot?.RasterizationScale ?? 1.0f)),
-			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height * (_host.RootElement.XamlRoot?.RasterizationScale ?? 1.0f)),
-			_host.RootElement,
-			invertPath: false);
-
-		var scale = _host.RootElement.XamlRoot?.RasterizationScale ?? 1.0f;
-		//// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
-		//// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
-		//// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
-		path?.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), path);
-
-		Interlocked.Exchange(ref _picture, picture);
-		Interlocked.Exchange(ref _clipPath, path);
-
-		NativeMethods.Invalidate(_nativeSwapChainPanel);
-	}
+	internal void InvalidateRender() => NativeMethods.Invalidate(_nativeSwapChainPanel);
 
 	private void RenderFrame()
 	{
+		using var _ = _fpsHelper.BeginFrame();
+
+		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			InvalidateRender();
+			return;
+		}
+
 		if (!_jsInfo.IsValid)
 		{
 			Initialize();
@@ -153,17 +134,25 @@ internal partial class BrowserRenderer
 			}
 		}
 
-		var currentPicture = _picture;
-		var currentClipPath = _clipPath;
+		using (new SKAutoCanvasRestore(_canvas, true))
+		{
+			_surface.Canvas.Clear(SKColors.Transparent);
+			_surface.Canvas.Scale((float)scale);
+			if (_host.RootElement?.Visual is { } rootVisual)
+			{
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(_renderTarget.Width, _renderTarget.Height, rootVisual, _canvas);
+				_fpsHelper.DrawFps(_canvas);
+				// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
+				// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
+				// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
+				negativePath.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), negativePath);
+				BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!negativePath.IsEmpty ? negativePath.ToSvgPathData() : "");
+				_host.RootElement?.XamlRoot?.InvokeFramePainted();
+			}
+		}
 
-		SkiaRenderHelper.RenderPicture(
-			_surface,
-			currentPicture,
-			SKColors.Transparent,
-			_fpsHelper);
-
-		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(currentClipPath is not null && !currentClipPath.IsEmpty ? currentClipPath.ToSvgPathData() : "");
-
+		// update the control
+		_canvas?.Flush();
 		_context.Flush();
 		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
 

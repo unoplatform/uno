@@ -86,11 +86,10 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	[JSExport]
-	private static void OnResize([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
+	private static void OnResize([JSMarshalAs<JSType.Any>] object instance, double width, double height)
 	{
 		if (instance is WebAssemblyWindowWrapper windowWrapper)
 		{
-			windowWrapper.RasterizationScale = scale;
 			windowWrapper.RaiseNativeSizeChanged(new(width, height));
 		}
 		else

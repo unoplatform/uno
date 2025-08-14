@@ -8,8 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Helpers;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
@@ -166,6 +166,14 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			return;
 		}
 
+		using var _ = _fpsHelper.BeginFrame();
+
+		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			_host.InvalidateRender();
+			return;
+		}
+
 		int width, height;
 
 		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
@@ -223,27 +231,34 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		var canvas = _surface.Canvas;
 
-		if (_host.RootElement?.Visual is { } rootVisual)
+		using (new SKAutoCanvasRestore(canvas, true))
 		{
-			SkiaRenderHelper.RenderPicture(
-				_surface,
-				_host.Picture,
-				BackgroundColor,
-				_fpsHelper);
+			canvas.Clear(BackgroundColor);
+			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 
-			if (_host.NativeOverlayLayer is { } nativeLayer)
+			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				nativeLayer.Clip ??= new PathGeometry();
-				((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(_host.ClipPath?.ToSvgPathData());
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, _surface.Canvas);
+				_fpsHelper.DrawFps(canvas);
+
+				if (_host.NativeOverlayLayer is { } nativeLayer)
 				{
-					this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
+					nativeLayer.Clip ??= new PathGeometry();
+					((PathGeometry)nativeLayer.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
 				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
+					}
+				}
+				_host.RootElement?.XamlRoot?.InvokeFramePainted();
 			}
 		}
+
+		// update the control
+		canvas.Flush();
 
 		// Copy the contents of the back buffer to the screen
 		if (_backBuffer != null)
@@ -255,6 +270,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			drawingContext.DrawImage(_backBuffer, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
 		}
+		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 
 	public void Dispose() => Release();
