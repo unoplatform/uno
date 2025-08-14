@@ -197,7 +197,7 @@ namespace Microsoft.UI.Xaml
 
 		public void Add(object key, object value) => Set(new ResourceKey(key), value, throwIfPresent: true);
 
-		public bool ContainsKey(object key) => ContainsKey(key, shouldCheckSystem: true);
+		public bool ContainsKey(object key) => ContainsKey(key, shouldCheckSystem: false);
 
 		public bool ContainsKey(object key, bool shouldCheckSystem)
 		{
