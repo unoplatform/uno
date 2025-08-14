@@ -56,7 +56,7 @@ partial class XamlRoot
 			rootElement,
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
 			applyScaling: FrameRenderingOptions.applyScalingToNativeElementClipPath);
-		var lastRenderedFrame = (picture, path, Bounds.Size, timestamp);
+		var lastRenderedFrame = (picture, path, new Size((int)(Bounds.Width * RasterizationScale), (int)(Bounds.Height * RasterizationScale)), timestamp);
 		lock (_frameGate)
 		{
 			_lastRenderedFrame = lastRenderedFrame;
