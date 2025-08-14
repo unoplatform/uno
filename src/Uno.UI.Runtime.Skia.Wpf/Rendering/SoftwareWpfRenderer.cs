@@ -50,6 +50,15 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 		using var _ = _fpsHelper.BeginFrame();
 
+<<<<<<< HEAD
+=======
+		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			_host.InvalidateRender();
+			return;
+		}
+
+>>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
 		int width, height;
 
 		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");

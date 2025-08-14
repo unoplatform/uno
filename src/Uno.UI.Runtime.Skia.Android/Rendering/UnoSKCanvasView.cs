@@ -16,9 +16,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Windows.Graphics.Display;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -77,6 +77,15 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			return;
 		}
 
+<<<<<<< HEAD
+=======
+		if (root.IsArrangeDirtyOrArrangeDirtyPath || root.IsMeasureDirtyOrMeasureDirtyPath)
+		{
+			NativeDispatcher.Main.Enqueue(InvalidateRender);
+			return;
+		}
+
+>>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
 		ExploreByTouchHelper.InvalidateRoot();
 
 		var recorder = new SKPictureRecorder();

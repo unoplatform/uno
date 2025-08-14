@@ -27,6 +27,15 @@ internal partial class Win32WindowWrapper
 			return;
 		}
 
+<<<<<<< HEAD
+=======
+		if (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			((IXamlRootHost)this).InvalidateRender();
+			return;
+		}
+
+>>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
 		using var _ = _fpsHelper.BeginFrame();
 
 		this.LogTrace()?.Trace($"Render {this._renderCount++}");

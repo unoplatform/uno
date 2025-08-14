@@ -18,10 +18,23 @@ internal partial class X11XamlRootHost
 	{
 		if (DispatcherQueue.Main.HasThreadAccess)
 		{
+<<<<<<< HEAD
 			var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
 				var rootElement = (this as IXamlRootHost).RootElement;
+=======
+			var rootElement = (this as IXamlRootHost).RootElement;
+			if (rootElement is not null && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+			{
+				NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
+				return;
+			}
+
+			var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+			using (new SKAutoCanvasRestore(canvas, true))
+			{
+>>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
 				if (_renderer is not null && rootElement?.Visual is { } rootVisual)
 				{
 					using var lockDisposable = X11Helper.XLock(TopX11Window.Display);

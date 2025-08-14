@@ -84,9 +84,21 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private void Draw(double nativeWidth, double nativeHeight, SKSurface surface)
 	{
 		using var _ = _fpsHelper.BeginFrame();
+<<<<<<< HEAD
 		using var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
+=======
+		if (((IXamlRootHost)this).RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			((IXamlRootHost)this).InvalidateRender();
+			return;
+		}
+
+		using var canvas = surface.Canvas;
+		using (new SKAutoCanvasRestore(canvas, true))
+		{
+>>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
 			canvas.Clear(SKColors.White);
 
 			if (RootElement?.Visual is { } rootVisual)

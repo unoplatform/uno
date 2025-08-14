@@ -65,6 +65,16 @@ internal partial class BrowserRenderer
 	private void RenderFrame()
 	{
 		using var _ = _fpsHelper.BeginFrame();
+<<<<<<< HEAD
+=======
+
+		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		{
+			InvalidateRender();
+			return;
+		}
+
+>>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
 		if (!_jsInfo.IsValid)
 		{
 			Initialize();
