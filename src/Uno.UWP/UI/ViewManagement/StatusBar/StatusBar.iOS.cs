@@ -28,7 +28,11 @@ namespace Windows.UI.ViewManagement
 		{
 			NSNotificationCenter.DefaultCenter.AddObserver(
 				UIApplication.DidBecomeActiveNotification,
-				_ => SetStatusBarBackgroundColor(_backgroundColor)
+				async _ =>
+				{
+					await Task.Delay(100);
+					SetStatusBarBackgroundColor(_backgroundColor);
+				}
 			);
 
 			NSNotificationCenter.DefaultCenter.AddObserver(
