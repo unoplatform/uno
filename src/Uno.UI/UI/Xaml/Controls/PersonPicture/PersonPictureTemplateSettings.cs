@@ -25,6 +25,7 @@ public partial class PersonPictureTemplateSettings : DependencyObject
 		internal set => SetValue(ActualInitialsProperty, value);
 	}
 
+	[DynamicDependency(nameof(ActualInitials))]
 	public static DependencyProperty ActualInitialsProperty { get; } =
 		DependencyProperty.Register(nameof(ActualInitials), typeof(string), typeof(PersonPictureTemplateSettings), new FrameworkPropertyMetadata(""));
 }
