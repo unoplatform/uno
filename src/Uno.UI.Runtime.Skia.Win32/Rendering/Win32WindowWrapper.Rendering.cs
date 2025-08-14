@@ -51,7 +51,7 @@ internal partial class Win32WindowWrapper
 			{
 				_renderer.Reset();
 				_surface?.Dispose();
-				_surface = _renderer.UpdateSize(clientRect.Width, clientRect.Height);
+				_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
 				return _surface.Canvas;
 			});
 			RenderingNegativePathReevaluated?.Invoke(this, nativeElementClipPath);
