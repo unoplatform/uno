@@ -223,7 +223,7 @@ dotnet publish project.csproj -f net9.0-desktop -r osx-arm64 -p:PackageFormat=ap
 Finally, merge both arch-specific app bundles into a fat (multi-arch) app bundle.
 
 ```bash
-dotnet build project.csproj -t:UnoMergeBundles -p:_IsPublishing=true -restore:false -f:net9.0-desktop -p:UnoX64Bundle=bin/Release/net9.0-desktop/osx-x64/publish/UnoApp.app -p:UnoArm64Bundle=bin/Release/net9.0-desktop/osx-arm64/publish/UnoBlank.app -p:UnoFatBundle=UnoBlank.app
+dotnet build project.csproj -t:UnoMergeBundles -p:_IsPublishing=true -restore:false -f:net9.0-desktop -p:UnoX64Bundle=bin/Release/net9.0-desktop/osx-x64/publish/UnoApp.app -p:UnoArm64Bundle=bin/Release/net9.0-desktop/osx-arm64/publish/UnoApp.app -p:UnoFatBundle=UnoApp.app
 ```
 
 Where `UnoX64Bundle` and `UnoArm64Bundle` are the (input) paths to the arch-specific app bundles created in the previous steps and `UnoFatBundle` is the (output) path where the resulting fat app bundle will be created (replacing any existing one).
