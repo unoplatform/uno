@@ -460,7 +460,7 @@ namespace Microsoft.UI.Xaml
 					{
 						_path = value;
 						_svgClipPath = svgClipPath;
-						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath);
+						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath)!;
 						_androidPath.SetFillType(value.FillType switch
 						{
 							SKPathFillType.Winding => APath.FillType.Winding!,

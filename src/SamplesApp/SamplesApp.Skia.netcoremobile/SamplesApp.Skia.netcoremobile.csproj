@@ -217,11 +217,21 @@
 				<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
 			</PropertyGroup>
 
-			<ItemGroup>
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
+				<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
+				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.14" />
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+			</ItemGroup>
+
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+				<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.10" />
+				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
+				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
+			</ItemGroup>
+
+			<ItemGroup>
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
-				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.14" />
 			</ItemGroup>
 
 			<ItemGroup>
@@ -261,10 +271,6 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Resizetizer" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
