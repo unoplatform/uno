@@ -62,6 +62,11 @@ partial class XamlRoot
 			_lastRenderedFrame = lastRenderedFrame;
 		}
 
+		if (CompositionTarget.IsRenderingActive)
+		{
+			RequestNewFrame();
+		}
+
 		FramePainted?.Invoke();
 		XamlRootMap.GetHostForRoot(this)!.InvalidateRender();
 	}
