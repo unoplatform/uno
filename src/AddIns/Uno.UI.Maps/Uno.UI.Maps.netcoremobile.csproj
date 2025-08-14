@@ -51,8 +51,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
-		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="120.0.0.1" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="118.1.0.1" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="121.3.0.6" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="119.2.0.2" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
