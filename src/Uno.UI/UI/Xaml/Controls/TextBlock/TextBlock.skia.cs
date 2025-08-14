@@ -121,6 +121,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
+			Visual.Compositor.InvalidateRender(Visual);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 			ApplyFlowDirection((float)finalSize.Width);
 
