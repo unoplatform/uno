@@ -102,7 +102,14 @@ namespace Microsoft.UI.Xaml
 
 #if SUPPORTS_RTL
 		internal Matrix3x2 GetFlowDirectionTransform()
-			=> ShouldMirrorVisual() ? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f) : Matrix3x2.Identity;
+		{
+			var inMirroredSubtree = ShouldMirrorVisual();
+			var isMirroredTextBlock = this is TextBlock { FlowDirection: FlowDirection.RightToLeft };
+
+			return inMirroredSubtree ^ isMirroredTextBlock
+				? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)
+				: Matrix3x2.Identity;
+		}
 
 		private bool ShouldMirrorVisual()
 		{
