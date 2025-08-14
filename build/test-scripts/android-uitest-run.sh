@@ -248,7 +248,7 @@ else
 	echo "--filter:\"$UNO_TESTS_FILTER\"" > tests.rsp
 
 	## Run NUnit tests
-	dotnet run -c Release -bl:$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/android-test.binlog -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings @tests.rsp || true
+	dotnet run -c Release -bl:$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/android-test.binlog -- --no-progress --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings @tests.rsp || true
 fi
 
 ## Dump the emulator's system log
