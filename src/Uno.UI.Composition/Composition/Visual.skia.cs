@@ -112,7 +112,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
-		InvalidateParentChildrenPicture(false);
+		InvalidateParentChildrenPicture();
 		return !matrixDirty;
 	}
 
@@ -207,12 +207,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		_picture?.Dispose();
 		_picture = null;
 		_flags |= VisualFlags.PaintDirty;
-		InvalidateParentChildrenPicture(false);
+		InvalidateParentChildrenPicture();
 	}
 
-	internal void InvalidateParentChildrenPicture(bool includeSelf)
+	internal void InvalidateParentChildrenPicture()
 	{
-		var parent = includeSelf ? Parent : this;
+		var parent = this.Parent;
 		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
 			parent._childrenPicture?.Dispose();

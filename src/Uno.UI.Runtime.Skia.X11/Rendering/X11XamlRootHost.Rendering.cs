@@ -19,42 +19,47 @@ internal partial class X11XamlRootHost
 		if (DispatcherQueue.Main.HasThreadAccess)
 		{
 			var rootElement = (this as IXamlRootHost).RootElement;
-			if (!SkiaRenderHelper.CanRecordPicture(rootElement))
+			if (rootElement is not null && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
 			{
-				rootElement?.XamlRoot?.QueueInvalidateRender();
+				NativeDispatcher.Main.Enqueue(() => ((IXamlRootHost)this).InvalidateRender());
 				return;
 			}
 
-			if (_renderer is not null)
+			var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
-				XWindowAttributes attributes = default;
-				_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
-				var width = attributes.width;
-				var height = attributes.height;
-
-				var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(width, height, rootElement, invertPath: true);
-
-				var scale = rootElement.XamlRoot is { } root
-					? root.RasterizationScale
-					: 1;
-
-				lock (_nextRenderParamsLock)
+				if (_renderer is not null && rootElement?.Visual is { } rootVisual)
 				{
-					_nextRenderParams = new RenderParams(picture, path, (float)scale);
-				}
+					using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
+					XWindowAttributes attributes = default;
+					_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
+					var width = attributes.width;
+					var height = attributes.height;
+					var nativeClippingPath = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, canvas);
+					var picture = _recorder.EndRecording();
+					rootElement.XamlRoot?.InvokeFramePainted();
 
-				if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
-				{
-					_renderingEventLoop.Schedule(() =>
+					var scale = rootElement.XamlRoot is { } root
+						? root.RasterizationScale
+						: 1;
+
+					lock (_nextRenderParamsLock)
 					{
-						Volatile.Write(ref _renderingScheduled, 0);
-						if (_nextRenderParams is { } renderParams)
+						_nextRenderParams = new RenderParams(picture, nativeClippingPath, (float)scale);
+					}
+
+					if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
+					{
+						_renderingEventLoop.Schedule(() =>
 						{
-							_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.Scale);
-							NativeDispatcher.Main.Enqueue(() => rootElement.XamlRoot?.InvokeFrameRendered());
-						}
-					});
+							Volatile.Write(ref _renderingScheduled, 0);
+							if (_nextRenderParams is { } renderParams)
+							{
+								_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.Scale);
+								NativeDispatcher.Main.Enqueue(() => rootElement.XamlRoot?.InvokeFrameRendered());
+							}
+						});
+					}
 				}
 			}
 		}
