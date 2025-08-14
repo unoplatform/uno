@@ -19,6 +19,7 @@ internal partial class X11XamlRootHost
 		if (DispatcherQueue.Main.HasThreadAccess)
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
@@ -35,6 +36,12 @@ internal partial class X11XamlRootHost
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
 >>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
+=======
+			var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+			using (new SKAutoCanvasRestore(canvas, true))
+			{
+				var rootElement = (this as IXamlRootHost).RootElement;
+>>>>>>> dd7cfdd782 (Revert "Merge pull request #20808 from ramezgerges/textblock_binding_paint_timing")
 				if (_renderer is not null && rootElement?.Visual is { } rootVisual)
 				{
 					using var lockDisposable = X11Helper.XLock(TopX11Window.Display);

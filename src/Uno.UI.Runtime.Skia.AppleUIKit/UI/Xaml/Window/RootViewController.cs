@@ -129,6 +129,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		if (_xamlRoot?.VisualTree.RootElement is { } rootElement)
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath)
 			{
@@ -142,6 +143,8 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			}
 
 >>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
+=======
+>>>>>>> dd7cfdd782 (Revert "Merge pull request #20808 from ramezgerges/textblock_binding_paint_timing")
 			canvas.Clear(SKColors.Transparent);
 
 			canvas.SetMatrix(SKMatrix.CreateScale((float)_xamlRoot.RasterizationScale, (float)_xamlRoot.RasterizationScale));

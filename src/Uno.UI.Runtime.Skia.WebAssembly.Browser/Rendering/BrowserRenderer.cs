@@ -66,6 +66,7 @@ internal partial class BrowserRenderer
 	{
 		using var _ = _fpsHelper.BeginFrame();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
@@ -75,6 +76,8 @@ internal partial class BrowserRenderer
 		}
 
 >>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
+=======
+>>>>>>> dd7cfdd782 (Revert "Merge pull request #20808 from ramezgerges/textblock_binding_paint_timing")
 		if (!_jsInfo.IsValid)
 		{
 			Initialize();

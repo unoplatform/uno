@@ -85,6 +85,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		using var _ = _fpsHelper.BeginFrame();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		using var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
@@ -95,6 +96,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return;
 		}
 
+=======
+>>>>>>> dd7cfdd782 (Revert "Merge pull request #20808 from ramezgerges/textblock_binding_paint_timing")
 		using var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{

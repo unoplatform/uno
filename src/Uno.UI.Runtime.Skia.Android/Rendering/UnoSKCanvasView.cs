@@ -18,7 +18,6 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Windows.Graphics.Display;
-using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -78,6 +77,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (root.IsArrangeDirtyOrArrangeDirtyPath || root.IsMeasureDirtyOrMeasureDirtyPath)
 		{
@@ -86,6 +86,8 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 		}
 
 >>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
+=======
+>>>>>>> dd7cfdd782 (Revert "Merge pull request #20808 from ramezgerges/textblock_binding_paint_timing")
 		ExploreByTouchHelper.InvalidateRoot();
 
 		var recorder = new SKPictureRecorder();

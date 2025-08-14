@@ -169,6 +169,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		using var _ = _fpsHelper.BeginFrame();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
 		{
@@ -177,6 +178,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 >>>>>>> ce3fa4a148 (Revert "Merge pull request #21236 from unoplatform/mergify/bp/release/stable/6.2/pr-21189")
+=======
+>>>>>>> dd7cfdd782 (Revert "Merge pull request #20808 from ramezgerges/textblock_binding_paint_timing")
 		int width, height;
 
 		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
