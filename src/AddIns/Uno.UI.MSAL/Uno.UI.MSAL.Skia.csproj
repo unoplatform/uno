@@ -3,7 +3,7 @@
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../targetframework-override.props"/>
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<Deterministic>true</Deterministic>
