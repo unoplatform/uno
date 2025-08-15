@@ -112,7 +112,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (viewType == IsOwnContainerType)
 			{
-				holder.ItemView = parent?.GetContainerForIndex(index) as View;
+				var itemContainer = parent?.GetContainerForIndex(index);
+				if (itemContainer is not null)
+				{
+					parent?.PrepareContainerForIndex(itemContainer, index);
+				}
+
+				holder.ItemView = itemContainer as View;
 			}
 			else
 			{
