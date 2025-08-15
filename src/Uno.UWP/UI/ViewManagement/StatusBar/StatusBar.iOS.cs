@@ -7,6 +7,7 @@ using CoreGraphics;
 using Foundation;
 using UIKit;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
@@ -26,13 +27,13 @@ namespace Windows.UI.ViewManagement
 
 		private void InitializeBackgroundColorObserver()
 		{
+			// Dispatch to ensure UI thread is ready, DidBecomeActive may fire before all windows are loaded
 			NSNotificationCenter.DefaultCenter.AddObserver(
 				UIApplication.DidBecomeActiveNotification,
-				async _ =>
-				{
-					await Task.Delay(100);
-					SetStatusBarBackgroundColor(_backgroundColor);
-				}
+				(NSNotification __) =>
+					_ = CoreDispatcher.Main.RunAsync(
+						CoreDispatcherPriority.Normal,
+						() => SetStatusBarBackgroundColor(_backgroundColor))
 			);
 
 			NSNotificationCenter.DefaultCenter.AddObserver(
