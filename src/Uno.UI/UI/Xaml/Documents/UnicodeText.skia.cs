@@ -66,14 +66,14 @@ internal readonly struct UnicodeText : IParsedText
 		public Cluster? cluster { get; set; } = cluster;
 	}
 
-	private record LayoutedLineBrokenBidiRun(ReadonlyInlineCopy inline, int startInInline, int endInInline, float x, float y, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, LayoutedLine line, int indexInLine)
+	private record LayoutedLineBrokenBidiRun(ReadonlyInlineCopy inline, int startInInline, int endInInline, float x, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, LayoutedLine line, int indexInLine)
 	{
 		public float width { get; set; } = width;
 		public LayoutedLine line { get; set; } = line;
 	}
 	// runs are always sorted LTR even in RTL text
 	// Each line must have at least one run except the very last line.
-	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float y, List<LayoutedLineBrokenBidiRun> runs);
+	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
 	private readonly Size _size;
@@ -126,7 +126,7 @@ internal readonly struct UnicodeText : IParsedText
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth);
-		_lines = LayoutLines(unlayoutedLines, lineStackingStrategy, lineHeight, defaultFontDetails);
+		_lines = LayoutLines(unlayoutedLines, textAlignment, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
 		_textIndexToGlyph = new Cluster[inlines.Sum(i => i.GetText().Length)];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
@@ -478,7 +478,7 @@ internal readonly struct UnicodeText : IParsedText
 		return ret;
 	}
 
-	private List<LayoutedLine> LayoutLines(List<List<ShapedLineBrokenBidiRun>> lines, LineStackingStrategy lineStackingStrategy, float lineHeight, FontDetails defaultFontDetails)
+	private List<LayoutedLine> LayoutLines(List<List<ShapedLineBrokenBidiRun>> lines, TextAlignment textAlignment, LineStackingStrategy lineStackingStrategy, float lineHeight, float availableWidth, FontDetails defaultFontDetails)
 	{
 		var layoutedLines = new List<LayoutedLine>();
 		float currentLineY = 0;
@@ -492,7 +492,7 @@ internal readonly struct UnicodeText : IParsedText
 				// Only the last line can be empty. All other lines either have a line break character or actual content since you can't wrap to a new line without having any content on the initial line.
 				Debug.Assert(lineIndex == lines.Count - 1 && lineIndex != 0);
 				var (currentLineHeight, baselineOffset) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
-				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, currentLineY, new());
+				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, 0, currentLineY, new());
 			}
 			else
 			{
@@ -502,7 +502,7 @@ internal readonly struct UnicodeText : IParsedText
 					var run = line[runIndex];
 					float runX = 0;
 					var glyphs = new LayoutedGlyphDetails[run.glyphs.Length];
-					var layoutedRun = new LayoutedLineBrokenBidiRun(run.Inline, run.startInInline, run.endInInline, currentLineX, currentLineY, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
+					var layoutedRun = new LayoutedLineBrokenBidiRun(run.Inline, run.startInInline, run.endInInline, currentLineX, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
 					layoutedRuns.Add(layoutedRun);
 					for (var i = 0; i < glyphs.Length; i++)
 					{
@@ -515,9 +515,17 @@ internal readonly struct UnicodeText : IParsedText
 					currentLineX += runX;
 				}
 
+				var lineWidth = currentLineX;
+				var alignmentOffset = textAlignment switch
+				{
+					TextAlignment.Center when lineWidth <= availableWidth => (availableWidth - lineWidth) / 2,
+					TextAlignment.Right when lineWidth <= availableWidth => availableWidth - lineWidth,
+					_ => 0
+				};
+
 				var fontDetailsWithMaxHeight = line.MaxBy(r => r.fontDetails.LineHeight).fontDetails;
 				var (currentLineHeight, baselineOffset) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, fontDetailsWithMaxHeight, lineIndex == 0, lineIndex == lines.Count - 1);
-				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, currentLineY, layoutedRuns);
+				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, alignmentOffset, currentLineY, layoutedRuns);
 			}
 			layoutedLines.Add(layoutedLine);
 			layoutedRuns.ForEach(r => r.line = layoutedLine);
@@ -575,7 +583,7 @@ internal readonly struct UnicodeText : IParsedText
 		for (var index = 0; index < _lines.Count; index++)
 		{
 			var line = _lines[index];
-			float currentLineX = 0;
+			var currentLineX = line.xAlignmentOffset;
 			foreach (var run in line.runs)
 			{
 				using (var textBlobBuilder = new SKTextBlobBuilder())
@@ -605,7 +613,7 @@ internal readonly struct UnicodeText : IParsedText
 		var cluster = _textIndexToGlyph[index];
 		var glyphs = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart..cluster.glyphInRunIndexEnd];
 
-		var x = glyphs[0].xPosInRun + cluster.layoutedRun.x;
+		var x = glyphs[0].xPosInRun + cluster.layoutedRun.x + cluster.layoutedRun.line.xAlignmentOffset;
 		var y = cluster.layoutedRun.line.y;
 		var width = glyphs.Sum(g => GlyphWidth(g.position, cluster.layoutedRun.fontDetails));
 		var height = cluster.layoutedRun.line.lineHeight;
@@ -638,7 +646,7 @@ internal readonly struct UnicodeText : IParsedText
 				return extendedSelection ? _textLength : -1;
 			}
 
-			if (line.runs[0] is var firstRun && firstRun.x > p.X)
+			if (line.runs[0] is var firstRun && firstRun.x + firstRun.line.xAlignmentOffset > p.X)
 			{
 				if (!extendedSelection)
 				{
@@ -651,7 +659,7 @@ internal readonly struct UnicodeText : IParsedText
 						: firstRun.startInInline + firstRun.inline.StartIndex;
 				}
 			}
-			if (line.runs[^1] is var lastRun && lastRun.x + lastRun.width < p.X)
+			if (line.runs[^1] is var lastRun && lastRun.x + lastRun.line.xAlignmentOffset + lastRun.width < p.X)
 			{
 				if (!extendedSelection)
 				{
@@ -667,14 +675,14 @@ internal readonly struct UnicodeText : IParsedText
 
 			foreach (var run in line.runs)
 			{
-				if (run.x > p.X || run.x + run.width < p.X)
+				if (run.x + run.line.xAlignmentOffset > p.X || run.x + run.line.xAlignmentOffset + run.width < p.X)
 				{
 					continue;
 				}
 
 				foreach (var glyph in run.glyphs)
 				{
-					var globalGlyphX = glyph.xPosInRun + run.x;
+					var globalGlyphX = glyph.xPosInRun + run.x + run.line.xAlignmentOffset;
 					var width = GlyphWidth(glyph.position, run.fontDetails);
 					if (globalGlyphX <= p.X && globalGlyphX + width >= p.X)
 					{
