@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 using Windows.Foundation;
 using Windows.UI.Text;
 using HarfBuzzSharp;
@@ -26,7 +23,7 @@ namespace Microsoft.UI.Xaml.Documents;
 // 	* Reordering the text for display on a line-by-line basis using the resolved embedding levels, once the text has been broken into lines.
 // The algorithm only reorders text within a paragraph; characters in one paragraph have no effect on characters in a different paragraph. Paragraphs are divided by the Paragraph Separator or appropriate Newline Function (see Section 4.3, Directionality and Unicode Technical Report #13, “Unicode Newline Guidelines,” found on the CD-ROM or the up-to-date version on the Unicode web site on the handling of CR, LF, and CRLF). Paragraphs may also be determined by higher-level protocols: for example, the text in two different cells of a table will be in different paragraphs.
 
-
+// TODO: make FontDetails read-only
 internal readonly struct UnicodeText : IParsedText
 {
 	// A readonly snapshot of an Inline that is referenced by individual text runs after splitting. It's a class
@@ -76,7 +73,7 @@ internal readonly struct UnicodeText : IParsedText
 	}
 	// runs are always sorted LTR even in RTL text
 	// Each line must have at least one run except the very last line.
-	private record LayoutedLine(float lineHeight, int lineIndex, float y, List<LayoutedLineBrokenBidiRun> runs);
+	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float y, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
 	private readonly Size _size;
@@ -87,29 +84,11 @@ internal readonly struct UnicodeText : IParsedText
 	private readonly Cluster[] _textIndexToGlyph;
 	private readonly Size _desiredSize;
 	private readonly int _textLength;
-	private readonly string _text;
-
-	private static readonly FieldInfo _biDiFieldInfo = typeof(BiDi).GetField("_biDi", BindingFlags.NonPublic | BindingFlags.Instance)!;
-	private static readonly ubidi_setLineDelegate _setLine;
-	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-	private delegate void ubidi_setLineDelegate(IntPtr bidi, int start, int limit, IntPtr lineBiDi, out ErrorCode errorCode);
-
-	static UnicodeText()
-	{
-		Wrapper.Verbose = true;
-		Wrapper.Init();
-
-		var icuNetAssembly = typeof(BiDi).Assembly;
-		var nativeMethodsType = icuNetAssembly.GetType("Icu.NativeMethods")!;
-		var getMethod = nativeMethodsType.GetMethod("GetMethod", BindingFlags.Static | BindingFlags.NonPublic)!.MakeGenericMethod(typeof(ubidi_setLineDelegate));
-		var icuCommonLibHandle = nativeMethodsType.GetProperty("IcuCommonLibHandle", BindingFlags.Static | BindingFlags.NonPublic)!;
-		_setLine = (ubidi_setLineDelegate)getMethod.Invoke(null, [icuCommonLibHandle.GetValue(null), "ubidi_setLine", false])!;
-	}
 
 	internal UnicodeText(
 		Size availableSize,
 		Inline[] inlines, // only leaf nodes
-		float defaultLineHeight,
+		FontDetails defaultFontDetails, // only used for a final empty line, otherwise the FontDetails are read from the inline
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
@@ -123,7 +102,6 @@ internal readonly struct UnicodeText : IParsedText
 		_textAlignment = textAlignment;
 
 		_inlines = new();
-		var textBuilder = new StringBuilder();
 		var lastEnd = 0;
 		foreach (var inline in inlines)
 		{
@@ -133,31 +111,22 @@ internal readonly struct UnicodeText : IParsedText
 			{
 				_inlines.Add(copy);
 			}
-			textBuilder.Append(copy.Text);
 			lastEnd = copy.EndIndex;
 		}
-		_text = textBuilder.ToString();
-		_textLength = _text.Length;
+		_textLength = lastEnd;
 
 		if (_inlines.Count == 0)
 		{
 			_lines = new();
-			desiredSize = new Size(0, defaultLineHeight);
+			desiredSize = new Size(0, GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, true, true).lineHeight);
 			_textIndexToGlyph = [];
 			_inlines = [];
-			return;
-		}
-		if (_textLength == 0)
-		{
-			_lines = new();
-			desiredSize = new Size(0, defaultLineHeight);
-			_textIndexToGlyph = [];
 			return;
 		}
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth);
-		_lines = LayoutLines(unlayoutedLines, defaultLineHeight);
+		_lines = LayoutLines(unlayoutedLines, lineStackingStrategy, lineHeight, defaultFontDetails);
 		_textIndexToGlyph = new Cluster[inlines.Sum(i => i.GetText().Length)];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
@@ -181,12 +150,12 @@ internal readonly struct UnicodeText : IParsedText
 		}
 
 		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidth, logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities);
-		var linesWithBidiReordering = ApplyBidiReordering(rtl, inlines, linesWithLogicallyOrderedRuns);
+		var linesWithBidiReordering = ApplyBidiReordering(rtl, linesWithLogicallyOrderedRuns);
 
 		return linesWithBidiReordering;
 	}
 
-	private static List<List<ShapedLineBrokenBidiRun>> ApplyBidiReordering(bool rtl, List<ReadonlyInlineCopy> linesBeforeBidiReordering, List<List<BidiRun>> linesWithLogicallyOrderedRuns)
+	private static List<List<ShapedLineBrokenBidiRun>> ApplyBidiReordering(bool rtl, List<List<BidiRun>> linesWithLogicallyOrderedRuns)
 	{
 		var shapedLines = new List<List<ShapedLineBrokenBidiRun>>();
 		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
@@ -509,7 +478,7 @@ internal readonly struct UnicodeText : IParsedText
 		return ret;
 	}
 
-	private static List<LayoutedLine> LayoutLines(List<List<ShapedLineBrokenBidiRun>> lines, float defaultLineHeight)
+	private List<LayoutedLine> LayoutLines(List<List<ShapedLineBrokenBidiRun>> lines, LineStackingStrategy lineStackingStrategy, float lineHeight, FontDetails defaultFontDetails)
 	{
 		var layoutedLines = new List<LayoutedLine>();
 		float currentLineY = 0;
@@ -520,7 +489,10 @@ internal readonly struct UnicodeText : IParsedText
 			LayoutedLine layoutedLine;
 			if (line.Count == 0)
 			{
-				layoutedLine = new LayoutedLine(defaultLineHeight, lineIndex, currentLineY, new());
+				// Only the last line can be empty. All other lines either have a line break character or actual content since you can't wrap to a new line without having any content on the initial line.
+				Debug.Assert(lineIndex == lines.Count - 1 && lineIndex != 0);
+				var (currentLineHeight, baselineOffset) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
+				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, currentLineY, new());
 			}
 			else
 			{
@@ -543,9 +515,9 @@ internal readonly struct UnicodeText : IParsedText
 					currentLineX += runX;
 				}
 
-				// TODO: line stacking strategy
-				var lineHeight = line.Max(r => r.fontDetails.LineHeight);
-				layoutedLine = new LayoutedLine(lineHeight, lineIndex, currentLineY, layoutedRuns);
+				var fontDetailsWithMaxHeight = line.MaxBy(r => r.fontDetails.LineHeight).fontDetails;
+				var (currentLineHeight, baselineOffset) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, fontDetailsWithMaxHeight, lineIndex == 0, lineIndex == lines.Count - 1);
+				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, currentLineY, layoutedRuns);
 			}
 			layoutedLines.Add(layoutedLine);
 			layoutedRuns.ForEach(r => r.line = layoutedLine);
@@ -614,11 +586,11 @@ internal readonly struct UnicodeText : IParsedText
 					{
 						var glyph = run.glyphs[i];
 						glyphs[i] = (ushort)glyph.info.Codepoint;
-						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.YOffset * run.fontDetails.TextScale.textScaleY);
+						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY);
 					}
 
 					textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
-					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.lineHeight - run.fontDetails.SKFontMetrics.Descent, new SKPaint { Color = SKColors.Red });
+					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.y + line.baselineOffset, new SKPaint { Color = SKColors.Red });
 					currentLineX += run.width;
 				}
 			}
@@ -758,6 +730,42 @@ internal readonly struct UnicodeText : IParsedText
 				return true;
 			default:
 				return false;
+		}
+	}
+
+	// This method assumes that the FontDetails with the biggest LineHeight is also the one with the biggest SKFontMetrics.Top.
+	// If that assumption is wrong, we will need an additional lazy parameter for the latter.
+	private static (float lineHeight, float baselineOffset) GetLineHeightAndBaselineOffset(LineStackingStrategy lineStackingStrategy, float lineHeight, FontDetails fontDetailsWithMaxHeightInLine, bool isFirstLine, bool isLastLine)
+	{
+		if (lineStackingStrategy is LineStackingStrategy.MaxHeight || !(lineHeight > 0))
+		{
+			return (Math.Max(lineHeight, fontDetailsWithMaxHeightInLine.LineHeight), -fontDetailsWithMaxHeightInLine.SKFontMetrics.Ascent);
+		}
+		else if (lineStackingStrategy is LineStackingStrategy.BaselineToBaseline)
+		{
+			if (isFirstLine)
+			{
+				return (Math.Min(fontDetailsWithMaxHeightInLine.LineHeight, Math.Max(-fontDetailsWithMaxHeightInLine.SKFontMetrics.Ascent, lineHeight)), -fontDetailsWithMaxHeightInLine.SKFontMetrics.Ascent);
+			}
+			else
+			{
+				if (isLastLine)
+				{
+					return (lineHeight + fontDetailsWithMaxHeightInLine.SKFontMetrics.Descent, lineHeight);
+				}
+				else
+				{
+					return (lineHeight, lineHeight);
+				}
+			}
+		}
+		else if (lineStackingStrategy is LineStackingStrategy.BlockLineHeight)
+		{
+			return (lineHeight, lineHeight - fontDetailsWithMaxHeightInLine.SKFontMetrics.Descent);
+		}
+		else
+		{
+			throw new ArgumentOutOfRangeException(nameof(lineStackingStrategy));
 		}
 	}
 }
