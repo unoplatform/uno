@@ -19,7 +19,6 @@
 		<PackageReference Include="Unity" Version="5.11.10" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
 		<PackageReference Include="MessagePack" Version="2.5.187" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1" />
@@ -60,11 +59,11 @@
 		<Content Update="Config\*.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
-		<Content Update="Config\global-net9.0.json" Condition="'$(TargetFramework)' == 'net9.0'">
+		<Content Update="Config\global-net10.0.json" Condition="'$(TargetFramework)' == 'net10.0'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>global.json</TargetPath>
 		</Content>
-		<Content Update="Config\global-net8.0.json" Condition="'$(TargetFramework)' == 'net8.0'">
+		<Content Update="Config\global-net9.0.json" Condition="'$(TargetFramework)' == 'net9.0'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>global.json</TargetPath>
 		</Content>

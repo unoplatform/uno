@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst17.0</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios18.0;$(NetPrevious)-maccatalyst18.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-netprevious.props" />
@@ -45,14 +45,14 @@
 		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" Condition="$(IsAndroid)" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="120.0.0.1" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="118.1.0.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
-		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="120.0.0.1" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="118.1.0.1" />
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="121.3.0.6" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="119.2.0.2" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

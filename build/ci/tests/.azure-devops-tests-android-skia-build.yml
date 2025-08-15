@@ -25,15 +25,15 @@ jobs:
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-linux.yml
     parameters:
-      UnoCheckParameters: '--tfm net9.0-android'
+      UnoCheckParameters: '--tfm net10.0-android'
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)/logs/build-skia-android.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net10.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net10.0-android /bl:$(build.artifactstagingdirectory)/logs/build-skia-android.binlog
     displayName: Build Android Skia Head
 
   - task: CopyFiles@2
     displayName: 'Copy Generated Android APK'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net9.0-android/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net10.0-android/publish
       Contents: 'uno.platform.samplesapp.skia-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
