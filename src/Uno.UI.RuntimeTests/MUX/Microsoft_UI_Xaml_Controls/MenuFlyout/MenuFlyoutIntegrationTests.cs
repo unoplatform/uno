@@ -514,358 +514,358 @@ public class MenuFlyoutIntegrationTests
 		return TreeHelper.FindAncestor<MenuFlyoutPresenter>(item);
 	}
 
-	//[TestMethod]
-	//public async Task ValidateShowAtTargetPosition()
-	//{
-	//	// The rules for positioning the menuflyout when calling ShowAt with Point(X,Y) are as follows:
-	//	//   - The menu should be positioned so that (X,Y) is the Top Left corner of the menu.
-	//	//   - For touch input (X,Y) should be the Bottom Left corner instead.
-	//	//   - If this would place the menu so that it is vertically clipped off-screen we do the opposite of above (i.e. Bottom Left for mouse, Top Left for touch).
-	//	//   - If the menuflyout is too tall for either of these to fit, we align it to the top of the screen.
-	//	// We also adjust in the horizontal direction:
-	//	//   - We try to position the menuflyout so that X is at the Left edge of the menu.
-	//	//   - If this would result in the menu being clipped horizontally, we try position it so that X is at the Right edge.
-	//	//   - If the menuflyout is too wide to position either its Right or Left edge at X, we align to the Left of the screen.
-	//	//   - When in Right-To-Left mode, the logic is the same as the above, with Right and Left swapped.
-	//	//   - When using Pen, if  SPI_GETHANDEDNESS returns "Right", then the menuflyout should show with the right edge at the X location.
+	[TestMethod]
+	public async Task ValidateShowAtTargetPosition()
+	{
+		// The rules for positioning the menuflyout when calling ShowAt with Point(X,Y) are as follows:
+		//   - The menu should be positioned so that (X,Y) is the Top Left corner of the menu.
+		//   - For touch input (X,Y) should be the Bottom Left corner instead.
+		//   - If this would place the menu so that it is vertically clipped off-screen we do the opposite of above (i.e. Bottom Left for mouse, Top Left for touch).
+		//   - If the menuflyout is too tall for either of these to fit, we align it to the top of the screen.
+		// We also adjust in the horizontal direction:
+		//   - We try to position the menuflyout so that X is at the Left edge of the menu.
+		//   - If this would result in the menu being clipped horizontally, we try position it so that X is at the Right edge.
+		//   - If the menuflyout is too wide to position either its Right or Left edge at X, we align to the Left of the screen.
+		//   - When in Right-To-Left mode, the logic is the same as the above, with Right and Left swapped.
+		//   - When using Pen, if  SPI_GETHANDEDNESS returns "Right", then the menuflyout should show with the right edge at the X location.
 
-	//	// We test the above logic by choosing values for Point(X,Y), the input mode and the FlowDirection.
-	//	//  - Point(X,Y):
-	//	//      This is the point passed to MenuFlyout ShowAt.
-	//	//      Values for X are chosen to be either near the left edge of the screen, the right edge of the screen, or the center.
-	//	//      Values for Y are chosen to be either near the top of the screen, the bottom of the screen or the center.
-	//	//  - Input Mode:
-	//	//      Either Mouse, Keyboard or Touch
-	//	//      (note, we mostly test with Keyboard and Touch because Mouse input helper doesn't work on phone).
-	//	//  - FlowDirection:
-	//	//      Either LeftToRight or RightToLeft
-	//	//
-	//	// Points that are "near" a particular edge of the screen are such that the point is too close to that edge for the menuflyout to open in that direction
-	//	//
-	//	// For each set of values that we test we specify the expected position of the open flyout:
-	//	//   HorizontalOpenDirection:
-	//	//     OpenRight: The menu should open to the Right, i.e. Point(X,Y) is on the Left edge of the menu.
-	//	//     OpenLeft: The menu should open to the Left, i.e. Point(X,Y) is on the Right edge of the menu.
-	//	//   VerticalOpenDirection:
-	//	//     OpenUp: the menu should open Up, i.e. Point(X,Y) is on the Bottom edge of the menu.
-	//	//     OpenDown: the menu should open Down, i.e. Point(X,Y) is on the Top edge of the menu.
+		// We test the above logic by choosing values for Point(X,Y), the input mode and the FlowDirection.
+		//  - Point(X,Y):
+		//      This is the point passed to MenuFlyout ShowAt.
+		//      Values for X are chosen to be either near the left edge of the screen, the right edge of the screen, or the center.
+		//      Values for Y are chosen to be either near the top of the screen, the bottom of the screen or the center.
+		//  - Input Mode:
+		//      Either Mouse, Keyboard or Touch
+		//      (note, we mostly test with Keyboard and Touch because Mouse input helper doesn't work on phone).
+		//  - FlowDirection:
+		//      Either LeftToRight or RightToLeft
+		//
+		// Points that are "near" a particular edge of the screen are such that the point is too close to that edge for the menuflyout to open in that direction
+		//
+		// For each set of values that we test we specify the expected position of the open flyout:
+		//   HorizontalOpenDirection:
+		//     OpenRight: The menu should open to the Right, i.e. Point(X,Y) is on the Left edge of the menu.
+		//     OpenLeft: The menu should open to the Left, i.e. Point(X,Y) is on the Right edge of the menu.
+		//   VerticalOpenDirection:
+		//     OpenUp: the menu should open Up, i.e. Point(X,Y) is on the Bottom edge of the menu.
+		//     OpenDown: the menu should open Down, i.e. Point(X,Y) is on the Top edge of the menu.
 
-	//	await RunOnUIThread(() =>
-	//	{
-	//		var rootPanel = new Grid();
-	//		TestServices.WindowHelper.WindowContent = rootPanel;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = new Grid();
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	Rect windowBounds = default;
-	//	await RunOnUIThread(() =>
-	//	{
-	//		windowBounds = TestServices.WindowHelper.WindowBounds;
-	//	});
-	//	LOG_OUTPUT("Windows bounds left=%f top=%f width=%f height=%f", windowBounds.Left, windowBounds.Top, windowBounds.Width, windowBounds.Height);
+		Rect windowBounds = default;
+		await RunOnUIThread(() =>
+		{
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+		});
+		LOG_OUTPUT($"Windows bounds left={windowBounds.Left} top={windowBounds.Top} width={windowBounds.Width} height={windowBounds.Height}");
 
-	//	float nearTop = 50;
-	//	float nearBottom = windowBounds.Bottom - 50;
-	//	float verticalCenter = floor(windowBounds.Y + (windowBounds.Height / 2));
-	//	float nearLeft = 50;
-	//	float nearRight = windowBounds.Right - 50;
-	//	float horizontalCenter = floor(windowBounds.X + (windowBounds.Width / 2));
+		float nearTop = 50;
+		float nearBottom = (float)(windowBounds.Bottom - 50);
+		float verticalCenter = (float)Math.Floor(windowBounds.Y + (windowBounds.Height / 2));
+		float nearLeft = 50;
+		float nearRight = (float)(windowBounds.Right - 50);
+		float horizontalCenter = (float)Math.Floor(windowBounds.X + (windowBounds.Width / 2));
 
-	//	// Simple Mouse case:
-	//	if (!TestServices.Utilities.IsOneCore)
-	//	{
-	//		// Mouse input helper doesn't work on phone or onecore.
-	//		LOG_OUTPUT("-------------");
-	//		LOG_OUTPUT("TEST: Simple Mouse case");
-	//		DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Mouse, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
-	//	}
+		// Simple Mouse case:
+		if (!TestServices.Utilities.IsOneCore)
+		{
+			// Mouse input helper doesn't work on phone or onecore.
+			LOG_OUTPUT("-------------");
+			LOG_OUTPUT("TEST: Simple Mouse case");
+			DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Mouse, FlowDirection.LeftToRight,
+				HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		}
 
-	//	// Simple Keyboard case:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Simple Keyboard case");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Keyboard, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Simple Keyboard case:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Simple Keyboard case");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Keyboard, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Simple Touch case:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Simple Touch case");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Touch, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Simple Touch case:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Simple Touch case");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Touch, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near bottom, non-touch:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near bottom, non-touch");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, nearBottom), InputMethod.Keyboard, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near bottom, non-touch:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near bottom, non-touch");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearBottom), InputMethod.Keyboard, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near bottom, touch:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near bottom, touch");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, nearBottom), InputMethod.Touch, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near bottom, touch:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near bottom, touch");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearBottom), InputMethod.Touch, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near top, non-touch:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near top, non-touch");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, nearTop), InputMethod.Keyboard, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near top, non-touch:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near top, non-touch");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearTop), InputMethod.Keyboard, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near top, touch:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near top, touch");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, nearTop), InputMethod.Touch, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near top, touch:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near top, touch");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearTop), InputMethod.Touch, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near right:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near right");
-	//	DoValidateShowAtTargetPosition(Point(nearRight, verticalCenter), InputMethod.Keyboard, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near right:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near right");
+		DoValidateShowAtTargetPosition(new Point(nearRight, verticalCenter), InputMethod.Keyboard, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near left:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near left");
-	//	DoValidateShowAtTargetPosition(Point(nearLeft, verticalCenter), InputMethod.Keyboard, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near left:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near left");
+		DoValidateShowAtTargetPosition(new Point(nearLeft, verticalCenter), InputMethod.Keyboard, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Simple RTL case:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Simple RTL case");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Keyboard, FlowDirection.RightToLeft,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Simple RTL case:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Simple RTL case");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Keyboard, FlowDirection.RightToLeft,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near right, RTL
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near right, RTL");
-	//	DoValidateShowAtTargetPosition(Point(nearRight, verticalCenter), InputMethod.Keyboard, FlowDirection.RightToLeft,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near right, RTL
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near right, RTL");
+		DoValidateShowAtTargetPosition(new Point(nearRight, verticalCenter), InputMethod.Keyboard, FlowDirection.RightToLeft,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near left, RTL
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near left, RTL");
-	//	DoValidateShowAtTargetPosition(Point(nearLeft, verticalCenter), InputMethod.Keyboard, FlowDirection.RightToLeft,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near left, RTL
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near left, RTL");
+		DoValidateShowAtTargetPosition(new Point(nearLeft, verticalCenter), InputMethod.Keyboard, FlowDirection.RightToLeft,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Right handed touch case");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Touch, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Right handed touch case");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Touch, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// RTL touch case:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: RTL touch case");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Touch, FlowDirection.RightToLeft,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// RTL touch case:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: RTL touch case");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Touch, FlowDirection.RightToLeft,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// MOCK10_REMOVAL : Reenable with bug 20936312
-	//	// Left handed touch case
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Left handed touch case");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Touch, FlowDirection.LeftToRight,
-	//	//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
-	//}
+		// MOCK10_REMOVAL : Reenable with bug 20936312
+		// Left handed touch case
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Left handed touch case");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Touch, FlowDirection.LeftToRight,
+		//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+	}
 
-	//[TestMethod]
-	//public async Task ValidateShowAtTargetPositionForPen()
-	//{
+	[TestMethod]
+	public async Task ValidateShowAtTargetPositionForPen()
+	{
+		await RunOnUIThread(() =>
+		{
+			var rootPanel = new Grid();
+			TestServices.WindowHelper.WindowContent = rootPanel;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
+		Rect windowBounds = default;
+		await RunOnUIThread(() =>
+		{
+			windowBounds = TestServices.WindowHelper.WindowBounds;
+		});
+		LOG_OUTPUT($"Windows bounds left={windowBounds.Left} top={windowBounds.Top} width={windowBounds.Width} height={windowBounds.Height}");
 
-	//	await RunOnUIThread(() =>
+		float nearTop = 50;
+		float nearBottom = (float)(windowBounds.Bottom - 50);
+		float verticalCenter = (float)Math.Floor(windowBounds.Y + (windowBounds.Height / 2));
+		float nearLeft = 50;
+		//float nearRight = windowBounds.Right - 50; // MOCK10_REMOVAL avoid local variable is initialized but not referenced error - Reenable with bug 20936312
+		float horizontalCenter = (float)Math.Floor(windowBounds.X + (windowBounds.Width / 2));
 
-	//	   {
-	//		   var rootPanel = new Grid();
-	//		   TestServices.WindowHelper.WindowContent = rootPanel;
-	//	   });
-	//	await TestServices.WindowHelper.WaitForIdle();
+		// Right handed (default) Pen cases:
 
-	//	Rect windowBounds = default;
-	//	await RunOnUIThread(() =>
+		// Simple Pen case:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Simple Pen case");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	   {
-	//		   windowBounds = TestServices.WindowHelper.WindowBounds;
-	//	   });
-	//	LOG_OUTPUT("Windows bounds left=%f top=%f width=%f height=%f", windowBounds.Left, windowBounds.Top, windowBounds.Width, windowBounds.Height);
+		// Near top, pen:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near top, pen");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	float nearTop = 50;
-	//	float nearBottom = windowBounds.Bottom - 50;
-	//	float verticalCenter = floor(windowBounds.Y + (windowBounds.Height / 2));
-	//	float nearLeft = 50;
-	//	//float nearRight = windowBounds.Right - 50; // MOCK10_REMOVAL avoid local variable is initialized but not referenced error - Reenable with bug 20936312
-	//	float horizontalCenter = floor(windowBounds.X + (windowBounds.Width / 2));
+		// Near bottom, pen:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near bottom, pen");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearBottom), InputMethod.Pen, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Right handed (default) Pen cases:
+		// RTL cases, Pen should still open to the left
 
-	//	// Simple Pen case:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Simple Pen case");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Simple Pen case:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Simple Pen case (RTL)");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near top, pen:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near top, pen");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near top, pen:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near top, pen (RTL)");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.RightToLeft,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near bottom, pen:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near bottom, pen");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, nearBottom), InputMethod.Pen, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenUp, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		//// MOCK10_REMOVAL : Reenable with bug 20936312
+		//// Left handed cases, now menus should open to the right.
 
-	//	// RTL cases, Pen should still open to the left
+		//// Simple Pen case:
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Simple Pen case (left handed)");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
+		//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Simple Pen case:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Simple Pen case (RTL)");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		//// Simple Pen case:
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Simple Pen case (RTL, left-handed)");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
+		//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near top, pen:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near top, pen (RTL)");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.RightToLeft,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		//// Near top, pen:
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Near top, pen (left-handed)");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.LeftToRight,
+		//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	//// MOCK10_REMOVAL : Reenable with bug 20936312
-	//	//// Left handed cases, now menus should open to the right.
+		// Near bottom, pen:
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Near bottom, pen (left-handed)");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearBottom), InputMethod.Pen, FlowDirection.LeftToRight,
+		//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	//// Simple Pen case:
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Simple Pen case (left handed)");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
-	//	//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// RTL right-handed cases, Pen should still open to the left
 
-	//	//// Simple Pen case:
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Simple Pen case (RTL, left-handed)");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
-	//	//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Simple Pen case:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Simple Pen case (RTL, right-handed)");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	//// Near top, pen:
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Near top, pen (left-handed)");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.LeftToRight,
-	//	//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near top, pen:
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near top, pen (RTL, right-handed)");
+		DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.RightToLeft,
+			HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Near bottom, pen:
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Near bottom, pen (left-handed)");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, nearBottom), InputMethod.Pen, FlowDirection.LeftToRight,
-	//	//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenUp, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		// Near left, pen, right-handed (should flip to right)
+		LOG_OUTPUT("-------------");
+		LOG_OUTPUT("TEST: Near left, pen, right-handed -- should flip to right");
+		DoValidateShowAtTargetPosition(new Point(nearLeft, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
+			HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// RTL right-handed cases, Pen should still open to the left
+		// MOCK10_REMOVAL : Reenable with bug 20936312
+		// Near left, pen, left-handed (should flip to left)
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Near right, pen, left-handed -- should flip to left");
+		//DoValidateShowAtTargetPosition(new Point(nearRight, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
+		//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
 
-	//	// Simple Pen case:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Simple Pen case (RTL, right-handed)");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		//// Explicitly force popups to be not windowed even on desktop using FlyoutBase.ShouldConstrainToRootBounds and run the Pen scenarios
+		//// again to exercise the non-windowed codepath.
 
-	//	// Near top, pen:
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near top, pen (RTL, right-handed)");
-	//	DoValidateShowAtTargetPosition(Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.RightToLeft,
-	//		HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		//// Simple Pen case:
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Simple Pen case (MOCK: non-HWND path)");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
+		//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
 
-	//	// Near left, pen, right-handed (should flip to right)
-	//	LOG_OUTPUT("-------------");
-	//	LOG_OUTPUT("TEST: Near left, pen, right-handed -- should flip to right");
-	//	DoValidateShowAtTargetPosition(Point(nearLeft, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
-	//		HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		//// RTL cases, Pen should still open to the left
 
-	//	// MOCK10_REMOVAL : Reenable with bug 20936312
-	//	// Near left, pen, left-handed (should flip to left)
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Near right, pen, left-handed -- should flip to left");
-	//	//DoValidateShowAtTargetPosition(Point(nearRight, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
-	//	//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, false /*disableFullHwndSupport*/);
+		//// Simple Pen case:
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Simple Pen case (RTL) (MOCK: non-HWND path)");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
+		//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
 
-	//	//// Explicitly force popups to be not windowed even on desktop using FlyoutBase.ShouldConstrainToRootBounds and run the Pen scenarios
-	//	//// again to exercise the non-windowed codepath.
+		//// Near top, pen:
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Near top, pen (RTL) (MOCK: non-HWND path)");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.RightToLeft,
+		//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
 
-	//	//// Simple Pen case:
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Simple Pen case (MOCK: non-HWND path)");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
-	//	//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
+		//// Change handedness to left, now menus should open to the right.
 
-	//	//// RTL cases, Pen should still open to the left
+		//// Simple Pen case:
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Simple Pen case (left handed) (MOCK: non-HWND path)");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
+		//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
 
-	//	//// Simple Pen case:
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Simple Pen case (RTL) (MOCK: non-HWND path)");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
-	//	//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
+		//// Simple Pen case:
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Simple Pen case (RTL, left-handed) (MOCK: non-HWND path)");
+		//DoValidateShowAtTargetPosition(new Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
+		//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
 
-	//	//// Near top, pen:
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Near top, pen (RTL) (MOCK: non-HWND path)");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, nearTop), InputMethod.Pen, FlowDirection.RightToLeft,
-	//	//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
+		//// Near left, pen, right-handed (should flip to right)
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Near left, pen, right-handed -- should flip to right (MOCK: non-HWND path)");
+		//DoValidateShowAtTargetPosition(new Point(nearLeft, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
+		//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
 
-	//	//// Change handedness to left, now menus should open to the right.
+		//// Near left, pen, left-handed (should flip to left)
+		//LOG_OUTPUT("-------------");
+		//LOG_OUTPUT("TEST: Near right, pen, left-handed -- should flip to left (MOCK: non-HWND path)");
+		//DoValidateShowAtPosition(new Point(nearRight, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
+		//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
+	}
 
-	//	//// Simple Pen case:
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Simple Pen case (left handed) (MOCK: non-HWND path)");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
-	//	//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
+	// Helper methods and enums that need to be implemented
+	private void DoValidateShowAtTargetPosition(
+		Point showAtPosition,
+		InputMethod inputMethod,
+		FlowDirection flowDirection,
+		HorizontalOpenDirection expectedHorizontalOpenDirection,
+		VerticalOpenDirection expectedVerticalOpenDirection,
+		bool mockLeftHandedness,
+		bool disableFullHwndSupport)
+	{
+		// TODO: Implement based on the C++ version
+		throw new NotImplementedException("DoValidateShowAtTargetPosition needs to be implemented");
+	}
 
-	//	//// Simple Pen case:
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Simple Pen case (RTL, left-handed) (MOCK: non-HWND path)");
-	//	//DoValidateShowAtTargetPosition(Point(horizontalCenter, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
-	//	//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
+	private enum InputMethod
+	{
+		Mouse,
+		Keyboard,
+		Touch,
+		Pen
+	}
 
-	//	//// Near left, pen, right-handed (should flip to right)
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Near left, pen, right-handed -- should flip to right (MOCK: non-HWND path)");
-	//	//DoValidateShowAtTargetPosition(Point(nearLeft, verticalCenter), InputMethod.Pen, FlowDirection.LeftToRight,
-	//	//    HorizontalOpenDirection.OpenRight, VerticalOpenDirection.OpenDown, false /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
+	private enum HorizontalOpenDirection
+	{
+		OpenLeft,
+		OpenRight
+	}
 
-	//	//// Near left, pen, left-handed (should flip to left)
-	//	//LOG_OUTPUT("-------------");
-	//	//LOG_OUTPUT("TEST: Near right, pen, left-handed -- should flip to left (MOCK: non-HWND path)");
-	//	//DoValidateShowAtTargetPosition(Point(nearRight, verticalCenter), InputMethod.Pen, FlowDirection.RightToLeft,
-	//	//    HorizontalOpenDirection.OpenLeft, VerticalOpenDirection.OpenDown, true /*mockLeftHandedness*/, true /*disableFullHwndSupport*/);
-	//}
+	private enum VerticalOpenDirection
+	{
+		OpenUp,
+		OpenDown
+	}
 
-	//void DoValidateShowAtTargetPosition(
-	//	Point showAtPosition,
-	//	InputMethod inputMethod,
-	//	FlowDirection flowDirection,
-	//	HorizontalOpenDirection expectedHorizontalOpenDirection,
-	//	VerticalOpenDirection expectedVerticalOpenDirection,
-	//	bool /*mockLeftHandedness*/,
-	//	bool /*disableFullHwndSupport*/)
-	//{
-	//	/* MOCK10_REMOVAL : Reenable with bug 20936312
-	//       typedef Mock10.MockFunction<BOOL NTAPI(uint, uint, PVOID, uint)>.Prototype SystemParametersInfoWPrototype;
-
-	//       DWORD dwMockHandedness = mockLeftHandedness ? HANDEDNESS_LEFT : HANDEDNESS_RIGHT;
-
-	//       // Within this scope, SystemParametersInfo is mocked
-	//       Mock10.MockFunction<SystemParametersInfoWPrototype> functionSystemParametersInfo(Mock10.Mock.Function<SystemParametersInfoWPrototype>(SystemParametersInfoW));
-	//       functionSystemParametersInfo.Set(
-	//           [&](uint uiAction,
-	//               uint uiParam,
-	//               PVOID pvParam,
-	//               uint fWinIni) . BOOL volatile
-	//       {
-	//           if (uiAction == SPI_GETHANDEDNESS)
-	//           {
-	//               *(LPDWORD)(pvParam) = dwMockHandedness;
-	//               return true;
-	//           }
-
-	//           return SystemParametersInfoW(uiAction, uiParam, pvParam, fWinIni);
-	//       });
-	//       */
-
-	//	var menuFlyout = await CreateMenuFlyout();
-
+	private static void LOG_OUTPUT(string message)
+	{
+		Console.WriteLine(message);
+	}
 	//	FrameworkElement ^ rootPanel;
 	//	Rect windowBounds;
 
