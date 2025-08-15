@@ -6,7 +6,6 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
-using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -27,6 +26,8 @@ internal partial class Win32WindowWrapper
 		{
 			return;
 		}
+
+		using var _ = _fpsHelper.BeginFrame();
 
 		this.LogTrace()?.Trace($"Render {this._renderCount++}");
 
@@ -52,31 +53,44 @@ internal partial class Win32WindowWrapper
 			_surface = _renderer.UpdateSize(clientRect.Width, clientRect.Height);
 		}
 
-		if (XamlRoot?.VisualTree.RootElement.Visual is { } rootVisual)
-		{
-			var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
-			// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
-			// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
-			// Paint() becoming reentrant which can cause crashes.
-			_rendering = true;
-			try
-			{
-				rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
+		var canvas = _surface!.Canvas;
 
-				SkiaRenderHelper.RenderPicture(
-					_surface,
-					_picture,
-					_background,
-					_fpsHelper);
-			}
-			finally
+		var count = canvas.Save();
+		try
+		{
+			canvas.Clear(_background);
+			var scale = XamlRoot!.RasterizationScale;
+			canvas.Scale((float)scale);
+			if (XamlRoot.VisualTree.RootElement.Visual is { } rootVisual)
 			{
-				_rendering = false;
-				rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
+				var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
+				// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
+				// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
+				// Paint() becoming reentrant which can cause crashes.
+				_rendering = true;
+				try
+				{
+					rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
+					var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(clientRect.Width, clientRect.Height, rootVisual, _surface.Canvas);
+					XamlRoot.InvokeFramePainted();
+					_fpsHelper.DrawFps(canvas);
+					RenderingNegativePathReevaluated?.Invoke(this, path);
+				}
+				finally
+				{
+					_rendering = false;
+					rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
+				}
 			}
 		}
+		finally
+		{
+			canvas.RestoreToCount(count);
+		}
 
+		_surface.Flush();
 		// this may call WM_ERASEBKGND
 		_renderer.CopyPixels(clientRect.Width, clientRect.Height);
+		XamlRoot.InvokeFrameRendered();
 	}
 }

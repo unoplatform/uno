@@ -27,6 +27,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		private readonly Action _onFrameDrawn;
 
 		private RootViewController? _owner;
+		private SKPicture? _picture;
 		private CADisplayLink _link;
 		private Thread? _renderThread;
 
@@ -120,6 +121,18 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		public void QueueRender()
 		{
+			var recorder = new SKPictureRecorder();
+			var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+			using (new SKAutoCanvasRestore(canvas, true))
+			{
+				_owner!.OnPaintSurfaceInner(canvas);
+				_fpsHelper.Scale = (float?)AppManager.XamlRootMap.GetRootForHost(_owner)?.RasterizationScale;
+				var picture = recorder.EndRecording();
+				_owner.RootElement?.XamlRoot?.InvokeFramePainted();
+
+				Interlocked.Exchange(ref _picture, picture);
+			}
+
 			_link.Paused = false;
 		}
 
@@ -137,12 +150,14 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		void IMTKViewDelegate.Draw(MTKView view)
 		{
+			using var _ = _fpsHelper.BeginFrame();
 			_onFrameDrawn();
 
 #if REPORT_FPS
 			_drawFpsLogger.ReportFrame();
 #endif
-			var currentPicture = _owner?.Picture;
+
+			var currentPicture = Volatile.Read(ref _picture);
 
 			var size = DrawableSize;
 
@@ -166,11 +181,16 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 				canvas = surface.Canvas;
 
-				SkiaRenderHelper.RenderPicture(
-					surface,
-					currentPicture,
-					SKColors.Transparent,
-					_fpsHelper);
+				// Paint
+				using (new SKAutoCanvasRestore(canvas, true))
+				{
+					// start drawing
+					if (currentPicture is { } picture)
+					{
+						canvas.DrawPicture(picture);
+						_fpsHelper.DrawFps(canvas);
+					}
+				}
 
 				// Flush
 				_context!.Flush(submit: true);
@@ -196,8 +216,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				_owner?.RootElement?.XamlRoot?.InvokeFrameRendered();
 			}
 
-			var newPicture = _owner?.Picture;
-			_link.Paused = ReferenceEquals(currentPicture, newPicture)
+			_link.Paused = ReferenceEquals(currentPicture, Volatile.Read(ref _picture))
 				&& !CompositionTarget.IsRenderingActive;
 		}
 	}
