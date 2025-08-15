@@ -121,8 +121,25 @@ Select the **MyUnoApp (Desktop)** debug profile then click the green arrow or th
 Set the Android debug profile in the debugger toolbar, then click the green arrow or the debug button.
 ![A view of the Rider taskbar for Android](Assets/quick-start/run-android-rider.png)
 
+If you don't already have an emulator, you can create and manage one **directly in Rider**.
+
+1. **Install the Android plugin** (if it isn’t already):
+   - `File` → `Settings` → `Plugins` → **Marketplace** → search **Rider Android Support** → **Install** → restart Rider.  
+ ![A view of the Rider Android Support plugin on marketplace](Assets/quick-start/rider-android-support-plugin-on-marketplace.png)
+
+2. **Confirm Android SDK is set**:
+   - `File` → `Settings` → search **Android SDK Location** → make sure the SDK path is valid and components are installed.
+ ![A view of the Rider Android SDK Location](Assets/quick-start/rider-android-sdk-location.png)
+
+3. **Open Device Manager**:
+   - `View` → `Tool Windows` → **Device Manager**.
+   - Click **+** → **Create Virtual Device…**, pick a device (e.g., Pixel), choose a recent system image (API 34/35), and finish.
+
+4. **Run your Uno app**:
+   - In the Rider debug toolbar, choose the **Android Emulator** profile and press ▶︎ **Run** or  **Debug**.
+
 > [!NOTE]
-> Whether you're using a physical device or the emulator, the app will install but will not automatically open. You will have to manually open it.
+> Whether you're using a physical device or the emulator, the app will install but may not automatically open. You may have to manually open it.
 
 ### [**WebAssembly**](#tab/wasm)
 
