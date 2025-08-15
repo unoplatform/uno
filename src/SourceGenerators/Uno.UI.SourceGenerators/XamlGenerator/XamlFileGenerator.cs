@@ -52,6 +52,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private static readonly string[] FrameworkTemplateTypes = new[] { "DataTemplate", "ControlTemplate", "ItemsPanelTemplate" };
 
+		private static readonly XamlType _elementStubXamlType = new XamlType(
+			XamlConstants.BaseXamlNamespace,
+			"ElementStub",
+			new List<XamlType>(),
+			new XamlSchemaContext()
+		);
+
 		private readonly Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
 		private readonly List<string> _partials = new List<string>();
 
@@ -6460,8 +6467,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (var innerWriter = CreateApplyBlock(writer, definition, Generation.ElementStubSymbol.Value))
 					{
-						var elementStubType = new XamlType(XamlConstants.BaseXamlNamespace, "ElementStub", new List<XamlType>(), new XamlSchemaContext());
-
 						if (nameMember != null)
 						{
 							innerWriter.AppendLineIndented(
@@ -6488,7 +6493,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var childrenNeedBindingUpdates = CurrentXLoadScope?.Components.Any(c => HasXBindMarkupExtension(c.ObjectDefinition) || HasMarkupExtensionNeedingComponent(c.ObjectDefinition)) ?? false;
 						if ((!_isTopLevelDictionary || isInsideFrameworkTemplate) && (needsBindingUpdates || childrenNeedBindingUpdates))
 						{
-							var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition, namespaces: null);
+							var xamlObjectDef = new XamlObjectDefinition(_elementStubXamlType, 0, 0, definition, namespaces: null);
 							xamlObjectDef.Members.AddRange(members);
 
 							var componentName = AddComponentForParentScope(xamlObjectDef).MemberName;
@@ -6578,7 +6583,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							var def = new XamlMemberDefinition(
 								new XamlMember(name,
-									elementStubType,
+									_elementStubXamlType,
 									false
 								), 0, 0,
 								owner
