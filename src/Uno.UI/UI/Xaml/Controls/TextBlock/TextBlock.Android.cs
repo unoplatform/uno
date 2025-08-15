@@ -124,6 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private TextUtils.TruncateAt _ellipsize;
 		private ALayoutAlignment _layoutAlignment;
 		private JustificationMode _justificationMode;
+		private bool _overflowMaxLines;
 
 		/// <summary>
 		/// Used by unit tests to verify that the displayed color matches the nominal managed color.
@@ -434,23 +435,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private Size UpdateLayout(ref LayoutBuilder layout, Size availableSize, bool exactWidth)
 		{
+			_overflowMaxLines = false;
+
 			// Normally this is a no-op since it's called in Measure. We call it again to prevent a crash in the edge case where Text changes in between calling Measure and Arrange.
 			Update();
+			var newLayout = CreateLayoutBuilder(layout, availableSize, exactWidth);
 
-			var newLayout = new LayoutBuilder(
-				_textFormatted,
-				_paint,
-				IsLayoutConstrainedByMaxLines ? TruncateEnd : _ellipsize, // .SetMaxLines() won't work on Android unless the ellipsize "END" is used.
-				_layoutAlignment,
-				_justificationMode,
-				TextWrapping,
-				MaxLines,
-				availableSize,
-				exactWidth,
-				(float)(LineHeight * ViewHelper.Scale),
-				LineStackingStrategy,
-				layout
-			);
 			if (!newLayout.Equals(layout))
 			{
 				layout = newLayout;
@@ -463,6 +453,14 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					layout.Build();
 				}
+			}
+
+			if (MaxLines > 0)
+			{
+				var newLayoutWithoutMaxLines = CreateLayoutBuilder(layout, availableSize, exactWidth, 0);
+				newLayoutWithoutMaxLines.Build();
+
+				_overflowMaxLines = newLayoutWithoutMaxLines.MeasuredSize.Height > layout.MeasuredSize.Height;
 			}
 
 			if (Foreground is GradientBrush gb)
@@ -484,11 +482,31 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return layout.MeasuredSize;
+
+			LayoutBuilder CreateLayoutBuilder(LayoutBuilder layout, Size availableSize, bool exactWidth, int? maxLinesOverride = null)
+			{
+				var newLayout = new LayoutBuilder(
+					_textFormatted,
+					_paint,
+					IsLayoutConstrainedByMaxLines ? TruncateEnd : _ellipsize, // .SetMaxLines() won't work on Android unless the ellipsize "END" is used.
+					_layoutAlignment,
+					_justificationMode,
+					TextWrapping,
+					maxLinesOverride ?? MaxLines,
+					availableSize,
+					exactWidth,
+					(float)(LineHeight * ViewHelper.Scale),
+					LineStackingStrategy,
+					layout
+				);
+				return newLayout;
+			}
 		}
 
 		partial void UpdateIsTextTrimmed()
 		{
 			IsTextTrimmed = IsTextTrimmable && (
+				_overflowMaxLines ||
 				_measureLayout.MeasuredSize.Width > _arrangeLayout.MeasuredSize.Width ||
 				_measureLayout.MeasuredSize.Height > _arrangeLayout.MeasuredSize.Height
 			);
