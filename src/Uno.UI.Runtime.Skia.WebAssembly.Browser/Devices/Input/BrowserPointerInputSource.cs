@@ -13,6 +13,7 @@ using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal 
 using System.Runtime.InteropServices;
 using Windows.System;
 using Uno.UI.Dispatching;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -149,7 +150,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 					throw new ArgumentOutOfRangeException(nameof(@event), $"Unknown event ({@event}-{evt}).");
 			}
 
-			return (int)Uno.UI.Xaml.HtmlEventDispatchResult.Ok; // TODO
+			return (int)(args.Handled ? HtmlEventDispatchResult.PreventDefault : HtmlEventDispatchResult.Ok);
 		}
 		catch (Exception error)
 		{
