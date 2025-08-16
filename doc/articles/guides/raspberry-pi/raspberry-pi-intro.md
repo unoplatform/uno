@@ -13,7 +13,7 @@ For this guide, you'll need various pieces of hardware and an Azure Account;
 - Raspberry Pi 3b+ and above (I'll be using a [4Gb Pi 4](https://shop.pimoroni.com/products/raspberry-pi-4?variant=29157087445075))
 - [Raspberry Pi Power Supply](https://shop.pimoroni.com/products/universal-usb-c-power-supply-5-1v-3a)
 - [16GB SD Card](https://amzn.to/2YAI07e)
-- SSH Client like [PuTTY](https://putty.org/)(Both Windows and Mac have a built in ssh client)
+- SSH Client like [PuTTY](https://putty.software/)(Both Windows and Mac have a built in ssh client)
 - Code Editor - [Visual Studio Code](https://code.visualstudio.com)
 - Choose the two following options:
   - [LCD Touchscreen](https://amzn.to/3uYSXvt), Keyboard and mouse
