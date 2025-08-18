@@ -46,6 +46,7 @@ You may need to follow additional directions, depending on your development envi
 
 [!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
+For help configuring Android or iOS emulators, see [Android & iOS emulator troubleshooting](xref:Uno.UI.CommonIssues.MobileDebugging).
 ---
 
 ## Next Steps
