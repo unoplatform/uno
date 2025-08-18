@@ -31,6 +31,7 @@ then
 fi
 
 export UITEST_IS_LOCAL=${UITEST_IS_LOCAL=false}
+export UNO_ANDROID_BUILD_TOOLS_VERSION="33.0.0"
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 export UNO_UITEST_APP_ID="uno.platform.unosampleapp"
 export UNO_UITEST_PLATFORM=Android
@@ -91,7 +92,7 @@ then
 	# Install AVD files
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;33.0.0' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "build-tools;$UNO_ANDROID_BUILD_TOOLS_VERSION" | tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-28;google_apis_playstore;$EMU_ARCH" | tr '\r' '\n' | uniq
@@ -229,6 +230,18 @@ then
 	$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
 
 else
+	# Re-sign the APK using the local debug key store to avoid Xamarin.UITests issues with Calabash
+	# Original error:
+	#     java.lang.SecurityException: Permission Denial: starting instrumentation
+	#     ComponentInfo{uno.platform.unosampleapp.test/sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner} from pid=22633, uid=2000 not allowed 
+	#     because package uno.platform.unosampleapp.test does not have a signature matching the target uno.platform.unosampleapp
+	$ANDROID_HOME/build-tools/$UNO_ANDROID_BUILD_TOOLS_VERSION/apksigner sign \
+		--ks "$HOME/.android/debug.keystore" \
+		--ks-key-alias androiddebugkey \
+		--ks-pass pass:android \
+		--key-pass pass:android \
+		--out "$UNO_UITEST_ANDROIDAPK_PATH" \
+		"$UNO_UITEST_ANDROIDAPK_PATH"
 
 	if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 		UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
