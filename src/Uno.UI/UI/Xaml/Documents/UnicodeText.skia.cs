@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using Windows.Foundation;
 using Windows.UI.Text;
 using HarfBuzzSharp;
@@ -24,6 +25,7 @@ namespace Microsoft.UI.Xaml.Documents;
 // The algorithm only reorders text within a paragraph; characters in one paragraph have no effect on characters in a different paragraph. Paragraphs are divided by the Paragraph Separator or appropriate Newline Function (see Section 4.3, Directionality and Unicode Technical Report #13, “Unicode Newline Guidelines,” found on the CD-ROM or the up-to-date version on the Unicode web site on the handling of CR, LF, and CRLF). Paragraphs may also be determined by higher-level protocols: for example, the text in two different cells of a table will be in different paragraphs.
 
 // TODO: character spacing
+// TODO: MaxLines
 internal readonly struct UnicodeText : IParsedText
 {
 	// A readonly snapshot of an Inline that is referenced by individual text runs after splitting. It's a class
@@ -85,7 +87,8 @@ internal readonly struct UnicodeText : IParsedText
 	private readonly List<LayoutedLine> _lines;
 	private readonly Cluster[] _textIndexToGlyph;
 	private readonly Size _desiredSize;
-	private readonly int _textLength;
+	private readonly string _text;
+	private readonly List<int> _wordBoundaries;
 
 	internal UnicodeText(
 		Size availableSize,
@@ -105,6 +108,7 @@ internal readonly struct UnicodeText : IParsedText
 
 		_inlines = new();
 		var lastEnd = 0;
+		var builder = new StringBuilder();
 		foreach (var inline in inlines)
 		{
 			var copy = new ReadonlyInlineCopy(inline, lastEnd, flowDirection);
@@ -114,8 +118,9 @@ internal readonly struct UnicodeText : IParsedText
 				_inlines.Add(copy);
 			}
 			lastEnd = copy.EndIndex;
+			builder.Append(copy.Text);
 		}
-		_textLength = lastEnd;
+		_text = builder.ToString();
 
 		if (_inlines.Count == 0)
 		{
@@ -123,6 +128,7 @@ internal readonly struct UnicodeText : IParsedText
 			desiredSize = new Size(0, GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, true, true).lineHeight);
 			_textIndexToGlyph = [];
 			_inlines = [];
+			_wordBoundaries = new();
 			return;
 		}
 
@@ -131,6 +137,9 @@ internal readonly struct UnicodeText : IParsedText
 		_lines = LayoutLines(unlayoutedLines, textAlignment, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
 		_textIndexToGlyph = new Cluster[inlines.Sum(i => i.GetText().Length)];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
+
+		var text = _text;
+		_wordBoundaries = unlayoutedLines.SelectMany(l => GetWordBreakingOpportunities(text[l.startInText..l.endInText], l.startInText)).ToList();
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
@@ -413,6 +422,16 @@ internal readonly struct UnicodeText : IParsedText
 		// The line breaking opportunity is right before the "line boundary"
 		var lineBreakingOpportunities = lineBoundaries.Select(b => b.End).ToList();
 		return lineBreakingOpportunities;
+	}
+
+	private static List<int> GetWordBreakingOpportunities(string text, int baseOffset)
+	{
+		// TODO: locale?
+		return BreakIterator.GetBoundaries(BreakIterator.UBreakIteratorType.WORD, new Locale("en", "US"), text)
+			.Skip(1)
+			.Select(b => b.Start + baseOffset)
+			.Append(text.Length)
+			.ToList();
 	}
 
 	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, BiDi bidi)
@@ -750,7 +769,48 @@ internal readonly struct UnicodeText : IParsedText
 		return null;
 	}
 
-	public (int start, int length) GetWordAt(int index, bool right) => throw new System.NotImplementedException();
+	public (int start, int length) GetWordAt(int index, bool right)
+	{
+		if (index == 0)
+		{
+			if (_wordBoundaries.Count == 0)
+			{
+				return (0, 0);
+			}
+			else
+			{
+				return (0, _wordBoundaries[0]);
+			}
+		}
+		else if (index == _text.Length)
+		{
+			if (right)
+			{
+				return (_text.Length, 0);
+			}
+			else if (_wordBoundaries.Count == 1)
+			{
+				return (0, _text.Length);
+			}
+			else
+			{
+				return (_wordBoundaries[^2], _text.Length);
+			}
+		}
+		else
+		{
+			var prevBoundary = 0;
+			foreach (var boundary in _wordBoundaries)
+			{
+				if (index < boundary || boundary == index && !right)
+				{
+					return (prevBoundary, boundary - prevBoundary);
+				}
+				prevBoundary = boundary;
+			}
+		}
+		throw new UnreachableException();
+	}
 
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
 	{
