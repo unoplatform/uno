@@ -30,6 +30,7 @@ internal readonly struct UnicodeText : IParsedText
 	// and not a struct because we don't want to copy the same Inline for each run.
 	private class ReadonlyInlineCopy
 	{
+		public Inline Inline { get; }
 		public int StartIndex { get; }
 		public int EndIndex { get; }
 		public string Text { get; }
@@ -43,6 +44,7 @@ internal readonly struct UnicodeText : IParsedText
 		public ReadonlyInlineCopy(Inline inline, int startIndex, FlowDirection defaultFlowDirection)
 		{
 			Debug.Assert(inline is Run or LineBreak);
+			Inline = inline;
 			Text = inline.GetText();
 			FlowDirection = (inline as Run)?.FlowDirection ?? defaultFlowDirection;
 			FontDetails = inline.FontInfo;
@@ -635,17 +637,28 @@ internal readonly struct UnicodeText : IParsedText
 		return new Rect(x, y, width, height);
 	}
 
-	public int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection)
+	public int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) =>
+		GetIndexAndRunAt(p, ignoreEndingSpace, extendedSelection).index;
+
+	private (int index, LayoutedLineBrokenBidiRun? run) GetIndexAndRunAt(Point p, bool ignoreEndingSpace, bool extendedSelection)
 	{
-		// TODO: ignoreEndingSpace
-		if (_lines.Count == 0 || p.Y < 0)
+		if (_lines.Count == 0)
 		{
-			return extendedSelection ? 0 : -1;
+			return extendedSelection ? (0, null) : (-1, null);
+		}
+
+		if (p.Y < 0)
+		{
+			return extendedSelection ? (0, _lines[0].runs.MinBy(r => r.indexInLine + r.inline.StartIndex)) : (-1, null);
 		}
 
 		if (_desiredSize.Height < p.Y)
 		{
-			return extendedSelection ? _textLength : -1;
+			var lastRun = _lines[^1].runs.Count == 0 ? _lines[^2].runs.MaxBy(r => r.indexInLine + r.inline.StartIndex)! : _lines[^1].runs.MaxBy(r => r.indexInLine + r.inline.StartIndex)!;
+			var index = _rtl
+				? lastRun.inline.StartIndex + lastRun.startInInline
+				: lastRun.inline.StartIndex + lastRun.endInInline - (ignoreEndingSpace ? TrailingWhiteSpaceCount(lastRun.inline.Text, lastRun.startInInline, lastRun.endInInline) : 0);
+			return (index, lastRun);
 		}
 
 		foreach (var line in _lines)
@@ -658,33 +671,40 @@ internal readonly struct UnicodeText : IParsedText
 			if (line.runs.Count == 0)
 			{
 				Debug.Assert(line == _lines[^1]);
-				return extendedSelection ? _textLength : -1;
+				return extendedSelection ? (0, _lines[^2].runs.MaxBy(r => r.indexInLine + r.inline.StartIndex)) : (-1, null);
 			}
 
-			if (line.runs[0] is var firstRun && firstRun.x + firstRun.line.xAlignmentOffset > p.X)
 			{
-				if (!extendedSelection)
+				if (line.runs[0] is var firstRun && firstRun.x + firstRun.line.xAlignmentOffset > p.X)
 				{
-					return -1;
-				}
-				else
-				{
-					return _rtl
-						? firstRun.endInInline + firstRun.inline.StartIndex - TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.startInInline, firstRun.endInInline)
-						: firstRun.startInInline + firstRun.inline.StartIndex;
+					if (!extendedSelection)
+					{
+						return (-1, null);
+					}
+					else
+					{
+						var index = _rtl
+							? firstRun.endInInline + firstRun.inline.StartIndex - (ignoreEndingSpace ? TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.startInInline, firstRun.endInInline) : 0)
+							: firstRun.startInInline + firstRun.inline.StartIndex;
+						return (index, firstRun);
+					}
 				}
 			}
-			if (line.runs[^1] is var lastRun && lastRun.x + lastRun.line.xAlignmentOffset + lastRun.width < p.X)
+
 			{
-				if (!extendedSelection)
+				if (line.runs[^1] is var lastRun && lastRun.x + lastRun.line.xAlignmentOffset + lastRun.width < p.X)
 				{
-					return -1;
-				}
-				else
-				{
-					return _rtl
-						? lastRun.inline.StartIndex + lastRun.startInInline
-						: lastRun.inline.StartIndex + lastRun.endInInline - TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.startInInline, firstRun.endInInline);
+					if (!extendedSelection)
+					{
+						return (-1, null);
+					}
+					else
+					{
+						var index = _rtl
+							? lastRun.inline.StartIndex + lastRun.startInInline
+							: lastRun.inline.StartIndex + lastRun.endInInline - (ignoreEndingSpace ? TrailingWhiteSpaceCount(lastRun.inline.Text, lastRun.startInInline, lastRun.endInInline) : 0);
+						return (index, lastRun);
+					}
 				}
 			}
 
@@ -702,17 +722,32 @@ internal readonly struct UnicodeText : IParsedText
 					if (globalGlyphX <= p.X && globalGlyphX + width >= p.X)
 					{
 						var closerToLeft = p.X - globalGlyphX < globalGlyphX + width - p.X;
-						return (closerToLeft && !run.rtl) || (!closerToLeft && run.rtl) ? glyph.cluster!.sourceTextStart : glyph.cluster!.sourceTextEnd;
+						var index = (closerToLeft && !run.rtl) || (!closerToLeft && run.rtl) ? glyph.cluster!.sourceTextStart : glyph.cluster!.sourceTextEnd;
+						return (index, run);
 					}
 				}
 			}
 		}
 
 		Debug.Assert(false, "This should be unreachable");
-		return -1;
+		return (-1, null);
 	}
 
-	public Hyperlink GetHyperlinkAt(Point point) => throw new System.NotImplementedException();
+	public Hyperlink? GetHyperlinkAt(Point point)
+	{
+		var run = GetIndexAndRunAt(point, ignoreEndingSpace: false, extendedSelection: false).run;
+		DependencyObject? parent = run?.inline.Inline;
+		while (parent is TextElement textElement)
+		{
+			if (parent is Hyperlink h)
+			{
+				return h;
+			}
+			parent = textElement.GetParent() as DependencyObject;
+		}
+
+		return null;
+	}
 
 	public (int start, int length) GetWordAt(int index, bool right) => throw new System.NotImplementedException();
 

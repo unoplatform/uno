@@ -153,7 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				UpdateHyperlinks();
-				Inlines.InvalidatePreorderTree();
+				Inlines.InvalidateTraversedTree();
 			}
 
 			OnInlinesChangedPartial();

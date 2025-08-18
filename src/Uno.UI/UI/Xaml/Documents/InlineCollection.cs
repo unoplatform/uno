@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 #if __WASM__
 using System.Collections.Specialized;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace Microsoft.UI.Xaml.Documents
 			)
 		{
 #if !IS_UNIT_TESTS
-			InvalidatePreorderTree();
+			InvalidateTraversedTree();
 
 #if __WASM__
 			switch (_collection.Owner)
@@ -59,9 +60,12 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 		}
 
-		private Inline[] _preorderTree;
+		private (Inline[] preorderTree, Inline[] leafTree)? _traversedTree;
 
-		internal void InvalidatePreorderTree() => _preorderTree = null;
+		internal void InvalidateTraversedTree()
+		{
+			_traversedTree = null;
+		}
 
 		/// <remarks>
 		/// The PreorderTree invalidation logic is extremely buggy because the DP parent chain is flattened
@@ -69,11 +73,16 @@ namespace Microsoft.UI.Xaml.Documents
 		/// when read using GetParent(). The returned value here is up to date only when this is the
 		/// InlineCollection of a TextBlock.
 		/// </remarks>
-		internal Inline[] PreorderTree
+		internal (Inline[] preorderTree, Inline[] leafTree) TraversedTree
 		{
 			get
 			{
-				return _preorderTree ??= GetPreorderTree();
+				if (_traversedTree is { } traversedTree)
+				{
+					return traversedTree;
+				}
+				var preOrderTree = GetPreorderTree();
+				return (_traversedTree = (preOrderTree, preOrderTree.Where(inline => inline is Run or LineBreak).ToArray())).Value;
 
 				Inline[] GetPreorderTree()
 				{
