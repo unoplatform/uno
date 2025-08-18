@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TabView.cpp, commit 6909712
+// MUX Reference TabView.cpp, commit 65718e2813
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -37,9 +37,9 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.UI.Content;
 using Windows.Graphics;
 using MUXDragEventArgs = Microsoft.UI.Xaml.DragEventArgs; // Required for Android to avoid clashes.
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 [ContentProperty(Name = nameof(TabItems))]
 public partial class TabView : Control

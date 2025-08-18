@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItemAutomationPeer.cpp, commit 9349a0fbc
+// MUX Reference: TabViewItemAutomationPeer.cpp, commit 65718e2813
 
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes TabViewItem types to Microsoft UI Automation.

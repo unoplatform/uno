@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\controls\dev\TabView\TabViewListView.cpp, commit d74a0332
+// MUX Reference src\controls\dev\TabView\TabViewListView.cpp, commit 65718e2813
 
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers.WinUI;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Represents the ListView corresponding to the TabStrip within the TabView.

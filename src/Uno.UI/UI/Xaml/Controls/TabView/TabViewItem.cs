@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItem.cpp, commit 6909712
+// MUX Reference: TabViewItem.cpp, commit 65718e2813
 
 using System.Numerics;
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Core;
 using System;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using Uno.Disposables;
 using Microsoft.UI.Xaml.Shapes;
 using System.Globalization;
@@ -24,16 +24,9 @@ using Windows.Foundation;
 using XamlWindow = Microsoft.UI.Xaml.Window;
 using System.Reflection;
 using MUII = Microsoft.UI.Input;
-
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Microsoft.UI.Xaml.Automation.Peers;
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a single tab within a TabView.
