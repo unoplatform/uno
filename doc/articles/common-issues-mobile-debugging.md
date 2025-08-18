@@ -6,7 +6,6 @@ uid: Uno.UI.CommonIssues.MobileDebugging
 
 If Android or iOS emulators are missing or fail to start in JetBrains Rider, Visual Studio, or Visual Studio Code on macOS or Windows, use the checklists and setup paths below.
 
-
 ## Quick-fix checklist (do this first)
 
 - **Start the emulator manually** once, then reopen your IDE.
@@ -17,7 +16,6 @@ If Android or iOS emulators are missing or fail to start in JetBrains Rider, Vis
 - **AVD reset:** Cold Boot or Wipe Data for a flaky AVD.
 - **macOS/iOS:** open iOS Simulator from Xcode once to initialize it.
 - After changing SDKs, emulator images, or virtualization settings, **restart your IDE** so it refreshes its device list.
-
 
 ## Android emulator setup
 
@@ -54,6 +52,7 @@ There are several common ways to manage Android Virtual Devices (AVDs):
 2. **Start an emulator**
    - Use an extension (e.g., an “Android/iOS Emulator” helper) to start/stop AVDs from the Command Palette, **or**
    - Use the terminal:
+
      ```bash
      emulator -list-avds
      emulator -avd <your_avd_name>
@@ -81,6 +80,7 @@ Enable **Windows Hypervisor Platform** (and **Hyper-V** on supported editions) t
 2. Verify the Simulator runs: **Xcode → Window → Devices and Simulators**.
 3. If your IDE can’t find the Simulator, **start it manually** or **reboot**.
 4. Inspect available simulators:
+
    ```bash
    xcrun simctl list devices
    ```
@@ -92,4 +92,3 @@ Enable **Windows Hypervisor Platform** (and **Hyper-V** on supported editions) t
   - Open Android Studio
   - Go to Preferences → Appearance & Behavior → System Settings → Android SDK
   - Move the SDK to a local, non-synced directory if needed
-
