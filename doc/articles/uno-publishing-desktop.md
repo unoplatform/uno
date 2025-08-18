@@ -58,7 +58,7 @@ dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PublishSing
 
 Same as above, make sure to replace the `{{RID}}` with [a valid value](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog).
 
-The `IncludeNativeLibrariesForSelfExtract` and `IncludeAllContentForSelfExtract` properties can also be set directly in a `PropertyGroup` directly in the `.csproj`.
+The `IncludeNativeLibrariesForSelfExtract` and `IncludeAllContentForSelfExtract` properties can also be set in a `PropertyGroup` in the `.csproj`.
 
 ### Windows ClickOnce
 
