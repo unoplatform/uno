@@ -230,35 +230,8 @@ then
 	$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
 
 else
-
-	# Re-sign the APK using the local debug key store to avoid Xamarin.UITests issues with Calabash
-	# Original error:
-	#     java.lang.SecurityException: Permission Denial: starting instrumentation
-	#     ComponentInfo{uno.platform.unosampleapp.test/sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner} from pid=22633, uid=2000 not allowed 
-	#     because package uno.platform.unosampleapp.test does not have a signature matching the target uno.platform.unosampleapp
-	
-	# Use the same keystore location that Xamarin.UITest uses
-	export UNO_ANDROID_KEYSTORE_PATH="~/.local/share/Xamarin/Mono for Android/debug.keystore"
-
-	mkdir -p "${UNO_ANDROID_KEYSTORE_PATH%/*}"
-
-	mkdir -p "$HOME/.android" && keytool -genkeypair \
-		-keystore "$UNO_ANDROID_KEYSTORE_PATH" \
-		-storetype JKS \
-		-storepass android \
-		-keypass android \
-		-alias androiddebugkey \
-		-keyalg RSA -keysize 2048 -validity 10000 \
-		-dname "CN=Android Debug, O=Android, C=US" \
-		-noprompt
-
-	$ANDROID_HOME/build-tools/$UNO_ANDROID_BUILD_TOOLS_VERSION/apksigner sign \
-		--ks "$UNO_ANDROID_KEYSTORE_PATH" \
-		--ks-key-alias androiddebugkey \
-		--ks-pass pass:android \
-		--key-pass pass:android \
-		--out "$UNO_UITEST_ANDROIDAPK_PATH" \
-		"$UNO_UITEST_ANDROIDAPK_PATH"
+	# Install the app
+	$ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 
 	# Run the tests
 	if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
