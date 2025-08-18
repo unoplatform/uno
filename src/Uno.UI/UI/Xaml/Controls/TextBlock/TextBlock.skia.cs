@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
 			ParsedText = ParsedText.ParseText(
 				availableSizeWithoutPadding,
-				Inlines.PreorderTree,
+				Inlines.TraversedTree.preorderTree,
 				GetComputedLineHeight(),
 				MaxLines,
 				(float)LineHeight,
@@ -130,7 +130,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 			ParsedText = ParsedText.ParseText(
 				availableSizeWithoutPadding,
-				Inlines.PreorderTree,
+				Inlines.TraversedTree.preorderTree,
 				GetComputedLineHeight(),
 				MaxLines,
 				(float)LineHeight,
