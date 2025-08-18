@@ -2,73 +2,94 @@
 uid: Uno.UI.CommonIssues.MobileDebugging
 ---
 
-# Android & iOS troubleshooting
+# Android & iOS emulators: setup & troubleshooting
 
-When Android or iOS emulators are missing or fail to start in JetBrains Rider or Visual Studio Code on macOS or Windows, the tips below can help you get moving again.
+If Android or iOS emulators are missing or fail to start in JetBrains Rider, Visual Studio, or Visual Studio Code on macOS or Windows, use the checklists and setup paths below.
+
+
+## Quick-fix checklist (do this first)
+
+- **Start the emulator manually** once, then reopen your IDE.
+- **Update tools & images** (Android Emulator, Platform-Tools, system images).
+- **Use one Android SDK location** across tools; avoid cloud-synced folders.
+- **Windows:** ensure virtualization is enabled (see “Windows virtualization”).
+- **ADB refresh:** `adb kill-server && adb start-server`, then `adb devices`.
+- **AVD reset:** Cold Boot or Wipe Data for a flaky AVD.
+- **macOS/iOS:** open iOS Simulator from Xcode once to initialize it.
+- After changing SDKs, emulator images, or virtualization settings, **restart your IDE** so it refreshes its device list.
+
 
 ## Android emulator setup
 
-There are two common ways to manage Android Virtual Devices (AVDs):
+There are several common ways to manage Android Virtual Devices (AVDs):
 
-### Option 1: Use Android Studio
+### Option 1 — Android Studio (works with all IDEs)
 
 1. Install the latest Android Studio.
-2. Open **Tools → SDK Manager → SDK Tools** and update **Android Emulator**, **Android SDK Platform‑Tools** and any outdated components.
-3. Launch **AVD Manager** and create or update an emulator image with the latest system image.
-4. Start the emulator before launching your Uno Platform app and restart your IDE so it picks up the running device.
+2. **Tools → SDK Manager → SDK Tools**: update **Android Emulator** and **Android SDK Platform-Tools**.
+3. **Tools → Device Manager (AVD Manager)**: create/update an AVD with a recent system image.
+4. Launch the emulator, then run your Uno Platform app from your IDE.
 
-### Option 2: Use Rider with the Android Support plugin
+### Option 2 — Visual Studio
 
-1. Install JetBrains Rider and add the **Android Support** plugin from **Preferences → Plugins → Marketplace**.
-2. From Rider's AVD Manager, create or update an emulator image, or reuse an image created in Android Studio.
-3. Launch the emulator manually if Rider does not detect it automatically.
-4. You can also use an emulator created in Rider from other tools like VS Code.
+1. Install Visual Studio 2022 with the **Multi-Platform App UI development with .NET** workload.
+2. Open **Tools → Android → Android Device Manager**.
+3. Create/update an AVD and start it before you deploy from your IDE.
 
-### Keep your AVDs up to date
+### Option 3 — JetBrains Rider
 
-Updating system images and tools helps avoid compatibility issues. Whenever you change your SDKs or devices, restart Rider or VS Code to refresh the device list.
+1. Install **Rider** and the **Android Support** plugin via **Preferences/Settings → Plugins → Marketplace**.
+2. From Rider’s Device/AVD Manager, create/update an AVD (you can reuse AVDs made in Android Studio).
+3. If Rider doesn’t list it immediately, start the AVD manually and restart Rider.
 
-### Launch emulators manually when needed
+### Option 4 — Visual Studio Code
 
-Sometimes IDEs only discover an emulator if it's already running. You can start it from Android Studio or with the command line:
+> VS Code doesn’t include a built-in AVD manager. It **uses AVDs created by Android Studio, Rider, or Visual Studio** and can start them via extensions or the terminal.
 
-```bash
-emulator -list-avds
-emulator -avd <your_avd_name>
-```
+1. **Install/verify Android SDK & tools**
+   - Create AVDs in **Android Studio** (recommended) or another IDE.
+   - Ensure command-line tools are available in your `PATH` (e.g., `<sdk>/platform-tools` and `<sdk>/emulator`).
+   - Optional: confirm the .NET Android workload is present: `dotnet workload list` (look for `android`).
 
-### macOS note: keep SDKs out of cloud‑synced folders
+2. **Start an emulator**
+   - Use an extension (e.g., an “Android/iOS Emulator” helper) to start/stop AVDs from the Command Palette, **or**
+   - Use the terminal:
+     ```bash
+     emulator -list-avds
+     emulator -avd <your_avd_name>
+     adb devices
+     ```
 
-Ensure your Android SDK and AVD directories are stored locally and not inside iCloud Drive, Dropbox, OneDrive, or other sync services to prevent file‑locking and permission issues. Adjust the path from **Android Studio → Preferences → Appearance & Behavior → System Settings → Android SDK** if necessary.
+3. **Make VS Code see the device**
+   - **Reload Window** after the emulator starts, or restart VS Code.
+   - If the emulator isn’t listed, verify `adb devices` shows it, then relaunch the debugger.
 
-## iOS simulator tips (macOS only)
+4. **Troubleshooting in VS Code**
+   - Ensure `ANDROID_SDK_ROOT` (or `ANDROID_HOME`) points to the correct SDK.
+   - Keep only **one** SDK location across tools to avoid mismatch.
+   - If an extension can’t find the emulator, set the SDK/emulator path in its settings.
 
-1. Install the latest Xcode from the App Store and launch it once to agree to the license.
-2. Verify the iOS Simulator runs on its own (**Xcode → Window → Devices and Simulators**).
-3. If your IDE cannot find the simulator, start it manually or restart your computer.
-4. To inspect available simulators from the command line run:
+---
 
-```bash
-xcrun simctl list devices
-```
+## Windows virtualization (required for fast Android emulation)
 
-## Useful device commands
+Enable **Windows Hypervisor Platform** (and **Hyper-V** on supported editions) then **reboot**. Avoid conflicts with other hypervisors (e.g., VirtualBox in non-Hyper-V mode).
 
-```bash
-adb devices                 # Lists connected Android devices and emulators
-xcrun simctl list devices   # Lists iOS simulators (macOS only)
-```
+## iOS simulator setup (macOS only)
 
-## IDE‑specific tips
+1. Install the latest **Xcode** from the App Store and launch it once to accept the license.
+2. Verify the Simulator runs: **Xcode → Window → Devices and Simulators**.
+3. If your IDE can’t find the Simulator, **start it manually** or **reboot**.
+4. Inspect available simulators:
+   ```bash
+   xcrun simctl list devices
+   ```
 
-### Rider
+## macOS notes
 
-- Ensure the **Android Support** plugin is installed.
-- Restart Rider after updating SDKs or AVDs.
-- Launch emulators manually if they are not detected.
+- Keep **Android SDK** and **AVD** directories **outside** cloud-sync folders (iCloud/Dropbox/OneDrive) to avoid file-locking.
+- To verify or change the SDK path:
+  - Open Android Studio
+  - Go to Preferences → Appearance & Behavior → System Settings → Android SDK
+  - Move the SDK to a local, non-synced directory if needed
 
-### Visual Studio Code
-
-- Extensions such as **Android iOS Emulator** can simplify device management.
-- Reload the window or restart VS Code after starting a new emulator.
-- VS Code can use emulators created in Android Studio or Rider.
