@@ -84,6 +84,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					await Notify(HotReloadEvent.Initializing);
 
+					// Clone the properties from the ConfigureServer
+					var properties = configureServer.MSBuildProperties.ToDictionary();
+
 					// Flag the current build as created for hot reload, which allows for running targets or settings
 					// props/items in the context of the hot reload workspace.
 					properties["UnoIsHotReloadHost"] = "True";
