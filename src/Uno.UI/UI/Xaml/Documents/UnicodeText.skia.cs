@@ -268,16 +268,16 @@ internal readonly struct UnicodeText : IParsedText
 			Debug.Assert(nextLineBreakingOpportunityIndex < logicallyOrderedLineBreakingOpportunities.Count && (bidiRun.inline.StartIndex < nextLineBreakingOpportunity.inline.StartIndex || (bidiRun.inline == nextLineBreakingOpportunity.inline && bidiRun.startInInline < nextLineBreakingOpportunity.indexInInline)));
 
 			// TODO: end-of-line space hanging
-			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
-			var runWidth = RunWidth(glyphs, bidiRun.inline.FontDetails);
 
 			if (bidiRun.inline != nextLineBreakingOpportunity.inline || bidiRun.endInInline < nextLineBreakingOpportunity.indexInInline)
 			{
+				var glyphsOfEntireBidiRun = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+				var bidiRunWidth = RunWidth(glyphsOfEntireBidiRun, bidiRun.inline.FontDetails);
 				// no line breaking opportunity in run
-				if (currentLine.Count == 0 || runWidth <= remainingLineWidth)
+				if (currentLine.Count == 0 || bidiRunWidth <= remainingLineWidth)
 				{
 					currentLine.Add(bidiRun);
-					remainingLineWidth -= runWidth;
+					remainingLineWidth -= bidiRunWidth;
 				}
 				else
 				{
@@ -291,7 +291,10 @@ internal readonly struct UnicodeText : IParsedText
 
 			if (IsLineBreak(bidiRun.inline.Text, nextLineBreakingOpportunity.indexInInline))
 			{
-				if (currentLine.Count != 0 && !(runWidth <= remainingLineWidth))
+				var glyphsToLineBreak = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..nextLineBreakingOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+				var runToLinebreakWidth = RunWidth(glyphsToLineBreak, bidiRun.inline.FontDetails);
+
+				if (currentLine.Count != 0 && !(runToLinebreakWidth <= remainingLineWidth))
 				{
 					MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
 				}
@@ -305,6 +308,8 @@ internal readonly struct UnicodeText : IParsedText
 				continue;
 			}
 
+			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+			var runWidth = RunWidth(glyphs, bidiRun.inline.FontDetails);
 			if (runWidth <= remainingLineWidth)
 			{
 				currentLine.Add(bidiRun);
@@ -471,7 +476,7 @@ internal readonly struct UnicodeText : IParsedText
 			ret[i] = (infos[i], positions[i]);
 		}
 
-		if (IsLineBreak(textRun, textRun.Length) && infos[^1].Cluster == textRun.Length - 2)
+		if (IsLineBreak(textRun, textRun.Length) && infos[^1].Cluster == (textRun is [.., '\r', '\n'] ? 2 : 1))
 		{
 			ret[^1] = (infos[^1] with { Codepoint = 0 }, positions[^1] with { XAdvance = 0 });
 		}
