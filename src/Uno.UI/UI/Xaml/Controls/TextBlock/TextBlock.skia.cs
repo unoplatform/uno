@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Windows.Foundation;
-using SkiaSharp;
 using Microsoft.UI.Composition;
 using System.Numerics;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
@@ -17,7 +14,6 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers.WinUI;
-using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
 
@@ -42,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _renderSelection;
 		private (int index, CompositionBrush brush)? _caretPaint;
 
-		internal ParsedText ParsedText { get; private set; } = ParsedText.Empty;
+		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
 		internal event Action? DrawingFinished;
 
@@ -75,10 +71,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
-			ParsedText = ParsedText.ParseText(
+			ParsedText = new UnicodeText(
 				availableSizeWithoutPadding,
-				Inlines.TraversedTree.preorderTree,
-				GetComputedLineHeight(),
+				Inlines.TraversedTree.leafTree,
+				GetDefaultFontDetails(),
 				MaxLines,
 				(float)LineHeight,
 				LineStackingStrategy,
@@ -130,10 +126,10 @@ namespace Microsoft.UI.Xaml.Controls
 			Visual.Compositor.InvalidateRender(Visual);
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
-			ParsedText = ParsedText.ParseText(
+			ParsedText = new UnicodeText(
 				availableSizeWithoutPadding,
-				Inlines.TraversedTree.preorderTree,
-				GetComputedLineHeight(),
+				Inlines.TraversedTree.leafTree,
+				GetDefaultFontDetails(),
 				MaxLines,
 				(float)LineHeight,
 				LineStackingStrategy,
@@ -192,28 +188,20 @@ namespace Microsoft.UI.Xaml.Controls
 		/// font line height.
 		/// </summary>
 		/// <returns>Computed line height</returns>
-		private float GetComputedLineHeight()
+		private FontDetails GetDefaultFontDetails()
 		{
-			var lineHeight = LineHeight;
-			if (!lineHeight.IsNaN() && lineHeight > 0)
+			var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+			if (task.IsCompletedSuccessfully)
 			{
-				return (float)lineHeight;
+				return task.Result;
 			}
 			else
 			{
-				var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
-				if (task.IsCompletedSuccessfully)
+				task.ContinueWith(_ =>
 				{
-					return task.Result.LineHeight;
-				}
-				else
-				{
-					task.ContinueWith(_ =>
-					{
-						NativeDispatcher.Main.Enqueue(OnFontLoaded);
-					});
-					return details.LineHeight;
-				}
+					NativeDispatcher.Main.Enqueue(OnFontLoaded);
+				});
+				return details;
 			}
 		}
 
