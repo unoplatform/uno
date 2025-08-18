@@ -240,7 +240,7 @@ else
 	# Use the same keystore location that Xamarin.UITest uses
 	export UNO_ANDROID_KEYSTORE_PATH="~/.local/share/Xamarin/Mono for Android/debug.keystore"
 
-	touch "$UNO_ANDROID_KEYSTORE_PATH"
+	mkdir -p "${UNO_ANDROID_KEYSTORE_PATH%/*}" && touch "$UNO_ANDROID_KEYSTORE_PATH"
 
 	mkdir -p "$HOME/.android" && keytool -genkeypair \
 		-keystore "$UNO_ANDROID_KEYSTORE_PATH" \
