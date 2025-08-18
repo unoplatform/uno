@@ -197,7 +197,7 @@ Further disk image customization is possible but can be tricky since it requires
 
 ## Re-using the app packaging tasks individually
 
-If you already have an app bundle built then you can use those commands to (re)sign, package, create a disk image and notarize it. It's useful for fat app bundles, which requires an extra merge step, as well as allowing further customization (that would break a digital signature) after an app bundle is created.
+If you already have an app bundle built, then you can use those commands to (re)sign, package, create a disk image, and notarize it. It's useful for fat app bundles, which require an extra merge step, as well as allowing further customization (that would break a digital signature) after an app bundle is created.
 
 ### Create a fat app bundle from arch-specific app bundles
 
