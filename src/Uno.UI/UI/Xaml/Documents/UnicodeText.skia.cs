@@ -42,12 +42,14 @@ internal readonly struct UnicodeText : IParsedText
 		public FontWeight FontWeight { get; }
 		public FontStretch FontStretch { get; }
 		public FontStyle FontStyle { get; }
+		public CompositionBrush Foreground { get; }
 
 		public ReadonlyInlineCopy(Inline inline, int startIndex, FlowDirection defaultFlowDirection)
 		{
 			Debug.Assert(inline is Run or LineBreak);
 			Inline = inline;
 			Text = inline.GetText();
+			Foreground = inline.Foreground.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
 			FlowDirection = (inline as Run)?.FlowDirection ?? defaultFlowDirection;
 			FontDetails = inline.FontInfo;
 			FontSize = inline.FontSize;
@@ -89,6 +91,7 @@ internal readonly struct UnicodeText : IParsedText
 	private readonly Size _desiredSize;
 	private readonly string _text;
 	private readonly List<int> _wordBoundaries;
+	private readonly FontDetails _defaultFontDetails;
 
 	internal UnicodeText(
 		Size availableSize,
@@ -105,6 +108,7 @@ internal readonly struct UnicodeText : IParsedText
 		_rtl = flowDirection == FlowDirection.RightToLeft;
 		_size = availableSize;
 		_textAlignment = textAlignment;
+		_defaultFontDetails = defaultFontDetails;
 
 		_inlines = new();
 		var lastEnd = 0;
@@ -623,21 +627,21 @@ internal readonly struct UnicodeText : IParsedText
 			var currentLineX = line.xAlignmentOffset;
 			foreach (var run in line.runs)
 			{
-				using (var textBlobBuilder = new SKTextBlobBuilder())
+				var path = new SKPath();
+				for (var i = 0; i < run.glyphs.Length; i++)
 				{
-					var glyphs = new ushort[run.glyphs.Length];
-					var positions = new SKPoint[run.glyphs.Length];
-					for (var i = 0; i < run.glyphs.Length; i++)
-					{
-						var glyph = run.glyphs[i];
-						glyphs[i] = (ushort)glyph.info.Codepoint;
-						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY);
-					}
-
-					textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
-					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.y + line.baselineOffset, new SKPaint { Color = SKColors.Red });
-					currentLineX += run.width;
+					var glyph = run.glyphs[i];
+					var p = run.fontDetails.SKFont.GetGlyphPath((ushort)glyph.info.Codepoint);
+					p.Transform(SKMatrix.CreateTranslation(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY), p);
+					path.AddPath(p);
 				}
+				path.Transform(SKMatrix.CreateTranslation(currentLineX, line.y + line.baselineOffset), path);
+
+				session.Canvas.Save();
+				session.Canvas.ClipPath(path, antialias: true);
+				run.inline.Foreground.Paint(session.Canvas, session.Opacity, path.Bounds);
+				session.Canvas.Restore();
+				currentLineX += run.width;
 			}
 		}
 	}
@@ -647,6 +651,10 @@ internal readonly struct UnicodeText : IParsedText
 
 	public Rect GetRectForIndex(int index)
 	{
+		if (index == 0 && string.IsNullOrEmpty(_text))
+		{
+			return new Rect(0, 0, 0, _defaultFontDetails.LineHeight);
+		}
 		var cluster = _textIndexToGlyph[index];
 		var glyphs = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart..cluster.glyphInRunIndexEnd];
 
