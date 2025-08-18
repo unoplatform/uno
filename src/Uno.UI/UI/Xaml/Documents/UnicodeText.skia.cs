@@ -487,6 +487,8 @@ internal readonly struct UnicodeText : IParsedText
 			ret[i] = (infos[i], positions[i]);
 		}
 
+		// Fonts will give a width > 0 to \r, so we hardcore the width here.
+		// TODO: make this cleaner somehow
 		if (IsLineBreak(textRun, textRun.Length) && infos[^1].Cluster == (textRun is [.., '\r', '\n'] ? 2 : 1))
 		{
 			ret[^1] = (infos[^1] with { Codepoint = 0 }, positions[^1] with { XAdvance = 0 });
