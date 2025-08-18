@@ -3,6 +3,7 @@ using HarfBuzzSharp;
 using SkiaSharp;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.UI.Dispatching;
 
 #nullable enable
 
@@ -18,10 +19,18 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				if (_fontInfo is null)
 				{
-					_fontInfo = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle).details;
-					if (_fontInfo.CanChange)
+					var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+					if (task.IsCompletedSuccessfully)
 					{
-						_fontInfo.RegisterElementForFontLoaded(this);
+						_fontInfo = task.Result;
+					}
+					else
+					{
+						task.ContinueWith(_ =>
+						{
+							NativeDispatcher.Main.Enqueue(OnFontLoaded);
+						});
+						_fontInfo = details;
 					}
 				}
 
