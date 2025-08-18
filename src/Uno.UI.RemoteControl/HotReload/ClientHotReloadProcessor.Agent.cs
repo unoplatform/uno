@@ -24,7 +24,7 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private bool _linkerEnabled;
 		private HotReloadAgent? _agent;
-		private bool _supportsMetadataUpdates; // Indicates that we **expect** to get metadata updates for HR for the current environment (dev-server or VS)
+		private MetadataUpdatesSupport _supportsMetadataUpdates; // Indicates that we **expect** to get metadata updates for HR for the current environment (dev-server or VS)
 		private bool _serverMetadataUpdatesEnabled; // Indicates that the dev-server has been configured to generate metadata updates on file changes
 		private bool _runningInsideVSCodeExtension; // running with Uno VS Code extension allows Hot Reload to work while debugging
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();

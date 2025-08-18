@@ -33,6 +33,8 @@
 			<Link>Resources\AndroidResourceNameEncoder.cs</Link>
 		</Compile>
 		<Compile Include="..\Uno.UI.SourceGenerators\BindableTypeProviders\LinkerHintsHelpers.cs" Link="Helpers\LinkerHintsHelpers.cs" />
+		<Compile Include="..\..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfo/%(Filename)%(Extension)" />
+
 	</ItemGroup>
 
 	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">
