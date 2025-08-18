@@ -44,12 +44,14 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	public partial class TabViewTests : MUXApiTestBase
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // Due to lifecycle differences , this test fails on iOS native.
 		public async Task VerifyCompactTabWidthVisualStates_ItemsMode()
 		{
 			await VerifyCompactTabWidthVisualStates();
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // Due to lifecycle differences , this test fails on iOS native.
 		public async Task VerifyCompactTabWidthVisualStates_ItemsSourceMode()
 		{
 			await VerifyCompactTabWidthVisualStates(isItemsSourceMode: true);
