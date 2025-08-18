@@ -73,7 +73,7 @@ internal readonly struct UnicodeText : IParsedText
 	}
 	// runs are always sorted LTR even in RTL text
 	// Each line must have at least one run except the very last line.
-	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, List<LayoutedLineBrokenBidiRun> runs);
+	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, int startInText, int endInText, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
 	private readonly Size _size;
@@ -136,7 +136,7 @@ internal readonly struct UnicodeText : IParsedText
 	}
 
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
-	private static List<List<ShapedLineBrokenBidiRun>> SplitTextIntoLines(bool rtl, List<ReadonlyInlineCopy> inlines, float lineWidth)
+	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> SplitTextIntoLines(bool rtl, List<ReadonlyInlineCopy> inlines, float lineWidth)
 	{
 		var logicallyOrderedRuns = new List<BidiRun>();
 		var logicallyOrderedLineBreakingOpportunities = new List<(int indexInInline, ReadonlyInlineCopy inline)>();
@@ -155,15 +155,24 @@ internal readonly struct UnicodeText : IParsedText
 		return linesWithBidiReordering;
 	}
 
-	private static List<List<ShapedLineBrokenBidiRun>> ApplyBidiReordering(bool rtl, List<List<BidiRun>> linesWithLogicallyOrderedRuns)
+	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> ApplyBidiReordering(bool rtl, List<List<BidiRun>> linesWithLogicallyOrderedRuns)
 	{
-		var shapedLines = new List<List<ShapedLineBrokenBidiRun>>();
+		var shapedLines = new List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)>();
 		for (var lineIndex = 0; lineIndex < linesWithLogicallyOrderedRuns.Count; lineIndex++)
 		{
 			var line = linesWithLogicallyOrderedRuns[lineIndex];
 			if (line.Count == 0)
 			{
-				shapedLines.Add(new());
+				// Only the last line can be empty, otherwise it will have at least one piece of piece or a line break.
+				Debug.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1);
+				if (lineIndex == 0)
+				{
+					shapedLines.Add((new(), 0, 0));
+				}
+				else
+				{
+					shapedLines.Add((new(), shapedLines[^1].endInText, shapedLines[^1].endInText));
+				}
 				continue;
 			}
 
@@ -237,7 +246,7 @@ internal readonly struct UnicodeText : IParsedText
 					}
 				}
 			}
-			shapedLines.Add(lineRuns.ToList());
+			shapedLines.Add((lineRuns.ToList(), line[0].startInInline + line[0].inline.StartIndex, line[^1].endInInline + line[^1].inline.StartIndex));
 		}
 
 		return shapedLines;
@@ -483,28 +492,29 @@ internal readonly struct UnicodeText : IParsedText
 		return ret;
 	}
 
-	private List<LayoutedLine> LayoutLines(List<List<ShapedLineBrokenBidiRun>> lines, TextAlignment textAlignment, LineStackingStrategy lineStackingStrategy, float lineHeight, float availableWidth, FontDetails defaultFontDetails)
+	private List<LayoutedLine> LayoutLines(List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> lines, TextAlignment textAlignment, LineStackingStrategy lineStackingStrategy, float lineHeight, float availableWidth, FontDetails defaultFontDetails)
 	{
 		var layoutedLines = new List<LayoutedLine>();
 		float currentLineY = 0;
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
 		{
 			var line = lines[lineIndex];
-			var layoutedRuns = new List<LayoutedLineBrokenBidiRun>(line.Count);
+			var lineRuns = lines[lineIndex].runs;
+			var layoutedRuns = new List<LayoutedLineBrokenBidiRun>(lineRuns.Count);
 			LayoutedLine layoutedLine;
-			if (line.Count == 0)
+			if (lineRuns.Count == 0)
 			{
 				// Only the last line can be empty. All other lines either have a line break character or actual content since you can't wrap to a new line without having any content on the initial line.
 				Debug.Assert(lineIndex == lines.Count - 1 && lineIndex != 0);
 				var (currentLineHeight, baselineOffset) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
-				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, 0, currentLineY, new());
+				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, 0, currentLineY, line.startInText, line.endInText, new());
 			}
 			else
 			{
 				float currentLineX = 0;
-				for (var runIndex = 0; runIndex < line.Count; runIndex++)
+				for (var runIndex = 0; runIndex < lineRuns.Count; runIndex++)
 				{
-					var run = line[runIndex];
+					var run = lineRuns[runIndex];
 					float runX = 0;
 					var glyphs = new LayoutedGlyphDetails[run.glyphs.Length];
 					var layoutedRun = new LayoutedLineBrokenBidiRun(run.Inline, run.startInInline, run.endInInline, currentLineX, default, glyphs, run.fontDetails, run.rtl, null!, runIndex);
@@ -528,9 +538,9 @@ internal readonly struct UnicodeText : IParsedText
 					_ => 0
 				};
 
-				var fontDetailsWithMaxHeight = line.MaxBy(r => r.fontDetails.LineHeight).fontDetails;
+				var fontDetailsWithMaxHeight = lineRuns.MaxBy(r => r.fontDetails.LineHeight).fontDetails;
 				var (currentLineHeight, baselineOffset) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, fontDetailsWithMaxHeight, lineIndex == 0, lineIndex == lines.Count - 1);
-				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, alignmentOffset, currentLineY, layoutedRuns);
+				layoutedLine = new LayoutedLine(currentLineHeight, baselineOffset, lineIndex, alignmentOffset, currentLineY, line.startInText, line.endInText, layoutedRuns);
 			}
 			layoutedLines.Add(layoutedLine);
 			layoutedRuns.ForEach(r => r.line = layoutedLine);
@@ -706,7 +716,17 @@ internal readonly struct UnicodeText : IParsedText
 
 	public (int start, int length) GetWordAt(int index, bool right) => throw new System.NotImplementedException();
 
-	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index) => throw new System.NotImplementedException();
+	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
+	{
+		foreach (var line in _lines)
+		{
+			if (line.startInText <= index && (line.endInText > index || (line.lineIndex == _lines.Count - 1 && line.endInText == index)))
+			{
+				return (line.startInText, line.endInText - line.startInText, line.lineIndex == 0, line.lineIndex == _lines.Count - 1, line.lineIndex);
+			}
+		}
+		throw new ArgumentOutOfRangeException("Given index is not within the range of text length.");
+	}
 
 	private static int TrailingWhiteSpaceCount(string str, int start, int end)
 	{
