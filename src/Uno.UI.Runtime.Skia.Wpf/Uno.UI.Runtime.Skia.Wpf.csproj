@@ -13,9 +13,6 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Wpf</PackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-
-		<!-- Ignore NU5104 for Microsoft.Win32.SystemEvents -->
-		<NoWarn>$(NoWarn);NU5104</NoWarn>
 	</PropertyGroup>	
 
 	<ItemGroup>
@@ -37,7 +34,6 @@
 			Required to ensure that this reference is latest and not
 			transitively flowing through SkiaSharp's dependencies
 		 -->
-		<PackageReference Include="Microsoft.Win32.SystemEvents" />
 		<PackageReference Include="HarfBuzzSharp" />
 	</ItemGroup>
 
