@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Documents;
 // 	* Reordering the text for display on a line-by-line basis using the resolved embedding levels, once the text has been broken into lines.
 // The algorithm only reorders text within a paragraph; characters in one paragraph have no effect on characters in a different paragraph. Paragraphs are divided by the Paragraph Separator or appropriate Newline Function (see Section 4.3, Directionality and Unicode Technical Report #13, “Unicode Newline Guidelines,” found on the CD-ROM or the up-to-date version on the Unicode web site on the handling of CR, LF, and CRLF). Paragraphs may also be determined by higher-level protocols: for example, the text in two different cells of a table will be in different paragraphs.
 
-// TODO: make FontDetails read-only
+// TODO: character spacing
 internal readonly struct UnicodeText : IParsedText
 {
 	// A readonly snapshot of an Inline that is referenced by individual text runs after splitting. It's a class
@@ -419,7 +419,6 @@ internal readonly struct UnicodeText : IParsedText
 	{
 		var runCount = bidi.CountRuns();
 		var logicallyOrderedRuns = new List<BidiRun>(runCount);
-		// TODO: paragraphs
 		for (var runIndex = 0; runIndex < runCount; runIndex++)
 		{
 			// using bidi.GetLogicalRun instead returned weird results especially in rtl text.

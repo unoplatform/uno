@@ -90,7 +90,7 @@ internal static class FontDetailsCache
 		}
 	}
 
-	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<SKTypeface?> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
+	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
 		string? name,
 		float fontSize,
 		FontWeight weight,
@@ -137,30 +137,30 @@ internal static class FontDetailsCache
 						?? SKTypeface.FromFamilyName(null);
 		}
 
-		var details = FontDetails.Create(typeface, fontSize, canChange);
+		var details = FontDetails.Create(typeface, fontSize);
 
-		if (canChange)
+		var detailsTask = typefaceTask.ContinueWith(t =>
 		{
-			typefaceTask.ContinueWith(t =>
-			{
-				var loadedTypeface = t.IsCompletedSuccessfully ? t.Result : null;
+			var loadedTypeface = t.IsCompletedSuccessfully ? t.Result : null;
 
-				if (loadedTypeface is null)
+			if (loadedTypeface is null)
+			{
+				if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
 				{
-					if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
-					}
+					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
 				}
 
-				details.FontLoaded(loadedTypeface);
-			});
-		}
-
-		return (details, typefaceTask);
+				return details;
+			}
+			else
+			{
+				return FontDetails.Create(loadedTypeface, details.SKFontSize);
+			}
+		});
+		return (details, detailsTask);
 	});
 
-	public static (FontDetails details, Task<SKTypeface?> loadedTask) GetFont(
+	public static (FontDetails details, Task<FontDetails> loadedTask) GetFont(
 		string? name,
 		float fontSize,
 		FontWeight weight,

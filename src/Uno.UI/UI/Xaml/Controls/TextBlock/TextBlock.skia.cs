@@ -5,6 +5,7 @@ using Windows.Foundation;
 using SkiaSharp;
 using Microsoft.UI.Composition;
 using System.Numerics;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
@@ -14,6 +15,7 @@ using Uno.UI;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
+using Uno.UI.Dispatching;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
@@ -199,13 +201,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle).details;
-				if (font.CanChange)
+				var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+				if (task.IsCompletedSuccessfully)
 				{
-					font.RegisterElementForFontLoaded(this);
+					return task.Result.LineHeight;
 				}
-
-				return font.LineHeight;
+				else
+				{
+					task.ContinueWith(_ =>
+					{
+						NativeDispatcher.Main.Enqueue(OnFontLoaded);
+					});
+					return details.LineHeight;
+				}
 			}
 		}
 

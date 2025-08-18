@@ -8,6 +8,7 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.Extensions;
+using Uno.UI.Dispatching;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = Microsoft.UI.Xaml.Documents.TextFormatting.GlyphInfo;
 
@@ -191,10 +192,18 @@ namespace Microsoft.UI.Xaml.Documents
 				float textSizeX;
 				if (typeface is not null && typeface != defaultTypeface)
 				{
-					fallbackFont = FontDetailsCache.GetFont(typeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle).details;
-					if (fallbackFont.CanChange)
+					var (details, task) = FontDetailsCache.GetFont(typeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle);
+					if (task.IsCompletedSuccessfully)
 					{
-						fallbackFont.RegisterElementForFontLoaded(this);
+						fallbackFont = task.Result;
+					}
+					else
+					{
+						task.ContinueWith(_ =>
+						{
+							NativeDispatcher.Main.Enqueue(OnFontLoaded);
+						});
+						fallbackFont = details;
 					}
 
 					font = fallbackFont.Font;
