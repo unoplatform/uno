@@ -235,6 +235,16 @@ else
 	#     java.lang.SecurityException: Permission Denial: starting instrumentation
 	#     ComponentInfo{uno.platform.unosampleapp.test/sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner} from pid=22633, uid=2000 not allowed 
 	#     because package uno.platform.unosampleapp.test does not have a signature matching the target uno.platform.unosampleapp
+	mkdir -p "$HOME/.android" && keytool -genkeypair \
+		-keystore "$HOME/.android/debug.keystore" \
+		-storetype JKS \
+		-storepass android \
+		-keypass android \
+		-alias androiddebugkey \
+		-keyalg RSA -keysize 2048 -validity 10000 \
+		-dname "CN=Android Debug, O=Android, C=US" \
+		-noprompt
+
 	$ANDROID_HOME/build-tools/$UNO_ANDROID_BUILD_TOOLS_VERSION/apksigner sign \
 		--ks "$HOME/.android/debug.keystore" \
 		--ks-key-alias androiddebugkey \
