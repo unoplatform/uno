@@ -21,7 +21,7 @@ partial class WinRTFeatureConfiguration
 		/// </summary>
 		public static Uri? DefaultReturnUri { get; set; }
 
-#if __CROSSRUNTIME__
+#if UNO_REFERENCE_API
 		/// <summary>
 		/// This is the initial name of the opened window, when this mode is used.
 		/// </summary>
