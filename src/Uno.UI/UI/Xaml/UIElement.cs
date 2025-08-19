@@ -553,7 +553,8 @@ namespace Microsoft.UI.Xaml
 
 		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
 
-		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
+#nullable enable
+		internal static Matrix3x2 GetTransform(UIElement from, UIElement? to)
 		{
 			if (from == to || !from.IsInLiveTree || (to is { IsVisualTreeRoot: false, IsInLiveTree: false }))
 			{
@@ -617,6 +618,7 @@ namespace Microsoft.UI.Xaml
 			return matrix;
 #endif
 		}
+#nullable restore
 
 #if !__SKIA__
 		/// <summary>

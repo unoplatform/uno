@@ -461,6 +461,16 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class ManipulationRoutedEventArgs
+		{
+			/// <summary>
+			/// In previous versions of uno, the Position property of the Manipulation&gt;Started|Delta|Complete&lt;**Routed**EventArgs
+			/// was in absolute coordinate space instead of being relative to the Container.
+			/// Enabling this flag does restore the previous behavior.
+			/// </summary>
+			public static bool IsAbsolutePositionEnabled { get; set; }
+		}
+
 		public static class SelectorItem
 		{
 			/// <summary>
