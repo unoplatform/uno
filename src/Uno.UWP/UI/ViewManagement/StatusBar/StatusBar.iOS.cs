@@ -142,10 +142,15 @@ namespace Windows.UI.ViewManagement
 				var currentScene = scenes.FirstOrDefault(n => n.ActivationState == UISceneActivationState.ForegroundActive);
 
 				if (currentScene is not UIWindowScene uiWindowScene)
-					throw new InvalidOperationException("Unable to find current window scene.");
+				{
+					// If no active scene is found, this can happen when app is in the background.
+					return ([], CGRect.Empty);
+				}
 
 				if (uiWindowScene.StatusBarManager is not { } statusBarManager)
+				{
 					throw new InvalidOperationException("Unable to find a status bar manager.");
+				}
 
 				return (uiWindowScene.Windows, statusBarManager.StatusBarFrame);
 			}
