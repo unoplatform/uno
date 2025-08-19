@@ -15,6 +15,9 @@ public partial class Given_UIElement
 {
 	[TestMethod]
 	[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_ManipulationEvents_Then_PositionIsRelative()
 	{
 		var sut = new Border
@@ -35,7 +38,7 @@ public partial class Given_UIElement
 
 		var bounds = await UITestHelper.Load(sut);
 
-		finger.Drag(bounds.Location.Offset(10, 10), bounds.Location.Offset(-100, 10), steps: 2);
+		finger.Drag(bounds.GetLocation().Offset(10, 10), bounds.GetLocation().Offset(-100, 10), steps: 2);
 
 		started.X.Should().BeInRange(-100 - 1, 10 + 1);
 		started.Y.Should().BeApproximately(10, precision: 1);
