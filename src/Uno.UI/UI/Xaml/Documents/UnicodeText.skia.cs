@@ -655,6 +655,14 @@ internal readonly struct UnicodeText : IParsedText
 		{
 			return new Rect(0, 0, 0, _defaultFontDetails.LineHeight);
 		}
+
+		if (index == _text.Length)
+		{
+			var lastRect = GetRectForIndex(index - 1);
+			return _rtl ?
+				new Rect(lastRect.Right, lastRect.Y, 0, lastRect.Height) :
+				new Rect(lastRect.Left, lastRect.Y, 0, lastRect.Height);
+		}
 		var cluster = _textIndexToGlyph[index];
 		var glyphs = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart..cluster.glyphInRunIndexEnd];
 
