@@ -27,6 +27,7 @@ namespace Microsoft.UI.Xaml.Documents;
 
 // TODO: character spacing
 // TODO: MaxLines
+// TODO: what happens if text has no drawable glyphs but is not empty? Can this happen? The HarfBuzz docs imply that it can't
 internal readonly struct UnicodeText : IParsedText
 {
 	// A readonly snapshot of an Inline that is referenced by individual text runs after splitting. It's a class
@@ -73,7 +74,7 @@ internal readonly struct UnicodeText : IParsedText
 		public Cluster? cluster { get; set; } = cluster;
 	}
 
-	private record LayoutedLineBrokenBidiRun(ReadonlyInlineCopy inline, int startInInline, int endInInline, float x, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, LayoutedLine line, int indexInLine)
+	private record LayoutedLineBrokenBidiRun(ReadonlyInlineCopy inline, int startInInline, int endInInline, float xPosInLine, float width, LayoutedGlyphDetails[] glyphs, FontDetails fontDetails, bool rtl, LayoutedLine line, int indexInLine)
 	{
 		public float width { get; set; } = width;
 		public LayoutedLine line { get; set; } = line;
@@ -670,15 +671,9 @@ internal readonly struct UnicodeText : IParsedText
 					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart <= run.endInInline + run.inline.StartIndex && run.startInInline + run.inline.StartIndex <= sd.selectionClusterEnd.sourceTextStart))
 					{
 						var leftX = sd.selectionClusterStart.layoutedRun == run ? positions[sd.selectionClusterStart.glyphInRunIndexStart].X : positions[0].X;
-						float rightX;
-						if (sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length)
-						{
-							rightX = positions[sd.selectionClusterEnd.glyphInRunIndexStart].X;
-						}
-						else
-						{
-							rightX = positions[^1].X + GlyphWidth(run.glyphs[^1].position, run.fontDetails);
-						}
+						var rightX = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length
+							? positions[sd.selectionClusterEnd.glyphInRunIndexStart].X
+							: positions[^1].X + GlyphWidth(run.glyphs[^1].position, run.fontDetails);
 						var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
 						sd.brush.Paint(session.Canvas, session.Opacity, selectionRect);
 					}
@@ -724,22 +719,60 @@ internal readonly struct UnicodeText : IParsedText
 			}
 		}
 
-		if (caret is { } c)
+		// if the caret index is out of range, this means that the parent TextBlock/TextBox updated the text and the
+		// caret position but a new UnicodeText instance has not been created yet. In that case, skip care rendering
+		// this frame and wait to be called again after measuring.
+		if (caret is { } c && caret.Value.index <= _text.Length)
 		{
-			var rect = GetRectForIndex(c.index);
-			rect.Width = c.thickness;
-			c.brush.Paint(session.Canvas, session.Opacity, rect.ToSKRect());
+			c.brush.Paint(session.Canvas, session.Opacity, GetCaretRectForIndex(c.index, c.thickness).ToSKRect());
 		}
 	}
 
 	private static float RunWidth((GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails details) => glyphs.Sum(g => GlyphWidth(g.position, details));
 	private static float GlyphWidth(GlyphPosition position, FontDetails details) => position.XAdvance * details.TextScale.textScaleX;
 
+	public Rect GetCaretRectForIndex(int index, float caretThickness)
+	{
+		if (index == 0 && string.IsNullOrEmpty(_text))
+		{
+			var alignmentOffset = _textAlignment switch
+			{
+				TextAlignment.Left => 0,
+				TextAlignment.Center => _desiredSize.Width / 2,
+				TextAlignment.Right => _desiredSize.Width,
+				_ => throw new ArgumentOutOfRangeException()
+			};
+			return new Rect(alignmentOffset, 0, caretThickness, _defaultFontDetails.LineHeight);
+		}
+
+		if (index == _text.Length)
+		{
+			var lastCluster = _textIndexToGlyph[^1];
+			var lastGlyph = lastCluster.layoutedRun.glyphs[lastCluster.glyphInRunIndexEnd - 1];
+			var lastGlyphX = lastGlyph.xPosInRun + lastCluster.layoutedRun.xPosInLine + lastCluster.layoutedRun.line.xAlignmentOffset;
+			return new Rect(lastCluster.layoutedRun.rtl ? lastGlyphX : lastGlyphX + GlyphWidth(lastGlyph.position, lastCluster.layoutedRun.fontDetails) - caretThickness, lastCluster.layoutedRun.line.y, caretThickness, lastCluster.layoutedRun.line.lineHeight);
+		}
+
+		{
+			var cluster = _textIndexToGlyph[index];
+			var glyph = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart];
+			var glyphX = glyph.xPosInRun + cluster.layoutedRun.xPosInLine + cluster.layoutedRun.line.xAlignmentOffset;
+			return new Rect(cluster.layoutedRun.rtl ? glyphX + GlyphWidth(glyph.position, cluster.layoutedRun.fontDetails) - caretThickness : glyphX, cluster.layoutedRun.line.y, caretThickness, cluster.layoutedRun.line.lineHeight);
+		}
+	}
+
 	public Rect GetRectForIndex(int index)
 	{
 		if (index == 0 && string.IsNullOrEmpty(_text))
 		{
-			return new Rect(0, 0, 0, _defaultFontDetails.LineHeight);
+			var alignmentOffset = _textAlignment switch
+			{
+				TextAlignment.Left => 0,
+				TextAlignment.Center => _desiredSize.Width / 2,
+				TextAlignment.Right => _desiredSize.Width,
+				_ => throw new ArgumentOutOfRangeException()
+			};
+			return new Rect(alignmentOffset, 0, 0, _defaultFontDetails.LineHeight);
 		}
 
 		if (index == _text.Length)
@@ -752,7 +785,7 @@ internal readonly struct UnicodeText : IParsedText
 		var cluster = _textIndexToGlyph[index];
 		var glyphs = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart..cluster.glyphInRunIndexEnd];
 
-		var x = glyphs[0].xPosInRun + cluster.layoutedRun.x + cluster.layoutedRun.line.xAlignmentOffset;
+		var x = glyphs[0].xPosInRun + cluster.layoutedRun.xPosInLine + cluster.layoutedRun.line.xAlignmentOffset;
 		var y = cluster.layoutedRun.line.y;
 		var width = glyphs.Sum(g => GlyphWidth(g.position, cluster.layoutedRun.fontDetails));
 		var height = cluster.layoutedRun.line.lineHeight;
@@ -797,7 +830,7 @@ internal readonly struct UnicodeText : IParsedText
 			}
 
 			{
-				if (line.runs[0] is var firstRun && firstRun.x + firstRun.line.xAlignmentOffset > p.X)
+				if (line.runs[0] is var firstRun && firstRun.xPosInLine + firstRun.line.xAlignmentOffset > p.X)
 				{
 					if (!extendedSelection)
 					{
@@ -814,7 +847,7 @@ internal readonly struct UnicodeText : IParsedText
 			}
 
 			{
-				if (line.runs[^1] is var lastRun && lastRun.x + lastRun.line.xAlignmentOffset + lastRun.width < p.X)
+				if (line.runs[^1] is var lastRun && lastRun.xPosInLine + lastRun.line.xAlignmentOffset + lastRun.width < p.X)
 				{
 					if (!extendedSelection)
 					{
@@ -832,14 +865,14 @@ internal readonly struct UnicodeText : IParsedText
 
 			foreach (var run in line.runs)
 			{
-				if (run.x + run.line.xAlignmentOffset > p.X || run.x + run.line.xAlignmentOffset + run.width < p.X)
+				if (run.xPosInLine + run.line.xAlignmentOffset > p.X || run.xPosInLine + run.line.xAlignmentOffset + run.width < p.X)
 				{
 					continue;
 				}
 
 				foreach (var glyph in run.glyphs)
 				{
-					var globalGlyphX = glyph.xPosInRun + run.x + run.line.xAlignmentOffset;
+					var globalGlyphX = glyph.xPosInRun + run.xPosInLine + run.line.xAlignmentOffset;
 					var width = GlyphWidth(glyph.position, run.fontDetails);
 					if (globalGlyphX <= p.X && globalGlyphX + width >= p.X)
 					{

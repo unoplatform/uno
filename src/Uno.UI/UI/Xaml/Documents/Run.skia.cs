@@ -22,6 +22,23 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal IReadOnlyList<Segment> Segments => _segments ??= GetSegments();
 
+		public global::Microsoft.UI.Xaml.FlowDirection FlowDirection
+		{
+			get => (global::Microsoft.UI.Xaml.FlowDirection)this.GetValue(FlowDirectionProperty);
+			set => this.SetValue(FlowDirectionProperty, value);
+		}
+
+		public static global::Microsoft.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } =
+			Microsoft.UI.Xaml.DependencyProperty.Register(
+				nameof(FlowDirection), typeof(FlowDirection),
+				typeof(Run),
+				new FrameworkPropertyMetadata(default(FlowDirection), FrameworkPropertyMetadataOptions.Inherits, (DependencyObject dO, DependencyPropertyChangedEventArgs args) => ((Run)dO).OnFlowDirectionChanged()));
+
+		private void OnFlowDirectionChanged()
+		{
+			InvalidateInlines(false);
+		}
+
 		private static (int CodePoint, int Length) GetCodePoint(ReadOnlySpan<char> text, int i)
 		{
 			if (i + 1 < text.Length &&

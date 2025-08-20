@@ -47,30 +47,35 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnFontFamilyChanged()
 		{
 			base.OnFontFamilyChanged();
+			InvalidateInlines(false);
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
+			InvalidateInlines(false);
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontStretchChanged()
 		{
 			base.OnFontStretchChanged();
+			InvalidateInlines(false);
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();
+			InvalidateInlines(false);
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontSizeChanged()
 		{
 			base.OnFontSizeChanged();
+			InvalidateInlines(false);
 			InvalidateFontInfo();
 		}
 
