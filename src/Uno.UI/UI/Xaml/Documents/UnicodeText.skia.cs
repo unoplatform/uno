@@ -142,7 +142,7 @@ internal readonly struct UnicodeText : IParsedText
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth);
 		_lines = LayoutLines(unlayoutedLines, textAlignment, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
-		_textIndexToGlyph = new Cluster[inlines.Sum(i => i.GetText().Length)];
+		_textIndexToGlyph = new Cluster[_text.Length];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
 		var text = _text;
@@ -583,7 +583,7 @@ internal readonly struct UnicodeText : IParsedText
 	// and how are they different? It seems from the HarfBuzz docs that HarfBuzz clustering by default approximates Unicode's text segmentation
 	// https://harfbuzz.github.io/working-with-harfbuzz-clusters.html
 	// https://unicode.org/reports/tr29
-	private void CreateSourceTextFromAndToGlyphMapping(List<LayoutedLine> lines, Cluster[] textIndexToGlyphMap)
+	private static void CreateSourceTextFromAndToGlyphMapping(List<LayoutedLine> lines, Cluster[] textIndexToGlyphMap)
 	{
 		foreach (var line in lines)
 		{
@@ -624,6 +624,15 @@ internal readonly struct UnicodeText : IParsedText
 	public void Draw(in Visual.PaintingSession session, (int index, CompositionBrush brush, float thickness)? caret,
 		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection)
 	{
+		// if selection is out of range, this means that the parent TextBlock/TextBox updated the text and the
+		// selection but a new UnicodeText instance has not been created yet. In that case, skip rendering
+		// the selection this frame and wait to be called again after measuring.
+		(int selectionIndexStart, int selectionIndexEnd, Cluster selectionClusterStart, Cluster selectionClusterEnd, CompositionBrush brush)? selectionDetails = null;
+		if (selection is { } s && s.selectionStart != s.selectionEnd && s.selectionStart <= _text.Length && s.selectionEnd <= _text.Length && _text.Length > 0)
+		{
+			selectionDetails = (s.selectionStart, s.selectionEnd, _textIndexToGlyph[s.selectionStart], _textIndexToGlyph[Math.Min(_textIndexToGlyph.Length - 1, s.selectionEnd)], s.brush);
+		}
+
 		for (var index = 0; index < _lines.Count; index++)
 		{
 			var line = _lines[index];
@@ -655,7 +664,23 @@ internal readonly struct UnicodeText : IParsedText
 					{
 						var glyph = run.glyphs[i];
 						glyphs[i] = (ushort)glyph.info.Codepoint;
-						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY);
+						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.YOffset * run.fontDetails.TextScale.textScaleY);
+					}
+
+					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart <= run.endInInline + run.inline.StartIndex && run.startInInline + run.inline.StartIndex <= sd.selectionClusterEnd.sourceTextStart))
+					{
+						var leftX = sd.selectionClusterStart.layoutedRun == run ? positions[sd.selectionClusterStart.glyphInRunIndexStart].X : positions[0].X;
+						float rightX;
+						if (sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length)
+						{
+							rightX = positions[sd.selectionClusterEnd.glyphInRunIndexStart].X;
+						}
+						else
+						{
+							rightX = positions[^1].X + GlyphWidth(run.glyphs[^1].position, run.fontDetails);
+						}
+						var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
+						sd.brush.Paint(session.Canvas, session.Opacity, selectionRect);
 					}
 
 					textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
@@ -693,7 +718,7 @@ internal readonly struct UnicodeText : IParsedText
 							alpha: (byte)(gbColor.A * session.Opacity));
 					}
 
-					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.y + line.baselineOffset, paint);
+					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.baselineOffset, paint);
 					currentLineX += run.width;
 				}
 			}
