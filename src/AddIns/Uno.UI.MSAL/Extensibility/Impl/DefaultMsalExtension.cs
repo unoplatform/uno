@@ -13,27 +13,47 @@ using Uno.Foundation.Extensibility;
 #endif
 
 #if UNO_MSAL_RUNTIME_SKIA
-[assembly: ApiExtension(typeof(IMsalExtension), typeof(DefaultMsalExtension))]
+[assembly: ApiExtension(typeof(IMsalExtension), typeof(SkiaDefaultMsalExtension))]
 #endif
 
 namespace Uno.UI.MSAL.Extensibility;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
-public partial class DefaultMsalExtension() : IMsalExtension
+public partial class
+
+#if UNO_MSAL_RUNTIME_SKIA
+
+	SkiaDefaultMsalExtension()
+#else
+	DefaultMsalExtension()
+#endif
+: IMsalExtension
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DefaultMsalExtension"/> class.
 	/// </summary>
 	/// <param name="_">An unused parameter reserved for compatibility. This parameter has no effect on the behavior of the
 	/// constructor.</param>
-	public DefaultMsalExtension(object _) : this() { }
-
-	public static DefaultMsalExtension Instance =>
-#if WINDOWS
-		new DefaultMsalExtension();
+	public
+#if UNO_MSAL_RUNTIME_SKIA
+	SkiaDefaultMsalExtension
 #else
-	ApiExtensibility.CreateInstance<DefaultMsalExtension>(typeof(DefaultMsalExtension), out var instance) ? instance : new DefaultMsalExtension();
+	DefaultMsalExtension
 #endif
+	(object _) : this() { }
+
+	private static readonly Lazy<IMsalExtension> _instance = new Lazy<IMsalExtension>(() =>
+	{
+#if !WINDOWS
+		ApiExtensibility.CreateInstance<IMsalExtension>(typeof(IMsalExtension), out var extension);
+		return extension ?? new DefaultMsalExtension();
+#else
+		// On Windows we don't use the extensibility system, so we can just return a new instance directly.
+		return new DefaultMsalExtension();
+#endif
+	});
+
+	public static IMsalExtension Default => _instance.Value;
 
 	public T InitializeAbstractApplicationBuilder<T>(T builder) where T : AbstractApplicationBuilder<T>
 	{
