@@ -79,7 +79,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		view.AddSubview(_textInputLayer);
 
 #if !__TVOS__
-		_skCanvasView = new SkiaCanvas(OnFrameDrawn);
+		_skCanvasView = new SkiaCanvas();
 		_skCanvasView.SetOwner(this);
 #else
 		_skCanvasView = new SkiaCanvas();
@@ -139,32 +139,20 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	{
 		if (_xamlRoot?.LastRenderedFrame is { } lastRenderedFrame)
 		{
-			SkiaRenderHelper.RenderPicture(
-				surface,
-				lastRenderedFrame.frame,
-				SKColors.Transparent,
-				_fpsHelper);
-			NativeDispatcher.Main.Enqueue(() => UpdateNativeClipping(lastRenderedFrame.nativeElementClipPath), NativeDispatcherPriority.High);
+			OnRenderFrameRequested(surface.Canvas);
 		}
 	}
 #endif
 
-#if !__TVOS__
-	private void OnFrameDrawn()
+	internal void OnRenderFrameRequested(SKCanvas canvas)
 	{
-		// On each frame, while we're using continuous rendering,
-		// we need to dispatch a processing of events on the DispatcherQueue
-		// Then force a render of the composition tree, assuming that the tree
-		// has changed. We explicitly hooking into the rendering loop to keep
-		// the pace with the screen refresh rate.
-		if (NativeDispatcher.Main.IsRendering)
+		var clipPath = RootElement?.XamlRoot?.OnNativePlatformFrameRequested(canvas, _ => canvas);
+
+		if (clipPath is not null)
 		{
-			// Enqueue on the dispatcher to process current events, then render
-			// the current composition tree.
-			NativeDispatcher.Main.DispatchRendering();
+			UpdateNativeClipping(clipPath);
 		}
 	}
-#endif
 
 	private void UpdateNativeClipping(SKPath path)
 	{
