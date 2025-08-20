@@ -10,8 +10,10 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 /// Top layer that receives all touch events and forwards them to the
 /// managed pointer handling. It also contains  <see cref="NativeOverlayLayer" /> which
 /// will only capture input of the native element within.
+/// Input handling must be in a layer (compared to override RootViewController.TouchesXXX methods)
+/// in order to be able to properly get the multitouch events.
 /// </summary>
-[Register("InputLayer")]
+[Register("TopViewLayer")]
 internal class TopViewLayer : UIView
 {
 #if __IOS__
@@ -21,8 +23,6 @@ internal class TopViewLayer : UIView
 	}
 #endif
 
-	// Note: The pointers are listen here in the NativeOverlayLayer as it's the topmost layer in the view hierarchy.
-	// Note2: This must be in a layer (compared to override RootViewController.TouchesXXX methods) in order to be able to properly get the multitouch events.
 	public override void TouchesBegan(NSSet touches, UIEvent? evt)
 	{
 		AppleUIKitCorePointerInputSource.Instance.TouchesBegan(this, touches, evt);
