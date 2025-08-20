@@ -13,7 +13,7 @@ namespace Uno.UI.MSAL
 		public static T WithUnoHelpers<T>(this T builder)
 			where T : AbstractApplicationBuilder<T>
 		{
-			return DefaultMsalExtension.Instance.InitializeAbstractApplicationBuilder(builder);
+			return DefaultMsalExtension.Default.InitializeAbstractApplicationBuilder(builder);
 		}
 	}
 }
