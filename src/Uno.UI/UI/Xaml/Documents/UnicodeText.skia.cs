@@ -11,6 +11,7 @@ using Icu;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
@@ -42,14 +43,14 @@ internal readonly struct UnicodeText : IParsedText
 		public FontWeight FontWeight { get; }
 		public FontStretch FontStretch { get; }
 		public FontStyle FontStyle { get; }
-		public CompositionBrush Foreground { get; }
+		public Brush Foreground { get; }
 
 		public ReadonlyInlineCopy(Inline inline, int startIndex, FlowDirection defaultFlowDirection)
 		{
 			Debug.Assert(inline is Run or LineBreak);
 			Inline = inline;
 			Text = inline.GetText();
-			Foreground = inline.Foreground.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
+			Foreground = inline.Foreground;
 			FlowDirection = (inline as Run)?.FlowDirection ?? defaultFlowDirection;
 			FontDetails = inline.FontInfo;
 			FontSize = inline.FontSize;
@@ -81,6 +82,8 @@ internal readonly struct UnicodeText : IParsedText
 	// Each line must have at least one run except the very last line.
 	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, int startInText, int endInText, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
+
+	private static readonly SKPaint _spareDrawPaint = new();
 
 	private readonly Size _size;
 	private readonly TextAlignment _textAlignment;
@@ -618,8 +621,8 @@ internal readonly struct UnicodeText : IParsedText
 		}
 	}
 
-	public void Draw(in Visual.PaintingSession session, (int index, CompositionBrush brush)? caret,
-		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection, float caretThickness)
+	public void Draw(in Visual.PaintingSession session, (int index, CompositionBrush brush, float thickness)? caret,
+		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection)
 	{
 		for (var index = 0; index < _lines.Count; index++)
 		{
@@ -627,22 +630,80 @@ internal readonly struct UnicodeText : IParsedText
 			var currentLineX = line.xAlignmentOffset;
 			foreach (var run in line.runs)
 			{
-				var path = new SKPath();
-				for (var i = 0; i < run.glyphs.Length; i++)
-				{
-					var glyph = run.glyphs[i];
-					var p = run.fontDetails.SKFont.GetGlyphPath((ushort)glyph.info.Codepoint);
-					p.Transform(SKMatrix.CreateTranslation(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY), p);
-					path.AddPath(p);
-				}
-				path.Transform(SKMatrix.CreateTranslation(currentLineX, line.y + line.baselineOffset), path);
+				// Ideally, we would want to get the path of the glyphs and then draw them using CompositionBrush.Paint, but this
+				// does not work for Emojis which don't have a path and instead must be drawn directly with SKCanvas.DrawText
+				// var path = new SKPath();
+				// for (var i = 0; i < run.glyphs.Length; i++)
+				// {
+				// 	var glyph = run.glyphs[i];
+				// 	var p = run.fontDetails.SKFont.GetGlyphPath((ushort)glyph.info.Codepoint);
+				// 	p.Transform(SKMatrix.CreateTranslation(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY), p);
+				// 	path.AddPath(p);
+				// }
+				// path.Transform(SKMatrix.CreateTranslation(currentLineX, line.y + line.baselineOffset), path);
+				//
+				// session.Canvas.Save();
+				// session.Canvas.ClipPath(path, antialias: true);
+				// run.inline.Foreground.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()).Paint(session.Canvas, session.Opacity, path.Bounds);
+				// session.Canvas.Restore();
 
-				session.Canvas.Save();
-				session.Canvas.ClipPath(path, antialias: true);
-				run.inline.Foreground.Paint(session.Canvas, session.Opacity, path.Bounds);
-				session.Canvas.Restore();
-				currentLineX += run.width;
+				using (var textBlobBuilder = new SKTextBlobBuilder())
+				{
+					var glyphs = new ushort[run.glyphs.Length];
+					var positions = new SKPoint[run.glyphs.Length];
+					for (var i = 0; i < run.glyphs.Length; i++)
+					{
+						var glyph = run.glyphs[i];
+						glyphs[i] = (ushort)glyph.info.Codepoint;
+						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY);
+					}
+
+					textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
+
+					var paint = _spareDrawPaint;
+					paint.Reset();
+					paint.IsStroke = false;
+					paint.IsAntialias = true;
+
+					if (run.inline.Foreground is SolidColorBrush scb)
+					{
+						var scbColor = scb.Color;
+						paint.Color = new SKColor(
+							red: scbColor.R,
+							green: scbColor.G,
+							blue: scbColor.B,
+							alpha: (byte)(scbColor.A * scb.Opacity * session.Opacity));
+					}
+					else if (run.inline.Foreground is GradientBrush gb)
+					{
+						var gbColor = gb.FallbackColorWithOpacity;
+						paint.Color = new SKColor(
+							red: gbColor.R,
+							green: gbColor.G,
+							blue: gbColor.B,
+							alpha: (byte)(gbColor.A * session.Opacity));
+					}
+					else if (run.inline.Foreground is XamlCompositionBrushBase xcbb)
+					{
+						var gbColor = xcbb.FallbackColorWithOpacity;
+						paint.Color = new SKColor(
+							red: gbColor.R,
+							green: gbColor.G,
+							blue: gbColor.B,
+							alpha: (byte)(gbColor.A * session.Opacity));
+					}
+
+					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.y + line.baselineOffset, paint);
+					currentLineX += run.width;
+				}
 			}
+		}
+
+		if (caret is { } c)
+		{
+			var rect = GetRectForIndex(c.index);
+			rect.Width = c.thickness;
+			c.brush.Paint(session.Canvas, session.Opacity, rect.ToSKRect());
 		}
 	}
 
@@ -660,8 +721,8 @@ internal readonly struct UnicodeText : IParsedText
 		{
 			var lastRect = GetRectForIndex(index - 1);
 			return _rtl ?
-				new Rect(lastRect.Right, lastRect.Y, 0, lastRect.Height) :
-				new Rect(lastRect.Left, lastRect.Y, 0, lastRect.Height);
+				new Rect(lastRect.Left, lastRect.Y, 0, lastRect.Height) :
+				new Rect(lastRect.Right, lastRect.Y, 0, lastRect.Height);
 		}
 		var cluster = _textIndexToGlyph[index];
 		var glyphs = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart..cluster.glyphInRunIndexEnd];

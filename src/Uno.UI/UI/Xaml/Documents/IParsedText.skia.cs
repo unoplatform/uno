@@ -6,9 +6,8 @@ namespace Microsoft.UI.Xaml.Documents;
 internal interface IParsedText
 {
 	void Draw(in Visual.PaintingSession session,
-		(int index, CompositionBrush brush)? caret, // null to skip drawing a caret
-		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection, // null to skip drawing a selection
-		float caretThickness);
+		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
+		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection); // null to skip drawing a selection
 
 	Rect GetRectForIndex(int adjustedIndex);
 
