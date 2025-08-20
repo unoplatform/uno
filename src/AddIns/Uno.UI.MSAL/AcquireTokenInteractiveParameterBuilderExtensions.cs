@@ -13,7 +13,7 @@ namespace Uno.UI.MSAL
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static AcquireTokenInteractiveParameterBuilder WithUnoHelpers(this AcquireTokenInteractiveParameterBuilder builder)
 		{
-			return DefaultMsalExtension.Instance.InitializeAcquireTokenInteractiveParameterBuilder(builder);
+			return DefaultMsalExtension.Default.InitializeAcquireTokenInteractiveParameterBuilder(builder);
 		}
 	}
 }
