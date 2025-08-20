@@ -342,21 +342,16 @@ internal readonly struct ParsedText : IParsedText
 
 	#region IParsedText
 
-	/// <summary>
-	/// Renders a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
-	/// </summary>
 	public void Draw(in Visual.PaintingSession session,
-		(int index, CompositionBrush brush)? caret, // null to skip drawing a caret
-		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection, // null to skip drawing a selection
-		float caretThickness)
+		(int index, CompositionBrush brush, float thickness)? caret,
+		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection)
 	{
 		if (_renderLines.Count == 0)
 		{
 			// empty, so caret is at the beginning
 			if (caret is not null)
 			{
-				var paint = new SKPaint();
-				var caretRect = new SKRect(0, 0, caretThickness, _defaultLineHeight);
+				var caretRect = new SKRect(0, 0, caret.Value.thickness, _defaultLineHeight);
 				caret.Value.brush.Paint(session.Canvas, session.Opacity, caretRect);
 			}
 
@@ -539,7 +534,7 @@ internal readonly struct ParsedText : IParsedText
 
 				if (caret is not null)
 				{
-					HandleCaret(caret.Value.index, caretThickness, canvas, caret.Value.brush, session.Opacity, characterCountSoFar, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
+					HandleCaret(caret.Value.index, caret.Value.thickness, canvas, caret.Value.brush, session.Opacity, characterCountSoFar, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
 				}
 
 				x += justifySpaceOffset * segmentSpan.TrailingSpaces;

@@ -175,9 +175,8 @@ namespace Microsoft.UI.Xaml.Controls
 			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
 			ParsedText.Draw(
 				session,
-				_caretPaint,
-				(Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end), SelectionHighlightColor.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor())),
-				CaretThickness);
+				(_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null),
+				(Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end), SelectionHighlightColor.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor())));
 			session.Canvas.Restore();
 			DrawingFinished?.Invoke();
 		}
