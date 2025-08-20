@@ -668,14 +668,24 @@ internal readonly struct UnicodeText : IParsedText
 						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.YOffset * run.fontDetails.TextScale.textScaleY);
 					}
 
-					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart <= run.endInInline + run.inline.StartIndex && run.startInInline + run.inline.StartIndex <= sd.selectionClusterEnd.sourceTextStart))
+					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart < run.endInInline + run.inline.StartIndex && run.startInInline + run.inline.StartIndex < sd.selectionClusterEnd.sourceTextStart))
 					{
-						var leftX = sd.selectionClusterStart.layoutedRun == run ? positions[sd.selectionClusterStart.glyphInRunIndexStart].X : positions[0].X;
-						var rightX = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length
-							? positions[sd.selectionClusterEnd.glyphInRunIndexStart].X
-							: positions[^1].X + GlyphWidth(run.glyphs[^1].position, run.fontDetails);
-						var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
-						sd.brush.Paint(session.Canvas, session.Opacity, selectionRect);
+						if (run.rtl)
+						{
+							var leftX = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length ? positions[sd.selectionClusterEnd.glyphInRunIndexEnd - 1].X + GlyphWidth(run.glyphs[sd.selectionClusterEnd.glyphInRunIndexEnd - 1].position, run.fontDetails) : positions[0].X;
+							var rightX = sd.selectionClusterStart.layoutedRun == run ? positions[sd.selectionClusterStart.glyphInRunIndexStart].X + GlyphWidth(run.glyphs[sd.selectionClusterStart.glyphInRunIndexStart].position, run.fontDetails) : positions[^1].X + GlyphWidth(run.glyphs[^1].position, run.fontDetails);
+							var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
+							sd.brush.Paint(session.Canvas, session.Opacity, selectionRect);
+						}
+						else
+						{
+							var leftX = sd.selectionClusterStart.layoutedRun == run ? positions[sd.selectionClusterStart.glyphInRunIndexStart].X : positions[0].X;
+							var rightX = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length
+								? positions[sd.selectionClusterEnd.glyphInRunIndexStart].X
+								: positions[^1].X + GlyphWidth(run.glyphs[^1].position, run.fontDetails);
+							var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
+							sd.brush.Paint(session.Canvas, session.Opacity, selectionRect);
+						}
 					}
 
 					textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
