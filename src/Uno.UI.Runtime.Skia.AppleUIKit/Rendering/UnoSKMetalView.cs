@@ -20,10 +20,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 {
 	internal sealed partial class UnoSKMetalView : MTKView, IMTKViewDelegate
 	{
-		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 		private readonly GRContext? _context;
 		private readonly IMTLCommandQueue? _queue;
-		private readonly Action _onFrameDrawn;
 
 		private RootViewController? _owner;
 		private CADisplayLink _link;
@@ -33,10 +31,9 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		/// Creates a new instance of <see cref="UnoSKMetalView"/>.
 		/// </summary>
 		/// <param name="onFrameDrawn">A delegate that will be called on a separate thread once per frame draw.</param>
-		public UnoSKMetalView(Action onFrameDrawn)
+		public UnoSKMetalView()
 			: base(CGRect.Empty, null)
 		{
-			_onFrameDrawn = onFrameDrawn;
 			_link = CADisplayLink.Create(() => this.Draw());
 			var device = MTLDevice.SystemDefault;
 
@@ -136,8 +133,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		void IMTKViewDelegate.Draw(MTKView view)
 		{
-			_onFrameDrawn();
-
 #if REPORT_FPS
 			_drawFpsLogger.ReportFrame();
 #endif
@@ -146,11 +141,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			var width = (int)size.Width;
 			var height = (int)size.Height;
-
-			if (width <= 0 || height <= 0 || _owner?.RootElement?.XamlRoot?.LastRenderedFrame is not { } lastRenderedFrame)
-			{
-				return;
-			}
 
 			SKSurface? surface = null;
 			SKCanvas? canvas = null;
@@ -164,11 +154,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 				canvas = surface.Canvas;
 
-				SkiaRenderHelper.RenderPicture(
-					surface,
-					lastRenderedFrame.frame,
-					SKColors.Transparent,
-					_fpsHelper);
+				_owner?.OnRenderFrameRequested(canvas);
 
 				// Flush
 				_context!.Flush(submit: true);
