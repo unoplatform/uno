@@ -85,10 +85,18 @@ Enable **Windows Hypervisor Platform** (and **Hyper-V** on supported editions) t
    xcrun simctl list devices
    ```
 
-## macOS notes
+## SDK location
 
-- Keep **Android SDK** and **AVD** directories **outside** cloud-sync folders (iCloud/Dropbox/OneDrive) to avoid file-locking.
-- To verify or change the SDK path:
-  - Open Android Studio
-  - Go to Preferences → Appearance & Behavior → System Settings → Android SDK
-  - Move the SDK to a local, non-synced directory if needed
+- Keep your **Android SDK** and **AVD** directories **outside** cloud-sync folders (OneDrive/iCloud/Dropbox) to avoid file-locking and partial syncs.
+- Verify or change the SDK path in **Android Studio**:
+  - **macOS:** *Preferences → Appearance & Behavior → System Settings → Android SDK*
+  - **Windows/Linux:** *File → Settings → Appearance & Behavior → System Settings → Android SDK*
+- Use a **single SDK location** across all tools (Android Studio, Rider, VS/VS Code).
+- Set environment variables so CLIs and IDEs agree:
+  - **`ANDROID_SDK_ROOT`** (recommended) or **`ANDROID_HOME`** (legacy).
+- Typical locations:
+  - **macOS:** `~/Library/Android/sdk`
+  - **Windows:** `%LOCALAPPDATA%\Android\Sdk` (or a custom `C:\Android\Sdk`)
+  - **Linux:** `~/Android/Sdk`
+  - **AVDs:** `~/.android/avd` (macOS/Linux) or `%USERPROFILE%\.android\avd` (Windows)
+- After moving or changing SDKs/AVDs, **restart your IDE** so it refreshes device lists.
