@@ -112,20 +112,21 @@ Make sure to adjust the list of target frameworks based on the platforms you hav
 
 ### [**Desktop**](#tab/desktop)
 
-Select the **MyUnoApp (Desktop)** debug profile then click the green arrow or the debug button.
+Select the **MyUnoApp (Desktop)** debug profile, then click the green arrow or the debug button.
 
 ![A view of the Rider taskbar for Desktop](Assets/quick-start/run-desktop-rider.png)
 
 ### [**Android**](#tab/android)
 
 Set the Android debug profile in the debugger toolbar, then click the green arrow or the debug button.
+
 ![A view of the Rider taskbar for Android](Assets/quick-start/run-android-rider.png)
 
 If you don't already have an emulator, you can create and manage one **directly in Rider**.
 
 1. **Install the Android plugin** (if it isn’t already):
    - `File` → `Settings` → `Plugins` → **Marketplace** → search **Rider Android Support** → **Install** → restart Rider.  
- ![A view of the Rider Android Support plugin on marketplace](Assets/quick-start/rider-android-support-plugin-on-marketplace.png)
+ ![A view of the Rider Android Support plugin on the marketplace](Assets/quick-start/rider-android-support-plugin-on-marketplace.png)
 
 2. **Confirm Android SDK is set**:
    - `File` → `Settings` → search **Android SDK Location** → make sure the SDK path is valid and components are installed.
@@ -144,12 +145,12 @@ If you don't already have an emulator, you can create and manage one **directly 
 ### [**WebAssembly**](#tab/wasm)
 
 > [!IMPORTANT]
-> To run WebAssembly with Rider you will need to install one of the following browsers:
+> To run WebAssembly with Rider, you will need to install one of the following browsers:
 >
 > - **Google Chrome**
 > - **Microsoft Edge (Chromium-based)**
 
-Select the **MyUnoApp (WebAssembly)** debug profile then click the green arrow or the debug button.
+Select the **MyUnoApp (WebAssembly)** debug profile, then click the green arrow or the debug button.
 
 ![A view of the Rider taskbar for WebAssembly](Assets/quick-start/run-wasm-rider.png)
 
@@ -162,14 +163,14 @@ A new browser window will automatically run your application.
 
 > [!IMPORTANT]
 > There is currently a known issue with **Rider version 2024.2** on **macOS** that causes an **'Access to localhost was denied' error when launching applications on WebAssembly**. Until this issue is resolved, you will need to reload the browser page to successfully load the application.
-> Please refer to this opened related [Rider issue](https://youtrack.jetbrains.com/issue/RIDER-115776/MacOS-WASM-Access-to-localhost-was-denied-on-Initial-Run) to track progress on this issue we are prioritizing with the JetBrains team.
+> Please refer to this open related [Rider issue](https://youtrack.jetbrains.com/issue/RIDER-115776/MacOS-WASM-Access-to-localhost-was-denied-on-Initial-Run) to track progress on this issue we are prioritizing with the JetBrains team.
 >
 > [!NOTE]
 > There is no debugging for WebAssembly within Rider for Uno Platform, but you can debug using the [built-in Chrome tools](external/uno.wasm.bootstrap/doc/debugger-support.md#how-to-use-the-browser-debugger).
 
 ### [**iOS**](#tab/ios)
 
-Select the **MyUnoApp** debug profile with the mobile Apple logo then click the green arrow or the debug button.
+Select the **MyUnoApp** debug profile with the mobile Apple logo, then click the green arrow or the debug button.
 
 ![A view of the Rider taskbar for iOS](Assets/quick-start/run-ios-rider.png)
 
