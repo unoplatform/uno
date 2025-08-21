@@ -230,10 +230,7 @@ then
 	$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
 
 else
-	# Install the app
-	$ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 
-	# Run the tests
 	if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 		UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
 	else
