@@ -1042,11 +1042,10 @@ namespace Microsoft.UI.Xaml
 #endif
 			}
 
-			// TODO
-			//if (!ManipulationMode.HasFlag(ManipulationModes.System))
-			//{
-			//	Cancel[ALL]DirectManipulation()
-			//}
+			if (!ManipulationMode.HasFlag(ManipulationModes.System))
+			{
+				CancelDirectManipulations();
+			}
 
 			return handledInManaged;
 		}

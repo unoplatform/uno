@@ -1323,6 +1323,57 @@ public class Given_InputManager
 		completed.Should().Be(0);
 	}
 
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	[DataRow(ManipulationModes.None)]
+	[DataRow(ManipulationModes.TranslateX)]
+	[DataRow(ManipulationModes.TranslateY)]
+	[DataRow(ManipulationModes.TranslateRailsX)]
+	[DataRow(ManipulationModes.TranslateRailsY)]
+	[DataRow(ManipulationModes.TranslateInertia)]
+	[DataRow(ManipulationModes.All)] // Does **NOT** include System
+	public async Task When_DirectManipulationDisabled(ManipulationModes mode)
+	{
+		ScrollViewer sv;
+		var ui = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			Children =
+			{
+				(sv = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = false,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = new Border
+					{
+						ManipulationMode = mode,
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 800,
+					}
+				}),
+			}
+		};
+
+		var bounds = await UITestHelper.Load(ui);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -8000));
+
+		await UITestHelper.WaitForIdle();
+
+		sv.VerticalOffset.Should().Be(0);
+	}
+
 	private CoreCursorType? GetCursorShape()
 	{
 		var cursor = TestServices.WindowHelper
