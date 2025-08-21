@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CoreAnimation;
+using CoreGraphics;
 using Foundation;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
@@ -12,12 +14,10 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 [Register("NativeOverlayLayer")]
 internal class NativeOverlayLayer : UIView
 {
-#if __IOS__
 	public NativeOverlayLayer()
 	{
-		MultipleTouchEnabled = true;
+		UserInteractionEnabled = false;
 	}
-#endif
 
 	public event EventHandler? SubviewsChanged;
 
@@ -36,32 +36,34 @@ internal class NativeOverlayLayer : UIView
 	public override void LayoutSubviews()
 	{
 		base.LayoutSubviews();
+
+		UserInteractionEnabled = Subviews.Length > 0;
+
 		SubviewsChanged?.Invoke(this, EventArgs.Empty);
 	}
 
-	// Note: The pointers are listen here in the NativeOverlayLayer as it's the topmost layer in the view hierarchy.
-	// Note2: This must be in a layer (compared to override RootViewController.TouchesXXX methods) in order to be able to properly get the multitouch events.
-	public override void TouchesBegan(NSSet touches, UIEvent? evt)
+	public override UIView? HitTest(CGPoint point, UIEvent? uiEvent)
 	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesBegan(this, touches, evt);
-		base.TouchesBegan(touches, evt);
-	}
+		// When there are any Subviews, we want to hit test against the native clipping
+		// mask, so we can let input pass-through the "holes" in the mask.
+		if (!Frame.Contains(point) || Subviews.Length == 0)
+		{
+			return null;
+		}
 
-	public override void TouchesMoved(NSSet touches, UIEvent? evt)
-	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesMoved(this, touches, evt);
-		base.TouchesMoved(touches, evt);
-	}
+		if (Layer.Mask is CAShapeLayer shape)
+		{
+			if (shape.Path is { } path)
+			{
+				var pointInPath = path.ContainsPoint(point, eoFill: true);
 
-	public override void TouchesEnded(NSSet touches, UIEvent? evt)
-	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesEnded(this, touches, evt);
-		base.TouchesEnded(touches, evt);
-	}
+				if (pointInPath)
+				{
+					return base.HitTest(point, uiEvent);
+				}
+			}
+		}
 
-	public override void TouchesCancelled(NSSet touches, UIEvent? evt)
-	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesCancelled(this, touches, evt);
-		base.TouchesCancelled(touches, evt);
+		return null;
 	}
 }

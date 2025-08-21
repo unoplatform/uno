@@ -38,6 +38,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
+	private UIView? _topViewLayer;
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
 	private SKPicture? _picture;
@@ -91,12 +92,16 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 #endif
 		view.AddSubview(_skCanvasView);
 
+		_topViewLayer = new TopViewLayer();
+		_topViewLayer.Frame = view.Bounds;
+		_topViewLayer.AutoresizingMask = UIViewAutoresizing.All;
 		var nativeOverlayLayer = new NativeOverlayLayer();
 		nativeOverlayLayer.Frame = view.Bounds;
 		nativeOverlayLayer.AutoresizingMask = UIViewAutoresizing.All;
 		nativeOverlayLayer.SubviewsChanged += NativeOverlayLayer_SubviewsChanged;
 		_nativeOverlayLayer = nativeOverlayLayer;
-		view.AddSubview(_nativeOverlayLayer);
+		_topViewLayer.AddSubview(_nativeOverlayLayer);
+		view.AddSubview(_topViewLayer);
 
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
