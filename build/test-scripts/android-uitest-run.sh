@@ -62,7 +62,7 @@ cd $BUILD_SOURCESDIRECTORY/build
 #
 export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
 export ANDROID_SDK_ROOT=$BUILD_SOURCESDIRECTORY/build/android-sdk
-export CMDLINETOOLS=commandlinetools-mac-8512546_latest.zip
+export CMDLINETOOLS=commandlinetools-linux-8512546_latest.zip
 
 if [[ ! -d $ANDROID_HOME ]];
 then
