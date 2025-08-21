@@ -11,6 +11,8 @@ uid: Uno.UI.CommonIssues.vscode
 
 ## Troubleshooting Uno Platform VS Code issues
 
+If you have any problems running Android or iOS applications in emulators, see [Android & iOS emulator troubleshooting](xref:Uno.UI.CommonIssues.MobileDebugging).
+
 If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.
 
 The Uno Platform extension provides multiple output windows to troubleshoot its activities:
