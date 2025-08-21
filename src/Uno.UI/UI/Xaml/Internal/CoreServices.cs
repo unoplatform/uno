@@ -107,7 +107,9 @@ namespace Uno.UI.Xaml.Core
 					root.UpdateLayout();
 				}
 
+#if __SKIA__
 				root.XamlRoot?.OnPaintFrameOpportunity();
+#endif
 			}
 		}
 #endif
