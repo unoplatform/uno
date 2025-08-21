@@ -31,8 +31,6 @@ namespace Uno.UI.Dispatching
 			new Queue<Delegate>(), // Idle
 		};
 
-		private readonly NativeDispatcherSynchronizationContext[] _synchronizationContexts;
-
 		private readonly object _gate = new();
 
 		private readonly long _startTime;
@@ -57,30 +55,14 @@ namespace Uno.UI.Dispatching
 
 			_currentPriority = NativeDispatcherPriority.Normal;
 
-			_synchronizationContexts = new NativeDispatcherSynchronizationContext[]
-			{
-				new(this, NativeDispatcherPriority.High),
-				new(this, NativeDispatcherPriority.Normal),
-				new(this, NativeDispatcherPriority.Low),
-				new(this, NativeDispatcherPriority.Idle),
-			};
+			SynchronizationContext = new NativeDispatcherSynchronizationContext(this);
 
 			Initialize();
 
 			_startTime = Stopwatch.GetTimestamp();
 		}
 
-		/// <summary>
-		/// Gets the synchronizations contexts for the available priorities from <see cref="NativeDispatcherPriority"/>.
-		/// </summary>
-		internal NativeDispatcherSynchronizationContext GetSynchronizationContext(NativeDispatcherPriority priority)
-		{
-			if ((int)priority < 0 || (int)priority > 3)
-			{
-				throw new ArgumentOutOfRangeException(nameof(priority));
-			}
-			return _synchronizationContexts[(int)priority];
-		}
+		internal NativeDispatcherSynchronizationContext SynchronizationContext { get; }
 
 		/// <summary>
 		/// Enforce access on the UI thread.
@@ -148,7 +130,7 @@ namespace Uno.UI.Dispatching
 			{
 				try
 				{
-					using (dispatcher._synchronizationContexts[(int)dispatcher._currentPriority].Apply())
+					using (dispatcher.SynchronizationContext.Apply())
 					{
 						action();
 					}
