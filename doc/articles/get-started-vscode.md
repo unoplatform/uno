@@ -26,7 +26,7 @@ See these sections for information about using Uno Platform with:
 If you are new to VS Code or to developing C# applications with VS Code take the time to follow the next steps.
 
 1. Open VS Code
-1. If this is not a new installation then try to update it. Press `F1` and type `Code: Check for Updates...` and select it. A notification will tell you if an update is available.
+1. If this is not a new installation, then try to update it. Press `F1` and type `Code: Check for Updates...` and select it. A notification will tell you if an update is available.
 1. Configure VS Code to start from the command-line using the `code` command. This can be configured by following [these instructions](https://code.visualstudio.com/docs/editor/command-line#_launching-from-command-line).
 1. Install the **Uno Platform** extension. Press `F1` and type `Extensions: Install Extensions`, search the marketplace for **Uno Platform** and click the **Install** button.
 
@@ -41,9 +41,13 @@ To switch between C# Dev Kit and OmniSharp:
 - [Switch to C# Dev Kit Mode](xref:Uno.GetStarted.vscode.DevKit)
 - [Switch to OmniSharp Mode](xref:Uno.GetStarted.vscode.OmniSharp)
 
-## Platform specific setup
+## Platform-specific setup
 
 You may need to follow additional directions, depending on your development environment.
+
+### Android & iOS
+
+For assistance configuring Android or iOS emulators, see the [Android & iOS emulator troubleshooting guide](xref:Uno.UI.CommonIssues.MobileDebugging).
 
 ### Linux
 
