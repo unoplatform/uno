@@ -50,19 +50,19 @@ The step-by-step process is:
 
    **Examples:**
    
-   - For iOS development with .NET 8:
+   - For iOS development with .NET 9:
      ```xml
-     <UnoTargetFrameworkOverride>net8.0-ios</UnoTargetFrameworkOverride>
+     <UnoTargetFrameworkOverride>net9.0-ios</UnoTargetFrameworkOverride>
      ```
    
-   - For Windows development with .NET 8:
+   - For Windows development with .NET 9:
      ```xml
-     <UnoTargetFrameworkOverride>net8.0-windows10.0.19041.0</UnoTargetFrameworkOverride>
+     <UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>
      ```
    
-   - For Android development with .NET 8:
+   - For Android development with .NET 9:
      ```xml
-     <UnoTargetFrameworkOverride>net8.0-android</UnoTargetFrameworkOverride>
+     <UnoTargetFrameworkOverride>net9.0-android</UnoTargetFrameworkOverride>
      ```
 1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf` (or the name listed in `crosstargeting_override.props` for the selected `UnoTargetFrameworkOverride`), and open it.
 1. To confirm that everything works:
