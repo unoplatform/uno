@@ -15,6 +15,7 @@ using Microsoft.UI.Content;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
