@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,21 @@ public static class HostBuilder
 	public static IUnoPlatformHostBuilder UseLinuxFrameBuffer(this IUnoPlatformHostBuilder builder)
 	{
 		builder.AddHostBuilder(() => new FramebufferHostBuilder());
+		return builder;
+	}
+
+	public static IUnoPlatformHostBuilder UseLinuxFrameBuffer(this IUnoPlatformHostBuilder builder, Action<FramebufferHostBuilder> action)
+	{
+		builder.AddHostBuilder(() =>
+		{
+			var framebufferBuilder = new FramebufferHostBuilder();
+			if (((IPlatformHostBuilder)framebufferBuilder).IsSupported)
+			{
+				action.Invoke(framebufferBuilder);
+			}
+			return framebufferBuilder;
+		});
+
 		return builder;
 	}
 }
