@@ -3,7 +3,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Uno.UI.Hosting;
 
 #if WINDOWS_UWP || WINAPPSDK
 using Microsoft.UI.Xaml;
@@ -17,6 +16,7 @@ using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using WpfWindow = System.Windows.Window;
 using WpfControl = System.Windows.Controls.Control;
