@@ -248,6 +248,10 @@ else
 	# the response file contains only the filters, in order to get proper stderr
 	echo "--filter:\"$UNO_TESTS_FILTER\"" > tests.rsp
 
+	# workaround for https://github.com/dotnet/maui/issues/31072
+	touch assemblies.blob
+	zip -u "$UNO_UITEST_ANDROIDAPK_PATH" assemblies.blob
+
 	## Run NUnit tests
 	dotnet run -c Release -bl:$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/android-test.binlog -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings @tests.rsp || true
 fi

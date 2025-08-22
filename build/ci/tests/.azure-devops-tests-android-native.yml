@@ -53,7 +53,7 @@ jobs:
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
-      dotnet publish -f net9.0-android -c Release -p:UnoTargetFrameworkOverride=net9.0-android /p:AndroidUseAssemblyStore=false /p:EmbedAssembliesIntoApk=false /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
+      dotnet publish -f net9.0-android -c Release -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Samples app
 
   - task: CopyFiles@2
