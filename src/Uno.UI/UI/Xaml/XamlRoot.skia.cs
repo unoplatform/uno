@@ -24,7 +24,7 @@ partial class XamlRoot
 	private readonly object _renderQueuingGate = new();
 	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
 	private Size _lastCanvasSize = Size.Empty;
-	private bool _renderQueued; // only reset on the UI thread, set not necessarily on the UI thread
+	private bool _paintQueued; // only reset on the UI thread, set not necessarily on the UI thread
 	private bool _paintedAheadOfTime;
 
 	private FocusManager? _focusManager;
@@ -48,6 +48,11 @@ partial class XamlRoot
 		var timestamp = Stopwatch.GetTimestamp();
 		NativeDispatcher.CheckThreadAccess();
 
+		lock (_renderQueuingGate)
+		{
+			_paintQueued = false;
+		}
+
 		var rootElement = VisualTree.RootElement;
 
 		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
@@ -68,7 +73,7 @@ partial class XamlRoot
 		}
 
 		FramePainted?.Invoke();
-		XamlRootMap.GetHostForRoot(this)!.InvalidateRender();
+		XamlRootMap.GetHostForRoot(this)?.InvalidateRender();
 	}
 
 	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
@@ -107,18 +112,19 @@ partial class XamlRoot
 	{
 		lock (_renderQueuingGate)
 		{
-			if (!_renderQueued)
+			if (!_paintQueued)
 			{
-				_renderQueued = true;
+				_paintQueued = true;
 				long? lastTimestampNullable;
 				lock (_frameGate)
 				{
 					lastTimestampNullable = _lastRenderedFrame?.timestamp;
 				}
-				var timestamp = Stopwatch.GetTimestamp();
 				if (lastTimestampNullable is { } lastTimestamp)
 				{
-					_renderTimer.Change(TimeSpan.FromTicks(Math.Min(TimeSpan.FromSeconds(1 / 60.0).Ticks, Math.Max(0, timestamp - lastTimestamp))), Timeout.InfiniteTimeSpan);
+					var delta = Stopwatch.GetElapsedTime(lastTimestamp);
+					var remainingPartOfTickSlice = delta > TimeSpan.FromSeconds(1 / 60.0) ? TimeSpan.Zero : TimeSpan.FromSeconds(1 / 60.0) - delta;
+					_renderTimer.Change(remainingPartOfTickSlice, Timeout.InfiniteTimeSpan);
 				}
 				else
 				{
@@ -130,27 +136,19 @@ partial class XamlRoot
 
 	private void OnRenderTimerTick()
 	{
-		var shouldDispatch = false;
-		bool shouldTickAgain;
 		lock (_renderQueuingGate)
 		{
-			shouldTickAgain = _renderQueued && _paintedAheadOfTime;
-			if (!_paintedAheadOfTime && _renderQueued)
+			if (_paintQueued && _paintedAheadOfTime)
 			{
-				_renderQueued = false;
-				shouldDispatch = true;
+				_renderTimer.Change(TimeSpan.FromSeconds(1 / 60.0), Timeout.InfiniteTimeSpan);
 			}
+
+			if (!_paintedAheadOfTime && _paintQueued)
+			{
+				NativeDispatcher.Main.Enqueue(PaintFrame, NativeDispatcherPriority.High);
+			}
+
 			_paintedAheadOfTime = false;
-		}
-
-		if (shouldTickAgain)
-		{
-			_renderTimer.Change(TimeSpan.FromSeconds(1 / 60.0), Timeout.InfiniteTimeSpan);
-		}
-
-		if (shouldDispatch)
-		{
-			NativeDispatcher.Main.Enqueue(PaintFrame, NativeDispatcherPriority.High);
 		}
 	}
 
@@ -161,23 +159,22 @@ partial class XamlRoot
 		// the rate of PaintFrame calls the same.
 		NativeDispatcher.CheckThreadAccess();
 
-		var shouldPaint = false;
 		if (SkiaRenderHelper.CanRecordPicture(VisualTree.RootElement))
 		{
+			var shouldPaint = false;
 			lock (_renderQueuingGate)
 			{
-				if (_renderQueued && !_paintedAheadOfTime)
+				if (_paintQueued && !_paintedAheadOfTime)
 				{
 					_paintedAheadOfTime = true;
-					_renderQueued = false;
 					shouldPaint = true;
 				}
 			}
-		}
 
-		if (shouldPaint)
-		{
-			PaintFrame();
+			if (shouldPaint)
+			{
+				PaintFrame();
+			}
 		}
 	}
 }

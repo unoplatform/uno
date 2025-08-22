@@ -406,22 +406,6 @@ namespace Uno.UI.Dispatching
 					handler.Method.DeclaringType?.FullName + "." + handler.Method.Name });
 
 		/// <summary>
-		/// Wakes up the dispatcher.
-		/// </summary>
-		internal void WakeUp()
-		{
-			lock (_gate)
-			{
-				if (Interlocked.Increment(ref _globalCount) == 1)
-				{
-					EnqueueNative(NativeDispatcherPriority.Normal);
-				}
-
-				Interlocked.Decrement(ref _globalCount);
-			}
-		}
-
-		/// <summary>
 		/// Gets the priority of the current task.
 		/// </summary>
 		internal NativeDispatcherPriority CurrentPriority => _currentPriority;
