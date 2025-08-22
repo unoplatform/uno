@@ -39,7 +39,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 		public void LastSelectedPreferBelow()
 		{
 			if (AppInitializer.GetLocalPlatform() == Platform.Android)
-			{ 
+			{
 				// https://github.com/unoplatform/uno/issues/9080
 				Assert.Ignore("Invalid for android starting net9");
 
