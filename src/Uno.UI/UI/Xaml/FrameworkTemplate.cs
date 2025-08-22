@@ -30,10 +30,11 @@ namespace Microsoft.UI.Xaml
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
-		internal readonly NewFrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
 		private readonly bool _isLegacyTemplate = true; // Tests fails if set to false, so we keep it true for now.
+
+		internal NewFrameworkTemplateBuilder? _viewFactory; // Updateable when a special mode is enabled un Uno.DataTemplateHelper
 
 		/// <summary>
 		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.
@@ -152,9 +153,7 @@ namespace Microsoft.UI.Xaml
 
 		public override bool Equals(object? obj)
 		{
-			var other = obj as FrameworkTemplate;
-
-			if (other != null)
+			if (obj is FrameworkTemplate other)
 			{
 				if (FrameworkTemplateEqualityComparer.Default.Equals(other, this))
 				{
@@ -195,6 +194,36 @@ namespace Microsoft.UI.Xaml
 					);
 
 			public int GetHashCode(FrameworkTemplate obj) => obj._hashCode;
+		}
+
+		// --- Uno extension points for template factory injection and update notifications ---
+		private global::Windows.UI.Core.WeakEventHelper.WeakEventCollection? _templateUpdatedHandlers;
+
+		internal IDisposable RegisterTemplateUpdated(Action handler)
+			=> global::Windows.UI.Core.WeakEventHelper.RegisterEvent(
+				_templateUpdatedHandlers ??= new global::Windows.UI.Core.WeakEventHelper.WeakEventCollection(),
+				handler,
+				(h, s, a) => (h as Action)?.Invoke()
+			);
+
+		internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factory)
+		{
+			// Special case to update the factory without creating a new instance.
+			// A special mode is required for it to work and is activated directly in the Uno.DataTemplateHelper.
+
+			var previous = _viewFactory;
+			var newFactory = factory?.Invoke(previous);
+
+			if (newFactory != previous)
+			{
+				_viewFactory = newFactory;
+
+				_templateUpdatedHandlers?.Invoke(this, null);
+
+				return true;
+			}
+
+			return false;
 		}
 	}
 }

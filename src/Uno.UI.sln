@@ -6537,4 +6537,14 @@ Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Umbrella.vsmdi
 	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = ..\Doc\articles\external\uno.chefs\.run\Chefs.run.xml
+		File = ..\Doc\articles\external\uno.samples\UI\MVUX\src\.run\MVUX.run.xml
+		File = ..\Doc\articles\external\uno.samples\UI\ScottPlot\QuickstartSample\.run\ScottPlotSample.run.xml
+		File = ..\Doc\articles\external\uno.samples\UI\ScottPlot\DataPersistedSample\.run\ScottPlotDataPersistedSample.run.xml
+		File = ..\Doc\articles\external\uno.samples\UI\ScottPlot\SignalPlotFiveMillionPointsSample\.run\ScottPlotSample.run.xml
+		File = ..\Doc\articles\external\uno.samples\UI\SkiaSharpTest\src\.run\SkiaSharpTest.run.xml
+		File = ..\Doc\articles\external\uno.samples\UI\NativeElementHostingDesktop\.run\NativeElementHostingDesktop.run.xml
+		File = ..\Doc\articles\external\uno.toolkit.ui\samples\Uno.Toolkit.Samples\.run\Uno.Toolkit.Samples.run.xml
+	EndGlobalSection
 EndGlobal
