@@ -14,7 +14,7 @@ If Android or iOS emulators are missing or fail to start in JetBrains Rider, Vis
 - **Windows:** ensure virtualization is enabled (see “Windows virtualization”).
 - **ADB refresh:** `adb kill-server && adb start-server`, then `adb devices`.
 - **AVD reset:** Cold Boot or Wipe Data for a flaky AVD.
-- **macOS/iOS:** open iOS Simulator from Xcode once to initialize it.
+- **macOS/iOS:** open the iOS Simulator from Xcode once to initialize it.
 - After changing SDKs, emulator images, or virtualization settings, **restart your IDE** so it refreshes its device list.
 
 ## Android emulator setup
@@ -65,14 +65,14 @@ There are several common ways to manage Android Virtual Devices (AVDs):
 
 4. **Troubleshooting in VS Code**
    - Ensure `ANDROID_SDK_ROOT` (or `ANDROID_HOME`) points to the correct SDK.
-   - Keep only **one** SDK location across tools to avoid mismatch.
+   - Keep only **one** SDK location across tools to avoid a mismatch.
    - If an extension can’t find the emulator, set the SDK/emulator path in its settings.
 
 ---
 
 ## Windows virtualization (required for fast Android emulation)
 
-Enable **Windows Hypervisor Platform** (and **Hyper-V** on supported editions) then **reboot**. Avoid conflicts with other hypervisors (e.g., VirtualBox in non-Hyper-V mode).
+Enable **Windows Hypervisor Platform** (and **Hyper-V** on supported editions), then **reboot**. Avoid conflicts with other hypervisors (e.g., VirtualBox in non-Hyper-V mode).
 
 ## iOS simulator setup (macOS only)
 
