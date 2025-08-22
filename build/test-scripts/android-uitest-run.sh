@@ -248,7 +248,8 @@ else
 	# the response file contains only the filters, in order to get proper stderr
 	echo "--filter:\"$UNO_TESTS_FILTER\"" > tests.rsp
 
-	# workaround for https://github.com/dotnet/maui/issues/31072
+	# Workaround for https://github.com/dotnet/maui/issues/31072
+	# Create a fake file that Xamarin.UITest will recognize and keep going
 	touch assemblies.blob
 	zip -u "$UNO_UITEST_ANDROIDAPK_PATH" assemblies.blob
 

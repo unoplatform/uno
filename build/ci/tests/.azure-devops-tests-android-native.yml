@@ -100,7 +100,7 @@ jobs:
 
       ${{ each testBucket in parameters.automatedTestsBuckets }}:
         'Automated Tests ${{ testBucket }}':
-          ANDROID_SIMULATOR_APILEVEL: 31
+          ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_DISPLAY_NAME: 'Automated Tests ${{ testBucket }}'
           UITEST_TEST_MODE_NAME: Automated
           UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT
@@ -112,7 +112,7 @@ jobs:
 
       ${{ each testGroup in parameters.runtimeTestsGroups }}:
         'Runtime Tests ${{ testGroup }}':
-          ANDROID_SIMULATOR_APILEVEL: 31
+          ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_DISPLAY_NAME: 'Runtime Tests ${{ testGroup }}'
           UITEST_TEST_MODE_NAME: RuntimeTests
           UNO_UITEST_BUCKET_ID: RuntimeTests
@@ -125,7 +125,7 @@ jobs:
           UITEST_TEST_TIMEOUT: '2600s'
 
       'Snapshot Tests':
-        ANDROID_SIMULATOR_APILEVEL: 31
+        ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_DISPLAY_NAME: 'Snapshot Tests'
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshot
