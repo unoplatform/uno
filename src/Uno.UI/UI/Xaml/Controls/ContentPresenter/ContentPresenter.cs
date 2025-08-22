@@ -61,6 +61,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	private View _contentTemplateRoot;
 	private bool _appliedTemplate;
 
+	// Subscription to DataTemplate updates
+	private IDisposable _templateUpdatedSubscription;
+
 	/// <summary>
 	/// Will be set to either the result of ContentTemplateSelector or to ContentTemplate, depending on which is used
 	/// </summary>
@@ -1034,7 +1037,17 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
 		var dataTemplate = this.ResolveContentTemplate();
 
-		//Only apply template if it has changed
+		void OnCurrentTemplateUpdated()
+		{
+			// Force re-materialization on template update
+			_dataTemplateUsedLastUpdate = null;
+			SetUpdateTemplate();
+		}
+
+		// Subscribe to template updates so presenter can refresh when factory changes (when feature is activated)
+		Uno.TemplateUpdateSubscription.Attach(dataTemplate, ref _templateUpdatedSubscription, OnCurrentTemplateUpdated);
+
+		// Only apply the template if it has changed
 		if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 		{
 			_dataTemplateUsedLastUpdate = dataTemplate;

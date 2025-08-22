@@ -1,0 +1,69 @@
+<Page
+	x:Class="Uno.UI.Samples.UITests.Templates.DataTemplate_Update_Sample"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:Uno.UI.Samples.UITests.Templates">
+
+	<Page.Resources>
+		<!-- Define a shared DataTemplate with a name and key so we can reference it in code and XAML -->
+		<DataTemplate x:Key="SharedTemplate">
+			<Grid>
+				<TextBlock Text="Initial template"/>
+			</Grid>
+		</DataTemplate>
+	</Page.Resources>
+
+	<ScrollViewer>
+		<StackPanel Spacing="12" Padding="12">
+			<TextBlock Text="DataTemplate Update Sample" FontSize="20"/>
+			<TextBlock Text="All presenters below share the same DataTemplate (x:Name=SharedTemplate)."/>
+
+			<StackPanel Orientation="Horizontal" Spacing="8">
+				<Button Content="Red" Click="OnRedClick"/>
+				<Button Content="Blue" Click="OnBlueClick"/>
+			</StackPanel>
+
+			<!-- Multiple ContentPresenters/ContentControls using the same template -->
+			<Border BorderBrush="Gray" BorderThickness="1" Padding="8">
+				<StackPanel Spacing="8">
+					<TextBlock Text="ContentPresenter #1"/>
+					<ContentPresenter Content="item-a" ContentTemplate="{StaticResource SharedTemplate}"/>
+				</StackPanel>
+			</Border>
+
+			<Border BorderBrush="Gray" BorderThickness="1" Padding="8">
+				<StackPanel Spacing="8">
+					<TextBlock Text="ContentPresenter #2"/>
+					<ContentPresenter Content="item-b" ContentTemplate="{StaticResource SharedTemplate}"/>
+				</StackPanel>
+			</Border>
+
+			<Border BorderBrush="Gray" BorderThickness="1" Padding="8">
+				<StackPanel Spacing="8">
+					<TextBlock Text="ContentControl"/>
+					<ContentControl Content="item-c" ContentTemplate="{StaticResource SharedTemplate}"/>
+				</StackPanel>
+			</Border>
+
+			<Border BorderBrush="Gray" BorderThickness="1" Padding="8">
+				<StackPanel Spacing="8">
+					<TextBlock Text="ItemsControl"/>
+					<ItemsControl ItemTemplate="{StaticResource SharedTemplate}">
+						<ItemsControl.Items>
+							<x:String>1</x:String>
+							<x:String>2</x:String>
+							<x:String>3</x:String>
+							<x:String>4</x:String>
+							<x:String>5</x:String>
+						</ItemsControl.Items>
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Horizontal" Spacing="20" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+					</ItemsControl>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
+</Page>
