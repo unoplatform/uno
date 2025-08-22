@@ -453,8 +453,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_ = XLib.XSync(display, false);
 
 		XSetWindowAttributes attribs = default;
-		// Not sure why this is needed, commented out until further notice
-		// attribs.override_redirect = /* True */ 1;
+		// Setting the colormap here is necessary, otherwise we get a GLX error on some environments. cf. https://github.com/unoplatform/uno/issues/21285
+		attribs.colormap = XLib.XCreateColormap(display, parent, visual->visual, /* AllocNone */ 0);
 		var window = XLib.XCreateWindow(
 			display,
 			parent,
@@ -466,7 +466,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			(int)visual->depth,
 			/* InputOutput */ 1,
 			visual->visual,
-			UIntPtr.Zero, // adding XCreateWindowFlags.CWBackPixel here would cause flickering when resizing the window. cf. https://github.com/unoplatform/uno/issues/20383
+			(UIntPtr)XCreateWindowFlags.CWColormap,
 			ref attribs);
 
 		_ = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
