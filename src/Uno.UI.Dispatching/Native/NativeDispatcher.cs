@@ -25,6 +25,7 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		private readonly Queue<Delegate>[] _queues = new[]
 		{
+			new Queue<Delegate>(), // Render
 			new Queue<Delegate>(), // High
 			new Queue<Delegate>(), // Normal
 			new Queue<Delegate>(), // Low
@@ -32,8 +33,6 @@ namespace Uno.UI.Dispatching
 		};
 
 		private readonly object _gate = new();
-
-		private readonly long _startTime;
 
 		private NativeDispatcherPriority _currentPriority;
 
@@ -47,19 +46,18 @@ namespace Uno.UI.Dispatching
 		private NativeDispatcher()
 		{
 			Debug.Assert(
-				(int)NativeDispatcherPriority.High == 0 &&
-				(int)NativeDispatcherPriority.Normal == 1 &&
-				(int)NativeDispatcherPriority.Low == 2 &&
-				(int)NativeDispatcherPriority.Idle == 3 &&
-				Enum.GetValues<NativeDispatcherPriority>().Length == 4);
+				(int)NativeDispatcherPriority.Render == 0 &&
+				(int)NativeDispatcherPriority.High == 1 &&
+				(int)NativeDispatcherPriority.Normal == 2 &&
+				(int)NativeDispatcherPriority.Low == 3 &&
+				(int)NativeDispatcherPriority.Idle == 4 &&
+				(int)NativeDispatcherPriority.EnumLength == 5);
 
 			_currentPriority = NativeDispatcherPriority.Normal;
 
 			SynchronizationContext = new NativeDispatcherSynchronizationContext(this);
 
 			Initialize();
-
-			_startTime = Stopwatch.GetTimestamp();
 		}
 
 		internal NativeDispatcherSynchronizationContext SynchronizationContext { get; }
@@ -76,6 +74,9 @@ namespace Uno.UI.Dispatching
 		}
 
 #if __ANDROID__ || __WASM__ || __SKIA__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
+		private int _lastRenderSeqNo;
+		private int _itemSeqNo;
+
 		private static void DispatchItems()
 		{
 			// Currently, we have a singleton NativeDispatcher.
@@ -84,8 +85,18 @@ namespace Uno.UI.Dispatching
 
 			Action? action = null;
 
-			for (var p = 0; p <= 3; p++)
+			@this._itemSeqNo++;
+			// We ignore the Render queue if the other queues are not making any progress. In that case, we're
+			// painting too frequently and the dispatcher is not given a chance to process any items but those in Render
+			var ignoreRenderQueue = @this._itemSeqNo - @this._lastRenderSeqNo < 5 && Volatile.Read(ref @this._globalCount) > @this._queues[(int)NativeDispatcherPriority.Render].Count;
+
+			for (var p = 0; p < (int)NativeDispatcherPriority.EnumLength; p++)
 			{
+				if (ignoreRenderQueue && (NativeDispatcherPriority)p == NativeDispatcherPriority.Render)
+				{
+					continue;
+				}
+
 				var queue = @this._queues[p];
 
 				lock (@this._gate)
@@ -93,7 +104,6 @@ namespace Uno.UI.Dispatching
 					if (queue.Count > 0)
 					{
 						action = Unsafe.As<Action>(queue.Dequeue());
-
 						@this._currentPriority = (NativeDispatcherPriority)p;
 
 						if (Interlocked.Decrement(ref @this._globalCount) > 0)
@@ -104,6 +114,11 @@ namespace Uno.UI.Dispatching
 						break;
 					}
 				}
+			}
+
+			if (@this._currentPriority == NativeDispatcherPriority.Render)
+			{
+				@this._lastRenderSeqNo = @this._itemSeqNo;
 			}
 
 			RunAction(@this, action);
@@ -356,13 +371,17 @@ namespace Uno.UI.Dispatching
 
 		private void EnqueueCore(Delegate handler, NativeDispatcherPriority priority)
 		{
-			Debug.Assert((int)priority >= 0 && (int)priority <= 3);
+			Debug.Assert((int)priority >= 0 && (int)priority <= 4);
 
 			bool shouldEnqueue;
 
 			lock (_gate)
 			{
 				_queues[(int)priority].Enqueue(handler);
+				if (priority == NativeDispatcherPriority.Render)
+				{
+					Debug.Assert(_queues[(int)priority].Count == 1);
+				}
 
 				shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
 			}
