@@ -193,3 +193,9 @@ When using the WebView2 and running on WinAppSDK, make sure to create an `x64` o
 - In the Visual Studio configuration manager, create an `x64` or `ARM64` solution configuration
 - Assign it to the Uno Platform project
 - Debug your application using the configuration relevant to your current environment
+
+## Tutorials and getting started guides
+
+As the WebView2 control we can use in Uno Apps is based on the same you can use in WinUI3 apps, you can follow the same tutorials and documentation available for WinUI3 to implement WebView2 in your Uno applications, with some adjustments for platform-specific features and capabilities.
+
+A good starting point is the official Microsoft documentation on [WebView2](https://learn.microsoft.com/de-de/microsoft-edge/webview2/platforms/winui3-windows-app-sdk) and its [getting started guide](https://learn.microsoft.com/de-de/microsoft-edge/webview2/get-started/winui#step-6-add-a-webview2-control).
