@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
@@ -21,10 +23,18 @@ partial class XamlRoot
 	// TODO: prevent this from being bottlenecked by the dispatcher queue, and read the native refresh rate instead of hardcoding it
 	private readonly Timer _renderTimer;
 	private readonly object _frameGate = new();
-	private readonly object _renderQueuingGate = new();
+	private readonly object _renderingStateGate = new();
 	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
 	private Size _lastCanvasSize = Size.Empty;
-	private bool _paintQueued; // only reset on the UI thread, set not necessarily on the UI thread
+
+	private enum RenderCycleState
+	{
+		Clean,
+		PaintRequested,
+		PaintQueued
+	}
+
+	private RenderCycleState _renderState = RenderCycleState.Clean;
 	private bool _paintedAheadOfTime;
 
 	private FocusManager? _focusManager;
@@ -45,13 +55,14 @@ partial class XamlRoot
 
 	private void PaintFrame()
 	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace("PaintFrame begins");
+			using var _ = Disposable.Create(() => this.Log().Trace("PaintFrame ends"));
+		}
+
 		var timestamp = Stopwatch.GetTimestamp();
 		NativeDispatcher.CheckThreadAccess();
-
-		lock (_renderQueuingGate)
-		{
-			_paintQueued = false;
-		}
 
 		var rootElement = VisualTree.RootElement;
 
@@ -110,45 +121,67 @@ partial class XamlRoot
 
 	internal void RequestNewFrame()
 	{
-		lock (_renderQueuingGate)
+		lock (_renderingStateGate)
 		{
-			if (!_paintQueued)
+			if (_renderState is RenderCycleState.Clean)
 			{
-				_paintQueued = true;
-				long? lastTimestampNullable;
-				lock (_frameGate)
-				{
-					lastTimestampNullable = _lastRenderedFrame?.timestamp;
-				}
-				if (lastTimestampNullable is { } lastTimestamp)
-				{
-					var delta = Stopwatch.GetElapsedTime(lastTimestamp);
-					var remainingPartOfTickSlice = delta > TimeSpan.FromSeconds(1 / 60.0) ? TimeSpan.Zero : TimeSpan.FromSeconds(1 / 60.0) - delta;
-					_renderTimer.Change(remainingPartOfTickSlice, Timeout.InfiniteTimeSpan);
-				}
-				else
-				{
-					_renderTimer.Change(TimeSpan.FromSeconds(1 / 60.0), Timeout.InfiniteTimeSpan);
-				}
+				_renderState = RenderCycleState.PaintRequested;
+				WakeUpTimer();
 			}
 		}
 	}
 
+	private void WakeUpTimer()
+	{
+		long? lastTimestampNullable;
+		lock (_frameGate)
+		{
+			lastTimestampNullable = _lastRenderedFrame?.timestamp;
+		}
+
+		TimeSpan dueTime;
+		if (lastTimestampNullable is { } lastTimestamp)
+		{
+			var delta = Stopwatch.GetElapsedTime(lastTimestamp);
+			dueTime = delta > TimeSpan.FromSeconds(1 / 60.0) ? TimeSpan.Zero : TimeSpan.FromSeconds(1 / 60.0) - delta;
+		}
+		else
+		{
+			dueTime = TimeSpan.FromSeconds(1 / 60.0);
+		}
+
+		this.LogTrace()?.Trace($"Enabling render timer with dueTime = {dueTime}");
+		_renderTimer.Change(dueTime, Timeout.InfiniteTimeSpan);
+	}
+
 	private void OnRenderTimerTick()
 	{
-		lock (_renderQueuingGate)
+		this.LogTrace()?.Trace($"Render timer tick");
+		lock (_renderingStateGate)
 		{
-			if (_paintQueued && _paintedAheadOfTime)
+			if (_paintedAheadOfTime)
 			{
-				_renderTimer.Change(TimeSpan.FromSeconds(1 / 60.0), Timeout.InfiniteTimeSpan);
+				if (_renderState == RenderCycleState.PaintRequested)
+				{
+					_paintedAheadOfTime = false;
+					this.LogTrace()?.Trace($"Render timer tick: painted ahead of time. Doing nothing this tick and rescheduling another tick");
+					_renderTimer.Change(TimeSpan.FromSeconds(1 / 60.0), Timeout.InfiniteTimeSpan);
+				}
 			}
-
-			if (!_paintedAheadOfTime && _paintQueued)
+			else if (_renderState == RenderCycleState.PaintRequested)
 			{
-				NativeDispatcher.Main.Enqueue(PaintFrame, NativeDispatcherPriority.High);
+				this.LogTrace()?.Trace("Render timer tick: enqueued PaintFrame");
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					this.LogTrace()?.Trace("PaintFrame fired from enqueued timer job");
+					lock (_renderingStateGate)
+					{
+						_renderState = RenderCycleState.Clean;
+					}
+					PaintFrame();
+				}, NativeDispatcherPriority.Render);
+				_renderState = RenderCycleState.PaintQueued;
 			}
-
-			_paintedAheadOfTime = false;
 		}
 	}
 
@@ -162,10 +195,11 @@ partial class XamlRoot
 		if (SkiaRenderHelper.CanRecordPicture(VisualTree.RootElement))
 		{
 			var shouldPaint = false;
-			lock (_renderQueuingGate)
+			lock (_renderingStateGate)
 			{
-				if (_paintQueued && !_paintedAheadOfTime)
+				if (_renderState is RenderCycleState.PaintRequested && !_paintedAheadOfTime)
 				{
+					_renderState = RenderCycleState.Clean;
 					_paintedAheadOfTime = true;
 					shouldPaint = true;
 				}
@@ -173,6 +207,7 @@ partial class XamlRoot
 
 			if (shouldPaint)
 			{
+				this.LogTrace()?.Trace("OnPaintFrameOpportunity: Calling PaintFrame early ");
 				PaintFrame();
 			}
 		}
