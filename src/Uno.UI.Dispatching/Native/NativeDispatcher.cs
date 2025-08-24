@@ -378,10 +378,7 @@ namespace Uno.UI.Dispatching
 			lock (_gate)
 			{
 				_queues[(int)priority].Enqueue(handler);
-				if (priority == NativeDispatcherPriority.Render)
-				{
-					Debug.Assert(_queues[(int)priority].Count == 1);
-				}
+				Debug.Assert(priority != NativeDispatcherPriority.Render || _queues[(int)priority].Count == 1);
 
 				shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
 			}
