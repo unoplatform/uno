@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
@@ -20,12 +21,14 @@ namespace Microsoft.UI.Xaml;
 partial class XamlRoot
 {
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-	// TODO: prevent this from being bottlenecked by the dispatcher queue, and read the native refresh rate instead of hardcoding it
+	// TODO: read the native refresh rate instead of hardcoding it
+	private readonly float _fps = FeatureConfiguration.CompositionTarget.FrameRate;
 	private readonly Timer _renderTimer;
 	private readonly object _frameGate = new();
 	private readonly object _renderingStateGate = new();
 	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
 	private Size _lastCanvasSize = Size.Empty;
+	private int _frameCount;
 
 	private enum RenderCycleState
 	{
@@ -63,6 +66,8 @@ partial class XamlRoot
 
 		var timestamp = Stopwatch.GetTimestamp();
 		NativeDispatcher.CheckThreadAccess();
+
+		_frameCount++;
 
 		var rootElement = VisualTree.RootElement;
 
@@ -143,11 +148,11 @@ partial class XamlRoot
 		if (lastTimestampNullable is { } lastTimestamp)
 		{
 			var delta = Stopwatch.GetElapsedTime(lastTimestamp);
-			dueTime = delta > TimeSpan.FromSeconds(1 / 60.0) ? TimeSpan.Zero : TimeSpan.FromSeconds(1 / 60.0) - delta;
+			dueTime = delta > TimeSpan.FromSeconds(1 / _fps) ? TimeSpan.Zero : TimeSpan.FromSeconds(1 / _fps) - delta;
 		}
 		else
 		{
-			dueTime = TimeSpan.FromSeconds(1 / 60.0);
+			dueTime = TimeSpan.FromSeconds(1 / _fps);
 		}
 
 		this.LogTrace()?.Trace($"Enabling render timer with dueTime = {dueTime}");
@@ -179,7 +184,7 @@ partial class XamlRoot
 						_renderState = RenderCycleState.Clean;
 					}
 					PaintFrame();
-				}, NativeDispatcherPriority.Render);
+				}, _frameCount % 5 == 0 ? NativeDispatcherPriority.Normal : NativeDispatcherPriority.High);
 				_renderState = RenderCycleState.PaintQueued;
 			}
 		}
