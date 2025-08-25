@@ -184,7 +184,7 @@ partial class XamlRoot
 						_renderState = RenderCycleState.Clean;
 					}
 					PaintFrame();
-				}, _frameCount % 5 == 0 ? NativeDispatcherPriority.Normal : NativeDispatcherPriority.High);
+				}, NativeDispatcherPriority.Idle);
 				_renderState = RenderCycleState.PaintQueued;
 			}
 		}
