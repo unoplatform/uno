@@ -17,6 +17,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Uno.UI.Dispatching;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
@@ -140,10 +141,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		try
 		{
 			// Make sure WPF doesn't override our own SynchronizationContext.
-			if (Microsoft.UI.Xaml.Application.ApplicationSynchronizationContext is { } syncContext)
-			{
-				SynchronizationContext.SetSynchronizationContext(syncContext);
-			}
+			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
 			var eventArgs = BuildPointerArgs(args, isReleaseOrCancel);
 			ev?.Invoke(this, eventArgs);
