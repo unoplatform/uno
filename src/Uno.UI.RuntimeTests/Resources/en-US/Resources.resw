@@ -129,4 +129,7 @@
   <data name="When_xUid_Root.Title" xml:space="preserve">
     <value>en-US Value for When_xUid_Root.Title</value>
   </data>
+  <data name="When_xUid_Conflicts_With_AttachedProperty_Named_Uid.Text" xml:space="preserve">
+    <value>en-US Value for When_xUid_Conflicts_With_AttachedProperty_Named_Uid</value>
+  </data>
 </root>
