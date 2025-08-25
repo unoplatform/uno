@@ -41,6 +41,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private ItemCollection _items = new ItemCollection();
 		private (object Source, IEnumerable Snapshot)? _cachedItemsSource;
 
+		// Uno-specific: subscription to ItemTemplate updates
+		private IDisposable _itemTemplateUpdatedSubscription;
+
 		// This gets prepended to MaterializedContainers to ensure it's being considered
 		// even if it might not yet have be added to the ItemsPanel (e.eg., NativeListViewBase).
 		private DependencyObject _containerBeingPrepared;
@@ -186,8 +189,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
 		{
-			Refresh();
-			UpdateItems(null);
+			void OnCurrentItemTemplateUpdated()
+			{
+				// Recreate item containers and refresh items
+				Refresh();
+				UpdateItems(null);
+			}
+
+			Uno.TemplateUpdateSubscription.Attach(newItemTemplate, ref _itemTemplateUpdatedSubscription, OnCurrentItemTemplateUpdated);
+
+			OnCurrentItemTemplateUpdated();
 		}
 
 		#endregion
@@ -936,6 +947,16 @@ namespace Microsoft.UI.Xaml.Controls
 			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
 
 			_isTemplateApplied = true;
+
+			// Uno-specific: ensure subscription is active when template is applied
+			void OnCurrentItemTemplateUpdated()
+			{
+				// Recreate item containers and refresh items
+				Refresh();
+				UpdateItems(null);
+			}
+
+			Uno.TemplateUpdateSubscription.Attach(ItemTemplate, ref _itemTemplateUpdatedSubscription, OnCurrentItemTemplateUpdated);
 		}
 
 		private protected override void OnUnloaded()
