@@ -27,7 +27,7 @@ using System.Numerics;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests;
 
-[Sample("TabView", "MUX")]
+[Sample("TabView", "MUX", IsManualTest = true)]
 public sealed partial class TabViewSelectionAndScrolling : Page
 {
 	private MainViewModel ViewModel { get; set; }
