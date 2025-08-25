@@ -36,6 +36,11 @@ namespace Microsoft.UI.Xaml.Controls
 		public UIElement TryGetElement(string key, UIElement owner)
 			=> TryGetElementCore(key, owner);
 
+		internal void Clear()
+		{
+			m_elements.Clear();
+		}
+
 		protected virtual void PutElementCore(UIElement element, string key, UIElement owner)
 		{
 			var winrtKey = key;
