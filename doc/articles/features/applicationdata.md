@@ -70,7 +70,7 @@ In the case of Skia Desktop targets, the data are stored in application- and use
 
 - `LocalFolder` - `C:\Users\UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalState`
 - `RoamingFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\RoamingState`
-- `LocalCaheFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalCache`
+- `LocalCacheFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalCache`
 - `TemporaryFolder` - `C:\Users\<UserName>\AppData\Local\Temp\<Publisher>\<ApplicationName>\TempState`
 - `LocalSettings` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\Settings\Local.dat`
 - `RoamingSettings` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\Settings\Roaming.dat`
@@ -90,7 +90,7 @@ The default paths above can be overridden using the following feature flags:
 
 - `WinRTFeatureConfiguration.ApplicationData.TemporaryFolderPathOverride` - affects `TemporaryFolder` location
 - `WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride` - affects `LocalCacheFolder` location
-- `WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride` - affects `LocalFolder`, `RoamingFolder`, `LocalCaheFolder`, `LocalSettings` and `RoamingSettings`
+- `WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride` - affects `LocalFolder`, `RoamingFolder`, `LocalCacheFolder`, `LocalSettings` and `RoamingSettings`
 
 These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `UnoPlatformHostBuilder` instance is created.
 
