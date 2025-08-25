@@ -189,140 +189,45 @@ $sdkFeatures = $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolki
 
 $projects =
 @(
-    #
-    # 5.1 Blank
-    #
-    @(1, "5.1/uno51blank/uno51blank.Mobile/uno51blank.Mobile.csproj", "", @("macOS", "NetCore")),
-    @(1, "5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", "", @("macOS", "NetCore")),
-    @(1, "5.1/uno51blank/uno51blank.Skia.Wpf/uno51blank.Skia.Wpf.csproj", "", @("NetCore")),
-    @(1, "5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", "", @("NetCore")),
-
-    # disabled on windows until android 35 is supported in the installed VS instance
-    # @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", "", @()),
-
-    #
-    # 5.1 Recommended
-    #
-    @(1, "5.1/uno51recommended/uno51recommended.Mobile/uno51recommended.Mobile.csproj", "", @("macOS", "NetCore")),
-
-    # disabled on windows until android 35 is supported in the installed VS instance
-    # @("5.1/uno51recommended/uno51recommended.Windows/uno51recommended.Windows.csproj", "", @()),
-
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", "", @("macOS", "NetCore")),
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", "", @("NetCore")),
-    @(1, "5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", "", @("NetCore")),
-    @(1, "5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", "", @("NetCore")),
-    @(1, "5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", "", @("macOS", "NetCore")),
-    @(1, "5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "", @("macOS", "NetCore")),
-
-    #
-    # 5.2 Blank
-    #
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0"), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0", $sdkFeatures), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-browserwasm"), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-browserwasm", $sdkFeatures), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-ios"), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-ios", $sdkFeatures), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-android"), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-android", $sdkFeatures), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-maccatalyst"), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-maccatalyst", $sdkFeatures), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop"), @("macOS", "NetCore")),
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
-
-    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=arm64" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
-
-    # Ensure that default without platform builds properly
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:TargetFramework=net8.0-windows10.0.19041"), @()),
-
-    # Validate building inside VS
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true"), @("NetCore")),
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true", "-p:_UnoSelectedTargetFramework=net8.0-desktop"), @("NetCore")),
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true", "-p:_UnoSelectedTargetFramework=net8.0-windows10.0.19041"), @()),
-
-    #
-    # 5.2 Uno Lib
-    #
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-browserwasm"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-ios"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-android"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-maccatalyst"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-desktop"), @("macOS", "NetCore")),
-    
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-browserwasm", "-p:ImplicitUsings=disable"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-desktop", "-p:ImplicitUsings=disable"), @("macOS", "NetCore")),
-
-    #
-    # 5.2 Uno NuGet Lib
-    #
-    @(2, "5.2/uno52NuGetLib/uno52NuGetLib.csproj", @(), @("macOS", "NetCore")),
-
-    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @("macOS")),
-
-    #
-    # 5.2 Uno SingleProject Lib
-    #
-    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-browserwasm"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-ios"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-android"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-maccatalyst"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-desktop"), @("macOS", "NetCore")),
-
-    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
-
-    # 5.2 Uno App with Library reference
-    @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-browserwasm"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-ios"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-android"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-maccatalyst"), @("macOS", "NetCore")),
-    @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0-desktop"), @("macOS", "NetCore")),
-
     # 5.3 Uno App with net9
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0"), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0", $sdkFeatures), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm"), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", $sdkFeatures), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-ios"), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-ios", $sdkFeatures), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android"), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", $sdkFeatures), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-maccatalyst"), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-maccatalyst", $sdkFeatures), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop"), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0"), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0", $sdkFeatures), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm"), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", $sdkFeatures), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-ios"), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-ios", $sdkFeatures), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android"), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", $sdkFeatures), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-maccatalyst"), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-maccatalyst", $sdkFeatures), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop"), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net9.0-windows10.0.19041"), @()),
+    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net9.0-windows10.0.19041"), @()),
 
     # 5.3 Library
-    @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @("macOS", "NetCore")),
-
-    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @(4, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
+    @(2, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @("macOS", "NetCore")),
 
     # Publishing validation
-    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:TargetFrameworks=net9.0-desktop", "-p:PackageFormat=app", "-r", "osx-x64", "-p:RuntimeIdentifiers=osx-x64"), @("OnlyMacOS", "NetCore", "Publish")),
+    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:TargetFrameworks=net9.0-desktop", "-p:PackageFormat=app", "-r", "osx-x64", "-p:RuntimeIdentifiers=osx-x64"), @("OnlyMacOS", "NetCore", "Publish")),
 
     # Publish with no debug symbols validation
-    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:TargetFrameworks=net9.0-desktop", "-r", "win-x64", "-p:DebugSymbols=false", "-p:DebugType=None"), @("NetCore", "Publish")),
+    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:TargetFrameworks=net9.0-desktop", "-r", "win-x64", "-p:DebugSymbols=false", "-p:DebugType=None"), @("NetCore", "Publish")),
+
+    # Workaround for: https://github.com/dotnet/android/issues/10423
+    # Must happen before trying `dotnet build -r …`
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android"), @("macOS", "NetCore")),
 
     # Ensure that build can happen even if a RID is specified
-    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
 
     # 5.6 Android/ios/Wasm+Skia nuget package (build first before the app)
-    @(4, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp","NoBuildClean")),
+    @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp","NoBuildClean")),
 
     # 5.6 Android/ios/Wasm+Skia
-    @(4, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @("macOS", "NetCore")),
+    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @("macOS", "NetCore")),
 
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0"), @("macOS", "NetCore")),
@@ -394,6 +299,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
         if(!$usePublish)
         {
             Write-Host "NetCore Building Debug $projectPath with $projectOptions"
+            Write-Host "Executing: dotnet build $debug ""$projectPath"" $projectOptions -bl"
             dotnet build $debug "$projectPath" $projectOptions -bl:binlogs/$projectPath/$i/debug/msbuild.binlog
             Assert-ExitCodeIsZero
 
@@ -403,6 +309,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
         $dotnetCommand = $usePublish ? "publish" : "build"
 
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
+        Write-Host "Executing: dotnet $dotnetCommand $release ""$projectPath"" $projectOptions $extraArgs -bl"
         dotnet $dotnetCommand $release "$projectPath" $projectOptions $extraArgs -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
  
@@ -419,12 +326,14 @@ for($i = 0; $i -lt $projects.Length; $i++)
         if ($IsWindows) 
         {
             Write-Host "MSBuild Building Debug $projectPath with $projectOptions"
+            Write-Host "Executing: ""$msbuild"" $debug /r ""$projectPath"" $projectOptions"
             & $msbuild $debug /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
 
             & $msbuild $debug /r /t:Clean "$projectPath" /bl:binlogs/$projectPath/$i/release/msbuild.binlog
 
             Write-Host "MSBuild Building Release $projectPath with $projectOptions"
+            Write-Host "Executing: ""$msbuild"" $release /r ""$projectPath"" $projectOptions $extraArgs /bl"
             & $msbuild $release /r "$projectPath" $projectOptions $extraArgs /bl:binlogs/$projectPath/$i/release/msbuild.binlog
             Assert-ExitCodeIsZero
 

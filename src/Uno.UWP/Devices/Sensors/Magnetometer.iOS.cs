@@ -66,7 +66,7 @@ namespace Windows.Devices.Sensors
 
 		private double UpdateMagnetometer(uint value) => value / 1000.0;
 
-		private void MagnetometerUpdateReceived(CMMagnetometerData data, NSError error)
+		private void MagnetometerUpdateReceived(CMMagnetometerData? data, NSError? error)
 		{
 			if (data == null)
 			{

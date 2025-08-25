@@ -63,6 +63,7 @@ cd $BUILD_SOURCESDIRECTORY/build
 export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
 export ANDROID_SDK_ROOT=$BUILD_SOURCESDIRECTORY/build/android-sdk
 export CMDLINETOOLS=commandlinetools-linux-8512546_latest.zip
+export ANDROID_AVD_HOME="${ANDROID_AVD_HOME:=$HOME/.android/avd}"
 
 if [[ ! -d $ANDROID_HOME ]];
 then
@@ -78,7 +79,7 @@ fi
 # sudo installer -verbose -pkg Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg -target /
 
 AVD_NAME=xamarin_android_emulator
-AVD_CONFIG_FILE=~/.android/avd/$AVD_NAME.avd/config.ini
+AVD_CONFIG_FILE="$ANDROID_AVD_HOME/$AVD_NAME.avd/config.ini"
 
 if [[ ! -f $AVD_CONFIG_FILE ]];
 then
