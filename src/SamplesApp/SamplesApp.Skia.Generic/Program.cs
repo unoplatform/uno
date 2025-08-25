@@ -57,7 +57,7 @@ namespace SkiaSharpExample
 				.UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
 				.UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
 				.UseWindows()
-				.UseLinuxFrameBuffer()
+				.UseLinuxFrameBuffer(hostBuilder => hostBuilder.DisplayScale(2.0f)) // Example of new DisplayScale configuration
 				.UseWindows(b => b
 					.WpfApplication(() =>
 					{
