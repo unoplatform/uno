@@ -67,6 +67,26 @@
 
 			<Border BorderBrush="Gray" BorderThickness="1" Padding="8">
 				<StackPanel Spacing="8">
+					<TextBlock Text="ListView"/>
+					<ListView ItemTemplate="{StaticResource SharedTemplate}" Height="100">
+						<ListView.Items>
+							<x:String>LV1</x:String>
+							<x:String>LV2</x:String>
+							<x:String>LV3</x:String>
+							<x:String>LV4</x:String>
+							<x:String>LV5</x:String>
+						</ListView.Items>
+						<ListView.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Horizontal" Spacing="15" />
+							</ItemsPanelTemplate>
+						</ListView.ItemsPanel>
+					</ListView>
+				</StackPanel>
+			</Border>
+
+			<Border BorderBrush="Gray" BorderThickness="1" Padding="8">
+				<StackPanel Spacing="8">
 					<TextBlock Text="ItemsRepeater"/>
 					<ItemsRepeater ItemTemplate="{StaticResource SharedTemplate}">
 						<ItemsRepeater.ItemsSource>
