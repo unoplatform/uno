@@ -99,6 +99,9 @@ namespace Uno.UI.RemoteControl.HotReload
 				("rider", "android", false) => MetadataUpdatesSupport.DevServer | MetadataUpdatesSupport.RemoteControl,
 				("rider", "ios", false) => MetadataUpdatesSupport.DevServer | MetadataUpdatesSupport.RemoteControl,
 
+				// Hot-reload in runtime test / legacy when built in command line
+				(null or "", _, false) => MetadataUpdatesSupport.DevServer | MetadataUpdatesSupport.RemoteControl,
+
 				_ => MetadataUpdatesSupport.None
 			};
 
