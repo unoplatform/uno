@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using WpfWindow = System.Windows.Window;
 using WpfControl = System.Windows.Controls.Control;
@@ -69,7 +70,7 @@ internal class WpfNativeOpenGLWrapper
 #if WINDOWS_UWP || WINAPPSDK
 		var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_getWindowFunc());
 #else
-		if (WpfManager.XamlRootMap.GetHostForRoot(xamlRoot) is not WpfControl wpfControl || WpfWindow.GetWindow(wpfControl) is not { } wpfWindow)
+		if (XamlRootMap.GetHostForRoot(xamlRoot) is not WpfControl wpfControl || WpfWindow.GetWindow(wpfControl) is not { } wpfWindow)
 		{
 			throw new InvalidOperationException($"The XamlRoot and the XamlRootMap must be initialized before constructing a {_type.Name}.");
 		}

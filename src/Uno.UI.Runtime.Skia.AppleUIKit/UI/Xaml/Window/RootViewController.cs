@@ -41,7 +41,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private UIView? _topViewLayer;
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
-	private SKPicture? _picture;
 
 	public RootViewController()
 	{
@@ -80,7 +79,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		view.AddSubview(_textInputLayer);
 
 #if !__TVOS__
-		_skCanvasView = new SkiaCanvas(OnFrameDrawn);
+		_skCanvasView = new SkiaCanvas();
 		_skCanvasView.SetOwner(this);
 #else
 		_skCanvasView = new SkiaCanvas();
@@ -116,8 +115,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			.ObserveWillResignActive(DismissPopups);
 	}
 
-	internal SKPicture? Picture => _picture;
-
 	private void DismissPopups(object? sender, object? args)
 	{
 		if (_xamlRoot is not null)
@@ -140,34 +137,26 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	private void OnPaintSurfaceInner(SKSurface surface)
 	{
-		SkiaRenderHelper.RenderPicture(
-			surface,
-			_picture,
-			SKColors.Transparent,
-			_fpsHelper);
-	}
-#endif
-
-#if !__TVOS__
-	private void OnFrameDrawn()
-	{
-		// On each frame, while we're using continuous rendering,
-		// we need to dispatch a processing of events on the DispatcherQueue
-		// Then force a render of the composition tree, assuming that the tree
-		// has changed. We explicitly hooking into the rendering loop to keep
-		// the pace with the screen refresh rate.
-		if (NativeDispatcher.Main.IsRendering)
+		if (_xamlRoot?.LastRenderedFrame is { } lastRenderedFrame)
 		{
-			// Enqueue on the dispatcher to process current events, then render
-			// the current composition tree.
-			NativeDispatcher.Main.DispatchRendering();
+			OnRenderFrameRequested(surface.Canvas);
 		}
 	}
 #endif
 
-	private void UpdateNativeClipping(SKPath? path)
+	internal void OnRenderFrameRequested(SKCanvas canvas)
 	{
-		if (path is not null && !path.IsEmpty)
+		var clipPath = RootElement?.XamlRoot?.OnNativePlatformFrameRequested(canvas, _ => canvas);
+
+		if (clipPath is not null)
+		{
+			UpdateNativeClipping(clipPath);
+		}
+	}
+
+	private void UpdateNativeClipping(SKPath path)
+	{
+		if (!path.IsEmpty)
 		{
 			var svgPath = path.ToSvgPathData();
 			if (svgPath != _lastSvgClipPath)
@@ -300,22 +289,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void InvalidateRender()
 	{
-		if (!SkiaRenderHelper.CanRecordPicture(RootElement))
-		{
-			RootElement?.XamlRoot?.QueueInvalidateRender();
-			return;
-		}
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width),
-			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height),
-			RootElement,
-			invertPath: false);
-
-		Interlocked.Exchange(ref _picture, picture);
-
-		UpdateNativeClipping(path);
-
 #if !__TVOS__
 		_skCanvasView?.QueueRender();
 #else

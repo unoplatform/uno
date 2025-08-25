@@ -88,9 +88,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_startInvoked = true;
 
-				SynchronizationContext.SetSynchronizationContext(
-					new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
-				);
+				SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
 				await WindowManagerInterop.InitAsync();
 

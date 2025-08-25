@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,11 +32,7 @@ namespace Uno.UI.Dispatching
 			new Queue<Delegate>(), // Idle
 		};
 
-		private readonly NativeDispatcherSynchronizationContext[] _synchronizationContexts;
-
 		private readonly object _gate = new();
-
-		private readonly long _startTime;
 
 		private NativeDispatcherPriority _currentPriority;
 
@@ -57,30 +54,12 @@ namespace Uno.UI.Dispatching
 
 			_currentPriority = NativeDispatcherPriority.Normal;
 
-			_synchronizationContexts = new NativeDispatcherSynchronizationContext[]
-			{
-				new(this, NativeDispatcherPriority.High),
-				new(this, NativeDispatcherPriority.Normal),
-				new(this, NativeDispatcherPriority.Low),
-				new(this, NativeDispatcherPriority.Idle),
-			};
+			SynchronizationContext = new NativeDispatcherSynchronizationContext(this);
 
 			Initialize();
-
-			_startTime = Stopwatch.GetTimestamp();
 		}
 
-		/// <summary>
-		/// Gets the synchronizations contexts for the available priorities from <see cref="NativeDispatcherPriority"/>.
-		/// </summary>
-		internal NativeDispatcherSynchronizationContext GetSynchronizationContext(NativeDispatcherPriority priority)
-		{
-			if ((int)priority < 0 || (int)priority > 3)
-			{
-				throw new ArgumentOutOfRangeException(nameof(priority));
-			}
-			return _synchronizationContexts[(int)priority];
-		}
+		internal NativeDispatcherSynchronizationContext SynchronizationContext { get; }
 
 		/// <summary>
 		/// Enforce access on the UI thread.
@@ -99,12 +78,6 @@ namespace Uno.UI.Dispatching
 			// Currently, we have a singleton NativeDispatcher.
 			// We want DispatchItems to be static to avoid delegate allocations.
 			var @this = NativeDispatcher.Main;
-			if (@this.Rendering != null)
-			{
-				Debug.Assert(@this.RenderingEventArgsGenerator != null);
-
-				@this.Rendering.Invoke(null, @this.RenderingEventArgsGenerator.Invoke(Stopwatch.GetElapsedTime(@this._startTime)));
-			}
 
 			Action? action = null;
 
@@ -119,6 +92,8 @@ namespace Uno.UI.Dispatching
 						action = Unsafe.As<Action>(queue.Dequeue());
 
 						@this._currentPriority = (NativeDispatcherPriority)p;
+
+						@this.LogTrace()?.Trace($"Dispatching next job in dispatcher queue: priority: {@this._currentPriority} queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
 
 						if (Interlocked.Decrement(ref @this._globalCount) > 0)
 						{
@@ -148,7 +123,7 @@ namespace Uno.UI.Dispatching
 			{
 				try
 				{
-					using (dispatcher._synchronizationContexts[(int)dispatcher._currentPriority].Apply())
+					using (dispatcher.SynchronizationContext.Apply())
 					{
 						action();
 					}
@@ -158,43 +133,12 @@ namespace Uno.UI.Dispatching
 					dispatcher.Log().Error("NativeDispatcher unhandled exception", exception);
 				}
 			}
-			else if (!dispatcher.IsRendering && dispatcher.Log().IsEnabled(LogLevel.Debug))
+			else if (dispatcher.Log().IsEnabled(LogLevel.Debug))
 			{
 				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
 		}
 #endif
-		internal void SynchronousDispatchRendering()
-			=> SynchronousDispatchRenderingPartial();
-
-		partial void SynchronousDispatchRenderingPartial();
-
-#if REPORT_FPS
-		static FrameRateLogger _dispatchRenderingLogger = new FrameRateLogger(typeof(NativeDispatcher), "DispatchRendering");
-#endif
-
-		internal void DispatchRendering()
-		{
-			if (IsRendering)
-			{
-#if REPORT_FPS
-				_dispatchRenderingLogger.ReportFrame();
-#endif
-				Enqueue(() =>
-				{
-					RaiseRendered();
-				});
-			}
-		}
-
-		private void RaiseRendered()
-		{
-			if (Rendering != null)
-			{
-				// If we raised the Rendering event we can render composition tree.
-				Rendered?.Invoke();
-			}
-		}
 
 		internal void Enqueue(Action handler, NativeDispatcherPriority priority = NativeDispatcherPriority.Normal)
 		{
@@ -411,14 +355,13 @@ namespace Uno.UI.Dispatching
 
 		private void EnqueueCore(Delegate handler, NativeDispatcherPriority priority)
 		{
-			Debug.Assert((int)priority >= 0 && (int)priority <= 3);
+			Debug.Assert((int)priority >= 0 && (int)priority <= 4);
 
 			bool shouldEnqueue;
 
 			lock (_gate)
 			{
 				_queues[(int)priority].Enqueue(handler);
-
 				shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
 			}
 
@@ -461,22 +404,6 @@ namespace Uno.UI.Dispatching
 					handler.Method.DeclaringType?.FullName + "." + handler.Method.Name });
 
 		/// <summary>
-		/// Wakes up the dispatcher.
-		/// </summary>
-		internal void WakeUp()
-		{
-			lock (_gate)
-			{
-				if (Interlocked.Increment(ref _globalCount) == 1)
-				{
-					EnqueueNative(NativeDispatcherPriority.Normal);
-				}
-
-				Interlocked.Decrement(ref _globalCount);
-			}
-		}
-
-		/// <summary>
 		/// Gets the priority of the current task.
 		/// </summary>
 		internal NativeDispatcherPriority CurrentPriority => _currentPriority;
@@ -490,23 +417,12 @@ namespace Uno.UI.Dispatching
 								_queues[(int)NativeDispatcherPriority.Normal].Count +
 								_queues[(int)NativeDispatcherPriority.Low].Count == 0;
 
-		internal bool IsRendering => Rendering != null;
-
 		/// <summary>
 		/// Gets the dispatcher for the main thread.
 		/// </summary>
 		internal static NativeDispatcher Main { get; } = new NativeDispatcher();
 
 		// Dispatching for the CompositionTarget.Rendering event
-		internal event EventHandler<object>? Rendering;
-
-#pragma warning disable CS0067
-		// Dispatching for the compositor to actually render the frame only called
-		// when there are subscribers to Rendering
-		internal event Action? Rendered;
-#pragma warning restore CS0067
-
-		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
 
 		public static class TraceProvider
 		{

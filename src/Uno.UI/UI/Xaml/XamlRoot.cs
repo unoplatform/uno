@@ -1,11 +1,13 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using MUIC = Microsoft.UI.Content;
@@ -23,6 +25,21 @@ public sealed partial class XamlRoot
 	internal XamlRoot(VisualTree visualTree)
 	{
 		VisualTree = visualTree;
+#if __SKIA__
+		_renderTimer = new Timer(_ => OnRenderTimerTick());
+		CompositionTarget.RenderingActiveChanged += RequestNewFrame;
+		// TODO: is HostWindow ever null?
+		if (HostWindow is { } hostWindow)
+		{
+			void OnHostWindowClosed(object sender, WindowEventArgs args)
+			{
+				_renderTimer.Dispose();
+				CompositionTarget.RenderingActiveChanged -= RequestNewFrame;
+				hostWindow.Closed -= OnHostWindowClosed;
+			}
+			hostWindow.Closed += OnHostWindowClosed;
+		}
+#endif
 	}
 
 	/// <summary>

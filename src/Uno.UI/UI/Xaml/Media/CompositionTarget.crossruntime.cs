@@ -1,42 +1,31 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using Uno.UI;
+using System.Diagnostics;
+using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Media;
 
 public partial class CompositionTarget
 {
+	private static readonly long _start = Stopwatch.GetTimestamp();
 	private static Action _renderingActiveChanged;
 	private static bool _isRenderingActive;
+
+	private static event EventHandler<object> _rendering;
 
 	public static event EventHandler<object> Rendering
 	{
 		add
 		{
 			NativeDispatcher.CheckThreadAccess();
-
-			var currentlyRaisingEvents = NativeDispatcher.Main.IsRendering;
-			NativeDispatcher.Main.Rendering += value;
-			NativeDispatcher.Main.RenderingEventArgsGenerator ??= (d => new RenderingEventArgs(d));
-
-			IsRenderingActive = NativeDispatcher.Main.IsRendering;
-
-			if (!currentlyRaisingEvents)
-			{
-				// Queue the first render, so that the native surfaces
-				// timers can pick up the subsquent renders.
-				NativeDispatcher.Main.DispatchRendering();
-			}
+			_rendering += value;
+			IsRenderingActive = true;
 		}
 		remove
 		{
 			NativeDispatcher.CheckThreadAccess();
-
-			NativeDispatcher.Main.Rendering -= value;
-
-			IsRenderingActive = NativeDispatcher.Main.IsRendering;
+			_rendering -= value;
+			IsRenderingActive = _rendering is not null;
 		}
 	}
 
@@ -61,4 +50,23 @@ public partial class CompositionTarget
 			}
 		}
 	}
+
+	internal static void InvokeRendering()
+	{
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+			}, NativeDispatcherPriority.High);
+		}
+	}
+
+#if __SKIA__
+	void ICompositionTarget.RequestNewFrame() => ContentRoot?.XamlRoot?.RequestNewFrame();
+#endif
 }

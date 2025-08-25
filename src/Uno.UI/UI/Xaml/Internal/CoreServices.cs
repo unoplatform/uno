@@ -106,6 +106,10 @@ namespace Uno.UI.Xaml.Core
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					root.UpdateLayout();
 				}
+
+#if __SKIA__
+				root.XamlRoot?.OnPaintFrameOpportunity();
+#endif
 			}
 		}
 #endif

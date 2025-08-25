@@ -44,7 +44,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController = new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
 		_xamlRoot = xamlRoot;
-		AppManager.XamlRootMap.Register(xamlRoot, _mainController);
+		XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 		ObserveOrientationAndSize();
