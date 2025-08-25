@@ -158,7 +158,11 @@ namespace Uno.AuthenticationBroker
 			var success = false;
 			var parentActivity = CurrentActivity;
 
-			var customTabsActivityManager = CustomTabsActivityManager.From(parentActivity);
+#pragma warning disable CS0618
+			// https://github.com/dotnet/android-libraries/issues/873
+			// TODO: try using `CustomTabsActivityManager(parentActivity!)` instead of `CustomTabsActivityManager.From()`?
+			var customTabsActivityManager = CustomTabsActivityManager.From(parentActivity!);
+#pragma warning restore CS0618
 			try
 			{
 				if (await BindServiceAsync(customTabsActivityManager, ct))
