@@ -20,6 +20,7 @@ namespace Uno.UI.Samples.UITests.Templates
 
 		private void OnRedClick(object sender, RoutedEventArgs e)
 		{
+#if !WINAPPSDK
 			if (Resources["SharedTemplate"] is DataTemplate dt)
 			{
 				Uno.DataTemplateHelper.UpdateDataTemplate(dt, () =>
@@ -35,10 +36,12 @@ namespace Uno.UI.Samples.UITests.Templates
 					return grid;
 				});
 			}
+#endif
 		}
 
 		private void OnBlueClick(object sender, RoutedEventArgs e)
 		{
+#if !WINAPPSDK
 			if (Resources["SharedTemplate"] is DataTemplate dt)
 			{
 				Uno.DataTemplateHelper.UpdateDataTemplate(dt, () =>
@@ -55,5 +58,6 @@ namespace Uno.UI.Samples.UITests.Templates
 				});
 			}
 		}
+#endif
 	}
 }
