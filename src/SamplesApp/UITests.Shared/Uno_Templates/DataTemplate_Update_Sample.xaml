@@ -48,7 +48,7 @@
 			<Border BorderBrush="Gray" BorderThickness="1" Padding="8">
 				<StackPanel Spacing="8">
 					<TextBlock Text="ItemsControl"/>
-					<ItemsControl ItemTemplate="{StaticResource SharedTemplate}">
+					<ItemsControl ItemTemplate="{StaticResource SharedTemplate}" x:Name="itms">
 						<ItemsControl.Items>
 							<x:String>1</x:String>
 							<x:String>2</x:String>
@@ -62,6 +62,36 @@
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 					</ItemsControl>
+				</StackPanel>
+			</Border>
+
+			<Border BorderBrush="Gray" BorderThickness="1" Padding="8">
+				<StackPanel Spacing="8">
+					<TextBlock Text="ItemsRepeater"/>
+					<ItemsRepeater ItemTemplate="{StaticResource SharedTemplate}">
+						<ItemsRepeater.ItemsSource>
+							<x:String>A</x:String>
+							<x:String>B</x:String>
+							<x:String>C</x:String>
+							<x:String>D</x:String>
+							<x:String>E</x:String>
+						</ItemsRepeater.ItemsSource>
+						<ItemsRepeater.Layout>
+							<StackLayout Orientation="Horizontal" Spacing="20" />
+						</ItemsRepeater.Layout>
+					</ItemsRepeater>
+				</StackPanel>
+			</Border>
+
+			<Border BorderBrush="Gray" BorderThickness="1" Padding="8">
+				<StackPanel Spacing="8">
+					<TextBlock Text="ItemsRepeater - BINDING TEST"/>
+					<ItemsRepeater ItemTemplate="{StaticResource SharedTemplate}"
+					               ItemsSource="{x:Bind itms.Items}">
+						<ItemsRepeater.Layout>
+							<StackLayout Orientation="Horizontal" Spacing="20" />
+						</ItemsRepeater.Layout>
+					</ItemsRepeater>
 				</StackPanel>
 			</Border>
 		</StackPanel>
