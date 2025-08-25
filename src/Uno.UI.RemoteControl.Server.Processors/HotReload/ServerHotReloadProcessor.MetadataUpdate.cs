@@ -27,6 +27,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private static readonly StringComparer _pathsComparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
 		private static readonly StringComparison _pathsComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
+		private bool _sendUpdatesThruDebugger;
 		private FileSystemWatcher[]? _solutionWatchers;
 		private IDisposable? _solutionWatcherEventsDisposable;
 
@@ -35,24 +36,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private WatchHotReloadService? _hotReloadService;
 		private IReporter _reporter = new Reporter();
 
-		private bool _useRoslynHotReload;
-		private bool _useHotReloadThruDebugger;
-
-		private bool InitializeMetadataUpdater(ConfigureServer configureServer, Dictionary<string, string> properties)
+		private bool InitializeMetadataUpdater(ConfigureServer configureServer)
 		{
-			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
-
-			_useRoslynHotReload = _useRoslynHotReload || configureServer.EnableMetadataUpdates;
-			_useHotReloadThruDebugger = configureServer.EnableHotReloadThruDebugger;
-
-			if (_useRoslynHotReload)
+			if (configureServer.EnableMetadataUpdates)
 			{
-				// Assembly registrations must be done before the workspace is initialized
-				// Not doing so will cause the roslyn msbuild workspace to fail to load because
-				// of a missing path on assemblies loaded from a memory stream.
-				CompilationWorkspaceProvider.RegisterAssemblyLoader();
-
-				InitializeInner(configureServer, properties);
+				_sendUpdatesThruDebugger = configureServer.EnableHotReloadThruDebugger;
+				InitializeInner(configureServer);
 
 				return true;
 			}
@@ -62,27 +51,46 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private void InitializeInner(ConfigureServer configureServer, Dictionary<string, string> properties)
+		private void InitializeInner(ConfigureServer configureServer)
 		{
-			if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
+			try
 			{
-				// If this assembly was loaded from a stream, it will not have a location.
-				// This will indicate that the assembly loader from CompilationWorkspaceProvider
-				// has been registered too late.
-				if (string.IsNullOrEmpty(wsAsm.Location))
+				// Assembly registrations must be done before the workspace is initialized
+				// Not doing so will cause the roslyn msbuild workspace to fail to load because
+				// of a missing path on assemblies loaded from a memory stream.
+				CompilationWorkspaceProvider.RegisterAssemblyLoader();
+
+				if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
 				{
-					throw new InvalidOperationException("Microsoft.CodeAnalysis.Workspaces was loaded from a stream and must loaded from a known path");
+					// If this assembly was loaded from a stream, it will not have a location.
+					// This will indicate that the assembly loader from CompilationWorkspaceProvider
+					// has been registered too late.
+					if (string.IsNullOrEmpty(wsAsm.Location))
+					{
+						throw new InvalidOperationException("Microsoft.CodeAnalysis.Workspaces was loaded from a stream and must loaded from a known path");
+					}
 				}
+
+				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
+
+				_initializeTask = Task.Run(InitializeAsync, CancellationToken.None);
+			}
+			catch
+			{
+				_ = _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
+				_ = Notify(HotReloadEvent.Disabled);
+
+				throw;
 			}
 
-			CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
-
-			_initializeTask = Task.Run(
-			async () =>
+			async Task<(Solution, WatchHotReloadService)> InitializeAsync()
 			{
 				try
 				{
 					await Notify(HotReloadEvent.Initializing);
+
+					// Clone the properties from the ConfigureServer
+					var properties = configureServer.MSBuildProperties.ToDictionary();
 
 					// Flag the current build as created for hot reload, which allows for running targets or settings
 					// props/items in the context of the hot reload workspace.
@@ -133,32 +141,31 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 					throw;
 				}
-			},
-			CancellationToken.None);
+			}
 		}
 
 		private void ObserveSolutionPaths(Solution solution, params string?[] excludedDir)
 		{
-			var observedPaths =
-				solution.Projects
-					.SelectMany(project =>
-					{
-						var projectDir = Path.GetDirectoryName(project.FilePath);
-						ImmutableArray<string> excludedProjectDir = [.. from dir in excludedDir where dir is not null select Path.Combine(projectDir!, dir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)];
+			var observedPaths = solution
+				.Projects
+				.SelectMany(project =>
+				{
+					var projectDir = Path.GetDirectoryName(project.FilePath);
+					ImmutableArray<string> excludedProjectDir = [.. from dir in excludedDir where dir is not null select Path.Combine(projectDir!, dir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)];
 
-						var paths = project
-							.Documents
-							.Select(d => d.FilePath)
-							.Concat(project.AdditionalDocuments.Select(d => d.FilePath))
-							.Select(Path.GetDirectoryName)
-							.Where(path => path is not null && !excludedProjectDir.Any(dir => path.StartsWith(dir, _pathsComparison)))
-							.Distinct()
-							.ToArray();
+					var paths = project
+						.Documents
+						.Select(d => d.FilePath)
+						.Concat(project.AdditionalDocuments.Select(d => d.FilePath))
+						.Select(Path.GetDirectoryName)
+						.Where(path => path is not null && !excludedProjectDir.Any(dir => path.StartsWith(dir, _pathsComparison)))
+						.Distinct()
+						.ToArray();
 
-						return paths;
-					})
-					.Distinct()
-					.ToArray();
+					return paths;
+				})
+				.Distinct()
+				.ToArray();
 
 #if DEBUG
 			Console.WriteLine($"Observing paths {string.Join(", ", observedPaths)}");
@@ -270,39 +277,45 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			_reporter.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 			sw.Stop();
 
-
-			if (rudeEdits.IsEmpty && updates.IsEmpty)
+			switch (rudeEdits.IsEmpty, updates.IsEmpty)
 			{
-				var compilationErrors = GetCompilationErrors(solution, ct);
-				if (compilationErrors.IsEmpty)
-				{
-					_reporter.Output("No hot reload changes to apply.");
-					await hotReload.Complete(HotReloadServerResult.NoChanges);
-				}
-				else
-				{
-					await hotReload.Complete(HotReloadServerResult.Failed);
-				}
+				case (true, true):
+					{
+						var compilationErrors = GetCompilationErrors(solution, ct);
+						if (compilationErrors.IsEmpty)
+						{
+							_reporter.Output("No hot reload changes to apply.");
+							await hotReload.Complete(HotReloadServerResult.NoChanges);
+						}
+						else
+						{
+							await hotReload.Complete(HotReloadServerResult.Failed);
+						}
+					}
+					break;
 
-				return;
+				case (false, _):
+					{
+						// Rude edit.
+						_reporter.Output("Unable to apply hot reload because of a rude edit.");
+						foreach (var diagnostic in hotReloadDiagnostics)
+						{
+							_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
+						}
+
+						await hotReload.Complete(HotReloadServerResult.RudeEdit);
+					}
+					break;
+
+				//case (true, false):
+				default:
+					{
+						await SendUpdates(updates);
+
+						await hotReload.Complete(HotReloadServerResult.Success);
+					}
+					break;
 			}
-
-			if (!rudeEdits.IsEmpty)
-			{
-				// Rude edit.
-				_reporter.Output("Unable to apply hot reload because of a rude edit.");
-				foreach (var diagnostic in hotReloadDiagnostics)
-				{
-					_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
-				}
-
-				await hotReload.Complete(HotReloadServerResult.RudeEdit);
-				return;
-			}
-
-			await SendUpdates(updates);
-
-			await hotReload.Complete(HotReloadServerResult.Success);
 
 			async Task SendUpdates(ImmutableArray<WatchHotReloadService.Update> updates)
 			{
@@ -312,7 +325,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				for (var i = 0; i < updates.Length; i++)
 				{
-					if (_useHotReloadThruDebugger)
+					if (_sendUpdatesThruDebugger)
 					{
 						await _remoteControlServer.SendMessageToIDEAsync(
 							new Uno.UI.RemoteControl.Messaging.IdeChannel.HotReloadThruDebuggerIdeMessage(

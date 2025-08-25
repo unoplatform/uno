@@ -13,6 +13,7 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\**\*.cs" Link="HotReload/Messages/%(Filename)%(Extension)" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReload/%(Filename)%(Extension)" />
 	</ItemGroup>
 
 	<ItemGroup>
