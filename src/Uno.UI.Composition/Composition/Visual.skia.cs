@@ -212,7 +212,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
-		var parent = includeSelf ? Parent : this;
+		var parent = includeSelf ? this : Parent;
 		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
 			parent._childrenPicture?.Dispose();
