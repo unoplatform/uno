@@ -81,7 +81,7 @@ dotnet restore Uno.UI-Wasm-only.slnf
 dotnet build Uno.UI-Wasm-only.slnf --no-restore -p:Configuration=Debug
 ```
 - Takes 3-5 minutes for WebAssembly. NEVER CANCEL. Set timeout to 15+ minutes.
-- **Note**: Some builds may fail in non-Windows environments due to Windows-specific dependencies. This is expected.
+- **Note**: The `Uno.UI-Windows-only.slnf` solution filter and any projects targeting `net9.0-windows10.0.19041.0` (or other Windows-specific target frameworks) will fail to build on non-Windows environments due to Windows-specific dependencies. On macOS, Linux, or CI environments, use the `Uno.UI-Wasm-only.slnf`, `Uno.UI-Skia-only.slnf`, or `Uno.UI-netcore-mobile-only.slnf` solution filters for cross-platform development. If you need to build or test Windows-specific projects, use a Windows machine or a Windows VM. For unit tests, ensure you are using a solution filter and target framework compatible with your OS.
 
 **Run unit tests**:
 ```bash
