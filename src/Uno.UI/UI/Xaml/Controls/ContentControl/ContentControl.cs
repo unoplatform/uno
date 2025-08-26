@@ -49,9 +49,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private bool _localContentDataContextOverride;
 
-		// Template reload system: subscription to DataTemplate updates (when enabled)
-		private IDisposable? _templateUpdatedSubscription;
-
 		protected override bool CanCreateTemplateWithoutParent { get { return _canCreateTemplateWithoutParent; } }
 
 #nullable disable // Public members should stay nullable-oblivious for now to stay consistent with WinUI
@@ -350,7 +347,7 @@ namespace Microsoft.UI.Xaml.Controls
 					SetUpdateTemplate();
 				}
 
-				var templateCanBeUpdated = Uno.UI.TemplateUpdateSubscription.Attach(dataTemplate, ref _templateUpdatedSubscription, OnCurrentTemplateUpdated);
+				var templateCanBeUpdated = Uno.UI.TemplateUpdateSubscription.Attach(this, dataTemplate, OnCurrentTemplateUpdated);
 
 				//Only apply template if it has changed
 				if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate) || templateCanBeUpdated)

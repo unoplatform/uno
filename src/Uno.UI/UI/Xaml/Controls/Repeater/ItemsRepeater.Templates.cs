@@ -54,7 +54,6 @@ partial class ItemsRepeater
 	//             ├─→ YES: Defer reset operation ⏱️
 	//             └─→ NO: Execute TriggerTemplateReset() safely ✅
 
-	private IDisposable _itemTemplateUpdatedSubscription;
 
 	/// <summary>
 	/// Flag to prevent reentrancy during template reset operations.
@@ -84,16 +83,11 @@ partial class ItemsRepeater
 			// During layout, we only set up subscriptions but prevent the original behavior
 			// to avoid the "ItemTemplate cannot be changed during layout" exception
 
-			// Clean up old subscription (safe during layout)
-			_itemTemplateUpdatedSubscription?.Dispose();
-			_itemTemplateUpdatedSubscription = null;
-
 			// Subscribe to template updates for the new template (if applicable)
 			if (newValue is DataTemplate layoutDataTemplate)
 			{
 				// Only subscribe if the dynamic template update feature is enabled
-				Uno.UI.TemplateUpdateSubscription.Attach(layoutDataTemplate,
-					ref _itemTemplateUpdatedSubscription, RefreshAllItemsForTemplateUpdate);
+				Uno.UI.TemplateUpdateSubscription.Attach(this, layoutDataTemplate, RefreshAllItemsForTemplateUpdate);
 			}
 
 			// CRITICAL: Update m_itemTemplateWrapper even during layout
@@ -115,18 +109,13 @@ partial class ItemsRepeater
 			return true; // Block original behavior to prevent constraint violation
 		}
 
-		// Clear previous subscription
-		_itemTemplateUpdatedSubscription?.Dispose();
-		_itemTemplateUpdatedSubscription = null;
-
 		var templateCanBeUpdated = false;
 
 		// Subscribe to template updates for the new template
 		if (newValue is DataTemplate newDataTemplate)
 		{
 			// Only subscribe if the dynamic template update feature is enabled
-			templateCanBeUpdated = Uno.UI.TemplateUpdateSubscription.Attach(newDataTemplate,
-				ref _itemTemplateUpdatedSubscription, RefreshAllItemsForTemplateUpdate);
+			templateCanBeUpdated = Uno.UI.TemplateUpdateSubscription.Attach(this, newDataTemplate, RefreshAllItemsForTemplateUpdate);
 		}
 
 		// Execute dynamic template reset only if feature is enabled
@@ -134,7 +123,6 @@ partial class ItemsRepeater
 		{
 			// Update wrapper first before resetting
 			UpdateItemTemplateWrapper(newValue);
-			
 			// Safe to reset immediately since we verified layout is not in progress
 			SafeTemplateReset(oldValue ?? newValue);
 			return true; // Indicate that dynamic update was handled
@@ -297,7 +285,6 @@ partial class ItemsRepeater
 		// Clear flag for bug #776
 		m_isItemTemplateEmpty = false;
 		m_itemTemplateWrapper = newValue as IElementFactoryShim;
-		
 		if (m_itemTemplateWrapper == null)
 		{
 			// ItemTemplate set does not implement IElementFactoryShim. We also 

@@ -1,6 +1,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI
 {
@@ -12,9 +15,10 @@ namespace Uno.UI
 	{
 		private sealed class Subscription : IDisposable
 		{
-			public Microsoft.UI.Xaml.DataTemplate? Template { get; }
+			public DataTemplate? Template { get; }
 			private readonly IDisposable? _inner;
-			public Subscription(Microsoft.UI.Xaml.DataTemplate? template, IDisposable? inner)
+
+			public Subscription(DataTemplate? template, IDisposable? inner)
 			{
 				Template = template;
 				_inner = inner;
@@ -22,40 +26,99 @@ namespace Uno.UI
 			public void Dispose() => _inner?.Dispose();
 		}
 
+		private sealed class OwnerState
+		{
+			public Dictionary<string, Subscription> Slots { get; } = new(StringComparer.Ordinal);
+		}
+
+		private static readonly ConditionalWeakTable<DependencyObject, OwnerState> _byOwner = new();
+
+		/// <summary>
+		/// Owner-based attach using a default slot key. Avoids the need for callers to keep a ref subscription.
+		/// </summary>
+		public static bool Attach(DependencyObject owner, DataTemplate? template, Action onUpdated)
+			=> Attach(owner, DefaultSlot, template, onUpdated);
+
+		private const string DefaultSlot = "__default__";
+
 		/// <summary>
 		/// Ensure a subscription is set to the given template; returns true if the global update mode is enabled.
+		/// Owner-based attach into a named slot, allowing multiple subscriptions per owner.
 		/// </summary>
-		public static bool Attach(
-			Microsoft.UI.Xaml.DataTemplate? template,
-			ref IDisposable? subscription,
-			Action onUpdated)
+		public static bool Attach(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)
 		{
-			if (!Uno.UI.TemplateManager.IsUpdateSubscriptionsEnabled)
+			if (!TemplateManager.IsUpdateSubscriptionsEnabled)
 			{
 				return false;
 			}
 
-			var current = subscription as Subscription;
-
-			if (!ReferenceEquals(template, current?.Template))
+			if (owner is null)
 			{
-				subscription?.Dispose();
-				subscription = null;
+				throw new ArgumentNullException(nameof(owner));
+			}
 
-				if (template is not null)
+			if (slotKey is null)
+			{
+				throw new ArgumentNullException(nameof(slotKey));
+			}
+
+			var state = _byOwner.GetOrCreateValue(owner);
+
+			if (state.Slots.TryGetValue(slotKey, out var current))
+			{
+				if (ReferenceEquals(template, current.Template))
 				{
-					var inner = template.RegisterTemplateUpdated(onUpdated);
-					subscription = new Subscription(template, inner);
+					return true; // Nothing to change
 				}
+
+				current.Dispose();
+				state.Slots.Remove(slotKey);
+			}
+
+			if (template is not null)
+			{
+				var inner = template.RegisterTemplateUpdated(onUpdated);
+				state.Slots[slotKey] = new Subscription(template, inner);
 			}
 
 			return true;
 		}
 
-		public static void Detach(ref IDisposable? subscription)
+
+		/// <summary>
+		/// Unsubscribe all owner-associated template update subscriptions.
+		/// </summary>
+		public static void Detach(DependencyObject owner)
 		{
-			subscription?.Dispose();
-			subscription = null;
+			if (owner is null)
+			{
+				return;
+			}
+
+			if (_byOwner.TryGetValue(owner, out var state))
+			{
+				foreach (var kvp in state.Slots)
+				{
+					kvp.Value.Dispose();
+				}
+				state.Slots.Clear();
+			}
+		}
+
+		public static void Detach(DependencyObject owner, string slotKey)
+		{
+			if (owner is null || slotKey is null)
+			{
+				return;
+			}
+
+			if (_byOwner.TryGetValue(owner, out var state))
+			{
+				if (state.Slots.Remove(slotKey, out var sub))
+				{
+					sub.Dispose();
+				}
+			}
 		}
 	}
 }
