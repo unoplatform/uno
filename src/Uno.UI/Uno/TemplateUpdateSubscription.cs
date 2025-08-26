@@ -30,7 +30,7 @@ namespace Uno
 			ref IDisposable? subscription,
 			Action onUpdated)
 		{
-			if (!DataTemplateHelper.IsUpdateSubscriptionsEnabled)
+			if (!TemplateManager.IsUpdateSubscriptionsEnabled)
 			{
 				return false;
 			}

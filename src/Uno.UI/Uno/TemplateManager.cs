@@ -14,10 +14,10 @@ using View = Microsoft.UI.Xaml.UIElement;
 namespace Uno
 {
 	/// <summary>
-	/// Helper to update an existing DataTemplate factory and notify interested controls.
+	/// Manager for runtime DataTemplate updates and notification system.
 	/// Also exposes a global flag to enable template-update subscriptions in controls.
 	/// </summary>
-	public static class DataTemplateHelper
+	public static class TemplateManager
 	{
 		/// <summary>
 		/// When true, controls will subscribe to DataTemplate update notifications and refresh their materialized content.
