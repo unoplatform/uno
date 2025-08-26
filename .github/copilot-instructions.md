@@ -180,7 +180,8 @@ Uno.UI.sln                       - Full solution (heavy, avoid)
 
 | Target Framework | Platform | Solution Filter |
 |------------------|----------|-----------------|
-| `net9.0` | WebAssembly, Skia | `Uno.UI-Wasm-only.slnf`, `Uno.UI-Skia-only.slnf` |
+| `net9.0` | WebAssembly | `Uno.UI-Wasm-only.slnf` |
+| `net9.0` | Skia (Linux/macOS) | `Uno.UI-Skia-only.slnf` |
 | `net9.0-windows10.0.19041.0` | Windows | `Uno.UI-Windows-only.slnf` |
 | `net9.0-android` | Android | `Uno.UI-netcore-mobile-only.slnf` |
 | `net9.0-ios` | iOS | `Uno.UI-netcore-mobile-only.slnf` |
