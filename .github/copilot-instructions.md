@@ -101,7 +101,7 @@ dotnet clean && rm -rf */bin */obj **/bin **/obj
 **Running SamplesApp locally**:
 1. Navigate to `src/SamplesApp/SamplesApp.Wasm/` for WebAssembly
 2. Ensure dependencies are restored: `dotnet restore`
-3. Run: `dotnet run` or `dotnet serve` for WebAssembly
+3. Run: `dotnet run` for WebAssembly
 
 **Online SamplesApp**: https://aka.platform.uno/wasm-samples-app
 
