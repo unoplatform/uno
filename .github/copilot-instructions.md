@@ -298,5 +298,7 @@ git commit -m "feat!: Remove deprecated API methods"
 - Use imperative mood ("Add feature" not "Added feature")
 - Reference issues when relevant: `fix: Resolve layout issue (fixes #12345)`
 - All commits will be validated by CI and must pass conventional commit format checks
+- Iterate and refine: Embrace rapid iteration, don't worry about perfect designs initially;
+improve them step by step.
 
 For complete guidelines, see: `doc/articles/contributing/guidelines/conventional-commits.md`
