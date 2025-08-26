@@ -91,9 +91,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		Microsoft.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper;
 
-		// Subscription for dynamic template updates
-		private IDisposable _itemTemplateUpdatedSubscription;
-
 		VirtualizingLayoutContext m_layoutContext;
 		object m_layoutState;
 		// Value is different from null only while we are on the OnItemsSourceChanged call stack.
@@ -679,10 +676,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_layoutSubscriptionsRevoker.Disposable = null;
 			_dataSourceSubscriptionsRevoker.Disposable = null;
 
-			// Template reload system: cleanup previous subscription
-			_itemTemplateUpdatedSubscription?.Dispose();
-			_itemTemplateUpdatedSubscription = null;
-
 			if (m_itemsSourceView is not null)
 			{
 				// We will no longer receive the element changes until next load.
@@ -761,89 +754,10 @@ namespace Microsoft.UI.Xaml.Controls
 				throw new InvalidOperationException("ItemTemplate cannot be changed during layout.");
 			}
 
-			// Clear previous subscription
-			_itemTemplateUpdatedSubscription?.Dispose();
-			_itemTemplateUpdatedSubscription = null;
-
-			var templateCanBeUpdated = false;
-
-			// Subscribe to template updates for the new template
-			if (newValue is DataTemplate newDataTemplate)
-			{
-				// Only subscribe if the dynamic template update feature is enabled
-				templateCanBeUpdated = TemplateUpdateSubscription.Attach(newDataTemplate, ref _itemTemplateUpdatedSubscription, RefreshAllItems);
-
-				// If false, the subscription is not active and RefreshAllItems will never be called
-			}
-
-			// Only perform reset logic if dynamic template updates are enabled
-			// This preserves the original behavior when the feature is disabled
-			if (templateCanBeUpdated)
-			{
-				// Since the ItemTemplate has changed, we need to re-evaluate all the items that
-				// have already been created and are now in the tree. The easiest way to do that
-				// would be to do a reset.. Note that this has to be done before we change the template
-				// so that the cleared elements go back into the old template.
-
-				// Reuse the same logic as when ItemsSource changes - trigger a reset
-				var layout = Layout;
-				if (layout != null)
-				{
-					var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-					using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
-					m_processingItemsSourceChange = args;
-
-					if (layout is VirtualizingLayout virtualLayout)
-					{
-						// Pass oldValue (the previous template) to help the layout understand 
-						// which template was used to create the existing elements that need to be cleared.
-						// This is important for proper cleanup before switching to the new template.
-						virtualLayout.OnItemsChangedCore(GetLayoutContext(), oldValue, args);
-					}
-					else if (layout is NonVirtualizingLayout nonVirtualLayout)
-					{
-						// Walk through all the elements and make sure they are cleared for
-						// non-virtualizing layouts.
-						foreach (var element in Children)
-						{
-							if (GetVirtualizationInfo(element).IsRealized)
-							{
-								ClearElementImpl(element);
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				// Original behavior when dynamic template updates are disabled:
-				// Perform a reset with the new template to refresh all items
-				var layout = Layout;
-				if (layout != null)
-				{
-					var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-					using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
-					m_processingItemsSourceChange = args;
-
-					if (layout is VirtualizingLayout virtualLayout)
-					{
-						// Pass newValue (the new template) as per original behavior
-						virtualLayout.OnItemsChangedCore(GetLayoutContext(), newValue, args);
-					}
-					else if (layout is NonVirtualizingLayout nonVirtualLayout)
-					{
-						// Walk through all the elements and make sure they are cleared for
-						// non-virtualizing layouts.
-						foreach (var element in Children)
-						{
-							if (GetVirtualizationInfo(element).IsRealized)
-							{
-								ClearElementImpl(element);
-							}
-						}
-					}
-				}
-			}
+			#region Dynamic Template Update Support
+			// Handle dynamic template updates - all related logic is consolidated here
+			HandleDynamicTemplateUpdate(oldValue, newValue);
+			#endregion
 
 			if (!SharedHelpers.IsRS5OrHigher())
 			{
@@ -888,48 +802,123 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			InvalidateMeasure();
+		}
 
-			void RefreshAllItems() // This method is only called when dynamic template updates are enabled (debugging feature)
+		#region Dynamic Template Update Support
+		// All dynamic template update functionality is consolidated in this region
+
+		private IDisposable _itemTemplateUpdatedSubscription;
+
+		/// <summary>
+		/// Handles dynamic template updates when enabled.
+		/// This consolidates all the template change subscription and reset logic.
+		/// </summary>
+		private void HandleDynamicTemplateUpdate(object oldValue, object newValue)
+		{
+			// Clear previous subscription
+			_itemTemplateUpdatedSubscription?.Dispose();
+			_itemTemplateUpdatedSubscription = null;
+
+			var templateCanBeUpdated = false;
+
+			// Subscribe to template updates for the new template
+			if (newValue is DataTemplate newDataTemplate)
 			{
-				if (Layout is not { } layout)
-				{
-					return;
-				}
+				// Only subscribe if the dynamic template update feature is enabled
+				templateCanBeUpdated = TemplateUpdateSubscription.Attach(newDataTemplate, ref _itemTemplateUpdatedSubscription, RefreshAllItems);
+			}
 
+			// Only perform reset logic if dynamic template updates are enabled
+			// This preserves the original behavior when the feature is disabled
+			if (templateCanBeUpdated)
+			{
+				TriggerTemplateReset(oldValue);
+			}
+		}
+
+		/// <summary>
+		/// Triggers a reset of all items when template changes (for dynamic template updates).
+		/// </summary>
+		private void TriggerTemplateReset(object oldTemplate)
+		{
+			// Since the ItemTemplate has changed, we need to re-evaluate all the items that
+			// have already been created and are now in the tree. The easiest way to do that
+			// would be to do a reset.. Note that this has to be done before we change the template
+			// so that the cleared elements go back into the old template.
+
+			var layout = Layout;
+			if (layout != null)
+			{
 				var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 				using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
 				m_processingItemsSourceChange = args;
 
 				if (layout is VirtualizingLayout virtualLayout)
 				{
-					// Pass ItemTemplate (the current template) because in a dynamic update scenario,
-					// the template instance hasn't changed - only its content has been modified.
-					// The layout needs to refresh elements created with this same template instance.
-					virtualLayout.OnItemsChangedCore(GetLayoutContext(), ItemTemplate, args);
+					// Pass oldTemplate to help the layout understand which template was used
+					// to create the existing elements that need to be cleared.
+					virtualLayout.OnItemsChangedCore(GetLayoutContext(), oldTemplate, args);
 				}
 				else if (layout is NonVirtualizingLayout nonVirtualLayout)
 				{
 					// Walk through all the elements and make sure they are cleared for
 					// non-virtualizing layouts.
-					foreach (var child in Children)
+					foreach (var element in Children)
 					{
-						if (GetVirtualizationInfo(child).IsRealized)
+						if (GetVirtualizationInfo(element).IsRealized)
 						{
-							ClearElementImpl(child);
+							ClearElementImpl(element);
 						}
 					}
 				}
-
-				// Clear the RecyclePool after layout has processed the reset
-				if (ItemTemplate is DataTemplate template)
-				{
-					var recyclePool = RecyclePool.GetPoolInstance(template);
-					recyclePool?.Clear();
-				}
-
-				InvalidateMeasure();
 			}
 		}
+
+		/// <summary>
+		/// Refreshes all items when a template is dynamically updated.
+		/// This method is only called when dynamic template updates are enabled.
+		/// </summary>
+		private void RefreshAllItems()
+		{
+			if (Layout is not { } layout)
+			{
+				return;
+			}
+
+			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+			using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
+			m_processingItemsSourceChange = args;
+
+			if (layout is VirtualizingLayout virtualLayout)
+			{
+				// Pass ItemTemplate (the current template) because in a dynamic update scenario,
+				// the template instance hasn't changed - only its content has been modified.
+				virtualLayout.OnItemsChangedCore(GetLayoutContext(), ItemTemplate, args);
+			}
+			else if (layout is NonVirtualizingLayout nonVirtualLayout)
+			{
+				// Walk through all the elements and make sure they are cleared for
+				// non-virtualizing layouts.
+				foreach (var child in Children)
+				{
+					if (GetVirtualizationInfo(child).IsRealized)
+					{
+						ClearElementImpl(child);
+					}
+				}
+			}
+
+			// Clear the RecyclePool after layout has processed the reset
+			if (ItemTemplate is DataTemplate template)
+			{
+				var recyclePool = RecyclePool.GetPoolInstance(template);
+				recyclePool?.Clear();
+			}
+
+			InvalidateMeasure();
+		}
+
+		#endregion
 
 		void OnLayoutChanged(Layout oldValue, Layout newValue)
 		{
