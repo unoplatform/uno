@@ -8,17 +8,20 @@ The Uno Platform is a cross-platform .NET UI framework that allows you to build 
 
 ### Prerequisites and Environment Setup
 
-Install .NET 9.0 SDK (required for this repository):
+Install the latest stable .NET SDK (currently .NET 9.0 for this repository):
 ```bash
 wget https://dot.net/v1/dotnet-install.sh && chmod +x dotnet-install.sh && ./dotnet-install.sh --channel 9.0
 export PATH="$HOME/.dotnet:$PATH"
 ```
+- Always use the latest stable supported .NET version for development
+- Update the channel number as new stable versions are released
 - Takes 1.5 minutes. NEVER CANCEL. Set timeout to 5+ minutes.
 
 Install required workloads for WebAssembly development:
 ```bash
 dotnet workload install wasm-tools wasm-tools-net9
 ```
+- Update workload versions (e.g., `wasm-tools-net10`) as new .NET versions are released
 - Takes 2.5 minutes. NEVER CANCEL. Set timeout to 10+ minutes.
 
 For other platforms, install additional workloads as needed:
@@ -40,7 +43,7 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 ```xml
 <Project>
   <PropertyGroup>
-    <!-- Choose one target framework: -->
+    <!-- Choose one target framework (update version number for latest stable .NET): -->
     <UnoTargetFrameworkOverride>net9.0</UnoTargetFrameworkOverride>              <!-- WebAssembly/Skia -->
     <!-- <UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>  Windows -->
     <!-- <UnoTargetFrameworkOverride>net9.0-android</UnoTargetFrameworkOverride>  Android -->
@@ -147,6 +150,8 @@ Uno.UI.sln                       - Full solution (heavy, avoid)
 ```
 
 ### Available Platform Targets
+
+*Note: Replace `net9.0` with the latest stable .NET version as new versions are released.*
 
 | Target Framework | Platform | Solution Filter |
 |------------------|----------|-----------------|
