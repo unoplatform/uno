@@ -1045,7 +1045,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		// Subscribe to template updates so presenter can refresh when factory changes (when feature is activated)
-		Uno.TemplateUpdateSubscription.Attach(dataTemplate, ref _templateUpdatedSubscription, OnCurrentTemplateUpdated);
+		Uno.UI.TemplateUpdateSubscription.Attach(dataTemplate, ref _templateUpdatedSubscription, OnCurrentTemplateUpdated);
 
 		// Only apply the template if it has changed
 		if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))

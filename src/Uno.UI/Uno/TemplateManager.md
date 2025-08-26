@@ -25,7 +25,7 @@
 ```csharp
 // Enable the dynamic template update system
 // WARNING: This is a debugging tool - do not use in production
-Uno.TemplateManager.EnableUpdateSubscriptions();
+Uno.UI.TemplateManager.EnableUpdateSubscriptions();
 ```
 
 ### Update a DataTemplate
@@ -34,7 +34,7 @@ Uno.TemplateManager.EnableUpdateSubscriptions();
 // Update a template's factory function (simple view factory)
 if (Resources["MyTemplate"] is DataTemplate template)
 {
-    Uno.TemplateManager.UpdateDataTemplate(template, () =>
+    Uno.UI.TemplateManager.UpdateDataTemplate(template, () =>
     {
         // Return new UI element - must be compatible with View type
         return new TextBlock { Text = "Updated Content" };
@@ -44,7 +44,7 @@ if (Resources["MyTemplate"] is DataTemplate template)
 // Alternative: Update using factory updater (advanced)
 if (Resources["MyTemplate"] is DataTemplate template)
 {
-    Uno.TemplateManager.UpdateDataTemplate(template, oldFactory =>
+    Uno.UI.TemplateManager.UpdateDataTemplate(template, oldFactory =>
     {
         // Return a new factory that creates different content
         return (NewFrameworkTemplateBuilder)((_, _) => new TextBlock { Text = "Advanced Update" });
@@ -80,7 +80,7 @@ public class MyCustomControl : FrameworkElement
         {
             // Subscribe to template updates using the public API
             // This automatically disposes previous subscription
-            Uno.TemplateManager.SubscribeToTemplate(
+            Uno.UI.TemplateManager.SubscribeToTemplate(
                 (DataTemplate) e.NewValue,
                 ref c._templateSubscription,
                 () => c.RefreshContent());
@@ -142,7 +142,7 @@ public class MyControl : FrameworkElement
     {
         if (d is MyControl c)
         {
-            Uno.TemplateManager.SubscribeToTemplate(
+            Uno.UI.TemplateManager.SubscribeToTemplate(
                 (DataTemplate)e.NewValue, 
                 ref c._templateSubscription, 
                 () => c.RefreshContent());
@@ -154,7 +154,7 @@ public class MyControl : FrameworkElement
     {
         if (disposing)
         {
-            Uno.TemplateManager.UnsubscribeFromTemplate(ref _templateSubscription);
+            Uno.UI.TemplateManager.UnsubscribeFromTemplate(ref _templateSubscription);
         }
         base.Dispose(disposing);
     }
@@ -194,7 +194,7 @@ private static void OnItemTemplateChanged(DependencyObject d, DependencyProperty
 {
     if (d is MyControl c)
     {
-        Uno.TemplateManager.SubscribeToTemplate(
+        Uno.UI.TemplateManager.SubscribeToTemplate(
             (DataTemplate)e.NewValue, 
             ref c._templateSubscription, 
             () => c.RefreshContent());
@@ -235,7 +235,7 @@ public class TemplateHotReloader
 {
     public void Initialize()
     {
-        Uno.TemplateManager.EnableUpdateSubscriptions();
+        Uno.UI.TemplateManager.EnableUpdateSubscriptions();
         
         // Watch for XAML file changes (pseudo-code)
         FileWatcher.OnFileChanged += (file) =>
@@ -246,7 +246,7 @@ public class TemplateHotReloader
                 if (template != null)
                 {
                     // Use the simple view factory overload
-                    Uno.TemplateManager.UpdateDataTemplate(template, () =>
+                    Uno.UI.TemplateManager.UpdateDataTemplate(template, () =>
                     {
                         var updatedElement = LoadUpdatedTemplate(file);
                         return updatedElement; // Must return View? type

@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Uno
+namespace Uno.UI
 {
 	/// <summary>
 	/// Internal helper to manage weak template-updated subscriptions consistently across controls.
@@ -30,7 +30,7 @@ namespace Uno
 			ref IDisposable? subscription,
 			Action onUpdated)
 		{
-			if (!TemplateManager.IsUpdateSubscriptionsEnabled)
+			if (!Uno.UI.TemplateManager.IsUpdateSubscriptionsEnabled)
 			{
 				return false;
 			}
