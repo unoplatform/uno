@@ -34,7 +34,8 @@ namespace Microsoft.UI.Xaml
 		private readonly ManagedWeakReference? _ownerRef;
 		private readonly bool _isLegacyTemplate = true; // Tests fails if set to false, so we keep it true for now.
 
-		internal NewFrameworkTemplateBuilder? _viewFactory; // Updateable when a special mode is enabled in Uno.TemplateManager
+		internal NewFrameworkTemplateBuilder?
+			_viewFactory; // Updateable when a special mode is enabled in Uno.TemplateManager
 
 		/// <summary>
 		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.
@@ -96,7 +97,8 @@ namespace Microsoft.UI.Xaml
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
-		internal protected View? LoadContentCachedCore(DependencyObject? templatedParent) => FrameworkTemplatePool.Instance.DequeueTemplate(this, templatedParent);
+		internal protected View? LoadContentCachedCore(DependencyObject? templatedParent) =>
+			FrameworkTemplatePool.Instance.DequeueTemplate(this, templatedParent);
 
 		/// <summary>
 		/// Manually return an unused template root created by <see cref="LoadContentCached"/> to the pool.
@@ -104,7 +106,8 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>
 		/// This is only used in specialized contexts. Normally the template reuse will be automatically handled by the pool.
 		/// </remarks>
-		internal void ReleaseTemplateRoot(View templateRoot) => FrameworkTemplatePool.Instance.ReleaseTemplateRoot(templateRoot, this);
+		internal void ReleaseTemplateRoot(View templateRoot) =>
+			FrameworkTemplatePool.Instance.ReleaseTemplateRoot(templateRoot, this);
 
 		/// <summary>
 		/// Creates a new instance of the current template.
@@ -191,7 +194,7 @@ namespace Microsoft.UI.Xaml
 				|| (
 					ReferenceEquals(left?._viewFactory?.Target, right?._viewFactory?.Target)
 					&& left?._viewFactory?.Method == right?._viewFactory?.Method
-					);
+				);
 
 			public int GetHashCode(FrameworkTemplate obj) => obj._hashCode;
 		}
@@ -206,13 +209,15 @@ namespace Microsoft.UI.Xaml
 				(h, s, a) => (h as Action)?.Invoke()
 			);
 
-	internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factory)
-	{
-		// Special case to update the factory without creating a new instance.
-		// A special mode is required for it to work and is activated directly in the Uno.TemplateManager.
+		internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factory)
+		{
+			// Special case to update the factory without creating a new instance.
+			// A special mode is required for it to work and is activated directly in the Uno.TemplateManager.
 
-		var previous = _viewFactory;
-		var newFactory = factory?.Invoke(previous);			if (newFactory != previous)
+			var previous = _viewFactory;
+			var newFactory = factory?.Invoke(previous);
+
+			if (newFactory != previous)
 			{
 				_viewFactory = newFactory;
 
