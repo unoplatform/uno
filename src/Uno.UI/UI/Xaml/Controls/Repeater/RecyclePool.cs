@@ -36,10 +36,13 @@ namespace Microsoft.UI.Xaml.Controls
 		public UIElement TryGetElement(string key, UIElement owner)
 			=> TryGetElementCore(key, owner);
 
+#if HAS_UNO
+		// Uno specific: Helper used by template updater
 		internal void Clear()
 		{
 			m_elements.Clear();
 		}
+#endif
 
 		protected virtual void PutElementCore(UIElement element, string key, UIElement owner)
 		{

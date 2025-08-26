@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.UITests.Templates
 	{
 		public DataTemplate_Update_Sample()
 		{
-			Uno.TemplateManager.EnableUpdateSubscriptions();
+			Uno.UI.TemplateManager.EnableUpdateSubscriptions();
 
 			this.InitializeComponent();
 		}
@@ -23,7 +23,7 @@ namespace Uno.UI.Samples.UITests.Templates
 #if !WINAPPSDK
 			if (Resources["SharedTemplate"] is DataTemplate dt)
 			{
-				Uno.TemplateManager.UpdateDataTemplate(dt, () =>
+				Uno.UI.TemplateManager.UpdateDataTemplate(dt, () =>
 				{
 					var rect = new Rectangle
 					{
@@ -44,7 +44,7 @@ namespace Uno.UI.Samples.UITests.Templates
 #if !WINAPPSDK
 			if (Resources["SharedTemplate"] is DataTemplate dt)
 			{
-				Uno.TemplateManager.UpdateDataTemplate(dt, () =>
+				Uno.UI.TemplateManager.UpdateDataTemplate(dt, () =>
 				{
 					var rect = new Rectangle
 					{

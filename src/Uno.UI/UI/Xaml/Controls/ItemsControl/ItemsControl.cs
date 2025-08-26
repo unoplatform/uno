@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateItems(null);
 			}
 
-			Uno.TemplateUpdateSubscription.Attach(newItemTemplate, ref _itemTemplateUpdatedSubscription, OnCurrentItemTemplateUpdated);
+			Uno.UI.TemplateUpdateSubscription.Attach(newItemTemplate, ref _itemTemplateUpdatedSubscription, OnCurrentItemTemplateUpdated);
 
 			OnCurrentItemTemplateUpdated();
 		}
@@ -956,7 +956,7 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateItems(null);
 			}
 
-			Uno.TemplateUpdateSubscription.Attach(ItemTemplate, ref _itemTemplateUpdatedSubscription, OnCurrentItemTemplateUpdated);
+			Uno.UI.TemplateUpdateSubscription.Attach(ItemTemplate, ref _itemTemplateUpdatedSubscription, OnCurrentItemTemplateUpdated);
 		}
 
 		private protected override void OnUnloaded()

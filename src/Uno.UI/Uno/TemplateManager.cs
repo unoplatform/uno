@@ -11,7 +11,7 @@ using View = UIKit.UIView;
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Uno
+namespace Uno.UI
 {
 	/// <summary>
 	/// Manager for runtime DataTemplate updates and notification system.
@@ -50,7 +50,7 @@ namespace Uno
 			ref IDisposable? subscription,
 			Action onUpdated)
 		{
-			return TemplateUpdateSubscription.Attach(template, ref subscription, onUpdated);
+			return Uno.UI.TemplateUpdateSubscription.Attach(template, ref subscription, onUpdated);
 		}
 
 		/// <summary>

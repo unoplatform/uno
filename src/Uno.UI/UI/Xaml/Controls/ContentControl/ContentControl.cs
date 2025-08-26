@@ -340,7 +340,6 @@ namespace Microsoft.UI.Xaml.Controls
 			//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
 			if (IsContentPresenterBypassEnabled)
 			{
-
 				var dataTemplate = this.ResolveContentTemplate();
 
 				// Template reload system: ensure we listen for updates on the effective template (when enabled)
@@ -351,7 +350,7 @@ namespace Microsoft.UI.Xaml.Controls
 					SetUpdateTemplate();
 				}
 
-				var templateCanBeUpdated = TemplateUpdateSubscription.Attach(dataTemplate, ref _templateUpdatedSubscription, OnCurrentTemplateUpdated);
+				var templateCanBeUpdated = Uno.UI.TemplateUpdateSubscription.Attach(dataTemplate, ref _templateUpdatedSubscription, OnCurrentTemplateUpdated);
 
 				//Only apply template if it has changed
 				if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate) || templateCanBeUpdated)
