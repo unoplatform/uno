@@ -58,10 +58,14 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 
 3. **Open the corresponding solution filter**:
 - **WebAssembly (native)**: `Uno.UI-Wasm-only.slnf`
-- **Skia (all platforms including WASM, Android, iOS Skia variants)**: `Uno.UI-Skia-only.slnf`
+- **Skia variants (WASM, Android, iOS Skia implementations)**: `Uno.UI-Skia-only.slnf`
 - **Mobile platforms (native Android, iOS)**: `Uno.UI-netcore-mobile-only.slnf`
 - **Windows**: `Uno.UI-Windows-only.slnf`
 - **Unit Tests only**: `Uno.UI-UnitTests-only.slnf`
+
+**Platform Clarifications:**
+- **Native variants**: WebAssembly native (`Uno.UI-Wasm-only.slnf`), native mobile platforms (`Uno.UI-netcore-mobile-only.slnf`)
+- **Skia variants**: All Skia implementations including WASM, Android, and iOS Skia variants are included in `Uno.UI-Skia-only.slnf`
 
 ### Building and Testing
 
