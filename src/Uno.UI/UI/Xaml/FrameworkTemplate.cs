@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml
 		private readonly ManagedWeakReference? _ownerRef;
 		private readonly bool _isLegacyTemplate = true; // Tests fails if set to false, so we keep it true for now.
 
-		internal NewFrameworkTemplateBuilder? _viewFactory; // Updateable when a special mode is enabled un Uno.DataTemplateHelper
+		internal NewFrameworkTemplateBuilder? _viewFactory; // Updateable when a special mode is enabled in Uno.TemplateManager
 
 		/// <summary>
 		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.
@@ -206,15 +206,13 @@ namespace Microsoft.UI.Xaml
 				(h, s, a) => (h as Action)?.Invoke()
 			);
 
-		internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factory)
-		{
-			// Special case to update the factory without creating a new instance.
-			// A special mode is required for it to work and is activated directly in the Uno.DataTemplateHelper.
+	internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factory)
+	{
+		// Special case to update the factory without creating a new instance.
+		// A special mode is required for it to work and is activated directly in the Uno.TemplateManager.
 
-			var previous = _viewFactory;
-			var newFactory = factory?.Invoke(previous);
-
-			if (newFactory != previous)
+		var previous = _viewFactory;
+		var newFactory = factory?.Invoke(previous);			if (newFactory != previous)
 			{
 				_viewFactory = newFactory;
 
