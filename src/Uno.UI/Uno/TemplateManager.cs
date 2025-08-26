@@ -26,19 +26,49 @@ namespace Uno
 		public static bool IsUpdateSubscriptionsEnabled { get; private set; }
 
 		/// <summary>
-		/// Enables the DataTemplate update subscriptions.
+		/// [DEV TOOLING] Enables the DataTemplate update subscriptions.
 		/// </summary>
 		/// <remarks>
 		/// This should be called at application startup, before any DataTemplate is created or used.
-		/// DEBUGGER TOOL: SHOULD NOT BE USED IN PRODUCTION APPLICATION CODE.
+		/// DEV TOOLING: SHOULD NOT BE USED IN PRODUCTION APPLICATION CODE.
 		/// </remarks>
 		public static void EnableUpdateSubscriptions() => IsUpdateSubscriptionsEnabled = true;
+
+		/// <summary>
+		/// Subscribe to dynamic updates for the specified DataTemplate
+		/// </summary>
+		/// <param name="template">The DataTemplate to monitor for updates</param>
+		/// <param name="subscription">Reference to store the subscription (will be disposed/replaced as needed)</param>
+		/// <param name="onUpdated">Callback to invoke when the template is updated</param>
+		/// <returns>True if the subscription was created (when dynamic updates are enabled)</returns>
+		/// <remarks>
+		/// Use this method in custom controls that materialize DataTemplate content and want to 
+		/// automatically refresh when the template is updated at runtime
+		/// </remarks>
+		public static bool SubscribeToTemplate(
+			DataTemplate? template,
+			ref IDisposable? subscription,
+			Action onUpdated)
+		{
+			return TemplateUpdateSubscription.Attach(template, ref subscription, onUpdated);
+		}
+
+		/// <summary>
+		/// Unsubscribe from DataTemplate updates
+		/// </summary>
+		/// <param name="subscription">The subscription to dispose</param>
+		public static void UnsubscribeFromTemplate(ref IDisposable? subscription)
+		{
+			subscription?.Dispose();
+			subscription = null;
+		}
 
 		/// <summary>
 		/// Updates the factory of the provided <see cref="Microsoft.UI.Xaml.DataTemplate"/> and raises an update notification.
 		/// Returns the previous factory so callers can reuse it if needed for special cases.
 		/// </summary>
-		public static bool UpdateDataTemplate(DataTemplate currentTemplate, Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factoryUpdater)
+		public static bool UpdateDataTemplate(DataTemplate currentTemplate,
+			Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factoryUpdater)
 		{
 			ArgumentNullException.ThrowIfNull(currentTemplate);
 			ArgumentNullException.ThrowIfNull(factoryUpdater);
