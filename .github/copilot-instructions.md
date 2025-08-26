@@ -125,6 +125,27 @@ cd src/SamplesApp/SamplesApp.Wasm && dotnet run
 cd doc && npm install && npm run build
 ```
 
+5. **Runtime test validation** (preferred for UI features):
+
+Runtime tests are generally preferred over unit tests for testing UI features. Add new tests to the `Uno.UI.RuntimeTests` project and run them at runtime on the target platform.
+
+**Running runtime tests via SamplesApp**:
+1. Build and run the SamplesApp for your target platform (e.g., `SamplesApp.Skia.WebAssembly.Browser` for WebAssembly)
+2. Click the test runner button in the top left corner of the application
+3. In the test interface, enter the name of your test
+4. Click "Run" to execute the test
+5. View results in the log output showing passed/failed tests with detailed information
+
+**Adding new runtime tests**:
+```bash
+# Navigate to the runtime tests project
+cd src/Uno.UI.RuntimeTests
+
+# Add your test class following existing patterns
+# Tests should be marked with [TestMethod] attribute
+# Use the Given_When_Then naming convention
+```
+
 ## Common Tasks
 
 ### Repository Structure
@@ -182,13 +203,16 @@ dotnet build Uno.UI-[Platform]-only.slnf --no-restore
 **Test changes**:
 ```bash
 dotnet test Uno.UI/Uno.UI.Tests.csproj
+# For runtime tests (preferred for UI features):
 cd SamplesApp/SamplesApp.Wasm && dotnet run
+# Use the test runner button in SamplesApp to run runtime tests
 ```
 
 **Before committing**:
 ```bash
 dotnet build Uno.UI-UnitTests-only.slnf --no-restore
 dotnet test Uno.UI/Uno.UI.Tests.csproj --no-build
+# Run relevant runtime tests via SamplesApp for UI changes
 ```
 
 ## Documentation
