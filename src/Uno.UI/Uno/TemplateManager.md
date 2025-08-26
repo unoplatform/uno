@@ -28,6 +28,67 @@
 Uno.UI.TemplateManager.EnableUpdateSubscriptions();
 ```
 
+### Production Release Configuration (Not Recommended)
+
+⚠️ **WARNING**: The dynamic template update system is designed as a development/debugging tool. However, if you absolutely need to enable it in a production release build, you must configure both the MSBuild property and runtime activation:
+
+#### Step 1: Enable MSBuild Feature Flag
+
+Add this to your application's `.csproj` file:
+
+```xml
+<PropertyGroup>
+  <!-- DANGER: Only enable this if you absolutely need dynamic templates in production -->
+  <!-- This ensures the code survives compilation and linking -->
+  <UnoEnableDynamicDataTemplateUpdate>true</UnoEnableDynamicDataTemplateUpdate>
+</PropertyGroup>
+```
+
+#### Step 2: Runtime Activation
+
+Even with the MSBuild flag enabled, you still need to explicitly activate the system at application startup:
+
+```csharp
+public partial class App : Application
+{
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    {
+        // DANGER: Only call this if you absolutely need dynamic templates in production
+        // This has performance implications and should only be used for debugging
+        Uno.UI.TemplateManager.EnableUpdateSubscriptions();
+        
+        // Rest of your application initialization...
+    }
+}
+```
+
+#### Why Both Steps Are Required
+
+1. **MSBuild Flag (`UnoEnableDynamicDataTemplateUpdate`)**: 
+   - Defaults to `false` to exclude the feature code from release builds
+   - When `false`, the linker removes all dynamic template update code
+   - Must be `true` to include the necessary infrastructure
+
+2. **Runtime Activation (`EnableUpdateSubscriptions()`)**: 
+   - Even when the code is included, the system remains disabled by default
+   - Must be explicitly enabled to avoid any performance overhead
+   - Allows you to conditionally enable the feature based on runtime conditions
+
+#### Production Considerations
+
+- **Performance Impact**: The subscription system adds overhead to template operations
+- **Memory Usage**: Template subscriptions consume additional memory
+- **Security**: Dynamic code execution capabilities may not be suitable for all environments
+- **Debugging Only**: This feature is primarily intended for development scenarios
+
+**Recommended Alternative**: Instead of enabling this in production, consider using conditional compilation symbols to enable it only in debug builds:
+
+```csharp
+#if DEBUG
+Uno.UI.TemplateManager.EnableUpdateSubscriptions();
+#endif
+```
+
 ### Update a DataTemplate
 
 ```csharp

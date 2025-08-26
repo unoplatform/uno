@@ -11,11 +11,16 @@
 	<!-- Feature configuration -->
 	<PropertyGroup>
 		<UnoDragDropExternalSupport Condition="'$(UnoDragDropExternalSupport)'==''">true</UnoDragDropExternalSupport>
+		<UnoEnableDynamicDataTemplateUpdate Condition="'$(UnoEnableDynamicDataTemplateUpdate)'==''">false</UnoEnableDynamicDataTemplateUpdate>
 	</PropertyGroup>
 	<ItemGroup>
 		
 		<RuntimeHostConfigurationOption Include="Windows.ApplicationModel.DataTransfer.DragDrop.ExternalSupport"
 										Value="$(UnoDragDropExternalSupport)"
+										Trim="true" />
+
+		<RuntimeHostConfigurationOption Include="Uno.UI.EnableDynamicDataTemplateUpdate"
+										Value="$(UnoEnableDynamicDataTemplateUpdate)"
 										Trim="true" />
 	</ItemGroup>
 

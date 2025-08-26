@@ -347,7 +347,12 @@ namespace Microsoft.UI.Xaml.Controls
 					SetUpdateTemplate();
 				}
 
-				var templateCanBeUpdated = Uno.UI.TemplateUpdateSubscription.Attach(this, dataTemplate, OnCurrentTemplateUpdated);
+				var templateCanBeUpdated = false;
+
+				if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+				{
+					templateCanBeUpdated = Uno.UI.TemplateUpdateSubscription.Attach(this, dataTemplate, OnCurrentTemplateUpdated);
+				}
 
 				//Only apply template if it has changed
 				if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate) || templateCanBeUpdated)

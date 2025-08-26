@@ -83,11 +83,14 @@ partial class ItemsRepeater
 			// During layout, we only set up subscriptions but prevent the original behavior
 			// to avoid the "ItemTemplate cannot be changed during layout" exception
 
-			// Subscribe to template updates for the new template (if applicable)
-			if (newValue is DataTemplate layoutDataTemplate)
+			if (Uno.UI.TemplateManager.IsDataTemplateDynamicUpdateEnabled)
 			{
-				// Only subscribe if the dynamic template update feature is enabled
-				Uno.UI.TemplateUpdateSubscription.Attach(this, layoutDataTemplate, RefreshAllItemsForTemplateUpdate);
+				// Subscribe to template updates for the new template (if applicable)
+				if (newValue is DataTemplate layoutDataTemplate)
+				{
+					// Only subscribe if the dynamic template update feature is enabled
+					Uno.UI.TemplateUpdateSubscription.Attach(this, layoutDataTemplate, RefreshAllItemsForTemplateUpdate);
+				}
 			}
 
 			// CRITICAL: Update m_itemTemplateWrapper even during layout
