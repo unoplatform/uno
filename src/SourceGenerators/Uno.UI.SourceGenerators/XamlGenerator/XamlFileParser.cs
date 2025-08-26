@@ -26,6 +26,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
 		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
 		private static readonly char[] _splitChars = new char[] { '(', ',', ')' };
+		private static readonly XamlType _runXamlType = new XamlType(
+			XamlConstants.PresentationXamlXmlNamespace,
+			"Run",
+			new List<XamlType>(),
+			new XamlSchemaContext()
+		);
 		private readonly string _excludeXamlNamespacesProperty;
 		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
@@ -425,16 +431,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, bool trimStart)
 		{
-			var runType = new XamlType(
-				XamlConstants.PresentationXamlXmlNamespace,
-				"Run",
-				new List<XamlType>(),
-				new XamlSchemaContext()
-			);
+			var textMember = new XamlMember("Text", _runXamlType, false);
 
-			var textMember = new XamlMember("Text", runType, false);
-
-			return new XamlObjectDefinition(runType, reader.LineNumber, reader.LinePosition, owner: null, namespaces: null)
+			return new XamlObjectDefinition(_runXamlType, reader.LineNumber, reader.LinePosition, owner: null, namespaces: null)
 			{
 				Members =
 				{
