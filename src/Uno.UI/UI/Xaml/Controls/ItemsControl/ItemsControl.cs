@@ -193,7 +193,10 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateItems(null);
 			}
 
-			Uno.UI.TemplateUpdateSubscription.Attach(this, newItemTemplate, OnCurrentItemTemplateUpdated);
+			if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+			{
+				Uno.UI.TemplateUpdateSubscription.Attach(this, newItemTemplate, OnCurrentItemTemplateUpdated);
+			}
 
 			OnCurrentItemTemplateUpdated();
 		}
@@ -953,7 +956,10 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateItems(null);
 			}
 
-			Uno.UI.TemplateUpdateSubscription.Attach(this, ItemTemplate, OnCurrentItemTemplateUpdated);
+			if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+			{
+				Uno.UI.TemplateUpdateSubscription.Attach(this, ItemTemplate, OnCurrentItemTemplateUpdated);
+			}
 		}
 
 		private protected override void OnUnloaded()
