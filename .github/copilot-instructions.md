@@ -31,7 +31,7 @@ For other platforms, install additional workloads as needed:
 
 ### Single-Platform Development (Recommended)
 
-**CRITICAL**: Always use single-platform builds with solution filters for efficient development. Multi-platform builds are resource-intensive and often unnecessary.
+**CRITICAL**: Always use single-platform builds with solution filters for efficient development, favor skia desktop first because it builds and runs faster, unless a specific platform is requested. Multi-platform builds are resource-intensive and often unnecessary.
 
 1. **Setup cross-targeting override** (required before opening any solution):
 ```bash
