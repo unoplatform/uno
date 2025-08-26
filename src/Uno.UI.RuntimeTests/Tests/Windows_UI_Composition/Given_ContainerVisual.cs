@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿#if __SKIA__
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -20,7 +21,6 @@ using RectExtensions = Uno.Extensions.RectExtensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
-#if __SKIA__
 [TestClass]
 [RunsOnUIThread]
 public class Given_ContainerVisual
