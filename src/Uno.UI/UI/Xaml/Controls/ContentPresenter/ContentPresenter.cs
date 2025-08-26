@@ -1034,16 +1034,16 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
 		var dataTemplate = this.ResolveContentTemplate();
 
-		void OnCurrentTemplateUpdated()
-		{
-			// Force re-materialization on template update
-			_dataTemplateUsedLastUpdate = null;
-			SetUpdateTemplate();
-		}
-
 		// Subscribe to template updates so presenter can refresh when factory changes (when feature is activated)
 		if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
 		{
+			void OnCurrentTemplateUpdated()
+			{
+				// Force re-materialization on template update
+				_dataTemplateUsedLastUpdate = null;
+				SetUpdateTemplate();
+			}
+
 			Uno.UI.TemplateUpdateSubscription.Attach(this, dataTemplate, OnCurrentTemplateUpdated);
 		}
 

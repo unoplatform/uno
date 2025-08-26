@@ -171,11 +171,11 @@ public class MyCustomControl : FrameworkElement
 
 The following Uno Platform controls already support dynamic template updates when the feature is enabled:
 
-- `ItemsRepeater`
-- `ItemsControl`
+- `ItemsRepeater` - Full support with comprehensive reentrancy protection
+- `ItemsControl` - Basic support using internal `TemplateUpdateSubscription.Attach`
 - `ListView` and `GridView` (through inheritance from `ItemsControl`)
-- `ContentPresenter`
-- `ContentControl`
+
+**Note**: `ContentPresenter` and `ContentControl` have the infrastructure but may not have dynamic template updates fully implemented yet.
 
 ## Important Notes
 
@@ -265,20 +265,20 @@ private static void OnItemTemplateChanged(DependencyObject d, DependencyProperty
 // }
 ```
 
-## API Reference
+### API Reference
 
 ### TemplateManager
 
 - `EnableUpdateSubscriptions()`: Enables the dynamic template update system
-- `IsUpdateSubscriptionsEnabled`: Gets whether the system is enabled
+- `IsDataTemplateDynamicUpdateEnabled`: Gets whether the feature is enabled via MSBuild configuration
+- `IsUpdateSubscriptionsEnabled`: Gets whether the system is enabled (requires `EnableUpdateSubscriptions()` call)
 - `UpdateDataTemplate(DataTemplate, Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?>)`: Updates a template with a factory updater function
 - `UpdateDataTemplate(DataTemplate, Func<View?>)`: Updates a template with a simple view factory function
-- `SubscribeToTemplate(DependencyObject owner, DataTemplate? template, Action onUpdated)`: Preferred owner-based subscription; no member field required
-- `SubscribeToTemplate(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)`: Owner-based subscription with a named slot for multiple subscriptions per control
+- `SubscribeToTemplate(DependencyObject owner, DataTemplate? template, Action onUpdated)`: Preferred owner-based subscription; returns `bool` indicating success
+- `SubscribeToTemplate(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)`: Owner-based subscription with a named slot for multiple subscriptions per control; returns `bool` indicating success
 - `UnsubscribeFromTemplate(DependencyObject owner)`: Unsubscribes all owner-associated subscriptions
 - `UnsubscribeFromTemplate(DependencyObject owner, string slotKey)`: Unsubscribes the specified slot subscription for the owner
-- `[Legacy] SubscribeToTemplate(DataTemplate?, ref IDisposable?, Action)`: Legacy API requiring a ref token
-- `[Legacy] UnsubscribeFromTemplate(ref IDisposable?)`: Legacy API
+- `UnsubscribeFromTemplate(DependencyObject owner, string slotKey)`: Unsubscribes the specified slot subscription for the owner
 
 ### TemplateUpdateSubscription (Internal)
 
@@ -286,10 +286,9 @@ private static void OnItemTemplateChanged(DependencyObject d, DependencyProperty
 - `Attach(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)`: Owner-based internal subscription with slot
 - `Detach(DependencyObject owner)`: Detach all subscriptions for owner
 - `Detach(DependencyObject owner, string slotKey)`: Detach slot subscription for owner
-- `[Legacy] Attach(DataTemplate, ref IDisposable, Action)`: Legacy internal method
 - Returns `true` if subscriptions are enabled and the subscription was created
 
-**Note**: Built-in Uno Platform controls may use internal methods directly for performance reasons. User code should use the public `TemplateManager.SubscribeToTemplate()` API.
+**Note**: Built-in Uno Platform controls use internal methods directly for performance reasons. The actual implementation in `ItemsControl` uses `TemplateUpdateSubscription.Attach` directly rather than the public `TemplateManager.SubscribeToTemplate()` API. User code should still use the public API.
 
 ## Example: Hot-Reload Scenario
 

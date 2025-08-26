@@ -747,16 +747,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void OnItemTemplateChanged(object oldValue, object newValue)
 		{
-#if HAS_UNO
-			// ARCHITECTURE NOTE: Dynamic template update handling
-			// This delegates to ItemsRepeater.Templates.cs (partial file) which contains
-			// intentionally duplicated wrapper update logic to bypass layout constraints.
-			// See ItemsRepeater.Templates.cs header for detailed architecture explanation.
-			if (HandleDynamicTemplateUpdate(oldValue, newValue))
+			if (Uno.UI.TemplateManager.IsDataTemplateDynamicUpdateEnabled)
 			{
-				return;
+				// ARCHITECTURE NOTE: Dynamic template update handling
+				// This delegates to ItemsRepeater.Templates.cs (partial file) which contains
+				// intentionally duplicated wrapper update logic to bypass layout constraints.
+				// See ItemsRepeater.Templates.cs header for detailed architecture explanation.
+				if (HandleDynamicTemplateUpdate(oldValue, newValue))
+				{
+					return;
+				}
 			}
-#endif
 
 			if (m_isLayoutInProgress && oldValue != null)
 			{

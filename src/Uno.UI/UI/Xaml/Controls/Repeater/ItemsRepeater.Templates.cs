@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
 using Uno.Disposables;
-using Microsoft.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -118,7 +117,8 @@ partial class ItemsRepeater
 		if (newValue is DataTemplate newDataTemplate)
 		{
 			// Only subscribe if the dynamic template update feature is enabled
-			templateCanBeUpdated = Uno.UI.TemplateUpdateSubscription.Attach(this, newDataTemplate, RefreshAllItemsForTemplateUpdate);
+			templateCanBeUpdated =
+				Uno.UI.TemplateUpdateSubscription.Attach(this, newDataTemplate, RefreshAllItemsForTemplateUpdate);
 		}
 
 		// Execute dynamic template reset only if feature is enabled
@@ -132,196 +132,184 @@ partial class ItemsRepeater
 		}
 
 		return false; // Indicate that original behavior should execute
-	}
 
-	/// <summary>
-	/// Triggers a reset of all items when template changes.
-	/// </summary>
-	/// <param name="templateForLayoutNotification">The template to pass to layout for reset notification (oldTemplate for template change, current template for dynamic update)</param>
-	/// <param name="clearRecyclePool">Whether to clear the recycle pool after reset</param>
-	private void TriggerTemplateReset(object templateForLayoutNotification, bool clearRecyclePool = false)
-	{
-		// Additional safety: Don't reset if ItemTemplate is null or if we don't have a valid template to notify
-		if (ItemTemplate == null)
+		void TriggerTemplateReset(object templateForLayoutNotification, bool clearRecyclePool = false)
 		{
-			return;
-		}
-
-		// Use current template if templateForLayoutNotification is null
-		templateForLayoutNotification ??= ItemTemplate;
-
-		// Since the ItemTemplate has changed, we need to re-evaluate all the items that
-		// have already been created and are now in the tree. The easiest way to do that
-		// would be to do a reset.. Note that this has to be done before we change the template
-		// so that the cleared elements go back into the old template.
-		var layout = Layout;
-		if (layout != null)
-		{
-			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-			using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
-			m_processingItemsSourceChange = args;
-
-			if (layout is VirtualizingLayout virtualLayout)
+			// Additional safety: Don't reset if ItemTemplate is null or if we don't have a valid template to notify
+			if (ItemTemplate == null)
 			{
-				virtualLayout.OnItemsChangedCore(GetLayoutContext(), templateForLayoutNotification, args);
+				return;
 			}
-			else if (layout is NonVirtualizingLayout nonVirtualLayout)
+
+			// Use current template if templateForLayoutNotification is null
+			templateForLayoutNotification ??= ItemTemplate;
+
+			// Since the ItemTemplate has changed, we need to re-evaluate all the items that
+			// have already been created and are now in the tree. The easiest way to do that
+			// would be to do a reset.. Note that this has to be done before we change the template
+			// so that the cleared elements go back into the old template.
+			var layout = Layout;
+			if (layout != null)
 			{
-				// Walk through all the elements and make sure they are cleared for
-				// non-virtualizing layouts.
-				foreach (var element in Children)
+				var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+				using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
+				m_processingItemsSourceChange = args;
+
+				if (layout is VirtualizingLayout virtualLayout)
 				{
-					if (GetVirtualizationInfo(element).IsRealized)
+					virtualLayout.OnItemsChangedCore(GetLayoutContext(), templateForLayoutNotification, args);
+				}
+				else if (layout is NonVirtualizingLayout nonVirtualLayout)
+				{
+					// Walk through all the elements and make sure they are cleared for
+					// non-virtualizing layouts.
+					foreach (var element in Children)
 					{
-						ClearElementImpl(element);
+						if (GetVirtualizationInfo(element).IsRealized)
+						{
+							ClearElementImpl(element);
+						}
 					}
 				}
 			}
-		}
 
-		// Clear the RecyclePool after layout has processed the reset (for dynamic updates)
-		if (clearRecyclePool && ItemTemplate is DataTemplate template)
-		{
-			var recyclePool = RecyclePool.GetPoolInstance(template);
-			recyclePool?.Clear();
-		}
-
-		InvalidateMeasure();
-	}
-
-	/// <summary>
-	/// Called when a template is dynamically updated. Handles layout reentrancy safely.
-	/// This method is only called when dynamic template updates are enabled.
-	/// </summary>
-	private void RefreshAllItemsForTemplateUpdate()
-	{
-		// CRITICAL: Block if already in reset operation to prevent cascading updates
-		if (m_isResettingTemplate)
-		{
-			return; // Ignore cascading update requests
-		}
-
-		// CRITICAL: Never trigger any template changes during layout
-		// This would violate the original constraint and cause crashes
-		if (m_isLayoutInProgress)
-		{
-			// Defer the refresh until layout is completely finished
-			_ = DispatcherQueue.TryEnqueue(() =>
+			// Clear the RecyclePool after layout has processed the reset (for dynamic updates)
+			if (clearRecyclePool && ItemTemplate is DataTemplate template)
 			{
-				if (!m_isLayoutInProgress)
-				{
-					RefreshAllItemsForTemplateUpdate();
-				}
-			});
-			return;
-		}
-
-		// Only proceed if we're definitely not in a layout operation
-		SafeTemplateReset(ItemTemplate, clearRecyclePool: true);
-	}
-
-	/// <summary>
-	/// Safely triggers a template reset with reentrancy protection.
-	/// </summary>
-	/// <param name="templateForLayoutNotification">The template to pass to layout for reset notification</param>
-	/// <param name="clearRecyclePool">Whether to clear the recycle pool after reset</param>
-	private void SafeTemplateReset(object templateForLayoutNotification, bool clearRecyclePool = false)
-	{
-		// CRITICAL: Prevent reentrancy - block cascading resets
-		if (m_isResettingTemplate)
-		{
-			return; // Already resetting, ignore this request
-		}
-
-		// CRITICAL: Never perform any reset operations during layout
-		// This is a hard constraint that must be respected to avoid crashes
-		if (m_isLayoutInProgress)
-		{
-			// Defer the reset until layout is completely finished
-			_ = DispatcherQueue.TryEnqueue(() =>
-			{
-				if (!m_isLayoutInProgress)
-				{
-					SafeTemplateReset(templateForLayoutNotification, clearRecyclePool);
-				}
-			});
-			return;
-		}
-
-		// Set flag to block any template changes during reset operation
-		m_isResettingTemplate = true;
-		try
-		{
-			TriggerTemplateReset(templateForLayoutNotification, clearRecyclePool);
-		}
-		finally
-		{
-			m_isResettingTemplate = false;
-		}
-	}
-
-	/// <summary>
-	/// Updates the ItemTemplateWrapper which is critical for ViewManager element creation.
-	/// This must be kept in sync even during layout operations.
-	/// 
-	/// IMPORTANT: This method duplicates logic from OnItemTemplateChanged (lines 795-825 in the original WinUI code).
-	/// This duplication is ARCHITECTURALLY NECESSARY because:
-	/// 
-	/// 1. PARTIAL FILE ARCHITECTURE: We use partial files to separate Uno-specific functionality
-	///    from the original WinUI code, maintaining clean separation and easier upstream merging.
-	/// 
-	/// 2. LAYOUT CONSTRAINT BYPASS: The original OnItemTemplateChanged throws during layout.
-	///    We need the wrapper update logic WITHOUT the layout constraint check.
-	/// 
-	/// 3. VIEWMANAGER DEPENDENCY: ViewManager.GetElement() requires m_itemTemplateWrapper to be
-	///    valid immediately, even during layout operations, or it crashes with NullReferenceException.
-	/// 
-	/// 4. GITHUB PR COMPARISON: The working GitHub PR modifies OnItemTemplateChanged directly.
-	///    Our partial file approach requires this controlled duplication to achieve the same result.
-	/// 
-	/// FUTURE: When this functionality is integrated upstream, this duplication will be eliminated
-	/// by merging both approaches into the main OnItemTemplateChanged method.
-	/// </summary>
-	/// <param name="newValue">The new template value</param>
-	private void UpdateItemTemplateWrapper(object newValue)
-	{
-		// Clear flag for bug #776
-		m_isItemTemplateEmpty = false;
-		m_itemTemplateWrapper = newValue as IElementFactoryShim;
-		if (m_itemTemplateWrapper == null)
-		{
-			// ItemTemplate set does not implement IElementFactoryShim. We also 
-			// want to support DataTemplate and DataTemplateSelectors automagically.
-			if (newValue is DataTemplate dataTemplate) // Implements IElementFactory but not IElementFactoryShim
-			{
-				m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
-				if (dataTemplate.LoadContent() is FrameworkElement content)
-				{
-					// Due to bug https://github.com/microsoft/microsoft-ui-xaml/issues/3057, we need to get the framework
-					// to take ownership of the extra implicit ref that was returned by LoadContent. The simplest way to do
-					// this is to add it to a Children collection and immediately remove it.						
-					var children = Children;
-					children.Add(content);
-					children.RemoveAt(children.Count - 1);
-				}
-				else
-				{
-					// We have a DataTemplate which is empty, so we need to set it to true
-					m_isItemTemplateEmpty = true;
-				}
+				var recyclePool = RecyclePool.GetPoolInstance(template);
+				recyclePool?.Clear();
 			}
-			else if (newValue is DataTemplateSelector selector) // Implements IElementFactory but not IElementFactoryShim
+
+			InvalidateMeasure();
+		}
+
+		void RefreshAllItemsForTemplateUpdate()
+		{
+			// CRITICAL: Block if already in reset operation to prevent cascading updates
+			if (m_isResettingTemplate)
 			{
-				m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
+				return; // Ignore cascading update requests
 			}
-			else if (newValue != null)
+
+			// CRITICAL: Never trigger any template changes during layout
+			// This would violate the original constraint and cause crashes
+			if (m_isLayoutInProgress)
 			{
-				throw new ArgumentException("ItemTemplate", "ItemTemplate");
+				// Defer the refresh until layout is completely finished
+				_ = DispatcherQueue.TryEnqueue(() =>
+				{
+					if (!m_isLayoutInProgress)
+					{
+						RefreshAllItemsForTemplateUpdate();
+					}
+				});
+				return;
+			}
+
+			// Only proceed if we're definitely not in a layout operation
+			SafeTemplateReset(ItemTemplate, clearRecyclePool: true);
+		}
+
+		void SafeTemplateReset(object templateForLayoutNotification, bool clearRecyclePool = false)
+		{
+			// CRITICAL: Prevent reentrancy - block cascading resets
+			if (m_isResettingTemplate)
+			{
+				return; // Already resetting, ignore this request
+			}
+
+			// CRITICAL: Never perform any reset operations during layout
+			// This is a hard constraint that must be respected to avoid crashes
+			if (m_isLayoutInProgress)
+			{
+				// Defer the reset until layout is completely finished
+				_ = DispatcherQueue.TryEnqueue(() =>
+				{
+					if (!m_isLayoutInProgress)
+					{
+						SafeTemplateReset(templateForLayoutNotification, clearRecyclePool);
+					}
+				});
+				return;
+			}
+
+			// Set flag to block any template changes during reset operation
+			m_isResettingTemplate = true;
+			try
+			{
+				TriggerTemplateReset(templateForLayoutNotification, clearRecyclePool);
+			}
+			finally
+			{
+				m_isResettingTemplate = false;
 			}
 		}
 
-		// Bug in framework's reference tracking causes crash during
-		// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
-		m_itemTemplate = newValue as IElementFactory; // DataTemplate of DataTemplateSelector
+		// <summary>
+		// Updates the ItemTemplateWrapper which is critical for ViewManager element creation.
+		// This must be kept in sync even during layout operations.
+		// 
+		// IMPORTANT: This method duplicates logic from OnItemTemplateChanged (lines 795-825 in the original WinUI code).
+		// This duplication is ARCHITECTURALLY NECESSARY because:
+		// 
+		// 1. PARTIAL FILE ARCHITECTURE: We use partial files to separate Uno-specific functionality
+		//    from the original WinUI code, maintaining clean separation and easier upstream merging.
+		// 
+		// 2. LAYOUT CONSTRAINT BYPASS: The original OnItemTemplateChanged throws during layout.
+		//    We need the wrapper update logic WITHOUT the layout constraint check.
+		// 
+		// 3. VIEWMANAGER DEPENDENCY: ViewManager.GetElement() requires m_itemTemplateWrapper to be
+		//    valid immediately, even during layout operations, or it crashes with NullReferenceException.
+		// 
+		// 4. GITHUB PR COMPARISON: The working GitHub PR modifies OnItemTemplateChanged directly.
+		//    Our partial file approach requires this controlled duplication to achieve the same result.
+		// 
+		// FUTURE: When this functionality is integrated upstream, this duplication will be eliminated
+		// by merging both approaches into the main OnItemTemplateChanged method.
+		// </summary>
+		// <param name="newValue">The new template value</param>
+		void UpdateItemTemplateWrapper(object newValue)
+		{
+			// Clear flag for bug #776
+			m_isItemTemplateEmpty = false;
+			m_itemTemplateWrapper = newValue as IElementFactoryShim;
+			if (m_itemTemplateWrapper == null)
+			{
+				// ItemTemplate set does not implement IElementFactoryShim. We also 
+				// want to support DataTemplate and DataTemplateSelectors automagically.
+				if (newValue is DataTemplate dataTemplate) // Implements IElementFactory but not IElementFactoryShim
+				{
+					m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
+					if (dataTemplate.LoadContent() is FrameworkElement content)
+					{
+						// Due to bug https://github.com/microsoft/microsoft-ui-xaml/issues/3057, we need to get the framework
+						// to take ownership of the extra implicit ref that was returned by LoadContent. The simplest way to do
+						// this is to add it to a Children collection and immediately remove it.						
+						var children = Children;
+						children.Add(content);
+						children.RemoveAt(children.Count - 1);
+					}
+					else
+					{
+						// We have a DataTemplate which is empty, so we need to set it to true
+						m_isItemTemplateEmpty = true;
+					}
+				}
+				else if
+					(newValue is DataTemplateSelector
+					 selector) // Implements IElementFactory but not IElementFactoryShim
+				{
+					m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
+				}
+				else if (newValue != null)
+				{
+					throw new ArgumentException("ItemTemplate", "ItemTemplate");
+				}
+			}
+
+			// Bug in framework's reference tracking causes crash during
+			// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
+			m_itemTemplate = newValue as IElementFactory; // DataTemplate of DataTemplateSelector
+		}
 	}
 }
