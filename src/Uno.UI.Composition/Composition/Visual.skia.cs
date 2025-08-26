@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.CodeAnalysis.PooledObjects;
 using SkiaSharp;
 using Uno.Disposables;
@@ -612,6 +613,30 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			Debug.Assert(Unsafe.IsNullRef(ref rootTransform) ? canvas.TotalMatrix == TotalMatrix.ToSKMatrix() : canvas.TotalMatrix == (TotalMatrix * rootTransform).ToSKMatrix());
 		}
 #endif
+	}
+
+	internal void PrintSubtree(StringBuilder sb, int indent = 0)
+	{
+		var indentation = new string(' ', indent * 2);
+		sb.Append(indentation);
+		sb.Append('[');
+		sb.Append(Comment);
+		sb.Append("]: ");
+		sb.Append("Subtree count: [");
+		sb.Append(GetSubTreeVisualCount());
+		sb.Append("], flags: [");
+		sb.Append(_flags);
+		sb.Append("], _totalMatrix: [");
+		sb.Append(_totalMatrix.matrix);
+		sb.Append(']');
+		sb.Append("], _framesSinceSubtreeNotChanged: [");
+		sb.Append(_framesSinceSubtreeNotChanged);
+		sb.Append(']');
+		sb.AppendLine();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.PrintSubtree(sb, indent + 1);
+		}
 	}
 
 	[Flags]
