@@ -59,8 +59,6 @@ If you're developing a custom control that uses `DataTemplate.LoadContent()` and
 ```csharp
 public class MyCustomControl : FrameworkElement
 {
-    private IDisposable _templateSubscription;
-
     public static readonly DependencyProperty ItemTemplateProperty =
         DependencyProperty.Register(
             nameof(ItemTemplate),
@@ -78,11 +76,11 @@ public class MyCustomControl : FrameworkElement
     {
         if (d is MyCustomControl c)
         {
-            // Subscribe to template updates using the public API
-            // This automatically disposes previous subscription
+            // Subscribe to template updates using the owner-based API
+            // No need to keep a member IDisposable anymore
             Uno.UI.TemplateManager.SubscribeToTemplate(
+                c,
                 (DataTemplate) e.NewValue,
-                ref c._templateSubscription,
                 () => c.RefreshContent());
         
             c.RefreshContent();
@@ -135,26 +133,24 @@ This feature is intended **exclusively for development and debugging scenarios**
 ```csharp
 public class MyControl : FrameworkElement
 {
-    private IDisposable _templateSubscription;
-
-    // ✅ CORRECT: Subscribe in DependencyProperty callback
+    // ✅ CORRECT: Subscribe in DependencyProperty callback (no member field required)
     private static void OnItemTemplateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is MyControl c)
         {
             Uno.UI.TemplateManager.SubscribeToTemplate(
-                (DataTemplate)e.NewValue, 
-                ref c._templateSubscription, 
+                c,
+                (DataTemplate)e.NewValue,
                 () => c.RefreshContent());
         }
     }
 
-    // ✅ CORRECT: Clean up only on final disposal (optional)
+    // ✅ OPTIONAL: Clean up all subscriptions associated with this control on final disposal
     protected override void Dispose(bool disposing)
     {
         if (disposing)
         {
-            Uno.UI.TemplateManager.UnsubscribeFromTemplate(ref _templateSubscription);
+            Uno.UI.TemplateManager.UnsubscribeFromTemplate(this);
         }
         base.Dispose(disposing);
     }
@@ -162,7 +158,7 @@ public class MyControl : FrameworkElement
     // ❌ INCORRECT: Don't unsubscribe in OnUnloaded
     // protected override void OnUnloaded()
     // {
-    //     Uno.TemplateManager.UnsubscribeFromTemplate(ref _templateSubscription); // DON'T DO THIS
+    //     Uno.UI.TemplateManager.UnsubscribeFromTemplate(this); // DON'T DO THIS
     // }
 }
 ```
@@ -189,14 +185,14 @@ Everything is happening in the UI Thread, so no need to shield against concurren
 For custom controls, the subscription should be managed in the DependencyProperty change callback:
 
 ```csharp
-// ✅ CORRECT: Subscribe in DependencyProperty callback
+// ✅ CORRECT: Subscribe in DependencyProperty callback (no member field required)
 private static void OnItemTemplateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 {
     if (d is MyControl c)
     {
         Uno.UI.TemplateManager.SubscribeToTemplate(
-            (DataTemplate)e.NewValue, 
-            ref c._templateSubscription, 
+            c,
+            (DataTemplate)e.NewValue,
             () => c.RefreshContent());
     }
 }
@@ -216,16 +212,23 @@ private static void OnItemTemplateChanged(DependencyObject d, DependencyProperty
 - `IsUpdateSubscriptionsEnabled`: Gets whether the system is enabled
 - `UpdateDataTemplate(DataTemplate, Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?>)`: Updates a template with a factory updater function
 - `UpdateDataTemplate(DataTemplate, Func<View?>)`: Updates a template with a simple view factory function
-- `SubscribeToTemplate(DataTemplate?, ref IDisposable?, Action)`: Subscribe to template update notifications
-- `UnsubscribeFromTemplate(ref IDisposable?)`: Unsubscribe from template updates
+- `SubscribeToTemplate(DependencyObject owner, DataTemplate? template, Action onUpdated)`: Preferred owner-based subscription; no member field required
+- `SubscribeToTemplate(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)`: Owner-based subscription with a named slot for multiple subscriptions per control
+- `UnsubscribeFromTemplate(DependencyObject owner)`: Unsubscribes all owner-associated subscriptions
+- `UnsubscribeFromTemplate(DependencyObject owner, string slotKey)`: Unsubscribes the specified slot subscription for the owner
+- `[Legacy] SubscribeToTemplate(DataTemplate?, ref IDisposable?, Action)`: Legacy API requiring a ref token
+- `[Legacy] UnsubscribeFromTemplate(ref IDisposable?)`: Legacy API
 
 ### TemplateUpdateSubscription (Internal)
 
-- `Attach(DataTemplate, ref IDisposable, Action)`: Internal subscription method
-- **Use `TemplateManager.SubscribeToTemplate` instead** - this is the public API
+- `Attach(DependencyObject owner, DataTemplate? template, Action onUpdated)`: Owner-based internal subscription
+- `Attach(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)`: Owner-based internal subscription with slot
+- `Detach(DependencyObject owner)`: Detach all subscriptions for owner
+- `Detach(DependencyObject owner, string slotKey)`: Detach slot subscription for owner
+- `[Legacy] Attach(DataTemplate, ref IDisposable, Action)`: Legacy internal method
 - Returns `true` if subscriptions are enabled and the subscription was created
 
-**Note**: Built-in Uno Platform controls currently use the internal `TemplateUpdateSubscription.Attach()` method directly for performance reasons. User code should use the public `TemplateManager.SubscribeToTemplate()` API.
+**Note**: Built-in Uno Platform controls may use internal methods directly for performance reasons. User code should use the public `TemplateManager.SubscribeToTemplate()` API.
 
 ## Example: Hot-Reload Scenario
 

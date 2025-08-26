@@ -35,38 +35,51 @@ namespace Uno.UI
 		public static void EnableUpdateSubscriptions() => IsUpdateSubscriptionsEnabled = true;
 
 		/// <summary>
-		/// Subscribe to dynamic updates for the specified DataTemplate
+		/// Subscribe to dynamic updates for the specified DataTemplate and associate the subscription with an owner control.
 		/// </summary>
-		/// <param name="template">The DataTemplate to monitor for updates</param>
-		/// <param name="subscription">Reference to store the subscription (will be disposed/replaced as needed)</param>
-		/// <param name="onUpdated">Callback to invoke when the template is updated</param>
-		/// <returns>True if the subscription was created (when dynamic updates are enabled)</returns>
-		/// <remarks>
-		/// Use this method in custom controls that materialize DataTemplate content and want to 
-		/// automatically refresh when the template is updated at runtime
-		/// </remarks>
 		public static bool SubscribeToTemplate(
+			DependencyObject owner,
 			DataTemplate? template,
-			ref IDisposable? subscription,
 			Action onUpdated)
 		{
-			return Uno.UI.TemplateUpdateSubscription.Attach(template, ref subscription, onUpdated);
+			return TemplateUpdateSubscription.Attach(owner, template, onUpdated);
 		}
 
 		/// <summary>
-		/// Unsubscribe from DataTemplate updates
+		/// Subscribe to dynamic updates for the specified DataTemplate using a named slot. Allows multiple subscriptions per owner.
 		/// </summary>
-		/// <param name="subscription">The subscription to dispose</param>
-		public static void UnsubscribeFromTemplate(ref IDisposable? subscription)
+		public static bool SubscribeToTemplate(
+			DependencyObject owner,
+			string slotKey,
+			DataTemplate? template,
+			Action onUpdated)
 		{
-			subscription?.Dispose();
-			subscription = null;
+			return TemplateUpdateSubscription.Attach(owner, slotKey, template, onUpdated);
+		}
+
+
+		/// <summary>
+		/// Unsubscribe all owner-associated template update subscriptions.
+		/// </summary>
+		public static void UnsubscribeFromTemplate(DependencyObject owner)
+		{
+			TemplateUpdateSubscription.Detach(owner);
+		}
+
+		/// <summary>
+		/// Unsubscribe a specific named slot subscription for the owner.
+		/// </summary>
+		public static void UnsubscribeFromTemplate(DependencyObject owner, string slotKey)
+		{
+			TemplateUpdateSubscription.Detach(owner, slotKey);
 		}
 
 		/// <summary>
 		/// Updates the factory of the provided <see cref="Microsoft.UI.Xaml.DataTemplate"/> and raises an update notification.
-		/// Returns the previous factory so callers can reuse it if needed for special cases.
 		/// </summary>
+		/// <returns>
+		/// True if the template was updated successfully.
+		/// </returns>
 		public static bool UpdateDataTemplate(DataTemplate currentTemplate,
 			Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factoryUpdater)
 		{
@@ -77,6 +90,12 @@ namespace Uno.UI
 			return currentTemplate.UpdateFactory(factoryUpdater);
 		}
 
+		/// <summary>
+		/// Updates the factory of the provided <see cref="Microsoft.UI.Xaml.DataTemplate"/> and raises an update notification.
+		/// </summary>
+		/// <returns>
+		/// True if the template was updated successfully.
+		/// </returns>
 		public static bool UpdateDataTemplate(DataTemplate currentTemplate, Func<View?> newViewfactory)
 		{
 			ArgumentNullException.ThrowIfNull(currentTemplate);
