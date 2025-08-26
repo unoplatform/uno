@@ -755,9 +755,43 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			#region Dynamic Template Update Support
-			// Handle dynamic template updates - all related logic is consolidated here
-			HandleDynamicTemplateUpdate(oldValue, newValue);
+			// Handle dynamic template updates - only executes if feature is enabled
+			bool dynamicUpdateHandled = HandleDynamicTemplateUpdate(oldValue, newValue);
 			#endregion
+
+			// ORIGINAL CODE: Execute only if dynamic update was not handled
+			if (!dynamicUpdateHandled)
+			{
+				// Since the ItemTemplate has changed, we need to re-evaluate all the items that
+				// have already been created and are now in the tree. The easiest way to do that
+				// would be to do a reset.. Note that this has to be done before we change the template
+				// so that the cleared elements go back into the old template.
+
+				var layout = Layout;
+				if (layout != null)
+				{
+					var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+					using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
+					m_processingItemsSourceChange = args;
+
+					if (layout is VirtualizingLayout virtualLayout)
+					{
+						virtualLayout.OnItemsChangedCore(GetLayoutContext(), newValue, args);
+					}
+					else if (layout is NonVirtualizingLayout nonVirtualLayout)
+					{
+						// Walk through all the elements and make sure they are cleared for
+						// non-virtualizing layouts.
+						foreach (var element in Children)
+						{
+							if (GetVirtualizationInfo(element).IsRealized)
+							{
+								ClearElementImpl(element);
+							}
+						}
+					}
+				}
+			}
 
 			if (!SharedHelpers.IsRS5OrHigher())
 			{
@@ -811,9 +845,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>
 		/// Handles dynamic template updates when enabled.
-		/// This consolidates all the template change subscription and reset logic.
+		/// This consolidates only the NEW behavior logic for dynamic template updates.
 		/// </summary>
-		private void HandleDynamicTemplateUpdate(object oldValue, object newValue)
+		/// <returns>True if dynamic update was handled, false if original behavior should execute</returns>
+		private bool HandleDynamicTemplateUpdate(object oldValue, object newValue)
 		{
 			// Clear previous subscription
 			_itemTemplateUpdatedSubscription?.Dispose();
@@ -828,12 +863,14 @@ namespace Microsoft.UI.Xaml.Controls
 				templateCanBeUpdated = TemplateUpdateSubscription.Attach(newDataTemplate, ref _itemTemplateUpdatedSubscription, RefreshAllItems);
 			}
 
-			// Only perform reset logic if dynamic template updates are enabled
-			// This preserves the original behavior when the feature is disabled
+			// NEW behavior: Execute dynamic template reset only if feature is enabled
 			if (templateCanBeUpdated)
 			{
 				TriggerTemplateReset(oldValue);
+				return true; // Indicate that dynamic update was handled
 			}
+
+			return false; // Indicate that original behavior should execute
 		}
 
 		/// <summary>
