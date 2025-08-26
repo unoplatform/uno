@@ -232,3 +232,66 @@ dotnet test Uno.UI/Uno.UI.Tests.csproj --no-build
 - **Sample App Startup**: 1-2 minutes
 
 **NEVER CANCEL** long-running operations. Build times are normal and expected. Always set timeouts of 15+ minutes for builds and 10+ minutes for restores.
+
+## Commit Guidelines
+
+**MANDATORY**: All commits MUST follow the [Conventional Commits](https://www.conventionalcommits.org/) specification as enforced by CI. This ensures proper automatic release note generation and semantic versioning.
+
+### Required Commit Format
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Common Commit Types
+
+- **fix**: Bug fixes (PATCH version bump)
+- **feat**: New features (MINOR version bump)
+- **docs**: Documentation changes only
+- **test**: Adding or updating tests
+- **perf**: Performance improvements
+- **chore**: Maintenance tasks, tooling, dependencies
+- **ci**: CI/CD pipeline changes
+- **style**: Code style changes (formatting, etc.)
+- **refactor**: Code changes that neither fix bugs nor add features
+
+### Examples
+
+```bash
+# Initial work (always start with this)
+git commit -m "chore: Initial work"
+
+# Bug fixes
+git commit -m "fix: Resolve null reference in TextBox control"
+git commit -m "fix(android): Handle back button navigation correctly"
+
+# New features
+git commit -m "feat: Add support for custom border radius"
+git commit -m "feat(ios): Implement native picker control"
+
+# Documentation
+git commit -m "docs: Update build instructions for .NET 9.0"
+
+# Breaking changes (note the !)
+git commit -m "feat!: Remove deprecated WinUI 2.x compatibility layer"
+```
+
+### Breaking Changes
+
+For breaking changes, add `!` after the type/scope:
+```bash
+git commit -m "feat!: Remove deprecated API methods"
+```
+
+### Additional Guidelines
+
+- Keep the description under 50 characters when possible
+- Use imperative mood ("Add feature" not "Added feature")
+- Reference issues when relevant: `fix: Resolve layout issue (fixes #12345)`
+- All commits will be validated by CI and must pass conventional commit format checks
+
+For complete guidelines, see: `doc/articles/contributing/guidelines/conventional-commits.md`
