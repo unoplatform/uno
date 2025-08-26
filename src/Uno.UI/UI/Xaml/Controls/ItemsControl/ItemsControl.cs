@@ -949,15 +949,15 @@ namespace Microsoft.UI.Xaml.Controls
 			_isTemplateApplied = true;
 
 			// Uno-specific: ensure subscription is active when template is applied
-			void OnCurrentItemTemplateUpdated()
-			{
-				// Recreate item containers and refresh items
-				Refresh();
-				UpdateItems(null);
-			}
-
 			if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
 			{
+				void OnCurrentItemTemplateUpdated()
+				{
+					// Recreate item containers and refresh items
+					Refresh();
+					UpdateItems(null);
+				}
+
 				Uno.UI.TemplateUpdateSubscription.Attach(this, ItemTemplate, OnCurrentItemTemplateUpdated);
 			}
 		}

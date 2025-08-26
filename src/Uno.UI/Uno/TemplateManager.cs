@@ -60,6 +60,8 @@ namespace Uno.UI
 			{
 				return TemplateUpdateSubscription.Attach(owner, template, onUpdated);
 			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -75,6 +77,8 @@ namespace Uno.UI
 			{
 				return TemplateUpdateSubscription.Attach(owner, slotKey, template, onUpdated);
 			}
+
+			return false;
 		}
 
 
