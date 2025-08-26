@@ -308,13 +308,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var retainedMessage = "";
 
-#if __APPLE_UIKIT__ || __ANDROID__
-			var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
-			if (activeControls != 0)
+			if (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser())
 			{
-				Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
+				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
+				if (activeControls != 0)
+				{
+					Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
 
-				Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
+					Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
 
 #if TRACK_REFS
 				Console.WriteLine($"\n ========== first run: total objects created ============");
@@ -331,10 +332,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 				Console.WriteLine();
 #endif
+				}
+
+				retainedMessage = retainedTypes.JoinBy(";");
 			}
-			retainedMessage = retainedTypes.JoinBy(";");
+
 			//var retained = _holders.Select(x => x.Key).ToArray();
-#endif
 			if (OperatingSystem.IsIOS())
 			{
 				// On iOS, the collection of objects does not seem to be reliable enough
@@ -348,7 +351,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.AreEqual(0, activeControls, retainedMessage);
 			}
 
-#if __APPLE_UIKIT__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
 				if (p.Key is FrameworkElement { Name: { Length: > 0 } name } fe)
@@ -360,7 +362,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					return p.Key?.ToString() ?? "null";
 				}
 			}
-#endif
+
 			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
 			{
 				var item = (FrameworkElement)Activator.CreateInstance(controlType)!;
