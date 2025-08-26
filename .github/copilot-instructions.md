@@ -31,7 +31,7 @@ For other platforms, install additional workloads as needed:
 
 ### Single-Platform Development (Recommended)
 
-**CRITICAL**: Always use single-platform builds with solution filters for efficient development, favor skia desktop first because it builds and runs faster, unless a specific platform is requested. Multi-platform builds are resource-intensive and often unnecessary.
+**CRITICAL**: Always use single-platform builds with solution filters for efficient development, favor Skia desktop first because it builds and runs faster, unless a specific platform is requested. Multi-platform builds are resource-intensive and often unnecessary.
 
 1. **Setup cross-targeting override** (required before opening any solution):
 ```bash
@@ -99,9 +99,16 @@ dotnet clean && rm -rf */bin */obj **/bin **/obj
 ### Sample Applications
 
 **Running SamplesApp locally**:
-1. Navigate to `src/SamplesApp/SamplesApp.Wasm/` for WebAssembly
+
+**Native WebAssembly**:
+1. Navigate to `src/SamplesApp/SamplesApp.Wasm/` for native WebAssembly
 2. Ensure dependencies are restored: `dotnet restore`
 3. Run: `dotnet run` for WebAssembly
+
+**Skia WebAssembly**:
+1. Navigate to `src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/` for Skia WebAssembly
+2. Ensure dependencies are restored: `dotnet restore`
+3. Run: `dotnet run` for Skia WebAssembly
 
 **Online SamplesApp**: https://aka.platform.uno/wasm-samples-app
 
@@ -298,7 +305,6 @@ git commit -m "feat!: Remove deprecated API methods"
 - Use imperative mood ("Add feature" not "Added feature")
 - Reference issues when relevant: `fix: Resolve layout issue (fixes #12345)`
 - All commits will be validated by CI and must pass conventional commit format checks
-- Iterate and refine: Embrace rapid iteration, don't worry about perfect designs initially;
-improve them step by step.
+- Iterate and refine: Embrace rapid iteration, don't worry about perfect designs initially; improve them step by step.
 
 For complete guidelines, see: `doc/articles/contributing/guidelines/conventional-commits.md`
