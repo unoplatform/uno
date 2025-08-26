@@ -4,7 +4,7 @@ uid: Uno.Skia.Desktop
 
 # Using the Skia Desktop
 
-Uno Platform supports running applications using a common Skia Desktop shell, which is automatically used based on the running platform, using a single build output using the `net10.0-desktop` target framework from the [Uno.Sdk](xref:Uno.Features.Uno.Sdk).
+Uno Platform supports running applications using a common Skia Desktop shell, which is automatically used based on the running platform, using a single build output using the `net9.0-desktop` target framework from the [Uno.Sdk](xref:Uno.Features.Uno.Sdk).
 
 The currently supported targets and platforms are:
 
@@ -125,7 +125,7 @@ To build an app with this feature enabled:
 1. Build your app with:
 
    ```dotnetcli
-   dotnet publish -c Release -f net10.0-desktop
+   dotnet publish -c Release -f net9.0-desktop
    ```
 
    > [!NOTE]

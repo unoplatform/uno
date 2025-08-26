@@ -245,8 +245,8 @@ As a result, the csproj file is on disk and will show the file as modified in yo
 
 Note that we are currently tracking these Visual Studio issues, make sure to upvote them:
 
-- `net9.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
-- [WinAppSDK Unpackaged profile cannot be selected properly when a net9.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
+- `net8.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
+- [WinAppSDK Unpackaged profile cannot be selected properly when a net8.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
 
 ## Disabling Default Items
 
@@ -301,7 +301,7 @@ As discussed above setting `EnableDefaultUnoItems` to false will disable these i
 >
 > ```xml
 > <Target Name="AdjustAppItemGroups" BeforeTargets="ResolveAssemblyReferences">
->     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">
+>     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-browserwasm'">
 >         <None Remove="Page.xaml"/>
 >         <Page Remove="Page.xaml"/>
 >     </ItemGroup>

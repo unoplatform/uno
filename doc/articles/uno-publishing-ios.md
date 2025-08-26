@@ -37,7 +37,7 @@ To build your app from the CLI on macOS:
 - Publish the app using:
 
   ```shell
-  dotnet publish -f net10.0-ios -c Release -o ./publish
+  dotnet publish -f net9.0-ios -c Release -o ./publish
   ```
 
 The output `.ipa` file will be in the `publish` folder.

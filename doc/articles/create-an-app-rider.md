@@ -95,15 +95,15 @@ To correct this, you'll need to modify your `csproj` file in order to make the p
 You can change this line:
 
 ```xml
-<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
+<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-windows10.0.26100;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
 ```
 
 To be:
 
 ```xml
-<TargetFrameworks>net10.0-android;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
-<TargetFrameworks Condition=" $([MSBuild]::IsOSPlatform('windows')) ">$(TargetFrameworks);net10.0-windows10.0.26100</TargetFrameworks>
-<TargetFrameworks Condition=" !$([MSBuild]::IsOSPlatform('linux')) ">$(TargetFrameworks);net10.0-ios</TargetFrameworks>
+<TargetFrameworks>net9.0-android;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
+<TargetFrameworks Condition=" $([MSBuild]::IsOSPlatform('windows')) ">$(TargetFrameworks);net9.0-windows10.0.26100</TargetFrameworks>
+<TargetFrameworks Condition=" !$([MSBuild]::IsOSPlatform('linux')) ">$(TargetFrameworks);net9.0-ios</TargetFrameworks>
 ```
 
 Make sure to adjust the list of target frameworks based on the platforms you have in your original list.

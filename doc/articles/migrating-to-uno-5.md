@@ -56,15 +56,15 @@ If your current project is built on Xamarin.* targets, you can upgrade by [follo
 
 ### Migrating from net6.0-*to net7.0-*
 
-There are no significant changes needed to upgrade to .NET 7 for applications (iOS, Android, Catalyst), aside from replacing all occurrences of `net6.0` to `net7.0` or `net9.0` in all your `csproj` files.
+There are no significant changes needed to upgrade to .NET 7 for applications (iOS, Android, Catalyst), aside from replacing all occurrences of `net6.0` to `net7.0` or `net8.0` in all your `csproj` files.
 
-For libraries that are depending on `net6.0-android/ios/maccatalyst`, depending on the impact of the breaking changes listed below, you will need to build your libraries with Uno Platform 5.0 packages, as well as target `net7.0-*` or `net9.0-*`.
+For libraries that are depending on `net6.0-android/ios/maccatalyst`, depending on the impact of the breaking changes listed below, you will need to build your libraries with Uno Platform 5.0 packages, as well as target `net7.0-*` or `net8.0-*`.
 
-### Migrating WebAssembly from `netstandard2.0` to `net7.0` or `net9.0`
+### Migrating WebAssembly from `netstandard2.0` to `net7.0` or `net8.0`
 
-Migrating from `netstandard2.0` WebAssembly apps to `net7.0` or `net9.0` requires:
+Migrating from `netstandard2.0` WebAssembly apps to `net7.0` or `net8.0` requires:
 
-- Replacing all occurrences of `netstandard2.0` to `net7.0` or `net9.0` in all your `csproj` files
+- Replacing all occurrences of `netstandard2.0` to `net7.0` or `net8.0` in all your `csproj` files
 - Upgrading `Uno.Wasm.Bootstrap*` packages to version `7.0.x` or `8.0.x`, depending on your chosen target framework.
 
 ### Migrating to the new `WpfHost`

@@ -134,7 +134,7 @@ The `suspend` directive means that the application will wait for `dotnet-trace` 
 - Build the application with profiling enabled
 
     ```dotnetcli
-    dotnet build -c Release -f net10.0-android -r android-arm64 -t:Run -p:AndroidEnableProfiler=true
+    dotnet build -c Release -f net9.0-android -r android-arm64 -t:Run -p:AndroidEnableProfiler=true
     ```
 
   Use `-r android-x64` for emulators instead.

@@ -33,7 +33,7 @@ sudo usermod --append --groups lxd $USER # In order for the current user to use 
 To generate a snap file, run the following:
 
 ```shell
-dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=snap
+dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=snap
 ```
 
 The generated snap file is located in the `bin/Release/netX.0-desktop/linux-[x64|arm64]/publish` folder.

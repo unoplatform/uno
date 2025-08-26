@@ -49,7 +49,7 @@ Uno Platform 5.4 contains breaking changes for Uno.Extensions.
 
 Uno Platform 5.4 updates to WinAppSDK 1.6 if you are using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk), which requires a temporary version adjustment until newer versions of the .NET 8 SDKs are released.
 
-In your project, you may need to add the following lines (or uncomment them if you kept them from our templates) to get the `net9.0-windowsXX` target to build:
+In your project, you may need to add the following lines (or uncomment them if you kept them from our templates) to get the `net8.0-windowsXX` target to build:
 
 ```xml
 <PropertyGroup>
@@ -195,13 +195,13 @@ Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 
 Additionally, here are some specific hints about the migration to Android 12:
 
 - If you are building with Android 12 on Azure Devops Hosted Agents (macOS or Windows), you'll need two updates:
-  - Use the JDK 17, using the following step:
+  - Use the JDK 11, using the following step:
 
     ```yml
     - pwsh: |
-        echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_17_X64)"
-        echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_17_X64)"
-    displayName: Select JDK 17
+        echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
+        echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
+    displayName: Select JDK 11
     ```
 
   - You may need to add the following property to your Android csproj:

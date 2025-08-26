@@ -41,7 +41,7 @@ You should now be able to set breakpoints or do step-by-step debugging of your c
 
 To debug your application:
 
-- Make the `net10.0-browserwasm` active debugging target framework (right-click **set as startup** in Solution Explorer)
+- Make the `net9.0-browserwasm` active debugging target framework (right-click **set as startup** in Solution Explorer)
 - Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj. It is automatically set [when using the Uno.SDK](xref:Uno.Features.Uno.Sdk).
 - In the debugging toolbar:
 

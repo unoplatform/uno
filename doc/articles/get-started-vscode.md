@@ -15,7 +15,7 @@ See these sections for information about using Uno Platform with:
 
 - [**Visual Studio Code**](https://code.visualstudio.com/)
 - The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
-- For Linux, install [OpenJDK 17](https://learn.microsoft.com/java/openjdk/install#install-on-ubuntu) for Android development.
+- For Linux, install [OpenJDK 11](https://learn.microsoft.com/java/openjdk/install#install-on-ubuntu) for Android development.
 
 ## Check your environment
 

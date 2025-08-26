@@ -13,9 +13,9 @@ Considering that your project is called `MyProject`, and you want to add the `de
 1. Make sure to select the template preset and features.
 1. Once the project has been created, navigate to the new folder `MyProject`.
 1. Copy `Platforms/Desktop` folder to the existing project structure, at the same level as the other platform folders.
-1. In your `.csproj`, add the `net10.0-desktop` target framework to the `TargetFrameworks` property.
+1. In your `.csproj`, add the `net9.0-desktop` target framework to the `TargetFrameworks` property.
 1. Save your solution.
 
 Your new platform project is now ready to be compiled.
 
-You can repeat a similar process for `net10.0-ios`, `net10.0-android`, `net10.0-browserwasm`, and `net10.0-windows10.0.xxxxx`.
+You can repeat a similar process for `net9.0-ios`, `net9.0-android`, `net9.0-browserwasm`, and `net9.0-windows10.0.xxxxx`.

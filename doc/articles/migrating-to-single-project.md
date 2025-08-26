@@ -60,15 +60,15 @@ We'll take the example of an Uno Platform 5.0 blank app, called `MyApp`, to migr
 
    ```xml
    <Choose>
-     <When Condition="'$(TargetFramework)'=='net9.0-ios'">
+     <When Condition="'$(TargetFramework)'=='net8.0-ios'">
      </When>
-     <When Condition="'$(TargetFramework)'=='net9.0-android'">
+     <When Condition="'$(TargetFramework)'=='net8.0-android'">
      </When>
-     <When Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041'">
+     <When Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041'">
      </When>
-     <When Condition="'$(TargetFramework)'=='net9.0-desktop'">
+     <When Condition="'$(TargetFramework)'=='net8.0-desktop'">
      </When>
-     <When Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
+     <When Condition="'$(TargetFramework)'=='net8.0-browserwasm'">
      </When>
    </Choose>
    ```
@@ -111,13 +111,13 @@ We'll take the example of an Uno Platform 5.0 blank app, called `MyApp`, to migr
     ```xml
     <ProjectReference 
         Include="..\MyApp\MyApp.csproj"
-        SetTargetFramework="TargetFramework=net9.0-browserwasm"
+        SetTargetFramework="TargetFramework=net8.0-browserwasm"
         ReferenceOutputAssembly="false" />
     ```
 
 1. From the empty app created at step one, take the `Directory.Build.props` and `Directory.Build.targets` files and copy those over your own root folder. Make sure to copy individual changes made in your file, such as `CSharpVersion` or `Nullable`.
 1. From the empty app created at step one, take the `Directory.Packages.props`file and copy it over to your own root folder. All of the NuGet packages can be removed from this file, as the Uno.SDK provides those automatically.
-1. In all the projects files, replace `$(DotnetVersion)` with `net9.0`
+1. In all the projects files, replace `$(DotnetVersion)` with `net8.0`
 1. Remove the `solution-config.props.sample` file. This part is now handled by Uno Platform automatically.
 
 At this point, your solution can be compiled using a single project and Uno Platform 5.2. For a guide through using the new single project, head over to [our getting started](xref:Uno.GetStarted).

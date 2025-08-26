@@ -9,7 +9,7 @@ To upgrade to .NET 9:
 
 - First, read [What's New in .NET 9](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-9/overview)
 - Install [Visual Studio 17.12 Preview 3](https://visualstudio.microsoft.com/vs/) or later and run [uno.check](xref:UnoCheck.UsingUnoCheck) with the `--pre-major` parameter to install .NET 9.
-- Change all your target framework (TFM) references from `net9.0` to `net10.0`, and `net9.0-*` to `net10.0-*`.
+- Change all your target framework (TFM) references from `net8.0` to `net9.0`, and `net8.0-*` to `net9.0-*`.
 - Delete your bin and obj folders
 
 ## Considerations for WebAssembly

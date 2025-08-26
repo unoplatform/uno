@@ -110,9 +110,9 @@ To debug for **iOS**:
 > [!NOTE]
 > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://learn.microsoft.com/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
-- In the "Debug toolbar" drop-down, select framework `net10.0-ios`:
+- In the "Debug toolbar" drop-down, select framework `net9.0-ios`:
 
-    ![Visual Studio - "Debug toolbar" drop-down selecting the "net10.0-ios" framework](Assets/quick-start/ios-debug.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net9.0-ios" framework](Assets/quick-start/ios-debug.png)
 
 - Select:
   - An active device, if your IDE is connected to a macOS Host
@@ -127,9 +127,9 @@ To debug for **iOS**:
 
 To debug the **Android** platform:
 
-- In the **Debug toolbar** drop-down, select framework `net10.0-android`
+- In the **Debug toolbar** drop-down, select framework `net9.0-android`
 
-    ![Visual Studio - "Debug toolbar" drop-down selecting the "net10.0-android" framework](Assets/quick-start/android-debug.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net9.0-android" framework](Assets/quick-start/android-debug.png)
 
 - Select an active device in the "Device" sub-menu
     > [!NOTE]
