@@ -13,6 +13,7 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Helpers;
+using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
 
 namespace Microsoft.UI.Composition;
@@ -613,7 +614,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			Debug.Assert(Unsafe.IsNullRef(ref rootTransform)
 				? canvas.TotalMatrix == TotalMatrix.ToSKMatrix()
 				// Due to the limit precision of doubles, instead of comparing the two matrices directly we compare the Frobenius norm of their difference to zero
-				: (canvas.TotalMatrix.ToMatrix4x4() - TotalMatrix * rootTransform).ToSKMatrix().Values.Sum(i => i * i) < 1e-5);
+				: CompositionMathHelpers.IsCloseRealZero((canvas.TotalMatrix.ToMatrix4x4() - TotalMatrix * rootTransform).ToSKMatrix().Values.Sum(i => i * i), 1e-5f));
 		}
 #endif
 	}
