@@ -171,11 +171,10 @@ public class MyCustomControl : FrameworkElement
 
 The following Uno Platform controls already support dynamic template updates when the feature is enabled:
 
+- `ContentPresenter` and `ContentControl` are fully supported
 - `ItemsRepeater` - Full support with comprehensive reentrancy protection
 - `ItemsControl` - Basic support using internal `TemplateUpdateSubscription.Attach`
 - `ListView` and `GridView` (through inheritance from `ItemsControl`)
-
-**Note**: `ContentPresenter` and `ContentControl` have the infrastructure but may not have dynamic template updates fully implemented yet.
 
 ## Important Notes
 
