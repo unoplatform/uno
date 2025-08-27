@@ -2,8 +2,6 @@
 using System;
 using System.Diagnostics;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -12,7 +10,6 @@ using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
-using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Media;
 
@@ -85,8 +82,6 @@ public partial class CompositionTarget
 
 	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
-		CompositionTarget.InvokeRendering();
-
 		(SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
@@ -110,6 +105,8 @@ public partial class CompositionTarget
 				lastRenderedFrame.frame,
 				SKColors.Transparent,
 				_fpsHelper);
+
+			CompositionTarget.InvokeRendering();
 
 			return lastRenderedFrame.nativeElementClipPath;
 		}
