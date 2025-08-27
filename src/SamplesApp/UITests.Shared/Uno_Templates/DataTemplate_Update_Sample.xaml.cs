@@ -57,7 +57,7 @@ namespace Uno.UI.Samples.UITests.Templates
 					return grid;
 				});
 			}
-		}
 #endif
+		}
 	}
 }

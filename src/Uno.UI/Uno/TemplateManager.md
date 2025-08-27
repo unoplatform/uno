@@ -278,7 +278,6 @@ private static void OnItemTemplateChanged(DependencyObject d, DependencyProperty
 - `SubscribeToTemplate(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)`: Owner-based subscription with a named slot for multiple subscriptions per control; returns `bool` indicating success
 - `UnsubscribeFromTemplate(DependencyObject owner)`: Unsubscribes all owner-associated subscriptions
 - `UnsubscribeFromTemplate(DependencyObject owner, string slotKey)`: Unsubscribes the specified slot subscription for the owner
-- `UnsubscribeFromTemplate(DependencyObject owner, string slotKey)`: Unsubscribes the specified slot subscription for the owner
 
 ### TemplateUpdateSubscription (Internal)
 
