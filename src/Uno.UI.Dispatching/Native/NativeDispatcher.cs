@@ -10,7 +10,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-
 using Uno.Diagnostics.Eventing;
 using Uno.Foundation.Logging;
 
@@ -33,6 +32,18 @@ namespace Uno.UI.Dispatching
 		};
 
 		private readonly object _gate = new();
+		private readonly System.Timers.Timer _timer = new System.Timers.Timer() { AutoReset = false };
+
+		private (Action action, long minimumTimestamp)? _paintAction;
+#pragma warning disable CS0649
+		private (Action action, long minimumTimestamp)? _paintActionForTimer;
+#pragma warning restore CS0649
+
+#pragma warning disable CS0169 // Field is never used
+#pragma warning disable IDE0051 // Field is never used
+		private int _normalItemsToProcessBeforeNextPaintAction;
+#pragma warning restore IDE0051 // Field is never used
+#pragma warning restore CS0169 // Field is never used
 
 		private NativeDispatcherPriority _currentPriority;
 
@@ -56,6 +67,13 @@ namespace Uno.UI.Dispatching
 
 			SynchronizationContext = new NativeDispatcherSynchronizationContext(this);
 
+			_timer.Elapsed += (sender, args) =>
+			{
+				if (_paintActionForTimer is { } a)
+				{
+					EnqueuePaint(a.action, a.minimumTimestamp);
+				}
+			};
 			Initialize();
 		}
 
@@ -81,28 +99,71 @@ namespace Uno.UI.Dispatching
 
 			Action? action = null;
 
-			for (var p = 0; p <= 3; p++)
+			lock (@this._gate)
 			{
-				var queue = @this._queues[p];
-
-				lock (@this._gate)
+				if (@this._paintAction is { action: var a, minimumTimestamp: var t })
 				{
-					if (queue.Count > 0)
+					var timestamp = Stopwatch.GetTimestamp();
+					if (timestamp >= t && @this._normalItemsToProcessBeforeNextPaintAction == 0)
 					{
-						action = Unsafe.As<Action>(queue.Dequeue());
-
-						@this._currentPriority = (NativeDispatcherPriority)p;
-
-						@this.LogTrace()?.Trace($"Dispatching next job in dispatcher queue: priority: {@this._currentPriority} queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
+						action = a;
+						@this._paintAction = null;
+						@this._normalItemsToProcessBeforeNextPaintAction = @this._queues[(int)NativeDispatcherPriority.Normal].Count;
+						@this._currentPriority = NativeDispatcherPriority.High;
 
 						if (Interlocked.Decrement(ref @this._globalCount) > 0)
 						{
 							@this.EnqueueNative(@this._currentPriority);
 						}
 
-						break;
+						@this.LogTrace()?.Trace($"Running paint job from the dispatcher: queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
+					}
+					else if (timestamp < t && Volatile.Read(ref @this._globalCount) == 1)
+					{
+						action = static () => { };
+						@this._paintActionForTimer = @this._paintAction;
+						@this._paintAction = null;
+						if (Interlocked.Decrement(ref @this._globalCount) > 0)
+						{
+							@this.EnqueueNative(@this._currentPriority);
+						}
+
+						@this.LogTrace()?.Trace($"Too early to run paint job from the dispatcher: queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
+						Debug.Assert(!@this._timer.Enabled);
+						@this._timer.Interval = TimeSpan.FromTicks(t - timestamp).TotalMilliseconds;
+						@this._timer.Enabled = true;
 					}
 				}
+			}
+
+			if (action is null)
+			{
+				for (var p = 0; p <= 3; p++)
+				{
+					var queue = @this._queues[p];
+
+					lock (@this._gate)
+					{
+						if (queue.Count > 0)
+						{
+							action = Unsafe.As<Action>(queue.Dequeue());
+
+							@this._currentPriority = (NativeDispatcherPriority)p;
+
+							@this.LogTrace()?.Trace($"Running next job in dispatcher queue: priority: {@this._currentPriority} queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
+							if (Interlocked.Decrement(ref @this._globalCount) > 0)
+							{
+								@this.EnqueueNative(@this._currentPriority);
+							}
+							break;
+						}
+					}
+				}
+			}
+
+			if (@this is { _currentPriority: NativeDispatcherPriority.Normal, _normalItemsToProcessBeforeNextPaintAction: > 0 })
+			{
+				@this._normalItemsToProcessBeforeNextPaintAction--;
 			}
 
 			RunAction(@this, action);
@@ -139,6 +200,28 @@ namespace Uno.UI.Dispatching
 			}
 		}
 #endif
+
+		public void EnqueuePaint(Action handler, long minimumTimestamp)
+		{
+			bool shouldEnqueue = false;
+			lock (_gate)
+			{
+				// _paintAction is maybe not null here, that's fine, it will be overridden
+				Debug.Assert(_paintAction is null || _paintAction.Value.action == handler);
+				Debug.Assert(_paintAction is null || minimumTimestamp > _paintAction.Value.minimumTimestamp);
+				if (_paintAction is null)
+				{
+					shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
+				}
+				_paintAction = (handler, minimumTimestamp);
+				this.LogTrace()?.Trace($"{nameof(EnqueuePaint)} updated paintAction with  minimum timestamp {minimumTimestamp}");
+			}
+
+			if (shouldEnqueue)
+			{
+				EnqueueNative(NativeDispatcherPriority.High);
+			}
+		}
 
 		internal void Enqueue(Action handler, NativeDispatcherPriority priority = NativeDispatcherPriority.Normal)
 		{
