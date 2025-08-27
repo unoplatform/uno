@@ -51,7 +51,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 		_bitmap?.Lock();
 		var surface = _bitmap is not null ? SKSurface.Create(new SKImageInfo(_bitmap.PixelWidth, _bitmap.PixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul), _bitmap.BackBuffer, _bitmap.BackBufferStride) : null;
-		var nativeElementClipPath = _host.RootElement!.XamlRoot!.OnNativePlatformFrameRequested(surface?.Canvas, size =>
+		var nativeElementClipPath = ((Microsoft.UI.Xaml.Media.CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas, size =>
 		{
 			_bitmap?.Unlock();
 			_bitmap = new WriteableBitmap((int)size.Width, (int)size.Height, 96, 96, PixelFormats.Pbgra32, null);

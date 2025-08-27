@@ -95,7 +95,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			}
 		}
 
-		XamlRoot.FrameRenderingOptions = (true, true);
+		CompositionTarget.FrameRenderingOptions = (true, true);
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60) : this(appBuilder, renderFrameRate, false)

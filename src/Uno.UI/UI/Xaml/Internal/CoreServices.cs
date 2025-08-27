@@ -10,6 +10,7 @@ using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Core
@@ -108,7 +109,7 @@ namespace Uno.UI.Xaml.Core
 				}
 
 #if __SKIA__
-				root.XamlRoot?.OnPaintFrameOpportunity();
+				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnPaintFrameOpportunity();
 #endif
 			}
 		}

@@ -146,7 +146,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	internal void OnRenderFrameRequested(SKCanvas canvas)
 	{
-		var clipPath = RootElement?.XamlRoot?.OnNativePlatformFrameRequested(canvas, _ => canvas);
+		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(canvas, _ => canvas);
 
 		if (clipPath is not null)
 		{

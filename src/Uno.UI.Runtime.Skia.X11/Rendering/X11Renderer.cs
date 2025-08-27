@@ -1,4 +1,5 @@
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
@@ -55,7 +56,7 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 			_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
 		}
 
-		var nativeElementClipPath = host.RootElement!.XamlRoot!.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		var nativeElementClipPath = ((CompositionTarget)host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			_surface?.Dispose();
 			_surface = UpdateSize(width, height, attributes.depth);
