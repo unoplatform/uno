@@ -5,6 +5,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis.PooledObjects;
@@ -609,7 +610,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 		else
 		{
-			Debug.Assert(Unsafe.IsNullRef(ref rootTransform) ? canvas.TotalMatrix == TotalMatrix.ToSKMatrix() : canvas.TotalMatrix == (TotalMatrix * rootTransform).ToSKMatrix());
+			Debug.Assert(Unsafe.IsNullRef(ref rootTransform)
+				? canvas.TotalMatrix == TotalMatrix.ToSKMatrix()
+				// Due to the limit precision of doubles, instead of comparing the two matrices directly we compare the Frobenius norm of their difference to zero
+				: (canvas.TotalMatrix.ToMatrix4x4() - TotalMatrix * rootTransform).ToSKMatrix().Values.Sum(i => i * i) < 1e-5);
 		}
 #endif
 	}
