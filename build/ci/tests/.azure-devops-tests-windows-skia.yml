@@ -41,6 +41,10 @@ jobs:
       artifact: $(SamplesAppArtifactName)
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
+  - template: ../templates/dotnet-install.yml
+    parameters:
+      haveCheckout: false
+
   - script: |
         cd $(SamplesAppArtifactPath)
         dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-windows-screenshots

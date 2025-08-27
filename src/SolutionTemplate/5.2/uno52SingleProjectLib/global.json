@@ -1,8 +1,0 @@
-{
-  "sdk": {
-    "allowPrerelease": true
-  },
-  "msbuild-sdks": {
-    "Uno.Sdk.Private": "5.2.0-dev.2002"
-  }
-}

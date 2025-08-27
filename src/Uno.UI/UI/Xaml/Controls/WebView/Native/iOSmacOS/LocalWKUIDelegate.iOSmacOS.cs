@@ -50,9 +50,9 @@ internal class LocalWKUIDelegate : WKUIDelegate
 		_runJavaScriptAlertPanel?.Invoke(webView, message, frame, completionHandler);
 	}
 
-#if MACCATALYST18_4_OR_GREATER || (NET10_0 && IOS18_0_OR_GREATER)
+#if NET10_0_OR_GREATER || MACCATALYST18_5_OR_GREATER || IOS18_5_OR_GREATER
 	[Obsolete("It's not possible to call the completion handler with a null value using this method. Please see https://github.com/dotnet/macios/issues/15728 for a workaround.")]
-#endif  // MACCATALYST18_4_OR_GREATER || (NET10_0 && IOS18_0_OR_GREATER)
+#endif  // NET10_0_OR_GREATER || MACCATALYST18_5_OR_GREATER || IOS18_5_OR_GREATER
 	public override void RunJavaScriptTextInputPanel(WKWebView webView, string prompt, string? defaultText, WKFrameInfo frame, Action<string> completionHandler)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

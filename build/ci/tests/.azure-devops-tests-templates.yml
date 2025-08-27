@@ -87,10 +87,10 @@ jobs:
     inputs:
       artifactName: 'Nuget_Packages'
 
-  # Install android 34 as we're running on macos-15
+  # Install android 35 as we're running on macos-15
   - bash: |
-      echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-34' | tr '\r' '\n' | uniq
-    displayName: Install Android 34
+      echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-35' | tr '\r' '\n' | uniq
+    displayName: Install Android 35
 
   - template: ../templates/gitversion.yml
 
@@ -183,6 +183,11 @@ jobs:
       # required for net8 and the latest uno-check does not install it anymore
       sudo apt install ninja-build
     displayName: Setup Ninja
+
+  # Install android 35 as we're running on macos-15
+  - bash: |
+      echo "y" | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "--sdk_root=$ANDROID_HOME" --install 'platforms;android-35' | tr '\r' '\n' | uniq
+    displayName: Install Android 35
 
   - pwsh: build/test-scripts/run-net7-template-linux.ps1 -TestGroup "$(TestGroup)"
     displayName: Run Project Templates Tests

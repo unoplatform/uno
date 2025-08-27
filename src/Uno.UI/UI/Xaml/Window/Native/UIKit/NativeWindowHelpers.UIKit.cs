@@ -68,7 +68,7 @@ internal static class NativeWindowHelpers
 					0.25f,
 					UIViewAnimationOptions.TransitionCrossDissolve,
 					() => nativeWindow.RootViewController = targetViewController,
-					null
+					delegate { }
 				);
 			});
 	}

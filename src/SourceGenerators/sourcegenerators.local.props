@@ -13,10 +13,10 @@
 
 	<!-- List of packages that provide an uno-runtime folder -->
 	<PropertyGroup>
-		<_UnoRCHostVersionPath>net8.0</_UnoRCHostVersionPath>
+		<_UnoRCHostVersionPath>net9.0</_UnoRCHostVersionPath>
 
-		<!-- Use the SDK version used to build the app, not the target framework (e.g. a net8.0 app may be built with a net9 SDK)-->
-		<_UnoRCHostVersionPath Condition="'$(BundledNETCoreAppTargetFrameworkVersion)' &gt; 8">net9.0</_UnoRCHostVersionPath>
+		<!-- Use the SDK version used to build the app, not the target framework (e.g. a net9.0 app may be built with a net9 SDK)-->
+		<_UnoRCHostVersionPath Condition="'$(BundledNETCoreAppTargetFrameworkVersion)' &gt; 8">net10.0</_UnoRCHostVersionPath>
 
 		<UnoRemoteControlProcessorsPath>$(MSBuildThisFileDirectory)..\Uno.UI.RemoteControl.Server.Processors\bin\$(Configuration)\$(_UnoRCHostVersionPath)</UnoRemoteControlProcessorsPath>
 	</PropertyGroup>

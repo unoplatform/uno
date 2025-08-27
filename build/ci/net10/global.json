@@ -1,0 +1,14 @@
+{
+	"sdk": {
+		"version": "10.0.100-preview.7.25380.108",
+		"allowPrerelease": true,
+		"rollForward": "latestMinor"
+	},
+	"tools": {
+		"dotnet": "10.0.100-preview.7.25380.108"
+	},
+	"msbuild-sdks": {
+		"MSBuild.Sdk.Extras": "3.0.44",
+		"Microsoft.Build.NoTargets": "3.7.56"
+	}
+}

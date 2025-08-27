@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI;
@@ -301,7 +302,7 @@ namespace Uno.UI.Toolkit
 
 		internal static DependencyProperty FindDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
 		{
-			var type = uiElement.GetType();
+			var type = GetType(uiElement);
 			var propertyType = typeof(TProperty);
 			var key = (ownerType: type, propertyName);
 
@@ -339,6 +340,10 @@ namespace Uno.UI.Toolkit
 			_dependencyPropertyReflectionCache[key] = property;
 
 			return property;
+
+			[UnconditionalSuppressMessage("Trimming", "IL2073", Justification = "🤷‍♂️")]
+			[return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)]
+			static Type GetType(object value) => value.GetType();
 		}
 	}
 }

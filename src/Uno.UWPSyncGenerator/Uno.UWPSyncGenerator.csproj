@@ -27,13 +27,6 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
-
-		<!-- BEGIN WORKAROUND: These are included transitively, but the transitive versions have vulnerabilities -->
-		<!-- Note that this is actually a false positive from NuGet side -->
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
-		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
-		<!-- END WORKAROUND -->
 	</ItemGroup>
 
 	<ItemGroup>

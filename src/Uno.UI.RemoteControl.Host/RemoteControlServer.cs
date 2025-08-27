@@ -359,9 +359,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
 
 #if NET9_0_OR_GREATER
-				basePath = Path.Combine(basePath, "net9.0");
+				basePath = Path.Combine(basePath, "net10.0");
 #elif NET8_0_OR_GREATER
-				basePath = Path.Combine(basePath, "net8.0");
+				basePath = Path.Combine(basePath, "net9.0");
 #endif
 
 				// Additional processors may not need the directory added immediately above.

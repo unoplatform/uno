@@ -34,6 +34,10 @@
 		<WasmBuildNative>true</WasmBuildNative>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
