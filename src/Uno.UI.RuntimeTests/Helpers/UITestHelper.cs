@@ -22,6 +22,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Markup;
 using Private.Infrastructure;
 using SamplesApp.UITests;
+using Uno.Disposables;
 
 #if !HAS_UNO
 using System.Runtime.InteropServices;
@@ -76,6 +77,22 @@ public static class UITestHelper
 		[CallerMemberName] string? callerMemberName = null,
 		[CallerLineNumber] int lineNumber = 0
 	) => TestServices.WindowHelper.WaitFor(condition, timeoutMS, message, callerMemberName, lineNumber);
+
+	public static Task WaitForRender(
+		int frameCount = 1,
+		int timeoutMS = 1000,
+		string? message = null,
+		[CallerMemberName] string? callerMemberName = null,
+		[CallerLineNumber] int lineNumber = 0)
+	{
+		var renderingCount = 0;
+		EventHandler<object> callback = (_, _) => renderingCount++;
+		CompositionTarget.Rendering += callback;
+		using var renderingDisposable = new DisposableStruct<EventHandler<object>>(a => CompositionTarget.Rendering -= a, callback);
+		var currentRenderingCount = renderingCount;
+		return WaitFor(() => renderingCount - currentRenderingCount >= frameCount, timeoutMS, message, callerMemberName, lineNumber);
+	}
+
 
 	public static async Task WaitForIdle(bool waitForCompositionAnimations = false)
 	{
