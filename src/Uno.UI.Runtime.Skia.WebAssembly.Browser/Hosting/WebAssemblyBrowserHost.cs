@@ -15,6 +15,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Graphics.Display;
 using Windows.Media.Playback;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -54,7 +55,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 		NativeMethods.PersistBootstrapperLoader();
 
-		XamlRoot.FrameRenderingOptions = (false, false);
+		CompositionTarget.FrameRenderingOptions = (false, false);
 		_renderer = new BrowserRenderer(this);
 	}
 

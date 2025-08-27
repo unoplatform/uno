@@ -1518,7 +1518,7 @@ public partial class TextBox
 			if (!_popup.IsOpen)
 			{
 				_popup.IsOpen = true;
-				xamlRoot.FramePainted += OnFramePainted;
+				((CompositionTarget)Visual.CompositionTarget)!.FramePainted += OnFramePainted;
 			}
 		}
 
@@ -1535,9 +1535,9 @@ public partial class TextBox
 
 		public void Hide()
 		{
-			if (XamlRoot is { })
+			if (Visual.CompositionTarget is CompositionTarget target)
 			{
-				XamlRoot.FramePainted -= OnFramePainted;
+				target.FramePainted -= OnFramePainted;
 			}
 			if (_popup is not null)
 			{

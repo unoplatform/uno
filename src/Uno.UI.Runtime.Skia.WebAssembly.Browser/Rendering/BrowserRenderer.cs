@@ -82,7 +82,7 @@ internal partial class BrowserRenderer
 			_context.SetResourceCacheLimit(ResourceCacheBytes);
 		}
 
-		var currentClipPath = _host.RootElement!.XamlRoot!.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		var currentClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			_glInfo = new GRGlFramebufferInfo(_jsInfo.FboId, colorType.ToGlSizedFormat());
 
