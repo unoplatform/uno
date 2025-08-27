@@ -17,6 +17,7 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Microsoft.UI.Xaml.Media;
 using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -102,7 +103,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		// we can't cache anything since the texture will be different on next calls
 		GRBackendRenderTarget? target = null;
 		SKSurface? surface = null;
-		var nativeElementClipPath = RootElement!.XamlRoot!.OnNativePlatformFrameRequested(null, size =>
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
 		{
 			target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
 			surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
@@ -146,7 +147,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		var nativeElementClipPath = RootElement!.XamlRoot!.OnNativePlatformFrameRequested(null, size =>
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
 		{
 			_bitmap?.Dispose();
 			_surface?.Dispose();

@@ -25,19 +25,6 @@ public sealed partial class XamlRoot
 	internal XamlRoot(VisualTree visualTree)
 	{
 		VisualTree = visualTree;
-#if __SKIA__
-		CompositionTarget.RenderingActiveChanged += RequestNewFrame;
-		// TODO: is HostWindow ever null?
-		if (HostWindow is { } hostWindow)
-		{
-			void OnHostWindowClosed(object sender, WindowEventArgs args)
-			{
-				CompositionTarget.RenderingActiveChanged -= RequestNewFrame;
-				hostWindow.Closed -= OnHostWindowClosed;
-			}
-			hostWindow.Closed += OnHostWindowClosed;
-		}
-#endif
 	}
 
 	/// <summary>

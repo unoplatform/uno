@@ -180,7 +180,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 			}
 			
 			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-			var nativeClipPath = Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.XamlRoot!.OnNativePlatformFrameRequested(surface?.Canvas,
+			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas,
 			size =>
 			{
 				// read the info from the buffer

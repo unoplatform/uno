@@ -65,8 +65,4 @@ public partial class CompositionTarget
 			}, NativeDispatcherPriority.High);
 		}
 	}
-
-#if __SKIA__
-	void ICompositionTarget.RequestNewFrame() => ContentRoot?.XamlRoot?.RequestNewFrame();
-#endif
 }

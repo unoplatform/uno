@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -47,7 +48,7 @@ internal partial class Win32WindowWrapper
 		_rendering = true;
 		try
 		{
-			var nativeElementClipPath = XamlRoot!.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+			var nativeElementClipPath = ((CompositionTarget)((IXamlRootHost)this).RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 			{
 				_renderer.Reset();
 				_surface?.Dispose();

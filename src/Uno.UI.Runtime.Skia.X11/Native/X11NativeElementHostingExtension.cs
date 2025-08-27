@@ -3,6 +3,7 @@ using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Hosting;
@@ -53,7 +54,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			HideWindowFromTaskBar(nativeWindow);
 
-			xamlRoot.FramePainted += UpdateLayout;
+			((CompositionTarget)_presenter.Visual.CompositionTarget!).FramePainted += UpdateLayout;
 			_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual); // to force initial layout and clipping
 		}
 		else
@@ -134,7 +135,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_lastClipRect = null;
 			_lastArrangeRect = null;
 
-			xamlRoot.FramePainted -= UpdateLayout;
+			((CompositionTarget)_presenter.Visual.CompositionTarget!).FramePainted -= UpdateLayout;
 		}
 		else
 		{
