@@ -121,7 +121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net10.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 #endif
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ImageIcon), 15)]
 #if !WINAPPSDK
