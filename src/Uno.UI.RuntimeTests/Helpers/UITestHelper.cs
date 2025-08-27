@@ -103,10 +103,11 @@ public static class UITestHelper
 	public static async Task WaitForIdle(bool waitForCompositionAnimations = false)
 	{
 #if __SKIA__
-		do
+		if (waitForCompositionAnimations)
 		{
-			await TestServices.WindowHelper.WaitForIdle();
-		} while (waitForCompositionAnimations && (TestServices.WindowHelper.WindowContent?.Visual?.Compositor?.IsAnimating ?? false));
+			await WaitForRender();
+		}
+		await TestServices.WindowHelper.WaitForIdle();
 #else
 		await TestServices.WindowHelper.WaitForIdle();
 #endif
