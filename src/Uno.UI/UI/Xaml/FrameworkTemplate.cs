@@ -34,8 +34,14 @@ namespace Microsoft.UI.Xaml
 		private readonly ManagedWeakReference? _ownerRef;
 		private readonly bool _isLegacyTemplate = true; // Tests fails if set to false, so we keep it true for now.
 
-		internal NewFrameworkTemplateBuilder?
-			_viewFactory; // Updateable when a special mode is enabled in Uno.UI.TemplateManager
+		/// <summary>
+		/// The template builder factory. This field is mutable and may be updated at runtime
+		/// only when Uno.UI.TemplateManager enables "template materialization override mode".
+		/// In this mode, the factory can be replaced to support dynamic template materialization
+		/// scenarios (e.g., hot reload, design-time updates). Outside of this mode, the field
+		/// should remain unchanged. See Uno.UI.TemplateManager for details.
+		/// </summary>
+		internal NewFrameworkTemplateBuilder? _viewFactory;
 
 		/// <summary>
 		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.
