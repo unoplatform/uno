@@ -26,14 +26,12 @@ public sealed partial class XamlRoot
 	{
 		VisualTree = visualTree;
 #if __SKIA__
-		_renderTimer = new Timer(_ => OnRenderTimerTick());
 		CompositionTarget.RenderingActiveChanged += RequestNewFrame;
 		// TODO: is HostWindow ever null?
 		if (HostWindow is { } hostWindow)
 		{
 			void OnHostWindowClosed(object sender, WindowEventArgs args)
 			{
-				_renderTimer.Dispose();
 				CompositionTarget.RenderingActiveChanged -= RequestNewFrame;
 				hostWindow.Closed -= OnHostWindowClosed;
 			}

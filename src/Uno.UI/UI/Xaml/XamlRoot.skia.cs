@@ -2,7 +2,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Threading;
 using Windows.Foundation;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Input;
@@ -23,28 +22,30 @@ partial class XamlRoot
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	// TODO: read the native refresh rate instead of hardcoding it
 	private readonly float _fps = FeatureConfiguration.CompositionTarget.FrameRate;
-	private readonly Timer _renderTimer;
 	private readonly object _frameGate = new();
 	private readonly object _renderingStateGate = new();
 	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
 	private Size _lastCanvasSize = Size.Empty;
-	private int _frameCount;
 
-	private enum RenderCycleState
-	{
-		Clean,
-		PaintRequested,
-		PaintQueued
-	}
-
-	private RenderCycleState _renderState = RenderCycleState.Clean;
+	private bool _paintRequested;
 	private bool _paintedAheadOfTime;
+	private bool _paintRequestedAfterAheadOfTimePaint;
 
 	private FocusManager? _focusManager;
 
 	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
 
 	internal event Action? FramePainted;
+
+	private bool PaintRequested
+	{
+		get => _paintRequested;
+		set
+		{
+			_paintRequested = value;
+			this.LogTrace()?.Trace($"_paintRequested = {_paintRequested}");
+		}
+	}
 
 	internal void InvalidateOverlays()
 	{
@@ -58,16 +59,14 @@ partial class XamlRoot
 
 	private void PaintFrame()
 	{
+		var timestamp = Stopwatch.GetTimestamp();
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace("PaintFrame begins");
+			this.Log().Trace($"PaintFrame begins with timestamp {timestamp}");
 			using var _ = Disposable.Create(() => this.Log().Trace("PaintFrame ends"));
 		}
 
-		var timestamp = Stopwatch.GetTimestamp();
 		NativeDispatcher.CheckThreadAccess();
-
-		_frameCount++;
 
 		var rootElement = VisualTree.RootElement;
 
@@ -85,7 +84,7 @@ partial class XamlRoot
 
 		if (CompositionTarget.IsRenderingActive)
 		{
-			RequestNewFrame();
+			RequestNewFrame(true);
 		}
 
 		FramePainted?.Invoke();
@@ -124,69 +123,80 @@ partial class XamlRoot
 		}
 	}
 
-	internal void RequestNewFrame()
+	internal void RequestNewFrame() => RequestNewFrame(true);
+	private void RequestNewFrame(bool preventDrifting)
 	{
+		var shouldEnqueue = false;
 		lock (_renderingStateGate)
 		{
-			if (_renderState is RenderCycleState.Clean)
+			AssertRenderStateMachine();
+			if (!_paintedAheadOfTime && !PaintRequested)
 			{
-				_renderState = RenderCycleState.PaintRequested;
-				WakeUpTimer();
+				PaintRequested = true;
+				shouldEnqueue = true;
 			}
+			else if (_paintedAheadOfTime)
+			{
+				_paintRequestedAfterAheadOfTimePaint = true;
+			}
+			AssertRenderStateMachine();
+		}
+
+		if (shouldEnqueue)
+		{
+			long? lastTimestampNullable;
+			lock (_frameGate)
+			{
+				lastTimestampNullable = _lastRenderedFrame?.timestamp;
+			}
+
+			long minimumTimestamp = 0;
+			if (preventDrifting && lastTimestampNullable is { } lastTimestamp)
+			{
+				minimumTimestamp = GetNextMultiple(lastTimestamp, (long)(Stopwatch.Frequency / _fps));
+			}
+			else
+			{
+				minimumTimestamp = GetNextMultiple(Stopwatch.GetTimestamp(), (long)(Stopwatch.Frequency / _fps));
+			}
+
+			this.LogTrace()?.Trace($"Requested paint with minimumTimestamp = {minimumTimestamp}");
+			NativeDispatcher.Main.EnqueuePaint(OnRenderTimerTick, minimumTimestamp);
 		}
 	}
 
-	private void WakeUpTimer()
-	{
-		long? lastTimestampNullable;
-		lock (_frameGate)
-		{
-			lastTimestampNullable = _lastRenderedFrame?.timestamp;
-		}
-
-		TimeSpan dueTime;
-		if (lastTimestampNullable is { } lastTimestamp)
-		{
-			var delta = Stopwatch.GetElapsedTime(lastTimestamp);
-			dueTime = delta > TimeSpan.FromSeconds(1 / _fps) ? TimeSpan.Zero : TimeSpan.FromSeconds(1 / _fps) - delta;
-		}
-		else
-		{
-			dueTime = TimeSpan.FromSeconds(1 / _fps);
-		}
-
-		this.LogTrace()?.Trace($"Enabling render timer with dueTime = {dueTime}");
-		_renderTimer.Change(dueTime, Timeout.InfiniteTimeSpan);
-	}
+	private static long GetNextMultiple(long target, long divisor) => ((target + divisor - 1) / divisor) * divisor;
 
 	private void OnRenderTimerTick()
 	{
-		this.LogTrace()?.Trace($"Render timer tick");
+		this.LogTrace()?.Trace("Render timer tick");
 		lock (_renderingStateGate)
 		{
+			AssertRenderStateMachine();
 			if (_paintedAheadOfTime)
 			{
-				if (_renderState == RenderCycleState.PaintRequested)
+				_paintedAheadOfTime = false;
+				if (_paintRequestedAfterAheadOfTimePaint)
 				{
-					_paintedAheadOfTime = false;
-					this.LogTrace()?.Trace($"Render timer tick: painted ahead of time. Doing nothing this tick and rescheduling another tick");
-					_renderTimer.Change(TimeSpan.FromSeconds(1 / 60.0), Timeout.InfiniteTimeSpan);
+					_paintRequestedAfterAheadOfTimePaint = false;
+					this.LogTrace()?.Trace("Render timer tick: painted ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
+					RequestNewFrame(false);
+				}
+				else
+				{
+					this.LogTrace()?.Trace("Render timer tick: painted ahead of time and no new frame was requested since.");
 				}
 			}
-			else if (_renderState == RenderCycleState.PaintRequested)
+			else if (PaintRequested)
 			{
-				this.LogTrace()?.Trace("Render timer tick: enqueued PaintFrame");
-				NativeDispatcher.Main.Enqueue(() =>
+				this.LogTrace()?.Trace("PaintFrame fired from enqueued timer job");
+				lock (_renderingStateGate)
 				{
-					this.LogTrace()?.Trace("PaintFrame fired from enqueued timer job");
-					lock (_renderingStateGate)
-					{
-						_renderState = RenderCycleState.Clean;
-					}
-					PaintFrame();
-				}, NativeDispatcherPriority.Idle);
-				_renderState = RenderCycleState.PaintQueued;
+					PaintRequested = false;
+				}
+				PaintFrame();
 			}
+			AssertRenderStateMachine();
 		}
 	}
 
@@ -202,12 +212,14 @@ partial class XamlRoot
 			var shouldPaint = false;
 			lock (_renderingStateGate)
 			{
-				if (_renderState is RenderCycleState.PaintRequested && !_paintedAheadOfTime)
+				AssertRenderStateMachine();
+				if (PaintRequested && !_paintedAheadOfTime)
 				{
-					_renderState = RenderCycleState.Clean;
+					PaintRequested = false;
 					_paintedAheadOfTime = true;
 					shouldPaint = true;
 				}
+				AssertRenderStateMachine();
 			}
 
 			if (shouldPaint)
@@ -215,6 +227,16 @@ partial class XamlRoot
 				this.LogTrace()?.Trace("OnPaintFrameOpportunity: Calling PaintFrame early ");
 				PaintFrame();
 			}
+		}
+	}
+
+	[Conditional("DEBUG")]
+	private void AssertRenderStateMachine()
+	{
+		lock (_renderingStateGate)
+		{
+			Debug.Assert(!_paintRequestedAfterAheadOfTimePaint || _paintedAheadOfTime);
+			Debug.Assert(!_paintedAheadOfTime || !PaintRequested);
 		}
 	}
 }
