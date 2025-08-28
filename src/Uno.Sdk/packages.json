@@ -74,7 +74,7 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.8.1",
+		"version": "1.10.3",
 		"packages": [
 			"Uno.Resizetizer"
 		]
@@ -88,14 +88,14 @@
 	},
 	{
 		"group": "settings",
-		"version": "1.6.0-dev.15",
+		"version": "1.5.16",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.11.182",
+		"version": "1.15.66",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -115,21 +115,21 @@
 	},
 	{
 		"group": "SvgSkia",
-		"version": "3.0.2",
+		"version": "3.0.5",
 		"packages": [
 			"Svg.Skia"
 		]
 	},
 	{
 		"group": "WinAppSdk",
-		"version": "1.7.250401001",
+		"version": "1.7.250606001",
 		"packages": [
 			"Microsoft.WindowsAppSDK"
 		]
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.26100.3916",
+		"version": "10.0.26100.4948",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
@@ -156,7 +156,7 @@
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.70.2",
+		"version": "4.74.1",
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
@@ -275,7 +275,7 @@
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.0.15",
+		"version": "6.2.10",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -283,7 +283,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "6.1.0-dev.11",
+		"version": "6.2.3",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -313,7 +313,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "7.0.2",
+		"version": "8.1.4",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -325,7 +325,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "5.5.1",
+		"version": "5.7.3",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
@@ -342,7 +342,7 @@
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.3240.44",
+		"version": "1.0.3405.78",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
