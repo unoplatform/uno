@@ -3,25 +3,24 @@ using System;
 using System.Diagnostics;
 using Windows.Foundation;
 using SkiaSharp;
-using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
-using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Media;
 
 public partial class CompositionTarget
 {
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-	// TODO: read the native refresh rate instead of hardcoding it
-	private readonly float _fps = FeatureConfiguration.CompositionTarget.FrameRate;
 
 	private readonly object _frameGate = new();
 	private readonly object _renderingStateGate = new();
+
+	private float _fps = FeatureConfiguration.CompositionTarget.FrameRate;
+	private float? _updatedFps; // used to update _fps but only after making sure that the old value of _fps is not currently being used in an enqueued paint action o the dispatcher queue
 
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
@@ -160,6 +159,16 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnDispatcherNewFrameCallback)}");
 		NativeDispatcher.CheckThreadAccess();
 
+		if (_updatedFps is { } updatedFps)
+		{
+			// We just got back from the dispatcher, so we know for a fact that the dispatcher doesn't have any enqueued
+			// paint job. Now, we can update _fps safely. If we updated _fps immediately when the screen refresh
+			// changes, we can break the invariant of always having a non-decreasing minimumTimestamp sent to the
+			// dispatcher, specifically if the new refresh rate is higher than the current one.
+			_fps = updatedFps;
+			_updatedFps = null;
+		}
+
 		lock (_renderingStateGate)
 		{
 			LogRenderState();
@@ -229,6 +238,14 @@ public partial class CompositionTarget
 				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: OnPaintFrameOpportunity: Calling PaintFrame early ");
 				PaintFrame();
 			}
+		}
+	}
+
+	internal void SetRefreshRate(float fps)
+	{
+		if (FeatureConfiguration.CompositionTarget.UseNativeRefreshRate)
+		{
+			NativeDispatcher.Main.Enqueue(() => _updatedFps = fps);
 		}
 	}
 
