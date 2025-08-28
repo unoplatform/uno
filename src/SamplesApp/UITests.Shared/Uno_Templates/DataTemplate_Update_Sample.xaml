@@ -15,6 +15,8 @@
 
 	<ScrollViewer>
 		<StackPanel Spacing="12" Padding="12">
+			<TextBlock x:Name="unavailable" Text="This feature is unavailable on WinAppSDK. It does nothing." />
+
 			<TextBlock Text="DataTemplate Update Sample" FontSize="20"/>
 			<TextBlock Text="All presenters below share the same DataTemplate (x:Name=SharedTemplate)."/>
 
