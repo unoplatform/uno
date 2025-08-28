@@ -560,7 +560,7 @@ namespace SamplesApp
 			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
 #endif
 
-#if IS_CI_OR_DEBUG && __SKIA__
+#if IS_CI && __SKIA__
 			// Lower the framerate so that CI agents don't slow down too much
 			// as they're running with software rendering.
 			FeatureConfiguration.CompositionTarget.FrameRate = 15;
