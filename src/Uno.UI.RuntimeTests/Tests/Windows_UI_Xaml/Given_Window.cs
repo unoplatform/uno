@@ -344,6 +344,9 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
+#if RUNTIME_NATIVE_AOT
+	[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 	public async Task When_Window_Close_Programmatically_Event_Order()
 	{
 		AssertSupportsMultipleWindows();
