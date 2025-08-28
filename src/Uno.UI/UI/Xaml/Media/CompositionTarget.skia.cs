@@ -19,14 +19,17 @@ public partial class CompositionTarget
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	// TODO: read the native refresh rate instead of hardcoding it
 	private readonly float _fps = FeatureConfiguration.CompositionTarget.FrameRate;
+
 	private readonly object _frameGate = new();
 	private readonly object _renderingStateGate = new();
-	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
-	private Size _lastCanvasSize = Size.Empty;
 
-	private bool _paintRequested;
-	private bool _paintedAheadOfTime;
-	private bool _paintRequestedAfterAheadOfTimePaint;
+	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
+	private Size _lastCanvasSize = Size.Empty;
+	// only set on the UI thread and under _frameGate, only read under _frameGate
+	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
+	private bool _paintRequested; // only set or read under _renderingStateGate
+	private bool _paintedAheadOfTime; // only set or read under _renderingStateGate
+	private bool _paintRequestedAfterAheadOfTimePaint; // only set or read under _renderingStateGate
 
 	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
 
@@ -67,7 +70,7 @@ public partial class CompositionTarget
 
 		if (IsRenderingActive)
 		{
-			RequestNewFrame(true);
+			((ICompositionTarget)this).RequestNewFrame();
 		}
 
 		FramePainted?.Invoke();
@@ -111,8 +114,7 @@ public partial class CompositionTarget
 		}
 	}
 
-	void ICompositionTarget.RequestNewFrame() => RequestNewFrame(true);
-	private void RequestNewFrame(bool preventDrifting)
+	void ICompositionTarget.RequestNewFrame()
 	{
 		var shouldEnqueue = false;
 		lock (_renderingStateGate)
@@ -141,13 +143,9 @@ public partial class CompositionTarget
 			}
 
 			long minimumTimestamp = 0;
-			if (preventDrifting && lastTimestampNullable is { } lastTimestamp)
+			if (lastTimestampNullable is { } lastTimestamp)
 			{
 				minimumTimestamp = GetNextMultiple(lastTimestamp, (long)(Stopwatch.Frequency / _fps));
-			}
-			else
-			{
-				minimumTimestamp = GetNextMultiple(Stopwatch.GetTimestamp(), (long)(Stopwatch.Frequency / _fps));
 			}
 
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: Requested paint with minimumTimestamp = {minimumTimestamp}");
@@ -160,6 +158,8 @@ public partial class CompositionTarget
 	private void OnDispatcherNewFrameCallback()
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnDispatcherNewFrameCallback)}");
+		NativeDispatcher.CheckThreadAccess();
+
 		lock (_renderingStateGate)
 		{
 			LogRenderState();
@@ -167,11 +167,19 @@ public partial class CompositionTarget
 			if (_paintedAheadOfTime)
 			{
 				_paintedAheadOfTime = false;
+				lock (_frameGate)
+				{
+					if (_lastRenderedFrame is not null)
+					{
+						_lastRenderedFrame = _lastRenderedFrame.Value with { timestamp = GetNextMultiple(Stopwatch.GetTimestamp(), (long)(Stopwatch.Frequency / _fps)) };
+						this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnDispatcherNewFrameCallback)}: updating last frame timestamp since it was painted ahead of time to {_lastRenderedFrame.Value.timestamp}");
+					}
+				}
 				if (_paintRequestedAfterAheadOfTimePaint)
 				{
 					_paintRequestedAfterAheadOfTimePaint = false;
 					this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnDispatcherNewFrameCallback)}: painted ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
-					RequestNewFrame(false);
+					((ICompositionTarget)this).RequestNewFrame();
 				}
 				else
 				{
@@ -180,11 +188,11 @@ public partial class CompositionTarget
 			}
 			else if (PaintRequested)
 			{
-				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame fired from {nameof(OnDispatcherNewFrameCallback)}");
 				lock (_renderingStateGate)
 				{
 					PaintRequested = false;
 				}
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame fired from {nameof(OnDispatcherNewFrameCallback)}");
 				PaintFrame();
 			}
 			AssertRenderStateMachine();
@@ -240,7 +248,7 @@ public partial class CompositionTarget
 		{
 			lock (_renderingStateGate)
 			{
-				this.Log().Trace($"CompositionTarget#{GetHashCode()}: Render state machine state {GetHashCode()}: _paintRequested = {_paintRequested}, _paintedAheadOfTime = {_paintedAheadOfTime}, _paintRequestedAfterAheadOfTimePaint={_paintRequestedAfterAheadOfTimePaint}");
+				this.Log().Trace($"CompositionTarget#{GetHashCode()}: Render state machine: _paintRequested = {_paintRequested}, _paintedAheadOfTime = {_paintedAheadOfTime}, _paintRequestedAfterAheadOfTimePaint={_paintRequestedAfterAheadOfTimePaint}");
 			}
 		}
 	}

@@ -231,13 +231,14 @@ namespace Uno.UI.Dispatching
 						{
 							action = _compositionTargets[compositionTarget].paintActionForTimer!.Value;
 						}
+						this.LogTrace()?.Trace($"{nameof(EnqueuePaint)} from timer");
 						EnqueuePaint(compositionTarget, action.action, action.minimumTimestamp);
 					};
 				}
 
 				// _paintAction is maybe not null here, that's fine, it will be overridden
 				Debug.Assert(details.paintAction is null || details.paintAction == handler);
-				Debug.Assert(details.paintAction is null || minimumTimestamp > details.minimumTimestamp);
+				Debug.Assert(minimumTimestamp >= details.minimumTimestamp);
 				if (details.paintAction is null)
 				{
 					_pendingPaintActions++;
