@@ -273,6 +273,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_Big_Elements_Horizontal_SnapPoints()
 		{
 			var grid = (Grid)XamlReader.Load("""
@@ -326,6 +329,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_Small_Elements_Horizontal_SnapPoints()
 		{
 			var grid = (Grid)XamlReader.Load("""

@@ -116,6 +116,12 @@ namespace SamplesApp.Droid
 			// TODO: remove once the Android+CoreCLR runtime properly inits crypto, possibly .NET 10 RC2?
 			Java.Lang.JavaSystem.LoadLibrary("System.Security.Cryptography.Native.Android");
 #endif  // RUNTIME_CORECLR
+#if RUNTIME_NATIVE_AOT
+			// TODO: remove once the Android+NativeAOT runtime properly inits crypto
+			// Likely once https://github.com/dotnet/android/pull/10461 is merged, possibly .NET 10 RC2?
+			JniEnvironment.References.GetJavaVM(out var invocationPointer);
+			NativeMethods.AndroidCryptoNative_InitLibraryOnLoad(javaVM: invocationPointer, reserved: IntPtr.Zero);
+#endif  // RUNTIME_NATIVE_AOT
 
 			// Initialize Android-specific extensions.
 			// These would be generally registered automatically by App.xaml generator,
@@ -126,4 +132,12 @@ namespace SamplesApp.Droid
 			ApiExtensibility.Register(typeof(IApplicationViewSpanningRects), o => new FoldableApplicationViewSpanningRects(o));
 		}
 	}
+
+#if RUNTIME_NATIVE_AOT
+	internal static partial class NativeMethods
+	{
+		[DllImport("System.Security.Cryptography.Native.Android", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void AndroidCryptoNative_InitLibraryOnLoad(IntPtr javaVM, IntPtr reserved);
+	}
+#endif  // RUNTIME_NATIVE_AOT
 }

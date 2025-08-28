@@ -13,6 +13,9 @@ using DependencyObjectExtensions = Uno.UI.Extensions.DependencyObjectExtensions;
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Extensions
 {
 	[TestClass]
+#if RUNTIME_NATIVE_AOT
+	[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 	public class Given_DependencyObjectExtensions
 	{
 		[TestMethod]
