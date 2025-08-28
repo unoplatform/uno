@@ -32,18 +32,8 @@ namespace Uno.UI.Dispatching
 		};
 
 		private readonly object _gate = new();
-		private readonly System.Timers.Timer _timer = new System.Timers.Timer() { AutoReset = false };
 
-		private (Action action, long minimumTimestamp)? _paintAction;
-#pragma warning disable CS0649
-		private (Action action, long minimumTimestamp)? _paintActionForTimer;
-#pragma warning restore CS0649
-
-#pragma warning disable CS0169 // Field is never used
-#pragma warning disable IDE0051 // Field is never used
-		private int _normalItemsToProcessBeforeNextPaintAction;
-#pragma warning restore IDE0051 // Field is never used
-#pragma warning restore CS0169 // Field is never used
+		private readonly Dictionary<object, (Action? paintAction, long minimumTimestamp, int normalItemsToProcessBeforeNextPaintAction, System.Timers.Timer timer, (Action action, long minimumTimestamp)? paintActionForTimer)> _compositionTargets = new();
 
 		private NativeDispatcherPriority _currentPriority;
 
@@ -67,13 +57,6 @@ namespace Uno.UI.Dispatching
 
 			SynchronizationContext = new NativeDispatcherSynchronizationContext(this);
 
-			_timer.Elapsed += (sender, args) =>
-			{
-				if (_paintActionForTimer is { } a)
-				{
-					EnqueuePaint(a.action, a.minimumTimestamp);
-				}
-			};
 			Initialize();
 		}
 
@@ -97,44 +80,7 @@ namespace Uno.UI.Dispatching
 			// We want DispatchItems to be static to avoid delegate allocations.
 			var @this = NativeDispatcher.Main;
 
-			Action? action = null;
-
-			lock (@this._gate)
-			{
-				if (@this._paintAction is { action: var a, minimumTimestamp: var t })
-				{
-					var timestamp = Stopwatch.GetTimestamp();
-					if (timestamp >= t && @this._normalItemsToProcessBeforeNextPaintAction == 0)
-					{
-						action = a;
-						@this._paintAction = null;
-						@this._normalItemsToProcessBeforeNextPaintAction = @this._queues[(int)NativeDispatcherPriority.Normal].Count;
-						@this._currentPriority = NativeDispatcherPriority.High;
-
-						if (Interlocked.Decrement(ref @this._globalCount) > 0)
-						{
-							@this.EnqueueNative(@this._currentPriority);
-						}
-
-						@this.LogTrace()?.Trace($"Running paint job from the dispatcher: queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
-					}
-					else if (timestamp < t && Volatile.Read(ref @this._globalCount) == 1)
-					{
-						action = static () => { };
-						@this._paintActionForTimer = @this._paintAction;
-						@this._paintAction = null;
-						if (Interlocked.Decrement(ref @this._globalCount) > 0)
-						{
-							@this.EnqueueNative(@this._currentPriority);
-						}
-
-						@this.LogTrace()?.Trace($"Too early to run paint job from the dispatcher: queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
-						Debug.Assert(!@this._timer.Enabled);
-						@this._timer.Interval = TimeSpan.FromTicks(t - timestamp).TotalMilliseconds;
-						@this._timer.Enabled = true;
-					}
-				}
-			}
+			Action? action = @this.TryGetPaintAction();
 
 			if (action is null)
 			{
@@ -161,9 +107,18 @@ namespace Uno.UI.Dispatching
 				}
 			}
 
-			if (@this is { _currentPriority: NativeDispatcherPriority.Normal, _normalItemsToProcessBeforeNextPaintAction: > 0 })
+			if (@this is { _currentPriority: NativeDispatcherPriority.Normal })
 			{
-				@this._normalItemsToProcessBeforeNextPaintAction--;
+				lock (@this._gate)
+				{
+					foreach (var (compositionTarget, details) in @this._compositionTargets)
+					{
+						if (details.normalItemsToProcessBeforeNextPaintAction > 0)
+						{
+							@this._compositionTargets[compositionTarget] = details with { normalItemsToProcessBeforeNextPaintAction = details.normalItemsToProcessBeforeNextPaintAction - 1 };
+						}
+					}
+				}
 			}
 
 			RunAction(@this, action);
@@ -199,21 +154,98 @@ namespace Uno.UI.Dispatching
 				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
 		}
+
+		private Action? TryGetPaintAction()
+		{
+			lock (_gate)
+			{
+				foreach (var (compositionTarget, details) in _compositionTargets)
+				{
+					if (details.paintAction is not null)
+					{
+						var timestamp = Stopwatch.GetTimestamp();
+						if (timestamp >= details.minimumTimestamp && details.normalItemsToProcessBeforeNextPaintAction == 0)
+						{
+							_compositionTargets[compositionTarget] = details with
+							{
+								paintAction = null,
+								normalItemsToProcessBeforeNextPaintAction = _queues[(int)NativeDispatcherPriority.Normal].Count
+							};
+
+							_currentPriority = NativeDispatcherPriority.High;
+
+							if (Interlocked.Decrement(ref _globalCount) > 0)
+							{
+								EnqueueNative(_currentPriority);
+							}
+
+							this.LogTrace()?.Trace($"Running paint job from the dispatcher: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
+
+							return details.paintAction;
+						}
+						else if (timestamp < details.minimumTimestamp && Volatile.Read(ref _globalCount) == 1)
+						{
+							_compositionTargets[compositionTarget] = details with
+							{
+								paintActionForTimer = (details.paintAction, details.minimumTimestamp),
+								paintAction = null,
+							};
+							Debug.Assert(!details.timer.Enabled);
+							details.timer.Interval = (double)(details.minimumTimestamp - timestamp) / Stopwatch.Frequency * 1000;
+							details.timer.Enabled = true;
+
+							if (Interlocked.Decrement(ref _globalCount) > 0)
+							{
+								EnqueueNative(_currentPriority);
+							}
+
+							this.LogTrace()?.Trace($"Too early to run paint job from the dispatcher: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
+
+							return static () => { };
+						}
+					}
+				}
+			}
+
+			return null;
+		}
 #endif
 
-		public void EnqueuePaint(Action handler, long minimumTimestamp)
+		public void EnqueuePaint(object compositionTarget, Action handler, long minimumTimestamp)
 		{
 			bool shouldEnqueue = false;
 			lock (_gate)
 			{
+				if (!_compositionTargets.TryGetValue(compositionTarget, out var details))
+				{
+					var timer = new System.Timers.Timer { AutoReset = false };
+					details = _compositionTargets[compositionTarget] = (null, minimumTimestamp, 0, timer, null);
+					timer.Elapsed += (_, _) =>
+					{
+						(Action action, long minimumTimestamp)? action;
+						lock (_gate)
+						{
+							action = _compositionTargets[compositionTarget].paintActionForTimer;
+						}
+						if (action is { } a)
+						{
+							EnqueuePaint(compositionTarget, a.action, a.minimumTimestamp);
+						}
+					};
+				}
+
 				// _paintAction is maybe not null here, that's fine, it will be overridden
-				Debug.Assert(_paintAction is null || _paintAction.Value.action == handler);
-				Debug.Assert(_paintAction is null || minimumTimestamp > _paintAction.Value.minimumTimestamp);
-				if (_paintAction is null)
+				Debug.Assert(details.paintAction is null || details.paintAction == handler);
+				Debug.Assert(details.paintAction is null || minimumTimestamp > details.minimumTimestamp);
+				if (details.paintAction is null)
 				{
 					shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
 				}
-				_paintAction = (handler, minimumTimestamp);
+				_compositionTargets[compositionTarget] = details with
+				{
+					paintAction = handler,
+					minimumTimestamp = minimumTimestamp
+				};
 				this.LogTrace()?.Trace($"{nameof(EnqueuePaint)} updated paintAction with  minimum timestamp {minimumTimestamp}");
 			}
 
