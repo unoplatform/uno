@@ -10,6 +10,7 @@ using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Media;
 
@@ -150,15 +151,15 @@ public partial class CompositionTarget
 			}
 
 			this.LogTrace()?.Trace($"Requested paint with minimumTimestamp = {minimumTimestamp}");
-			NativeDispatcher.Main.EnqueuePaint(OnRenderTimerTick, minimumTimestamp);
+			NativeDispatcher.Main.EnqueuePaint(this, OnDispatcherNewFrameCallback, minimumTimestamp);
 		}
 	}
 
 	private static long GetNextMultiple(long target, long divisor) => ((target + divisor - 1) / divisor) * divisor;
 
-	private void OnRenderTimerTick()
+	private void OnDispatcherNewFrameCallback()
 	{
-		this.LogTrace()?.Trace("Render timer tick");
+		this.LogTrace()?.Trace($"{nameof(OnDispatcherNewFrameCallback)}");
 		lock (_renderingStateGate)
 		{
 			AssertRenderStateMachine();
@@ -168,17 +169,17 @@ public partial class CompositionTarget
 				if (_paintRequestedAfterAheadOfTimePaint)
 				{
 					_paintRequestedAfterAheadOfTimePaint = false;
-					this.LogTrace()?.Trace("Render timer tick: painted ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
+					this.LogTrace()?.Trace($"{nameof(OnDispatcherNewFrameCallback)}: painted ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
 					RequestNewFrame(false);
 				}
 				else
 				{
-					this.LogTrace()?.Trace("Render timer tick: painted ahead of time and no new frame was requested since.");
+					this.LogTrace()?.Trace($"{nameof(OnDispatcherNewFrameCallback)}: painted ahead of time and no new frame was requested since.");
 				}
 			}
 			else if (PaintRequested)
 			{
-				this.LogTrace()?.Trace("PaintFrame fired from enqueued timer job");
+				this.LogTrace()?.Trace($"PaintFrame fired from {nameof(OnDispatcherNewFrameCallback)}");
 				lock (_renderingStateGate)
 				{
 					PaintRequested = false;
@@ -191,8 +192,8 @@ public partial class CompositionTarget
 
 	internal void OnPaintFrameOpportunity()
 	{
-		// If we get an opportunity to get call PaintFrame earlier than the timer tick, then we do that
-		// but skip the PaintFrame call in the next timer tick so that overall we're still keeping
+		// If we get an opportunity to get call PaintFrame earlier than OnDispatcherNewFrameCallback, then we do that
+		// but skip the PaintFrame call in the next OnDispatcherNewFrameCallback so that overall we're still keeping
 		// the rate of PaintFrame calls the same.
 		NativeDispatcher.CheckThreadAccess();
 
