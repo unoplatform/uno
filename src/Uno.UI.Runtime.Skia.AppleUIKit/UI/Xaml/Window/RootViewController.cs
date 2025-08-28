@@ -17,24 +17,12 @@ using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
 using Uno.UI.Xaml.Core;
-
-
-#if __IOS__
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
-#else
-using SkiaSharp.Views.tvOS;
-using SkiaCanvas = SkiaSharp.Views.tvOS.SKCanvasView;
-using SkiaEventArgs = SkiaSharp.Views.tvOS.SKPaintSurfaceEventArgs;
-#endif
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
-#if __TVOS__
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-#endif
-
 	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
@@ -78,17 +66,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_textInputLayer = new UIView();
 		view.AddSubview(_textInputLayer);
 
-#if !__TVOS__
 		_skCanvasView = new SkiaCanvas();
 		_skCanvasView.SetOwner(this);
-#else
-		_skCanvasView = new SkiaCanvas();
-#endif
 		_skCanvasView.Frame = view.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
-#if __TVOS__
-		_skCanvasView.PaintSurface += OnPaintSurface;
-#endif
 		view.AddSubview(_skCanvasView);
 
 		_topViewLayer = new TopViewLayer();
@@ -128,21 +109,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	internal event Action? VisibleBoundsChanged;
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
-
-#if __TVOS__
-	private void OnPaintSurface(object? sender, SkiaEventArgs e)
-	{
-		OnPaintSurfaceInner(e.Surface);
-	}
-
-	private void OnPaintSurfaceInner(SKSurface surface)
-	{
-		if (_xamlRoot?.LastRenderedFrame is { } lastRenderedFrame)
-		{
-			OnRenderFrameRequested(surface.Canvas);
-		}
-	}
-#endif
 
 	internal void OnRenderFrameRequested(SKCanvas canvas)
 	{
@@ -289,11 +255,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void InvalidateRender()
 	{
-#if !__TVOS__
 		_skCanvasView?.QueueRender();
-#else
-		_skCanvasView?.LayoutSubviews();
-#endif
 	}
 
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;

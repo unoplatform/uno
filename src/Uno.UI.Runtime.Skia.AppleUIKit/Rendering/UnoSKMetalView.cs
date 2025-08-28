@@ -1,5 +1,4 @@
-﻿#if !__TVOS__
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using CoreAnimation;
@@ -64,7 +63,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
 			SampleCount = 1;
 
-#if !__TVOS__
 			FramebufferOnly = false;
 
 			// Disable UIKit’s display‑link
@@ -72,7 +70,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			// We're drawing ourselves
 			EnableSetNeedsDisplay = false;
-#endif
 
 			var fps = UIScreen.MainScreen.MaximumFramesPerSecond;
 			PreferredFramesPerSecond = fps;
@@ -150,7 +147,11 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			try
 			{
 				// Defer the acquisition of the drawable
+#if __TVOS__ // TODO: tvOS is not supported yet.
+				surface = SKSurface.CreateNull(width, height);
+#else
 				surface = SKSurface.Create(_context, this, GRSurfaceOrigin.TopLeft, (int)SampleCount, SKColorType.Bgra8888);
+#endif
 
 				canvas = surface.Canvas;
 
@@ -183,4 +184,3 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		}
 	}
 }
-#endif
