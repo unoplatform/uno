@@ -38,7 +38,7 @@ public partial class CompositionTarget
 		set
 		{
 			_paintRequested = value;
-			this.LogTrace()?.Trace($"_paintRequested = {_paintRequested}");
+			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()} _paintRequested = {_paintRequested}");
 		}
 	}
 
@@ -47,8 +47,8 @@ public partial class CompositionTarget
 		var timestamp = Stopwatch.GetTimestamp();
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"PaintFrame begins with timestamp {timestamp}");
-			using var _ = Disposable.Create(() => this.Log().Trace("PaintFrame ends"));
+			this.Log().Trace($"CompositionTarget#{GetHashCode()}: PaintFrame begins with timestamp {timestamp}");
+			using var _ = Disposable.Create(() => this.Log().Trace($"CompositionTarget#{GetHashCode()}: PaintFrame ends"));
 		}
 
 		NativeDispatcher.CheckThreadAccess();
@@ -119,6 +119,7 @@ public partial class CompositionTarget
 		var shouldEnqueue = false;
 		lock (_renderingStateGate)
 		{
+			LogRenderState();
 			AssertRenderStateMachine();
 			if (!_paintedAheadOfTime && !PaintRequested)
 			{
@@ -130,6 +131,7 @@ public partial class CompositionTarget
 				_paintRequestedAfterAheadOfTimePaint = true;
 			}
 			AssertRenderStateMachine();
+			LogRenderState();
 		}
 
 		if (shouldEnqueue)
@@ -150,7 +152,7 @@ public partial class CompositionTarget
 				minimumTimestamp = GetNextMultiple(Stopwatch.GetTimestamp(), (long)(Stopwatch.Frequency / _fps));
 			}
 
-			this.LogTrace()?.Trace($"Requested paint with minimumTimestamp = {minimumTimestamp}");
+			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: Requested paint with minimumTimestamp = {minimumTimestamp}");
 			NativeDispatcher.Main.EnqueuePaint(this, OnDispatcherNewFrameCallback, minimumTimestamp);
 		}
 	}
@@ -159,9 +161,10 @@ public partial class CompositionTarget
 
 	private void OnDispatcherNewFrameCallback()
 	{
-		this.LogTrace()?.Trace($"{nameof(OnDispatcherNewFrameCallback)}");
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnDispatcherNewFrameCallback)}");
 		lock (_renderingStateGate)
 		{
+			LogRenderState();
 			AssertRenderStateMachine();
 			if (_paintedAheadOfTime)
 			{
@@ -169,7 +172,7 @@ public partial class CompositionTarget
 				if (_paintRequestedAfterAheadOfTimePaint)
 				{
 					_paintRequestedAfterAheadOfTimePaint = false;
-					this.LogTrace()?.Trace($"{nameof(OnDispatcherNewFrameCallback)}: painted ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
+					this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnDispatcherNewFrameCallback)}: painted ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
 					RequestNewFrame(false);
 				}
 				else
@@ -179,7 +182,7 @@ public partial class CompositionTarget
 			}
 			else if (PaintRequested)
 			{
-				this.LogTrace()?.Trace($"PaintFrame fired from {nameof(OnDispatcherNewFrameCallback)}");
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame fired from {nameof(OnDispatcherNewFrameCallback)}");
 				lock (_renderingStateGate)
 				{
 					PaintRequested = false;
@@ -187,6 +190,7 @@ public partial class CompositionTarget
 				PaintFrame();
 			}
 			AssertRenderStateMachine();
+			LogRenderState();
 		}
 	}
 
@@ -202,6 +206,7 @@ public partial class CompositionTarget
 			var shouldPaint = false;
 			lock (_renderingStateGate)
 			{
+				LogRenderState();
 				AssertRenderStateMachine();
 				if (PaintRequested && !_paintedAheadOfTime)
 				{
@@ -210,11 +215,12 @@ public partial class CompositionTarget
 					shouldPaint = true;
 				}
 				AssertRenderStateMachine();
+				LogRenderState();
 			}
 
 			if (shouldPaint)
 			{
-				this.LogTrace()?.Trace("OnPaintFrameOpportunity: Calling PaintFrame early ");
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: OnPaintFrameOpportunity: Calling PaintFrame early ");
 				PaintFrame();
 			}
 		}
@@ -227,6 +233,17 @@ public partial class CompositionTarget
 		{
 			Debug.Assert(!_paintRequestedAfterAheadOfTimePaint || _paintedAheadOfTime);
 			Debug.Assert(!_paintedAheadOfTime || !PaintRequested);
+		}
+	}
+
+	private void LogRenderState()
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			lock (_renderingStateGate)
+			{
+				this.Log().Trace($"CompositionTarget#{GetHashCode()}: Render state machine state {GetHashCode()}: _paintRequested = {_paintRequested}, _paintedAheadOfTime = {_paintedAheadOfTime}, _paintRequestedAfterAheadOfTimePaint={_paintRequestedAfterAheadOfTimePaint}");
+			}
 		}
 	}
 }
