@@ -34,7 +34,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="DragView">
 					<Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-						<Image Visibility="{TemplateBinding ContentVisibility}" Source="{TemplateBinding Content}" Opacity=".8">
+						<Image Visibility="{TemplateBinding ContentVisibility}" Stretch="None" Source="{TemplateBinding Content}" Opacity=".8">
 							<Image.RenderTransform>
 								<TranslateTransform X="{TemplateBinding ContentAnchor.X}" Y="{TemplateBinding ContentAnchor.Y}" />
 							</Image.RenderTransform>
