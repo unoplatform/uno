@@ -2,15 +2,20 @@
 uid: Uno.GetStarted.Wizard
 ---
 
-<!-- markdownlint-disable MD026 -->
-# Welcome to Uno Platform! Important Next Steps
+<!-- TITLE SECTION -->
+<div style="display: flex; justify-content: center; align-items: center; text-align: center;">
+  <h1>Welcome to Uno Platform! Important Next Steps</h1>
+</div>
 
-Create a simple cross-platform Counter application. (Time to complete < 5 min)
+<!-- COUNTER - HOT DESIGN TUTORIAL - SECTION -->
+<p style="text-align: center;">
+  Create a simple cross-platform Counter application (Time to complete &lt; 5 min):
+</p>
 
 <!-- markdownlint-disable MD001 -->
 
 <!-- Centered first item -->
-<div class="row" style="display: flex; justify-content: center; align-items: center;">
+<div style="display: flex; justify-content: center; align-items: center;">
 <div class="col-md-6 col-xs-12">
 <a href="studio/Hot Design/hot-design-getstarted-counter-tutorial.md">
 <div class="alert alert-info alert-hover">
@@ -24,13 +29,19 @@ Use Hot Design®, Uno Platform's visual designer, to design and develop the app.
 </div>
 </div>
 
-<div class="row">
+<p align="center">
+  <img src="Assets/getting-started-hot-design.png" alt="Welcome-Hot Design-Counter" style="width:auto; max-width:90%; height:auto;" />
+</p>
 
-![Welcome-Hot Design-Counter](Assets/getting-started-hot-design.gif)
+<br/>
 
-</div>
+<!-- COUNTER - OTHER VARIANTS TUTORIALS - SECTION -->
 
-Prefer to start from code? Choose one of the 4 variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX).
+<p style="text-align: center;">
+    Prefer to start from code? Choose one of the 4 variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX).
+</p>
+
+<br/>
 
 <div class="row">
 
@@ -85,5 +96,7 @@ Use C# Markup for layout and MVVM for state management
 </div>
 
 <br/>
+
+<!-- GETTING HELP SECTION -->
 
 [!include[getting-help](includes/getting-help.md)]
