@@ -38,6 +38,7 @@ namespace Uno.UI.Dispatching
 		private NativeDispatcherPriority _currentPriority;
 
 		private int _globalCount;
+		private int _pendingPaintActions;
 
 		[ThreadStatic]
 		private static bool? _hasThreadAccess;
@@ -171,6 +172,7 @@ namespace Uno.UI.Dispatching
 								paintAction = null,
 								normalItemsToProcessBeforeNextPaintAction = _queues[(int)NativeDispatcherPriority.Normal].Count
 							};
+							_pendingPaintActions--;
 
 							_currentPriority = NativeDispatcherPriority.High;
 
@@ -183,13 +185,15 @@ namespace Uno.UI.Dispatching
 
 							return details.paintAction;
 						}
-						else if (timestamp < details.minimumTimestamp && Volatile.Read(ref _globalCount) == 1)
+						else if (_globalCount == _pendingPaintActions)
 						{
+							Debug.Assert(timestamp < details.minimumTimestamp);
 							_compositionTargets[compositionTarget] = details with
 							{
 								paintActionForTimer = (details.paintAction, details.minimumTimestamp),
 								paintAction = null,
 							};
+							_pendingPaintActions--;
 							Debug.Assert(!details.timer.Enabled);
 							details.timer.Interval = (double)(details.minimumTimestamp - timestamp) / Stopwatch.Frequency * 1000;
 							details.timer.Enabled = true;
@@ -233,9 +237,10 @@ namespace Uno.UI.Dispatching
 
 				// _paintAction is maybe not null here, that's fine, it will be overridden
 				Debug.Assert(details.paintAction is null || details.paintAction == handler);
-				Debug.Assert(minimumTimestamp > details.minimumTimestamp);
+				Debug.Assert(details.paintAction is null || minimumTimestamp > details.minimumTimestamp);
 				if (details.paintAction is null)
 				{
+					_pendingPaintActions++;
 					shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
 				}
 				_compositionTargets[compositionTarget] = details with
