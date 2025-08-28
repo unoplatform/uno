@@ -11,7 +11,7 @@
 	<!-- Feature configuration -->
 	<PropertyGroup>
 		<UnoDragDropExternalSupport Condition="'$(UnoDragDropExternalSupport)'==''">true</UnoDragDropExternalSupport>
-		<UnoEnableDynamicDataTemplateUpdate Condition="'$(UnoEnableDynamicDataTemplateUpdate)'==''">false</UnoEnableDynamicDataTemplateUpdate>
+		<UnoEnableDynamicDataTemplateUpdate Condition="'$(UnoEnableDynamicDataTemplateUpdate)'==''">true</UnoEnableDynamicDataTemplateUpdate>
 	</PropertyGroup>
 	<ItemGroup>
 		
