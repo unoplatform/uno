@@ -111,10 +111,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
 	{
-		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
+		var matrixNotDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
 		InvalidateParentChildrenPicture(false);
-		return !matrixDirty;
+		return !matrixNotDirty;
 	}
 
 	/// <summary>
