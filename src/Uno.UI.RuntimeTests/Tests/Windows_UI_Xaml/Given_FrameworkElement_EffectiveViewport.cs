@@ -251,6 +251,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, double.NaN, 100)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Stretch, double.NaN, double.NaN)]
 		#endregion
+#if RUNTIME_NATIVE_AOT
+		[Ignore("DataRowAttribute.GetData() wraps data in an extra array under NativeAOT; not yet understood why.")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task EVP_When_Constrained(HorizontalAlignment hAlign, VerticalAlignment vAlign, double width, double height)
 		{
 			/*

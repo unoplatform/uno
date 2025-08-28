@@ -32,6 +32,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("hour minute second", "en-US|fr-CA", "{hour}:{minute}:{second} {period.abbreviated}|{hour}:{minute}:{second}")]
 		[DataRow("hour minute", "en-US|fr-CA", "{hour}:{minute} {period.abbreviated}|{hour}:{minute}")]
 		[Ignore("https://github.com/unoplatform/uno/issues/9080")]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void When_UsingMultipleLanguages(string format, string languages, string expectedPatterns)
 		{
 			var sut = new DateTimeFormatter(format, languages.Split('|'));
