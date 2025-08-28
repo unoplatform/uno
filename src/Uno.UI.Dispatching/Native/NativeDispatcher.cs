@@ -219,24 +219,21 @@ namespace Uno.UI.Dispatching
 				if (!_compositionTargets.TryGetValue(compositionTarget, out var details))
 				{
 					var timer = new System.Timers.Timer { AutoReset = false };
-					details = _compositionTargets[compositionTarget] = (null, minimumTimestamp, 0, timer, null);
+					details = _compositionTargets[compositionTarget] = (null, 0, 0, timer, null);
 					timer.Elapsed += (_, _) =>
 					{
-						(Action action, long minimumTimestamp)? action;
+						(Action action, long minimumTimestamp) action;
 						lock (_gate)
 						{
-							action = _compositionTargets[compositionTarget].paintActionForTimer;
+							action = _compositionTargets[compositionTarget].paintActionForTimer!.Value;
 						}
-						if (action is { } a)
-						{
-							EnqueuePaint(compositionTarget, a.action, a.minimumTimestamp);
-						}
+						EnqueuePaint(compositionTarget, action.action, action.minimumTimestamp);
 					};
 				}
 
 				// _paintAction is maybe not null here, that's fine, it will be overridden
 				Debug.Assert(details.paintAction is null || details.paintAction == handler);
-				Debug.Assert(details.paintAction is null || minimumTimestamp > details.minimumTimestamp);
+				Debug.Assert(minimumTimestamp > details.minimumTimestamp);
 				if (details.paintAction is null)
 				{
 					shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
