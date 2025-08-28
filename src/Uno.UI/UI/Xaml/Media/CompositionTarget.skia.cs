@@ -45,11 +45,7 @@ public partial class CompositionTarget
 	private void PaintFrame()
 	{
 		var timestamp = Stopwatch.GetTimestamp();
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"CompositionTarget#{GetHashCode()}: PaintFrame begins with timestamp {timestamp}");
-			using var _ = Disposable.Create(() => this.Log().Trace($"CompositionTarget#{GetHashCode()}: PaintFrame ends"));
-		}
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame begins with timestamp {timestamp}");
 
 		NativeDispatcher.CheckThreadAccess();
 
@@ -69,7 +65,7 @@ public partial class CompositionTarget
 			_lastRenderedFrame = lastRenderedFrame;
 		}
 
-		if (CompositionTarget.IsRenderingActive)
+		if (IsRenderingActive)
 		{
 			RequestNewFrame(true);
 		}
@@ -79,6 +75,8 @@ public partial class CompositionTarget
 		{
 			XamlRootMap.GetHostForRoot(rootElement.XamlRoot)?.InvalidateRender();
 		}
+
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame ends");
 	}
 
 	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
@@ -107,7 +105,7 @@ public partial class CompositionTarget
 				SKColors.Transparent,
 				_fpsHelper);
 
-			CompositionTarget.InvokeRendering();
+			InvokeRendering();
 
 			return lastRenderedFrame.nativeElementClipPath;
 		}
