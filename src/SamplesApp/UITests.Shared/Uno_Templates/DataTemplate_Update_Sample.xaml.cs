@@ -13,8 +13,11 @@ namespace Uno.UI.Samples.UITests.Templates
 	{
 		public DataTemplate_Update_Sample()
 		{
+#if !WINAPPSDK
 			Uno.UI.TemplateManager.EnableUpdateSubscriptions();
-
+#else
+			unavailable.Visiblity = Visibility.Visible;
+#endif
 			this.InitializeComponent();
 		}
 
