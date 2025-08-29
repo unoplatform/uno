@@ -898,7 +898,8 @@ namespace SampleControl.Presentation
 
 			await SetFile(SampleChooserFavoriteConstant, favorites.ToArray());
 
-			FavoriteSamples = favorites;
+			// Sort favorites by name to ensure consistent ordering
+			FavoriteSamples = favorites.OrderBy(s => s.ControlName).ToList();
 
 			OnSelectedCategoryChanged();
 			UpdateFavorites();
@@ -949,7 +950,8 @@ namespace SampleControl.Presentation
 				// Update the Sample List to set the IsFavorite to True
 				UpdateFavorites(getAllSamples, favoriteSamples);
 
-				return favoriteSamples;
+				// Sort favorites by name to ensure consistent ordering
+				return favoriteSamples.OrderBy(s => s.ControlName).ToList();
 			}
 			catch (Exception e)
 			{
