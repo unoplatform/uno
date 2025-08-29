@@ -41,9 +41,22 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		/// <remarks>
 		/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 		/// </remarks>
-		public FrameBufferHost(Func<WUX.Application> appBuilder)
+		public FrameBufferHost(Func<WUX.Application> appBuilder) : this(appBuilder, null)
+		{
+		}
+
+		/// <summary>
+		/// Creates a host for a Uno Skia FrameBuffer application.
+		/// </summary>
+		/// <param name="appBuilder">App builder.</param>
+		/// <param name="displayScale">Optional display scale override.</param>
+		/// <remarks>
+		/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
+		/// </remarks>
+		public FrameBufferHost(Func<WUX.Application> appBuilder, float? displayScale)
 		{
 			_appBuilder = appBuilder;
+			DisplayScale = displayScale;
 
 			_eventLoop = new EventLoop();
 			_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
