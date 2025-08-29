@@ -1,0 +1,175 @@
+using System;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Uno.UI.RuntimeTests.Helpers;
+using Private.Infrastructure;
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
+{
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_PasswordBox
+	{
+		[TestMethod]
+#if __WASM__
+		[Ignore("RenderTargetBitmap is not implemented on WASM.")]
+#endif
+		public async Task When_PasswordChar_Visual_Comparison()
+		{
+			// Test password with 4 characters 
+			const string testPassword = "test";
+			const int passwordLength = 4;
+
+			// Create a PasswordBox with PasswordChar="A"
+			var passwordBox = new PasswordBox
+			{
+				PasswordChar = "A",
+				Password = testPassword,
+				FontFamily = new FontFamily("Consolas"), // Use monospace font for consistent character spacing
+				FontSize = 16,
+				Width = 100,
+				Height = 32,
+				Padding = new Thickness(4)
+			};
+
+			// Create a TextBox with "AAAA" to compare visual appearance
+			var textBox = new TextBox
+			{
+				Text = new string('A', passwordLength),
+				FontFamily = new FontFamily("Consolas"), // Same font as PasswordBox
+				FontSize = 16,
+				Width = 100,
+				Height = 32,
+				Padding = new Thickness(4)
+			};
+
+			// Load PasswordBox and take screenshot
+			await UITestHelper.Load(passwordBox);
+			var passwordBoxScreenshot = await UITestHelper.ScreenShot(passwordBox);
+
+			// Load TextBox and take screenshot  
+			await UITestHelper.Load(textBox);
+			var textBoxScreenshot = await UITestHelper.ScreenShot(textBox);
+
+			// Compare that PasswordBox with PasswordChar="A" looks similar to TextBox with "AAAA"
+			await ImageAssert.AreSimilarAsync(passwordBoxScreenshot, textBoxScreenshot, imperceptibilityThreshold: 0.05);
+
+			// Now change PasswordChar to "B" and verify it changes
+			passwordBox.PasswordChar = "B";
+			await UITestHelper.WaitForIdle();
+
+			// Take new screenshot of PasswordBox with "B" characters
+			var passwordBoxBScreenshot = await UITestHelper.ScreenShot(passwordBox);
+
+			// Update TextBox to show "BBBB" for comparison
+			textBox.Text = new string('B', passwordLength);
+			await UITestHelper.WaitForIdle();
+			var textBoxBScreenshot = await UITestHelper.ScreenShot(textBox);
+
+			// Verify PasswordBox with PasswordChar="B" looks similar to TextBox with "BBBB"
+			await ImageAssert.AreSimilarAsync(passwordBoxBScreenshot, textBoxBScreenshot, imperceptibilityThreshold: 0.05);
+
+			// Verify that the two PasswordBox screenshots are different (A vs B)
+			await ImageAssert.AreNotEqualAsync(passwordBoxScreenshot, passwordBoxBScreenshot);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("RenderTargetBitmap is not implemented on WASM.")]
+#endif
+		public async Task When_PasswordChar_Korean_Character()
+		{
+			// Test with Korean character as mentioned in the original issue
+			const string testPassword = "test";
+			const int passwordLength = 4;
+
+			// Create a PasswordBox with Korean PasswordChar
+			var passwordBox = new PasswordBox
+			{
+				PasswordChar = "한", // Korean character
+				Password = testPassword,
+				FontFamily = new FontFamily("Segoe UI"), // Font that supports Korean
+				FontSize = 16,
+				Width = 120,
+				Height = 32,
+				Padding = new Thickness(4)
+			};
+
+			// Create a TextBox with Korean characters to compare visual appearance  
+			var textBox = new TextBox
+			{
+				Text = new string('한', passwordLength),
+				FontFamily = new FontFamily("Segoe UI"), // Same font as PasswordBox
+				FontSize = 16,
+				Width = 120,
+				Height = 32,
+				Padding = new Thickness(4)
+			};
+
+			// Load PasswordBox and take screenshot
+			await UITestHelper.Load(passwordBox);
+			var passwordBoxScreenshot = await UITestHelper.ScreenShot(passwordBox);
+
+			// Load TextBox and take screenshot
+			await UITestHelper.Load(textBox);
+			var textBoxScreenshot = await UITestHelper.ScreenShot(textBox);
+
+			// Compare that PasswordBox with Korean PasswordChar looks similar to TextBox with Korean characters
+			// Use a slightly higher threshold due to potential font rendering differences
+			await ImageAssert.AreSimilarAsync(passwordBoxScreenshot, textBoxScreenshot, imperceptibilityThreshold: 0.08);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("RenderTargetBitmap is not implemented on WASM.")]
+#endif
+		public async Task When_PasswordChar_Special_Characters()
+		{
+			// Test with various special characters
+			const string testPassword = "test";
+			const int passwordLength = 4;
+
+			var specialChars = new[] { "*", "■", "♦", "●" };
+
+			foreach (var specialChar in specialChars)
+			{
+				// Create a PasswordBox with special PasswordChar
+				var passwordBox = new PasswordBox
+				{
+					PasswordChar = specialChar,
+					Password = testPassword,
+					FontFamily = new FontFamily("Segoe UI"),
+					FontSize = 16,
+					Width = 100,
+					Height = 32,
+					Padding = new Thickness(4)
+				};
+
+				// Create a TextBox with the same special characters for comparison
+				var textBox = new TextBox
+				{
+					Text = new string(specialChar[0], passwordLength),
+					FontFamily = new FontFamily("Segoe UI"),
+					FontSize = 16,
+					Width = 100,
+					Height = 32,
+					Padding = new Thickness(4)
+				};
+
+				// Load PasswordBox and take screenshot
+				await UITestHelper.Load(passwordBox);
+				var passwordBoxScreenshot = await UITestHelper.ScreenShot(passwordBox);
+
+				// Load TextBox and take screenshot
+				await UITestHelper.Load(textBox);
+				var textBoxScreenshot = await UITestHelper.ScreenShot(textBox);
+
+				// Compare visual appearance
+				await ImageAssert.AreSimilarAsync(passwordBoxScreenshot, textBoxScreenshot, imperceptibilityThreshold: 0.05);
+			}
+		}
+	}
+}
