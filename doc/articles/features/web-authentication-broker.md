@@ -93,7 +93,7 @@ On WebAssembly, it is possible to use an in-application `<iframe>` instead of op
    <Page ...>
        <Grid>
            [...]
-           <controls:LoginIFrame x:name="loginWebView" />
+           <controls:LoginIFrame x:Name="loginWebView" />
        </Grid>
    </Page>
    ```
