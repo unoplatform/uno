@@ -30,6 +30,10 @@ namespace Uno.UI.Runtime.Skia {
 				this.canvas.height = h;
 		}
 
+		static makeContextCurrent(instance: BrowserRenderer) {
+			(<any>window).GL.makeContextCurrent(instance.glCtx);
+		}
+
 		public static createContextStatic(instance: BrowserRenderer, canvasOrCanvasId: any) {
 			return instance.createContext(canvasOrCanvasId);
 		}
