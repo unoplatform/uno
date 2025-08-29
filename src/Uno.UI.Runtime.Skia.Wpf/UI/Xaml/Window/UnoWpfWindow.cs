@@ -9,6 +9,7 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Xaml.Controls;
 using WindowChrome = System.Windows.Shell.WindowChrome;
@@ -44,7 +45,7 @@ internal class UnoWpfWindow : WpfWindow
 
 		var windowHost = new UnoWpfWindowHost(this, winUIWindow);
 		Host = windowHost;
-		WpfManager.XamlRootMap.Register(xamlRoot, (IWpfXamlRootHost)Host);
+		XamlRootMap.Register(xamlRoot, (IWpfXamlRootHost)Host);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;

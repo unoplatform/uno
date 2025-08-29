@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-
 using Uno.Diagnostics.Eventing;
 using Uno.Foundation.Logging;
 
@@ -33,11 +33,12 @@ namespace Uno.UI.Dispatching
 
 		private readonly object _gate = new();
 
-		private readonly long _startTime;
+		private readonly Dictionary<object, (Action? paintAction, long minimumTimestamp, int normalItemsToProcessBeforeNextPaintAction, System.Timers.Timer timer, (Action action, long minimumTimestamp)? paintActionForTimer)> _compositionTargets = new();
 
 		private NativeDispatcherPriority _currentPriority;
 
 		private int _globalCount;
+		private int _pendingPaintActions;
 
 		[ThreadStatic]
 		private static bool? _hasThreadAccess;
@@ -58,8 +59,6 @@ namespace Uno.UI.Dispatching
 			SynchronizationContext = new NativeDispatcherSynchronizationContext(this);
 
 			Initialize();
-
-			_startTime = Stopwatch.GetTimestamp();
 		}
 
 		internal NativeDispatcherSynchronizationContext SynchronizationContext { get; }
@@ -81,33 +80,44 @@ namespace Uno.UI.Dispatching
 			// Currently, we have a singleton NativeDispatcher.
 			// We want DispatchItems to be static to avoid delegate allocations.
 			var @this = NativeDispatcher.Main;
-			if (@this.Rendering != null)
-			{
-				Debug.Assert(@this.RenderingEventArgsGenerator != null);
 
-				@this.Rendering.Invoke(null, @this.RenderingEventArgsGenerator.Invoke(Stopwatch.GetElapsedTime(@this._startTime)));
+			Action? action = @this.TryGetPaintAction();
+
+			if (action is null)
+			{
+				for (var p = 0; p <= 3; p++)
+				{
+					var queue = @this._queues[p];
+
+					lock (@this._gate)
+					{
+						if (queue.Count > 0)
+						{
+							action = Unsafe.As<Action>(queue.Dequeue());
+
+							@this._currentPriority = (NativeDispatcherPriority)p;
+
+							@this.LogTrace()?.Trace($"Running next job in dispatcher queue: priority: {@this._currentPriority} queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
+							if (Interlocked.Decrement(ref @this._globalCount) > 0)
+							{
+								@this.EnqueueNative(@this._currentPriority);
+							}
+							break;
+						}
+					}
+				}
 			}
 
-			Action? action = null;
-
-			for (var p = 0; p <= 3; p++)
+			if (@this is { _currentPriority: NativeDispatcherPriority.Normal })
 			{
-				var queue = @this._queues[p];
-
 				lock (@this._gate)
 				{
-					if (queue.Count > 0)
+					foreach (var (compositionTarget, details) in @this._compositionTargets)
 					{
-						action = Unsafe.As<Action>(queue.Dequeue());
-
-						@this._currentPriority = (NativeDispatcherPriority)p;
-
-						if (Interlocked.Decrement(ref @this._globalCount) > 0)
+						if (details.normalItemsToProcessBeforeNextPaintAction > 0)
 						{
-							@this.EnqueueNative(@this._currentPriority);
+							@this._compositionTargets[compositionTarget] = details with { normalItemsToProcessBeforeNextPaintAction = details.normalItemsToProcessBeforeNextPaintAction - 1 };
 						}
-
-						break;
 					}
 				}
 			}
@@ -140,41 +150,111 @@ namespace Uno.UI.Dispatching
 					dispatcher.Log().Error("NativeDispatcher unhandled exception", exception);
 				}
 			}
-			else if (!dispatcher.IsRendering && dispatcher.Log().IsEnabled(LogLevel.Debug))
+			else if (dispatcher.Log().IsEnabled(LogLevel.Debug))
 			{
 				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
 		}
-#endif
-		internal void SynchronousDispatchRendering()
-			=> SynchronousDispatchRenderingPartial();
 
-		partial void SynchronousDispatchRenderingPartial();
-
-#if REPORT_FPS
-		static FrameRateLogger _dispatchRenderingLogger = new FrameRateLogger(typeof(NativeDispatcher), "DispatchRendering");
-#endif
-
-		internal void DispatchRendering()
+		private Action? TryGetPaintAction()
 		{
-			if (IsRendering)
+			lock (_gate)
 			{
-#if REPORT_FPS
-				_dispatchRenderingLogger.ReportFrame();
-#endif
-				Enqueue(() =>
+				foreach (var (compositionTarget, details) in _compositionTargets)
 				{
-					RaiseRendered();
-				});
-			}
-		}
+					if (details.paintAction is not null)
+					{
+						var timestamp = Stopwatch.GetTimestamp();
+						if (timestamp >= details.minimumTimestamp && details.normalItemsToProcessBeforeNextPaintAction == 0)
+						{
+							_compositionTargets[compositionTarget] = details with
+							{
+								paintAction = null,
+								normalItemsToProcessBeforeNextPaintAction = _queues[(int)NativeDispatcherPriority.Normal].Count
+							};
+							_pendingPaintActions--;
 
-		private void RaiseRendered()
+							_currentPriority = NativeDispatcherPriority.High;
+
+							if (Interlocked.Decrement(ref _globalCount) > 0)
+							{
+								EnqueueNative(_currentPriority);
+							}
+
+							this.LogTrace()?.Trace($"Running paint job from the dispatcher: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
+
+							return details.paintAction;
+						}
+						else if (_globalCount == _pendingPaintActions)
+						{
+							Debug.Assert(timestamp < details.minimumTimestamp);
+							_compositionTargets[compositionTarget] = details with
+							{
+								paintActionForTimer = (details.paintAction, details.minimumTimestamp),
+								paintAction = null,
+							};
+							_pendingPaintActions--;
+							Debug.Assert(!details.timer.Enabled);
+							details.timer.Interval = (double)(details.minimumTimestamp - timestamp) / Stopwatch.Frequency * 1000;
+							details.timer.Enabled = true;
+
+							if (Interlocked.Decrement(ref _globalCount) > 0)
+							{
+								EnqueueNative(_currentPriority);
+							}
+
+							this.LogTrace()?.Trace($"Too early to run paint job from the dispatcher: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
+
+							return static () => { };
+						}
+					}
+				}
+			}
+
+			return null;
+		}
+#endif
+
+		public void EnqueuePaint(object compositionTarget, Action handler, long minimumTimestamp)
 		{
-			if (Rendering != null)
+			bool shouldEnqueue = false;
+			lock (_gate)
 			{
-				// If we raised the Rendering event we can render composition tree.
-				Rendered?.Invoke();
+				if (!_compositionTargets.TryGetValue(compositionTarget, out var details))
+				{
+					var timer = new System.Timers.Timer { AutoReset = false };
+					details = _compositionTargets[compositionTarget] = (null, 0, 0, timer, null);
+					timer.Elapsed += (_, _) =>
+					{
+						(Action action, long minimumTimestamp) action;
+						lock (_gate)
+						{
+							action = _compositionTargets[compositionTarget].paintActionForTimer!.Value;
+						}
+						this.LogTrace()?.Trace($"{nameof(EnqueuePaint)} from timer");
+						EnqueuePaint(compositionTarget, action.action, action.minimumTimestamp);
+					};
+				}
+
+				// _paintAction is maybe not null here, that's fine, it will be overridden
+				Debug.Assert(details.paintAction is null || details.paintAction == handler);
+				Debug.Assert(minimumTimestamp >= details.minimumTimestamp);
+				if (details.paintAction is null)
+				{
+					_pendingPaintActions++;
+					shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
+				}
+				_compositionTargets[compositionTarget] = details with
+				{
+					paintAction = handler,
+					minimumTimestamp = minimumTimestamp
+				};
+				this.LogTrace()?.Trace($"{nameof(EnqueuePaint)} updated paintAction with  minimum timestamp {minimumTimestamp}");
+			}
+
+			if (shouldEnqueue)
+			{
+				EnqueueNative(NativeDispatcherPriority.High);
 			}
 		}
 
@@ -393,14 +473,13 @@ namespace Uno.UI.Dispatching
 
 		private void EnqueueCore(Delegate handler, NativeDispatcherPriority priority)
 		{
-			Debug.Assert((int)priority >= 0 && (int)priority <= 3);
+			Debug.Assert((int)priority >= 0 && (int)priority <= 4);
 
 			bool shouldEnqueue;
 
 			lock (_gate)
 			{
 				_queues[(int)priority].Enqueue(handler);
-
 				shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
 			}
 
@@ -443,22 +522,6 @@ namespace Uno.UI.Dispatching
 					handler.Method.DeclaringType?.FullName + "." + handler.Method.Name });
 
 		/// <summary>
-		/// Wakes up the dispatcher.
-		/// </summary>
-		internal void WakeUp()
-		{
-			lock (_gate)
-			{
-				if (Interlocked.Increment(ref _globalCount) == 1)
-				{
-					EnqueueNative(NativeDispatcherPriority.Normal);
-				}
-
-				Interlocked.Decrement(ref _globalCount);
-			}
-		}
-
-		/// <summary>
 		/// Gets the priority of the current task.
 		/// </summary>
 		internal NativeDispatcherPriority CurrentPriority => _currentPriority;
@@ -472,23 +535,12 @@ namespace Uno.UI.Dispatching
 								_queues[(int)NativeDispatcherPriority.Normal].Count +
 								_queues[(int)NativeDispatcherPriority.Low].Count == 0;
 
-		internal bool IsRendering => Rendering != null;
-
 		/// <summary>
 		/// Gets the dispatcher for the main thread.
 		/// </summary>
 		internal static NativeDispatcher Main { get; } = new NativeDispatcher();
 
 		// Dispatching for the CompositionTarget.Rendering event
-		internal event EventHandler<object>? Rendering;
-
-#pragma warning disable CS0067
-		// Dispatching for the compositor to actually render the frame only called
-		// when there are subscribers to Rendering
-		internal event Action? Rendered;
-#pragma warning restore CS0067
-
-		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
 
 		public static class TraceProvider
 		{

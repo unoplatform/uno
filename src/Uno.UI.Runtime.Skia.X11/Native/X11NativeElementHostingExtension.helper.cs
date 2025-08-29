@@ -6,6 +6,7 @@ using System.Threading;
 using Windows.ApplicationModel;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -19,7 +20,7 @@ internal partial class X11NativeElementHostingExtension
 	/// so that you can then look it up.
 	public object? CreateSampleComponent(string text)
 	{
-		if (XamlRoot is { } xamlRoot && X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
+		if (XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			if (!Exists("mpv") && !Exists("vlc") && !Exists("xterm"))
 			{
