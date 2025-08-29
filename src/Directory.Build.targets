@@ -128,8 +128,7 @@
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.0-preview.7.25380.108" />
 
-		<PackageReference Update="Svg.Custom" Version="3.0.0" />
-		<PackageReference Update="Svg.Model" Version="3.0.0" />
+		<PackageReference Update="Svg.Skia" Version="3.0.6" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
 		<PackageReference Update="FluentAssertions" Version="5.10.3" />
