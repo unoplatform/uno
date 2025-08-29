@@ -217,6 +217,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// For WASM, we handle custom password characters by switching between
 			// native password input (for default behavior) and text input with custom masking
+			// Note: HTML input type="password" only supports the browser's default password character.
+			// Custom password characters would require implementing custom masking logic with type="text"
+			// which is a complex undertaking involving manual character replacement, selection handling, etc.
+			// For now, we maintain the password state but use the browser's default character.
 			if (_textBox is PasswordBox passwordBox)
 			{
 				SetPasswordRevealState(passwordBox.PasswordRevealMode == PasswordRevealMode.Visible ? 
