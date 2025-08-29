@@ -121,6 +121,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region PasswordChar
+
+		private void OnPasswordCharChanged(DependencyPropertyChangedEventArgs e)
+		{
+			OnPasswordCharChangedPartial(e);
+		}
+
+		partial void OnPasswordCharChangedPartial(DependencyPropertyChangedEventArgs e);
+
+		#endregion
+
 		public new object Description
 		{
 			get => this.GetValue(DescriptionProperty);
