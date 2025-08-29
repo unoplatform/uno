@@ -67,6 +67,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			ContentPresenter cp = null;
 			await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
+			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("item 0", cp.Content);
 
 			var tb = cp.FindFirstChild<TextBlock>();
@@ -108,6 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ContentPresenter cp = null;
 				await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[index]) as ContentPresenter) != null);
+				await WindowHelper.WaitForIdle();
 #if !WINAPPSDK // This is an Uno implementation detail
 				cp.Content.Should().Be(s, $"ContainerFromItem() at index {index}");
 #endif
@@ -178,6 +180,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			ContentPresenter cp = null;
 			await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
+			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("Item 1", cp.Content);
 
