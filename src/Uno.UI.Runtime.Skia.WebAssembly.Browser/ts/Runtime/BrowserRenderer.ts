@@ -2,28 +2,14 @@ namespace Uno.UI.Runtime.Skia {
 	export class BrowserRenderer {
 		managedHandle: number;
 		canvas: any;
-		requestRender: any;
 		static anyGL: any;
 		glCtx: any;
-		continousRender: boolean;
 		queued: boolean;
 
 		constructor(managedHandle: number) {
 			this.managedHandle = managedHandle;
 			this.canvas = undefined;
-			this.requestRender = undefined;
 			BrowserRenderer.anyGL = (<any>window).GL;
-			this.buildImports();
-		}
-
-		async buildImports() {
-			let anyModule = <any>window.Module;
-
-			if (anyModule.getAssemblyExports !== undefined) {
-				const skiaSharpExports = await anyModule.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
-
-				this.requestRender = () => skiaSharpExports.Uno.UI.Runtime.Skia.BrowserRenderer.RenderFrame(this.managedHandle);
-			}
 		}
 
 		public static createInstance(managedHandle: number) {
@@ -42,53 +28,6 @@ namespace Uno.UI.Runtime.Skia {
 				this.canvas.width = w;
 			if (this.canvas.height !== h)
 				this.canvas.height = h;
-
-			// We request to repaint on the next frame. Without this, the first frame after resizing the window will be
-			// blank and will cause a flickering effect when you drag the window's border to resize.
-			// See also https://github.com/unoplatform/uno-private/issues/902.
-			BrowserRenderer.invalidate(this);
-		}
-
-		static setContinousRender(instance: BrowserRenderer, enabled: boolean) {
-			instance.continousRender = enabled;
-
-			if (enabled) {
-				BrowserRenderer.invalidate(instance);
-			}
-		}
-
-		static invalidate(instance: BrowserRenderer) {
-
-			const render = () => {
-				// Allow for another queuing to happen in callees of `requestRender`
-				instance.queued = false;
-
-				if (instance.requestRender) {
-					// make current for this canvas instance
-					(<any>window).GL.makeContextCurrent(instance.glCtx);
-
-					instance.requestRender();
-
-					if (
-						// If we're in continuous render mode, we need to requeue
-						instance.continousRender
-
-						// unless there's already another queueued render
-						&& !instance.queued) {
-
-							queueRender();
-					}
-				}
-			};
-
-			const queueRender = () => {
-				instance.queued = true;
-				window.requestAnimationFrame(() => render());
-			};
-
-			if (!instance.queued) {
-				queueRender();
-			}
 		}
 
 		public static createContextStatic(instance: BrowserRenderer, canvasOrCanvasId: any) {
