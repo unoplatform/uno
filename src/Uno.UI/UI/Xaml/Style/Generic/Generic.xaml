@@ -45,7 +45,6 @@
 				<ControlTemplate TargetType="ContentControl">
 					<ContentPresenter Content="{TemplateBinding Content}"
 									  ContentTemplate="{TemplateBinding ContentTemplate}"
-									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 									  Margin="{TemplateBinding Padding}"
 									  ContentTransitions="{TemplateBinding ContentTransitions}"
 									  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -58,7 +57,6 @@
 				<ControlTemplate TargetType="ContentControl">
 					<ContentPresenter Content="{TemplateBinding Content}"
 									  ContentTemplate="{TemplateBinding ContentTemplate}"
-									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 									  Margin="{TemplateBinding Padding}"
 									  ContentTransitions="{TemplateBinding ContentTransitions}"
 									  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -204,7 +202,6 @@
 										  Content="{TemplateBinding Content}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  CornerRadius="{TemplateBinding CornerRadius}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -970,7 +967,6 @@
 										  Content="{TemplateBinding Content}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  Foreground="{TemplateBinding Foreground}"
 										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -1766,7 +1762,6 @@
 						<ContentPresenter x:Name="ContentPresenter"
 										  Content="{TemplateBinding Content}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -2994,7 +2989,6 @@
 										  Content="{TemplateBinding Content}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  CornerRadius="{TemplateBinding CornerRadius}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -3253,7 +3247,6 @@
 										  Content="{TemplateBinding Content}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  CornerRadius="{TemplateBinding CornerRadius}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -3660,10 +3653,8 @@
                                 Opacity="0" />
 
 						</Grid>
-						<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
 						<ContentPresenter x:Name="ContentPresenter"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
-							ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                             ContentTransitions="{TemplateBinding ContentTransitions}"
                             Content="{TemplateBinding Content}"
                             Margin="{TemplateBinding Padding}"
@@ -3848,7 +3839,6 @@
 										  Content="{TemplateBinding Content}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  Margin="{TemplateBinding Padding}"
 										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -4680,7 +4670,6 @@
 				<ControlTemplate TargetType="Frame">
 					<ContentPresenter Content="{TemplateBinding Content}"
 									  ContentTemplate="{TemplateBinding ContentTemplate}"
-									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 									  ContentTransitions="{TemplateBinding ContentTransitions}"
 									  Background="{TemplateBinding Background}"
 									  BorderBrush="{TemplateBinding BorderBrush}"
@@ -4769,7 +4758,6 @@
 										  Margin="{TemplateBinding Padding}"
 										  Content="{TemplateBinding Content}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
@@ -4816,7 +4804,6 @@
 										  Margin="{TemplateBinding Padding}"
 										  Content="{TemplateBinding Content}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
@@ -4852,7 +4839,6 @@
 									  CornerRadius="{TemplateBinding CornerRadius}"
 									  ContentTransitions="{TemplateBinding ContentTransitions}"
 									  ContentTemplate="{TemplateBinding ContentTemplate}"
-									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 									  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 									  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
 									  Padding="{TemplateBinding Padding}" />
@@ -5258,7 +5244,6 @@
 				<ControlTemplate TargetType="ContentControl">
 					<ContentPresenter Content="{TemplateBinding Content}"
 									  ContentTemplate="{TemplateBinding ContentTemplate}"
-									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 									  Margin="{TemplateBinding Padding}"
 									  ContentTransitions="{TemplateBinding ContentTransitions}"
 									  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -5693,7 +5678,6 @@
 										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
 										  Content="{TemplateBinding Content}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  Margin="{TemplateBinding Padding}" />
 
 					</Grid>
@@ -5882,7 +5866,6 @@
 						<ContentPresenter x:Name="ContentPresenter"
 										  Content="{TemplateBinding Content}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  FontSize="{TemplateBinding FontSize}"
 										  FontFamily="{TemplateBinding FontFamily}"
 										  FontWeight="{TemplateBinding FontWeight}"
@@ -7397,7 +7380,6 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="RepeatButton">
-					<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
 					<ContentPresenter x:Name="ContentPresenter"
 				Background="{TemplateBinding Background}"
 				BackgroundSizing="{TemplateBinding BackgroundSizing}"
@@ -7405,7 +7387,6 @@
 				BorderThickness="{TemplateBinding BorderThickness}"
 				Content="{TemplateBinding Content}"
 				ContentTemplate="{TemplateBinding ContentTemplate}"
-				ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 				ContentTransitions="{TemplateBinding ContentTransitions}"
 				CornerRadius="{TemplateBinding CornerRadius}"
 				Padding="{TemplateBinding Padding}"
