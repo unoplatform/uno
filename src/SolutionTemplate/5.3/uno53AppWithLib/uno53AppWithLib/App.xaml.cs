@@ -48,7 +48,6 @@ public partial class App : Application
             rootFrame.Navigate(typeof(MainPage), args.Arguments);
         }
 
-        MainWindow.SetWindowIcon();
         // Ensure the current window is active
         MainWindow.Activate();
     }
