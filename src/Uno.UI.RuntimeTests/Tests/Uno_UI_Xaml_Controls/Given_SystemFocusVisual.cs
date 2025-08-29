@@ -177,5 +177,15 @@ public class Given_SystemFocusVisual
 		Assert.AreEqual(focusPoint.X, buttonPoint.X);
 		Assert.AreEqual(focusPoint.Y, buttonPoint.Y);
 	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_Keyboard_Focus()
+	{
+		// This sequence on full window test previously caused infinite layout loop
+		var button = new Button() { Content = "Test" };
+		await UITestHelper.Load(button);
+		button.Focus(FocusState.Keyboard);
+	}
 }
 #endif
