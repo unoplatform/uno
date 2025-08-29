@@ -3,6 +3,7 @@
 //
 
 #import "UNOWindow.h"
+#import "MouseButtons.h"
 #import "UNOApplication.h"
 #import "UNOSoftView.h"
 
@@ -619,7 +620,11 @@ inline static window_move_or_resize_fn_ptr uno_get_window_resize_event_callback(
     return window_resize_event;
 }
 
-void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer, window_move_or_resize_fn_ptr move, window_move_or_resize_fn_ptr resize)
+void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown,
+    window_key_callback_fn_ptr keyUp,
+    window_mouse_callback_fn_ptr pointer,
+    window_move_or_resize_fn_ptr move,
+    window_move_or_resize_fn_ptr resize)
 {
     window_key_down = keyDown;
     window_key_up = keyUp;
@@ -915,6 +920,8 @@ NSEventModifierFlags _previousFlags;
         }
 #endif
     }
+
+    [MouseButtons track:event];
     
     if (mouse != MouseEventsNone) {
         struct MouseEventData data;
@@ -935,8 +942,10 @@ NSEventModifierFlags _previousFlags;
             }
 #endif
             data.pointerDeviceType = pdt;
+            
             // mouse
-            data.mouseButtons = (uint32)NSEvent.pressedMouseButtons;
+            // FIXME: NSEvent.pressedMouseButtons is returning a wrong value in Sequoia when using an extenal trackpad
+            data.mouseButtons = (uint32)[MouseButtons mask];
 
             // Pen
             if (pdt == PointerDeviceTypePen) {
