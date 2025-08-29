@@ -58,6 +58,36 @@ namespace Uno.UI.Tests.PasswordBoxTests
 			Assert.AreEqual("19", passwordBox.Password);
 		}
 
+		[TestMethod]
+		public void When_PasswordChar_Set()
+		{
+			var passwordBox = new PasswordBox();
+			
+			// Test default value
+			Assert.AreEqual("●", passwordBox.PasswordChar);
+			
+			// Test setting custom value
+			passwordBox.PasswordChar = "*";
+			Assert.AreEqual("*", passwordBox.PasswordChar);
+			
+			// Test setting multi-character string (should use first character)
+			passwordBox.PasswordChar = "xyz";
+			Assert.AreEqual("xyz", passwordBox.PasswordChar);
+		}
+
+		[TestMethod]
+		public void When_PasswordChar_Set_To_Null()
+		{
+			var passwordBox = new PasswordBox();
+			
+			passwordBox.PasswordChar = "*";
+			Assert.AreEqual("*", passwordBox.PasswordChar);
+			
+			// Setting to null should revert to empty string
+			passwordBox.PasswordChar = null;
+			Assert.AreEqual("", passwordBox.PasswordChar);
+		}
+
 		public class MySource : System.ComponentModel.INotifyPropertyChanged
 		{
 			private string _sourceText;

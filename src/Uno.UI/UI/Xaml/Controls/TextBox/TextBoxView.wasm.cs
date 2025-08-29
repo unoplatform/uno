@@ -212,5 +212,16 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal override bool IsViewHit() => true;
+
+		internal void UpdatePasswordMasking()
+		{
+			// For WASM, we handle custom password characters by switching between
+			// native password input (for default behavior) and text input with custom masking
+			if (_textBox is PasswordBox passwordBox)
+			{
+				SetPasswordRevealState(passwordBox.PasswordRevealMode == PasswordRevealMode.Visible ? 
+					PasswordRevealState.Revealed : PasswordRevealState.Obscured);
+			}
+		}
 	}
 }
