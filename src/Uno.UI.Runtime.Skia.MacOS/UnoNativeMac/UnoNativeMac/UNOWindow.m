@@ -799,9 +799,11 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
 @implementation UNOWindow : NSWindow
 
 NSEventModifierFlags _previousFlags;
+NSOperatingSystemVersion _osVersion;
 
 + (void)initialize {
     windows = [[NSMutableSet alloc] initWithCapacity:10];
+    _osVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
 }
 
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
@@ -921,7 +923,9 @@ NSEventModifierFlags _previousFlags;
 #endif
     }
 
-    [MouseButtons track:event];
+    if (_osVersion.majorVersion >= 15) {
+        [MouseButtons track:event];
+    }
     
     if (mouse != MouseEventsNone) {
         struct MouseEventData data;
@@ -945,7 +949,11 @@ NSEventModifierFlags _previousFlags;
             
             // mouse
             // FIXME: NSEvent.pressedMouseButtons is returning a wrong value in Sequoia when using an extenal trackpad
-            data.mouseButtons = (uint32)[MouseButtons mask];
+            if (_osVersion.majorVersion >= 15) {
+                data.mouseButtons = (uint32)[MouseButtons mask];
+            } else {
+                data.mouseButtons = (uint32)NSEvent.pressedMouseButtons;
+            }
 
             // Pen
             if (pdt == PointerDeviceTypePen) {
