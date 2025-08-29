@@ -219,14 +219,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void UpdateMaxLength() => _overlayTextBoxViewExtension?.UpdateNativeView();
 
-		private void UpdateDisplayBlockText(string text)
+		public void UpdateDisplayBlockText(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.
 			if (IsPasswordBox && !_isPasswordRevealed)
 			{
-				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string(PasswordChar, text.Length);
+				var passwordChar = GetPasswordChar();
+				DisplayBlock.Text = new string(passwordChar, text.Length);
 			}
 			else
 			{
@@ -240,6 +240,27 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private char GetPasswordChar()
+		{
+			if (TextBox is PasswordBox passwordBox && !string.IsNullOrEmpty(passwordBox.PasswordChar))
+			{
+				// Use the first character of the PasswordChar property
+				return passwordBox.PasswordChar[0];
+			}
+			
+			// Fallback to the platform-specific default
+			return PasswordChar;
+		}
+
 		internal void UpdateProperties() => _overlayTextBoxViewExtension?.UpdateProperties();
+
+		internal void UpdatePasswordMasking()
+		{
+			// For Skia, we can update the display block text directly
+			if (TextBox is { } textBox)
+			{
+				UpdateDisplayBlockText(textBox.Text);
+			}
+		}
 	}
 }
