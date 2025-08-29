@@ -180,7 +180,7 @@
 	},
 	{
 		"group": "UnoFonts",
-		"version": "2.8.0-dev.3",
+		"version": "2.7.1",
 		"packages": [
 			"Uno.Fonts.OpenSans",
 			"Uno.Fonts.Fluent",
@@ -302,7 +302,7 @@
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.3.0-dev.3",
+		"version": "6.2.10",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -310,7 +310,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "6.3.0-dev.3",
+		"version": "6.2.3",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -340,7 +340,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "8.2.0-dev.6",
+		"version": "8.1.4",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -352,7 +352,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "5.8.0-dev.2",
+		"version": "5.7.3",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
