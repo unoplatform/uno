@@ -58,6 +58,8 @@ internal partial class BrowserRenderer
 			Initialize();
 		}
 
+		NativeMethods.MakeContextCurrent(_nativeSwapChainPanel);
+
 		_renderStopwatch.Restart();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -152,5 +154,8 @@ internal partial class BrowserRenderer
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.createContextStatic")]
 		internal static partial JSObject CreateContextInternal(JSObject nativeSwapChainPanel, string canvasId);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.makeContextCurrent")]
+		internal static partial void MakeContextCurrent(JSObject nativeSwapChainPanel);
 	}
 }
