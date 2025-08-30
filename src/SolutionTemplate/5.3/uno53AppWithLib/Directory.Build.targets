@@ -9,4 +9,9 @@
   <!-- Except for this workaround for .NET 9 RC1 -->
 	<Import Project="../../../Workaround-43339.targets" />
 
+  <ItemGroup>
+    <!-- Use version of Resizetizer with fix for SetWindowIcon -->
+    <PackageReference Update="Uno.Resizetizer" Version="1.11.0-dev.17" />
+  </ItemGroup>
+
 </Project>
