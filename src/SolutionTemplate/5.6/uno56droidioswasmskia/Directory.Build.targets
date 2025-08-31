@@ -4,4 +4,8 @@
     <Error Text="Expected IsPackable='false', however it actually equals '$(IsPackable)'."
       Condition="$(IsPackable) == 'true' AND '$(GeneratePackageOnBuild)' != 'true' " />
   </Target>
+  <ItemGroup>
+    <!-- Use version of Resizetizer with fix for SetWindowIcon -->
+    <PackageReference Update="Uno.Resizetizer" Version="1.11.0-dev.17" />
+  </ItemGroup>  
 </Project>
