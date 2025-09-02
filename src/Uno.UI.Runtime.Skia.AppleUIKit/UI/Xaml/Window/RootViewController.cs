@@ -122,16 +122,34 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	private void UpdateNativeClipping(SKPath path)
 	{
+		string? svgPath = null;
 		if (!path.IsEmpty)
 		{
-			var svgPath = path.ToSvgPathData();
-			if (svgPath != _lastSvgClipPath)
-			{
-				_lastSvgClipPath = svgPath;
-				ClipBySvgPath(svgPath);
-			}
+			svgPath = path.ToSvgPathData();
 		}
-		else if (_lastSvgClipPath != null && _nativeOverlayLayer is { } view)
+
+		if (svgPath != _lastSvgClipPath)
+		{
+			var oldPath = _lastSvgClipPath;
+			_lastSvgClipPath = svgPath;
+
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (svgPath is not null)
+				{
+					ClipBySvgPath(svgPath);
+				}
+				else if (_lastSvgClipPath is not null)
+				{
+					ClearNativeClipping();
+				}
+			});
+		}
+	}
+
+	private void ClearNativeClipping()
+	{
+		if (_nativeOverlayLayer is { } view)
 		{
 			// If the path is empty, we need to clear the mask of the native overlay layer
 			// to avoid showing the previous clip.
@@ -141,8 +159,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 				mask.Path = null;
 				mask.FillColor = UIColor.Clear.CGColor;
 			}
-
-			_lastSvgClipPath = null;
 		}
 	}
 
