@@ -33,7 +33,7 @@ namespace Uno.UI.Dispatching
 
 		private readonly object _gate = new();
 
-		private readonly Dictionary<object, (Action? paintAction, long minimumTimestamp, int normalItemsToProcessBeforeNextPaintAction, System.Timers.Timer timer, (Action action, long minimumTimestamp)? paintActionForTimer)> _compositionTargets = new();
+		private readonly Dictionary<object, (Action? paintAction, int normalItemsToProcessBeforeNextPaintAction)> _compositionTargets = new();
 
 		private NativeDispatcherPriority _currentPriority;
 
@@ -164,14 +164,9 @@ namespace Uno.UI.Dispatching
 				{
 					if (details.paintAction is not null)
 					{
-						var timestamp = Stopwatch.GetTimestamp();
-						if (timestamp >= details.minimumTimestamp && details.normalItemsToProcessBeforeNextPaintAction == 0)
+						if (details.normalItemsToProcessBeforeNextPaintAction == 0)
 						{
-							_compositionTargets[compositionTarget] = details with
-							{
-								paintAction = null,
-								normalItemsToProcessBeforeNextPaintAction = _queues[(int)NativeDispatcherPriority.Normal].Count
-							};
+							_compositionTargets[compositionTarget] = (paintAction: null, normalItemsToProcessBeforeNextPaintAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
 							_pendingPaintActions--;
 
 							_currentPriority = NativeDispatcherPriority.High;
@@ -185,27 +180,9 @@ namespace Uno.UI.Dispatching
 
 							return details.paintAction;
 						}
-						else if (_globalCount == _pendingPaintActions)
+						else
 						{
-							Debug.Assert(timestamp < details.minimumTimestamp);
-							_compositionTargets[compositionTarget] = details with
-							{
-								paintActionForTimer = (details.paintAction, details.minimumTimestamp),
-								paintAction = null,
-							};
-							_pendingPaintActions--;
-							Debug.Assert(!details.timer.Enabled);
-							details.timer.Interval = (double)(details.minimumTimestamp - timestamp) / Stopwatch.Frequency * 1000;
-							details.timer.Enabled = true;
-
-							if (Interlocked.Decrement(ref _globalCount) > 0)
-							{
-								EnqueueNative(_currentPriority);
-							}
-
-							this.LogTrace()?.Trace($"Too early to run paint job from the dispatcher: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
-
-							return static () => { };
+							Debug.Assert(_globalCount > _pendingPaintActions);
 						}
 					}
 				}
@@ -215,30 +192,17 @@ namespace Uno.UI.Dispatching
 		}
 #endif
 
-		public void EnqueuePaint(object compositionTarget, Action handler, long minimumTimestamp)
+		public void EnqueuePaint(object compositionTarget, Action handler)
 		{
 			bool shouldEnqueue = false;
 			lock (_gate)
 			{
 				if (!_compositionTargets.TryGetValue(compositionTarget, out var details))
 				{
-					var timer = new System.Timers.Timer { AutoReset = false };
-					details = _compositionTargets[compositionTarget] = (null, 0, 0, timer, null);
-					timer.Elapsed += (_, _) =>
-					{
-						(Action action, long minimumTimestamp) action;
-						lock (_gate)
-						{
-							action = _compositionTargets[compositionTarget].paintActionForTimer!.Value;
-						}
-						this.LogTrace()?.Trace($"{nameof(EnqueuePaint)} from timer");
-						EnqueuePaint(compositionTarget, action.action, action.minimumTimestamp);
-					};
+					details = _compositionTargets[compositionTarget] = (null, 0);
 				}
 
-				// _paintAction is maybe not null here, that's fine, it will be overridden
-				Debug.Assert(details.paintAction is null || details.paintAction == handler);
-				Debug.Assert(minimumTimestamp >= details.minimumTimestamp);
+				Debug.Assert(details.paintAction is null);
 				if (details.paintAction is null)
 				{
 					_pendingPaintActions++;
@@ -247,11 +211,10 @@ namespace Uno.UI.Dispatching
 				_compositionTargets[compositionTarget] = details with
 				{
 					paintAction = handler,
-					minimumTimestamp = minimumTimestamp
 				};
-				this.LogTrace()?.Trace($"{nameof(EnqueuePaint)} updated paintAction with  minimum timestamp {minimumTimestamp}");
 			}
 
+			this.LogTrace()?.Trace($"{nameof(EnqueuePaint)} : shouldEnqueue={shouldEnqueue}");
 			if (shouldEnqueue)
 			{
 				EnqueueNative(NativeDispatcherPriority.High);
