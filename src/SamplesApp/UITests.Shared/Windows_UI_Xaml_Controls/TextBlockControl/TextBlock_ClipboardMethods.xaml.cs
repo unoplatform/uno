@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Xaml.Controls;
 
-namespace UITests.Windows_UI_Xaml_Controls.TextBlockControl
+namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 {
 	[Sample("TextBlock", IsManualTest = true)]
 	public sealed partial class TextBlock_ClipboardMethods : Page
