@@ -1,10 +1,12 @@
 ﻿using System;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBox
+namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	public sealed partial class PasswordBox_PasswordChar : Page
+	[SampleControlInfo("TextBox", "PasswordBox_PasswordChar")]
+	public sealed partial class PasswordBox_PasswordChar : UserControl
 	{
 		public PasswordBox_PasswordChar()
 		{
