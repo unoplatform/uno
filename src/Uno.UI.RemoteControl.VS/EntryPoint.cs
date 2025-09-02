@@ -293,7 +293,7 @@ public partial class EntryPoint : IDisposable
 			_isFirstProfileTfmChange = true;
 		}
 
-		if (!await EnsureProjectUserSettingsAsync() && _debuggerObserver is not null)
+		if (!await HasUnoTargetFrameworkInStartupProjectAsync() && _debuggerObserver is not null)
 		{
 			_debugAction?.Invoke($"The user setting is not yet initialized, aligning framework and profile");
 
