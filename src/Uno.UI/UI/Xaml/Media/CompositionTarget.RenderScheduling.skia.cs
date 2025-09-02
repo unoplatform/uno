@@ -14,25 +14,14 @@ namespace Microsoft.UI.Xaml.Media;
 
 public partial class CompositionTarget
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-
-	private readonly object _frameGate = new();
 	private readonly object _renderingStateGate = new();
 
 	private float _fps = FeatureConfiguration.CompositionTarget.FrameRate;
 	private float? _updatedFps; // used to update _fps but only after making sure that the old value of _fps is not currently being used in an enqueued paint action o the dispatcher queue
 
-	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
-	private Size _lastCanvasSize = Size.Empty;
-	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
 	private bool _paintRequested; // only set or read under _renderingStateGate
 	private bool _paintedAheadOfTime; // only set or read under _renderingStateGate
 	private bool _paintRequestedAfterAheadOfTimePaint; // only set or read under _renderingStateGate
-
-	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
-
-	internal event Action? FramePainted;
 
 	private bool PaintRequested
 	{
@@ -41,75 +30,6 @@ public partial class CompositionTarget
 		{
 			_paintRequested = value;
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()} _paintRequested = {_paintRequested}");
-		}
-	}
-
-	private void PaintFrame()
-	{
-		var timestamp = Stopwatch.GetTimestamp();
-		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame begins with timestamp {timestamp}");
-
-		NativeDispatcher.CheckThreadAccess();
-
-		var rootElement = ContentRoot.VisualTree.RootElement;
-		var bounds = ContentRoot.VisualTree.Size;
-		var scale = ContentRoot.XamlRoot?.RasterizationScale ?? 1;
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(bounds.Width * scale),
-			(int)(bounds.Height * scale),
-			rootElement,
-			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
-			applyScaling: FrameRenderingOptions.applyScalingToNativeElementClipPath);
-		var lastRenderedFrame = (picture, path, new Size((int)(bounds.Width * scale), (int)(bounds.Height * scale)), timestamp);
-		lock (_frameGate)
-		{
-			_lastRenderedFrame = lastRenderedFrame;
-		}
-
-		if (IsRenderingActive)
-		{
-			((ICompositionTarget)this).RequestNewFrame();
-		}
-
-		FramePainted?.Invoke();
-		if (rootElement.XamlRoot is not null)
-		{
-			XamlRootMap.GetHostForRoot(rootElement.XamlRoot)?.InvalidateRender();
-		}
-
-		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame ends");
-	}
-
-	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
-	{
-		(SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? lastRenderedFrameNullable;
-		lock (_frameGate)
-		{
-			lastRenderedFrameNullable = _lastRenderedFrame;
-		}
-
-		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
-		{
-			return new SKPath();
-		}
-		else
-		{
-			if (canvas is null || _lastCanvasSize != lastRenderedFrame.size)
-			{
-				canvas = resizeFunc(lastRenderedFrame.size);
-				_lastCanvasSize = lastRenderedFrame.size;
-			}
-
-			SkiaRenderHelper.RenderPicture(
-				canvas,
-				lastRenderedFrame.frame,
-				SKColors.Transparent,
-				_fpsHelper);
-
-			InvokeRendering();
-
-			return lastRenderedFrame.nativeElementClipPath;
 		}
 	}
 
