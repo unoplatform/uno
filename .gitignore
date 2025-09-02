@@ -264,6 +264,3 @@ mergedstyles.xaml
 
 !build/ci/publish
 /doc/articles/llms/llms-full.txt
-
-# Prevent dotnet-install.sh from being committed
-dotnet-install.sh
