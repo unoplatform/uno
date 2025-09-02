@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Uno.UI;
 using Uno.UI.Hosting;
@@ -11,7 +12,7 @@ internal partial class X11XamlRootHost
 
 	private Timer CreateRenderTimer()
 	{
-		var timer = new Timer { AutoReset = false, Interval = FeatureConfiguration.CompositionTarget.FrameRate };
+		var timer = new Timer { AutoReset = false, Interval = TimeSpan.FromSeconds(1.0 / FeatureConfiguration.CompositionTarget.FrameRate).TotalMilliseconds };
 		timer.Elapsed += (_, _) => _renderer?.Render();
 		return timer;
 	}
