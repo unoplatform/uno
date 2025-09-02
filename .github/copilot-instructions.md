@@ -10,7 +10,7 @@ The Uno Platform is a cross-platform .NET UI framework that allows you to build 
 
 Install the latest stable .NET SDK (currently .NET 9.0 for this repository):
 ```bash
-wget https://dot.net/v1/dotnet-install.sh && chmod +x dotnet-install.sh && ./dotnet-install.sh --channel 9.0
+wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh && chmod +x /tmp/dotnet-install.sh && /tmp/dotnet-install.sh --channel 9.0
 export PATH="$HOME/.dotnet:$PATH"
 ```
 - Always use the latest stable supported .NET version for development
