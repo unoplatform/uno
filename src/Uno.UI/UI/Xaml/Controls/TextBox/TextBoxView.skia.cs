@@ -247,7 +247,6 @@ namespace Microsoft.UI.Xaml.Controls
 				// Use the first character of the PasswordChar property
 				return passwordBox.PasswordChar[0];
 			}
-			
 			// Fallback to the platform-specific default
 			return PasswordChar;
 		}
