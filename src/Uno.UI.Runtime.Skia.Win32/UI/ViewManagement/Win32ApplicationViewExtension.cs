@@ -3,6 +3,7 @@ using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -23,9 +24,9 @@ internal class Win32ApplicationViewExtension(ApplicationView owner) : IApplicati
 			return false;
 		}
 
-		if (Win32WindowWrapper.XamlRootMap.GetHostForRoot(xamlRoot) is not { } wrapper)
+		if (XamlRootMap.GetHostForRoot(xamlRoot) is not Win32WindowWrapper wrapper)
 		{
-			this.LogWarn()?.Warn($"{nameof(Win32WindowWrapper)}.{nameof(Win32WindowWrapper.XamlRootMap)} should have been filled at this point.");
+			this.LogWarn()?.Warn($"{nameof(XamlRootMap)} should have been filled at this point.");
 			return false;
 		}
 

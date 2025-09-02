@@ -33,7 +33,7 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 
 		_initialWindow = window;
 		FrameBufferWindowWrapper.Instance.SetWindow(window, xamlRoot);
-		FrameBufferManager.XamlRootMap.Register(xamlRoot, _host);
+		XamlRootMap.Register(xamlRoot, _host);
 
 		return FrameBufferWindowWrapper.Instance;
 	}

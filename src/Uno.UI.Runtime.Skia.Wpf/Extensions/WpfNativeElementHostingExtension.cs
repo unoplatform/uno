@@ -4,6 +4,8 @@ using System;
 using System.Windows.Media;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
@@ -19,7 +21,7 @@ internal partial class WpfNativeElementHostingExtension : ContentPresenter.INati
 	}
 
 	private XamlRoot? XamlRoot => _presenter.XamlRoot;
-	private WpfCanvas? OverlayLayer => _presenter.XamlRoot is { } xamlRoot ? WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer : null;
+	private WpfCanvas? OverlayLayer => _presenter.XamlRoot is { } xamlRoot ? (XamlRootMap.GetHostForRoot(xamlRoot) as IWpfXamlRootHost)?.NativeOverlayLayer : null;
 
 	public bool IsNativeElement(object content)
 		=> content is System.Windows.UIElement;

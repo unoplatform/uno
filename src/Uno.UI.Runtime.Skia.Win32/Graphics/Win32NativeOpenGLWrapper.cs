@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
+using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -36,7 +37,7 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 
 	public Win32NativeOpenGLWrapper(XamlRoot xamlRoot)
 	{
-		if (Win32WindowWrapper.XamlRootMap.GetHostForRoot(xamlRoot) is not { } wrapper)
+		if (XamlRootMap.GetHostForRoot(xamlRoot) is not Win32WindowWrapper wrapper)
 		{
 			throw new InvalidOperationException($"The XamlRoot and the XamlRootMap must be initialized before constructing a {_type.Name}.");
 		}

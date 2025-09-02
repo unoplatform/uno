@@ -34,7 +34,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 	public unsafe Win32DragDropExtension(DragDropManager manager)
 	{
-		var host = Win32WindowWrapper.XamlRootMap.GetHostForRoot(manager.ContentRoot.GetOrCreateXamlRoot()) ?? throw new InvalidOperationException($"Couldn't find an {nameof(Win32WindowWrapper)} instance associated with this {nameof(XamlRoot)}.");
+		var host = XamlRootMap.GetHostForRoot(manager.ContentRoot.GetOrCreateXamlRoot()) as Win32WindowWrapper ?? throw new InvalidOperationException($"Couldn't find an {nameof(Win32WindowWrapper)} instance associated with this {nameof(XamlRoot)}.");
 		_coreDragDropManager = XamlRoot.GetCoreDragDropManager(((IXamlRootHost)host).RootElement!.XamlRoot);
 		_manager = manager;
 		_hwnd = (HWND)((Win32NativeWindow)host.NativeWindow).Hwnd;

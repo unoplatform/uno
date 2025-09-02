@@ -15,6 +15,7 @@ using Microsoft.UI.Content;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -231,7 +232,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				if (currentRoot != null)
 				{
 					currentRoot.SizeChanged -= XamlContentSizeChanged;
-					WpfManager.XamlRootMap.Unregister(currentRoot.XamlRoot);
+					XamlRootMap.Unregister(currentRoot.XamlRoot);
 				}
 
 				_childInternal = value;
@@ -261,7 +262,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		private void OnChildLoading(FrameworkElement sender, object args)
 		{
 			// Ensure the XamlRoot is registered early.
-			WpfManager.XamlRootMap.Register(sender.XamlRoot, this);
+			XamlRootMap.Register(sender.XamlRoot, this);
 		}
 
 		/// <summary>

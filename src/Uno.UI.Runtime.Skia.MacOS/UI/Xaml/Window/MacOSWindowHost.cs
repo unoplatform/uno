@@ -38,8 +38,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private SKPicture? _picture;
 	private SKPath? _clipPath;
 
-	private static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
-
 	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow, XamlRoot xamlRoot)
 	{
 		_nativeWindow = nativeWindow ?? throw new ArgumentNullException(nameof(nativeWindow));

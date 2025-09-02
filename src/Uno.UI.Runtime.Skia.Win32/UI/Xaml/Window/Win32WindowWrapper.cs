@@ -47,8 +47,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static Win32WindowWrapper? _wrapperForNextCreateWindow;
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
-	public static readonly XamlRootMap<Win32WindowWrapper> XamlRootMap = new();
-
 	private readonly HWND _hwnd;
 	private readonly ApplicationView _applicationView;
 	private readonly IRenderer _renderer;

@@ -64,7 +64,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			var window = Window.GetFromAppWindow(appWindow);
 			var rootElement = window.RootElement ?? throw new NullReferenceException($"The window's {nameof(window.RootElement)} is not initialized.");
 			var xamlRoot = rootElement.XamlRoot ?? throw new NullReferenceException($"The window's {nameof(window.RootElement)} doesn't have a {nameof(XamlRoot)}.");
-			var wrapper = Win32WindowWrapper.XamlRootMap.GetHostForRoot(xamlRoot) ?? throw new NullReferenceException($"The {nameof(XamlRoot)} is not associated with a {nameof(Win32WindowWrapper)} instance.");
+			var wrapper = XamlRootMap.GetHostForRoot(xamlRoot) as Win32WindowWrapper ?? throw new NullReferenceException($"The {nameof(XamlRoot)} is not associated with a {nameof(Win32WindowWrapper)} instance.");
 			wrapper.SetDisplayInformation(displayInformation);
 			return wrapper;
 		});
