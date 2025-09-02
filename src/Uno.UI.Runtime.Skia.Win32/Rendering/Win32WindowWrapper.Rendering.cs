@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -12,10 +13,7 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-
 	private int _renderCount;
-	private Size? _lastSize;
 	private SKSurface? _surface;
 	private bool _rendering;
 
@@ -44,37 +42,26 @@ internal partial class Win32WindowWrapper
 			return;
 		}
 
-		if (_surface is null || _lastSize != clientRect.Size)
+		// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
+		// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
+		// Paint() becoming reentrant which can cause crashes.
+		_rendering = true;
+		try
 		{
-			_lastSize = clientRect.Size;
-			_renderer.Reset();
-			_surface?.Dispose();
-			_surface = _renderer.UpdateSize(clientRect.Width, clientRect.Height);
+			var nativeElementClipPath = ((CompositionTarget)((IXamlRootHost)this).RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+			{
+				_renderer.Reset();
+				_surface?.Dispose();
+				_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
+				return _surface.Canvas;
+			});
+			RenderingNegativePathReevaluated?.Invoke(this, nativeElementClipPath);
+		}
+		finally
+		{
+			_rendering = false;
 		}
 
-		if (XamlRoot?.VisualTree.RootElement.Visual is { } rootVisual)
-		{
-			var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
-			// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
-			// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
-			// Paint() becoming reentrant which can cause crashes.
-			_rendering = true;
-			try
-			{
-				rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
-
-				SkiaRenderHelper.RenderPicture(
-					_surface,
-					_picture,
-					_background,
-					_fpsHelper);
-			}
-			finally
-			{
-				_rendering = false;
-				rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
-			}
-		}
 
 		// this may call WM_ERASEBKGND
 		_renderer.CopyPixels(clientRect.Width, clientRect.Height);
