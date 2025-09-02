@@ -1,11 +1,15 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Net;
+using System.Timers;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
@@ -13,13 +17,28 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
+	private readonly Timer _renderTimer;
 	private int _renderCount;
 	private SKSurface? _surface;
 	private bool _rendering;
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
-	private void Paint()
+	private Timer CreateRenderTimer()
+	{
+		var timer = new Timer { AutoReset = false, Interval = TimeSpan.FromSeconds(1.0 / FeatureConfiguration.CompositionTarget.FrameRate).TotalMilliseconds };
+		timer.Elapsed += (_, _) => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.High);
+		return timer;
+	}
+
+	unsafe void IXamlRootHost.InvalidateRender()
+	{
+		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }
+		_renderTimer.Enabled = true;
+	}
+
+	private void Render()
 	{
 		if (_rendererDisposed || _rendering)
 		{
