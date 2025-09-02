@@ -240,7 +240,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private char GetPasswordChar()
+		internal char GetPasswordChar()
 		{
 			if (TextBox is PasswordBox passwordBox && !string.IsNullOrEmpty(passwordBox.PasswordChar))
 			{
