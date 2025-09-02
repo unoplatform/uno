@@ -11,6 +11,7 @@
 
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
+		<DefineConstants Condition=" '$(SkiaPublishAot)' == 'true' ">$(DefineConstants);NATIVE_AOT_EXTRA_LOGGING</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
 		<ApplicationId>uno.platform.samplesapp.skia</ApplicationId>
