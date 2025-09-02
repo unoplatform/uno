@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 			{
 				TestTextBlock.CopySelectionToClipboard();
 				UpdateLastCopyResult("✅ CopySelectionToClipboard() called successfully");
-				
+
 				// Verify the clipboard content
 				await Task.Delay(100); // Small delay to ensure clipboard is updated
 				await VerifyClipboardContentAsync();
