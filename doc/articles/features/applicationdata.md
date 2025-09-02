@@ -4,7 +4,7 @@ uid: Uno.Features.ApplicationData
 
 # Application Data and Settings
 
-![Application Data and Preferences](../Assets/features/applicationdata/appdata.jpg)
+<img src="../Assets/features/applicationdata/appdata.jpg" alt="Application Data and Preferences" style="width: 400px;" />
 
 To store persistent application data and user settings, you can utilize the `Windows.Storage.ApplicationData` class in Uno Platform.
 
@@ -61,6 +61,12 @@ localSettings.Values["name"] = "Martin";
 // Read a setting.
 string value = (string)localSettings.Values["name"];
 ```
+
+## Initialization considerations
+
+All the `StorageFile`/`StorageFolder` APIs need to be used inside the instance constructor of the `App.xaml.cs`.
+
+Any earlier use, for example in a static constructor or in `Program.cs`, will lead to a fatal failure.
 
 ## Data location on Skia Desktop
 
