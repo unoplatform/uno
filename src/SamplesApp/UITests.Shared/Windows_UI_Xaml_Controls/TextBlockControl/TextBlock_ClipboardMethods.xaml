@@ -1,0 +1,99 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_ClipboardMethods"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.TextBlockControl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<ScrollViewer Padding="12">
+		<StackPanel Spacing="16">
+			<!-- Instructions -->
+			<TextBlock FontWeight="Bold" FontSize="16" Foreground="DarkBlue">
+				TextBlock Clipboard Methods Manual Test
+			</TextBlock>
+			<TextBlock FontWeight="SemiBold" FontSize="14" Foreground="OrangeRed">
+				⚠️ Platform Support: This feature is only supported on Skia targets (Desktop, WebAssembly with Skia), NOT on native targets (iOS, Android native).
+			</TextBlock>
+
+			<!-- Test Instructions -->
+			<StackPanel Spacing="8">
+				<TextBlock FontWeight="SemiBold" FontSize="14">Test Instructions:</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					1. <Bold>Test SelectAll():</Bold> Click the "Select All Text" button. All text in the TextBlock should become selected (highlighted).
+				</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					2. <Bold>Test CopySelectionToClipboard():</Bold> First select text manually (drag to select) or use "Select All", then click "Copy Selection to Clipboard". The selected text should be copied.
+				</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					3. <Bold>Test keyboard shortcuts:</Bold> Click on the TextBlock to focus it, then try Ctrl+A (Select All) and Ctrl+C (Copy).
+				</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					4. <Bold>Verify copy worked:</Bold> Use the "Paste to TextBox" button to verify that text was copied to clipboard correctly.
+				</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					5. <Bold>Test with different text:</Bold> Change the text using the input field and repeat the tests.
+				</TextBlock>
+			</StackPanel>
+
+			<!-- Test Controls -->
+			<Border Background="LightGray" Padding="16" CornerRadius="8">
+				<StackPanel Spacing="12">
+					<TextBlock FontWeight="SemiBold">Sample TextBlock for Testing:</TextBlock>
+					
+					<!-- The main TextBlock to test -->
+					<Border BorderBrush="DarkGray" BorderThickness="2" Padding="8" CornerRadius="4">
+						<TextBlock x:Name="TestTextBlock" 
+								   FontSize="16" 
+								   IsTextSelectionEnabled="True"
+								   TextWrapping="Wrap"
+								   Text="This is a sample text block for testing clipboard operations. You can select all text or select parts of it manually. Try using the buttons below or keyboard shortcuts (Ctrl+A, Ctrl+C) to test the functionality." />
+					</Border>
+
+					<!-- Control buttons -->
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button x:Name="SelectAllButton" Click="{x:Bind SelectAllText}">Select All Text</Button>
+						<Button x:Name="CopySelectionButton" Click="{x:Bind CopySelectionToClipboard}">Copy Selection to Clipboard</Button>
+						<Button x:Name="ClearSelectionButton" Click="{x:Bind ClearSelection}">Clear Selection</Button>
+					</StackPanel>
+
+					<!-- Text input for changing content -->
+					<StackPanel Spacing="4">
+						<TextBlock FontWeight="SemiBold">Change TextBlock Content:</TextBlock>
+						<TextBox x:Name="ContentInput" PlaceholderText="Enter new text content..." />
+						<Button x:Name="UpdateContentButton" Click="{x:Bind UpdateContent}">Update TextBlock Text</Button>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- Clipboard verification area -->
+			<Border Background="LightYellow" Padding="16" CornerRadius="8">
+				<StackPanel Spacing="8">
+					<TextBlock FontWeight="SemiBold">Clipboard Verification:</TextBlock>
+					<TextBox x:Name="PasteTarget" PlaceholderText="Click 'Paste from Clipboard' to verify copied text appears here..." />
+					<Button x:Name="PasteButton" Click="{x:Bind PasteFromClipboard}">Paste from Clipboard</Button>
+					<TextBlock x:Name="LastCopyResult" FontStyle="Italic" Foreground="Green" />
+				</StackPanel>
+			</Border>
+
+			<!-- Expected Results -->
+			<StackPanel Spacing="8">
+				<TextBlock FontWeight="SemiBold" FontSize="14">Expected Results:</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					• <Bold>On Skia platforms:</Bold> All clipboard operations should work. Text selection should be visible, SelectAll() should select all text, CopySelectionToClipboard() should copy to system clipboard.
+				</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					• <Bold>On native platforms:</Bold> These methods may not be implemented and clipboard operations may not work as expected.
+				</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					• <Bold>Keyboard shortcuts:</Bold> Ctrl+A and Ctrl+C should work when the TextBlock has focus (Skia only).
+				</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					• <Bold>Visual feedback:</Bold> Selected text should be highlighted with selection background color.
+				</TextBlock>
+			</StackPanel>
+		</StackPanel>
+	</ScrollViewer>
+</Page>
