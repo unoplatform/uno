@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Diagnostics;
+using System.Threading;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -63,8 +64,10 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame ends");
 	}
 
-	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
+	private SKPath Render(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
+
 		(SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
