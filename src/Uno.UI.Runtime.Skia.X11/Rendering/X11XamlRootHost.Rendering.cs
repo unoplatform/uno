@@ -1,32 +1,24 @@
-using System.Threading;
-using Microsoft.UI.Dispatching;
-using SkiaSharp;
-using Uno.Helpers;
-using Uno.UI.Dispatching;
+using System.Diagnostics;
+using Uno.UI;
 using Uno.UI.Hosting;
+using Timer = System.Timers.Timer;
+
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost
 {
-	private readonly EventLoop _renderingEventLoop;
-	private int _renderingScheduled;
+	private readonly Timer _renderTimer;
+
+	private Timer CreateRenderTimer()
+	{
+		var timer = new Timer { AutoReset = false, Interval = FeatureConfiguration.CompositionTarget.FrameRate };
+		timer.Elapsed += (_, _) => _renderer?.Render();
+		return timer;
+	}
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		if (_renderer is not null && (this as IXamlRootHost).RootElement is { } rootElement)
-		{
-			using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
-			XWindowAttributes attributes = default;
-			_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
-
-			if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
-			{
-				_renderingEventLoop.Schedule(() =>
-				{
-					Volatile.Write(ref _renderingScheduled, 0);
-					_renderer.Render();
-				});
-			}
-		}
+		Debug.Assert(!_renderTimer.Enabled);
+		_renderTimer.Enabled = true;
 	}
 }
