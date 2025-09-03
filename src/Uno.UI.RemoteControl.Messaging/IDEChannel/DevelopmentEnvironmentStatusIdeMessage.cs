@@ -7,7 +7,7 @@ namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 /// <param name="Component">Identifier of the component to which this message refers.</param>
 /// <param name="Status">The status of the component.</param>
 /// <param name="Description">User-friendly description of the current status (e.g. "Searching for uno packages.").</param>
-/// <param name="Description">Set of actions the user can perform regarding the current status (a good practice is to always provide at least one action)</param>
+/// <param name="Actions">Set of actions the user can perform regarding the current status (a good practice is to always provide at least one action)</param>
 public record DevelopmentEnvironmentStatusIdeMessage(
 	DevelopmentEnvironmentComponent Component,
 	DevelopmentEnvironmentStatus Status,
