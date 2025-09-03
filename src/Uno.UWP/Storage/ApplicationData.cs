@@ -129,5 +129,21 @@ public sealed partial class ApplicationData
 				e);
 		}
 	}
+
+#if !__SKIA__
+	private static StorageFolder CreateStorageFolder(string name, string folder)
+	{
+		try
+		{
+			return new StorageFolder(name, folder);
+		}
+		catch (Exception e)
+		{
+			throw new InvalidOperationException(
+				$"The creation of the StorageFolder \'{folder}\' failed. It may have been initialized too early, see for more information: https://aka.platform.uno/application-data",
+				e);
+		}
+	}
+#endif
 }
 #endif

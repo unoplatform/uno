@@ -64,9 +64,7 @@ string value = (string)localSettings.Values["name"];
 
 ## Initialization considerations
 
-All the `StorageFile`/`StorageFolder` APIs need to be used inside the instance constructor of the `App.xaml.cs`.
-
-Any earlier use, for example in a static constructor or in `Program.cs`, will lead to a fatal failure.
+`ApplicationData` APIs cannot be used before the `App` instance is constructed (i.e., before the instance constructor runs). It is possible to start using them in the `App` constructor, or the Application.OnLaunched method.
 
 ## Data location on Skia Desktop
 
