@@ -4704,8 +4704,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
+#if !HAS_INPUT_INJECTOR || !HAS_RENDER_TARGET_BITMAP
+		[Ignore("InputInjector or RenderTargetBitmap is not supported on this platform.")]
 #endif
 		public async Task When_Drop_Outside_Bounds()
 		{
