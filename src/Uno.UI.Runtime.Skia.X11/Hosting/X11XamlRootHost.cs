@@ -123,7 +123,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// so things like UpdateWindowPropertiesFromPackage can read the DPI, but also late enough so that
 		// the X11Window is "initialized".
 		_windowToHost[winUIWindow] = this;
-		X11Manager.XamlRootMap.Register(xamlRoot, this);
+		XamlRootMap.Register(xamlRoot, this);
 
 		UpdateWindowPropertiesFromPackage();
 		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
@@ -143,7 +143,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			using (X11Helper.XLock(RootX11Window.Display))
 			{
-				X11Manager.XamlRootMap.Unregister(xamlRoot);
+				XamlRootMap.Unregister(xamlRoot);
 				_windowToHost.Remove(winUIWindow, out var _);
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;

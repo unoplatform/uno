@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Visibility = System.Windows.Visibility;
 using WpfControl = global::System.Windows.Controls.Control;
@@ -47,9 +48,10 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			return;
 		}
 
+		_xamlRoot ??= XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+
 		int width, height;
 
-		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 		var dpi = _xamlRoot.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;

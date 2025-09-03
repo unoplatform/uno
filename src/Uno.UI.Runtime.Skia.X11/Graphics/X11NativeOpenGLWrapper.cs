@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
+using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -14,7 +15,7 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 
 	public unsafe X11NativeOpenGLWrapper(XamlRoot xamlRoot)
 	{
-		if (X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is not X11XamlRootHost xamlRootHost)
+		if (XamlRootMap.GetHostForRoot(xamlRoot) is not X11XamlRootHost xamlRootHost)
 		{
 			throw new InvalidOperationException($"The XamlRoot and its XamlRootHost must be initialized on the element before constructing an {nameof(X11NativeOpenGLWrapper)}.");
 		}
