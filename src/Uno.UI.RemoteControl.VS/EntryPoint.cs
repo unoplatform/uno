@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -13,19 +14,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.Build.Evaluation;
 using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Threading;
+using StreamJsonRpc;
+using Uno.IDE;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
 using Uno.UI.RemoteControl.VS.Notifications;
-using Constants = EnvDTE.Constants;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
 
@@ -54,20 +54,19 @@ public partial class EntryPoint : IDisposable
 	private (System.Diagnostics.Process process, int port)? _devServer;
 	private SemaphoreSlim _devServerGate = new(1);
 	private IServiceProvider? _visualStudioServiceProvider;
-
 	private bool _closing;
 	private bool _isDisposed;
 	private IdeChannelClient? _ideChannelClient;
 	private ProfilesObserver? _debuggerObserver;
 	private InfoBarFactory? _infoBarFactory;
 	private GlobalJsonObserver? _globalJsonObserver;
-	private readonly Func<Task> _globalPropertiesChanged;
 	private _dispSolutionEvents_BeforeClosingEventHandler? _closeHandler;
 	private _dispBuildEvents_OnBuildBeginEventHandler? _onBuildBeginHandler;
 	private _dispBuildEvents_OnBuildDoneEventHandler? _onBuildDoneHandler;
 	private _dispBuildEvents_OnBuildProjConfigBeginEventHandler? _onBuildProjConfigBeginHandler;
 	private UnoMenuCommand? _unoMenuCommand;
 
+	// Legacy API v2
 	public EntryPoint(
 		DTE2 dte2
 		, string toolsPath
@@ -79,13 +78,75 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
-		globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
-		_globalPropertiesChanged = globalPropertiesChanged;
 
-		_ = ThreadHelper.JoinableTaskFactory.RunAsync(() => InitializeAsync(asyncPackage));
+		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+		{
+			globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
+
+			var services = new SimpleServiceProvider();
+			await InitializeAsync(asyncPackage, services, _ct.Token);
+		});
 	}
 
-	private async Task InitializeAsync(AsyncPackage asyncPackage)
+	// Current API v3
+	public EntryPoint(
+		DTE2 dte2,
+		string toolsPath,
+		AsyncPackage asyncPackage,
+		string vsixChannelHandle)
+	{
+		_dte = dte2 as DTE;
+		_dte2 = dte2;
+		_toolsPath = toolsPath;
+		_asyncPackage = asyncPackage;
+
+		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+		{
+			var services = await InitializeVsixChannelAsync(
+				vsixChannelHandle,
+				remoteServices: [
+					typeof(Uno.IDE.IUnoEnvironmentIndicator)
+				],
+				localServices: [
+					(typeof(Uno.IDE.IGlobalPropertiesProvider), new GlobalPropertiesProvider(OnProvideGlobalPropertiesAsync))
+				],
+				_ct.Token);
+
+			await InitializeAsync(asyncPackage, services, _ct.Token);
+		});
+	}
+
+	private async Task<IServiceProvider> InitializeVsixChannelAsync(string vsixChannelHandle, Type[] remoteServices, (Type type, object instance)[] localServices, CancellationToken ct)
+	{
+		var rpcStream = new NamedPipeClientStream(
+			serverName: ".",
+			pipeName: vsixChannelHandle,
+			direction: PipeDirection.InOut,
+			options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+		await rpcStream.ConnectAsync(ct).ConfigureAwait(false);
+
+		var rpc = new JsonRpc(rpcStream);
+		ct.Register(rpc.Dispose);
+
+		foreach (var service in localServices)
+		{
+			rpc.AddLocalRpcTarget(service.type, service.instance, null);
+		}
+
+		var services = new SimpleServiceProvider();
+		ct.Register(services.Dispose);
+
+		foreach (var service in remoteServices)
+		{
+			services.Register(service, rpc.Attach(service));
+		}
+
+		rpc.StartListening();
+
+		return services;
+	}
+
+	private async Task InitializeAsync(AsyncPackage asyncPackage, IServiceProvider services, CancellationToken ct)
 	{
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
