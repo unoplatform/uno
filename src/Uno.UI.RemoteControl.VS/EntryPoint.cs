@@ -105,7 +105,7 @@ public partial class EntryPoint : IDisposable
 			var services = await InitializeVsixChannelAsync(
 				vsixChannelHandle,
 				remoteServices: [
-					typeof(Uno.IDE.IUnoDevelopmentEnvironmentIndicatorService)
+					typeof(Uno.IDE.IUnoDevelopmentEnvironmentIndicator)
 				],
 				localServices: [
 					(typeof(Uno.IDE.IGlobalPropertiesProvider), new GlobalPropertiesProvider(OnProvideGlobalPropertiesAsync))
