@@ -14,7 +14,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 			this.InitializeComponent();
 		}
 
-		private void SelectAllText()
+		private async void SelectAllText()
 		{
 			try
 			{
