@@ -18,6 +18,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 		{
 			try
 			{
+				// Focus the text block so the selection is visually visible
+				TestTextBlock.Focus(FocusState.Programmatic);
+				await Task.Delay(100);
 				TestTextBlock.SelectAll();
 				UpdateLastCopyResult("✅ SelectAll() called successfully");
 			}
