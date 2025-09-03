@@ -11,11 +11,8 @@ public partial class PasswordBox
 			throw new ArgumentException("PasswordChar must be a single character string.");
 		}
 
-		// Update the password character when it changes
-		if (TextBoxView != null)
-		{
-			TextBoxView.UpdateDisplayBlockText(Text);
-		}
+		// Force display update to refresh the password character
+		TextBoxView?.UpdateDisplayBlockText(Text);
 	}
 
 	partial void SetPasswordRevealState(PasswordRevealState state) => TextBoxView?.SetPasswordRevealState(state);
