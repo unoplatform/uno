@@ -18,6 +18,6 @@ public record Command(string Text, string Name, string? Parameter = null)
 	/// <param name="Text">User-friendly text for the link.</param>
 	/// <param name="Uri">Uri to navigate to.</param>
 	/// <returns></returns>
-	public Command OpenBrowser(string Text, Uri Uri)
+	public static Command OpenBrowser(string Text, Uri Uri)
 		=> new(Text, "ide.open_browser", Uri.ToString());
 }
