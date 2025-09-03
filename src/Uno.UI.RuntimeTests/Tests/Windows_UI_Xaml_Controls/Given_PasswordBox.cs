@@ -14,6 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_PasswordBox
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 #if !HAS_RENDER_TARGET_BITMAP
 	[Ignore("Cannot take screenshot on this platform.")]
 #endif
@@ -83,6 +84,7 @@ public class Given_PasswordBox
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 #if !HAS_RENDER_TARGET_BITMAP
 	[Ignore("Cannot take screenshot on this platform.")]
 #endif
