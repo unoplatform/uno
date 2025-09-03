@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "PasswordBox_PasswordChar")]
+	[SampleControlInfo("TextBox", "PasswordBox_PasswordChar", IsManualTest = )]
 	public sealed partial class PasswordBox_PasswordChar : UserControl
 	{
 		public PasswordBox_PasswordChar()
@@ -31,15 +31,15 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 			UpdateValueDisplays();
 		}
 
-		private void SetSquare_Click(object sender, RoutedEventArgs e)
+		private void SetQuestion_Click(object sender, RoutedEventArgs e)
 		{
-			DynamicPasswordBox.PasswordChar = "■";
+			DynamicPasswordBox.PasswordChar = "?";
 			UpdateValueDisplays();
 		}
 
-		private void SetKorean_Click(object sender, RoutedEventArgs e)
+		private void SetDollar_Click(object sender, RoutedEventArgs e)
 		{
-			DynamicPasswordBox.PasswordChar = "한";
+			DynamicPasswordBox.PasswordChar = "$";
 			UpdateValueDisplays();
 		}
 
@@ -47,8 +47,8 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 		{
 			DefaultValueText.Text = $"Default: '{DefaultPasswordBox.PasswordChar}'";
 			CustomValueText.Text = $"Custom: '{CustomPasswordBox.PasswordChar}'";
-			SquareValueText.Text = $"Square: '{SquarePasswordBox.PasswordChar}'";
-			KoreanValueText.Text = $"Korean: '{KoreanPasswordBox.PasswordChar}'";
+			QuestionValueText.Text = $"Question: '{QuestionPasswordBox.PasswordChar}'";
+			DollarValueText.Text = $"Dollar: '{DollarPasswordBox.PasswordChar}'";
 			DynamicValueText.Text = $"Dynamic: '{DynamicPasswordBox.PasswordChar}'";
 		}
 	}
