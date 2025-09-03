@@ -85,7 +85,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		ExploreByTouchHelper.InvalidateRoot();
 
-		root.XamlRoot?.VisualTree.ContentRoot.CompositionTarget.PaintFrame();
+		root.XamlRoot?.VisualTree.ContentRoot.CompositionTarget.Render();
 		_paintId++;
 
 		// Request the call of IRenderer.OnDrawFrame for one frame

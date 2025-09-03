@@ -281,7 +281,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			return;
 		}
 
-		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.PaintFrame();
+		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
 		_paintId++;
 
 		_skCanvasView?.QueueRender();

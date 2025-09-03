@@ -537,7 +537,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			return;
 		}
 
-		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.PaintFrame();
+		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
 
 		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }

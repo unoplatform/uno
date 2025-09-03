@@ -152,7 +152,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 			return;
 		}
 
-		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.PaintFrame();
+		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
 
 		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 		_renderLayer.InvalidateVisual();

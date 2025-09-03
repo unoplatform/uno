@@ -24,12 +24,12 @@ public partial class CompositionTarget
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
 
-	internal event Action? FramePainted;
+	internal event Action? FrameRendered;
 
-	internal void PaintFrame()
+	internal void Render()
 	{
 		var timestamp = Stopwatch.GetTimestamp();
-		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame begins with timestamp {timestamp}");
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} begins with timestamp {timestamp}");
 
 		NativeDispatcher.CheckThreadAccess();
 
@@ -49,9 +49,9 @@ public partial class CompositionTarget
 			_lastRenderedFrame = lastRenderedFrame;
 		}
 
-		FramePainted?.Invoke();
+		FrameRendered?.Invoke();
 
-		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame ends");
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
 	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)

@@ -216,7 +216,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			this.Log().Trace($"Window {_nativeWindow.Handle} invalidated.");
 		}
 
-		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.PaintFrame();
+		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
 
 		NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 	}

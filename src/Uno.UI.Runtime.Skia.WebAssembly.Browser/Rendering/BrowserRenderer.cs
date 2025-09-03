@@ -65,7 +65,7 @@ internal partial class BrowserRenderer
 			return;
 		}
 
-		XamlRootMap.GetRootForHost(_host)?.VisualTree.ContentRoot.CompositionTarget.PaintFrame();
+		XamlRootMap.GetRootForHost(_host)?.VisualTree.ContentRoot.CompositionTarget.Render();
 
 		NativeMethods.Invalidate(_nativeSwapChainPanel);
 	}

@@ -23,7 +23,7 @@ internal partial class X11XamlRootHost
 				return;
 			}
 
-			XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.PaintFrame();
+			XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
 
 			if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
 			{
