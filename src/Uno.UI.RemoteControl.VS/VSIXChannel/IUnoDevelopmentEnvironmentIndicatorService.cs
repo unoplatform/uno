@@ -3,10 +3,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.IDE;
 
-public interface IUnoEnvironmentIndicator
+public interface IUnoDevelopmentEnvironmentIndicatorService
 {
 	/*
 	* WARNING WARNING WARNING WARNING WARNING WARNING WARNING
@@ -16,5 +17,5 @@ public interface IUnoEnvironmentIndicator
 	*
 	*/
 
-	ValueTask NotifyAsync(string text, CancellationToken ct);
+	ValueTask NotifyAsync(DevelopmentEnvironmentStatusIdeMessage message, CancellationToken ct);
 }
