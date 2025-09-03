@@ -1351,17 +1351,13 @@ public partial class TabView : Control
 						}
 						else
 						{
-							// TODO: Uno specific workaround - ListView stretches to full available width, even when it does not require it
-							tabColumn.Width = GridLengthHelper.FromPixels(requiredWidth);
-
 							// If we're dragging over the TabView, we need to set the width to a specific value,
 							// since we want it to be larger than the items actually in it in order to accommodate
 							// the item being dragged into the TabView.  Otherwise, we can just set its width to Auto.
-
-							//tabColumn.Width(
-							//	m_isItemDraggedOver ?
-							//	winrt::GridLengthHelper::FromPixels(requiredWidth) :
-							//	winrt::GridLengthHelper::FromValueAndType(1.0, winrt::GridUnitType::Auto));
+							tabColumn.Width =
+								m_isItemDraggedOver ?
+								GridLengthHelper.FromPixels(requiredWidth) :
+								GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
 
 							var listview = m_listView;
 							var tabListView = m_listView as TabViewListView;
@@ -1425,8 +1421,6 @@ public partial class TabView : Control
 							if (itemsPresenter != null)
 							{
 								var visible = itemsPresenter.ActualWidth > availableWidth;
-								// TODO: Uno specific: Apply visibility directly to scroll viewer
-								// until attached property template binding is supported (issue #4259)
 								ScrollViewer.SetHorizontalScrollBarVisibility(listview, visible
 									? ScrollBarVisibility.Visible
 									: ScrollBarVisibility.Hidden);
