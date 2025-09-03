@@ -125,7 +125,6 @@ public partial class ContainerVisual : Visual
 		return true;
 	}
 
-	/// <returns>true if a ViewBox exists</returns>
 	internal Rect? GetArrangeClipPathInElementCoordinateSpace()
 	{
 		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
