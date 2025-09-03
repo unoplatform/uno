@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.IDE;
 
-public interface IUnoDevelopmentEnvironmentIndicatorService
+public interface IUnoDevelopmentEnvironmentIndicator
 {
 	/*
 	* WARNING WARNING WARNING WARNING WARNING WARNING WARNING
