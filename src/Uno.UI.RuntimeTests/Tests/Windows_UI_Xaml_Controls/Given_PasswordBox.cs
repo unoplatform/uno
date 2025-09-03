@@ -46,12 +46,18 @@ public class Given_PasswordBox
 			Padding = new Thickness(4)
 		};
 
-		// Load PasswordBox and take screenshot
-		await UITestHelper.Load(passwordBox);
-		var passwordBoxScreenshot = await UITestHelper.ScreenShot(passwordBox);
+		var parent = new StackPanel()
+		{
+			Margin = new Thickness(10),
+			Spacing = 8
+		};
 
-		// Load TextBox and take screenshot  
-		await UITestHelper.Load(textBox);
+		parent.Children.Add(passwordBox);
+		parent.Children.Add(textBox);
+
+		// Load and take screenshot
+		await UITestHelper.Load(parent);
+		var passwordBoxScreenshot = await UITestHelper.ScreenShot(passwordBox);
 		var textBoxScreenshot = await UITestHelper.ScreenShot(textBox);
 
 		// Compare that PasswordBox with PasswordChar="A" looks similar to TextBox with "AAAA"
