@@ -1,12 +1,10 @@
-﻿using Uno.Extensions;
-using System;
-using System.Collections.Generic;
-using Uno.Disposables;
-using System.Text;
+﻿using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -121,7 +119,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		#region PasswordChar
+		[NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__")]
+		public string PasswordChar
+		{
+			get => (string)this.GetValue(PasswordCharProperty);
+			set => this.SetValue(PasswordCharProperty, value);
+		}
+
+		[NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__")]
+		public static DependencyProperty PasswordCharProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PasswordChar),
+				typeof(string),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(
+					"\u25CF",
+					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnPasswordCharChanged(e)));
 
 		private void OnPasswordCharChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -129,8 +142,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnPasswordCharChangedPartial(DependencyPropertyChangedEventArgs e);
-
-		#endregion
 
 		public new object Description
 		{
