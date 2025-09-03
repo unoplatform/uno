@@ -15,9 +15,6 @@ public class Given_PasswordBox
 {
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-#if !HAS_RENDER_TARGET_BITMAP
-	[Ignore("Cannot take screenshot on this platform.")]
-#endif
 	public async Task When_PasswordChar_Visual_Comparison()
 	{
 		// Test password with 4 characters 
@@ -85,9 +82,6 @@ public class Given_PasswordBox
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-#if !HAS_RENDER_TARGET_BITMAP
-	[Ignore("Cannot take screenshot on this platform.")]
-#endif
 	public async Task When_PasswordChar_Special_Characters()
 	{
 		// Test with various special characters
@@ -133,6 +127,7 @@ public class Given_PasswordBox
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public void When_PasswordChar_Set()
 	{
 		var passwordBox = new PasswordBox();
@@ -146,6 +141,7 @@ public class Given_PasswordBox
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public void When_PasswordChar_Set_To_Invalid()
 	{
 		string[] invalidValues = ["", null, "AB", "LongString"];
