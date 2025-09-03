@@ -46,13 +46,13 @@ internal readonly struct UnicodeText : IParsedText
 		public FontStyle FontStyle { get; }
 		public Brush Foreground { get; }
 
-		public ReadonlyInlineCopy(Inline inline, int startIndex, FlowDirection defaultFlowDirection)
+		public ReadonlyInlineCopy(Inline inline, int startIndex, FlowDirection defaultFlowDirection, bool forceDefaultFlowDirection = false)
 		{
 			Debug.Assert(inline is Run or LineBreak);
 			Inline = inline;
 			Text = inline.GetText();
 			Foreground = inline.Foreground;
-			FlowDirection = (inline as Run)?.FlowDirection ?? defaultFlowDirection;
+			FlowDirection = forceDefaultFlowDirection ? defaultFlowDirection : (inline as Run)?.FlowDirection ?? defaultFlowDirection;
 			FontDetails = inline.FontInfo;
 			FontSize = inline.FontSize;
 			FontWeight = inline.FontWeight;
@@ -104,31 +104,57 @@ internal readonly struct UnicodeText : IParsedText
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
-		TextAlignment textAlignment,
+		(FlowDirection flowDirection, TextAlignment textAlignment)? flowDirectionAndAlignment, // null to determine from text
 		TextWrapping textWrapping,
-		FlowDirection flowDirection,
 		out Size desiredSize)
 	{
-		_rtl = flowDirection == FlowDirection.RightToLeft;
+		Debug.Assert(maxLines >= 0);
 		_size = availableSize;
-		_textAlignment = textAlignment;
 		_defaultFontDetails = defaultFontDetails;
 
-		_inlines = new();
-		var lastEnd = 0;
-		var builder = new StringBuilder();
-		foreach (var inline in inlines)
+		if (flowDirectionAndAlignment is null)
 		{
-			var copy = new ReadonlyInlineCopy(inline, lastEnd, flowDirection);
-			var length = copy.Text.Length;
-			if (length != 0)
+			// TODO: can we make this cleaner instead of implicitly assuming that this is a code path coming from TextBox?
+			Debug.Assert(inlines.Length == 1);
+			var inline = inlines[0];
+			var inlineText = inline.GetText();
+			if (inlineText.Length == 0)
 			{
-				_inlines.Add(copy);
+				// WinUI always has the caret on the left in this case of an empty TextBox
+				// it doesn't really matter what the flow direction is when there's no text
+				flowDirectionAndAlignment = (FlowDirection.LeftToRight, TextAlignment.Left);
 			}
-			lastEnd = copy.EndIndex;
-			builder.Append(copy.Text);
+			else
+			{
+				using var bidi = new BiDi();
+				bidi.SetPara(inlines[0].GetText(), BiDi.DEFAULT_LTR, null);
+				bidi.GetLogicalRun(0, out var level);
+				Debug.Assert(level is (int)BiDi.BiDiDirection.RTL or (int)BiDi.BiDiDirection.LTR);
+				flowDirectionAndAlignment = level is (int)BiDi.BiDiDirection.RTL ? (FlowDirection.RightToLeft, TextAlignment.Right) : (FlowDirection.LeftToRight, TextAlignment.Left);
+			}
+			var copy = new ReadonlyInlineCopy(inline, 0, flowDirectionAndAlignment.Value.flowDirection, true);
+			var length = copy.Text.Length;
+			_inlines = length == 0 ? [] : [copy];
+			_text = copy.Text;
 		}
-		_text = builder.ToString();
+		else
+		{
+			_inlines = new();
+			var lastEnd = 0;
+			var builder = new StringBuilder();
+			foreach (var inline in inlines)
+			{
+				var copy = new ReadonlyInlineCopy(inline, lastEnd, flowDirectionAndAlignment.Value.flowDirection);
+				var length = copy.Text.Length;
+				if (length != 0)
+				{
+					_inlines.Add(copy);
+				}
+				lastEnd = copy.EndIndex;
+				builder.Append(copy.Text);
+			}
+			_text = builder.ToString();
+		}
 
 		if (_inlines.Count == 0)
 		{
@@ -137,12 +163,14 @@ internal readonly struct UnicodeText : IParsedText
 			_textIndexToGlyph = [];
 			_inlines = [];
 			_wordBoundaries = new();
+			_textAlignment = flowDirectionAndAlignment.Value.textAlignment;
+			_rtl = flowDirectionAndAlignment.Value.flowDirection == FlowDirection.RightToLeft;
 			return;
 		}
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth);
-		_lines = LayoutLines(unlayoutedLines, textAlignment, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
+		_lines = LayoutLines(unlayoutedLines, flowDirectionAndAlignment.Value.textAlignment, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
 		_textIndexToGlyph = new Cluster[_text.Length];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 

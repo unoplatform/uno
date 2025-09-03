@@ -78,9 +78,8 @@ namespace Microsoft.UI.Xaml.Controls
 				MaxLines,
 				(float)LineHeight,
 				LineStackingStrategy,
-				TextAlignment,
+				IsTextBoxDisplay ? null : (FlowDirection, TextAlignment),
 				TextWrapping,
-				FlowDirection,
 				out var desiredSize);
 
 			desiredSize = desiredSize.Add(padding);
@@ -133,9 +132,8 @@ namespace Microsoft.UI.Xaml.Controls
 				MaxLines,
 				(float)LineHeight,
 				LineStackingStrategy,
-				TextAlignment,
+				IsTextBoxDisplay ? null : (FlowDirection, TextAlignment),
 				TextWrapping,
-				FlowDirection,
 				out var arrangedSize);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 
