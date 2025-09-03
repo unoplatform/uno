@@ -219,7 +219,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void UpdateMaxLength() => _overlayTextBoxViewExtension?.UpdateNativeView();
 
-		public void UpdateDisplayBlockText(string text)
+		internal void UpdateDisplayBlockText(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.
