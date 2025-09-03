@@ -718,39 +718,7 @@ internal readonly struct UnicodeText : IParsedText
 
 					textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
 
-					var paint = _spareDrawPaint;
-					paint.Reset();
-					paint.IsStroke = false;
-					paint.IsAntialias = true;
-
-					if (run.inline.Foreground is SolidColorBrush scb)
-					{
-						var scbColor = scb.Color;
-						paint.Color = new SKColor(
-							red: scbColor.R,
-							green: scbColor.G,
-							blue: scbColor.B,
-							alpha: (byte)(scbColor.A * scb.Opacity * session.Opacity));
-					}
-					else if (run.inline.Foreground is GradientBrush gb)
-					{
-						var gbColor = gb.FallbackColorWithOpacity;
-						paint.Color = new SKColor(
-							red: gbColor.R,
-							green: gbColor.G,
-							blue: gbColor.B,
-							alpha: (byte)(gbColor.A * session.Opacity));
-					}
-					else if (run.inline.Foreground is XamlCompositionBrushBase xcbb)
-					{
-						var gbColor = xcbb.FallbackColorWithOpacity;
-						paint.Color = new SKColor(
-							red: gbColor.R,
-							green: gbColor.G,
-							blue: gbColor.B,
-							alpha: (byte)(gbColor.A * session.Opacity));
-					}
-
+					var paint = SetupPaint(run.inline.Foreground, session.Opacity);
 					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.baselineOffset, paint);
 					currentLineX += run.width;
 				}
@@ -764,6 +732,44 @@ internal readonly struct UnicodeText : IParsedText
 		{
 			c.brush.Paint(session.Canvas, session.Opacity, GetCaretRectForIndex(c.index, c.thickness).ToSKRect());
 		}
+	}
+
+	private static SKPaint SetupPaint(Brush foreground, float opacity)
+	{
+		var paint = _spareDrawPaint;
+		paint.Reset();
+		paint.IsStroke = false;
+		paint.IsAntialias = true;
+
+		if (foreground is SolidColorBrush scb)
+		{
+			var scbColor = scb.Color;
+			paint.Color = new SKColor(
+				red: scbColor.R,
+				green: scbColor.G,
+				blue: scbColor.B,
+				alpha: (byte)(scbColor.A * scb.Opacity * opacity));
+		}
+		else if (foreground is GradientBrush gb)
+		{
+			var gbColor = gb.FallbackColorWithOpacity;
+			paint.Color = new SKColor(
+				red: gbColor.R,
+				green: gbColor.G,
+				blue: gbColor.B,
+				alpha: (byte)(gbColor.A * opacity));
+		}
+		else if (foreground is XamlCompositionBrushBase xcbb)
+		{
+			var gbColor = xcbb.FallbackColorWithOpacity;
+			paint.Color = new SKColor(
+				red: gbColor.R,
+				green: gbColor.G,
+				blue: gbColor.B,
+				alpha: (byte)(gbColor.A * opacity));
+		}
+
+		return paint;
 	}
 
 	private static float RunWidth((GlyphInfo info, GlyphPosition position)[] glyphs, FontDetails details) => glyphs.Sum(g => GlyphWidth(g.position, details));
@@ -790,7 +796,7 @@ internal readonly struct UnicodeText : IParsedText
 			var lastGlyphX = lastGlyph.xPosInRun + lastCluster.layoutedRun.xPosInLine + lastCluster.layoutedRun.line.xAlignmentOffset;
 			return new Rect(lastCluster.layoutedRun.rtl ? lastGlyphX : lastGlyphX + GlyphWidth(lastGlyph.position, lastCluster.layoutedRun.fontDetails) - caretThickness, lastCluster.layoutedRun.line.y, caretThickness, lastCluster.layoutedRun.line.lineHeight);
 		}
-
+		else
 		{
 			var cluster = _textIndexToGlyph[index];
 			var glyph = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart];
