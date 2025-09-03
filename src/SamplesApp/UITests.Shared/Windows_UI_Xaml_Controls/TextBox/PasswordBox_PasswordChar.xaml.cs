@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "PasswordBox_PasswordChar", IsManualTest = )]
+	[SampleControlInfo("TextBox", "PasswordBox_PasswordChar", IsManualTest = true, Description = "PasswordChar is supported on Skia targets. Setting its value should change the password char accordingly.")]
 	public sealed partial class PasswordBox_PasswordChar : UserControl
 	{
 		public PasswordBox_PasswordChar()
