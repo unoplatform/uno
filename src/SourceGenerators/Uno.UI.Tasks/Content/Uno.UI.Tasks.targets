@@ -20,7 +20,6 @@
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" />
-	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" />
 
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" TaskFactory="TaskHostFactory"/>
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" TaskFactory="TaskHostFactory"/>
@@ -28,7 +27,6 @@
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" TaskFactory="TaskHostFactory" />
-	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" TaskFactory="TaskHostFactory" />
 
 	<Target Name="_UnoLangSetup">
 		<!-- String resources -->
@@ -423,23 +421,5 @@
 			</Code>
 		</Task>
 	</UsingTask>
-
-	<Target
-		Name="_GenerateHotReloadInfo"
-		BeforeTargets="BeforeCompile"
-		Condition="'$(Configuration)'=='Debug' OR '$(UnoForceHotReloadCodeGen)' == 'true'">
-
-		<HotReloadInfoTask_v0
-			IntermediateOutputPath="$(IntermediateOutputPath)">
-			<Output
-				TaskParameter="GeneratedFiles"
-				ItemName="_HotReloadInfoTaskGeneratedFiles" />
-		</HotReloadInfoTask_v0>
-
-		<ItemGroup>
-			<Compile Include="@(_HotReloadInfoTaskGeneratedFiles)" />
-		</ItemGroup>
-
-	</Target>
 
 </Project>

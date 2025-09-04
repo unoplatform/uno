@@ -18,7 +18,7 @@ public record DevelopmentEnvironmentStatusIdeMessage(
 	string? Description,
 	string? Details,
 	string? ErrorTrace,
-	Command[] Actions);
+	Command[] Actions) : IdeMessage("udei");
 
 /// <summary>
 /// Represents a component within the development environment, including its identifier and description.
