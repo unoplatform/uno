@@ -11,10 +11,10 @@
 	<ScrollViewer Padding="12">
 		<StackPanel Spacing="16">
 			<!-- Instructions -->
-			<TextBlock FontWeight="Bold" FontSize="16" Foreground="DarkBlue">
+			<TextBlock FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemAccentColor}">
 				TextBlock Clipboard Methods Manual Test
 			</TextBlock>
-			<TextBlock FontWeight="SemiBold" FontSize="14" Foreground="OrangeRed">
+			<TextBlock FontWeight="SemiBold" FontSize="14" Foreground="{ThemeResource SystemControlForegroundAccentBrush}">
 				⚠️ Platform Support: This feature is only supported on Skia targets (Desktop, WebAssembly with Skia), NOT on native targets (iOS, Android native).
 			</TextBlock>
 
@@ -39,12 +39,12 @@
 			</StackPanel>
 
 			<!-- Test Controls -->
-			<Border Background="LightGray" Padding="16" CornerRadius="8">
+			<Border Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" Padding="16" CornerRadius="8">
 				<StackPanel Spacing="12">
 					<TextBlock FontWeight="SemiBold">Sample TextBlock for Testing:</TextBlock>
 					
 					<!-- The main TextBlock to test -->
-					<Border BorderBrush="DarkGray" BorderThickness="2" Padding="8" CornerRadius="4">
+					<Border BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}" BorderThickness="2" Padding="8" CornerRadius="4">
 						<TextBlock x:Name="TestTextBlock" 
 								   FontSize="16" 
 								   IsTextSelectionEnabled="True"
@@ -69,12 +69,12 @@
 			</Border>
 
 			<!-- Clipboard verification area -->
-			<Border Background="LightYellow" Padding="16" CornerRadius="8">
+			<Border Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" Padding="16" CornerRadius="8">
 				<StackPanel Spacing="8">
 					<TextBlock FontWeight="SemiBold">Clipboard Verification:</TextBlock>
 					<TextBox x:Name="PasteTarget" PlaceholderText="Click 'Paste from Clipboard' to verify copied text appears here..." />
 					<Button x:Name="PasteButton" Click="{x:Bind PasteFromClipboard}">Paste from Clipboard</Button>
-					<TextBlock x:Name="LastCopyResult" FontStyle="Italic" Foreground="Green" />
+					<TextBlock x:Name="LastCopyResult" FontStyle="Italic" Foreground="{ThemeResource SystemAccentColor}" />
 				</StackPanel>
 			</Border>
 
