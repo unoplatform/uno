@@ -104,7 +104,8 @@ internal readonly struct UnicodeText : IParsedText
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
-		(FlowDirection flowDirection, TextAlignment textAlignment)? flowDirectionAndAlignment, // null to determine from text
+		FlowDirection flowDirection,
+		TextAlignment? textAlignment, // null to determine from text. This will also infer the directionality of the text from the content
 		TextWrapping textWrapping,
 		out Size desiredSize)
 	{
@@ -112,17 +113,15 @@ internal readonly struct UnicodeText : IParsedText
 		_size = availableSize;
 		_defaultFontDetails = defaultFontDetails;
 
-		if (flowDirectionAndAlignment is null)
+		if (textAlignment is null)
 		{
 			// TODO: can we make this cleaner instead of implicitly assuming that this is a code path coming from TextBox?
 			Debug.Assert(inlines.Length == 1);
-			var inline = inlines[0];
+			var inline = (Run)inlines[0];
 			var inlineText = inline.GetText();
 			if (inlineText.Length == 0)
 			{
-				// WinUI always has the caret on the left in this case of an empty TextBox
-				// it doesn't really matter what the flow direction is when there's no text
-				flowDirectionAndAlignment = (FlowDirection.LeftToRight, TextAlignment.Left);
+				flowDirection = inline.FlowDirection;
 			}
 			else
 			{
@@ -130,9 +129,10 @@ internal readonly struct UnicodeText : IParsedText
 				bidi.SetPara(inlines[0].GetText(), BiDi.DEFAULT_LTR, null);
 				bidi.GetLogicalRun(0, out var level);
 				Debug.Assert(level is (int)BiDi.BiDiDirection.RTL or (int)BiDi.BiDiDirection.LTR);
-				flowDirectionAndAlignment = level is (int)BiDi.BiDiDirection.RTL ? (FlowDirection.RightToLeft, TextAlignment.Right) : (FlowDirection.LeftToRight, TextAlignment.Left);
+				flowDirection = level is (int)BiDi.BiDiDirection.RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 			}
-			var copy = new ReadonlyInlineCopy(inline, 0, flowDirectionAndAlignment.Value.flowDirection, true);
+			textAlignment = flowDirection is FlowDirection.LeftToRight ? TextAlignment.Left : TextAlignment.Right;
+			var copy = new ReadonlyInlineCopy(inline, 0, flowDirection, true);
 			var length = copy.Text.Length;
 			_inlines = length == 0 ? [] : [copy];
 			_text = copy.Text;
@@ -144,7 +144,7 @@ internal readonly struct UnicodeText : IParsedText
 			var builder = new StringBuilder();
 			foreach (var inline in inlines)
 			{
-				var copy = new ReadonlyInlineCopy(inline, lastEnd, flowDirectionAndAlignment.Value.flowDirection);
+				var copy = new ReadonlyInlineCopy(inline, lastEnd, flowDirection);
 				var length = copy.Text.Length;
 				if (length != 0)
 				{
@@ -163,14 +163,14 @@ internal readonly struct UnicodeText : IParsedText
 			_textIndexToGlyph = [];
 			_inlines = [];
 			_wordBoundaries = new();
-			_textAlignment = flowDirectionAndAlignment.Value.textAlignment;
-			_rtl = flowDirectionAndAlignment.Value.flowDirection == FlowDirection.RightToLeft;
+			_textAlignment = textAlignment.Value;
+			_rtl = flowDirection == FlowDirection.RightToLeft;
 			return;
 		}
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth);
-		_lines = LayoutLines(unlayoutedLines, flowDirectionAndAlignment.Value.textAlignment, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
+		_lines = LayoutLines(unlayoutedLines, textAlignment.Value, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
 		_textIndexToGlyph = new Cluster[_text.Length];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 

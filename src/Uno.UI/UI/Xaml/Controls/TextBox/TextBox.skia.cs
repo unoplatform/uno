@@ -188,7 +188,7 @@ public partial class TextBox
 
 	partial void OnFlowDirectionChangedPartial()
 	{
-		TextBoxView?.SetFlowDirectionAndTextAlignment();
+		TextBoxView?.SetFlowDirection();
 	}
 
 	partial void OnTextWrappingChangedPartial()
@@ -205,11 +205,6 @@ public partial class TextBox
 	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType)
 	{
 		TextBoxView?.UpdateProperties();
-	}
-
-	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
-	{
-		TextBoxView?.SetFlowDirectionAndTextAlignment();
 	}
 
 	private void UpdateTextBoxView()

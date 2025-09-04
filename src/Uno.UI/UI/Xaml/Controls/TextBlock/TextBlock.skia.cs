@@ -78,7 +78,8 @@ namespace Microsoft.UI.Xaml.Controls
 				MaxLines,
 				(float)LineHeight,
 				LineStackingStrategy,
-				IsTextBoxDisplay ? null : (FlowDirection, TextAlignment),
+				FlowDirection,
+				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
 				TextWrapping,
 				out var desiredSize);
 
@@ -132,7 +133,8 @@ namespace Microsoft.UI.Xaml.Controls
 				MaxLines,
 				(float)LineHeight,
 				LineStackingStrategy,
-				IsTextBoxDisplay ? null : (FlowDirection, TextAlignment),
+				FlowDirection,
+				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
 				TextWrapping,
 				out var arrangedSize);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
