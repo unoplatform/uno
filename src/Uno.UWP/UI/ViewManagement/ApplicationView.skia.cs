@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
 
@@ -29,11 +29,14 @@ namespace Windows.UI.ViewManagement
 			set
 			{
 				_preferredMinSize = value;
-				OnPropertyChanged();
+				if (AppWindow.TryGetFromWindowId(_windowId, out var appWindow) &&
+					appWindow.Presenter is OverlappedPresenter { } overlappedPresenter)
+				{
+					overlappedPresenter.PreferredMinimumWidth = (int)_preferredMinSize.Width;
+					overlappedPresenter.PreferredMinimumHeight = (int)_preferredMinSize.Height;
+				}
 			}
 		}
-
-		internal PropertyChangedEventHandler? PropertyChanged;
 
 		public bool TryResizeView(Size value)
 		{
@@ -45,11 +48,6 @@ namespace Windows.UI.ViewManagement
 		}
 
 		public void SetPreferredMinSize(Size minSize) => PreferredMinSize = minSize;
-
-		private void OnPropertyChanged([CallerMemberName] string? name = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-		}
 	}
 
 	internal interface IApplicationViewExtension
