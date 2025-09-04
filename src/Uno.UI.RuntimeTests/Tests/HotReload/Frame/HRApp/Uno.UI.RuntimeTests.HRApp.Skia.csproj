@@ -34,7 +34,8 @@
 
 		<!-- C:/s/uno.github/uno/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/../../../../SamplesApp/SamplesApp.Skia.Gtk/bin -->
 		
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.8" />
 		
 		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
 		<PackageReference Include="MSTest.TestFramework" />
