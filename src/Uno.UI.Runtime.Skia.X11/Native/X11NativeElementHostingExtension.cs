@@ -54,8 +54,8 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			HideWindowFromTaskBar(nativeWindow);
 
-			((CompositionTarget)_presenter.Visual.CompositionTarget!).FrameRendered += UpdateLayout;
-			_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual); // to force initial layout and clipping
+			xamlRoot.RenderInvalidated += UpdateLayout;
+			xamlRoot.QueueInvalidateRender(); // to force initial layout and clipping
 		}
 		else
 		{
@@ -135,7 +135,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_lastClipRect = null;
 			_lastArrangeRect = null;
 
-			((CompositionTarget)_presenter.Visual.CompositionTarget!).FrameRendered -= UpdateLayout;
+			xamlRoot.RenderInvalidated -= UpdateLayout;
 		}
 		else
 		{
@@ -148,7 +148,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		_lastArrangeRect = arrangeRect;
 		_lastClipRect = clipRect;
 		_layoutDirty = true;
-		_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual);
+		XamlRoot?.QueueInvalidateRender();
 		// we don't update the layout right now. We wait for the next render to happen, as
 		// xlib calls are expensive and it's better to update the layout once at the end when multiple arrange
 		// calls are fired sequentially.
