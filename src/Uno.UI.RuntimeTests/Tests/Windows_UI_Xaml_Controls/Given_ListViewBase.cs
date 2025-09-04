@@ -4701,6 +4701,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("0", textBlocks[1].Text);
 			Assert.AreEqual("2", textBlocks[2].Text);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR || !HAS_RENDER_TARGET_BITMAP
+		[Ignore("InputInjector or RenderTargetBitmap is not supported on this platform.")]
+#endif
+		public async Task When_Drop_Outside_Bounds()
+		{
+			var SUT = new ListView
+			{
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true,
+				Width = 50,
+			};
+
+			for (var i = 0; i < 3; i++)
+			{
+				SUT.Items.Add(new UpdateLayoutOnUnloadedControl
+				{
+					Content = new TextBlock
+					{
+						AllowDrop = true,
+						Height = 100,
+						Text = i.ToString()
+					}
+				});
+			}
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(2) is { });
+			await WindowHelper.WaitForIdle();
+
+			// Make screenshot of the initial state
+			var screenshotBefore = await UITestHelper.ScreenShot(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// drag(pick-up) item#0
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 50 });
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// drop outside of ListView bounds
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { X = SUT.GetAbsoluteBoundsRect().Right + 100 }, 1);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+
+			var screenshotAfter = await UITestHelper.ScreenShot(SUT);
+
+			// When the item is dropped outside the bounds of the list, all items should return to their original state
+			await ImageAssert.AreEqualAsync(screenshotBefore, screenshotAfter);
+		}
 #endif
 
 #if HAS_UNO
