@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Uno.UI.Tasks.HotReloadInfo;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -44,7 +43,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				break;
 
 			case HotReloadWorkspaceLoadResult.Name:
-				ProcessWorkspaceLoadResult(frame.GetContent<HotReloadWorkspaceLoadResult>());
+				WorkspaceLoadResult(frame.GetContent<HotReloadWorkspaceLoadResult>());
 				break;
 
 			case HotReloadStatusMessage.Name:
@@ -76,23 +75,18 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 				_projectPath = config.ProjectPath;
 
-				_msbuildProperties = Messages.ConfigureServer.ParseMSBuildProperties(config.MSBuildProperties);
+				_msbuildProperties = Messages.ConfigureServer.BuildMSBuildProperties(config.MSBuildProperties);
 
 				ConfigureHotReloadMode();
 				InitializeMetadataUpdater();
 
-				if (_supportsMetadataUpdates is MetadataUpdatesSupport.None)
+				if (!_supportsMetadataUpdates)
 				{
 					_status.ReportInvalidRuntime();
 				}
 
-				var message = new ConfigureServer(
-					_projectPath,
-					GetMetadataUpdateCapabilities(),
-					config.MSBuildProperties,
-					HotReloadInfoHelper.GetInfoFilePath(assembly),
-					_supportsMetadataUpdates.HasFlag(MetadataUpdatesSupport.DevServer),
-					_supportsMetadataUpdates.HasFlag(MetadataUpdatesSupport.Debugger));
+				var hrDebug = Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
+				var message = new ConfigureServer(_projectPath, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties, hrDebug);
 
 				await _rcClient.SendMessage(message);
 

@@ -33,7 +33,6 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			"SolutionDir",
 			"SolutionExt",
 			"BuildingInsideVisualStudio",
-			"UnoPlatformIDE",
 			"UnoRemoteControlPort",
 			"UseHostCompilerIfAvailable",
 			"TargetFramework",
