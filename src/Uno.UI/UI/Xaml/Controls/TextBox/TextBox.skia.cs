@@ -530,10 +530,12 @@ public partial class TextBox
 					KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
 				break;
-			case VirtualKey.Left:
+			case VirtualKey.Left when !TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+			case VirtualKey.Right when TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
 				KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
 				break;
-			case VirtualKey.Right:
+			case VirtualKey.Left when TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+			case VirtualKey.Right when !TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
 				KeyDownRightArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.Home:

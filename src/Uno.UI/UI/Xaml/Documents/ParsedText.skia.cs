@@ -735,6 +735,8 @@ internal readonly struct ParsedText : IParsedText
 		return (lines[^1].start, lines[^1].length, lines.Count == 1, true, lines.Count - 1);
 	}
 
+	public bool IsBaseDirectionRightToLeft => false;
+
 	#endregion
 
 	private void HandleSelection(SelectionDetails selection, int lineIndex,

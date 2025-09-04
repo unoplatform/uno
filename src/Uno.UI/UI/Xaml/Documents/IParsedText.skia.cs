@@ -19,4 +19,6 @@ internal interface IParsedText
 	(int start, int length) GetWordAt(int index, bool right);
 
 	internal (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index);
+
+	bool IsBaseDirectionRightToLeft { get; }
 }
