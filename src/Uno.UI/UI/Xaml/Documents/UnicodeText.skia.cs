@@ -28,6 +28,7 @@ namespace Microsoft.UI.Xaml.Documents;
 // TODO: character spacing
 // TODO: MaxLines
 // TODO: what happens if text has no drawable glyphs but is not empty? Can this happen? The HarfBuzz docs imply that it can't
+// TODO: keyboard left/right when rtl
 internal readonly struct UnicodeText : IParsedText
 {
 	// A readonly snapshot of an Inline that is referenced by individual text runs after splitting. It's a class
@@ -167,6 +168,8 @@ internal readonly struct UnicodeText : IParsedText
 			_rtl = flowDirection == FlowDirection.RightToLeft;
 			return;
 		}
+
+		_rtl = flowDirection == FlowDirection.RightToLeft;
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth);
@@ -801,7 +804,22 @@ internal readonly struct UnicodeText : IParsedText
 			var cluster = _textIndexToGlyph[index];
 			var glyph = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart];
 			var glyphX = glyph.xPosInRun + cluster.layoutedRun.xPosInLine + cluster.layoutedRun.line.xAlignmentOffset;
-			return new Rect(cluster.layoutedRun.rtl ? glyphX + GlyphWidth(glyph.position, cluster.layoutedRun.fontDetails) - caretThickness : glyphX, cluster.layoutedRun.line.y, caretThickness, cluster.layoutedRun.line.lineHeight);
+			var rect = new Rect(cluster.layoutedRun.rtl ? glyphX + GlyphWidth(glyph.position, cluster.layoutedRun.fontDetails) - caretThickness : glyphX, cluster.layoutedRun.line.y, caretThickness, cluster.layoutedRun.line.lineHeight);
+			var glyphRun = glyph.parentRun;
+			var isFirstGlyphInRun = (!glyphRun.rtl && glyphRun.glyphs[0] == glyph) || (glyphRun.rtl && glyphRun.glyphs[^1] == glyph);
+			if (isFirstGlyphInRun && glyphRun.indexInLine > 0)
+			{
+				if (_rtl && !glyphRun.rtl && glyphRun.indexInLine < glyphRun.line.runs.Count - 1 && glyphRun.line.runs[glyphRun.indexInLine + 1].rtl)
+				{
+					rect.X += glyphRun.width;
+				}
+				else if (!_rtl && glyphRun.rtl && glyphRun.indexInLine > 0 && !glyphRun.line.runs[glyphRun.indexInLine - 1].rtl)
+				{
+					rect.X -= glyphRun.width;
+				}
+			}
+
+			return rect;
 		}
 	}
 
