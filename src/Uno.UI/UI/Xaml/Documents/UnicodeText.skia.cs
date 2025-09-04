@@ -805,6 +805,10 @@ internal readonly struct UnicodeText : IParsedText
 			var glyph = cluster.layoutedRun.glyphs[cluster.glyphInRunIndexStart];
 			var glyphX = glyph.xPosInRun + cluster.layoutedRun.xPosInLine + cluster.layoutedRun.line.xAlignmentOffset;
 			var rect = new Rect(cluster.layoutedRun.rtl ? glyphX + GlyphWidth(glyph.position, cluster.layoutedRun.fontDetails) - caretThickness : glyphX, cluster.layoutedRun.line.y, caretThickness, cluster.layoutedRun.line.lineHeight);
+
+			// When the index is set to be right after a run that runs in the direction of the base direction,
+			// and right at the start of a run that runs opposite to the base direction, the caret should be
+			// at the end of the logically previous run, not at the start of the "current" run.
 			var glyphRun = glyph.parentRun;
 			var isFirstGlyphInRun = (!glyphRun.rtl && glyphRun.glyphs[0] == glyph) || (glyphRun.rtl && glyphRun.glyphs[^1] == glyph);
 			if (isFirstGlyphInRun && glyphRun.indexInLine > 0)
