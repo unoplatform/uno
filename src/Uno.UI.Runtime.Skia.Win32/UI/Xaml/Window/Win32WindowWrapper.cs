@@ -30,7 +30,6 @@ using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Point = System.Drawing.Point;
-using Microsoft.UI.Windowing;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 

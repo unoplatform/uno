@@ -170,7 +170,7 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 
 	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMaximumHeight)
 	{
-		var maxWidth = preferredMaximumHeight ?? int.MaxValue;
+		var maxWidth = preferredMaximumWidth ?? int.MaxValue;
 		var maxHeight = preferredMaximumHeight ?? int.MaxValue;
 		var hints = new XSizeHints
 		{
