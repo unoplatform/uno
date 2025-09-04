@@ -352,9 +352,41 @@ internal readonly struct UnicodeText : IParsedText
 
 			Debug.Assert(nextLineBreakingOpportunityIndex < logicallyOrderedLineBreakingOpportunities.Count && bidiRun.inline == nextLineBreakingOpportunity.inline && bidiRun.startInInline < nextLineBreakingOpportunity.indexInInline && bidiRun.endInInline >= nextLineBreakingOpportunity.indexInInline);
 
-			if (IsLineBreak(bidiRun.inline.Text, nextLineBreakingOpportunity.indexInInline))
+			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+			var runWidth = RunWidth(glyphs, bidiRun.inline.FontDetails);
+
+			var forcedLineBreak = -1;
 			{
-				var glyphsToLineBreak = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..nextLineBreakingOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+				var forcedLineBreakIndex = nextLineBreakingOpportunityIndex;
+				if (runWidth <= remainingLineWidth)
+				{
+					var lb = logicallyOrderedLineBreakingOpportunities[forcedLineBreakIndex];
+					while (bidiRun.inline == nextLineBreakingOpportunity.inline && bidiRun.endInInline >= lb.indexInInline)
+					{
+						if (IsLineBreak(bidiRun.inline.Text, lb.indexInInline))
+						{
+							forcedLineBreak = lb.indexInInline;
+							break;
+						}
+						else
+						{
+							forcedLineBreakIndex++;
+							if (forcedLineBreakIndex == logicallyOrderedLineBreakingOpportunities.Count)
+							{
+								break;
+							}
+							else
+							{
+								lb = logicallyOrderedLineBreakingOpportunities[forcedLineBreakIndex];
+							}
+						}
+					}
+				}
+			}
+
+			if (forcedLineBreak != -1)
+			{
+				var glyphsToLineBreak = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..forcedLineBreak], bidiRun.rtl, bidiRun.fontDetails.Font);
 				var runToLinebreakWidth = RunWidth(glyphsToLineBreak, bidiRun.inline.FontDetails);
 
 				if (currentLine.Count != 0 && !(runToLinebreakWidth <= remainingLineWidth))
@@ -362,17 +394,15 @@ internal readonly struct UnicodeText : IParsedText
 					MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
 				}
 
-				currentLine.Add(bidiRun with { endInInline = nextLineBreakingOpportunity.indexInInline });
-				if (bidiRun.endInInline != nextLineBreakingOpportunity.indexInInline)
+				currentLine.Add(bidiRun with { endInInline = forcedLineBreak });
+				if (bidiRun.endInInline != forcedLineBreak)
 				{
-					stack.Push(bidiRun with { startInInline = nextLineBreakingOpportunity.indexInInline });
+					stack.Push(bidiRun with { startInInline = forcedLineBreak });
 				}
 				MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
 				continue;
 			}
 
-			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
-			var runWidth = RunWidth(glyphs, bidiRun.inline.FontDetails);
 			if (runWidth <= remainingLineWidth)
 			{
 				currentLine.Add(bidiRun);
@@ -798,10 +828,19 @@ internal readonly struct UnicodeText : IParsedText
 
 		if (index == _text.Length)
 		{
-			var lastCluster = _textIndexToGlyph[^1];
-			var lastGlyph = lastCluster.layoutedRun.glyphs[lastCluster.glyphInRunIndexEnd - 1];
-			var lastGlyphX = lastGlyph.xPosInRun + lastCluster.layoutedRun.xPosInLine + lastCluster.layoutedRun.line.xAlignmentOffset;
-			return new Rect(lastCluster.layoutedRun.rtl ? lastGlyphX : lastGlyphX + GlyphWidth(lastGlyph.position, lastCluster.layoutedRun.fontDetails) - caretThickness, lastCluster.layoutedRun.line.y, caretThickness, lastCluster.layoutedRun.line.lineHeight);
+			var lastLine = _lines[^1];
+			if (lastLine.runs.Count == 0)
+			{
+				// text ending in newline
+				return new Rect(_rtl ? lastLine.xAlignmentOffset - caretThickness : lastLine.xAlignmentOffset, lastLine.y, caretThickness, lastLine.lineHeight);
+			}
+			else
+			{
+				var lastCluster = _textIndexToGlyph[^1];
+				var lastGlyph = lastCluster.layoutedRun.glyphs[lastCluster.glyphInRunIndexEnd - 1];
+				var lastGlyphX = lastGlyph.xPosInRun + lastCluster.layoutedRun.xPosInLine + lastCluster.layoutedRun.line.xAlignmentOffset;
+				return new Rect(lastCluster.layoutedRun.rtl ? lastGlyphX : lastGlyphX + GlyphWidth(lastGlyph.position, lastCluster.layoutedRun.fontDetails) - caretThickness, lastCluster.layoutedRun.line.y, caretThickness, lastCluster.layoutedRun.line.lineHeight);
+			}
 		}
 		else
 		{
