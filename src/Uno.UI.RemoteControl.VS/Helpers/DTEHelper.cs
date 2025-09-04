@@ -13,6 +13,8 @@ using VSLangProj110;
 
 namespace Uno.UI.RemoteControl.VS.Helpers;
 
+// Please keep this file in sync with the Uno.UI.RC.VS DTEHelper file
+
 [Flags]
 internal enum ProjectAttribute
 {
@@ -78,16 +80,13 @@ internal static class DTEHelper
 		return projects;
 	}
 
-	public static async ValueTask<IEnumerable<string?>> GetProjectUserSettingsAsync(this DTE dte, AsyncPackage asyncPackage, string name, ProjectAttribute? attributes = null)
+	public static async Task<IEnumerable<string?>> GetProjectUserSettingsAsync(this DTE dte, AsyncPackage asyncPackage, string name, ProjectAttribute? attributes = null)
 	{
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-		if (await asyncPackage.GetServiceAsync(typeof(SVsSolution)) is not IVsSolution solution)
-		{
-			return [];
-		}
-
-		return (await dte.GetProjectsAsync(attributes))
+		return await asyncPackage.GetServiceAsync(typeof(SVsSolution)) is not IVsSolution solution
+			? []
+			: (await dte.GetProjectsAsync(attributes))
 			.Select(GetHierarchy)
 			.OfType<IVsBuildPropertyStorage>()
 			.Select(propertyStorage => GetUserProperty(propertyStorage, name))
@@ -96,7 +95,7 @@ internal static class DTEHelper
 #pragma warning disable VSTHRD010 // False positive rule: we are on the main thread here (including the materialization of the list using the ToArray())
 		IVsHierarchy GetHierarchy(Project project)
 		{
-			solution.GetProjectOfUniqueName(project.UniqueName, out var hierarchy);
+			_ = solution.GetProjectOfUniqueName(project.UniqueName, out var hierarchy);
 			return hierarchy;
 		}
 #pragma warning restore VSTHRD010
@@ -116,7 +115,7 @@ internal static class DTEHelper
 		foreach (var project in await dte.GetProjectsAsync(attributes))
 		{
 			// Convert DTE project to IVsHierarchy
-			solution.GetProjectOfUniqueName(project.UniqueName, out var hierarchy);
+			_ = solution.GetProjectOfUniqueName(project.UniqueName, out var hierarchy);
 			if (hierarchy is IVsBuildPropertyStorage propertyStorage)
 			{
 				propertyStorage.SetUserProperty(name, value);
@@ -131,7 +130,7 @@ internal static class DTEHelper
 	{
 		ThreadHelper.ThrowIfNotOnUIThread();
 
-		propertyStorage.SetPropertyValue(
+		_ = propertyStorage.SetPropertyValue(
 			propertyName,        // Property name
 			null,                 // Configuration name, null applies to all configurations
 			(uint)_PersistStorageType.PST_USER_FILE,  // Specifies that this is a user-specific property
@@ -143,7 +142,7 @@ internal static class DTEHelper
 	{
 		ThreadHelper.ThrowIfNotOnUIThread();
 
-		propertyStorage.GetPropertyValue(
+		_ = propertyStorage.GetPropertyValue(
 			propertyName,        // Property name
 			null,                 // Configuration name, null applies to all configurations
 			(uint)_PersistStorageType.PST_USER_FILE,  // Specifies that this is a user-specific property
