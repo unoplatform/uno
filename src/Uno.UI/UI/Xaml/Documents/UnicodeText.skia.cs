@@ -26,7 +26,6 @@ namespace Microsoft.UI.Xaml.Documents;
 // The algorithm only reorders text within a paragraph; characters in one paragraph have no effect on characters in a different paragraph. Paragraphs are divided by the Paragraph Separator or appropriate Newline Function (see Section 4.3, Directionality and Unicode Technical Report #13, “Unicode Newline Guidelines,” found on the CD-ROM or the up-to-date version on the Unicode web site on the handling of CR, LF, and CRLF). Paragraphs may also be determined by higher-level protocols: for example, the text in two different cells of a table will be in different paragraphs.
 
 // TODO: character spacing
-// TODO: MaxLines
 // TODO: what happens if text has no drawable glyphs but is not empty? Can this happen? The HarfBuzz docs imply that it can't
 internal readonly struct UnicodeText : IParsedText
 {
@@ -115,6 +114,7 @@ internal readonly struct UnicodeText : IParsedText
 		_size = availableSize;
 		_defaultFontDetails = defaultFontDetails;
 
+		string text;
 		if (textAlignment is null)
 		{
 			// TODO: can we make this cleaner instead of implicitly assuming that this is a code path coming from TextBox?
@@ -137,7 +137,7 @@ internal readonly struct UnicodeText : IParsedText
 			var copy = new ReadonlyInlineCopy(inline, 0, flowDirection, true);
 			var length = copy.Text.Length;
 			_inlines = length == 0 ? [] : [copy];
-			_text = copy.Text;
+			text = copy.Text;
 		}
 		else
 		{
@@ -155,7 +155,7 @@ internal readonly struct UnicodeText : IParsedText
 				lastEnd = copy.EndIndex;
 				builder.Append(copy.Text);
 			}
-			_text = builder.ToString();
+			text = builder.ToString();
 		}
 
 		_rtl = flowDirection == FlowDirection.RightToLeft;
@@ -168,16 +168,20 @@ internal readonly struct UnicodeText : IParsedText
 			_inlines = [];
 			_wordBoundaries = new();
 			_textAlignment = textAlignment.Value;
+			_text = "";
 			return;
 		}
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth);
-		_lines = LayoutLines(unlayoutedLines, textAlignment.Value, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
+		var lines = LayoutLines(unlayoutedLines, textAlignment.Value, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
+
+		_lines = maxLines == 0 || maxLines >= lines.Count ? lines : lines[..maxLines];
+		_text = text = text[.._lines[^1].endInText];
+
 		_textIndexToGlyph = new Cluster[_text.Length];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
-		var text = _text;
 		_wordBoundaries = unlayoutedLines.SelectMany(l => GetWordBreakingOpportunities(text[l.startInText..l.endInText], l.startInText)).ToList();
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
