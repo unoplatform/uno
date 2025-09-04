@@ -28,7 +28,6 @@ namespace Microsoft.UI.Xaml.Documents;
 // TODO: character spacing
 // TODO: MaxLines
 // TODO: what happens if text has no drawable glyphs but is not empty? Can this happen? The HarfBuzz docs imply that it can't
-// TODO: keyboard left/right when rtl
 internal readonly struct UnicodeText : IParsedText
 {
 	// A readonly snapshot of an Inline that is referenced by individual text runs after splitting. It's a class
@@ -98,6 +97,8 @@ internal readonly struct UnicodeText : IParsedText
 	private readonly List<int> _wordBoundaries;
 	private readonly FontDetails _defaultFontDetails;
 
+	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
+
 	internal UnicodeText(
 		Size availableSize,
 		Inline[] inlines, // only leaf nodes
@@ -157,6 +158,8 @@ internal readonly struct UnicodeText : IParsedText
 			_text = builder.ToString();
 		}
 
+		_rtl = flowDirection == FlowDirection.RightToLeft;
+
 		if (_inlines.Count == 0)
 		{
 			_lines = new();
@@ -165,11 +168,8 @@ internal readonly struct UnicodeText : IParsedText
 			_inlines = [];
 			_wordBoundaries = new();
 			_textAlignment = textAlignment.Value;
-			_rtl = flowDirection == FlowDirection.RightToLeft;
 			return;
 		}
-
-		_rtl = flowDirection == FlowDirection.RightToLeft;
 
 		var lineWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var unlayoutedLines = SplitTextIntoLines(_rtl, _inlines, lineWidth);
