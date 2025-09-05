@@ -150,6 +150,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal virtual View? LoadContent(FrameworkElement templatedParent)
+			=> ((IFrameworkTemplateInternal)this).LoadContent(templatedParent);
+
 		public override bool Equals(object? obj)
 		{
 			var other = obj as FrameworkTemplate;
