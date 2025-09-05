@@ -465,7 +465,7 @@ namespace SamplesApp
 				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
 #endif
 
-#if !DEBUG
+#if !DEBUG && !NATIVE_AOT_EXTRA_LOGGING
 				// Exclude logs below this level
 				builder.SetMinimumLevel(LogLevel.Information);
 #else
@@ -490,6 +490,46 @@ namespace SamplesApp
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
+
+#if NATIVE_AOT_EXTRA_LOGGING
+				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Trace);
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
+
+				// Generic Xaml events
+				builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Media", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Shapes", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.FrameworkElement", LogLevel.Trace );
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.TextBlock", LogLevel.Debug );
+
+				// Layouter specific messages
+				builder.AddFilter("Microsoft.UI.Xaml.Controls", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug );
+				builder.AddFilter("Windows.Storage", LogLevel.Debug );
+
+				// Binding related messages
+				builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
+
+				// Binder memory references tracking
+				builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
+
+				// builder.AddFilter(ListView-related messages
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.ListViewBase", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.ListView", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.GridView", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug );
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug ); //iOS
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug ); //iOS
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug ); //Android
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug ); //Android
+				builder.AddFilter("Microsoft.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug ); //WASM
+#endif  // NATIVE_AOT_EXTRA_LOGGING
 
 				// builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Trace);
 
