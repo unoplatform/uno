@@ -143,6 +143,9 @@ namespace Uno.UI.RemoteControl.Host
 				host.Services.GetService<IIdeChannel>();
 				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
+				// Display DevServer version banner
+				DisplayVersionBanner();
+
 				// STEP 3: Use global telemetry for server-wide events
 				// Track devserver startup using global telemetry service
 				var startupProperties = new Dictionary<string, string>
