@@ -516,6 +516,8 @@ namespace Microsoft.UI.Xaml
 
 		internal void RefreshStateTriggers(bool force = false)
 		{
+  			// If no visual state in this group has triggers, we should not try to overwrite
+	 		// the currently set state with "null" - skip the refresh.
 			if (!HasStateTriggers())
 			{
 				return;
