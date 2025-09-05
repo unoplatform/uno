@@ -4087,7 +4087,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 't'));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(new string(TextBoxView.PasswordChar, 4), SUT.TextBoxView.DisplayBlock.Text);
+			Assert.AreEqual(new string(PasswordBox.DefaultPasswordChar[0], 4), SUT.TextBoxView.DisplayBlock.Text);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
