@@ -21,7 +21,9 @@
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 
 	</PropertyGroup>
-
+	
+	<Import Project="../targetframework-override-noplatform.props" />
+	
 	<ItemGroup Label="GlobalUsings">
 		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
 		<Using Include="FluentAssertions" />

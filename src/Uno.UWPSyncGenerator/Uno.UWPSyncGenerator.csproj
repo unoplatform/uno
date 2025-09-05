@@ -11,7 +11,9 @@
 		<SyncGeneratorCodeAnalysisVersion>4.8.0</SyncGeneratorCodeAnalysisVersion>
 		<NoWarn>$(NoWarn);RS1024</NoWarn> <!-- RS1024: Use SymbolEqualityComparer -->
 	</PropertyGroup>
-
+	
+	<Import Project="../targetframework-override-noplatform.props" />
+	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Build" Version="17.5.0" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.27" ExcludeAssets="runtime" />
