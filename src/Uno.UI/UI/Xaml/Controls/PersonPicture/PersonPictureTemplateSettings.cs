@@ -2,10 +2,13 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference PersonPictureTemplateSettings.properties.cpp, tag winui3/release/1.4.2
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
+
+[Microsoft.UI.Xaml.Data.Bindable]
 
 public partial class PersonPictureTemplateSettings : DependencyObject
 {
@@ -24,6 +27,7 @@ public partial class PersonPictureTemplateSettings : DependencyObject
 		internal set => SetValue(ActualInitialsProperty, value);
 	}
 
-	public static DependencyProperty ActualInitialsProperty { get; } =
+	[DynamicDependency(nameof(ActualInitials))]
+	public static readonly DependencyProperty ActualInitialsProperty =
 		DependencyProperty.Register(nameof(ActualInitials), typeof(string), typeof(PersonPictureTemplateSettings), new FrameworkPropertyMetadata(""));
 }
