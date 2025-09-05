@@ -8,9 +8,9 @@ The Uno Platform is a cross-platform .NET UI framework that allows you to build 
 
 ### Prerequisites and Environment Setup
 
-Install the latest stable .NET SDK (currently .NET 9.0 for this repository):
+Install the latest stable .NET SDK (currently .NET 10.0 for this repository, with .NET 9.0 also supported):
 ```bash
-wget https://dot.net/v1/dotnet-install.sh && chmod +x dotnet-install.sh && ./dotnet-install.sh --channel 9.0
+wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh && chmod +x /tmp/dotnet-install.sh && /tmp/dotnet-install.sh --channel 10.0
 export PATH="$HOME/.dotnet:$PATH"
 ```
 - Always use the latest stable supported .NET version for development
@@ -19,9 +19,9 @@ export PATH="$HOME/.dotnet:$PATH"
 
 Install required workloads for WebAssembly development:
 ```bash
-dotnet workload install wasm-tools wasm-tools-net9
+dotnet workload install wasm-tools wasm-tools-net9 wasm-tools-net10
 ```
-- Update workload versions (e.g., `wasm-tools-net10`) as new .NET versions are released
+- Update workload versions (e.g., `wasm-tools-net11`) as new .NET versions are released
 - Takes 2.5 minutes. NEVER CANCEL. Set timeout to 10+ minutes.
 
 For other platforms, install additional workloads as needed:
@@ -44,10 +44,14 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 <Project>
   <PropertyGroup>
     <!-- Choose one target framework (update version number for latest stable .NET): -->
-    <UnoTargetFrameworkOverride>net9.0</UnoTargetFrameworkOverride>              <!-- WebAssembly/Skia -->
-    <!-- <UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>  Windows -->
-    <!-- <UnoTargetFrameworkOverride>net9.0-android</UnoTargetFrameworkOverride>  Android -->
-    <!-- <UnoTargetFrameworkOverride>net9.0-ios</UnoTargetFrameworkOverride>      iOS -->
+    <UnoTargetFrameworkOverride>net10.0</UnoTargetFrameworkOverride>              <!-- WebAssembly/Skia (current) -->
+    <!-- <UnoTargetFrameworkOverride>net9.0</UnoTargetFrameworkOverride>           WebAssembly/Skia (previous) -->
+    <!-- <UnoTargetFrameworkOverride>net10.0-windows10.0.19041.0</UnoTargetFrameworkOverride>  Windows (current) -->
+    <!-- <UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>   Windows (previous) -->
+    <!-- <UnoTargetFrameworkOverride>net10.0-android</UnoTargetFrameworkOverride>  Android (current) -->
+    <!-- <UnoTargetFrameworkOverride>net9.0-android</UnoTargetFrameworkOverride>   Android (previous) -->
+    <!-- <UnoTargetFrameworkOverride>net10.0-ios</UnoTargetFrameworkOverride>      iOS (current) -->
+    <!-- <UnoTargetFrameworkOverride>net9.0-ios</UnoTargetFrameworkOverride>       iOS (previous) -->
     
     <!-- Performance optimizations for development: -->
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
@@ -81,7 +85,7 @@ dotnet restore Uno.UI-Wasm-only.slnf
 dotnet build Uno.UI-Wasm-only.slnf --no-restore -p:Configuration=Debug
 ```
 - Takes 3-5 minutes for WebAssembly. NEVER CANCEL. Set timeout to 15+ minutes.
-- **Note**: The `Uno.UI-Windows-only.slnf` solution filter and any projects targeting `net9.0-windows10.0.19041.0` (or other Windows-specific target frameworks) will fail to build on non-Windows environments due to Windows-specific dependencies. On macOS, Linux, or CI environments, use the `Uno.UI-Wasm-only.slnf`, `Uno.UI-Skia-only.slnf`, or `Uno.UI-netcore-mobile-only.slnf` solution filters for cross-platform development. If you need to build or test Windows-specific projects, use a Windows machine or a Windows VM. For unit tests, ensure you are using a solution filter and target framework compatible with your OS.
+- **Note**: The `Uno.UI-Windows-only.slnf` solution filter and any projects targeting `net10.0-windows10.0.19041.0` or `net9.0-windows10.0.19041.0` (or other Windows-specific target frameworks) will fail to build on non-Windows environments due to Windows-specific dependencies. On macOS, Linux, or CI environments, use the `Uno.UI-Wasm-only.slnf`, `Uno.UI-Skia-only.slnf`, or `Uno.UI-netcore-mobile-only.slnf` solution filters for cross-platform development. If you need to build or test Windows-specific projects, use a Windows machine or a Windows VM. For unit tests, ensure you are using a solution filter and target framework compatible with your OS.
 
 **Run unit tests**:
 ```bash
@@ -111,6 +115,49 @@ dotnet clean && rm -rf */bin */obj **/bin **/obj
 3. Run: `dotnet run` for Skia WebAssembly
 
 **Online SamplesApp**: https://aka.platform.uno/wasm-samples-app
+
+### XAML Sample Guidelines
+
+When adding XAML samples to the SamplesApp, follow these theming guidelines to ensure samples work well in both light and dark themes:
+
+**Use ThemeResource for UI Elements:**
+- **Always use `{ThemeResource}` colors** for backgrounds and foregrounds in UI elements
+- This ensures proper theme adaptation between light and dark modes
+- Examples:
+  ```xml
+  <!-- Good: Uses theme-aware colors -->
+  <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+      <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" 
+                 Text="Sample content" />
+  </Border>
+  
+  <!-- Avoid: Hard-coded colors that don't adapt to themes -->
+  <Border Background="White">
+      <TextBlock Foreground="Black" Text="Sample content" />
+  </Border>
+  ```
+
+**Exception for Test/Demo UI:**
+- **Test UI and demonstrations can use explicit colors** when showing specific functionality
+- Use clear, high-contrast colors that are legible in both themes
+- Examples where explicit colors are acceptable:
+  ```xml
+  <!-- Acceptable: Shape samples demonstrating colors -->
+  <Rectangle Fill="Red" Width="100" Height="100" />
+  <Rectangle Fill="Blue" Width="100" Height="100" />
+  
+  <!-- Acceptable: Color picker demonstrations -->
+  <Button Background="Orange" Content="Orange Button Demo" />
+  ```
+
+**Common ThemeResource Colors:**
+- `SystemControlBackgroundChromeMediumBrush` - Standard background
+- `SystemControlForegroundBaseHighBrush` - Primary text
+- `SystemControlBackgroundAltHighBrush` - Alternate background
+- `SystemAccentColorBrush` - Accent color
+- `SystemControlBackgroundBaseLowBrush` - Subtle background
+
+This ensures a consistent, professional appearance across all theme modes while maintaining the flexibility to demonstrate specific color-related functionality when needed.
 
 ## Validation
 
@@ -183,16 +230,22 @@ Uno.UI.sln                       - Full solution (heavy, avoid)
 
 ### Available Platform Targets
 
-*Note: Replace `net9.0` with the latest stable .NET version as new versions are released.*
+*Note: The repository supports both .NET 10.0 (current) and .NET 9.0 (previous). Use .NET 10.0 for new development.*
 
 | Target Framework | Platform | Solution Filter |
 |------------------|----------|-----------------|
-| `net9.0` | WebAssembly | `Uno.UI-Wasm-only.slnf` |
-| `net9.0` | Skia (Linux/macOS) | `Uno.UI-Skia-only.slnf` |
-| `net9.0-windows10.0.19041.0` | Windows | `Uno.UI-Windows-only.slnf` |
-| `net9.0-android` | Android | `Uno.UI-netcore-mobile-only.slnf` |
-| `net9.0-ios` | iOS | `Uno.UI-netcore-mobile-only.slnf` |
-| `net9.0-maccatalyst` | macOS Catalyst | `Uno.UI-netcore-mobile-only.slnf` |
+| `net10.0` | WebAssembly (current) | `Uno.UI-Wasm-only.slnf` |
+| `net9.0` | WebAssembly (previous) | `Uno.UI-Wasm-only.slnf` |
+| `net10.0` | Skia (Linux/macOS, current) | `Uno.UI-Skia-only.slnf` |
+| `net9.0` | Skia (Linux/macOS, previous) | `Uno.UI-Skia-only.slnf` |
+| `net10.0-windows10.0.19041.0` | Windows (current) | `Uno.UI-Windows-only.slnf` |
+| `net9.0-windows10.0.19041.0` | Windows (previous) | `Uno.UI-Windows-only.slnf` |
+| `net10.0-android` | Android (current) | `Uno.UI-netcore-mobile-only.slnf` |
+| `net9.0-android` | Android (previous) | `Uno.UI-netcore-mobile-only.slnf` |
+| `net10.0-ios` | iOS (current) | `Uno.UI-netcore-mobile-only.slnf` |
+| `net9.0-ios` | iOS (previous) | `Uno.UI-netcore-mobile-only.slnf` |
+| `net10.0-maccatalyst` | macOS Catalyst (current) | `Uno.UI-netcore-mobile-only.slnf` |
+| `net9.0-maccatalyst` | macOS Catalyst (previous) | `Uno.UI-netcore-mobile-only.slnf` |
 
 ### Common Build Issues
 
@@ -286,7 +339,7 @@ git commit -m "feat: Add support for custom border radius"
 git commit -m "feat(ios): Implement native picker control"
 
 # Documentation
-git commit -m "docs: Update build instructions for .NET 9.0"
+git commit -m "docs: Update build instructions for .NET 10.0"
 
 # Breaking changes (note the !)
 git commit -m "feat!: Remove deprecated WinUI 2.x compatibility layer"
