@@ -116,6 +116,49 @@ dotnet clean && rm -rf */bin */obj **/bin **/obj
 
 **Online SamplesApp**: https://aka.platform.uno/wasm-samples-app
 
+### XAML Sample Guidelines
+
+When adding XAML samples to the SamplesApp, follow these theming guidelines to ensure samples work well in both light and dark themes:
+
+**Use ThemeResource for UI Elements:**
+- **Always use `{ThemeResource}` colors** for backgrounds and foregrounds in UI elements
+- This ensures proper theme adaptation between light and dark modes
+- Examples:
+  ```xml
+  <!-- Good: Uses theme-aware colors -->
+  <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+      <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" 
+                 Text="Sample content" />
+  </Border>
+  
+  <!-- Avoid: Hard-coded colors that don't adapt to themes -->
+  <Border Background="White">
+      <TextBlock Foreground="Black" Text="Sample content" />
+  </Border>
+  ```
+
+**Exception for Test/Demo UI:**
+- **Test UI and demonstrations can use explicit colors** when showing specific functionality
+- Use clear, high-contrast colors that are legible in both themes
+- Examples where explicit colors are acceptable:
+  ```xml
+  <!-- Acceptable: Shape samples demonstrating colors -->
+  <Rectangle Fill="Red" Width="100" Height="100" />
+  <Rectangle Fill="Blue" Width="100" Height="100" />
+  
+  <!-- Acceptable: Color picker demonstrations -->
+  <Button Background="Orange" Content="Orange Button Demo" />
+  ```
+
+**Common ThemeResource Colors:**
+- `SystemControlBackgroundChromeMediumBrush` - Standard background
+- `SystemControlForegroundBaseHighBrush` - Primary text
+- `SystemControlBackgroundAltHighBrush` - Alternate background
+- `SystemAccentColorBrush` - Accent color
+- `SystemControlBackgroundBaseLowBrush` - Subtle background
+
+This ensures a consistent, professional appearance across all theme modes while maintaining the flexibility to demonstrate specific color-related functionality when needed.
+
 ## Validation
 
 **ALWAYS run these validation steps after making changes:**
