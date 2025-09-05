@@ -133,7 +133,7 @@ public class Given_PasswordBox
 		var passwordBox = new PasswordBox();
 
 		// Test default value
-		Assert.AreEqual("●", passwordBox.PasswordChar);
+		Assert.AreEqual(PasswordBox.DefaultPasswordChar, passwordBox.PasswordChar);
 
 		// Test setting custom value
 		passwordBox.PasswordChar = "*";
