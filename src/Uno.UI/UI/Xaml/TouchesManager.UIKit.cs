@@ -56,8 +56,8 @@ namespace Microsoft.UI.Xaml
 
 				// Redirections to nested native scrollable contents
 				case ListViewBase listView:
-					manager = listView.NativePanel.TouchesManager; // We only propagates the touches manager of the nested native ListView/UICollectionView
-					return true;
+					manager = listView.NativePanel?.TouchesManager; // We only propagates the touches manager of the nested native ListView/UICollectionView
+					return manager is not null;
 #if !__TVOS__
 #if !__MACCATALYST__
 				case UIWebView uiWebView:
