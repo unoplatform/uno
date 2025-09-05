@@ -35,16 +35,52 @@ namespace Uno.UI.Tests.BinderTests
 
 			SUT.SetBinding(MyControl.MyPropertyProperty, binding);
 
-			// Forward conversion should work
-			Assert.AreEqual("Hello", SUT.MyProperty);
+			// Test forward direction: source enum -> string target
+			Assert.AreEqual("Hello", SUT.MyProperty, "Forward conversion should work");
 
-			// Track what targetType the converter receives in ConvertBack
+			// Test backward direction: string target -> source enum with proper targetType
 			SUT.MyProperty = "World";
 
-			// The issue: targetType should be typeof(TestEnum) but x:Bind currently passes null
+			// The fix: targetType should be typeof(TestEnum) but x:Bind previously passed null
 			Assert.AreEqual(typeof(TestEnum), myTestConverter.LastConvertBackTargetType,
-				"ConvertBack should receive the enum type as targetType, but x:Bind currently passes null");
-			Assert.AreEqual(TestEnum.World, enumSource.Value);
+				"ConvertBack should receive the enum type as targetType, but x:Bind previously passed null");
+			Assert.AreEqual(TestEnum.World, enumSource.Value, "Backward conversion should work");
+		}
+
+		[TestMethod]
+		public void When_XBind_Without_SourceType_Falls_Back_To_BindingPath()
+		{
+			var SUT = new MyControl();
+			var myTestConverter = new TestEnumStringConverter();
+			var enumSource = new EnumSource() { Value = TestEnum.Hello };
+
+			// Test the old behavior (without sourceType) - should fall back to binding path type
+			var binding = new Binding()
+			{
+				Mode = BindingMode.TwoWay,
+				Converter = myTestConverter
+			};
+
+			// This simulates old x:Bind code generation without source type
+			BindingHelper.SetBindingXBindProvider(
+				binding,
+				enumSource, // compiled source
+				ctx => (true, enumSource.Value), // getter
+				(ctx, value) => enumSource.Value = (TestEnum)Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(TestEnum), value), // setter
+				null // property paths - no sourceType provided
+			);
+
+			SUT.SetBinding(MyControl.MyPropertyProperty, binding);
+
+			// Forward conversion should still work
+			Assert.AreEqual("Hello", SUT.MyProperty);
+
+			// Backward conversion - targetType should fall back to binding path type (which might be null for x:Bind)
+			SUT.MyProperty = "World";
+
+			// Without sourceType, it falls back to _bindingPath.ValueType which might be null for x:Bind
+			// This demonstrates the original issue
+			Assert.AreEqual(TestEnum.World, enumSource.Value, "Should still work due to fallback in our test converter");
 		}
 
 		public class EnumSource
