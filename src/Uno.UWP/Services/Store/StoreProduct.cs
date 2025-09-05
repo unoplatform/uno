@@ -21,14 +21,25 @@ public sealed partial class StoreProduct
 	/// </remarks>
 	public string StoreId { get; internal set; }
 
-	/// <summary>
-	/// Gets the URI to the Store listing for the product.
-	/// </summary>
-	/// <remarks>
-	/// For example (Twitter app): 
-	/// Windows: https://www.microsoft.com/store/apps/9wzdncrfj140
-	/// iOS: https://itunes.apple.com/app/id333903271
-	/// Android: https://play.google.com/store/apps/details?id=com.twitter.android
-	/// </remarks>
-	public Uri LinkUri { get; internal set; }
+		/// <summary>
+		/// Gets the URI to the Store listing for the product.
+		/// </summary>
+		/// <remarks>
+		/// For example (Twitter app): 
+		/// Windows: https://www.microsoft.com/store/apps/9wzdncrfj140
+		/// iOS: https://itunes.apple.com/app/id333903271
+		/// Android: https://play.google.com/store/apps/details?id=com.twitter.android
+		/// </remarks>
+		public Uri LinkUri { get; internal set; }
+
+		public string Language { get; internal set; }
+
+		public string Description { get; internal set; }
+
+		public string Title { get; internal set; }
+
+		public string ProductKind { get; internal set; }
+
+		public StorePrice Price { get; internal set; }
+	}
 }
