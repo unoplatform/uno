@@ -243,7 +243,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Fallback to the platform-specific default
-			return PasswordBox.DefaultPasswordChar;
+			return PasswordBox.DefaultPasswordChar[0];
 		}
 
 		internal void UpdateProperties() => _overlayTextBoxViewExtension?.UpdateProperties();
