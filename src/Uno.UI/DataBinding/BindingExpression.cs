@@ -213,12 +213,20 @@ namespace Microsoft.UI.Xaml.Data
 					value = ConvertBack();
 
 					[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
-					object ConvertBack() => ParentBinding.Converter.ConvertBack(
-						value,
-						_bindingPath.ValueType,
-						ParentBinding.ConverterParameter,
-						GetCurrentCulture()
-					);
+					object ConvertBack()
+					{
+						// For x:Bind, use the source type if available, otherwise fall back to binding path type
+						var targetType = ParentBinding.IsXBind && ParentBinding.XBindSourceType != null
+							? ParentBinding.XBindSourceType
+							: _bindingPath.ValueType;
+
+						return ParentBinding.Converter.ConvertBack(
+							value,
+							targetType,
+							ParentBinding.ConverterParameter,
+							GetCurrentCulture()
+						);
+					}
 				}
 
 				if (ParentBinding.XBindBack != null)
