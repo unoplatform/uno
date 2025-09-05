@@ -16,32 +16,23 @@ using Windows.Graphics.Display;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
+using Uno.UI.Hosting;
 using Uno.UI.Xaml.Core;
-
-
-#if __IOS__
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
-#else
-using SkiaSharp.Views.tvOS;
-using SkiaCanvas = SkiaSharp.Views.tvOS.SKCanvasView;
-using SkiaEventArgs = SkiaSharp.Views.tvOS.SKPaintSurfaceEventArgs;
-#endif
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
-#if __TVOS__
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-#endif
-
 	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _topViewLayer;
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
-	private SKPicture? _picture;
+
+	private int _paintId;
+	public int PaintId => Volatile.Read(ref _paintId);
 
 	public RootViewController()
 	{
@@ -79,17 +70,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_textInputLayer = new UIView();
 		view.AddSubview(_textInputLayer);
 
-#if !__TVOS__
-		_skCanvasView = new SkiaCanvas(OnFrameDrawn);
-		_skCanvasView.SetOwner(this);
-#else
 		_skCanvasView = new SkiaCanvas();
-#endif
+		_skCanvasView.SetOwner(this);
 		_skCanvasView.Frame = view.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
-#if __TVOS__
-		_skCanvasView.PaintSurface += OnPaintSurface;
-#endif
 		view.AddSubview(_skCanvasView);
 
 		_topViewLayer = new TopViewLayer();
@@ -116,8 +100,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			.ObserveWillResignActive(DismissPopups);
 	}
 
-	internal SKPicture? Picture => _picture;
-
 	private void DismissPopups(object? sender, object? args)
 	{
 		if (_xamlRoot is not null)
@@ -132,51 +114,46 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
-#if __TVOS__
-	private void OnPaintSurface(object? sender, SkiaEventArgs e)
+	internal void OnRenderFrameRequested(SKCanvas canvas)
 	{
-		OnPaintSurfaceInner(e.Surface);
-	}
+		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(canvas, _ => canvas);
 
-	private void OnPaintSurfaceInner(SKSurface surface)
-	{
-		SkiaRenderHelper.RenderPicture(
-			surface,
-			_picture,
-			SKColors.Transparent,
-			_fpsHelper);
-	}
-#endif
-
-#if !__TVOS__
-	private void OnFrameDrawn()
-	{
-		// On each frame, while we're using continuous rendering,
-		// we need to dispatch a processing of events on the DispatcherQueue
-		// Then force a render of the composition tree, assuming that the tree
-		// has changed. We explicitly hooking into the rendering loop to keep
-		// the pace with the screen refresh rate.
-		if (NativeDispatcher.Main.IsRendering)
+		if (clipPath is not null)
 		{
-			// Enqueue on the dispatcher to process current events, then render
-			// the current composition tree.
-			NativeDispatcher.Main.DispatchRendering();
+			UpdateNativeClipping(clipPath);
 		}
 	}
-#endif
 
-	private void UpdateNativeClipping(SKPath? path)
+	private void UpdateNativeClipping(SKPath path)
 	{
-		if (path is not null && !path.IsEmpty)
+		string? svgPath = null;
+		if (!path.IsEmpty)
 		{
-			var svgPath = path.ToSvgPathData();
-			if (svgPath != _lastSvgClipPath)
+			svgPath = path.ToSvgPathData();
+		}
+
+		if (svgPath != _lastSvgClipPath)
+		{
+			var oldPath = _lastSvgClipPath;
+			_lastSvgClipPath = svgPath;
+
+			NativeDispatcher.Main.Enqueue(() =>
 			{
-				_lastSvgClipPath = svgPath;
-				ClipBySvgPath(svgPath);
-			}
+				if (svgPath is not null)
+				{
+					ClipBySvgPath(svgPath);
+				}
+				else if (_lastSvgClipPath is not null)
+				{
+					ClearNativeClipping();
+				}
+			});
 		}
-		else if (_lastSvgClipPath != null && _nativeOverlayLayer is { } view)
+	}
+
+	private void ClearNativeClipping()
+	{
+		if (_nativeOverlayLayer is { } view)
 		{
 			// If the path is empty, we need to clear the mask of the native overlay layer
 			// to avoid showing the previous clip.
@@ -186,8 +163,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 				mask.Path = null;
 				mask.FillColor = UIColor.Clear.CGColor;
 			}
-
-			_lastSvgClipPath = null;
 		}
 	}
 
@@ -306,21 +281,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			return;
 		}
 
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width),
-			(int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height),
-			RootElement,
-			invertPath: false);
+		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
+		_paintId++;
 
-		Interlocked.Exchange(ref _picture, picture);
-
-		UpdateNativeClipping(path);
-
-#if !__TVOS__
 		_skCanvasView?.QueueRender();
-#else
-		_skCanvasView?.LayoutSubviews();
-#endif
 	}
 
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;

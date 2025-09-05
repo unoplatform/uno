@@ -15,6 +15,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Graphics.Display;
 using Windows.Media.Playback;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -54,6 +55,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 		NativeMethods.PersistBootstrapperLoader();
 
+		CompositionTarget.FrameRenderingOptions = (false, false);
 		_renderer = new BrowserRenderer(this);
 	}
 
@@ -100,7 +102,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		Window.CurrentSafe!.RootElement?.XamlRoot?.InvalidateOverlays();
 	}
 
-	UIElement? IXamlRootHost.RootElement => Window.Current!.RootElement;
+	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe!.RootElement;
 
 	private static partial class NativeMethods
 	{

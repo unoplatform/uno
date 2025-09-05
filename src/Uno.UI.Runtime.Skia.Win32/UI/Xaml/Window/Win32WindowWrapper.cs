@@ -6,8 +6,16 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.JavaScript;
-using System.Threading;
+using Windows.Foundation;
+using Windows.Graphics;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Dwm;
+using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.UI.HiDpi;
+using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
@@ -19,16 +27,6 @@ using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
-using Windows.Foundation;
-using Windows.Graphics;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.Graphics.Dwm;
-using Windows.Win32.Graphics.Gdi;
-using Windows.Win32.UI.HiDpi;
-using Windows.Win32.UI.WindowsAndMessaging;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -55,9 +53,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
 	private bool _isFirstEraseBkgnd = true;
-
-	private SKPicture? _picture;
-	private SKPath? _clipPath;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -542,16 +537,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			return;
 		}
 
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(Window.Bounds.Width),
-			(int)(Window.Bounds.Height),
-			Window.RootElement,
-			invertPath: false);
-
-		Interlocked.Exchange(ref _picture, picture);
-		Interlocked.Exchange(ref _clipPath, path);
-
-		RenderingNegativePathReevaluated?.Invoke(this, path);
+		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
 
 		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }
