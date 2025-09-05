@@ -352,65 +352,6 @@ internal readonly struct UnicodeText : IParsedText
 
 			Debug.Assert(nextLineBreakingOpportunityIndex < logicallyOrderedLineBreakingOpportunities.Count && bidiRun.inline == nextLineBreakingOpportunity.inline && bidiRun.startInInline < nextLineBreakingOpportunity.indexInInline && bidiRun.endInInline >= nextLineBreakingOpportunity.indexInInline);
 
-			var glyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
-			var runWidth = RunWidth(glyphs, bidiRun.inline.FontDetails);
-
-			var forcedLineBreak = -1;
-			{
-				var forcedLineBreakIndex = nextLineBreakingOpportunityIndex;
-				if (runWidth <= remainingLineWidth)
-				{
-					var lb = logicallyOrderedLineBreakingOpportunities[forcedLineBreakIndex];
-					while (bidiRun.inline == nextLineBreakingOpportunity.inline && bidiRun.endInInline >= lb.indexInInline)
-					{
-						if (IsLineBreak(bidiRun.inline.Text, lb.indexInInline))
-						{
-							forcedLineBreak = lb.indexInInline;
-							break;
-						}
-						else
-						{
-							forcedLineBreakIndex++;
-							if (forcedLineBreakIndex == logicallyOrderedLineBreakingOpportunities.Count)
-							{
-								break;
-							}
-							else
-							{
-								lb = logicallyOrderedLineBreakingOpportunities[forcedLineBreakIndex];
-							}
-						}
-					}
-				}
-			}
-
-			if (forcedLineBreak != -1)
-			{
-				var glyphsToLineBreak = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..forcedLineBreak], bidiRun.rtl, bidiRun.fontDetails.Font);
-				var runToLinebreakWidth = RunWidth(glyphsToLineBreak, bidiRun.inline.FontDetails);
-
-				if (currentLine.Count != 0 && !(runToLinebreakWidth <= remainingLineWidth))
-				{
-					MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
-				}
-
-				currentLine.Add(bidiRun with { endInInline = forcedLineBreak });
-				if (bidiRun.endInInline != forcedLineBreak)
-				{
-					stack.Push(bidiRun with { startInInline = forcedLineBreak });
-				}
-				MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
-				continue;
-			}
-
-			if (runWidth <= remainingLineWidth)
-			{
-				currentLine.Add(bidiRun);
-				remainingLineWidth -= runWidth;
-				continue;
-			}
-
-			// Can't fill whole BidiRun on this line, so let's take the longest prefix of it that does
 			var biggestFittingPrefixEnd = -1;
 			float biggestFittingPrefixWidth = -1;
 			{
@@ -427,8 +368,19 @@ internal readonly struct UnicodeText : IParsedText
 							biggestFittingPrefixEnd = testOpportunity.indexInInline;
 							biggestFittingPrefixWidth = testWidth;
 						}
+						if (IsLineBreak(bidiRun.inline.Text, testOpportunity.indexInInline))
+						{
+							break;
+						}
 						testOpportunityIndex++;
-						testOpportunity = logicallyOrderedLineBreakingOpportunities[testOpportunityIndex];
+						if (testOpportunityIndex < logicallyOrderedLineBreakingOpportunities.Count)
+						{
+							testOpportunity = logicallyOrderedLineBreakingOpportunities[testOpportunityIndex];
+						}
+						else
+						{
+							break;
+						}
 					}
 					else
 					{
@@ -446,17 +398,22 @@ internal readonly struct UnicodeText : IParsedText
 
 			if (biggestFittingPrefixEnd != -1)
 			{
+				remainingLineWidth -= biggestFittingPrefixWidth;
 				currentLine.Add(bidiRun with { endInInline = biggestFittingPrefixEnd });
 				if (bidiRun.endInInline != biggestFittingPrefixEnd)
 				{
 					stack.Push(bidiRun with { startInInline = biggestFittingPrefixEnd });
 				}
+				if (remainingLineWidth < 0 || IsLineBreak(bidiRun.inline.Text, biggestFittingPrefixEnd))
+				{
+					MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
+				}
 			}
 			else
 			{
 				stack.Push(bidiRun);
+				MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
 			}
-			MoveToNextLine(lines, ref currentLine, ref remainingLineWidth, lineWidth);
 		}
 
 		lines.Add(currentLine);
