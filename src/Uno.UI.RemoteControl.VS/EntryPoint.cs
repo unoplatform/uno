@@ -52,7 +52,7 @@ public partial class EntryPoint : IDisposable
 	private Action<string>? _warningAction;
 	private Action<string>? _errorAction;
 	private int _msBuildLogLevel;
-	private (System.Diagnostics.Process process, int port, CancellationTokenSource atachedServices)? _devServer;
+	private (System.Diagnostics.Process process, int port, CancellationTokenSource attachedServices)? _devServer;
 	private SemaphoreSlim _devServerGate = new(1);
 	private IServiceProvider? _visualStudioServiceProvider;
 	private bool _closing;
@@ -304,7 +304,7 @@ public partial class EntryPoint : IDisposable
 		_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
 
 		_closing = true;
-		if (_devServer is { process: var devServer, atachedServices: var ct })
+		if (_devServer is { process: var devServer, attachedServices: var ct })
 		{
 			try
 			{
@@ -434,8 +434,8 @@ public partial class EntryPoint : IDisposable
 				return;
 			}
 
-			// Safety: Cancel previous services! (Should have alredy been cancelled by the exit handler);
-			_devServer?.atachedServices.Cancel();
+			// Safety: Cancel previous services! (Should have already been cancelled by the exit handler);
+			_devServer?.attachedServices.Cancel();
 
 			devServerCt = CancellationTokenSource.CreateLinkedTokenSource(_ct.Token);
 			if (_udei is not null)

@@ -104,9 +104,8 @@ public class AddIns
 				_log.Log(LogLevel.Information, $"Didn't find any add-ins for solution '{solutionFile}'.");
 			}
 
-			var noAddInsResult = ImmutableArray<string>.Empty;
-			TrackDiscoveryCompletion(telemetry, startTime, noAddInsResult, "NoAddInsFound");
-			return AddInsDiscoveryResult.Failed("Failed to determine target frameworks");
+			TrackDiscoveryCompletion(telemetry, startTime, ImmutableArray<string>.Empty, "NoAddInsFound");
+			return AddInsDiscoveryResult.Empty();
 		}
 		catch (Exception ex)
 		{
