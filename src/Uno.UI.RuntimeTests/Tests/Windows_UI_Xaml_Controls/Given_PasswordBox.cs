@@ -26,7 +26,6 @@ public class Given_PasswordBox
 		{
 			PasswordChar = "A",
 			Password = testPassword,
-			FontFamily = new FontFamily("Consolas"), // Use monospace font for consistent character spacing
 			FontSize = 16,
 			Width = 100,
 			Height = 32,
@@ -37,7 +36,6 @@ public class Given_PasswordBox
 		var textBox = new TextBox
 		{
 			Text = new string('A', passwordLength),
-			FontFamily = new FontFamily("Consolas"), // Same font as PasswordBox
 			FontSize = 16,
 			Width = 100,
 			Height = 32,
