@@ -182,7 +182,7 @@ internal readonly struct UnicodeText : IParsedText
 		_textIndexToGlyph = new Cluster[_text.Length];
 		CreateSourceTextFromAndToGlyphMapping(_lines, _textIndexToGlyph);
 
-		_wordBoundaries = unlayoutedLines.SelectMany(l => GetWordBreakingOpportunities(text[l.startInText..l.endInText], l.startInText)).ToList();
+		_wordBoundaries = GetWordBreakingOpportunities(text);
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
@@ -497,14 +497,61 @@ internal readonly struct UnicodeText : IParsedText
 		return lineBreakingOpportunities;
 	}
 
-	private static List<int> GetWordBreakingOpportunities(string text, int baseOffset)
+	private static List<int> GetWordBreakingOpportunities(string text)
 	{
-		// TODO: locale?
-		return BreakIterator.GetBoundaries(BreakIterator.UBreakIteratorType.WORD, new Locale("en", "US"), text)
-			.Skip(1)
-			.Select(b => b.Start + baseOffset)
-			.Append(text.Length)
-			.ToList();
+		// libICU's BreakIterator does not return what we want here. It only returns what it considers proper words
+		// like sequences of latin characters, but e.g. a sequence of symbols is ignored.
+		var chunks = new List<int>();
+		{
+			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
+			// \r\n, \r, \n and \t are always their own chunks
+			var length = text.Length;
+			for (var i = 0; i < length;)
+			{
+				var start = i;
+				var c = text[i];
+				if (c is '\r' && i < (length - 1) && text[i + 1] == '\n')
+				{
+					i += 2;
+				}
+				else if (c is '\r' or '\t' or '\n')
+				{
+					i++;
+				}
+				else if (c == ' ')
+				{
+					while (i < length && text[i] == ' ')
+					{
+						i++;
+					}
+				}
+				else if (char.IsLetterOrDigit(text[i]))
+				{
+					while (i < length && char.IsLetterOrDigit(text[i]))
+					{
+						i++;
+					}
+					while (i < length && text[i] == ' ')
+					{
+						i++;
+					}
+				}
+				else
+				{
+					while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
+					{
+						i++;
+					}
+					while (i < length && text[i] == ' ')
+					{
+						i++;
+					}
+				}
+
+				chunks.Add(i);
+			}
+		}
+		return chunks;
 	}
 
 	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, BiDi bidi)
