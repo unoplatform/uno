@@ -10,6 +10,12 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PasswordBox : TextBox
 	{
+		// On Windows, \u25CF is used as password character.
+		// However, this character can't be retrieved on Android (doesn't exist in any system font) and on some browser/OS combinations.
+		// We use \u2022 instead, which is already the one normally used by Android and all the major browsers.
+		// See https://github.com/mozilla/gecko-dev/blob/1d4c27f9f166ce6e967fb0e8c8d6e0795dbbd12e/widget/android/nsLookAndFeel.cpp#L441
+		internal const string DefaultPasswordChar = OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() ? "\u2022" : "\u25CF";
+
 		public event RoutedEventHandler PasswordChanged;
 
 		public const string RevealButtonPartName = "RevealButton";
@@ -133,7 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(string),
 				typeof(PasswordBox),
 				new FrameworkPropertyMetadata(
-					"\u25CF",
+					DefaultPasswordChar,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnPasswordCharChanged(e)));
 
 		private void OnPasswordCharChanged(DependencyPropertyChangedEventArgs e)
