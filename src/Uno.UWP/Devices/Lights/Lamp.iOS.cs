@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.Foundation.Logging;
 using AVFoundation;
 
 namespace Windows.Devices.Lights
@@ -6,6 +7,9 @@ namespace Windows.Devices.Lights
 	public partial class Lamp
 	{
 		private AVCaptureDevice _captureDevice;
+		private AVCaptureSession _captureSession;
+		private AVCaptureDeviceInput _deviceInput;
+		private AVCaptureOutput _dummyOutput;
 		private float _brightness;
 		private bool _isEnabled;
 
@@ -14,6 +18,47 @@ namespace Windows.Devices.Lights
 			_captureDevice = captureDevice;
 			_brightness = GetCurrentBrightness();
 			_isEnabled = _brightness > 0;
+
+			// Create capture session for torch control
+			_captureSession = new AVCaptureSession();
+			_deviceInput = new AVCaptureDeviceInput(captureDevice, out var inputError);
+			if (inputError != null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Failed to create AVCaptureDeviceInput: {inputError}");
+				}
+			}
+			if (inputError != null)
+			{
+				throw new InvalidOperationException("Could not create device input. Error: " + inputError);
+			}
+
+			if (_captureSession.CanAddInput(_deviceInput))
+			{
+				_captureSession.AddInput(_deviceInput);
+			}
+			else
+			{
+				throw new InvalidOperationException("Could not add device input to session");
+			}
+
+			// Add a dummy output to satisfy session requirements
+			_dummyOutput = new AVCaptureVideoDataOutput();
+			if (_captureSession.CanAddOutput(_dummyOutput))
+			{
+				_captureSession.AddOutput(_dummyOutput);
+			}
+			else
+			{
+				throw new InvalidOperationException("Could not add dummy output to session");
+			}
+
+			_captureSession.StartRunning();
+			if (!_captureSession.Running)
+			{
+				throw new InvalidOperationException("Could not start capture session");
+			}
 		}
 
 		public bool IsEnabled
@@ -56,9 +101,16 @@ namespace Windows.Devices.Lights
 				{
 					if (_captureDevice.HasTorch)
 					{
-						_captureDevice.SetTorchModeLevel(
-							_brightness,
-							out var torchErr);
+						var success = _captureDevice.SetTorchModeLevel(_brightness, out var torchError);
+						if (!success || torchError != null)
+						{
+							if (this.Log().IsEnabled(LogLevel.Warning))
+							{
+								this.Log().LogWarning($"Failed to set torch level to {_brightness}: {torchError?.Description ?? "Unknown error"}. Falling back to full brightness.");
+							}
+							// If setting level fails, try to turn torch on at full brightness
+							_captureDevice.TorchMode = AVCaptureTorchMode.On;
+						}
 					}
 					else
 					{
@@ -103,6 +155,16 @@ namespace Windows.Devices.Lights
 
 		public void Dispose()
 		{
+			if (_captureSession?.Running == true)
+			{
+				_captureSession.StopRunning();
+			}
+			_captureSession?.Dispose();
+			_captureSession = null;
+			_deviceInput?.Dispose();
+			_deviceInput = null;
+			_dummyOutput?.Dispose();
+			_dummyOutput = null;
 			_captureDevice?.Dispose();
 			_captureDevice = null;
 		}
