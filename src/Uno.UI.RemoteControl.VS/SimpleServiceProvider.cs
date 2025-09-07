@@ -9,10 +9,18 @@ internal class SimpleServiceProvider : IServiceProvider, IDisposable
 	private ImmutableDictionary<Type, object> _services = ImmutableDictionary<Type, object>.Empty;
 
 	public void Register(Type contract, object instance)
-		=> ImmutableInterlocked.AddOrUpdate(ref _services, contract, instance, (_, __) => instance);
+		=> ImmutableInterlocked.AddOrUpdate(
+			ref _services,
+			contract ?? throw new ArgumentNullException(nameof(contract)),
+			instance ?? throw new ArgumentNullException(nameof(instance)),
+			(_, __) => instance);
 
 	public void Register<T>(T instance)
-		=> ImmutableInterlocked.AddOrUpdate(ref _services, typeof(T), instance ?? throw new ArgumentNullException(nameof(instance)), (_, __) => instance);
+		=> ImmutableInterlocked.AddOrUpdate(
+			ref _services,
+			typeof(T),
+			instance ?? throw new ArgumentNullException(nameof(instance)),
+			(_, __) => instance);
 
 	/// <inheritdoc />
 	public virtual object? GetService(Type serviceType)

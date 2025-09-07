@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,10 +15,16 @@ public static class AddInsExtensions
 	{
 		return builder.ConfigureServices(services =>
 		{
-			var discoveredAddIns = AddIns.Discover(solutionFile, telemetry);
-			var assemblies = AssemblyHelper.Load(discoveredAddIns, telemetry, throwIfLoadFailed: false);
+			var discovery = AddIns.Discover(solutionFile, telemetry);
+			var loadResults = AssemblyHelper.Load(discovery.AddIns, telemetry, throwIfLoadFailed: false);
+
+			var assemblies = loadResults
+				.Where(result => result.Assembly is not null)
+				.Select(result => result.Assembly)
+				.ToImmutableArray();
 
 			services.AddFromAttributes(assemblies);
+			services.AddSingleton(new AddInsStatus(discovery, loadResults));
 		});
 	}
 }

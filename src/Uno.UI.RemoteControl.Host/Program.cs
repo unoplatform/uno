@@ -27,60 +27,7 @@ namespace Uno.UI.RemoteControl.Host
 
 			ITelemetry? telemetry = null;
 
-			// Set up graceful shutdown handling
-			using var cancellationTokenSource = new CancellationTokenSource();
-			var shutdownRequested = false;
-
-			Console.CancelKeyPress += (sender, e) =>
-			{
-				if (!shutdownRequested)
-				{
-					shutdownRequested = true;
-					e.Cancel = true; // Prevent immediate termination
-					Console.WriteLine("Graceful shutdown requested...");
-					cancellationTokenSource.Cancel();
-				}
-			};
-
-			// Monitor stdin for CTRL-C character (ASCII 3) for graceful shutdown
-			_ = Task.Run(async () =>
-			{
-				try
-				{
-					if (!Console.IsInputRedirected)
-						return;
-
-					using var reader = new StreamReader(Console.OpenStandardInput());
-
-					var buffer = new char[1];
-					while (!cancellationTokenSource.Token.IsCancellationRequested)
-					{
-						var read = await reader.ReadAsync(buffer, 0, 1);
-						if (read == 0)
-						{
-							break; // EOF
-						}
-
-						if (buffer[0] != '\x03') // CTRL-C (ASCII 3)
-						{
-							continue;
-						}
-
-						if (!shutdownRequested)
-						{
-							shutdownRequested = true;
-							Console.WriteLine("Graceful shutdown requested via stdin...");
-							await cancellationTokenSource.CancelAsync();
-						}
-
-						break;
-					}
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"Error monitoring stdin: {ex.Message}");
-				}
-			}, cancellationTokenSource.Token);
+			using var ct = ConsoleHelper.CreateCancellationToken();
 
 			try
 			{
@@ -156,11 +103,10 @@ namespace Uno.UI.RemoteControl.Host
 					.UseUrls($"http://*:{httpPort}/")
 					.UseContentRoot(Directory.GetCurrentDirectory())
 					.UseStartup<Startup>()
-					.ConfigureLogging(logging =>
-						logging
-							.ClearProviders()
-							.AddConsole()
-							.SetMinimumLevel(LogLevel.Debug))
+					.ConfigureLogging(logging => logging
+						.ClearProviders()
+						.AddConsole()
+						.SetMinimumLevel(LogLevel.Debug))
 					.ConfigureAppConfiguration((hostingContext, config) =>
 					{
 						config.AddCommandLine(args);
@@ -168,6 +114,7 @@ namespace Uno.UI.RemoteControl.Host
 					.ConfigureServices(services =>
 					{
 						services.AddSingleton<IIdeChannel, IdeChannelServer>();
+						services.AddSingleton<UnoDevEnvironmentService>();
 
 						// Add the global service provider to the DI container
 						services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
@@ -184,6 +131,7 @@ namespace Uno.UI.RemoteControl.Host
 				else
 				{
 					typeof(Program).Log().Log(LogLevel.Warning, "No solution file specified, add-ins will not be loaded which means that you won't be able to use any of the uno-studio features. Usually this indicates that your version of uno's IDE extension is too old.");
+					builder.ConfigureServices(services => services.AddSingleton(AddInsStatus.Empty));
 				}
 
 				var host = builder.Build();
@@ -191,7 +139,9 @@ namespace Uno.UI.RemoteControl.Host
 				// Once the app has started, we use the logger from the host
 				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
 
+				// Force resolution of the IDEChannel to enable connection (Note: We should use a BackgroundService instead)
 				host.Services.GetService<IIdeChannel>();
+				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
 				// Display DevServer version banner
 				DisplayVersionBanner();
@@ -205,19 +155,11 @@ namespace Uno.UI.RemoteControl.Host
 
 				telemetry?.TrackEvent("startup", startupProperties, null);
 
-				_ = ParentProcessObserver.ObserveAsync(
-					parentPID,
-					() =>
-					{
-						shutdownRequested = true;
-						cancellationTokenSource.Cancel();
-					},
-					telemetry,
-					cancellationTokenSource.Token);
+				_ = ParentProcessObserver.ObserveAsync(parentPID, ct.Cancel, telemetry, ct.Token);
 
 				try
 				{
-					await host.RunAsync(cancellationTokenSource.Token);
+					await host.RunAsync(ct.Token);
 				}
 				finally
 				{
@@ -227,7 +169,7 @@ namespace Uno.UI.RemoteControl.Host
 						var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
 						var shutdownProperties = new Dictionary<string, string>
 						{
-							["ShutdownType"] = shutdownRequested ? "Graceful" : "Crash",
+							["ShutdownType"] = ct.IsCancellationRequested ? "Graceful" : "Crash",
 						};
 						var shutdownMeasurements = new Dictionary<string, double>
 						{

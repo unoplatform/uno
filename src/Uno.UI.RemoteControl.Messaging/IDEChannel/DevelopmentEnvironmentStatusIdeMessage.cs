@@ -1,6 +1,4 @@
 ﻿#nullable enable
-using System;
-
 namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 /// <summary>

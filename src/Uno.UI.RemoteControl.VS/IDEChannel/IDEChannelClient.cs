@@ -22,6 +22,8 @@ internal class IdeChannelClient
 
 	public event AsyncEventHandler<IdeMessage>? OnMessageReceived;
 
+	public long MessagesReceivedCount { get; private set; }
+
 	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
 		_logger = logger;
@@ -84,6 +86,8 @@ internal class IdeChannelClient
 	{
 		try
 		{
+			MessagesReceivedCount++;
+
 			var devServerMessage = IdeMessageSerializer.Deserialize(devServerMessageEnvelope);
 
 			_logger.Verbose($"IDE: IDEChannel message received {devServerMessage}");
