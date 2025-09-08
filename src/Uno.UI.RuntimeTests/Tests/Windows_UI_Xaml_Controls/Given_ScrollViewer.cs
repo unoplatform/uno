@@ -726,19 +726,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.MoveTo(inner.GetAbsoluteBounds().GetCenter());
 			mouse.Wheel(-50, steps: 5);
-			await WindowHelper.WaitForIdle();
 
 			// waiting for wheel animation
-			await Task.Delay(500);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			Assert.AreEqual(0, outer.VerticalOffset);
 			Assert.IsTrue(inner.VerticalOffset > 0, "Inner Vertical Offset is not greater than 0");
 
 			mouse.Wheel(-500, steps: 5);
-			await WindowHelper.WaitForIdle();
 
 			// waiting for wheel animation
-			await Task.Delay(500);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			var expectedOffset = outer.ScrollableHeight / 2;
 			Assert.IsTrue(outer.VerticalOffset > expectedOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
@@ -1524,13 +1522,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.WheelUp();
 
-			await Task.Delay(500);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			sut.VerticalOffset.Should().BeGreaterThan(0);
 
 			mouse.WheelDown();
 
-			await Task.Delay(500);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			sut.VerticalOffset.Should().BeApproximately(0, 0.5);
 #endif
@@ -1854,7 +1852,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				steps: 1,
 				stepOffsetInMilliseconds: 1);
 
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Wait for the inertia to run
+			await Task.Delay(500);
 
 			Assert.AreEqual(0, parent.VerticalOffset);
 			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1);

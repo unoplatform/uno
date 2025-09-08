@@ -11,8 +11,6 @@ internal partial class X11XamlRootHost
 {
 	private readonly EventLoop _renderingEventLoop;
 	private int _renderingScheduled;
-	private readonly object _nextRenderParamsLock = new();
-	private RenderParams? _nextRenderParams;
 
 	void IXamlRootHost.InvalidateRender()
 	{
@@ -25,37 +23,15 @@ internal partial class X11XamlRootHost
 				return;
 			}
 
-			if (_renderer is not null)
+			XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
+
+			if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
 			{
-				using var lockDisposable = X11Helper.XLock(TopX11Window.Display);
-				XWindowAttributes attributes = default;
-				_ = XLib.XGetWindowAttributes(TopX11Window.Display, TopX11Window.Window, ref attributes);
-				var width = attributes.width;
-				var height = attributes.height;
-
-				var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(width, height, rootElement, invertPath: true);
-
-				var scale = rootElement.XamlRoot is { } root
-					? root.RasterizationScale
-					: 1;
-
-				lock (_nextRenderParamsLock)
+				_renderingEventLoop.Schedule(() =>
 				{
-					_nextRenderParams = new RenderParams(picture, path, (float)scale);
-				}
-
-				if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
-				{
-					_renderingEventLoop.Schedule(() =>
-					{
-						Volatile.Write(ref _renderingScheduled, 0);
-						if (_nextRenderParams is { } renderParams)
-						{
-							_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.Scale);
-							NativeDispatcher.Main.Enqueue(() => rootElement.XamlRoot?.InvokeFrameRendered());
-						}
-					});
-				}
+					Volatile.Write(ref _renderingScheduled, 0);
+					_renderer?.Render();
+				});
 			}
 		}
 		else
@@ -66,9 +42,4 @@ internal partial class X11XamlRootHost
 			NativeDispatcher.Main.DispatchRendering();
 		}
 	}
-
-	private readonly record struct RenderParams(
-		SKPicture Picture,
-		SKPath NativeClippingPath,
-		float Scale);
 }

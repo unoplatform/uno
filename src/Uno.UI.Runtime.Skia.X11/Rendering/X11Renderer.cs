@@ -1,4 +1,5 @@
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
@@ -13,11 +14,10 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 	private Size _lastSize;
 	private SKSurface? _surface;
 	private X11AirspaceRenderHelper? _airspaceHelper;
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 
 	public void SetBackgroundColor(SKColor color) => _background = color;
 
-	public void Render(SKPicture picture, SKPath nativeClippingPath, float scale)
+	public void Render()
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -56,18 +56,18 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 			_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
 		}
 
-		_fpsHelper.Scale = scale;
+		var nativeElementClipPath = ((CompositionTarget)host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		{
+			_surface?.Dispose();
+			_surface = UpdateSize(width, height, attributes.depth);
+			_airspaceHelper?.Dispose();
+			_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
+			return _surface.Canvas;
+		});
 
-		SkiaRenderHelper.RenderPicture(
-			_surface,
-			picture,
-			_background,
-			_fpsHelper);
-
-		_airspaceHelper.XShapeClip(nativeClippingPath);
+		_airspaceHelper.XShapeClip(nativeElementClipPath);
 		Flush();
 		_ = XLib.XFlush(display);
-		host.RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 
 	protected abstract SKSurface UpdateSize(int width, int height, int depth);
