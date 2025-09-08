@@ -362,13 +362,14 @@ internal readonly struct UnicodeText : IParsedText
 
 			if (bidiRun.inline != nextLineBreakingOpportunity.inline || bidiRun.endInInline < nextLineBreakingOpportunity.indexInInline)
 			{
-				var glyphsOfEntireBidiRun = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth);
-				var bidiRunWidth = RunWidth(glyphsOfEntireBidiRun, bidiRun.inline.FontDetails);
+				var glyphsWithoutTrailingSpaces = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth, ignoreTrailingSpaces: true);
+				var runWidthWithoutTrailingSpaces = RunWidth(glyphsWithoutTrailingSpaces, bidiRun.inline.FontDetails);
 				// no line breaking opportunity in run
-				if (currentLine.Count == 0 || bidiRunWidth <= remainingLineWidth)
+				if (currentLine.Count == 0 || runWidthWithoutTrailingSpaces <= remainingLineWidth)
 				{
 					currentLine.Add(bidiRun);
-					remainingLineWidth -= bidiRunWidth;
+					var bidiRunWidthWithTrailingSpaces = RunWidth(ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth, ignoreTrailingSpaces: false), bidiRun.inline.FontDetails);
+					remainingLineWidth -= bidiRunWidthWithTrailingSpaces;
 				}
 				else
 				{
@@ -387,14 +388,14 @@ internal readonly struct UnicodeText : IParsedText
 				var testOpportunity = logicallyOrderedLineBreakingOpportunities[testOpportunityIndex];
 				while (testOpportunity.inline == bidiRun.inline && testOpportunity.indexInInline <= bidiRun.endInInline)
 				{
-					var testGlyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..testOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth);
-					var testWidth = RunWidth(testGlyphs, bidiRun.inline.FontDetails);
-					if (testWidth <= remainingLineWidth)
+					var testGlyphsWithoutTrailingSpaces = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..testOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth, ignoreTrailingSpaces: true);
+					var testWidthWithoutTrailingSpaces = RunWidth(testGlyphsWithoutTrailingSpaces, bidiRun.inline.FontDetails);
+					if (testWidthWithoutTrailingSpaces <= remainingLineWidth)
 					{
-						if (testWidth > biggestFittingPrefixWidth)
+						if (testWidthWithoutTrailingSpaces > biggestFittingPrefixWidth)
 						{
 							biggestFittingPrefixEnd = testOpportunity.indexInInline;
-							biggestFittingPrefixWidth = testWidth;
+							biggestFittingPrefixWidth = RunWidth(ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..testOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth, ignoreTrailingSpaces: false), bidiRun.inline.FontDetails);
 						}
 						if (IsLineBreak(bidiRun.inline.Text, testOpportunity.indexInInline))
 						{
@@ -420,8 +421,7 @@ internal readonly struct UnicodeText : IParsedText
 			if (biggestFittingPrefixEnd == -1 && currentLine.Count == 0)
 			{
 				biggestFittingPrefixEnd = nextLineBreakingOpportunity.indexInInline;
-				var g = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..nextLineBreakingOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth);
-				biggestFittingPrefixWidth = RunWidth(g, bidiRun.inline.FontDetails);
+				biggestFittingPrefixWidth = RunWidth(ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..nextLineBreakingOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth, ignoreTrailingSpaces: false), bidiRun.inline.FontDetails);
 			}
 
 			if (biggestFittingPrefixEnd != -1)
@@ -603,8 +603,15 @@ internal readonly struct UnicodeText : IParsedText
 	}
 
 	/// <param name="currentLineWidth">Only used for tab stop width calculation. Null to ignore this case.</param>
-	private static (GlyphInfo info, GlyphPosition position)[] ShapeRun(string textRun, bool rtl, FontDetails fontDetails, float? currentLineWidth)
+	private static (GlyphInfo info, GlyphPosition position)[] ShapeRun(string textRun, bool rtl, FontDetails fontDetails, float? currentLineWidth, bool ignoreTrailingSpaces = false)
 	{
+		if (ignoreTrailingSpaces)
+		{
+			textRun = textRun[..^TrailingSpaceCount(textRun, 0, textRun.Length)];
+			if (textRun is "")
+			{
+			}
+		}
 		Debug.Assert(textRun.Length < 2 || !textRun[..^2].Contains("\r\n"));
 		using var buffer = new Buffer();
 		buffer.AddUtf16(textRun, 0, textRun is [.., '\r', '\n'] ? textRun.Length - 1 : textRun.Length);
@@ -1117,6 +1124,18 @@ internal readonly struct UnicodeText : IParsedText
 			}
 		}
 		throw new ArgumentOutOfRangeException("Given index is not within the range of text length.");
+	}
+
+	private static int TrailingSpaceCount(string str, int start, int end)
+	{
+		for (var i = end - 1; i >= start; i--)
+		{
+			if (str[i] != ' ')
+			{
+				return end - 1 - i;
+			}
+		}
+		return 0;
 	}
 
 	private static int TrailingWhiteSpaceCount(string str, int start, int end)
