@@ -35,6 +35,8 @@ namespace Uno.UI.Tests.BinderTests
 
 			SUT.SetBinding(MyControl.MyPropertyProperty, binding);
 
+			SUT.ApplyXBind();
+
 			// Test forward direction: source enum -> string target
 			Assert.AreEqual("Hello", SUT.MyProperty, "Forward conversion should work");
 
@@ -71,6 +73,8 @@ namespace Uno.UI.Tests.BinderTests
 			);
 
 			SUT.SetBinding(MyControl.MyPropertyProperty, binding);
+
+			SUT.ApplyXBind();
 
 			// Forward conversion should still work
 			Assert.AreEqual("Hello", SUT.MyProperty);
