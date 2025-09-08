@@ -21,7 +21,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 
 		private void SetDefaultChar_Click(object sender, RoutedEventArgs e)
 		{
-			DynamicPasswordBox.PasswordChar = "●";
+			DynamicPasswordBox.PasswordChar = DefaultPasswordBox.PasswordChar;
 			UpdateValueDisplays();
 		}
 
