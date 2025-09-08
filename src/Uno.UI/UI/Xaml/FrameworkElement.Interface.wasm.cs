@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Shapes;
 
+using Uno;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.Disposables;
@@ -107,12 +108,20 @@ namespace Microsoft.UI.Xaml
 		}
 		#endregion
 
+		[NotImplemented]
 		public int? RenderPhase
 		{
-			get => throw new NotImplementedException();
-			set => throw new NotImplementedException();
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "RenderPhase");
+				return null;
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "RenderPhase");
+			}
 		}
 
-		public void ApplyBindingPhase(int phase) => throw new NotImplementedException();
+		public void ApplyBindingPhase(int phase) { }
 	}
 }
