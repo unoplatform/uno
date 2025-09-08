@@ -12,11 +12,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 
@@ -25,14 +28,14 @@ namespace Uno.UI.RemoteControl.Host;
 internal class RemoteControlServer : IRemoteControlServer, IDisposable
 {
 	private readonly object _loadContextGate = new();
-	private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = [];
-	private static readonly Dictionary<string, string> _resolveAssemblyLocations = [];
-	private readonly Dictionary<string, IServerProcessor> _processors = [];
-	private readonly List<DiscoveredProcessor> _discoveredProcessors = [];
+	private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
+	private static readonly Dictionary<string, string> _resolveAssemblyLocations = new();
+	private readonly Dictionary<string, IServerProcessor> _processors = new();
+	private readonly List<DiscoveredProcessor> _discoveredProcessors = new();
 	private readonly CancellationTokenSource _ct = new();
 
 	private WebSocket? _socket;
-	private readonly List<string> _appInstanceIds = [];
+	private readonly List<string> _appInstanceIds = new();
 	private readonly IConfiguration _configuration;
 	private readonly IIdeChannel _ideChannel;
 	private readonly IServiceProvider _serviceProvider;
