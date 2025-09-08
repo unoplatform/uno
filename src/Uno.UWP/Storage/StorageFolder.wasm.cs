@@ -17,8 +17,8 @@ namespace Windows.Storage
 	{
 		private static TaskCompletionSource<bool> _storageInitialized = new TaskCompletionSource<bool>();
 
-		internal void MakePersistent()
-			=> MakePersistent(this);
+		internal async Task MakePersistentAsync()
+			=> await MakePersistentAsync(this);
 
 		private static async Task TryInitializeStorage()
 		{
@@ -35,8 +35,8 @@ namespace Windows.Storage
 			}
 		}
 
-		internal static void MakePersistent(params StorageFolder[] folders)
-			=> NativeMethods.MakePersistent(folders.SelectToArray(f => f.Path));
+		internal static async Task MakePersistentAsync(params StorageFolder[] folders)
+			=> await NativeMethods.MakePersistentAsync(folders.SelectToArray(f => f.Path));
 
 		[JSExport]
 		internal static void DispatchStorageInitialized()
