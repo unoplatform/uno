@@ -951,7 +951,7 @@ namespace Uno.UI
 			/// and <see cref="UIElement.InvalidateArrange"/> calls have been processed) to update the UI and generate
 			/// new render frames.
 			/// </summary>
-			public static bool GenerateNewFramesOnlyWhenUITreeIsArranged { get; set; }
+			internal static bool GenerateNewFramesOnlyWhenUITreeIsArranged { get; set; }
 		}
 
 		public static class DependencyProperty
