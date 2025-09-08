@@ -4087,7 +4087,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 't'));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(new string(PasswordBox.DefaultPasswordChar[0], 4), SUT.TextBoxView.DisplayBlock.Text);
+#if !HAS_UNO
+			char defaultPasswordBoxChar = '\u25CF';
+#else
+			char defaultPasswordBoxChar = PasswordBox.DefaultPasswordChar[0];
+#endif
+			
+			Assert.AreEqual(new string(defaultPasswordBoxChar, 4), SUT.TextBoxView.DisplayBlock.Text);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
