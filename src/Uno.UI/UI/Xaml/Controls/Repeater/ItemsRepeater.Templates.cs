@@ -20,9 +20,6 @@ namespace Microsoft.UI.Xaml.Controls;
 // This is architecturally necessary to bypass layout constraints while maintaining ViewManager
 // compatibility. See UpdateItemTemplateWrapper() documentation for detailed justification.
 //
-// RELATED GITHUB PR: https://github.com/unoplatform/uno/pull/[PR_NUMBER]
-// The working GitHub PR modifies OnItemTemplateChanged directly. Our partial file approach
-// achieves the same functionality through controlled duplication.
 // **************************************************************************
 
 // Partial class file containing dynamic template update functionality for ItemsRepeater.
@@ -245,31 +242,22 @@ partial class ItemsRepeater
 			}
 		}
 
-		// <summary>
 		// Updates the ItemTemplateWrapper which is critical for ViewManager element creation.
 		// This must be kept in sync even during layout operations.
-		// 
-		// IMPORTANT: This method duplicates logic from OnItemTemplateChanged (lines 795-825 in the original WinUI code).
-		// This duplication is ARCHITECTURALLY NECESSARY because:
-		// 
-		// 1. PARTIAL FILE ARCHITECTURE: We use partial files to separate Uno-specific functionality
-		//    from the original WinUI code, maintaining clean separation and easier upstream merging.
-		// 
-		// 2. LAYOUT CONSTRAINT BYPASS: The original OnItemTemplateChanged throws during layout.
-		//    We need the wrapper update logic WITHOUT the layout constraint check.
-		// 
-		// 3. VIEWMANAGER DEPENDENCY: ViewManager.GetElement() requires m_itemTemplateWrapper to be
-		//    valid immediately, even during layout operations, or it crashes with NullReferenceException.
-		// 
-		// 4. GITHUB PR COMPARISON: The working GitHub PR modifies OnItemTemplateChanged directly.
-		//    Our partial file approach requires this controlled duplication to achieve the same result.
-		// 
-		// FUTURE: When this functionality is integrated upstream, this duplication will be eliminated
-		// by merging both approaches into the main OnItemTemplateChanged method.
-		// </summary>
-		// <param name="newValue">The new template value</param>
 		void UpdateItemTemplateWrapper(object newValue)
 		{
+			// IMPORTANT: This method duplicates logic from OnItemTemplateChanged (lines 795-825 in the original WinUI code).
+			// This duplication is ARCHITECTURALLY NECESSARY because:
+			// 
+			// 1. PARTIAL FILE ARCHITECTURE: We use partial files to separate Uno-specific functionality
+			//    from the original WinUI code, maintaining clean separation and easier upstream merging.
+			// 
+			// 2. LAYOUT CONSTRAINT BYPASS: The original OnItemTemplateChanged throws during layout.
+			//    We need the wrapper update logic WITHOUT the layout constraint check.
+			// 
+			// 3. VIEWMANAGER DEPENDENCY: ViewManager.GetElement() requires m_itemTemplateWrapper to be
+			//    valid immediately, even during layout operations, or it crashes with NullReferenceException.
+
 			// Clear flag for bug #776
 			m_isItemTemplateEmpty = false;
 			m_itemTemplateWrapper = newValue as IElementFactoryShim;

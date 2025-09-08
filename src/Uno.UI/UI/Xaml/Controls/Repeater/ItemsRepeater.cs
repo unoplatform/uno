@@ -771,7 +771,6 @@ namespace Microsoft.UI.Xaml.Controls
 			var layout = Layout;
 			if (layout != null)
 			{
-
 				var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 				using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
 				m_processingItemsSourceChange = args;

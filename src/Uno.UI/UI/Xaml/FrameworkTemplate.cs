@@ -215,7 +215,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// --- Uno extension points for template factory injection and update notifications ---
-		
+
 		// Use weak attached field to avoid adding a field to every FrameworkTemplate instance
 		// when the dynamic template update feature is not used
 		private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<FrameworkTemplate, global::Windows.UI.Core.WeakEventHelper.WeakEventCollection> _templateUpdatedHandlers = new();

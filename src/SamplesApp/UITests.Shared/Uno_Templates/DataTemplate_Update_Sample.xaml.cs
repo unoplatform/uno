@@ -16,7 +16,7 @@ namespace Uno.UI.Samples.UITests.Templates
 #if !WINAPPSDK
 			Uno.UI.TemplateManager.EnableUpdateSubscriptions();
 #else
-			unavailable.Visiblity = Visibility.Visible;
+			unavailable.Visibility = Visibility.Visible;
 #endif
 			this.InitializeComponent();
 		}
