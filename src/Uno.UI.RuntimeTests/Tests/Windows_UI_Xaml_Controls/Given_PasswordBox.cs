@@ -130,8 +130,13 @@ public class Given_PasswordBox
 	{
 		var passwordBox = new PasswordBox();
 
+#if !HAS_UNO
+		char defaultPasswordBoxChar = '\u25CF';
+#else
+		char defaultPasswordBoxChar = PasswordBox.DefaultPasswordChar[0];
+#endif
 		// Test default value
-		Assert.AreEqual(PasswordBox.DefaultPasswordChar, passwordBox.PasswordChar);
+		Assert.AreEqual(defaultPasswordBoxChar, passwordBox.PasswordChar);
 
 		// Test setting custom value
 		passwordBox.PasswordChar = "*";
