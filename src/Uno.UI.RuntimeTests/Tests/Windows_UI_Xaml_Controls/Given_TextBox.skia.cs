@@ -4092,7 +4092,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #else
 			char defaultPasswordBoxChar = PasswordBox.DefaultPasswordChar[0];
 #endif
-			
+
 			Assert.AreEqual(new string(defaultPasswordBoxChar, 4), SUT.TextBoxView.DisplayBlock.Text);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
