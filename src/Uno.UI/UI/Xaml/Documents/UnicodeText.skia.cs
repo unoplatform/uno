@@ -27,7 +27,6 @@ namespace Microsoft.UI.Xaml.Documents;
 
 // TODO: character spacing
 // TODO: what happens if text has no drawable glyphs but is not empty? Can this happen? The HarfBuzz docs imply that it can't
-// TODO: tab spacing
 internal readonly struct UnicodeText : IParsedText
 {
 	// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
@@ -236,34 +235,8 @@ internal readonly struct UnicodeText : IParsedText
 
 			var lineRuns = new Deque<ShapedLineBrokenBidiRun>();
 
-			IEnumerable<(ReadonlyInlineCopy Inline, int startInInline, int endInInline)> GroupByInline()
+			foreach (var (inline, startInInline, endInInline) in GroupByInline(line))
 			{
-				foreach (var group in line.GroupBy(r => r.inline))
-				{
-					var inline = group.Key;
-					var groupAsArray = group.ToArray();
-					var startInInline = groupAsArray[0].startInInline;
-					var endInInline = groupAsArray[^1].endInInline;
-					var i = startInInline;
-					while (inline.Text.IndexOf('\t', i) is var tabIndex && tabIndex != -1)
-					{
-						if (i != tabIndex)
-						{
-							yield return (inline, i, tabIndex);
-						}
-						yield return (inline, tabIndex, tabIndex + 1);
-						i = tabIndex + 1;
-					}
-
-					if (i != endInInline)
-					{
-						yield return (inline, i, endInInline);
-					}
-				}
-			}
-			foreach (var (inline, startInInline, endInInline) in GroupByInline())
-			{
-
 				var sameInlineRuns = new List<ShapedLineBrokenBidiRun>();
 
 				var text = inline.Text[startInInline..endInInline];
@@ -296,13 +269,15 @@ internal readonly struct UnicodeText : IParsedText
 						{
 							if (i != logicalStart)
 							{
-								sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + i, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + i)], level is BiDi.BiDiDirection.RTL, currentFontDetails), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+								// the currentLineWidth parameter of ShapeRun is null and the tab width will be adjusted later in LayoutLines.
+								sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + i, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + i)], level is BiDi.BiDiDirection.RTL, currentFontDetails, null), currentFontDetails, level is BiDi.BiDiDirection.RTL));
 							}
 							currentFontDetails = newFontDetails;
 							currentFontSplitStart = i;
 						}
 					}
-					sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + logicalStart + length, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + logicalStart + length)], level is BiDi.BiDiDirection.RTL, currentFontDetails), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+					// the currentLineWidth parameter of ShapeRun is null and the tab width will be adjusted later in LayoutLines.
+					sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + logicalStart + length, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + logicalStart + length)], level is BiDi.BiDiDirection.RTL, currentFontDetails, null), currentFontDetails, level is BiDi.BiDiDirection.RTL));
 					// swap runs if rtl since we always process characters in a single bidi run in logical order
 					if (level is BiDi.BiDiDirection.RTL)
 					{
@@ -331,6 +306,32 @@ internal readonly struct UnicodeText : IParsedText
 		}
 
 		return shapedLines;
+	}
+
+	private static IEnumerable<(ReadonlyInlineCopy Inline, int startInInline, int endInInline)> GroupByInline(List<BidiRun> line)
+	{
+		foreach (var group in line.GroupBy(r => r.inline))
+		{
+			var inline = group.Key;
+			var groupAsArray = group.ToArray();
+			var startInInline = groupAsArray[0].startInInline;
+			var endInInline = groupAsArray[^1].endInInline;
+			var i = startInInline;
+			while (inline.Text.IndexOf('\t', i) is var tabIndex && tabIndex != -1)
+			{
+				if (i != tabIndex)
+				{
+					yield return (inline, i, tabIndex);
+				}
+				yield return (inline, tabIndex, tabIndex + 1);
+				i = tabIndex + 1;
+			}
+
+			if (i != endInInline)
+			{
+				yield return (inline, i, endInInline);
+			}
+		}
 	}
 
 	private static List<List<BidiRun>> ApplyLineBreaking(float lineWidth, List<BidiRun> logicallyOrderedRuns, List<(int indexInInline, ReadonlyInlineCopy inline)> logicallyOrderedLineBreakingOpportunities)
@@ -601,7 +602,8 @@ internal readonly struct UnicodeText : IParsedText
 		return logicallyOrderedRuns;
 	}
 
-	private static (GlyphInfo info, GlyphPosition position)[] ShapeRun(string textRun, bool rtl, FontDetails fontDetails, float currentLineWidth = 0)
+	/// <param name="currentLineWidth">Only used for tab stop width calculation. Null to ignore this case.</param>
+	private static (GlyphInfo info, GlyphPosition position)[] ShapeRun(string textRun, bool rtl, FontDetails fontDetails, float? currentLineWidth)
 	{
 		Debug.Assert(textRun.Length < 2 || !textRun[..^2].Contains("\r\n"));
 		using var buffer = new Buffer();
@@ -626,7 +628,7 @@ internal readonly struct UnicodeText : IParsedText
 		{
 			fontDetails.Font.TryGetGlyph(' ', out var codepoint);
 			var tabWidth = TabStopWidth / fontDetails.TextScale.textScaleX;
-			ret[^1] = (infos[^1] with { Codepoint = codepoint }, positions[^1] with { XAdvance = (int)(isTab ? tabWidth - currentLineWidth % tabWidth : 0) });
+			ret[^1] = (infos[^1] with { Codepoint = codepoint }, positions[^1] with { XAdvance = (int)(isTab ? tabWidth - (currentLineWidth ?? 0) % tabWidth : 0) });
 		}
 		return ret;
 	}
