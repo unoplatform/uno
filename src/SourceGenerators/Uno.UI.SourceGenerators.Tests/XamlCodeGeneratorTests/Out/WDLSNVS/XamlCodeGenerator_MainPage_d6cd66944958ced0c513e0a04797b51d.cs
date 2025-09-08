@@ -135,17 +135,11 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _LazyLoadedBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LazyLoadedBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.Border LazyLoadedBorder
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Border)_LazyLoadedBorderSubject.ElementInstance;
-			}
-			set
-			{
-				_LazyLoadedBorderSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Border)_LazyLoadedBorderSubject.ElementInstance;
+			set => _LazyLoadedBorderSubject.ElementInstance = value;
 		}
 	}
 }

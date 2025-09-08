@@ -17,6 +17,9 @@
 		<!-- Obsolete members CA1422 -->
 		<NoWarn>$(NoWarn);CA1422</NoWarn>
 
+		<!-- TODO: Deal with Trimming errors "later" -->
+		<NoWarn>$(NoWarn);IL2057;IL2026;IL2067;IL2070;IL2072;IL2075;IL2091</NoWarn>
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
@@ -88,7 +91,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
+		<EmbeddedResource Include="UI\Xaml\Controls\ProgressRing\*.json" />
 	</ItemGroup>
 
 	<PropertyGroup>

@@ -36,8 +36,8 @@
 
 		<ItemGroup Condition="'$(PkgUno_WinUI)'!=''">
 			<!-- This must be aligned with $winuisourcepath$ in the nuspec -->
-			<ReferencePath Include="$(PkgUno_WinUI)/lib/net8.0-windows10.0.19041.0/*.dll" />
-			<ReferenceCopyLocalPaths Include="$(PkgUno_WinUI)/lib/net8.0-windows10.0.19041.0/*.dll" />
+			<ReferencePath Include="$(PkgUno_WinUI)/lib/net9.0-windows10.0.19041.0/*.dll" />
+			<ReferenceCopyLocalPaths Include="$(PkgUno_WinUI)/lib/net9.0-windows10.0.19041.0/*.dll" />
 		</ItemGroup>
 
 		<ItemGroup Condition="'$(PkgUno_UI)'!=''">
@@ -57,13 +57,13 @@
 		-->
 		
 		<ItemGroup>
-			<PriOutputs Include="$(PkgUno_WinUI)/lib/net8.0-windows10.0.19041.0/Uno.UI.Toolkit.pri"
+			<PriOutputs Include="$(PkgUno_WinUI)/lib/net9.0-windows10.0.19041.0/Uno.UI.Toolkit.pri"
 						TargetPath="Uno.UI.Toolkit.pri"
 						CopyLocal="True"
 						CopyToOutputDirectory="PreserveNewest"
 						OutputGroup="CopyLocalFilesOutputGroup" />
 
-			<_UnoUIToolkitAssets Include="$(PkgUno_WinUI)/lib/net8.0-windows10.0.19041.0/Uno.UI.Toolkit/**"/>
+			<_UnoUIToolkitAssets Include="$(PkgUno_WinUI)/lib/net9.0-windows10.0.19041.0/Uno.UI.Toolkit/**"/>
 
 			<None
 				Include="@(_UnoUIToolkitAssets)"

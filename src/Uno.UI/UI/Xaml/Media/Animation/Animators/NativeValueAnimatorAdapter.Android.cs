@@ -212,7 +212,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public void Pause()
 		{
-			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+			if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
 			{
 				_adaptee.Pause();
 			}
@@ -225,7 +225,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public void Resume()
 		{
-			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+			if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
 			{
 				_adaptee.Resume();
 			}

@@ -44,7 +44,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController = new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
 		_xamlRoot = xamlRoot;
-		AppManager.XamlRootMap.Register(xamlRoot, _mainController);
+		XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 		ObserveOrientationAndSize();
@@ -115,9 +115,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		var newWindowSize = GetWindowSize();
 
-		Bounds = new Rect(default, newWindowSize);
-
-		SetVisibleBounds(_nativeWindow, newWindowSize);
+		SetBoundsAndVisibleBounds(new Rect(default, newWindowSize), GetVisibleBounds(_nativeWindow, newWindowSize));
 	}
 
 	private void ObserveOrientationAndSize()
@@ -156,7 +154,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return new Size(nativeFrame.Width, nativeFrame.Height);
 	}
 
-	private void SetVisibleBounds(UIKit.UIWindow keyWindow, Windows.Foundation.Size windowSize)
+	private Rect GetVisibleBounds(UIKit.UIWindow keyWindow, Windows.Foundation.Size windowSize)
 	{
 		var windowBounds = new Windows.Foundation.Rect(default, windowSize);
 
@@ -186,7 +184,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			height: windowBounds.Height - inset.Top - inset.Bottom
 		);
 
-		VisibleBounds = newVisibleBounds;
+		return newVisibleBounds;
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
@@ -206,7 +204,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 				return;
 			}
 
-			_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
+			_inputPane.OccludedRect = ((NSValue?)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey))?.CGRectValue ?? default;
 		}
 		catch (Exception ex)
 		{

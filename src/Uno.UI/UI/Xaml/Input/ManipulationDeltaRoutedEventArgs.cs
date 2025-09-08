@@ -1,4 +1,7 @@
-﻿using Windows.Foundation;
+﻿using System;
+using Windows.Foundation;
+using Uno.Extensions;
+using Uno.UI;
 using Uno.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
@@ -26,7 +29,9 @@ namespace Microsoft.UI.Xaml.Input
 
 			Pointers = args.Pointers;
 			PointerDeviceType = args.PointerDeviceType;
-			Position = args.Position;
+			Position = FeatureConfiguration.ManipulationRoutedEventArgs.IsAbsolutePositionEnabled
+				? args.Position
+				: UIElement.GetTransform(container, null).Inverse().Transform(args.Position);
 			Delta = args.Delta;
 			Cumulative = args.Cumulative;
 			Velocities = args.Velocities;
@@ -39,7 +44,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).
 		/// </summary>
 		/// <remarks>This collection might contains pointers that has been released.</remarks>
-		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
+		/// <remarks>All pointers are expected to have the same <see cref="Type"/>.</remarks>
 		internal global::Windows.Devices.Input.PointerIdentifier[] Pointers { get; }
 
 		public bool Handled { get; set; }

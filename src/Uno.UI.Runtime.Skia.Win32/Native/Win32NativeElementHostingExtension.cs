@@ -16,6 +16,7 @@ using Windows.Win32.Graphics.GdiPlus;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Composition;
 using SkiaSharp;
+using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -93,7 +94,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			return;
 		}
 
-		Win32WindowWrapper.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!.RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
+		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
 	}
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
@@ -282,7 +283,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		Win32WindowWrapper.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!.RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
+		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
 
 	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)

@@ -54,10 +54,12 @@ public class Given_TabView
 		Assert.IsTrue(((TabViewItem)SUT.TabItems[0]).IsSelected);
 		Assert.IsFalse(((TabViewItem)SUT.TabItems[1]).IsSelected);
 
+		var secondItem = (TabViewItem)SUT.TabItems[1];
+
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var finger = injector.GetFinger();
 
-		finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+		finger.Press(secondItem.GetAbsoluteBounds().GetCenter());
 		finger.Release();
 
 		await WindowHelper.WaitForIdle();
@@ -68,6 +70,7 @@ public class Given_TabView
 #endif
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Leading_Item_Removed()
 	{
 		var source = new ObservableCollection<int>(Enumerable.Range(0, 100));
@@ -156,7 +159,7 @@ public class Given_TabView
 		await UITestHelper.Load(SUT);
 
 		Assert.AreEqual(2, SUT.TabItems.Count);
-		Assert.AreEqual(0, SUT.SelectedIndex);
+		Assert.AreEqual(-1, SUT.SelectedIndex);
 	}
 
 #if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.

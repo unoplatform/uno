@@ -21,10 +21,6 @@ public sealed class PlatformConditionAttribute : ConditionBaseAttribute
 	public override bool ShouldRun => Platforms.HasFlag(RuntimeTestsPlatformHelper.CurrentPlatform);
 
 	/// <summary>
-	/// Gets the ignore message (in case <see cref="ShouldRun"/> returns <see langword="false"/>).
-	/// </summary>
-	public override string IgnoreMessage { get; }
-	/// <summary>
 	/// Gets the group name for this attribute.
 	/// </summary>
 	public override string GroupName => nameof(PlatformConditionAttribute);

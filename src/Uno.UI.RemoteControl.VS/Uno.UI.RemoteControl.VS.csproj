@@ -30,14 +30,24 @@
 
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Managed" Version="2.0.6142705" />
 		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.4.33103.184" ExcludeAssets="runtime" />
+		
+		<!--
+		Uno Studio.Extension is relying on this package:
+			<PackageReference Include="Microsoft.VisualStudio.Extensibility.Sdk" Version="17.9.2092" />
+
+		However, referencing this package requires us to provide a VS extension, so the referenced packages are subtitute to this reference (with correspongin versions)
+		-->
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
+		<!-- End of Microsoft.VisualStudio.Extensibility.Sdk direct refs -->
+
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="17.0.1313-pre" />
-		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
 		<PackageReference Include="MessagePack" Version="2.5.187" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
 		<PackageReference Include="PolySharp" Version="1.14.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

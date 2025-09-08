@@ -77,8 +77,8 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 			Console.WriteLine($"RaiseNativeSizeChanged({newWindowSize.Width}, {newWindowSize.Height})");
 		}
 
-		Bounds = new Rect(default, newWindowSize);
-		VisibleBounds = new Rect(default, newWindowSize);
+		var bounds = new Rect(default, newWindowSize);
+		SetBoundsAndVisibleBounds(bounds, bounds);
 	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
@@ -86,10 +86,11 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	[JSExport]
-	private static void OnResize([JSMarshalAs<JSType.Any>] object instance, double width, double height)
+	private static void OnResize([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
 	{
 		if (instance is WebAssemblyWindowWrapper windowWrapper)
 		{
+			windowWrapper.RasterizationScale = scale;
 			windowWrapper.RaiseNativeSizeChanged(new(width, height));
 		}
 		else

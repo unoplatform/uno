@@ -1,23 +1,24 @@
-﻿<Page
-    x:Class="UITests.Microsoft_UI_Xaml_Controls.TabViewTests.TabViewPage"
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<local:TestPage
+    x:Class="MUXControlsTestApp.TabViewPage"
+    x:Name="TabViewTestPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MUXControlsTestApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-	xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.TabViewTests"
-	mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	<Grid x:Name="BackgroundGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid>
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="*"/>
-				</Grid.ColumnDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
 
-				<StackPanel Padding="12" Background="{ThemeResource SystemChromeMediumLowColor}" Width="250">
+			<ScrollViewer>
+				<StackPanel Padding="12" Width="250">
 					<TextBlock Text="Options" Style="{ThemeResource StandardGroupHeader}"/>
 					<CheckBox x:Name="IsClosableCheckBox" AutomationProperties.Name="IsClosableCheckBox" Checked="IsClosableCheckBox_CheckChanged" Unchecked="IsClosableCheckBox_CheckChanged" IsChecked="True" Content="IsClosable on first tab"/>
 					<CheckBox x:Name="HandleTabCloseRequestedCheckBox" AutomationProperties.Name="HandleTabCloseRequestedCheckBox" Content="Handle TabView tab close" IsChecked="True"/>
@@ -53,6 +54,15 @@
 					<Button x:Name="ScrollTabViewToTheRight" AutomationProperties.Name="ScrollTabViewToTheRight" Content="Scroll TabView To the Right" Margin="0,0,0,8" Click="TabViewScrollToTheRightButton_Click" />
 
 					<Button x:Name="ShortLongTextButton" AutomationProperties.Name="ShortLongTextButton" Content="Short/Long Text" Margin="0,0,0,8" Click="ShortLongTextButton_Click" />
+					<Button x:Name="HomeTabOverlapCheck" AutomationProperties.Name="HomeTabOverlapCheck" Content="Set HomeTabOverlapCheck" Margin="0,0,0,8" Click="HomeTabOverlapCheck_Click" />
+					<Button x:Name="SetActiveTabTransparent" AutomationProperties.Name="SetActiveTabTransparent" Content="Set ActiveTab Transparent" Margin="0,0,0,8" Click="SetActiveTabTransparent_Click" />
+					<Button x:Name="SetActiveContentTransparent" AutomationProperties.Name="SetActiveContentTransparent" Content="Set ActiveContent Transparent" Margin="0,0,0,8" Click="SetActiveContentTransparent_Click" />
+					<Button x:Name="ClearOverlapCheck" AutomationProperties.Name="ClearOverlapCheck" Content="Clear OverlapCheck" Margin="0,0,0,8" Click="ClearOverlapCheck_Click" />
+
+					<StackPanel Orientation="Horizontal">
+						<Button Click="SetColorsButton_Click" Content="Set Colors"/>
+						<Button Click="ClearColorsButton_Click" Content="Clear Colors"/>
+					</StackPanel>
 
 					<Border HorizontalAlignment="Stretch" Height="3" Background="{ThemeResource SystemChromeGrayColor}" Margin="0,8,0,8"/>
 
@@ -111,21 +121,23 @@
 					</StackPanel>
 
 					<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-						<Button x:Name="GetSecondTabHeaderForegroundButton" AutomationProperties.Name="GetSecondTabHeaderForegroundButton" Content="SecondTabHeaderForeground" Click="GetSecondTabHeaderForegroundButton_Click" />
-						<TextBlock x:Name="SecondTabHeaderForegroundTextBlock" AutomationProperties.Name="SecondTabHeaderForegroundTextBlock" Margin="4,0,0,0" Text=""/>
+						<TextBlock x:Name="TabsItemChangedEventArgsTextBlock" AutomationProperties.Name="TabsItemChangedEventArgsTextBlock" Margin="4,0,0,0" Text="" />
+						<TextBlock x:Name="TabsItemChangedEventArgsIndexTextBlock" AutomationProperties.Name="TabsItemChangedEventArgsIndexTextBlock" Margin="4,0,0,0" Text="" />
 					</StackPanel>
 				</StackPanel>
+			</ScrollViewer>
 
-				<Grid Grid.Column="1">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
+			<Grid Grid.Column="1">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
 
-					<controls:TabView
+				<controls:TabView
                     x:Name="Tabs"
                     TabWidthMode="Equal"
                     CanDragTabs="True"
+					CanTearOutTabs="True"
                     SelectionChanged="TabViewSelectionChanged"
                     TabCloseRequested="TabViewTabCloseRequested"
                     TabDragStarting="OnTabDragStarting"
@@ -134,123 +146,129 @@
                     TabDroppedOutside="TabViewTabDroppedOutside"
                     AddTabButtonClick="AddButtonClick">
 
-						<controls:TabView.TabStripFooter>
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto"/>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="Auto"/>
-								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0" Text="Middle" Margin="6,3,6,0" VerticalAlignment="Center"/>
-								<TextBlock Grid.Column="2" Text="Right" Margin="6,3,6,0" VerticalAlignment="Center"/>
-							</Grid>
-						</controls:TabView.TabStripFooter>
+					<controls:TabView.Resources>
+						<ResourceDictionary>
+							<SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="AliceBlue"/>
+						</ResourceDictionary>
+					</controls:TabView.Resources>
 
-						<controls:TabViewItem x:Name="FirstTab" AutomationProperties.Name="FirstTab" Header="Home" CloseRequested="FirstTab_CloseRequested" ToolTipService.ToolTip="Custom Tooltip">
-							<controls:TabViewItem.IconSource>
-								<controls:SymbolIconSource Symbol="Home"/>
-							</controls:TabViewItem.IconSource>
+					<controls:TabView.TabStripFooter>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Grid.Column="0" Text="Middle" Margin="6,3,6,0" VerticalAlignment="Center" FontSize="14"/>
+							<TextBlock Grid.Column="2" Text="Right" Margin="6,3,6,0" VerticalAlignment="Center" FontSize="14"/>
+						</Grid>
+					</controls:TabView.TabStripFooter>
 
-							<StackPanel x:Name="FirstTabContent" AutomationProperties.Name="FirstTabContent">
-								<Button x:Name="FirstTabButton" AutomationProperties.Name="FirstTabButton" Margin="8" FontSize="20">Home Button</Button>
-								<StackPanel Orientation="Horizontal">
-									<Button x:Name="TabViewSizingPageButton" AutomationProperties.Name="TabViewSizingPageButton"
-                                        Margin="8" Click="TabViewSizingPageButton_Click"
+					<controls:TabViewItem x:Name="FirstTab" AutomationProperties.Name="FirstTab" Header="Home" CloseRequested="FirstTab_CloseRequested" ToolTipService.ToolTip="Custom Tooltip">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Home"/>
+						</controls:TabViewItem.IconSource>
+
+						<StackPanel x:Name="FirstTabContent" AutomationProperties.Name="FirstTabContent" Background="{ThemeResource TabViewItemHeaderBackgroundSelected}">
+							<Button x:Name="FirstTabButton" AutomationProperties.Name="FirstTabButton" Margin="8" FontSize="20">Home Button</Button>
+							<StackPanel>
+								<Button x:Name="TabViewSizingPageButton" AutomationProperties.Name="TabViewSizingPageButton"
+                                        Margin="4" Click="TabViewSizingPageButton_Click"
                                         FontSize="20">TabView Sizing Page</Button>
-									<Button x:Name="TabViewTabClosingBehaviorButton" AutomationProperties.Name="TabViewTabClosingBehaviorButton"
-                                        Margin="8" Click="TabViewTabClosingBehaviorButton_Click"
+								<Button x:Name="TabViewTabClosingBehaviorButton" AutomationProperties.Name="TabViewTabClosingBehaviorButton"
+                                        Margin="4" Click="TabViewTabClosingBehaviorButton_Click"
                                         FontSize="20">TabView Tab Closing behavior Page</Button>
-									<Button x:Name="TabViewTabItemsSourcePageButton" AutomationProperties.Name="TabViewTabItemsSourcePageButton"
-                                        Margin="8" Click="TabViewTabItemsSourcePageButton_Click"
+								<Button x:Name="TabViewTabItemsSourcePageButton" AutomationProperties.Name="TabViewTabItemsSourcePageButton"
+                                        Margin="4" Click="TabViewTabItemsSourcePageButton_Click"
                                         FontSize="20">TabView TabItemsSource Page</Button>
-								</StackPanel>
 							</StackPanel>
-						</controls:TabViewItem>
+						</StackPanel>
+					</controls:TabViewItem>
 
-						<controls:TabViewItem x:Name="SecondTab" Header="SecondTab" IsClosable="True">
-							<controls:TabViewItem.Resources>
-								<!-- Do not remove or change this! We are verifying this resource in a TabView InteractionTest. -->
-								<SolidColorBrush x:Key="TabViewItemHeaderForeground" Color="#FF008000" />
-							</controls:TabViewItem.Resources>
-							<controls:TabViewItem.IconSource>
-								<controls:SymbolIconSource Symbol="Shop"/>
-							</controls:TabViewItem.IconSource>
+					<controls:TabViewItem x:Name="SecondTab" Header="SecondTab" IsClosable="True">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Shop"/>
+						</controls:TabViewItem.IconSource>
 
-							<StackPanel Padding="16">
-								<TextBlock>Shop text</TextBlock>
-								<Button Content="SecondTabButton" AutomationProperties.Name="SecondTabButton"/>
-							</StackPanel>
-						</controls:TabViewItem>
+						<StackPanel Padding="16" Background="{ThemeResource TabViewItemHeaderBackgroundSelected}">
+							<TextBlock>Shop text</TextBlock>
+							<Button Content="SecondTabButton" AutomationProperties.Name="SecondTabButton"/>
+							<controls:ProgressRing IsActive="True"/>
+						</StackPanel>
+					</controls:TabViewItem>
 
-						<controls:TabViewItem x:Name="LongHeaderTab" AutomationProperties.Name="LongHeaderTab" Header="Long Header No Icon">
-							<StackPanel Padding="16">
-								<TextBlock >Emoji text</TextBlock>
-								<Button Content="Button 3"/>
-							</StackPanel>
-						</controls:TabViewItem>
+					<controls:TabViewItem x:Name="LongHeaderTab" AutomationProperties.Name="LongHeaderTab" Header="Long Header No Icon">
+						<StackPanel Padding="16" Background="{ThemeResource TabViewItemHeaderBackgroundSelected}">
+							<TextBlock >Emoji text</TextBlock>
+							<Button Content="Button 3"/>
+							<controls:ProgressRing IsActive="True"/>
+						</StackPanel>
+					</controls:TabViewItem>
 
-						<controls:TabViewItem x:Name="NotCloseableTab" AutomationProperties.Name="NotCloseableTab" Header="Video" IsClosable="False">
-							<controls:TabViewItem.IconSource>
-								<controls:SymbolIconSource Symbol="Video"/>
-							</controls:TabViewItem.IconSource>
+					<controls:TabViewItem x:Name="NotCloseableTab" AutomationProperties.Name="NotCloseableTab" Header="Video" IsClosable="False">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Video"/>
+						</controls:TabViewItem.IconSource>
 
-							<StackPanel>
-								<TextBlock Padding="16">This tab can't be closed.</TextBlock>
-							</StackPanel>
-						</controls:TabViewItem>
+						<StackPanel Background="{ThemeResource TabViewItemHeaderBackgroundSelected}">
+							<TextBlock Padding="16">This tab can't be closed.</TextBlock>
+						</StackPanel>
+					</controls:TabViewItem>
 
-						<controls:TabViewItem x:Name="DisabledTab" AutomationProperties.Name="DisabledTab" Header="Disabled" IsEnabled="False">
-							<controls:TabViewItem.IconSource>
-								<controls:SymbolIconSource Symbol="Admin"/>
-							</controls:TabViewItem.IconSource>
+					<controls:TabViewItem x:Name="DisabledTab" AutomationProperties.Name="DisabledTab" Header="Disabled" IsEnabled="False">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Admin"/>
+						</controls:TabViewItem.IconSource>
 
-							<StackPanel>
-								<TextBlock Padding="16">This tab can't be selected.</TextBlock>
-							</StackPanel>
-						</controls:TabViewItem>
+						<StackPanel Background="{ThemeResource TabViewItemHeaderBackgroundSelected}">
+							<TextBlock Padding="16">This tab can't be selected.</TextBlock>
+						</StackPanel>
+					</controls:TabViewItem>
 
-						<controls:TabViewItem x:Name="LastTab" AutomationProperties.Name="LastTab" Header="Contact">
-							<controls:TabViewItem.IconSource>
-								<controls:SymbolIconSource Symbol="Contact"/>
-							</controls:TabViewItem.IconSource>
+					<controls:TabViewItem x:Name="LastTab" AutomationProperties.Name="LastTab" Header="Contact">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Contact"/>
+						</controls:TabViewItem.IconSource>
 
+						<StackPanel Background="{ThemeResource TabViewItemHeaderBackgroundSelected}">
 							<TextBlock x:Name="LastTabContent" AutomationProperties.Name="LastTabContent" Padding="16">Contact text</TextBlock>
-						</controls:TabViewItem>
+						</StackPanel>
+					</controls:TabViewItem>
 
+				</controls:TabView>
+
+				<Grid Grid.Row="1">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="3"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<controls:TabView x:Name="DataBindingTabView" IsAddTabButtonVisible="false" Background="#66336699" SelectedIndex="2">
+						<controls:TabView.Resources>
+							<ResourceDictionary>
+								<StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SystemAccentColor"/>
+							</ResourceDictionary>
+						</controls:TabView.Resources>
+
+						<controls:TabView.TabItemTemplate>
+							<DataTemplate x:DataType="local:TabDataItem">
+								<controls:TabViewItem Header="{x:Bind Header}" IconSource="{x:Bind IconSource}" Content="{x:Bind Content}">
+									<controls:TabViewItem.ContentTemplate>
+										<DataTemplate>
+											<Grid Margin="16">
+												<TextBlock Foreground="Purple" Text="{Binding}"/>
+											</Grid>
+										</DataTemplate>
+									</controls:TabViewItem.ContentTemplate>
+								</controls:TabViewItem>
+							</DataTemplate>
+						</controls:TabView.TabItemTemplate>
 					</controls:TabView>
 
-					<Grid Grid.Row="1">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="3"/>
-							<ColumnDefinition Width="*"/>
-						</Grid.ColumnDefinitions>
+					<Border Background="Gray" Grid.Column="1"/>
 
-						<controls:TabView x:Name="DataBindingTabView" IsAddTabButtonVisible="false" Background="#66336699" SelectedIndex="2">
-							<controls:TabView.Resources>
-								<ResourceDictionary>
-									<StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SystemAccentColor"/>
-								</ResourceDictionary>
-							</controls:TabView.Resources>
-
-							<controls:TabView.TabItemTemplate>
-								<DataTemplate x:DataType="local:TabDataItem">
-									<controls:TabViewItem Header="{x:Bind Header}" IconSource="{x:Bind IconSource}" Content="{x:Bind Content}">
-										<controls:TabViewItem.ContentTemplate>
-											<DataTemplate>
-												<Grid Margin="16">
-													<TextBlock Foreground="Purple" Text="{Binding}"/>
-												</Grid>
-											</DataTemplate>
-										</controls:TabViewItem.ContentTemplate>
-									</controls:TabViewItem>
-								</DataTemplate>
-							</controls:TabView.TabItemTemplate>
-						</controls:TabView>
-
-						<Border Background="Gray" Grid.Column="1"/>
-
-						<controls:TabView x:Name="SecondTabView"
+					<controls:TabView x:Name="SecondTabView"
                         Grid.Column="2"
                         CanDragTabs="True"
                         IsAddTabButtonVisible="false"
@@ -258,26 +276,21 @@
                         TabStripDragOver="OnTabStripDragOver"
                         TabStripDrop="OnTabStripDrop">
 
-							<controls:TabView.TabItems>
+						<controls:TabView.TabItems>
 
-								<controls:TabViewItem x:Name="TabInSecondTabView" AutomationProperties.Name="TabInSecondTabView" Header="Hello">
-									<controls:TabViewItem.IconSource>
-										<controls:SymbolIconSource Symbol="Placeholder"/>
-									</controls:TabViewItem.IconSource>
+							<controls:TabViewItem x:Name="TabInSecondTabView" AutomationProperties.Name="TabInSecondTabView" Header="Hello">
+								<controls:TabViewItem.IconSource>
+									<controls:SymbolIconSource Symbol="Placeholder"/>
+								</controls:TabViewItem.IconSource>
 
-									<TextBlock Padding="16" x:Name="DisabledTabStateText">Disabled tab state:</TextBlock>
-								</controls:TabViewItem>
+								<TextBlock Padding="16" Text="Content"/>
+							</controls:TabViewItem>
 
-							</controls:TabView.TabItems>
-						</controls:TabView>
-					</Grid>
-
+						</controls:TabView.TabItems>
+					</controls:TabView>
 				</Grid>
+
 			</Grid>
 		</Grid>
-		<!-- Uno specific: navigation grid for subpage tests-->
-		<Grid Background="White" x:Name="NavFrameGrid" Visibility="Collapsed">
-			<Frame x:Name="NavFrame" Grid.RowSpan="2" />
-		</Grid>
 	</Grid>
-</Page>
+</local:TestPage>

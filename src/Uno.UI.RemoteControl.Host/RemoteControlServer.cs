@@ -323,11 +323,11 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// Track processor discovery start
 			var discoveryProperties = new Dictionary<string, string>
 			{
-				["devserver/AppInstanceId"] = msg.AppInstanceId,
-				["devserver/Discovery/IsFile"] = File.Exists(msg.BasePath).ToString()
+				["AppInstanceId"] = msg.AppInstanceId,
+				["DiscoveryIsFile"] = File.Exists(msg.BasePath).ToString()
 			};
 
-			_telemetry?.TrackEvent("Processor.Discovery.Start", discoveryProperties, null);
+			_telemetry?.TrackEvent("processor-discovery-start", discoveryProperties, null);
 
 			if (!_appInstanceIds.Contains(msg.AppInstanceId))
 			{
@@ -359,9 +359,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
 
 #if NET9_0_OR_GREATER
-				basePath = Path.Combine(basePath, "net9.0");
+				basePath = Path.Combine(basePath, "net10.0");
 #elif NET8_0_OR_GREATER
-				basePath = Path.Combine(basePath, "net8.0");
+				basePath = Path.Combine(basePath, "net9.0");
 #endif
 
 				// Additional processors may not need the directory added immediately above.
@@ -487,19 +487,19 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// Track processor discovery completion
 			var completionProperties = new Dictionary<string, string>(discoveryProperties)
 			{
-				["devserver/Discovery/Result"] = processorsFailed == 0 ? "Success" : "PartialFailure",
-				["devserver/Discovery/FailedProcessors"] = string.Join(",", failedProcessors),
+				["DiscoveryResult"] = processorsFailed == 0 ? "Success" : "PartialFailure",
+				["DiscoveryFailedProcessors"] = string.Join(",", failedProcessors),
 			};
 
 			var completionMeasurements = new Dictionary<string, double>
 			{
-				["devserver/Discovery/DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["devserver/Discovery/AssembliesProcessed"] = assemblies.Count,
-				["devserver/Discovery/ProcessorsLoadedCount"] = processorsLoaded,
-				["devserver/Discovery/ProcessorsFailedCount"] = processorsFailed,
+				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["DiscoveryAssembliesProcessed"] = assemblies.Count,
+				["DiscoveryProcessorsLoadedCount"] = processorsLoaded,
+				["DiscoveryProcessorsFailedCount"] = processorsFailed,
 			};
 
-			_telemetry?.TrackEvent("Processor.Discovery.Complete", completionProperties, completionMeasurements);
+			_telemetry?.TrackEvent("processor-discovery-complete", completionProperties, completionMeasurements);
 		}
 		catch (Exception exc)
 		{
@@ -511,19 +511,19 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// Track processor discovery error
 			var errorProperties = new Dictionary<string, string>
 			{
-				["devserver/Discovery/ErrorMessage"] = exc.Message,
-				["devserver/Discovery/ErrorType"] = exc.GetType().Name,
+				["DiscoveryErrorMessage"] = exc.Message,
+				["DiscoveryErrorType"] = exc.GetType().Name,
 			};
 
 			var errorMeasurements = new Dictionary<string, double>
 			{
-				["devserver/Discovery/DurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
-				["devserver/Discovery/AssembliesCount"] = assemblies.Count,
-				["devserver/Discovery/ProcessorsLoadedCount"] = processorsLoaded,
-				["devserver/Discovery/ProcessorsFailedCount"] = processorsFailed,
+				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["DiscoveryAssembliesCount"] = assemblies.Count,
+				["DiscoveryProcessorsLoadedCount"] = processorsLoaded,
+				["DiscoveryProcessorsFailedCount"] = processorsFailed,
 			};
 
-			_telemetry?.TrackEvent("Processor.Discovery.Error", errorProperties, errorMeasurements);
+			_telemetry?.TrackEvent("processor-discovery-error", errorProperties, errorMeasurements);
 		}
 		finally
 		{

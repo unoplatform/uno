@@ -291,8 +291,8 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that CommandBar can close when a secondary command is selected from the overflow.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
-#if __APPLE_UIKIT__
-		[Ignore("Test is failing on iOS https://github.com/unoplatform/uno/issues/17984")]
+#if __APPLE_UIKIT__ || __ANDROID__
+		[Ignore("Test is failing on iOS/Android https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task DoesCloseOnSecondaryCommandSelection()
 		{

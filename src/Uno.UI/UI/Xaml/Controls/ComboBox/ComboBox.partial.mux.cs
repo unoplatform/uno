@@ -946,7 +946,7 @@ partial class ComboBox
 #if HAS_UNO // Force load children
 			// This method will load the itempresenter children
 #if __ANDROID__
-			SetItemsPresenter((m_tpPopupPart.Child as Android.Views.ViewGroup).FindFirstChild<ItemsPresenter>()!);
+			SetItemsPresenter((m_tpPopupPart.Child as AViewGroup).FindFirstChild<ItemsPresenter>()!);
 #elif __APPLE_UIKIT__
 			SetItemsPresenter(m_tpPopupPart.Child.FindFirstChild<ItemsPresenter>()!);
 #endif

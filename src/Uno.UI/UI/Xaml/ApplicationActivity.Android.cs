@@ -5,6 +5,7 @@ using Android.Content.PM;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
@@ -29,7 +30,6 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-
 namespace Microsoft.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
@@ -48,9 +48,9 @@ namespace Microsoft.UI.Xaml
 
 		private InputPane _inputPane;
 		private View _content;
-		private Android.Views.Window _window;
+		private AWindow _window;
 
-		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
+		public ApplicationActivity(IntPtr ptr, JniHandleOwnership owner) : base(ptr, owner)
 		{
 			Initialize();
 		}
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		View Uno.UI.Composition.ICompositionRoot.Content => _content;
-		Android.Views.Window Uno.UI.Composition.ICompositionRoot.Window => _window ??= base.Window;
+		AWindow Uno.UI.Composition.ICompositionRoot.Window => _window ??= base.Window;
 
 		internal void EnsureContentView()
 		{
@@ -427,9 +427,15 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
+#if NET10_0_OR_GREATER
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		public static string GetTypeAssemblyFullName(string type) =>
+			throw new NotSupportedException("`static` methods with [Export] are not supported on NativeAOT.");
+#else   // !NET10_0_OR_GREATER
 		[Java.Interop.Export(nameof(GetTypeAssemblyFullName))]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
+#endif  // !NET10_0_OR_GREATER
 
 		internal void SetRootElement(ViewGroup rootElement) => RootView = rootElement;
 	}

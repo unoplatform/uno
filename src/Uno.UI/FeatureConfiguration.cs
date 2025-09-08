@@ -361,12 +361,20 @@ namespace Uno.UI
 			/// This is mainly useful for debugging purposes, we do not recommend using this in production code.
 			/// </summary>
 			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
+
+			/// <summary>
+			/// By default, popups are constrained by the visible bounds on native renderer, but unconstrained on Skia renderer.
+			/// </summary>
+			public static bool ConstrainByVisibleBounds { get; set; }
+#if !__SKIA__
+				= true;
+#endif
 		}
 
 		public static class ProgressRing
 		{
-			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
-			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
+			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
+			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
 		}
 
 		public static class ListViewBase
@@ -451,6 +459,16 @@ namespace Uno.UI
 			/// </summary>
 			public static bool AllowRelativeTimeStamp { get; set; } = true;
 #endif
+		}
+
+		public static class ManipulationRoutedEventArgs
+		{
+			/// <summary>
+			/// In previous versions of uno, the Position property of the Manipulation&gt;Started|Delta|Complete&lt;**Routed**EventArgs
+			/// was in absolute coordinate space instead of being relative to the Container.
+			/// Enabling this flag does restore the previous behavior.
+			/// </summary>
+			public static bool IsAbsolutePositionEnabled { get; set; }
 		}
 
 		public static class SelectorItem
@@ -921,6 +939,19 @@ namespace Uno.UI
 				set { }
 #endif
 			}
+
+			/// <summary>
+			/// Force the use of Metal (true) or Software (false) rendering on macOS.
+			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
+			/// </summary>
+			public static bool? UseMetalOnMacOS { get; set; }
+
+			/// <summary>
+			/// Wait until the UI tree is completely arranged (i.e. all <see cref="UIElement.InvalidateMeasure"/>
+			/// and <see cref="UIElement.InvalidateArrange"/> calls have been processed) to update the UI and generate
+			/// new render frames.
+			/// </summary>
+			public static bool GenerateNewFramesOnlyWhenUITreeIsArranged { get; set; }
 		}
 
 		public static class DependencyProperty

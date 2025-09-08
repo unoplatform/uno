@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 
@@ -8,7 +11,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 {
-	private readonly Func<Application> _appBuilder;
+	private static Func<Application>? _appBuilder;
 
 	[ThreadStatic] private static bool _isDispatcherThread;
 	[ThreadStatic] private static MacSkiaHost? _current;
@@ -58,18 +61,13 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 			return;
 		}
 
-		// if packaged as an app bundle, set the resource path base to the Resources folder
-		if (NativeUno.uno_application_is_bundled())
-		{
-			Windows.Storage.StorageFile.ResourcePathBase = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, "..", "Resources");
-		}
-
 		InitializeDispatcher();
 	}
 
-	protected override Task RunLoop()
+	protected override unsafe Task RunLoop()
 	{
-		StartApp();
+		// we'll call to NSApplication so it needs to be initialized first (and know what to call once done)
+		NativeUno.uno_set_application_start_callback(&StartApp);
 
 		// `argc` and `argv` parameters are ignored by macOS
 		// see https://developer.apple.com/documentation/appkit/1428499-nsapplicationmain?language=objc
@@ -90,14 +88,31 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		CompositionTargetTimer.Start();
 	}
 
-	private void StartApp()
+	// called from native code to ensure NSApplication is fully initialized
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	static private void StartApp()
 	{
-		void CreateApp(ApplicationInitializationCallbackParams _)
+		try
 		{
-			var app = _appBuilder();
-			app.Host = this;
+			// if packaged as an app bundle, set the resource path base to the Resources folder
+			if (NativeUno.uno_application_is_bundled())
+			{
+				Windows.Storage.StorageFile.ResourcePathBase = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, "Resources");
+			}
+
+			void CreateApp(ApplicationInitializationCallbackParams _)
+			{
+				var app = _appBuilder!();
+				app.Host = Current;
+			}
+			Application.Start(CreateApp);
 		}
-		Application.Start(CreateApp);
+		catch (Exception e)
+		{
+			// the exception would be printed on the console if this was not called from native code
+			Console.WriteLine(e);
+			throw;
+		}
 	}
 
 	private bool InitializeMac()
@@ -105,23 +120,24 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		try
 		{
 			// Initialize with Metal unless software rendering is requested
-			var metal = RenderSurfaceType != RenderSurfaceType.Software;
+			var metal = FeatureConfiguration.Rendering.UseMetalOnMacOS ?? true;
 
 			// Create the native NSApplication and a main window
 			var result = NativeUno.uno_app_initialize(ref metal);
 
-			switch (RenderSurfaceType)
+			switch (FeatureConfiguration.Rendering.UseMetalOnMacOS)
 			{
-				case RenderSurfaceType.Auto:
+				case null:
 					RenderSurfaceType = metal ? RenderSurfaceType.Metal : RenderSurfaceType.Software;
 					break;
-				case RenderSurfaceType.Metal:
+				case true:
 					if (!metal)
 					{
 						throw new NotSupportedException("Metal is not supported on this hardware or configuration. Try enabling the software-based renderer. See https://aka.platform.uno/skia-macos");
 					}
+					RenderSurfaceType = RenderSurfaceType.Metal;
 					break;
-				case RenderSurfaceType.Software:
+				case false:
 					if (metal)
 					{
 						if (this.Log().IsEnabled(LogLevel.Warning))
@@ -129,6 +145,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 							this.Log().Warn("Metal is supported on this hardware but software rendering was requested.");
 						}
 					}
+					RenderSurfaceType = RenderSurfaceType.Software;
 					break;
 			}
 			return result;

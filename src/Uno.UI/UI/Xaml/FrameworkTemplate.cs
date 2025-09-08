@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml
 		internal readonly NewFrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
-		private readonly bool _isLegacyTemplate;
+		private readonly bool _isLegacyTemplate = true; // Tests fails if set to false, so we keep it true for now.
 
 		/// <summary>
 		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.

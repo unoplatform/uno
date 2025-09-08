@@ -121,7 +121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net10.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 #endif
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ImageIcon), 15)]
 #if !WINAPPSDK
@@ -132,7 +132,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationViewItem), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationViewItem), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net10.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15)]
@@ -183,7 +183,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
 		[DataRow(typeof(MediaPlayerElement), 15)]
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CommandBarFlyout_Leak", 15)]
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CommandBarFlyout_Leak", 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeUIKit)] // flaky on native iOS
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All, RuntimeTestPlatforms ignoredPlatforms = RuntimeTestPlatforms.None)
 		{
 			if (ignoredPlatforms.HasFlag(RuntimeTestsPlatformHelper.CurrentPlatform))
@@ -308,13 +308,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var retainedMessage = "";
 
-#if __APPLE_UIKIT__ || __ANDROID__
-			var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
-			if (activeControls != 0)
+			if (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser())
 			{
-				Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
+				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
+				if (activeControls != 0)
+				{
+					Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
 
-				Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
+					Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
 
 #if TRACK_REFS
 				Console.WriteLine($"\n ========== first run: total objects created ============");
@@ -331,22 +332,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 				Console.WriteLine();
 #endif
+				}
+
+				retainedMessage = retainedTypes.JoinBy(";");
 			}
-			retainedMessage = retainedTypes.JoinBy(";");
+
 			//var retained = _holders.Select(x => x.Key).ToArray();
-#endif
+			if (OperatingSystem.IsIOS())
+			{
+				// On iOS, the collection of objects does not seem to be reliable enough
+				// to always go to zero during runtime tests. If the count of active objects
+				// is arbitrarily below the half of the number of top-level objects.
+				// created, we can assume that enough objects were collected entirely.
+				Assert.IsTrue(activeControls < count, retainedMessage);
+			}
+			else
+			{
+				Assert.AreEqual(0, activeControls, retainedMessage);
+			}
 
-#if __APPLE_UIKIT__
-			// On iOS, the collection of objects does not seem to be reliable enough
-			// to always go to zero during runtime tests. If the count of active objects
-			// is arbitrarily below the half of the number of top-level objects.
-			// created, we can assume that enough objects were collected entirely.
-			Assert.IsTrue(activeControls < count, retainedMessage);
-#else
-			Assert.AreEqual(0, activeControls, retainedMessage);
-#endif
-
-#if __APPLE_UIKIT__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
 				if (p.Key is FrameworkElement { Name: { Length: > 0 } name } fe)
@@ -358,7 +362,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					return p.Key?.ToString() ?? "null";
 				}
 			}
-#endif
+
 			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
 			{
 				var item = (FrameworkElement)Activator.CreateInstance(controlType)!;

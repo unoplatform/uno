@@ -46,7 +46,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 
 			var fileContent = await File.ReadAllTextAsync(tempFile, CT);
 			fileContent.Should().NotBeNullOrEmpty("temp file should not be empty");
-			fileContent.Should().Contain("DevServer", "telemetry should contain DevServer events");
+			fileContent.Should().Contain("dev-server", "telemetry should contain dev-server events");
 
 			Logger.LogInformation($"[DEBUG_LOG] Telemetry file content: {fileContent}");
 		}
@@ -74,7 +74,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 
 			var fileContent = await File.ReadAllTextAsync(tempFile, CT);
 			fileContent.Should().NotBeNullOrEmpty("temp file should not be empty");
-			fileContent.Should().Contain("DevServer", "telemetry should contain DevServer events");
+			fileContent.Should().Contain("dev-server", "telemetry should contain dev-server events");
 
 			// The telemetry should contain connection metadata from the enhanced scoped services
 			// This validates that ConnectionContext is properly integrated with TelemetrySession

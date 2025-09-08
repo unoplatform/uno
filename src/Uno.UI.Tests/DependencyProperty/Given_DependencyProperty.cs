@@ -401,7 +401,7 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			var SUT = new MockDependencyObject();
 			var testProperty = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
-			Assert.ThrowsException<InvalidOperationException>(() => DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42")));
+			Assert.ThrowsExactly<InvalidOperationException>(() => DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42")));
 		}
 
 		[TestMethod]
@@ -470,7 +470,7 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			var SUT = new MockDependencyObject();
 			var testProperty = DependencyProperty.Register(nameof(When_Setting_UnsetValue_On_DefaultValue_Then_Fails), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
-			Assert.ThrowsException<InvalidOperationException>(() => SUT.SetValue(testProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.DefaultValue));
+			Assert.ThrowsExactly<InvalidOperationException>(() => SUT.SetValue(testProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.DefaultValue));
 		}
 
 		[TestMethod]
@@ -1003,7 +1003,7 @@ namespace Uno.UI.Tests.BinderTests
 				typeof(MockDependencyObject),
 				null
 			);
-			Assert.ThrowsException<ArgumentException>(() => SUT.SetValue(testProperty, "test", DependencyPropertyValuePrecedences.Coercion));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.SetValue(testProperty, "test", DependencyPropertyValuePrecedences.Coercion));
 		}
 
 		[TestMethod]

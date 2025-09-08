@@ -96,7 +96,7 @@ namespace Uno.UI.Controls
 			void OnStatusBarChanged(StatusBar sender, object args)
 			{
 				nativeBar.SetNeedsLayout();
-				nativeBar.Superview.SetNeedsLayout();
+				nativeBar.Superview?.SetNeedsLayout();
 			}
 		}
 

@@ -1,22 +1,20 @@
-﻿using SkiaSharp;
-using MUX = Microsoft.UI.Xaml;
-using Uno.Foundation.Logging;
-using Windows.Graphics.Display;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
-using Uno.UI.Hosting;
-using System.Diagnostics;
-using Uno.UI.Helpers;
+using System.Threading;
 using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
+using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
+using Uno.UI.Hosting;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia;
 
 internal partial class BrowserRenderer
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly IXamlRootHost _host;
 	private int _renderCount;
-	private DisplayInformation? _displayInformation;
 	private bool _isWindowInitialized;
 
 	private const int ResourceCacheBytes = 256 * 1024 * 1024; // 256 MB
@@ -33,8 +31,6 @@ internal partial class BrowserRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
 	private SKCanvas? _canvas;
-
-	private SKSizeI? _lastSize;
 
 	public BrowserRenderer(IXamlRootHost host)
 	{
@@ -60,18 +56,22 @@ internal partial class BrowserRenderer
 		_jsInfo = NativeMethods.CreateContext(this, _nativeSwapChainPanel, WebAssemblyWindowWrapper.Instance?.CanvasId ?? "invalid");
 	}
 
-	internal void InvalidateRender() => NativeMethods.Invalidate(_nativeSwapChainPanel);
-
-	private void RenderFrame()
+	internal void InvalidateRender()
 	{
-		using var _ = _fpsHelper.BeginFrame();
-
-		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		if (!SkiaRenderHelper.CanRecordPicture(_host.RootElement))
 		{
-			InvalidateRender();
+			// Try again next tick
+			_host.RootElement?.XamlRoot?.QueueInvalidateRender();
 			return;
 		}
 
+		XamlRootMap.GetRootForHost(_host)?.VisualTree.ContentRoot.CompositionTarget.Render();
+
+		NativeMethods.Invalidate(_nativeSwapChainPanel);
+	}
+
+	private void RenderFrame()
+	{
 		if (!_jsInfo.IsValid)
 		{
 			Initialize();
@@ -94,24 +94,8 @@ internal partial class BrowserRenderer
 			_context.SetResourceCacheLimit(ResourceCacheBytes);
 		}
 
-		_displayInformation ??= DisplayInformation.GetForCurrentView();
-
-		var scale = _displayInformation.RawPixelsPerViewPixel;
-
-		// get the new surface size
-		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width), (int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height));
-
-		// manage the drawing surface
-		if (_surface == null || _canvas == null || _renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
+		var currentClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"Render size {newCanvasSize.Width}x{newCanvasSize.Height}, Window size: {Microsoft.UI.Xaml.Window.Current!.Bounds}, Scale: {scale}");
-			}
-
-			// create or update the dimensions
-			_lastSize = newCanvasSize;
-
 			_glInfo = new GRGlFramebufferInfo(_jsInfo.FboId, colorType.ToGlSizedFormat());
 
 			// destroy the old surface
@@ -121,7 +105,7 @@ internal partial class BrowserRenderer
 
 			// re-create the render target
 			_renderTarget?.Dispose();
-			_renderTarget = new GRBackendRenderTarget((int)(newCanvasSize.Width * scale), (int)(newCanvasSize.Height * scale), _jsInfo.Samples, _jsInfo.Stencil, _glInfo);
+			_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, _jsInfo.Samples, _jsInfo.Stencil, _glInfo);
 
 			// create the surface
 			_surface = SKSurface.Create(_context, _renderTarget, surfaceOrigin, colorType);
@@ -132,29 +116,13 @@ internal partial class BrowserRenderer
 				_isWindowInitialized = true;
 				// Microsoft.UI.Xaml.Window.Current.OnNativeWindowCreated();
 			}
-		}
 
-		using (new SKAutoCanvasRestore(_canvas, true))
-		{
-			_surface.Canvas.Clear(SKColors.Transparent);
-			_surface.Canvas.Scale((float)scale);
-			if (_host.RootElement?.Visual is { } rootVisual)
-			{
-				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(_renderTarget.Width, _renderTarget.Height, rootVisual, _canvas);
-				_fpsHelper.DrawFps(_canvas);
-				// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
-				// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
-				// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.
-				negativePath.Transform(SKMatrix.CreateScale((float)(1 / scale), (float)(1 / scale)), negativePath);
-				BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!negativePath.IsEmpty ? negativePath.ToSvgPathData() : "");
-				_host.RootElement?.XamlRoot?.InvokeFramePainted();
-			}
-		}
+			return _canvas;
+		});
 
-		// update the control
-		_canvas?.Flush();
 		_context.Flush();
-		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
+
+		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!currentClipPath.IsEmpty ? currentClipPath.ToSvgPathData() : "");
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{

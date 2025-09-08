@@ -84,7 +84,7 @@ namespace Windows.Devices.Sensors
 
 		private double UpdateAccelerometer(uint value) => value / 1000.0;
 
-		private void AccelerometerDataReceived(CMAccelerometerData data, NSError error)
+		private void AccelerometerDataReceived(CMAccelerometerData? data, NSError? error)
 		{
 			if (data == null)
 			{

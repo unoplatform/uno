@@ -160,46 +160,36 @@ namespace TestRepro
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
 		}
+
 		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			this.Bindings.StopTracking();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
-			}
-			set
-			{
-				_innerTextBlockSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
+			set => _innerTextBlockSubject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelContentSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelContentSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.ContentControl topLevelContent
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ContentControl)_topLevelContentSubject.ElementInstance;
-			}
-			set
-			{
-				_topLevelContentSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.ContentControl)_topLevelContentSubject.ElementInstance;
+			set => _topLevelContentSubject.ElementInstance = value;
 		}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
-				set => _component_0_Holder.Instance = value;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
-			private global::Microsoft.UI.Xaml.ElementStub _component_1
-			{
-				get => (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
-				set => _component_1_Holder.Instance = value;
-			}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
+		private global::Microsoft.UI.Xaml.ElementStub _component_1
+		{
+			get => (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
+			set => _component_1_Holder.Instance = value;
+		}
 		private interface IMainPage_Bindings
 		{
 			void Initialize();

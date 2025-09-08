@@ -129,13 +129,16 @@ partial class InputManager
 			var cancelled = false;
 			foreach (var manipulation in _directManipulations)
 			{
-				if (manipulation.Handlers.Any(handler => handler.Owner == requestingElement))
+				if (manipulation.Handlers.Any(IsForParentOfRequestingElement))
 				{
 					cancelled |= manipulation.Cancel();
 				}
 			}
 
 			return cancelled;
+
+			bool IsForParentOfRequestingElement(IDirectManipulationHandler handler)
+				=> handler.Owner is DependencyObject owner && requestingElement.GetAllParents(includeCurrent: true).Contains(owner);
 		}
 
 		private bool IsRedirectedToManipulations(PointerIdentifier pointerId)

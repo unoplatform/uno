@@ -29,8 +29,8 @@ public partial class CoreWebView2
 	internal INativeWebView? GetNativeWebViewFromTemplate()
 	{
 		var webView = (_owner as ViewGroup)?
-			.GetChildren(v => v is Android.Webkit.WebView)
-			.FirstOrDefault() as Android.Webkit.WebView;
+			.GetChildren(v => v is AWebView)
+			.FirstOrDefault() as AWebView;
 
 		if (webView is null)
 		{

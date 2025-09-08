@@ -27,8 +27,7 @@
 
 	<ItemGroup>
 
-		<PackageReference Include="Svg.Custom" />
-		<PackageReference Include="Svg.Model" />
+		<PackageReference Include="Svg.Skia" />
 		<PackageReference Include="SkiaSharp.Views.Uno" Condition="'$(UNO_UWP_BUILD)'=='true'" />
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 

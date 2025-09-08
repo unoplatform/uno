@@ -135,7 +135,7 @@ namespace Microsoft.UI.Xaml.Media
 			var paint = new Paint();
 
 			//Draw the output bitmap to the screen
-			var rect = new Android.Graphics.Rect(0, 0, (int)drawRect.Width, (int)drawRect.Height);
+			var rect = new ARect(0, 0, (int)drawRect.Width, (int)drawRect.Height);
 			destinationCanvas.DrawBitmap(output, rect, rect, paint);
 		}
 
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml.Media
 				return null;
 			}
 
-			var outputBitmap = Bitmap.CreateBitmap((int)drawRect.Width, (int)drawRect.Height, Android.Graphics.Bitmap.Config.Argb8888);
+			var outputBitmap = Bitmap.CreateBitmap((int)drawRect.Width, (int)drawRect.Height, ABitmap.Config.Argb8888);
 
 			//and a temporary canvas that will draw into the bitmap
 			using (var bitmapCanvas = new Canvas(outputBitmap))
@@ -215,9 +215,9 @@ namespace Microsoft.UI.Xaml.Media
 		/// <param name="drawRect"></param>
 		/// <param name="bitmap"></param>
 		/// <returns></returns>
-		private Android.Graphics.Matrix GenerateMatrix(Rect drawRect, Bitmap bitmap)
+		private AMatrix GenerateMatrix(Rect drawRect, Bitmap bitmap)
 		{
-			var matrix = new Android.Graphics.Matrix();
+			var matrix = new AMatrix();
 
 			// Note that bitmap.Width and bitmap.Height (in physical pixels) are automatically scaled up when loaded from local resources, but aren't when acquired externally.
 			// This means that bitmaps acquired externally might not render the same way on devices with different densities when using Stretch.None.
@@ -225,7 +225,7 @@ namespace Microsoft.UI.Xaml.Media
 			var sourceRect = new Rect(0, 0, bitmap.Width, bitmap.Height);
 			var destinationRect = GetArrangedImageRect(sourceRect.Size, drawRect);
 
-			matrix.SetRectToRect(sourceRect.ToRectF(), destinationRect.ToRectF(), Android.Graphics.Matrix.ScaleToFit.Fill);
+			matrix.SetRectToRect(sourceRect.ToRectF(), destinationRect.ToRectF(), AMatrix.ScaleToFit.Fill);
 
 			RelativeTransform?.ToNativeMatrix(matrix, size: new Size(sourceRect.Width, sourceRect.Height));
 			return matrix;

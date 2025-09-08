@@ -119,7 +119,7 @@ namespace Uno.UI.Controls
 			// CommandBarExtensions.BackButtonText
 			if (element.GetValue(BackButtonTitleProperty) is string backButtonText)
 			{
-				native.BackBarButtonItem = new UIBarButtonItem(backButtonText, UIBarButtonItemStyle.Plain, null);
+				native.BackBarButtonItem = new UIBarButtonItem(backButtonText, UIBarButtonItemStyle.Plain, delegate { });
 			}
 			else
 			{

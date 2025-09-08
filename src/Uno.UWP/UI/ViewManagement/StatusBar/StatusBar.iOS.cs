@@ -22,7 +22,9 @@ namespace Windows.UI.ViewManagement
 	/// programmatically manipulate the status bar with <see cref="ShowAsync"/> and <see cref="HideAsync"/>.</remarks>
 	public sealed partial class StatusBar
 	{
-		partial void InitializePartial()
+		private bool _isUsingBackgroundColor;
+
+		private void InitializeBackgroundColorObserver()
 		{
 			NSNotificationCenter.DefaultCenter.AddObserver(
 				UIApplication.DidBecomeActiveNotification,
@@ -80,6 +82,12 @@ namespace Windows.UI.ViewManagement
 
 		public void SetStatusBarBackgroundColor(Color? color)
 		{
+			if (!_isUsingBackgroundColor)
+			{
+				InitializeBackgroundColorObserver();
+				_isUsingBackgroundColor = true;
+			}
+
 			// random unique tag to avoid recreating the view
 			const int StatusBarViewTag = 38482;
 			var (windows, statusBarFrame) = GetWindowsAndStatusBarFrame();
@@ -142,10 +150,15 @@ namespace Windows.UI.ViewManagement
 				var currentScene = scenes.FirstOrDefault(n => n.ActivationState == UISceneActivationState.ForegroundActive);
 
 				if (currentScene is not UIWindowScene uiWindowScene)
-					throw new InvalidOperationException("Unable to find current window scene.");
+				{
+					// If no active scene is found, this can happen when app is in the background.
+					return ([], CGRect.Empty);
+				}
 
 				if (uiWindowScene.StatusBarManager is not { } statusBarManager)
+				{
 					throw new InvalidOperationException("Unable to find a status bar manager.");
+				}
 
 				return (uiWindowScene.Windows, statusBarManager.StatusBarFrame);
 			}

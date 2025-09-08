@@ -13,6 +13,7 @@ using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal 
 using System.Runtime.InteropServices;
 using Windows.System;
 using Uno.UI.Dispatching;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -79,7 +80,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 			// Ensure that the async context is set properly, since we're raising
 			// events from outside the dispatcher.
-			using var syncContextScope = NativeDispatcher.Main.GetSynchronizationContext(NativeDispatcherPriority.Normal).Apply();
+			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
 
 			var that = (BrowserPointerInputSource)inputSource;
 			var evt = (HtmlPointerEvent)@event;
@@ -149,7 +150,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 					throw new ArgumentOutOfRangeException(nameof(@event), $"Unknown event ({@event}-{evt}).");
 			}
 
-			return (int)Uno.UI.Xaml.HtmlEventDispatchResult.Ok; // TODO
+			return (int)(args.Handled ? HtmlEventDispatchResult.PreventDefault : HtmlEventDispatchResult.Ok);
 		}
 		catch (Exception error)
 		{

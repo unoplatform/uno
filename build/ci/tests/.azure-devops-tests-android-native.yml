@@ -36,14 +36,14 @@ jobs:
   - checkout: self
     clean: true
 
-  # Install android 34 as we're running on macos-15
+  # Install android 35 as we're running on macos-15
   - bash: |
-      echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-34' | tr '\r' '\n' | uniq
-    displayName: Install Android 34
+      echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-35' | tr '\r' '\n' | uniq
+    displayName: Install Android 35
 
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
-      UnoCheckParameters: '--tfm net9.0-android'
+      UnoCheckParameters: '--tfm net10.0-android'
 
   - template: ../templates/nuget-cache.yml
     parameters:
@@ -53,12 +53,12 @@ jobs:
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
-      dotnet publish -f net8.0-android -c Release -p:UnoTargetFrameworkOverride=net8.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
+      dotnet publish -f net9.0-android -c Release -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Samples app
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-android/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net9.0-android/publish
       Contents: 'uno.platform.unosampleapp-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
@@ -105,7 +105,7 @@ jobs:
           UITEST_TEST_MODE_NAME: Automated
           UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT
           SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
-          TARGETPLATFORM_NAME: net8
+          TARGETPLATFORM_NAME: net9
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: true
           UITEST_TEST_TIMEOUT: '270s'
@@ -119,7 +119,7 @@ jobs:
           UITEST_RUNTIME_TEST_GROUP: ${{ testGroup }}
           UITEST_RUNTIME_TEST_GROUP_COUNT: 5
           SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
-          TARGETPLATFORM_NAME: net8
+          TARGETPLATFORM_NAME: net9
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: false
           UITEST_TEST_TIMEOUT: '2600s'
@@ -130,7 +130,7 @@ jobs:
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshot
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
-        TARGETPLATFORM_NAME: net8
+        TARGETPLATFORM_NAME: net9
         FAILBUILD_ON_FAILURE: true
         ALLOW_RERUN: true
         UITEST_TEST_TIMEOUT: '270s'

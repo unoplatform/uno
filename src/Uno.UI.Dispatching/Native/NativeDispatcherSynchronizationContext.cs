@@ -3,22 +3,21 @@
 namespace Uno.UI.Dispatching
 {
 	/// <summary>
-	/// Provides a CoreDispatched Synchronization context, to allow for async methods to keep the dispatcher priority.
+	/// A synchronization context that always schedules on the Normal priority.
 	/// </summary>
 	internal sealed class NativeDispatcherSynchronizationContext : SynchronizationContext
 	{
 		private readonly NativeDispatcher _dispatcher;
-		private readonly NativeDispatcherPriority _priority;
+		private const NativeDispatcherPriority Priority = NativeDispatcherPriority.Normal;
 
-		public NativeDispatcherSynchronizationContext(NativeDispatcher dispatcher, NativeDispatcherPriority priority)
+		public NativeDispatcherSynchronizationContext(NativeDispatcher dispatcher)
 		{
 			_dispatcher = dispatcher;
-			_priority = priority;
 		}
 
 		public override void Post(SendOrPostCallback d, object state)
 		{
-			_dispatcher.Enqueue(() => d(state), _priority);
+			_dispatcher.Enqueue(() => d(state), Priority);
 		}
 
 		public override void Send(SendOrPostCallback d, object state)
@@ -30,7 +29,7 @@ namespace Uno.UI.Dispatching
 			else
 			{
 				_dispatcher
-					.EnqueueAsync(() => d(state), _priority)
+					.EnqueueAsync(() => d(state), Priority)
 					.Wait();
 			}
 		}

@@ -102,7 +102,14 @@ namespace Microsoft.UI.Xaml
 
 #if SUPPORTS_RTL
 		internal Matrix3x2 GetFlowDirectionTransform()
-			=> ShouldMirrorVisual() ? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f) : Matrix3x2.Identity;
+		{
+			var inMirroredSubtree = ShouldMirrorVisual();
+			var isMirroredTextBlock = this is TextBlock { FlowDirection: FlowDirection.RightToLeft };
+
+			return inMirroredSubtree ^ isMirroredTextBlock
+				? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)
+				: Matrix3x2.Identity;
+		}
 
 		private bool ShouldMirrorVisual()
 		{
@@ -546,7 +553,8 @@ namespace Microsoft.UI.Xaml
 
 		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
 
-		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
+#nullable enable
+		internal static Matrix3x2 GetTransform(UIElement from, UIElement? to)
 		{
 			if (from == to || !from.IsInLiveTree || (to is { IsVisualTreeRoot: false, IsInLiveTree: false }))
 			{
@@ -610,6 +618,7 @@ namespace Microsoft.UI.Xaml
 			return matrix;
 #endif
 		}
+#nullable restore
 
 #if !__SKIA__
 		/// <summary>
@@ -1491,6 +1500,19 @@ namespace Microsoft.UI.Xaml
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
 			}
+		}
+
+		internal void SetEntireSubtreeDirty()
+		{
+#if __SKIA__
+			// TODO Uno: Implementation should be different. For now we invalidate the entire visual tree.
+			XamlRoot?.QueueInvalidateRender();
+			//if (!m_isEntireSubtreeDirty)
+			//{
+			//	NWSetDirtyFlagsAndPropagate(DirtyFlags::Render, FALSE);
+			//	m_isEntireSubtreeDirty = TRUE;
+			//}
+#endif
 		}
 	}
 }

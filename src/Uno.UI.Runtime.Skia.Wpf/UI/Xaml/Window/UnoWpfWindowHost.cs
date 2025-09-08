@@ -5,6 +5,7 @@ using System.Windows.Markup;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
@@ -13,7 +14,6 @@ using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
 using WpfControl = System.Windows.Controls.Control;
 using WpfWindow = System.Windows.Window;
-using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 using MUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
@@ -145,6 +145,15 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
+		if (!SkiaRenderHelper.CanRecordPicture(_winUIWindow.RootElement))
+		{
+			// Try again next tick
+			_winUIWindow.RootElement?.XamlRoot?.QueueInvalidateRender();
+			return;
+		}
+
+		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
+
 		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 		_renderLayer.InvalidateVisual();
 		InvalidateVisual();

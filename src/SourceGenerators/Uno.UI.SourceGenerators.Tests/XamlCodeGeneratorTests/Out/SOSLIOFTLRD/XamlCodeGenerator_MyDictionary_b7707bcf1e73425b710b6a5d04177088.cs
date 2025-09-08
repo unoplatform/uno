@@ -48,7 +48,7 @@ namespace TestNamespace
 
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_TestNamespaceTestClass
+		private class __MyDictionary_b7707bcf1e73425b710b6a5d04177088
 		{
 		}
 	}
@@ -123,7 +123,7 @@ namespace MyProject.__Resources
 {
 	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	internal class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_MyDictionaryRD
+	internal class __MyDictionary_b7707bcf1e73425b710b6a5d04177088
 	{
 	}
 }

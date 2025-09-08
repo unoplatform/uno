@@ -6,10 +6,6 @@
 	-->
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
 
-	<ItemGroup>
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$(UnoFeatures.Contains(';glcanvas;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DGL" ProjectSystem="true" />
 	</ItemGroup>

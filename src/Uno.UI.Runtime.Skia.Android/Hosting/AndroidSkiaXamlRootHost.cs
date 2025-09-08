@@ -18,8 +18,6 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost
 		_choreographerHandler = new();
 	}
 
-	internal static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
-
 	void IXamlRootHost.InvalidateRender()
 	{
 		ApplicationActivity.Instance?.InvalidateRender();

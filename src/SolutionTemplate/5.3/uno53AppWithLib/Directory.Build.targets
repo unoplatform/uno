@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
   <Target Name="ValidateIsPackable"
           AfterTargets="CoreCompile;Build"
           Condition="$(UsingUnoSdk) == 'true'">
@@ -8,5 +8,6 @@
 
   <!-- Except for this workaround for .NET 9 RC1 -->
 	<Import Project="../../../Workaround-43339.targets" />
+
 
 </Project>

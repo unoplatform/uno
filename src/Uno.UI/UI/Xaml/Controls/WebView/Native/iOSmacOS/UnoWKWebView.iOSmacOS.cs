@@ -236,11 +236,16 @@ public
 
 	internal void OnAnchorNavigation(Uri uri)
 	{
-		// For anchor navigation, only update source and raise history changed
+		// For anchor navigation, update source, raise history changed, and navigation completed
 		// This matches Windows WebView2 behavior
 		_lastNavigationData = uri;
 		_lastNavigationUrl = uri.AbsoluteUri;
 		_coreWebView!.Source = uri.AbsoluteUri;
+
+		// Raise NavigationCompleted for anchor navigation to ensure proper event handling
+		RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
+
+		_shouldQueueHistoryChange = true;
 		QueueHistoryChange();
 	}
 
@@ -276,7 +281,7 @@ public
 			if (!cancel)
 			{
 #if __APPLE_UIKIT__
-				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
+				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target!))
 #else
 				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
 #endif
@@ -480,12 +485,12 @@ public
 			}
 			else
 			{
-				_shouldQueueHistoryChange = true;
-				QueueHistoryChange();
-
 				// Anchor navigation shouldn't trigger NavigationStarting event, but should still allow queuing history changes
 				if (uri != null && IsAnchorNavigation(uri.AbsoluteUri))
 				{
+					_shouldQueueHistoryChange = true;
+					QueueHistoryChange();
+
 					cancel = true;
 					return;
 				}
@@ -694,11 +699,15 @@ public
 		else if (forKey.Equals(nameof(Url), StringComparison.OrdinalIgnoreCase))
 		{
 			var currentUri = Url?.ToUri();
-			if (currentUri != null && !IsAnchorNavigation(currentUri.AbsoluteUri))
+			if (currentUri != null)
 			{
-				_lastNavigationUrl = currentUri.AbsoluteUri;
+				if (!IsAnchorNavigation(currentUri.AbsoluteUri))
+				{
+					_lastNavigationUrl = currentUri.AbsoluteUri;
+					QueueHistoryChange();
+				}
+
 				_coreWebView.Source = currentUri.ToString();
-				QueueHistoryChange();
 			}
 		}
 	}
@@ -798,7 +807,7 @@ public
 				}
 				else
 				{
-					tcs.TrySetResult(result as NSString);
+					tcs.TrySetResult((result as NSString) ?? "");
 				}
 			});
 

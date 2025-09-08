@@ -1528,11 +1528,11 @@
       <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="AccentFillColorDefaultBrush" />
       <StaticResource x:Key="TabViewBackground" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="LayerOnMicaBaseAltFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SolidBackgroundFillColorTertiaryBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundPointerOver" ResourceKey="LayerOnMicaBaseAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundPressed" ResourceKey="LayerOnMicaBaseAltFillColorDefaultBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundDisabled" ResourceKey="LayerOnMicaBaseAltFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewItemHeaderForeground" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TabViewItemHeaderForegroundPressed" ResourceKey="TextFillColorTertiaryBrush" />
       <StaticResource x:Key="TabViewItemHeaderForegroundSelected" ResourceKey="TextFillColorPrimaryBrush" />
@@ -1551,6 +1551,10 @@
       <StaticResource x:Key="TabViewButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TabViewButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="TabViewButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrushPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewScrollButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewScrollButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
       <StaticResource x:Key="TabViewScrollButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
@@ -1559,6 +1563,10 @@
       <StaticResource x:Key="TabViewScrollButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TabViewScrollButtonForegroundPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TabViewScrollButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrushPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewItemSeparator" ResourceKey="DividerStrokeColorDefaultBrush" />
       <StaticResource x:Key="TabViewItemHeaderCloseButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewItemHeaderCloseButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
@@ -1574,10 +1582,17 @@
       <StaticResource x:Key="TabViewItemHeaderPointerOverCloseButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="TabViewItemHeaderSelectedCloseButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="TabViewItemHeaderDisabledCloseButtonForeground" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushSelected" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewButtonBackgroundActiveTab" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewButtonForegroundActiveTab" ResourceKey="ControlStrongFillColorDefaultBrush" />
       <StaticResource x:Key="TabViewBorderBrush" ResourceKey="CardStrokeColorDefault" />
       <StaticResource x:Key="TabViewItemBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <Thickness x:Key="TabViewButtonBorderThickness">0</Thickness>
+      <Thickness x:Key="TabViewItemHeaderCloseButtonBorderThickness">0</Thickness>
       <LinearGradientBrush x:Key="TabViewSelectedItemBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,4">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
@@ -3334,11 +3349,11 @@
       <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="AccentFillColorDefaultBrush" />
       <StaticResource x:Key="TabViewBackground" ResourceKey="SubtleFillColorTransparentBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="LayerOnMicaBaseAltFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SolidBackgroundFillColorTertiaryBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundPointerOver" ResourceKey="LayerOnMicaBaseAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundPressed" ResourceKey="LayerOnMicaBaseAltFillColorDefaultBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundDisabled" ResourceKey="LayerOnMicaBaseAltFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewItemHeaderForeground" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TabViewItemHeaderForegroundPressed" ResourceKey="TextFillColorTertiaryBrush" />
       <StaticResource x:Key="TabViewItemHeaderForegroundSelected" ResourceKey="TextFillColorPrimaryBrush" />
@@ -3357,6 +3372,10 @@
       <StaticResource x:Key="TabViewButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TabViewButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="TabViewButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrushPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewScrollButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewScrollButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
       <StaticResource x:Key="TabViewScrollButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
@@ -3365,6 +3384,10 @@
       <StaticResource x:Key="TabViewScrollButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TabViewScrollButtonForegroundPointerOver" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="TabViewScrollButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrushPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewItemSeparator" ResourceKey="DividerStrokeColorDefaultBrush" />
       <StaticResource x:Key="TabViewItemHeaderCloseButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewItemHeaderCloseButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
@@ -3380,10 +3403,17 @@
       <StaticResource x:Key="TabViewItemHeaderPointerOverCloseButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="TabViewItemHeaderSelectedCloseButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="TabViewItemHeaderDisabledCloseButtonForeground" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushSelected" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewButtonBackgroundActiveTab" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewButtonForegroundActiveTab" ResourceKey="ControlStrongFillColorDefaultBrush" />
       <StaticResource x:Key="TabViewBorderBrush" ResourceKey="CardStrokeColorDefault" />
       <StaticResource x:Key="TabViewItemBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <Thickness x:Key="TabViewButtonBorderThickness">0</Thickness>
+      <Thickness x:Key="TabViewItemHeaderCloseButtonBorderThickness">0</Thickness>
       <LinearGradientBrush x:Key="TabViewSelectedItemBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,4">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
@@ -5126,57 +5156,72 @@
       <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
-      <StaticResource x:Key="TabViewBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SystemControlHighlightChromeHighBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundPointerOver" ResourceKey="SystemControlHighlightChromeHighBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundPressed" ResourceKey="SystemControlHighlightChromeHighBrush" />
-      <StaticResource x:Key="TabViewItemHeaderBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewItemHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
-      <StaticResource x:Key="TabViewItemHeaderForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewItemHeaderForegroundSelected" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewItemHeaderForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewItemHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-      <StaticResource x:Key="TabViewItemIconForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <StaticResource x:Key="TabViewItemIconForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewItemIconForegroundSelected" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewItemIconForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewItemIconForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-      <StaticResource x:Key="TabViewButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewButtonBackgroundPressed" ResourceKey="SystemControlHighlightChromeHighBrush" />
-      <StaticResource x:Key="TabViewButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightChromeHighBrush" />
-      <StaticResource x:Key="TabViewButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewButtonForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <StaticResource x:Key="TabViewButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-      <StaticResource x:Key="TabViewScrollButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewScrollButtonBackgroundPressed" ResourceKey="SystemControlHighlightChromeHighBrush" />
-      <StaticResource x:Key="TabViewScrollButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightChromeHighBrush" />
-      <StaticResource x:Key="TabViewScrollButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewScrollButtonForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <StaticResource x:Key="TabViewScrollButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewScrollButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="TabViewScrollButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-      <StaticResource x:Key="TabViewItemSeparator" ResourceKey="SystemControlForegroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewItemHeaderCloseButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewItemHeaderCloseButtonBackgroundPressed" ResourceKey="SystemControlBackgroundListMediumBrush" />
-      <StaticResource x:Key="TabViewItemHeaderCloseButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundListLowBrush" />
-      <StaticResource x:Key="TabViewItemHeaderPressedCloseButtonBackground" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="TabViewItemHeaderPointerOverCloseButtonBackground" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="TabViewItemHeaderSelectedCloseButtonBackground" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="TabViewItemHeaderDisabledCloseButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="TabViewItemHeaderCloseButtonForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <StaticResource x:Key="TabViewItemHeaderCloseButtonForegroundPressed" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
-      <StaticResource x:Key="TabViewItemHeaderCloseButtonForegroundPointerOver" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
-      <StaticResource x:Key="TabViewItemHeaderPressedCloseButtonForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
-      <StaticResource x:Key="TabViewItemHeaderPointerOverCloseButtonForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
-      <StaticResource x:Key="TabViewItemHeaderSelectedCloseButtonForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
-      <StaticResource x:Key="TabViewItemHeaderDisabledCloseButtonForeground" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-      <StaticResource x:Key="TabViewButtonBackgroundActiveTab" ResourceKey="SystemControlTransparentBrush" />
+      <StaticResource x:Key="TabViewBackground" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderBackgroundDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderForeground" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderForegroundPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderForegroundSelected" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderForegroundPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TabViewItemIconForeground" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="TabViewItemIconForegroundPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewItemIconForegroundSelected" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewItemIconForegroundPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewItemIconForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TabViewButtonBackground" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TabViewButtonBackgroundPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewButtonBackgroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewButtonBackgroundDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="TabViewButtonForeground" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewButtonForegroundPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewButtonForegroundPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewButtonForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrush" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrushPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrushPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewButtonBorderBrushDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBackground" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBackgroundPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBackgroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBackgroundDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonForeground" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonForegroundPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonForegroundPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrush" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrushPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrushPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewScrollButtonBorderBrushDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TabViewItemSeparator" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBackground" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBackgroundPressed" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBackgroundPointerOver" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderPressedCloseButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderPointerOverCloseButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderSelectedCloseButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderDisabledCloseButtonBackground" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonForeground" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonForegroundPressed" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonForegroundPointerOver" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderPressedCloseButtonForeground" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderPointerOverCloseButtonForeground" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderSelectedCloseButtonForeground" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderDisabledCloseButtonForeground" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushPointerOver" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushPressed" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushSelected" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TabViewItemHeaderCloseButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TabViewButtonBackgroundActiveTab" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="TabViewButtonForegroundActiveTab" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
-      <StaticResource x:Key="TabViewBorderBrush" ResourceKey="CardStrokeColorDefault" />
+      <SolidColorBrush x:Key="TabViewBorderBrush" Color="{ThemeResource SystemColorHighlightColor}" />
       <StaticResource x:Key="TabViewItemBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <Thickness x:Key="TabViewButtonBorderThickness">1</Thickness>
+      <Thickness x:Key="TabViewItemHeaderCloseButtonBorderThickness">1</Thickness>
       <LinearGradientBrush x:Key="TabViewSelectedItemBorderBrush" MappingMode="Absolute" StartPoint="0,0" EndPoint="0,4">
         <LinearGradientBrush.RelativeTransform>
           <ScaleTransform ScaleY="-1" CenterY="0.5" />
@@ -20727,16 +20772,23 @@
     </Setter>
   </Style>
   <Style TargetType="controls:RatingControl">
-    <Setter Property="Height" Value="32" />
+    <Setter Property="MinHeight" Value="32" />
     <!-- 9794813: retire these two properties as customisation points once all resource keys available -->
     <Setter Property="Foreground" Value="{ThemeResource RatingControlCaptionForeground}" />
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
     <Setter Property="ItemInfo" Value="{ThemeResource MUX_RatingControlDefaultFontInfo}" />
+    <!-- I've picked values so that these LOOK like the redlines, but these
+         values are not actually from the redlines because the redlines don't
+         consistently pick "distance from glyph"/"distance from edge of textbox"
+         so it's not possible to actually just have a consistent sizing model
+         here based on the redlines. -->
+    <Setter Property="FocusVisualMargin" Value="-8,-7,-8,0" />
+    <Setter Property="IsFocusEngagementEnabled" Value="True" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:RatingControl">
-          <Grid x:Name="LayoutRoot">
+          <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Disabled">
@@ -20771,19 +20823,26 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="-20,-20,-20,-20">
-              <StackPanel x:Name="RatingBackgroundStackPanel" Orientation="Horizontal" Background="Transparent" Margin="20,20,0,20" />
-              <TextBlock x:Name="Caption" Height="32" Margin="4,9,20,0" TextLineBounds="TrimToBaseline" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource RatingControlCaptionForeground}" VerticalAlignment="Center" IsHitTestVisible="False" AutomationProperties.AccessibilityView="Raw" AutomationProperties.Name="RatingCaption" Text="{TemplateBinding Caption}" />
+            <StackPanel x:Name="CaptionStackPanel" Orientation="Horizontal" Grid.Row="0" Margin="-20,-20,-20,-20">
+              <StackPanel x:Name="RatingBackgroundStackPanel" Orientation="Horizontal" Background="Transparent" Margin="20,20,0,20">
+                <StackPanel.RenderTransform>
+                  <TranslateTransform x:Name="RatingBackgroundStackPanelTranslateTransform" />
+                </StackPanel.RenderTransform>
+              </StackPanel>
+              <TextBlock x:Name="Caption" Margin="4,0,20,0" TextLineBounds="Tight" FontSize="12" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" IsHitTestVisible="False" AutomationProperties.AccessibilityView="Raw" AutomationProperties.Name="RatingCaption" Text="{TemplateBinding Caption}" />
               <!-- 4 = 8 item spacing +4 of magic redline spacing -8 to compensate for scale of the last RatingItem -->
               <!-- NB: The redlines say 8px, but it's really 12 px because:
                                 Designer note: The value between the last glyph and first text character is 12px.
                                 (There's 4px of whitespace accounted for in the text area in the redline) -->
-              <!-- TODO MSFT: 9925444 Fix vertical alignment in all text scenarios -->
             </StackPanel>
             <ContentPresenter x:Name="ForegroundContentPresenter" IsHitTestVisible="False" Grid.Row="0">
               <!-- Margin is on the StackPanel because ContentPresenter clips differently such that moving the reverse margin up won't work -->
               <StackPanel Orientation="Horizontal" Margin="-40,-40,-40,-40">
-                <StackPanel x:Name="RatingForegroundStackPanel" Orientation="Horizontal" IsHitTestVisible="False" Margin="40,40,40,40" />
+                <StackPanel x:Name="RatingForegroundStackPanel" Orientation="Horizontal" IsHitTestVisible="False" Margin="40,40,40,40">
+                  <StackPanel.RenderTransform>
+                    <TranslateTransform x:Name="RatingForegroundStackPanelTranslateTransform" />
+                  </StackPanel.RenderTransform>
+                </StackPanel>
               </StackPanel>
             </ContentPresenter>
           </Grid>
@@ -20791,13 +20850,16 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <x:Double x:Key="RatingControlFontSizeForRendering">32</x:Double>
+  <x:Double x:Key="RatingControlItemSpacing">8</x:Double>
+  <x:Double x:Key="RatingControlCaptionTopMargin">-12.5</x:Double>
   <DataTemplate x:Key="BackgroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
-    <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="32" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
+    <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="{StaticResource RatingControlFontSizeForRendering}" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
   </DataTemplate>
   <DataTemplate x:Key="ForegroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
-    <TextBlock Margin="-8,-8,0,0" FontSize="32" Text="&#xE735;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
+    <TextBlock Margin="-8,-8,0,0" FontSize="{StaticResource RatingControlFontSizeForRendering}" Text="&#xE735;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
   </DataTemplate>
   <DataTemplate x:Key="BackgroundImageDefaultTemplate">
     <Image Margin="-8,-8,0,0" AutomationProperties.AccessibilityView="Raw" />
@@ -22218,14 +22280,26 @@
               <RowDefinition Height="Auto" />
               <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup>
+                <VisualState x:Name="NormalBottomBorderLine" />
+                <VisualState x:Name="SingleBottomBorderLine">
+                  <VisualState.Setters>
+                    <Setter Target="LeftBottomBorderLine.(Grid.ColumnSpan)" Value="4" />
+                    <Setter Target="RightBottomBorderLine.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
             <Grid x:Name="TabContainerGrid" Background="{TemplateBinding Background}" XYFocusKeyboardNavigation="Enabled">
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" x:Name="LeftContentColumn" />
+                <ColumnDefinition Width="Auto" MinWidth="2" x:Name="LeftContentColumn" />
                 <ColumnDefinition Width="Auto" x:Name="TabColumn" />
                 <ColumnDefinition Width="Auto" x:Name="AddButtonColumn" />
                 <ColumnDefinition Width="*" x:Name="RightContentColumn" />
               </Grid.ColumnDefinitions>
-              <Border BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Height="1" Grid.ColumnSpan="4" VerticalAlignment="Bottom" />
+              <Border x:Name="LeftBottomBorderLine" BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Height="1" VerticalAlignment="Bottom" />
+              <Border x:Name="RightBottomBorderLine" BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Height="1" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" />
               <ContentPresenter Grid.Column="0" x:Name="LeftContentPresenter" Content="{TemplateBinding TabStripHeader}" ContentTemplate="{TemplateBinding TabStripHeaderTemplate}" />
               <primitives:TabViewListView Grid.Column="1" x:Name="TabListView" Padding="{TemplateBinding Padding}" CanReorderItems="{TemplateBinding CanReorderTabs}" CanDragItems="{TemplateBinding CanDragTabs}" AllowDrop="{TemplateBinding AllowDropTabs}" ItemsSource="{TemplateBinding TabItemsSource}" ItemTemplate="{TemplateBinding TabItemTemplate}" ItemTemplateSelector="{TemplateBinding TabItemTemplateSelector}" />
               <Border Visibility="{Binding IsAddTabButtonVisible, RelativeSource={RelativeSource TemplatedParent}}" Grid.Column="2" Padding="{ThemeResource TabViewItemAddButtonContainerPadding}" VerticalAlignment="Bottom">
@@ -22233,7 +22307,7 @@
               </Border>
               <ContentPresenter Grid.Column="3" x:Name="RightContentPresenter" HorizontalAlignment="Stretch" Content="{TemplateBinding TabStripFooter}" ContentTemplate="{TemplateBinding TabStripFooterTemplate}" />
             </Grid>
-            <ContentPresenter x:Name="TabContentPresenter" Grid.Row="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
+            <ContentPresenter x:Name="TabContentPresenter" Grid.Row="1" Background="{ThemeResource TabViewItemHeaderBackgroundSelected}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
           </Grid>
         </ControlTemplate>
       </Setter.Value>
@@ -22275,8 +22349,47 @@
       <Setter.Value>
         <ControlTemplate TargetType="primitives:TabViewListView">
           <Border BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
-            <ScrollViewer x:Name="ScrollViewer" Grid.Column="1" AutomationProperties.AccessibilityView="Raw" BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}" TabNavigation="{TemplateBinding TabNavigation}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" Style="{StaticResource TabScrollViewerStyle}">
-              <ItemsPresenter x:Name="TabsItemsPresenter" Padding="{TemplateBinding Padding}" />
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup>
+                <VisualState x:Name="LeftBottomBorderLineNormal" />
+                <VisualState x:Name="LeftBottomBorderLineShort">
+                  <VisualState.Setters>
+                    <Setter Target="LeftBottomBorderLine.Width" Value="2" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup>
+                <VisualState x:Name="RightBottomBorderLineNormal" />
+                <VisualState x:Name="RightBottomBorderLineShort">
+                  <VisualState.Setters>
+                    <Setter Target="RightBottomBorderLine.Width" Value="2" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup>
+                <VisualState x:Name="NormalBottomBorderLine" />
+                <VisualState x:Name="NoBottomBorderLine">
+                  <VisualState.Setters>
+                    <Setter Target="LeftBottomBorderLine.Visibility" Value="Collapsed" />
+                    <Setter Target="RightBottomBorderLine.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <!-- TODO: Uno specific: Original template uses attached property template bindings (issue #4259) -->
+            <ScrollViewer x:Name="ScrollViewer" Grid.Column="1" AutomationProperties.AccessibilityView="Raw" BringIntoViewOnFocusChange="True" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" IsDeferredScrollingEnabled="False" IsHorizontalRailEnabled="False" IsHorizontalScrollChainingEnabled="False" IsVerticalRailEnabled="False" IsVerticalScrollChainingEnabled="False" TabNavigation="{TemplateBinding TabNavigation}" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" ZoomMode="Disabled" Style="{StaticResource TabScrollViewerStyle}">
+              <ItemsPresenter x:Name="TabsItemsPresenter" Padding="{TemplateBinding Padding}">
+                <ItemsPresenter.Header>
+                  <Grid Width="4">
+                    <Border x:Name="LeftBottomBorderLine" BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Width="4" Height="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                  </Grid>
+                </ItemsPresenter.Header>
+                <ItemsPresenter.Footer>
+                  <Grid Width="4">
+                    <Border x:Name="RightBottomBorderLine" BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Width="4" Height="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+                  </Grid>
+                </ItemsPresenter.Footer>
+              </ItemsPresenter>
             </ScrollViewer>
           </Border>
         </ControlTemplate>
@@ -22290,19 +22403,32 @@
       <Setter.Value>
         <ControlTemplate TargetType="ScrollViewer">
           <Border x:Name="Root" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup>
+                <VisualState x:Name="NormalBottomBorderLine" />
+                <VisualState x:Name="NoBottomBorderLine">
+                  <VisualState.Setters>
+                    <Setter Target="LeftBottomBorderLine.Visibility" Value="Collapsed" />
+                    <Setter Target="RightBottomBorderLine.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
             <Grid>
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" MinWidth="2" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
+              <Border x:Name="LeftBottomBorderLine" BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Height="1" VerticalAlignment="Bottom" />
+              <Border x:Name="RightBottomBorderLine" BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Height="1" Grid.Column="2" VerticalAlignment="Bottom" />
               <Border x:Name="ScrollDecreaseButtonContainer" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Padding="{ThemeResource TabViewItemLeftScrollButtonContainerPadding}" VerticalAlignment="Bottom">
-                <RepeatButton x:Name="ScrollDecreaseButton" AutomationProperties.AccessibilityView="Raw" Delay="50" Interval="100" HighContrastAdjustment="None" Content="&#xEDD9;" Style="{ThemeResource TabViewScrollButtonStyle}" />
+                <RepeatButton x:Name="ScrollDecreaseButton" AutomationProperties.AccessibilityView="Raw" IsTabStop="False" Delay="50" Interval="100" HighContrastAdjustment="None" Content="&#xEDD9;" Style="{ThemeResource TabViewScrollButtonStyle}" />
               </Border>
               <android:ListViewBaseScrollContentPresenter x:Name="ScrollContentPresenter" Grid.Column="1" Padding="1,0,0,0" contract4Present:TabFocusNavigation="Once" />
               <not_android:ScrollContentPresenter x:Name="ScrollContentPresenter" Grid.Column="1" Padding="1,0,0,0" contract4Present:TabFocusNavigation="Once" />
               <Border x:Name="ScrollIncreaseButtonContainer" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Grid.Column="2" Padding="{ThemeResource TabViewItemRightScrollButtonContainerPadding}" VerticalAlignment="Bottom">
-                <RepeatButton x:Name="ScrollIncreaseButton" AutomationProperties.AccessibilityView="Raw" Delay="50" Interval="100" HighContrastAdjustment="None" Content="&#xEDDA;" Style="{ThemeResource TabViewScrollButtonStyle}" />
+                <RepeatButton x:Name="ScrollIncreaseButton" AutomationProperties.AccessibilityView="Raw" IsTabStop="False" Delay="50" Interval="100" HighContrastAdjustment="None" Content="&#xEDDA;" Style="{ThemeResource TabViewScrollButtonStyle}" />
               </Border>
             </Grid>
           </Border>
@@ -22321,11 +22447,13 @@
     <Setter Property="Height" Value="{ThemeResource TabViewItemHeaderCloseButtonHeight}" />
     <Setter Property="Background" Value="{ThemeResource TabViewItemHeaderCloseButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource TabViewItemHeaderCloseButtonForeground}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TabViewItemHeaderCloseButtonBorderBrush}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource TabViewItemHeaderCloseButtonBorderThickness}" />
     <Setter Property="FocusVisualMargin" Value="-3" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}" Background="{TemplateBinding Background}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+          <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -22337,6 +22465,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewItemHeaderCloseButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewItemHeaderCloseButtonBorderBrushPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Pressed">
@@ -22346,6 +22477,9 @@
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewItemHeaderCloseButtonForegroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewItemHeaderCloseButtonBorderBrushPressed}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
@@ -22359,16 +22493,18 @@
   <Style x:Name="TabViewButtonStyle" TargetType="Button">
     <Setter Property="Background" Value="{ThemeResource TabViewButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource TabViewButtonForeground}" />
-    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="FontSize" Value="{ThemeResource TabViewItemAddButtonFontSize}" />
     <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
     <Setter Property="Width" Value="{ThemeResource TabViewItemAddButtonWidth}" />
     <Setter Property="Height" Value="{ThemeResource TabViewItemAddButtonHeight}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource TabViewButtonBorderThickness}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TabViewButtonBorderBrush}" />
     <Setter Property="FocusVisualMargin" Value="-3" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+          <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -22380,6 +22516,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewButtonBorderBrushPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Pressed">
@@ -22390,6 +22529,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewButtonForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewButtonBorderBrushPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Disabled">
@@ -22399,6 +22541,9 @@
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewButtonForegroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewButtonBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
@@ -22412,15 +22557,18 @@
   <Style TargetType="controls:TabViewItem">
     <Setter Property="Background" Value="{ThemeResource TabViewItemHeaderBackground}" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <!-- TODO: Uno specific: This is a temporary workaround for TabView items stretching vertically
+		Can be removed when #1133 is fixed.-->
+    <ios:Setter Property="MinHeight" Value="32" />
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="MinHeight" Value="{ThemeResource TabViewItemMinHeight}" />
-    <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
     <Setter Property="BorderThickness" Value="{ThemeResource TabViewItemBorderThickness}" />
     <Setter Property="BorderBrush" Value="{ThemeResource TabViewItemBorderBrush}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:TabViewItem">
-          <Grid x:Name="LayoutRoot" Padding="{TemplateBinding Padding}">
+          <Grid x:Name="LayoutRoot" Padding="{TemplateBinding Padding}" UseLayoutRounding="False">
             <Grid.ColumnDefinitions>
               <ColumnDefinition x:Name="LeftColumn" Width="Auto" />
               <ColumnDefinition Width="*" />
@@ -22454,16 +22602,15 @@
                 </VisualState>
                 <VisualState x:Name="Selected">
                   <VisualState.Setters>
+                    <Setter Target="BottomBorderLine.Visibility" Value="Collapsed" />
                     <Setter Target="RightRadiusRenderArc.Visibility" Value="Visible" />
-                    <Setter Target="RightRadiusRenderTriangle.Visibility" Value="Visible" />
-                    <Setter Target="RightRadiusRenderTriangle.Fill" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
                     <Setter Target="LeftRadiusRenderArc.Visibility" Value="Visible" />
-                    <Setter Target="LeftRadiusRenderTriangle.Visibility" Value="Visible" />
-                    <Setter Target="LeftRadiusRenderTriangle.Fill" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
+                    <Setter Target="SelectedBackgroundPath.Visibility" Value="Visible" />
+                    <Setter Target="SelectedBackgroundPath.Fill" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
+                    <Setter Target="TabContainer.Background" Value="{ThemeResource TabViewItemHeaderBackground}" />
                     <Setter Target="TabContainer.Margin" Value="{ThemeResource TabViewSelectedItemHeaderMargin}" />
                     <Setter Target="TabContainer.BorderBrush" Value="{ThemeResource TabViewSelectedItemBorderBrush}" />
                     <Setter Target="TabContainer.BorderThickness" Value="{ThemeResource TabViewSelectedItemBorderThickness}" />
-                    <Setter Target="TabContainer.Background" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
                     <Setter Target="TabContainer.Padding" Value="{ThemeResource TabViewSelectedItemHeaderPadding}" />
                     <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderForegroundSelected}" />
                     <Setter Target="IconControl.Foreground" Value="{ThemeResource TabViewItemIconForegroundSelected}" />
@@ -22475,16 +22622,15 @@
                 </VisualState>
                 <VisualState x:Name="PointerOverSelected">
                   <VisualState.Setters>
+                    <Setter Target="BottomBorderLine.Visibility" Value="Collapsed" />
                     <Setter Target="RightRadiusRenderArc.Visibility" Value="Visible" />
-                    <Setter Target="RightRadiusRenderTriangle.Visibility" Value="Visible" />
-                    <Setter Target="RightRadiusRenderTriangle.Fill" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
                     <Setter Target="LeftRadiusRenderArc.Visibility" Value="Visible" />
-                    <Setter Target="LeftRadiusRenderTriangle.Visibility" Value="Visible" />
-                    <Setter Target="LeftRadiusRenderTriangle.Fill" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
+                    <Setter Target="SelectedBackgroundPath.Visibility" Value="Visible" />
+                    <Setter Target="SelectedBackgroundPath.Fill" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
+                    <Setter Target="TabContainer.Background" Value="{ThemeResource TabViewItemHeaderBackground}" />
                     <Setter Target="TabContainer.Margin" Value="{ThemeResource TabViewSelectedItemHeaderMargin}" />
                     <Setter Target="TabContainer.BorderBrush" Value="{ThemeResource TabViewSelectedItemBorderBrush}" />
                     <Setter Target="TabContainer.BorderThickness" Value="{ThemeResource TabViewSelectedItemBorderThickness}" />
-                    <Setter Target="TabContainer.Background" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
                     <Setter Target="TabContainer.Padding" Value="{ThemeResource TabViewSelectedItemHeaderPadding}" />
                     <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderForegroundSelected}" />
                     <Setter Target="IconControl.Foreground" Value="{ThemeResource TabViewItemIconForegroundSelected}" />
@@ -22496,16 +22642,15 @@
                 </VisualState>
                 <VisualState x:Name="PressedSelected">
                   <VisualState.Setters>
+                    <Setter Target="BottomBorderLine.Visibility" Value="Collapsed" />
                     <Setter Target="RightRadiusRenderArc.Visibility" Value="Visible" />
-                    <Setter Target="RightRadiusRenderTriangle.Visibility" Value="Visible" />
-                    <Setter Target="RightRadiusRenderTriangle.Fill" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
                     <Setter Target="LeftRadiusRenderArc.Visibility" Value="Visible" />
-                    <Setter Target="LeftRadiusRenderTriangle.Visibility" Value="Visible" />
-                    <Setter Target="LeftRadiusRenderTriangle.Fill" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
+                    <Setter Target="SelectedBackgroundPath.Visibility" Value="Visible" />
+                    <Setter Target="SelectedBackgroundPath.Fill" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
+                    <Setter Target="TabContainer.Background" Value="{ThemeResource TabViewItemHeaderBackground}" />
                     <Setter Target="TabContainer.Margin" Value="{ThemeResource TabViewSelectedItemHeaderMargin}" />
                     <Setter Target="TabContainer.BorderBrush" Value="{ThemeResource TabViewSelectedItemBorderBrush}" />
                     <Setter Target="TabContainer.BorderThickness" Value="{ThemeResource TabViewSelectedItemBorderThickness}" />
-                    <Setter Target="TabContainer.Background" Value="{ThemeResource TabViewItemHeaderBackgroundSelected}" />
                     <Setter Target="TabContainer.Padding" Value="{ThemeResource TabViewSelectedItemHeaderPadding}" />
                     <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderForegroundSelected}" />
                     <Setter Target="IconControl.Foreground" Value="{ThemeResource TabViewItemIconForegroundSelected}" />
@@ -22526,6 +22671,7 @@
                     <Setter Target="IconControl.Foreground" Value="{ThemeResource TabViewButtonForegroundDisabled}" />
                     <Setter Target="CloseButton.Background" Value="{ThemeResource TabViewItemHeaderDisabledCloseButtonBackground}" />
                     <Setter Target="CloseButton.Foreground" Value="{ThemeResource TabViewItemHeaderDisabledCloseButtonForeground}" />
+                    <Setter Target="CloseButton.BorderBrush" Value="{ThemeResource TabViewItemHeaderCloseButtonBorderBrushDisabled}" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -22579,8 +22725,6 @@
                 <VisualState x:Name="ReorderingTarget">
                   <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="LayoutRoot" Storyboard.TargetProperty="Opacity" To="{ThemeResource ListViewItemReorderTargetThemeOpacity}" Duration="0:0:0.240" />
-                    <DoubleAnimation Storyboard.TargetName="LayoutRootScale" Storyboard.TargetProperty="ScaleX" To="{ThemeResource ListViewItemReorderTargetThemeScale}" Duration="0:0:0.240" />
-                    <DoubleAnimation Storyboard.TargetName="LayoutRootScale" Storyboard.TargetProperty="ScaleY" To="{ThemeResource ListViewItemReorderTargetThemeScale}" Duration="0:0:0.240" />
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="MultipleReorderingPrimary" />
@@ -22633,11 +22777,32 @@
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
+              <VisualStateGroup>
+                <VisualState x:Name="NormalBottomBorderLine" />
+                <VisualState x:Name="LeftOfSelectedTab">
+                  <VisualState.Setters>
+                    <Setter Target="BottomBorderLine.Margin" Value="0,0,2,0" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="RightOfSelectedTab">
+                  <VisualState.Setters>
+                    <Setter Target="BottomBorderLine.Margin" Value="2,0,0,0" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NoBottomBorderLine">
+                  <VisualState.Setters>
+                    <Setter Target="BottomBorderLine.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
+            <Border x:Name="BottomBorderLine" BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Height="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom" />
             <Path x:Name="LeftRadiusRenderArc" x:Load="False" Fill="{ThemeResource TabViewBorderBrush}" VerticalAlignment="Bottom" Visibility="Collapsed" Margin="-4,0,0,0" Height="4" Width="4" Data="M4 0C4 1.19469 3.47624 2.26706 2.64582 3H0C1.65685 3 3 1.65685 3 0H4Z" />
-            <Path x:Name="LeftRadiusRenderTriangle" x:Load="False" Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}" VerticalAlignment="Bottom" Margin="-4,0,0,0" Visibility="Collapsed" Data="M0 4H4V0C4 2.20914 2.20914 4 0 4Z" />
             <Path x:Name="RightRadiusRenderArc" x:Load="False" Grid.Column="2" Visibility="Collapsed" Fill="{ThemeResource TabViewBorderBrush}" VerticalAlignment="Bottom" Margin="0,0,-4,0" Height="4" Width="4" Data="M0 0C0 1.19469 0.523755 2.26706 1.35418 3H4C2.34315 3 1 1.65685 1 0H0Z" />
-            <Path x:Name="RightRadiusRenderTriangle" x:Load="False" Grid.Column="2" Visibility="Collapsed" Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}" VerticalAlignment="Bottom" Margin="0,0,-4,0" Data="M4 4H0V0C0 2.20914 1.79086 4 4 4Z" />
+            <!-- This Path wrapped in a Canvas to prevent an infinite loop in calculating its width. -->
+            <Canvas>
+              <Path x:Name="SelectedBackgroundPath" x:Load="False" Grid.ColumnSpan="3" Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}" VerticalAlignment="Bottom" Margin="-4,0,-4,0" Visibility="Collapsed" Data="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TabViewTemplateSettings.TabGeometry}" />
+            </Canvas>
             <Border x:Name="TabSeparator" HorizontalAlignment="Right" Width="1" Grid.Column="1" BorderBrush="{ThemeResource TabViewItemSeparator}" BorderThickness="1" Margin="{ThemeResource TabViewItemSeparatorMargin}" />
             <Grid x:Name="TabContainer" Grid.Column="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Control.IsTemplateFocusTarget="True" Padding="{ThemeResource TabViewItemHeaderPadding}" contract7Present:CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CornerRadius, Converter={StaticResource TopCornerRadiusFilterConverter}}" contract7NotPresent:CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}}" FocusVisualMargin="{TemplateBinding FocusVisualMargin}">
               <Grid.ColumnDefinitions>
@@ -22674,11 +22839,13 @@
     <Setter Property="Width" Value="{ThemeResource TabViewItemScrollButtonWidth}" />
     <Setter Property="Height" Value="{ThemeResource TabViewItemScrollButtonHeight}" />
     <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource TabViewButtonBorderThickness}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TabViewScrollButtonBorderBrush}" />
     <Setter Property="FocusVisualMargin" Value="-3" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="RepeatButton">
-          <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+          <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -22690,6 +22857,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewScrollButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewScrollButtonBorderBrushPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Pressed">
@@ -22699,6 +22869,9 @@
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewScrollButtonForegroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewScrollButtonBorderBrushPressed}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
@@ -22710,6 +22883,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewScrollButtonForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TabViewScrollButtonBorderBrushDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
               </VisualStateGroup>
@@ -22719,7 +22895,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Thickness x:Key="TabViewHeaderPadding">4,8,4,0</Thickness>
+  <Thickness x:Key="TabViewHeaderPadding">0,8,0,0</Thickness>
   <Thickness x:Key="TabViewItemHeaderPadding">8,3,4,3</Thickness>
   <Thickness x:Key="TabViewSelectedItemHeaderPadding">9,3,5,4</Thickness>
   <x:Double x:Key="TabViewItemMinHeight">32</x:Double>

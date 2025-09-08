@@ -252,7 +252,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// Ensure that the async context is set properly, since we're raising
 			// events from outside the dispatcher.
-			using var syncContextScope = NativeDispatcher.Main.GetSynchronizationContext(NativeDispatcherPriority.Normal).Apply();
+			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
 
 			if (_eventHandlers.TryGetValue((n, onCapturePhase), out var registration))
 			{

@@ -1818,6 +1818,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_NativeEmbedding_Android_FillType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Template.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4318,6 +4322,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_ManagedOverlay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Folder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6241,7 +6249,6 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\RotatingCubeGlCanvasElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SimpleTriangleGlCanvasElement.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElementImpl.skia.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\CompositionPathTests.xaml.cs">
       <DependentUpon>CompositionPathTests.xaml</DependentUpon>
     </Compile>
@@ -9667,6 +9674,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Basic.xaml.cs">
       <DependentUpon>WebView2_Basic.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_ManagedOverlay.xaml.cs">
+      <DependentUpon>WebView2_ManagedOverlay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Folder.xaml.cs">
       <DependentUpon>WebView2_Folder.xaml</DependentUpon>
     </Compile>
@@ -9777,6 +9787,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_NativeEmbedding.xaml.cs">
       <DependentUpon>ContentPresenter_NativeEmbedding.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_NativeEmbedding_Android_FillType.xaml.cs">
+      <DependentUpon>ContentPresenter_NativeEmbedding_Android_FillType.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Template.xaml.cs">
       <DependentUpon>ContentPresenter_Template.xaml</DependentUpon>

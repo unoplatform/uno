@@ -10,19 +10,19 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector : ContentControl
 	{
-		private Android.Widget.TimePicker _picker;
+		private ATimePicker _picker;
 		private TimeSpan _initialTime;
 
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			_picker = this.FindFirstChild<Android.Widget.TimePicker>();
+			_picker = this.FindFirstChild<ATimePicker>();
 
 			if (_picker != null)
 			{
 				//By settings DescendantFocusability to BlockDescendnts it disables the possibility to use the keyboard to modify time which was causing issues in 4.4
-				_picker.DescendantFocusability = Android.Views.DescendantFocusability.BlockDescendants;
+				_picker.DescendantFocusability = ADescendantFocusability.BlockDescendants;
 
 				this.Binding(nameof(Time), nameof(Time), Content, BindingMode.TwoWay);
 				this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);

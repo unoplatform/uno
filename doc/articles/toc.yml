@@ -50,6 +50,8 @@
           href: xref:Uno.UI.CommonIssues.vscode
         - name: Rider
           href: xref:Uno.UI.CommonIssues.rider
+        - name: Android & iOS Emulators
+          href: xref:Uno.UI.CommonIssues.MobileDebugging
       - name: Platforms
         topicHref: xref:Uno.UI.CommonIssues.Wasm
         items:
@@ -317,6 +319,8 @@
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
           href: xref:uno.articles.features.illinker
+        - name: Skia Native Libraries Trimming
+          href: features/skia-libraries-trimming.md
         - name: Working with String Resource Trimming
           href: features/upri-trimming.md
         - name: Working with XAML Trimming

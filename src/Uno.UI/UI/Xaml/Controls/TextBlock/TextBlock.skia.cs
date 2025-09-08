@@ -109,20 +109,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void ApplyFlowDirection(float width)
-		{
-			Visual.TransformMatrix = FlowDirection == FlowDirection.RightToLeft
-				? new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, width, 0.0f))
-				: Matrix4x4.Identity;
-		}
-
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
+			Visual.Compositor.InvalidateRender(Visual);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
-			ApplyFlowDirection((float)finalSize.Width);
 
 			var result = base.ArrangeOverride(finalSize);
 			UpdateIsTextTrimmed();
@@ -152,15 +145,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				return font.LineHeight;
-			}
-		}
-
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-		{
-			base.OnPropertyChanged2(args);
-			if (args.Property == FlowDirectionProperty)
-			{
-				ApplyFlowDirection((float)this.RenderSize.Width);
 			}
 		}
 

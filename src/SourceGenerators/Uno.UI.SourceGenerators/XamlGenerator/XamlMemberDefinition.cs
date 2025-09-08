@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
@@ -47,5 +48,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public int LinePosition { get; set; }
 
 		public XamlObjectDefinition? Owner { get; }
+
+		public string Key => Member.Name switch
+		{
+			"_UnknownContent" => Owner?.Key ?? "__",
+			var name => $"{Owner?.Key ?? "_"}_{NamingHelper.GetShortName(name)}"
+		};
 	}
 }

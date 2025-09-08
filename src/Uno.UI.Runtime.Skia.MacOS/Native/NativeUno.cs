@@ -201,6 +201,9 @@ internal static partial class NativeUno
 	internal static partial uint uno_get_system_theme();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_application_start_callback(delegate* unmanaged[Cdecl]<void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_application_can_exit_callback(delegate* unmanaged[Cdecl]<int> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]

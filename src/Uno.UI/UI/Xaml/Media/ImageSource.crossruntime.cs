@@ -105,34 +105,24 @@ namespace Microsoft.UI.Xaml.Media
 				}
 				else if (TryOpenSourceAsync(ct, null, null, out var asyncImg))
 				{
-					if (!OperatingSystem.IsBrowser())
+					DispatcherQueue.TryEnqueue(async () =>
 					{
-						asyncImg.ContinueWith(t =>
+						try
 						{
-							OnOpened(t.IsFaulted ? ImageData.FromError(t.Exception) : t.Result);
-						}, ct, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
-					}
-					else
-					{
-						// On Wasm single-threaded ContinueWith with
-						// TaskContinuationOptions/TaskScheduler is not functional
-						asyncImg.ContinueWith(t =>
-						{
-							if (t.IsCompletedSuccessfully)
+							var data = await asyncImg;
+							if (!ct.IsCancellationRequested)
 							{
-								if (DispatcherQueue.HasThreadAccess)
-								{
-									// single threaded wasm
-									OnOpened(t.Result);
-								}
-								else
-								{
-									// multi threaded wasm
-									DispatcherQueue.TryEnqueue(() => OnOpened(t.Result));
-								}
+								OnOpened(data);
 							}
-						}, ct);
-					}
+						}
+						catch (OperationCanceledException) when (ct.IsCancellationRequested)
+						{
+						}
+						catch (Exception error)
+						{
+							OnOpened(ImageData.FromError(error));
+						}
+					});
 				}
 				else
 				{

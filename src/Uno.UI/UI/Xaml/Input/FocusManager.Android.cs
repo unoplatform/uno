@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Input
 			if (element is Control control)
 			{
 				var focusManager = VisualTree.GetFocusManagerForElement(control);
-				if (element is Android.Views.View androidView &&
+				if (element is AView androidView &&
 					androidView.Focusable &&
 					focusManager?.InitialFocus == false) // Do not focus natively on initial focus so the soft keyboard is not opened
 				{

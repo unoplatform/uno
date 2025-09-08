@@ -4,6 +4,10 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
+## Uno Platform 6.2
+
+Uno Platform 6.2 does not contain breaking changes that require attention when upgrading.
+
 ## Uno Platform 6.1
 
 Uno Platform 6.1 does not contain breaking changes that require attention when upgrading.

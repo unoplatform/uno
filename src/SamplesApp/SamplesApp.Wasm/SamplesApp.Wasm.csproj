@@ -85,8 +85,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-
 		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Graph" Version="5.56.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
@@ -114,6 +112,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Wasm.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.WebAssembly\Uno.UI.MediaPlayer.WebAssembly.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />

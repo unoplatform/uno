@@ -112,6 +112,7 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
+		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
 		ChildInternal?.XamlRoot?.InvalidateOverlays();
 		InvalidateVisual();
 	}

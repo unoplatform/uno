@@ -5,6 +5,7 @@
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Wasm.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Wasm.csproj",
       "AddIns\\Uno.UI.MediaPlayer.WebAssembly\\Uno.UI.MediaPlayer.WebAssembly.csproj",
+      "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.Crossruntime.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",

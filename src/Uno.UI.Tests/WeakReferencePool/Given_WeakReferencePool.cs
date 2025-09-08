@@ -87,7 +87,7 @@ namespace Uno.UI.Tests
 			var mr1 = WeakReferencePool.RentWeakReference(this, target);
 
 			Assert.AreEqual(target, mr1.GetUnsafeTargetHandle().Target);
-			Assert.ReferenceEquals(target.WeakReference.GetUnsafeTargetHandle(), mr1.GetUnsafeTargetHandle());
+			Assert.AreSame(target.WeakReference.GetUnsafeTargetHandle(), mr1.GetUnsafeTargetHandle());
 			Assert.AreEqual(target, mr1.Owner);
 		}
 

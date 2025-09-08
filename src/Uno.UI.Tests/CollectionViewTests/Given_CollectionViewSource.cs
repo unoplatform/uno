@@ -309,7 +309,7 @@ namespace Uno.UI.Tests.CollectionViewTests
 		[TestMethod]
 		public void When_IsSynchronizedWithCurrentItem_Is_True()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ListView() { IsSynchronizedWithCurrentItem = true });
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ListView() { IsSynchronizedWithCurrentItem = true });
 		}
 	}
 }

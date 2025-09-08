@@ -23,6 +23,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
@@ -43,8 +44,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	// window class (and a new WndProc) per window, but that sounds excessive.
 	private static Win32WindowWrapper? _wrapperForNextCreateWindow;
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
-
-	public static readonly XamlRootMap<Win32WindowWrapper> XamlRootMap = new();
 
 	private readonly HWND _hwnd;
 	private readonly ApplicationView _applicationView;
@@ -360,7 +359,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// same size regardless of the reported top-left corner by Windows.
 		// Bounds = new Rect(windowRect.left / scale, windowRect.top / scale, windowRect.Width / scale, windowRect.Height / scale);
 		// VisibleBounds = new Rect(clientRect.left / scale, clientRect.top / scale, clientRect.Width / scale, clientRect.Height / scale);
-		VisibleBounds = Bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
+		var bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
+		SetBoundsAndVisibleBounds(bounds, bounds);
 
 		Size = new SizeInt32(windowRect.Width, windowRect.Height);
 		Position = new PointInt32(windowRect.left, windowRect.top);
@@ -530,6 +530,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	unsafe void IXamlRootHost.InvalidateRender()
 	{
+		if (!SkiaRenderHelper.CanRecordPicture(Window?.RootElement))
+		{
+			// Try again next tick
+			Window?.RootElement?.XamlRoot?.QueueInvalidateRender();
+			return;
+		}
+
+		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
+
 		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}

@@ -38,9 +38,13 @@ In Rider, in the **Configure**, **Plugins** menu, open the **Marketplace** tab, 
 
 Then click the install button.
 
-## Platform specific setup
+## Platform-specific setup
 
 You may need to follow additional directions, depending on your development environment.
+
+### Android & iOS
+
+For assistance configuring Android or iOS emulators, see the [Android & iOS emulator troubleshooting guide](xref:Uno.UI.CommonIssues.MobileDebugging).
 
 ### Linux
 

@@ -6,6 +6,7 @@ using Android.Content.PM;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
@@ -54,7 +55,7 @@ namespace Microsoft.UI.Xaml
 
 		internal ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
-		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
+		public ApplicationActivity(IntPtr ptr, JniHandleOwnership owner) : base(ptr, owner)
 		{
 			Initialize();
 		}
@@ -428,9 +429,15 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
+#if NET10_0_OR_GREATER
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		public static string GetTypeAssemblyFullName(string type) =>
+			throw new NotSupportedException("`static` methods with [Export] are not supported on NativeAOT.");
+#else   // !NET10_0_OR_GREATER
 		[Java.Interop.Export]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName!;
+#endif  // !NET10_0_OR_GREATER
 
 		internal class ClippedRelativeLayout : RelativeLayout
 		{
@@ -453,7 +460,15 @@ namespace Microsoft.UI.Xaml
 					{
 						_path = value;
 						_svgClipPath = svgClipPath;
-						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath);
+						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath)!;
+						_androidPath.SetFillType(value.FillType switch
+						{
+							SKPathFillType.Winding => APath.FillType.Winding!,
+							SKPathFillType.EvenOdd => APath.FillType.EvenOdd!,
+							SKPathFillType.InverseWinding => APath.FillType.InverseWinding!,
+							SKPathFillType.InverseEvenOdd => APath.FillType.InverseEvenOdd!,
+							_ => throw new ArgumentOutOfRangeException()
+						});
 						Invalidate();
 					}
 				}

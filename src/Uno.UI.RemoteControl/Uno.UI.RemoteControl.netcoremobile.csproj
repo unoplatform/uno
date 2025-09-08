@@ -12,6 +12,9 @@
 
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 
+		<!-- TODO: Deal with Trimming errors "later" -->
+		<NoWarn>$(NoWarn);IL2067;IL2070;IL2075;</NoWarn>
+
 		<Nullable>enable</Nullable>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>

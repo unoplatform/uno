@@ -1,59 +1,65 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewHelper.h, commit 2ec9b1c
 
-//
-// This file is a C# translation of the NavigationViewHelper.cpp file from WinUI controls.
-//
+using Microsoft.UI.Xaml;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+internal enum NavigationViewVisualStateDisplayMode
 {
-	internal enum NavigationViewVisualStateDisplayMode
-	{
-		Compact,
-		Expanded,
-		Minimal,
-		MinimalWithBackButton
-	}
-
-	internal enum NavigationViewListPosition
-	{
-		LeftNav,
-		TopPrimary,
-		TopOverflow
-	}
-
-	internal enum NavigationViewPropagateTarget
-	{
-		LeftListView,
-		TopListView,
-		OverflowListView,
-		All
-	}
-
-	public class NavigationViewItemHelper
-	{
-		public readonly static string c_OnLeftNavigationReveal = "OnLeftNavigationReveal";
-		public readonly static string c_OnLeftNavigation = "OnLeftNavigation";
-		public readonly static string c_OnTopNavigationPrimary = "OnTopNavigationPrimary";
-		public readonly static string c_OnTopNavigationPrimaryReveal = "OnTopNavigationPrimaryReveal";
-		public readonly static string c_OnTopNavigationOverflow = "OnTopNavigationOverflow";
-	}
-
-	public class NavigationViewItemHelper<T> where T : Control
-	{
-		static string c_selectionIndicatorName = "SelectionIndicator";
-
-		public NavigationViewItemHelper()
-		{
-		}
-
-		public UIElement GetSelectionIndicator() { return m_selectionIndicator; }
-
-		public void Init(T item)
-		{
-			m_selectionIndicator = item.GetTemplateChild(c_selectionIndicatorName) as UIElement;
-		}
-
-		UIElement m_selectionIndicator;
-	}
+	Compact,
+	Expanded,
+	Minimal,
+	MinimalWithBackButton
 }
+
+internal enum NavigationViewRepeaterPosition
+{
+	LeftNav,
+	TopPrimary,
+	TopOverflow,
+	LeftFooter,
+	TopFooter
+}
+
+internal enum NavigationViewPropagateTarget
+{
+	LeftListView,
+	TopListView,
+	OverflowListView,
+	All
+}
+
+// TODO:
+internal class NavigationViewItemHelper
+{
+	internal const string c_OnLeftNavigationReveal = "OnLeftNavigationReveal";
+	internal const string c_OnLeftNavigation = "OnLeftNavigation";
+	internal const string c_OnTopNavigationPrimary = "OnTopNavigationPrimary";
+	internal const string c_OnTopNavigationPrimaryReveal = "OnTopNavigationPrimaryReveal";
+	internal const string c_OnTopNavigationOverflow = "OnTopNavigationOverflow";
+}
+
+// Since RS5, a lot of functions in NavigationViewItem is moved to NavigationViewItemPresenter. So they both share some common codes.
+// This class helps to initialize and maintain the status of SelectionIndicator and ToolTip
+internal class NavigationViewItemHelper<T>
+{
+	internal NavigationViewItemHelper(object owner)
+	{
+		m_owner = owner;
+	}
+
+	internal UIElement GetSelectionIndicator() { return m_selectionIndicator; }
+
+	internal void Init(FrameworkElement controlProtected)
+	{
+		m_selectionIndicator = controlProtected.GetTemplateChild(c_selectionIndicatorName) as UIElement;
+	}
+
+	private object m_owner = null;
+
+	private UIElement m_selectionIndicator;
+
+	private const string c_selectionIndicatorName = "SelectionIndicator";
+};

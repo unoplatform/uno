@@ -36,53 +36,15 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
 
 $projects =
 @(
-    # 5.0 and earlier
-    @(0, "UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Wasm/UnoAppWinUILinuxValidation.Wasm.csproj", @(), @()),
-    @(0, "UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer.csproj", @(), @()),
-
-    # 5.1 Blank
-    @(0, "5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", @(), @()),
-    @(0, "5.1/uno51blank/uno51blank.Skia.WPF/uno51blank.Skia.WPF.csproj", @(), @()),
-    @(0, "5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", @(), @()),
-
-    # 5.1 Recommended
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.WPF/uno51recommended.Skia.WPF.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", @(), @()),
-    @(1, "5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", @(), @()),
-
-    # 5.2 Blank
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @(), @()),
-
-    # 5.2 Blank SkiaSharp 3
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:SkiaSharpVersion=3.0.0-preview.3.1"), @()),
-
-    # 5.2 Blank GLCanvas
-    @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:UnoFeatures=GLCanvas"), @()),
-
-    # 5.2 Uno Lib
-    @(1, "5.2/uno52Lib/uno52Lib.csproj", @(), @()),
-
-    # 5.2 Uno NuGet Lib
-    @(2, "5.2/uno52NuGetLib/uno52NuGetLib.csproj", @(), @()),
-
-    # 5.2 Uno SingleProject Lib
-    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @(), @()),
-
-    # 5.2 Uno App with Library reference
-    @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @(), @()),
-
     # 5.3 Blank with net9
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
+    @(0, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
+    @(0, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
 
     # 5.3 lib
-    @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @()),
+    @(1, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @()),
 
     # 5.3 Uno App with Library reference
-    @(3, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @(), @()),
+    @(2, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @(), @()),
 
     # 5.3 blank publish testing
     # Disabled for LXD setup issues

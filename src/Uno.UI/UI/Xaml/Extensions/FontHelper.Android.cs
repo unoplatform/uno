@@ -79,10 +79,10 @@ namespace Microsoft.UI.Xaml
 				else
 				{
 					var style = TypefaceStyleHelper.GetTypefaceStyle(italic, fontWeight);
-					typeface = Android.Graphics.Typeface.Create(fontFamily.Source, style);
+					typeface = ATypeface.Create(fontFamily.Source, style);
 					if (typeface is not null && typeface.Weight != fontWeight.Weight)
 					{
-						typeface = Android.Graphics.Typeface.Create(typeface, fontWeight.Weight, italic);
+						typeface = ATypeface.Create(typeface, fontWeight.Weight, italic);
 					}
 				}
 
@@ -145,7 +145,7 @@ namespace Microsoft.UI.Xaml
 			string actualAsset = AssetsHelper.FindAssetFile(encodedSource);
 			if (actualAsset != null)
 			{
-				var builder = new Android.Graphics.Typeface.Builder(Android.App.Application.Context.Assets!, actualAsset);
+				var builder = new ATypeface.Builder(AApplication.Context.Assets!, actualAsset);
 				// NOTE: We are unable to use 'ital' axis here. If that axis doesn't exist in the
 				// font file, italic will break badly. However, if it exists, we will render "reasonable" (but not ideal) italic text.
 				builder.SetFontVariationSettings($"'wght' {weight}, 'wdth' {FontStretchToPercentage(stretch)}");

@@ -21,6 +21,7 @@ using Point = Windows.Foundation.Point;
 using UIElement = Microsoft.UI.Xaml.UIElement;
 using WpfControl = System.Windows.Controls.Control;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Wpf
@@ -34,7 +35,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 		public WpfDragDropExtension(DragDropManager owner)
 		{
-			var host = WpfManager.XamlRootMap.GetHostForRoot(owner.ContentRoot.GetOrCreateXamlRoot()) ?? throw new InvalidOperationException($"Couldn't find an {nameof(IWpfXamlRootHost)} host associated with a {nameof(WpfDragDropExtension)}.");
+			var host = XamlRootMap.GetHostForRoot(owner.ContentRoot.GetOrCreateXamlRoot()) ?? throw new InvalidOperationException($"Couldn't find an {nameof(IWpfXamlRootHost)} host associated with a {nameof(WpfDragDropExtension)}.");
 			_rootControl = host as WpfControl ?? throw new InvalidOperationException($"Couldn't find an {nameof(WpfControl)} host associated with a {nameof(WpfDragDropExtension)}.");
 			_coreDragDropManager = XamlRoot.GetCoreDragDropManager(host.RootElement!.XamlRoot);
 

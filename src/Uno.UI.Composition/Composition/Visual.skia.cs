@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.CodeAnalysis.PooledObjects;
 using SkiaSharp;
 using Uno.Disposables;
@@ -112,7 +113,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
-		InvalidateParentChildrenPicture();
+		InvalidateParentChildrenPicture(false);
 		return !matrixDirty;
 	}
 
@@ -207,12 +208,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		_picture?.Dispose();
 		_picture = null;
 		_flags |= VisualFlags.PaintDirty;
-		InvalidateParentChildrenPicture();
+		InvalidateParentChildrenPicture(false);
 	}
 
-	internal void InvalidateParentChildrenPicture()
+	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
-		var parent = this.Parent;
+		var parent = includeSelf ? this : Parent;
 		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
 			parent._childrenPicture?.Dispose();
@@ -416,10 +417,20 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		static void PostPaintingClipStep(Visual visual, SKCanvas canvas)
 		{
+#if DEBUG
+			canvas.Save();
 			if (visual.GetPostPaintingClipping() is { } postClip)
 			{
 				canvas.ClipPath(postClip, antialias: true);
 			}
+
+			var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
+			canvas.Restore();
+#endif
+			visual.ApplyPostPaintingClipping(canvas);
+#if DEBUG
+			Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
+#endif
 		}
 
 		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
@@ -541,6 +552,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
 	private protected virtual SKPath? GetPostPaintingClipping() => null;
+	/// <summary>This can be overriden if some Visuals can apply the clipping more optimally than generating a path
+	/// and then applying the clip. Specifically, if the clipping is a simple rectangle, creating an SKPath with the
+	/// rectangle might be a lot more overhead than just calling SKCanvas.ClipRect, specifically on WASM.</summary>
+	private protected virtual void ApplyPostPaintingClipping(SKCanvas canvas)
+	{
+		if (GetPostPaintingClipping() is { } postClip)
+		{
+			canvas.ClipPath(postClip, antialias: true);
+		}
+	}
 
 	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
 	// NOTE: Returning List<Visual> so that enumerating doesn't cause boxing.
@@ -580,8 +601,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				totalMatrix = TotalMatrix * rootTransform;
 			}
 
-			// this avoids the matrix copying in canvas.SetMatrix()
-			UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+			if (!_totalMatrix.isLocalMatrixIdentity)
+			{
+				// this avoids the matrix copying in canvas.SetMatrix()
+				UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+			}
 		}
 #if DEBUG
 		else
@@ -589,6 +613,30 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			Debug.Assert(Unsafe.IsNullRef(ref rootTransform) ? canvas.TotalMatrix == TotalMatrix.ToSKMatrix() : canvas.TotalMatrix == (TotalMatrix * rootTransform).ToSKMatrix());
 		}
 #endif
+	}
+
+	internal void PrintSubtree(StringBuilder sb, int indent = 0)
+	{
+		var indentation = new string(' ', indent * 2);
+		sb.Append(indentation);
+		sb.Append('[');
+		sb.Append(Comment);
+		sb.Append("]: ");
+		sb.Append("Subtree count: [");
+		sb.Append(GetSubTreeVisualCount());
+		sb.Append("], flags: [");
+		sb.Append(_flags);
+		sb.Append("], _totalMatrix: [");
+		sb.Append(_totalMatrix.matrix);
+		sb.Append(']');
+		sb.Append("], _framesSinceSubtreeNotChanged: [");
+		sb.Append(_framesSinceSubtreeNotChanged);
+		sb.Append(']');
+		sb.AppendLine();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.PrintSubtree(sb, indent + 1);
+		}
 	}
 
 	[Flags]

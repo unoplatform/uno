@@ -15,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_AppBarButton
 	{
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno/issues/9080
 		[TestMethod]
 		public async Task Check_DataContext_Propagation()
 		{

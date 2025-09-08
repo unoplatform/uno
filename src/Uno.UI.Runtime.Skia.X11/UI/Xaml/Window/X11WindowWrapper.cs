@@ -195,8 +195,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 		var scale = _xamlRoot.RasterizationScale;
 		var newWindowSize = new Size(windowAttrs2.width / scale, windowAttrs2.height / scale);
-		Bounds = new Rect(default, newWindowSize);
-		VisibleBounds = new Rect(default, newWindowSize);
+		var bounds = new Rect(default, newWindowSize);
+		SetBoundsAndVisibleBounds(bounds, bounds);
 
 		// copy the root window dimensions to the top window
 		_ = XLib.XResizeWindow(display, _host.TopX11Window.Window, windowAttrs2.width, windowAttrs2.height);

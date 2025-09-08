@@ -10,11 +10,19 @@ namespace Uno.UI.SourceGenerators.Tests.MetadataUpdateTests;
 public class Given_HotReloadService
 {
 	[TestMethod]
-	[DynamicData(nameof(GetScenarios), DynamicDataSourceType.Method)]
+	[DynamicData(nameof(GetScenarios))]
 	public async Task HR(string name, Scenario? scenario, Project[]? projects)
 	{
 		if (scenario != null)
 		{
+#if DEBUG && false
+			if (!name.Contains("When_DataTemplates_With_Nested_Add_Sibling"))
+			{
+				Assert.Inconclusive("Ignored case.");
+				return;
+			}
+#endif
+
 			if (scenario.IsCrashingRoslyn)
 			{
 				Assert.Inconclusive("Case is known to crash roslyn.");
@@ -63,13 +71,6 @@ public class Given_HotReloadService
 		{
 			var scenarioName = Path.GetFileName(scenarioFolder);
 			var scenarioConfig = Path.Combine(scenarioFolder, "Scenario.json");
-
-#if DEBUG && false
-			if (!scenarioName.Contains("When_DataTemplate_Event_Add"))
-			{
-				continue;
-			}
-#endif
 
 			if (File.Exists(scenarioConfig))
 			{

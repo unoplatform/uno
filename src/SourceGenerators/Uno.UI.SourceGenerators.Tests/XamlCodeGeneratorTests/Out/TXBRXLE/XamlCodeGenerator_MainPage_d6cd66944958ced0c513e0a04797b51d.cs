@@ -48,9 +48,7 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[
-			"NullableBoolConverter"
-			] = 
+			Resources["NullableBoolConverter"] = 
 			new global::TestRepro.NullableBoolConverter
 			{
 				// Source 0\MainPage.xaml (Line 10:4)
@@ -215,64 +213,48 @@ namespace TestRepro
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
 		}
+
 		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			this.Bindings.StopTracking();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _LoadElementSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LoadElementSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton LoadElement
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_LoadElementSubject.ElementInstance;
-			}
-			set
-			{
-				_LoadElementSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_LoadElementSubject.ElementInstance;
+			set => _LoadElementSubject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ToggleLoadSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ToggleLoadSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton ToggleLoad
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_ToggleLoadSubject.ElementInstance;
-			}
-			set
-			{
-				_ToggleLoadSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_ToggleLoadSubject.ElementInstance;
+			set => _ToggleLoadSubject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.Button button1
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_button1Subject.ElementInstance;
-			}
-			set
-			{
-				_button1Subject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_button1Subject.ElementInstance;
+			set => _button1Subject.ElementInstance = value;
 		}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton _component_0
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_component_0_Holder.Instance;
-				set => _component_0_Holder.Instance = value;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
-			private global::Microsoft.UI.Xaml.ElementStub _component_1
-			{
-				get => (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
-				set => _component_1_Holder.Instance = value;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Button _component_2
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
-				set => _component_2_Holder.Instance = value;
-			}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton _component_0
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
+		private global::Microsoft.UI.Xaml.ElementStub _component_1
+		{
+			get => (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
+			set => _component_1_Holder.Instance = value;
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.Button _component_2
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
+			set => _component_2_Holder.Instance = value;
+		}
 		private interface IMainPage_Bindings
 		{
 			void Initialize();
