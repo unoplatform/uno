@@ -44,6 +44,15 @@ namespace Microsoft.UI.Xaml
 		internal NewFrameworkTemplateBuilder? _viewFactory;
 
 		/// <summary>
+		/// Sets the view factory. Internal method to avoid unwanted changes from outside the framework.
+		/// </summary>
+		/// <param name="factory">The new factory to set</param>
+		internal void SetViewFactory(NewFrameworkTemplateBuilder? factory)
+		{
+			_viewFactory = factory;
+		}
+
+		/// <summary>
 		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
@@ -206,14 +215,20 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// --- Uno extension points for template factory injection and update notifications ---
-		private global::Windows.UI.Core.WeakEventHelper.WeakEventCollection? _templateUpdatedHandlers;
+		
+		// Use weak attached field to avoid adding a field to every FrameworkTemplate instance
+		// when the dynamic template update feature is not used
+		private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<FrameworkTemplate, global::Windows.UI.Core.WeakEventHelper.WeakEventCollection> _templateUpdatedHandlers = new();
 
 		internal IDisposable RegisterTemplateUpdated(Action handler)
-			=> global::Windows.UI.Core.WeakEventHelper.RegisterEvent(
-				_templateUpdatedHandlers ??= new global::Windows.UI.Core.WeakEventHelper.WeakEventCollection(),
+		{
+			var handlers = _templateUpdatedHandlers.GetOrCreateValue(this);
+			return global::Windows.UI.Core.WeakEventHelper.RegisterEvent(
+				handlers,
 				handler,
 				(h, s, a) => (h as Action)?.Invoke()
 			);
+		}
 
 		internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factory)
 		{
@@ -226,7 +241,11 @@ namespace Microsoft.UI.Xaml
 			{
 				_viewFactory = newFactory;
 
-				_templateUpdatedHandlers?.Invoke(this, null);
+				// Only invoke handlers if they exist for this instance
+				if (_templateUpdatedHandlers.TryGetValue(this, out var handlers))
+				{
+					handlers.Invoke(this, null);
+				}
 
 				return true;
 			}

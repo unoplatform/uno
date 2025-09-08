@@ -17,7 +17,7 @@ namespace Uno.UI
 	/// Manager for runtime DataTemplate updates and notification system.
 	/// Also exposes a global flag to enable template-update subscriptions in controls.
 	/// </summary>
-	public static class TemplateManager
+	internal static class TemplateManager
 	{
 		/// <summary>
 		/// If true, DataTemplate update can be activated.
