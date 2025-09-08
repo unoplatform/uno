@@ -27,8 +27,12 @@ namespace Microsoft.UI.Xaml.Documents;
 
 // TODO: character spacing
 // TODO: what happens if text has no drawable glyphs but is not empty? Can this happen? The HarfBuzz docs imply that it can't
+// TODO: tab spacing
 internal readonly struct UnicodeText : IParsedText
 {
+	// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
+	private const float TabStopWidth = 48;
+
 	// A readonly snapshot of an Inline that is referenced by individual text runs after splitting. It's a class
 	// and not a struct because we don't want to copy the same Inline for each run.
 	private class ReadonlyInlineCopy
@@ -231,17 +235,40 @@ internal readonly struct UnicodeText : IParsedText
 			}
 
 			var lineRuns = new Deque<ShapedLineBrokenBidiRun>();
-			foreach (var group in line.GroupBy(r => r.inline))
+
+			IEnumerable<(ReadonlyInlineCopy Inline, int startInInline, int endInInline)> GroupByInline()
 			{
-				var inline = group.Key;
-				var groupAsArray = group.ToArray();
-				var startInInline = groupAsArray[0].startInInline;
-				var endInInline = groupAsArray[^1].endInInline;
+				foreach (var group in line.GroupBy(r => r.inline))
+				{
+					var inline = group.Key;
+					var groupAsArray = group.ToArray();
+					var startInInline = groupAsArray[0].startInInline;
+					var endInInline = groupAsArray[^1].endInInline;
+					var i = startInInline;
+					while (inline.Text.IndexOf('\t', i) is var tabIndex && tabIndex != -1)
+					{
+						if (i != tabIndex)
+						{
+							yield return (inline, i, tabIndex);
+						}
+						yield return (inline, tabIndex, tabIndex + 1);
+						i = tabIndex + 1;
+					}
+
+					if (i != endInInline)
+					{
+						yield return (inline, i, endInInline);
+					}
+				}
+			}
+			foreach (var (inline, startInInline, endInInline) in GroupByInline())
+			{
 
 				var sameInlineRuns = new List<ShapedLineBrokenBidiRun>();
 
+				var text = inline.Text[startInInline..endInInline];
 				var bidi = new BiDi();
-				bidi.SetPara(inline.Text[startInInline..endInInline], (byte)(inline.FlowDirection is FlowDirection.RightToLeft ? 1 : 0), null);
+				bidi.SetPara(text, (byte)(inline.FlowDirection is FlowDirection.RightToLeft ? 1 : 0), null);
 				var runCount = bidi.CountRuns();
 				for (var runIndex = 0; runIndex < runCount; runIndex++)
 				{
@@ -269,13 +296,13 @@ internal readonly struct UnicodeText : IParsedText
 						{
 							if (i != logicalStart)
 							{
-								sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + i, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + i)], level is BiDi.BiDiDirection.RTL, currentFontDetails.Font), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+								sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + i, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + i)], level is BiDi.BiDiDirection.RTL, currentFontDetails), currentFontDetails, level is BiDi.BiDiDirection.RTL));
 							}
 							currentFontDetails = newFontDetails;
 							currentFontSplitStart = i;
 						}
 					}
-					sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + logicalStart + length, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + logicalStart + length)], level is BiDi.BiDiDirection.RTL, currentFontDetails.Font), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+					sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + logicalStart + length, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + logicalStart + length)], level is BiDi.BiDiDirection.RTL, currentFontDetails), currentFontDetails, level is BiDi.BiDiDirection.RTL));
 					// swap runs if rtl since we always process characters in a single bidi run in logical order
 					if (level is BiDi.BiDiDirection.RTL)
 					{
@@ -334,7 +361,7 @@ internal readonly struct UnicodeText : IParsedText
 
 			if (bidiRun.inline != nextLineBreakingOpportunity.inline || bidiRun.endInInline < nextLineBreakingOpportunity.indexInInline)
 			{
-				var glyphsOfEntireBidiRun = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+				var glyphsOfEntireBidiRun = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..bidiRun.endInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth);
 				var bidiRunWidth = RunWidth(glyphsOfEntireBidiRun, bidiRun.inline.FontDetails);
 				// no line breaking opportunity in run
 				if (currentLine.Count == 0 || bidiRunWidth <= remainingLineWidth)
@@ -359,7 +386,7 @@ internal readonly struct UnicodeText : IParsedText
 				var testOpportunity = logicallyOrderedLineBreakingOpportunities[testOpportunityIndex];
 				while (testOpportunity.inline == bidiRun.inline && testOpportunity.indexInInline <= bidiRun.endInInline)
 				{
-					var testGlyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..testOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+					var testGlyphs = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..testOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth);
 					var testWidth = RunWidth(testGlyphs, bidiRun.inline.FontDetails);
 					if (testWidth <= remainingLineWidth)
 					{
@@ -392,7 +419,7 @@ internal readonly struct UnicodeText : IParsedText
 			if (biggestFittingPrefixEnd == -1 && currentLine.Count == 0)
 			{
 				biggestFittingPrefixEnd = nextLineBreakingOpportunity.indexInInline;
-				var g = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..nextLineBreakingOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails.Font);
+				var g = ShapeRun(bidiRun.inline.Text[bidiRun.startInInline..nextLineBreakingOpportunity.indexInInline], bidiRun.rtl, bidiRun.fontDetails, lineWidth is float.PositiveInfinity ? 0 : lineWidth - remainingLineWidth);
 				biggestFittingPrefixWidth = RunWidth(g, bidiRun.inline.FontDetails);
 			}
 
@@ -537,17 +564,27 @@ internal readonly struct UnicodeText : IParsedText
 					newFontDetails = inline.FontDetails;
 				}
 
-				if (newFontDetails != currentFontDetails)
+				var isTab = inline.Text[i] is '\t';
+				if (newFontDetails != currentFontDetails || isTab)
 				{
-					if (i != logicalStart)
+					if (currentFontSplitStart != i)
 					{
 						logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, i, level == BiDi.BiDiDirection.RTL, currentFontDetails));
 					}
 					currentFontDetails = newFontDetails;
 					currentFontSplitStart = i;
+					if (isTab)
+					{
+						logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, i + 1, level == BiDi.BiDiDirection.RTL, currentFontDetails));
+						currentFontSplitStart = i + 1;
+					}
 				}
 			}
-			logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, logicalStart + length, level == BiDi.BiDiDirection.RTL, currentFontDetails));
+
+			if (currentFontSplitStart != logicalStart + length)
+			{
+				logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, logicalStart + length, level == BiDi.BiDiDirection.RTL, currentFontDetails));
+			}
 		}
 
 		logicallyOrderedRuns.Sort((run, bidiRun) => run.startInInline - bidiRun.startInInline);
@@ -564,7 +601,7 @@ internal readonly struct UnicodeText : IParsedText
 		return logicallyOrderedRuns;
 	}
 
-	private static (GlyphInfo info, GlyphPosition position)[] ShapeRun(string textRun, bool rtl, Font font)
+	private static (GlyphInfo info, GlyphPosition position)[] ShapeRun(string textRun, bool rtl, FontDetails fontDetails, float currentLineWidth = 0)
 	{
 		Debug.Assert(textRun.Length < 2 || !textRun[..^2].Contains("\r\n"));
 		using var buffer = new Buffer();
@@ -572,7 +609,7 @@ internal readonly struct UnicodeText : IParsedText
 		buffer.GuessSegmentProperties();
 		buffer.Direction = rtl ? Direction.RightToLeft : Direction.LeftToRight;
 		// TODO: ligatures
-		font.Shape(buffer, new Feature(new Tag('l', 'i', 'g', 'a'), 0));
+		fontDetails.Font.Shape(buffer, new Feature(new Tag('l', 'i', 'g', 'a'), 0));
 		var positions = buffer.GetGlyphPositionSpan();
 		var infos = buffer.GetGlyphInfoSpan();
 		var count = buffer.Length;
@@ -584,9 +621,12 @@ internal readonly struct UnicodeText : IParsedText
 
 		// Fonts will give a width > 0 to \r, so we hardcore the width here.
 		// TODO: make this cleaner somehow
-		if (IsLineBreak(textRun, textRun.Length) && infos[^1].Cluster == (textRun is [.., '\r', '\n'] ? 2 : 1))
+		var isTab = textRun is "\t";
+		if ((isTab || IsLineBreak(textRun, textRun.Length)) && infos[^1].Cluster == textRun.Length - (textRun is [.., '\r', '\n'] ? 2 : 1))
 		{
-			ret[^1] = (infos[^1] with { Codepoint = 0 }, positions[^1] with { XAdvance = 0 });
+			fontDetails.Font.TryGetGlyph(' ', out var codepoint);
+			var tabWidth = TabStopWidth / fontDetails.TextScale.textScaleX;
+			ret[^1] = (infos[^1] with { Codepoint = codepoint }, positions[^1] with { XAdvance = (int)(isTab ? tabWidth - currentLineWidth % tabWidth : 0) });
 		}
 		return ret;
 	}
@@ -623,6 +663,11 @@ internal readonly struct UnicodeText : IParsedText
 						var glyph = run.glyphs[i];
 						glyphs[i] = new LayoutedGlyphDetails(glyph.info, glyph.position, runX, default, layoutedRun);
 						runX += GlyphWidth(glyph.position, run.fontDetails);
+					}
+
+					if (run.Inline.Text[run.startInInline] is '\t')
+					{
+						runX = TabStopWidth - currentLineX % TabStopWidth;
 					}
 
 					layoutedRun.width = runX;
