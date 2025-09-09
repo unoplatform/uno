@@ -29,7 +29,7 @@ public partial class CompositionTarget
 
 	private void Render()
 	{
-		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame begins with timestamp {Stopwatch.GetTimestamp()}");
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} begins with timestamp {Stopwatch.GetTimestamp()}");
 
 		NativeDispatcher.CheckThreadAccess();
 

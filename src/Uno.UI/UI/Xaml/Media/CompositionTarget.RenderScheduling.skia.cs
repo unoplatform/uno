@@ -16,18 +16,18 @@ public partial class CompositionTarget
 {
 	private readonly object _renderingStateGate = new();
 
-	private bool _paintRequested; // only set or read under _renderingStateGate
-	private bool _paintedAheadOfTime; // only set or read under _renderingStateGate
-	private bool _paintRequestedAfterAheadOfTimePaint; // only set or read under _renderingStateGate
-	private bool _shouldEnqueuePaintOnNextNativePlatformFrameRequested = true; // only set from the UI thread, only reset from the rendering/gpu thread
+	private bool _renderRequested; // only set or read under _renderingStateGate
+	private bool _renderedAheadOfTime; // only set or read under _renderingStateGate
+	private bool _renderRequestedAfterAheadOfTimePaint; // only set or read under _renderingStateGate
+	private bool _shouldEnqueueRenderOnNextNativePlatformFrameRequested = true; // only set from the UI thread, only reset from the rendering/gpu thread
 
-	private bool PaintRequested
+	private bool RenderRequested
 	{
-		get => _paintRequested;
+		get => _renderRequested;
 		set
 		{
-			_paintRequested = value;
-			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()} _paintRequested = {_paintRequested}");
+			_renderRequested = value;
+			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()} {nameof(_renderRequested)} = {_renderRequested}");
 		}
 	}
 
@@ -38,14 +38,14 @@ public partial class CompositionTarget
 		{
 			LogRenderState();
 			AssertRenderStateMachine();
-			if (!_paintedAheadOfTime && !PaintRequested)
+			if (!_renderedAheadOfTime && !RenderRequested)
 			{
-				PaintRequested = true;
+				RenderRequested = true;
 				shouldEnqueue = true;
 			}
-			else if (_paintedAheadOfTime)
+			else if (_renderedAheadOfTime)
 			{
-				_paintRequestedAfterAheadOfTimePaint = true;
+				_renderRequestedAfterAheadOfTimePaint = true;
 			}
 			AssertRenderStateMachine();
 			LogRenderState();
@@ -54,11 +54,11 @@ public partial class CompositionTarget
 		if (shouldEnqueue)
 		{
 			XamlRootMap.GetHostForRoot(ContentRoot.XamlRoot!)!.InvalidateRender();
-			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: RequestNewFrame invalidated render");
+			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} invalidated render");
 		}
 		else
 		{
-			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: RequestNewFrame found no need to invalidate render.");
+			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} found no need to invalidate render.");
 		}
 	}
 
@@ -67,33 +67,33 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueuePaintCallback)}");
 		NativeDispatcher.CheckThreadAccess();
 
-		Interlocked.Exchange(ref _shouldEnqueuePaintOnNextNativePlatformFrameRequested, true);
+		Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, true);
 
 		lock (_renderingStateGate)
 		{
 			LogRenderState();
 			AssertRenderStateMachine();
-			if (_paintedAheadOfTime)
+			if (_renderedAheadOfTime)
 			{
-				_paintedAheadOfTime = false;
-				if (_paintRequestedAfterAheadOfTimePaint)
+				_renderedAheadOfTime = false;
+				if (_renderRequestedAfterAheadOfTimePaint)
 				{
-					_paintRequestedAfterAheadOfTimePaint = false;
-					this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueuePaintCallback)}: painted ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
+					_renderRequestedAfterAheadOfTimePaint = false;
+					this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueuePaintCallback)}: rendered ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
 					((ICompositionTarget)this).RequestNewFrame();
 				}
 				else
 				{
-					this.LogTrace()?.Trace($"{nameof(EnqueuePaintCallback)}: painted ahead of time and no new frame was requested since.");
+					this.LogTrace()?.Trace($"{nameof(EnqueuePaintCallback)}: rendered ahead of time and no new frame was requested since.");
 				}
 			}
-			else if (PaintRequested)
+			else if (RenderRequested)
 			{
 				lock (_renderingStateGate)
 				{
-					PaintRequested = false;
+					RenderRequested = false;
 				}
-				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame fired from {nameof(EnqueuePaintCallback)}");
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} fired from {nameof(EnqueuePaintCallback)}");
 				Render();
 			}
 			AssertRenderStateMachine();
@@ -105,7 +105,7 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 
-		if (Interlocked.Exchange(ref _shouldEnqueuePaintOnNextNativePlatformFrameRequested, false))
+		if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
 		{
 			NativeDispatcher.Main.EnqueuePaint(this, EnqueuePaintCallback);
 		}
@@ -113,33 +113,33 @@ public partial class CompositionTarget
 		return Render(canvas, resizeFunc);
 	}
 
-	internal void OnPaintFrameOpportunity()
+	internal void OnRenderFrameOpportunity()
 	{
-		// If we get an opportunity to get call PaintFrame earlier than EnqueuePaintCallback, then we do that
-		// but skip the PaintFrame call in the next EnqueuePaintCallback so that overall we're still keeping
-		// the rate of PaintFrame calls the same.
+		// If we get an opportunity to get call Render earlier than EnqueuePaintCallback, then we do that
+		// but skip the Render call in the next EnqueuePaintCallback so that overall we're still keeping
+		// the rate of Render calls the same.
 		NativeDispatcher.CheckThreadAccess();
 
 		if (SkiaRenderHelper.CanRecordPicture(ContentRoot.VisualTree.RootElement))
 		{
-			var shouldPaint = false;
+			var shouldRender = false;
 			lock (_renderingStateGate)
 			{
 				LogRenderState();
 				AssertRenderStateMachine();
-				if (PaintRequested && !_paintedAheadOfTime)
+				if (RenderRequested && !_renderedAheadOfTime)
 				{
-					PaintRequested = false;
-					_paintedAheadOfTime = true;
-					shouldPaint = true;
+					RenderRequested = false;
+					_renderedAheadOfTime = true;
+					shouldRender = true;
 				}
 				AssertRenderStateMachine();
 				LogRenderState();
 			}
 
-			if (shouldPaint)
+			if (shouldRender)
 			{
-				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: OnPaintFrameOpportunity: Calling PaintFrame early ");
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnRenderFrameOpportunity)}: Calling {nameof(Render)} early ");
 				Render();
 			}
 		}
@@ -150,8 +150,8 @@ public partial class CompositionTarget
 	{
 		lock (_renderingStateGate)
 		{
-			Debug.Assert(!_paintRequestedAfterAheadOfTimePaint || _paintedAheadOfTime);
-			Debug.Assert(!_paintedAheadOfTime || !PaintRequested);
+			Debug.Assert(!_renderRequestedAfterAheadOfTimePaint || _renderedAheadOfTime);
+			Debug.Assert(!_renderedAheadOfTime || !RenderRequested);
 		}
 	}
 
@@ -161,7 +161,7 @@ public partial class CompositionTarget
 		{
 			lock (_renderingStateGate)
 			{
-				this.Log().Trace($"CompositionTarget#{GetHashCode()}: Render state machine: _paintRequested = {_paintRequested}, _paintedAheadOfTime = {_paintedAheadOfTime}, _paintRequestedAfterAheadOfTimePaint={_paintRequestedAfterAheadOfTimePaint}");
+				this.Log().Trace($"CompositionTarget#{GetHashCode()}: Render state machine: {nameof(_renderRequested)} = {_renderRequested}, {nameof(_renderedAheadOfTime)} = {_renderedAheadOfTime}, {nameof(_renderRequestedAfterAheadOfTimePaint)}={_renderRequestedAfterAheadOfTimePaint}");
 			}
 		}
 	}
