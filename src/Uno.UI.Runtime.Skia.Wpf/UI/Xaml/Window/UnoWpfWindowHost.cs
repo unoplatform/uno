@@ -61,7 +61,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	private readonly RenderingLayerHost _renderLayer;
 
 	private readonly SerialDisposable _backgroundDisposable = new();
-	private bool _enqueued;
+	private bool _invalidateRenderEnqueued;
 
 	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
 	{
@@ -148,13 +148,13 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		if (!Interlocked.Exchange(ref _enqueued, true))
+		if (!Interlocked.Exchange(ref _invalidateRenderEnqueued, true))
 		{
 			// We schedule on Idle here because if you invalidate directly, it can cause a hang if
 			// the rendering is continuously invalidated (e.g. animations). Try Given_SKCanvasElement to confirm.
 			NativeDispatcher.Main.Enqueue(() =>
 			{
-				Interlocked.Exchange(ref _enqueued, false);
+				Interlocked.Exchange(ref _invalidateRenderEnqueued, false);
 				_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 				_renderLayer.InvalidateVisual();
 				InvalidateVisual();
