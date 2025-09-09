@@ -54,20 +54,7 @@ public partial class CompositionTarget
 		if (shouldEnqueue)
 		{
 			XamlRootMap.GetHostForRoot(ContentRoot.XamlRoot!)!.InvalidateRender();
-			// long? lastTimestampNullable;
-			// lock (_frameGate)
-			// {
-			// 	lastTimestampNullable = _lastRenderedFrame?.timestamp;
-			// }
-			//
-			// long minimumTimestamp = 0;
-			// if (lastTimestampNullable is { } lastTimestamp)
-			// {
-			// 	minimumTimestamp = 0;
-			// }
-			//
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: RequestNewFrame invalidated render");
-			// NativeDispatcher.Main.EnqueuePaint(this, OnDispatcherNewFrameCallback, minimumTimestamp);
 		}
 		else
 		{
@@ -89,14 +76,6 @@ public partial class CompositionTarget
 			if (_paintedAheadOfTime)
 			{
 				_paintedAheadOfTime = false;
-				lock (_frameGate)
-				{
-					if (_lastRenderedFrame is not null)
-					{
-						_lastRenderedFrame = _lastRenderedFrame.Value with { timestamp = 0 };
-						this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueuePaintCallback)}: updating last frame timestamp since it was painted ahead of time to {_lastRenderedFrame.Value.timestamp}");
-					}
-				}
 				if (_paintRequestedAfterAheadOfTimePaint)
 				{
 					_paintRequestedAfterAheadOfTimePaint = false;

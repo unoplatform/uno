@@ -23,14 +23,13 @@ public partial class CompositionTarget
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
+	private (SKPicture frame, SKPath nativeElementClipPath, Size size)? _lastRenderedFrame;
 
 	internal event Action? FrameRendered;
 
 	private void Render()
 	{
-		var timestamp = Stopwatch.GetTimestamp();
-		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame begins with timestamp {timestamp}");
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame begins with timestamp {Stopwatch.GetTimestamp()}");
 
 		NativeDispatcher.CheckThreadAccess();
 
@@ -44,7 +43,7 @@ public partial class CompositionTarget
 			rootElement,
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
 			applyScaling: FrameRenderingOptions.applyScalingToNativeElementClipPath);
-		var lastRenderedFrame = (picture, path, new Size((int)(bounds.Width * scale), (int)(bounds.Height * scale)), timestamp);
+		var lastRenderedFrame = (picture, path, new Size((int)(bounds.Width * scale), (int)(bounds.Height * scale)));
 		lock (_frameGate)
 		{
 			_lastRenderedFrame = lastRenderedFrame;
@@ -68,7 +67,7 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 
-		(SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? lastRenderedFrameNullable;
+		(SKPicture frame, SKPath nativeElementClipPath, Size size)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
