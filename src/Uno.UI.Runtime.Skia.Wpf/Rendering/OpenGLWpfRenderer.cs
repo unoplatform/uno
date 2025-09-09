@@ -169,11 +169,30 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		_xamlRoot ??= XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 
+		int width, height;
+
+		var dpi = _xamlRoot!.RasterizationScale;
+		double dpiScaleX = dpi;
+		double dpiScaleY = dpi;
+		if (_host.IgnorePixelScaling)
+		{
+			width = (int)_hostControl.ActualWidth;
+			height = (int)_hostControl.ActualHeight;
+		}
+		else
+		{
+			var matrix = PresentationSource.FromVisual(_hostControl).CompositionTarget.TransformToDevice;
+			dpiScaleX = matrix.M11;
+			dpiScaleY = matrix.M22;
+			width = (int)(_hostControl.ActualWidth * dpiScaleX);
+			height = (int)(_hostControl.ActualHeight * dpiScaleY);
+		}
+
 #pragma warning disable CA1806 // Do not ignore method results
 		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
 #pragma warning restore CA1806 // Do not ignore method results
 
-		var nativeElementClipPath = ((Microsoft.UI.Xaml.Media.CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		if (_renderTarget == null || _surface == null || _renderTarget.Width != width || _renderTarget.Height != height)
 		{
 			// create or update the dimensions
 			_renderTarget?.Dispose();
@@ -188,33 +207,43 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			var glInfo = new GRGlFramebufferInfo((uint)framebuffer, colorType.ToGlSizedFormat());
 
-			_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Width, samples, stencil, glInfo);
+			_renderTarget = new GRBackendRenderTarget(width, height, samples, stencil, glInfo);
 
 			// create the surface
 			_surface?.Dispose();
 			_surface = SKSurface.Create(_grContext, _renderTarget, surfaceOrigin, colorType);
 
-			_backBuffer = new WriteableBitmap((int)size.Width, (int)size.Width, 96, 96, PixelFormats.Pbgra32, null);
+			_backBuffer = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"Recreate render surface {(int)size.Width}x{(int)size.Width} colorType:{colorType} sample:{samples}");
+				this.Log().Trace($"Recreate render surface {width}x{height} colorType:{colorType} sample:{samples}");
 			}
-			return _surface.Canvas;
-		});
+		}
 
 		WindowsRenderingNativeMethods.glClear(WindowsRenderingNativeMethods.GL_COLOR_BUFFER_BIT | WindowsRenderingNativeMethods.GL_STENCIL_BUFFER_BIT | WindowsRenderingNativeMethods.GL_DEPTH_BUFFER_BIT);
 
-		if (_host.NativeOverlayLayer is { } nativeLayer)
+		var canvas = _surface.Canvas;
+
+		if (_host.RootElement?.Visual is { } rootVisual)
 		{
-			nativeLayer.Clip ??= new PathGeometry();
-			((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(nativeElementClipPath.ToSvgPathData());
-		}
-		else
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			SkiaRenderHelper.RenderPicture(
+				_surface,
+				_host.Picture,
+				BackgroundColor,
+				_fpsHelper);
+
+			if (_host.NativeOverlayLayer is { } nativeLayer)
 			{
-				this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
+				nativeLayer.Clip ??= new PathGeometry();
+				((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(_host.ClipPath?.ToSvgPathData());
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
+				}
 			}
 		}
 
@@ -222,8 +251,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		if (_backBuffer != null)
 		{
 			_backBuffer.Lock();
-			WindowsRenderingNativeMethods.glReadPixels(0, 0, _backBuffer.PixelWidth, _backBuffer.PixelHeight, WindowsRenderingNativeMethods.GL_BGRA_EXT, WindowsRenderingNativeMethods.GL_UNSIGNED_BYTE, _backBuffer.BackBuffer);
-			_backBuffer.AddDirtyRect(new Int32Rect(0, 0, _backBuffer.PixelWidth, _backBuffer.PixelHeight));
+			WindowsRenderingNativeMethods.glReadPixels(0, 0, width, height, WindowsRenderingNativeMethods.GL_BGRA_EXT, WindowsRenderingNativeMethods.GL_UNSIGNED_BYTE, _backBuffer.BackBuffer);
+			_backBuffer.AddDirtyRect(new Int32Rect(0, 0, width, height));
 			_backBuffer.Unlock();
 
 			drawingContext.DrawImage(_backBuffer, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));

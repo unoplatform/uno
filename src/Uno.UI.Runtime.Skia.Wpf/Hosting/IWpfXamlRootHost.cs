@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using SkiaSharp;
 using Uno.UI.Hosting;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
@@ -12,4 +13,8 @@ internal interface IWpfXamlRootHost : IXamlRootHost
 	bool IgnorePixelScaling { get; }
 
 	RenderSurfaceType? RenderSurfaceType { get; }
+
+	SKPicture? Picture { get; }
+
+	SKPath? ClipPath { get; }
 }
