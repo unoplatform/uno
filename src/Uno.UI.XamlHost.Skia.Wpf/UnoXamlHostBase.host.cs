@@ -1,9 +1,11 @@
 ﻿#nullable enable
 
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.UI.Content;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
@@ -28,6 +30,7 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 	private Microsoft.UI.Xaml.UIElement? _rootElement;
 	private ContentSite _contentSite;
 	private WpfWindow? _window;
+	private bool _invalidateRenderEnqueued;
 
 	/// <summary>
 	/// Gets or sets the current Skia Render surface type.
@@ -112,8 +115,17 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		ChildInternal?.XamlRoot?.InvalidateOverlays();
-		InvalidateVisual();
+		if (!Interlocked.Exchange(ref _invalidateRenderEnqueued, true))
+		{
+			// We schedule on Idle here because if you invalidate directly, it can cause a hang if
+			// the rendering is continuously invalidated (e.g. animations). Try Given_SKCanvasElement to confirm.
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				ChildInternal?.XamlRoot?.InvalidateOverlays();
+				InvalidateVisual();
+				Interlocked.Exchange(ref _invalidateRenderEnqueued, false);
+			}, NativeDispatcherPriority.Idle);
+		}
 	}
 
 	WinUI.UIElement? IXamlRootHost.RootElement => _rootElement ??= _xamlSource?.GetVisualTreeRoot();
