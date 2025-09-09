@@ -25,15 +25,15 @@ public sealed partial class ApplicationData
 
 	private ApplicationData()
 	{
-		_localFolderLazy = new(() => new StorageFolder(GetLocalFolder()));
-		_roamingFolderLazy = new(() => new StorageFolder(GetRoamingFolder()));
+		_localFolderLazy = new(() => CreateStorageFolder(GetLocalFolder()));
+		_roamingFolderLazy = new(() => CreateStorageFolder(GetRoamingFolder()));
 #if !__SKIA__ // The concept of Shared Local folder is not implemented for Skia.
-		_sharedLocalFolderLazy = new(() => new StorageFolder(".shared", GetSharedLocalFolder()));
+		_sharedLocalFolderLazy = new(() => CreateStorageFolder(".shared", GetSharedLocalFolder()));
 #else
 		_sharedLocalFolderLazy = new((StorageFolder?)null);
 #endif
-		_localCacheFolderLazy = new(() => new StorageFolder(GetLocalCacheFolder()));
-		_temporaryFolderLazy = new(() => new StorageFolder(GetTemporaryFolder()));
+		_localCacheFolderLazy = new(() => CreateStorageFolder(GetLocalCacheFolder()));
+		_temporaryFolderLazy = new(() => CreateStorageFolder(GetTemporaryFolder()));
 
 		_localSettingsLazy = new(() => new ApplicationDataContainer(this, "Local", ApplicationDataLocality.Local));
 		_roamingSettingsLazy = new(() => new ApplicationDataContainer(this, "Roaming", ApplicationDataLocality.Roaming));
@@ -115,5 +115,35 @@ public sealed partial class ApplicationData
 
 	[Uno.NotImplemented]
 	public event Foundation.TypedEventHandler<ApplicationData, object>? DataChanged;
+
+	private static StorageFolder CreateStorageFolder(string folder)
+	{
+		try
+		{
+			return new StorageFolder(folder);
+		}
+		catch (Exception e)
+		{
+			throw new InvalidOperationException(
+				$"The creation of the StorageFolder \'{folder}\' failed. It may have been initialized too early, see for more information: https://aka.platform.uno/application-data",
+				e);
+		}
+	}
+
+#if !__SKIA__
+	private static StorageFolder CreateStorageFolder(string name, string folder)
+	{
+		try
+		{
+			return new StorageFolder(name, folder);
+		}
+		catch (Exception e)
+		{
+			throw new InvalidOperationException(
+				$"The creation of the StorageFolder \'{folder}\' failed. It may have been initialized too early, see for more information: https://aka.platform.uno/application-data",
+				e);
+		}
+	}
+#endif
 }
 #endif

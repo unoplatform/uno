@@ -22,5 +22,6 @@
     <UnoToolkitVersion>5.2.0-dev.44</UnoToolkitVersion>
     <UnoThemesVersion>4.2.0-dev.19</UnoThemesVersion>
     <UnoCSharpMarkupVersion>5.2.0-dev.58</UnoCSharpMarkupVersion>
+    <UnoResizetizerVersion>1.11.0-dev.17</UnoResizetizerVersion>
   </PropertyGroup>
 </Project>

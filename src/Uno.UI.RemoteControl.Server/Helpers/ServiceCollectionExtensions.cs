@@ -48,8 +48,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			services.AddScoped<TelemetrySession>(svc => CreateConnectionTelemetrySession(svc, solutionPath));
 
 			// Register connection-specific telemetry service as scoped
-			services.AddScoped<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly,
-				svc.GetRequiredService<TelemetrySession>()));
+			services.AddScoped<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly, svc.GetRequiredService<TelemetrySession>()));
 
 			// Register ITelemetry<T> so that it resolves CreateTelemetry with the correct type argument T
 			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryGenericAdapter<>));
