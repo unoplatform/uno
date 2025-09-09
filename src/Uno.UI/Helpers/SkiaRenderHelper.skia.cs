@@ -19,7 +19,7 @@ internal static class SkiaRenderHelper
 		rootElement is not null &&
 		(!FeatureConfiguration.Rendering.GenerateNewFramesOnlyWhenUITreeIsArranged || rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false });
 
-	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath, bool applyScaling)
+	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath)
 	{
 		var xamlRoot = rootElement.XamlRoot;
 		var scale = (float)(xamlRoot?.RasterizationScale ?? 1.0f);
@@ -29,16 +29,19 @@ internal static class SkiaRenderHelper
 		using var _ = new SKAutoCanvasRestore(canvas, true);
 		canvas.Clear(SKColors.Transparent);
 		canvas.Scale(scale);
-		rootElement.Visual.Compositor.RenderRootVisual(canvas, rootElement.Visual);
-		var path = CalculateClippingPath(width, height, rootElement.Visual, canvas, invertPath, applyScaling);
+		var path = RenderRootVisualAndReturnPath(width, height, rootElement.Visual, canvas, invertPath);
+
 		var picture = recorder.EndRecording();
+
+		xamlRoot?.InvokeFramePainted();
 
 		return (picture, path);
 	}
 
-	internal static void RenderPicture(SKCanvas canvas, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
+	internal static void RenderPicture(SKSurface surface, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
 	{
 		using var fpsHelperDisposable = fpsHelper.BeginFrame();
+		var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(background);
@@ -53,34 +56,30 @@ internal static class SkiaRenderHelper
 
 		// update the control
 		canvas.Flush();
+		surface.Flush();
 	}
 
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
 	/// Takes the current TotalMatrix of the surface's canvas into account
 	/// </summary>
-	private static SKPath CalculateClippingPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas, bool invertPath, bool applyScaling)
+	public static SKPath RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas, bool invertPath)
 	{
+		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
 		SKPath outPath = new SKPath();
 		if (ContentPresenter.HasNativeElements())
 		{
 			var parentClipPath = new SKPath();
 			parentClipPath.AddRect(new SKRect(0, 0, width, height));
 			rootVisual.GetNativeViewPath(parentClipPath, outPath);
-			if (applyScaling)
-			{
-				outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
-			}
+			outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
 		}
 
 		if (invertPath)
 		{
 			var invertedPath = new SKPath();
 			invertedPath.AddRect(new SKRect(0, 0, width, height));
-			if (applyScaling)
-			{
-				invertedPath.Transform(canvas.TotalMatrix, invertedPath);
-			}
+			invertedPath.Transform(canvas.TotalMatrix, invertedPath);
 			invertedPath.Op(outPath, SKPathOp.Difference, invertedPath);
 			return invertedPath;
 		}
