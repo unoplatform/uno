@@ -98,13 +98,6 @@ namespace Uno.UI
 			/// This property is used by skia renderers.
 			/// </summary>
 			public static float FrameRate { get; set; } = 60;
-
-			/// <summary>
-			/// If available on the current platform, composition will use the refresh rate of the screen
-			/// instead of forcing the value in
-			/// <see cref="CompositionTarget.FrameRate" />.
-			/// </summary>
-			public static bool UseNativeRefreshRate { get; set; } = true;
 		}
 
 		public static class ContentPresenter
