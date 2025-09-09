@@ -109,7 +109,7 @@ namespace Uno.UI.Xaml.Core
 				}
 
 #if __SKIA__
-				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnPaintFrameOpportunity();
+				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
 #endif
 			}
 		}
