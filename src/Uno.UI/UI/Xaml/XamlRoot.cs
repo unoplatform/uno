@@ -1,16 +1,13 @@
 ﻿#nullable enable
 
 using System;
-using System.Threading;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.Graphics.Display;
-using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
-using MUIC = Microsoft.UI.Content;
 
 namespace Microsoft.UI.Xaml;
 
