@@ -53,7 +53,10 @@ public partial class CompositionTarget
 
 		if (shouldEnqueue)
 		{
-			XamlRootMap.GetHostForRoot(ContentRoot.XamlRoot!)!.InvalidateRender();
+			if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
+			{
+				host.InvalidateRender();
+			}
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} invalidated render");
 		}
 		else
