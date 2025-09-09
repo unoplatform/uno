@@ -26,7 +26,7 @@ internal partial class Win32WindowWrapper
 
 	private Timer CreateRenderTimer()
 	{
-		var timer = new Timer { AutoReset = false, Interval = TimeSpan.FromSeconds(1.0 / FeatureConfiguration.CompositionTarget.FrameRate).TotalMilliseconds };
+		var timer = new Timer { AutoReset = false, Interval = TimeSpan.FromSeconds(1.0 / _refreshRate).TotalMilliseconds };
 		timer.Elapsed += (_, _) => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.High);
 		return timer;
 	}

@@ -48,6 +48,11 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 			RasterizationScale = (float)_displayInfo.LogicalDpi / PInvoke.USER_DEFAULT_SCREEN_DPI;
 			_displayInformation?.NotifyDpiChanged();
 		}
+
+		if (_refreshRate != oldRefreshRate)
+		{
+			_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / _refreshRate).TotalMilliseconds;
+		}
 	}
 
 	private unsafe (DisplayInfo, float) GetDisplayInfo()
