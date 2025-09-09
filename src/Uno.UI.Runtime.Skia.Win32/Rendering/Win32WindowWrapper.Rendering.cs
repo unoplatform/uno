@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.Drawing;
-using System.Net;
 using System.Timers;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -10,7 +8,6 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
-using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;

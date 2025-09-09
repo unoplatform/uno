@@ -843,39 +843,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			SUT.Select(SUT.Text.Length, 0);
-			await WindowHelper.WaitForIdle();
-			await Task.Delay(600); // Allow the ScrollViewer to update its offset
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
 			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, "sv.ScrollableWidth is not equal to sv.HorizontalOffset");
 
 			for (var i = 0; i < 6; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(200); // Allow the ScrollViewer to update its offset
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
 				Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, $"Index: {i} sv.ScrollableWidth is not equal to sv.HorizontalOffset");
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
-			await WindowHelper.WaitForIdle();
-			await Task.Delay(600); // Allow the ScrollViewer to update its offset
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
 			sv.HorizontalOffset.Should().BeLessThan(sv.ScrollableWidth);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
-			await WindowHelper.WaitForIdle();
-			await Task.Delay(600); // Allow the ScrollViewer to update its offset
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
 			Assert.AreEqual(0, sv.HorizontalOffset);
 
 			for (var i = 0; i < 6; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(600); // Allow the ScrollViewer to update its offset
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
 				Assert.AreEqual(0, sv.HorizontalOffset, $"Index: {i} sv.HorizontalOffset is not 0");
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
-			await WindowHelper.WaitForIdle();
-			await Task.Delay(600); // Allow the ScrollViewer to update its offset
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true); // Allow the ScrollViewer to update its offset
 			sv.HorizontalOffset.Should().BeGreaterThan(0);
 		}
 

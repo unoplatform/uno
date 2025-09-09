@@ -96,7 +96,7 @@ public partial class CompositionTarget
 				{
 					RenderRequested = false;
 				}
-				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} fired from {nameof(EnqueueRenderCallback)}");
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)} fired from {nameof(EnqueueRenderCallback)}");
 				Render();
 			}
 			AssertRenderStateMachine();
@@ -113,7 +113,7 @@ public partial class CompositionTarget
 			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
 		}
 
-		return Render(canvas, resizeFunc);
+		return Draw(canvas, resizeFunc);
 	}
 
 	internal void OnRenderFrameOpportunity()
@@ -142,7 +142,7 @@ public partial class CompositionTarget
 
 			if (shouldRender)
 			{
-				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnRenderFrameOpportunity)}: Calling {nameof(Render)} early ");
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnRenderFrameOpportunity)}: Calling {nameof(Draw)} early ");
 				Render();
 			}
 		}

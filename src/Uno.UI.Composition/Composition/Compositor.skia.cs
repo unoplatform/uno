@@ -198,7 +198,6 @@ public partial class Compositor
 			}
 		}
 
-		// TODO: this should be in XamlRoot.PaintFrame
 		if (_runningAnimations.Count > 0 || transitionsCount > 0)
 		{
 			rootVisual.CompositionTarget?.RequestNewFrame();

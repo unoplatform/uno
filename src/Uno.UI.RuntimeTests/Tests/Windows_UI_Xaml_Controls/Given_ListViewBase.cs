@@ -3855,7 +3855,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// scroll to bottom
 			ScrollTo(list, 10000);
 			await Task.Delay(500);
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var firstScroll = GetCurrenState();
 
 			// Has'No'MoreItems
@@ -3864,7 +3864,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// scroll to bottom
 			ScrollTo(list, 10000);
 			await Task.Delay(500);
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var secondScroll = GetCurrenState();
 
 			Assert.IsTrue(initial.Count / BatchSize > 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");

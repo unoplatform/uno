@@ -58,12 +58,12 @@ public partial class CompositionTarget
 			XamlRootMap.GetHostForRoot(rootElement.XamlRoot)?.InvalidateRender();
 		}
 
-		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame ends");
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	private SKPath Render(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
+	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
-		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
 		(SKPicture frame, SKPath nativeElementClipPath, Size size)? lastRenderedFrameNullable;
 		lock (_frameGate)

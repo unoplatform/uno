@@ -2,14 +2,26 @@ namespace Uno.UI.Runtime.Skia {
 	export class BrowserRenderer {
 		managedHandle: number;
 		canvas: any;
+		requestRender: any;
 		static anyGL: any;
 		glCtx: any;
-		queued: boolean;
 
 		constructor(managedHandle: number) {
 			this.managedHandle = managedHandle;
 			this.canvas = undefined;
+			this.requestRender = undefined;
 			BrowserRenderer.anyGL = (<any>window).GL;
+			this.buildImports();
+		}
+
+		async buildImports() {
+			let anyModule = <any>window.Module;
+
+			if (anyModule.getAssemblyExports !== undefined) {
+				const skiaSharpExports = await anyModule.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
+
+				this.requestRender = () => skiaSharpExports.Uno.UI.Runtime.Skia.BrowserRenderer.RenderFrame(this.managedHandle);
+			}
 		}
 
 		public static createInstance(managedHandle: number) {
@@ -30,8 +42,11 @@ namespace Uno.UI.Runtime.Skia {
 				this.canvas.height = h;
 		}
 
-		static makeContextCurrent(instance: BrowserRenderer) {
-			(<any>window).GL.makeContextCurrent(instance.glCtx);
+		static invalidate(instance: BrowserRenderer) {
+			window.requestAnimationFrame(() => {
+				(<any>window).GL.makeContextCurrent(instance.glCtx);
+				instance.requestRender();
+			});
 		}
 
 		public static createContextStatic(instance: BrowserRenderer, canvasOrCanvasId: any) {

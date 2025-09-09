@@ -38,7 +38,6 @@ namespace Uno.UI.Dispatching
 		private NativeDispatcherPriority _currentPriority;
 
 		private int _globalCount;
-		private int _pendingRenderActions;
 
 		[ThreadStatic]
 		private static bool? _hasThreadAccess;
@@ -164,7 +163,6 @@ namespace Uno.UI.Dispatching
 						if (details.normalItemsToProcessBeforeNextRenderAction == 0)
 						{
 							_compositionTargets[compositionTarget] = (renderAction: null, normalItemsToProcessBeforeNextRenderAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
-							_pendingRenderActions--;
 
 							_currentPriority = NativeDispatcherPriority.High;
 
@@ -176,10 +174,6 @@ namespace Uno.UI.Dispatching
 							this.LogTrace()?.Trace($"Running render job from the dispatcher: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
 
 							return details.renderAction;
-						}
-						else
-						{
-							Debug.Assert(_globalCount > _pendingRenderActions);
 						}
 					}
 				}
@@ -202,7 +196,6 @@ namespace Uno.UI.Dispatching
 				Debug.Assert(details.renderAction is null);
 				if (details.renderAction is null)
 				{
-					_pendingRenderActions++;
 					shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
 				}
 				_compositionTargets[compositionTarget] = details with

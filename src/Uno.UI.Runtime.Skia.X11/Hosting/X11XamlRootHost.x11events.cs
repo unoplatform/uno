@@ -209,6 +209,7 @@ internal partial class X11XamlRootHost
 							QueueAction(this, () => _visibilityCallback(@event.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
 							break;
 						case XEventName.Expose:
+							((IXamlRootHost)this).InvalidateRender();
 							if (_firstExpose && _window.AppWindow.Presenter is FullScreenPresenter)
 							{
 								_wrapper.SetFullScreenMode(true);
