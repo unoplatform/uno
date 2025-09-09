@@ -45,6 +45,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		private readonly List<(string elementName, ElementNameSubject bindingSubject)> _elementNames = new List<(string, ElementNameSubject)>();
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
 		private Queue<Action> _postActions = new Queue<Action>();
+		private List<XamlParseException>? _parseExceptions;
 
 		private static Type[] _genericConvertibles = new[]
 		{
@@ -60,7 +61,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			typeof(Media.Matrix),
 			typeof(FontWeight),
 		};
-
 		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
 
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
@@ -78,13 +78,56 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 		internal object? Build(object? component = null, bool createInstanceFromXClass = false)
 		{
-			var topLevelControl = _fileDefinition.Objects.First();
+			bool topLevelExceptionSet = false;
+			try
+			{
+				var topLevelControl = _fileDefinition.Objects.First();
 
-			var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
+				var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
 
-			ApplyPostActions(instance);
+				if (_parseExceptions?.Count > 0)
+				{
+					topLevelExceptionSet = true;
 
-			return instance;
+					if (_parseExceptions.Count == 1)
+					{
+						throw _parseExceptions[0];
+					}
+					else
+					{
+						throw new AggregateException("Multiple exceptions were thrown during XAML parsing", _parseExceptions);
+					}
+				}
+
+				ApplyPostActions(instance);
+
+				return instance;
+			}
+			catch (Exception e)
+			{
+				if (!topLevelExceptionSet)
+				{
+					if (e is XamlParseException xpe)
+					{
+						AddParseException(xpe);
+					}
+					else
+					{
+						AddParseException(new XamlParseException("Failed to build the XAML tree", e));
+					}
+				}
+			}
+
+			if (_parseExceptions?.Count == 1)
+			{
+				throw _parseExceptions[0];
+			}
+			else
+			{
+				throw new XamlParseException(
+					"Multiple exceptions were thrown during XAML parsing",
+					new AggregateException(null, _parseExceptions ?? []));
+			}
 		}
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
@@ -194,6 +237,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
 				};
+
+				// We're loading the object ahead of time in order to get parse errors in that block
+				// if any. We're not using the result of that load.
+				_ = LoadObject(unknownContent?.Objects.FirstOrDefault(), rootInstance: rootInstance);
 
 				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder);
 				TrySetContextualProperties(created, control);
@@ -309,7 +356,14 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					foreach (var member in control.Members)
 					{
-						ProcessNamedMember(control, instance, member, rootInstance, settings);
+						try
+						{
+							ProcessNamedMember(control, instance, member, rootInstance, settings);
+						}
+						catch (Exception ex)
+						{
+							AddParseException(new XamlParseException($"Failed to parse member ({ex.Message})", ex, member.LineNumber, member.LinePosition));
+						}
 					}
 				}
 
@@ -317,6 +371,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				return instance;
 			}
+		}
+
+		private void AddParseException(XamlParseException xamlParseException)
+		{
+			_parseExceptions ??= new List<XamlParseException>();
+			_parseExceptions.Add(xamlParseException);
 		}
 
 		private string RewriteAttachedPropertyPath(string? value)

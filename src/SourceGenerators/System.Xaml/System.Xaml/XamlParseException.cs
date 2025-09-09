@@ -40,8 +40,13 @@ namespace Uno.Xaml
 		{
 		}
 
-		public XamlParseException (string message, Exception innerException)
-			: base (message, innerException)
+		public XamlParseException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+
+		public XamlParseException(string message, Exception innerException, int lineNumber, int linePosition)
+			: base(message, innerException, lineNumber, linePosition)
 		{
 		}
 

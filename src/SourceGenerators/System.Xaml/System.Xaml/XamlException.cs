@@ -42,7 +42,7 @@ namespace Uno.Xaml
 		}
 
 		public XamlException (string message, Exception innerException)
-			: this (message, null, 0, 0)
+			: this (message, innerException, 0, 0)
 		{
 		}
 

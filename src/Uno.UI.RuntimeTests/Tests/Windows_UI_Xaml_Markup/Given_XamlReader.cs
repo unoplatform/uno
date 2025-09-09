@@ -627,6 +627,129 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.AreEqual(expectedDP.Type, pvtp.Type, "IProvideValueTarget.TargetProperty.Type");
 			Assert.AreEqual(rootGrid, rop.RootObject, "IRootObjectProvider.RootObject");
 		}
+
+		[TestMethod]
+		public void When_Invalid_Enum_Value()
+		{
+			Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<ContentControl>
+						<ContentControl.ContentTemplate>
+							<DataTemplate>
+								<Border 
+									xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup" 
+									local:AttachedDPWithEnum.Value="Invalid" />
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+					""")
+			);
+		}
+
+		[TestMethod]
+		public void When_Invalid_Ampersand_Escape()
+		{
+			Assert.ThrowsExactly<System.Xml.XmlException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<ContentControl Content="Hello & Welcome" />
+					""")
+			);
+		}
+
+		[TestMethod]
+		public void When_Invalid_Root()
+		{
+			Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StackPanel Orientation="invalid" />
+					""")
+			);
+		}
+
+		[TestMethod]
+		public void When_Multiple_Exceptions_1()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StackPanel>
+						<StackPanel Orientation="invalid" />
+						<StackPanel Orientation="invalid" />
+					</StackPanel>
+					""")
+			);
+
+			Assert.IsInstanceOfType(ex.InnerException, typeof(AggregateException));
+			if (ex.InnerException is AggregateException ae)
+			{
+				Assert.HasCount(2, ae.InnerExceptions);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
+				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
+				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
+				Assert.AreEqual(3, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
+				Assert.AreEqual(3, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+			}
+		}
+
+		[TestMethod]
+		public void When_Multiple_Exceptions_Nested_1()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StackPanel>
+						<StackPanel Orientation="invalid" />
+						<StackPanel>
+							<StackPanel Orientation="invalid" />
+						</StackPanel>
+					</StackPanel>
+					""")
+			);
+
+			Assert.IsInstanceOfType(ex.InnerException, typeof(AggregateException));
+			if (ex.InnerException is AggregateException ae)
+			{
+				Assert.HasCount(2, ae.InnerExceptions);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
+				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
+				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
+				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
+				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+			}
+		}
+
+		[TestMethod]
+		public void When_Multiple_Exceptions_InvalidFormats()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StackPanel>
+						<StackPanel Grid.Row="0.5" />
+						<StackPanel>
+							<StackPanel Grid.Row="invalid" />
+						</StackPanel>
+					</StackPanel>
+					""")
+			);
+
+			Assert.IsInstanceOfType(ex.InnerException, typeof(AggregateException));
+			if (ex.InnerException is AggregateException ae)
+			{
+				Assert.HasCount(2, ae.InnerExceptions);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
+				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
+				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
+				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
+				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+			}
+		}
 	}
 
 	public partial class Given_XamlReader
@@ -757,6 +880,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		public static void SetValue2(DependencyObject obj, int value) => obj.SetValue(Value2Property, value);
 
 		#endregion
+	}
+
+	public static class AttachedDPWithEnum
+	{
+		public static DependencyProperty ValueProperty { get; } = DependencyProperty.RegisterAttached(
+			"Value",
+			typeof(ScrollMode),
+			typeof(AttachedDPWithEnum),
+			new PropertyMetadata(default(ScrollMode)));
+
+		public static ScrollMode GetValue(DependencyObject obj) => (ScrollMode)obj.GetValue(ValueProperty);
+		public static void SetValue(DependencyObject obj, ScrollMode value) => obj.SetValue(ValueProperty, value);
 	}
 
 	public class DebugMarkupExtension : MarkupExtension
