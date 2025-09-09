@@ -65,9 +65,9 @@ public partial class CompositionTarget
 		}
 	}
 
-	private void EnqueuePaintCallback()
+	private void EnqueueRenderCallback()
 	{
-		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueuePaintCallback)}");
+		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueueRenderCallback)}");
 		NativeDispatcher.CheckThreadAccess();
 
 		Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, true);
@@ -82,12 +82,12 @@ public partial class CompositionTarget
 				if (_renderRequestedAfterAheadOfTimePaint)
 				{
 					_renderRequestedAfterAheadOfTimePaint = false;
-					this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueuePaintCallback)}: rendered ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
+					this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(EnqueueRenderCallback)}: rendered ahead of time and got a new frame request since. Doing nothing this tick and rescheduling another tick");
 					((ICompositionTarget)this).RequestNewFrame();
 				}
 				else
 				{
-					this.LogTrace()?.Trace($"{nameof(EnqueuePaintCallback)}: rendered ahead of time and no new frame was requested since.");
+					this.LogTrace()?.Trace($"{nameof(EnqueueRenderCallback)}: rendered ahead of time and no new frame was requested since.");
 				}
 			}
 			else if (RenderRequested)
@@ -96,7 +96,7 @@ public partial class CompositionTarget
 				{
 					RenderRequested = false;
 				}
-				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} fired from {nameof(EnqueuePaintCallback)}");
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} fired from {nameof(EnqueueRenderCallback)}");
 				Render();
 			}
 			AssertRenderStateMachine();
@@ -110,7 +110,7 @@ public partial class CompositionTarget
 
 		if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
 		{
-			NativeDispatcher.Main.EnqueuePaint(this, EnqueuePaintCallback);
+			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
 		}
 
 		return Render(canvas, resizeFunc);
