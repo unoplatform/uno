@@ -115,7 +115,7 @@ public partial class CompositionTarget
 					PaintRequested = false;
 				}
 				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame fired from {nameof(EnqueuePaintCallback)}");
-				PaintFrame();
+				Render();
 			}
 			AssertRenderStateMachine();
 			LogRenderState();
@@ -161,7 +161,7 @@ public partial class CompositionTarget
 			if (shouldPaint)
 			{
 				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: OnPaintFrameOpportunity: Calling PaintFrame early ");
-				PaintFrame();
+				Render();
 			}
 		}
 	}
