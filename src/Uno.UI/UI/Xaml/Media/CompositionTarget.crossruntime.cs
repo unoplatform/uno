@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 
@@ -8,7 +9,8 @@ namespace Microsoft.UI.Xaml.Media;
 public partial class CompositionTarget
 {
 	private static readonly long _start = Stopwatch.GetTimestamp();
-	private static Action _renderingActiveChanged;
+	// We're using this table as a set with weakref keys. values are always null
+	private static readonly ConditionalWeakTable<CompositionTarget, object> _targets = new();
 	private static bool _isRenderingActive;
 
 	private static event EventHandler<object> _rendering;
@@ -19,34 +21,24 @@ public partial class CompositionTarget
 		{
 			NativeDispatcher.CheckThreadAccess();
 			_rendering += value;
-			IsRenderingActive = true;
+			if (!_isRenderingActive)
+			{
+				_isRenderingActive = true;
+				foreach (var (target, _) in _targets)
+				{
+#if __SKIA__
+					((ICompositionTarget)target).RequestNewFrame();
+#endif
+				}
+			}
 		}
 		remove
 		{
 			NativeDispatcher.CheckThreadAccess();
 			_rendering -= value;
-			IsRenderingActive = _rendering is not null;
-		}
-	}
-
-	internal static event Action RenderingActiveChanged
-	{
-		add => _renderingActiveChanged += value;
-		remove => _renderingActiveChanged -= value;
-	}
-
-	/// <summary>
-	/// Determines if the CompositionTarget rendering is active.
-	/// </summary>
-	internal static bool IsRenderingActive
-	{
-		get => _isRenderingActive;
-		set
-		{
-			if (value != _isRenderingActive)
+			if (_rendering == null)
 			{
-				_isRenderingActive = value;
-				_renderingActiveChanged?.Invoke();
+				_isRenderingActive = false;
 			}
 		}
 	}

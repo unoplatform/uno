@@ -47,7 +47,7 @@ public partial class CompositionTarget
 			_lastRenderedFrame = lastRenderedFrame;
 		}
 
-		if (IsRenderingActive)
+		if (_isRenderingActive)
 		{
 			((ICompositionTarget)this).RequestNewFrame();
 		}
