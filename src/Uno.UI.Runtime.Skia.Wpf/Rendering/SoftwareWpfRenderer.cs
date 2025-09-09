@@ -17,6 +17,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
 internal class SoftwareWpfRenderer : IWpfRenderer
 {
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
 	private WriteableBitmap? _bitmap;
@@ -49,36 +50,73 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 		_xamlRoot ??= XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 
-		_bitmap?.Lock();
-		var surface = _bitmap is not null ? SKSurface.Create(new SKImageInfo(_bitmap.PixelWidth, _bitmap.PixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul), _bitmap.BackBuffer, _bitmap.BackBufferStride) : null;
-		var nativeElementClipPath = ((Microsoft.UI.Xaml.Media.CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas, size =>
-		{
-			_bitmap?.Unlock();
-			_bitmap = new WriteableBitmap((int)size.Width, (int)size.Height, 96, 96, PixelFormats.Pbgra32, null);
-			_bitmap.Lock();
-			surface = SKSurface.Create(new SKImageInfo(_bitmap.PixelWidth, _bitmap.PixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul), _bitmap.BackBuffer, _bitmap.BackBufferStride);
-			return surface.Canvas;
-		});
+		int width, height;
 
-		if (_host.NativeOverlayLayer is { } nativeLayer)
+		var dpi = _xamlRoot.RasterizationScale;
+		double dpiScaleX = dpi;
+		double dpiScaleY = dpi;
+		if (_host.IgnorePixelScaling)
 		{
-			nativeLayer.Clip ??= new PathGeometry();
-			((PathGeometry)nativeLayer.Clip).Figures = PathFigureCollection.Parse(nativeElementClipPath.ToSvgPathData());
+			width = (int)_hostControl.ActualWidth;
+			height = (int)_hostControl.ActualHeight;
 		}
 		else
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			var matrix = PresentationSource.FromVisual(_hostControl).CompositionTarget.TransformToDevice;
+			dpiScaleX = matrix.M11;
+			dpiScaleY = matrix.M22;
+			width = (int)(_hostControl.ActualWidth * dpiScaleX);
+			height = (int)(_hostControl.ActualHeight * dpiScaleY);
+		}
+
+		var info = new SKImageInfo(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+
+		// reset the bitmap if the size has changed
+		if (_bitmap == null || info.Width != _bitmap.PixelWidth || info.Height != _bitmap.PixelHeight)
+		{
+			_bitmap = new WriteableBitmap(width, height, 96 * dpiScaleX, 96 * dpiScaleY, PixelFormats.Pbgra32, null);
+		}
+
+		// draw on the bitmap
+		_bitmap.Lock();
+		using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
+		{
+			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
+				var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
+				try
+				{
+					rootVisual.Compositor.IsSoftwareRenderer = true;
+
+					SkiaRenderHelper.RenderPicture(
+						surface,
+						_host.Picture,
+						BackgroundColor,
+						_fpsHelper);
+
+					if (_host.NativeOverlayLayer is { } nativeLayer)
+					{
+						nativeLayer.Clip ??= new PathGeometry();
+						((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(_host.ClipPath?.ToSvgPathData());
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
+						}
+					}
+				}
+				finally
+				{
+					rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
+				}
 			}
 		}
 
 		// draw the bitmap to the screen
-		if (_bitmap is not null)
-		{
-			_bitmap.AddDirtyRect(new Int32Rect(0, 0, _bitmap.PixelWidth, _bitmap.PixelHeight));
-			_bitmap.Unlock();
-			drawingContext.DrawImage(_bitmap, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
-		}
+		_bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
+		_bitmap.Unlock();
+		drawingContext.DrawImage(_bitmap, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
 	}
 }

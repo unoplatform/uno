@@ -1,9 +1,13 @@
 ﻿#nullable enable
 
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.UI.Content;
+using SkiaSharp;
+using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
@@ -28,12 +32,18 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 	private Microsoft.UI.Xaml.UIElement? _rootElement;
 	private ContentSite _contentSite;
 	private WpfWindow? _window;
+	private SKPicture? _picture;
+	private SKPath? _clipPath;
 
 	/// <summary>
 	/// Gets or sets the current Skia Render surface type.
 	/// </summary>
 	/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 	public RenderSurfaceType? RenderSurfaceType { get; set; }
+
+	SKPicture? IWpfXamlRootHost.Picture => _picture;
+
+	SKPath? IWpfXamlRootHost.ClipPath => _clipPath;
 
 	public bool IgnorePixelScaling
 	{
@@ -112,7 +122,23 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		XamlRootMap.GetRootForHost(this)?.VisualTree.ContentRoot.CompositionTarget.Render();
+		var rootElement = ((IXamlRootHost)this).RootElement;
+		if (!SkiaRenderHelper.CanRecordPicture(rootElement))
+		{
+			// Try again next tick
+			rootElement?.XamlRoot?.QueueInvalidateRender();
+			return;
+		}
+
+		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
+			(int)(ActualWidth),
+			(int)(ActualHeight),
+			rootElement,
+			invertPath: false);
+
+		Interlocked.Exchange(ref _picture, picture);
+		Interlocked.Exchange(ref _clipPath, path);
+
 		ChildInternal?.XamlRoot?.InvalidateOverlays();
 		InvalidateVisual();
 	}
