@@ -94,8 +94,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 			grid.Children.Add(new InvalidatingSKCanvasElement());
 			Loaded += (s, e) =>
 			{
-				EventHandler<object> onRenderedFrame = default;
-				onRenderedFrame = (_, _) =>
+				Action onRenderedFrame = default;
+				onRenderedFrame = () =>
 				{
 					if (imagesLoaded == _images.Count)
 					{
@@ -104,11 +104,11 @@ namespace UITests.Windows_UI_Xaml.Performance
 							Foreground = new SolidColorBrush(Colors.Black),
 							Text = $"Rendered first frame after all images loaded in {Stopwatch.GetElapsedTime(start).TotalMilliseconds}ms from sample creation"
 						});
-						CompositionTarget.Rendering -= onRenderedFrame;
+						XamlRoot.FrameRendered -= onRenderedFrame;
 					}
 				};
-				CompositionTarget.Rendering += onRenderedFrame;
-				Unloaded += (_, _) => CompositionTarget.Rendering -= onRenderedFrame;
+				XamlRoot.FrameRendered += onRenderedFrame;
+				Unloaded += (_, _) => XamlRoot.FrameRendered -= onRenderedFrame;
 			};
 #endif
 		}
