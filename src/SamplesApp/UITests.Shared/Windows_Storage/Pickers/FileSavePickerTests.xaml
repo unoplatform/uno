@@ -36,7 +36,9 @@
                 BorderThickness="1"
                 CornerRadius="4">
                 <StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBox
+					<TextBlock 
+						Text="To add a file type selection group, first enter extension names one at a time, then press 'Add extension'. Once done, select a file choice name, then click Add file type choice." />
+					<TextBox
                         Width="140"
                         Header="File choice name"
                         Text="{x:Bind ViewModel.NewFileTypeChoice.Name, Mode=TwoWay}" />
