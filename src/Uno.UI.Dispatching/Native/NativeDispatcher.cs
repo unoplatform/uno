@@ -33,12 +33,12 @@ namespace Uno.UI.Dispatching
 
 		private readonly object _gate = new();
 
-		private readonly Dictionary<object, (Action? paintAction, int normalItemsToProcessBeforeNextPaintAction)> _compositionTargets = new();
+		private readonly Dictionary<object, (Action? renderAction, int normalItemsToProcessBeforeNextRenderAction)> _compositionTargets = new();
 
 		private NativeDispatcherPriority _currentPriority;
 
 		private int _globalCount;
-		private int _pendingPaintActions;
+		private int _pendingRenderActions;
 
 		[ThreadStatic]
 		private static bool? _hasThreadAccess;
@@ -81,7 +81,7 @@ namespace Uno.UI.Dispatching
 			// We want DispatchItems to be static to avoid delegate allocations.
 			var @this = NativeDispatcher.Main;
 
-			Action? action = @this.TryGetPaintAction();
+			Action? action = @this.TryGetRenderAction();
 
 			if (action is null)
 			{
@@ -102,21 +102,18 @@ namespace Uno.UI.Dispatching
 							{
 								@this.EnqueueNative(@this._currentPriority);
 							}
-							break;
-						}
-					}
-				}
-			}
 
-			if (@this is { _currentPriority: NativeDispatcherPriority.Normal })
-			{
-				lock (@this._gate)
-				{
-					foreach (var (compositionTarget, details) in @this._compositionTargets)
-					{
-						if (details.normalItemsToProcessBeforeNextPaintAction > 0)
-						{
-							@this._compositionTargets[compositionTarget] = details with { normalItemsToProcessBeforeNextPaintAction = details.normalItemsToProcessBeforeNextPaintAction - 1 };
+							if (@this._currentPriority == NativeDispatcherPriority.Normal)
+							{
+								foreach (var (compositionTarget, details) in @this._compositionTargets)
+								{
+									if (details.normalItemsToProcessBeforeNextRenderAction > 0)
+									{
+										@this._compositionTargets[compositionTarget] = details with { normalItemsToProcessBeforeNextRenderAction = details.normalItemsToProcessBeforeNextRenderAction - 1 };
+									}
+								}
+							}
+							break;
 						}
 					}
 				}
@@ -156,18 +153,18 @@ namespace Uno.UI.Dispatching
 			}
 		}
 
-		private Action? TryGetPaintAction()
+		private Action? TryGetRenderAction()
 		{
 			lock (_gate)
 			{
 				foreach (var (compositionTarget, details) in _compositionTargets)
 				{
-					if (details.paintAction is not null)
+					if (details.renderAction is not null)
 					{
-						if (details.normalItemsToProcessBeforeNextPaintAction == 0)
+						if (details.normalItemsToProcessBeforeNextRenderAction == 0)
 						{
-							_compositionTargets[compositionTarget] = (paintAction: null, normalItemsToProcessBeforeNextPaintAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
-							_pendingPaintActions--;
+							_compositionTargets[compositionTarget] = (renderAction: null, normalItemsToProcessBeforeNextRenderAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
+							_pendingRenderActions--;
 
 							_currentPriority = NativeDispatcherPriority.High;
 
@@ -176,13 +173,13 @@ namespace Uno.UI.Dispatching
 								EnqueueNative(_currentPriority);
 							}
 
-							this.LogTrace()?.Trace($"Running paint job from the dispatcher: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
+							this.LogTrace()?.Trace($"Running render job from the dispatcher: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
 
-							return details.paintAction;
+							return details.renderAction;
 						}
 						else
 						{
-							Debug.Assert(_globalCount > _pendingPaintActions);
+							Debug.Assert(_globalCount > _pendingRenderActions);
 						}
 					}
 				}
@@ -192,7 +189,7 @@ namespace Uno.UI.Dispatching
 		}
 #endif
 
-		public void EnqueuePaint(object compositionTarget, Action handler)
+		public void EnqueueRender(object compositionTarget, Action handler)
 		{
 			bool shouldEnqueue = false;
 			lock (_gate)
@@ -202,19 +199,19 @@ namespace Uno.UI.Dispatching
 					details = _compositionTargets[compositionTarget] = (null, 0);
 				}
 
-				Debug.Assert(details.paintAction is null);
-				if (details.paintAction is null)
+				Debug.Assert(details.renderAction is null);
+				if (details.renderAction is null)
 				{
-					_pendingPaintActions++;
+					_pendingRenderActions++;
 					shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
 				}
 				_compositionTargets[compositionTarget] = details with
 				{
-					paintAction = handler,
+					renderAction = handler,
 				};
 			}
 
-			this.LogTrace()?.Trace($"{nameof(EnqueuePaint)} : shouldEnqueue={shouldEnqueue}");
+			this.LogTrace()?.Trace($"{nameof(EnqueueRender)} : {nameof(shouldEnqueue)}={shouldEnqueue}");
 			if (shouldEnqueue)
 			{
 				EnqueueNative(NativeDispatcherPriority.High);
