@@ -54,6 +54,15 @@ internal partial class BrowserRenderer
 		NativeMethods.Invalidate(_nativeSwapChainPanel);
 	}
 
+	[JSExport]
+	internal static void RenderFrame([JSMarshalAs<JSType.Any>] object instance)
+	{
+		if (instance is BrowserRenderer panel)
+		{
+			panel.RenderFrame();
+		}
+	}
+
 	private void RenderFrame()
 	{
 		if (!_jsInfo.IsValid)
