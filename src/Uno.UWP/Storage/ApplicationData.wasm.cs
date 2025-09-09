@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
@@ -9,13 +10,7 @@ namespace Windows.Storage;
 
 partial class ApplicationData
 {
-	internal static void Init()
-	{
-		// Nothing to do here, this is only a way to explicitly poke the 'ApplicationData' so the
-		// 'Current' is instantiated and the 'InitializePartial' is invoked.
-	}
-
-	async partial void InitializePartial()
+	internal async Task EnablePersistenceAsync()
 	{
 		try
 		{
