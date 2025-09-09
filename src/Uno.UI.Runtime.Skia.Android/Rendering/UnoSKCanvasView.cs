@@ -50,22 +50,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 		SetWillNotDraw(false);
 
-		// Start the render thread paused
 		RenderMode = Rendermode.WhenDirty;
-
-		CompositionTarget.RenderingActiveChanged += OnCompositionRenderingActiveChanged;
-	}
-
-	private void OnCompositionRenderingActiveChanged()
-	{
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"OnCompositionRenderingActiveChanged: {CompositionTarget.IsRenderingActive}");
-		}
-
-		RenderMode = CompositionTarget.IsRenderingActive
-			? Rendermode.Continuously
-			: Rendermode.WhenDirty;
 	}
 
 	internal void ResetRendererContext()

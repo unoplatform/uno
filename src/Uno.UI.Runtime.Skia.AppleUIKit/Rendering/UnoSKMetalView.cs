@@ -134,6 +134,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			_drawFpsLogger.ReportFrame();
 #endif
 
+			_link.Paused = true;
+
 			var size = DrawableSize;
 
 			var width = (int)size.Width;
@@ -179,8 +181,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				((IDisposable?)canvas)?.Dispose();
 				((IDisposable?)surface)?.Dispose();
 			}
-
-			_link.Paused = !CompositionTarget.IsRenderingActive;
 		}
 	}
 }

@@ -16,18 +16,8 @@ public partial class CompositionTarget : ICompositionTarget
 	internal CompositionTarget(ContentRoot contentRoot)
 	{
 		ContentRoot = contentRoot;
-#if __SKIA__
-		RenderingActiveChanged += ((ICompositionTarget)this).RequestNewFrame;
-		// TODO: is HostWindow ever null?
-		if (ContentRoot.XamlRoot?.HostWindow is { } hostWindow)
-		{
-			void OnHostWindowClosed(object sender, WindowEventArgs args)
-			{
-				RenderingActiveChanged -= ((ICompositionTarget)this).RequestNewFrame;
-				hostWindow.Closed -= OnHostWindowClosed;
-			}
-			hostWindow.Closed += OnHostWindowClosed;
-		}
+#if __CROSSRUNTIME__
+		_targets.Add(this, null);
 #endif
 	}
 
