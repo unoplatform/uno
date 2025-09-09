@@ -1,10 +1,12 @@
 ﻿#nullable enable
 
+using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
@@ -59,6 +61,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	private readonly RenderingLayerHost _renderLayer;
 
 	private readonly SerialDisposable _backgroundDisposable = new();
+	private bool _enqueued;
 
 	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
 	{
@@ -145,9 +148,18 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
-		_renderLayer.InvalidateVisual();
-		InvalidateVisual();
+		if (!Interlocked.Exchange(ref _enqueued, true))
+		{
+			// We schedule on Idle here because if you invalidate directly, it can cause a hang if
+			// the rendering is continuously invalidated (e.g. animations). Try Given_SKCanvasElement to confirm.
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				Interlocked.Exchange(ref _enqueued, false);
+				_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
+				_renderLayer.InvalidateVisual();
+				InvalidateVisual();
+			}, NativeDispatcherPriority.Idle);
+		}
 	}
 
 	WpfCanvas IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
