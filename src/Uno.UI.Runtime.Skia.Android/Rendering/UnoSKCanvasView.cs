@@ -178,7 +178,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 				var glInterface = GRGlInterface.Create();
 				_context = GRContext.CreateGl(glInterface);
 			}
-			
+
 			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
 			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas,
 			size =>
@@ -206,7 +206,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 				// re-create the render target
 				_renderTarget?.Dispose();
 				_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, samples, buffer[1], _glInfo);
-				
+
 				if (_glBackedSurface == null)
 				{
 					_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
@@ -217,7 +217,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 					var info = new SKImageInfo((int)size.Width, (int)size.Height, ColorType);
 					_softwareSurface = SKSurface.Create(info);
 				}
-				
+
 				surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
 				return surface!.Canvas;
 			});

@@ -1,11 +1,9 @@
 #nullable enable
 using System;
 using System.Diagnostics;
-using System.Threading;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI;
 using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
