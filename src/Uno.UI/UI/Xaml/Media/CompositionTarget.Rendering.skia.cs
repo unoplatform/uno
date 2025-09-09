@@ -25,9 +25,9 @@ public partial class CompositionTarget
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	private (SKPicture frame, SKPath nativeElementClipPath, Size size, long timestamp)? _lastRenderedFrame;
 
-	internal event Action? FramePainted;
+	internal event Action? FrameRendered;
 
-	private void PaintFrame()
+	private void Render()
 	{
 		var timestamp = Stopwatch.GetTimestamp();
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: PaintFrame begins with timestamp {timestamp}");
@@ -55,7 +55,7 @@ public partial class CompositionTarget
 			((ICompositionTarget)this).RequestNewFrame();
 		}
 
-		FramePainted?.Invoke();
+		FrameRendered?.Invoke();
 		if (rootElement.XamlRoot is not null)
 		{
 			XamlRootMap.GetHostForRoot(rootElement.XamlRoot)?.InvalidateRender();

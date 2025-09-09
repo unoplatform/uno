@@ -54,7 +54,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			HideWindowFromTaskBar(nativeWindow);
 
-			((CompositionTarget)_presenter.Visual.CompositionTarget!).FramePainted += UpdateLayout;
+			((CompositionTarget)_presenter.Visual.CompositionTarget!).FrameRendered += UpdateLayout;
 			_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual); // to force initial layout and clipping
 		}
 		else
@@ -135,7 +135,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_lastClipRect = null;
 			_lastArrangeRect = null;
 
-			((CompositionTarget)_presenter.Visual.CompositionTarget!).FramePainted -= UpdateLayout;
+			((CompositionTarget)_presenter.Visual.CompositionTarget!).FrameRendered -= UpdateLayout;
 		}
 		else
 		{

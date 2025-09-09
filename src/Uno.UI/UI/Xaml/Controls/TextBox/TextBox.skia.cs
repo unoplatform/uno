@@ -1518,11 +1518,11 @@ public partial class TextBox
 			if (!_popup.IsOpen)
 			{
 				_popup.IsOpen = true;
-				((CompositionTarget)Visual.CompositionTarget)!.FramePainted += OnFramePainted;
+				((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
 			}
 		}
 
-		private void OnFramePainted()
+		private void OnFrameRendered()
 		{
 			NativeDispatcher.Main.Enqueue(() =>
 			{
@@ -1537,7 +1537,7 @@ public partial class TextBox
 		{
 			if (Visual.CompositionTarget is CompositionTarget target)
 			{
-				target.FramePainted -= OnFramePainted;
+				target.FrameRendered -= OnFrameRendered;
 			}
 			if (_popup is not null)
 			{
