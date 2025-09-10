@@ -85,6 +85,7 @@ public static class UITestHelper
 		[CallerMemberName] string? callerMemberName = null,
 		[CallerLineNumber] int lineNumber = 0)
 	{
+#if __SKIA__
 		var renderingCount = 0;
 		EventHandler<object> callback = (_, _) => renderingCount++;
 		CompositionTarget.Rendering += callback;
@@ -97,6 +98,10 @@ public static class UITestHelper
 		{
 			CompositionTarget.Rendering -= callback;
 		}
+#else
+		await WaitForIdle();
+		await Task.Delay(timeoutMS);
+#endif
 	}
 
 
