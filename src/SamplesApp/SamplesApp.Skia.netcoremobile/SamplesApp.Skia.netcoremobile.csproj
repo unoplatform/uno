@@ -47,7 +47,7 @@
 		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
 
 		<!-- Keep full exception strings in release -->
-		<UseSystemResourceKeys>true</UseSystemResourceKeys>
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 
 		<!-- Required when not building inside VS to avoid dependency issues -->
 		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
