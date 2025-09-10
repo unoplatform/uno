@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Microsoft.UI.Windowing.Native;
 
 namespace Microsoft.UI.Windowing;
@@ -16,6 +14,8 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	private bool _isAlwaysOnTop;
 	private bool _hasBorder;
 	private bool _hasTitleBar;
+	private bool _pendingMaximize;
+	private bool? _pendingMinimizeActivateWindow;
 
 	internal OverlappedPresenter() : base(AppWindowPresenterKind.Overlapped)
 	{
@@ -83,7 +83,17 @@ public partial class OverlappedPresenter : AppWindowPresenter
 
 	public void Restore() => Restore(false);
 
-	public void Maximize() => Native.Maximize();
+	public void Maximize()
+	{
+		if (Native is not null)
+		{
+			Native.Maximize();
+		}
+		else
+		{
+			_pendingMaximize = true;
+		}
+	}
 
 	/// <summary>
 	/// Minimizes the window that the presenter is applied to.
@@ -94,7 +104,17 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	/// 
 	/// </summary>
 	/// <param name="activateWindow"></param>
-	public void Minimize(bool activateWindow) => Native.Minimize(activateWindow);
+	public void Minimize(bool activateWindow)
+	{
+		if (Native is not null)
+		{
+			Native.Minimize(activateWindow);
+		}
+		else
+		{
+			_pendingMinimizeActivateWindow = activateWindow;
+		}
+	}
 
 	/// <summary>
 	/// Sets the border and title bar properties of the window.
@@ -108,7 +128,17 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		Native?.SetBorderAndTitleBar(hasBorder, hasTitleBar);
 	}
 
-	public void Restore(bool activateWindow) => Native.Restore(activateWindow);
+	public void Restore(bool activateWindow)
+	{
+		if (Native is not null)
+		{
+			Native.Restore(activateWindow);
+		}
+		else
+		{
+			_pendingMaximize = false;
+		}
+	}
 
 	/// <summary>
 	/// Creates a new instance of OverlappedPresenter.
@@ -194,6 +224,19 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			Native.SetIsMaximizable(IsMaximizable);
 			Native.SetIsAlwaysOnTop(IsAlwaysOnTop);
 			Native.SetBorderAndTitleBar(HasBorder, HasTitleBar);
+
+			// Apply any pending actions
+			if (_pendingMaximize)
+			{
+				Native.Maximize();
+				_pendingMaximize = false;
+			}
+
+			if (_pendingMinimizeActivateWindow.HasValue)
+			{
+				Native.Minimize(_pendingMinimizeActivateWindow.Value);
+				_pendingMinimizeActivateWindow = null;
+			}
 		}
 	}
 }
