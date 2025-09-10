@@ -22,7 +22,6 @@ using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
 using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
 using Uno.UI.Tests.Helpers;
 using System.Numerics;
-using Uno.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -842,7 +841,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_ImplicitStyle_WithoutKey()
 		{
-			Assert.ThrowsExactly<XamlParseException>(() =>
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() =>
 			{
 				var s = GetContent(nameof(When_ImplicitStyle_WithoutKey));
 				var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
@@ -1138,7 +1137,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		{
 			var xaml = "<CreateFromStringInvalidReturnTypeOwner Test=\"1\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
 			// TODO: This should throw XamlParseException too
-			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
