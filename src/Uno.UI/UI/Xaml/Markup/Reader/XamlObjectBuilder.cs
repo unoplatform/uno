@@ -23,6 +23,8 @@ using Uno.Xaml;
 
 using Color = Windows.UI.Color;
 using Windows.Media.Playback;
+using System.Text;
+
 
 
 #if __ANDROID__
@@ -97,7 +99,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					}
 					else
 					{
-						throw new AggregateException("Multiple exceptions were thrown during XAML parsing", _parseExceptions);
+						throw new AggregateException($"Multiple exceptions were thrown during XAML parsing: {ExpandAggregateException(_parseExceptions)}", _parseExceptions);
 					}
 				}
 
@@ -127,10 +129,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			else
 			{
 				throw new XamlParseException(
-					"Multiple exceptions were thrown during XAML parsing",
+					$"Multiple exceptions were thrown during XAML parsing: {ExpandAggregateException(_parseExceptions)}",
 					new AggregateException(null, _parseExceptions ?? []));
 			}
 		}
+
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 		// Regardless the setup, XamlReader still uses the new templated-parent impl, including the new framework-template.ctor.
@@ -1597,15 +1600,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 								}
 							}
 						}
-						//else if (
-						//	xamlObjectDefinition.Type.Name == "TemplateBinding"
-						//	|| xamlObjectDefinition.Type.Name == "Binding"
-						//	|| xamlObjectDefinition.Type.Name == "StaticResource"
-						//	|| xamlObjectDefinition.Type.Name == "ThemeResource"
-						//)
-						//{
-
-						//}
 						else if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
 							&& (member.Member.Name == "Key" || member.Member.Name == "Name"))
 						{
@@ -1639,6 +1633,36 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
+		private string ExpandAggregateException(List<XamlParseException>? parseExceptions)
+		{
+			var messages = new List<string>();
+
+			// recurse into all the exceptions
+			void Recurse(Exception ex)
+			{
+				if (ex is AggregateException agg)
+				{
+					foreach (var inner in agg.InnerExceptions)
+					{
+						Recurse(inner);
+					}
+				}
+				else
+				{
+					messages.Add(ex.Message);
+				}
+			}
+
+			if (parseExceptions != null)
+			{
+				foreach (var ex in parseExceptions)
+				{
+					Recurse(ex);
+				}
+			}
+
+			return string.Join("; ", messages);
+		}
 		private class EventHandlerWrapper
 		{
 			private readonly object _instance;
