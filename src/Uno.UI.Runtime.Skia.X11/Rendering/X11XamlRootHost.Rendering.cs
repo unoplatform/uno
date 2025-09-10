@@ -19,7 +19,9 @@ internal partial class X11XamlRootHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		Debug.Assert(!_renderTimer.Enabled);
-		_renderTimer.Enabled = true;
+		if (!_closed.Task.IsCompleted)
+		{
+			_renderTimer.Enabled = true;
+		}
 	}
 }
