@@ -747,6 +747,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void OnItemTemplateChanged(object oldValue, object newValue)
 		{
+			if (Uno.UI.TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+			{
+				// ARCHITECTURE NOTE: Dynamic template update handling
+				// This delegates to ItemsRepeater.Templates.cs (partial file) which contains
+				// intentionally duplicated wrapper update logic to bypass layout constraints.
+				// See ItemsRepeater.Templates.cs header for detailed architecture explanation.
+				if (HandleDynamicTemplateUpdate(oldValue, newValue))
+				{
+					return;
+				}
+			}
+
 			if (m_isLayoutInProgress && oldValue != null)
 			{
 				throw new InvalidOperationException("ItemTemplate cannot be changed during layout.");

@@ -550,6 +550,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Uno_Templates\DataTemplate_Update_Sample.xaml" />
     <Page Include="$(MSBuildThisFileDirectory)Uno_Web\Http\CookieManagerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6063,6 +6064,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal_Test.xaml.cs">
       <DependentUpon>VisibleBoundsPadding_Modal_Test.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Uno_Templates\DataTemplate_Update_Sample.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Uno_Web\Http\CookieManagerTests.xaml.cs">
       <DependentUpon>CookieManagerTests.xaml</DependentUpon>
     </Compile>

@@ -337,10 +337,22 @@ namespace Microsoft.UI.Xaml.Controls
 			//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
 			if (IsContentPresenterBypassEnabled)
 			{
-
 				var dataTemplate = this.ResolveContentTemplate();
 
-				//Only apply template if it has changed
+				// Template reload system: ensure we listen for updates on the effective template (when enabled)
+				void OnCurrentTemplateUpdated()
+				{
+					// Force re-materialization by clearing cache then updating
+					_dataTemplateUsedLastUpdate = null;
+					SetUpdateTemplate();
+				}
+
+				if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+				{
+					TemplateUpdateSubscription.Attach(this, dataTemplate, OnCurrentTemplateUpdated);
+				}
+
+				// Only apply template if it has changed
 				if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 				{
 					_dataTemplateUsedLastUpdate = dataTemplate;

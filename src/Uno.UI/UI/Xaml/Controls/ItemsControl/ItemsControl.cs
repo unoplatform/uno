@@ -186,8 +186,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
 		{
-			Refresh();
-			UpdateItems(null);
+			void OnCurrentItemTemplateUpdated()
+			{
+				// Recreate item containers and refresh items
+				Refresh();
+				UpdateItems(null);
+			}
+
+			if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+			{
+				Uno.UI.TemplateUpdateSubscription.Attach(this, newItemTemplate, OnCurrentItemTemplateUpdated);
+			}
+
+			OnCurrentItemTemplateUpdated();
 		}
 
 		#endregion
@@ -936,6 +947,19 @@ namespace Microsoft.UI.Xaml.Controls
 			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
 
 			_isTemplateApplied = true;
+
+			// Uno-specific: ensure subscription is active when template is applied
+			if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+			{
+				void OnCurrentItemTemplateUpdated()
+				{
+					// Recreate item containers and refresh items
+					Refresh();
+					UpdateItems(null);
+				}
+
+				Uno.UI.TemplateUpdateSubscription.Attach(this, ItemTemplate, OnCurrentItemTemplateUpdated);
+			}
 		}
 
 		private protected override void OnUnloaded()
