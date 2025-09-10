@@ -25,7 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 
 		private void EnsureApiAvailable(string propertyName)
 		{
-			if (!Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Windows.System.MemoryManager", propertyName))
+			if (!Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Windows.System.MemoryManager, Uno", propertyName))
 			{
 				Assert.Inconclusive($"The Api {propertyName} is not implemented");
 			}

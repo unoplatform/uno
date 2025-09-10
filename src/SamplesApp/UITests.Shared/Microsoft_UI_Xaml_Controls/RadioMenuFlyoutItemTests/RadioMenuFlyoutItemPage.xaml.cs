@@ -27,14 +27,14 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.RadioMenuFlyoutItemTests
 
 			itemStates = new Dictionary<string, TextBlock>();
 
-			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.MenuFlyoutItem", "Icon"))
+			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.MenuFlyoutItem, Uno.UI", "Icon"))
 			{
 				IconMenuFlyoutItem.Icon = new SymbolIcon(Symbol.Calendar);
 				IconRadioMenuFlyoutItem.Icon = new SymbolIcon(Symbol.Calculator);
 				IconRadioMenuFlyoutItem2.Icon = new SymbolIcon(Symbol.Calculator);
 			}
 
-			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.Grid", "ColumnSpacing"))
+			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.Grid, Uno.UI", "ColumnSpacing"))
 			{
 				ItemNames.Spacing = 4;
 				ItemStates.Spacing = 4;

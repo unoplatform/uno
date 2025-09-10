@@ -15,9 +15,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Metadata
 			// but the second call resulted in false
 
 			// Application.Current is implemented on all targets
-			var isPresent = ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Application", "Current");
+			var isPresent = ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Application, Uno.UI", "Current");
 			Assert.IsTrue(isPresent);
-			var secondIsPresent = ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Application", "Current");
+			var secondIsPresent = ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Application, Uno.UI", "Current");
 			Assert.IsTrue(secondIsPresent);
 		}
 
