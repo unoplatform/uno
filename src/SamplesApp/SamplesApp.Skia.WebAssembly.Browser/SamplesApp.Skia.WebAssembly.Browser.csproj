@@ -32,6 +32,9 @@
 
 		<WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
 		<WasmBuildNative>true</WasmBuildNative>
+		
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>true</UseSystemResourceKeys>
 	</PropertyGroup>
 
 	<ItemGroup>
