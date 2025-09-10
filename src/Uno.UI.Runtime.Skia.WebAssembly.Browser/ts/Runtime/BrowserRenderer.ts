@@ -40,6 +40,11 @@ namespace Uno.UI.Runtime.Skia {
 				this.canvas.width = w;
 			if (this.canvas.height !== h)
 				this.canvas.height = h;
+
+			// We request to repaint on the next frame. Without this, the first frame after resizing the window will be
+			// blank and will cause a flickering effect when you drag the window's border to resize.
+			// See also https://github.com/unoplatform/uno-private/issues/902.
+			BrowserRenderer.invalidate(this);
 		}
 
 		static invalidate(instance: BrowserRenderer) {
