@@ -22,6 +22,8 @@ using Uno.UI.Xaml.Markup;
 using Uno.Xaml;
 
 using Color = Windows.UI.Color;
+using Windows.Media.Playback;
+
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -238,9 +240,9 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
 				};
 
-				// We're loading the object ahead of time in order to get parse errors in that block
-				// if any. We're not using the result of that load.
-				_ = LoadObject(unknownContent?.Objects.FirstOrDefault(), rootInstance: rootInstance);
+				// We're validating the content here to ensure that any parse exception is
+				// reported even if we're not materializing the content explicitly.
+				ValidateContent(unknownContent?.Objects.FirstOrDefault());
 
 				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder);
 				TrySetContextualProperties(created, control);
@@ -371,12 +373,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				return instance;
 			}
-		}
-
-		private void AddParseException(XamlParseException xamlParseException)
-		{
-			_parseExceptions ??= new List<XamlParseException>();
-			_parseExceptions.Add(xamlParseException);
 		}
 
 		private string RewriteAttachedPropertyPath(string? value)
@@ -549,9 +545,9 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 					}
 				}
-				else
+				else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties)
 				{
-					// throw new InvalidOperationException($"The Property {member.Member.Name} does not exist on {member.Member.DeclaringType}");
+					throw new InvalidOperationException($"The Property {member.Member.Name} does not exist on {member.Member.DeclaringType}");
 				}
 			}
 			else if (isAttached)
@@ -1467,6 +1463,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(propertyType, memberValue);
 		}
 
+		private void AddParseException(XamlParseException xamlParseException)
+		{
+			_parseExceptions ??= new List<XamlParseException>();
+			_parseExceptions.Add(xamlParseException);
+		}
+
 		private void ApplyPostActions(object? instance)
 		{
 			while (_postActions.Count != 0)
@@ -1503,6 +1505,139 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		/// This will return false for member child node (member property).
 		/// </remarks>
 		private static bool IsNestedChildNode(XamlMemberDefinition member) => member.Member.Name == XamlConstants.UnknownContent;
+
+		/// <summary>
+		/// Statically validates the XAML tree
+		/// </summary>
+		/// <param name="xamlObjectDefinition">The object to validate</param>
+		private void ValidateContent(XamlObjectDefinition? xamlObjectDefinition)
+		{
+			try
+			{
+				if (xamlObjectDefinition == null)
+				{
+					return;
+				}
+
+				if (
+					xamlObjectDefinition.Type.Name == "ThemeResource"
+					|| xamlObjectDefinition.Type.Name == "StaticResource"
+					|| xamlObjectDefinition.Type.Name == "ThemeResource"
+				)
+				{
+					// Skip types that are not having explicit representations.
+					return;
+				}
+
+				var type = TypeResolver.FindType(xamlObjectDefinition.Type);
+				if (type == null)
+				{
+					AddParseException(new XamlParseException($"The type {xamlObjectDefinition.Type} was not found. (Line {xamlObjectDefinition.LineNumber}:{xamlObjectDefinition.LinePosition})"));
+					return;
+				}
+
+				var contentProperty = TypeResolver.FindContentProperty(type);
+				var unknownContent = xamlObjectDefinition.Members.Where(m => m.Member.Name == XamlConstants.UnknownContent).FirstOrDefault();
+				var initializationMember = xamlObjectDefinition.Members.Where(m => m.Member.Name == "_Initialization").FirstOrDefault();
+
+				if (contentProperty == null
+					&&
+					(xamlObjectDefinition.Type.Name != "ResourceDictionary" && xamlObjectDefinition.Type.Name != "DataTemplate"))
+				{
+					if (xamlObjectDefinition.Members.Any(m => IsNestedChildNode(m)))
+					{
+						AddParseException(new XamlParseException($"The type {type} does not support implicit content. (Line {xamlObjectDefinition.LineNumber}:{xamlObjectDefinition.LinePosition})"));
+					}
+				}
+
+				if (type.IsPrimitive && initializationMember?.Value is string primitiveValue)
+				{
+					_ = Convert.ChangeType(primitiveValue, type, CultureInfo.InvariantCulture);
+				}
+				else if (type == typeof(string))
+				{
+					// Skip, always valid
+				}
+				else if (_genericConvertibles.Contains(type) && unknownContent?.Value is string otherContentValue)
+				{
+					_ = XamlBindingHelper.ConvertValue(type, unknownContent?.Value);
+				}
+				else
+				{
+					foreach (var member in xamlObjectDefinition.Members)
+					{
+						var propertyInfo = TypeResolver.GetPropertyByName(type, member.Member.Name);
+						var eventInfo = TypeResolver.GetEventByName(xamlObjectDefinition.Type, member.Member.Name);
+
+						var isAttached = TypeResolver.IsAttachedProperty(member);
+						if (isAttached)
+						{
+							var dp = TypeResolver.FindDependencyProperty(member);
+
+							if (dp is null)
+							{
+								AddParseException(new XamlParseException($"The attached property {member.Member.Name} was not found on type {type}. (Line {member.LineNumber}:{member.LinePosition})"));
+							}
+							else
+							{
+								if (member.Objects.Count == 0)
+								{
+									if (dp.Type.IsPrimitive && initializationMember?.Value is string primitiveValue2)
+									{
+										_ = Convert.ChangeType(primitiveValue2, dp.Type, CultureInfo.InvariantCulture);
+									}
+									else if (member.Value is string otherContentValue2)
+									{
+										_ = XamlBindingHelper.ConvertValue(dp.Type, otherContentValue2);
+									}
+								}
+								else if (member.Objects.Count > 0 && !TypeResolver.IsCollectionOrListType(dp.Type) && member.Objects.Count > 1)
+								{
+									AddParseException(new XamlParseException($"The attached property {member.Member.Name} on type {type} does not support multiple values. (Line {member.LineNumber}:{member.LinePosition})"));
+								}
+							}
+						}
+						//else if (
+						//	xamlObjectDefinition.Type.Name == "TemplateBinding"
+						//	|| xamlObjectDefinition.Type.Name == "Binding"
+						//	|| xamlObjectDefinition.Type.Name == "StaticResource"
+						//	|| xamlObjectDefinition.Type.Name == "ThemeResource"
+						//)
+						//{
+
+						//}
+						else if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+							&& (member.Member.Name == "Key" || member.Member.Name == "Name"))
+						{
+
+						}
+						else if (member.Member.Name == XamlConstants.XamlXmlNamespace && member.Member.Name == "Key")
+						{
+
+						}
+						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
+						{
+							AddParseException(new XamlParseException($"The type {type} does not contain a property or event named '{member.Member.Name}'. (Line {member.LineNumber}:{member.LinePosition})"));
+						}
+						else
+						{
+							foreach (var child in member.Objects)
+							{
+								ValidateContent(child);
+							}
+						}
+					}
+				}
+			}
+			catch (XamlParseException xpe)
+			{
+				AddParseException(xpe);
+			}
+			catch (Exception e)
+			{
+				AddParseException(new XamlParseException(e.Message, e, xamlObjectDefinition?.LineNumber ?? 0, xamlObjectDefinition?.LinePosition ?? 0));
+			}
+		}
 
 		private class EventHandlerWrapper
 		{
