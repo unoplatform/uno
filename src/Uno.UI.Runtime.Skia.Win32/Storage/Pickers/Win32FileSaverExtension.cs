@@ -93,8 +93,6 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 
 				using ComScope<IShellItem> defaultFolderItem = new((IShellItem*)defaultFolderItemRaw);
 
-				defaultFolderItem.Value->GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out var path);
-
 				hResult = iFileSaveDialog.Value->SetDefaultFolder(defaultFolderItem);
 				if (hResult.Failed)
 				{
