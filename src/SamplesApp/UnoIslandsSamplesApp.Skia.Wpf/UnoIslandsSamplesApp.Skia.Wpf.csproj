@@ -11,6 +11,9 @@
 		<!-- Required in CI to avoid dependency issues -->
 		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
+
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-windows.props" />
