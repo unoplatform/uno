@@ -14,6 +14,8 @@ using Uno.Disposables;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers.WinUI;
+using Uno.UI.Helpers;
+using System.Runtime.InteropServices;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -70,6 +72,35 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 						pattern.Dispose();
 					}
 				}, fileTypeList);
+
+		if (!string.IsNullOrWhiteSpace(picker.SuggestedFileName))
+		{
+			iFileSaveDialog.Value->SetFileName(picker.SuggestedFileName);
+		}
+
+		if (picker.SuggestedStartLocation != PickerLocationId.Unspecified)
+		{
+			var initialDirectory = PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocation);
+
+			if (!string.IsNullOrEmpty(initialDirectory))
+			{
+				hResult = PInvoke.SHCreateItemFromParsingName(initialDirectory, null, IShellItem.IID_Guid, out var defaultFolderItemRaw);
+				if (hResult.Failed)
+				{
+					this.LogError()?.Error($"{nameof(PInvoke.SHCreateItemFromParsingName)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+					return Task.FromResult<StorageFile?>(null);
+				}
+
+				using ComScope<IShellItem> defaultFolderItem = new((IShellItem*)defaultFolderItemRaw);
+
+				hResult = iFileSaveDialog.Value->SetDefaultFolder(defaultFolderItem);
+				if (hResult.Failed)
+				{
+					this.LogError()?.Error($"{nameof(IFileDialog.SetDefaultFolder)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+					return Task.FromResult<StorageFile?>(null);
+				}
+			}
+		}
 
 		if (fileTypeList.Count > 0)
 		{
@@ -133,17 +164,21 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		var ret = new List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName, Win32Helper.NativeNulTerminatedUtf16String pattern)>();
 		foreach (var entry in picker.FileTypeChoices)
 		{
+			List<string> patternList = new();
+
 			foreach (var pattern in entry.Value)
 			{
 				if (pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
 				{
-					ret.Add((new Win32Helper.NativeNulTerminatedUtf16String(entry.Key), new Win32Helper.NativeNulTerminatedUtf16String($"*{pattern}")));
+					patternList.Add($"*{pattern}");
 				}
 				else
 				{
 					this.LogError()?.Error($"Skipping invalid file extension pattern '{pattern}' for key {entry.Key}");
 				}
 			}
+
+			ret.Add((new Win32Helper.NativeNulTerminatedUtf16String(entry.Key), new Win32Helper.NativeNulTerminatedUtf16String(string.Join(";", patternList))));
 		}
 
 		return ret;
