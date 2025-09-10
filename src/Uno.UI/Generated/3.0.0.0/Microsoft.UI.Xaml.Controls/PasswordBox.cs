@@ -53,8 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property PlaceholderText
 		// Skipping already declared property PasswordRevealMode
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false
 		public string PasswordChar
 		{
 			get
@@ -98,8 +97,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property InputScopeProperty
 		// Skipping already declared property IsPasswordRevealButtonEnabledProperty
 		// Skipping already declared property MaxLengthProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false
 		public static global::Microsoft.UI.Xaml.DependencyProperty PasswordCharProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(PasswordChar), typeof(string),
