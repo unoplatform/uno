@@ -39,7 +39,10 @@ if ($Llmstxt) {
 
 # ── 2) Process all markdown files ───────────────────────────────────────────────
 Get-ChildItem $InputFolder -Recurse -Filter '*.md' |
-    Where-Object { $_.FullName -ne $headerResolved } |   # skip header if in tree
+    Where-Object {
+        $_.FullName -ne $headerResolved -and
+        $_.FullName -notmatch '[\\/]\.github[\\/]'
+    } |  # skip header if in tree + skip .github folder
     Sort-Object FullName |
     ForEach-Object {
         $text = Get-Content $_.FullName -Raw
