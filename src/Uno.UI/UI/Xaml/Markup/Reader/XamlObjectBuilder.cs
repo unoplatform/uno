@@ -1525,7 +1525,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				if (
 					xamlObjectDefinition.Type.Name == "ThemeResource"
 					|| xamlObjectDefinition.Type.Name == "StaticResource"
-					|| xamlObjectDefinition.Type.Name == "ThemeResource"
 				)
 				{
 					// Skip types that are not having explicit representations.
@@ -1603,11 +1602,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						else if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
 							&& (member.Member.Name == "Key" || member.Member.Name == "Name"))
 						{
-
-						}
-						else if (member.Member.Name == XamlConstants.XamlXmlNamespace && member.Member.Name == "Key")
-						{
-
+							// Skip, no validation needed
 						}
 						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
 						{
