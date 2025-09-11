@@ -96,6 +96,11 @@ namespace Uno.UI.RemoteControl.Host
 
 				telemetry = globalServiceProvider.GetRequiredService<ITelemetry>();
 
+#pragma warning disable ASPDEPR004
+				// WebHostBuilder is deprecated in .NET 10 RC1.
+				// As we still build for .NET 9, ignore this warning until $(NetPrevious)=net10.
+				// https://github.com/aspnet/Announcements/issues/526
+
 				// STEP 2: Create the WebHost with reference to the global service provider
 				var builder = new WebHostBuilder()
 					.UseSetting("UseIISIntegration", false.ToString())
@@ -133,8 +138,12 @@ namespace Uno.UI.RemoteControl.Host
 					typeof(Program).Log().Log(LogLevel.Warning, "No solution file specified, add-ins will not be loaded which means that you won't be able to use any of the uno-studio features. Usually this indicates that your version of uno's IDE extension is too old.");
 					builder.ConfigureServices(services => services.AddSingleton(AddInsStatus.Empty));
 				}
+#pragma warning restore ASPDEPR004
 
+#pragma warning disable ASPDEPR008
+				// Ditto: https://github.com/aspnet/Announcements/issues/526
 				var host = builder.Build();
+#pragma warning restore ASPDEPR008
 
 				// Once the app has started, we use the logger from the host
 				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
