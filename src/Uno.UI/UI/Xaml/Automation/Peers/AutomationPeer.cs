@@ -274,6 +274,12 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 		}
 
+		[global::Uno.NotImplemented]
+		public void RaiseNotificationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationKind notificationKind, global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+		{
+			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
+		}
+
 #if !__SKIA__
 		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void RaisePropertyChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue)
