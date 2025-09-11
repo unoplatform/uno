@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference TabView_themeresources.xaml, commit 65718e2813 -->
+<!-- MUX Reference TabView_themeresources.xaml, tag winui3/release/1.8.0, commit 61382c07e6cd8d -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Light">
@@ -251,6 +251,8 @@
   <x:Double x:Key="TabViewItemHeaderCloseButtonSize">16</x:Double>
   <x:Double x:Key="TabViewItemHeaderCloseFontSize">12</x:Double>
   <Thickness x:Key="TabViewItemHeaderCloseMargin">4,0,0,0</Thickness>
+  <Thickness x:Key="TabViewItemHeaderPaddingWithCloseButton">8,3,4,3</Thickness>
+  <Thickness x:Key="TabViewItemHeaderPaddingWithoutCloseButton">8,3,8,3</Thickness>
   <x:Double x:Key="TabViewItemScrollButtonWidth">32</x:Double>
   <x:Double x:Key="TabViewItemScrollButtonHeight">24</x:Double>
   <x:Double x:Key="TabViewItemScrollButonFontSize">8</x:Double>
@@ -265,5 +267,6 @@
   <Thickness x:Key="TabViewItemSeparatorMargin">0,8,0,8</Thickness>
   <Thickness x:Key="TabViewItemBorderThickness">1</Thickness>
   <Thickness x:Key="TabViewSelectedItemBorderThickness">1,1,1,0</Thickness>
-  <Thickness x:Key="TabViewSelectedItemHeaderMargin">-1,0,-1,0</Thickness>
+  <Thickness x:Key="TabViewSelectedItemHeaderMargin">-1,0,-1,1</Thickness>
 </ResourceDictionary>
+
