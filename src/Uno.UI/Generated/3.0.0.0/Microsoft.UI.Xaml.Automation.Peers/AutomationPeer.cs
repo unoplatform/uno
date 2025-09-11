@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			throw new global::System.NotImplementedException("The member int AutomationPeer.GetCulture() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AutomationPeer.GetCulture%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RaiseNotificationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationKind notificationKind, global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 		{
