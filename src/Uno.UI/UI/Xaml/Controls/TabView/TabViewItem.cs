@@ -45,7 +45,7 @@ public partial class TabViewItem : ListViewItem
 		m_dispatcherHelper = new(this);
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_TabViewItem);
 
-		DefaultStyleKey = typeof(TabViewItem);
+		this.SetDefaultStyleKey();
 
 		SetValue(TabViewTemplateSettingsProperty, new TabViewItemTemplateSettings());
 

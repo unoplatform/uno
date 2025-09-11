@@ -29,7 +29,7 @@ partial class CommandBarFlyoutCommandBar
 {
 	public CommandBarFlyoutCommandBar()
 	{
-		DefaultStyleKey = typeof(CommandBarFlyoutCommandBar);
+		this.SetDefaultStyleKey();
 
 		SetValue(FlyoutTemplateSettingsProperty, new CommandBarFlyoutCommandBarTemplateSettings());
 

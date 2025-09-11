@@ -28,7 +28,7 @@ public partial class NavigationViewItemPresenter : ContentControl
 	public NavigationViewItemPresenter()
 	{
 		SetValue(TemplateSettingsProperty, new NavigationViewItemPresenterTemplateSettings());
-		DefaultStyleKey = typeof(NavigationViewItemPresenter);
+		this.SetDefaultStyleKey();
 	}
 
 	protected override void OnApplyTemplate()

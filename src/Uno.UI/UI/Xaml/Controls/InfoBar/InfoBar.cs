@@ -47,7 +47,7 @@ public partial class InfoBar : Control
 
 		_foregroundChangedCallbackRegistration = RegisterPropertyChangedCallback(Control.ForegroundProperty, OnForegroundChanged);
 
-		DefaultStyleKey = typeof(InfoBar);
+		this.SetDefaultStyleKey();
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer() => new InfoBarAutomationPeer(this);
