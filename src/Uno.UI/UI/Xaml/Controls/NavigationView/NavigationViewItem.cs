@@ -67,7 +67,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	public NavigationViewItem()
 	{
-		DefaultStyleKey = typeof(NavigationViewItem);
+		this.SetDefaultStyleKey();
 		SetValue(MenuItemsProperty, new ObservableVector<object>());
 	}
 
