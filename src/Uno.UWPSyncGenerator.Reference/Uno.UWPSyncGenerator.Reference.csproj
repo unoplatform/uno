@@ -116,20 +116,9 @@
 			<Name>Windows Mobile Extensions for the UWP</Name>
 		</SDKReference>
 	</ItemGroup>
-	<Choose>
-		<When Condition="'$(UNO_UWP_BUILD)'=='false'">
-			<ItemGroup>
-				<PackageReference Include="Microsoft.WindowsAppSDK">
-					<Version>1.7.250310001</Version>
-				</PackageReference>
-			</ItemGroup>
-		</When>
-		<Otherwise>
-			<ItemGroup>
-				<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.6" />
-			</ItemGroup>
-		</Otherwise>
-	</Choose>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.250907003" />
+	</ItemGroup>
 	<PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
 		<VisualStudioVersion>14.0</VisualStudioVersion>
 	</PropertyGroup>
