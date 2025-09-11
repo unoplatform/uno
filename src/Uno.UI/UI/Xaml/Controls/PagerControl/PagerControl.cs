@@ -79,7 +79,7 @@ public partial class PagerControl : Control
 		templateSettings.SetValue(PagerControlTemplateSettings.NumberPanelItemsProperty, m_numberPanelElements);
 		SetValue(TemplateSettingsProperty, templateSettings);
 
-		SetDefaultStyleKey(this);
+		this.SetDefaultStyleKey();
 	}
 
 	~PagerControl()

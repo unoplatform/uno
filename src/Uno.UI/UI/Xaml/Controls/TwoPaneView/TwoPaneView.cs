@@ -37,7 +37,7 @@ public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 	/// </summary>
 	public TwoPaneView()
 	{
-		DefaultStyleKey = typeof(TwoPaneView);
+		this.SetDefaultStyleKey();
 
 		SizeChanged += OnSizeChanged;
 

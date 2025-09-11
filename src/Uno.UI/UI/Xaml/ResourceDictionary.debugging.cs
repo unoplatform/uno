@@ -1,4 +1,5 @@
 ﻿#if DEBUG
+#define DEBUG_SET_RESOURCE_SOURCE
 #nullable enable
 
 using System;

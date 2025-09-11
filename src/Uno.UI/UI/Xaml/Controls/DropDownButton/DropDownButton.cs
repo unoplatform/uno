@@ -14,7 +14,7 @@ public partial class DropDownButton : Button
 
 	public DropDownButton()
 	{
-		DefaultStyleKey = typeof(DropDownButton);
+		this.SetDefaultStyleKey();
 	}
 
 	protected override void OnApplyTemplate()

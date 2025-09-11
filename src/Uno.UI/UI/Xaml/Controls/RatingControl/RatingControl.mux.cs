@@ -53,7 +53,7 @@ partial class RatingControl
 
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_RatingControl);
 
-		DefaultStyleKey = typeof(RatingControl);
+		this.SetDefaultStyleKey();
 
 #if HAS_UNO
 		// Ensure events are detached on Unload and reattached on Load

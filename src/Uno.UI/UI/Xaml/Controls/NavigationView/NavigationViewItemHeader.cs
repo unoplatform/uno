@@ -5,6 +5,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -16,7 +17,7 @@ public partial class NavigationViewItemHeader : NavigationViewItemBase
 
 	public NavigationViewItemHeader()
 	{
-		DefaultStyleKey = typeof(NavigationViewItemHeader);
+		this.SetDefaultStyleKey();
 	}
 
 	protected override void OnApplyTemplate()

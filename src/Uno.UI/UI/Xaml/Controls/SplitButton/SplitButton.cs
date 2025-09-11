@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public SplitButton()
 		{
-			DefaultStyleKey = typeof(SplitButton);
+			this.SetDefaultStyleKey();
 
 			KeyDown += OnSplitButtonKeyDown;
 			KeyUp += OnSplitButtonKeyUp;

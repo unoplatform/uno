@@ -1,4 +1,4 @@
-﻿//#define DEBUG_SET_RESOURCE_SOURCE
+﻿#define DEBUG_SET_RESOURCE_SOURCE
 using System;
 using System.Collections.Generic;
 using System.Threading;

@@ -7,6 +7,8 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Helpers.WinUI;
+
 
 #nullable enable
 
@@ -105,7 +107,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ProgressRing()
 		{
-			DefaultStyleKey = typeof(ProgressRing);
+			this.SetDefaultStyleKey();
 
 			ApiExtensibility.CreateInstance(this, out _lottieProvider);
 

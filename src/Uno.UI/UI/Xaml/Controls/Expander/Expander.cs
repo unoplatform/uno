@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -26,7 +27,7 @@ public partial class Expander : ContentControl
 
 	public Expander()
 	{
-		DefaultStyleKey = typeof(AnimatedIcon);
+		this.SetDefaultStyleKey();
 
 		SetValue(TemplateSettingsProperty, new ExpanderTemplateSettings());
 

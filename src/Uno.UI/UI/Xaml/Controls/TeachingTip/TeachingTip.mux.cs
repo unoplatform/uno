@@ -51,7 +51,7 @@ public partial class TeachingTip : ContentControl
 	/// </summary>
 	public TeachingTip()
 	{
-		DefaultStyleKey = typeof(TeachingTip);
+		this.SetDefaultStyleKey();
 		// EnsureProperties()
 		Unloaded += ClosePopupOnUnloadEvent;
 		m_automationNameChangedRevoker = RegisterPropertyChangedCallback(AutomationProperties.NameProperty, OnAutomationNameChanged);

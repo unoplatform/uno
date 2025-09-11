@@ -22,6 +22,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+using Uno.UI.Helpers.WinUI;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
@@ -40,7 +41,7 @@ public partial class BreadcrumbBarItem : ContentControl
 	{
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_BreadcrumbBarItem);
 
-		DefaultStyleKey = typeof(BreadcrumbBarItem);
+		this.SetDefaultStyleKey();
 
 #if HAS_UNO
 		// Uno specific: We use Unloaded instead of destructor
