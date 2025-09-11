@@ -191,17 +191,24 @@ namespace Microsoft.UI.Xaml
 		/// Clear properties from the current Style that are not set by the incoming Style. (The remaining properties will be overwritten
 		/// when the incoming Style is applied.)
 		/// </summary>
-		internal void ClearInvalidProperties(DependencyObject dependencyObject, Style incomingStyle, DependencyPropertyValuePrecedences precedence)
+		internal void ClearInvalidProperties(DependencyObject dependencyObject, DependencyPropertyValuePrecedences oldPrecedence, Style incomingStyle, DependencyPropertyValuePrecedences newPrecedence)
 		{
+			if (oldPrecedence is DependencyPropertyValuePrecedences.ImplicitStyle)
+			{
+				// When the old precedence is ImplicitStyle, we don't clear properties -
+				// they should be preserved unless explicitly overwritten by the new style.
+				return;
+			}
+
 			var oldSetters = EnsureSetterMap();
 			var newSetters = incomingStyle?.EnsureSetterMap();
 			foreach (var kvp in oldSetters)
 			{
 				if (kvp.Key is DependencyProperty dp)
 				{
-					if (newSetters == null || !newSetters.ContainsKey(dp))
+					if ((newSetters == null || !newSetters.ContainsKey(dp)))
 					{
-						DependencyObjectExtensions.ClearValue(dependencyObject, dp, precedence);
+						DependencyObjectExtensions.ClearValue(dependencyObject, dp, newPrecedence);
 					}
 				}
 			}

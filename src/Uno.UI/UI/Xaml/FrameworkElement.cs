@@ -84,6 +84,11 @@ namespace Microsoft.UI.Xaml
 		private Style _activeStyle;
 
 		/// <summary>
+		/// The precedence of the current active style.
+		/// </summary>
+		private DependencyPropertyValuePrecedences _activeStylePrecedence;
+
+		/// <summary>
 		/// Cache for the current type key for faster implicit style lookup
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey _thisTypeResourceKey;
@@ -502,8 +507,9 @@ namespace Microsoft.UI.Xaml
 		private void ApplyStyle()
 		{
 			var oldActiveStyle = _activeStyle;
+			var oldPrecedence = _activeStylePrecedence;
 			UpdateActiveStyle();
-			OnStyleChanged(oldActiveStyle, _activeStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
+			OnStyleChanged(oldActiveStyle, oldPrecedence, _activeStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
 		}
 
 		/// <summary>
@@ -514,10 +520,12 @@ namespace Microsoft.UI.Xaml
 			if (this.IsDependencyPropertySet(StyleProperty))
 			{
 				_activeStyle = Style;
+				_activeStylePrecedence = DependencyPropertyValuePrecedences.ExplicitStyle;
 			}
 			else
 			{
 				_activeStyle = ResolveImplicitStyle();
+				_activeStylePrecedence = DependencyPropertyValuePrecedences.ImplicitStyle;
 			}
 		}
 
@@ -703,7 +711,7 @@ namespace Microsoft.UI.Xaml
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
 		/// 'active style' and for the baked-in 'default style'.
 		/// </summary>
-		private void OnStyleChanged(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
+		private void OnStyleChanged(Style oldStyle, DependencyPropertyValuePrecedences oldPrecedence, Style newStyle, DependencyPropertyValuePrecedences newPrecedence)
 		{
 			if (oldStyle == newStyle)
 			{
@@ -711,9 +719,9 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			oldStyle?.ClearInvalidProperties(this, newStyle, precedence);
+			oldStyle?.ClearInvalidProperties(this, oldPrecedence, newStyle, newPrecedence);
 
-			newStyle?.ApplyTo(this, precedence);
+			newStyle?.ApplyTo(this, newPrecedence);
 		}
 
 		/// <summary>
@@ -737,7 +745,7 @@ namespace Microsoft.UI.Xaml
 
 			// Although this is the default style, we use the ImplicitStyle enum value (which is otherwise unused) to ensure that it takes precedence
 			//over inherited property values. UWP's precedence system is simpler than WPF's, from which the enum is derived.
-			OnStyleChanged(null, style, DependencyPropertyValuePrecedences.ImplicitStyle);
+			OnStyleChanged(null, default, style, DependencyPropertyValuePrecedences.ImplicitStyle);
 #if DEBUG
 			AppliedDefaultStyle = style;
 #endif
