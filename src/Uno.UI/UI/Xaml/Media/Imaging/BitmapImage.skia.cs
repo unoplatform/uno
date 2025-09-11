@@ -65,7 +65,17 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					if (uri.IsLocalResource())
 					{
 						// GetScaledPath uses DisplayInformation so it needs to be called on the UI thread
-						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+						if (OperatingSystem.IsIOS())
+						{
+							// For iOS, PlatformImageHelpers.GetScaledPath just returns the inputed uri back as is.
+							// Presumably under the assumption that the native control will handle the resultion of @2x @3x assets accordingly.
+							// However, on skia-ios, this is handled by uno (right here), so we need to resolve the correct asset here.
+							uri = new Uri(await GetScaledPath(uri));
+						}
+						else
+						{
+							uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+						}
 					}
 
 					var ignoreCache = CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
@@ -139,6 +149,17 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			(int)ResolutionScale.Scale450Percent,
 			(int)ResolutionScale.Scale500Percent
 		};
+
+		internal static Task<string> GetScaledPath(Uri uri)
+		{
+			var path = uri.PathAndQuery;
+			if (uri.Host is { Length: > 0 } host)
+			{
+				path = host + "/" + path.TrimStart('/');
+			}
+
+			return Task.FromResult(GetScaledPath(path));
+		}
 
 		internal static string GetScaledPath(string rawPath)
 		{
