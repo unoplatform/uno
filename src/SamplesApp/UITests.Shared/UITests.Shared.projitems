@@ -10038,6 +10038,11 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset_hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rect.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Reveal.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-400.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ScrollViewer.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\search.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Slices.png" />
