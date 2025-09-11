@@ -2,16 +2,33 @@
 
 
 using System;
-using Uno.Disposables;
-using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Uno.Disposables;
+using Uno.UI.Xaml;
+using Windows.Foundation;
 
 namespace Uno.UI.Helpers.WinUI;
 
 internal static class CppWinRTHelpers
 {
+	/// <remarks>
+	/// Note: Although this is usually called as 'SetDefaultStyleKey(this)' (per WinUI C++ code), we actually only use the compile-time
+	///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed'
+	/// under inheritance unless explicitly changed by an inheriting type.
+	/// </remarks>
+	internal static void SetDefaultStyleKey<TDerived>(this TDerived derivedControl) where TDerived : Control
+	{
+		derivedControl.DefaultStyleKey = typeof(TDerived);
+
+		if (derivedControl is Control control)
+		{
+			Uri uri = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl(2));
+			control.DefaultStyleResourceUri = uri;
+		}
+	}
+
 	public static IDisposable RegisterXamlRootChanged(XamlRoot xamlRoot, TypedEventHandler<XamlRoot, XamlRootChangedEventArgs> handler)
 	{
 		xamlRoot.Changed += handler;
