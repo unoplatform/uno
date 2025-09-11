@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 		// TODO: Should use DefaultStyleKeyProperty DP
-		protected object DefaultStyleKey { get; set; }
+		protected internal object DefaultStyleKey { get; set; }
 
 		protected override bool IsSimpleLayout => true;
 
@@ -79,6 +79,25 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void RegisterSubView(View child);
 #endif
+
+		/// <summary>
+		/// Gets or sets the path to the resource file that contains the default style for the control.
+		/// </summary>
+		public Uri DefaultStyleResourceUri
+		{
+			get => (Uri)this.GetValue(DefaultStyleResourceUriProperty);
+			set => this.SetValue(DefaultStyleResourceUriProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the DefaultStyleResourceUri dependency property.
+		/// </summary>
+		public static DependencyProperty DefaultStyleResourceUriProperty { get; } =
+			DependencyProperty.Register(
+				nameof(DefaultStyleResourceUri),
+				typeof(Uri),
+				typeof(Control),
+				new FrameworkPropertyMetadata(default(Uri)));
 
 		#region IsEnabled DependencyProperty
 
@@ -1261,17 +1280,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return result;
 		}
-
-		/// <summary>
-		/// Duplicates the SetDefaultStyleKey() helper method from WinUI code.
-		/// </summary>
-		/// <remarks>
-		/// Note: Although this is usually called as 'SetDefaultStyleKey(this)' (per WinUI C++ code), we actually only use the compile-time
-		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed'
-		/// under inheritance unless explicitly changed by an inheriting type.
-		/// </remarks>
-		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control
-			=> DefaultStyleKey = typeof(TDerived);
 
 		private protected bool GoToState(bool useTransitions, string stateName) => VisualStateManager.GoToState(this, stateName, useTransitions);
 
