@@ -52,7 +52,7 @@ namespace Uno.Xaml
 				return message;
 			if (linePosition <= 0)
 				return String.Format (CultureInfo.InvariantCulture, "{0} [Line: {1}]", message, lineNumber);
-			return String.Format (CultureInfo.InvariantCulture, "{0} [Line: {1} Position {2}]", message, lineNumber, linePosition);
+			return String.Format (CultureInfo.InvariantCulture, "{0} [Line: {1} Position: {2}]", message, lineNumber, linePosition);
 		}
 
 		public XamlException (string message, Exception innerException, int lineNumber, int linePosition)

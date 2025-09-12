@@ -681,9 +681,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 
 			var aggregateException = (AggregateException)ex.InnerException;
 			Assert.AreEqual(5, (aggregateException.InnerExceptions[0] as XamlParseException).LineNumber);
-			Assert.AreEqual("Requested value 'Invalid' was not found. at line 5, position 6", (aggregateException.InnerExceptions[0] as XamlParseException).Message);
+			Assert.AreEqual("Requested value 'Invalid' was not found. [Line: 5 Position: 6]", (aggregateException.InnerExceptions[0] as XamlParseException).Message);
 			Assert.AreEqual(11, (aggregateException.InnerExceptions[1] as XamlParseException).LineNumber);
-			Assert.AreEqual("Requested value 'Invalid2' was not found. at line 11, position 9", (aggregateException.InnerExceptions[1] as XamlParseException).Message);
+			Assert.AreEqual("Requested value 'Invalid2' was not found. [Line: 11 Position: 9]", (aggregateException.InnerExceptions[1] as XamlParseException).Message);
 		}
 
 		[TestMethod]
