@@ -561,7 +561,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						<Setter Property="Background" Value="Pink" />
 					</Style>
 				</Grid.Resources>
-				<ToggleButton />	
 				<controls:TabView HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 					<controls:TabViewItem Header="Home" IsClosable="False">
 						<controls:TabViewItem.IconSource>
@@ -590,5 +589,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.Pink, ((SolidColorBrush)tabView.Background).Color);
 			Assert.IsNotNull(tabView.GetTemplateChild("TabContainerGrid"));
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_DefaultStyleResourceUri_And_Derived_Control()
+		{
+			var SUT = XamlHelper.LoadXaml<Grid>("""
+				<Grid xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml">
+				<Grid.Resources>
+					<Style TargetType="local:DerivedTabView">
+						<Setter Property="Background" Value="Pink" />
+					</Style>
+				</Grid.Resources>
+				<local:DerivedTabView HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+					<controls:TabViewItem Header="Home" IsClosable="False">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Home" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 1">
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 2">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Document" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 3">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Document" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+				</local:DerivedTabView>
+			</Grid>
+			
+			""");
+			await UITestHelper.Load(SUT);
+			var tabView = SUT.Children.OfType<DerivedTabView>().First();
+			Assert.AreEqual(Colors.Pink, ((SolidColorBrush)tabView.Background).Color);
+			Assert.IsNotNull(tabView.GetTemplateChild("TabContainerGrid"));
+		}
 	}
+
+	public partial class DerivedTabView : TabView { }
 }
