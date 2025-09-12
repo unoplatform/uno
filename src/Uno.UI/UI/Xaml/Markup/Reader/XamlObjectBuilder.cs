@@ -1467,12 +1467,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(propertyType, memberValue);
 		}
 
-		private void AddParseException(XamlParseException xamlParseException)
-		{
-			_parseExceptions ??= new List<XamlParseException>();
-			_parseExceptions.Add(xamlParseException);
-		}
-
 		private void ApplyPostActions(object? instance)
 		{
 			while (_postActions.Count != 0)
@@ -1532,7 +1526,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				var type = TypeResolver.FindType(xamlObjectDefinition.Type);
 				if (type == null)
 				{
-					AddParseException(new XamlParseException($"The type {xamlObjectDefinition.Type} was not found.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
+					AddXamlParseException($"The type {xamlObjectDefinition.Type} was not found.", xamlObjectDefinition);
 					return;
 				}
 
@@ -1545,7 +1539,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					if (xamlObjectDefinition.Members.Any(m => IsNestedChildNode(m)))
 					{
-						AddParseException(new XamlParseException($"The type '{type}' does not support direct content.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
+						AddXamlParseException($"The type '{type}' does not support direct content.", xamlObjectDefinition);
 					}
 				}
 
@@ -1575,7 +1569,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 							if (dp is null)
 							{
-								AddParseException(new XamlParseException($"The attachable property '{member.Member.Name}' was not found in type '{type}'.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
+								AddXamlParseException($"The attachable property '{member.Member.Name}' was not found in type '{type}'.", xamlObjectDefinition);
 							}
 							else
 							{
@@ -1592,7 +1586,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 								}
 								else if (member.Objects.Count > 0 && !TypeResolver.IsCollectionOrListType(dp.Type) && member.Objects.Count > 1)
 								{
-									AddParseException(new XamlParseException($"The attachable property `{member.Member.Name}` on type `{type}` does not support multiple values.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
+									AddXamlParseException($"The attachable property `{member.Member.Name}` on type `{type}` does not support multiple values.", xamlObjectDefinition);
 								}
 							}
 						}
@@ -1603,7 +1597,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
 						{
-							AddParseException(new XamlParseException($"The type `{type}` does not contain a property or event named '{member.Member.Name}'.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
+							AddXamlParseException($"The type `{type}` does not contain a property or event named '{member.Member.Name}'.", xamlObjectDefinition);
 						}
 						else
 						{
@@ -1621,8 +1615,20 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 			catch (Exception e)
 			{
-				AddParseException(new XamlParseException(e.Message, e, xamlObjectDefinition?.LineNumber ?? 0, xamlObjectDefinition?.LinePosition ?? 0));
+				AddXamlParseException(e.Message, xamlObjectDefinition, e);
 			}
+		}
+
+		/// <summary>
+		/// Queues a XamlParseException to be thrown later
+		/// </summary>
+		private void AddXamlParseException(string message, XamlObjectDefinition? lineInfo, Exception? exception = null)
+			=> AddParseException(new XamlParseException(message, exception, lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0));
+
+		private void AddParseException(XamlParseException xamlParseException)
+		{
+			_parseExceptions ??= new List<XamlParseException>();
+			_parseExceptions.Add(xamlParseException);
 		}
 
 		private string ExpandAggregateException(List<XamlParseException>? parseExceptions)
