@@ -20,7 +20,7 @@ internal static class CppWinRTHelpers
 	/// </remarks>
 	internal static void SetDefaultStyleKey<TDerived>(this TDerived derivedControl) where TDerived : Control
 	{
-		derivedControl.DefaultStyleKey = typeof(TDerived);
+		derivedControl.SetDefaultStyleKeyInternal(typeof(TDerived));
 
 		if (derivedControl is Control control)
 		{
