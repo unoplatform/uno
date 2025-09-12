@@ -22,10 +22,7 @@ using Uno.UI.Xaml.Markup;
 using Uno.Xaml;
 
 using Color = Windows.UI.Color;
-using Windows.Media.Playback;
 using System.Text;
-
-
 
 #if __ANDROID__
 using _View = Android.Views.View;
