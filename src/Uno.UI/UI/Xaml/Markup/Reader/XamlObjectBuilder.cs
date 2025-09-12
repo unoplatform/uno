@@ -698,7 +698,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						throw new XamlParseException(value is Inline
 							? $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}' because the type '{value.GetType().FullName}' cannot be assigned to the type '{typeof(InlineCollection).FullName}'."
 							: $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}'."
-						);
+						, null, control.LineNumber, control.LinePosition);
 					}
 					if (value is Inline inline)
 					{
@@ -851,7 +851,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					}
 					else
 					{
-						throw new XamlParseException($"This Member '{propertyInfo.DeclaringType}.{propertyInfo.Name}' has more than one item, use the Items property");
+						throw new XamlParseException(
+							$"This Member '{propertyInfo.DeclaringType}.{propertyInfo.Name}' has more than one item, use the Items property"
+							, null
+							, member.LineNumber
+							, member.LinePosition);
 					}
 
 					static bool IsFrameworkElementResources(PropertyInfo propertyInfo) =>
@@ -1528,7 +1532,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				var type = TypeResolver.FindType(xamlObjectDefinition.Type);
 				if (type == null)
 				{
-					AddParseException(new XamlParseException($"The type {xamlObjectDefinition.Type} was not found. (Line {xamlObjectDefinition.LineNumber}:{xamlObjectDefinition.LinePosition})"));
+					AddParseException(new XamlParseException($"The type {xamlObjectDefinition.Type} was not found.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
 					return;
 				}
 
@@ -1541,7 +1545,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					if (xamlObjectDefinition.Members.Any(m => IsNestedChildNode(m)))
 					{
-						AddParseException(new XamlParseException($"The type '{type}' does not support direct content. (Line {xamlObjectDefinition.LineNumber}:{xamlObjectDefinition.LinePosition})"));
+						AddParseException(new XamlParseException($"The type '{type}' does not support direct content.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
 					}
 				}
 
@@ -1571,7 +1575,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 							if (dp is null)
 							{
-								AddParseException(new XamlParseException($"The attachable property '{member.Member.Name}' was not found in type '{type}'. (Line {member.LineNumber}:{member.LinePosition})"));
+								AddParseException(new XamlParseException($"The attachable property '{member.Member.Name}' was not found in type '{type}'.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
 							}
 							else
 							{
@@ -1588,7 +1592,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 								}
 								else if (member.Objects.Count > 0 && !TypeResolver.IsCollectionOrListType(dp.Type) && member.Objects.Count > 1)
 								{
-									AddParseException(new XamlParseException($"The attachable property `{member.Member.Name}` on type `{type}` does not support multiple values. (Line {member.LineNumber}:{member.LinePosition})"));
+									AddParseException(new XamlParseException($"The attachable property `{member.Member.Name}` on type `{type}` does not support multiple values.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
 								}
 							}
 						}
@@ -1599,7 +1603,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
 						{
-							AddParseException(new XamlParseException($"The type `{type}` does not contain a property or event named '{member.Member.Name}'. (Line {member.LineNumber}:{member.LinePosition})"));
+							AddParseException(new XamlParseException($"The type `{type}` does not contain a property or event named '{member.Member.Name}'.", null, xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition));
 						}
 						else
 						{
