@@ -113,31 +113,34 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch
 			var mvid = Guid.NewGuid();
 
 			// Register K entries which will be expired
-			for (int i = 0; i < K; i++)
+			for (var i = 0; i < K; i++)
 			{
 				sut.RegisterLaunch(mvid, "Wasm", isDebug: false);
+				clock.Advance(TimeSpan.FromTicks(1));
 			}
 
 			// Advance to let those K entries time out
 			clock.Advance(TimeSpan.FromMilliseconds(150));
 
 			// Register L active entries without advancing the global clock so they remain within the timeout window
-			for (int i = 0; i < L; i++)
+			for (var i = 0; i < L; i++)
 			{
 				sut.RegisterLaunch(mvid, "Wasm", isDebug: false);
+				clock.Advance(TimeSpan.FromTicks(1));
 				// Do NOT advance the clock here: advancing would make early active entries expire before we report connections.
 			}
 
 			// Act: report L times
-			for (int i = 0; i < L; i++)
+			for (var i = 0; i < L; i++)
 			{
 				sut.ReportConnection(mvid, "Wasm", isDebug: false);
+				clock.Advance(TimeSpan.FromTicks(1));
 			}
 
 			// Assert: at least K should have timed out, and we should have L connections in FIFO order
 			timeouts.Count.Should().BeGreaterOrEqualTo(K);
 			connections.Should().HaveCount(L);
-			for (int i = 1; i < connections.Count; i++)
+			for (var i = 1; i < connections.Count; i++)
 			{
 				connections[i - 1].RegisteredAt.Should().BeOnOrBefore(connections[i].RegisteredAt);
 			}

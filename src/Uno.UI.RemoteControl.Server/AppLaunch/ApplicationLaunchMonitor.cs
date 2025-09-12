@@ -47,15 +47,14 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 
 	private readonly TimeProvider _timeProvider;
 	private readonly Options _options;
-	private readonly CancellationTokenSource _cancellationTokenSource = new();
 
 	// Non-allocating composite key (avoids string creation per lookup)
 	private readonly record struct Key(Guid Mvid, string Platform, bool IsDebug);
 
 	private readonly ConcurrentDictionary<Key, ConcurrentQueue<LaunchEvent>> _pending = new();
 	
-	// Track timeout tasks for each launch event
-	private readonly ConcurrentDictionary<LaunchEvent, CancellationTokenSource> _timeoutTasks = new();
+	// Track timeout timers for each launch event
+	private readonly ConcurrentDictionary<LaunchEvent, IDisposable> _timeoutTasks = new();
 
 	/// <summary>
 	/// Creates a new instance of <see cref="ApplicationLaunchMonitor"/>.
@@ -78,14 +77,13 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// <param name="isDebug">Whether the debugger is used.</param>
 	public void RegisterLaunch(Guid mvid, string platform, bool isDebug)
 	{
-		if (string.IsNullOrEmpty(platform))
-			throw new ArgumentException("platform cannot be null or empty", nameof(platform));
+		ArgumentException.ThrowIfNullOrEmpty(platform);
 
 		var now = _timeProvider.GetUtcNow();
 		var ev = new LaunchEvent(mvid, platform, isDebug, now);
 		var key = new Key(mvid, platform, isDebug);
 
-		var queue = _pending.GetOrAdd(key, _ => new ConcurrentQueue<LaunchEvent>());
+		var queue = _pending.GetOrAdd(key, static _ => new ConcurrentQueue<LaunchEvent>());
 		queue.Enqueue(ev);
 
 		// Schedule automatic timeout
@@ -108,32 +106,32 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// <param name="key">The key for the launch event.</param>
 	private void ScheduleTimeout(LaunchEvent launchEvent, Key key)
 	{
-		var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token);
-		_timeoutTasks[launchEvent] = timeoutCts;
-
-		_ = TimeoutTask();
-
-		async Task TimeoutTask()
-		{
-			try
+		// Create a one-shot timer using the injected TimeProvider. When it fires, it will invoke HandleTimeout.
+		var timer = _timeProvider.CreateTimer(
+			static s =>
 			{
-				await Task
-					.Delay(_options.Timeout, _timeProvider, timeoutCts.Token) // use injected TimeProvider
-					.ConfigureAwait(false); // Ensure to continue on TimeProvider's calling context
+				var (self, ev, k) = ((ApplicationLaunchMonitor, LaunchEvent, Key))s!;
 
-				// Timeout occurred - handle it
-				HandleTimeout(launchEvent, key);
-			}
-			catch (OperationCanceledException)
-			{
-				// Timeout was cancelled (connection occurred or disposal)
-			}
-			finally
-			{
-				_timeoutTasks.TryRemove(launchEvent, out _);
-				timeoutCts.Dispose();
-			}
-		}
+				// Remove and dispose the timer entry if still present
+				if (self._timeoutTasks.TryRemove(ev, out var t))
+				{
+					try { t.Dispose(); } catch { }
+				}
+
+				try
+				{
+					self.HandleTimeout(ev, k);
+				}
+				catch
+				{
+					// swallow
+				}
+			},
+			(this, launchEvent, key),
+			_options.Timeout,
+			Timeout.InfiniteTimeSpan);
+
+		_timeoutTasks[launchEvent] = timer;
 	}
 
 	/// <summary>
@@ -199,19 +197,17 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// <param name="isDebug">true if the connection is from a debug build; otherwise, false.</param>
 	public void ReportConnection(Guid mvid, string platform, bool isDebug)
 	{
-		if (string.IsNullOrEmpty(platform))
-			throw new ArgumentException("platform cannot be null or empty", nameof(platform));
+		ArgumentException.ThrowIfNullOrEmpty(platform);
 
 		var key = new Key(mvid, platform, isDebug);
 		if (_pending.TryGetValue(key, out var queue))
 		{
 			if (queue.TryDequeue(out var ev))
 			{
-				// Cancel the timeout task for this event
-				if (_timeoutTasks.TryRemove(ev, out var timeoutCts))
+				// Cancel / dispose the timeout timer for this event
+				if (_timeoutTasks.TryRemove(ev, out var timeoutTimer))
 				{
-					timeoutCts.Cancel();
-					timeoutCts.Dispose();
+					try { timeoutTimer.Dispose(); } catch { }
 				}
 
 				// If queue is now empty, remove it from dictionary
@@ -238,26 +234,14 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// </summary>
 	public void Dispose()
 	{
-		// Cancel all pending timeout tasks
-		_cancellationTokenSource.Cancel();
-
-		// Clean up individual timeout tasks
+		// Dispose all timers and clear pending timeout tasks
 		foreach (var kvp in _timeoutTasks.ToArray())
 		{
-			var timeoutCts = kvp.Value;
-			try
-			{
-				timeoutCts.Cancel();
-				timeoutCts.Dispose();
-			}
-			catch
-			{
-				// swallow
-			}
+			var timer = kvp.Value;
+			try { timer.Dispose(); } catch { }
 		}
 
 		_timeoutTasks.Clear();
 		_pending.Clear();
-		_cancellationTokenSource.Dispose();
 	}
 }
