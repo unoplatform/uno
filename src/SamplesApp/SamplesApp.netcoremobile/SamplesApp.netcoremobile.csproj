@@ -44,6 +44,9 @@
 
 		<!-- We need all the intermediate assemblies -->
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
+
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 	</PropertyGroup>
 
 	<ItemGroup>

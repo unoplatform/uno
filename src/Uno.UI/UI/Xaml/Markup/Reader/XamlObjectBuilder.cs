@@ -22,6 +22,7 @@ using Uno.UI.Xaml.Markup;
 using Uno.Xaml;
 
 using Color = Windows.UI.Color;
+using System.Text;
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -45,6 +46,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		private readonly List<(string elementName, ElementNameSubject bindingSubject)> _elementNames = new List<(string, ElementNameSubject)>();
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
 		private Queue<Action> _postActions = new Queue<Action>();
+		private List<XamlParseException>? _parseExceptions;
 
 		private static Type[] _genericConvertibles = new[]
 		{
@@ -60,7 +62,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			typeof(Media.Matrix),
 			typeof(FontWeight),
 		};
-
 		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
 
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
@@ -78,14 +79,58 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 		internal object? Build(object? component = null, bool createInstanceFromXClass = false)
 		{
-			var topLevelControl = _fileDefinition.Objects.First();
+			bool topLevelExceptionSet = false;
+			try
+			{
+				var topLevelControl = _fileDefinition.Objects.First();
 
-			var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
+				var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
 
-			ApplyPostActions(instance);
+				if (_parseExceptions?.Count > 0)
+				{
+					topLevelExceptionSet = true;
 
-			return instance;
+					if (_parseExceptions.Count == 1)
+					{
+						throw _parseExceptions[0];
+					}
+					else
+					{
+						throw new AggregateException($"Multiple exceptions were thrown during XAML parsing: {ExpandAggregateException(_parseExceptions)}", _parseExceptions);
+					}
+				}
+
+				ApplyPostActions(instance);
+
+				return instance;
+			}
+			catch (Exception e)
+			{
+				if (!topLevelExceptionSet)
+				{
+					if (e is XamlParseException xpe)
+					{
+						AddParseException(xpe);
+					}
+					else
+					{
+						AddParseException(new XamlParseException("Failed to build the XAML tree", e));
+					}
+				}
+			}
+
+			if (_parseExceptions?.Count == 1)
+			{
+				throw _parseExceptions[0];
+			}
+			else
+			{
+				throw new XamlParseException(
+					$"Multiple exceptions were thrown during XAML parsing: {ExpandAggregateException(_parseExceptions)}",
+					new AggregateException(null, _parseExceptions ?? []));
+			}
 		}
+
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 		// Regardless the setup, XamlReader still uses the new templated-parent impl, including the new framework-template.ctor.
@@ -194,6 +239,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
 				};
+
+				// We're validating the content here to ensure that any parse exception is
+				// reported even if we're not materializing the content explicitly.
+				ValidateContent(unknownContent?.Objects.FirstOrDefault());
 
 				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder);
 				TrySetContextualProperties(created, control);
@@ -309,7 +358,14 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					foreach (var member in control.Members)
 					{
-						ProcessNamedMember(control, instance, member, rootInstance, settings);
+						try
+						{
+							ProcessNamedMember(control, instance, member, rootInstance, settings);
+						}
+						catch (Exception ex)
+						{
+							AddParseException(new XamlParseException($"Failed to parse member ({ex.Message})", ex, member.LineNumber, member.LinePosition));
+						}
 					}
 				}
 
@@ -489,9 +545,9 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 					}
 				}
-				else
+				else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties)
 				{
-					// throw new InvalidOperationException($"The Property {member.Member.Name} does not exist on {member.Member.DeclaringType}");
+					throw new InvalidOperationException($"The Property {member.Member.Name} does not exist on {member.Member.DeclaringType}");
 				}
 			}
 			else if (isAttached)
@@ -642,7 +698,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						throw new XamlParseException(value is Inline
 							? $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}' because the type '{value.GetType().FullName}' cannot be assigned to the type '{typeof(InlineCollection).FullName}'."
 							: $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}'."
-						);
+						, null, control.LineNumber, control.LinePosition);
 					}
 					if (value is Inline inline)
 					{
@@ -795,7 +851,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					}
 					else
 					{
-						throw new XamlParseException($"This Member '{propertyInfo.DeclaringType}.{propertyInfo.Name}' has more than one item, use the Items property");
+						throw new XamlParseException(
+							$"This Member '{propertyInfo.DeclaringType}.{propertyInfo.Name}' has more than one item, use the Items property"
+							, null
+							, member.LineNumber
+							, member.LinePosition);
 					}
 
 					static bool IsFrameworkElementResources(PropertyInfo propertyInfo) =>
@@ -1444,6 +1504,163 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		/// </remarks>
 		private static bool IsNestedChildNode(XamlMemberDefinition member) => member.Member.Name == XamlConstants.UnknownContent;
 
+		/// <summary>
+		/// Statically validates the XAML tree
+		/// </summary>
+		/// <param name="xamlObjectDefinition">The object to validate</param>
+		private void ValidateContent(XamlObjectDefinition? xamlObjectDefinition)
+		{
+			try
+			{
+				if (xamlObjectDefinition == null)
+				{
+					return;
+				}
+
+				if (xamlObjectDefinition.Type.Name is "StaticResource" or "ThemeResource")
+				{
+					// Skip types that are not having explicit representations.
+					return;
+				}
+
+				var type = TypeResolver.FindType(xamlObjectDefinition.Type);
+				if (type == null)
+				{
+					AddXamlParseException($"The type '{xamlObjectDefinition.Type}' was not found.", xamlObjectDefinition);
+					return;
+				}
+
+				var contentProperty = TypeResolver.FindContentProperty(type);
+				var unknownContent = xamlObjectDefinition.Members.FirstOrDefault(IsNestedChildNode);
+				var initializationMember = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_Initialization");
+
+				if (contentProperty == null &&
+					xamlObjectDefinition.Type.Name is not ("ResourceDictionary" or "DataTemplate"))
+				{
+					if (xamlObjectDefinition.Members.Any(m => IsNestedChildNode(m)))
+					{
+						AddXamlParseException($"The type '{type}' does not support direct content.", xamlObjectDefinition);
+					}
+				}
+
+				if (type.IsPrimitive && initializationMember?.Value is string primitiveValue)
+				{
+					_ = Convert.ChangeType(primitiveValue, type, CultureInfo.InvariantCulture);
+				}
+				else if (type == typeof(string))
+				{
+					// Skip, always valid
+				}
+				else if (_genericConvertibles.Contains(type) && unknownContent?.Value is string otherContentValue)
+				{
+					_ = XamlBindingHelper.ConvertValue(type, unknownContent?.Value);
+				}
+				else
+				{
+					foreach (var member in xamlObjectDefinition.Members)
+					{
+						var propertyInfo = TypeResolver.GetPropertyByName(type, member.Member.Name);
+						var eventInfo = TypeResolver.GetEventByName(xamlObjectDefinition.Type, member.Member.Name);
+
+						var isAttached = TypeResolver.IsAttachedProperty(member);
+						if (isAttached)
+						{
+							var dp = TypeResolver.FindDependencyProperty(member);
+
+							if (dp is null)
+							{
+								AddXamlParseException($"The attachable property '{member.Member.Name}' was not found in type '{type}'.", xamlObjectDefinition);
+							}
+							else
+							{
+								if (member.Objects.Count == 0)
+								{
+									if (dp.Type.IsPrimitive && initializationMember?.Value is string primitiveValue2)
+									{
+										_ = Convert.ChangeType(primitiveValue2, dp.Type, CultureInfo.InvariantCulture);
+									}
+									else if (member.Value is string otherContentValue2)
+									{
+										_ = XamlBindingHelper.ConvertValue(dp.Type, otherContentValue2);
+									}
+								}
+								else if (member.Objects.Count > 0 && !TypeResolver.IsCollectionOrListType(dp.Type) && member.Objects.Count > 1)
+								{
+									AddXamlParseException($"The attachable property '{member.Member.Name}' on type '{type}' does not support multiple values.", xamlObjectDefinition);
+								}
+							}
+						}
+						else if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+							&& (member.Member.Name is "Key" or "Name"))
+						{
+							// Skip, no validation needed
+						}
+						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
+						{
+							AddXamlParseException($"The type '{type}' does not contain a property or event named '{member.Member.Name}'.", xamlObjectDefinition);
+						}
+						else
+						{
+							foreach (var child in member.Objects)
+							{
+								ValidateContent(child);
+							}
+						}
+					}
+				}
+			}
+			catch (XamlParseException xpe)
+			{
+				AddParseException(xpe);
+			}
+			catch (Exception e)
+			{
+				AddXamlParseException(e.Message, xamlObjectDefinition, e);
+			}
+		}
+
+		/// <summary>
+		/// Queues a XamlParseException to be thrown later
+		/// </summary>
+		private void AddXamlParseException(string message, XamlObjectDefinition? lineInfo, Exception? exception = null)
+			=> AddParseException(new XamlParseException(message, exception, lineInfo?.LineNumber ?? 0, lineInfo?.LinePosition ?? 0));
+
+		private void AddParseException(XamlParseException xamlParseException)
+		{
+			_parseExceptions ??= new List<XamlParseException>();
+			_parseExceptions.Add(xamlParseException);
+		}
+
+		private string ExpandAggregateException(List<XamlParseException>? parseExceptions)
+		{
+			var messages = new List<string>();
+
+			// recurse into all the exceptions
+			void Recurse(Exception ex)
+			{
+				if (ex is AggregateException agg)
+				{
+					foreach (var inner in agg.InnerExceptions)
+					{
+						Recurse(inner);
+					}
+				}
+				else
+				{
+					messages.Add(ex.Message);
+				}
+			}
+
+			if (parseExceptions != null)
+			{
+				foreach (var ex in parseExceptions)
+				{
+					Recurse(ex);
+				}
+			}
+
+			return string.Join("; ", messages);
+		}
 		private class EventHandlerWrapper
 		{
 			private readonly object _instance;

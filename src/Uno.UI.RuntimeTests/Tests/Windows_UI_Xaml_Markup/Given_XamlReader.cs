@@ -627,6 +627,244 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.AreEqual(expectedDP.Type, pvtp.Type, "IProvideValueTarget.TargetProperty.Type");
 			Assert.AreEqual(rootGrid, rop.RootObject, "IRootObjectProvider.RootObject");
 		}
+
+		[TestMethod]
+		public void When_Invalid_Enum_Value_Template()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<ContentControl>
+						<ContentControl.ContentTemplate>
+							<DataTemplate>
+								<Border 
+									xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup" 
+									local:AttachedDPWithEnum.Value="Invalid" />
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+					""")
+			);
+
+			Assert.AreEqual(4, ex.LineNumber);
+			Assert.AreEqual("Requested value 'Invalid' was not found.", ex.InnerException.Message);
+		}
+
+		[TestMethod]
+		public void When_Invalid_Enum_Value_Template_Nested()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<ContentControl>
+						<ContentControl.ContentTemplate>
+							<DataTemplate>
+								<StackPanel>
+									<Border 
+										xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup" 
+										local:AttachedDPWithEnum.Value="Invalid" />
+									<ContentControl>
+										<ContentControl.ContentTemplate>
+											<DataTemplate>
+												<Border 
+													xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup" 
+													local:AttachedDPWithEnum.Value="Invalid2" />
+											</DataTemplate>
+										</ContentControl.ContentTemplate>
+									</ContentControl>
+								</StackPanel>
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+					""")
+			);
+
+			var aggregateException = (AggregateException)ex.InnerException;
+			Assert.AreEqual(5, (aggregateException.InnerExceptions[0] as XamlParseException).LineNumber);
+			Assert.AreEqual("Requested value 'Invalid' was not found. [Line: 5 Position: 6]", (aggregateException.InnerExceptions[0] as XamlParseException).Message);
+			Assert.AreEqual(11, (aggregateException.InnerExceptions[1] as XamlParseException).LineNumber);
+			Assert.AreEqual("Requested value 'Invalid2' was not found. [Line: 11 Position: 9]", (aggregateException.InnerExceptions[1] as XamlParseException).Message);
+		}
+
+		[TestMethod]
+		public void When_Invalid_Ampersand_Escape()
+		{
+			Assert.ThrowsExactly<System.Xml.XmlException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<ContentControl Content="Hello & Welcome" />
+					""")
+			);
+		}
+
+		[TestMethod]
+		public void When_Invalid_Root()
+		{
+			Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StackPanel Orientation="invalid" />
+					""")
+			);
+		}
+
+		[TestMethod]
+		public void When_Unknown_Type()
+		{
+			Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StarPanel Orientation="invalid" />
+					""")
+			);
+		}
+
+		[TestMethod]
+		public void When_Unknown_Type_In_Template()
+		{
+			Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<ContentControl>
+						<ContentControl.ContentTemplate>
+							<DataTemplate>
+								<StarPanel Orientation="invalid" />
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+					""")
+			);
+		}
+
+		[TestMethod]
+		public void When_Unknown_Property()
+		{
+			static void Load()
+			{
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StackPanel Oriented="invalid" />
+					""");
+			}
+
+			if (FeatureConfiguration.XamlReader.FailOnUnknownProperties)
+			{
+				Assert.ThrowsExactly<XamlParseException>(() => Load());
+			}
+			else
+			{
+				Load();
+			}
+		}
+
+		[TestMethod]
+		public void When_Unknown_Property_In_Template()
+		{
+			static void Load()
+			{
+				XamlHelper.LoadXaml<StackPanel>(
+				"""
+				<ContentControl>
+					<ContentControl.ContentTemplate>
+						<DataTemplate>
+							<StackPanel Oriented="invalid" />
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+				""");
+			}
+
+			if (FeatureConfiguration.XamlReader.FailOnUnknownProperties)
+			{
+				Assert.ThrowsExactly<XamlParseException>(() => Load());
+			}
+			else
+			{
+				Load();
+			}
+		}
+
+		[TestMethod]
+		public void When_Multiple_Exceptions_1()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StackPanel>
+						<StackPanel Orientation="invalid" />
+						<StackPanel Orientation="invalid" />
+					</StackPanel>
+					""")
+			);
+
+			Assert.IsInstanceOfType(ex.InnerException, typeof(AggregateException));
+			if (ex.InnerException is AggregateException ae)
+			{
+				Assert.HasCount(2, ae.InnerExceptions);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
+				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
+				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
+				Assert.AreEqual(3, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
+				Assert.AreEqual(3, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+			}
+		}
+
+		[TestMethod]
+		public void When_Multiple_Exceptions_Nested_1()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StackPanel>
+						<StackPanel Orientation="invalid" />
+						<StackPanel>
+							<StackPanel Orientation="invalid" />
+						</StackPanel>
+					</StackPanel>
+					""")
+			);
+
+			Assert.IsInstanceOfType(ex.InnerException, typeof(AggregateException));
+			if (ex.InnerException is AggregateException ae)
+			{
+				Assert.HasCount(2, ae.InnerExceptions);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
+				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
+				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
+				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
+				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+			}
+		}
+
+		[TestMethod]
+		public void When_Multiple_Exceptions_InvalidFormats()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<StackPanel>(
+					"""
+					<StackPanel>
+						<StackPanel Grid.Row="0.5" />
+						<StackPanel>
+							<StackPanel Grid.Row="invalid" />
+						</StackPanel>
+					</StackPanel>
+					""")
+			);
+
+			Assert.IsInstanceOfType(ex.InnerException, typeof(AggregateException));
+			if (ex.InnerException is AggregateException ae)
+			{
+				Assert.HasCount(2, ae.InnerExceptions);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
+				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
+				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
+				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
+				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
+				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+			}
+		}
 	}
 
 	public partial class Given_XamlReader
@@ -757,6 +995,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		public static void SetValue2(DependencyObject obj, int value) => obj.SetValue(Value2Property, value);
 
 		#endregion
+	}
+
+	public static class AttachedDPWithEnum
+	{
+		public static DependencyProperty ValueProperty { get; } = DependencyProperty.RegisterAttached(
+			"Value",
+			typeof(ScrollMode),
+			typeof(AttachedDPWithEnum),
+			new PropertyMetadata(default(ScrollMode)));
+
+		public static ScrollMode GetValue(DependencyObject obj) => (ScrollMode)obj.GetValue(ValueProperty);
+		public static void SetValue(DependencyObject obj, ScrollMode value) => obj.SetValue(ValueProperty, value);
 	}
 
 	public class DebugMarkupExtension : MarkupExtension

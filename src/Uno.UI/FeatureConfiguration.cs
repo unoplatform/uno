@@ -777,6 +777,15 @@ namespace Uno.UI
 			public static bool ForceHotReloadDisabled { get; set; }
 		}
 
+		public static class XamlReader
+		{
+			/// <summary>
+			/// When set to true, the XamlReader will throw an exception if it encounters properties in
+			/// the XAML that do not map to a property on the target object.
+			/// </summary>
+			public static bool FailOnUnknownProperties { get; set; }
+		}
+
 		public static class DatePicker
 		{
 #if __APPLE_UIKIT__
