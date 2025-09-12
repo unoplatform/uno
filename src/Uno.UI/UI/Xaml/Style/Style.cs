@@ -307,9 +307,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null, ShouldUseUWPDefaultStyle(type));
 
-		internal static Style? GetDefaultStyleForInstance(Control instance, Type type) => GetDefaultStyleForType(type, instance, ShouldUseUWPDefaultStyle(type));
+		internal static Style? GetDefaultStyleForInstance(FrameworkElement instance, Type type) => GetDefaultStyleForType(type, instance, ShouldUseUWPDefaultStyle(type));
 
-		private static Style? GetDefaultStyleForType(Type type, Control? instance, bool useUWPDefaultStyles)
+		private static Style? GetDefaultStyleForType(Type type, FrameworkElement? instance, bool useUWPDefaultStyles)
 		{
 			if (type == null)
 			{
@@ -333,7 +333,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (style is null && instance is { DefaultStyleResourceUri: { } defaultStyleResourceUri })
+			if (style is null && instance is Control { DefaultStyleResourceUri: { } defaultStyleResourceUri })
 			{
 				if (ResourceResolver.TryRetrieveDictionaryForSource(defaultStyleResourceUri, out var dictionary))
 				{
