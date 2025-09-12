@@ -12,14 +12,17 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions.Specialized;
-using Uno.UI.Controls.Legacy;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI;
 using Expander = Microsoft.UI.Xaml.Controls.Expander;
+
+#if HAS_UNO
+using Uno.UI.Controls.Legacy;
+using Uno.UI.Xaml;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -453,8 +456,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 #if HAS_UNO
+		/// <remarks>
+		/// If this test starts failing, it may be because you have added a new UI control that's coming from
+		/// WinUI. Ensure it uses this.SetDefaultStyleKey() in its constructor (the WinUI sources should have
+		/// an equivalent present as well for all styled controls). Exception are unstyled controls such as
+		/// TreeViewList - for those cases add the control to the builtInControls list below.
+		/// </remarks>
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
 		public async Task When_Non_BuiltIn_Control()
 		{
 			var allControlTypes = typeof(Control).Assembly.GetTypes().OfType<Type>().Where(c => typeof(Control).IsAssignableFrom(c) && !c.IsAbstract && c.IsPublic && c.GetConstructor(Array.Empty<Type>()) is not null);
@@ -530,7 +540,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(SelectorItem),
 				typeof(Thumb),
 				typeof(ToggleButton),
+#if HAS_UNO
 				typeof(Uno.UI.Controls.Legacy.ProgressRing),
+#endif
 #if __ANDROID__ || __IOS__
 				typeof(Uno.UI.Controls.Legacy.GridView),
 				typeof(Uno.UI.Controls.Legacy.ListView),
@@ -552,6 +564,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
 		public async Task When_DefaultStyleResourceUri_And_Style_Without_BasedOn()
 		{
 			var SUT = XamlHelper.LoadXaml<Grid>("""
@@ -592,6 +605,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
 		public async Task When_DefaultStyleResourceUri_And_Derived_Control()
 		{
 			var SUT = XamlHelper.LoadXaml<Grid>("""
