@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TabView.cpp, commit 65718e2813
+// MUX Reference TabView.cpp, tag winui3/release/1.8.0, commit 61382c07e6cd8d
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -1158,6 +1158,12 @@ public partial class TabView : Control
 								break;
 							}
 						}
+					}
+
+					if (newFocusedElement == args.NewFocusedElement)
+					{
+						// No-op If the new focused element is the same as the one we're already trying to focus.
+						return;
 					}
 
 					if (newFocusedElement is null)
