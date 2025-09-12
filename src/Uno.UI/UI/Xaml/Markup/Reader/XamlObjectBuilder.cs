@@ -1526,7 +1526,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				var type = TypeResolver.FindType(xamlObjectDefinition.Type);
 				if (type == null)
 				{
-					AddXamlParseException($"The type {xamlObjectDefinition.Type} was not found.", xamlObjectDefinition);
+					AddXamlParseException($"The type '{xamlObjectDefinition.Type}' was not found.", xamlObjectDefinition);
 					return;
 				}
 
@@ -1586,7 +1586,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 								}
 								else if (member.Objects.Count > 0 && !TypeResolver.IsCollectionOrListType(dp.Type) && member.Objects.Count > 1)
 								{
-									AddXamlParseException($"The attachable property `{member.Member.Name}` on type `{type}` does not support multiple values.", xamlObjectDefinition);
+									AddXamlParseException($"The attachable property '{member.Member.Name}' on type '{type}' does not support multiple values.", xamlObjectDefinition);
 								}
 							}
 						}
@@ -1597,7 +1597,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
 						{
-							AddXamlParseException($"The type `{type}` does not contain a property or event named '{member.Member.Name}'.", xamlObjectDefinition);
+							AddXamlParseException($"The type '{type}' does not contain a property or event named '{member.Member.Name}'.", xamlObjectDefinition);
 						}
 						else
 						{
