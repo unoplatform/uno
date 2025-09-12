@@ -6,6 +6,7 @@
 - When a launched application fails to connect, it is reported as a timeout thru the OnTimeout callback.
 - It is thread-safe / Disposable.
 - It used the MVID as the key. This is the _Module Version ID_ of the app (head) assembly, which is unique per build. More info: https://learn.microsoft.com/en-us/dotnet/api/system.reflection.module.moduleversionid
+- It uses the MVID as the key. This is the _Module Version ID_ of the app (head) assembly, which is unique per build. More info: https://learn.microsoft.com/en-us/dotnet/api/system.reflection.module.moduleversionid
 
 ## How to use
 ### 1) Create the monitor (optionally with callbacks and a custom timeout):
@@ -42,6 +43,17 @@ That’s it. The monitor pairs the connection with the oldest pending launch for
 - Platform must not be null or empty (ArgumentException).
 - Registrations are consumed in FIFO order per key.
 - Always dispose the monitor (use "using" as shown).
+
+### Testing / Time control
+
+- The constructor accepts an optional `TimeProvider` which the monitor uses for timeout scheduling. Tests commonly inject `Microsoft.Extensions.Time.Testing.FakeTimeProvider` and advance time with `fake.Advance(...)` to trigger timeouts instantly.
+- Example for tests:
+
+```csharp
+var fake = new FakeTimeProvider(DateTimeOffset.UtcNow);
+using var monitor = new ApplicationLaunchMonitor(timeProvider: fake, options: options);
+// register, then fake.Advance(TimeSpan.FromSeconds(11)); // triggers timeout callbacks
+```
 
 ## Where it lives
 - Project: Uno.UI.RemoteControl.Server
