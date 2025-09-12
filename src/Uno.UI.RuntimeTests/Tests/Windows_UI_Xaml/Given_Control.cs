@@ -486,12 +486,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(FlipViewItem),
 				typeof(FlyoutPresenter),
 				typeof(Frame),
-				typeof(GridView),
+				typeof(Microsoft.UI.Xaml.Controls.GridView),
 				typeof(GridViewHeaderItem),
 				typeof(GridViewItem),
 				typeof(HyperlinkButton),
 				typeof(ItemsControl),
-				typeof(ListView),
+				typeof(Microsoft.UI.Xaml.Controls.ListView),
 				typeof(ListViewBaseHeaderItem),
 				typeof(ListViewHeaderItem),
 				typeof(ListViewItem),
@@ -530,7 +530,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(SelectorItem),
 				typeof(Thumb),
 				typeof(ToggleButton),
-				typeof(Uno.UI.Controls.Legacy.ProgressRing)
+				typeof(Uno.UI.Controls.Legacy.ProgressRing),
+#if __ANDROID__ || __IOS__
+				typeof(Uno.UI.Controls.Legacy.GridView),
+				typeof(Uno.UI.Controls.Legacy.ListView),
+#endif
 			};
 
 			allControlTypes = allControlTypes.Except(builtInControls);
