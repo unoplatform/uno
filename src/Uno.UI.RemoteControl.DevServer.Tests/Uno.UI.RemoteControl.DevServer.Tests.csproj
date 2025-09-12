@@ -5,16 +5,32 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
+		<!-- Force referenced projects to only build net9.0 to avoid requiring .NET 10 SDK during tests -->
+		<UnoTargetFrameworkOverride>net9.0</UnoTargetFrameworkOverride>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+		<PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+	</ItemGroup>
+
+	<!-- Link the ApplicationLaunchMonitor source directly so tests can compile without referencing the Server project output -->
+	<ItemGroup>
+		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\ApplicationLaunchMonitor.cs" Link="AppLaunch\ApplicationLaunchMonitor.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Reference those projects to ensure to have binaries available at runtime, but don't reference them for compilation -->
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj" ReferenceOutputAssembly="false" AdditionalProperties="UnoTargetFrameworkOverride=net9.0" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" ReferenceOutputAssembly="false" AdditionalProperties="UnoTargetFrameworkOverride=net9.0" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Server.Processors\Uno.UI.RemoteControl.Server.Processors.csproj" ReferenceOutputAssembly="false" AdditionalProperties="UnoTargetFrameworkOverride=net9.0" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl.TestProcessor\Uno.UI.RemoteControl.TestProcessor.csproj" ReferenceOutputAssembly="false" AdditionalProperties="UnoTargetFrameworkOverride=net9.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -23,15 +39,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- Reference those projects to ensure to have binaries available, but don't reference them -->
-		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Uno.UI.RemoteControl.Server.Processors\Uno.UI.RemoteControl.Server.Processors.csproj" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Uno.UI.RemoteControl.TestProcessor\Uno.UI.RemoteControl.TestProcessor.csproj" ReferenceOutputAssembly="false" />
-		
 		<!-- Normal project references - use Skia implementation of the Remote Control client -->
-		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" AdditionalProperties="UnoTargetFrameworkOverride=net9.0" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" AdditionalProperties="UnoTargetFrameworkOverride=net9.0" />
 	</ItemGroup>
 
 </Project>
