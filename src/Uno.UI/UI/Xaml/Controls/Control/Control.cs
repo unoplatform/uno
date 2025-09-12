@@ -47,7 +47,10 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 		// TODO: Should use DefaultStyleKeyProperty DP
-		protected internal object DefaultStyleKey { get; set; }
+		protected object DefaultStyleKey { get; set; }
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		internal void SetDefaultStyleKeyInternal(object defaultStyleKey) => DefaultStyleKey = defaultStyleKey;
 
 		protected override bool IsSimpleLayout => true;
 

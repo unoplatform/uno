@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Uno.UI.Extensions;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.UI;
-using Windows.Foundation;
-using Uno.UI.RuntimeTests.Helpers;
+using Uno.Extensions.Specialized;
+using Uno.UI.Controls.Legacy;
+using Uno.UI.Extensions;
 using Uno.UI.Helpers;
-
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Xaml;
+using Windows.Foundation;
+using Windows.UI;
 using Expander = Microsoft.UI.Xaml.Controls.Expander;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -446,6 +450,141 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await UITestHelper.Load(SUT);
 
 			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Non_BuiltIn_Control()
+		{
+			var allControlTypes = typeof(Control).Assembly.GetTypes().OfType<Type>().Where(c => typeof(Control).IsAssignableFrom(c) && !c.IsAbstract && c.IsPublic && c.GetConstructor(Array.Empty<Type>()) is not null);
+			allControlTypes = allControlTypes.Where(t => !t.GetCustomAttributes(false).Any(a => a.GetType() == typeof(NotImplementedAttribute)));
+
+			var builtInControls = new[]
+			{
+				typeof(AppBar),
+				typeof(AppBarButton),
+				typeof(AppBarElementContainer),
+				typeof(AppBarSeparator),
+				typeof(AppBarToggleButton),
+				typeof(AutoSuggestBox),
+				typeof(Button),
+				typeof(CalendarDatePicker),
+				typeof(CalendarView),
+				typeof(CalendarViewDayItem),
+				typeof(CheckBox),
+				typeof(ComboBox),
+				typeof(ComboBoxItem),
+				typeof(CommandBar),
+				typeof(CommandBarOverflowPresenter),
+				typeof(ContentControl),
+				typeof(ContentDialog),
+				typeof(Control),
+				typeof(DatePicker),
+				typeof(DatePickerFlyoutPresenter),
+				typeof(FlipView),
+				typeof(FlipViewItem),
+				typeof(FlyoutPresenter),
+				typeof(Frame),
+				typeof(GridView),
+				typeof(GridViewHeaderItem),
+				typeof(GridViewItem),
+				typeof(HyperlinkButton),
+				typeof(ItemsControl),
+				typeof(ListView),
+				typeof(ListViewBaseHeaderItem),
+				typeof(ListViewHeaderItem),
+				typeof(ListViewItem),
+				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
+				typeof(MenuFlyoutItem),
+				typeof(MenuFlyoutPresenter),
+				typeof(MenuFlyoutSeparator),
+				typeof(MenuFlyoutSubItem),
+				typeof(NavigationViewItemBase),
+				typeof(Page),
+				typeof(PasswordBox),
+				typeof(Pivot),
+				typeof(PivotItem),
+				typeof(RadioButton),
+				typeof(RichEditBox),
+				typeof(ScrollViewer),
+				typeof(Slider),
+				typeof(SplitView),
+				typeof(TextBox),
+				typeof(TimePicker),
+				typeof(ToggleMenuFlyoutItem),
+				typeof(ToggleSwitch),
+				typeof(ToolTip),
+				typeof(TreeViewList),
+				typeof(UserControl),
+				typeof(DatePickerSelector),
+				typeof(NativePivotPresenter),
+				typeof(TimePickerSelector),
+				typeof(ButtonBase),
+				typeof(ColorPickerSlider),
+				typeof(PivotHeaderItem),
+				typeof(RepeatButton),
+				typeof(ScrollBar),
+				typeof(Selector),
+				typeof(SelectorItem),
+				typeof(Thumb),
+				typeof(ToggleButton),
+				typeof(Uno.UI.Controls.Legacy.ProgressRing)
+			};
+
+			allControlTypes = allControlTypes.Except(builtInControls);
+
+			var url = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl(2));
+
+			StringBuilder nonWinUI = new StringBuilder();
+			foreach (var controlInstance in allControlTypes.Select(t => Activator.CreateInstance(t) as Control))
+			{
+				Assert.AreEqual(url, controlInstance.DefaultStyleResourceUri);
+				Assert.IsNotNull(Style.GetDefaultStyleForInstance(controlInstance, controlInstance.GetType()));
+			}
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_DefaultStyleResourceUri_And_Style_Without_BasedOn()
+		{
+			var SUT = XamlHelper.LoadXaml<Grid>("""
+				<Grid xmlns:controls="using:Microsoft.UI.Xaml.Controls">
+				<Grid.Resources>
+					<Style TargetType="controls:TabView">
+						<Setter Property="Background" Value="Pink" />
+					</Style>
+				</Grid.Resources>
+				<ToggleButton />	
+				<controls:TabView HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+					<controls:TabViewItem Header="Home" IsClosable="False">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Home" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 1">
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 2">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Document" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 3">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Document" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+				</controls:TabView>
+			</Grid>
+			
+			""");
+			await UITestHelper.Load(SUT);
+
+			var tabView = SUT.Children.OfType<TabView>().First();
+			Assert.AreEqual(Colors.Pink, ((SolidColorBrush)tabView.Background).Color);
+			Assert.IsNotNull(tabView.GetTemplateChild("TabContainerGrid"));
 		}
 	}
 }
