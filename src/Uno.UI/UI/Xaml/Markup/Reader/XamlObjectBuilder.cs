@@ -1519,10 +1519,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					return;
 				}
 
-				if (
-					xamlObjectDefinition.Type.Name == "ThemeResource"
-					|| xamlObjectDefinition.Type.Name == "StaticResource"
-				)
+				if (xamlObjectDefinition.Type.Name is "StaticResource" or "ThemeResource")
 				{
 					// Skip types that are not having explicit representations.
 					return;
@@ -1536,16 +1533,15 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				}
 
 				var contentProperty = TypeResolver.FindContentProperty(type);
-				var unknownContent = xamlObjectDefinition.Members.Where(m => m.Member.Name == XamlConstants.UnknownContent).FirstOrDefault();
-				var initializationMember = xamlObjectDefinition.Members.Where(m => m.Member.Name == "_Initialization").FirstOrDefault();
+				var unknownContent = xamlObjectDefinition.Members.FirstOrDefault(IsNestedChildNode);
+				var initializationMember = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_Initialization");
 
-				if (contentProperty == null
-					&&
-					(xamlObjectDefinition.Type.Name != "ResourceDictionary" && xamlObjectDefinition.Type.Name != "DataTemplate"))
+				if (contentProperty == null &&
+					xamlObjectDefinition.Type.Name is not ("ResourceDictionary" or "DataTemplate"))
 				{
 					if (xamlObjectDefinition.Members.Any(m => IsNestedChildNode(m)))
 					{
-						AddParseException(new XamlParseException($"The type {type} does not support implicit content. (Line {xamlObjectDefinition.LineNumber}:{xamlObjectDefinition.LinePosition})"));
+						AddParseException(new XamlParseException($"The type '{type}' does not support direct content. (Line {xamlObjectDefinition.LineNumber}:{xamlObjectDefinition.LinePosition})"));
 					}
 				}
 
@@ -1575,7 +1571,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 							if (dp is null)
 							{
-								AddParseException(new XamlParseException($"The attached property {member.Member.Name} was not found on type {type}. (Line {member.LineNumber}:{member.LinePosition})"));
+								AddParseException(new XamlParseException($"The attachable property '{member.Member.Name}' was not found in type '{type}'. (Line {member.LineNumber}:{member.LinePosition})"));
 							}
 							else
 							{
@@ -1592,18 +1588,18 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 								}
 								else if (member.Objects.Count > 0 && !TypeResolver.IsCollectionOrListType(dp.Type) && member.Objects.Count > 1)
 								{
-									AddParseException(new XamlParseException($"The attached property {member.Member.Name} on type {type} does not support multiple values. (Line {member.LineNumber}:{member.LinePosition})"));
+									AddParseException(new XamlParseException($"The attachable property `{member.Member.Name}` on type `{type}` does not support multiple values. (Line {member.LineNumber}:{member.LinePosition})"));
 								}
 							}
 						}
 						else if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
-							&& (member.Member.Name == "Key" || member.Member.Name == "Name"))
+							&& (member.Member.Name is "Key" or "Name"))
 						{
 							// Skip, no validation needed
 						}
 						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
 						{
-							AddParseException(new XamlParseException($"The type {type} does not contain a property or event named '{member.Member.Name}'. (Line {member.LineNumber}:{member.LinePosition})"));
+							AddParseException(new XamlParseException($"The type `{type}` does not contain a property or event named '{member.Member.Name}'. (Line {member.LineNumber}:{member.LinePosition})"));
 						}
 						else
 						{
