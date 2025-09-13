@@ -119,11 +119,17 @@ public partial class WebView2 : Control, IWebView
 		}
 	}
 
-	private void CoreWebView2_NavigationStarting(CoreWebView2 sender, CoreWebView2NavigationStartingEventArgs args) =>
+	private void CoreWebView2_NavigationStarting(CoreWebView2 sender, CoreWebView2NavigationStartingEventArgs args)
+	{
+		IsNavigating = true;
 		NavigationStarting?.Invoke(this, args);
+	}
 
-	private void CoreWebView2_NavigationCompleted(CoreWebView2 sender, CoreWebView2NavigationCompletedEventArgs args) =>
+	private void CoreWebView2_NavigationCompleted(CoreWebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
+	{
+		IsNavigating = false;
 		NavigationCompleted?.Invoke(this, args);
+	}
 
 	private void CoreWebView2_HistoryChanged(CoreWebView2 sender, object args) =>
 		(CanGoBack, CanGoForward) = (sender.CanGoBack, sender.CanGoForward);

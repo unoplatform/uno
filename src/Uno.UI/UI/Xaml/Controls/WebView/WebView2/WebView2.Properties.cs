@@ -82,6 +82,25 @@ public partial class WebView2
 				(s, e) => ((WebView2)s)?.CoreWebView2.OnScrollEnabledChanged((bool)e.NewValue)));
 
 	/// <summary>
+	/// Gets a value that indicates whether the WebView2 is navigating to new content.
+	/// </summary>
+	public bool IsNavigating
+	{
+		get => (bool)GetValue(IsNavigatingProperty);
+		private set => SetValue(IsNavigatingProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the IsNavigating dependency property.
+	/// </summary>
+	public static DependencyProperty IsNavigatingProperty { get; } =
+		DependencyProperty.Register(
+			nameof(IsNavigating),
+			typeof(bool),
+			typeof(WebView2),
+			new FrameworkPropertyMetadata(false));
+
+	/// <summary>
 	/// Gets the title of the current top-level document.
 	/// </summary>
 	public string DocumentTitle
