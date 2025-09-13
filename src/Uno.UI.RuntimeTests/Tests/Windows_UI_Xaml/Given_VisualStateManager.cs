@@ -14,6 +14,8 @@ using SamplesApp.UITests;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Private.Infrastructure;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
@@ -81,6 +83,39 @@ public partial class Given_VisualStateManager
 		// check if the visual-state is set
 		var states = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
 		Assert.IsTrue(states.Contains("MultiSelectEnabled"), $"container2 is not in 'MultiSelectEnabled' state: states={states.JoinBy(",")}");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/339")]
+	public async Task When_VisualState_In_UserControl()
+	{
+		var SUT = new VisualStateUserControl
+		{
+			Mode = ButtonMode.Task
+		};
+		await UITestHelper.Load(SUT);
+
+		Assert.IsTrue(SUT.IsTaskTextVisible);
+		Assert.IsFalse(SUT.IsMessageTextVisible);
+		Assert.AreEqual(true, SUT.LastGoToStateResult);
+
+		SUT.Mode = ButtonMode.Message;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(SUT.IsMessageTextVisible);
+		Assert.IsFalse(SUT.IsTaskTextVisible);
+		Assert.AreEqual(true, SUT.LastGoToStateResult);
+
+		SUT = new VisualStateUserControl
+		{
+			Mode = ButtonMode.Message
+		};
+
+		await UITestHelper.Load(SUT);
+
+		SUT.Mode = ButtonMode.Message;
+		Assert.IsTrue(SUT.IsMessageTextVisible);
+		Assert.IsFalse(SUT.IsTaskTextVisible);
 	}
 
 #if HAS_UNO
