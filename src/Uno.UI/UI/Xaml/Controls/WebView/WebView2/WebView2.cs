@@ -33,6 +33,7 @@ public partial class WebView2 : Control, IWebView
 		CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
 		CoreWebView2.SourceChanged += CoreWebView2_SourceChanged;
 		CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+		CoreWebView2.DocumentTitleChanged += CoreWebView2_DocumentTitleChanged;
 
 		Loaded += WebView2_Loaded;
 #if __SKIA__
@@ -110,5 +111,10 @@ public partial class WebView2 : Control, IWebView
 		_sourceChangeFromCore = true;
 		Source = Uri.TryCreate(sender.Source, UriKind.Absolute, out var uri) ? uri : CoreWebView2.BlankUri;
 		_sourceChangeFromCore = false;
+	}
+	private void CoreWebView2_DocumentTitleChanged(CoreWebView2 sender, object args)
+	{
+		DocumentTitle = sender.DocumentTitle;
+		DocumentTitleChanged?.Invoke(this, args);
 	}
 }
