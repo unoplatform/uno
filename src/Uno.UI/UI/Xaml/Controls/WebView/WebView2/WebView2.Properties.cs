@@ -60,12 +60,18 @@ public partial class WebView2
 				}
 			}));
 
+	/// <summary>
+	/// Gets or sets a value that indicates whether the user can scroll the WebView2 content.
+	/// </summary>
 	public bool IsScrollEnabled
 	{
 		get => (bool)GetValue(IsScrollEnabledProperty);
 		set => SetValue(IsScrollEnabledProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the IsScrollEnabled dependency property.
+	/// </summary>
 	public static DependencyProperty IsScrollEnabledProperty { get; } =
 		DependencyProperty.Register(
 			nameof(IsScrollEnabled),

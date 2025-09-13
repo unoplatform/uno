@@ -60,13 +60,13 @@ public partial class CoreWebView2
 	public event TypedEventHandler<CoreWebView2, object> DocumentTitleChanged;
 
 	/// <summary>
-	/// HistoryChanged is raised for changes to joint session history, which consists of top-level and manual frame navigations.
+	/// HistoryChanged is raised for changes to joint session history, which consists of top-level and manual frame navigation.
 	/// </summary>
 	public event TypedEventHandler<CoreWebView2, object> HistoryChanged;
 
 	/// <summary>
 	/// SourceChanged is raised when the CoreWebView2.Source property changes. SourceChanged is raised when
-	/// navigating to a different site or fragment navigations.
+	/// navigating to a different site or fragment navigation.
 	/// </summary>
 	public event TypedEventHandler<CoreWebView2, CoreWebView2SourceChangedEventArgs> SourceChanged;
 

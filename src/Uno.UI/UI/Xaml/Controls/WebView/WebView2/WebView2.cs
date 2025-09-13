@@ -41,6 +41,9 @@ public partial class WebView2 : Control, IWebView
 #endif
 	}
 
+	/// <summary>
+	/// Gets the CoreWebView2 associated with this WebView2.
+	/// </summary>
 	public CoreWebView2 CoreWebView2 { get; }
 
 	bool IWebView.IsLoaded => IsLoaded;
@@ -67,6 +70,10 @@ public partial class WebView2 : Control, IWebView
 	private void WebView2_Unloaded(object sender, RoutedEventArgs e) => CoreWebView2?.OnUnloaded();
 #endif
 
+	/// <summary>
+	/// Ensures that the CoreWebView2 is initialized.
+	/// </summary>
+	/// <returns>An asynchronous action that represents the initialization operation.</returns>
 	public IAsyncAction EnsureCoreWebView2Async() =>
 		AsyncAction.FromTask(ct =>
 		{
@@ -74,15 +81,33 @@ public partial class WebView2 : Control, IWebView
 			return Task.CompletedTask;
 		});
 
+	/// <summary>
+	/// Executes the specified JavaScript code in the context of the current page.
+	/// </summary>
+	/// <param name="javascriptCode">The JavaScript code to execute.</param>
+	/// <returns>The result of the JavaScript execution as a <see cref="IAsyncOperation{string}"/>.</returns>
 	public IAsyncOperation<string?> ExecuteScriptAsync(string javascriptCode) =>
 		CoreWebView2.ExecuteScriptAsync(javascriptCode);
 
+	/// <summary>
+	/// Reloads the current page.
+	/// </summary>
 	public void Reload() => CoreWebView2.Reload();
 
+	/// <summary>
+	/// Navigates to the next page in the navigation history, if one exists.
+	/// </summary>
 	public void GoForward() => CoreWebView2.GoForward();
 
+	/// <summary>
+	/// Navigates to the previous page in the navigation history, if one exists.
+	/// </summary>
 	public void GoBack() => CoreWebView2.GoBack();
 
+	/// <summary>
+	/// Navigates to a string containing HTML content.
+	/// </summary>
+	/// <param name="htmlContent">The HTML content to navigate to.</param>
 	public void NavigateToString(string htmlContent) => CoreWebView2.NavigateToString(htmlContent);
 
 	private void EnsureCoreWebView2()
