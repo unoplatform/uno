@@ -54,13 +54,17 @@ internal partial class Win32WindowWrapper
 
 		void IRenderer.CopyPixels(int width, int height)
 		{
-			var paintDc = PInvoke.BeginPaint(hwnd, out var lpPaint);
+			var paintDc = PInvoke.GetDC(hwnd);
 			if (paintDc == new HDC(IntPtr.Zero))
 			{
-				this.LogError()?.Error($"{nameof(PInvoke.BeginPaint)} failed: {Win32Helper.GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.GetDC)} failed: {Win32Helper.GetErrorMessage()}");
 				return;
 			}
-			using var endPaintDisposable = new DisposableStruct<HWND, PAINTSTRUCT>(static (hwnd, lpPaint) => PInvoke.EndPaint(hwnd, lpPaint), hwnd, lpPaint);
+			using var endPaintDisposable = new DisposableStruct<HWND, HDC>(static (hwnd, lpPaint) =>
+			{
+				var success = PInvoke.ReleaseDC(hwnd, lpPaint) == 1;
+				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
+			}, hwnd, paintDc);
 
 			var bitmapDc = PInvoke.CreateCompatibleDC(paintDc);
 			if (bitmapDc == new HDC(IntPtr.Zero))

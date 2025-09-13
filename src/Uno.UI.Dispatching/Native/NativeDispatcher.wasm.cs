@@ -10,8 +10,6 @@ namespace Uno.UI.Dispatching
 {
 	internal sealed partial class NativeDispatcher
 	{
-		private long _lastDispatchRendering;
-
 #pragma warning disable IDE0051 // Remove unused private members
 		[JSExport]
 		private static void DispatcherCallback()
@@ -78,32 +76,6 @@ namespace Uno.UI.Dispatching
 			else
 			{
 				DispatchOverride(NativeDispatcher.DispatchItems, priority);
-			}
-		}
-
-		/// <summary>
-		/// Synchronous dispatching to the dispatcher is required for Wasm.
-		/// This must be called *only* when originating from the `requestAnimationFrame` callback
-		/// </summary>
-		partial void SynchronousDispatchRenderingPartial()
-		{
-			var elapsed = Stopwatch.GetElapsedTime(_lastDispatchRendering);
-			var delta = TimeSpan.FromSeconds(1 / DispatchingFeatureConfiguration.DispatcherQueue.WebAssemblyFrameRate);
-			if (elapsed < delta)
-			{
-				if (this.Log().IsTraceEnabled())
-				{
-					this.Log().Trace($"Skipping frame ({elapsed} < {delta})");
-				}
-				return;
-			}
-
-			_lastDispatchRendering = Stopwatch.GetTimestamp();
-
-			if (IsRendering)
-			{
-				DispatchItems();
-				RaiseRendered();
 			}
 		}
 

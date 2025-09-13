@@ -1,64 +1,60 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using Uno.UI;
+using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Media;
 
 public partial class CompositionTarget
 {
-	private static Action _renderingActiveChanged;
+	private static readonly long _start = Stopwatch.GetTimestamp();
+	// We're using this table as a set with weakref keys. values are always null
+	private static readonly ConditionalWeakTable<CompositionTarget, object> _targets = new();
 	private static bool _isRenderingActive;
+
+	private static event EventHandler<object> _rendering;
 
 	public static event EventHandler<object> Rendering
 	{
 		add
 		{
 			NativeDispatcher.CheckThreadAccess();
-
-			var currentlyRaisingEvents = NativeDispatcher.Main.IsRendering;
-			NativeDispatcher.Main.Rendering += value;
-			NativeDispatcher.Main.RenderingEventArgsGenerator ??= (d => new RenderingEventArgs(d));
-
-			IsRenderingActive = NativeDispatcher.Main.IsRendering;
-
-			if (!currentlyRaisingEvents)
+			_rendering += value;
+			if (!_isRenderingActive)
 			{
-				// Queue the first render, so that the native surfaces
-				// timers can pick up the subsquent renders.
-				NativeDispatcher.Main.DispatchRendering();
+				_isRenderingActive = true;
+				foreach (var (target, _) in _targets)
+				{
+#if __SKIA__
+					((ICompositionTarget)target).RequestNewFrame();
+#endif
+				}
 			}
 		}
 		remove
 		{
 			NativeDispatcher.CheckThreadAccess();
-
-			NativeDispatcher.Main.Rendering -= value;
-
-			IsRenderingActive = NativeDispatcher.Main.IsRendering;
+			_rendering -= value;
+			if (_rendering == null)
+			{
+				_isRenderingActive = false;
+			}
 		}
 	}
 
-	internal static event Action RenderingActiveChanged
+	internal static void InvokeRendering()
 	{
-		add => _renderingActiveChanged += value;
-		remove => _renderingActiveChanged -= value;
-	}
-
-	/// <summary>
-	/// Determines if the CompositionTarget rendering is active.
-	/// </summary>
-	internal static bool IsRenderingActive
-	{
-		get => _isRenderingActive;
-		set
+		if (NativeDispatcher.Main.HasThreadAccess)
 		{
-			if (value != _isRenderingActive)
+			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(() =>
 			{
-				_isRenderingActive = value;
-				_renderingActiveChanged?.Invoke();
-			}
+				_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+			}, NativeDispatcherPriority.High);
 		}
 	}
 }
