@@ -172,7 +172,7 @@ public partial class CoreWebView2
 	/// Executes the specified JavaScript code in the context of the current page.
 	/// </summary>
 	/// <param name="javaScript">The JavaScript code to execute.</param>
-	/// <returns>The result of the JavaScript execution as an <see cref="IAsyncOperation{string}"/>.</returns>
+	/// <returns>The result of the JavaScript execution as an <see cref="IAsyncOperation{TResult}"/>.</returns>
 	public IAsyncOperation<string?> ExecuteScriptAsync(string javaScript) =>
 		AsyncOperation.FromTask(ct =>
 		{
