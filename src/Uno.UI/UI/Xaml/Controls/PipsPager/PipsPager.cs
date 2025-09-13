@@ -84,7 +84,7 @@ public partial class PipsPager : Control
 		//		null,
 		//		null);
 
-		DefaultStyleKey = typeof(PipsPager);
+		this.SetDefaultStyleKey();
 	}
 
 	protected override void OnApplyTemplate()

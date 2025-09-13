@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Uno Doc: Not supported
 			//__RP_Marker_ClassById(RuntimeProfiler::ProfId_ColorPicker);
 
-			SetDefaultStyleKey(this);
+			this.SetDefaultStyleKey();
 
 			Loaded += OnLoaded; // Uno Doc: Added to re-registered disposed event handlers
 			Unloaded += OnUnloaded;

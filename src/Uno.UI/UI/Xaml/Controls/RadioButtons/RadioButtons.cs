@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var items = new ObservableCollection<object>();
 			SetValue(ItemsProperty, items);
 
-			DefaultStyleKey = typeof(RadioButtons);
+			this.SetDefaultStyleKey();
 
 			// Override normal up/down/left/right behavior -- down should always go to the next item and up to the previous.
 			// left and right should be spacial but contained to the RadioButtons control. We have to attach to PreviewKeyDown

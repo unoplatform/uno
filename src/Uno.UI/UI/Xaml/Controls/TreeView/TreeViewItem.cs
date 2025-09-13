@@ -3,18 +3,19 @@
 // MUX Reference TreeViewItem.cpp, tag winui3/release/1.4.2
 
 using System;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.System;
-using Windows.UI.Core;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.UI.Helpers.WinUI;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
+using Windows.UI.Core;
 using TreeViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer;
-using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -38,7 +39,7 @@ public partial class TreeViewItem : ListViewItem
 	/// </summary>
 	public TreeViewItem()
 	{
-		DefaultStyleKey = typeof(TreeViewItem);
+		this.SetDefaultStyleKey();
 		SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());
 	}
 

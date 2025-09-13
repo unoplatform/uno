@@ -10,6 +10,8 @@ using Microsoft.UI.Xaml.Automation;
 
 #pragma warning disable 105 // Required for the WinUI replace pass
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.UI.Helpers.WinUI;
+
 #pragma warning restore 105
 
 namespace Microsoft.UI.Xaml.Controls
@@ -18,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		public ToggleSplitButton()
 		{
-			DefaultStyleKey = typeof(ToggleSplitButton);
+			this.SetDefaultStyleKey();
 		}
 
 		// Uno Specific: not present in the C++ source, but is part of the public API

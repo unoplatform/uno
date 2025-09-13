@@ -32,7 +32,7 @@ public partial class BreadcrumbBar : Control
 	{
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_BreadcrumbBar);
 
-		DefaultStyleKey = typeof(BreadcrumbBar);
+		this.SetDefaultStyleKey();
 
 		m_itemsRepeaterElementFactory = new BreadcrumbElementFactory();
 		m_itemsRepeaterLayout = new BreadcrumbLayout(this);

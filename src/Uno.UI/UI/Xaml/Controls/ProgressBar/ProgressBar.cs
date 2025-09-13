@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXC = Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -23,7 +24,7 @@ public partial class ProgressBar : RangeBase
 
 	public ProgressBar()
 	{
-		DefaultStyleKey = typeof(ProgressBar);
+		this.SetDefaultStyleKey();
 
 		SizeChanged += (snd, evt) => OnSizeChange();
 

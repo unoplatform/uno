@@ -7,6 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.WinUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -21,7 +22,7 @@ partial class SelectorBarItem
 		// SELECTORBAR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
 
 		// EnsureProperties();
-		DefaultStyleKey = typeof(SelectorBarItem);
+		this.SetDefaultStyleKey();
 	}
 
 	//SelectorBarItem.~public SelectorBarItem()

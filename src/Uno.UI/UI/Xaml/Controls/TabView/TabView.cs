@@ -58,7 +58,7 @@ public partial class TabView : Control
 		var items = new ObservableVector<object>();
 		SetValue(TabItemsProperty, items);
 
-		SetDefaultStyleKey(this);
+		this.SetDefaultStyleKey();
 
 		Loaded += OnLoaded;
 		Unloaded += OnUnloaded;

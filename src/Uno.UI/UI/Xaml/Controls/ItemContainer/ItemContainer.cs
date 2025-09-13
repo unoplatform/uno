@@ -35,7 +35,7 @@ partial class ItemContainer : Control
 		//__RP_Marker_ClassById(RuntimeProfiler::ProfId_ItemContainer);
 
 		//EnsureProperties();
-		SetDefaultStyleKey(this);
+		this.SetDefaultStyleKey();
 	}
 
 	~ItemContainer()

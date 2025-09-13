@@ -23,7 +23,7 @@ public partial class TabViewListView : ListView
 		ShouldApplyChildStretch = false;
 #endif
 
-		this.DefaultStyleKey = typeof(TabViewListView);
+		this.SetDefaultStyleKey();
 
 		ContainerContentChanging += OnContainerContentChanging;
 

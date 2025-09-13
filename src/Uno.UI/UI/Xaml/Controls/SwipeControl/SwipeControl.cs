@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 			s_lastInteractedWithSwipeControl ??= new WeakReference<SwipeControl>(null);
 
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_SwipeControl);
-			SetDefaultStyleKey(this);
+			this.SetDefaultStyleKey();
 
 			Loaded += UnfinalizeOnLoad;
 			Unloaded += FinalizeOnUnload;
