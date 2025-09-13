@@ -88,7 +88,7 @@ public partial class WebView2 : Control, IWebView
 	/// Executes the specified JavaScript code in the context of the current page.
 	/// </summary>
 	/// <param name="javascriptCode">The JavaScript code to execute.</param>
-	/// <returns>The result of the JavaScript execution as a <see cref="IAsyncOperation{string}"/>.</returns>
+	/// <returns>The result of the JavaScript execution as a <see cref="IAsyncOperation{TResult}"/>.</returns>
 	public IAsyncOperation<string?> ExecuteScriptAsync(string javascriptCode) =>
 		CoreWebView2.ExecuteScriptAsync(javascriptCode);
 
