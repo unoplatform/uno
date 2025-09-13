@@ -173,9 +173,9 @@ public partial class CoreWebView2
 		_nativeWebView?.SetScrollingEnabled(newValue);
 	}
 
-	internal void OnDocumentTitleChanged()
+	internal void OnDocumentTitleChanged(string? newValue = null)
 	{
-		DocumentTitleChanged?.Invoke(this, null);
+		DocumentTitleChanged?.Invoke(this, newValue ?? DocumentTitle);
 	}
 
 	internal void RaiseNavigationStarting(object? navigationData, out bool cancel)
