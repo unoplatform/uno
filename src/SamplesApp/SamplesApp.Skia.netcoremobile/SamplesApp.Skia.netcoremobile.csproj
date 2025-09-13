@@ -253,6 +253,7 @@
 				<AndroidAsset Include="..\LinkedFiles\WebContent\css\site.css" Link="Android\Assets\WebContent\css\site.css" />
 				<AndroidAsset Include="..\LinkedFiles\WebContent\index.html" Link="Android\Assets\WebContent\index.html" />
 				<AndroidEnvironment Include="Android\environment.conf" />
+				<Compile Include="Android\SampleProviders\*.cs" />
 			</ItemGroup>
 		</When>
 	</Choose>

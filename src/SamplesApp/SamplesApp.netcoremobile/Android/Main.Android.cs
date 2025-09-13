@@ -20,6 +20,7 @@ using Com.Nostra13.Universalimageloader.Core;
 [assembly: UsesPermission("android.permission.SET_WALLPAPER")]
 [assembly: UsesPermission("android.permission.READ_CONTACTS")]
 [assembly: UsesPermission("android.permission.INTERNET")]
+[assembly: UsesPermission("android.permission.POST_NOTIFICATIONS")]
 
 [assembly: UsesFeature("android.software.leanback", Required = false)]
 [assembly: UsesFeature("android.hardware.touchscreen", Required = false)]
