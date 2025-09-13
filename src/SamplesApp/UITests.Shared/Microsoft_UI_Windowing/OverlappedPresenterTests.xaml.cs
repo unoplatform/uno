@@ -1,23 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using SampleControl.Presentation;
+using SamplesApp;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
-using Microsoft.UI.Windowing;
-using SamplesApp;
-using SampleControl.Presentation;
 
 
 namespace UITests.Microsoft_UI_Windowing;
@@ -59,6 +48,54 @@ internal class OverlappedPresenterTestsViewModel : ViewModelBase
 
 	public void SetToolWindow() => SetPresenter(OverlappedPresenter.CreateForToolWindow());
 
+	public void SetMinSize()
+	{
+		var intMinWidth = (int)MinWidth;
+		var intMinHeight = (int)MinHeight;
+		_currentPresenter.PreferredMinimumWidth = intMinWidth;
+		_currentPresenter.PreferredMinimumHeight = intMinHeight;
+	}
+
+	public void SetMaxSize()
+	{
+		var intMaxWidth = (int)MaxWidth;
+		var intMaxHeight = (int)MaxHeight;
+		_currentPresenter.PreferredMaximumWidth = intMaxWidth;
+		_currentPresenter.PreferredMaximumHeight = intMaxHeight;
+	}
+
+	public void SetMinWidth()
+	{
+		var intMinWidth = (int)MinWidth;
+		_currentPresenter.PreferredMinimumWidth = intMinWidth;
+	}
+
+	public void SetMinHeight()
+	{
+		var intMinHeight = (int)MinHeight;
+		_currentPresenter.PreferredMinimumHeight = intMinHeight;
+	}
+
+	public void SetMaxWidth()
+	{
+		var intMaxWidth = (int)MaxWidth;
+		_currentPresenter.PreferredMaximumWidth = intMaxWidth;
+	}
+
+	public void SetMaxHeight()
+	{
+		var intMaxHeight = (int)MaxHeight;
+		_currentPresenter.PreferredMaximumHeight = intMaxHeight;
+	}
+
+	public void ResetMinWidth() => _currentPresenter.PreferredMinimumWidth = null;
+
+	public void ResetMinHeight() => _currentPresenter.PreferredMinimumHeight = null;
+
+	public void ResetMaxWidth() => _currentPresenter.PreferredMaximumWidth = null;
+
+	public void ResetMaxHeight() => _currentPresenter.PreferredMaximumHeight = null;
+
 	private void SetPresenter(OverlappedPresenter presenter)
 	{
 		_currentPresenter = presenter;
@@ -71,6 +108,11 @@ internal class OverlappedPresenterTestsViewModel : ViewModelBase
 	public bool ShouldActivateWindow { get; set; } = false;
 
 	public OverlappedPresenterState State => _currentPresenter.State;
+
+	public double MinWidth { get; set; }
+	public double MinHeight { get; set; }
+	public double MaxWidth { get; set; }
+	public double MaxHeight { get; set; }
 
 	public void Maximize()
 	{
