@@ -10,6 +10,19 @@ This page lists supported .NET versions and [C# language versions](https://learn
 
 ## Table of supported versions
 
+# [**Uno 6.3 and later**](#tab/uno63)
+
+| Platform                                   | Default .NET version | Default C# version |  Max .NET version | Max C# version |
+|--------------------------------------------|:--------------------:|:------------------:|:-----------------:|:--------------:|
+| WebAssembly                                | .NET 9               | 13                 | .NET 10           | 14             |
+| Skia Desktop                               | .NET 9               | 13                 | .NET 10           | 14             |
+| WinAppSDK                                  | .NET 9               | 13                 | .NET 10           | 14             |
+| iOS, Android                               | .NET 9               | 13                 | .NET 10           | 14             |
+
+### Notes
+
+- In Uno 6.3, support for .NET 8 has been removed.
+
 # [**Uno 5 and later**](#tab/uno5)
 
 | Platform                                   | Default .NET version | Default C# version |  Max .NET version | Max C# version |
@@ -17,7 +30,7 @@ This page lists supported .NET versions and [C# language versions](https://learn
 | WebAssembly                                | .NET 8               | 12                 | .NET 9            | 13             |
 | Skia Desktop                               | .NET 8               | 12                 | .NET 9            | 13             |
 | WinAppSDK                                  | .NET 8               | 12                 | .NET 9            | 13             |
-| iOS, Android  | .NET 8               | 12                 | .NET 9            | 13             |
+| iOS, Android                               | .NET 8               | 12                 | .NET 9            | 13             |
 
 ### Notes
 
