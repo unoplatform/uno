@@ -1,10 +1,11 @@
 ﻿using System.Linq;
 using Microsoft.UI.Private.Controls;
-using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.WinUI;
+using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -61,7 +62,7 @@ public partial class RefreshContainer : ContentControl, IRefreshContainerPrivate
 
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_RefreshContainer);
 
-		DefaultStyleKey = typeof(RefreshContainer);
+		this.SetDefaultStyleKey();
 
 #if HAS_UNO
 		SetDefaultRefreshInfoProviderAdapter();

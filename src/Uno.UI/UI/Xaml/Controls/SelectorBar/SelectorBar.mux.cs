@@ -26,7 +26,7 @@ partial class SelectorBar
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_SelectorBar);
 
 		// EnsureProperties();
-		DefaultStyleKey = typeof(SelectorBar);
+		this.SetDefaultStyleKey();
 
 		var items = new ObservableVector<SelectorBarItem>();
 		SetValue(ItemsProperty, items);

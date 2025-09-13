@@ -305,9 +305,11 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Returns the default Style for given type.
 		/// </summary>
-		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, ShouldUseUWPDefaultStyle(type));
+		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null, ShouldUseUWPDefaultStyle(type));
 
-		private static Style? GetDefaultStyleForType(Type type, bool useUWPDefaultStyles)
+		internal static Style? GetDefaultStyleForInstance(FrameworkElement instance, Type type) => GetDefaultStyleForType(type, instance, ShouldUseUWPDefaultStyle(type));
+
+		private static Style? GetDefaultStyleForType(Type type, FrameworkElement? instance, bool useUWPDefaultStyles)
 		{
 			if (type == null)
 			{
@@ -331,16 +333,26 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
+			if (style is null && instance is Control { DefaultStyleResourceUri: { } defaultStyleResourceUri })
+			{
+				if (ResourceResolver.TryRetrieveDictionaryForSource(defaultStyleResourceUri, out var dictionary))
+				{
+					if (dictionary.TryGetValue(type, out var resolvedItem, shouldCheckSystem: false) && resolvedItem is Style defaultStyle)
+					{
+						style = defaultStyle;
+					}
+				}
+			}
+
 			if (style == null && !useUWPDefaultStyles)
 			{
-
 				if (_logger.IsEnabled(LogLevel.Debug))
 				{
 					_logger.LogDebug($"No native style found for type {type}, falling back on UWP style");
 				}
 
 				// If no native style found, fall back on UWP style
-				style = GetDefaultStyleForType(type, useUWPDefaultStyles: true);
+				style = GetDefaultStyleForType(type, instance, useUWPDefaultStyles: true);
 			}
 
 			if (_logger.IsEnabled(LogLevel.Debug))
