@@ -18,6 +18,8 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI;
 using Expander = Microsoft.UI.Xaml.Controls.Expander;
+using MUXControlsTestApp.Utilities;
+
 
 #if HAS_UNO
 using Uno.UI.Controls.Legacy;
@@ -461,10 +463,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		/// WinUI. Ensure it uses this.SetDefaultStyleKey() in its constructor (the WinUI sources should have
 		/// an equivalent present as well for all styled controls). Exception are unstyled controls such as
 		/// TreeViewList - for those cases add the control to the builtInControls list below.
+		/// We only execute this test on Skia, as native targets also have some built-in controls that are not
+		/// in fact WinUI-based, so it is expected they don't have the DefaultStyleResourceUri set.
 		/// </remarks>
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public async Task When_Non_BuiltIn_Control()
 		{
 			var allControlTypes = typeof(Control).Assembly.GetTypes().OfType<Type>().Where(c => typeof(Control).IsAssignableFrom(c) && !c.IsAbstract && c.IsPublic && c.GetConstructor(Array.Empty<Type>()) is not null);
@@ -503,7 +508,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(ItemsControl),
 				typeof(Microsoft.UI.Xaml.Controls.ListView),
 				typeof(ListViewBaseHeaderItem),
-				typeof(ListViewHeaderItem),
+				typeof(Microsoft.UI.Xaml.Controls.ListViewHeaderItem),
 				typeof(ListViewItem),
 				typeof(MediaPlayerElement),
 				typeof(MediaTransportControls),
@@ -540,13 +545,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(SelectorItem),
 				typeof(Thumb),
 				typeof(ToggleButton),
-#if HAS_UNO
 				typeof(Uno.UI.Controls.Legacy.ProgressRing),
-#endif
-#if __ANDROID__ || __IOS__
-				typeof(Uno.UI.Controls.Legacy.GridView),
-				typeof(Uno.UI.Controls.Legacy.ListView),
-#endif
 			};
 
 			allControlTypes = allControlTypes.Except(builtInControls);
@@ -600,7 +599,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var tabView = SUT.Children.OfType<TabView>().First();
 			Assert.AreEqual(Colors.Pink, ((SolidColorBrush)tabView.Background).Color);
-			Assert.IsNotNull(tabView.GetTemplateChild("TabContainerGrid"));
+			Assert.IsNotNull(VisualTreeUtils.FindVisualChildByName(tabView, "TabContainerGrid"));
 		}
 
 		[TestMethod]
@@ -640,7 +639,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await UITestHelper.Load(SUT);
 			var tabView = SUT.Children.OfType<DerivedTabView>().First();
 			Assert.AreEqual(Colors.Pink, ((SolidColorBrush)tabView.Background).Color);
-			Assert.IsNotNull(tabView.GetTemplateChild("TabContainerGrid"));
+			Assert.IsNotNull(VisualTreeUtils.FindVisualChildByName(tabView, "TabContainerGrid"));
 		}
 	}
 
