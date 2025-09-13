@@ -81,7 +81,7 @@ internal partial class NativeWebViewWrapper : INativeWebView
 			if (_documentTitle != value)
 			{
 				_documentTitle = value;
-				_coreWebView?.OnDocumentTitleChanged();
+				_coreWebView?.OnDocumentTitleChanged(_documentTitle);
 			}
 		}
 	}
