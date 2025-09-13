@@ -51,6 +51,11 @@ public partial class CoreWebView2
 	/// </summary>
 	public CoreWebView2Settings Settings { get; } = new();
 
+	/// <summary>
+	/// Navigates to the specified URI.
+	/// </summary>
+	/// <param name="uri">The URI to navigate to.</param>
+	/// <exception cref="ArgumentException">Thrown when the URI is not absolute or invalid.</exception>
 	public void Navigate(string uri)
 	{
 		if (!Uri.TryCreate(uri, UriKind.Absolute, out var actualUri))
@@ -67,6 +72,10 @@ public partial class CoreWebView2
 		UpdateFromInternalSource();
 	}
 
+	/// <summary>
+	/// Navigates to a HTML string.
+	/// </summary>
+	/// <param name="htmlContent">The HTML content to navigate to.</param>
 	public void NavigateToString(string htmlContent)
 	{
 		_processedSource = htmlContent;
@@ -78,6 +87,14 @@ public partial class CoreWebView2
 		UpdateFromInternalSource();
 	}
 
+	/// <summary>
+	/// Maps a host name to a folder path.
+	/// This allows content within the specified folder to be accessed
+	/// </summary>
+	/// <param name="hostName">The host name to map.</param>
+	/// <param name="folderPath">The folder path to map the host name to.</param>
+	/// <param name="accessKind">The access kind for the folder.</param>
+	/// <exception cref="ArgumentNullException">Thrown when any of the parameters are <see langword="null"/>.</exception>
 	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
 	{
 		if (hostName is null)
@@ -100,6 +117,10 @@ public partial class CoreWebView2
 		}
 	}
 
+	/// <summary>
+	/// Clears the mapping for the specified host name.
+	/// </summary>
+	/// <param name="hostName">The host name to clear the mapping for.</param>
 	public void ClearVirtualHostNameToFolderMapping(string hostName)
 	{
 		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
@@ -127,15 +148,31 @@ public partial class CoreWebView2
 
 		UpdateFromInternalSource();
 	}
-
+	/// <summary>
+	/// Navigates to the previous page in the navigation history, if one exists.
+	/// </summary>
 	public void GoBack() => _nativeWebView?.GoBack();
 
+	/// <summary>
+	/// Navigates to the next page in the navigation history, if one exists.
+	/// </summary>
 	public void GoForward() => _nativeWebView?.GoForward();
 
+	/// <summary>
+	/// Stops any in-progress navigation.
+	/// </summary>
 	public void Stop() => _nativeWebView?.Stop();
 
+	/// <summary>
+	/// Reloads the current content.
+	/// </summary>
 	public void Reload() => _nativeWebView?.Reload();
 
+	/// <summary>
+	/// Executes the specified JavaScript code in the context of the current page.
+	/// </summary>
+	/// <param name="javaScript">The JavaScript code to execute.</param>
+	/// <returns>The result of the JavaScript execution as an <see cref="IAsyncOperation{string}"/>.</returns>
 	public IAsyncOperation<string?> ExecuteScriptAsync(string javaScript) =>
 		AsyncOperation.FromTask(ct =>
 		{
