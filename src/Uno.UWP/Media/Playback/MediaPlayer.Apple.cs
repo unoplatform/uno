@@ -499,7 +499,7 @@ namespace Windows.Media.Playback
 		{
 			if (_player != null)
 			{
-				_player.Volume = (float)Volume / 100;
+				_player.Volume = (float)Volume;
 			}
 		}
 
