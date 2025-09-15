@@ -1519,16 +1519,6 @@ public partial class TextBox
 			{
 				_popup.IsOpen = true;
 				((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
-				if (_popup.IsOpen)
-				{
-					EventHandler<object> popupOnClosed = default!;
-					popupOnClosed = (_, _) =>
-					{
-						((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
-						_popup.Closed -= popupOnClosed;
-					};
-					_popup.Closed += popupOnClosed;
-				}
 			}
 		}
 
@@ -1545,6 +1535,10 @@ public partial class TextBox
 
 		public void Hide()
 		{
+			if (Visual.CompositionTarget is CompositionTarget target)
+			{
+				target.FrameRendered -= OnFrameRendered;
+			}
 			if (_popup is not null)
 			{
 				_popup.IsOpen = false;

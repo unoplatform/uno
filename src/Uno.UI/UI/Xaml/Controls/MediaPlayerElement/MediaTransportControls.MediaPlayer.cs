@@ -27,10 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_mediaPlayer = mediaPlayer;
 
-			if (IsLoaded)
-			{
-				BindMediaPlayer();
-			}
+			BindMediaPlayer();
 		}
 
 		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
