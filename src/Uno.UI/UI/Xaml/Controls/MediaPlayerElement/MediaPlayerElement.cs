@@ -1,12 +1,10 @@
 ﻿using System;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -25,7 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private ContentPresenter _transportControlsPresenter;
 		private MediaPlayerPresenter _mediaPlayerPresenter;
 		private Grid _layoutRoot;
-		private CompositeDisposable _mediaPlayerDisposable;
 
 		private bool _isTransportControlsBound;
 
@@ -229,27 +226,20 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (sender is MediaPlayerElement mpe)
 			{
-				mpe._mediaPlayerDisposable?.Dispose();
-				mpe._mediaPlayerDisposable = null;
+				if (args.OldValue is global::Windows.Media.Playback.MediaPlayer oldMediaPlayer)
+				{
+					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
+					oldMediaPlayer.MediaOpened -= mpe.OnMediaOpened;
+					oldMediaPlayer.NaturalVideoDimensionChanged -= mpe.OnNaturalVideoDimensionChanged;
+					oldMediaPlayer.Dispose();
+				}
 
 				if (args.NewValue is global::Windows.Media.Playback.MediaPlayer newMediaPlayer)
 				{
 					newMediaPlayer.Source = mpe.Source;
-
-					mpe._mediaPlayerDisposable = new CompositeDisposable();
-					var weakThis = new WeakReference<MediaPlayerElement>(mpe);
-#pragma warning disable IDE0055
-					TypedEventHandler<MediaPlayer,MediaPlayerFailedEventArgs> newMediaPlayerOnMediaFailed = (s, e) => { if (weakThis.TryGetTarget(out var mpe)) { mpe.OnMediaFailed(s, e); } };
-					newMediaPlayer.MediaFailed += newMediaPlayerOnMediaFailed;
-					mpe._mediaPlayerDisposable.Add(Disposable.Create(() => newMediaPlayer.MediaFailed -= newMediaPlayerOnMediaFailed));
-					TypedEventHandler<MediaPlayer,object> newMediaPlayerOnMediaOpened = (s, e) => { if (weakThis.TryGetTarget(out var mpe)) { mpe.OnMediaOpened(s, e); } };
-					newMediaPlayer.MediaOpened += newMediaPlayerOnMediaOpened;
-					mpe._mediaPlayerDisposable.Add(Disposable.Create(() => newMediaPlayer.MediaOpened -= newMediaPlayerOnMediaOpened));
-					TypedEventHandler<MediaPlayer,object> newMediaPlayerOnNaturalVideoDimensionChanged = (s, e) => { if (weakThis.TryGetTarget(out var mpe)) { mpe.OnNaturalVideoDimensionChanged(s, e); } };
-					newMediaPlayer.NaturalVideoDimensionChanged += newMediaPlayerOnNaturalVideoDimensionChanged;
-					mpe._mediaPlayerDisposable.Add(Disposable.Create(() => newMediaPlayer.NaturalVideoDimensionChanged -= newMediaPlayerOnNaturalVideoDimensionChanged));
-#pragma warning restore IDE0055
-
+					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
+					newMediaPlayer.MediaOpened += mpe.OnMediaOpened;
+					newMediaPlayer.NaturalVideoDimensionChanged += mpe.OnNaturalVideoDimensionChanged;
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}

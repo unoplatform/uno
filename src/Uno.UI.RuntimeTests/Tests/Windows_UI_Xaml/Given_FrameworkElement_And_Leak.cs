@@ -41,7 +41,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_FrameworkElement_And_Leak
 	{
 		[TestMethod]
-		[Timeout(3 * 60 * 1000)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]
@@ -183,7 +182,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
-		[DataRow(typeof(MediaPlayerElement), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(typeof(MediaPlayerElement), 15)]
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CommandBarFlyout_Leak", 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeUIKit)] // flaky on native iOS
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All, RuntimeTestPlatforms ignoredPlatforms = RuntimeTestPlatforms.None)
 		{
@@ -206,6 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private async Task When_Add_Remove_Inner(object controlTypeRaw, int count)
 		{
+
 			Type GetType(string s)
 				=> AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(s)).Where(t => t != null).First()!;
 
@@ -216,31 +216,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				_ => throw new InvalidOperationException()
 			};
 
-			var weakRefs = new HashSet<WeakReference<DependencyObject>>();
-			void TrackDependencyObject(DependencyObject target) => weakRefs.Add(new WeakReference<DependencyObject>(target));
-
-			IEnumerable<DependencyObject> RemoveDeadRefsAndGetAliveRefs()
-			{
-				var toRemove = new List<WeakReference<DependencyObject>>();
-				foreach (var weakRef in weakRefs)
-				{
-					if (weakRef.TryGetTarget(out var target))
-					{
-						yield return target;
-					}
-					else
-					{
-						toRemove.Add(weakRef);
-					}
-				}
-
-				foreach (var weakReference in toRemove)
-				{
-					weakRefs.Remove(weakReference);
-				}
-			}
+			var _holders = new ConditionalWeakTable<DependencyObject, Holder>();
+			void TrackDependencyObject(DependencyObject target) => _holders.Add(target, new Holder(HolderUpdate));
 
 			var forest = new List<string>();
+			var maxCounter = 0;
+			var activeControls = 0;
+			var maxActiveControls = 0;
+
+			// Ensure Holder counter is reset between individual control tests.
+			Holder.Reset();
 
 			var rootContainer = new ContentControl();
 
@@ -260,21 +245,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			for (int i = 0; i < count; i++)
 			{
-				await MaterializeControl(controlType, rootContainer);
+				await MaterializeControl(controlType, _holders, maxCounter, rootContainer);
+			}
+
+			TestServices.WindowHelper.WindowContent = null;
+			rootContainer = null;
+
+			void HolderUpdate(int value)
+			{
+#if HAS_UNO
+				_ = TestServices.WindowHelper.RootElement.Dispatcher.RunAsync(CoreDispatcherPriority.High,
+#else
+				_ = TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High,
+#endif
+					() =>
+					{
+						maxCounter = Math.Max(value, maxCounter);
+						activeControls = value;
+						maxActiveControls = maxCounter;
+					}
+				);
 			}
 
 			var sw = Stopwatch.StartNew();
 
-			var endTime = TimeSpan.FromSeconds(30);
-			while (sw.Elapsed < endTime && RemoveDeadRefsAndGetAliveRefs().Any())
+			//var endTime = TimeSpan.FromSeconds(10);
+			var endTime = TimeSpan.FromSeconds(5);
+			var maxTime = TimeSpan.FromSeconds(30);
+
+			var lastActiveControls = activeControls;
+
+			while (sw.Elapsed < endTime && sw.Elapsed < maxTime && activeControls != 0)
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
-				GC.Collect();
 
 				// Waiting for idle is required for collection of
 				// DispatcherConditionalDisposable to be executed
 				await TestServices.WindowHelper.WaitForIdle();
+
+				if (lastActiveControls != activeControls)
+				{
+					// Expand the timeout if the count has changed, as the
+					// GC may still be processing levels of the hierarcy on iOS
+					endTime += TimeSpan.FromMilliseconds(500);
+				}
+
+				lastActiveControls = activeControls;
 			}
 
 #if TRACK_REFS
@@ -293,8 +310,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			if (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser())
 			{
-				var retainedTypes = RemoveDeadRefsAndGetAliveRefs().Select(ExtractTargetName).ToArray();
-				if (RemoveDeadRefsAndGetAliveRefs().Any())
+				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
+				if (activeControls != 0)
 				{
 					Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
 
@@ -327,32 +344,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// to always go to zero during runtime tests. If the count of active objects
 				// is arbitrarily below the half of the number of top-level objects.
 				// created, we can assume that enough objects were collected entirely.
-				Assert.IsTrue(RemoveDeadRefsAndGetAliveRefs().Count() < count, retainedMessage);
+				Assert.IsTrue(activeControls < count, retainedMessage);
 			}
 			else
 			{
-				Assert.AreEqual(0, RemoveDeadRefsAndGetAliveRefs().Count(), retainedMessage);
+				Assert.AreEqual(0, activeControls, retainedMessage);
 			}
 
-			static string ExtractTargetName(DependencyObject p)
+			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
-				if (p is FrameworkElement { Name: { Length: > 0 } name } fe)
+				if (p.Key is FrameworkElement { Name: { Length: > 0 } name } fe)
 				{
 					return $"{fe.GetType().Name}/{name}";
 				}
 				else
 				{
-					return p.ToString() ?? "null";
+					return p.Key?.ToString() ?? "null";
 				}
 			}
 
-			async Task MaterializeControl(Type controlType, ContentControl rootContainer)
+			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
 			{
-				rootContainer.Content = (FrameworkElement)Activator.CreateInstance(controlType)!;
-				TrackDependencyObject((rootContainer.Content as DependencyObject)!);
+				var item = (FrameworkElement)Activator.CreateInstance(controlType)!;
+				TrackDependencyObject(item);
+				rootContainer.Content = item;
 				await TestServices.WindowHelper.WaitForIdle();
 
-				if (rootContainer.Content is IExtendedLeakTest extendedTest)
+				if (item is IExtendedLeakTest extendedTest)
 				{
 					void TrackAdditionalObject(object? sender, DependencyObject e)
 					{
@@ -361,7 +379,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 							TrackDependencyObject(e);
 						}
 					}
-					if (rootContainer.Content is ITrackingLeakTest leakTrackingProvider)
+					if (item is ITrackingLeakTest leakTrackingProvider)
 					{
 						leakTrackingProvider.ObjectTrackingRequested += TrackAdditionalObject;
 					}
@@ -369,7 +387,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					await extendedTest.WaitForTestToComplete();
 
 					// Unsubscribe to avoid memory leaks
-					if (rootContainer.Content is ITrackingLeakTest leakTrackingProvider2)
+					if (item is ITrackingLeakTest leakTrackingProvider2)
 					{
 						leakTrackingProvider2.ObjectTrackingRequested -= TrackAdditionalObject;
 					}
@@ -399,7 +417,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				{
 					var child = VisualTreeHelper.GetChild(item, i);
 #else
-				foreach (var child in ((FrameworkElement)rootContainer.Content).EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())
+				foreach (var child in item.EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())
 				{
 #endif
 					TrackDependencyObject(child);
@@ -452,6 +470,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 				#endregion
 
+				item = null;
 				rootContainer.Content = null;
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
@@ -487,6 +506,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 #endif
+
+		private class Holder
+		{
+			private readonly Action<int> _update;
+			private static int _counter;
+
+			private static object _lock = new object();
+
+			public Holder(Action<int> update)
+			{
+				_update = update;
+				lock (_lock)
+				{
+					_update(++_counter);
+				}
+			}
+
+			~Holder()
+			{
+				try
+				{
+					lock (_lock)
+					{
+						_update(--_counter);
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Failed to finalize holder: " + ex);
+				}
+			}
+
+			public static void Reset() => _counter = 0;
+		}
 
 		[Flags]
 		public enum LeakTestStyles
