@@ -20,6 +20,7 @@ using Uno.UI.Dispatching;
 using MediaPlayer = Windows.Media.Playback.MediaPlayer;
 using Windows.Web.Http.Headers;
 using Uno.Logging;
+using System.Timers;
 
 #if IS_MPE_WIN32
 namespace Uno.UI.MediaPlayer.Skia.Win32;
@@ -195,21 +196,16 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 		VlcPlayer.Buffering += (o, a) => weakRef.GetTarget()?.OnBuffering(o, a);
 		VlcPlayer.Paused += (o, a) => weakRef.GetTarget()?.OnPaused(o, a);
 		VlcPlayer.TimeChanged += (o, a) => weakRef.GetTarget()?.OnTimeChanged(o, a); // PositionChanged fires way too frequently (probably every frame). We use TimeChanged instead.
-		VlcPlayer.VolumeChanged += (o, a) => weakRef.GetTarget()?.OnVlcVolumeChanged(o, a);
 
-		if (PlatformHelper.IsWindows)
-		{
-			// Update the player volume from VLC volume, since all VLC instances have
-			// shared volume control on Windows.
-			OnVlcVolumeChanged(null, null!);
-		}
-
+		//VlcPlayer.VolumeChanged += (o, a) => weakRef.GetTarget()?.OnVlcVolumeChanged(o, a);
 		// We need to start a timer to update the playback state, since libVLC doesn't
 		// provide a way to get the end of buffering without polling.
-		var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
-		EventHandler<object> timerOnTick = (_, _) => weakRef.GetTarget()?.OnTick();
-		timer.Tick += timerOnTick;
-		_timerDisposable = Disposable.Create(() => timer.Tick -= timerOnTick);
+		// Also, attaching to VolumeChanged with debugger attached causes crashes on some systems,
+		// so we poll the volume on the timer as well.
+		var timer = new System.Timers.Timer(16);
+		ElapsedEventHandler timerOnTick = (_, _) => weakRef.GetTarget()?.OnTick();
+		timer.Elapsed += timerOnTick;
+		_timerDisposable = timer;
 		timer.Start();
 	}
 
@@ -480,19 +476,20 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 	{
 		// This is primarily to update the Buffering status, since libVLC doesn't
 		// expose a BufferingEnded event.
+		MediaPlaybackState? state = null;
 		switch (VlcPlayer.State)
 		{
 			case VLCState.Opening:
-				Player.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
+				state = MediaPlaybackState.Opening;
 				break;
 			case VLCState.Buffering:
-				Player.PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
+				state = MediaPlaybackState.Buffering;
 				break;
 			case VLCState.Playing:
-				Player.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+				state = MediaPlaybackState.Playing;
 				break;
 			case VLCState.Paused:
-				Player.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+				state = MediaPlaybackState.Paused;
 				break;
 			case VLCState.Stopped:
 			case VLCState.Ended:
@@ -500,19 +497,25 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 			case VLCState.NothingSpecial:
 				break;
 		}
-	}
 
-	private void OnVlcVolumeChanged(object? _, MediaPlayerVolumeChangedEventArgs _1)
-	{
-		NativeDispatcher.Main.Enqueue(() =>
+		if (state != null && state != Player.PlaybackSession.PlaybackState)
 		{
-			var volume = VlcPlayer.Volume;
-			if (_vlcPlayerVolume != volume && volume != -1)
+			NativeDispatcher.Main.Enqueue(() =>
 			{
-				_vlcPlayerVolume = volume;
+				Player.PlaybackSession.PlaybackState = state.Value;
+			});
+		}
+
+		// We also update the volume, in case it has has been changed externally.
+		var volume = VlcPlayer.Volume;
+		if (_vlcPlayerVolume != volume && volume != -1)
+		{
+			_vlcPlayerVolume = volume;
+			NativeDispatcher.Main.Enqueue(() =>
+			{
 				double newVolume = volume / 100.0; // VlcPlayer.Volume is in [0, 100]
-				Events?.RaiseExternalVolumeChanged(newVolume);
-			}
-		});
+				Events?.RaiseVolumeChanged(newVolume);
+			});
+		}
 	}
 }

@@ -462,7 +462,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_mediaPlayer is not null)
 			{
-				_mediaPlayer.Volume = e.NewValue / 100.0;
+				var volume = e.NewValue / 100.0;
+				if (Math.Abs(_mediaPlayer.Volume - volume) > 0.001)
+				{
+					_mediaPlayer.Volume = volume;
+				}
 			}
 
 			UpdateVolumeMuteStates();
@@ -471,14 +475,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnPlayerVolumeChanged(_MediaPlayer sender, object e)
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			var percent = Math.Round(sender.Volume * 100);
+			if (m_tpTHVolumeSlider != null && Math.Abs(m_tpTHVolumeSlider.Value - percent) > 0.1)
 			{
-				var percent = Math.Round(sender.Volume * 100);
-				if (m_tpTHVolumeSlider != null && Math.Abs(m_tpTHVolumeSlider.Value - percent) > 0.1)
-				{
-					m_tpTHVolumeSlider.Value = percent;
-				}
-			});
+				m_tpTHVolumeSlider.Value = percent;
+			}
 		}
 
 		private void ToggleMute(object sender, RoutedEventArgs e)
