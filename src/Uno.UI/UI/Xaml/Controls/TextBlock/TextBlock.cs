@@ -870,7 +870,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (ReadLocalValue(TextProperty) == DependencyProperty.UnsetValue)
+			if (!this.IsDependencyPropertySet(TextProperty))
 			{
 				_skipInlinesChangedTextSetter = true;
 				Inlines.Clear();
