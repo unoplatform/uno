@@ -469,7 +469,7 @@ namespace Microsoft.UI.Xaml.Controls
 			ResetControlsVisibilityTimer();
 		}
 
-		private void OnPlayerVolumeChanged(MediaPlayer sender, object e)
+		private void OnPlayerVolumeChanged(_MediaPlayer sender, object e)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
