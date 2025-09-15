@@ -1023,6 +1023,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 50, 50), Colors.Red);
 		}
 
+#if HAS_RENDER_TARGET_BITMAP
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21322")]
+		public async Task When_Text_Set_By_Style_Setter()
+		{
+			var style = new Style(typeof(TextBlock));
+			const string text = "Hello from style";
+			style.Setters.Add(new Setter(TextBlock.TextProperty, text));
+			var container = new StackPanel() { Spacing = 8, Padding = new Thickness(4) };
+			var SUT = new TextBlock
+			{
+				Foreground = new SolidColorBrush(Colors.Red),
+				Style = style
+			};
+			var duplicate = new TextBlock
+			{
+				Foreground = new SolidColorBrush(Colors.Red),
+				Text = text
+			};
+			container.Children.Add(SUT);
+			container.Children.Add(duplicate);
+
+			await UITestHelper.Load(container);
+			Assert.AreEqual("Hello from style", SUT.Text);
+
+			// Verify the text is actually rendered
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), Colors.Red);
+
+			// Verify both TextBlocks render the same
+			var screenshot2 = await UITestHelper.ScreenShot(duplicate);
+			await ImageAssert.AreSimilarAsync(screenshot, screenshot2);
+		}
+#endif
+
+
 #if __SKIA__
 		[TestMethod]
 		public async Task When_RenderTransform_Rearrange()
