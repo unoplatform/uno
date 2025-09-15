@@ -513,7 +513,7 @@
 				},
 				"SkiaRenderer": {
 					"description": "Adds support for using Skia as a UI renderer on all targets.",
-					"helpUrl": "https://aka.platform.uno/feature-skia-renderer"
+					"helpUrl": "https://aka.platform.uno/skia-rendering"
 				},
 				"Storage": {
 					"description": "Adds support for Storage using Uno.Extensions.",
