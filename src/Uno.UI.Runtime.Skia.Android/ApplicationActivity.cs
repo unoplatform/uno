@@ -344,8 +344,6 @@ namespace Microsoft.UI.Xaml
 			DismissKeyboard();
 		}
 
-		protected override void OnRestart() => base.OnRestart();
-
 		protected override void OnDestroy()
 		{
 			base.OnDestroy();
