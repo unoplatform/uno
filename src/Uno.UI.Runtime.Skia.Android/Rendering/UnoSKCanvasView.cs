@@ -32,12 +32,13 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 	internal static UnoSKCanvasView? Instance { get; private set; }
 
+	private readonly InternalRenderer _renderer;
+
 	public UnoSKCanvasView(Context context) : base(context)
 	{
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
-		SetRenderer(new InternalRenderer(this));
-
+		SetRenderer(_renderer = new InternalRenderer(this));
 		Instance = this;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
@@ -70,6 +71,11 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			: Rendermode.WhenDirty;
 	}
 
+	internal void ResetRendererContext()
+	{
+		_renderer.ResetContext();
+	}
+
 	internal void InvalidateRender()
 	{
 		if (Microsoft.UI.Xaml.Window.CurrentSafe is not { RootElement: { } root } window)
@@ -97,7 +103,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		_fpsHelper.Scale = (float)scale;
 
-		if (ApplicationActivity.Instance.NativeLayerHost is { } nativeLayerHost)
+		if (ApplicationActivity.NativeLayerHost is { } nativeLayerHost)
 		{
 			nativeLayerHost.Path = path;
 			nativeLayerHost.Invalidate();
@@ -326,5 +332,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			_context?.Dispose();
 			_context = null;
 		}
+
+		internal void ResetContext() => FreeContext();
 	}
 }

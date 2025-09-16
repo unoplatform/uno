@@ -32,12 +32,12 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
-		private UnoSKCanvasView? _skCanvasView;
-		private ClippedRelativeLayout? _nativeLayerHost;
+		private static UnoSKCanvasView? _skCanvasView;
+		private static ClippedRelativeLayout? _nativeLayerHost;
 
 		private InputPane _inputPane;
 
-		private bool _started;
+		private static bool _started;
 		private bool _isContentViewSet;
 
 		/// <summary>
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml
 
 		internal LayoutProvider LayoutProvider { get; private set; } = null!;
 
-		internal ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
+		internal static ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
 		public ApplicationActivity(IntPtr ptr, JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -105,6 +105,29 @@ namespace Microsoft.UI.Xaml
 
 		protected override void InitializeComponent()
 		{
+			// The app was previously running, but application activity
+			// changed. Reparent content.
+			if (RelativeLayout is not null)
+			{
+				// Reparent the current layout to this activity
+				if (RelativeLayout.Parent is ViewGroup parent)
+				{
+					parent.RemoveView(RelativeLayout);
+				}
+
+				this.SetContentView(RelativeLayout);
+
+				// Ensure the SKCanvasView is reset
+				_skCanvasView?.ResetRendererContext();
+
+				var winUIWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
+				if (winUIWindow?.RootElement is { } root)
+				{
+					// Reactivate the window
+					winUIWindow.Activate();
+					InvalidateRender();
+				}
+			}
 		}
 
 		public override bool DispatchKeyEvent(KeyEvent? e)
@@ -248,7 +271,7 @@ namespace Microsoft.UI.Xaml
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
 
-				_skCanvasView = new UnoSKCanvasView(this);
+				_skCanvasView ??= new UnoSKCanvasView(this);
 				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
@@ -259,14 +282,6 @@ namespace Microsoft.UI.Xaml
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
 				RelativeLayout.AddView(NativeLayerHost);
-			}
-
-			var winUIWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
-			if (winUIWindow?.RootElement is { } root)
-			{
-				// App was already running, but backed out of
-				winUIWindow.Activate();
-				InvalidateRender();
 			}
 		}
 
