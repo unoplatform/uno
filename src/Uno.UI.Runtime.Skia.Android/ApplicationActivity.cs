@@ -10,6 +10,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
+using AndroidX.Activity;
+using AndroidX.Core.Graphics;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -20,15 +22,9 @@ using Uno.UI.Runtime.Skia.Android;
 using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
-using Windows.System;
-using Windows.UI.ViewManagement;
-using AndroidX.Core.Graphics;
-using Uno.UI.Helpers;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Windows.Storage.Pickers;
-using AndroidX.Activity;
-using Windows.Extensions;
-using Uno.WinUI.Runtime.Skia.Android;
+using Windows.UI.ViewManagement;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 
 namespace Microsoft.UI.Xaml
@@ -49,7 +45,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal static ApplicationActivity Instance { get; private set; } = null!;
 
-		internal RelativeLayout RelativeLayout { get; private set; } = null!;
+		internal static RelativeLayout RelativeLayout { get; private set; } = null!;
 
 		internal LayoutProvider LayoutProvider { get; private set; } = null!;
 
@@ -109,14 +105,6 @@ namespace Microsoft.UI.Xaml
 
 		protected override void InitializeComponent()
 		{
-			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
-			// This code transfers the content from the previous activity to the new one (if applicable).
-			//var initialWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
-			//if (initialWindow?.RootElement is View content)
-			//{
-			//	(content.GetParent() as ViewGroup)?.RemoveView(content);
-			//	SetContentView(content);
-			//}
 		}
 
 		public override bool DispatchKeyEvent(KeyEvent? e)
@@ -272,6 +260,14 @@ namespace Microsoft.UI.Xaml
 					ViewGroup.LayoutParams.MatchParent);
 				RelativeLayout.AddView(NativeLayerHost);
 			}
+
+			var winUIWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
+			if (winUIWindow?.RootElement is { } root)
+			{
+				// App was already running, but backed out of
+				winUIWindow.Activate();
+				InvalidateRender();
+			}
 		}
 
 		internal void InvalidateRender()
@@ -332,6 +328,8 @@ namespace Microsoft.UI.Xaml
 
 			DismissKeyboard();
 		}
+
+		protected override void OnRestart() => base.OnRestart();
 
 		protected override void OnDestroy()
 		{
