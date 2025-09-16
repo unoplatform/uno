@@ -490,6 +490,52 @@ public partial class TextBox
 		var text = Text;
 		var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
 		var ctrl = args.KeyboardModifiers.HasFlag(_platformCtrlKey);
+		// Text commands: always return from this switch, never break
+		switch (args.Key)
+		{
+			case VirtualKey.Z when ctrl:
+				if (!HasPointerCapture)
+				{
+					args.Handled = true;
+					Undo();
+				}
+				return;
+			case VirtualKey.Y when ctrl:
+				if (!HasPointerCapture)
+				{
+					args.Handled = true;
+					Redo();
+				}
+				return;
+			case VirtualKey.X when ctrl:
+				CutSelectionToClipboard();
+				return;
+			case VirtualKey.V when ctrl:
+			case VirtualKey.Insert when shift:
+				PasteFromClipboard(); // async so doesn't actually do anything right now
+				return;
+			case VirtualKey.C when ctrl:
+			case VirtualKey.Insert when ctrl:
+				CopySelectionToClipboard();
+				return;
+			case VirtualKey.Escape:
+				if (HasPointerCapture)
+				{
+					args.Handled = true;
+					ReleasePointerCaptures();
+				}
+				return;
+			case VirtualKey.LeftShift:
+			case VirtualKey.RightShift:
+			case VirtualKey.Shift:
+			case VirtualKey.Control:
+			case VirtualKey.LeftControl:
+			case VirtualKey.RightControl:
+				// No-op when pressing these key specifically.
+				return;
+		}
+
+		// text input/movement
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
@@ -542,48 +588,6 @@ public partial class TextBox
 					selectionLength = text.Length;
 				}
 				break;
-			case VirtualKey.Z when ctrl:
-				if (!HasPointerCapture)
-				{
-					args.Handled = true;
-					Undo();
-				}
-				return;
-			case VirtualKey.Y when ctrl:
-				if (!HasPointerCapture)
-				{
-					args.Handled = true;
-					Redo();
-				}
-				return;
-			case VirtualKey.X when ctrl:
-				CutSelectionToClipboard();
-				selectionLength = 0;
-				text = Text;
-				break;
-			case VirtualKey.V when ctrl:
-			case VirtualKey.Insert when shift:
-				PasteFromClipboard(); // async so doesn't actually do anything right now
-				break;
-			case VirtualKey.C when ctrl:
-			case VirtualKey.Insert when ctrl:
-				CopySelectionToClipboard();
-				break;
-			case VirtualKey.Escape:
-				if (HasPointerCapture)
-				{
-					args.Handled = true;
-					ReleasePointerCaptures();
-				}
-				break;
-			case VirtualKey.LeftShift:
-			case VirtualKey.RightShift:
-			case VirtualKey.Shift:
-			case VirtualKey.Control:
-			case VirtualKey.LeftControl:
-			case VirtualKey.RightControl:
-				// No-op when pressing these key specifically.
-				break;
 			default:
 				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
 				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
@@ -601,9 +605,16 @@ public partial class TextBox
 					text = text[..start] + key + text[end..];
 					selectionStart = start + 1;
 					selectionLength = 0;
+					break;
 				}
-				break;
+				else
+				{
+					return;
+				}
 		}
+
+		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
+		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 
 		// This is queued in order to run after public KeyDown callbacks are fired and is enqueued on High to run
 		// before the next TextChanged+KeyUp sequence.
@@ -630,8 +641,6 @@ public partial class TextBox
 				_caretXOffset = caretXOffset;
 			}
 		});
-		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
-		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 	}
 
 	internal void SetPendingSelection(int selectionStart, int selectionLength)

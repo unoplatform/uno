@@ -366,8 +366,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var isUserModifyingText = _isInputModifyingText | _isInputClearingText;
 			_textChangedPendingCount++;
-			// This is queued on High in order to run before a possible KeyUp event when text is changed because of typing.
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () => RaiseTextChanged(isUserModifyingText));
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RaiseTextChanged(isUserModifyingText));
 		}
 
 		partial void OnTextChangedPartial();
