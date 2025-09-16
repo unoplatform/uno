@@ -218,7 +218,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 
 			var weakRefs = new HashSet<WeakReference<DependencyObject>>();
-			void TrackDependencyObject(DependencyObject target) => weakRefs.Add(new WeakReference<DependencyObject>(target));
+			var totalRefCount = 0;
+			void TrackDependencyObject(DependencyObject target)
+			{
+				totalRefCount++;
+				weakRefs.Add(new WeakReference<DependencyObject>(target));
+			}
 
 			IEnumerable<DependencyObject> RemoveDeadRefsAndGetAliveRefs()
 			{
@@ -259,10 +264,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Dictionary<Type, int>? run0Stats = null;
 #endif
 
-			for (int i = 0; i < count; i++)
+			for (int i = 0; i < count - 1; i++)
 			{
 				await MaterializeControl(controlType, rootContainer);
 			}
+			var totalRefCountExceptForLastControlInstance = totalRefCount;
+			await MaterializeControl(controlType, rootContainer);
 
 			var sw = Stopwatch.StartNew();
 
@@ -276,7 +283,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// This gets around some GC quirks where the objects from the last instance of the control
 				// stick around until this test method returns
 #if __SKIA__
-				if (OperatingSystem.IsBrowser() || OperatingSystem.IsLinux() || OperatingSystem.IsIOS())
+				if (OperatingSystem.IsBrowser() || OperatingSystem.IsLinux() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
 #endif
 				{
 					await Task.Yield();
@@ -333,13 +340,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				retainedMessage = retainedTypes.JoinBy(";");
 			}
 
-			if (OperatingSystem.IsIOS())
+			if (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() || OperatingSystem.IsLinux())
 			{
-				// On iOS, the collection of objects does not seem to be reliable enough
-				// to always go to zero during runtime tests. If the count of active objects
-				// is arbitrarily below the half of the number of top-level objects.
-				// created, we can assume that enough objects were collected entirely.
-				Assert.IsTrue(RemoveDeadRefsAndGetAliveRefs().Count() < count, retainedMessage);
+				// Some platforms have a problem with GC timing and/or the way things like async methods are compiled
+				// where the last created instance of the control will remain in memory, so we check that objects from
+				// all but the last instance of the control are collected
+				Assert.IsTrue(RemoveDeadRefsAndGetAliveRefs().Count() < totalRefCount - totalRefCountExceptForLastControlInstance, retainedMessage);
 			}
 			else
 			{
