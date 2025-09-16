@@ -25,6 +25,7 @@ using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.Foundation;
+using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 
 
 #if HAS_UNO_WINUI
@@ -604,28 +605,33 @@ public partial class TextBox
 				break;
 		}
 
+		// This is queued in order to run after public KeyDown callbacks are fired and is enqueued on High to run
+		// before the next TextChanged+KeyUp sequence.
+		DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, () =>
+		{
+			var caretXOffset = _caretXOffset;
+
+			_suppressCurrentlyTyping = true;
+			_clearHistoryOnTextChanged = false;
+			if (!HasPointerCapture)
+			{
+				_pendingSelection = (selectionStart, selectionLength);
+			}
+
+			ProcessTextInput(text);
+			_clearHistoryOnTextChanged = true;
+			_suppressCurrentlyTyping = false;
+
+			// don't change the caret offset when moving up and down
+			if (args.Key is VirtualKey.Up or VirtualKey.Down)
+			{
+				// this condition is accurate in the case of hitting Down on the last line
+				// or up on the first line. On WinUI, the caret offset won't change.
+				_caretXOffset = caretXOffset;
+			}
+		});
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
-
-		var caretXOffset = _caretXOffset;
-
-		_suppressCurrentlyTyping = true;
-		_clearHistoryOnTextChanged = false;
-		if (!HasPointerCapture)
-		{
-			_pendingSelection = (selectionStart, selectionLength);
-		}
-		ProcessTextInput(text);
-		_clearHistoryOnTextChanged = true;
-		_suppressCurrentlyTyping = false;
-
-		// don't change the caret offset when moving up and down
-		if (args.Key is VirtualKey.Up or VirtualKey.Down)
-		{
-			// this condition is accurate in the case of hitting Down on the last line
-			// or up on the first line. On WinUI, the caret offset won't change.
-			_caretXOffset = caretXOffset;
-		}
 	}
 
 	internal void SetPendingSelection(int selectionStart, int selectionLength)
