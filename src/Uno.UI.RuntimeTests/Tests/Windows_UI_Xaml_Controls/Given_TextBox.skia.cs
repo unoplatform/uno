@@ -2626,6 +2626,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_SelectionChanging()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "hello world"
+			};
+
+			var selectionChangedCount = 0;
+			var selectionChangingCount = 0;
+			SUT.SelectionChanging += (_, e) =>
+			{
+				selectionChangingCount++;
+				e.Cancel = true;
+			};
+			SUT.SelectionChanged += (_, _) => selectionChangedCount++;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, selectionChangingCount);
+			Assert.AreEqual(0, selectionChangedCount);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+
+		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]
 		public async Task When_BeforeTextChanging_Resets_Selection_Direction()
 		{
