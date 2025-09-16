@@ -65,6 +65,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Basic_Input_Event_Sequence()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var eventLog = "";
+			SUT.KeyDown += (_, _) => eventLog += $"KeyDown Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.KeyUp += (_, _) => eventLog += $"KeyUp Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.PreviewKeyDown += (_, _) => eventLog += $"PreviewKeyDown Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.PreviewKeyUp += (_, _) => eventLog += $"PreviewKeyUpKeyUp Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.SelectionChanged += (_, _) => eventLog += $"SelectionChanged Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.TextChanged += (_, _) => eventLog += $"TextChanged Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'a'));
+			await Task.Delay(10);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'a'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(
+				"""
+                KeyDown Text=a SelectionStart=1 SelectionLength=0
+                SelectionChanged Text=a SelectionStart=1 SelectionLength=0
+                TextChanged Text=a SelectionStart=1 SelectionLength=0
+                KeyUp Text=a SelectionStart=1 SelectionLength=0
+                
+                """, eventLog);
+		}
+
+		[TestMethod]
 		public async Task When_Basic_Input_With_ArrowKeys()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
