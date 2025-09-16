@@ -88,22 +88,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SelectionChanged += (_, _) => eventLog += $"SelectionChanged Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
 			SUT.TextChanged += (_, _) => eventLog += $"TextChanged Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'a'));
+			var downArgs = new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'a');
+			var upArgs = new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None);
+			SUT.SafeRaiseTunnelingEvent(UIElement.PreviewKeyDownEvent, downArgs);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, downArgs);
 			await Task.Delay(10);
-			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'a'));
+			SUT.SafeRaiseTunnelingEvent(UIElement.PreviewKeyUpEvent, upArgs);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, upArgs);
 			await WindowHelper.WaitForIdle();
 
+			// WinUI has Text="" when SelectionChanging is fired and Text="a" when SelectionChanged is fired.
+			// We fire SelectionChanging after the Text is updated, which both makes more sense and is easier to
+			// get right with the way our version is written.
 			Assert.AreEqual(
 				"""
                 PreviewKeyDown Text= SelectionStart=0 SelectionLength=0
                 KeyDown Text= SelectionStart=0 SelectionLength=0
-                SelectionChanging Text= SelectionStart=0 SelectionLength=0
+                SelectionChanging Text=a SelectionStart=0 SelectionLength=0
                 SelectionChanged Text=a SelectionStart=1 SelectionLength=0
                 TextChanged Text=a SelectionStart=1 SelectionLength=0
                 PreviewKeyUpKeyUp Text=a SelectionStart=1 SelectionLength=0
                 KeyUp Text=a SelectionStart=1 SelectionLength=0
                 
-                """, eventLog);
+                """.Replace("\r\n", "\n"), eventLog);
 		}
 
 		[TestMethod]
