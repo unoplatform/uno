@@ -84,6 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.KeyUp += (_, _) => eventLog += $"KeyUp Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
 			SUT.PreviewKeyDown += (_, _) => eventLog += $"PreviewKeyDown Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
 			SUT.PreviewKeyUp += (_, _) => eventLog += $"PreviewKeyUpKeyUp Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
+			SUT.SelectionChanging += (_, _) => eventLog += $"SelectionChanging Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
 			SUT.SelectionChanged += (_, _) => eventLog += $"SelectionChanged Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
 			SUT.TextChanged += (_, _) => eventLog += $"TextChanged Text={SUT.Text} SelectionStart={SUT.SelectionStart} SelectionLength={SUT.SelectionLength}\n";
 
@@ -94,9 +95,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(
 				"""
-                KeyDown Text=a SelectionStart=1 SelectionLength=0
+                PreviewKeyDown Text= SelectionStart=0 SelectionLength=0
+                KeyDown Text= SelectionStart=0 SelectionLength=0
+                SelectionChanging Text= SelectionStart=0 SelectionLength=0
                 SelectionChanged Text=a SelectionStart=1 SelectionLength=0
                 TextChanged Text=a SelectionStart=1 SelectionLength=0
+                PreviewKeyUpKeyUp Text=a SelectionStart=1 SelectionLength=0
                 KeyUp Text=a SelectionStart=1 SelectionLength=0
                 
                 """, eventLog);
