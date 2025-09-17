@@ -43,7 +43,7 @@
 			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Page);App.xaml"
 			IsDefaultItem="true" />
 		<UpToDateCheckInput Include="**\*.xaml"
-			Exclude="$(DefaultItemExcludes)"
+			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"
 			IsDefaultItem="true" />
 		<Compile Update="**\*.xaml.cs"
 			DependentUpon="%(Filename)"
