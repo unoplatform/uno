@@ -6,7 +6,7 @@
 		<DefaultItemExcludes Condition="!$(DefaultItemExcludes.Contains('obj/**'))">$(DefaultItemExcludes);obj/**</DefaultItemExcludes>
 
 		<!-- Exclude the Stories folder when in Optimize (aka Release) build configuration -->
-		<DefaultItemExcludes Condition=" '$(Optimize)' == 'true' AND '$(HotDesignStoryFolder)' != '' ">$(HotDesignStoryFolder)/**</DefaultItemExcludes>
+		<DefaultItemExcludes Condition=" '$(Optimize)' == 'true' AND '$(HotDesignStoriesFolder)' != '' ">$(HotDesignStoriesFolder)/**</DefaultItemExcludes>
 	</PropertyGroup>
 
 	<!-- Default Includes-->

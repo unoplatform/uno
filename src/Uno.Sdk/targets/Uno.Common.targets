@@ -158,6 +158,6 @@
 
 	<!-- Define the default folder for Hot Design Stories, so they can be excluded in Release -->
 	<PropertyGroup Condition="'$(UnoDisableHotDesign)' != 'true'">
-		<HotDesignStoryFolder Condition="'$(HotDesignStoryFolder)' == ''">HotDesignStories</HotDesignStoryFolder>
+		<HotDesignStoriesFolder Condition="'$(HotDesignStoriesFolder)' == ''">HotDesignStories</HotDesignStoriesFolder>
 	</PropertyGroup>
 </Project>
