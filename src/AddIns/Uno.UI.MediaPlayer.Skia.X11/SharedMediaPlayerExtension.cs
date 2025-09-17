@@ -28,7 +28,7 @@ namespace Uno.UI.MediaPlayer.Skia.Win32;
 namespace Uno.UI.MediaPlayer.Skia.X11;
 #endif
 
-public class SharedMediaPlayerExtension : IMediaPlayerExtension
+internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 {
 	private static int _vlcInitialized;
 	private static LibVLC _vlc = null!;
