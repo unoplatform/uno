@@ -463,6 +463,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				expectations = new() { SuggestionChosen };
 			}
 
+			// remove repeating UserInputs in a sequence as a result of typing individual characters. WinUI has a timer
+			// that will only fire an event with UserInput once it has waited a bit and found no new characters coming
+			reasons = reasons
+				.Where((reason, i) => i == 0 || !(reason == UserInput && reasons[i - 1] == UserInput))
+				.ToList();
+
 			CollectionAssert.AreEquivalent(expectations, reasons, string.Join("; ",
 				$"expectations[{expectations.Count}]: {string.Join(",", expectations)}",
 				$"actual[{reasons.Count}]: {string.Join(",", reasons)}"
