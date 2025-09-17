@@ -283,6 +283,11 @@ namespace Private.Infrastructure
 									}
 								}
 							}
+
+#if HAS_UNO
+							// To allow TextBox to fully process the key events
+							await TestServices.WindowHelper.WaitForIdle();
+#endif
 						}
 					}
 
