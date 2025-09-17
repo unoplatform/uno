@@ -11,7 +11,8 @@ public record RemoteControlStatus(
 	bool? IsVersionValid,
 	(RemoteControlStatus.KeepAliveState State, long RoundTrip) KeepAlive,
 	ImmutableHashSet<RemoteControlStatus.MissingProcessor> MissingRequiredProcessors,
-	(long Count, ImmutableHashSet<Type> Types) InvalidFrames)
+	(long Count, ImmutableHashSet<Type> Types) InvalidFrames,
+	string? ServerError)
 {
 
 	/// <summary>
@@ -32,6 +33,11 @@ public record RemoteControlStatus(
 
 	public (Classification kind, string message) GetSummary()
 	{
+		// If the dev-server reported a fatal initialization error, surface it as an Error summary immediately
+		if (!string.IsNullOrEmpty(ServerError))
+		{
+			return (Classification.Error, $"Dev-server fatal error: {ServerError}");
+		}
 		var (kind, message) = State switch
 		{
 			ConnectionState.Idle => (Classification.Info, "Initializing..."),
@@ -79,6 +85,14 @@ public record RemoteControlStatus(
 					details.AppendLine($"  {m.Error}");
 				}
 			}
+		}
+
+		if (!string.IsNullOrEmpty(ServerError))
+		{
+			details.AppendLine();
+			details.AppendLine();
+			details.AppendLine("Dev-server fatal error:");
+			details.AppendLine(ServerError);
 		}
 
 		if (InvalidFrames.Types is { Count: > 0 } invalidFrameTypes)
@@ -168,7 +182,7 @@ public record RemoteControlStatus(
 		///		1. Application was not built in the IDE
 		///		2. Uno's extension has not been installed in the IDE
 		///		3. Uno's extension has not been loaded yet by the IDE (machine is slow, request for the user to wait before relaunching the application using F5)
-		///		4. Uno's extension ís out-dated and needs to be updated (code or rider)
+		///		4. Uno's extension ï¿½s out-dated and needs to be updated (code or rider)
 		/// </summary>
 		EndpointWithoutPort,
 	}
