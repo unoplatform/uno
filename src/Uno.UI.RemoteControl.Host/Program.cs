@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ using Mono.Options;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.Versioning;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
@@ -144,7 +146,7 @@ namespace Uno.UI.RemoteControl.Host
 				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
 				// Display DevServer version banner
-				DisplayVersionBanner();
+				DisplayVersionBanner(httpPort);
 
 				// STEP 3: Use global telemetry for server-wide events
 				// Track devserver startup using global telemetry service
@@ -208,39 +210,54 @@ namespace Uno.UI.RemoteControl.Host
 		/// <summary>
 		/// Displays a banner with the DevServer version information when it starts up.
 		/// </summary>
-		private static void DisplayVersionBanner()
+		private static void DisplayVersionBanner(int httpPort)
 		{
 			try
 			{
 				var assembly = typeof(Program).Assembly;
-				var version = assembly.GetName().Version?.ToString() ?? "Unknown";
+				var version =
+					assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+					?? assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version
+					?? assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
+					?? assembly.GetName().Version?.ToString()
+					?? "Unknown";
 				var assemblyName = assembly.GetName().Name ?? "Uno.UI.RemoteControl.Host";
 				var location = assembly.Location;
 
 				Console.WriteLine();
-				Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
-				Console.WriteLine("║                    Uno Platform DevServer                   ║");
-				Console.WriteLine("╠══════════════════════════════════════════════════════════════╣");
-				Console.WriteLine($"║ Version: {version,-47} ║");
-				Console.WriteLine($"║ Assembly: {assemblyName,-46} ║");
+
+				Console.WriteLine("+======================================================================================================================+");
+				Console.WriteLine("|                                                Uno Platform DevServer                                                |");
+				Console.WriteLine("+----------------------------------------------------------------------------------------------------------------------+");
+#if DEBUG
+				Console.WriteLine("| Build    : DEBUG                                                                                                     |");
+#endif
+				Console.WriteLine($"| Version  : {version,-105} |");
+
+				var targetFrameworkAttr = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
+				var runtimeText = targetFrameworkAttr is not null
+					? $"dotnet v{Environment.Version} (Assembly target: {targetFrameworkAttr.FrameworkDisplayName})"
+					: $"dotnet v{Environment.Version}";
+
+				var runtimeDisplay = runtimeText.Length > 105
+					? $"{runtimeText.AsSpan(runtimeText.Length - 102)}..."
+					: runtimeText;
+				Console.WriteLine($"| Runtime  : {runtimeDisplay,-105} |");
+				Console.WriteLine($"| Assembly : {assemblyName,-105} |");
 				if (!string.IsNullOrEmpty(location))
 				{
-					var shortLocation = location.Length > 45 ? $"...{location.AsSpan(location.Length - 42)}" : location;
-					Console.WriteLine($"║ Location: {shortLocation,-46} ║");
+					var directoryPath = Path.GetDirectoryName(location) ?? location;
+					var shortLocation = directoryPath.Length > 105
+						? $"...{directoryPath.AsSpan(directoryPath.Length - 102)}"
+						: directoryPath;
+					Console.WriteLine($"| Location : {shortLocation,-105} |");
 				}
-				Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
+				Console.WriteLine($"| HTTP Port: {httpPort,-105} |");
+				Console.WriteLine("+======================================================================================================================+");
 				Console.WriteLine();
 			}
 			catch (Exception ex)
 			{
-				// Fallback in case of any issues with version extraction
-				Console.WriteLine();
-				Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
-				Console.WriteLine("║                    Uno Platform DevServer                   ║");
-				Console.WriteLine("║                         Started                              ║");
-				Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
-				Console.WriteLine();
-
 				// Log the error for debugging purposes
 				Console.WriteLine($"Warning: Could not extract version information: {ex.Message}");
 			}
