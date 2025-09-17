@@ -345,7 +345,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// Some platforms have a problem with GC timing and/or the way things like async methods are compiled
 				// where the last created instance of the control will remain in memory, so we check that objects from
 				// all but the last instance of the control are collected
-				Assert.IsTrue(RemoveDeadRefsAndGetAliveRefs().Count() < totalRefCount - totalRefCountExceptForLastControlInstance, retainedMessage);
+				RemoveDeadRefsAndGetAliveRefs().Count().Should().BeLessOrEqualTo(totalRefCount - totalRefCountExceptForLastControlInstance, retainedMessage);
 			}
 			else
 			{
