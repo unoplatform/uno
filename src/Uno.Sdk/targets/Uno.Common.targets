@@ -155,4 +155,9 @@
 			   AND $(TargetFrameworks.Contains('desktop')) ">
 		<ProjectCapability Include="DotNetWslLaunch" />
 	</ItemGroup>
+
+	<!-- Define the default folder for Hot Design Stories, so they can be excluded in Release -->
+	<PropertyGroup Condition="'$(UnoDisableHotDesign)' != 'true'">
+		<HotDesignStoriesFolder Condition="'$(HotDesignStoriesFolder)' == ''">HotDesignStories</HotDesignStoriesFolder>
+	</PropertyGroup>
 </Project>
