@@ -220,6 +220,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public void Close()
 	{
 		CloseCore();
+
+		IsVisible = false;
 	}
 
 	public virtual void ExtendContentIntoTitleBar(bool extend) { }
@@ -290,9 +292,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public void Destroy() { }
 
-	public void Hide()
-	{
-	}
+	public void Hide() => IsVisible = false;
 
 #if __APPLE_UIKIT__
 	public abstract Size GetWindowSize();
