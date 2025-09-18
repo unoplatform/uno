@@ -18,6 +18,7 @@ using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
+using Uno.UI.RemoteControl.Helpers;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -215,12 +216,7 @@ namespace Uno.UI.RemoteControl.Host
 			try
 			{
 				var assembly = typeof(Program).Assembly;
-				var version =
-					assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-					?? assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version
-					?? assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
-					?? assembly.GetName().Version?.ToString()
-					?? "Unknown";
+				var version = VersionHelper.GetVersion(assembly);
 				var assemblyName = assembly.GetName().Name ?? "Uno.UI.RemoteControl.Host";
 				var location = assembly.Location;
 

@@ -76,7 +76,8 @@ public static class WebSocketHelper
 			var log = Uno.Extensions.LogExtensionPoint.Log(typeof(Frame));
 			if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				Microsoft.Extensions.Logging.LoggerExtensions.LogDebug(log, "Connection reset by peer.", []);
+				ex.ToString();
+				Microsoft.Extensions.Logging.LoggerExtensions.LogDebug(log, "Connection reset by peer.");
 			}
 #else // Client
 			var log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Frame));

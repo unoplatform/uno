@@ -11,7 +11,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 public class BannerHelperTests
 {
 	[TestMethod]
-	public void Write_WhenTitleIsNull_ShouldThrowArgumentNullException()
+	public void Banner_Write_WhenTitleIsNull_ShouldThrowArgumentNullException()
 	{
 		// Arrange & Act
 		var act = () => BannerHelper.Write(title: null!, entries: []);
@@ -22,7 +22,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenEntriesIsNull_ShouldThrowArgumentNullException()
+	public void Banner_Write_WhenEntriesIsNull_ShouldThrowArgumentNullException()
 	{
 		// Arrange & Act
 		var act = () => BannerHelper.Write(title: "Test Title", entries: null!);
@@ -33,7 +33,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenEmptyTitleAndNoEntries_ShouldProduceValidBanner()
+	public void Banner_Write_WhenEmptyTitleAndNoEntries_ShouldProduceValidBanner()
 	{
 		// Arrange
 		var output = new StringWriter();
@@ -52,7 +52,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenSimpleTitleAndNoEntries_ShouldCenterTitle()
+	public void Banner_Write_WhenSimpleTitleAndNoEntries_ShouldCenterTitle()
 	{
 		// Arrange
 		var output = new StringWriter();
@@ -71,7 +71,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenTitleAndEntries_ShouldProduceCompleteBanner()
+	public void Banner_Write_WhenTitleAndEntries_ShouldProduceCompleteBanner()
 	{
 		// Arrange
 		BannerHelper.BannerEntry[] entries =
@@ -98,7 +98,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenDefaultOutput_ShouldNotThrow()
+	public void Banner_Write_WhenDefaultOutput_ShouldNotThrow()
 	{
 		// Arrange & Act
 		var act = () => BannerHelper.Write(title: "Test", entries: [], maxInnerWidth: 20);
@@ -108,7 +108,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenVerySmallMaxInnerWidth_ShouldUseMinimumWidth()
+	public void Banner_Write_WhenVerySmallMaxInnerWidth_ShouldUseMinimumWidth()
 	{
 		// Arrange
 		var output = new StringWriter();
@@ -133,7 +133,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenOddWidthTitle_ShouldCenterCorrectly()
+	public void Banner_Write_WhenOddWidthTitle_ShouldCenterCorrectly()
 	{
 		// Arrange
 		var output = new StringWriter();
@@ -152,7 +152,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenLongTitle_ShouldClipTitle()
+	public void Banner_Write_WhenLongTitle_ShouldClipTitle()
 	{
 		// Arrange
 		const string title = "This is a very long title that should be clipped";
@@ -172,7 +172,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenLongKeys_ShouldClipKeys()
+	public void Banner_Write_WhenLongKeys_ShouldClipKeys()
 	{
 		// Arrange
 		BannerHelper.BannerEntry[] entries =
@@ -197,7 +197,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenMaxKeyWidthConstraint_ShouldLimitKeyWidth()
+	public void Banner_Write_WhenMaxKeyWidthConstraint_ShouldLimitKeyWidth()
 	{
 		// Arrange - Test that key width never exceeds 50% of max width
 		BannerHelper.BannerEntry[] entries =
@@ -222,7 +222,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenLongValuesWithDefaultClip_ShouldClipAtEnd()
+	public void Banner_Write_WhenLongValuesWithDefaultClip_ShouldClipAtEnd()
 	{
 		// Arrange
 		BannerHelper.BannerEntry[] entries =
@@ -247,7 +247,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenLongValuesWithStartClip_ShouldClipAtBeginning()
+	public void Banner_Write_WhenLongValuesWithStartClip_ShouldClipAtBeginning()
 	{
 		// Arrange
 		BannerHelper.BannerEntry[] entries =
@@ -272,7 +272,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenNullKeyAndValue_ShouldHandleGracefully()
+	public void Banner_Write_WhenNullKeyAndValue_ShouldHandleGracefully()
 	{
 		// Arrange
 		BannerHelper.BannerEntry[] entries =
@@ -297,7 +297,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenZeroValueWidth_ShouldHandleGracefully()
+	public void Banner_Write_WhenZeroValueWidth_ShouldHandleGracefully()
 	{
 		// Arrange
 		BannerHelper.BannerEntry[] entries =
@@ -356,7 +356,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenMixedEntryTypes_ShouldHandleAll()
+	public void Banner_Write_WhenMixedEntryTypes_ShouldHandleAll()
 	{
 		// Arrange
 		BannerHelper.BannerEntry[] entries =
@@ -389,7 +389,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenForceClipWithMaxWidthZero_ShouldHandleGracefully()
+	public void Banner_Write_WhenForceClipWithMaxWidthZero_ShouldHandleGracefully()
 	{
 		// Arrange - This indirectly tests the Clip method with maxWidth <= 0
 		BannerHelper.BannerEntry[] entries =
@@ -414,7 +414,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenForceClipWithSmallWidth_ShouldHandleGracefully()
+	public void Banner_Write_WhenForceClipWithSmallWidth_ShouldHandleGracefully()
 	{
 		// Arrange - This indirectly tests the Clip method with maxWidth <= 3
 		BannerHelper.BannerEntry[] entries =
@@ -439,7 +439,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenExtremelyLongValueRequiresClipping_ShouldClipCorrectly()
+	public void Banner_Write_WhenExtremelyLongValueRequiresClipping_ShouldClipCorrectly()
 	{
 		// Arrange - Test both clip modes with extreme values
 		const string title = "Test";
@@ -462,7 +462,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenClippingWith3CharacterLimit_ShouldUseDotsOnly()
+	public void Banner_Write_WhenClippingWith3CharacterLimit_ShouldUseDotsOnly()
 	{
 		// Arrange - Force clipping to only 3 characters (edge case: maxWidth <= 3)
 		BannerHelper.BannerEntry[] entries =
@@ -481,7 +481,7 @@ public class BannerHelperTests
 	}
 
 	[TestMethod]
-	public void Write_WhenClippingWith1CharacterLimit_ShouldHandleEdgeCase()
+	public void Banner_Write_WhenClippingWith1CharacterLimit_ShouldHandleEdgeCase()
 	{
 		// Arrange - Test extreme edge case for clip method
 		const string title = "Test";
