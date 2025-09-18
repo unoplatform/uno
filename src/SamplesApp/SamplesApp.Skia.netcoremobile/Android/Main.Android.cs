@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 using Android.App;
@@ -110,6 +111,11 @@ namespace SamplesApp.Droid
 		public override void OnCreate()
 		{
 			base.OnCreate();
+
+#if RUNTIME_CORECLR
+			// TODO: remove once the Android+CoreCLR runtime properly inits crypto, possibly .NET 10 RC2?
+			Java.Lang.JavaSystem.LoadLibrary("System.Security.Cryptography.Native.Android");
+#endif  // RUNTIME_CORECLR
 
 			// Initialize Android-specific extensions.
 			// These would be generally registered automatically by App.xaml generator,

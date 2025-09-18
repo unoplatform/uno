@@ -5,7 +5,7 @@ set -euo pipefail
 set -x
 
 export UITEST_IS_LOCAL=${UITEST_IS_LOCAL=false}
-export UNO_UITEST_APP_ID="uno.platform.samplesapp.skia"
+export UNO_UITEST_APP_ID="${UNO_UITEST_APP_ID=uno.platform.samplesapp.skia}"
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/$UNO_UITEST_APP_ID-Signed.apk
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
@@ -131,7 +131,7 @@ $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permi
 
 # start the android app using environment variables using adb
 $ANDROID_HOME/platform-tools/adb shell am start \
-  -n uno.platform.samplesapp.skia/crc6448f3b0362cbf4bc9.MainActivity \
+  -n $UNO_UITEST_APP_ID/crc6448f3b0362cbf4bc9.MainActivity \
   -e UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP" \
   -e UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT" \
   -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" \

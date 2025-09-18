@@ -119,7 +119,15 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		if (content is View view)
 		{
 			var availablePhysical = availableSize.LogicalToPhysicalPixels();
-			view.Measure((int)availablePhysical.Width, (int)availablePhysical.Height);
+
+			// Note: View.Measure(widthMeasureSpec, heightMeasureSpec) doesn't take "raw" sizes,
+			// it instead takes a "MeasureSpec" which is 2 bits of "mode" and 30 bits of "size".
+			// As e.g. availablePhysical.Width could be int.MaxValue -- when availableSize.Width is Infinite --
+			// then availablePhysical.Width could *exceed* 30 bits.
+			// Using MakeMeasureSpec() ensures that the size we specify doesn't overflow into "mode".
+			int widthMeasureSpec = View.MeasureSpec.MakeMeasureSpec((int)availablePhysical.Width, MeasureSpecMode.Unspecified);
+			int heightMeasureSpec = View.MeasureSpec.MakeMeasureSpec((int)availablePhysical.Height, MeasureSpecMode.Unspecified);
+			view.Measure(widthMeasureSpec, heightMeasureSpec);
 			return new Size(view.MeasuredWidth, view.MeasuredHeight).PhysicalToLogicalPixels();
 		}
 
