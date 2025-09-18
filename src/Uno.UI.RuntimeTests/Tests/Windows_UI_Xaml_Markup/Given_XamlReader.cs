@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
+using static Private.Infrastructure.TestServices;
+using System.Threading.Tasks;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 {
@@ -864,6 +866,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
 				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_ListView_ItemsPanelTemplate()
+		{
+			var sut = XamlHelper.LoadXaml<ListView>("""
+				<ListView>
+					<x:String>Hello</x:String>
+					<ListView.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ListView.ItemsPanel>
+				</ListView>
+			""");
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+		}
+
+		[TestMethod]
+		public async Task When_ItemsControl_ItemsPanelTemplate_In_DataTemplate()
+		{
+			var sut = XamlHelper.LoadXaml<ContentControl>("""
+				<ContentControl Content="test" Width="100" Height="100">
+					<ContentControl.ContentTemplate>
+						<DataTemplate>
+							<ItemsControl ItemsSource="{Binding Assets}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel Orientation="Horizontal"/>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+							</ItemsControl>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			""");
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+		}
+
+		[TestMethod]
+		public async Task When_ControlTemplate_In_DataTemplate()
+		{
+			var sut = XamlHelper.LoadXaml<ContentControl>("""
+				<ContentControl Content="test" Width="100" Height="100">
+					<ContentControl.ContentTemplate>
+						<DataTemplate>
+							<ContentControl Content="test2" Width="100" Height="100">
+								<ContentControl.Template>
+									<ControlTemplate TargetType="ContentControl">
+										<Border Background="LightGray">
+											<ContentPresenter />
+										</Border>
+									</ControlTemplate>
+								</ContentControl.Template>
+							</ContentControl>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			""");
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
 		}
 	}
 
