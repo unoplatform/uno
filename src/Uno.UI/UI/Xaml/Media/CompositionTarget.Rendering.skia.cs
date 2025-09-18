@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -15,6 +16,11 @@ public partial class CompositionTarget
 {
 	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
 
+	private static readonly long _start = Stopwatch.GetTimestamp();
+	// We're using this table as a set with weakref keys. values are always null
+	private static readonly ConditionalWeakTable<CompositionTarget, object> _targets = new();
+	private static bool _isRenderingActive;
+
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly object _frameGate = new();
 
@@ -24,6 +30,34 @@ public partial class CompositionTarget
 	private (SKPicture frame, SKPath nativeElementClipPath, Size size)? _lastRenderedFrame;
 
 	internal event Action? FrameRendered;
+
+	private static event EventHandler<object>? _rendering;
+
+	public static event EventHandler<object>? Rendering
+	{
+		add
+		{
+			NativeDispatcher.CheckThreadAccess();
+			_rendering += value;
+			if (!_isRenderingActive)
+			{
+				_isRenderingActive = true;
+				foreach (var (target, _) in _targets)
+				{
+					((ICompositionTarget)target).RequestNewFrame();
+				}
+			}
+		}
+		remove
+		{
+			NativeDispatcher.CheckThreadAccess();
+			_rendering -= value;
+			if (_rendering == null)
+			{
+				_isRenderingActive = false;
+			}
+		}
+	}
 
 	private void Render()
 	{
@@ -92,6 +126,21 @@ public partial class CompositionTarget
 			InvokeRendering();
 
 			return lastRenderedFrame.nativeElementClipPath;
+		}
+	}
+
+	internal static void InvokeRendering()
+	{
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+			}, NativeDispatcherPriority.High);
 		}
 	}
 }
