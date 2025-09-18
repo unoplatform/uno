@@ -95,9 +95,16 @@ namespace Uno.UI
 		{
 			/// <summary>
 			/// Suggested frame rate for <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event.
-			/// This property is used by skia renderers.
+			/// This property is used by desktop skia renderers.
 			/// </summary>
 			public static float FrameRate { get; set; } = 60;
+
+			/// <summary>
+			/// When possible, read the screen refresh rate and use it as the target frame rate instead of
+			/// <see cref="FeatureConfiguration.CompositionTarget.FrameRate"/>.
+			/// This property is used by desktop skia renderers.
+			/// </summary>
+			public static bool SetFrameRateAsScreenRefreshRate { get; set; } = true;
 		}
 
 		public static class ContentPresenter
