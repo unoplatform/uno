@@ -4657,7 +4657,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				throw new InvalidOperationException($"Unable to find markup extension type: '{member.Objects.FirstOrDefault()?.Type}' on '{member.Member}'");
 			}
 
-			var property = FindProperty(member.Member);
+			var property = FindProperty(member);
 			var declaringType = property?.ContainingType;
 			var propertyType = property?.FindDependencyPropertyType(unwrapNullable: false);
 
@@ -4684,7 +4684,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var propertyType = markup.Symbol.GetPropertyWithName(m.Member.Name)?.Type as INamedTypeSymbol;
 					var resourceName = GetSimpleStaticResourceRetrieval(m, propertyType);
-					var value = resourceName ?? BuildLiteralValue(m, propertyType: propertyType, owner: member);
+					var value = resourceName ??
+						(HasCustomMarkupExtension(m)
+							? GetCustomMarkupExtensionValue(m, target, resourceOwner)
+							: BuildLiteralValue(m, propertyType: propertyType, owner: member));
 
 					return "{0} = {1}".InvariantCultureFormat(m.Member.Name, value);
 				})
