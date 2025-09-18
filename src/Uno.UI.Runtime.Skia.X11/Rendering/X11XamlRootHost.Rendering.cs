@@ -17,6 +17,14 @@ internal partial class X11XamlRootHost
 		return timer;
 	}
 
+	internal void UpdateRenderTimerFps(double fps)
+	{
+		if (FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
+		{
+			_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / fps).TotalMilliseconds;
+		}
+	}
+
 	void IXamlRootHost.InvalidateRender()
 	{
 		if (!_closed.Task.IsCompleted)
