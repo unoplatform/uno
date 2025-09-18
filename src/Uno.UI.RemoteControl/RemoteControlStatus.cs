@@ -182,7 +182,7 @@ public record RemoteControlStatus(
 		///		1. Application was not built in the IDE
 		///		2. Uno's extension has not been installed in the IDE
 		///		3. Uno's extension has not been loaded yet by the IDE (machine is slow, request for the user to wait before relaunching the application using F5)
-		///		4. Uno's extension �s out-dated and needs to be updated (code or rider)
+		///		4. Uno's extension is out-dated and needs to be updated (code or rider)
 		/// </summary>
 		EndpointWithoutPort,
 	}
