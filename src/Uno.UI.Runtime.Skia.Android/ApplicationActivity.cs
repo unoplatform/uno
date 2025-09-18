@@ -10,6 +10,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
+using AndroidX.Activity;
+using AndroidX.Core.Graphics;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -20,15 +22,9 @@ using Uno.UI.Runtime.Skia.Android;
 using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
-using Windows.System;
-using Windows.UI.ViewManagement;
-using AndroidX.Core.Graphics;
-using Uno.UI.Helpers;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Windows.Storage.Pickers;
-using AndroidX.Activity;
-using Windows.Extensions;
-using Uno.WinUI.Runtime.Skia.Android;
+using Windows.UI.ViewManagement;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 
 namespace Microsoft.UI.Xaml
@@ -36,12 +32,12 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
-		private UnoSKCanvasView? _skCanvasView;
-		private ClippedRelativeLayout? _nativeLayerHost;
+		private static UnoSKCanvasView? _skCanvasView;
+		private static ClippedRelativeLayout? _nativeLayerHost;
 
 		private InputPane _inputPane;
 
-		private bool _started;
+		private static bool _started;
 		private bool _isContentViewSet;
 
 		/// <summary>
@@ -49,11 +45,11 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal static ApplicationActivity Instance { get; private set; } = null!;
 
-		internal RelativeLayout RelativeLayout { get; private set; } = null!;
+		internal static RelativeLayout RelativeLayout { get; private set; } = null!;
 
 		internal LayoutProvider LayoutProvider { get; private set; } = null!;
 
-		internal ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
+		internal static ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
 		public ApplicationActivity(IntPtr ptr, JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -109,14 +105,29 @@ namespace Microsoft.UI.Xaml
 
 		protected override void InitializeComponent()
 		{
-			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
-			// This code transfers the content from the previous activity to the new one (if applicable).
-			//var initialWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
-			//if (initialWindow?.RootElement is View content)
-			//{
-			//	(content.GetParent() as ViewGroup)?.RemoveView(content);
-			//	SetContentView(content);
-			//}
+			// The app was previously running, but application activity
+			// changed. Reparent content.
+			if (RelativeLayout is not null)
+			{
+				// Reparent the current layout to this activity
+				if (RelativeLayout.Parent is ViewGroup parent)
+				{
+					parent.RemoveView(RelativeLayout);
+				}
+
+				this.SetContentView(RelativeLayout);
+
+				// Ensure the SKCanvasView is reset
+				_skCanvasView?.ResetRendererContext();
+
+				var winUIWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
+				if (winUIWindow?.RootElement is { } root)
+				{
+					// Reactivate the window
+					winUIWindow.Activate();
+					InvalidateRender();
+				}
+			}
 		}
 
 		public override bool DispatchKeyEvent(KeyEvent? e)

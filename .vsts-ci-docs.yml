@@ -22,7 +22,7 @@ variables:
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
-  GlobalUnoCheckVersion: '1.32.0-dev.45'
+  GlobalUnoCheckVersion: '1.33.0-dev.7'
 
 stages:
 - template: build/ci/.azure-devops-stages-docs.yml

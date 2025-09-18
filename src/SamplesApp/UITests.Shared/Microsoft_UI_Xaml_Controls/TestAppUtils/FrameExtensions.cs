@@ -13,7 +13,7 @@ static class FrameExtensions
 {
 	public static void NavigateWithoutAnimation(this Frame frame, Type sourcePageType)
 	{
-		if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo"))
+		if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo, Uno.UI"))
 		{
 			frame.Navigate(sourcePageType, new SuppressNavigationTransitionInfo());
 		}

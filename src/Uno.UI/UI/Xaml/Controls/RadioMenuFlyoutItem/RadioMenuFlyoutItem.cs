@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -33,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 				s_selectionMap = new ConcurrentDictionary<string, WeakReference<RadioMenuFlyoutItem>>();
 			}
 
-			SetDefaultStyleKey(this);
+			this.SetDefaultStyleKey();
 
 		}
 

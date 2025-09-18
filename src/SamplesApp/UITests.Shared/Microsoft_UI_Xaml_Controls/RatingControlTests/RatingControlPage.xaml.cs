@@ -84,7 +84,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			//FrameDetails.Text = Window.Current.Bounds.ToString() + " " + cb.IsChecked.ToString();
 
 #if !HAS_UNO
-			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Controls.RatingControl"))
+			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Controls.RatingControl, Uno.UI"))
 			{
 				var wuxcRatingControl = new Microsoft.UI.Xaml.Controls.RatingControl();
 				wuxcRatingControl.Name = "WUXC RatingControl";

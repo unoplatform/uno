@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public MenuBarItem()
 		{
-			DefaultStyleKey = typeof(MenuBarItem);
+			this.SetDefaultStyleKey();
 
 			var observableVector = new ObservableVector<MenuFlyoutItemBase>();
 

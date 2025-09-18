@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -31,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Items = new ObservableCollection<MenuBarItem>();
 
-			DefaultStyleKey = typeof(MenuBar);
+			this.SetDefaultStyleKey();
 		}
 
 		protected override void OnApplyTemplate()

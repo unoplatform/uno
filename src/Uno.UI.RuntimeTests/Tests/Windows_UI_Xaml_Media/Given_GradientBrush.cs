@@ -22,7 +22,7 @@ public class Given_GradientBrush
 	[RunsOnUIThread]
 	public async Task When_GradientStop_Color_Changes()
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 		{
 			Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 		}
@@ -62,7 +62,7 @@ public class Given_GradientBrush
 #endif
 	public async Task When_RadialGradientBrush_Ellipse_With_Non_Equal_Center_And_Origin()
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 		{
 			Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 		}
@@ -113,7 +113,7 @@ public class Given_GradientBrush
 #endif
 	public async Task When_RadialGradientBrush_Ellipse_With_Equal_Center_And_Origin()
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 		{
 			Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 		}
@@ -164,7 +164,7 @@ public class Given_GradientBrush
 #endif
 	public async Task When_RadialGradientBrush_Circle_With_Non_Equal_Center_And_Origin()
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 		{
 			Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 		}
@@ -215,7 +215,7 @@ public class Given_GradientBrush
 #endif
 	public async Task When_RadialGradientBrush_Circle_With_Equal_Center_And_Origin()
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 		{
 			Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 		}

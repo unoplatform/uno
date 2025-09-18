@@ -65,7 +65,7 @@ public class NumberBoxAutomationPeer : AutomationPeer, IRangeValueProvider
 
 	internal void RaiseValueChangedEvent(double oldValue, double newValue)
 	{
-		if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers", nameof(RangeValuePatternIdentifiers.ValueProperty)))
+		if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers, Uno.UI", nameof(RangeValuePatternIdentifiers.ValueProperty)))
 		{
 			RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty,
 						   oldValue,

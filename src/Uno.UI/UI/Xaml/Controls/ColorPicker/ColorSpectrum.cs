@@ -107,7 +107,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public ColorSpectrum()
 		{
-			SetDefaultStyleKey(this);
+			this.SetDefaultStyleKey();
 
 			m_updatingColor = false;
 			m_updatingHsvColor = false;

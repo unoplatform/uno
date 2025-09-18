@@ -228,7 +228,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool TryGetValueFromBuiltInStyle(DependencyProperty dp, out object? value)
 		{
-			if (Style.GetDefaultStyleForType(GetDefaultStyleKey()) is { } style)
+			if (Style.GetDefaultStyleForInstance(this, GetDefaultStyleKey()) is { } style)
 			{
 				return style.TryGetPropertyValue(dp, out value, this);
 			}

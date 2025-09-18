@@ -202,6 +202,7 @@ SetWindowLong
 SetWindowPos
 SetWindowRgn
 SetWindowText
+SHCreateItemFromParsingName
 ShowWindow
 SwapBuffers
 TranslateMessage

@@ -45,7 +45,7 @@ public partial class ScrollView : Control, IScrollView
 		//__RP_Marker_ClassById(RuntimeProfiler::ProfId_ScrollView);
 
 		//EnsureProperties();
-		SetDefaultStyleKey(this);
+		this.SetDefaultStyleKey();
 		HookUISettingsEvent();
 		HookScrollViewEvents();
 	}

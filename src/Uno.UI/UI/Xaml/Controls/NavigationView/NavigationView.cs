@@ -210,7 +210,7 @@ public partial class NavigationView : ContentControl
 		m_topDataProvider = new TopNavigationViewDataProvider(this);
 #endif
 		SetValue(TemplateSettingsProperty, new NavigationViewTemplateSettings());
-		DefaultStyleKey = typeof(NavigationView);
+		this.SetDefaultStyleKey();
 
 		SizeChanged += OnSizeChanged;
 

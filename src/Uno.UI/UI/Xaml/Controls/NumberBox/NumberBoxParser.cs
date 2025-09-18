@@ -90,7 +90,7 @@ internal partial class NumberBoxParser
 		{
 			// Might be a number
 			var matchLength = match.Groups[0].Length;
-			var parsedNum = ApiInformation.IsTypePresent(numberParser?.GetType().FullName)
+			var parsedNum = ApiInformation.IsTypePresent(numberParser?.GetType().AssemblyQualifiedName)
 				? numberParser.ParseDouble(input.Substring(0, matchLength))
 				: double.TryParse(input.AsSpan().Slice(0, matchLength), out var d)
 					? (double?)d

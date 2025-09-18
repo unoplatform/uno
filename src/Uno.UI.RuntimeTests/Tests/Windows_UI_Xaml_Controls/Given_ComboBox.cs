@@ -118,7 +118,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_IsEditable_False_Changes_To_True()
 		{
-			if (!ApiInformation.IsPropertyPresent("ComboBox", "IsEditable"))
+			if (!ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.ComboBox, Uno.UI", "IsEditable"))
 			{
 				Assert.Inconclusive();
 			}

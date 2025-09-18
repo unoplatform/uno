@@ -74,7 +74,7 @@ public partial class PersonPicture : Control
 
 	public PersonPicture()
 	{
-		DefaultStyleKey = typeof(PersonPicture);
+		this.SetDefaultStyleKey();
 
 		TemplateSettings = new PersonPictureTemplateSettings();
 

@@ -28,7 +28,7 @@ namespace UITests.Shared.Windows_Phone
 		public Devices_Notifications_VibrationDevice()
 		{
 			this.InitializeComponent();
-			if (ApiInformation.IsTypePresent("Windows.Phone.Devices.Notification.VibrationDevice"))
+			if (ApiInformation.IsTypePresent("Windows.Phone.Devices.Notification.VibrationDevice, Uno"))
 			{
 				try
 				{

@@ -301,7 +301,7 @@ namespace SamplesApp
 					$"PreviousState - {e.PreviousExecutionState}, " +
 					$"Uri - {protocolActivatedEventArgs.Uri}",
 					"Application activated via protocol");
-				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
+				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
 				{
 					await dlg.ShowAsync();
 				}

@@ -51,7 +51,7 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_RefreshVisualizer);
 
-		DefaultStyleKey = typeof(RefreshVisualizer);
+		this.SetDefaultStyleKey();
 	}
 
 	protected override void OnApplyTemplate()

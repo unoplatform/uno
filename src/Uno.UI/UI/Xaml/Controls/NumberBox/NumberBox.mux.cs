@@ -59,7 +59,7 @@ partial class NumberBox
 		Unloaded += (s, e) => DisposeRegistrations();
 #endif
 
-		SetDefaultStyleKey(this);
+		this.SetDefaultStyleKey();
 		SetDefaultInputScope();
 
 		// We are not revoking this since the event and the listener reside on the same object and as such have the same lifecycle.

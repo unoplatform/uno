@@ -11,9 +11,11 @@
 
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
+		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
-		<ApplicationId>uno.platform.samplesapp.skia</ApplicationId>
+		<ApplicationId Condition=" '$(ApplicationId)' != '' ">$(ApplicationId)</ApplicationId>
+		<ApplicationId Condition=" '$(ApplicationId)' == '' ">uno.platform.samplesapp.skia</ApplicationId>
 
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
@@ -45,6 +47,9 @@
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 
 		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
+
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 
 		<!-- Required when not building inside VS to avoid dependency issues -->
 		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
