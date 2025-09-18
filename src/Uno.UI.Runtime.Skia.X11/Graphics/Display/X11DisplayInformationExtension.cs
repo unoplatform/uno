@@ -452,6 +452,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			// the required scaling. We don't need to do any scale by <x|y>Scaling ourselves.
 			var rawScale = _scaleOverride ?? (TryGetXResource(XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : 1);
 
+			// Note: This returns nondeterministic values when testing on WSL or on a VM. Testing on a real device
+			// with the same Ubuntu version returns accurate results.
 			static double? mode_refresh(X11Helper.XRRModeInfo* mode_info)
 			{
 				double? rate;
