@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Uno.UI.Helpers;
+﻿namespace Uno.UI.Helpers;
 
 public static class PlatformRuntimeHelper
 {
