@@ -1535,7 +1535,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				var initializationMember = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_Initialization");
 
 				if (contentProperty == null &&
-					xamlObjectDefinition.Type.Name is not ("ResourceDictionary" or "DataTemplate"))
+					xamlObjectDefinition.Type.Name is not ("ResourceDictionary" or "DataTemplate" or "ItemsPanelTemplate" or "ControlTemplate"))
 				{
 					if (xamlObjectDefinition.Members.Any(m => IsNestedChildNode(m)))
 					{
