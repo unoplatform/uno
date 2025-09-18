@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
 using Windows.Foundation;
 using Windows.Media.Core;
@@ -16,6 +17,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.Media.Playback;
+using Uno.UI.DataBinding;
 using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia;
@@ -23,8 +25,8 @@ namespace Uno.UI.Runtime.Skia;
 internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 {
 	private const string MsAppXScheme = "ms-appx";
-	private static readonly ConcurrentDictionary<MediaPlayer, BrowserMediaPlayerExtension> _mediaPlayerToExtension = new();
-	private static readonly ConcurrentDictionary<string, BrowserMediaPlayerExtension> _elementIdToMediaPlayer = new();
+	private static readonly ConditionalWeakTable<MediaPlayer, ManagedWeakReference> _mediaPlayerToExtension = new();
+	private static readonly ConcurrentDictionary<string, ManagedWeakReference> _elementIdToMediaPlayer = new();
 
 	private readonly MediaPlayer _player;
 	private readonly DispatcherTimer _onTimeUpdateTimer;
@@ -111,21 +113,30 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	{
 		NativeMethods.BuildImports();
 		_player = player;
-		_mediaPlayerToExtension.TryAdd(player, this);
+		var weakThis = WeakReferencePool.RentWeakReference(this, this);
+		_mediaPlayerToExtension.TryAdd(player, weakThis);
 
 		HtmlElement = BrowserHtmlElement.CreateHtmlElement("video");
-		_elementIdToMediaPlayer.TryAdd(HtmlElement.ElementId, this);
+		_elementIdToMediaPlayer.TryAdd(HtmlElement.ElementId, weakThis);
 
 		NativeMethods.SetupEvents(HtmlElement.ElementId);
 
 		// using the native timeupdate fires way too frequently (probably every frame) and chokes
 		// the event loop, so we limit this to 60 times a second.
 		_onTimeUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
-		_onTimeUpdateTimer.Tick += (_, _) => OnTimeUpdate(HtmlElement.ElementId);
+		_onTimeUpdateTimer.Tick += (_, _) =>
+		{
+			if (weakThis.Target is BrowserMediaPlayerExtension @this)
+			{
+				OnTimeUpdate(@this.HtmlElement.ElementId);
+			}
+		};
+		OnTimeUpdate(HtmlElement.ElementId);
 		_onTimeUpdateTimer.Start();
 	}
 
-	internal static BrowserMediaPlayerExtension? GetByMediaPlayer(MediaPlayer player) => _mediaPlayerToExtension.GetValueOrDefault(player);
+	internal static BrowserMediaPlayerExtension? GetByMediaPlayer(MediaPlayer player)
+		=> _mediaPlayerToExtension.TryGetValue(player, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension extension ? extension : null;
 
 	public IMediaPlayerEventsExtension? Events { get; set; }
 
@@ -254,18 +265,26 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	public void Dispose()
+	public void Dispose() => Dispose(true);
+	~BrowserMediaPlayerExtension() => Dispose(false);
+
+	private void Dispose(bool disposing)
 	{
+		if (disposing)
+		{
+			GC.SuppressFinalize(this);
+		}
 		_onTimeUpdateTimer.Stop();
-		_mediaPlayerToExtension.TryRemove(_player, out _);
-		_elementIdToMediaPlayer.TryRemove(HtmlElement.ElementId, out _);
+		_mediaPlayerToExtension.Remove(_player);
+		_elementIdToMediaPlayer.TryRemove(HtmlElement.ElementId, out var weakRef);
+		WeakReferencePool.ReturnWeakReference(this, weakRef);
 		HtmlElement.Dispose();
 	}
 
 	[JSExport]
 	private static void OnPlaying(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 		}
@@ -274,7 +293,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnLoadedMetadata(string id, bool isVideo)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this.Events?.RaiseNaturalVideoDimensionChanged();
 			@this.Events?.RaiseMediaOpened();
@@ -286,7 +305,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnStalled(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
 		}
@@ -295,7 +314,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnRateChange(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this.Events?.RaiseMediaPlayerRateChanged(@this.PlaybackRate);
 		}
@@ -304,7 +323,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnDurationChange(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this.Events?.NaturalDurationChanged();
 		}
@@ -313,7 +332,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnEnded(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this.Events?.RaiseMediaEnded();
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
@@ -341,7 +360,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnError(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this.Events?.RaiseMediaFailed(MediaPlayerError.Unknown, null, null);
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
@@ -351,7 +370,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnPause(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 		}
@@ -360,7 +379,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnSeeked(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this.Events?.RaiseSeekCompleted();
 		}
@@ -369,7 +388,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnVolumeChange(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this.Events?.RaiseVolumeChanged();
 		}
@@ -378,7 +397,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnTimeUpdate(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this._updatingPositionFromNative = true; // RaisePositionChanged will set Position, so we need a way to flag this so we can ignore it
 			@this.Events?.RaisePositionChanged();

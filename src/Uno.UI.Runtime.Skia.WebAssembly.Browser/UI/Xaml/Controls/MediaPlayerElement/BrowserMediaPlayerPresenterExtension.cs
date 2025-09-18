@@ -1,18 +1,17 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices.JavaScript;
-using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.DataBinding;
 using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia;
 
 internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
-	private static readonly ConcurrentDictionary<string, BrowserMediaPlayerPresenterExtension> _elementIdToMediaPlayerPresenter = new();
+	private static readonly ConcurrentDictionary<string, ManagedWeakReference> _elementIdToMediaPlayerPresenter = new();
 
 	private readonly MediaPlayerPresenter _presenter;
 	private BrowserHtmlElement? _htmlElement;
@@ -28,7 +27,8 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 	{
 		if (_htmlElement is { })
 		{
-			_elementIdToMediaPlayerPresenter.TryRemove(_htmlElement.ElementId, out _);
+			_elementIdToMediaPlayerPresenter.TryRemove(_htmlElement.ElementId, out var weakRef);
+			WeakReferencePool.ReturnWeakReference(this, weakRef);
 		}
 	}
 
@@ -50,7 +50,8 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 
 			NativeMethods.SetupEvents(_htmlElement.ElementId);
 
-			_elementIdToMediaPlayerPresenter.TryAdd(_htmlElement.ElementId, this);
+			var weakRef = WeakReferencePool.RentWeakReference(this, this);
+			_elementIdToMediaPlayerPresenter.TryAdd(_htmlElement.ElementId, weakRef);
 		}
 	}
 
@@ -102,7 +103,7 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 	[JSExport]
 	private static void OnExitFullscreen(string id)
 	{
-		if (_elementIdToMediaPlayerPresenter.TryGetValue(id, out var @this))
+		if (_elementIdToMediaPlayerPresenter.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerPresenterExtension @this)
 		{
 			if (@this._presenter.TemplatedParent is MediaPlayerElement mpe)
 			{

@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -11,6 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class MediaPlayerPresenter : Border
 	{
 		private WeakReference<MediaPlayerElement>? _wrOwner;
+		private CompositeDisposable? _mediaPlayerDisposable;
 
 		internal void SetOwner(MediaPlayerElement owner)
 		{
@@ -72,18 +74,25 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					presenter.Log().LogDebug($"MediaPlayerPresenter.OnMediaPlayerChanged({args.NewValue})");
 				}
-				if (args.OldValue is global::Windows.Media.Playback.MediaPlayer oldPlayer)
-				{
-					oldPlayer.NaturalVideoDimensionChanged -= presenter.OnNaturalVideoDimensionChanged;
-					oldPlayer.MediaFailed -= presenter.OnMediaFailed;
-					oldPlayer.SourceChanged -= presenter.OnSourceChanged;
-				}
+
+				presenter._mediaPlayerDisposable?.Dispose();
+				presenter._mediaPlayerDisposable = null;
 
 				if (args.NewValue is global::Windows.Media.Playback.MediaPlayer newPlayer)
 				{
-					newPlayer.NaturalVideoDimensionChanged += presenter.OnNaturalVideoDimensionChanged;
-					newPlayer.MediaFailed += presenter.OnMediaFailed;
-					newPlayer.SourceChanged += presenter.OnSourceChanged;
+#pragma warning disable IDE0055
+					presenter._mediaPlayerDisposable = new CompositeDisposable();
+					var weakThis = new WeakReference<MediaPlayerPresenter>(presenter);
+					TypedEventHandler<global::Windows.Media.Playback.MediaPlayer,object> newPlayerOnNaturalVideoDimensionChanged = (s, e) => { if (weakThis.TryGetTarget(out var p)) { p.OnNaturalVideoDimensionChanged(s, e); } };
+					newPlayer.NaturalVideoDimensionChanged += newPlayerOnNaturalVideoDimensionChanged;
+					presenter._mediaPlayerDisposable.Add(Disposable.Create(() => newPlayer.NaturalVideoDimensionChanged -= newPlayerOnNaturalVideoDimensionChanged));
+					TypedEventHandler<global::Windows.Media.Playback.MediaPlayer,MediaPlayerFailedEventArgs> newPlayerOnMediaFailed = (s, e) => { if (weakThis.TryGetTarget(out var p)) { p.OnMediaFailed(s, e); } };
+					newPlayer.MediaFailed += newPlayerOnMediaFailed;
+					presenter._mediaPlayerDisposable.Add(Disposable.Create(() => newPlayer.MediaFailed -= newPlayerOnMediaFailed));
+					TypedEventHandler<global::Windows.Media.Playback.MediaPlayer,object> newPlayerOnSourceChanged = (s, e) => { if (weakThis.TryGetTarget(out var p)) { p.OnSourceChanged(s, e); } };
+					newPlayer.SourceChanged += newPlayerOnSourceChanged;
+					presenter._mediaPlayerDisposable.Add(Disposable.Create(() => newPlayer.SourceChanged -= newPlayerOnSourceChanged));
+#pragma warning restore IDE0055
 
 #if __APPLE_UIKIT__ || __ANDROID__
 					presenter.SetVideoSurface(newPlayer.RenderSurface);
