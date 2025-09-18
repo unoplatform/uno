@@ -51,7 +51,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			switch (frame.Name)
 			{
 				case ConfigureServer.Name:
-					ProcessConfigureServer(frame.GetContent<ConfigureServer>());
+					await ProcessConfigureServer(frame.GetContent<ConfigureServer>());
 					break;
 				case XamlLoadError.Name:
 					ProcessXamlLoadError(frame.GetContent<XamlLoadError>());
@@ -81,7 +81,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		#region Hot-relaod state
+		#region Hot-reload state
 		private HotReloadState _globalState; // This actually contains only the initializing stat (i.e. Disabled, Initializing, Idle). Processing state is _current != null.
 		private HotReloadServerOperation? _current; // I.e. head of the operation chain list
 
@@ -223,7 +223,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask SendUpdate(HotReloadServerOperation? completing = null)
+		private async ValueTask SendUpdate(HotReloadServerOperation? completing = null, string? serverError = null)
 		{
 			var state = _globalState;
 			var operations = ImmutableList<HotReloadServerOperationData>.Empty;
@@ -256,7 +256,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			}
 
-			await _remoteControlServer.SendFrame(new HotReloadStatusMessage(state, operations));
+			await _remoteControlServer.SendFrame(new HotReloadStatusMessage(state, operations, serverError));
 		}
 
 		/// <summary>
@@ -450,7 +450,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		#endregion
 
 		#region ConfigureServer
-		private void ProcessConfigureServer(ConfigureServer configureServer)
+		private async Task ProcessConfigureServer(ConfigureServer configureServer)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -463,15 +463,55 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			InterpretMsbuildProperties(properties);
 
-			if (InitializeMetadataUpdater(configureServer, properties))
+			try
 			{
-				this.Log().LogDebug($"Metadata updater initialized");
+				if (InitializeMetadataUpdater(configureServer, properties))
+				{
+					this.Log().LogDebug($"Metadata updater initialized");
+				}
+				else
+				{
+					// We are relying on IDE, we won't have any other hot-reload initialization steps.
+					await Notify(HotReloadEvent.Ready);
+					this.Log().LogDebug("Metadata updater **NOT** initialized.");
+				}
 			}
-			else
+			catch (Exception error)
 			{
-				// We are relying on IDE, we won't have any other hot-reload initialization steps.
-				_ = Notify(HotReloadEvent.Ready);
-				this.Log().LogDebug("Metadata updater **NOT** initialized.");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError(error, "Failed to configure metadata updater");
+				}
+
+				await SafeNotifyMetadataInitializationFailed(error);
+				throw;
+			}
+		}
+
+		private async Task SafeNotifyMetadataInitializationFailed(Exception? ex = null)
+		{
+			var errorMessage = ex?.Message ?? ex?.ToString();
+
+			try
+			{
+				await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
+			}
+			catch (Exception sendError)
+			{
+				this.Log().LogWarning(sendError, "Failed to send workspace failure notification to client");
+			}
+
+			try
+			{
+				// Send the error via HotReloadStatusMessage immediately
+				await SendUpdate(serverError: errorMessage);
+
+				// Then notify the disabled state
+				await Notify(HotReloadEvent.Disabled);
+			}
+			catch (Exception notifyError)
+			{
+				this.Log().LogWarning(notifyError, "Failed to notify hot-reload disabled state");
 			}
 		}
 		#endregion
