@@ -44,13 +44,13 @@ namespace Uno.UI.RemoteControl.Host.Helpers
 			ArgumentNullException.ThrowIfNull(entries);
 			var writer = new StringWriter(CultureInfo.InvariantCulture);
 
-			if (maxInnerWidth < 10)
+			if (maxInnerWidth < 20)
 			{
-				maxInnerWidth = 10;
+				maxInnerWidth = 20;
 			}
 
 			// Determine raw maximum key width across entries
-			var rawKeyWidth = 8;
+			var rawKeyWidth = 6;
 			var longestValue = 0;
 			if (entries.Count != 0)
 			{
@@ -82,7 +82,6 @@ namespace Uno.UI.RemoteControl.Host.Helpers
 			var innerWidth = requiredContentWidth < maxInnerWidth ? requiredContentWidth : maxInnerWidth;
 
 			// Box lines
-			writer.WriteLine();
 			writer.WriteLine($"+{new string('=', innerWidth)}+");
 
 			// Title centered
@@ -116,7 +115,6 @@ namespace Uno.UI.RemoteControl.Host.Helpers
 			}
 
 			writer.WriteLine($"+{new string('=', innerWidth)}+");
-			writer.WriteLine();
 
 			// Write to output
 			(output ?? Console.Out).Write(writer.ToString());
