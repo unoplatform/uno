@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ public static class WebSocketHelper
 	const int BufferSize = 1 << 16;
 	private static readonly RecyclableMemoryStreamManager manager = new RecyclableMemoryStreamManager();
 
+	/// <summary>
+	/// Reads a full frame from the websocket, returning null if the socket was closed.
+	/// </summary>
 	public static async Task<Frame?> ReadFrame(WebSocket socket, CancellationToken token)
 	{
 		var pool = ArrayPool<byte>.Shared;
@@ -65,6 +69,10 @@ public static class WebSocketHelper
 					}
 				}
 			}
+		}
+		catch (IOException)
+		{
+			return null; // Connection reset by peer, no need to report this.
 		}
 		finally
 		{
