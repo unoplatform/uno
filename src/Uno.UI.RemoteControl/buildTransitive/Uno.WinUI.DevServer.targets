@@ -23,7 +23,7 @@
 			<_UnoRCHostVersionPath>net9.0</_UnoRCHostVersionPath>
 
 			<!-- Use the SDK version used to build the app, not the target framework (e.g. a net9.0 app may be built with a net9 SDK)-->
-			<_UnoRCHostVersionPath Condition="'$(BundledNETCoreAppTargetFrameworkVersion)' &gt; 8">net10.0</_UnoRCHostVersionPath>
+			<_UnoRCHostVersionPath Condition="'$(BundledNETCoreAppTargetFrameworkVersion)' &gt; 9">net10.0</_UnoRCHostVersionPath>
 		</PropertyGroup>
 
 		<Message Text="&lt;RemoteControlHostPath&gt;$(MSBuildThisFileDirectory)../tools/rc/host/$(_UnoRCHostVersionPath)/Uno.UI.RemoteControl.Host.dll&lt;/RemoteControlHostPath&gt;" Importance="High" />
