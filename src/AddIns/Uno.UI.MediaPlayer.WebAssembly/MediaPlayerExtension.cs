@@ -21,7 +21,7 @@ using Uno.Helpers;
 
 namespace Uno.UI.Media;
 
-public partial class MediaPlayerExtension : IMediaPlayerExtension
+internal partial class MediaPlayerExtension : IMediaPlayerExtension
 {
 	private static Dictionary<MediaPlayer, MediaPlayerExtension> _instances = new();
 
