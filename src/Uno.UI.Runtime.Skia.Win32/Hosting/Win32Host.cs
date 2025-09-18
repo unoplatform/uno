@@ -112,8 +112,6 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
 		}
 
-		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWin32;
-
 		_appBuilder = appBuilder;
 		Win32EventLoop.Schedule(() =>
 		{
