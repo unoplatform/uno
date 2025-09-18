@@ -224,37 +224,24 @@ namespace Uno.UI.RemoteControl.Host
 				var assemblyName = assembly.GetName().Name ?? "Uno.UI.RemoteControl.Host";
 				var location = assembly.Location;
 
-				Console.WriteLine();
-
-				Console.WriteLine("+======================================================================================================================+");
-				Console.WriteLine("|                                                Uno Platform DevServer                                                |");
-				Console.WriteLine("+----------------------------------------------------------------------------------------------------------------------+");
-#if DEBUG
-				Console.WriteLine("| Build    : DEBUG                                                                                                     |");
-#endif
-				Console.WriteLine($"| Version  : {version,-105} |");
-
 				var targetFrameworkAttr = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
 				var runtimeText = targetFrameworkAttr is not null
 					? $"dotnet v{Environment.Version} (Assembly target: {targetFrameworkAttr.FrameworkDisplayName})"
 					: $"dotnet v{Environment.Version}";
 
-				var runtimeDisplay = runtimeText.Length > 105
-					? $"{runtimeText.AsSpan(runtimeText.Length - 102)}..."
-					: runtimeText;
-				Console.WriteLine($"| Runtime  : {runtimeDisplay,-105} |");
-				Console.WriteLine($"| Assembly : {assemblyName,-105} |");
-				if (!string.IsNullOrEmpty(location))
+				var entries = new List<Host.Helpers.BannerHelper.BannerEntry>()
 				{
-					var directoryPath = Path.GetDirectoryName(location) ?? location;
-					var shortLocation = directoryPath.Length > 105
-						? $"...{directoryPath.AsSpan(directoryPath.Length - 102)}"
-						: directoryPath;
-					Console.WriteLine($"| Location : {shortLocation,-105} |");
-				}
-				Console.WriteLine($"| HTTP Port: {httpPort,-105} |");
-				Console.WriteLine("+======================================================================================================================+");
-				Console.WriteLine();
+#if DEBUG
+					("Build", "DEBUG"),
+#endif
+					("Version", version),
+					("Runtime", runtimeText),
+					("Assembly", assemblyName),
+					("Location", Path.GetDirectoryName(location) ?? location, Helpers.BannerHelper.ClipMode.Start),
+					("HTTP Port", httpPort.ToString(DateTimeFormatInfo.InvariantInfo)),
+				};
+
+				Helpers.BannerHelper.Write("Uno Platform DevServer", entries);
 			}
 			catch (Exception ex)
 			{
