@@ -27,15 +27,16 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 	private bool _ignorePixelScaling;
 
 	static WpfHost()
-		=> WpfExtensionsRegistrar.Register();
+	{
+		WpfExtensionsRegistrar.Register();
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWpf;
+	}
 
 	public WpfHost(Dispatcher dispatcher, Func<WinUIApplication> appBuilder)
 	{
 		_current = this;
 		_dispatcher = dispatcher;
 		_appBuilder = appBuilder;
-
-		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWpf;
 	}
 
 	internal WpfHost(Func<WinUIApplication> appBuilder, Func<WpfApplication>? wpfAppBuilder)
@@ -45,8 +46,6 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 		_current = this;
 		_dispatcher = _wpfApp.Dispatcher;
 		_appBuilder = appBuilder;
-
-		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWpf;
 	}
 
 	internal static WpfHost? Current => _current;
