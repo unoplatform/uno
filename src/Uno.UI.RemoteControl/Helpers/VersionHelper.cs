@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Uno.UI.RemoteControl.Helpers;
 
-internal class VersionHelper
+internal static class VersionHelper
 {
 	public static string GetVersion(Type type)
 		=> GetVersion(type.Assembly);

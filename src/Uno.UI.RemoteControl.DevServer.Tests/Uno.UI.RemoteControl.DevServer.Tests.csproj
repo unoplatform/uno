@@ -18,6 +18,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Include BannerHelper source file directly for testing -->
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<!-- Reference those projects to ensure to have binaries available, but don't reference them -->
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" ReferenceOutputAssembly="false" />
