@@ -14,8 +14,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	private bool _isAlwaysOnTop;
 	private bool _hasBorder;
 	private bool _hasTitleBar;
-	private bool _pendingMaximize;
-	private bool? _pendingMinimizeActivateWindow;
+	private OverlappedPresenterState? _pendingState;
 
 	internal OverlappedPresenter() : base(AppWindowPresenterKind.Overlapped)
 	{
@@ -77,7 +76,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 
 	public bool HasTitleBar => _hasTitleBar;
 
-	public OverlappedPresenterState State => Native?.State ?? OverlappedPresenterState.Restored;
+	public OverlappedPresenterState State => Native?.State ?? _pendingState ?? OverlappedPresenterState.Restored;
 
 	public static OverlappedPresenterState RequestedStartupState { get; } = OverlappedPresenterState.Restored;
 
@@ -91,7 +90,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		}
 		else
 		{
-			_pendingMaximize = true;
+			_pendingState = OverlappedPresenterState.Maximized;
 		}
 	}
 
@@ -112,7 +111,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		}
 		else
 		{
-			_pendingMinimizeActivateWindow = activateWindow;
+			_pendingState = OverlappedPresenterState.Maximized;
 		}
 	}
 
@@ -136,7 +135,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		}
 		else
 		{
-			_pendingMaximize = false;
+			_pendingState = OverlappedPresenterState.Maximized;
 		}
 	}
 
@@ -225,18 +224,19 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			Native.SetIsAlwaysOnTop(IsAlwaysOnTop);
 			Native.SetBorderAndTitleBar(HasBorder, HasTitleBar);
 
-			// Apply any pending actions
-			if (_pendingMaximize)
+			if (_pendingState is OverlappedPresenterState.Maximized)
 			{
 				Native.Maximize();
-				_pendingMaximize = false;
 			}
-
-			if (_pendingMinimizeActivateWindow.HasValue)
+			else if (_pendingState is OverlappedPresenterState.Minimized)
 			{
-				Native.Minimize(_pendingMinimizeActivateWindow.Value);
-				_pendingMinimizeActivateWindow = null;
+				Native.Minimize(false);
 			}
+			else
+			{
+				Native.Restore(false);
+			}
+			_pendingState = null;
 		}
 	}
 }
