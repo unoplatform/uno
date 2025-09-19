@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Private.Infrastructure;
@@ -142,6 +143,30 @@ public class Given_AppWindow
 			await TestServices.WindowHelper.WaitFor(() => activated);
 
 			Assert.AreEqual(appWindow.Position, adjustedPosition);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Maximize_Before_Activate()
+	{
+		AssertPositioningAndSizingSupport();
+		var newWindow = new Window();
+		var appWindow = newWindow.AppWindow;
+		var activated = false;
+		try
+		{
+			var overlappedPresenter = (OverlappedPresenter)appWindow.Presenter;
+			var act = () => overlappedPresenter.Maximize();
+			act.Should().NotThrow();
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+			Assert.AreEqual(OverlappedPresenterState.Maximized, overlappedPresenter.State);
 		}
 		finally
 		{
