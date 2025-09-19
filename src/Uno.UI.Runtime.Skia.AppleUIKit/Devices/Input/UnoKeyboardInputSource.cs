@@ -62,13 +62,14 @@ internal sealed class UnoKeyboardInputSource : IUnoKeyboardInputSource
 				{
 					ownerEvents.RaiseKeyUp(args);
 
+					var routerArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
+					{
+						CanBubbleNatively = false
+					};
+
 					var xamlRoot = Window.InitialWindow?.Content?.XamlRoot;
 					if (xamlRoot is not null && FocusManager.GetFocusedElement(xamlRoot) is FrameworkElement fe)
 					{
-						var routerArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
-						{
-							CanBubbleNatively = false
-						};
 						fe.RaiseEvent(UIElement.KeyUpEvent, routerArgs);
 					}
 
