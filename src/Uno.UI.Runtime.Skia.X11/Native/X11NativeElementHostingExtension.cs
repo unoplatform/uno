@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -23,6 +24,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 	private readonly Lazy<IntPtr> _display;
 	private IntPtr Display => _display.Value;
+	private IDisposable? _frameRenderedDisposable;
 
 	public X11NativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
@@ -54,7 +56,15 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			HideWindowFromTaskBar(nativeWindow);
 
-			((CompositionTarget)_presenter.Visual.CompositionTarget!).FrameRendered += UpdateLayout;
+			var compositionTarget = (CompositionTarget)_presenter.Visual.CompositionTarget!;
+			compositionTarget.FrameRendered += UpdateLayout;
+
+			Debug.Assert(_frameRenderedDisposable is null);
+			_frameRenderedDisposable = Disposable.Create(() =>
+			{
+				compositionTarget.FrameRendered -= UpdateLayout;
+			});
+
 			_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual); // to force initial layout and clipping
 		}
 		else
@@ -135,7 +145,9 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_lastClipRect = null;
 			_lastArrangeRect = null;
 
-			((CompositionTarget)_presenter.Visual.CompositionTarget!).FrameRendered -= UpdateLayout;
+			Debug.Assert(_frameRenderedDisposable is not null);
+			_frameRenderedDisposable?.Dispose();
+			_frameRenderedDisposable = null;
 		}
 		else
 		{
