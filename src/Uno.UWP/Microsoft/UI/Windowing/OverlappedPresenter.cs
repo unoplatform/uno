@@ -236,6 +236,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			{
 				Native.Restore(false);
 			}
+
 			_pendingState = null;
 		}
 	}

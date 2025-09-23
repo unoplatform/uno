@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using Combinatorial.MSTest;
 using FluentAssertions;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -152,7 +153,10 @@ public class Given_AppWindow
 	}
 
 	[TestMethod]
-	public async Task When_Maximize_Before_Activate()
+	[CombinatorialData]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21435")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Skia/X11: Fails in CI (#21194)
+	public async Task When_Change_Window_State_Before_Activate(OverlappedPresenterState state)
 	{
 		AssertPositioningAndSizingSupport();
 		var newWindow = new Window();
@@ -161,12 +165,17 @@ public class Given_AppWindow
 		try
 		{
 			var overlappedPresenter = (OverlappedPresenter)appWindow.Presenter;
-			var act = () => overlappedPresenter.Maximize();
+			Action act = state switch
+			{
+				OverlappedPresenterState.Maximized => () => overlappedPresenter.Maximize(),
+				OverlappedPresenterState.Minimized => () => overlappedPresenter.Minimize(),
+				_ => () => overlappedPresenter.Restore()
+			};
 			act.Should().NotThrow();
 			newWindow.Activated += (s, e) => activated = true;
 			newWindow.Activate();
 			await TestServices.WindowHelper.WaitFor(() => activated);
-			Assert.AreEqual(OverlappedPresenterState.Maximized, overlappedPresenter.State);
+			Assert.AreEqual(state, overlappedPresenter.State);
 		}
 		finally
 		{
