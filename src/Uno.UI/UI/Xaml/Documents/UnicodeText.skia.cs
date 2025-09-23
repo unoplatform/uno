@@ -670,12 +670,6 @@ internal readonly struct UnicodeText : IParsedText
 						runX = TabStopWidth - currentLineX % TabStopWidth;
 					}
 
-					// var isLastRun = _rtl ? runIndex == 0 : runIndex == lineRuns.Count - 1;
-					// if (isLastRun && TrailingSpaceCount(run.Inline.Text, run.startInInline, run.endInInline) is var trailingWhiteSpaceCount and > 0)
-					// {
-					// 	trailingWhiteSpaceCount
-					// }
-
 					layoutedRun.width = runX;
 					currentLineX += runX;
 				}
@@ -958,10 +952,10 @@ internal readonly struct UnicodeText : IParsedText
 		return new Rect(x, y, width, height);
 	}
 
-	public int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) =>
-		GetIndexAndRunAt(p, ignoreEndingSpace, extendedSelection).index;
+	public int GetIndexAt(Point p, bool ignoreEndingNewLine, bool extendedSelection) =>
+		GetIndexAndRunAt(p, ignoreEndingNewLine, extendedSelection).index;
 
-	private (int index, LayoutedLineBrokenBidiRun? run) GetIndexAndRunAt(Point p, bool ignoreEndingSpace, bool extendedSelection)
+	private (int index, LayoutedLineBrokenBidiRun? run) GetIndexAndRunAt(Point p, bool ignoreEndingNewLine, bool extendedSelection)
 	{
 		if (_lines.Count == 0)
 		{
@@ -1015,7 +1009,7 @@ internal readonly struct UnicodeText : IParsedText
 					else
 					{
 						var index = _rtl
-							? firstRun.endInInline + firstRun.inline.StartIndex - (ignoreEndingSpace ? TrailingWhiteSpaceCount(firstRun.inline.Text, firstRun.startInInline, firstRun.endInInline) : 0)
+							? firstRun.endInInline + firstRun.inline.StartIndex - (ignoreEndingNewLine ? TrailingCRLFCount(firstRun.inline.Text, firstRun.startInInline, firstRun.endInInline) : 0)
 							: firstRun.startInInline + firstRun.inline.StartIndex;
 						return (index, firstRun);
 					}
@@ -1033,7 +1027,7 @@ internal readonly struct UnicodeText : IParsedText
 					{
 						var index = _rtl
 							? lastRun.inline.StartIndex + lastRun.startInInline
-							: lastRun.inline.StartIndex + lastRun.endInInline - (ignoreEndingSpace ? TrailingWhiteSpaceCount(lastRun.inline.Text, lastRun.startInInline, lastRun.endInInline) : 0);
+							: lastRun.inline.StartIndex + lastRun.endInInline - (ignoreEndingNewLine ? TrailingCRLFCount(lastRun.inline.Text, lastRun.startInInline, lastRun.endInInline) : 0);
 						return (index, lastRun);
 					}
 				}
@@ -1066,7 +1060,7 @@ internal readonly struct UnicodeText : IParsedText
 
 	public Hyperlink? GetHyperlinkAt(Point point)
 	{
-		var run = GetIndexAndRunAt(point, ignoreEndingSpace: false, extendedSelection: false).run;
+		var run = GetIndexAndRunAt(point, ignoreEndingNewLine: false, extendedSelection: false).run;
 		DependencyObject? parent = run?.inline.Inline;
 		while (parent is TextElement textElement)
 		{
@@ -1147,16 +1141,20 @@ internal readonly struct UnicodeText : IParsedText
 		return 0;
 	}
 
-	private static int TrailingWhiteSpaceCount(string str, int start, int end)
+	private static int TrailingCRLFCount(string str, int start, int end)
 	{
-		for (var i = end - 1; i >= start; i--)
+		if (str[end - 2] == '\r' && str[end - 1] == '\n')
 		{
-			if (str[i] != ' ' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n')
-			{
-				return end - 1 - i;
-			}
+			return 2;
 		}
-		return end - start;
+		else if (str[end - 1] == '\r' || str[end - 1] == '\n')
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 
 	private static bool IsLineBreak(string text, int indexAfterLineBreakOpportunity)
