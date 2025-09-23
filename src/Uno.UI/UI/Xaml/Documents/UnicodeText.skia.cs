@@ -377,14 +377,24 @@ internal readonly struct UnicodeText : IParsedText
 		(int endRunIndex, int endIndexInLastRun)? prevInSameLine = null;
 		foreach (var runSequence in SplitByLineBreakingOpportunities(logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities))
 		{
-			var backup1 = logicallyOrderedRuns[firstRunIndex];
-			var backup2 = logicallyOrderedRuns[runSequence.endRunIndex - 1];
-			logicallyOrderedRuns[firstRunIndex] = backup1 with { startInInline = startingIndexInFirstRun };
-			logicallyOrderedRuns[runSequence.endRunIndex - 1] = backup2 with { endInInline = runSequence.endIndexInLastRun };
-			var (widthWithoutTrailingSpaces, widthWithTrailingSpaces) = MeasureContiguousRunSequence(lineWidth,
-				logicallyOrderedRuns.Slice(firstRunIndex, runSequence.endRunIndex - firstRunIndex), rtl);
-			logicallyOrderedRuns[firstRunIndex] = backup1;
-			logicallyOrderedRuns[runSequence.endRunIndex - 1] = backup2;
+			float widthWithoutTrailingSpaces;
+			if (firstRunIndex == runSequence.endRunIndex - 1)
+			{
+				var backup = logicallyOrderedRuns[firstRunIndex];
+				logicallyOrderedRuns[firstRunIndex] = backup with { startInInline = startingIndexInFirstRun, endInInline = runSequence.endIndexInLastRun };
+				(widthWithoutTrailingSpaces, _) = MeasureContiguousRunSequence(lineWidth, logicallyOrderedRuns.Slice(firstRunIndex, runSequence.endRunIndex - firstRunIndex), rtl);
+				logicallyOrderedRuns[firstRunIndex] = backup;
+			}
+			else
+			{
+				var backup1 = logicallyOrderedRuns[firstRunIndex];
+				var backup2 = logicallyOrderedRuns[runSequence.endRunIndex - 1];
+				logicallyOrderedRuns[firstRunIndex] = backup1 with { startInInline = startingIndexInFirstRun };
+				logicallyOrderedRuns[runSequence.endRunIndex - 1] = backup2 with { endInInline = runSequence.endIndexInLastRun };
+				(widthWithoutTrailingSpaces, _) = MeasureContiguousRunSequence(lineWidth, logicallyOrderedRuns.Slice(firstRunIndex, runSequence.endRunIndex - firstRunIndex), rtl);
+				logicallyOrderedRuns[firstRunIndex] = backup1;
+				logicallyOrderedRuns[runSequence.endRunIndex - 1] = backup2;
+			}
 
 			if (prevInSameLine is not null && widthWithoutTrailingSpaces > lineWidth)
 			{
