@@ -374,7 +374,7 @@ internal readonly struct UnicodeText : IParsedText
 		var lines = new List<List<BidiRun>>();
 
 		(int firstRunIndex, int startingIndexInFirstRun) = (0, 0);
-		(int endRunIndex, int endIndexInLastRun)? prev = null;
+		(int endRunIndex, int endIndexInLastRun)? prevInSameLine = null;
 		foreach (var runSequence in SplitByLineBreakingOpportunities(logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities))
 		{
 			var backup1 = logicallyOrderedRuns[firstRunIndex];
@@ -386,15 +386,15 @@ internal readonly struct UnicodeText : IParsedText
 			logicallyOrderedRuns[firstRunIndex] = backup1;
 			logicallyOrderedRuns[runSequence.endRunIndex - 1] = backup2;
 
-			if (prev is not null && widthWithoutTrailingSpaces > lineWidth)
+			if (prevInSameLine is not null && widthWithoutTrailingSpaces > lineWidth)
 			{
 				var line = new List<BidiRun>();
-				line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, prev.Value.endRunIndex - firstRunIndex));
+				line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, prevInSameLine.Value.endRunIndex - firstRunIndex));
 				line[0] = line[0] with { startInInline = startingIndexInFirstRun };
-				line[^1] = line[^1] with { endInInline = prev.Value.endIndexInLastRun };
+				line[^1] = line[^1] with { endInInline = prevInSameLine.Value.endIndexInLastRun };
 				lines.Add(line);
-				(firstRunIndex, startingIndexInFirstRun) = (prev.Value.endRunIndex - 1, prev.Value.endIndexInLastRun);
-				prev = null;
+				(firstRunIndex, startingIndexInFirstRun) = (prevInSameLine.Value.endRunIndex - 1, prevInSameLine.Value.endIndexInLastRun);
+				prevInSameLine = runSequence;
 			}
 			else if (IsLineBreak(logicallyOrderedRuns[runSequence.endRunIndex - 1].inline.Text, runSequence.endIndexInLastRun))
 			{
@@ -404,21 +404,21 @@ internal readonly struct UnicodeText : IParsedText
 				line[^1] = line[^1] with { endInInline = runSequence.endIndexInLastRun };
 				lines.Add(line);
 				(firstRunIndex, startingIndexInFirstRun) = (runSequence.endRunIndex - 1, runSequence.endIndexInLastRun);
-				prev = null;
+				prevInSameLine = null;
 			}
 			else
 			{
-				prev = runSequence;
+				prevInSameLine = runSequence;
 			}
 		}
 
-		if (prev is not null)
+		if (prevInSameLine is not null)
 		{
 			var line = new List<BidiRun>();
-			line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, prev.Value.endRunIndex - firstRunIndex));
+			line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, prevInSameLine.Value.endRunIndex - firstRunIndex));
 			line[0] = line[0] with { startInInline = startingIndexInFirstRun };
-			line[^1] = line[^1] with { endInInline = prev.Value.endIndexInLastRun };
-			(firstRunIndex, startingIndexInFirstRun) = (prev.Value.endRunIndex - 1, prev.Value.endIndexInLastRun);
+			line[^1] = line[^1] with { endInInline = prevInSameLine.Value.endIndexInLastRun };
+			(firstRunIndex, startingIndexInFirstRun) = (prevInSameLine.Value.endRunIndex - 1, prevInSameLine.Value.endIndexInLastRun);
 			lines.Add(line);
 		}
 
