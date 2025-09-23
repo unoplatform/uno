@@ -962,16 +962,26 @@ internal readonly struct UnicodeText : IParsedText
 
 		if (p.Y < 0)
 		{
-			return extendedSelection ? (0, _lines[0].runs.MinBy(r => r.indexInLine + r.inline.StartIndex)) : (-1, null);
+			if (extendedSelection)
+			{
+				p.Y = 0;
+			}
+			else
+			{
+				return (-1, null);
+			}
 		}
 
 		if (_desiredSize.Height < p.Y)
 		{
-			var lastRun = _lines[^1].runs.Count == 0 ? _lines[^2].runs.MaxBy(r => r.indexInLine + r.inline.StartIndex)! : _lines[^1].runs.MaxBy(r => r.indexInLine + r.inline.StartIndex)!;
-			var index = _rtl
-				? lastRun.inline.StartIndex + lastRun.startInInline
-				: lastRun.inline.StartIndex + lastRun.endInInline - (ignoreEndingSpace ? TrailingWhiteSpaceCount(lastRun.inline.Text, lastRun.startInInline, lastRun.endInInline) : 0);
-			return (index, lastRun);
+			if (extendedSelection)
+			{
+				p.Y = _desiredSize.Height;
+			}
+			else
+			{
+				return (-1, null);
+			}
 		}
 
 		foreach (var line in _lines)
