@@ -22,6 +22,10 @@
 		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
 		<PackageReference Include="MessagePack" Version="2.5.187" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1" />
+		
+		<!-- Ensure MSBuild assemblies are resolved from the correct SDK at runtime -->
+		<PackageReference Include="Microsoft.Build.Locator" Version="1.9.1" />
+		<PackageReference Include="Microsoft.NET.StringTools" Version="17.14.8" />
 
 		<!-- StreamJsonRpc 2.14.24 brings in Microsoft.VisualStudio.Threading (and in turn -->
 		<!-- Microsoft.VisualStudio.Threading.Analyzers) version 17.1.46 -->

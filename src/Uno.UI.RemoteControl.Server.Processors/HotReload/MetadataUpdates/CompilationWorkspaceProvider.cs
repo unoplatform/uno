@@ -11,6 +11,7 @@ using Uno.UI.RemoteControl.Helpers;
 using System.Collections.Generic;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
+using Microsoft.Build.Locator;
 using System.Composition.Hosting;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
@@ -104,6 +105,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 		public static void InitializeRoslyn(string? workDir)
 		{
+			// Register MSBuild defaults to ensure a coherent set of MSBuild assemblies is loaded
+			// before any MSBuild/Roslyn types are referenced. This prevents mixed assembly
+			// load contexts that can cause TypeLoadException for Microsoft.NET.StringTools.
+			if (!MSBuildLocator.IsRegistered)
+			{
+				MSBuildLocator.RegisterDefaults();
+			}
+
 			RegisterAssemblyLoader();
 
 			MSBuildBasePath = BuildMSBuildPath(workDir);

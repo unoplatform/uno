@@ -28,6 +28,9 @@
 
 		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on 6.0.0 which has a vulnerability -->
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.2" />
+
+		<!-- Ensure MSBuild assemblies are resolved from the correct SDK at runtime -->
+		<PackageReference Include="Microsoft.Build.Locator" Version="1.9.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">

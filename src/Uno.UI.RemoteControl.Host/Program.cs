@@ -19,6 +19,7 @@ using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Helpers;
+using Microsoft.Build.Locator;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -26,6 +27,13 @@ namespace Uno.UI.RemoteControl.Host
 	{
 		static async Task Main(string[] args)
 		{
+			// Register MSBuild defaults before any MSBuild assemblies are loaded
+			// This prevents TypeLoadException for Microsoft.NET.StringTools.FowlerNollVo1aHash
+			if (!MSBuildLocator.IsRegistered)
+			{
+				MSBuildLocator.RegisterDefaults();
+			}
+
 			var startTime = Stopwatch.GetTimestamp();
 
 			ITelemetry? telemetry = null;
