@@ -613,7 +613,7 @@ internal readonly struct ParsedText : IParsedText
 	}
 
 	/// <remarks>Adjusted for surrogate pairs</remarks>
-	public int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection) => AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingSpace, extendedSelection));
+	public int GetIndexAt(Point p, bool ignoreEndingNewLine, bool extendedSelection) => AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingNewLine, extendedSelection));
 
 	public Hyperlink GetHyperlinkAt(Point point)
 	{
@@ -633,7 +633,7 @@ internal readonly struct ParsedText : IParsedText
 					break;
 			}
 		}
-		var characterIndex = ((IParsedText)this).GetIndexAt(point, ignoreEndingSpace: false, extendedSelection: false);
+		var characterIndex = ((IParsedText)this).GetIndexAt(point, ignoreEndingNewLine: false, extendedSelection: false);
 		return hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
 			.hyperlink;
 	}
