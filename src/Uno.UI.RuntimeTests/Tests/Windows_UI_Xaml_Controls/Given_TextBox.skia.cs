@@ -2742,7 +2742,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			var bounds = SUT.GetAbsoluteBounds();
-			mouse.MoveTo(bounds.GetCenter());
+			mouse.MoveTo(bounds.Location.Offset(145, 55));
 			await WindowHelper.WaitForIdle();
 
 			mouse.Press();
@@ -2960,8 +2960,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(13, SUT.SelectionStart);
-			Assert.AreEqual(26, SUT.SelectionLength);
+			Assert.AreEqual(25, SUT.SelectionStart);
+			Assert.AreEqual(14, SUT.SelectionLength);
 		}
 
 		[TestMethod]
