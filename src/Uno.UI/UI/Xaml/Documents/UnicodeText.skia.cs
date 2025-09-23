@@ -420,6 +420,14 @@ internal readonly struct UnicodeText : IParsedText
 			{
 				prevInSameLine = runSequence;
 			}
+
+			if (firstRunIndex < logicallyOrderedRuns.Count - 1 && logicallyOrderedRuns[firstRunIndex].endInInline == startingIndexInFirstRun)
+			{
+				// The current line starts at the end of a run, so it actually means that it starts at the beginning of
+				// the next run
+				firstRunIndex++;
+				startingIndexInFirstRun = logicallyOrderedRuns[firstRunIndex].startInInline;
+			}
 		}
 
 		if (prevInSameLine is not null)
