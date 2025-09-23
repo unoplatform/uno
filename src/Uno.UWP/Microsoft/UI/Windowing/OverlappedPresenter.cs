@@ -135,7 +135,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		}
 		else
 		{
-			_pendingState = OverlappedPresenterState.Maximized;
+			_pendingState = OverlappedPresenterState.Restored;
 		}
 	}
 
