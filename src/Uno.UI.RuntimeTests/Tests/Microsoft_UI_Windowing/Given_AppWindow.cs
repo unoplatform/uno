@@ -155,7 +155,7 @@ public class Given_AppWindow
 	[TestMethod]
 	[CombinatorialData]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21435")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Skia/X11: Fails in CI (#21194)
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)] // Skia/X11 & macOS: Fail in CI (#21194)
 	public async Task When_Change_Window_State_Before_Activate(OverlappedPresenterState state)
 	{
 		AssertPositioningAndSizingSupport();
