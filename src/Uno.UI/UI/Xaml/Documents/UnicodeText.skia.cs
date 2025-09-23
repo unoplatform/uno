@@ -1135,7 +1135,7 @@ internal readonly struct UnicodeText : IParsedText
 	{
 		// https://www.unicode.org/standard/reports/tr13/tr13-5.html
 
-		if (indexAfterLineBreakOpportunity >= 2 && text[indexAfterLineBreakOpportunity - 2] == '\r' || text[indexAfterLineBreakOpportunity - 1] == '\n')
+		if (text is [.., '\r', '\n'])
 		{
 			return true;
 		}
