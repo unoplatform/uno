@@ -1040,8 +1040,9 @@ public partial class TextBox
 		var x = _caretXOffset;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
 		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(new Point(x, y), true, true));
-		var (newLineStart, newLineLength, newLineFirst, newLineLast, _) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
+		var (newLineStart, newLineLength, newLineFirst, newLineLast, _) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(index);
 		if (text.Length > index - 1
+			&& newLineLength > 1 // this check is for cases where the line has nothing but \r (i.e. is empty)
 			&& index - 1 >= 0
 			&& index == newLineStart + newLineLength
 			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
