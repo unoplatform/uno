@@ -1041,8 +1041,4 @@
 		</Setter>
 	</Style>
 
-	<netstdref:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlNoAnimationScrollBar}" />
-	<ios:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
-	<android:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
-
 </ResourceDictionary>
