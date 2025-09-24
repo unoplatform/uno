@@ -13900,7 +13900,7 @@
                             <VisualStateGroup x:Name="FocusStates">
                                 <VisualState x:Name="Focused">
 
-                                    <Storyboard>
+                                    <!-- <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="FocusVisualWhite"
                         Storyboard.TargetProperty="Opacity"
                         To="1"
@@ -13909,7 +13909,7 @@
                         Storyboard.TargetProperty="Opacity"
                         To="1"
                         Duration="0" />
-                                    </Storyboard>
+                                    </Storyboard> -->
                                 </VisualState>
                                 <VisualState x:Name="Unfocused" />
                                 <VisualState x:Name="PointerFocused" />
