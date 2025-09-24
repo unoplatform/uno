@@ -319,6 +319,4 @@
 		</Setter>
 	</Style>
 
-	<not_winappsdk:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
-
 </ResourceDictionary>
