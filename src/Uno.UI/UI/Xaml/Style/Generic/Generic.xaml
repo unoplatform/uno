@@ -15411,7 +15411,7 @@
                                                 <SplineDoubleKeyFrame
                         KeySpline="0.0,0.35 0.15,1.0"
                         KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}"
-                        Value=""/>
+                        Value="0"/>
                                             </DoubleAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
                                                 <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
