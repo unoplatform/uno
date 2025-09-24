@@ -34,7 +34,7 @@ namespace Windows.Devices.Sensors {
 				}
 			} catch (error) {
 				//sensor not available
-				console.log("Accelerometer could not be initialized.");
+				console.log("Accelerometer could not be initialized:", error);
 			}
 			return false;
 		}
