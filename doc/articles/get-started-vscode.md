@@ -13,7 +13,9 @@ See these sections for information about using Uno Platform with:
 
 ## Prerequisites
 
-- [**Visual Studio Code**](https://code.visualstudio.com/)
+- [**Visual Studio Code**](https://code.visualstudio.com/) 1.75.0 or later
+  - For **C# extension** (OmniSharp mode): 1.93.0 or later
+  - For **C# Dev Kit**: 1.95.0 or later
 - The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
 - For Linux, install [OpenJDK 11](https://learn.microsoft.com/java/openjdk/install#install-on-ubuntu) for Android development.
 
@@ -27,6 +29,7 @@ If you are new to VS Code or to developing C# applications with VS Code take the
 
 1. Open VS Code
 1. If this is not a new installation, then try to update it. Press `F1` and type `Code: Check for Updates...` and select it. A notification will tell you if an update is available.
+1. **macOS users**: Ensure VS Code is installed in the Applications folder, not in Downloads. If VS Code is in Downloads, it may run in read-only mode and prevent proper extension functionality. See the [troubleshooting guide](xref:Uno.UI.CommonIssues.vscode) for details.
 1. Configure VS Code to start from the command-line using the `code` command. This can be configured by following [these instructions](https://code.visualstudio.com/docs/editor/command-line#_launching-from-command-line).
 1. Install the **Uno Platform** extension. Press `F1` and type `Extensions: Install Extensions`, search the marketplace for **Uno Platform** and click the **Install** button.
 
