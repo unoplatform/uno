@@ -345,21 +345,33 @@ internal readonly struct UnicodeText : IParsedText
 		}
 	}
 
-	private static (float remainingLineWidthWithoutTrailingSpaces, float remainingLineWidthWithTrailingSpaces) MeasureContiguousRunSequence(float currentLineWidth, ReadOnlySpan<BidiRun> logicallyOrderedRuns, bool rtl)
+	private static (float remainingLineWidthWithoutTrailingSpaces, float remainingLineWidthWithTrailingSpaces) MeasureContiguousRunSequence(float currentLineWidth, List<BidiRun> logicallyOrderedRuns, int firstRunIndex, int startingIndexInFirstRun, int endRunIndex, int endIndexInLastRun, bool rtl)
 	{
+		var backup1 = logicallyOrderedRuns[firstRunIndex];
+		var backup2 = logicallyOrderedRuns[endRunIndex - 1];
+		logicallyOrderedRuns[firstRunIndex] = logicallyOrderedRuns[firstRunIndex] with { startInInline = startingIndexInFirstRun };
+		logicallyOrderedRuns[endRunIndex - 1] = logicallyOrderedRuns[endRunIndex - 1] with { endInInline = endIndexInLastRun };
+
 		float usedWidth = currentLineWidth;
-		foreach (var run in logicallyOrderedRuns[..^1])
+		for (var index = endRunIndex - 2; index >= firstRunIndex; index--)
 		{
-			var glyphs = ShapeRun(run.inline.Text[run.startInInline..run.endInInline], run.rtl, run.fontDetails, usedWidth, ignoreTrailingSpaces: false);
+			var run = logicallyOrderedRuns[index];
+			var start_ = index == firstRunIndex ? startingIndexInFirstRun : run.startInInline;
+			var glyphs = ShapeRun(run.inline.Text[start_..run.endInInline], run.rtl, run.fontDetails, usedWidth, ignoreTrailingSpaces: false);
 			usedWidth += RunWidth(glyphs, run.inline.FontDetails);
 		}
 
-		var lastRun = logicallyOrderedRuns[^1];
-		var glyphsWithTrailingSpaces = ShapeRun(lastRun.inline.Text[lastRun.startInInline..lastRun.endInInline], lastRun.rtl, lastRun.fontDetails, usedWidth, ignoreTrailingSpaces: true);
+		var lastRun = logicallyOrderedRuns[endRunIndex - 1];
+		var start = firstRunIndex == endRunIndex - 1 ? startingIndexInFirstRun : lastRun.startInInline;
+		var glyphsWithTrailingSpaces = ShapeRun(lastRun.inline.Text[start..endIndexInLastRun], lastRun.rtl, lastRun.fontDetails, usedWidth, ignoreTrailingSpaces: true);
 		var glyphsWithoutTrailingSpaces =
 			lastRun.rtl == rtl && lastRun.inline.Text[lastRun.endInInline - 1] == ' '
-				? ShapeRun(lastRun.inline.Text[lastRun.startInInline..lastRun.endInInline], lastRun.rtl, lastRun.fontDetails, usedWidth, ignoreTrailingSpaces: true)
+				? ShapeRun(lastRun.inline.Text[start..endIndexInLastRun], lastRun.rtl, lastRun.fontDetails, usedWidth, ignoreTrailingSpaces: true)
 				: glyphsWithTrailingSpaces;
+
+		logicallyOrderedRuns[firstRunIndex] = backup1;
+		logicallyOrderedRuns[endRunIndex - 1] = backup2;
+
 		return (usedWidth + RunWidth(glyphsWithoutTrailingSpaces, lastRun.inline.FontDetails), usedWidth + RunWidth(glyphsWithTrailingSpaces, lastRun.inline.FontDetails));
 	}
 
@@ -393,13 +405,7 @@ internal readonly struct UnicodeText : IParsedText
 				{
 					continue;
 				}
-				var backup1 = logicallyOrderedRuns[firstRunIndex];
-				var backup2 = logicallyOrderedRuns[testEndRunIndex - 1];
-				logicallyOrderedRuns[firstRunIndex] = logicallyOrderedRuns[firstRunIndex] with { startInInline = startingIndexInFirstRun };
-				logicallyOrderedRuns[testEndRunIndex - 1] = logicallyOrderedRuns[testEndRunIndex - 1] with { endInInline = textEndIndexInLastRun };
-				var (widthWithoutTrailingSpaces, _) = MeasureContiguousRunSequence(lineWidth, CollectionsMarshal.AsSpan(logicallyOrderedRuns.Slice(firstRunIndex, testEndRunIndex - firstRunIndex)), rtl);
-				logicallyOrderedRuns[firstRunIndex] = backup1;
-				logicallyOrderedRuns[testEndRunIndex - 1] = backup2;
+				var (widthWithoutTrailingSpaces, _) = MeasureContiguousRunSequence(lineWidth, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, endRunIndex, endIndexInLastRun, rtl);
 				if (widthWithoutTrailingSpaces <= lineWidth)
 				{
 					return (testEndRunIndex, textEndIndexInLastRun);
@@ -429,7 +435,7 @@ internal readonly struct UnicodeText : IParsedText
 			var backup2 = logicallyOrderedRuns[runSequence.endRunIndex - 1];
 			logicallyOrderedRuns[firstRunIndex] = logicallyOrderedRuns[firstRunIndex] with { startInInline = startingIndexInFirstRun };
 			logicallyOrderedRuns[runSequence.endRunIndex - 1] = logicallyOrderedRuns[runSequence.endRunIndex - 1] with { endInInline = runSequence.endIndexInLastRun };
-			var (widthWithoutTrailingSpaces, _) = MeasureContiguousRunSequence(0, CollectionsMarshal.AsSpan(logicallyOrderedRuns.Slice(firstRunIndex, runSequence.endRunIndex - firstRunIndex)), rtl);
+			var (widthWithoutTrailingSpaces, _) = MeasureContiguousRunSequence(0, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, runSequence.endRunIndex, runSequence.endIndexInLastRun, rtl);
 			logicallyOrderedRuns[firstRunIndex] = backup1;
 			logicallyOrderedRuns[runSequence.endRunIndex - 1] = backup2;
 
