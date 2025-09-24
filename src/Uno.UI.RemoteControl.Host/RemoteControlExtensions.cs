@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net.WebSockets;
 using System.Threading;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -80,6 +81,13 @@ namespace Uno.UI.RemoteControl.Host
 							{
 								app.Log().LogError($"Unable to find configuration service");
 							}
+						}
+					}
+					catch (WebSocketException)
+					{
+						if (app.Log().IsEnabled(LogLevel.Information))
+						{
+							app.Log().LogInformation("Connection from {Remote} has been closed", context.Connection.RemoteIpAddress);
 						}
 					}
 					finally
