@@ -5043,7 +5043,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (string.IsNullOrWhiteSpace(memberValue))
 				{
-					throw new XamlGenerationException("The property value is invalid", owner);
+					throw new XamlGenerationException($"The property value is invalid for {memberName} of type {propertyType.Name}", owner);
 				}
 
 				return memberValue!;
