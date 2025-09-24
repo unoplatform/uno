@@ -112,7 +112,7 @@ namespace MUXControlsTestApp
 
 		private void OnButtonEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			if (sender == previousPageButton)
+			if (sender.Equals(previousPageButton))
 			{
 				PreviousPageButtonIsEnabledCheckBox.IsChecked = previousPageButton?.IsEnabled;
 			}
