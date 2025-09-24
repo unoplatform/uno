@@ -28,8 +28,7 @@ namespace Windows.Devices.Sensors {
 					} else {
 						throw `Accelerometer: Unable to find dotnet exports`;
 					}
-					let AccelerometerClass: any = window.Accelerometer;
-					this.accelerometer = new AccelerometerClass({ frequency: 60 });
+					this.accelerometer = new window.Accelerometer({ frequency: 60 });
 					return true;
 				}
 			} catch (error) {
