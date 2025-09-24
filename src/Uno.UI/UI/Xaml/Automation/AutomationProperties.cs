@@ -14,7 +14,8 @@ public partial class AutomationProperties
 	/// </summary>
 	public static DependencyProperty AcceleratorKeyProperty { get; } =
 		DependencyProperty.RegisterAttached(
-			"AcceleratorKey", typeof(string),
+			"AcceleratorKey",
+			typeof(string),
 			typeof(AutomationProperties),
 			new FrameworkPropertyMetadata(default(string)));
 
@@ -23,7 +24,8 @@ public partial class AutomationProperties
 	/// </summary>
 	public static DependencyProperty AccessKeyProperty { get; } =
 		DependencyProperty.RegisterAttached(
-			"AccessKey", typeof(string),
+			"AccessKey",
+			typeof(string),
 			typeof(AutomationProperties),
 			new FrameworkPropertyMetadata(default(string)));
 
@@ -124,7 +126,8 @@ public partial class AutomationProperties
 	/// </summary>
 	public static DependencyProperty HeadingLevelProperty { get; } =
 		DependencyProperty.RegisterAttached(
-			"HeadingLevel", typeof(AutomationHeadingLevel),
+			"HeadingLevel",
+			typeof(AutomationHeadingLevel),
 			typeof(AutomationProperties),
 			new FrameworkPropertyMetadata(default(AutomationHeadingLevel)));
 
@@ -133,7 +136,8 @@ public partial class AutomationProperties
 	/// </summary>
 	public static DependencyProperty HelpTextProperty { get; } =
 		DependencyProperty.RegisterAttached(
-			"HelpText", typeof(string),
+			"HelpText",
+			typeof(string),
 			typeof(AutomationProperties),
 			new FrameworkPropertyMetadata(default(string)));
 
@@ -142,7 +146,8 @@ public partial class AutomationProperties
 	/// </summary>
 	public static DependencyProperty IsDataValidForFormProperty { get; } =
 		DependencyProperty.RegisterAttached(
-			"IsDataValidForForm", typeof(bool),
+			"IsDataValidForForm",
+			typeof(bool),
 			typeof(AutomationProperties),
 			new FrameworkPropertyMetadata(default(bool)));
 
@@ -222,7 +227,8 @@ public partial class AutomationProperties
 	/// </summary>
 	public static DependencyProperty LevelProperty { get; } =
 		DependencyProperty.RegisterAttached(
-			"Level", typeof(int),
+			"Level",
+			typeof(int),
 			typeof(AutomationProperties),
 			new FrameworkPropertyMetadata(default(int)));
 
@@ -231,7 +237,8 @@ public partial class AutomationProperties
 	/// </summary>
 	public static DependencyProperty LiveSettingProperty { get; } =
 		DependencyProperty.RegisterAttached(
-			"LiveSetting", typeof(AutomationLiveSetting),
+			"LiveSetting",
+			typeof(AutomationLiveSetting),
 			typeof(AutomationProperties),
 			new FrameworkPropertyMetadata(default(AutomationLiveSetting)));
 
@@ -250,7 +257,8 @@ public partial class AutomationProperties
 	/// </summary>
 	public static DependencyProperty LocalizedLandmarkTypeProperty { get; } =
 		DependencyProperty.RegisterAttached(
-			"LocalizedLandmarkType", typeof(string),
+			"LocalizedLandmarkType",
+			typeof(string),
 			typeof(AutomationProperties),
 			new FrameworkPropertyMetadata(default(string)));
 
@@ -290,57 +298,40 @@ public partial class AutomationProperties
 	/// </summary>
 	public static DependencyProperty AutomationControlTypeProperty { get; } =
 		DependencyProperty.RegisterAttached(
-			"AutomationControlType", typeof(AutomationControlType),
+			"AutomationControlType",
+			typeof(AutomationControlType),
 			typeof(AutomationProperties),
 			new FrameworkPropertyMetadata(default(AutomationControlType)));
 
 	/// <summary>
 	/// Gets the UI Automation control type for the specified element.
 	/// </summary>
-	public static Peers.AutomationControlType GetAutomationControlType(UIElement element)
-	{
-		return (Peers.AutomationControlType)element.GetValue(AutomationControlTypeProperty);
-	}
+	public static AutomationControlType GetAutomationControlType(UIElement element) => (AutomationControlType)element.GetValue(AutomationControlTypeProperty);
 
 	/// <summary>
 	/// Sets the UI Automation control type for the specified element.
 	/// </summary>
-	public static void SetAutomationControlType(UIElement element, Peers.AutomationControlType value)
-	{
-		element.SetValue(AutomationControlTypeProperty, value);
-	}
+	public static void SetAutomationControlType(UIElement element, AutomationControlType value) => element.SetValue(AutomationControlTypeProperty, value);
 
 	/// <summary>
 	/// Gets the accelerator key string for the specified element.
 	/// </summary>
-	public static string GetAcceleratorKey(DependencyObject element)
-	{
-		return (string)element.GetValue(AcceleratorKeyProperty);
-	}
+	public static string GetAcceleratorKey(DependencyObject element) => (string)element.GetValue(AcceleratorKeyProperty);
 
 	/// <summary>
 	/// Sets the accelerator key string for the specified element.
 	/// </summary>
-	public static void SetAcceleratorKey(DependencyObject element, string value)
-	{
-		element.SetValue(AcceleratorKeyProperty, value);
-	}
+	public static void SetAcceleratorKey(DependencyObject element, string value) => element.SetValue(AcceleratorKeyProperty, value);
 
 	/// <summary>
 	/// Gets the access key (mnemonic) for the specified element.
 	/// </summary>
-	public static string GetAccessKey(DependencyObject element)
-	{
-		return (string)element.GetValue(AccessKeyProperty);
-	}
+	public static string GetAccessKey(DependencyObject element) => (string)element.GetValue(AccessKeyProperty);
 
 	/// <summary>
 	/// Sets the access key (mnemonic) for the specified element.
 	/// </summary>
-	public static void SetAccessKey(DependencyObject element, string value)
-	{
-		element.SetValue(AccessKeyProperty, value);
-	}
+	public static void SetAccessKey(DependencyObject element, string value) => element.SetValue(AccessKeyProperty, value);
 
 	private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
@@ -388,138 +379,87 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Gets the help text associated with the specified element.
 	/// </summary>
-	public static string GetHelpText(DependencyObject element)
-	{
-		return (string)element.GetValue(HelpTextProperty);
-	}
+	public static string GetHelpText(DependencyObject element) => (string)element.GetValue(HelpTextProperty);
 
 	/// <summary>
 	/// Sets the help text associated with the specified element.
 	/// </summary>
-	public static void SetHelpText(DependencyObject element, string value)
-	{
-		element.SetValue(HelpTextProperty, value);
-	}
+	public static void SetHelpText(DependencyObject element, string value) => element.SetValue(HelpTextProperty, value);
 
 	/// <summary>
 	/// Gets whether the element is required for form submission.
 	/// </summary>
-	public static bool GetIsRequiredForForm(DependencyObject element)
-	{
-		return (bool)element.GetValue(IsRequiredForFormProperty);
-	}
+	public static bool GetIsRequiredForForm(DependencyObject element) => (bool)element.GetValue(IsRequiredForFormProperty);
 
 	/// <summary>
 	/// Sets whether the element is required for form submission.
 	/// </summary>
-	public static void SetIsRequiredForForm(DependencyObject element, bool value)
-	{
-		element.SetValue(IsRequiredForFormProperty, value);
-	}
+	public static void SetIsRequiredForForm(DependencyObject element, bool value) => element.SetValue(IsRequiredForFormProperty, value);
 
 	/// <summary>
 	/// Gets the status text associated with the specified element.
 	/// </summary>
-	public static string GetItemStatus(DependencyObject element)
-	{
-		return (string)element.GetValue(ItemStatusProperty);
-	}
+	public static string GetItemStatus(DependencyObject element) => (string)element.GetValue(ItemStatusProperty);
 
 	/// <summary>
 	/// Sets the status text associated with the specified element.
 	/// </summary>
-	public static void SetItemStatus(DependencyObject element, string value)
-	{
-		element.SetValue(ItemStatusProperty, value);
-	}
+	public static void SetItemStatus(DependencyObject element, string value) => element.SetValue(ItemStatusProperty, value);
 
 	/// <summary>
 	/// Gets the item type description for the specified element.
 	/// </summary>
-	public static string GetItemType(DependencyObject element)
-	{
-		return (string)element.GetValue(ItemTypeProperty);
-	}
+	public static string GetItemType(DependencyObject element) => (string)element.GetValue(ItemTypeProperty);
 
 	/// <summary>
 	/// Sets the item type description for the specified element.
 	/// </summary>
-	public static void SetItemType(DependencyObject element, string value)
-	{
-		element.SetValue(ItemTypeProperty, value);
-	}
+	public static void SetItemType(DependencyObject element, string value) => element.SetValue(ItemTypeProperty, value);
 
 	/// <summary>
 	/// Gets the element that provides the accessible label for the specified element.
 	/// </summary>
-	public static UIElement GetLabeledBy(DependencyObject element)
-	{
-		return (UIElement)element.GetValue(LabeledByProperty);
-	}
+	public static UIElement GetLabeledBy(DependencyObject element) => (UIElement)element.GetValue(LabeledByProperty);
 
 	/// <summary>
 	/// Sets the element that provides the accessible label for the specified element.
 	/// </summary>
-	public static void SetLabeledBy(DependencyObject element, UIElement value)
-	{
-		element.SetValue(LabeledByProperty, value);
-	}
+	public static void SetLabeledBy(DependencyObject element, UIElement value) => element.SetValue(LabeledByProperty, value);
 
 	/// <summary>
 	/// Sets the accessible name for the specified element.
 	/// </summary>
-	public static void SetName(DependencyObject element, string value)
-	{
-		element.SetValue(NameProperty, value);
-	}
+	public static void SetName(DependencyObject element, string value) => element.SetValue(NameProperty, value);
 
 	/// <summary>
 	/// Gets the accessible name for the specified element.
 	/// </summary>
-	public static string GetName(DependencyObject element)
-	{
-		return (string)element.GetValue(NameProperty);
-	}
+	public static string GetName(DependencyObject element) => (string)element.GetValue(NameProperty);
 
 	/// <summary>
 	/// Gets the live region setting for the specified element.
 	/// </summary>
-	public static Peers.AutomationLiveSetting GetLiveSetting(DependencyObject element)
-	{
-		return (Peers.AutomationLiveSetting)element.GetValue(LiveSettingProperty);
-	}
+	public static AutomationLiveSetting GetLiveSetting(DependencyObject element) => (AutomationLiveSetting)element.GetValue(LiveSettingProperty);
 
 	/// <summary>
 	/// Sets the live region setting for the specified element.
 	/// </summary>
-	public static void SetLiveSetting(DependencyObject element, Peers.AutomationLiveSetting value)
-	{
-		element.SetValue(LiveSettingProperty, value);
-	}
+	public static void SetLiveSetting(DependencyObject element, AutomationLiveSetting value) => element.SetValue(LiveSettingProperty, value);
 
 	/// <summary>
 	/// Gets the accessibility view for the specified element.
 	/// </summary>
-	public static AccessibilityView GetAccessibilityView(DependencyObject element)
-	{
-		return (AccessibilityView)element.GetValue(AccessibilityViewProperty);
-	}
+	public static AccessibilityView GetAccessibilityView(DependencyObject element) => (AccessibilityView)element.GetValue(AccessibilityViewProperty);
 
 	/// <summary>
 	/// Sets the accessibility view for the specified element.
 	/// </summary>
-	public static void SetAccessibilityView(DependencyObject element, AccessibilityView value)
-	{
-		element.SetValue(AccessibilityViewProperty, value);
-	}
+	public static void SetAccessibilityView(DependencyObject element, AccessibilityView value) => element.SetValue(AccessibilityViewProperty, value);
 
 	/// <summary>
 	/// Gets the list of controlled peers for the specified element.
 	/// </summary>
-	public static IList<UIElement> GetControlledPeers(DependencyObject element)
-	{
-		return (IList<UIElement>)element.GetValue(ControlledPeersProperty);
-	}
+	public static IList<UIElement> GetControlledPeers(DependencyObject element) => (IList<UIElement>)element.GetValue(ControlledPeersProperty);
 
 	/// <summary>
 	/// Gets the 1-based position of the element within its set.
@@ -544,26 +484,17 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Gets the hierarchical level of the element.
 	/// </summary>
-	public static int GetLevel(DependencyObject element)
-	{
-		return (int)element.GetValue(LevelProperty);
-	}
+	public static int GetLevel(DependencyObject element) => (int)element.GetValue(LevelProperty);
 
 	/// <summary>
 	/// Sets the hierarchical level of the element.
 	/// </summary>
-	public static void SetLevel(DependencyObject element, int value)
-	{
-		element.SetValue(LevelProperty, value);
-	}
+	public static void SetLevel(DependencyObject element, int value) => element.SetValue(LevelProperty, value);
 
 	/// <summary>
 	/// Gets the annotations associated with the specified element.
 	/// </summary>
-	public static IList<AutomationAnnotation> GetAnnotations(DependencyObject element)
-	{
-		return (IList<AutomationAnnotation>)element.GetValue(AnnotationsProperty);
-	}
+	public static IList<AutomationAnnotation> GetAnnotations(DependencyObject element) => (IList<AutomationAnnotation>)element.GetValue(AnnotationsProperty);
 
 	/// <summary>
 	/// Gets the landmark type for the specified element.
@@ -578,152 +509,95 @@ public partial class AutomationProperties
 	/// <summary>
 	/// Gets the localized landmark type string for the specified element.
 	/// </summary>
-	public static string GetLocalizedLandmarkType(DependencyObject element)
-	{
-		return (string)element.GetValue(LocalizedLandmarkTypeProperty);
-	}
+	public static string GetLocalizedLandmarkType(DependencyObject element) => (string)element.GetValue(LocalizedLandmarkTypeProperty);
 
 	/// <summary>
 	/// Sets the localized landmark type string for the specified element.
 	/// </summary>
-	public static void SetLocalizedLandmarkType(DependencyObject element, string value)
-	{
-		element.SetValue(LocalizedLandmarkTypeProperty, value);
-	}
+	public static void SetLocalizedLandmarkType(DependencyObject element, string value) => element.SetValue(LocalizedLandmarkTypeProperty, value);
 
 	/// <summary>
 	/// Gets whether the element is peripheral to the main UI experience.
 	/// </summary>
-	public static bool GetIsPeripheral(DependencyObject element)
-	{
-		return (bool)element.GetValue(IsPeripheralProperty);
-	}
+	public static bool GetIsPeripheral(DependencyObject element) => (bool)element.GetValue(IsPeripheralProperty);
 
 	/// <summary>
 	/// Sets whether the element is peripheral to the main UI experience.
 	/// </summary>
-	public static void SetIsPeripheral(DependencyObject element, bool value)
-	{
-		element.SetValue(IsPeripheralProperty, value);
-	}
+	public static void SetIsPeripheral(DependencyObject element, bool value) => element.SetValue(IsPeripheralProperty, value);
 
 	/// <summary>
 	/// Gets whether the element’s data is valid for form submission.
 	/// </summary>
-	public static bool GetIsDataValidForForm(DependencyObject element)
-	{
-		return (bool)element.GetValue(IsDataValidForFormProperty);
-	}
+	public static bool GetIsDataValidForForm(DependencyObject element) => (bool)element.GetValue(IsDataValidForFormProperty);
 
 	/// <summary>
 	/// Sets whether the element’s data is valid for form submission.
 	/// </summary>
-	public static void SetIsDataValidForForm(DependencyObject element, bool value)
-	{
-		element.SetValue(IsDataValidForFormProperty, value);
-	}
+	public static void SetIsDataValidForForm(DependencyObject element, bool value) => element.SetValue(IsDataValidForFormProperty, value);
 
 	/// <summary>
 	/// Gets the full description text for the specified element.
 	/// </summary>
-	public static string GetFullDescription(DependencyObject element)
-	{
-		return (string)element.GetValue(FullDescriptionProperty);
-	}
+	public static string GetFullDescription(DependencyObject element) => (string)element.GetValue(FullDescriptionProperty);
 
 	/// <summary>
 	/// Sets the full description text for the specified element.
 	/// </summary>
-	public static void SetFullDescription(DependencyObject element, string value)
-	{
-		element.SetValue(FullDescriptionProperty, value);
-	}
+	public static void SetFullDescription(DependencyObject element, string value) => element.SetValue(FullDescriptionProperty, value);
 
 	/// <summary>
 	/// Gets the localized control type string for the specified element.
 	/// </summary>
-	public static string GetLocalizedControlType(DependencyObject element)
-	{
-		return (string)element.GetValue(LocalizedControlTypeProperty);
-	}
+	public static string GetLocalizedControlType(DependencyObject element) => (string)element.GetValue(LocalizedControlTypeProperty);
 
 	/// <summary>
 	/// Sets the localized control type string for the specified element.
 	/// </summary>
-	public static void SetLocalizedControlType(DependencyObject element, string value)
-	{
-		element.SetValue(LocalizedControlTypeProperty, value);
-	}
+	public static void SetLocalizedControlType(DependencyObject element, string value) => element.SetValue(LocalizedControlTypeProperty, value);
 
 	/// <summary>
 	/// Gets the collection of elements that describe the specified element.
 	/// </summary>
-	public static IList<DependencyObject> GetDescribedBy(DependencyObject element)
-	{
-		return (IList<DependencyObject>)element.GetValue(DescribedByProperty);
-	}
+	public static IList<DependencyObject> GetDescribedBy(DependencyObject element) => (IList<DependencyObject>)element.GetValue(DescribedByProperty);
 
 	/// <summary>
 	/// Gets the collection of elements that are next in reading order from the specified element.
 	/// </summary>
-	public static IList<DependencyObject> GetFlowsTo(DependencyObject element)
-	{
-		return (IList<DependencyObject>)element.GetValue(FlowsToProperty);
-	}
+	public static IList<DependencyObject> GetFlowsTo(DependencyObject element) => (IList<DependencyObject>)element.GetValue(FlowsToProperty);
 
 	/// <summary>
 	/// Gets the collection of elements that precede the specified element in reading order.
 	/// </summary>
-	public static IList<DependencyObject> GetFlowsFrom(DependencyObject element)
-	{
-		return (IList<DependencyObject>)element.GetValue(FlowsFromProperty);
-	}
+	public static IList<DependencyObject> GetFlowsFrom(DependencyObject element) => (IList<DependencyObject>)element.GetValue(FlowsFromProperty);
 
 	/// <summary>
 	/// Gets the culture (locale) identifier for the specified element.
 	/// </summary>
-	public static int GetCulture(DependencyObject element)
-	{
-		return (int)element.GetValue(CultureProperty);
-	}
+	public static int GetCulture(DependencyObject element) => (int)element.GetValue(CultureProperty);
 
 	/// <summary>
 	/// Sets the culture (locale) identifier for the specified element.
 	/// </summary>
-	public static void SetCulture(DependencyObject element, int value)
-	{
-		element.SetValue(CultureProperty, value);
-	}
+	public static void SetCulture(DependencyObject element, int value) => element.SetValue(CultureProperty, value);
 
 	/// <summary>
 	/// Gets the heading level for the specified element.
 	/// </summary>
-	public static Peers.AutomationHeadingLevel GetHeadingLevel(DependencyObject element)
-	{
-		return (Peers.AutomationHeadingLevel)element.GetValue(HeadingLevelProperty);
-	}
+	public static AutomationHeadingLevel GetHeadingLevel(DependencyObject element) => (AutomationHeadingLevel)element.GetValue(HeadingLevelProperty);
 
 	/// <summary>
 	/// Sets the heading level for the specified element.
 	/// </summary>
-	public static void SetHeadingLevel(DependencyObject element, Peers.AutomationHeadingLevel value)
-	{
-		element.SetValue(HeadingLevelProperty, value);
-	}
+	public static void SetHeadingLevel(DependencyObject element, AutomationHeadingLevel value) => element.SetValue(HeadingLevelProperty, value);
 
 	/// <summary>
 	/// Gets whether the element represents a dialog.
 	/// </summary>
-	public static bool GetIsDialog(DependencyObject element)
-	{
-		return (bool)element.GetValue(IsDialogProperty);
-	}
+	public static bool GetIsDialog(DependencyObject element) => (bool)element.GetValue(IsDialogProperty);
 
 	/// <summary>
 	/// Sets whether the element represents a dialog.
 	/// </summary>
-	public static void SetIsDialog(DependencyObject element, bool value)
-	{
-		element.SetValue(IsDialogProperty, value);
-	}
+	public static void SetIsDialog(DependencyObject element, bool value) => element.SetValue(IsDialogProperty, value);
 }
