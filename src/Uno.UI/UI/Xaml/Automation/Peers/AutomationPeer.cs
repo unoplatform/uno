@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		public Rect GetBoundingRectangle() => GetBoundingRectangleCore();
 
-		public IList<AutomationPeer> GetChildren() => GetChildrenCore();
+		
 
 		public Point GetClickablePoint() => GetClickablePointCore();
 
@@ -52,7 +52,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		public bool IsRequiredForForm() => IsRequiredForFormCore();
 
-		public AutomationPeer GetPeerFromPoint(Point point) => GetPeerFromPointCore(point);
 
 		public AutomationLiveSetting GetLiveSetting() => GetLiveSettingCore();
 
@@ -62,9 +61,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		public object GetFocusedElement() => GetFocusedElementCore();
 
-		public void ShowContextMenu() => ShowContextMenuCore();
 
-		public IReadOnlyList<AutomationPeer> GetControlledPeers() => GetControlledPeersCore();
 
 		public IList<AutomationPeerAnnotation> GetAnnotations() => GetAnnotationsCore();
 
@@ -123,13 +120,10 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		
 
 
-		protected virtual AutomationPeer GetPeerFromPointCore(Point point) => this;
 
 		
 
 		
-
-		protected virtual object NavigateCore(Microsoft.UI.Xaml.Automation.Peers.AutomationNavigationDirection direction) => null;
 
 		
 
@@ -147,11 +141,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		
 
-		protected virtual bool IsDataValidForFormCore() => true;
 
 		
 
-		protected virtual AutomationHeadingLevel GetHeadingLevelCore() => AutomationHeadingLevel.None;
 
 		
 
