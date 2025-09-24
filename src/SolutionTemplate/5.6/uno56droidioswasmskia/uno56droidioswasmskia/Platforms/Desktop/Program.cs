@@ -11,7 +11,7 @@ internal class Program
         var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())
             .UseX11()
-            .UseLinuxFrameBuffer() // Use .UseLinuxFrameBuffer(builder => builder.DisplayScale(2.0f)) to set custom display scale
+            .UseLinuxFrameBuffer(builder => builder.DisplayScale(2.0f)) // Use .UseLinuxFrameBuffer() for default behavior
             .UseMacOS()
             .UseWin32()
             .Build();

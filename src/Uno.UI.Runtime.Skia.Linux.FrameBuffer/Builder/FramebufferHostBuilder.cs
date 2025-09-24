@@ -4,13 +4,18 @@ using Uno.UI.Runtime.Skia.Linux.FrameBuffer;
 
 namespace Uno.UI.Runtime.Skia;
 
-public class FramebufferHostBuilder : IPlatformHostBuilder
+internal class FramebufferHostBuilder : IPlatformHostBuilder
 {
 	private float? _displayScale;
 
 	internal FramebufferHostBuilder()
 	{
 	}
+
+	/// <summary>
+	/// Gets the configured display scale
+	/// </summary>
+	internal float? ConfiguredDisplayScale => _displayScale;
 
 	/// <summary>
 	/// Sets the display scale to override framebuffer default scale
@@ -28,5 +33,5 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 		=> OperatingSystem.IsLinux();
 
 	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
-		=> new FrameBufferHost(appBuilder, _displayScale);
+		=> new FrameBufferHost(appBuilder, this);
 }
