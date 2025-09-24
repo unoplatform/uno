@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
-namespace Uno.UI.RemoteControl.Host.Helpers
+namespace Uno.UI.RemoteControl.Helpers
 {
 	/// <summary>
 	/// Console banner rendering utilities.
@@ -26,6 +27,13 @@ namespace Uno.UI.RemoteControl.Host.Helpers
 		{
 			public static implicit operator BannerEntry((string Key, string Value, ClipMode Clip) t) => new(t.Key, t.Value, t.Clip);
 			public static implicit operator BannerEntry((string Key, string Value) t) => new(t.Key, t.Value);
+		}
+
+		public static void Write(string title, IReadOnlyDictionary<string, string> entries, int maxInnerWidth = 118, TextWriter? output = null)
+		{
+			ArgumentNullException.ThrowIfNull(title);
+			ArgumentNullException.ThrowIfNull(entries);
+			Write(title, [.. entries.Select(kvp => new BannerEntry(kvp.Key, kvp.Value))], maxInnerWidth, output);
 		}
 
 		/// <summary>

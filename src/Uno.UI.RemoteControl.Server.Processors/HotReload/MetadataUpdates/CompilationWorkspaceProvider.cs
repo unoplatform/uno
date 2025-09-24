@@ -62,6 +62,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			var globalProperties = properties.Where(property => IsValidProperty(property.Key)).ToDictionary();
 
+#if DEBUG
+			var bannerProperties = new Dictionary<string, string>(globalProperties)
+			{
+				["(Project)"] = projectPath,
+				["(MSBuildBasePath)"] = MSBuildBasePath,
+			};
+
+			BannerHelper.Write("MSBuildWorkspace globalProperties", bannerProperties);
+#endif
+
 			MSBuildWorkspace workspace = null!;
 			for (var i = 3; i > 0; i--)
 			{
@@ -105,14 +115,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 		public static void InitializeRoslyn(string? workDir)
 		{
-			// Register MSBuild defaults to ensure a coherent set of MSBuild assemblies is loaded
-			// before any MSBuild/Roslyn types are referenced. This prevents mixed assembly
-			// load contexts that can cause TypeLoadException for Microsoft.NET.StringTools.
-			if (!MSBuildLocator.IsRegistered)
-			{
-				MSBuildLocator.RegisterDefaults();
-			}
-
 			RegisterAssemblyLoader();
 
 			MSBuildBasePath = BuildMSBuildPath(workDir);
@@ -137,6 +139,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			{
 				throw new InvalidOperationException($"Invalid dotnet installation installation (Cannot find Microsoft.Build.dll in [{MSBuildBasePath}])");
 			}
+
+			// Add a banner with the version of the MSBuild used, project path (workdir), etc... using the banner helper
+			var entries = new List<BannerHelper.BannerEntry>()
+			{
+				("MSBuild", MSBuildBasePath),
+				("TargetFramework", "net" + expectedVersion.Major),
+				("WorkDir", workDir ?? ""),
+			};
+
+			BannerHelper.Write("Compilation Workspace Provider", entries);
 		}
 
 		private static Version GetDotnetVersion(string? workDir)

@@ -19,7 +19,6 @@ using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Helpers;
-using Microsoft.Build.Locator;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -27,13 +26,6 @@ namespace Uno.UI.RemoteControl.Host
 	{
 		static async Task Main(string[] args)
 		{
-			// Register MSBuild defaults before any MSBuild assemblies are loaded
-			// This prevents TypeLoadException for Microsoft.NET.StringTools.FowlerNollVo1aHash
-			if (!MSBuildLocator.IsRegistered)
-			{
-				MSBuildLocator.RegisterDefaults();
-			}
-
 			var startTime = Stopwatch.GetTimestamp();
 
 			ITelemetry? telemetry = null;
@@ -242,19 +234,21 @@ namespace Uno.UI.RemoteControl.Host
 					? $"dotnet v{Environment.Version} (Assembly target: {targetFrameworkAttr.FrameworkDisplayName})"
 					: $"dotnet v{Environment.Version}";
 
-				var entries = new List<Host.Helpers.BannerHelper.BannerEntry>()
+				var lastWriteTime = File.GetLastWriteTime(location);
+				var entries = new List<BannerHelper.BannerEntry>()
 				{
 #if DEBUG
 					("Build", "DEBUG"),
+					("Build Date/Time", $"{lastWriteTime:yyyy-MM-dd/HH:mm:ss} ({DateTime.Now - lastWriteTime:g} ago)"),
 #endif
 					("Version", version),
 					("Runtime", runtimeText),
 					("Assembly", assemblyName),
-					("Location", Path.GetDirectoryName(location) ?? location, Helpers.BannerHelper.ClipMode.Start),
+					("Location", Path.GetDirectoryName(location) ?? location, BannerHelper.ClipMode.Start),
 					("HTTP Port", httpPort.ToString(DateTimeFormatInfo.InvariantInfo)),
 				};
 
-				Helpers.BannerHelper.Write("Uno Platform DevServer", entries);
+				BannerHelper.Write("Uno Platform DevServer", entries);
 			}
 			catch (Exception ex)
 			{
