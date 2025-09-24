@@ -11,8 +11,6 @@ using Uno.UI.RemoteControl.Helpers;
 using System.Collections.Generic;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
-using Microsoft.Build.Locator;
-using System.Composition.Hosting;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -140,7 +138,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				throw new InvalidOperationException($"Invalid dotnet installation installation (Cannot find Microsoft.Build.dll in [{MSBuildBasePath}])");
 			}
 
-			// Add a banner with the version of the MSBuild used, project path (workdir), etc... using the banner helper
 			var entries = new List<BannerHelper.BannerEntry>()
 			{
 				("MSBuild", MSBuildBasePath),
