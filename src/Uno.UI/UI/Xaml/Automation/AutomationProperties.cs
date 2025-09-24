@@ -333,37 +333,6 @@ public partial class AutomationProperties
 	/// </summary>
 	public static void SetAccessKey(DependencyObject element, string value) => element.SetValue(AccessKeyProperty, value);
 
-	private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-	{
-#if __APPLE_UIKIT__
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIKit.UIView view)
-			{
-				view.AccessibilityIdentifier = (string)args.NewValue;
-			}
-#elif __ANDROID__
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AView view)
-			{
-				view.ContentDescription = (string)args.NewValue;
-			}
-#elif __WASM__
-			if (dependencyObject is UIElement uiElement)
-			{
-				if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
-				{
-					uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
-				}
-
-				var role = FindHtmlRole(uiElement);
-				if (role != null)
-				{
-					uiElement.SetAttribute(
-						("aria-label", (string)args.NewValue),
-						("role", role));
-				}
-			}
-#endif
-	}
-
 	/// <summary>
 	/// Gets the AutomationId for the specified element.
 	/// </summary>
