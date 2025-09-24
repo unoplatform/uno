@@ -29,11 +29,11 @@ namespace Uno.UI.RemoteControl.Helpers
 			public static implicit operator BannerEntry((string Key, string Value) t) => new(t.Key, t.Value);
 		}
 
-		public static void Write(string title, IReadOnlyDictionary<string, string> entries, int maxInnerWidth = 118, TextWriter? output = null)
+		public static void Write(string title, IReadOnlyDictionary<string, string> dictionary, int maxInnerWidth = 118, TextWriter? output = null)
 		{
 			ArgumentNullException.ThrowIfNull(title);
-			ArgumentNullException.ThrowIfNull(entries);
-			Write(title, [.. entries.Select(kvp => new BannerEntry(kvp.Key, kvp.Value))], maxInnerWidth, output);
+			ArgumentNullException.ThrowIfNull(dictionary);
+			Write(title, [.. dictionary.Select(kvp => new BannerEntry(kvp.Key, kvp.Value))], maxInnerWidth, output);
 		}
 
 		/// <summary>
