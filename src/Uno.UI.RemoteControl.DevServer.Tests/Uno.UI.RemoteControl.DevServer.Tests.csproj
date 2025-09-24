@@ -19,7 +19,7 @@
 
 	<ItemGroup>
 		<!-- Include BannerHelper source file directly for testing -->
-		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Server\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -11,7 +11,6 @@ using Uno.UI.RemoteControl.Helpers;
 using System.Collections.Generic;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
-using System.Composition.Hosting;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -60,6 +59,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			}
 
 			var globalProperties = properties.Where(property => IsValidProperty(property.Key)).ToDictionary();
+
+#if DEBUG
+			var bannerProperties = new Dictionary<string, string>(globalProperties)
+			{
+				["(Project)"] = projectPath,
+				["(MSBuildBasePath)"] = MSBuildBasePath,
+			};
+
+			BannerHelper.Write("MSBuildWorkspace globalProperties", bannerProperties);
+#endif
 
 			MSBuildWorkspace workspace = null!;
 			for (var i = 3; i > 0; i--)
@@ -128,6 +137,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			{
 				throw new InvalidOperationException($"Invalid dotnet installation installation (Cannot find Microsoft.Build.dll in [{MSBuildBasePath}])");
 			}
+
+			var entries = new List<BannerHelper.BannerEntry>()
+			{
+				("MSBuild", MSBuildBasePath),
+				("TargetFramework", "net" + expectedVersion.Major),
+				("WorkDir", workDir ?? ""),
+			};
+
+			BannerHelper.Write("Compilation Workspace Provider", entries);
 		}
 
 		private static Version GetDotnetVersion(string? workDir)
