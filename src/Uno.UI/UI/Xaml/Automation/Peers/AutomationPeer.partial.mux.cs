@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -138,66 +139,33 @@ internal class AutomationPeer
 	//}
 	protected virtual object GetPatternCore(Microsoft.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => null;
 
-	//private void GetChildrenImpl(out IVector<AutomationPeer*>** returnValue)
-	//{
+	public IList<AutomationPeer> GetChildren()
+	{
+		var pAPChildren = GetChildrenCore();
+		if (pAPChildren is not null)
+		{
+			var nCount = pAPChildren.Count;
 
-	//	IVector<AutomationPeer*>* pAPChildren = null;
-	//	IAutomationPeer* pAP = null;
-	//	uint nCount = 0;
+			// Defining a set of nodes as children implies that all the children must target this node as their parent. We ensure that
+			// relationship here for managed peer objects.
+			for (uint i = 0; i < nCount; i++)
+			{
+				var pAP = pAPChildren[i];
+				if (pAP is not null)
+				{
+					(CoreImports.SetAutomationPeerParent((AutomationPeer)pAP, this);
+				}
+			}
+		}
 
-	//	*returnValue = null;
-	//	GetChildrenCoreProtected(&pAPChildren);
-	//	if (pAPChildren)
-	//	{
-	//		nCount = pAPChildren.Size;
+		return pAPChildren;
+	}
 
-	//		// Defining a set of nodes as children implies that all the children must target this node as their parent. We ensure that
-	//		// relationship here for managed peer objects.
-	//		for (uint i = 0; i < nCount; i++)
-	//		{
-	//			pAPChildren.GetAt(i, &pAP);
-	//			if (pAP)
-	//			{
-	//				(CoreImports.SetAutomationPeerParent((CAutomationPeer*)((AutomationPeer*)(pAP).GetHandle()),
-	//					(CAutomationPeer*)(GetHandle())));
-	//			}
-	//			ReleaseInterface(pAP);
-	//		}
-	//	}
+	public IReadOnlyList<AutomationPeer> GetControlledPeers() => GetControlledPeersCore();
 
-	//	*returnValue = pAPChildren;
-	//	pAPChildren = null;
-
-	//Cleanup:
-	//	ReleaseInterface(pAP);
-	//	ReleaseInterface(pAPChildren);
-	//	RRETURN(hr);
-	//}
-
-	//private void GetControlledPeersImpl(out IVectorView<AutomationPeer*>** returnValue)
-	//{
-
-
-	//	GetControlledPeersCoreProtected(returnValue);
-
-	//Cleanup:
-	//	RRETURN(hr);
-	//}
-
-	//private void ShowContextMenuImpl()
-	//{
-	//	RRETURN(ShowContextMenuCoreProtected());
-	//}
-
-	//private void GetPeerFromPointImpl(wf.Point point, out IAutomationPeer** returnValue)
-	//{
-
-
-	//	GetPeerFromPointCoreProtected(point, returnValue);
-
-	//Cleanup:
-	//	RRETURN(hr);
-	//}
+	public void ShowContextMenu() => ShowContextMenuCore();
+	
+	public AutomationPeer GetPeerFromPoint(Point point) => GetPeerFromPointCore(point);
 
 	protected virtual string GetAcceleratorKeyCore() => string.Empty;
 
@@ -211,108 +179,96 @@ internal class AutomationPeer
 
 	protected virtual IList<AutomationPeer> GetChildrenCore() => null;
 
-	//// Custom APs can override NavigateCoreImpl to manage the navigation of APs completley by themselves.
-	//// In addition to that they can also use it to return native UIA nodes which is why the return
-	//// type is object instead of an IAutomationPeer*. The default implementation still uses
-	//// GetChildren and GetParent to have backward compatibility. This method also deprecates GetParent.
-	//private void NavigateCoreImpl(AutomationNavigationDirection direction, out object* ppReturnValue)
-	//{
+	// Custom APs can override NavigateCoreImpl to manage the navigation of APs completley by themselves.
+	// In addition to that they can also use it to return native UIA nodes which is why the return
+	// type is object instead of an IAutomationPeer*. The default implementation still uses
+	// GetChildren and GetParent to have backward compatibility. This method also deprecates GetParent.
+	protected virtual object NavigateCore(AutomationNavigationDirection direction)
+	{
+		IList<AutomationPeer> spAPChildren;
+		AutomationPeer spAP = null;
+		int nCount = 0;
 
-	//	IVector<AutomationPeer*> spAPChildren;
-	//	IAutomationPeer spAP;
-	//	object spAPAsInspectable;
-	//	uint nCount = 0;
+		switch (direction)
+		{
+			case AutomationNavigationDirection.FirstChild:
+				{
+					spAPChildren = GetChildren();
+					if (spAPChildren is not null)
+					{
+						nCount = spAPChildren.Count;
+						if (nCount > 0)
+						{
+							spAP = spAPChildren[0];
+						}
+					}
+					break;
+				}
+			case AutomationNavigationDirection.LastChild:
+				{
+					spAPChildren = GetChildren();
+					if (spAPChildren is not null)
+					{
+						nCount = spAPChildren.Count;
+						if (nCount > 0)
+						{
+							spAP = spAPChildren[nCount - 1];
+						}
+					}
+					break;
+				}
+			case AutomationNavigationDirection.PreviousSibling:
+				{
+					// Prev/Next needs to make sure to handle case where parent is root window, GetParent will be null in that case.
+					AutomationPeer spAPParent;
 
-	//	*ppReturnValue = null;
+					spAPParent = GetParent();
+					if (spAPParent is not null)
+					{
+						spAPChildren = spAPParent.GetChildren();
+						if (spAPChildren is not null)
+						{
+							var index = spAPChildren.IndexOf(this);
+							if (index != -1 && index > 0)
+							{
+								spAP = spAPChildren[index - 1];
+							}
+						}
+					}
+					break;
+				}
+			case AutomationNavigationDirection.NextSibling:
+				{
+					AutomationPeer spAPParent;
 
-	//	switch (direction)
-	//	{
-	//		case AutomationNavigationDirection_FirstChild:
-	//			{
-	//				GetChildren(&spAPChildren);
-	//				if (spAPChildren)
-	//				{
-	//					nCount = spAPChildren.Size;
-	//					if (nCount > 0)
-	//					{
-	//						spAPChildren.GetAt(0, &spAP);
-	//					}
-	//				}
-	//				break;
-	//			}
-	//		case AutomationNavigationDirection_LastChild:
-	//			{
-	//				GetChildren(&spAPChildren);
-	//				if (spAPChildren)
-	//				{
-	//					nCount = spAPChildren.Size;
-	//					if (nCount > 0)
-	//					{
-	//						spAPChildren.GetAt(nCount - 1, &spAP);
-	//					}
-	//				}
-	//				break;
-	//			}
-	//		case AutomationNavigationDirection_PreviousSibling:
-	//			{
-	//				// Prev/Next needs to make sure to handle case where parent is root window, GetParent will be null in that case.
-	//				IAutomationPeer spAPParent;
-	//				uint index = 0;
-	//				bool found = false;
+					spAPParent = GetParent();
+					if (spAPParent is not null)
+					{
+						spAPChildren = spAPParent.GetChildren();
+						if (spAPChildren is not null)
+						{
+							nCount = spAPChildren.Count;
+							var index = spAPChildren.IndexOf(this);
+							MUX_ASSERT(nCount == 0 ? index == -1 : true);
+							if (index != -1 && index < nCount - 1)
+							{
+								spAP = spAPChildren[index + 1];
+							}
+						}
+					}
+					break;
+				}
+			case AutomationNavigationDirection.Parent:
+				{
+					spAP = GetParent();
+					break;
+				}
+			default:
+				throw new NotSupportedException("Unsupported AutomationNavigationDirection");
+		}
 
-	//				GetParent(&spAPParent);
-	//				if (spAPParent)
-	//				{
-	//					spAPParent.GetChildren(&spAPChildren);
-	//					if (spAPChildren)
-	//					{
-	//						spAPChildren.IndexOf(this, &index, &found);
-	//						if (found && index > 0)
-	//						{
-	//							spAPChildren.GetAt(index - 1, &spAP);
-	//						}
-	//					}
-	//				}
-	//				break;
-	//			}
-	//		case AutomationNavigationDirection_NextSibling:
-	//			{
-	//				IAutomationPeer spAPParent;
-	//				uint index = 0;
-	//				bool found = false;
-
-	//				GetParent(&spAPParent);
-	//				if (spAPParent)
-	//				{
-	//					spAPParent.GetChildren(&spAPChildren);
-	//					if (spAPChildren)
-	//					{
-	//						nCount = spAPChildren.Size;
-	//						spAPChildren.IndexOf(this, &index, &found);
-	//						MUX_ASSERT(nCount == 0 ? found == false : true);
-	//						if (found && index < nCount - 1)
-	//						{
-	//							spAPChildren.GetAt(index + 1, &spAP);
-	//						}
-	//					}
-	//				}
-	//				break;
-	//			}
-	//		case AutomationNavigationDirection_Parent:
-	//			{
-	//				GetParent(&spAP);
-	//				break;
-	//			}
-	//		default:
-	//			E_NOT_SUPPORTED;
-	//	}
-
-	//	spAP.As(&spAPAsInspectable);
-	//	*ppReturnValue = spAPAsInspectable.Detach();
-
-	//Cleanup:
-	//	RRETURN(hr);
-	//}
+		return spAP;
+	}
 
 	protected virtual string GetClassNameCore() => "";
 
@@ -532,13 +488,7 @@ internal class AutomationPeer
 
 	protected virtual bool IsPeripheralCore() => false;
 
-	//private void IsDataValidForFormCoreImpl(out bool* pRetVal)
-	//{
-	//	// RS1 Bug 6889554 - While this is different than the default value that UIA Core normally returns, we
-	//	// felt the current default of false does not make the most sense for the scenario(s) in which it is used.
-	//	*pRetVal = true;
-	//	return S_OK;
-	//}
+	protected virtual bool IsDataValidForFormCore() => true;
 
 	protected virtual string GetFullDescriptionCore() => string.Empty;
 
@@ -561,11 +511,7 @@ internal class AutomationPeer
 	//	return ((CAutomationPeer*)(GetHandle()).GetCultureHelper(returnValue));
 	//}
 
-	//private void GetHeadingLevelCoreImpl(out AutomationHeadingLevel* returnValue)
-	//{
-	//	*returnValue = AutomationHeadingLevel.AutomationHeadingLevel_None;
-	//	return S_OK;
-	//}
+	protected virtual AutomationHeadingLevel GetHeadingLevelCore() => AutomationHeadingLevel.None;
 
 	protected virtual bool IsDialogCore() => false;
 
@@ -818,16 +764,8 @@ internal class AutomationPeer
 
 	//	return S_OK;
 	//}
-
-	//private void GetPeerFromPointCoreImpl(
-	//	 wf.Point point,
-	//	out IAutomationPeer** ppReturnValue)
-	//{
-	//	IAutomationPeer spThis(this);
-	//	*ppReturnValue = spThis.Detach();
-
-	//	return S_OK;
-	//}
+	
+	protected virtual AutomationPeer GetPeerFromPointCore(Point point) => this;
 
 	//// Custom APs can override GetElementFromPointCoreImpl to manage the hit-testing of APs completley
 	//// by themselves. In addition to that they can also use it to return native UIA nodes as applicable
