@@ -14,7 +14,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.DataBinding;
-using Uno.UI.__Resources;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Extensions;
 using static DirectUI.ElevationHelper;
