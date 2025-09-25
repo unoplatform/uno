@@ -46,7 +46,7 @@ partial class ToggleMenuFlyoutItem
 		// since if we don't have any menu items with accelerator text, we won't be showing any accelerator text anyway.
 		if (hasMenuItemWithKeyboardAcceleratorText)
 		{
-			isKeyboardPresent = DXamlCore.Current.IsKeyboardPresent; // TODO MZ new KeyboardCapabilities().KeyboardPresent != 0;
+			isKeyboardPresent = DXamlCore.Current.IsKeyboardPresent;
 		}
 
 		// CommonStates
