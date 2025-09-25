@@ -2,19 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using Windows.Foundation;
 using Windows.UI.Text;
 using HarfBuzzSharp;
-using Icu;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
-using Uno.Disposables;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
 
@@ -139,8 +137,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			else
 			{
 				var firstInlineText = inlines[0].GetText();
-				using var _1 = NativeMethods.CreateBiDiAndSetPara(firstInlineText, 0, firstInlineText.Length, UBIDI_DEFAULT_LTR, out var bidi);
-				NativeMethods.GetMethod<NativeMethods.ubidi_getLogicalRun>()(bidi, 0, out _, out var level);
+				using var _1 = ICU.CreateBiDiAndSetPara(firstInlineText, 0, firstInlineText.Length, UBIDI_DEFAULT_LTR, out var bidi);
+				ICU.GetMethod<ICU.ubidi_getLogicalRun>()(bidi, 0, out _, out var level);
 				Debug.Assert(level is UBIDI_LTR or UBIDI_RTL);
 				flowDirection = level is UBIDI_RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 			}
@@ -244,17 +242,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				var sameInlineRuns = new List<ShapedLineBrokenBidiRun>();
 
-				using var _ = NativeMethods.CreateBiDiAndSetPara(inline.Text, startInInline, endInInline, (byte)(inline.FlowDirection is FlowDirection.RightToLeft ? 1 : 0), out var bidi);
+				using var _ = ICU.CreateBiDiAndSetPara(inline.Text, startInInline, endInInline, (byte)(inline.FlowDirection is FlowDirection.RightToLeft ? 1 : 0), out var bidi);
 
-				var runCount = NativeMethods.GetMethod<NativeMethods.ubidi_countRuns>()(bidi, out int countRunsErrorCode);
-				if (countRunsErrorCode > 0)
-				{
-					throw new InvalidOperationException($"{nameof(NativeMethods.ubidi_countRuns)} failed with error code {countRunsErrorCode}");
-				}
+				var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out var countRunsErrorCode);
+				ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
 
 				for (var runIndex = 0; runIndex < runCount; runIndex++)
 				{
-					var level = NativeMethods.GetMethod<NativeMethods.ubidi_getVisualRun>()(bidi, runIndex, out var logicalStart, out var length);
+					var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, runIndex, out var logicalStart, out var length);
 					Debug.Assert(level is UBIDI_LTR or UBIDI_RTL);
 
 					var sameInlineRunsLengthBeforeFontSplitting = sameInlineRuns.Count;
@@ -531,21 +526,24 @@ internal readonly partial struct UnicodeText : IParsedText
 		return lines;
 	}
 
-	private static List<int> GetLineBreakingOpportunities(string text)
+	private static unsafe IEnumerable<int> GetLineBreakingOpportunities(string text)
 	{
-		// TODO: locale?
-		var lineBoundaries = BreakIterator.GetBoundaries(BreakIterator.UBreakIteratorType.LINE, new Locale("en", "US"), text).ToArray();
-#if DEBUG
-		Debug.Assert(lineBoundaries[0].Start == 0);
-		for (int i = 0; i < lineBoundaries.Length - 1; i++)
+		var ret = new List<int>();
+		fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
 		{
-			Debug.Assert(lineBoundaries[i].End != lineBoundaries[i].Start && lineBoundaries[i].End == lineBoundaries[i + 1].Start);
+			fixed (char* textPtr = &text.GetPinnableReference())
+			{
+				var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(/* Line */ 2, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
+				ICU.CheckErrorCode<ICU.ubrk_open>(status);
+				ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
+				while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
+				{
+					ret.Add(next);
+				}
+				ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
+			}
 		}
-		Debug.Assert(lineBoundaries[^1].End != lineBoundaries[^1].Start && lineBoundaries[^1].End == text.Length);
-#endif
-		// The line breaking opportunity is right before the "line boundary"
-		var lineBreakingOpportunities = lineBoundaries.Select(b => b.End).ToList();
-		return lineBreakingOpportunities;
+		return ret;
 	}
 
 	private static List<int> GetWordBreakingOpportunities(string text)
@@ -607,19 +605,16 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline)
 	{
-		using var _ = NativeMethods.CreateBiDiAndSetPara(inline.Text, 0, inline.Text.Length, (byte)(inline.FlowDirection == FlowDirection.LeftToRight ? UBIDI_LTR : UBIDI_RTL), out var bidi);
+		using var _ = ICU.CreateBiDiAndSetPara(inline.Text, 0, inline.Text.Length, (byte)(inline.FlowDirection == FlowDirection.LeftToRight ? UBIDI_LTR : UBIDI_RTL), out var bidi);
 
-		var runCount = NativeMethods.GetMethod<NativeMethods.ubidi_countRuns>()(bidi, out int countRunsErrorCode);
-		if (countRunsErrorCode > 0)
-		{
-			throw new InvalidOperationException($"{nameof(NativeMethods.ubidi_countRuns)} failed with error code {countRunsErrorCode}");
-		}
+		var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out int countRunsErrorCode);
+		ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
 
 		var logicallyOrderedRuns = new List<BidiRun>(runCount);
 		for (var runIndex = 0; runIndex < runCount; runIndex++)
 		{
 			// using bidi.GetLogicalRun instead returned weird results especially in rtl text.
-			var level = NativeMethods.GetMethod<NativeMethods.ubidi_getVisualRun>()(bidi, runIndex, out var logicalStart, out var length);
+			var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, runIndex, out var logicalStart, out var length);
 			Debug.Assert(level is UBIDI_LTR or UBIDI_RTL);
 
 			var currentFontDetails = inline.FontDetails;
@@ -682,6 +677,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			textRun = textRun[..^TrailingSpaceCount(textRun, 0, textRun.Length)];
 		}
+
 		Debug.Assert(textRun.Length < 2 || !textRun[..^2].Contains("\r\n"));
 		using var buffer = new Buffer();
 		buffer.AddUtf16(textRun, 0, textRun is [.., '\r', '\n'] ? textRun.Length - 1 : textRun.Length);
