@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
+using Uno.Disposables;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
 
@@ -28,10 +29,13 @@ namespace Microsoft.UI.Xaml.Documents;
 
 // TODO: character spacing
 // TODO: what happens if text has no drawable glyphs but is not empty? Can this happen? The HarfBuzz docs imply that it can't
-internal readonly struct UnicodeText : IParsedText
+internal readonly partial struct UnicodeText : IParsedText
 {
 	// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
 	private const float TabStopWidth = 48;
+	private const byte UBIDI_DEFAULT_LTR = 0xfe;
+	private const int UBIDI_LTR = 0;
+	private const int UBIDI_RTL = 1;
 
 	// A readonly snapshot of an Inline that is referenced by individual text runs after splitting. It's a class
 	// and not a struct because we don't want to copy the same Inline for each run.
@@ -105,7 +109,7 @@ internal readonly struct UnicodeText : IParsedText
 
 	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
 
-	internal UnicodeText(
+	internal unsafe UnicodeText(
 		Size availableSize,
 		Inline[] inlines, // only leaf nodes
 		FontDetails defaultFontDetails, // only used for a final empty line, otherwise the FontDetails are read from the inline
@@ -134,11 +138,11 @@ internal readonly struct UnicodeText : IParsedText
 			}
 			else
 			{
-				using var bidi = new BiDi();
-				bidi.SetPara(inlines[0].GetText(), BiDi.DEFAULT_LTR, null);
-				bidi.GetLogicalRun(0, out var level);
-				Debug.Assert(level is (int)BiDi.BiDiDirection.RTL or (int)BiDi.BiDiDirection.LTR);
-				flowDirection = level is (int)BiDi.BiDiDirection.RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+				var firstInlineText = inlines[0].GetText();
+				using var _1 = NativeMethods.CreateBiDiAndSetPara(firstInlineText, 0, firstInlineText.Length, UBIDI_DEFAULT_LTR, out var bidi);
+				NativeMethods.GetMethod<NativeMethods.ubidi_getLogicalRun>()(bidi, 0, out _, out var level);
+				Debug.Assert(level is UBIDI_LTR or UBIDI_RTL);
+				flowDirection = level is UBIDI_RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 			}
 			textAlignment = flowDirection is FlowDirection.LeftToRight ? TextAlignment.Left : TextAlignment.Right;
 			var copy = new ReadonlyInlineCopy(inline, 0, flowDirection, true);
@@ -203,11 +207,8 @@ internal readonly struct UnicodeText : IParsedText
 		var logicallyOrderedLineBreakingOpportunities = new List<(int indexInInline, ReadonlyInlineCopy inline)>();
 		foreach (var inline in inlines)
 		{
-			var text = inline.Text;
-			var bidi = new BiDi();
-			bidi.SetPara(text, (byte)(inline.FlowDirection == FlowDirection.LeftToRight ? 0 : 1), null);
-			logicallyOrderedRuns.AddRange(SplitTextIntoLogicallyOrderedBidiRuns(inline, bidi));
-			logicallyOrderedLineBreakingOpportunities.AddRange(GetLineBreakingOpportunities(text).Select(b => (b, inline)));
+			logicallyOrderedRuns.AddRange(SplitTextIntoLogicallyOrderedBidiRuns(inline));
+			logicallyOrderedLineBreakingOpportunities.AddRange(GetLineBreakingOpportunities(inline.Text).Select(b => (b, inline)));
 		}
 
 		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidth, logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities, rtl, textWrapping);
@@ -243,14 +244,18 @@ internal readonly struct UnicodeText : IParsedText
 			{
 				var sameInlineRuns = new List<ShapedLineBrokenBidiRun>();
 
-				var text = inline.Text[startInInline..endInInline];
-				var bidi = new BiDi();
-				bidi.SetPara(text, (byte)(inline.FlowDirection is FlowDirection.RightToLeft ? 1 : 0), null);
-				var runCount = bidi.CountRuns();
+				using var _ = NativeMethods.CreateBiDiAndSetPara(inline.Text, startInInline, endInInline, (byte)(inline.FlowDirection is FlowDirection.RightToLeft ? 1 : 0), out var bidi);
+
+				var runCount = NativeMethods.GetMethod<NativeMethods.ubidi_countRuns>()(bidi, out int countRunsErrorCode);
+				if (countRunsErrorCode > 0)
+				{
+					throw new InvalidOperationException($"{nameof(NativeMethods.ubidi_countRuns)} failed with error code {countRunsErrorCode}");
+				}
+
 				for (var runIndex = 0; runIndex < runCount; runIndex++)
 				{
-					var level = bidi.GetVisualRun(runIndex, out var logicalStart, out var length);
-					Debug.Assert(level is BiDi.BiDiDirection.RTL or BiDi.BiDiDirection.LTR);
+					var level = NativeMethods.GetMethod<NativeMethods.ubidi_getVisualRun>()(bidi, runIndex, out var logicalStart, out var length);
+					Debug.Assert(level is UBIDI_LTR or UBIDI_RTL);
 
 					var sameInlineRunsLengthBeforeFontSplitting = sameInlineRuns.Count;
 					var currentFontDetails = inline.FontDetails;
@@ -274,16 +279,16 @@ internal readonly struct UnicodeText : IParsedText
 							if (i != logicalStart)
 							{
 								// the currentLineWidth parameter of ShapeRun is null and the tab width will be adjusted later in LayoutLines.
-								sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + i, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + i)], level is BiDi.BiDiDirection.RTL, currentFontDetails, null, ignoreTrailingSpaces: false), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+								sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + i, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + i)], level is UBIDI_RTL, currentFontDetails, null, ignoreTrailingSpaces: false), currentFontDetails, level is UBIDI_RTL));
 							}
 							currentFontDetails = newFontDetails;
 							currentFontSplitStart = i;
 						}
 					}
 					// the currentLineWidth parameter of ShapeRun is null and the tab width will be adjusted later in LayoutLines.
-					sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + logicalStart + length, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + logicalStart + length)], level is BiDi.BiDiDirection.RTL, currentFontDetails, null, ignoreTrailingSpaces: false), currentFontDetails, level is BiDi.BiDiDirection.RTL));
+					sameInlineRuns.Add(new ShapedLineBrokenBidiRun(inline, startInInline + currentFontSplitStart, startInInline + logicalStart + length, ShapeRun(inline.Text[(startInInline + currentFontSplitStart)..(startInInline + logicalStart + length)], level is UBIDI_RTL, currentFontDetails, null, ignoreTrailingSpaces: false), currentFontDetails, level is UBIDI_RTL));
 					// swap runs if rtl since we always process characters in a single bidi run in logical order
-					if (level is BiDi.BiDiDirection.RTL)
+					if (level is UBIDI_RTL)
 					{
 						for (var i = 0; i < (sameInlineRuns.Count - sameInlineRunsLengthBeforeFontSplitting) / 2; i++)
 						{
@@ -600,15 +605,22 @@ internal readonly struct UnicodeText : IParsedText
 		return chunks;
 	}
 
-	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline, BiDi bidi)
+	private static List<BidiRun> SplitTextIntoLogicallyOrderedBidiRuns(ReadonlyInlineCopy inline)
 	{
-		var runCount = bidi.CountRuns();
+		using var _ = NativeMethods.CreateBiDiAndSetPara(inline.Text, 0, inline.Text.Length, (byte)(inline.FlowDirection == FlowDirection.LeftToRight ? UBIDI_LTR : UBIDI_RTL), out var bidi);
+
+		var runCount = NativeMethods.GetMethod<NativeMethods.ubidi_countRuns>()(bidi, out int countRunsErrorCode);
+		if (countRunsErrorCode > 0)
+		{
+			throw new InvalidOperationException($"{nameof(NativeMethods.ubidi_countRuns)} failed with error code {countRunsErrorCode}");
+		}
+
 		var logicallyOrderedRuns = new List<BidiRun>(runCount);
 		for (var runIndex = 0; runIndex < runCount; runIndex++)
 		{
 			// using bidi.GetLogicalRun instead returned weird results especially in rtl text.
-			var level = bidi.GetVisualRun(runIndex, out var logicalStart, out var length);
-			Debug.Assert(level is BiDi.BiDiDirection.RTL or BiDi.BiDiDirection.LTR);
+			var level = NativeMethods.GetMethod<NativeMethods.ubidi_getVisualRun>()(bidi, runIndex, out var logicalStart, out var length);
+			Debug.Assert(level is UBIDI_LTR or UBIDI_RTL);
 
 			var currentFontDetails = inline.FontDetails;
 			var currentFontSplitStart = logicalStart;
@@ -631,13 +643,13 @@ internal readonly struct UnicodeText : IParsedText
 				{
 					if (currentFontSplitStart != i)
 					{
-						logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, i, level == BiDi.BiDiDirection.RTL, currentFontDetails));
+						logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, i, level is UBIDI_RTL, currentFontDetails));
 					}
 					currentFontDetails = newFontDetails;
 					currentFontSplitStart = i;
 					if (isTab)
 					{
-						logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, i + 1, level == BiDi.BiDiDirection.RTL, currentFontDetails));
+						logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, i + 1, level is UBIDI_RTL, currentFontDetails));
 						currentFontSplitStart = i + 1;
 					}
 				}
@@ -645,7 +657,7 @@ internal readonly struct UnicodeText : IParsedText
 
 			if (currentFontSplitStart != logicalStart + length)
 			{
-				logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, logicalStart + length, level == BiDi.BiDiDirection.RTL, currentFontDetails));
+				logicallyOrderedRuns.Add(new BidiRun(inline, currentFontSplitStart, logicalStart + length, level is UBIDI_RTL, currentFontDetails));
 			}
 		}
 
