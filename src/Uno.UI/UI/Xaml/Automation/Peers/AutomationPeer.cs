@@ -79,6 +79,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		public bool IsDataValidForForm() => IsDataValidForFormCore();
 
+		public int GetCulture() => GetCultureCore();
+
 		public string GetFullDescription() => GetFullDescriptionCore();
 
 		public AutomationHeadingLevel GetHeadingLevel() => GetHeadingLevelCore();
@@ -110,66 +112,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		#endregion
 
 		#region Overrides
-
-
-
-
-
-		
-
-		
-
-
-
-		
-
-		
-
-		
-
 		protected virtual object GetElementFromPointCore(Point pointInWindowCoordinates) => this;
-
-		
-
-		
-
-		
-
-		
-
-		
-
-		
-
-
-		
-
-
-		
-
-
-		
-
-		
-
-		protected virtual string GetLocalizedControlTypeCore() => LocalizeControlType(GetAutomationControlType());
-
-
-		
-		protected virtual void SetFocusCore()
-		{
-		}
-
 
 		#endregion
 
 		#region Private
-
-		//UNO TODO: Implement GetRootNoRef on AutomationPeer
-		internal DependencyObject GetRootNoRef()
-		{
-			return null;
-		}
 
 		//UNO TODO: Check the implementations of IsKeyboardFocusableHelper and IsOffscreenHelper
 		internal bool IsKeyboardFocusableHelper()
@@ -177,11 +124,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		internal bool IsOffscreenHelper(bool ignoreClippingOnScrollContentPresenters)
 			=> false;
-
-		private static string LocalizeControlType(AutomationControlType controlType) =>
-			// TODO: Humanize ("AppBarButton" -> "app bar button")
-			// TODO: Localize
-			Enum.GetName<AutomationControlType>(controlType).ToLowerInvariant();
 
 		internal bool InvokeAutomationPeer()
 		{
