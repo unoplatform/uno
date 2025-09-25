@@ -13,43 +13,72 @@ internal readonly partial struct UnicodeText
 {
 	private static class ICU
 	{
+		// The version number of ICU is important because the exported symbols have there names appended by
+		// the version number. For example, there's a ubrk_open_74 in ICU v74, but not a ubrl_open.
 		private static readonly int _icuVersion;
 		private static Func<Type, object> _getMethodMemoized;
 
-		static ICU()
+		static unsafe ICU()
 		{
-			var openLibraries = new List<IntPtr>();
+			IntPtr libicuuc;
 			if (OperatingSystem.IsWindows())
 			{
+				// On Windows, We get the ICU binaries from the Microsoft.ICU.ICU4C.Runtime package
 				_icuVersion = 72;
-				foreach (var libraryName in (ReadOnlySpan<string>)["icudt72", "icuin72", "icuuc72"])
+				if (NativeLibrary.TryLoad("icuuc72", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out var handle))
 				{
-					if (NativeLibrary.TryLoad(libraryName, typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out var handle))
+					libicuuc = handle;
+				}
+				else
+				{
+					throw new Exception("Failed to load libicuuc.");
+				}
+			}
+			else if (OperatingSystem.IsLinux())
+			{
+				// On Linux, we get the ICU binaries from the dynamic linker search path (usually /usr/lib64/)
+				if (NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out var handle))
+				{
+					libicuuc = handle;
+				}
+				else
+				{
+					throw new Exception("Failed to load libicuuc.");
+				}
+
+				// Since libicuuc not installed by us, we have no control over the specific version number, so
+				// we try a wide range of versions.
+				for (int i = 100; i >= 67; i--)
+				{
+					if (NativeLibrary.TryGetExport(libicuuc, $"u_getVersion_{i}", out var getVersion))
 					{
-						openLibraries.Add(handle);
-					}
-					else
-					{
-						typeof(ICU).LogError()?.Error($"Failed to load the {libraryName} library.");
+						_icuVersion = i;
 					}
 				}
+			}
+			else
+			{
+				throw new DllNotFoundException("Failed to load libicuuc.");
 			}
 
 			_getMethodMemoized = Funcs.CreateMemoized<Type, object>(type =>
 			{
-				foreach (var handle in openLibraries)
+				if (NativeLibrary.TryGetExport(libicuuc, type.Name, out var func))
 				{
-					if (NativeLibrary.TryGetExport(handle, type.Name, out var func))
-					{
-						return Marshal.GetDelegateForFunctionPointer(func, type);
-					}
-					if (NativeLibrary.TryGetExport(handle, $"{type.Name}_{_icuVersion}", out var func2))
-					{
-						return Marshal.GetDelegateForFunctionPointer(func2, type);
-					}
+					return Marshal.GetDelegateForFunctionPointer(func, type);
+				}
+				if (NativeLibrary.TryGetExport(libicuuc, $"{type.Name}_{_icuVersion}", out var func2))
+				{
+					return Marshal.GetDelegateForFunctionPointer(func2, type);
 				}
 				throw new Exception($"Failed to obtain the {type.Name} method from the ICU libraries.");
 			});
+
+			GetMethod<u_getVersion>()(out var versionInfo);
+			var ptr = Marshal.AllocHGlobal(1000);
+			GetMethod<u_versionToString>()((IntPtr)(&versionInfo), ptr);
+			typeof(ICU).LogInfo()?.Info($"Found ICU version {Marshal.PtrToStringAnsi(ptr)}.");
+			Marshal.FreeHGlobal(ptr);
 		}
 
 		public static T GetMethod<T>() => (T)_getMethodMemoized(typeof(T));
@@ -110,5 +139,20 @@ internal readonly partial struct UnicodeText
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		internal delegate int ubrk_next(IntPtr bi);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void u_getVersion(out UVersionInfo versionInfo);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void u_versionToString(IntPtr versionArray, IntPtr versionString);
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct UVersionInfo
+		{
+			public byte byte1;
+			public byte byte2;
+			public byte byte3;
+			public byte byte4;
+		}
 	}
 }
