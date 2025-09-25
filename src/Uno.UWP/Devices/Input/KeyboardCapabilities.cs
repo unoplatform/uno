@@ -10,7 +10,7 @@ namespace Windows.Devices.Input
 			get
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.KeyboardCapabilities", "KeyboardCapabilities.KeyboardPresent");
-				return 0;
+				return 1;
 			}
 		}
 
