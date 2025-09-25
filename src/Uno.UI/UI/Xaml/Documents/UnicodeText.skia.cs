@@ -345,7 +345,7 @@ internal readonly struct UnicodeText : IParsedText
 		}
 	}
 
-	private static (float remainingLineWidthWithoutTrailingSpaces, float remainingLineWidthWithTrailingSpaces) MeasureContiguousRunSequence(float currentLineWidth, List<BidiRun> logicallyOrderedRuns, int firstRunIndex, int startingIndexInFirstRun, int endRunIndex, int endIndexInLastRun, bool rtl)
+	private static float MeasureContiguousRunSequence(float currentLineWidth, List<BidiRun> logicallyOrderedRuns, int firstRunIndex, int startingIndexInFirstRun, int endRunIndex, int endIndexInLastRun, bool rtl)
 	{
 		var backup1 = logicallyOrderedRuns[firstRunIndex];
 		var backup2 = logicallyOrderedRuns[endRunIndex - 1];
@@ -363,16 +363,12 @@ internal readonly struct UnicodeText : IParsedText
 
 		var lastRun = logicallyOrderedRuns[endRunIndex - 1];
 		var start = firstRunIndex == endRunIndex - 1 ? startingIndexInFirstRun : lastRun.startInInline;
-		var glyphsWithTrailingSpaces = ShapeRun(lastRun.inline.Text[start..endIndexInLastRun], lastRun.rtl, lastRun.fontDetails, usedWidth, ignoreTrailingSpaces: true);
-		var glyphsWithoutTrailingSpaces =
-			lastRun.rtl == rtl && lastRun.inline.Text[lastRun.endInInline - 1] == ' '
-				? ShapeRun(lastRun.inline.Text[start..endIndexInLastRun], lastRun.rtl, lastRun.fontDetails, usedWidth, ignoreTrailingSpaces: true)
-				: glyphsWithTrailingSpaces;
+		var glyphsWithoutTrailingSpaces = ShapeRun(lastRun.inline.Text[start..endIndexInLastRun], lastRun.rtl, lastRun.fontDetails, usedWidth, ignoreTrailingSpaces: true);
 
 		logicallyOrderedRuns[firstRunIndex] = backup1;
 		logicallyOrderedRuns[endRunIndex - 1] = backup2;
 
-		return (usedWidth + RunWidth(glyphsWithoutTrailingSpaces, lastRun.inline.FontDetails), usedWidth + RunWidth(glyphsWithTrailingSpaces, lastRun.inline.FontDetails));
+		return usedWidth - currentLineWidth + RunWidth(glyphsWithoutTrailingSpaces, lastRun.inline.FontDetails);
 	}
 
 	private static IEnumerable<(int endRunIndex, int endIndexInLastRun)> SplitByLineBreakingOpportunities(List<BidiRun> logicallyOrderedRuns, List<(int indexInInline, ReadonlyInlineCopy inline)> logicallyOrderedLineBreakingOpportunities)
@@ -399,16 +395,18 @@ internal readonly struct UnicodeText : IParsedText
 	{
 		for (int testEndRunIndex = endRunIndex; testEndRunIndex > firstRunIndex; testEndRunIndex--)
 		{
-			for (int textEndIndexInLastRun = testEndRunIndex == endRunIndex ? endIndexInLastRun - 1 : logicallyOrderedRuns[testEndRunIndex - 1].endInInline; textEndIndexInLastRun > logicallyOrderedRuns[testEndRunIndex - 1].startInInline; textEndIndexInLastRun--)
+			for (int testEndIndexInLastRun = testEndRunIndex == endRunIndex ? endIndexInLastRun - 1 : logicallyOrderedRuns[testEndRunIndex - 1].endInInline;
+				 testEndIndexInLastRun > (testEndRunIndex - 1 == firstRunIndex ? startingIndexInFirstRun : logicallyOrderedRuns[testEndRunIndex - 1].startInInline);
+				 testEndIndexInLastRun--)
 			{
-				if (char.IsHighSurrogate(logicallyOrderedRuns[testEndRunIndex - 1].inline.Text[textEndIndexInLastRun - 1]))
+				if (char.IsHighSurrogate(logicallyOrderedRuns[testEndRunIndex - 1].inline.Text[testEndIndexInLastRun - 1]))
 				{
 					continue;
 				}
-				var (widthWithoutTrailingSpaces, _) = MeasureContiguousRunSequence(lineWidth, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, endRunIndex, endIndexInLastRun, rtl);
+				var widthWithoutTrailingSpaces = MeasureContiguousRunSequence(lineWidth, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, testEndRunIndex, testEndIndexInLastRun, rtl);
 				if (widthWithoutTrailingSpaces <= lineWidth)
 				{
-					return (testEndRunIndex, textEndIndexInLastRun);
+					return (testEndRunIndex, testEndIndexInLastRun);
 				}
 			}
 		}
@@ -429,15 +427,9 @@ internal readonly struct UnicodeText : IParsedText
 		var lineBreakingOpporunities = SplitByLineBreakingOpportunities(logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities).ToList();
 		for (var lineBreakingOpportunityIndex = 0; lineBreakingOpportunityIndex < lineBreakingOpporunities.Count; lineBreakingOpportunityIndex++)
 		{
-			var runSequence = lineBreakingOpporunities[lineBreakingOpportunityIndex];
+			var lineBreakingOpporunity = lineBreakingOpporunities[lineBreakingOpportunityIndex];
 
-			var backup1 = logicallyOrderedRuns[firstRunIndex];
-			var backup2 = logicallyOrderedRuns[runSequence.endRunIndex - 1];
-			logicallyOrderedRuns[firstRunIndex] = logicallyOrderedRuns[firstRunIndex] with { startInInline = startingIndexInFirstRun };
-			logicallyOrderedRuns[runSequence.endRunIndex - 1] = logicallyOrderedRuns[runSequence.endRunIndex - 1] with { endInInline = runSequence.endIndexInLastRun };
-			var (widthWithoutTrailingSpaces, _) = MeasureContiguousRunSequence(0, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, runSequence.endRunIndex, runSequence.endIndexInLastRun, rtl);
-			logicallyOrderedRuns[firstRunIndex] = backup1;
-			logicallyOrderedRuns[runSequence.endRunIndex - 1] = backup2;
+			var widthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, lineBreakingOpporunity.endRunIndex, lineBreakingOpporunity.endIndexInLastRun, rtl);
 
 			if (widthWithoutTrailingSpaces > lineWidth)
 			{
@@ -446,7 +438,7 @@ internal readonly struct UnicodeText : IParsedText
 
 				if (prevInSameLine is not null)
 				{
-					// after including the current runSequence on the line, things won't fit anymore
+					// after including the current run sequence on the line, things won't fit anymore
 					// so it moves to the next line regardless of whether we're in Wrap or WrapWholeWords
 					var line = new List<BidiRun>();
 					line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, prevInSameLine.Value.endRunIndex - firstRunIndex));
@@ -454,23 +446,24 @@ internal readonly struct UnicodeText : IParsedText
 					line[^1] = line[^1] with { endInInline = prevInSameLine.Value.endIndexInLastRun };
 					lines.Add(line);
 					(firstRunIndex, startingIndexInFirstRun) = (prevInSameLine.Value.endRunIndex - 1, prevInSameLine.Value.endIndexInLastRun);
-					prevInSameLine = runSequence;
+					prevInSameLine = lineBreakingOpporunity;
 				}
 				else
 				{
-					// runSequence is the only thing on this line but it still won't fit
-					if (textWrapping is TextWrapping.WrapWholeWords)
+					// only one "non-line-breakable" sequence is on this line but it still won't fit
+					if (textWrapping is TextWrapping.WrapWholeWords || logicallyOrderedRuns[firstRunIndex].inline.Text[startingIndexInFirstRun] == ' ')
 					{
+						// WrapWholeWords or nothing but spaces: move to the next line
 						var line = new List<BidiRun>();
-						line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, runSequence.endRunIndex - firstRunIndex));
+						line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, lineBreakingOpporunity.endRunIndex - firstRunIndex));
 						line[0] = line[0] with { startInInline = startingIndexInFirstRun };
-						line[^1] = line[^1] with { endInInline = runSequence.endIndexInLastRun };
+						line[^1] = line[^1] with { endInInline = lineBreakingOpporunity.endIndexInLastRun };
 						lines.Add(line);
-						(firstRunIndex, startingIndexInFirstRun) = (runSequence.endRunIndex - 1, runSequence.endIndexInLastRun);
+						(firstRunIndex, startingIndexInFirstRun) = (lineBreakingOpporunity.endRunIndex - 1, lineBreakingOpporunity.endIndexInLastRun);
 					}
 					else // Wrap
 					{
-						(int endRunIndex, int endIndexInLastRun) = SplitRunSequenceForWrapping(lineWidth, rtl, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, runSequence.endRunIndex, runSequence.endIndexInLastRun);
+						(int endRunIndex, int endIndexInLastRun) = SplitRunSequenceForWrapping(lineWidth, rtl, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, lineBreakingOpporunity.endRunIndex, lineBreakingOpporunity.endIndexInLastRun);
 						var line = new List<BidiRun>();
 						line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, endRunIndex - firstRunIndex));
 						line[0] = line[0] with { startInInline = startingIndexInFirstRun };
@@ -481,19 +474,19 @@ internal readonly struct UnicodeText : IParsedText
 					}
 				}
 			}
-			else if (IsLineBreak(logicallyOrderedRuns[runSequence.endRunIndex - 1].inline.Text, runSequence.endIndexInLastRun))
+			else if (IsLineBreak(logicallyOrderedRuns[lineBreakingOpporunity.endRunIndex - 1].inline.Text, lineBreakingOpporunity.endIndexInLastRun))
 			{
 				var line = new List<BidiRun>();
-				line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, runSequence.endRunIndex - firstRunIndex));
+				line.AddRange(logicallyOrderedRuns.Slice(firstRunIndex, lineBreakingOpporunity.endRunIndex - firstRunIndex));
 				line[0] = line[0] with { startInInline = startingIndexInFirstRun };
-				line[^1] = line[^1] with { endInInline = runSequence.endIndexInLastRun };
+				line[^1] = line[^1] with { endInInline = lineBreakingOpporunity.endIndexInLastRun };
 				lines.Add(line);
-				(firstRunIndex, startingIndexInFirstRun) = (runSequence.endRunIndex - 1, runSequence.endIndexInLastRun);
+				(firstRunIndex, startingIndexInFirstRun) = (lineBreakingOpporunity.endRunIndex - 1, lineBreakingOpporunity.endIndexInLastRun);
 				prevInSameLine = null;
 			}
 			else
 			{
-				prevInSameLine = runSequence;
+				prevInSameLine = lineBreakingOpporunity;
 			}
 
 			if (firstRunIndex < logicallyOrderedRuns.Count - 1 && logicallyOrderedRuns[firstRunIndex].endInInline == startingIndexInFirstRun)
