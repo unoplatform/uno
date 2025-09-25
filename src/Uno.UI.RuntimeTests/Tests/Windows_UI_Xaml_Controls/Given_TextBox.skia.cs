@@ -1912,7 +1912,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var text = "copied content";
 			dp.SetText(text);
 			Clipboard.SetContent(dp);
-			await Task.Delay(500);
 
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
@@ -1942,15 +1941,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			Paste();
-			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
 			Assert.AreEqual(text, SUT.Text);
 
 			SUT.Select(2, 4);
-			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
 			Copy();
-			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
 			Assert.AreEqual(SUT.Text.Substring(2, 4), await Clipboard.GetContent()!.GetTextAsync());
@@ -1958,9 +1957,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(4, SUT.SelectionLength);
 
 			SUT.Select(SUT.Text.Length - 1, 0);
-			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
 			Paste();
-			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
 			Assert.AreEqual("copied contenpiedt", SUT.Text);
@@ -1968,9 +1967,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			SUT.Select(6, 3);
-			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
 			Paste();
-			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
 			Assert.AreEqual("copiedpiedntenpiedt", SUT.Text);
