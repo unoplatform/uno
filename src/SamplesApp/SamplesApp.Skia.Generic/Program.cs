@@ -1,14 +1,9 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
-using Icu;
-using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI;
 using Uno.UI.Hosting;
@@ -30,33 +25,6 @@ namespace SkiaSharpExample
 			// and _UnoAdjustUserRuntimeAssembly to avoid getting reference assemblies in the
 			// output folder.
 			AssemblyLoadContext.Default.Resolving += Default_Resolving;
-			// Icu.Wrapper.Verbose = true;
-			// Icu.Wrapper.Init();
-
-			// Console.WriteLine($"Text: {text}");
-			// var lineBoundaries = Icu.BreakIterator.GetBoundaries(BreakIterator.UBreakIteratorType.LINE, new Locale("en", "US"), text);
-			// Console.WriteLine("Line boundaries:");
-			// foreach (var boundary in lineBoundaries)
-			// {
-			// 	Console.WriteLine($"[{text[boundary.Start..boundary.End]}]");
-			// }
-			// var wordBoundaries = Icu.BreakIterator.GetWordBoundaries(new Locale("en", "US"), text, true);
-			// Console.WriteLine("Word boundaries:");
-			// foreach (var boundary in wordBoundaries)
-			// {
-			// 	Console.WriteLine($"[{text[boundary.Start..boundary.End]}]");
-			// }
-			//
-			// var bidi = new Icu.BiDi();
-			// bidi.SetPara(text, BiDi.DEFAULT_RTL, null);
-			// var runCount = bidi.CountRuns();
-			// Console.WriteLine("BiDi runs logical to visual:");
-			// for (var i = 0; i < runCount; i++)
-			// {
-			// 	var level = bidi.GetVisualRun(i, out var logicalStart, out var length);
-			// 	Console.WriteLine(
-			// 		$"Visual Run {i} level: {level}: [{text[logicalStart..(logicalStart + length)]}]");
-			// }
 
 			Run();
 		}
