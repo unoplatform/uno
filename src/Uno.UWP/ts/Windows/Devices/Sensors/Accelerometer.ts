@@ -10,7 +10,7 @@
 }
 
 interface Window {
-	Accelerometer: Accelerometer;
+	Accelerometer: typeof Accelerometer;
 }
 
 namespace Windows.Devices.Sensors {
@@ -28,7 +28,8 @@ namespace Windows.Devices.Sensors {
 					} else {
 						throw `Accelerometer: Unable to find dotnet exports`;
 					}
-					this.accelerometer = new window.Accelerometer({ frequency: 60 });
+					let AccelerometerClass: any = window.Accelerometer;
+					this.accelerometer = new AccelerometerClass({ frequency: 60 });
 					return true;
 				}
 			} catch (error) {
