@@ -572,7 +572,7 @@ public class MenuFlyoutIntegrationTests
 		float horizontalCenter = (float)Math.Floor(windowBounds.X + (windowBounds.Width / 2));
 
 		// Simple Mouse case:
-		if (!TestServices.Utilities.IsOneCore)
+		if (true)
 		{
 			// Mouse input helper doesn't work on phone or onecore.
 			LOG_OUTPUT("-------------");
@@ -847,7 +847,9 @@ public class MenuFlyoutIntegrationTests
 		Mouse,
 		Keyboard,
 		Touch,
-		Pen
+		Pen,
+		Gamepad,
+		Remote,
 	}
 
 	private enum HorizontalOpenDirection
@@ -860,11 +862,6 @@ public class MenuFlyoutIntegrationTests
 	{
 		OpenUp,
 		OpenDown
-	}
-
-	private static void LOG_OUTPUT(string message)
-	{
-		Console.WriteLine(message);
 	}
 	//	FrameworkElement ^ rootPanel;
 	//	Rect windowBounds;
@@ -3022,7 +3019,7 @@ public class MenuFlyoutIntegrationTests
 			   button2 = (Button)(rootPanel.FindName("button2"));
 			   VERIFY_IS_NOT_NULL(button2);
 
-			   rightTappedRegistration.Attach(button1, (object sender, RoutedEventArgs e) =>
+			   rightTappedRegistration.Attach(button1, (object sender, RightTappedRoutedEventArgs e) =>
 			   {
 				   rightTappedEvent.Set();
 			   });

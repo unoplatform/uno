@@ -15,7 +15,6 @@ using Private.Infrastructure;
 using Windows.System;
 using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 using FocusHelper = Uno.UI.RuntimeTests.MUX.Input.Focus.FocusHelper;
-using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
 
 #if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Tests.Common;
