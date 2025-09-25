@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DirectUI;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -164,7 +166,7 @@ internal class AutomationPeer
 	public IReadOnlyList<AutomationPeer> GetControlledPeers() => GetControlledPeersCore();
 
 	public void ShowContextMenu() => ShowContextMenuCore();
-	
+
 	public AutomationPeer GetPeerFromPoint(Point point) => GetPeerFromPointCore(point);
 
 	protected virtual string GetAcceleratorKeyCore() => string.Empty;
@@ -281,154 +283,153 @@ internal class AutomationPeer
 	protected virtual string GetItemTypeCore() => string.Empty;
 
 	protected virtual AutomationPeer GetLabeledByCore() => null;
-	//private void GetLocalizedControlTypeCoreImpl(out string* returnValue)
-	//{
-	//	AutomationControlType apType;
 
-	//	HRESULT hr = GetAutomationControlType(&apType);
-	//	if (hr == S_false)
-	//	{
-	//		// PopupRoot only has a control type if a light dismiss popup is on top. Otherwise it's not a control and
-	//		// returns S_false. Allow it and return a null string.
-	//		*returnValue = null;
-	//		return hr;
-	//	}
-	//	hr;
+	protected virtual string GetLocalizedControlTypeCore()
+	{
+		AutomationControlType apType;
+		try
+		{
+			apType = GetAutomationControlType();
+		}
+		catch (Exception)
+		{
+			// PopupRoot only has a control type if a light dismiss popup is on top. Otherwise it's not a control and
+			// returns S_false. Allow it and return a null string.
+			return null;
+		}
 
-	//	switch (apType)
-	//	{
-	//		case AutomationControlType.AutomationControlType_Button:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_BUTTON, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Calendar:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_CALENDAR, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_CheckBox:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_CHECKBOX, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_ComboBox:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_COMBOBOX, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Edit:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_EDIT, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Hyperlink:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_HYPERLINK, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Image:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_IMAGE, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_ListItem:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_LISTITEM, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_List:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_LIST, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Menu:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_MENU, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_MenuBar:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_MENUBAR, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_MenuItem:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_MENUITEM, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_ProgressBar:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_PROGRESSBAR, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_RadioButton:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_RADIOBUTTON, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_ScrollBar:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_SCROLLBAR, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Slider:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_SLIDER, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Spinner:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_SPINNER, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_StatusBar:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_STATUSBAR, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Tab:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_TAB, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_TabItem:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_TABITEM, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Text:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_TEXT, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_ToolBar:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_TOOLBAR, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_ToolTip:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_TOOLTIP, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Tree:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_TREE, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_TreeItem:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_TREEITEM, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Custom:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_CUSTOM, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Group:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_GROUP, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Thumb:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_THUMB, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_DataGrid:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_DATAGRID, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_DataItem:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_DATAITEM, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Document:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_DOCUMENT, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_SplitButton:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_SPLITBUTTON, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Window:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_WINDOW, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Pane:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_PANE, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Header:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_HEADER, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_HeaderItem:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_HEADERITEM, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Table:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_TABLE, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_TitleBar:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_TITLEBAR, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_Separator:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_SEPARATOR, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_SemanticZoom:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_SEMANTICZOOM, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_AppBar:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_APPBAR, returnValue);
-	//			break;
-	//		case AutomationControlType.AutomationControlType_FlipView:
-	//			DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_AP_FLIPVIEW, returnValue);
-	//			break;
-	//		default:
-	//			E_FAIL;
-	//	}
-
-	//	return S_OK;
-	//}
+		switch (apType)
+		{
+			case AutomationControlType.Button:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_BUTTON");
+				break;
+			case AutomationControlType.Calendar:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_CALENDAR");
+				break;
+			case AutomationControlType.CheckBox:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_CHECKBOX");
+				break;
+			case AutomationControlType.ComboBox:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_COMBOBOX");
+				break;
+			case AutomationControlType.Edit:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_EDIT");
+				break;
+			case AutomationControlType.Hyperlink:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_HYPERLINK");
+				break;
+			case AutomationControlType.Image:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_IMAGE");
+				break;
+			case AutomationControlType.ListItem:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_LISTITEM");
+				break;
+			case AutomationControlType.List:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_LIST");
+				break;
+			case AutomationControlType.Menu:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_MENU");
+				break;
+			case AutomationControlType.MenuBar:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_MENUBAR");
+				break;
+			case AutomationControlType.MenuItem:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_MENUITEM");
+				break;
+			case AutomationControlType.ProgressBar:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_PROGRESSBAR");
+				break;
+			case AutomationControlType.RadioButton:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_RADIOBUTTON");
+				break;
+			case AutomationControlType.ScrollBar:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_SCROLLBAR");
+				break;
+			case AutomationControlType.Slider:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_SLIDER");
+				break;
+			case AutomationControlType.Spinner:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_SPINNER");
+				break;
+			case AutomationControlType.StatusBar:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_STATUSBAR");
+				break;
+			case AutomationControlType.Tab:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_TAB");
+				break;
+			case AutomationControlType.TabItem:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_TABITEM");
+				break;
+			case AutomationControlType.Text:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_TEXT");
+				break;
+			case AutomationControlType.ToolBar:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_TOOLBAR");
+				break;
+			case AutomationControlType.ToolTip:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_TOOLTIP");
+				break;
+			case AutomationControlType.Tree:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_TREE");
+				break;
+			case AutomationControlType.TreeItem:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_TREEITEM");
+				break;
+			case AutomationControlType.Custom:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_CUSTOM");
+				break;
+			case AutomationControlType.Group:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_GROUP");
+				break;
+			case AutomationControlType.Thumb:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_THUMB");
+				break;
+			case AutomationControlType.DataGrid:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_DATAGRID");
+				break;
+			case AutomationControlType.DataItem:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_DATAITEM");
+				break;
+			case AutomationControlType.Document:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_DOCUMENT");
+				break;
+			case AutomationControlType.SplitButton:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_SPLITBUTTON");
+				break;
+			case AutomationControlType.Window:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_WINDOW");
+				break;
+			case AutomationControlType.Pane:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_PANE");
+				break;
+			case AutomationControlType.Header:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_HEADER");
+				break;
+			case AutomationControlType.HeaderItem:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_HEADERITEM");
+				break;
+			case AutomationControlType.Table:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_TABLE");
+				break;
+			case AutomationControlType.TitleBar:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_TITLEBAR");
+				break;
+			case AutomationControlType.Separator:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_SEPARATOR");
+				break;
+			case AutomationControlType.SemanticZoom:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_SEMANTICZOOM");
+				break;
+			case AutomationControlType.AppBar:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_APPBAR");
+				break;
+			case AutomationControlType.FlipView:
+				DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_FLIPVIEW");
+				break;
+			default:
+				throw new NotSupportedException("Unsupported AutomationControlType");
+		}
+	}
 
 	protected virtual string GetNameCore() => "";
 
@@ -466,21 +467,15 @@ internal class AutomationPeer
 
 	protected virtual bool IsRequiredForFormCore() => false;
 
-	//private void SetFocusCoreImpl()
-	//{
-	//	// Lets keep this as it is, that is getting the value from core, Core layer has some exceptional logic that depends upon
-	//	// focus manager.
+	protected virtual void SetFocusCore()
+	{
+		// Lets keep this as it is, that is getting the value from core, Core layer has some exceptional logic that depends upon
+		// focus manager.
 
-	//	(CAutomationPeer*)(GetHandle()).SetFocusHelper();
+		SetFocusHelper();
+	}
 
-	//	return S_OK;
-	//}
-
-	//private void SetAutomationFocusImpl()
-	//{
-	//	(CAutomationPeer*)(GetHandle()).SetAutomationFocusHelper();
-	//	return S_OK;
-	//}
+	private void SetAutomationFocus() => SetAutomationFocusHelper();
 
 	protected virtual void ShowContextMenuCore()
 	{
@@ -494,22 +489,11 @@ internal class AutomationPeer
 
 	protected virtual IEnumerable<AutomationPeer> GetDescribedByCore() => null;
 
-	//private void GetFlowsToCoreImpl(out IIterable<AutomationPeer*>** returnValue)
-	//{
-	//	*returnValue = null;
-	//	return S_OK;
-	//}
+	protected virtual IEnumerable<AutomationPeer> GetFlowsToCore() => null;
 
-	//private void GetFlowsFromCoreImpl(out IIterable<AutomationPeer*>** returnValue)
-	//{
-	//	*returnValue = null;
-	//	return S_OK;
-	//}
+	protected virtual IEnumerable<AutomationPeer> GetFlowsFromCore() => null;
 
-	//private void GetCultureCoreImpl(out INT* returnValue)
-	//{
-	//	return ((CAutomationPeer*)(GetHandle()).GetCultureHelper(returnValue));
-	//}
+	protected virtual int GetCultureCore() => GetCultureHelper();
 
 	protected virtual AutomationHeadingLevel GetHeadingLevelCore() => AutomationHeadingLevel.None;
 
@@ -590,160 +574,152 @@ internal class AutomationPeer
 	//	return S_OK;
 	//}
 
-	//private void RaiseStructureChangedEventImpl(
-	//	 AutomationStructureChangeType structureChangeType,
-	//	 IAutomationPeer* pChild)
-	//{
-	//	CValue newValue;
-	//	CValue oldValue;
-	//	UIAXcp.APAutomationProperties ePropertiesEnum;
-	//	oldValue.SetNull();
+	public void RaiseStructureChangedEvent(AutomationStructureChangeType structureChangeType, AutomationPeer child)
+	{
+		CValue newValue;
+		CValue oldValue;
+		UIAXcp.APAutomationProperties ePropertiesEnum;
+		oldValue.SetNull();
 
-	//	switch ((AutomationStructureChangeType)(structureChangeType))
-	//	{
-	//		case AutomationStructureChangeType.ChildAdded:
-	//			{
-	//				ePropertiesEnum = UIAXcp.APStructureChangeType_ChildAddedProperty;
-	//				newValue.SetNull();
-	//				break;
-	//			}
+		switch ((AutomationStructureChangeType)(structureChangeType))
+		{
+			case AutomationStructureChangeType.ChildAdded:
+				{
+					ePropertiesEnum = UIAXcp.APStructureChangeType_ChildAddedProperty;
+					newValue.SetNull();
+					break;
+				}
 
-	//		case AutomationStructureChangeType.ChildRemoved:
-	//			{
-	//				// UIAutomationCore expects runtime id of the removed child to be returned, henceforth it's required to be non-null.
-	//				IFCPTR_RETURN(pChild);
+			case AutomationStructureChangeType.ChildRemoved:
+				{
+					// UIAutomationCore expects runtime id of the removed child to be returned, henceforth it's required to be non-null.
+					IFCPTR_RETURN(pChild);
 
-	//				Xint runtimeId = (CAutomationPeer*)((AutomationPeer*)(pChild).GetHandle()).GetRuntimeId();
-	//				newValue.WrapSignedArray(1, &runtimeId);
-	//				ePropertiesEnum = UIAXcp.APStructureChangeType_ChildRemovedProperty;
-	//				break;
-	//			}
+					Xint runtimeId = (CAutomationPeer*)((AutomationPeer*)(pChild).GetHandle()).GetRuntimeId();
+					newValue.WrapSignedArray(1, &runtimeId);
+					ePropertiesEnum = UIAXcp.APStructureChangeType_ChildRemovedProperty;
+					break;
+				}
 
-	//		case AutomationStructureChangeType.ChildrenBulkAdded:
-	//			{
-	//				ePropertiesEnum = UIAXcp.APStructureChangeType_ChildrenBulkAddedProperty;
-	//				newValue.SetNull();
-	//				break;
-	//			}
+			case AutomationStructureChangeType.ChildrenBulkAdded:
+				{
+					ePropertiesEnum = UIAXcp.APStructureChangeType_ChildrenBulkAddedProperty;
+					newValue.SetNull();
+					break;
+				}
 
-	//		case AutomationStructureChangeType.ChildrenBulkRemoved:
-	//			{
-	//				ePropertiesEnum = UIAXcp.APStructureChangeType_ChildrenBulkRemovedProperty;
-	//				newValue.SetNull();
-	//				break;
-	//			}
+			case AutomationStructureChangeType.ChildrenBulkRemoved:
+				{
+					ePropertiesEnum = UIAXcp.APStructureChangeType_ChildrenBulkRemovedProperty;
+					newValue.SetNull();
+					break;
+				}
 
-	//		case AutomationStructureChangeType.ChildrenInvalidated:
-	//			{
-	//				ePropertiesEnum = UIAXcp.APStructureChangeType_ChildrenInvalidatedProperty;
-	//				newValue.SetNull();
-	//				break;
-	//			}
+			case AutomationStructureChangeType.ChildrenInvalidated:
+				{
+					ePropertiesEnum = UIAXcp.APStructureChangeType_ChildrenInvalidatedProperty;
+					newValue.SetNull();
+					break;
+				}
 
-	//		case AutomationStructureChangeType.ChildrenReordered:
-	//			{
-	//				ePropertiesEnum = UIAXcp.APStructureChangeType_ChildernReorderedProperty;
-	//				newValue.SetNull();
-	//				break;
-	//			}
+			case AutomationStructureChangeType.ChildrenReordered:
+				{
+					ePropertiesEnum = UIAXcp.APStructureChangeType_ChildernReorderedProperty;
+					newValue.SetNull();
+					break;
+				}
 
-	//		default:
-	//			{
-	//				E_UNEXPECTED;
-	//			}
-	//	}
+			default:
+				{
+					E_UNEXPECTED;
+				}
+		}
 
-	//	CoreImports.AutomationRaiseAutomationPropertyChanged((CAutomationPeer*)(GetHandle()), ePropertiesEnum, oldValue, newValue);
+		CoreImports.AutomationRaiseAutomationPropertyChanged((CAutomationPeer*)(GetHandle()), ePropertiesEnum, oldValue, newValue);
+	}
 
-	//	return S_OK;
-	//}
-
-	//private void RaisePropertyChangedEventImpl(
-	//	 xaml_automation.IAutomationProperty* pAutomationProperty,
-	//	 object pPropertyValueOld,
-	//	 object pPropertyValueNew)
-	//{
+	private void RaisePropertyChangedEventImpl(
+		 xaml_automation.IAutomationProperty* pAutomationProperty,
+		 object pPropertyValueOld,
+		 object pPropertyValueNew)
+	{
 
 
-	//	CValue valueOld;
-	//	CValue valueNew;
-	//	BoxerBuffer oldBuffer;
-	//	BoxerBuffer newBuffer;
-	//	DependencyObject* pObjectForCoreOld = null;
-	//	DependencyObject* pObjectForCoreNew = null;
+		CValue valueOld;
+		CValue valueNew;
+		BoxerBuffer oldBuffer;
+		BoxerBuffer newBuffer;
+		DependencyObject* pObjectForCoreOld = null;
+		DependencyObject* pObjectForCoreNew = null;
 
-	//	AutomationPropertiesEnum ePropertiesEnum;
-	//	(AutomationProperty*)(pAutomationProperty).GetAutomationPropertiesEnum(&ePropertiesEnum);
+		AutomationPropertiesEnum ePropertiesEnum;
+		(AutomationProperty*)(pAutomationProperty).GetAutomationPropertiesEnum(&ePropertiesEnum);
 
-	//	if (ePropertiesEnum != AutomationPropertiesEnum.ControlledPeersProperty)
-	//	{
-	//		CValueBoxer.BoxObjectValue(&valueOld, /* pSourceType */ null, pPropertyValueOld, &oldBuffer, &pObjectForCoreOld);
-	//		CValueBoxer.BoxObjectValue(&valueNew, /* pSourceType */ null, pPropertyValueNew, &newBuffer, &pObjectForCoreNew);
-	//	}
-	//	else
-	//	{
-	//		// Ideally, we shall verify and marshall the oldValue(vectorView) and newValue(vectorView). But, in this case
-	//		// considering Narrator doesn't care for old and new values for ControllerFor its okay to ignore those values.
-	//		valueOld = CValue();
-	//		valueNew = CValue();
-	//	}
+		if (ePropertiesEnum != AutomationPropertiesEnum.ControlledPeersProperty)
+		{
+			CValueBoxer.BoxObjectValue(&valueOld, /* pSourceType */ null, pPropertyValueOld, &oldBuffer, &pObjectForCoreOld);
+			CValueBoxer.BoxObjectValue(&valueNew, /* pSourceType */ null, pPropertyValueNew, &newBuffer, &pObjectForCoreNew);
+		}
+		else
+		{
+			// Ideally, we shall verify and marshall the oldValue(vectorView) and newValue(vectorView). But, in this case
+			// considering Narrator doesn't care for old and new values for ControllerFor its okay to ignore those values.
+			valueOld = CValue();
+			valueNew = CValue();
+		}
 
-	//	RaisePropertyChangedEvent(pAutomationProperty, valueOld, valueNew);
+		RaisePropertyChangedEvent(pAutomationProperty, valueOld, valueNew);
 
-	//Cleanup:
-	//	ctl.release_interface(pObjectForCoreOld);
-	//	ctl.release_interface(pObjectForCoreNew);
+	Cleanup:
+		ctl.release_interface(pObjectForCoreOld);
+		ctl.release_interface(pObjectForCoreNew);
 
-	//	RRETURN(hr);
-	//}
-
-
-	//private void RaisePropertyChangedEvent(
-	//	 xaml_automation.IAutomationProperty* pAutomationProperty,
-	//	  CValue& oldValue,
-	//	  CValue& newValue)
-	//{
+		RRETURN(hr);
+	}
 
 
-	//	AutomationPropertiesEnum ePropertiesEnum;
-
-	//	(AutomationProperty*)(pAutomationProperty).GetAutomationPropertiesEnum(&ePropertiesEnum);
-	//	CoreImports.AutomationRaiseAutomationPropertyChanged((CAutomationPeer*)(GetHandle()), (UIAXcp.APAutomationProperties)ePropertiesEnum, oldValue, newValue);
-
-	//Cleanup:
-	//	RRETURN(hr);
-	//}
+	private void RaisePropertyChangedEvent(
+		 xaml_automation.IAutomationProperty* pAutomationProperty,
+		  CValue& oldValue,
+		  CValue& newValue)
+	{
 
 
-	//private void RaiseTextEditTextChangedEventImpl(
-	//	 xaml_automation.AutomationTextEditChangeType pAutomationProperty,
-	//	 IVectorView<string>* pChangedData)
-	//{
-	//	CValue cValue;
-	//	object spChangedDataAsInspectable;
-	//	IVectorView<string> spChangedData(pChangedData);
-	//	spChangedData.As(&spChangedDataAsInspectable);
+		AutomationPropertiesEnum ePropertiesEnum;
 
-	//	IFCPTR_RETURN(spChangedDataAsInspectable);
-	//	cValue.SetobjectAddRef(spChangedDataAsInspectable);
+		(AutomationProperty*)(pAutomationProperty).GetAutomationPropertiesEnum(&ePropertiesEnum);
+		CoreImports.AutomationRaiseAutomationPropertyChanged((CAutomationPeer*)(GetHandle()), (UIAXcp.APAutomationProperties)ePropertiesEnum, oldValue, newValue);
 
-	//	switch (pAutomationProperty)
-	//	{
-	//		case xaml_automation.AutomationTextEditChangeType.AutomationTextEditChangeType_None:
-	//			(CAutomationPeer*)(GetHandle()).RaiseTextEditTextChangedEvent(UIAXcp.AutomationTextEditChangeType.AutomationTextEditChangeType_None, &cValue);
-	//			break;
-	//		case xaml_automation.AutomationTextEditChangeType.AutomationTextEditChangeType_AutoCorrect:
-	//			(CAutomationPeer*)(GetHandle()).RaiseTextEditTextChangedEvent(UIAXcp.AutomationTextEditChangeType.AutomationTextEditChangeType_AutoCorrect, &cValue);
-	//			break;
-	//		case xaml_automation.AutomationTextEditChangeType.AutomationTextEditChangeType_Composition:
-	//			(CAutomationPeer*)(GetHandle()).RaiseTextEditTextChangedEvent(UIAXcp.AutomationTextEditChangeType.AutomationTextEditChangeType_Composition, &cValue);
-	//			break;
-	//		case xaml_automation.AutomationTextEditChangeType.AutomationTextEditChangeType_CompositionFinalized:
-	//			(CAutomationPeer*)(GetHandle()).RaiseTextEditTextChangedEvent(UIAXcp.AutomationTextEditChangeType.AutomationTextEditChangeType_CompositionFinalized, &cValue);
-	//			break;
-	//	}
-	//	return S_OK;
-	//}
+	Cleanup:
+		RRETURN(hr);
+	}
+
+	public void RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	{
+		CValue cValue;
+		object spChangedDataAsInspectable;
+		IVectorView<string> spChangedData(pChangedData);
+		spChangedData.As(&spChangedDataAsInspectable);
+
+		IFCPTR_RETURN(spChangedDataAsInspectable);
+		cValue.SetobjectAddRef(spChangedDataAsInspectable);
+
+		switch (pAutomationProperty)
+		{
+			case AutomationTextEditChangeType.None:
+				(CAutomationPeer*)(GetHandle()).RaiseTextEditTextChangedEvent(UIAXcp.AutomationTextEditChangeType.AutomationTextEditChangeType_None, &cValue);
+				break;
+			case AutomationTextEditChangeType.AutoCorrect:
+				(CAutomationPeer*)(GetHandle()).RaiseTextEditTextChangedEvent(UIAXcp.AutomationTextEditChangeType.AutomationTextEditChangeType_AutoCorrect, &cValue);
+				break;
+			case AutomationTextEditChangeType.Composition:
+				(CAutomationPeer*)(GetHandle()).RaiseTextEditTextChangedEvent(UIAXcp.AutomationTextEditChangeType.AutomationTextEditChangeType_Composition, &cValue);
+				break;
+			case xaml_automation.AutomationTextEditChangeType.AutomationTextEditChangeType_CompositionFinalized:
+				(CAutomationPeer*)(GetHandle()).RaiseTextEditTextChangedEvent(UIAXcp.AutomationTextEditChangeType.AutomationTextEditChangeType_CompositionFinalized, &cValue);
+				break;
+		}
+	}
 
 	//private void RaiseNotificationEventImpl(
 	//	AutomationNotificationKind notificationKind,
@@ -764,7 +740,7 @@ internal class AutomationPeer
 
 	//	return S_OK;
 	//}
-	
+
 	protected virtual AutomationPeer GetPeerFromPointCore(Point point) => this;
 
 	//// Custom APs can override GetElementFromPointCoreImpl to manage the hit-testing of APs completley
@@ -793,29 +769,11 @@ internal class AutomationPeer
 
 	protected virtual object GetFocusedElementCore() => this;
 
-	//private void PeerFromProviderImpl(
-	//	 xaml_automation.Provider.IIRawElementProviderSimple* pProvider,
-	//	out IAutomationPeer** ppReturnValue)
-	//{
+	protected AutomationPeer PeerFromProvider(IRawElementProviderSimple provider) =>
+		PeerFromProviderStatic(provider);
 
-
-	//	PeerFromProviderStatic(pProvider, ppReturnValue);
-
-	//Cleanup:
-	//	RRETURN(hr);
-	//}
-
-	//private void PeerFromProviderStatic(
-	//	 xaml_automation.Provider.IIRawElementProviderSimple* pProvider,
-	//	out IAutomationPeer** ppReturnValue)
-	//{
-
-
-	//	(IRawElementProviderSimple*)(pProvider).GetAutomationPeer(ppReturnValue);
-
-	//Cleanup:
-	//	RRETURN(hr);
-	//}
+	private static void PeerFromProviderStatic(IRawElementProviderSimple provider) =>
+		provider.AutomationPeer;
 
 	//private void ProviderFromPeerImpl(
 	//	 IAutomationPeer* pAutomationPeer,
@@ -2175,7 +2133,7 @@ internal class AutomationPeer
 
 	//	switch (ePatternInterface)
 	//	{
-	//		case PatternInterface_Invoke:
+	//		case PatternInterface.Invoke:
 	//			ctl.do_query_interface(pInvokeProvider, pTargetAsobject);
 	//			if (pInvokeProvider)
 	//			{
@@ -2186,7 +2144,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Dock:
+	//		case PatternInterface.Dock:
 	//			ctl.do_query_interface(pDockProvider, pTargetAsobject);
 	//			if (pDockProvider)
 	//			{
@@ -2205,7 +2163,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_ExpandCollapse:
+	//		case PatternInterface.ExpandCollapse:
 	//			ctl.do_query_interface(pExpandCollapseProvider, pTargetAsobject);
 	//			if (pExpandCollapseProvider)
 	//			{
@@ -2226,7 +2184,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Value:
+	//		case PatternInterface.Value:
 	//			ctl.do_query_interface(pValueProvider, pTargetAsobject);
 	//			if (pValueProvider)
 	//			{
@@ -2253,7 +2211,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_GridItem:
+	//		case PatternInterface.GridItem:
 	//			ctl.do_query_interface(pGridItemProvider, pTargetAsobject);
 	//			if (pGridItemProvider)
 	//			{
@@ -2290,7 +2248,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Grid:
+	//		case PatternInterface.Grid:
 	//			ctl.do_query_interface(pGridProvider, pTargetAsobject);
 	//			if (pGridProvider)
 	//			{
@@ -2320,7 +2278,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_MultipleView:
+	//		case PatternInterface.MultipleView:
 	//			ctl.do_query_interface(pMultipleViewProvider, pTargetAsobject);
 	//			if (pMultipleViewProvider)
 	//			{
@@ -2364,7 +2322,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_RangeValue:
+	//		case PatternInterface.RangeValue:
 	//			ctl.do_query_interface(pRangeValueProvider, pTargetAsobject);
 	//			if (pRangeValueProvider)
 	//			{
@@ -2401,7 +2359,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_ScrollItem:
+	//		case PatternInterface.ScrollItem:
 	//			ctl.do_query_interface(pScrollItemProvider, pTargetAsobject);
 	//			if (pScrollItemProvider)
 	//			{
@@ -2414,7 +2372,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Scroll:
+	//		case PatternInterface.Scroll:
 	//			ctl.do_query_interface(pScrollProvider, pTargetAsobject);
 	//			if (pScrollProvider)
 	//			{
@@ -2454,7 +2412,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_SelectionItem:
+	//		case PatternInterface.SelectionItem:
 	//			ctl.do_query_interface(pSelectionItemProvider, pTargetAsobject);
 	//			if (pSelectionItemProvider)
 	//			{
@@ -2488,7 +2446,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Selection:
+	//		case PatternInterface.Selection:
 	//			ctl.do_query_interface(pSelectionProvider, pTargetAsobject);
 	//			if (pSelectionProvider)
 	//			{
@@ -2528,7 +2486,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_TableItem:
+	//		case PatternInterface.TableItem:
 	//			ctl.do_query_interface(pTableItemProvider, pTargetAsobject);
 	//			if (pTableItemProvider)
 	//			{
@@ -2581,7 +2539,7 @@ internal class AutomationPeer
 	//				}
 	//			}
 	//			break;
-	//		case PatternInterface_Table:
+	//		case PatternInterface.Table:
 	//			ctl.do_query_interface(pTableProvider, pTargetAsobject);
 	//			if (pTableProvider)
 	//			{
@@ -2640,7 +2598,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Toggle:
+	//		case PatternInterface.Toggle:
 	//			ctl.do_query_interface(pToggleProvider, pTargetAsobject);
 	//			if (pToggleProvider)
 	//			{
@@ -2658,7 +2616,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Transform:
+	//		case PatternInterface.Transform:
 	//			ctl.do_query_interface(pTransformProvider, pTargetAsobject);
 	//			if (pTransformProvider)
 	//			{
@@ -2689,7 +2647,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Transform2:
+	//		case PatternInterface.Transform2:
 	//			pTransformProvider2 = ctl.query_interface<xaml_automation.Provider.ITransformProvider2>(pTargetAsobject);
 	//			if (pTransformProvider2)
 	//			{
@@ -2725,7 +2683,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_ItemContainer:
+	//		case PatternInterface.ItemContainer:
 	//			ctl.do_query_interface(pItemContainerProvider, pTargetAsobject);
 	//			if (pItemContainerProvider)
 	//			{
@@ -2755,7 +2713,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_VirtualizedItem:
+	//		case PatternInterface.VirtualizedItem:
 	//			ctl.do_query_interface(pVirtualizedItemProvider, pTargetAsobject);
 	//			if (pVirtualizedItemProvider)
 	//			{
@@ -2768,7 +2726,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Window:
+	//		case PatternInterface.Window:
 	//			ctl.do_query_interface(pWindowProvider, pTargetAsobject);
 	//			if (pWindowProvider)
 	//			{
@@ -2814,7 +2772,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Text:
+	//		case PatternInterface.Text:
 	//			ctl.do_query_interface(pTextProvider, pTargetAsobject);
 	//			if (pTextProvider)
 	//			{
@@ -2924,7 +2882,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Text2:
+	//		case PatternInterface.Text2:
 	//			pTextProvider2 = ctl.query_interface<xaml_automation.Provider.ITextProvider2>(pTargetAsobject);
 	//			if (pTextProvider2)
 	//			{
@@ -2985,7 +2943,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_TextChild:
+	//		case PatternInterface.TextChild:
 	//			ctl.do_query_interface(pTextChildProvider, pTargetAsobject);
 	//			if (pTextChildProvider)
 	//			{
@@ -3021,7 +2979,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Annotation:
+	//		case PatternInterface.Annotation:
 	//			ctl.do_query_interface(pAnnotationProvider, pTargetAsobject);
 	//			if (pAnnotationProvider)
 	//			{
@@ -3073,7 +3031,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Drag:
+	//		case PatternInterface.Drag:
 	//			ctl.do_query_interface(pDragProvider, pTargetAsobject);
 	//			if (pDragProvider)
 	//			{
@@ -3102,7 +3060,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_DropTarget:
+	//		case PatternInterface.DropTarget:
 	//			ctl.do_query_interface(pDropTargetProvider, pTargetAsobject);
 	//			if (pDropTargetProvider)
 	//			{
@@ -3123,7 +3081,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_ObjectModel:
+	//		case PatternInterface.ObjectModel:
 	//			ctl.do_query_interface(pObjectModelProvider, pTargetAsobject);
 	//			if (pObjectModelProvider)
 	//			{
@@ -3143,7 +3101,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Spreadsheet:
+	//		case PatternInterface.Spreadsheet:
 	//			ctl.do_query_interface(pSpreadsheetProvider, pTargetAsobject);
 	//			if (pSpreadsheetProvider)
 	//			{
@@ -3170,7 +3128,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_SpreadsheetItem:
+	//		case PatternInterface.SpreadsheetItem:
 	//			ctl.do_query_interface(pSpreadsheetItemProvider, pTargetAsobject);
 	//			if (pSpreadsheetItemProvider)
 	//			{
@@ -3224,7 +3182,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_Styles:
+	//		case PatternInterface.Styles:
 	//			ctl.do_query_interface(pStylesProvider, pTargetAsobject);
 	//			if (pStylesProvider)
 	//			{
@@ -3265,7 +3223,7 @@ internal class AutomationPeer
 	//			}
 	//			break;
 
-	//		case PatternInterface_SynchronizedInput:
+	//		case PatternInterface.SynchronizedInput:
 	//			ctl.do_query_interface(pSynchronizedInputProvider, pTargetAsobject);
 	//			if (pSynchronizedInputProvider)
 	//			{
@@ -3283,7 +3241,7 @@ internal class AutomationPeer
 	//				}
 	//			}
 	//			break;
-	//		case PatternInterface_TextEdit:
+	//		case PatternInterface.TextEdit:
 	//			{
 	//				object spTargetAsobject(pTargetAsobject);
 	//				spTextEditProvider = spTargetAsobject.AsOrNull<xaml_automation.Provider.ITextEditProvider>();
@@ -3328,7 +3286,7 @@ internal class AutomationPeer
 	//				}
 	//			}
 	//			break;
-	//		case PatternInterface_CustomNavigation:
+	//		case PatternInterface.CustomNavigation:
 	//			{
 	//				object spTargetAsobject(pTargetAsobject);
 	//				object spResult;
@@ -3710,28 +3668,26 @@ internal class AutomationPeer
 	//	RRETURN(hr);
 	//}
 
-	//// Static function to provide a mechanism for making sure uniqueness of runtimeIds across the board.
-	//// As with this change we are allowing a merge of XAML APs and native UIA nodes, there needs to be a
-	//// common place for managing runtimeIds, this static function serves the task.
-	//private void AutomationPeerFactory.GenerateRawElementProviderRuntimeIdImpl(out RawElementProviderRuntimeId* pReturnValue)
-	//{
+	// Static function to provide a mechanism for making sure uniqueness of runtimeIds across the board.
+	// As with this change we are allowing a merge of XAML APs and native UIA nodes, there needs to be a
+	// common place for managing runtimeIds, this static function serves the task.
+	public static RawElementProviderRuntimeId GenerateRawElementProviderRuntimeId()
+	{
 
-	//	RawElementProviderRuntimeId rawElementProviderRuntimeId;
-	//	IDXamlCore* pCore = DXamlServices.GetDXamlCore();
+		RawElementProviderRuntimeId rawElementProviderRuntimeId;
+		IDXamlCore* pCore = DXamlServices.GetDXamlCore();
 
-	//	if (pCore)
-	//	{
-	//		rawElementProviderRuntimeId.Part2 = pCore.GenerateRawElementProviderRuntimeId();
+		if (pCore)
+		{
+			rawElementProviderRuntimeId.Part2 = pCore.GenerateRawElementProviderRuntimeId();
 
-	//		// Each node provides a locally unique ID which is appended to the ID of the containing provider fragment root.
-	//		// This is accomplished by specifying UiaAppendRuntimeId as the first value in the array.
-	//		rawElementProviderRuntimeId.Part1 = UiaAppendRuntimeId;
-	//	}
+			// Each node provides a locally unique ID which is appended to the ID of the containing provider fragment root.
+			// This is accomplished by specifying UiaAppendRuntimeId as the first value in the array.
+			rawElementProviderRuntimeId.Part1 = UiaAppendRuntimeId;
+		}
 
-	//	*pReturnValue = rawElementProviderRuntimeId;
-
-	//	RRETURN(hr);
-	//}
+		return rawElementProviderRuntimeId;
+	}
 
 	//private void BoxArrayOfHStrings(Automation.object pReturnVal, Xint nLength, string* phsArray)
 	//{
