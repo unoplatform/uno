@@ -24,12 +24,12 @@ namespace Windows.Devices.Sensors {
 			try {
 				if (typeof window.Accelerometer === "function") {
 					if ((<any>globalThis).DotnetExports !== undefined) {
-						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Accelerometer.DispatchReading;
+						Accelerometer.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Accelerometer.DispatchReading;
 					} else {
 						throw `Accelerometer: Unable to find dotnet exports`;
 					}
-					let AccelerometerClass: any = window.Accelerometer;
-					this.accelerometer = new AccelerometerClass({ frequency: 60 });
+					const AccelerometerClass: any = window.Accelerometer;
+					Accelerometer.accelerometer = new AccelerometerClass({ frequency: 60 });
 					return true;
 				}
 			} catch (error) {
@@ -40,13 +40,13 @@ namespace Windows.Devices.Sensors {
 		}
 
 		public static startReading() {
-			this.accelerometer.addEventListener("reading", Accelerometer.readingChangedHandler);
-			this.accelerometer.start();
+			Accelerometer.accelerometer.addEventListener("reading", Accelerometer.readingChangedHandler);
+			Accelerometer.accelerometer.start();
 		}
 
 		public static stopReading() {
-			this.accelerometer.removeEventListener("reading", Accelerometer.readingChangedHandler);
-			this.accelerometer.stop();
+			Accelerometer.accelerometer.removeEventListener("reading", Accelerometer.readingChangedHandler);
+			Accelerometer.accelerometer.stop();
 		}
 
 		private static readingChangedHandler(event: any) {
