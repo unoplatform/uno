@@ -33,7 +33,6 @@ public partial class WebView2 : Control, IWebView
 		CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
 		CoreWebView2.SourceChanged += CoreWebView2_SourceChanged;
 		CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
-		CoreWebView2.DocumentTitleChanged += CoreWebView2_DocumentTitleChanged;
 
 		Loaded += WebView2_Loaded;
 #if __SKIA__
@@ -120,16 +119,10 @@ public partial class WebView2 : Control, IWebView
 	}
 
 	private void CoreWebView2_NavigationStarting(CoreWebView2 sender, CoreWebView2NavigationStartingEventArgs args)
-	{
-		IsNavigating = true;
-		NavigationStarting?.Invoke(this, args);
-	}
+		=> NavigationStarting?.Invoke(this, args);
 
 	private void CoreWebView2_NavigationCompleted(CoreWebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
-	{
-		IsNavigating = false;
-		NavigationCompleted?.Invoke(this, args);
-	}
+		=> NavigationCompleted?.Invoke(this, args);
 
 	private void CoreWebView2_HistoryChanged(CoreWebView2 sender, object args) =>
 		(CanGoBack, CanGoForward) = (sender.CanGoBack, sender.CanGoForward);
@@ -143,9 +136,5 @@ public partial class WebView2 : Control, IWebView
 		Source = Uri.TryCreate(sender.Source, UriKind.Absolute, out var uri) ? uri : CoreWebView2.BlankUri;
 		_sourceChangeFromCore = false;
 	}
-	private void CoreWebView2_DocumentTitleChanged(CoreWebView2 sender, object args)
-	{
-		DocumentTitle = sender.DocumentTitle;
-		DocumentTitleChanged?.Invoke(this, args);
-	}
+
 }

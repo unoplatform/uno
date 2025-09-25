@@ -81,44 +81,6 @@ public partial class WebView2
 				true,
 				(s, e) => ((WebView2)s)?.CoreWebView2.OnScrollEnabledChanged((bool)e.NewValue)));
 
-	/// <summary>
-	/// Gets a value that indicates whether the WebView2 is navigating to new content.
-	/// </summary>
-	public bool IsNavigating
-	{
-		get => (bool)GetValue(IsNavigatingProperty);
-		private set => SetValue(IsNavigatingProperty, value);
-	}
-
-	/// <summary>
-	/// Identifies the IsNavigating dependency property.
-	/// </summary>
-	public static DependencyProperty IsNavigatingProperty { get; } =
-		DependencyProperty.Register(
-			nameof(IsNavigating),
-			typeof(bool),
-			typeof(WebView2),
-			new FrameworkPropertyMetadata(false));
-
-	/// <summary>
-	/// Gets the title of the current top-level document.
-	/// </summary>
-	public string DocumentTitle
-	{
-		get => (string)GetValue(DocumentTitleProperty) ?? string.Empty;
-		private set => SetValue(DocumentTitleProperty, value);
-	}
-
-	/// <summary>
-	/// Identifies the DocumentTitle dependency property.
-	/// </summary>
-	public static DependencyProperty DocumentTitleProperty { get; } =
-		DependencyProperty.Register(
-			nameof(DocumentTitle),
-			typeof(string),
-			typeof(WebView2),
-			new FrameworkPropertyMetadata(string.Empty));
-
 #pragma warning disable 67
 	/// <summary>
 	/// Occurs when the core WebView2 process fails.
@@ -145,8 +107,4 @@ public partial class WebView2
 	/// </summary>
 	public event TypedEventHandler<WebView2, CoreWebView2WebMessageReceivedEventArgs> WebMessageReceived;
 
-	/// <summary>
-	/// Occurs when the title for the current top-level document changes.
-	/// </summary>
-	public event TypedEventHandler<WebView2, object> DocumentTitleChanged;
 }
