@@ -291,18 +291,15 @@
 
 	<wasm:Style
 		x:Key="NativeDefaultProgressBar"
-		TargetType="ProgressBar"
-		BasedOn="{StaticResource XamlDefaultProgressBar}" />
+		TargetType="ProgressBar" />
 
 	<skia:Style
 		x:Key="NativeDefaultProgressBar"
-		TargetType="ProgressBar"
-		BasedOn="{StaticResource XamlDefaultProgressBar}" />
+		TargetType="ProgressBar" />
 
 	<macos:Style
 		x:Key="NativeDefaultProgressBar"
-		TargetType="ProgressBar"
-		BasedOn="{StaticResource XamlDefaultProgressBar}" />
+		TargetType="ProgressBar" />
 
 	<not_win:Style
 		TargetType="ProgressBar"
