@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Microsoft.UI.Windowing.Native;
 
 namespace Microsoft.UI.Windowing;
@@ -16,6 +14,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	private bool _isAlwaysOnTop;
 	private bool _hasBorder;
 	private bool _hasTitleBar;
+	private OverlappedPresenterState? _pendingState;
 
 	internal OverlappedPresenter() : base(AppWindowPresenterKind.Overlapped)
 	{
@@ -77,13 +76,23 @@ public partial class OverlappedPresenter : AppWindowPresenter
 
 	public bool HasTitleBar => _hasTitleBar;
 
-	public OverlappedPresenterState State => Native?.State ?? OverlappedPresenterState.Restored;
+	public OverlappedPresenterState State => Native?.State ?? _pendingState ?? OverlappedPresenterState.Restored;
 
 	public static OverlappedPresenterState RequestedStartupState { get; } = OverlappedPresenterState.Restored;
 
 	public void Restore() => Restore(false);
 
-	public void Maximize() => Native.Maximize();
+	public void Maximize()
+	{
+		if (Native is not null)
+		{
+			Native.Maximize();
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Maximized;
+		}
+	}
 
 	/// <summary>
 	/// Minimizes the window that the presenter is applied to.
@@ -94,7 +103,17 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	/// 
 	/// </summary>
 	/// <param name="activateWindow"></param>
-	public void Minimize(bool activateWindow) => Native.Minimize(activateWindow);
+	public void Minimize(bool activateWindow)
+	{
+		if (Native is not null)
+		{
+			Native.Minimize(activateWindow);
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Minimized;
+		}
+	}
 
 	/// <summary>
 	/// Sets the border and title bar properties of the window.
@@ -108,7 +127,17 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		Native?.SetBorderAndTitleBar(hasBorder, hasTitleBar);
 	}
 
-	public void Restore(bool activateWindow) => Native.Restore(activateWindow);
+	public void Restore(bool activateWindow)
+	{
+		if (Native is not null)
+		{
+			Native.Restore(activateWindow);
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Restored;
+		}
+	}
 
 	/// <summary>
 	/// Creates a new instance of OverlappedPresenter.
@@ -194,6 +223,21 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			Native.SetIsMaximizable(IsMaximizable);
 			Native.SetIsAlwaysOnTop(IsAlwaysOnTop);
 			Native.SetBorderAndTitleBar(HasBorder, HasTitleBar);
+
+			if (_pendingState is OverlappedPresenterState.Maximized)
+			{
+				Native.Maximize();
+			}
+			else if (_pendingState is OverlappedPresenterState.Minimized)
+			{
+				Native.Minimize(false);
+			}
+			else
+			{
+				Native.Restore(false);
+			}
+
+			_pendingState = null;
 		}
 	}
 }
