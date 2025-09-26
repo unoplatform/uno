@@ -37,7 +37,9 @@ using UIKit;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
+#if __APPLE_UIKIT__ // These test are failing in CI on native iOS https://github.com/unoplatform/uno/issues/21528
 	[TestClass]
+#endif
 	[RunsOnUIThread]
 	public class Given_FrameworkElement_And_Leak
 	{
