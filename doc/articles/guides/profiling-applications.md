@@ -94,7 +94,7 @@ Once that's printed, go ahead and start profiling:
 dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedscope
 ```
 
-## Profiling .NET Android applications (.NET 8)
+## Profiling .NET Android applications (.NET 8) (TBD: To verify if we if we need to update this title/section)
 
 ### Enable profiling in your application
 

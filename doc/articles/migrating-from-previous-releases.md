@@ -4,6 +4,33 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
+## Uno Platform 6.3
+
+Uno Platform 6.3 introduces support for .NET 10 RC1 and drops .NET 8 targets.
+
+### Visual Studio, Visual Studio Code, and Rider
+
+When upgrading to Uno Platform 6.3, make sure to update your IDE extension or plugin to the latest stable version to ensure the Uno Platform development tooling connects properly.
+
+- [Visual Studio extension](https://aka.platform.uno/vs-extension-marketplace)
+- [Visual Studio Code extension](https://aka.platform.uno/vscode-extension-marketplace)
+- [Rider plugin](https://aka.platform.uno/rider-extension-marketplace)
+
+### .NET 8 Support Removed
+
+.NET 8 targets are no longer supported by Uno 6.3. While .NET 8 itself remains a Long Term Support (LTS) release supported until [November 2026](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core), the .NET MAUI 8 workload (mobile) reached end of support on [May 2025](https://dotnet.microsoft.com/en-us/platform/support/policy/maui). You can [upgrade your project to .NET 9](xref:Uno.Development.MigratingFromNet8ToNet9) using our guide.
+
+If you need to stay on .NET 8, you can continue to use **Uno Platform 6.2 or earlier** and plan your migration to .NET 9 or .NET 10.
+
+### .NET 10 RC1
+
+Uno Platform 6.3 is now built with .NET 10 support, allowing you to upgrade existing ones or create new projects using the wizard.
+A few considerations to take into account:
+
+- Moving to .NET 10 or upgrading .NET 10 projects requires the use of .NET 10 RC1 and latest version of [Visual Studio 2026 Insiders](https://visualstudio.microsoft.com/insiders/) as recommended by Microsoft in this [annoucement](https://devblogs.microsoft.com/dotnet/dotnet-10-rc-1/#🚀-get-started).
+- Uno Platform provides an updated [Visual Studio extension](https://aka.platform.uno/vs-extension-marketplace) in the store that supports Visual Studio 2026 and the new `.slnx` solution format.
+- To migrate a project to .NET 10, [read the directions](xref:Uno.Development.MigratingFromNet9ToNet10) from our documentation.
+
 ## Uno Platform 6.2
 
 Uno Platform 6.2 does not contain breaking changes that require attention when upgrading.
