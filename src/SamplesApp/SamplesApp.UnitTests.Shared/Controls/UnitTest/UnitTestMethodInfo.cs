@@ -41,10 +41,13 @@ internal record UnitTestMethodInfo
 			.SingleOrDefault()
 			?.ExceptionType;
 
+		var methodParametersCount = method.GetParameters().Length;
+		var loggedExtraWrap = false;
+
 		_casesParameters = method
 			.GetCustomAttributes<Attribute>()
 			.OfType<ITestDataSource>()
-			.SelectMany(d => d.GetData(method))
+			.SelectMany(d => GetData(d))
 			.ToList();
 
 		if (_casesParameters is { Count: 0 })
@@ -57,6 +60,33 @@ internal record UnitTestMethodInfo
 			.Select(attr => attr.Type)
 			.Distinct()
 			.ToList();
+
+		IEnumerable<object?[]> GetData(ITestDataSource d)
+		{
+			foreach (object?[] data in d.GetData(method))
+			{
+				if (methodParametersCount == 1)
+				{
+					yield return data;
+				}
+				else if (data.Length == 1 && data[0] is object?[] value && value.Length == methodParametersCount)
+				{
+					if (!loggedExtraWrap)
+					{
+						loggedExtraWrap = true;
+						Console.WriteLine($"# jonp: Detected extra array wrapping from {d.GetType().FullName}::ITestDataSource.GetData() " +
+							$"for test method {method.DeclaringType?.FullName ?? "[unknown]"}.{method.Name}(" +
+							string.Join(", ", method.GetParameters().Select(p => p.ParameterType.FullName)) +
+							$")");
+					}
+					yield return value;
+				}
+				else
+				{
+					yield return data;
+				}
+			}
+		}
 	}
 
 	public string Name => Method.Name;
