@@ -153,7 +153,7 @@ public partial class EntryPoint : IDisposable
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
 		SetupOutputWindow();
-		_udei = services.GetRequiredService<IUnoDevelopmentEnvironmentIndicator>();
+		_udei = services.GetService<IUnoDevelopmentEnvironmentIndicator>();
 
 		_closeHandler = () => SolutionEvents_BeforeClosing();
 		_dte.Events.SolutionEvents.BeforeClosing += _closeHandler;
