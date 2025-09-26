@@ -16,22 +16,24 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using FluentAssertions;
-using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
 using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Extensions;
-using Point = Windows.Foundation.Point;
-using Size = Windows.Foundation.Size;
 using Combinatorial.MSTest;
-
+using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Markup;
 
 #if __SKIA__
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 #endif
+
+using Point = Windows.Foundation.Point;
+using Size = Windows.Foundation.Size;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -986,6 +988,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 50, 50), Colors.Red);
 		}
 
+#if __SKIA__
+		[TestMethod]
+		public async Task When_RenderTransform_Rearrange()
+		{
+			var sut = new TextBlock()
+			{
+				Text = "AsdAsd",
+				RenderTransform = new CompositeTransform { ScaleX = 2, ScaleY = 2 },
+			};
+
+			await UITestHelper.Load(sut);
+
+			var a = sut.Visual.TransformMatrix;
+
+			sut.InvalidateArrange();
+			await UITestHelper.WaitForIdle();
+
+			var b = sut.Visual.TransformMatrix;
+
+			Assert.AreEqual(a, b, "Visual.TransformMatrix should remain unchanged after re-arrange.");
+		}
+#endif
+
 #if HAS_UNO // GetMouse is not available on WinUI
 		#region IsTextSelectionEnabled
 
@@ -1600,6 +1625,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(selectedText, sut.SelectedText);
 		}
 		#endregion
+#endif
+
+#if __SKIA__
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21264")]
+		[DataRow("L")]
+		[DataRow("R")]
+		[DataRow("LL")]
+		[DataRow("LR")]
+		[DataRow("RL")]
+		[DataRow("RR")]
+		[DataRow("LLL")]
+		[DataRow("LLR")]
+		[DataRow("LRL")]
+		[DataRow("LRR")]
+		[DataRow("RLL")]
+		[DataRow("RLR")]
+		[DataRow("RRL")]
+		[DataRow("RRR")]
+		public async Task When_Layered_FlowDirection(string setup)
+		{
+			if (string.IsNullOrEmpty(setup) || setup.Any(c => c is not ('L' or 'R')))
+			{
+				throw new ArgumentException("setup must be a non-empty string containing only 'L' and 'R' characters");
+			}
+
+			FrameworkElement root = null;
+			var textblock = new TextBlock { Text = "Asd" };
+
+			// assign FlowDirection from in-most, and box each layer with border
+			// LLR: Border R > Border L > TextBlock L
+			foreach (var c in setup)
+			{
+				root = root is null ? textblock : new Border { Child = root };
+				root.FlowDirection = Parse(c);
+			}
+
+			await UITestHelper.Load(root);
+
+			Assert.AreEqual(1, textblock.Visual.TotalMatrix.M11);
+
+			FlowDirection Parse(char c) => c switch
+			{
+				'L' => FlowDirection.LeftToRight,
+				'R' => FlowDirection.RightToLeft,
+				_ => throw new InvalidOperationException()
+			};
+		}
 #endif
 	}
 }
