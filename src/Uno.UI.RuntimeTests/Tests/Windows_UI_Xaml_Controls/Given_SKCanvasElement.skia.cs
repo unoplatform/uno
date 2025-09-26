@@ -87,6 +87,79 @@ public class Given_SKCanvasElement
 		Assert.IsFalse(SUT.RenderOverrideCalledNestedly);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/1380")]
+	public async Task When_Loading_Not_Rendering_Unnecessarily()
+	{
+		var renderInvalidatedCount = 0;
+
+		var SUT = new InvalidateOnRenderSKCanvasElement
+		{
+			Height = 400,
+			Width = 400
+		};
+
+		var border = new Border
+		{
+			BorderBrush = Microsoft.UI.Colors.Green,
+			Height = 400,
+			Child = new ScrollViewer
+			{
+				VerticalAlignment = VerticalAlignment.Top,
+				Height = 400,
+				Background = Microsoft.UI.Colors.Red,
+				Content = SUT
+			}
+		};
+
+		await UITestHelper.Load(border);
+
+		SUT.XamlRoot.RenderInvalidated += () =>
+		{
+			renderInvalidatedCount++;
+		};
+
+		// Wait a short time to ensure no extra invalidations occur
+		await Task.Delay(6000);
+
+		Assert.IsTrue(renderInvalidatedCount < 4, "RenderInvalidated should not be executed indefinitely.");
+	}
+
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/1380")]
+	public async Task When_Invalidate_Called_MultipleTimes_DoesNot_Crash()
+	{
+		var SUT = new InvalidateOnRenderSKCanvasElement
+		{
+			Height = 200,
+			Width = 400
+		};
+
+		var blueCanvas = new BlueFillSKCanvasElement
+		{
+			Height = 200,
+			Width = 400
+		};
+
+		var stack = new StackPanel
+		{
+			VerticalAlignment = VerticalAlignment.Stretch,
+			HorizontalAlignment = HorizontalAlignment.Stretch,
+			Height = 500,
+		};
+
+		stack.Children.Add(SUT);
+		stack.Children.Add(blueCanvas);
+
+		await UITestHelper.Load(stack);
+
+		var bitmap = await UITestHelper.ScreenShot(stack);
+
+		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 200, 200), Microsoft.UI.Colors.Red);
+		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 200, 200, 200), Microsoft.UI.Colors.Blue);
+	}
+
 	private class BlueFillSKCanvasElement : SKCanvasElement
 	{
 		protected override void RenderOverride(SKCanvas canvas, Size area)
@@ -127,6 +200,15 @@ public class Given_SKCanvasElement
 			Monitor.Enter(gate);
 			Monitor.Exit(gate);
 			_insideRenderOverride = false;
+		}
+	}
+
+	private class InvalidateOnRenderSKCanvasElement : SKCanvasElement
+	{
+		protected override void RenderOverride(SKCanvas canvas, Size area)
+		{
+			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), new SKPaint { Color = SKColors.Red });
+			InvalidateMeasure();
 		}
 	}
 }
