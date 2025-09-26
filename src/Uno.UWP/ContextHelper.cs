@@ -40,6 +40,12 @@ namespace Uno.UI
 			set => _current = value;
 		}
 
+		internal static Android.Content.Context CurrentSafe
+		{
+			get => Current;
+			set => Current = value;
+		}
+
 		/// <summary>
 		/// Tries getting the current context.
 		/// </summary>
