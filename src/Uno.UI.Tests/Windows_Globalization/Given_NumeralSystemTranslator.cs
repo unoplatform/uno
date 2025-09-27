@@ -10,7 +10,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 	[TestClass]
 	public class Given_NumeralSystemTranslator
 	{
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("")]
 		[DataRow("abcd")]
 		[DataRow("Arab ")]
@@ -30,7 +30,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.ThrowsExactly<ArgumentException>(() => sut.NumeralSystem = numeralSystem);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 #pragma warning disable MSTEST0014 // DataRow should be valid - Works in our case
 		[DataRow(new string[0])]
 		[DataRow(new string[] { "abcd" })]
@@ -50,7 +50,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.ThrowsExactly<ArgumentException>(() => new NumeralSystemTranslator(languages));
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		#region DataRows
 		[DataRow("aa", "Latn", "aa")]
 		[DataRow("aa-DJ", "Latn", "aa-Latn-DJ")]
@@ -906,7 +906,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(resolveLanguage, sut.ResolvedLanguage);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(".1", "\u066b١")]
 		[DataRow("1.", "١.")]
 		[DataRow(",1", "\u066c١")]
@@ -930,7 +930,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, translated);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(".1", "\u066b۱")]
 		[DataRow("1.", "۱.")]
 		[DataRow(",1", "\u066c۱")]
@@ -951,7 +951,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "ArabExt");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "᭐")]
 		[DataRow("1", "᭑")]
 		[DataRow("2", "᭒")]
@@ -970,7 +970,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Bali");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "০")]
 		[DataRow("1", "১")]
 		[DataRow("2", "২")]
@@ -989,7 +989,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Beng");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "꩐")]
 		[DataRow("1", "꩑")]
 		[DataRow("2", "꩒")]
@@ -1008,7 +1008,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Cham");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "०")]
 		[DataRow("1", "१")]
 		[DataRow("2", "२")]
@@ -1027,7 +1027,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Deva");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "０")]
 		[DataRow("1", "１")]
 		[DataRow("2", "２")]
@@ -1046,7 +1046,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "FullWide");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "૦")]
 		[DataRow("1", "૧")]
 		[DataRow("2", "૨")]
@@ -1065,7 +1065,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Gujr");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "੦")]
 		[DataRow("1", "੧")]
 		[DataRow("2", "੨")]
@@ -1084,7 +1084,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Guru");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "꧐")]
 		[DataRow("1", "꧑")]
 		[DataRow("2", "꧒")]
@@ -1103,7 +1103,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Java");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "꤀")]
 		[DataRow("1", "꤁")]
 		[DataRow("2", "꤂")]
@@ -1122,7 +1122,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Kali");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "០")]
 		[DataRow("1", "១")]
 		[DataRow("2", "២")]
@@ -1141,7 +1141,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Khmr");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "೦")]
 		[DataRow("1", "೧")]
 		[DataRow("2", "೨")]
@@ -1160,7 +1160,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Knda");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "᪀")]
 		[DataRow("1", "᪁")]
 		[DataRow("2", "᪂")]
@@ -1179,7 +1179,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Lana");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "᪐")]
 		[DataRow("1", "᪑")]
 		[DataRow("2", "᪒")]
@@ -1198,7 +1198,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "LanaTham");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "໐")]
 		[DataRow("1", "໑")]
 		[DataRow("2", "໒")]
@@ -1217,7 +1217,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Laoo");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "0")]
 		[DataRow("1", "1")]
 		[DataRow("2", "2")]
@@ -1236,7 +1236,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Latn");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "᱀")]
 		[DataRow("1", "᱁")]
 		[DataRow("2", "᱂")]
@@ -1255,7 +1255,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Lepc");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "᥆")]
 		[DataRow("1", "᥇")]
 		[DataRow("2", "᥈")]
@@ -1274,7 +1274,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Limb");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "൦")]
 		[DataRow("1", "൧")]
 		[DataRow("2", "൨")]
@@ -1293,7 +1293,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Mlym");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "᠐")]
 		[DataRow("1", "᠑")]
 		[DataRow("2", "᠒")]
@@ -1312,7 +1312,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Mong");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "꯰")]
 		[DataRow("1", "꯱")]
 		[DataRow("2", "꯲")]
@@ -1331,7 +1331,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Mtei");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "၀")]
 		[DataRow("1", "၁")]
 		[DataRow("2", "၂")]
@@ -1350,7 +1350,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Mymr");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "႐")]
 		[DataRow("1", "႑")]
 		[DataRow("2", "႒")]
@@ -1369,7 +1369,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "MymrShan");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "߀")]
 		[DataRow("1", "߁")]
 		[DataRow("2", "߂")]
@@ -1388,7 +1388,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Nkoo");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "᱐")]
 		[DataRow("1", "᱑")]
 		[DataRow("2", "᱒")]
@@ -1407,7 +1407,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Olck");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "୦")]
 		[DataRow("1", "୧")]
 		[DataRow("2", "୨")]
@@ -1426,7 +1426,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Orya");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "꣐")]
 		[DataRow("1", "꣑")]
 		[DataRow("2", "꣒")]
@@ -1445,7 +1445,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Saur");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "᮰")]
 		[DataRow("1", "᮱")]
 		[DataRow("2", "᮲")]
@@ -1464,7 +1464,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Sund");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "᧐")]
 		[DataRow("1", "᧑")]
 		[DataRow("2", "᧒")]
@@ -1483,7 +1483,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Talu");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "௦")]
 		[DataRow("1", "௧")]
 		[DataRow("2", "௨")]
@@ -1502,7 +1502,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "TamlDec");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "౦")]
 		[DataRow("1", "౧")]
 		[DataRow("2", "౨")]
@@ -1521,7 +1521,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Telu");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "๐")]
 		[DataRow("1", "๑")]
 		[DataRow("2", "๒")]
@@ -1540,7 +1540,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Thai");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "༠")]
 		[DataRow("1", "༡")]
 		[DataRow("2", "༢")]
@@ -1559,7 +1559,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Tibt");
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0", "꘠")]
 		[DataRow("1", "꘡")]
 		[DataRow("2", "꘢")]
@@ -1587,7 +1587,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("ARAB", "Arab")]
 		[DataRow("ARABEXT", "ArabExt")]
 		[DataRow("BALI", "Bali")]

@@ -10,10 +10,10 @@ The currently supported targets and platforms are:
 
 - Linux X11
 - [Linux Framebuffer](xref:Uno.Skia.Linux.Framebuffer)
-- Windows (Using a WPF shell)
+- Windows (Using Win32 shell)
 - [macOS (Using an AppKit shell)](xref:Uno.Skia.macOS)
 
-The set of supported platforms can be defined by using the `SkiaHostBuilder`, introduced in Uno Platform 5.2 and the [Single Project support](xref:Uno.Development.MigratingToSingleProject).
+The set of supported platforms can be defined by using the `UnoPlatformHostBuilder`, introduced in Uno Platform 5.2 and the [Single Project support](xref:Uno.Development.MigratingToSingleProject).
 
 ## Get started with the Skia Desktop head
 
@@ -22,12 +22,12 @@ Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [V
 Once created, in the `Platforms/Desktop/Program.cs` file, you'll find the following builder:
 
 ```csharp
-var host = SkiaHostBuilder.Create()
+var host = UnoPlatformHostBuilder.Create()
    .App(() => new App())
    .UseX11()
    .UseLinuxFrameBuffer()
    .UseMacOS()
-   .UseWindows()
+   .UseWin32()
    .Build();
 
 host.Run();
@@ -73,10 +73,10 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 
 ```xml
 <ItemGroup>
-   <PackagReference Include="SkiaSharp" Version="3.119.0-preview.1.2" />
-   <PackagReference Include="SkiaSharp.Harfbuzz" Version="3.119.0-preview.1.2" />
-   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0-preview.1.2" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="3.119.0-preview.1.2" />
+   <PackagReference Include="SkiaSharp" Version="3.119.0" />
+   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
+   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="3.119.0" />
+   <PackagReference Include="HarfBuzzSharp" Version="8.3.1.1" />
 </ItemGroup>
 ```
 

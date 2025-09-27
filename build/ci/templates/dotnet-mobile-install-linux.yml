@@ -1,5 +1,4 @@
 parameters:
-  UnoCheck_Version: '1.31.0-dev.12'
   UnoCheckParameters: ''
 
 steps:
@@ -12,13 +11,17 @@ steps:
       sudo dpkg -i packages-microsoft-prod.deb
       sudo apt-get install apt-transport-https
       sudo apt-get update
-      sudo apt-get install -y msopenjdk-11
-      sudo update-java-alternatives --set msopenjdk-11-amd64
-    displayName: Install OpenJDK 11
+      sudo apt-get install -y msopenjdk-17
+      sudo update-java-alternatives --set msopenjdk-17-amd64
+    displayName: Install OpenJDK 17
     retryCountOnTaskFailure: 3
 
+  - template: dotnet-setup-cache.yml
+    parameters:
+      UnoCheckParameters: ${{ parameters.UnoCheckParameters }}
+
   - bash: |
-      dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json
       uno-check --verbose --ci --non-interactive --fix --skip gtk3 --skip dotnetnewunotemplates --skip androidemulator --skip maui --skip unosdk --pre-major ${{ parameters.UnoCheckParameters }}
     displayName: Install .NET Workloads
     retryCountOnTaskFailure: 3

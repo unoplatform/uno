@@ -5,6 +5,8 @@ using System.IO;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
 using Uno.WinUI.Runtime.Skia.X11;
@@ -31,8 +33,8 @@ namespace SkiaSharpExample
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
-			SkiaHost? host = default;
-			var builder = SkiaHostBuilder.Create()
+			UnoPlatformHost? host = default;
+			var builder = UnoPlatformHostBuilder.Create()
 				.App(() => _app = new SamplesApp.App())
 				.AfterInit(() =>
 				{
@@ -49,45 +51,11 @@ namespace SkiaSharpExample
 
 					if (host is X11ApplicationHost)
 					{
-						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Windows.Media.Playback.MediaPlayer>(typeof(global::Uno.Media.Playback.IMediaPlayerExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension(o));
-						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Microsoft.UI.Xaml.Controls.MediaPlayerPresenter>(typeof(global::Microsoft.UI.Xaml.Controls.IMediaPlayerPresenterExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension(o));
 						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider(o));
 					}
-
-					if (OperatingSystem.IsWindows())
-					{
-						void Initialize()
-						{
-							// This is in a separate method to avoid loading the win32 uno runtime assembly
-							// This assumes that the runtime loads dependencies when entering the method.
-
-							if (host is Win32Host)
-							{
-								global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Windows.Media.Playback.MediaPlayer>(typeof(global::Uno.Media.Playback.IMediaPlayerExtension), o => new global::Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension(o));
-								global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Microsoft.UI.Xaml.Controls.MediaPlayerPresenter>(typeof(global::Microsoft.UI.Xaml.Controls.IMediaPlayerPresenterExtension), o => new global::Uno.UI.MediaPlayer.Skia.Win32.Win32MediaPlayerPresenterExtension(o));
-							}
-						}
-
-						Initialize();
-					}
 				})
-				.UseX11();
-
-			if (OperatingSystem.IsWindows())
-			{
-				void Build()
-				{
-					// This is in a separate method to avoid loading the win32 uno runtime assembly
-					// This assumes that the runtime loads dependencies when entering the method.
-
-					builder = builder
-						.UseWin32();
-				}
-
-				Build();
-			}
-
-			builder = builder
+				.UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
+				.UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
 				.UseWindows()
 				.UseLinuxFrameBuffer()
 				.UseWindows(b => b

@@ -11,15 +11,15 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
 using Windows.UI;
 using System.Windows.Input;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using IconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource;
-using FontIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIconSource;
-using BitmapIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.BitmapIconSource;
-using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
-using PathIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PathIconSource;
+using Microsoft.UI.Xaml.Controls;
+using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
+using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
+using BitmapIconSource = Microsoft.UI.Xaml.Controls.BitmapIconSource;
+using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+using PathIconSource = Microsoft.UI.Xaml.Controls.PathIconSource;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
-using ColorChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorChangedEventArgs;
+using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
+using ColorChangedEventArgs = Microsoft.UI.Xaml.Controls.ColorChangedEventArgs;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.InfoBadgeTests

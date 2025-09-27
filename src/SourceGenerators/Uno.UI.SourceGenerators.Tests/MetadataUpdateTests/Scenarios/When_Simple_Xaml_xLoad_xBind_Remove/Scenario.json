@@ -3,7 +3,6 @@
 		{
 			"IsDebug": true,
 			"IsMono": false,
-			"IsCrashingRoslyn": true,
 			"PassResults": [
 				{
 					"MetadataUpdates": 1,
@@ -14,7 +13,6 @@
 		{
 			"IsDebug": true,
 			"IsMono": true,
-			"IsCrashingRoslyn": true,
 			"PassResults": [
 				{
 					"MetadataUpdates": 1,

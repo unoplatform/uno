@@ -17,28 +17,28 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
-		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
+		private readonly IOverlayTextBoxViewExtension? _overlayTextBoxViewExtension;
 
 		private readonly ManagedWeakReference _textBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
 
-		// On Windows, \u25CF is used as password character.
-		// However, this character can't be retrieved on Android (doesn't exist in any system font) and on some browser/OS combinations.
-		// We use \u2022 instead, which is already the one normally used by Android and all the major browsers.
-		// See https://github.com/mozilla/gecko-dev/blob/1d4c27f9f166ce6e967fb0e8c8d6e0795dbbd12e/widget/android/nsLookAndFeel.cpp#L441
-		internal static readonly char PasswordChar = OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() ? '\u2022' : '\u25CF';
-
 		public TextBoxView(TextBox textBox)
 		{
 			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
 			IsPasswordBox = textBox is PasswordBox;
 
-			DisplayBlock = new TextBlock { MinWidth = InlineCollection.CaretThickness };
+			DisplayBlock = new TextBlock
+			{
+				MinWidth = InlineCollection.CaretThickness,
+				Style = null, // Prevent inheriting TextBlock styles
+				IsTextBoxDisplay = true,
+			};
+
 			SetFlowDirectionAndTextAlignment();
 
-			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
+			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -52,15 +52,15 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool IsPasswordBox { get; }
 
 		public (int start, int length) SelectionBeforeKeyDown =>
-			(_textBoxExtension?.GetSelectionStartBeforeKeyDown() ?? 0, _textBoxExtension?.GetSelectionLengthBeforeKeyDown() ?? 0);
+			(_overlayTextBoxViewExtension?.GetSelectionStartBeforeKeyDown() ?? 0, _overlayTextBoxViewExtension?.GetSelectionLengthBeforeKeyDown() ?? 0);
 
-		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
+		internal IOverlayTextBoxViewExtension? Extension => _overlayTextBoxViewExtension;
 
 		public TextBox? TextBox => !_textBox.IsDisposed ? _textBox.Target as TextBox : null;
 
-		internal int GetSelectionStart() => _textBoxExtension?.GetSelectionStart() ?? 0;
+		internal int GetSelectionStart() => _overlayTextBoxViewExtension?.GetSelectionStart() ?? 0;
 
-		internal int GetSelectionLength() => _textBoxExtension?.GetSelectionLength() ?? 0;
+		internal int GetSelectionLength() => _overlayTextBoxViewExtension?.GetSelectionLength() ?? 0;
 
 		public TextBlock DisplayBlock { get; }
 
@@ -68,12 +68,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			UpdateDisplayBlockText(text);
 
-			_textBoxExtension?.SetText(text);
+			_overlayTextBoxViewExtension?.SetText(text);
 		}
 
 		internal void Select(int start, int length)
 		{
-			_textBoxExtension?.Select(start, length);
+			_overlayTextBoxViewExtension?.Select(start, length);
 		}
 
 		internal void SetFlowDirectionAndTextAlignment()
@@ -107,16 +107,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void OnForegroundChanged(Brush brush)
-		{
-			DisplayBlock.Foreground = brush;
-			_textBoxExtension?.UpdateProperties();
-		}
+		/// <remarks>
+		/// Note that we are intentionally *not* setting the Foreground of DisplayBlock here, as it is inherited from
+		/// ContentElement in TextBox template. If it was set explicitly, the inheritance would no longer apply.
+		/// </remarks>
+		internal void OnForegroundChanged(Brush brush) => _overlayTextBoxViewExtension?.UpdateProperties();
 
 		internal void OnSelectionHighlightColorChanged(SolidColorBrush brush)
 		{
 			DisplayBlock.SelectionHighlightColor = brush;
-			_textBoxExtension?.UpdateProperties();
+			_overlayTextBoxViewExtension?.UpdateProperties();
 		}
 
 		internal void OnFocusStateChanged(FocusState focusState)
@@ -127,11 +127,11 @@ namespace Microsoft.UI.Xaml.Controls
 				// the password manager autocompletion button appear.
 				if (focusState != FocusState.Unfocused)
 				{
-					_textBoxExtension?.StartEntry();
+					_overlayTextBoxViewExtension?.StartEntry();
 				}
 				else
 				{
-					_textBoxExtension?.EndEntry();
+					_overlayTextBoxViewExtension?.EndEntry();
 				}
 			}
 			else if (!_isSkiaTextBox)
@@ -139,7 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (focusState != FocusState.Unfocused)
 				{
 					DisplayBlock.Opacity = 0;
-					_textBoxExtension?.StartEntry();
+					_overlayTextBoxViewExtension?.StartEntry();
 
 					var selectionStart = this.GetSelectionStart();
 
@@ -147,18 +147,18 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						int cursorPosition = selectionStart + TextBox?.Text?.Length ?? 0;
 
-						_textBoxExtension?.Select(cursorPosition, 0);
+						_overlayTextBoxViewExtension?.Select(cursorPosition, 0);
 					}
 				}
 				else
 				{
-					_textBoxExtension?.EndEntry();
+					_overlayTextBoxViewExtension?.EndEntry();
 					DisplayBlock.Opacity = 1;
 				}
 			}
 		}
 
-		internal void UpdateTheme() => _textBoxExtension?.UpdateProperties();
+		internal void UpdateTheme() => _overlayTextBoxViewExtension?.UpdateProperties();
 
 		internal void UpdateFont()
 		{
@@ -176,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{
 			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
-			_textBoxExtension?.SetPasswordRevealState(revealState);
+			_overlayTextBoxViewExtension?.SetPasswordRevealState(revealState);
 			if (TextBox is { } textBox)
 			{
 				UpdateDisplayBlockText(textBox.Text);
@@ -211,16 +211,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
+		public void UpdateMaxLength() => _overlayTextBoxViewExtension?.UpdateNativeView();
 
-		private void UpdateDisplayBlockText(string text)
+		internal void UpdateDisplayBlockText(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.
 			if (IsPasswordBox && !_isPasswordRevealed)
 			{
-				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string(PasswordChar, text.Length);
+				var passwordChar = GetPasswordChar();
+				DisplayBlock.Text = new string(passwordChar, text.Length);
 			}
 			else
 			{
@@ -234,6 +234,27 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void UpdateProperties() => _textBoxExtension?.UpdateProperties();
+		internal char GetPasswordChar()
+		{
+			if (TextBox is PasswordBox passwordBox && !string.IsNullOrEmpty(passwordBox.PasswordChar))
+			{
+				// Use the first character of the PasswordChar property
+				return passwordBox.PasswordChar[0];
+			}
+
+			// Fallback to the platform-specific default
+			return PasswordBox.DefaultPasswordChar[0];
+		}
+
+		internal void UpdateProperties() => _overlayTextBoxViewExtension?.UpdateProperties();
+
+		internal void UpdatePasswordMasking()
+		{
+			// For Skia, we can update the display block text directly
+			if (TextBox is { } textBox)
+			{
+				UpdateDisplayBlockText(textBox.Text);
+			}
+		}
 	}
 }

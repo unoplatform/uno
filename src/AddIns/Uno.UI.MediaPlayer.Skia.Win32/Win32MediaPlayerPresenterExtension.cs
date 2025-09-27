@@ -14,16 +14,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
-using Uno.Foundation.Extensibility;
 using Uno.Logging;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
-
-[assembly: ApiExtension(
-	typeof(IMediaPlayerPresenterExtension),
-	typeof(Uno.UI.MediaPlayer.Skia.Win32.Win32MediaPlayerPresenterExtension),
-	ownerType: typeof(MediaPlayerPresenter),
-	operatingSystemCondition: "windows")]
 
 namespace Uno.UI.MediaPlayer.Skia.Win32;
 
@@ -97,8 +92,6 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			this.Log().Trace("Created media player window.");
 		}
 
-		Win32Host.RegisterWindow(_hwnd);
-
 		var success = PInvoke.RegisterTouchWindow(_hwnd, 0);
 		if (!success && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 		{
@@ -124,8 +117,6 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			{
 				_hwndToExtension.Remove(_hwnd);
 			}
-
-			Win32Host.UnregisterWindow(_hwnd);
 		});
 	}
 
@@ -159,8 +150,7 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		{
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
 				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
-				var point = _presenter.GetAbsoluteBoundsRect().Location;
-				Win32WindowWrapper.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!.OnPointer(msg, wParam, new Point(-(int)point.X, -(int)point.Y));
+				((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).OnPointer(msg, wParam, _hwnd);
 				return new LRESULT(0);
 		}
 

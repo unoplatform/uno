@@ -1,5 +1,5 @@
 using System;
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Hosting;
 
 namespace UnoApp50.Skia.Gtk;
 public class Program
@@ -9,7 +9,7 @@ public class Program
     {
         AppHead.InitializeLogging();
 
-        var host = SkiaHostBuilder.Create()
+        var host = UnoPlatformHostBuilder.Create()
             .App(() => new AppHead())
             .UseX11()
             .UseLinuxFrameBuffer()

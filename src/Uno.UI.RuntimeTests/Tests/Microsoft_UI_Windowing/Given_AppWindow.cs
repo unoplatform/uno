@@ -158,7 +158,7 @@ public class Given_AppWindow
 			TestServices.WindowHelper.IsXamlIsland ||
 			IsGtk())
 		{
-			Assert.Inconclusive("This test only supported on Windows and Linux apps currently.");
+			Assert.Inconclusive("This test only supported on Windows, macOS and Linux apps currently.");
 		}
 	}
 

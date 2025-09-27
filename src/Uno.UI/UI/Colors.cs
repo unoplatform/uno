@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using Color = global::Windows/*Intentional space for WinUI upgrade tool*/.UI.Color;
+using Color = global::Windows.UI.Color;
 
 #if IS_UNO_UI_PROJECT
 namespace Microsoft.UI

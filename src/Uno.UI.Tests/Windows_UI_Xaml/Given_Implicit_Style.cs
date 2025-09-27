@@ -252,7 +252,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.CommandBar>();
 			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.AppBarButton>();
 			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.Frame>();
-			AssertDefaultStyleKey<Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem>(isString: true);
+			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.MenuBarItem>(isString: true);
 			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter>();
 			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.MenuFlyoutItem>();
 			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem>();

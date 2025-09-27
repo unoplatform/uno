@@ -1,13 +1,8 @@
-﻿using System.Threading.Tasks;
-using UIKit;
-using Uno.UI.Runtime.Skia.AppleUIKit;
+﻿using Uno.UI.Hosting;
 
-namespace SamplesApp.MacCatalyst;
-public class Application
-{
-	public static void Main(string[] args)
-	{
-		var host = new PlatformHost(() => new SamplesApp.App());
-		host.Run();
-	}
-}
+var host = UnoPlatformHostBuilder.Create()
+	.App(() => new SamplesApp.App())
+	.UseAppleUIKit()
+	.Build();
+
+host.Run();

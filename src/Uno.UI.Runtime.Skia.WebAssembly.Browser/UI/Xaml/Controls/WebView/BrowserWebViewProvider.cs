@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Xaml.Controls;
 

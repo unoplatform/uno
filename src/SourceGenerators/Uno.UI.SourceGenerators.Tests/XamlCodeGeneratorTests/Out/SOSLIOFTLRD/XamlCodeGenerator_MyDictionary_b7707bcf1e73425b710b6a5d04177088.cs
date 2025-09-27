@@ -48,15 +48,15 @@ namespace TestNamespace
 
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_TestNamespaceTestClass
+		private class __MyDictionary_b7707bcf1e73425b710b6a5d04177088
 		{
 		}
 	}
 }
 namespace MyProject
 {
-	[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
-	[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
+	[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+	[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 	public sealed partial class GlobalStaticResources
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -123,7 +123,7 @@ namespace MyProject.__Resources
 {
 	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	internal class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_MyDictionaryRD
+	internal class __MyDictionary_b7707bcf1e73425b710b6a5d04177088
 	{
 	}
 }

@@ -1,12 +1,13 @@
 ﻿using System;
 using Android.Content.PM;
+using AndroidX.Core.Content.PM;
 using Windows.UI.StartScreen;
 
 namespace Uno.UI.StartScreen.Extensions
 {
 	internal static class ShortcutInfoExtensions
 	{
-		internal static bool IsUnoShortcut(this ShortcutInfo shortcut)
+		internal static bool IsUnoShortcut(this ShortcutInfoCompat shortcut)
 		{
 			if (shortcut == null)
 			{
@@ -15,7 +16,7 @@ namespace Uno.UI.StartScreen.Extensions
 			return shortcut.Extras?.ContainsKey(JumpListItem.UnoShortcutKey) == true;
 		}
 
-		internal static JumpListItem ToJumpListItem(this ShortcutInfo shortcut)
+		internal static JumpListItem ToJumpListItem(this ShortcutInfoCompat shortcut)
 		{
 			if (!shortcut.IsUnoShortcut())
 			{

@@ -15,9 +15,6 @@
 		<RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)'==''">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 
 		<IsMSALSupported>true</IsMSALSupported>
-
-		<!-- net9 requires the use of unsafe blocks -->
-		<AllowUnsafeBlocks Condition=" '$(AllowUnsafeBlocks)' == '' ">true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" $(_IsExecutable) == 'true' ">
@@ -44,7 +41,9 @@
 		<Platform Condition="$(Platform) == 'AnyCPU'">$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
 		<PublishProfile Condition=" $(PublishProfile) == '' ">win-$(Platform).pubxml</PublishProfile>
 		<UseWinUI Condition=" $(UseWinUI) == '' ">true</UseWinUI>
+	</PropertyGroup>
 
+	<PropertyGroup Condition=" $(_IsExecutable) == 'true' ">
 		<!-- Explicitly set the PlatformTarget in order for packages like WebView2 to select the appropriate binaries -->
 		<PlatformTarget Condition=" '$(PlatformTarget)' == '' AND $(Platform) == 'AnyCPU' AND '$(NETCoreSdkRuntimeIdentifier)' == 'win-x86'">x86</PlatformTarget>
 		<PlatformTarget Condition=" '$(PlatformTarget)' == '' AND $(Platform) == 'AnyCPU' AND '$(NETCoreSdkRuntimeIdentifier)' == 'win-x64'">x64</PlatformTarget>

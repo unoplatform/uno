@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.Globalization.NumberFormatting;
 using Microsoft.UI.Xaml;

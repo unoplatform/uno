@@ -358,7 +358,6 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 #nullable enable
-
 		public static IEnumerable<T> GetChildren<T>(DependencyObject view)
 			=> (view as _ViewGroup)
 				?.GetChildren()
@@ -478,10 +477,6 @@ namespace Microsoft.UI.Xaml.Media
 			return default;
 		}
 
-#if __SKIA__
-		private static SkiaSharp.SKPath _spareViewBoxPath = new SkiaSharp.SKPath();
-#endif
-
 		/// <param name="position">
 		/// On skia: The absolute position relative to the window origin.
 		/// Everywhere else: The position relative to the parent (i.e. the position in parent coordinates).
@@ -493,8 +488,7 @@ namespace Microsoft.UI.Xaml.Media
 			StalePredicate? isStale)
 		{
 			var stale = default(Branch?);
-			HitTestability elementHitTestVisibility;
-			(elementHitTestVisibility, getVisibility) = getVisibility(element);
+			(var elementHitTestVisibility, getVisibility) = getVisibility(element);
 
 #if TRACE_HIT_TESTING
 			using var _ = SET_TRACE_SUBJECT(element);
@@ -525,27 +519,23 @@ namespace Microsoft.UI.Xaml.Media
 				TRACE($"- renderTransform: {tr.ToMatrix(element.RenderTransformOrigin, element.ActualSize.ToSize())}");
 
 #if __SKIA__
-			var transformToElement = UIElement.GetTransform(element, null);
+			var elementToRoot = UIElement.GetTransform(element, null);
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
-			var viewBoxPath = _spareViewBoxPath;
-			viewBoxPath.Rewind();
-
-			var clippingBounds = element.Visual.GetArrangeClipPathInElementCoordinateSpace(viewBoxPath)
-				? transformToElement.Transform(viewBoxPath.TightBounds.ToRect())
+			var clippingBounds = element.Visual.GetArrangeClipPathInElementCoordinateSpace() is { } clipping
+				? elementToRoot.Transform(clipping)
 				: Rect.Infinite;
-
 			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)
 			{
-				clippingBounds = clippingBounds.IntersectWith(transformToElement.Transform(clip)) ?? default;
+				clippingBounds = clippingBounds.IntersectWith(elementToRoot.Transform(clip)) ?? default;
 			}
 			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
 
 			// The region where the current element draws itself.
 			// Be aware that children might be out of this rendering bounds if no clipping defined.
 			// This is expressed in the window (absolute) coordinate space.
-			var renderingBounds = transformToElement.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
+			var renderingBounds = elementToRoot.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
 			TRACE($"- rendering (absolute): {renderingBounds.ToDebugString()}");
 #else
 			// First compute the transformation between the element and its parent coordinate space
@@ -592,17 +582,17 @@ namespace Microsoft.UI.Xaml.Media
 			if (!clippingBounds.Contains(testPosition))
 			{
 				// Even if out of bounds, if the element is stale, we search down for the real stale leaf
-				if (isStale is not null)
+				if (isStale is { } stalePredicate)
 				{
-					if (isStale.Value.Method(element))
+					if (stalePredicate.Method(element))
 					{
-						TRACE($"- Is {isStale.Value.Name}");
+						TRACE($"- Is {stalePredicate.Name}");
 
-						stale = SearchDownForStaleBranch(element, isStale.Value);
+						stale = SearchDownForStaleBranch(element, stalePredicate);
 					}
 					else
 					{
-						TRACE($"- Is NOT {isStale.Value.Name}");
+						TRACE($"- Is NOT {stalePredicate.Name}");
 					}
 				}
 
@@ -643,12 +633,12 @@ namespace Microsoft.UI.Xaml.Media
 				// If we found an acceptable element in the child's sub-tree, job is done!
 				if (childResult.element is not null)
 				{
-					if (isChildStale is not null) // Also indicates that stale is null
+					if (isChildStale is { } childStalePredicate) // Also indicates that stale is null
 					{
 						// If we didn't find any stale root in previous children or in the child's sub tree,
 						// we continue to enumerate sibling children to detect a potential stale root.
 
-						TRACE($"+ Searching for stale {isChildStale.Value.Name} branch.");
+						TRACE($"+ Searching for stale {childStalePredicate.Name} branch.");
 
 						while (child.MoveNext())
 						{
@@ -656,20 +646,20 @@ namespace Microsoft.UI.Xaml.Media
 							using var __ = SET_TRACE_SUBJECT(child.Current);
 #endif
 
-							if (isChildStale.Value.Method(child.Current))
+							if (childStalePredicate.Method(child.Current))
 							{
-								TRACE($"- Is {isChildStale.Value.Name}");
+								TRACE($"- Is {childStalePredicate.Name}");
 
-								stale = SearchDownForStaleBranch(child.Current!, isChildStale.Value);
+								stale = SearchDownForStaleBranch(child.Current!, childStalePredicate);
 
 #if TRACE_HIT_TESTING
 								while (child.MoveNext())
 								{
 									using var ___ = SET_TRACE_SUBJECT(child.Current);
-									if (isChildStale.Value.Method(child.Current))
+									if (childStalePredicate.Method(child.Current))
 									{
 										//Debug.Assert(false);
-										TRACE($"- Is {isChildStale.Value.Name} ***** INVALID: Only one branch can be considered as stale at once! ****");
+										TRACE($"- Is {childStalePredicate.Name} ***** INVALID: Only one branch can be considered as stale at once! ****");
 									}
 									TRACE($"> Ignored since leaf and stale branch has already been found.");
 								}
@@ -679,7 +669,7 @@ namespace Microsoft.UI.Xaml.Media
 							}
 							else
 							{
-								TRACE($"- Is NOT {isChildStale.Value.Name}");
+								TRACE($"- Is NOT {childStalePredicate.Name}");
 							}
 						}
 					}
@@ -701,9 +691,11 @@ namespace Microsoft.UI.Xaml.Media
 
 			// We didn't find any child at the given position, validate that element can be touched,
 			// and the position is in actual bounds(which might be different than the clipping bounds)
-			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition)
+			if (elementHitTestVisibility == HitTestability.Visible
+				&& renderingBounds.Contains(testPosition)
+				// TODO: Those HitTest should be provided by the `getVisibility`. SearchDownForTopMostElementAt is NOT about hit-testing (even if derived from and used by)
 #if __SKIA__
-				&& element.HitTest(transformToElement.Inverse().Transform(testPosition))
+				&& element.HitTest(elementToRoot.Inverse().Transform(testPosition))
 #elif __WASM__
 				&& element.HitTest(testPosition)
 #endif

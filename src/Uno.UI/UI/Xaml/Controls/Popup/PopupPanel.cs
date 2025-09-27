@@ -137,7 +137,7 @@ internal partial class PopupPanel : Panel
 			// for android, the above line returns the absolute coordinates of anchor on the screen
 			// because the parent view of this PopupPanel is a PopupWindow and GetLocationInWindow will be (0,0)
 			// therefore, we need to make the relative adjustment
-			if (this.NativeVisualParent is Android.Views.View view)
+			if (this.NativeVisualParent is AView view)
 			{
 				var windowLocation = Point.From(view.GetLocationInWindow);
 				var screenLocation = Point.From(view.GetLocationOnScreen);
@@ -158,7 +158,7 @@ internal partial class PopupPanel : Panel
 			// TODO: For now, the layouting logic for managed DatePickerFlyout or TimePickerFlyout does not correctly work
 			// against the placement target approach.
 			var isFlyoutManagedDatePicker =
-					(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
+				(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
 #if __ANDROID__ || __IOS__
 				&& (Popup.AssociatedFlyout is not NativeDatePickerFlyout && Popup.AssociatedFlyout is not NativeTimePickerFlyout)
 #endif
@@ -290,7 +290,7 @@ internal partial class PopupPanel : Panel
 		// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
 		// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
 		// rely on this workaround to close CommandBar's popup.
-		if (Popup?.GetTemplatedParent() is CommandBar { IsSticky: false })
+		if (Popup?.GetTemplatedParent() is CommandBar { IsSticky: false } and not CommandBarFlyoutCommandBar)
 		{
 			return true;
 		}

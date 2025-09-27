@@ -68,7 +68,6 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"logo.png", @"logo.png")]
 		[DataRow(@"test/logo.png", @"test/logo.png")]
 		[DataRow(@"test/logo-1.png", @"test/logo_1.png")]
-		[DataRow(@"test/logo-1.png", @"test/logo_1.png")]
 		[DataRow(@"test/test2/logo-1.png", @"test/test2/logo_1.png")]
 		[DataRow(@"test/test2/test-3/logo-1.png", @"test/test2/test_3/logo_1.png")]
 		[DataRow(@"1test/logo-1.png", @"__1test/logo_1.png")]
@@ -85,7 +84,6 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"logo.png", @"Assets\logo.png")]
 		[DataRow(@"test\logo.png", @"Assets\test\logo.png")]
 		[DataRow(@"test\logo-1.png", @"Assets\test\logo_1.png")]
-		[DataRow(@"test\logo-1.png", @"Assets\test\logo_1.png")]
 		[DataRow(@"test\test2\logo-1.png", @"Assets\test\test2\logo_1.png")]
 		[DataRow(@"test\test2\test-3\logo-1.png", @"Assets\test\test2\test_3\logo_1.png")]
 		[DataRow(@"1test\logo-1.png", @"Assets\__1test\logo_1.png")]
@@ -101,7 +99,6 @@ namespace Uno.UI.Tests.Resources
 
 		[DataRow(@"logo.png", @"logo.png")]
 		[DataRow(@"test/logo.png", @"test_logo.png")]
-		[DataRow(@"test/logo-1.png", @"test_logo_1.png")]
 		[DataRow(@"test/logo-1.png", @"test_logo_1.png")]
 		[DataRow(@"test/test2/logo-1.png", @"test_test2_logo_1.png")]
 		[DataRow(@"test/test2/test-3/logo-1.png", @"test_test2_test_3_logo_1.png")]

@@ -8,6 +8,7 @@ This article lists various performance tips to optimize your Uno Platform applic
 
 Here's what to look for:
 
+- Make sure to choose the right renderer ([Skia](xref:uno.features.renderer.skia) or [Native](xref:uno.features.renderer.native)) for your application, depending on the feature set you'll be using.
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
 - Reduce panels in panels depth. Use Grids and relative panels where possible.
 - Force the size of images anywhere possible, using explicit `Width` and `Height` properties.
@@ -79,7 +80,7 @@ Here's what to look for:
 - [`x:Phase`](https://learn.microsoft.com/windows/uwp/xaml-platform/x-phase-attribute)
   - For `ListView` instances with large templates, consider the use of x:Phase to reduce the number of bindings processed during item materialization.
   - It is only supported for items inside `ListViewItem` templates, it will be ignored for others.
-  - It is also supported as `not_win:Phase` on controls that do not have bindings. This feature is not supported by UWP.
+  - It is also supported as `not_win:Phase` on controls that do not have bindings. This feature is not supported by WinUI.
   - It is only supported for elements under the `DataTemplate` of a `ListViewItem`. The
  attribute is ignored for templates of `ContentControl` instances, or any other control.
   - When binding to Brushes with a solid color, prefer binding to the `Color` property like this if the brush type does not change:
@@ -147,6 +148,14 @@ Here's what to look for:
   You may combine this with `-p:EnableLLVM=true` and `-p:AndroidEnableMarshalMethods=true` to get even better performance.
 
 - Use [String Resource Trimming](xref:Uno.Features.StringResourceTrimming) to improve package size and startup time
+
+## Skia Targets Specifics
+
+- On Desktop targets, it's possible to change the composition refresh rate using `FeatureConfiguration.CompositionTarget.FrameRate`. The default value is 60 (frames per second).
+- On all targets:
+  - It's possible to set `DebugSettings.EnableFrameRateCounter` in `App.OnLaunched` in order to view a top-left indicator. It indicates the current frames per second, as well as the time spent rendering a composition frame, in milliseconds.
+  - If the indicator does not change, this means that the UI is not refreshing.
+  - If it is, but nothing is changing visually, it could be that a XAML or Composition animation is still running, see the `ProgressRing` section in this document.
 
 ## Advanced performance Tracing
 

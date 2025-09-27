@@ -166,7 +166,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/16250")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16250")]
 		public async Task When_xLoad_Referenced_By_xBind()
 		{
 			var SUT = new When_xLoad_Referenced_By_xBind();

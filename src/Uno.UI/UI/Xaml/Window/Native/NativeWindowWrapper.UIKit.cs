@@ -1,19 +1,21 @@
 ﻿using System;
 using CoreGraphics;
 using Foundation;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.Graphics;
+using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 using MUXWindow = Microsoft.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
-using Microsoft.UI.Xaml;
-using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -27,15 +29,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 #endif
 	private readonly DisplayInformation _displayInformation;
 
-	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot)
+	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_nativeWindow = new NativeWindow();
 
 		_mainController = MUXWindow.ViewControllerGenerator?.Invoke() ?? new RootViewController();
+		_mainController.SetXamlRoot(xamlRoot);
 		_mainController.View.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
 		ObserveOrientationAndSize();
+
+		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
 
 		SubscribeBackgroundNotifications();
 
@@ -53,11 +58,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
-	protected override void ShowCore()
-	{
-		_nativeWindow.RootViewController = _mainController;
-		_nativeWindow.MakeKeyAndVisible();
-	}
+	protected override void ShowCore() => NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
 
 	internal RootViewController MainController => _mainController;
 
@@ -69,10 +70,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	{
 		var newWindowSize = GetWindowSize();
 
-		Bounds = new Rect(default, newWindowSize);
+		SetBoundsAndVisibleBounds(new Rect(default, newWindowSize), GetVisibleBounds(_nativeWindow, newWindowSize));
 		Size = new((int)(newWindowSize.Width * RasterizationScale), (int)(newWindowSize.Height * RasterizationScale));
-
-		SetVisibleBounds(_nativeWindow, newWindowSize);
 	}
 
 	private void ObserveOrientationAndSize()
@@ -111,7 +110,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		return new Size(nativeFrame.Width, nativeFrame.Height);
 	}
 
-	private void SetVisibleBounds(UIWindow keyWindow, Size windowSize)
+	private Rect GetVisibleBounds(UIWindow keyWindow, Size windowSize)
 	{
 		var windowBounds = new Rect(default, windowSize);
 
@@ -139,7 +138,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			height: windowBounds.Height - inset.Top - inset.Bottom
 		);
 
-		VisibleBounds = newVisibleBounds;
+		return newVisibleBounds;
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);

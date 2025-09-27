@@ -4,7 +4,7 @@ using System.Linq;
 using Uno.Extensions;
 using Android.Views;
 using System;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Controls;
 using Uno.UI;
 

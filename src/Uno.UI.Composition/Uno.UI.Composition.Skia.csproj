@@ -6,7 +6,6 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AssemblyName>Uno.UI.Composition</AssemblyName>
 		<DefineConstants>$(DefineConstants);IS_UNO_COMPOSITION</DefineConstants>
 	</PropertyGroup>

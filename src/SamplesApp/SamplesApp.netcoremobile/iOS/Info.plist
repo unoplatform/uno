@@ -68,8 +68,10 @@
 	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/iconapp.appiconset</string>
+	<string>Assets.xcassets/icon.appiconset</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

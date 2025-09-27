@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using IndexPath = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IndexPath;
+using IndexPath = Microsoft.UI.Xaml.Controls.IndexPath;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {

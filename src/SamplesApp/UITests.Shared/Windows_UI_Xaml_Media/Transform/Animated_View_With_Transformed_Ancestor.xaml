@@ -39,6 +39,7 @@
 										Background="Purple">
 									<VisualStateManager.VisualStateGroups>
 										<VisualStateGroup x:Name="Animation">
+											<VisualState x:Name="NotAnimating" />
 											<VisualState x:Name="Animating">
 												<Storyboard>
 													<DoubleAnimation Storyboard.TargetName="OpacityBorder"

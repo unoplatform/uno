@@ -26,10 +26,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using RefreshVisualizer = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshVisualizer;
-using RefreshRequestedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshRequestedEventArgs;
-using RefreshStateChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshStateChangedEventArgs;
-using RefreshVisualizerOrientation = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshVisualizerOrientation;
+using RefreshVisualizer = Microsoft.UI.Xaml.Controls.RefreshVisualizer;
+using RefreshRequestedEventArgs = Microsoft.UI.Xaml.Controls.RefreshRequestedEventArgs;
+using RefreshStateChangedEventArgs = Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs;
+using RefreshVisualizerOrientation = Microsoft.UI.Xaml.Controls.RefreshVisualizerOrientation;
 using Uno.UI.Samples.Controls;
 #if HAS_UNO
 using IRefreshVisualizerPrivate = Microsoft.UI.Private.Controls.IRefreshVisualizerPrivate;

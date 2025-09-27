@@ -11,9 +11,4 @@ namespace Windows.ApplicationModel.Core;
 /// </summary>
 public static partial class CoreApplication
 {
-	internal static void QueueInvalidateRender(object? visual)
-		=> throw new NotSupportedException();
-
-	internal static void SetInvalidateRender(Action<object?> invalidateRender)
-		=> throw new NotSupportedException();
 }

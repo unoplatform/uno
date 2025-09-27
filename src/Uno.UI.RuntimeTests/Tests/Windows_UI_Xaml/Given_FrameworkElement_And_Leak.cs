@@ -11,6 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -23,7 +24,7 @@ using Windows.UI.Core;
 using Uno.Extensions;
 
 #if !HAS_UNO_WINUI && !WINAPPSDK
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 #if WINAPPSDK
@@ -41,6 +42,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_FrameworkElement_And_Leak
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // These test are failing in CI on native iOS https://github.com/unoplatform/uno/issues/21528
+		[Timeout(3 * 60 * 1000)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]
@@ -62,17 +65,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15,
-#if __APPLE_UIKIT__
-			LeakTestStyles.Uwp // Fluent styles disabled - #18105
-#else
-			LeakTestStyles.All
-#endif
-			)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
 #endif
-		//[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
+		//[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
 		[DataRow(typeof(Pivot), 15)]
 		[DataRow(typeof(ScrollBar), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
@@ -80,7 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		[DataRow(typeof(SymbolIcon), 15)]
 		[DataRow(typeof(Viewbox), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.MenuBar), 15)]
 		[DataRow(typeof(ComboBox), 15)]
 		[DataRow(typeof(Canvas), 15)]
 		[DataRow(typeof(AutoSuggestBox), 15)]
@@ -95,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(DatePicker), 15)]
 		[DataRow(typeof(TimePicker), 15)]
 #endif
-#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/issues/9080
+#if !__APPLE_UIKIT__ && !__ANDROID__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(CalendarView), 15)]
 #endif
 		[DataRow(typeof(Page), 15)]
@@ -109,9 +105,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ItemsView), 15)]
 		[DataRow(typeof(ScrollView), 15)]
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedIcon), 15,
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15,
 #if __ANDROID__
 			LeakTestStyles.Uwp // Fluent styles disabled - #14341
 #else
@@ -119,55 +115,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/issues/9080
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/issues/9080
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorPicker), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ColorPicker), 15)]
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Expander), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net10.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ImageIcon), 15)]
 #if !WINAPPSDK
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBadge), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBadge), 15)]
 #endif
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBar), 15)]
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationViewItem), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net10.0-wasm, see https://github.com/unoplatform/uno/issues/9080
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15)]
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NumberBox), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NumberBox), 15)]
 #if !WINAPPSDK
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PagerControl), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.PagerControl), 15)]
 #endif
 #endif
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPager), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.PipsPager), 15)]
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshContainer), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioButtons), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RefreshContainer), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RadioButtons), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RatingControl), 15)]
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ItemsRepeater), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SplitButton), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.TabViewListView), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TabView), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.TabViewListView), 15)]
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TreeView), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TwoPaneView), 15)]
 		[DataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]
@@ -189,7 +185,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
-		[DataRow(typeof(MediaPlayerElement), 15)]
+		[DataRow(typeof(MediaPlayerElement), 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeAndroid)]
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CommandBarFlyout_Leak", 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeUIKit)] // flaky on native iOS
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All, RuntimeTestPlatforms ignoredPlatforms = RuntimeTestPlatforms.None)
 		{
 			if (ignoredPlatforms.HasFlag(RuntimeTestsPlatformHelper.CurrentPlatform))
@@ -211,7 +208,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private async Task When_Add_Remove_Inner(object controlTypeRaw, int count)
 		{
-
 			Type GetType(string s)
 				=> AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(s)).Where(t => t != null).First()!;
 
@@ -222,16 +218,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				_ => throw new InvalidOperationException()
 			};
 
-			var _holders = new ConditionalWeakTable<DependencyObject, Holder>();
-			void TrackDependencyObject(DependencyObject target) => _holders.Add(target, new Holder(HolderUpdate));
+			var weakRefs = new HashSet<WeakReference<DependencyObject>>();
+			var totalRefCount = 0;
+			void TrackDependencyObject(DependencyObject target)
+			{
+				totalRefCount++;
+				weakRefs.Add(new WeakReference<DependencyObject>(target));
+			}
+
+			IEnumerable<DependencyObject> RemoveDeadRefsAndGetAliveRefs()
+			{
+				var toRemove = new List<WeakReference<DependencyObject>>();
+				foreach (var weakRef in weakRefs)
+				{
+					if (weakRef.TryGetTarget(out var target))
+					{
+						yield return target;
+					}
+					else
+					{
+						toRemove.Add(weakRef);
+					}
+				}
+
+				foreach (var weakReference in toRemove)
+				{
+					weakRefs.Remove(weakReference);
+				}
+			}
 
 			var forest = new List<string>();
-			var maxCounter = 0;
-			var activeControls = 0;
-			var maxActiveControls = 0;
-
-			// Ensure Holder counter is reset between individual control tests.
-			Holder.Reset();
 
 			var rootContainer = new ContentControl();
 
@@ -249,55 +265,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Dictionary<Type, int>? run0Stats = null;
 #endif
 
-			for (int i = 0; i < count; i++)
+			for (int i = 0; i < count - 1; i++)
 			{
-				await MaterializeControl(controlType, _holders, maxCounter, rootContainer);
+				await MaterializeControl(controlType, rootContainer);
 			}
-
-			TestServices.WindowHelper.WindowContent = null;
-			rootContainer = null;
-
-			void HolderUpdate(int value)
-			{
-#if HAS_UNO
-				_ = TestServices.WindowHelper.RootElement.Dispatcher.RunAsync(CoreDispatcherPriority.High,
-#else
-				_ = TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High,
-#endif
-					() =>
-					{
-						maxCounter = Math.Max(value, maxCounter);
-						activeControls = value;
-						maxActiveControls = maxCounter;
-					}
-				);
-			}
+			var totalRefCountExceptForLastControlInstance = totalRefCount;
+			await MaterializeControl(controlType, rootContainer);
 
 			var sw = Stopwatch.StartNew();
 
-			//var endTime = TimeSpan.FromSeconds(10);
-			var endTime = TimeSpan.FromSeconds(5);
-			var maxTime = TimeSpan.FromSeconds(30);
-
-			var lastActiveControls = activeControls;
-
-			while (sw.Elapsed < endTime && sw.Elapsed < maxTime && activeControls != 0)
+			var endTime = TimeSpan.FromSeconds(30);
+			while (sw.Elapsed < endTime && RemoveDeadRefsAndGetAliveRefs().Any())
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
+				GC.Collect();
+
+				// This gets around some GC quirks where the objects from the last instance of the control
+				// stick around until this test method returns
+#if __SKIA__
+				if (OperatingSystem.IsBrowser() || OperatingSystem.IsLinux() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
+#endif
+				{
+					await Task.Yield();
+					GC.Collect();
+					GC.WaitForPendingFinalizers();
+					GC.Collect();
+				}
 
 				// Waiting for idle is required for collection of
 				// DispatcherConditionalDisposable to be executed
 				await TestServices.WindowHelper.WaitForIdle();
-
-				if (lastActiveControls != activeControls)
-				{
-					// Expand the timeout if the count has changed, as the
-					// GC may still be processing levels of the hierarcy on iOS
-					endTime += TimeSpan.FromMilliseconds(500);
-				}
-
-				lastActiveControls = activeControls;
 			}
 
 #if TRACK_REFS
@@ -314,13 +312,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var retainedMessage = "";
 
-#if __APPLE_UIKIT__ || __ANDROID__
-			var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
-			if (activeControls != 0)
+			if (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser())
 			{
-				Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
+				var retainedTypes = RemoveDeadRefsAndGetAliveRefs().Select(ExtractTargetName).ToArray();
+				if (RemoveDeadRefsAndGetAliveRefs().Any())
+				{
+					Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
 
-				Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
+					Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
 
 #if TRACK_REFS
 				Console.WriteLine($"\n ========== first run: total objects created ============");
@@ -337,44 +336,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 				Console.WriteLine();
 #endif
+				}
+
+				retainedMessage = retainedTypes.JoinBy(";");
 			}
-			retainedMessage = retainedTypes.JoinBy(";");
-			//var retained = _holders.Select(x => x.Key).ToArray();
-#endif
 
-#if __APPLE_UIKIT__
-			// On iOS, the collection of objects does not seem to be reliable enough
-			// to always go to zero during runtime tests. If the count of active objects
-			// is arbitrarily below the half of the number of top-level objects.
-			// created, we can assume that enough objects were collected entirely.
-			Assert.IsTrue(activeControls < count, retainedMessage);
-#else
-			Assert.AreEqual(0, activeControls, retainedMessage);
-#endif
-
-#if __APPLE_UIKIT__ || __ANDROID__
-			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
+			if (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() || OperatingSystem.IsLinux())
 			{
-				if (p.Key is FrameworkElement { Name: { Length: > 0 } name } fe)
+				// Some platforms have a problem with GC timing and/or the way things like async methods are compiled
+				// where the last created instance of the control will remain in memory, so we check that objects from
+				// all but the last instance of the control are collected
+				RemoveDeadRefsAndGetAliveRefs().Count().Should().BeLessOrEqualTo(totalRefCount - totalRefCountExceptForLastControlInstance, retainedMessage);
+			}
+			else
+			{
+				Assert.AreEqual(0, RemoveDeadRefsAndGetAliveRefs().Count(), retainedMessage);
+			}
+
+			static string ExtractTargetName(DependencyObject p)
+			{
+				if (p is FrameworkElement { Name: { Length: > 0 } name } fe)
 				{
 					return $"{fe.GetType().Name}/{name}";
 				}
 				else
 				{
-					return p.Key?.ToString() ?? "null";
+					return p.ToString() ?? "null";
 				}
 			}
-#endif
-			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
+
+			async Task MaterializeControl(Type controlType, ContentControl rootContainer)
 			{
-				var item = (FrameworkElement)Activator.CreateInstance(controlType)!;
-				TrackDependencyObject(item);
-				rootContainer.Content = item;
+				rootContainer.Content = (FrameworkElement)Activator.CreateInstance(controlType)!;
+				TrackDependencyObject((rootContainer.Content as DependencyObject)!);
 				await TestServices.WindowHelper.WaitForIdle();
 
-				if (item is IExtendedLeakTest extendedTest)
+				if (rootContainer.Content is IExtendedLeakTest extendedTest)
 				{
+					void TrackAdditionalObject(object? sender, DependencyObject e)
+					{
+						if (e is not null)
+						{
+							TrackDependencyObject(e);
+						}
+					}
+					if (rootContainer.Content is ITrackingLeakTest leakTrackingProvider)
+					{
+						leakTrackingProvider.ObjectTrackingRequested += TrackAdditionalObject;
+					}
+
 					await extendedTest.WaitForTestToComplete();
+
+					// Unsubscribe to avoid memory leaks
+					if (rootContainer.Content is ITrackingLeakTest leakTrackingProvider2)
+					{
+						leakTrackingProvider2.ObjectTrackingRequested -= TrackAdditionalObject;
+					}
 				}
 
 #if TRACK_REFS
@@ -397,11 +414,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				#region Add all children to the tracking
 #if WINAPPSDK
-				for (int i = 0; i < VisualTreeHelper.GetChildrenCount(item); i++)
+				for (int i = 0; i < VisualTreeHelper.GetChildrenCount((FrameworkElement)rootContainer.Content); i++)
 				{
-					var child = VisualTreeHelper.GetChild(item, i);
+					var child = VisualTreeHelper.GetChild((FrameworkElement)rootContainer.Content, i);
 #else
-				foreach (var child in item.EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())
+				foreach (var child in ((FrameworkElement)rootContainer.Content).EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())
 				{
 #endif
 					TrackDependencyObject(child);
@@ -454,14 +471,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 				#endregion
 
-				item = null;
 				rootContainer.Content = null;
-				GC.Collect();
-				GC.WaitForPendingFinalizers();
-
-				// Waiting for idle is required for collection of
-				// DispatcherConditionalDisposable to be executed
-				await TestServices.WindowHelper.WaitForIdle();
 			}
 		}
 
@@ -490,33 +500,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 #endif
-
-		private class Holder
-		{
-			private readonly Action<int> _update;
-			private static int _counter;
-
-			private static object _lock = new object();
-
-			public Holder(Action<int> update)
-			{
-				_update = update;
-				lock (_lock)
-				{
-					_update(++_counter);
-				}
-			}
-
-			~Holder()
-			{
-				lock (_lock)
-				{
-					_update(--_counter);
-				}
-			}
-
-			public static void Reset() => _counter = 0;
-		}
 
 		[Flags]
 		public enum LeakTestStyles

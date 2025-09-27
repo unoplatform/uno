@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Microsoft.UI.Composition
 {
@@ -15,7 +16,7 @@ namespace Microsoft.UI.Composition
 			_owner = owner;
 		}
 
-		internal event EventHandler CollectionChanged;
+		internal event NotifyCollectionChangedEventHandler CollectionChanged;
 
 		public int Count => _visuals.Count;
 
@@ -28,7 +29,7 @@ namespace Microsoft.UI.Composition
 			newChild.Parent = _owner;
 			InsertAbovePartial(newChild, sibling);
 
-			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Add, newChild));
 		}
 
 		partial void InsertAbovePartial(Visual newChild, Visual sibling);
@@ -39,7 +40,7 @@ namespace Microsoft.UI.Composition
 			newChild.Parent = _owner;
 			InsertAtBottomPartial(newChild);
 
-			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Add, newChild));
 		}
 		partial void InsertAtBottomPartial(Visual newChild);
 
@@ -49,7 +50,7 @@ namespace Microsoft.UI.Composition
 			newChild.Parent = _owner;
 			InsertAtTopPartial(newChild);
 
-			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Add, newChild));
 		}
 		partial void InsertAtTopPartial(Visual newChild);
 
@@ -60,7 +61,7 @@ namespace Microsoft.UI.Composition
 			newChild.Parent = _owner;
 			InsertBelowPartial(newChild, sibling);
 
-			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Add, newChild));
 		}
 		partial void InsertBelowPartial(Visual newChild, Visual sibling);
 
@@ -71,13 +72,15 @@ namespace Microsoft.UI.Composition
 				child.Parent = null;
 				RemovePartial(child);
 
-				CollectionChanged?.Invoke(this, EventArgs.Empty);
+				CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Remove, child));
 			}
 		}
 		partial void RemovePartial(Visual child);
 
 		public void RemoveAll()
 		{
+			var resetItems = CollectionChanged != null ? _visuals.ToArray() : null;
+
 			foreach (var child in _visuals)
 			{
 				child.Parent = null;
@@ -85,7 +88,7 @@ namespace Microsoft.UI.Composition
 			_visuals.Clear();
 			RemoveAllPartial();
 
-			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Reset, resetItems));
 		}
 		partial void RemoveAllPartial();
 

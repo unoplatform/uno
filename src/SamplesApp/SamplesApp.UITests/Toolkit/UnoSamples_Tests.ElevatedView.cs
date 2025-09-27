@@ -25,12 +25,16 @@ namespace SamplesApp.UITests.Toolkit
 
 			_app.WaitForElement("elevatedViewText");
 
+			var parentView = _app.Marked("parentView");
 			var elevatedView = _app.Marked("elevatedView");
+
+			var parentX = parentView.FirstResult().Rect.X;
+			var parentY = parentView.FirstResult().Rect.Y;
 
 			using (new AssertionScope())
 			{
-				elevatedView.FirstResult().Rect.X.Should().Be(42f);
-				elevatedView.FirstResult().Rect.Y.Should().Be(92f);
+				(elevatedView.FirstResult().Rect.X - parentX).Should().Be(32f);
+				(elevatedView.FirstResult().Rect.Y - parentY).Should().Be(32f);
 				elevatedView.FirstResult().Rect.Width.Should().Be(200f);
 				elevatedView.FirstResult().Rect.Height.Should().Be(160f);
 			}

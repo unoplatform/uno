@@ -12,9 +12,10 @@ using Uno.UI.RuntimeTests.Helpers;
 using System.Linq;
 using SamplesApp.UITests;
 using Windows.Foundation;
+using static Private.Infrastructure.TestServices;
 
 #if HAS_UNO && !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -27,7 +28,7 @@ public class Given_CalendarView
 	const int DEFAULT_MIN_MAX_DATE_YEAR_OFFSET = 100;
 
 	[TestMethod]
-	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16123")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16123")]
 	[Ignore("Test is unstable on CI: https://github.com/unoplatform/uno/issues/16123")]
 	public async Task When_ReMeasure_After_Changing_MaxDate()
 	{
@@ -251,6 +252,25 @@ public class Given_CalendarView
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
 		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush2);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // Test is flaky on iOS native because the calendar takes longer to fully #9080.
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20575")]
+	public async Task When_Year_Mode_Shown()
+	{
+		var now = DateTimeOffset.UtcNow;
+		var calendarView = new Microsoft.UI.Xaml.Controls.CalendarView();
+
+		TestServices.WindowHelper.WindowContent = calendarView;
+
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+
+		calendarView.DisplayMode = CalendarViewDisplayMode.Year;
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(calendarView.TemplateSettings.HeaderText.EndsWith(now.Year.ToString(), StringComparison.Ordinal));
 	}
 }
 #endif

@@ -42,7 +42,7 @@ public class Given_Panel
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
 									<Grid Background="Black" >
-										<Image Source="ms-appx:///Uno.UI.RuntimeTests/Assets/linux.png" />
+										<Image x:Name="linuxImage" Source="ms-appx:///Uno.UI.RuntimeTests/Assets/linux.png" />
 									</Grid>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
@@ -55,6 +55,19 @@ public class Given_Panel
 		WindowHelper.WindowContent = grid;
 
 		await WindowHelper.WaitForLoaded(lv);
+
+#if __SKIA__
+		if (grid.FindName("linuxImage") is Image img
+			&& img.Source is BitmapImage bitmapImage)
+		{
+			await WindowHelper.WaitForOpened(bitmapImage);
+		}
+		else
+		{
+			throw new InvalidOperationException("Image [linuxImage] is not found");
+		}
+#endif
+
 		await WindowHelper.WaitFor(() => lv.Items.Select(item => ((ListViewItem)lv.ContainerFromItem(item)).DesiredSize.Width > 0).All(b => b));
 		await WindowHelper.WaitForIdle();
 

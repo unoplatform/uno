@@ -17,7 +17,7 @@ using UIKit;
 #endif
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;

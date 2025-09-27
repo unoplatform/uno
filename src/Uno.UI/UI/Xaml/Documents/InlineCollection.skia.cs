@@ -13,6 +13,7 @@ using Uno.UI.Composition;
 using Windows.Foundation;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
+using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -76,7 +77,7 @@ namespace Microsoft.UI.Xaml.Documents
 		/// The second argument is whether this caret is the one at the start (false) or the end (true)
 		/// of the selection.
 		/// </summary>
-		internal event Action<(Rect rect, SKCanvas canvas, bool endCaret)>? CaretFound;
+		internal event Action<(Rect rect, SKCanvas canvas, float opacity, bool endCaret)>? CaretFound;
 
 		internal (int start, int end) Selection
 		{
@@ -458,8 +459,8 @@ namespace Microsoft.UI.Xaml.Documents
 				// empty, so caret is at the beginning
 				if (RenderCaret)
 				{
-					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, false));
-					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, true));
+					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, session.Opacity, false));
+					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, session.Opacity, true));
 				}
 				DrawingFinished?.Invoke();
 
@@ -634,7 +635,7 @@ namespace Microsoft.UI.Xaml.Documents
 					}
 					// END decorations
 
-					HandleCaret(canvas, characterCountSoFar, lineIndex, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
+					HandleCaret(canvas, session.Opacity, characterCountSoFar, lineIndex, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
 					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? segment.LineBreakLength : 0);
@@ -719,16 +720,13 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				if (segmentSpan.GlyphsLength > 0)
 				{
-					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength);
-					positions.CopyTo(run1.GetPositionSpan(segmentSpan.GlyphsLength));
-					glyphs.CopyTo(run1.GetGlyphSpan(segmentSpan.GlyphsLength));
-
-					// Roughly equivalent to:
-					//   using var textBlob = _textBlobBuilder.Build();
-					//   canvas.DrawText(textBlob, 0f, y, paint);
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					DrawText(
+						fontInfo,
+						positions,
+						glyphs,
+						canvas,
+						y,
+						paint);
 				}
 			}
 			else
@@ -771,40 +769,55 @@ namespace Microsoft.UI.Xaml.Documents
 
 				if (startOfSelection > 0) // pre selection
 				{
-					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, startOfSelection);
-					positions.Slice(0, startOfSelection).CopyTo(run1.GetPositionSpan(startOfSelection));
-					glyphs.Slice(0, startOfSelection).CopyTo(run1.GetGlyphSpan(startOfSelection));
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					DrawText(
+						fontInfo,
+						positions.Slice(0, startOfSelection),
+						glyphs.Slice(0, startOfSelection),
+						canvas,
+						y,
+						paint);
 				}
 
 				if (endOfSelection - startOfSelection > 0) // selection
 				{
-					var run2 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, endOfSelection - startOfSelection);
-					positions.Slice(startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetPositionSpan(endOfSelection - startOfSelection));
-					glyphs.Slice(startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetGlyphSpan(endOfSelection - startOfSelection));
 					var color = paint.Color;
 					paint.Color = new SKColor(255, 255, 255, 255); // selection is always white
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					DrawText(
+						fontInfo,
+						positions.Slice(startOfSelection, endOfSelection - startOfSelection),
+						glyphs.Slice(startOfSelection, endOfSelection - startOfSelection),
+						canvas,
+						y,
+						paint);
 					paint.Color = color;
 				}
 
 				if (segmentSpan.GlyphsLength - endOfSelection > 0) // post selection
 				{
-					var run3 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength - endOfSelection);
-					positions.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetPositionSpan(segmentSpan.GlyphsLength - endOfSelection));
-					glyphs.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetGlyphSpan(segmentSpan.GlyphsLength - endOfSelection));
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					DrawText(
+						fontInfo,
+						positions.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection),
+						glyphs.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection),
+						canvas,
+						y,
+						paint);
 				}
+			}
+
+			static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
+				SKCanvas canvas, float y, SKPaint paint)
+			{
+				_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
+				// Roughly equivalent to:
+				//   using var textBlob = _textBlobBuilder.Build();
+				//   canvas.DrawText(textBlob, 0f, y, paint);
+				var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+				UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+				UnoSkiaApi.sk_textblob_unref(textBlobHandle);
 			}
 		}
 
-		private void HandleCaret(SKCanvas canvas, int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan,
+		private void HandleCaret(SKCanvas canvas, float opacity, int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan,
 			Span<SKPoint> positions, float x, float justifySpaceOffset, float y, RenderLine line)
 		{
 			var spanStartingIndex = characterCountSoFar;
@@ -851,7 +864,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 					if (caretLocation != float.MinValue)
 					{
-						CaretFound?.Invoke((new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)), canvas, caretAtSelectionEnd));
+						CaretFound?.Invoke((new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)), canvas, opacity, caretAtSelectionEnd));
 					}
 				}
 			}

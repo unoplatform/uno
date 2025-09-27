@@ -6,7 +6,7 @@
 
 using System;
 using Microsoft.UI.Xaml;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Uno.UI.Xaml.Core
 {

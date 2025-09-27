@@ -17,12 +17,14 @@
 		<!-- Disable assets generation for libraries -->
 		<StaticWebAssetsEnabled Condition=" $(OutputType) != 'Exe' ">false</StaticWebAssetsEnabled>
 
+		<WasmShellEnableIDBFS Condition=" '$(WasmShellEnableIDBFS)' == '' AND $(UnoFeatures.Contains(';skiarenderer;'))">true</WasmShellEnableIDBFS>
+
 		<!-- Workaround for https://github.com/dotnet/runtime/pull/109866 -->
 		<IsBrowserWasmProject Condition=" $(OutputType) != 'Exe' ">false</IsBrowserWasmProject>
 
 		<IsMSALSupported>true</IsMSALSupported>
 
-		<!-- net9.0 validation of CA1418 is case sensitive -->
+		<!-- net10.0 validation of CA1418 is case sensitive -->
 		<NoWarn>$(NoWarn);CA1418</NoWarn>
 	</PropertyGroup>
 
@@ -35,7 +37,7 @@
 		<SupportedPlatform Remove="@(SupportedPlatform)" />
 		<SupportedPlatform Include="browserwasm" />
 
-		<!-- net9.0 validation of CA1418 is case sensitive -->
+		<!-- net10.0 validation of CA1418 is case sensitive -->
 		<SupportedPlatform Include="BrowserWasm" />
 		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
 	</ItemGroup>

@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			//(Private.SetDefaultStyleKey(
 			//		spInnerInspectable,
-			//		"Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.LoopingSelectorItem"));
+			//		"Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem"));
 
 			DefaultStyleKey = typeof(LoopingSelectorItem);
 		}

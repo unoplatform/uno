@@ -5,47 +5,4 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="all" />
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)\BannedSymbols.txt" />
 	</ItemGroup>
-
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
-		<!-- These files are present for the UWP Build only, to preserve compatibility -->
-		<Compile Remove="UI\Xaml\Controls\Unsupported\*.cs"/>
-
-		<Compile Remove="UI\Xaml\Controls\ProgressBar\*.cs"/>
-		<None Include="UI\Xaml\Controls\ProgressBar\*.cs"/>
-
-		<Compile Remove="UI\Xaml\Controls\Icons\BitmapIconSource.cs" />
-		<Compile Remove="UI\Xaml\Controls\Icons\SymbolIconSource.cs" />
-		<Compile Remove="UI\Xaml\Controls\Icons\PathIconSource.cs" />
-		<Compile Remove="UI\Xaml\Controls\Icons\FontIconSource.cs" />
-		<Compile Remove="UI\Xaml\Controls\Icons\IconSource.cs" />
-		<Compile Remove="UI\Xaml\Media\RevealBrush.Android.cs" />
-		<Compile Remove="UI\Xaml\Automation\Peers\RatingControlAutomationPeer.cs" />
-
-		<Compile Remove="UI\Xaml\Controls\NavigationView\**\*.cs" />
-		<Page Remove="UI\Xaml\Controls\NavigationView\**\*.xaml" />
-		<XamlMergeInput Remove="UI\Xaml\Controls\NavigationView\**\*.xaml" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<!-- These files are present for the WinUI Build only -->
-		<Compile Remove="Microsoft\UI\Xaml\Controls\ItemsView\**\*.cs"/>
-		<Page Remove="Microsoft\UI\Xaml\Controls\ItemsView\**\*.xaml"/>
-		<XamlMergeInput Remove="Microsoft\UI\Xaml\Controls\ItemsView\**\*.xaml"/>
-		<None Include="Microsoft\UI\Xaml\Controls\ItemsView\**\*.cs"/>
-		<None Include="Microsoft\UI\Xaml\Controls\ItemsView\**\*.xaml"/>
-
-		<Compile Remove="Microsoft\UI\Xaml\Controls\ItemContainer\**\*.cs"/>
-		<Page Remove="Microsoft\UI\Xaml\Controls\ItemContainer\ItemContainer.xaml"/>
-		<XamlMergeInput Remove="Microsoft\UI\Xaml\Controls\ItemContainer\ItemContainer.xaml"/>
-		<None Include="Microsoft\UI\Xaml\Controls\ItemContainer\**\*.cs"/>
-		<None Include="Microsoft\UI\Xaml\Controls\ItemContainer\ItemContainer.xaml"/>
-
-		<Compile Remove="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.cs"/>
-		<Page Remove="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.xaml"/>
-		<XamlMergeInput Remove="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.xaml"/>
-		<None Include="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.cs"/>
-		<None Include="Microsoft\UI\Xaml\Controls\SelectorBar\**\*.xaml"/>
-
-	</ItemGroup>
-
 </Project>

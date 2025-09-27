@@ -9,10 +9,10 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
-	using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+	using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
 	using RepeaterTestHooks = Microsoft.UI.Private.Controls.RepeaterTestHooks;
-	using ElementFactoryGetArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryGetArgs;
-	using ElementFactoryRecycleArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryRecycleArgs;
+	using ElementFactoryGetArgs = Microsoft.UI.Xaml.Controls.ElementFactoryGetArgs;
+	using ElementFactoryRecycleArgs = Microsoft.UI.Xaml.Controls.ElementFactoryRecycleArgs;
 
 	public class RecyclingElementFactoryDerived : RecyclingElementFactory
 	{

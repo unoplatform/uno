@@ -26,6 +26,7 @@ using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
 using Uno.UI.Extensions;
+using Combinatorial.MSTest;
 
 #if __APPLE_UIKIT__
 using _UIViewController = UIKit.UIViewController;
@@ -117,7 +118,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_IsEditable_False_Changes_To_True()
 		{
-			if (!ApiInformation.IsPropertyPresent("ComboBox", "IsEditable"))
+			if (!ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.ComboBox, Uno.UI", "IsEditable"))
 			{
 				Assert.Inconclusive();
 			}
@@ -1140,8 +1141,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Closed(bool isTextSearchEnabled)
 		{
 			var comboBox = new ComboBox();
@@ -1171,8 +1171,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Opened(bool isTextSearchEnabled)
 		{
 			var comboBox = new ComboBox();
@@ -1223,7 +1222,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(PopupPlacementMode.Top, 0)]
 		[DataRow(PopupPlacementMode.Bottom, 20)]
 		[DataRow(PopupPlacementMode.Top, -20)]
-		[UnoWorkItem("https://github.com/unoplatform/nventive-private/issues/509")]
+		[GitHubWorkItem("https://github.com/unoplatform/nventive-private/issues/509")]
 		public async Task When_Customized_Popup_Placement(PopupPlacementMode mode, double verticalOffset)
 		{
 			var grid = new Grid();
@@ -1332,7 +1331,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15531")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15531")]
 		public async Task When_Tap_Twice()
 		{
 			var grid = new Grid();
@@ -1367,6 +1366,105 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_ComboBox_Popup_Dismissed()
+		{
+			// test case built against https://github.com/unoplatform/uno/issues/20014
+
+			var sut = new ComboBox()
+			{
+				ItemsSource = Enumerable.Range(0, 3).ToArray(),
+				Visibility = Visibility.Collapsed,
+			};
+
+			// load the collapsed control into the visual tree
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			// then let it become visible
+			sut.Visibility = Visibility.Visible;
+			await UITestHelper.WaitForLoaded(sut);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+
+			// focus the control
+			// This is required, otherwise DropDownClosed would be triggered by focus shift instead, which is not what we are testing here.
+			// [ComboBox > ComboBoxItem > ComboBox] doesnt trigger that mechanism, but [other-control > ComboBoxItem > ComboBox] will do.
+			// We are trying to validate if the ComboBox properly subscribes to the Popup::Closed event, and in turn raises DropDownClosed.
+			sut.Focus(FocusState.Programmatic);
+
+			// open the popup
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to open");
+
+			// track event firing
+			var dropDownClosedFired = false;
+			sut.DropDownClosed += (s, e) => dropDownClosedFired = true;
+
+			// close the popup as if the user had light-dismissed it
+			popup.IsOpen = false;
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsFalse(sut.IsDropDownOpen, "ComboBox.IsDropDownOpen is still true");
+			Assert.IsTrue(dropDownClosedFired, "DropDownClosed event was not fired");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		public Task When_ComboBox_ScrollIntoView_SelectedItem() => When_ComboBox_ScrollIntoView_Selection(viaIndex: false);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
+
+		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)
+		{
+			var source = ( // 12x20=240 items, enough to overflow
+				from a in "qwerasdfzxcv"
+				from b in Enumerable.Range(0, 20)
+				select string.Concat(a, b)
+			).ToArray();
+			var sut = new ComboBox
+			{
+				ItemsSource = source,
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+
+			// open the popup
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to open");
+
+			// wait until the dropdown panel is ready
+			await UITestHelper.WaitFor(() => sut.ItemsPanelRoot is { }, timeoutMS: 2000, "timed out waiting on the ItemsPanelRoot");
+
+			// set selection
+			if (viaIndex)
+			{
+				sut.SelectedIndex = source.Length - 3;
+			}
+			else
+			{
+				sut.SelectedItem = source[^3];
+			}
+			await UITestHelper.WaitForIdle();
+
+			// sanity check
+			Assert.AreEqual(source.Length - 3, sut.SelectedIndex, "SelectedIndex should be the 3rd last");
+			Assert.AreEqual(source[^3], sut.SelectedItem, "SelectedItem should be the 3rd last");
+
+			var sv = sut.ItemsPanelRoot.FindFirstAncestorOrThrow<ScrollViewer>();
+			var cbi = sut.ContainerFromIndex(sut.SelectedIndex) as FrameworkElement;
+			Assert.IsNotNull(cbi, "Selected container should not be null");
+
+			var cbiAbsRect = new Rect(cbi.ActualOffset.X, cbi.ActualOffset.Y, cbi.ActualWidth, cbi.ActualHeight);
+			var viewportAbsRect = new Rect(sv.HorizontalOffset, sv.VerticalOffset, sv.ViewportWidth, sv.ViewportHeight);
+			var intersection = viewportAbsRect;
+			intersection.Intersect(cbiAbsRect);
+
+			Assert.IsTrue(cbiAbsRect == intersection, $"Selected container should be fully within viewport: CBI={PrettyPrint.FormatRect(cbiAbsRect)}, VP={PrettyPrint.FormatRect(viewportAbsRect)}");
+		}
 
 		public sealed class TwoWayBindingClearViewModel : IDisposable
 		{

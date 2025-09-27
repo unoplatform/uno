@@ -16,7 +16,7 @@ partial class SvgImageSource
 {
 	private static MethodInfo _fromPictureMethod;
 
-	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
+	private protected unsafe override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 	{
 		if (TryOpenSvgImageData(ct, out var imageTask))
 		{
@@ -45,18 +45,19 @@ partial class SvgImageSource
 						throw new InvalidOperationException("Unable to find the 'FromPicture' method on SKImage");
 					}
 
+					var matrix = SKMatrix.Identity;
+
 					var skImage = (SKImage)_fromPictureMethod.Invoke(
 						null,
 						[
 							picture,
 							new SKSizeI((int)sourceSize.Width, (int)sourceSize.Height),
-							SKMatrix.Identity,
+							Pointer.Box(&matrix, typeof(SKMatrix*)),
 							new SKPaint(),
 							false,
-							null,
+							SKColorSpace.CreateSrgb(),
 							new SKSurfaceProperties(SKPixelGeometry.Unknown)
 					]);
-
 
 					return ImageData.FromCompositionSurface(new(skImage));
 				}

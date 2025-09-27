@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Provides data for the CommandBar.DynamicOverflowItemsChanging event.
+/// </summary>
+public partial class DynamicOverflowItemsChangingEventArgs
 {
-	public partial class DynamicOverflowItemsChangingEventArgs
-	{
-		public global::Microsoft.UI.Xaml.Controls.CommandBarDynamicOverflowAction Action
-		{
-			get;
-			internal set;
-		}
-	}
+	/// <summary>
+	/// Gets a value that indicates whether items were added to or removed from the CommandBar overflow menu.
+	/// </summary>
+	public CommandBarDynamicOverflowAction Action { get; internal set; }
 }

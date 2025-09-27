@@ -27,11 +27,12 @@ using Com.Nostra13.Universalimageloader.Core;
 namespace SamplesApp.Droid
 {
 	[global::Android.App.ApplicationAttribute(
-		Label = "@string/ApplicationName",
+		Label = "@string/SamplesAppName",
+		Icon = "@mipmap/icon",
 		Banner = "@drawable/banner",
 		LargeHeap = true,
 		HardwareAccelerated = true,
-		Theme = "@style/AppTheme"
+		Theme = "@style/Theme.App.Starting"
 	)]
 	public class Application : Microsoft.UI.Xaml.NativeApplication
 	{

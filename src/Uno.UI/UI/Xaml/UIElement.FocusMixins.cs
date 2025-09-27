@@ -7,10 +7,9 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml
 {
-	/// <summary>
-	/// This contains focus-related mixins that belong either in UIElement or in Control depending whether
-	/// targeting UWP or WinUI. When WinUI becomes the "standard", we can move this in UIElement directly.
-	/// </summary>
+	// This file contains focus-related mixins that belong either in UIElement or in Control depending whether
+	// targeting UWP or WinUI. When WinUI becomes the "standard", we can move this in UIElement directly.
+
 	public partial class UIElement
 	{
 		public FocusState FocusState
@@ -148,7 +147,7 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual bool IsFocusableForFocusEngagement() => false;
 
-		private protected bool IsVisible() => Visibility == Visibility.Visible;
+		internal protected bool IsVisible() => Visibility == Visibility.Visible;
 
 		private bool IsEnabled()
 		{

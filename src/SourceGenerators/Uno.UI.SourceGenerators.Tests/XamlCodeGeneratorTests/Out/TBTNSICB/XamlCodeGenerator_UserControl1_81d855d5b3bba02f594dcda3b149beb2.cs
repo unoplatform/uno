@@ -41,6 +41,8 @@ namespace TestRepro
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_UserControl1_81d855d5b3bba02f594dcda3b149beb2 = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);

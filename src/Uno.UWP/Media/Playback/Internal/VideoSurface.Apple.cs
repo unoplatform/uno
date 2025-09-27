@@ -1,5 +1,6 @@
 ﻿using System;
 using AVFoundation;
+using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 #if __APPLE_UIKIT__
@@ -34,7 +35,10 @@ namespace Uno.Media.Playback
 				var avPlayerLayer = layer as AVPlayerLayer;
 				if (avPlayerLayer != null)
 				{
+					CATransaction.Begin();
+					CATransaction.AnimationDuration = 0;
 					avPlayerLayer.Frame = Bounds;
+					CATransaction.Commit();
 				}
 			}
 		}

@@ -1586,7 +1586,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Update the visual states when the Visibility property is changed.
-		private void OnVisibilityChanged()
+		private protected override void OnVisibilityChanged()
 		{
 			Visibility visibility = Visibility.Collapsed;
 

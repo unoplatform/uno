@@ -23,7 +23,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using _This = Microsoft.UI.Xaml.FrameworkElement;
-using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
 
 #if __APPLE_UIKIT__
 using UIKit;

@@ -1,21 +1,6 @@
-﻿using System;
-using Uno.UI.DataBinding;
-using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.Diagnostics.Eventing;
-using Uno.Disposables;
-using System.Linq;
-using System.Threading;
-using Uno.Collections;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
+﻿#pragma warning disable IDE1006 // Naming Styles
 
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-#endif
+using System;
 
 namespace Microsoft.UI.Xaml
 {
@@ -24,68 +9,47 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	public sealed partial class DependencyPropertyChangedEventArgs : EventArgs
 	{
-		internal DependencyPropertyChangedEventArgs(
-			DependencyProperty property,
-			object oldValue,
-			object newValue
+		internal DependencyProperty PropertyInternal;
+		internal object NewValueInternal;
+		internal object OldValueInternal;
 #if __APPLE_UIKIT__ || IS_UNIT_TESTS
-			, DependencyPropertyValuePrecedences oldPrecedence,
-			DependencyPropertyValuePrecedences newPrecedence,
-			bool bypassesPropagation
+		internal DependencyPropertyValuePrecedences NewPrecedenceInternal;
+		internal DependencyPropertyValuePrecedences OldPrecedenceInternal;
+		internal bool BypassesPropagationInternal;
 #endif
-			)
+
+		internal DependencyPropertyChangedEventArgs()
 		{
-			Property = property;
-			OldValue = oldValue;
-			NewValue = newValue;
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
-			OldPrecedence = oldPrecedence;
-			NewPrecedence = newPrecedence;
-			BypassesPropagation = bypassesPropagation;
-#endif
 		}
+
+		public DependencyProperty Property => PropertyInternal;
 
 		/// <summary>
 		/// Gets the new value of the dependency property.
 		/// </summary>
-		public object NewValue { get; }
-
+		public object NewValue => NewValueInternal;
 		/// <summary>
 		/// Gets the old value of the dependency property.
 		/// </summary>
-		public object OldValue { get; }
-
-		public DependencyProperty Property { get; }
+		public object OldValue => OldValueInternal;
 
 #if __APPLE_UIKIT__ || IS_UNIT_TESTS
 		/// <summary>
 		/// Gets the dependency property value precedence of the new value
 		/// </summary>
-		internal DependencyPropertyValuePrecedences NewPrecedence
-		{
-			get;
-			private set;
-		}
+		internal DependencyPropertyValuePrecedences NewPrecedence => NewPrecedenceInternal;
 
 		/// <summary>
 		/// Gets the dependency property value precedence of the old value
 		/// </summary>
-		internal DependencyPropertyValuePrecedences OldPrecedence
-		{
-			get;
-			private set;
-		}
+		internal DependencyPropertyValuePrecedences OldPrecedence => OldPrecedenceInternal;
 
 		/// <summary>
 		/// Is true if an animated value should be ignored when setting the native
 		/// value associated to it.  Happens in the scenario of GPU bound animations
 		/// in iOS.
 		/// </summary>
-		internal bool BypassesPropagation
-		{
-			get;
-			private set;
-		}
+		internal bool BypassesPropagation => BypassesPropagationInternal;
 #endif
 	}
 }

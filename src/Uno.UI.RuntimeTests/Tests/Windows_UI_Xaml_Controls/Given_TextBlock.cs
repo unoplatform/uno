@@ -16,19 +16,25 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using FluentAssertions;
-using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
 using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
-using Point = Windows.Foundation.Point;
-using Size = Windows.Foundation.Size;
+using Uno.UI.Extensions;
+using Combinatorial.MSTest;
+using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Markup;
 
 #if __SKIA__
+using Microsoft.UI.Xaml.Data;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 #endif
+
+using Point = Windows.Foundation.Point;
+using Size = Windows.Foundation.Size;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -50,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow((ushort)600, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-SemiBold.ttf#Open Sans")]
 		public async Task When_Font_Has_Manifest(ushort weight, FontStyle style, FontStretch stretch, string ttfFile)
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -151,7 +157,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
 		// is different between the fallback font and OpenSans
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm)]
 		public async Task Check_FontFallback_Shaping()
 		{
 			var SUT = new TextBlock
@@ -221,7 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("\r", segments[1].Text.ToString());
 #endif
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -607,9 +614,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Inlines_Transitively_Change()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+			var SUT = new TextBlock();
+
+			await UITestHelper.Load(SUT, tb => tb.IsLoaded);
+
+			var span = new Span();
+			SUT.Inlines.Add(span);
+			span.Inlines.Add(new Run() { Text = "text" });
+
+			await UITestHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.TextForegroundBrush).Color);
+		}
+#endif
+
 #if __WASM__
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19380")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19380")]
 		public async Task When_Changing_Text_Through_Inlines()
 		{
 			var SUT = new TextBlock { Text = "Initial Text" };
@@ -784,6 +814,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.DesiredSize.Height > 0);
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/289")]
+#if __ANDROID__ || __APPLE_UIKIT__
+		[Ignore("Layout logic forces DesiredSize to be smaller than availableSize, which prevents us from fixing the behaviour to match wasm and skia.")]
+#endif
+		[DataRow(TextTrimming.None)]
+#if __WASM__
+		[DataRow(TextTrimming.Clip)]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+#endif
+		public async Task When_Text_Does_Not_Fit(TextTrimming trimming)
+		{
+			var lv = new ListView()
+			{
+				Width = 200
+			};
+			ScrollViewer.SetHorizontalScrollBarVisibility(lv, ScrollBarVisibility.Visible);
+			ScrollViewer.SetHorizontalScrollMode(lv, ScrollMode.Enabled);
+			var SUT = new TextBlock
+			{
+				Text = "text that is a lot longer than the given bounds",
+				TextTrimming = trimming
+			};
+			lv.Items.Add(SUT);
+			await UITestHelper.Load(lv);
+
+			if (trimming is TextTrimming.None)
+			{
+				lv.FindFirstDescendant<ScrollViewer>().ScrollableWidth.Should().BeGreaterThan(50);
+			}
+			else
+			{
+				// Not necessarily zero because of measuring inaccuracies
+				lv.FindFirstDescendant<ScrollViewer>().ScrollableWidth.Should().BeLessThan(5);
+			}
+		}
+
 #if !__APPLE_UIKIT__ // Line height is not supported on iOS
 		[TestMethod]
 		public async Task When_Empty_TextBlock_LineHeight_Override()
@@ -846,6 +914,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if __SKIA__
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno.hotdesign/issues/4327")]
+		public async Task When_Bound_To_TextBox_Text()
+		{
+			var textblock = new TextBlock { Foreground = new SolidColorBrush(Colors.Red) };
+			var textbox = new TextBox { Text = "0", Foreground = new SolidColorBrush(Colors.Red) };
+
+			textblock.SetBinding(TextBlock.TextProperty,
+				new Binding { Source = textbox, Path = new PropertyPath("Text"), });
+
+			await UITestHelper.Load(new StackPanel
+			{
+				textbox,
+				textblock
+			});
+
+			for (int i = 0; i < 5; i++)
+			{
+				textbox.Text = (int.TryParse(textbox.Text, out var v) ? v + 2 : 0).ToString();
+				await UITestHelper.WaitForIdle();
+				var tb1 = await UITestHelper.ScreenShot(textbox.FindFirstChild<TextBlock>());
+				var tb2 = await UITestHelper.ScreenShot(textblock);
+				for (int y = 0; y < 20; y++)
+				{
+					for (int x = 0; x < 20; x++)
+					{
+						Assert.AreEqual(tb1.GetPixel(x, y), tb2.GetPixel(x, y));
+					}
+				}
+			}
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_TextTrimming()
@@ -902,6 +1004,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, states.Count, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
 
+		[TestMethod]
+		public async Task When_Padding()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
+			}
+
+			var SUT = new TextBlock
+			{
+				Text = "text",
+				Padding = new Thickness(50),
+				Foreground = new SolidColorBrush(Colors.Red),
+			};
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 50, 50), Colors.Red);
+		}
+
+#if HAS_RENDER_TARGET_BITMAP
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21322")]
+		public async Task When_Text_Set_By_Style_Setter()
+		{
+			var style = new Style(typeof(TextBlock));
+			const string text = "Hello from style";
+			style.Setters.Add(new Setter(TextBlock.TextProperty, text));
+			var container = new StackPanel() { Spacing = 8, Padding = new Thickness(4) };
+			var SUT = new TextBlock
+			{
+				Foreground = new SolidColorBrush(Colors.Red),
+				Style = style
+			};
+			var duplicate = new TextBlock
+			{
+				Foreground = new SolidColorBrush(Colors.Red),
+				Text = text
+			};
+			container.Children.Add(SUT);
+			container.Children.Add(duplicate);
+
+			await UITestHelper.Load(container);
+			Assert.AreEqual("Hello from style", SUT.Text);
+
+			// Verify the text is actually rendered
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), Colors.Red);
+
+			// Verify both TextBlocks render the same
+			var screenshot2 = await UITestHelper.ScreenShot(duplicate);
+			await ImageAssert.AreSimilarAsync(screenshot, screenshot2);
+		}
+#endif
+
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_RenderTransform_Rearrange()
+		{
+			var sut = new TextBlock()
+			{
+				Text = "AsdAsd",
+				RenderTransform = new CompositeTransform { ScaleX = 2, ScaleY = 2 },
+			};
+
+			await UITestHelper.Load(sut);
+
+			var a = sut.Visual.TransformMatrix;
+
+			sut.InvalidateArrange();
+			await UITestHelper.WaitForIdle();
+
+			var b = sut.Visual.TransformMatrix;
+
+			Assert.AreEqual(a, b, "Visual.TransformMatrix should remain unchanged after re-arrange.");
+		}
+#endif
+
 #if HAS_UNO // GetMouse is not available on WinUI
 		#region IsTextSelectionEnabled
 
@@ -951,6 +1131,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
 			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_TappedMouse_Then_ClearSelection()
+		{
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			sut.SelectAll();
+			Assert.AreEqual(sut.Text, sut.SelectedText);
+
+			mouse.MoveTo(bounds.GetCenter());
+			mouse.Press();
+			mouse.Release();
+
+			Assert.AreEqual("", sut.SelectedText);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_TappedFinger_Then_ClearSelection()
+		{
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			sut.SelectAll();
+			Assert.AreEqual(sut.Text, sut.SelectedText);
+
+			finger.Press(bounds.GetCenter());
+			finger.Release();
+
+			Assert.AreEqual("", sut.SelectedText);
 		}
 
 		[TestMethod]
@@ -1113,7 +1350,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_SurrogatePair_Copy()
 		{
 			var SUT = new TextBlock
@@ -1149,7 +1387,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		// Clipboard is currently not available on skia-WASM
 		// Flaky on Skia.iOS uno-private#795
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_IsTextSelectionEnabled_CRLF()
 		{
 			var delayToAvoidDoubleTap = 600;
@@ -1217,8 +1456,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !__SKIA__
 		[Ignore("The context menu is only implemented on skia.")]
 #endif
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_TextBlock_RightTapped(bool isTextSelectionEnabled)
 		{
 			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));
@@ -1250,7 +1488,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
 		{
 			var SUT = new TextBlock
@@ -1343,7 +1582,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("The context menu is only implemented on skia.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
 		{
 			var SUT = new TextBlock
@@ -1375,7 +1615,135 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("world", await Clipboard.GetContent()!.GetTextAsync());
 		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_TouchScroll_Then_DoesNotSelectText()
+		{
+			TextBlock sut;
+			var root = new ScrollViewer
+			{
+				Width = 150,
+				Height = 300,
+				IsScrollInertiaEnabled = false,
+				Content = sut = new TextBlock
+				{
+					Text = Enumerable.Range(0, 4096).Select(i => $"Hello uno #{i:D4}!").JoinBy(" "),
+					TextWrapping = TextWrapping.WrapWholeWords,
+					IsTextSelectionEnabled = true,
+				}
+			};
+
+			var bounds = await UITestHelper.Load(root);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Drag(
+				from: bounds.GetCenter(),
+				to: new(bounds.GetCenter().X, bounds.GetCenter().Y - 300));
+
+			Assert.AreEqual("", sut.SelectedText);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_TouchScroll_Then_DoesNotAlterSelection()
+		{
+			TextBlock sut;
+			var root = new ScrollViewer
+			{
+				Width = 150,
+				Height = 300,
+				IsScrollInertiaEnabled = false,
+				Content = sut = new TextBlock
+				{
+					Text = Enumerable.Range(0, 4096).Select(i => $"Hello uno #{i:D4}!").JoinBy(" "),
+					TextWrapping = TextWrapping.WrapWholeWords,
+					IsTextSelectionEnabled = true,
+				}
+			};
+
+			var bounds = await UITestHelper.Load(root);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using (var mouse = injector.GetMouse()) // We use mouse to select text as currently we do not support selection using touch
+			{
+				// Drag horizontally to select some text
+				mouse.Drag(
+					from: new(bounds.X + 5, bounds.GetCenter().Y),
+					to: new(bounds.Right - 5, bounds.GetCenter().Y));
+			}
+
+			var selectedText = sut.SelectedText;
+			Assert.AreNotEqual("", sut.SelectedText);
+
+			// Scroll vertically
+			using (var finger = injector.GetFinger())
+			{
+				finger.Drag(
+					from: bounds.GetCenter(),
+					to: new(bounds.GetCenter().X, bounds.GetCenter().Y - 300));
+			}
+			Assert.AreEqual(selectedText, sut.SelectedText);
+		}
 		#endregion
+#endif
+
+#if __SKIA__
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21264")]
+		[DataRow("L")]
+		[DataRow("R")]
+		[DataRow("LL")]
+		[DataRow("LR")]
+		[DataRow("RL")]
+		[DataRow("RR")]
+		[DataRow("LLL")]
+		[DataRow("LLR")]
+		[DataRow("LRL")]
+		[DataRow("LRR")]
+		[DataRow("RLL")]
+		[DataRow("RLR")]
+		[DataRow("RRL")]
+		[DataRow("RRR")]
+		public async Task When_Layered_FlowDirection(string setup)
+		{
+			if (string.IsNullOrEmpty(setup) || setup.Any(c => c is not ('L' or 'R')))
+			{
+				throw new ArgumentException("setup must be a non-empty string containing only 'L' and 'R' characters");
+			}
+
+			FrameworkElement root = null;
+			var textblock = new TextBlock { Text = "Asd" };
+
+			// assign FlowDirection from in-most, and box each layer with border
+			// LLR: Border R > Border L > TextBlock L
+			foreach (var c in setup)
+			{
+				root = root is null ? textblock : new Border { Child = root };
+				root.FlowDirection = Parse(c);
+			}
+
+			await UITestHelper.Load(root);
+
+			Assert.AreEqual(1, textblock.Visual.TotalMatrix.M11);
+
+			FlowDirection Parse(char c) => c switch
+			{
+				'L' => FlowDirection.LeftToRight,
+				'R' => FlowDirection.RightToLeft,
+				_ => throw new InvalidOperationException()
+			};
+		}
 #endif
 	}
 }

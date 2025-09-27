@@ -7,22 +7,31 @@ stages:
     pool:
       vmImage: $(linuxVMImage)
 
+    variables:
+      npm_config_cache: $(Pipeline.Workspace)/.npm
+
     steps:
     - checkout: self
       clean: true
 
+    - task: Cache@2
+      inputs:
+        key: validation | $(Agent.OS) | $(Build.SourcesDirectory)/build/ci/**
+        path: $(npm_config_cache)
+      displayName: Cache npm packages
+
     - template: templates/gitversion-run.yml
-    - template: .azure-devops-commitsar.yml
-    - template: .azure-devops-spell-check.yml
-    - template: .azure-devops-markdown-lint.yml
+    - template: setup/.azure-devops-setup-commitsar.yml
+    - template: setup/.azure-devops-setup-spell-check.yml
+    - template: setup/.azure-devops-setup-markdown-lint.yml
 
 - stage: binaries_build_native_macos
-  displayName: Build native binaries
+  displayName: Build - Native Binaries
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-package-skia-native-assets.yml
+  - template: build/.azure-devops-build-native.yml
     parameters:
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
@@ -30,24 +39,24 @@ stages:
  
 
 - stage: binaries_build_winui
-  displayName: Build Binaries WinUI
+  displayName: Build - Managed Binaries
   dependsOn:
     - binaries_build_native_macos
 
   jobs:
-  - template: .azure-devops-package-netcoremobile.yml
+  - template: build/.azure-devops-build-managed.yml
     parameters:
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
 - stage: packages_tests
-  displayName: Test Packages
+  displayName: Tests - Templates
   dependsOn:
     - binaries_build_winui
 
   jobs: 
-  - template: .azure-devops-project-template-tests.yml
+  - template: tests/.azure-devops-tests-templates.yml
     parameters:
       poolName: '$(windowsScaledPool)'
       vmImageWindows: $(windows2022HostedVMImage)
@@ -56,28 +65,28 @@ stages:
       xCodeRoot: '$(xCodeRoot)'
 
 - stage: unit_tests
-  displayName: Tests - Unit
+  displayName: Tests - Unit Tests
   dependsOn:
     - Setup
 
   jobs:
 
-  - template: .azure-devops-unit-tests.yml
+  - template: tests/.azure-devops-tests-unit-tests.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
 - stage: wasm_tests
-  displayName: Tests - WebAssembly
+  displayName: Tests - WebAssembly Native
   dependsOn:
     - Setup
 
   jobs:
   
-  - template: .azure-devops-wasm-uitests.yml
+  - template: tests/.azure-devops-tests-webassembly-native.yml
     parameters:
       poolName: '$(linuxScaledPool)'
 
-- template: .azure-devops-skia-tests.yml
+- template: tests/.azure-devops-tests-skia-stages.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
     vmMacImage: '$(macOSVMImage)'
@@ -91,26 +100,26 @@ stages:
     XAML_FLAVOR_BUILD: WinUI
 
 - stage: android_tests
-  displayName: Tests - Android
+  displayName: Tests - Android Native
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-android-tests.yml
+  - template: tests/.azure-devops-tests-android-native.yml
     parameters:
       vmWindowsImage: '$(windows2019HostedVMImage)'
       vmLinuxImage: '$(linuxVMImage)'
       vmMacOSImage: '$(macOSVMImage)'
       vmLinuxPool: '$(linuxScaledPool)'
       xCodeRoot: '$(xCodeRoot)'
-  
+
 - stage: ios_tests
-  displayName: Tests - iOS
+  displayName: Tests - iOS Native
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-ios-tests.yml
+  - template: tests/.azure-devops-tests-ios-native.yml
     parameters:
       vmImage: '$(macOSVMImage)'
       vmImageTest: '$(macOSVMImage_UITests)'
@@ -118,17 +127,17 @@ stages:
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
 
 - stage: wasdk_tests
-  displayName: Tests - WinAppSDK  
+  displayName: Tests - WinAppSDK
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-wasdk.yml
+  - template: tests/.azure-devops-tests-winappsdk.yml
     parameters:
-      poolName: '$(windowsScaledPool)'
+      poolName: '$(windows2022HostedVMImage)'
 
 - stage: test_finalization
-  displayName: Tests - Results
+  displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
   dependsOn:
     - wasm_tests
@@ -141,36 +150,49 @@ stages:
     - runtime_tests_skia_windows
 
   jobs:
-  - template: .azure-devops-screenshot-compare.yml
+  - template: tests/.azure-devops-tests-screenshots.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
+- stage: ios_testflight
+  displayName: Publish - iOS Testflight
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: publish/.azure-devops-publish-ios-testflight.yml
+    parameters:
+      vmImage: '$(macOSVMImage)'
+      vmImageTest: '$(macOSVMImage_UITests)'
+      xCodeRootBuild: '$(xCodeRoot)'
+      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+      
 ##
 ## Publishing
 ##
 - stage: Publish_Dev
-  displayName: 'Publish Dev NuGet'
+  displayName: 'Publish - Dev NuGet'
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
-  - template: .azure-devops-publish-nuget-dev.yml
+  - template: publish/.azure-devops-publish-nuget-dev.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
 
 - stage: Publish_Prod_Dev
-  displayName: 'Publish Prod Dev NuGet'
+  displayName: 'Publish - Prod Dev NuGet'
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
-  - template: .azure-devops-publish-nuget-prod-dev.yml
+  - template: publish/.azure-devops-publish-nuget-prod-dev.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
   
 - stage: Publish_Prod_Public
-  displayName: 'Publish Prod NuGet.org'
+  displayName: 'Publish - Prod NuGet.org'
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: Publish_Prod_Dev
   jobs:
-  - template: .azure-devops-publish-nuget-prod.yml
+  - template: publish/.azure-devops-publish-nuget-prod.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'

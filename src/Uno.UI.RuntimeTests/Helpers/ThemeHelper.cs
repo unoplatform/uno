@@ -26,5 +26,15 @@ namespace Uno.UI.RuntimeTests.Helpers
 				root.RequestedTheme = currentTheme == ApplicationTheme.Light ? ElementTheme.Light : ElementTheme.Dark;
 			});
 		}
+
+		public static ElementTheme CurrentTheme
+		{
+			get
+			{
+				var root = TestServices.WindowHelper.XamlRoot.Content as FrameworkElement;
+				Assert.IsNotNull(root);
+				return root.ActualTheme;
+			}
+		}
 	}
 }

@@ -2,11 +2,16 @@
 //#define TRACE_COMPOSITION
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text;
+using Microsoft.CodeAnalysis.PooledObjects;
 using SkiaSharp;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI.Composition;
@@ -16,10 +21,19 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	private static readonly ObjectPool<SKPath> _pathPool = new(() => new SKPath());
 	private static readonly SKPath _spareRenderPath = new SKPath();
 
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
+
+	internal static bool EnablePictureCollapsingOptimization { get; set; } = true;
+	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
+	internal static int PictureCollapsingOptimizationVisualCountThreshold { get; set; } = 100;
+
+	private bool _enablePictureCollapsingOptimization;
+	private int _pictureCollapsingOptimizationFrameThreshold;
+	private int _pictureCollapsingOptimizationVisualCountThreshold;
 
 	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
 	// If we move to a UI-thread-per-window model, then we need multiple recorders.
@@ -29,10 +43,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
-	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
+	private (Matrix4x4 matrix, bool isLocalMatrixIdentity) _totalMatrix = (Matrix4x4.Identity, true);
 	private SKPicture? _picture;
+	private SKPicture? _childrenPicture;
+	private int _framesSinceSubtreeNotChanged;
 
-	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty;
+	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
 
 	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
 
@@ -75,6 +91,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
+	partial void InitializePartial()
+	{
+		_enablePictureCollapsingOptimization = EnablePictureCollapsingOptimization;
+		_pictureCollapsingOptimizationFrameThreshold = PictureCollapsingOptimizationFrameThreshold;
+		_pictureCollapsingOptimizationVisualCountThreshold = PictureCollapsingOptimizationVisualCountThreshold;
+	}
+
 	/// <summary>
 	/// Identifies whether a Visual can paint things. For example, ContainerVisuals don't
 	/// paint on their own (even though they might contain other Visuals that do).
@@ -92,6 +115,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
+		InvalidateParentChildrenPicture(false);
 		return !matrixDirty;
 	}
 
@@ -115,6 +139,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				_flags &= ~VisualFlags.MatrixDirty;
 
+				var isLocalMatrixIdentity = true;
+
 				// Start out with the final matrix of the parent
 				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
 
@@ -125,19 +151,23 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					0, 1, 0, 0,
 					0, 0, 1, 0,
 					totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y, 0, 1);
-				matrix = offsetMatrix * matrix;
+				if (!offsetMatrix.IsIdentity)
+				{
+					isLocalMatrixIdentity = false;
+					matrix = offsetMatrix * matrix;
+				}
 
 				// Apply the rending transformation matrix (i.e. change coordinates system to the "rendering" one)
 				if (GetTransform() is { IsIdentity: false } transform)
 				{
+					isLocalMatrixIdentity = false;
 					matrix = transform * matrix;
 				}
 
-				_totalMatrix = matrix;
-
+				_totalMatrix = (matrix, isLocalMatrixIdentity);
 			}
 
-			return _totalMatrix;
+			return _totalMatrix.matrix;
 
 			Matrix4x4 GetTransform()
 			{
@@ -180,6 +210,19 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		_picture?.Dispose();
 		_picture = null;
 		_flags |= VisualFlags.PaintDirty;
+		InvalidateParentChildrenPicture(false);
+	}
+
+	internal void InvalidateParentChildrenPicture(bool includeSelf)
+	{
+		var parent = includeSelf ? this : Parent;
+		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+		{
+			parent._childrenPicture?.Dispose();
+			parent._childrenPicture = null;
+			parent._flags |= VisualFlags.ChildrenSKPictureInvalid;
+			parent = parent.Parent;
+		}
 	}
 
 	public CompositionClip? Clip
@@ -230,8 +273,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	/// <param name="postRenderAction">An action that gets invoked right after each visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
-	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction)
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -250,8 +292,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = invertedParentTotalMatrix * initialTransform;
 		}
 
-		canvas.Save();
-
 		if (offsetOverride is { } offset)
 		{
 			var totalOffset = GetTotalOffset();
@@ -267,18 +307,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (session)
 		{
-			Render(session, postRenderAction);
+			// we set the matrix here similarly to CreateLocalMatrix in case the SetMatrix call there is
+			// omitted.
+			canvas.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
+			Render(session);
 		}
-
-		canvas.Restore();
 	}
 
 	/// <summary>
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	/// <param name="postRenderAction">An action that gets invoked right after the visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
-	private void Render(in PaintingSession parentSession, Action<SKCanvas, Visual>? postRenderAction)
+	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -290,6 +330,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
 			return;
+		}
+
+		if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+		{
+			_framesSinceSubtreeNotChanged++;
+		}
+		else
+		{
+			_framesSinceSubtreeNotChanged = 0;
+			_flags &= ~VisualFlags.ChildrenSKPictureInvalid;
 		}
 
 		CreateLocalSession(in parentSession, out var session);
@@ -307,47 +357,165 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				canvas.ClipPath(preClip, antialias: true);
 			}
 
-			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
-			// be specific to that visual and should not affect the rendering of any other visual.
-#if DEBUG
-			var saveCount = canvas.SaveCount;
-#endif
-
-			if (RequiresRepaintOnEveryFrame)
+			if (ShadowState is null)
 			{
-				// why bother with a recorder when it's going to get repainted next frame? just paint directly
-				Paint(session);
+				PaintStep(this, session);
+				PostPaintingClipStep(this, canvas);
+				RenderChildrenStep(this, session, applyChildOptimization);
 			}
 			else
 			{
-				if ((_flags & VisualFlags.PaintDirty) != 0)
+				var recorder = new SKPictureRecorder();
+				var recordingCanvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+				// child.Render will reapply the total transform matrix, so we need to invert ours.
+				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
+				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+				using (childSession)
 				{
-					_flags &= ~VisualFlags.PaintDirty;
+					PaintStep(this, childSession);
+					PostPaintingClipStep(this, recordingCanvas);
+					RenderChildrenStep(this, childSession, applyChildOptimization);
+				}
+				var childrenPicture = recorder.EndRecording();
+				canvas.DrawPicture(childrenPicture, ShadowState.ShadowOnlyPaint);
+				canvas.DrawPicture(childrenPicture);
+			}
+		}
+
+		static void PaintStep(Visual visual, in PaintingSession session)
+		{
+			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
+			// be specific to that visual and should not affect the rendering of any other visual.
+#if DEBUG
+			var saveCount = session.Canvas.SaveCount;
+#endif
+			if (visual.RequiresRepaintOnEveryFrame)
+			{
+				// why bother with a recorder when it's going to get repainted next frame? just paint directly
+				visual.Paint(session);
+			}
+			else
+			{
+				if ((visual._flags & VisualFlags.PaintDirty) != 0)
+				{
+					visual._flags &= ~VisualFlags.PaintDirty;
 					_recorder ??= new SKPictureRecorder();
 					var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
-					_factory.CreateInstance(this, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
+					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					Paint(in recorderSession);
-					_picture = _recorder.EndRecording();
+					visual.Paint(in recorderSession);
+					visual._picture = _recorder.EndRecording();
 				}
 
-				session.Canvas.DrawPicture(_picture);
+				if (visual._picture is not null)
+				{
+					session.Canvas.DrawPicture(visual._picture);
+				}
 			}
 #if DEBUG
-			Debug.Assert(saveCount == canvas.SaveCount);
+			Debug.Assert(saveCount == session.Canvas.SaveCount);
 #endif
+		}
 
-			postRenderAction?.Invoke(canvas, this);
-
-			if (GetPostPaintingClipping() is { } postClip)
+		static void PostPaintingClipStep(Visual visual, SKCanvas canvas)
+		{
+#if DEBUG
+			canvas.Save();
+			if (visual.GetPostPaintingClipping() is { } postClip)
 			{
 				canvas.ClipPath(postClip, antialias: true);
 			}
 
-			foreach (var child in GetChildrenInRenderOrder())
+			var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
+			canvas.Restore();
+#endif
+			visual.ApplyPostPaintingClipping(canvas);
+#if DEBUG
+			Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
+#endif
+		}
+
+		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
+		{
+			if (visual._childrenPicture is not null)
 			{
-				child.Render(in session, postRenderAction);
+				session.Canvas.DrawPicture(visual._childrenPicture);
 			}
+			else if (!visual._enablePictureCollapsingOptimization
+					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
+					 || !applyChildOptimization
+					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
+			{
+				foreach (var child in visual.GetChildrenInRenderOrder())
+				{
+					child.Render(in session, applyChildOptimization);
+				}
+			}
+			else
+			{
+				var recorder = new SKPictureRecorder();
+				var recordingCanvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+				// child.Render will reapply the total transform matrix, so we need to invert ours.
+				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
+				_factory.CreateInstance(visual, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+				using (childSession)
+				{
+					foreach (var child in visual.GetChildrenInRenderOrder())
+					{
+						child.Render(in childSession, applyChildOptimization: false);
+					}
+				}
+
+				var picture = recorder.EndRecording();
+				session.Canvas.DrawPicture(picture);
+
+				// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
+				// In such case, we should not cache this picture. Not only it is outdated, it will also lead to a corrupted state,
+				// where subtree rendering is skipped with the cached picture,
+				// and its descendant can't invalidate the cached picture since they area already on a ChildrenSKPictureInvalid path.
+				if ((visual._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+				{
+					visual._childrenPicture = picture;
+				}
+			}
+		}
+	}
+
+	internal void GetNativeViewPath(SKPath clipFromParent, SKPath outPath)
+	{
+		if (this is { Opacity: 0 } or { IsVisible: false } || clipFromParent.IsEmpty)
+		{
+			return;
+		}
+
+		var localClipCombinedByClipFromParent = _pathPool.Allocate();
+		using var rentedArrayDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), localClipCombinedByClipFromParent);
+		localClipCombinedByClipFromParent.Rewind();
+
+		if (GetPrePaintingClipping(_spareRenderPath))
+		{
+			localClipCombinedByClipFromParent.AddPath(_spareRenderPath);
+		}
+		else
+		{
+			localClipCombinedByClipFromParent.AddRect(new SKRect(0, 0, Size.X, Size.Y));
+		}
+		localClipCombinedByClipFromParent.Transform(TotalMatrix.ToSKMatrix(), localClipCombinedByClipFromParent);
+		localClipCombinedByClipFromParent.Op(clipFromParent, SKPathOp.Intersect, localClipCombinedByClipFromParent);
+
+		if (IsNativeHostVisual || CanPaint())
+		{
+			outPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, outPath);
+		}
+
+		if (GetPostPaintingClipping() is { } postClip)
+		{
+			postClip.Transform(TotalMatrix.ToSKMatrix(), postClip);
+			localClipCombinedByClipFromParent.Op(postClip, SKPathOp.Intersect, localClipCombinedByClipFromParent);
+		}
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.GetNativeViewPath(localClipCombinedByClipFromParent, outPath);
 		}
 	}
 
@@ -386,6 +554,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
 	private protected virtual SKPath? GetPostPaintingClipping() => null;
+	/// <summary>This can be overriden if some Visuals can apply the clipping more optimally than generating a path
+	/// and then applying the clip. Specifically, if the clipping is a simple rectangle, creating an SKPath with the
+	/// rectangle might be a lot more overhead than just calling SKCanvas.ClipRect, specifically on WASM.</summary>
+	private protected virtual void ApplyPostPaintingClipping(SKCanvas canvas)
+	{
+		if (GetPostPaintingClipping() is { } postClip)
+		{
+			canvas.ClipPath(postClip, antialias: true);
+		}
+	}
 
 	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
 	// NOTE: Returning List<Visual> so that enumerating doesn't cause boxing.
@@ -396,6 +574,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
 	internal List<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
+
+	internal virtual int GetSubTreeVisualCount() => 1;
 
 	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.
@@ -410,19 +590,58 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, out session);
 
-		Matrix4x4 totalMatrix;
-
-		if (Unsafe.IsNullRef(ref rootTransform))
+		if ((_flags & VisualFlags.MatrixDirty) != 0 || !_totalMatrix.isLocalMatrixIdentity)
 		{
-			totalMatrix = TotalMatrix;
+			Matrix4x4 totalMatrix;
+
+			if (Unsafe.IsNullRef(ref rootTransform))
+			{
+				totalMatrix = TotalMatrix;
+			}
+			else
+			{
+				totalMatrix = TotalMatrix * rootTransform;
+			}
+
+			if (!_totalMatrix.isLocalMatrixIdentity)
+			{
+				// this avoids the matrix copying in canvas.SetMatrix()
+				UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+			}
 		}
+#if DEBUG
 		else
 		{
-			totalMatrix = TotalMatrix * rootTransform;
+			Debug.Assert(Unsafe.IsNullRef(ref rootTransform)
+				? canvas.TotalMatrix == TotalMatrix.ToSKMatrix()
+				// Due to the limit precision of doubles, instead of comparing the two matrices directly we compare the Frobenius norm of their difference to zero
+				: CompositionMathHelpers.IsCloseRealZero((canvas.TotalMatrix.ToMatrix4x4() - TotalMatrix * rootTransform).ToSKMatrix().Values.Sum(i => i * i), 1e-5f));
 		}
+#endif
+	}
 
-		// this avoids the matrix copying in canvas.SetMatrix()
-		UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+	internal void PrintSubtree(StringBuilder sb, int indent = 0)
+	{
+		var indentation = new string(' ', indent * 2);
+		sb.Append(indentation);
+		sb.Append('[');
+		sb.Append(Comment);
+		sb.Append("]: ");
+		sb.Append("Subtree count: [");
+		sb.Append(GetSubTreeVisualCount());
+		sb.Append("], flags: [");
+		sb.Append(_flags);
+		sb.Append("], _totalMatrix: [");
+		sb.Append(_totalMatrix.matrix);
+		sb.Append(']');
+		sb.Append("], _framesSinceSubtreeNotChanged: [");
+		sb.Append(_framesSinceSubtreeNotChanged);
+		sb.Append(']');
+		sb.AppendLine();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.PrintSubtree(sb, indent + 1);
+		}
 	}
 
 	[Flags]
@@ -433,5 +652,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		IsNativeHostVisualInherited = 4,
 		MatrixDirty = 8,
 		PaintDirty = 16,
+		ChildrenSKPictureInvalid = 32, // some child in the subtree of this visual is dirty.
 	}
 }

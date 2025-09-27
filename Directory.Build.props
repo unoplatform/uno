@@ -18,11 +18,12 @@
 
 		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
 
-		<NetCurrent>net9.0</NetCurrent>
-		<NetPrevious>net8.0</NetPrevious>
+		<NetCurrent>net10.0</NetCurrent>
+		<NetPrevious>net9.0</NetPrevious>
 
-		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios18.0;$(NetCurrent)-maccatalyst18.0;$(NetCurrent)-tvos18.0</NetCurrentNetCoreMobile>
-		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst17.0;$(NetPrevious)-tvos17.0</NetPreviousNetCoreMobile>
+		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios18.5;$(NetCurrent)-maccatalyst18.5;$(NetCurrent)-tvos18.5</NetCurrentNetCoreMobile>
+		<NetPreviousNetCoreApple>$(NetPrevious)-ios18.0;$(NetPrevious)-maccatalyst18.0;$(NetPrevious)-tvos18.0</NetPreviousNetCoreApple>
+		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPreviousNetCoreApple)</NetPreviousNetCoreMobile>
 
 		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>
 		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>

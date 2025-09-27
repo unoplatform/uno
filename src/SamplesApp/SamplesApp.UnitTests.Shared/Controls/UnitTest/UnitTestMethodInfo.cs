@@ -16,8 +16,6 @@ internal record UnitTestMethodInfo
 	private readonly List<object?[]> _casesParameters;
 	private readonly IList<PointerDeviceType> _injectedPointerTypes;
 
-	private readonly bool _ignoredBecauseOfConditionalTestAttribute;
-
 	public UnitTestMethodInfo(object testClassInstance, MethodInfo method)
 	{
 		Method = method;
@@ -37,31 +35,18 @@ internal record UnitTestMethodInfo
 		PassFiltersAsFirstParameter =
 			HasCustomAttribute<FiltersAttribute>(method) ||
 			HasCustomAttribute<FiltersAttribute>(method.DeclaringType);
+
 		ExpectedException = method
 			.GetCustomAttributes<ExpectedExceptionAttribute>()
 			.SingleOrDefault()
 			?.ExceptionType;
 
-		var ignoredBecauseOfConditionalTestClassAttribute = method.DeclaringType?
-			.GetCustomAttributes<ConditionalTestClassAttribute>()
-			.SingleOrDefault()
-			?.ShouldRun() == false;
-
-		var ignoredBecauseOfConditionalTestAttribute = method
-			.GetCustomAttributes<ConditionalTestAttribute>()
-			.SingleOrDefault()
-			?.ShouldRun() == false;
-
-		_ignoredBecauseOfConditionalTestAttribute = ignoredBecauseOfConditionalTestClassAttribute | ignoredBecauseOfConditionalTestAttribute;
-
 		_casesParameters = method
-			.GetCustomAttributes<DataRowAttribute>()
-			.Select(d => d.Data)
+			.GetCustomAttributes<Attribute>()
+			.OfType<ITestDataSource>()
+			.SelectMany(d => d.GetData(method))
 			.ToList();
-		if (method.GetCustomAttribute<DynamicDataAttribute>() is { } dynamicData)
-		{
-			_casesParameters.AddRange(dynamicData.GetData(method));
-		}
+
 		if (_casesParameters is { Count: 0 })
 		{
 			_casesParameters.Add(Array.Empty<object>());
@@ -91,28 +76,49 @@ internal record UnitTestMethodInfo
 	private bool HasCustomAttribute<T>(MemberInfo? testMethod)
 		=> testMethod?.GetCustomAttribute(typeof(T)) != null;
 
-	public bool IsIgnored(out string ignoreMessage)
+	// Adopted from https://github.com/microsoft/testfx/blob/47dee826a0a3eb7a2d9d089ed8aba9d2dabfe82e/src/Adapter/MSTest.TestAdapter/Helpers/AttributeHelpers.cs
+	private static bool IsIgnored(ICustomAttributeProvider member, out string? ignoreMessage)
 	{
-		var ignoreAttribute = Method.GetCustomAttribute<IgnoreAttribute>();
-		if (ignoreAttribute == null)
+		var attributes = member.GetCustomAttributes(typeof(ConditionBaseAttribute), inherit: false).Cast<ConditionBaseAttribute>();
+		IEnumerable<IGrouping<string, ConditionBaseAttribute>> groups = attributes.GroupBy(attr => attr.GroupName);
+		foreach (IGrouping<string, ConditionBaseAttribute>? group in groups)
 		{
-			ignoreAttribute = Method.DeclaringType?.GetCustomAttribute<IgnoreAttribute>();
+			bool atLeastOneInGroupIsSatisfied = false;
+			string? firstNonSatisfiedMatch = null;
+			foreach (ConditionBaseAttribute attribute in group)
+			{
+				bool shouldRun = attribute.Mode == ConditionMode.Include ? attribute.ShouldRun : !attribute.ShouldRun;
+				if (shouldRun)
+				{
+					atLeastOneInGroupIsSatisfied = true;
+					break;
+				}
+
+				firstNonSatisfiedMatch ??= attribute.IgnoreMessage;
+			}
+
+			if (!atLeastOneInGroupIsSatisfied)
+			{
+				ignoreMessage = firstNonSatisfiedMatch;
+				return true;
+			}
 		}
 
-		if (ignoreAttribute != null)
-		{
-			ignoreMessage = string.IsNullOrEmpty(ignoreAttribute.IgnoreMessage) ? "Test is marked as ignored" : ignoreAttribute.IgnoreMessage;
-			return true;
-		}
-
-		if (_ignoredBecauseOfConditionalTestAttribute)
-		{
-			ignoreMessage = "The test is ignored on the current platform";
-			return true;
-		}
-
-		ignoreMessage = "";
+		ignoreMessage = null;
 		return false;
+	}
+
+	public bool IsIgnored(out string? ignoreMessage)
+	{
+		bool shouldIgnoreClass = IsIgnored(Method, out string? ignoreMessageOnClass);
+		bool shouldIgnoreMethod = IsIgnored(Method.DeclaringType!, out string? ignoreMessageOnMethod);
+		ignoreMessage = ignoreMessageOnClass;
+		if (string.IsNullOrEmpty(ignoreMessage) && shouldIgnoreMethod)
+		{
+			ignoreMessage = ignoreMessageOnMethod;
+		}
+
+		return shouldIgnoreClass || shouldIgnoreMethod;
 	}
 
 	public IEnumerable<TestCase> GetCases()

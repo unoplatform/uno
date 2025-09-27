@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 
 #if !WINAPPSDK
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace UITests.Shared.Windows_Devices.Midi

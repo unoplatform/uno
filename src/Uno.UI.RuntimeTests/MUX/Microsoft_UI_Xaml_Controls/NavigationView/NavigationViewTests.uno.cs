@@ -7,8 +7,8 @@ using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
-using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
-using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
+using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
 using Private.Infrastructure;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;

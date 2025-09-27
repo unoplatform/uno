@@ -4,8 +4,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
-using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
+using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
+using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 

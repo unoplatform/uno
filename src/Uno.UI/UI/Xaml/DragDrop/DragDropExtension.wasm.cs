@@ -17,7 +17,7 @@ using Windows.Storage.Streams;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation;

@@ -1,90 +1,170 @@
 #nullable enable
 
+using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
+using Uno.UI.Xaml.Core;
+using static Uno.UI.Helpers.SkiaRenderHelper;
 
 namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper
 {
-	// reusable paths to avoid repetitive allocations
-	private static readonly SKPath _visualPath = new SKPath();
-	private static readonly SKPath _clipPath = new SKPath();
+	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
+		rootElement is not null &&
+		(!FeatureConfiguration.Rendering.GenerateNewFramesOnlyWhenUITreeIsArranged || rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false });
 
-	/// <summary>
-	/// Does a rendering cycle and returns a path that represents the total area that was drawn
-	/// or null if the entire window is drawn. Takes the current TotalMatrix of the surface's canvas into account
-	/// </summary>
-	public static SKPath RenderRootVisualAndReturnNegativePath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
+	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath)
 	{
-		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, canvas);
-		var negativePath = new SKPath();
-		if (path is not null)
-		{
-			negativePath.AddRect(new SKRect(0, 0, width, height));
-			negativePath.Transform(canvas.TotalMatrix);
-			negativePath = negativePath.Op(path, SKPathOp.Difference);
-		}
+		var xamlRoot = rootElement.XamlRoot;
+		var scale = (float)(xamlRoot?.RasterizationScale ?? 1.0f);
 
-		return negativePath;
+		using var recorder = new SKPictureRecorder();
+		using var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+		using var _ = new SKAutoCanvasRestore(canvas, true);
+		canvas.Clear(SKColors.Transparent);
+		canvas.Scale(scale);
+		var path = RenderRootVisualAndReturnPath(width, height, rootElement.Visual, canvas, invertPath);
+
+		var picture = recorder.EndRecording();
+
+		xamlRoot?.InvokeFramePainted();
+
+		return (picture, path);
 	}
 
-	private static SKPath _sparePreClipPath = new SKPath();
+	internal static void RenderPicture(SKSurface surface, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
+	{
+		using var fpsHelperDisposable = fpsHelper.BeginFrame();
+		var canvas = surface.Canvas;
+		using (new SKAutoCanvasRestore(canvas, true))
+		{
+			canvas.Clear(background);
+			if (picture is not null)
+			{
+				// This might happen if we get render request before the first frame is painted
+				canvas.DrawPicture(picture);
+			}
+
+			fpsHelper.DrawFps(canvas);
+		}
+
+		// update the control
+		canvas.Flush();
+		surface.Flush();
+	}
 
 	/// <summary>
-	/// Does a rendering cycle and returns a path that represents the total area that was drawn
-	/// or null if the entire window is drawn.
+	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
+	/// Takes the current TotalMatrix of the surface's canvas into account
 	/// </summary>
-	public static SKPath? RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
+	public static SKPath RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas, bool invertPath)
 	{
-		if (!ContentPresenter.HasNativeElements())
+		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
+		SKPath outPath = new SKPath();
+		if (ContentPresenter.HasNativeElements())
 		{
-			rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, null);
-			return null;
+			var parentClipPath = new SKPath();
+			parentClipPath.AddRect(new SKRect(0, 0, width, height));
+			rootVisual.GetNativeViewPath(parentClipPath, outPath);
+			outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
+		}
+
+		if (invertPath)
+		{
+			var invertedPath = new SKPath();
+			invertedPath.AddRect(new SKRect(0, 0, width, height));
+			invertedPath.Transform(canvas.TotalMatrix, invertedPath);
+			invertedPath.Op(outPath, SKPathOp.Difference, invertedPath);
+			return invertedPath;
 		}
 		else
 		{
-			SKPath? mainPath = null;
-			rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, (canvas, visual) =>
-			{
-				// the entire viewport
-				if (visual == rootVisual)
-				{
-					// we initialize the mainPath here to be able to factor the initial TotalMatrix into our rect.
-					// This matters for DPI scaling primarily.
-					mainPath = new SKPath();
-					mainPath.AddRect(canvas.TotalMatrix.MapRect(new SKRect(0, 0, width, height)));
-				}
-
-				if (visual is { IsNativeHostVisual: false } && !visual.CanPaint())
-				{
-					return;
-				}
-
-				_clipPath.Reset();
-				_clipPath.AddRect(canvas.LocalClipBounds);
-				_visualPath.Reset();
-				_visualPath.AddRect(new SKRect(0, 0, visual.Size.X, visual.Size.Y));
-
-				var finalVisualPath = _clipPath.Op(_visualPath, SKPathOp.Intersect);
-				var preClip = _sparePreClipPath;
-
-				preClip.Rewind();
-
-				if (visual.GetPrePaintingClipping(preClip))
-				{
-					finalVisualPath.Op(preClip, SKPathOp.Intersect, finalVisualPath);
-				}
-
-				finalVisualPath.Transform(canvas.TotalMatrix);
-
-				mainPath = mainPath!.Op(
-					finalVisualPath,
-					visual.IsNativeHostVisual ? SKPathOp.Difference : SKPathOp.Union);
-			});
-
-			return mainPath;
+			return outPath;
 		}
+	}
+
+	public class FpsHelper
+	{
+		public readonly record struct FrameDisposable(FpsHelper @this) : IDisposable
+		{
+			public void Dispose() => @this.EndFrame();
+		}
+
+		private static readonly SKPaint _blackPaint = new() { Color = SKColors.Black };
+		private static readonly SKPaint _redPaint = new() { Color = SKColors.Red };
+		private static readonly SKFont _font = new() { Size = 20, Embolden = true };
+
+		private readonly TimeSpan[] _frameTimes;
+		private readonly Timer _fpsTimer;
+		private int _frameTimesHead;
+		private int _framesRenderedInLastSecond;
+		private long _currentFrameBeginTimestamp;
+
+		public FpsHelper(int numberOfFramesToCalculateFrameTime = 10)
+		{
+			_frameTimes = new TimeSpan[numberOfFramesToCalculateFrameTime];
+			_fpsTimer = new Timer(static state => (state as FpsHelper)?.TimerTick(), this, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+		}
+
+		public double Fps { get; private set; }
+		public double FrameTime { get; private set; }
+
+		public float? Scale { private get; set; }
+
+		public FrameDisposable BeginFrame()
+		{
+			_currentFrameBeginTimestamp = Stopwatch.GetTimestamp();
+			return new FrameDisposable(this);
+		}
+
+		private void EndFrame()
+		{
+			_frameTimes[_frameTimesHead] = Stopwatch.GetElapsedTime(_currentFrameBeginTimestamp);
+			_frameTimesHead = (_frameTimesHead + 1) % _frameTimes.Length;
+			var acc = TimeSpan.Zero;
+			foreach (var t in _frameTimes)
+			{
+				acc += t;
+			}
+			FrameTime = acc.TotalMilliseconds / _frameTimes.Length;
+
+			_framesRenderedInLastSecond++;
+		}
+
+		public void DrawFps(SKCanvas canvas)
+		{
+			if (!Application.Current.DebugSettings.EnableFrameRateCounter)
+			{
+				return;
+			}
+
+			var text = $"{Fps:F1}   {FrameTime:F1}";
+			_font.MeasureText(text, out var rect);
+			if (Scale is { } scale)
+			{
+				canvas.Save();
+				canvas.Scale(scale, scale);
+			}
+			canvas.DrawRect(new SKRect(0, 0, rect.Width, rect.Height), _blackPaint);
+			canvas.DrawText(text, 0, -rect.Top, _font, _redPaint);
+			if (Scale is not null)
+			{
+				canvas.Restore();
+			}
+		}
+
+		private void TimerTick()
+		{
+			Fps = _framesRenderedInLastSecond;
+			_framesRenderedInLastSecond = 0;
+		}
+
+		public void Dispose() => _fpsTimer.Dispose();
 	}
 }

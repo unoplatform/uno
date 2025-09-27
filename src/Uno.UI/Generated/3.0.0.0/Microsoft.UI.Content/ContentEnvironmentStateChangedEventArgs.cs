@@ -33,7 +33,18 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool DidDisplayScaleChange
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentEnvironmentStateChangedEventArgs.DidDisplayScaleChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentEnvironmentStateChangedEventArgs.DidDisplayScaleChange");
+			}
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.DidAppWindowIdChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.DidDisplayIdChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs.DidDisplayScaleChange.get
 	}
 }

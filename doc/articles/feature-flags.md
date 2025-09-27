@@ -49,6 +49,10 @@ By default, the `ComboBox` popup will not extend under the status bar even if it
 
 ## Popups
 
+### Constraining by visible bounds
+
+By default we don't constrain popups by the visible bounds of the application view on Skia renderer targets. This is different from native renderer where popups are automatically padded by the visible bounds, which ensures the popup does not flow below the system UI (e.g. mobile device status bar or navigation bar). The `ConstrainByVisibleBounds` property allows you to control this behavior. Please note that in case the property is set to `false` (which is the default for Skia renderer), you are responsible for ensuring the content of your popups has appropriate padding around its content. This can be achieved using the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea).
+
 ### Native popups (Android)
 
 On Android, it is possible to use a native popup implementation, which is integrated into the system for `Popup`- and `Flyout`-derived UI. Prior to Uno Platform 3.5, native popups were used by default. On Uno Platform 3.5 or later, we made the managed implementation the default.
@@ -57,7 +61,7 @@ If you require native popups for your use case, set the `Uno.UI.FeatureConfigura
 
 ### Light Dismiss Default
 
-In older versions of Uno Platforms, the `Popup.IsLightDismissEnabled` dependency property defaulted to `true`. In UWP/WinUI and Uno 4.1 and newer, it correctly defaults to `false`. If your code depended on the old behavior, you can set the `Uno.UI.FeatureConfiguration.Popup.EnableLightDismissByDefault` property to `true` to override this.
+In older versions of Uno Platforms, the `Popup.IsLightDismissEnabled` dependency property defaulted to `true`. In WinUI and Uno 4.1 and newer, it correctly defaults to `false`. If your code depended on the old behavior, you can set the `Uno.UI.FeatureConfiguration.Popup.EnableLightDismissByDefault` property to `true` to override this.
 
 ### Prevent light dismiss on window deactivation
 
@@ -97,11 +101,11 @@ By default, `ToolTips` are disabled on all platforms except for WebAssembly and 
 Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 ```
 
-It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDelay` - defaults to `1000`) and show duration in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDuration` - defaults to `5000`). This configuration only applies to Uno Platform targets. Windows App SDK/UWP will not adhere to this configuration.
+It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDelay` - defaults to `1000`) and show duration in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDuration` - defaults to `5000`). This configuration only applies to Uno Platform targets. Windows App SDK (WinUI) will not adhere to this configuration.
 
 ## WebView2
 
-### Inspectable (iOS and Mac Catalyst)
+### Inspectable (iOS)
 
 To enable inspecting applications using `WebView2` controls from macOS with the Safari Developer Tools, set the `IsInspectable` configuration flag to `true` in your `App.Xaml.cs`:
 

@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Uno.UI.Xaml.Rendering;
 using Uno.UI.Xaml.Core.Rendering;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -44,6 +44,11 @@ namespace Microsoft.UI.Xaml.Input
 		/// Represents the currently focused element.
 		/// </summary>
 		private DependencyObject? _focusedElement;
+
+		/// <summary>
+		/// Represents the element being focused.
+		/// </summary>
+		private DependencyObject? _focusingElement;
 
 		/// <summary>
 		/// Focused element's AutomationPeer.
@@ -139,6 +144,11 @@ namespace Microsoft.UI.Xaml.Input
 		/// Returns the current focused element.
 		/// </summary>
 		internal DependencyObject? FocusedElement => _focusedElement;
+
+		/// <summary>
+		/// Returns the element about to be focused when focus is changing
+		/// </summary>
+		internal DependencyObject? FocusingElement => _focusingElement;
 
 		/// <summary>
 		/// Returns the content root associated with this focus manager instance.
@@ -1796,6 +1806,7 @@ namespace Microsoft.UI.Xaml.Input
 
 			// Update the previous focused control
 			oldFocusedElement = _focusedElement; // Still has reference that will be freed in Cleanup.
+			_focusingElement = newFocusTarget;
 
 			if (oldFocusedElement != null && FocusableHelper.GetIFocusableForDO(oldFocusedElement) is IFocusable oldFocusFocusable)
 			{
@@ -1954,6 +1965,8 @@ namespace Microsoft.UI.Xaml.Input
 			{
 				ElementSoundPlayerService.Instance.RequestInteractionSoundForElement(ElementSoundKind.Focus, newFocusTarget);
 			}
+
+			_focusingElement = null;
 
 			return Cleanup();
 

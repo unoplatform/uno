@@ -44,6 +44,9 @@
 
 		<!-- We need all the intermediate assemblies -->
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
+
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -57,7 +60,11 @@
 			<DefineConstants>$(DefineConstants);HAS_TESTCLOUD_AGENT</DefineConstants>
 		</PropertyGroup>
 	</Target>
-	
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.netcoremobile.csproj" />
+	</ItemGroup>
+
 	<Choose>
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios'">
@@ -179,10 +186,18 @@
 				<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
 			</PropertyGroup>
 			
-			<ItemGroup>
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+			</ItemGroup>
+
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
+			</ItemGroup>
+
+			<ItemGroup>
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.37" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
+				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
 			</ItemGroup>
 			
 			<ItemGroup>
@@ -218,7 +233,7 @@
 			<Version>5.56.0</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Identity.Client">
-			<Version>4.61.3</Version>
+			<Version>4.72.1</Version>
 		</PackageReference>
 
 		<PackageReference Include="MSTest.TestFramework" />
@@ -227,7 +242,11 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Resizetizer" />
-		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
+		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -241,7 +260,7 @@
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Foldable\Uno.UI.Foldable.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Foldable\Uno.UI.Foldable.netcoremobile.csproj" />
 
 		<!--
 		<ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.netcoremobile.csproj"/>
@@ -263,12 +282,9 @@
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
 	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(NBGV_AssemblyInformationalVersion)'!=''">
-
-		<Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true">
-			<Output TaskParameter="ConsoleOutput" PropertyName="_VersionCode" />
-		</Exec>
-
 		<PropertyGroup>
+			<_VersionCode>$(NBGV_VersionHeight)</_VersionCode>
+			<_VersionCode Condition=" '$(_VersionCode)' == '' ">0</_VersionCode>
 			<_VersionCode Condition="$(VersionCodeOffset) != ''">$([MSBuild]::Add($(_VersionCode), $(VersionCodeOffset)))</_VersionCode>
 
 			<ApplicationDisplayVersion>$([System.DateTime]::Now.ToString(`yyMMddHHmm`)).$(_VersionCode)</ApplicationDisplayVersion>

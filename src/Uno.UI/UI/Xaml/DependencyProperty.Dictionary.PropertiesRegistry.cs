@@ -30,6 +30,24 @@ namespace Microsoft.UI.Xaml
 			{
 			}
 
+			internal bool TryGetValueByName(string type, string name, out DependencyProperty? result)
+			{
+				foreach (Type key in _entries.Keys)
+				{
+					if (key.Name == type && TryGetTypeTable(key, out var typeTable))
+					{
+						if (typeTable!.TryGetValue(name, out var propertyObject))
+						{
+							result = (DependencyProperty)propertyObject!;
+							return true;
+						}
+					}
+				}
+
+				result = null;
+				return false;
+			}
+
 			internal bool TryGetValue(Type type, string name, out DependencyProperty? result)
 			{
 				if (TryGetTypeTable(type, out var typeTable))

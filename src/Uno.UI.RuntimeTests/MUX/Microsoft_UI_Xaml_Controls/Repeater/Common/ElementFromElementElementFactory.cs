@@ -6,8 +6,8 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
-	using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-	using ElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactory;
+	using Microsoft.UI.Xaml.Controls;
+	using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
 
 	class ElementFromElementElementFactory : ElementFactory
 	{

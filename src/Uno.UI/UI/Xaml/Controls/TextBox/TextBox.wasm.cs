@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -63,11 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnHeaderClick(object sender, object args)
 		{
 			FocusTextView();
-		}
-
-		partial void OnForegroundColorChangedPartial(Brush newValue)
-		{
-			_textBoxView?.SetForeground(newValue);
 		}
 
 		partial void UpdateFontPartial()
@@ -147,6 +143,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private void ApplyEnabled(bool? isEnabled = null) => _textBoxView?.SetEnabled(isEnabled ?? IsEnabled);
 
 		private void ApplyInputScope(InputScope scope) => _textBoxView?.SetInputScope(scope);
+
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType) => _textBoxView?.SetInputReturnType(inputReturnType);
 
 		partial void SelectPartial(int start, int length)
 		{

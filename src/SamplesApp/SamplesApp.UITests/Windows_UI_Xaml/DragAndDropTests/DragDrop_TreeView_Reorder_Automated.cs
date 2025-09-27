@@ -3,7 +3,7 @@
 #if HAS_RENDER_TARGET_BITMAP
 #define CAN_ASSERT_IMAGE
 #endif
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 #else
 #define CAN_ASSERT_IMAGE
@@ -42,7 +42,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[Test]
 		[Ignore("Flaky")]
 #else
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // https://github.com/unoplatform/uno-private/issues/809
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // https://github.com/unoplatform/uno-private/issues/809
 #endif
 		public async Task When_Dragging_TreeView_Item()
 		{

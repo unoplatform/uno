@@ -6,8 +6,8 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-using AnimationContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationContext;
-using ElementAnimator = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementAnimator;
+using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
+using ElementAnimator = Microsoft.UI.Xaml.Controls.ElementAnimator;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {

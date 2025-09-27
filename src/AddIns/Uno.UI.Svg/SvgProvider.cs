@@ -16,7 +16,6 @@ using System.Diagnostics.CodeAnalysis;
 #if !__NETSTD_REFERENCE__
 using ShimSkiaSharp;
 using Svg.Skia;
-using Uno.Svg.Skia;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
 using SKCanvas = SkiaSharp.SKCanvas;

@@ -7,7 +7,7 @@ namespace Uno.UI.Tests.Extensions
 	[TestClass]
 	public class Given_TimeSpanExtensions
 	{
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(0, -5, -30)]
 		[DataRow(-1, -5, -30)]
 		[DataRow(-3, -5, -30)]
@@ -22,7 +22,7 @@ namespace Uno.UI.Tests.Extensions
 			Assert.AreEqual(expected, actual);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(0, 0, 0)]
 		[DataRow(0, 9, 30)]
 		[DataRow(0, 20, 30)]
@@ -37,7 +37,7 @@ namespace Uno.UI.Tests.Extensions
 			Assert.AreEqual(expected, actual);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1, 5, 30)]
 		[DataRow(3, 5, 30)]
 		[DataRow(8, 5, 30)]

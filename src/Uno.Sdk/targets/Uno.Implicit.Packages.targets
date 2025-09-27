@@ -55,6 +55,7 @@
 				UnoUniversalImageLoaderVersion="$(UnoUniversalImageLoaderVersion)"
 				AndroidMaterialVersion="$(AndroidMaterialVersion)"
 				AndroidXLegacySupportV4Version="@(AndroidXLegacySupportV4Version)"
+				AndroidXSplashScreenVersion="@(AndroidXSplashScreenVersion)"
 				AndroidXAppCompatVersion="@(AndroidXAppCompatVersion)"
 				AndroidXRecyclerViewVersion="@(AndroidXRecyclerViewVersion)"
 				AndroidXActivityVersion="@(AndroidXActivityVersion)"
@@ -75,6 +76,7 @@
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
 				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
 				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
+				MicrosoftWebView2Version="$(MicrosoftWebView2Version)"
 				Condition=" '$(TargetFramework)' != '' ">
 			<Output ItemName="_UnoImplicitPackageReference"
 					TaskParameter="ImplicitPackages" />

@@ -5,7 +5,7 @@
 using DirectUI;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 

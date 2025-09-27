@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -235,6 +236,29 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_RequestedTheme_Set_Explicitly()
+	{
+		AssertSupportsMultipleWindows();
+
+		var darkThemeDisposable = ThemeHelper.UseDarkTheme();
+		try
+		{
+			var sut = new Window();
+			sut.Content = new Border() { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
+			sut.Activate();
+			await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
+
+			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
+		}
+		finally
+		{
+			// Reset the theme to avoid affecting other tests
+			darkThemeDisposable.Dispose();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Window_Close_Programmatically_Does_Not_Trigger_AppWindow_Closing()
 	{
 		AssertSupportsMultipleWindows();
@@ -360,6 +384,36 @@ public class Given_Window
 		window.Close();
 
 		await TestServices.WindowHelper.WaitFor(() => window.ClosedExecuted);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	[RunsOnUIThread]
+	public async Task When_FullScreen_After_Activate()
+	{
+		var window = new Window();
+		var content = new Border() { Width = 100, Height = 100 };
+		window.Content = content;
+		window.Activate();
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		var bounds1 = window.Bounds;
+		window.Close();
+		var window2 = new Window();
+		window2.Content = content;
+		window2.Activate();
+		window2.AppWindow.SetPresenter(FullScreenPresenter.Create());
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		await Task.Delay(TimeSpan.FromMilliseconds(1000));
+		try
+		{
+			var bounds2 = window2.Bounds;
+			bounds1.Width.Should().BeLessThan(bounds2.Width);
+			bounds1.Height.Should().BeLessThan(bounds2.Height);
+		}
+		finally
+		{
+			window2.Close();
+		}
 	}
 
 	[TestMethod]

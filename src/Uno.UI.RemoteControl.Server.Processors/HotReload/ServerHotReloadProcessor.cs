@@ -6,19 +6,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Elfie.Serialization;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Server.Telemetry;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor))]
 
@@ -28,10 +25,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 	{
 		private static readonly TimeSpan _waitForIdeResultTimeout = TimeSpan.FromSeconds(25);
 		private readonly IRemoteControlServer _remoteControlServer;
+		private readonly ITelemetry _telemetry;
 
-		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
+		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry)
 		{
 			_remoteControlServer = remoteControlServer;
+			_telemetry = telemetry;
 		}
 
 		public string Scope => WellKnownScopes.HotReload;
@@ -52,7 +51,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			switch (frame.Name)
 			{
 				case ConfigureServer.Name:
-					ProcessConfigureServer(frame.GetContent<ConfigureServer>());
+					await ProcessConfigureServer(frame.GetContent<ConfigureServer>());
 					break;
 				case XamlLoadError.Name:
 					ProcessXamlLoadError(frame.GetContent<XamlLoadError>());
@@ -82,7 +81,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		#region Hot-relaod state
+		#region Hot-reload state
 		private HotReloadState _globalState; // This actually contains only the initializing stat (i.e. Disabled, Initializing, Idle). Processing state is _current != null.
 		private HotReloadServerOperation? _current; // I.e. head of the operation chain list
 
@@ -103,11 +102,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private async ValueTask<HotReloadServerOperation> StartHotReload(ImmutableHashSet<string>? filesPaths)
 		{
 			var previous = _current;
-			HotReloadServerOperation? current, @new;
+			HotReloadServerOperation? @new;
 			while (true)
 			{
 				@new = new HotReloadServerOperation(this, previous, filesPaths);
-				current = Interlocked.CompareExchange(ref _current, @new, previous);
+				var current = Interlocked.CompareExchange(ref _current, @new, previous);
 				if (current == previous)
 				{
 					break;
@@ -134,47 +133,97 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async ValueTask Notify(HotReloadEvent evt, HotReloadEventSource source = HotReloadEventSource.DevServer)
 		{
-			switch (evt)
+			var properties = new Dictionary<string, string>
 			{
-				// Global state events
-				case HotReloadEvent.Disabled:
-					_globalState = HotReloadState.Disabled;
-					await AbortHotReload();
-					break;
+				["Event"] = evt.ToString(),
+				["Source"] = source.ToString(),
+				["PreviousState"] = _globalState.ToString()
+			};
 
-				case HotReloadEvent.Initializing:
-					_globalState = HotReloadState.Initializing;
-					await SendUpdate();
-					break;
 
-				case HotReloadEvent.Ready:
-					_globalState = HotReloadState.Ready;
-					await SendUpdate();
-					break;
+			Dictionary<string, double>? measurements = null;
+			if (_current != null)
+			{
+				measurements = new Dictionary<string, double>
+				{
+					["FileCount"] = _current.FilePaths.Count
+				};
+				if (_current.CompletionTime != null)
+				{
+					var duration = (_current.CompletionTime.Value - _current.StartTime).TotalMilliseconds;
+					measurements["DurationMs"] = duration;
+				}
+			}
 
-				// Pending hot-reload events
-				case HotReloadEvent.ProcessingFiles:
-					await EnsureHotReloadStarted();
-					break;
+			_telemetry.TrackEvent("notify-start", properties, measurements);
 
-				case HotReloadEvent.Completed:
-					await (await StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
-					break;
+			try
+			{
+				switch (evt)
+				{
+					// Global state events
+					case HotReloadEvent.Disabled:
+						_globalState = HotReloadState.Disabled;
+						await AbortHotReload();
+						_telemetry.TrackEvent("notify-disabled", properties, measurements);
+						break;
 
-				case HotReloadEvent.NoChanges:
-					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
-					break;
-				case HotReloadEvent.Failed:
-					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
-					break;
+					case HotReloadEvent.Initializing:
+						_globalState = HotReloadState.Initializing;
+						await SendUpdate();
+						_telemetry.TrackEvent("notify-initializing", properties, measurements);
+						break;
 
-				case HotReloadEvent.RudeEdit:
-					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
-					break;
+					case HotReloadEvent.Ready:
+						_globalState = HotReloadState.Ready;
+						await SendUpdate();
+						_telemetry.TrackEvent("notify-ready", properties, measurements);
+						break;
+
+					// Pending hot-reload events
+					case HotReloadEvent.ProcessingFiles:
+						await EnsureHotReloadStarted();
+						_telemetry.TrackEvent("notify-processing-files", properties, measurements);
+						break;
+
+					case HotReloadEvent.Completed:
+						await (await StartOrContinueHotReload()).DeferComplete(HotReloadServerResult.Success);
+						_telemetry.TrackEvent("notify-completed", properties, measurements);
+						break;
+
+					case HotReloadEvent.NoChanges:
+						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.NoChanges);
+						_telemetry.TrackEvent("notify-no-changes", properties, measurements);
+						break;
+
+					case HotReloadEvent.Failed:
+						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.Failed);
+						_telemetry.TrackEvent("notify-failed", properties, measurements);
+						break;
+
+					case HotReloadEvent.RudeEdit:
+						await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
+						_telemetry.TrackEvent("notify-rude-edit", properties, measurements);
+						break;
+				}
+
+				properties["NewState"] = _globalState.ToString();
+				properties["HasCurrentOperation"] = (_current != null).ToString();
+				_telemetry.TrackEvent("notify-complete", properties, measurements);
+			}
+			catch (Exception ex)
+			{
+				var errorProperties = new Dictionary<string, string>(properties)
+				{
+					["ErrorMessage"] = ex.Message,
+					["ErrorType"] = ex.GetType().Name
+				};
+				_telemetry.TrackEvent("notify-error", errorProperties, measurements);
+				throw;
 			}
 		}
 
-		private async ValueTask SendUpdate(HotReloadServerOperation? completing = null)
+		private async ValueTask SendUpdate(HotReloadServerOperation? completing = null, string? serverError = null)
 		{
 			var state = _globalState;
 			var operations = ImmutableList<HotReloadServerOperationData>.Empty;
@@ -207,7 +256,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			}
 
-			await _remoteControlServer.SendFrame(new HotReloadStatusMessage(state, operations));
+			await _remoteControlServer.SendFrame(new HotReloadStatusMessage(state, operations, serverError));
 		}
 
 		/// <summary>
@@ -215,9 +264,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		/// </summary>
 		private class HotReloadServerOperation
 		{
-			public readonly static int DefaultAutoRetryIfNoChangesAttempts = 3;
+			private static readonly int DefaultAutoRetryIfNoChangesAttempts = 3;
 
-			public readonly static TimeSpan DefaultAutoRetryIfNoChangesDelay = TimeSpan.FromMilliseconds(500);
+			public static readonly TimeSpan DefaultAutoRetryIfNoChangesDelay = TimeSpan.FromMilliseconds(500);
 
 			// Delay to wait without any update to consider operation was aborted.
 			private static readonly TimeSpan _timeoutDelay = TimeSpan.FromSeconds(30);
@@ -401,7 +450,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		#endregion
 
 		#region ConfigureServer
-		private void ProcessConfigureServer(ConfigureServer configureServer)
+		private async Task ProcessConfigureServer(ConfigureServer configureServer)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -414,15 +463,55 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			InterpretMsbuildProperties(properties);
 
-			if (InitializeMetadataUpdater(configureServer, properties))
+			try
 			{
-				this.Log().LogDebug($"Metadata updater initialized");
+				if (InitializeMetadataUpdater(configureServer, properties))
+				{
+					this.Log().LogDebug($"Metadata updater initialized");
+				}
+				else
+				{
+					// We are relying on IDE, we won't have any other hot-reload initialization steps.
+					await Notify(HotReloadEvent.Ready);
+					this.Log().LogDebug("Metadata updater **NOT** initialized.");
+				}
 			}
-			else
+			catch (Exception error)
 			{
-				// We are relying on IDE, we won't have any other hot-reload initialization steps.
-				_ = Notify(HotReloadEvent.Ready);
-				this.Log().LogDebug("Metadata updater **NOT** initialized.");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError(error, "Failed to configure metadata updater");
+				}
+
+				await SafeNotifyMetadataInitializationFailed(error);
+				throw;
+			}
+		}
+
+		private async Task SafeNotifyMetadataInitializationFailed(Exception? ex = null)
+		{
+			var errorMessage = ex?.Message ?? ex?.ToString();
+
+			try
+			{
+				await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
+			}
+			catch (Exception sendError)
+			{
+				this.Log().LogWarning(sendError, "Failed to send workspace failure notification to client");
+			}
+
+			try
+			{
+				// Send the error via HotReloadStatusMessage immediately
+				await SendUpdate(serverError: errorMessage);
+
+				// Then notify the disabled state
+				await Notify(HotReloadEvent.Disabled);
+			}
+			catch (Exception notifyError)
+			{
+				this.Log().LogWarning(notifyError, "Failed to notify hot-reload disabled state");
 			}
 		}
 		#endregion

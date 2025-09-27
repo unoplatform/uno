@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
@@ -18,6 +19,8 @@ using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Server.Helpers;
+using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 
 namespace Uno.UI.RemoteControl.Host;
@@ -36,12 +39,22 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	private readonly IConfiguration _configuration;
 	private readonly IIdeChannel _ideChannel;
 	private readonly IServiceProvider _serviceProvider;
+	private readonly IServiceProvider _globalServiceProvider;
+	private readonly ITelemetry? _telemetry;
 
 	public RemoteControlServer(IConfiguration configuration, IIdeChannel ideChannel, IServiceProvider serviceProvider)
 	{
 		_configuration = configuration;
 		_ideChannel = ideChannel;
 		_serviceProvider = serviceProvider;
+
+		// Get the global service provider from the connection services
+		// This allows access to both global and connection-specific services
+		_globalServiceProvider = _serviceProvider.GetKeyedService<IServiceProvider>("global") ?? _serviceProvider;
+
+		// Use connection-specific telemetry for this RemoteControlServer instance
+		// This telemetry is scoped to the current WebSocket connection (Kestrel request)
+		_telemetry = _serviceProvider.GetService<ITelemetry>();
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -297,11 +310,24 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 	private async Task ProcessDiscoveryFrame(Frame frame)
 	{
+		var startTime = Stopwatch.GetTimestamp();
 		var assemblies = new List<(string path, System.Reflection.Assembly assembly)>();
+		var processorsLoaded = 0;
+		var processorsFailed = 0;
+
 		try
 		{
 			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content)!;
 			var serverAssemblyName = typeof(IServerProcessor).Assembly.GetName().Name;
+
+			// Track processor discovery start
+			var discoveryProperties = new Dictionary<string, string>
+			{
+				["AppInstanceId"] = msg.AppInstanceId,
+				["DiscoveryIsFile"] = File.Exists(msg.BasePath).ToString()
+			};
+
+			_telemetry?.TrackEvent("processor-discovery-start", discoveryProperties, null);
 
 			if (!_appInstanceIds.Contains(msg.AppInstanceId))
 			{
@@ -332,10 +358,10 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				// As BasePath is a directory, try and load processors from assemblies within that dir
 				var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
 
-#if NET9_0_OR_GREATER
+#if NET10_0_OR_GREATER
+				basePath = Path.Combine(basePath, "net10.0");
+#elif NET9_0_OR_GREATER
 				basePath = Path.Combine(basePath, "net9.0");
-#elif NET8_0_OR_GREATER
-				basePath = Path.Combine(basePath, "net8.0");
 #endif
 
 				// Additional processors may not need the directory added immediately above.
@@ -344,7 +370,8 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 					basePath = msg.BasePath;
 				}
 
-				foreach (var file in Directory.GetFiles(basePath, "Uno.*.dll"))
+				// Local default Uno Processors (matched by assembly name)
+				foreach (var file in Directory.GetFiles(basePath, "Uno.*.Processor*.dll"))
 				{
 					if (Path.GetFileNameWithoutExtension(file).Equals(serverAssemblyName, StringComparison.OrdinalIgnoreCase))
 					{
@@ -371,6 +398,8 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				}
 			}
 
+			var failedProcessors = new List<string>();
+
 			foreach (var asm in assemblies)
 			{
 				try
@@ -395,26 +424,49 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 							try
 							{
-								if (ActivatorUtilities.CreateInstance(_serviceProvider, processor.ProcessorType, parameters: new[] { this }) is IServerProcessor serverProcessor)
+								// Log detailed processor instantiation attempt
+								if (this.Log().IsEnabled(LogLevel.Information))
+								{
+									this.Log().LogInformation(
+										"Attempting to instantiate processor {ProcessorType} from assembly {AssemblyPath}",
+										processor.ProcessorType.FullName,
+										asm.path);
+									this.Log().LogInformation(
+										"Processor assembly location: {AssemblyLocation}",
+										processor.ProcessorType.Assembly.Location);
+								}
+
+								// Use the connection-scoped service provider directly
+								// It should have all necessary dependencies registered via AddConnectionTelemetry()
+								if (ActivatorUtilities.CreateInstance(_serviceProvider, processor.ProcessorType, parameters: [this]) is IServerProcessor serverProcessor)
 								{
 									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: true));
 									RegisterProcessor(serverProcessor);
+									processorsLoaded++;
+									if (this.Log().IsEnabled(LogLevel.Debug))
+									{
+										this.Log().LogDebug("Successfully registered server processor {ProcessorType}", processor.ProcessorType);
+									}
 								}
 								else
 								{
 									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false));
-									if (this.Log().IsEnabled(LogLevel.Debug))
+									processorsFailed++;
+									failedProcessors.Add(processor.ProcessorType.Name);
+									if (this.Log().IsEnabled(LogLevel.Warning))
 									{
-										this.Log().LogDebug("Failed to create server processor {ProcessorType}", processor.ProcessorType);
+										this.Log().LogWarning("Failed to create server processor {ProcessorType} - ActivatorUtilities returned null", processor.ProcessorType);
 									}
 								}
 							}
 							catch (Exception error)
 							{
 								_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false, LoadError: error.ToString()));
+								processorsFailed++;
 								if (this.Log().IsEnabled(LogLevel.Error))
 								{
-									this.Log().LogError(error, "Failed to create server processor {ProcessorType}", processor.ProcessorType);
+									this.Log().LogError(error, "Failed to create server processor {ProcessorType} from assembly {AssemblyPath}", processor.ProcessorType.FullName, asm.path);
+									this.Log().LogError("Processor assembly location: {AssemblyLocation}", processor.ProcessorType.Assembly.Location);
 								}
 							}
 						}
@@ -431,6 +483,23 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 			// Being thorough about trying to ensure everything is unloaded
 			assemblies.Clear();
+
+			// Track processor discovery completion
+			var completionProperties = new Dictionary<string, string>(discoveryProperties)
+			{
+				["DiscoveryResult"] = processorsFailed == 0 ? "Success" : "PartialFailure",
+				["DiscoveryFailedProcessors"] = string.Join(",", failedProcessors),
+			};
+
+			var completionMeasurements = new Dictionary<string, double>
+			{
+				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["DiscoveryAssembliesProcessed"] = assemblies.Count,
+				["DiscoveryProcessorsLoadedCount"] = processorsLoaded,
+				["DiscoveryProcessorsFailedCount"] = processorsFailed,
+			};
+
+			_telemetry?.TrackEvent("processor-discovery-complete", completionProperties, completionMeasurements);
 		}
 		catch (Exception exc)
 		{
@@ -438,6 +507,23 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			{
 				this.Log().LogError("Failed to process discovery frame: {Exc}", exc);
 			}
+
+			// Track processor discovery error
+			var errorProperties = new Dictionary<string, string>
+			{
+				["DiscoveryErrorMessage"] = exc.Message,
+				["DiscoveryErrorType"] = exc.GetType().Name,
+			};
+
+			var errorMeasurements = new Dictionary<string, double>
+			{
+				["DiscoveryDurationMs"] = Stopwatch.GetElapsedTime(startTime).TotalMilliseconds,
+				["DiscoveryAssembliesCount"] = assemblies.Count,
+				["DiscoveryProcessorsLoadedCount"] = processorsLoaded,
+				["DiscoveryProcessorsFailedCount"] = processorsFailed,
+			};
+
+			_telemetry?.TrackEvent("processor-discovery-error", errorProperties, errorMeasurements);
 		}
 		finally
 		{
@@ -463,9 +549,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		}
 		else
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().LogDebug($"Failed to send, no connection available");
+				this.Log().LogWarning("Tried to send frame, but WebSocket is null.");
 			}
 		}
 	}

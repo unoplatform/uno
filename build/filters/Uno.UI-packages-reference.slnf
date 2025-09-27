@@ -5,6 +5,7 @@
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Reference.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Reference.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Reference.csproj",
+      "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.Crossruntime.csproj",
       "SourceGenerators\\SourceGeneratorHelpers\\SourceGeneratorHelpers.shproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",

@@ -9,7 +9,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 	[TestClass]
 	public class Given_PermilleFormatter
 	{
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(double.PositiveInfinity, "∞")]
 		[DataRow(double.NegativeInfinity, "-∞")]
 		[DataRow(double.NaN, "NaN")]
@@ -21,7 +21,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, actual);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(0.0015d, 1, 2, "1.50‰")]
 		[DataRow(0.001567d, 1, 2, "1.567‰")]
 		[DataRow(0.0015602d, 1, 2, "1.5602‰")]
@@ -43,12 +43,11 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, formatted);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.234, 2, 0, "1,234‰")]
 		[DataRow(1.234, 6, 0, "001,234‰")]
 		[DataRow(1.23456, 2, 2, "1,234.56‰")]
 		[DataRow(1.2340, 6, 2, "001,234.00‰")]
-		[DataRow(1.2340, 6, 0, "001,234‰")]
 		public void When_FormatDoubleWithIsGroupSetTrue(double value, int integerDigits, int fractionDigits, string expected)
 		{
 			var sut = MakeFormatter();
@@ -60,7 +59,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, formatted);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(0, 0, "-0‰")]
 		[DataRow(0, 2, "-.00‰")]
 		[DataRow(2, 0, "-00‰")]
@@ -76,7 +75,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, formatted);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(0, 0, "0‰")]
 		[DataRow(0, 2, ".00‰")]
 		[DataRow(2, 0, "00‰")]
@@ -92,7 +91,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, formatted);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(0.001d, "1.‰")]
 		public void When_FormatDoubleWithIsDecimalPointerAlwaysDisplayedSetTrue(double value, string expected)
 		{
@@ -105,7 +104,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, formatted);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(0.1234567d, 5, 1, 2, "123.4567‰")]
 		[DataRow(0.1234567d, 10, 1, 2, "123.4567000‰")]
 		[DataRow(0.1234567d, 2, 1, 2, "123.4567‰")]
@@ -175,7 +174,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			 */
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("1.2‰", 0.0012)]
 		[DataRow(" 1.2‰", null)]
 		[DataRow("1.2‰ ", null)]
@@ -194,7 +193,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, actual);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("1234.2‰", 1.2342)]
 		[DataRow("1,234.2‰", 1.2342)]
 		[DataRow("12,34.2‰", null)]
@@ -208,7 +207,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, actual);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("1‰", 0.001)]
 		[DataRow("1.‰", 0.001)]
 		public void When_ParseDoubleAndIsDecimalPointAlwaysDisplayedSetTrue(string value, double? expected)
@@ -236,7 +235,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.IsTrue(isNegative);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("Arab")]
 		[DataRow("ArabExt")]
 		[DataRow("Bali")]

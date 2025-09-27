@@ -23,7 +23,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -713,9 +713,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Only handle the up/down keys when focus is on the more/expand button.
-			var focusedElement = XamlRoot is null ?
-				FocusManager.GetFocusedElement() :
-				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedElement = XamlRoot is { } xamlRoot ?
+				FocusManager.GetFocusedElement(xamlRoot) :
+				null;
 			if (m_tpExpandButton == focusedElement)
 			{
 				bool isOpen = IsOpen;
@@ -760,9 +760,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ShiftFocusVerticallyInOverflow(bool topToBottom, bool allowFocusWrap = true)
 		{
-			var focusedElement = XamlRoot is null ?
-				FocusManager.GetFocusedElement() :
-				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedElement = XamlRoot is { } xamlRoot ?
+				FocusManager.GetFocusedElement(xamlRoot) :
+				null;
 			DependencyObject? referenceElement = null;
 
 			if (topToBottom)
@@ -815,9 +815,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// focus is currently on the first/last item depending on direction.
 			if (!shouldFocusLeaveOverflow)
 			{
-				var focusedElement = XamlRoot is null ?
-					FocusManager.GetFocusedElement() :
-					FocusManager.GetFocusedElement(XamlRoot);
+				var focusedElement = XamlRoot is { } xamlRoot ?
+					FocusManager.GetFocusedElement(xamlRoot) :
+					null;
 				DependencyObject? referenceElement = null;
 
 				if (isShiftKeyPressed)
@@ -880,7 +880,8 @@ namespace Microsoft.UI.Xaml.Controls
 						// otherwise we'll end up moving focus back into the overflow menu.
 						m_skipProcessTabStopOverride = true;
 
-						FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+						var focusManager = VisualTree.GetFocusManagerForElement(this);
+						focusManager?.TryMoveFocusInstance(FocusNavigationDirection.Next);
 						DXamlCore.Current.GetElementSoundPlayerServiceNoRef().RequestInteractionSoundForElement(ElementSoundKind.Focus, this);
 
 						m_skipProcessTabStopOverride = false;
@@ -1047,9 +1048,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// Determine whether we should shift focus horizontally.
 			if (m_tpContentControl is { })
 			{
-				var focusedElement = XamlRoot is null ?
-					FocusManager.GetFocusedElement() :
-					FocusManager.GetFocusedElement(XamlRoot);
+				var focusedElement = XamlRoot is { } xamlRoot ?
+					FocusManager.GetFocusedElement(XamlRoot) :
+					null;
 
 				// Don't do it if focus is in the custom content area.
 				var isChildOfContentControl = m_tpContentControl.IsAncestorOf(focusedElement as DependencyObject);
@@ -1331,37 +1332,62 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		//		CommandBar::HasBottomLabel(BOOLEAN* hasBottomLabel)
-		//{
-		//    xaml_controls::CommandBarDefaultLabelPosition defaultLabelPosition = xaml_controls::CommandBarDefaultLabelPosition_Bottom;
-		//    *hasBottomLabel = FALSE;
+		private bool HasLabelAtPosition(CommandBarDefaultLabelPosition labelPosition)
+		{
+			if (m_tpDynamicPrimaryCommands is null)
+			{
+				return false;
+			}
 
-		//    IFC_RETURN(get_DefaultLabelPosition(&defaultLabelPosition));
+			bool hasLabelAtPosition = false;
 
-		//    if (defaultLabelPosition == xaml_controls::CommandBarDefaultLabelPosition_Bottom)
-		//    {
-		//        UINT32 primaryItemsCount = 0;
-		//		IFC_RETURN(m_tpDynamicPrimaryCommands.Get()->get_Size(&primaryItemsCount));
-		//        for (UINT32 i = 0; i<primaryItemsCount; ++i)
-		//        {
-		//            ctl::ComPtr<xaml_controls::ICommandBarElement> element;
-		//		IFC_RETURN(m_tpDynamicPrimaryCommands.Get()->GetAt(i, &element));
+			CommandBarDefaultLabelPosition defaultLabelPosition = DefaultLabelPosition;
 
-		//            auto elementAsLabeledElement = element.AsOrNull<xaml_controls::ICommandBarLabeledElement>();
-		//            if (elementAsLabeledElement)
-		//            {
-		//                IFC_RETURN(elementAsLabeledElement->GetHasBottomLabel(hasBottomLabel));
+			if (defaultLabelPosition == labelPosition)
+			{
+				int primaryItemsCount = m_tpDynamicPrimaryCommands.Count;
 
-		//                if (* hasBottomLabel)
-		//                {
-		//                    break;
-		//                }
-		//}
-		//        }
-		//    }
+				for (int i = 0; i < primaryItemsCount; ++i)
+				{
+					var element = m_tpDynamicPrimaryCommands[i];
 
-		//    return S_OK;
-		//}
+					var elementAsUIE = element as UIElement;
+
+					if (elementAsUIE is not null)
+					{
+						Visibility visibility = elementAsUIE.Visibility;
+						if (visibility == Visibility.Collapsed)
+						{
+							continue;
+						}
+					}
+
+					var elementAsLabeledElement = element as ICommandBarLabeledElement;
+
+					if (elementAsLabeledElement is not null)
+					{
+						bool hasBottomOrRightLabel = false;
+
+						if (labelPosition == CommandBarDefaultLabelPosition.Bottom)
+						{
+							hasBottomOrRightLabel = elementAsLabeledElement.GetHasBottomLabel();
+						}
+						else
+						{
+							hasBottomOrRightLabel = elementAsLabeledElement.GetHasRightLabel();
+						}
+
+						if (hasBottomOrRightLabel)
+						{
+							hasLabelAtPosition = true;
+							break;
+						}
+					}
+				}
+			}
+
+			return hasLabelAtPosition;
+		}
 
 
 		private bool IsGamepadNavigationDirection(VirtualKey key)
@@ -1594,8 +1620,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal static void OnCommandExecutionStatic(ICommandBarElement element)
 		{
-			CommandBar? parentCmdBar;
-			FindParentCommandBarForElement(element, out parentCmdBar);
+			var parentCmdBar = FindParentCommandBarForElement(element);
 
 			if (parentCmdBar is { })
 			{
@@ -1605,8 +1630,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal static void OnCommandBarElementVisibilityChanged(ICommandBarElement element)
 		{
-			CommandBar? parentCmdBar;
-			FindParentCommandBarForElement(element, out parentCmdBar);
+			var parentCmdBar = FindParentCommandBarForElement(element);
 
 			if (parentCmdBar is { })
 			{
@@ -1846,7 +1870,19 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						var compactVerticalDelta = appBarTemplateSettings.CompactVerticalDelta;
 
-						shouldShowOverflowButton = !compactVerticalDelta.IsZero();
+						if (!compactVerticalDelta.IsZero())
+						{
+							shouldShowOverflowButton = true;
+						}
+						else
+						{
+							var hasBottomLabel = HasLabelAtPosition(CommandBarDefaultLabelPosition.Bottom);
+
+							if (hasBottomLabel)
+							{
+								shouldShowOverflowButton = true;
+							}
+						}
 					}
 				}
 			}
@@ -1866,11 +1902,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (element is AppBarButton elementAsAppBarButton)
 					{
-						desiredSize = elementAsAppBarButton.GetKeyboardAcceleratorTextDesiredSize();
+						desiredSize = AppBarButtonHelpers<AppBarButton>.GetKeyboardAcceleratorTextDesiredSize(elementAsAppBarButton);
 					}
 					else if (element is AppBarToggleButton elementAsAppBarToggleButton)
 					{
-						desiredSize = elementAsAppBarToggleButton.GetKeyboardAcceleratorTextDesiredSize();
+						desiredSize = AppBarButtonHelpers<AppBarToggleButton>.GetKeyboardAcceleratorTextDesiredSize(elementAsAppBarToggleButton);
 					}
 
 					desiredWidth = desiredSize.Width;
@@ -1889,11 +1925,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (element is AppBarButton elementAsAppBarButton)
 					{
-						elementAsAppBarButton.UpdateTemplateSettings(maxAppBarKeyboardAcceleratorTextWidth);
+						AppBarButtonHelpers<AppBarButton>.UpdateTemplateSettings<AppBarButtonTemplateSettings>(elementAsAppBarButton, maxAppBarKeyboardAcceleratorTextWidth);
 					}
 					else if (element is AppBarToggleButton elementAsAppBarToggleButton)
 					{
-						elementAsAppBarToggleButton.UpdateTemplateSettings(maxAppBarKeyboardAcceleratorTextWidth);
+						AppBarButtonHelpers<AppBarToggleButton>.UpdateTemplateSettings<AppBarToggleButtonTemplateSettings>(elementAsAppBarToggleButton, maxAppBarKeyboardAcceleratorTextWidth);
 					}
 				}
 			}
@@ -2097,8 +2133,9 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		}
 
 
-		public static void FindParentCommandBarForElement(ICommandBarElement element, out CommandBar? parentCmdBar)
+		public static CommandBar? FindParentCommandBarForElement(ICommandBarElement element)
 		{
+			CommandBar? parentCmdBar = null;
 			if (element is DependencyObject elementAsDO &&
 				ItemsControl.ItemsControlFromItemContainer(elementAsDO) is { } ic &&
 				ic.GetTemplatedParent() is CommandBar tp)
@@ -2114,6 +2151,8 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 					.OfType<CommandBar>()
 					.FirstOrDefault();
 			}
+
+			return parentCmdBar;
 		}
 
 		private void FindMovablePrimaryCommands(double availablePrimaryCommandsWidth, double primaryItemsControlDesiredWidth, out int primaryCommandsCountInTransition)
@@ -2608,7 +2647,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 
 		internal static bool IsCommandBarElementInOverflow(ICommandBarElement element)
 		{
-			FindParentCommandBarForElement(element, out var parentCmdBar);
+			var parentCmdBar = FindParentCommandBarForElement(element);
 			bool isInOverflow = false;
 
 			if (parentCmdBar is { })
@@ -2643,7 +2682,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		{
 			int positionInSet = -1;
 
-			FindParentCommandBarForElement(element, out var parentCommandBar);
+			var parentCommandBar = FindParentCommandBarForElement(element);
 
 			if (parentCommandBar is { })
 			{
@@ -2743,7 +2782,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		{
 			int sizeOfSet = -1;
 
-			FindParentCommandBarForElement(element, out var parentCommandBar);
+			var parentCommandBar = FindParentCommandBarForElement(element);
 
 			if (parentCommandBar is { })
 			{
@@ -3260,7 +3299,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 			return focusState;
 		}
 
-		internal void CloseSubMenus(ISubMenuOwner? pMenuToLeaveOpen, bool closeOnDelay)
+		internal void CloseSubMenus(ISubMenuOwner? pMenuToLeaveOpen = null, bool closeOnDelay = false)
 		{
 			var primaryCommands = PrimaryCommands;
 			var secondaryCommands = SecondaryCommands;

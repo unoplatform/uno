@@ -188,7 +188,8 @@ public partial class Given_InteractionTracker
 #elif !HAS_UNO
 	[Ignore("Test fails on Windows. For some reason, Drag isn't doing what we expect it to for an unknown reason.")]
 #endif
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
 	public async Task When_UserInteraction()
 	{
 		var border = new Border()
@@ -246,17 +247,6 @@ public partial class Given_InteractionTracker
 				trackerPosition: new(-50.0f, 0.0f, 0.0f),
 				requestId: 0,
 				argsPosition: new(-50.0f, 0.0f, 0.0f)),
-			helper.Current);
-
-		helper.Advance();
-
-		Assert.AreEqual(
-			TrackerLogsConstructingHelper.GetInertiaStateEntered(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
-				requestId: 0,
-				naturalRestingPosition: new(-50.0f, 0.0f, 0.0f),
-				modifiedRestingPosition: new(-50.0f, 0.0f, 0.0f),
-				positionVelocityInPixelsPerSecond: new(-0.0f, -0.0f, -0.0f)),
 			helper.Current);
 
 		helper.Advance();

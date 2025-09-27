@@ -66,7 +66,7 @@ public class Given_Parser
 		test.ExpectedDiagnostics.AddRange(
 			new[] {
 				// /0/MainPage.xaml(13,5): error UXAML0001: Member 'PaneTitle' cannot have properties at line 13, position 5
-				DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 13, 5, 13, 5).WithArguments("Member 'PaneTitle' cannot have properties at line 13, position 5"),
+				DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 13, 5, 13, 5).WithArguments("Member 'PaneTitle' cannot have properties [Line: 13 Position: 5]"),
 				// /0/Test0.cs(9,9): error CS1061: 'MainPage' does not contain a definition for 'InitializeComponent' and no accessible extension method 'InitializeComponent' accepting a first argument of type 'MainPage' could be found (are you missing a using directive or an assembly reference?)
 				DiagnosticResult.CompilerError("CS1061").WithSpan(9, 9, 9, 28).WithArguments("TestRepro.MainPage", "InitializeComponent")
 			}
@@ -362,7 +362,6 @@ public class Given_Parser
 					"""
 				}
 			},
-			DisableBuildReferences = true,
 			ReferenceAssemblies = _Dotnet.CurrentAndroid.ReferenceAssemblies.AddPackages([new PackageIdentity("SkiaSharp.Views.Uno.WinUI", "3.0.0-preview.3.1")]),
 		}.AddGeneratedSources();
 
@@ -410,8 +409,66 @@ public class Given_Parser
 					"""
 				}
 			},
-			DisableBuildReferences = true,
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage("5.3.114"),
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Vector_Properties()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:local="using:TestRepro"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Grid>
+
+						<local:MyStackPanel Vec2="1,2" Vec3="3,4,5" />
+
+					</Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+
+						public sealed partial class MyStackPanel : StackPanel
+						{
+							public global::System.Numerics.Vector2 Vec2 { get; set; }
+
+							public global::System.Numerics.Vector3 Vec3 { get; set; }
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
 		}.AddGeneratedSources();
 
 		await test.RunAsync();

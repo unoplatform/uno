@@ -1,20 +1,22 @@
-﻿using Android.Graphics;
-using Uno.Helpers;
-using Windows.UI.StartScreen;
-using Android.Graphics.Drawables;
-using Android.OS;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content.PM;
+using Android.Graphics;
+using Android.Graphics.Drawables;
+using Android.OS;
+using AndroidX.Core.Content.PM;
+using AndroidX.Core.Graphics.Drawable;
+using Uno.Helpers;
+using Windows.UI.StartScreen;
 
 namespace Uno.UI.StartScreen.Extensions
 {
 	internal static class JumpListItemExtensions
 	{
-		internal static async Task<ShortcutInfo> ToShortcutInfoAsync(this JumpListItem jumpListItem)
+		internal static async Task<ShortcutInfoCompat> ToShortcutInfoCompatAsync(this JumpListItem jumpListItem)
 		{
-			var builder = new ShortcutInfo.Builder(Application.Context, jumpListItem.Arguments);
+			var builder = new ShortcutInfoCompat.Builder(Application.Context, jumpListItem.Arguments);
 			var pm = Application.Context.PackageManager;
 			var intent = pm.GetLaunchIntentForPackage(Application.Context.PackageName);
 			intent.PutExtra(JumpListItem.ArgumentsExtraKey, jumpListItem.Arguments);
@@ -40,7 +42,7 @@ namespace Uno.UI.StartScreen.Extensions
 						ContextHelper.Current.Resources,
 						imageResourceId.Value,
 						new BitmapFactory.Options());
-					builder.SetIcon(Icon.CreateWithBitmap(bitmap));
+					builder.SetIcon(IconCompat.CreateWithBitmap(bitmap));
 				}
 			}
 

@@ -10,6 +10,9 @@
         href: xref:Uno.GetStarted.vscode
       - name: Rider
         href: xref:Uno.GetStarted.Rider
+
+    - name: Sign in with Uno Platform
+      href: xref:Uno.GetStarted.Licensing
         
     - name: Create an App
       topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
@@ -34,8 +37,6 @@
       items:
       - name: Overview
         href: xref:Uno.UI.CommonIssues
-      - name: Sign in with Uno Platform
-        href: xref:Uno.GetStarted.Licensing
       - name: Hot Reload
         topicHref: xref:Uno.Features.HotReload#troubleshooting
       - name: Development Environments
@@ -49,17 +50,19 @@
           href: xref:Uno.UI.CommonIssues.vscode
         - name: Rider
           href: xref:Uno.UI.CommonIssues.rider
+        - name: Android & iOS Emulators
+          href: xref:Uno.UI.CommonIssues.MobileDebugging
       - name: Platforms
         topicHref: xref:Uno.UI.CommonIssues.Wasm
         items:
         - name: WebAssembly
           href: xref:Uno.UI.CommonIssues.Wasm
-        - name: UWP
-          href: xref:Uno.UI.CommonIssues.UWP
         - name: Skia (Gtk/Wpf/Framebuffer)
           href: xref:Uno.UI.CommonIssues.Skia
-        - name: iOS/mac Catalyst
-          href: xref:Uno.UI.CommonIssues.IosCatalyst
+        - name: iOS
+          href: xref:Uno.UI.CommonIssues.Ios
+        - name: Android
+          href: xref:Uno.UI.CommonIssues.Android
       - name: Build Errors
         topicHref: xref:Uno.Development.Troubleshooting
         items:
@@ -94,13 +97,16 @@
     - name: Tube Player
       topicHref: xref:Workshop.TubePlayer.Overview
       href: external/workshops/tube-player/toc.yml
+    - name: Chefs
+      href: external/uno.chefs/doc/toc.yml
+      topicHref: xref:Uno.Chefs.Overview
     - name: Tutorials
       topicHref: xref:Uno.Tutorials.Intro
       items:
       - name: Overview
         href: xref:Uno.Tutorials.Intro
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
-        href: xref:Uno.Tutorials.AzureStaticWepApps
+        href: xref:Uno.Tutorials.AzureStaticWebApps
       - name: How to use Windows Community Toolkit
         topicHref: xref:Uno.Development.CommunityToolkit
         items:
@@ -120,8 +126,6 @@
         href: xref:Uno.Tutorials.ChangeAppLanguage
       - name: How to integrate SignalR
         href: xref:Uno.Development.SignalR
-      - name: How to update StatusBar color based on dark/light theme
-        href: xref:Uno.Tutorials.StatusBarThemeColor
       - name: How to use MSAL for Azure Authentication
         href: xref:Uno.Interop.MSAL
       - name: How to authenticate with OpenID Connect
@@ -139,8 +143,6 @@
             href: xref:Uno.Interop.WasmJavaScript3
       - name: Deploy to Raspberry Pi
         href: xref:Uno.RaspberryPi.Intro
-      - name: (Wasm) Handling custom HTML events
-        href: xref:Uno.Development.WasmCustomEvents
       - name: Community Tutorials
         topicHref: xref:Uno.Tutorials.CommunityTutorials
     - name: Samples
@@ -150,30 +152,33 @@
 
 - name: Overview
   items:
-    - name: Intro
+    - name: Introduction
       href: xref:Uno.Documentation.Intro
     - name: Architecture
       items:
         - name: Supported Platforms
           href: getting-started/requirements.md
-          items:
-          - name: .NET Versions
-            href: net-version-support.md
-          - name: Working with Skia Desktop
-            href: xref:Uno.Skia.Desktop
-          - name: Working with the Linux Framebuffer
-            href: features/using-linux-framebuffer.md
+        - name: .NET Version Support
+          href: net-version-support.md
         - name: Philosophy
           href: concepts/overview/philosophy-of-uno.md
         - name: How Uno Works
           href: how-uno-works.md
-        - name: Best practices
+        - name: UI Renderers
+          items: 
+          - name: Skia Renderer
+            href: xref:uno.features.renderer.skia
+          - name: Native Renderer
+            href: xref:uno.features.renderer.native
+        - name: Best Practices
           href: best-practices-uno.md
 
     - name: Authoring
       items:
       - name: Using the Uno.SDK
         href: xref:Uno.Features.Uno.Sdk
+      - name: UI Markup
+        href: xref:uno.development.using.markup
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
@@ -183,21 +188,25 @@
       - name: Control Libraries
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
-        href: guides/how-to-add-platforms-existing-project.md
+        href: xref:Uno.Guides.AddAdditionalPlatforms
+      - name: New Projects in Existing Solutions
+        href: xref:Uno.Guides.AddUnoToExistingSolution
+      - name: Using the Skia Desktop
+        href: xref:Uno.Skia.Desktop
+      - name: Linux Framebuffer
+        href: features/using-linux-framebuffer.md
+      - name: Using Skia Desktop (macOS)
+        href: xref:Uno.Skia.macOS
       - name: Getting Started With Tests
         href: xref:Uno.Authoring.Tests
       - name: Logging
         href: logging.md
       - name: AppManifest (WebAssembly)
         href: wasm-appmanifest.md
+      - name: Using the server project
+        href: xref:Uno.Guides.UsingTheServerProject
       - name: Hosting a WebAssembly app
         href: xref:Uno.Development.HostWebAssemblyApp
-      - name: Using Skia Desktop (macOS)
-        href: xref:Uno.Skia.macOS
-      - name: Legacy Topics
-        items:
-        - name: Working with Skia+GTK
-          href: features/using-skia-gtk.md
 
     - name: Debugging
       items:
@@ -216,9 +225,9 @@
       items:
       - name: Uno Platform in WPF
         href: guides/uno-islands.md
-      - name: Native Views with Mobile
+      - name: Native Views
         href: native-views.md
-      - name: Native Views with Skia 
+      - name: Native Views with Skia
         href: xref:Uno.Skia.Embedding.Native
 
     - name: Upgrading
@@ -229,6 +238,8 @@
         href: migrating-from-previous-releases.md
       - name: Upgrading to Single Project
         href: xref:Uno.Development.MigratingToSingleProject
+      - name: Upgrading to Uno 6.0
+        href: xref:Uno.Development.MigratingToUno6
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
       - name: Upgrading from .NET 8 to .NET 9
@@ -295,8 +306,6 @@
           href: xref:uno.publishing.ios
         - name: Publishing for Android
           href: xref:uno.publishing.android
-        - name: Publishing for Mac Catalyst
-          href: xref:uno.publishing.maccatalyst
 
     - name: Performance
       items:
@@ -310,6 +319,8 @@
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
           href: xref:uno.articles.features.illinker
+        - name: Skia Native Libraries Trimming
+          href: features/skia-libraries-trimming.md
         - name: Working with String Resource Trimming
           href: features/upri-trimming.md
         - name: Working with XAML Trimming
@@ -355,8 +366,6 @@
         href: uno-development/building-uno-ui.md
       - name: Debugging Uno.UI
         href: uno-development/debugging-uno-ui.md
-      - name: Building Uno.UI for macOS using Visual Studio for Mac
-        href: uno-development/building-uno-macos.md
       - name: Using Codespaces
         href: features/working-with-codespaces.md
       - name: Using Gitpod
@@ -427,14 +436,7 @@
     - name: Hot Reload
       href: xref:Uno.Platform.Studio.HotReload.Overview
     - name: Hot Design
-      href: xref:Uno.HotDesign.Overview
-      items:
-      - name: Overview
-        href: xref:Uno.HotDesign.Overview
-      - name: Getting Started with Hot Design
-        href: xref:Uno.HotDesign.GetStarted.Guide
-      - name: Counter Tutorial
-        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
+      href: studio/Hot Design/toc.yml
     - name: Design-to-Code
       href: external/figma-docs/toc.yml
     - name: Feedback
@@ -559,6 +561,8 @@
           href: uno-toolchain-telemetry.md
         - name: Composition API
           href: composition.md
+        - name: Customizing the UIApplicationDelegate on iOS
+          href: xref:Uno.Features.CustomizingUIApplicationDelegate
         - name: Dialogs
           href: features/dialogs.md
         - name: Fluent styles
@@ -589,22 +593,24 @@
           href: features/using-winui2.md
         - name: Windowing
           href: features/windows-ui-xaml-window.md
+        - name: Preventing Window Closing
+          href: features/app-close-handler.md
         - name: x:Bind
-          href: features/windows-ui-xbind.md
+          href: xref:Uno.Features.WinUIxBind
 
       - name: 3rd-party libraries
         href: supported-libraries.md
 
     - name: Non-UI
       items:
+      - name: Overview
+        href: xref:uno.features.uno.winrt
       - name: Accelerometer
         href: features/accelerometer.md
       - name: Android TV
         href: features/android-tv.md
       - name: App Actions
         href: features/windows-ui-startscreen.md
-      - name: App Close Handler
-        href: features/app-close-handler.md
       - name: App Suspension
         href: features/windows-ui-xaml-application.md
       - name: Application Data and Settings

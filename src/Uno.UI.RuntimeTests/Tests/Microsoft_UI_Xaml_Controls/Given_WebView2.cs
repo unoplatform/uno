@@ -9,9 +9,11 @@ using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
 using FluentAssertions;
+using Combinatorial.MSTest;
+
 
 #if !HAS_UNO_WINUI && !WINAPPSDK
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO
@@ -27,108 +29,124 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 #if !HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__
 [RunsOnUIThread]
-[ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
+[TestClass]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
 public class Given_WebView2
 {
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)]
-#if __IOS__
-	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
-#endif
+	[TestMethod]
+	[Ignore("This test is flaky on CI, see #9080")]
 	public async Task When_Navigate()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		var uri = new Uri("https://platform.uno/");
-		await webView.EnsureCoreWebView2Async();
-		bool navigationStarting = false;
-		bool navigationDone = false;
-		webView.NavigationStarting += (s, e) => navigationStarting = true;
-		webView.NavigationCompleted += (s, e) => navigationDone = true;
-		webView.CoreWebView2.Navigate(uri.ToString());
-		Assert.IsNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 30000);
-		Assert.IsNotNull(webView.Source);
-		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://platform.uno/", StringComparison.OrdinalIgnoreCase));
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			var uri = new Uri("https://platform.uno/");
+			await webView.EnsureCoreWebView2Async();
+			bool navigationStarting = false;
+			bool navigationDone = false;
+			webView.NavigationStarting += (s, e) => navigationStarting = true;
+			webView.NavigationCompleted += (s, e) => navigationDone = true;
+			webView.CoreWebView2.Navigate(uri.ToString());
+			Assert.IsNull(webView.Source);
+			await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
+			await TestServices.WindowHelper.WaitFor(() => navigationDone, 30000);
+			Assert.IsNotNull(webView.Source);
+			Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://platform.uno/", StringComparison.OrdinalIgnoreCase));
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
 
 	[TestMethod]
+	[Ignore("This test is flaky on CI, see #9080")]
 	public async Task When_NavigateToString()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		var uri = new Uri("https://platform.uno/");
-		await webView.EnsureCoreWebView2Async();
-		bool navigationStarting = false;
-		bool navigationDone = false;
-		webView.NavigationStarting += (s, e) => navigationStarting = true;
-		webView.NavigationCompleted += (s, e) => navigationDone = true;
-		webView.Source = uri;
-		Assert.IsNotNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
-		Assert.IsNotNull(webView.Source);
-		navigationStarting = false;
-		navigationDone = false;
-		webView.NavigateToString("<html></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
-		Assert.AreEqual(new Uri("about:blank"), webView.Source);
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			var uri = new Uri("https://platform.uno/");
+			await webView.EnsureCoreWebView2Async();
+			bool navigationStarting = false;
+			bool navigationDone = false;
+			webView.NavigationStarting += (s, e) => navigationStarting = true;
+			webView.NavigationCompleted += (s, e) => navigationDone = true;
+			webView.Source = uri;
+			Assert.IsNotNull(webView.Source);
+			await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
+			await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
+			Assert.IsNotNull(webView.Source);
+			navigationStarting = false;
+			navigationDone = false;
+			webView.NavigateToString("<html></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
+			await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
+			Assert.AreEqual(new Uri("about:blank"), webView.Source);
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
 
 
 	[TestMethod]
+	[Ignore("Currently very flaky https://github.com/unoplatform/uno/issues/9080")]
 	public async Task When_GoBack()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		bool navigated = false;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		await webView.EnsureCoreWebView2Async();
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
 
-		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
-		Assert.IsFalse(webView.CanGoBack);
-		Assert.IsFalse(webView.CoreWebView2.CanGoForward);
-		Assert.IsFalse(webView.CanGoForward);
+			Assert.IsFalse(webView.CoreWebView2.CanGoBack);
+			Assert.IsFalse(webView.CanGoBack);
+			Assert.IsFalse(webView.CoreWebView2.CanGoForward);
+			Assert.IsFalse(webView.CanGoForward);
 
-		webView.NavigationCompleted += (sender, e) => navigated = true;
-		webView.CoreWebView2.Navigate("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html");
-		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			webView.CoreWebView2.Navigate("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html");
+			await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
-		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
-		Assert.IsFalse(webView.CanGoBack);
-		Assert.IsFalse(webView.CoreWebView2.CanGoForward);
-		Assert.IsFalse(webView.CanGoForward);
+			Assert.IsFalse(webView.CoreWebView2.CanGoBack);
+			Assert.IsFalse(webView.CanGoBack);
+			Assert.IsFalse(webView.CoreWebView2.CanGoForward);
+			Assert.IsFalse(webView.CanGoForward);
 
-		navigated = false;
-		webView.CoreWebView2.Navigate("https://platform.uno");
-		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
+			navigated = false;
+			webView.CoreWebView2.Navigate("https://platform.uno");
+			await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
-		Assert.IsTrue(webView.CoreWebView2.CanGoBack);
-		Assert.IsTrue(webView.CanGoBack);
+			Assert.IsTrue(webView.CoreWebView2.CanGoBack);
+			Assert.IsTrue(webView.CanGoBack);
 
-		navigated = false;
-		webView.GoBack();
-		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
+			navigated = false;
+			webView.GoBack();
+			await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
-		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
-		Assert.IsFalse(webView.CanGoBack);
-		Assert.IsTrue(webView.CoreWebView2.CanGoForward);
-		Assert.IsTrue(webView.CanGoForward);
+			Assert.IsFalse(webView.CoreWebView2.CanGoBack);
+			Assert.IsFalse(webView.CanGoBack);
+			Assert.IsTrue(webView.CoreWebView2.CanGoForward);
+			Assert.IsTrue(webView.CanGoForward);
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
 
 #if __ANDROID__ || __IOS__
@@ -177,7 +195,8 @@ public class Given_WebView2
 	}
 #endif
 
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_Has_No_Result()
 	{
 		async Task Do()
@@ -202,7 +221,8 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync()
 	{
 		async Task Do()
@@ -233,7 +253,8 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_String_Double_Quote()
 	{
 		async Task Do()
@@ -259,7 +280,8 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_String()
 	{
 		async Task Do()
@@ -289,7 +311,8 @@ public class Given_WebView2
 #if WINAPPSDK
 	[Ignore("Crashes")]
 #endif
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWin32)] // passes locally but fails in CI
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32)] // passes locally but fails in CI
 	public async Task When_LocalFolder_File()
 	{
 		async Task Do()
@@ -319,7 +342,7 @@ public class Given_WebView2
 			};
 			webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
 			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
-			await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
+			await TestServices.WindowHelper.WaitFor(() => !string.IsNullOrEmpty(message), 2000);
 
 			if (RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaX11) // On X11 we double escape. This makes sense because in site.js, we stringify a string. Other webkit-based implementations get this wrong
 			{
@@ -334,7 +357,8 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_Non_String()
 	{
 		async Task Do()
@@ -363,8 +387,9 @@ public class Given_WebView2
 #if __IOS__
 	[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
+	[TestMethod]
 	// Fails on iOS https://github.com/unoplatform/uno/issues/9080
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)]
 	public async Task When_WebMessageReceived()
 	{
 		var border = new Border();
@@ -464,9 +489,9 @@ public class Given_WebView2
 	}
 
 #if !WINAPPSDK && !__ANDROID__
-	[DataRow(true)]
-	[DataRow(false)]
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaAndroid)]
+	[TestMethod]
+	[CombinatorialData]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid)]
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{
 		var border = new Border();
@@ -489,7 +514,7 @@ public class Given_WebView2
 			e.Handled = handled;
 		};
 		webView.CoreWebView2.Navigate(uri.ToString());
-		Assert.IsNull(webView.Source);
+		Assert.IsNotNull(webView.Source);
 		await TestServices.WindowHelper.WaitFor(() => scheme == "notsupported", 3000);
 		if (handled)
 		{

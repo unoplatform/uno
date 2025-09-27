@@ -8,16 +8,15 @@ using Windows.Foundation;
 using System.Collections.Generic;
 using Uno.UI.StartScreen.Extensions;
 using Uno.Extensions;
+using AndroidX.Core.Content.PM;
+using Uno.UI;
 
 namespace Windows.UI.StartScreen
 {
 	public partial class JumpList
 	{
-		private ShortcutManager _manager;
-
 		private void Init()
 		{
-			_manager = (ShortcutManager)Application.Context.GetSystemService(Context.ShortcutService);
 			LoadItems();
 		}
 
@@ -25,7 +24,7 @@ namespace Windows.UI.StartScreen
 
 		private void LoadItems()
 		{
-			var shortcuts = _manager.DynamicShortcuts.ToArray();
+			var shortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.Current).ToArray();
 			Items.Clear();
 			foreach (var shortcut in shortcuts)
 			{
@@ -37,14 +36,14 @@ namespace Windows.UI.StartScreen
 		{
 			return AsyncAction.FromTask(async ct =>
 			{
-				var nonUnoShortcuts = _manager.DynamicShortcuts.Where(s => !s.IsUnoShortcut()).ToArray();
-				var convertedItems = new List<ShortcutInfo>();
+				var nonUnoShortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.Current).Where(s => !s.IsUnoShortcut()).ToArray();
+				var convertedItems = new List<ShortcutInfoCompat>();
 				foreach (var item in Items)
 				{
-					convertedItems.Add(await item.ToShortcutInfoAsync());
+					convertedItems.Add(await item.ToShortcutInfoCompatAsync());
 				}
 
-				_manager.SetDynamicShortcuts(nonUnoShortcuts.Union(convertedItems).ToArray());
+				ShortcutManagerCompat.SetDynamicShortcuts(ContextHelper.Current, nonUnoShortcuts.Union(convertedItems).ToArray());
 			});
 		}
 	}

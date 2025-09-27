@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 #if WinUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 #else
 using Microsoft.UI.Xaml.Data;
 #endif

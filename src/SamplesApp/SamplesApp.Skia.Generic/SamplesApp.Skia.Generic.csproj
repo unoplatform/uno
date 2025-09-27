@@ -2,7 +2,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<RollForward>Major</RollForward>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-noplatform.props" />
@@ -20,6 +19,9 @@
 		<RollForward>Major</RollForward>
 		
 		<ApplicationManifest>app.manifest</ApplicationManifest>
+
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -47,6 +49,8 @@
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
+		<PackageReference Include="Uno.Resizetizer" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -82,6 +86,11 @@
 
 	<ItemGroup>
 		<Compile Update="Program.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
+		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
 	</ItemGroup>
 
 	<Import Project="..\..\Uno.UI.Runtime.Skia.Wpf\buildTransitive\*.Runtime.Skia.Wpf.props" />
@@ -127,7 +136,7 @@
 		<ItemGroup>
 			<!--
 			This removes the transitive dependency to WPF which has a requirement to 
-			have net8.0-windows and not net8.0.
+			have net9.0-windows and not net9.0.
 			-->
 			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
 		</ItemGroup>

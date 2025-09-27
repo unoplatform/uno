@@ -39,9 +39,9 @@ To use MSAL into an Uno project, follow the following steps:
 
 By adding those helpers, Uno will correctly add required initializations to MSAL for all supported platforms.
 
-## Windows - UWP
+## WinUI
 
-There is nothing to change for UWP. The `.WithUnoHelpers()` does nothing on UAP/UWP platforms, they are just there to allow the code to compile without introducing `#if` conditionals in your code.
+There is nothing to change for WinUI. The `.WithUnoHelpers()` does nothing on WinUI, they are just there to allow the code to compile without introducing `#if` conditionals in your code.
 
 ## Android
 
@@ -62,6 +62,11 @@ Follow [Considerations for using Xamarin iOS with MSAL.NET](https://learn.micros
 ## WebAssembly
 
 Particularities for WASM:
+
+* Currently, .NET 9 [enforces COOP/COEP](https://github.com/dotnet/runtime/issues/109937) for WebAssembly applications. This prevents any cross-site behavior, including authentication through a browser window popup. There are currently two workarounds for this:
+
+  * Use an Uno [Server project](xref:Uno.GettingStarted.UsingWizard#server) which will host the WASM app on its own, and will not have COOP enabled. WASM Debugging may not work as intended in this context. Starting the Server project without the debugger will work.
+  * Run the app via `dotnet serve` from the CLI. This approach will not allow for debugging.
 
 * Because of browser security requirements, the `redirectUri` must be on the same **protocol** (http/https), **hostname** & **port** as your application. The path is not particularly important and there's a good practice to set the callback URI to some static content defined in your `wwwroot` folder (could be an empty page). For example:
 

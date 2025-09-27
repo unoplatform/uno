@@ -4,7 +4,7 @@ uid: Uno.Development.WasmAppManifest
 
 # AppManifest for WebAssembly head project
 
-The `[AppName].Wasm` project in your solution typically includes a manifest file containing settings for the WebAssembly application. This file is typically generated for you under `WasmScripts/AppManifest.js`.
+The `[AppName]` project in your solution typically includes a manifest file containing settings for the WebAssembly application. This file is typically generated for you under `Platforms/WebAssembly/WasmScripts/AppManifest.js`.
 
 ## AppManifest properties
 
@@ -14,10 +14,10 @@ This app manifest file allows you to customize certain aspects of the WebAssembl
 
 If you created an application without using the default Uno [templates](xref:Uno.GetStarted.dotnet-new), you may need to add the manifest file manually.
 
-To do this, create a folder named `WasmScripts` in your `[AppName].Wasm` project, with a file containing the JavaScript code below
+To do this, create a folder named `Platforms/WebAssembly/WasmScripts` in your `[AppName]` project, with a file containing the JavaScript code below
 (e.g. `AppManifest.js`).
 
-Set the manifest file's build action to `Embedded resource`, and edit the contents of this file to resemble the following:
+If the project is not using the [Uno.Sdk](xref:Uno.Features.Uno.Sdk), Set the manifest file's build action to `Embedded resource`, and edit the contents of this file to resemble the following:
 
 ```javascript
 var UnoAppManifest = {

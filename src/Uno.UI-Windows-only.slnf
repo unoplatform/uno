@@ -4,6 +4,7 @@
     "projects": [
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Windows.csproj",
       "AddIns\\Uno.WinUI.Graphics3DGL\\Uno.WinUI.Graphics3DGL.csproj",
+      "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.Windows.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Windows\\SamplesApp.Windows.csproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",

@@ -8,11 +8,11 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
-using ColorChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorChangedEventArgs;
-using ColorPicker = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorPicker;
-using ColorSpectrum = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorSpectrum;
-using ColorSpectrumComponents = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorSpectrumComponents;
-using ColorSpectrumShape = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorSpectrumShape;
+using ColorChangedEventArgs = Microsoft.UI.Xaml.Controls.ColorChangedEventArgs;
+using ColorPicker = Microsoft.UI.Xaml.Controls.ColorPicker;
+using ColorSpectrum = Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum;
+using ColorSpectrumComponents = Microsoft.UI.Xaml.Controls.ColorSpectrumComponents;
+using ColorSpectrumShape = Microsoft.UI.Xaml.Controls.ColorSpectrumShape;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
 {

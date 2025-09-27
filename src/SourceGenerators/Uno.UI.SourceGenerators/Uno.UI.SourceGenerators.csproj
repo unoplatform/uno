@@ -5,7 +5,6 @@
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<!-- We need all the intermediate assemblies -->
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
@@ -15,7 +14,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.0.0-dev.24" />
+		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>

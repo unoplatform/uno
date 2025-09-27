@@ -1,7 +1,7 @@
 ﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System.Collections.Specialized;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

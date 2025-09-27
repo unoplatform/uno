@@ -3,6 +3,7 @@
 //
 
 #import "UNOWindow.h"
+#import "MouseButtons.h"
 #import "UNOApplication.h"
 #import "UNOSoftView.h"
 
@@ -191,8 +192,10 @@ bool uno_window_resize(NSWindow *window, double width, double height)
     bool result = false;
     if (window) {
         NSRect frame = window.frame;
-        frame.size = CGSizeMake(width, height);
-        [window setFrame:frame display:true animate:true];
+        // consider the titlebar height when re-sizing the window
+        CGSize content = [window contentRectForFrameRect: frame].size;
+        frame.size = CGSizeMake(width, height + (frame.size.height - content.height));
+        [window setFrame:frame display:true animate:false];
         result = true;
     }
     return result;
@@ -617,7 +620,11 @@ inline static window_move_or_resize_fn_ptr uno_get_window_resize_event_callback(
     return window_resize_event;
 }
 
-void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer, window_move_or_resize_fn_ptr move, window_move_or_resize_fn_ptr resize)
+void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown,
+    window_key_callback_fn_ptr keyUp,
+    window_mouse_callback_fn_ptr pointer,
+    window_move_or_resize_fn_ptr move,
+    window_move_or_resize_fn_ptr resize)
 {
     window_key_down = keyDown;
     window_key_up = keyUp;
@@ -646,14 +653,13 @@ void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, wind
     window_close = close;
 }
 
-void* uno_window_get_metal_context(UNOWindow* window)
+void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue)
 {
-    id device = uno_application_get_metal_device();
-    id queue = window.metalViewDelegate.queue;
+    *device = (__bridge void *)(uno_application_get_metal_device());
+    *queue = (__bridge void *)(window.metalViewDelegate.queue);
 #if DEBUG
     NSLog(@"uno_window_get_metal device %p queue %p", device, queue);
 #endif
-    return gr_direct_context_make_metal(device, queue);
 }
 
 CGFloat readNextCoord(const char *svg, int *position, long length)
@@ -672,7 +678,7 @@ CGFloat readNextCoord(const char *svg, int *position, long length)
     return result;
 }
 
-void uno_window_clip_svg(UNOWindow* window, const char* svg)
+bool uno_window_clip_svg(UNOWindow* window, const char* svg)
 {
     if (svg) {
         CGFloat scale = window.screen.backingScaleFactor;
@@ -682,8 +688,13 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
         NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
         for (int i = 0; i < subviews.count; i++) {
             NSView* view = subviews[i];
-            CGFloat vx = view.frame.origin.x;
-            CGFloat vy = view.frame.origin.y;
+            NSRect frame = view.frame;
+            // if called too early the element might not have been arranged and it's values cannot be used yet
+            if (NSIsEmptyRect(frame))
+                return false;
+
+            CGFloat vx = frame.origin.x;
+            CGFloat vy = frame.origin.y;
 #if DEBUG
             NSLog(@"uno_window_clip_svg subview %d %@ layer %@ mask %@", i, view, view.layer, view.layer.mask);
 #endif
@@ -761,16 +772,38 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
                 view.layer.mask = mask = [[CAShapeLayer alloc] init];
             }
             mask.fillColor = NSColor.blueColor.CGColor; // anything but clearColor
-            mask.path = path;
             mask.fillRule = kCAFillRuleEvenOdd;
+            mask.path = path;
+        }
+    } else {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg %@ %@ reset", window, window.contentView.layer.description);
+#endif
+        NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
+        for (int i = 0; i < subviews.count; i++) {
+            NSView* view = subviews[i];
+#if DEBUG
+            NSLog(@"uno_window_clip_svg reset subview %d %@ layer %@ mask %@", i, view, view.layer, view.layer.mask);
+#endif
+            CAShapeLayer* mask = view.layer.mask;
+            if (mask != nil) {
+                mask.fillColor = NSColor.clearColor.CGColor;
+                mask.fillRule = kCAFillRuleEvenOdd;
+                mask.path = nil;
+            }
         }
     }
+    return true;
 }
 
 @implementation UNOWindow : NSWindow
 
+NSEventModifierFlags _previousFlags;
+NSOperatingSystemVersion _osVersion;
+
 + (void)initialize {
     windows = [[NSMutableSet alloc] initWithCapacity:10];
+    _osVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
 }
 
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
@@ -870,16 +903,28 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 #endif
             break;
         }
-#if DEBUG
         case NSEventTypeFlagsChanged: {
-            NSLog(@"NSEventTypeFlagsChanged: %@", event); // FIXME: needed ?
+            // raise separate events for each modifiers and for key up and down
+            handled |= [self processModifiers:NSEventModifierFlagControl event:event];
+            handled |= [self processModifiers:NSEventModifierFlagOption event:event];
+            handled |= [self processModifiers:NSEventModifierFlagShift event:event];
+            handled |= [self processModifiers:NSEventModifierFlagCommand event:event];
+            _previousFlags = event.modifierFlags;
+#if DEBUG
+            NSLog(@"NSEventTypeFlagsChanged: %@ handled? %s", event, handled ? "true" : "false");
+#endif
             break;
         }
+#if DEBUG
         default: {
             NSLog(@"Unhandled Event: %@", event);
             break;
         }
 #endif
+    }
+
+    if (_osVersion.majorVersion >= 15) {
+        [MouseButtons track:event];
     }
     
     if (mouse != MouseEventsNone) {
@@ -901,8 +946,14 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             }
 #endif
             data.pointerDeviceType = pdt;
+            
             // mouse
-            data.mouseButtons = (uint32)NSEvent.pressedMouseButtons;
+            // FIXME: NSEvent.pressedMouseButtons is returning a wrong value in Sequoia when using an extenal trackpad
+            if (_osVersion.majorVersion >= 15) {
+                data.mouseButtons = (uint32)[MouseButtons mask];
+            } else {
+                data.mouseButtons = (uint32)NSEvent.pressedMouseButtons;
+            }
 
             // Pen
             if (pdt == PointerDeviceTypePen) {
@@ -948,6 +999,35 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
     }
 }
 
+- (BOOL)processModifiers:(NSEventModifierFlags)candidate event:(NSEvent*)event {
+    NSEventModifierFlags flags = event.modifierFlags;
+    bool down = (_previousFlags & candidate) == 0 && (flags & candidate) != 0;
+    bool up = (_previousFlags & candidate) != 0 && (flags & candidate) == 0;
+
+    VirtualKey key = VirtualKeyNone;
+    VirtualKeyModifiers mod = VirtualKeyModifiersNone;
+    unsigned short scanCode = 0;
+    UniChar unicode = 0;
+    if (down || up) {
+        scanCode = event.keyCode;
+        key = get_virtual_key(scanCode);
+        mod = get_modifiers(candidate);
+        unicode = get_unicode(event);
+    }
+
+    bool handled = false;
+    if (down) {
+        handled |= uno_get_window_key_down_callback()(self, key, mod, scanCode, unicode);
+    }
+    if (up) {
+        handled |= uno_get_window_key_up_callback()(self, key, mod, scanCode, unicode);
+    }
+#if DEBUG
+    NSLog(@"NSEventTypeFlagsChanged: down: %s up: %s", down ? "TRUE" : "false", up ? "TRUE" : "false");
+#endif
+    return handled;
+}
+
 - (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame {
     // if we disable the (green) maximize button then we don't allow zooming
     return window.collectionBehavior != (NSWindowCollectionBehaviorFullScreenAuxiliary|NSWindowCollectionBehaviorFullScreenNone|NSWindowCollectionBehaviorFullScreenDisallowsTiling);
@@ -962,16 +1042,20 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 }
 
 - (void)windowDidResize:(NSNotification *)notification {
-    CGSize size = self.frame.size;
+    // the UNOMetalViewDelegate has its own resize callback but we need something for the software fallback
+    if (self.metalViewDelegate == nil) {
+        // consider the title bar height
+        CGSize size = [self contentRectForFrameRect: self.frame].size;
 #if DEBUG
-    NSLog(@"UNOWindow %p windowDidMove %@ x: %g y: %g", self, notification, size.width, size.height);
+        NSLog(@"UNOWindow %p windowDidResize %@ w: %g h: %g", self, notification, size.width, size.height);
 #endif
-    uno_get_window_resize_event_callback()(self, size.width, size.height);
+        uno_get_window_resize_event_callback()(self, size.width, size.height);
+    }
 }
 
 - (bool)windowShouldClose:(NSWindow *)sender
 {
-    // see `ISystemNavigationManagerPreviewExtension`
+    // see `AppWindow.Closing`
     bool result = uno_get_window_should_close_callback()(self) ? YES : NO;
 #if DEBUG
     NSLog(@"UNOWindow %p windowShouldClose %@ -> %s", self, sender, result ? "true" : "false");

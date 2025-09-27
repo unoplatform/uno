@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
+namespace Microsoft.UI.Xaml.Tests.Common;
 
 internal static class PanelsHelper
 {

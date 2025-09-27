@@ -9,7 +9,7 @@
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.WebAssembly"
 										   ProjectSystem="true"
-										   Condition="!$(UnoFeatures.Contains(';skiarenderer;')) AND $(UnoFeatures.Contains(';mediaelement;'))"/>
+										   Condition="!$(UnoFeatures.Contains(';skiarenderer;')) AND ($(UnoFeatures.Contains(';mediaplayerelement;')) OR $(UnoFeatures.Contains(';mediaelement;')))"/>
 		<_UnoProjectSystemPackageReference Include="Microsoft.Windows.Compatibility" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Wasm.Bootstrap" ProjectSystem="true" />
@@ -28,6 +28,21 @@
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" $(_IsExecutable) == 'false' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="
+			   (
+				   $(UnoFeatures.Contains(';lottie;')) 
+				   OR $(UnoFeatures.Contains(';svg;')) 
+				   OR $(UnoFeatures.Contains(';material;')) 
+				   OR $(UnoFeatures.Contains(';cupertino;'))
+			   )
+			   AND $(UnoFeatures.Contains(';skiarenderer;'))">
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">

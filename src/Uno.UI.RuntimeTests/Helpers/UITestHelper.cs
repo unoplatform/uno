@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -68,7 +69,25 @@ public static class UITestHelper
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
-	public static Task WaitForIdle() => TestServices.WindowHelper.WaitForIdle();
+	public static Task WaitFor(
+		Func<bool> condition,
+		int timeoutMS = 1000,
+		string? message = null,
+		[CallerMemberName] string? callerMemberName = null,
+		[CallerLineNumber] int lineNumber = 0
+	) => TestServices.WindowHelper.WaitFor(condition, timeoutMS, message, callerMemberName, lineNumber);
+
+	public static async Task WaitForIdle(bool waitForCompositionAnimations = false)
+	{
+#if __SKIA__
+		do
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+		} while (waitForCompositionAnimations && (TestServices.WindowHelper.WindowContent?.Visual?.Compositor?.IsAnimating ?? false));
+#else
+		await TestServices.WindowHelper.WaitForIdle();
+#endif
+	}
 
 	/// <summary>
 	/// Takes a screen-shot of the given element.
@@ -373,10 +392,10 @@ public static class FrameworkElementExtensions
 
 public static class PointExtensions
 {
-	public static Point Offset(this Point point, double xAndY)
+	public static Point OffsetLinear(this Point point, double xAndY)
 		=> new(point.X + xAndY, point.Y + xAndY);
 
-	public static Point Offset(this Point point, double x, double y)
+	public static Point Offset(this Point point, double x = 0, double y = 0)
 		=> new(point.X + x, point.Y + y);
 }
 
@@ -392,6 +411,12 @@ public static class InjectedPointerExtensions
 	{
 		pointer.Press(from);
 		pointer.MoveTo(to, steps, stepOffsetInMilliseconds);
+		pointer.Release();
+	}
+
+	public static void Tap(this IInjectedPointer pointer, Point location)
+	{
+		pointer.Press(location);
 		pointer.Release();
 	}
 }
@@ -429,23 +454,23 @@ public partial class Finger : IInjectedPointer, IDisposable
 	{
 		if (_currentPosition is { } current)
 		{
-			Inject(GetMove(current, position, steps, stepOffsetInMilliseconds));
+			Inject(GetMove(_id, current, position, steps, stepOffsetInMilliseconds));
 			_currentPosition = position;
 		}
 	}
 
 	void IInjectedPointer.MoveBy(double deltaX, double deltaY) => MoveBy(deltaX, deltaY);
-	public void MoveBy(double deltaX, double deltaY, uint steps = _defaultMoveSteps)
+	public void MoveBy(double x = 0, double y = 0, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
 	{
 		if (_currentPosition is { } current)
 		{
-			MoveTo(current.Offset(deltaX, deltaY), steps);
+			MoveTo(current.Offset(x, y), steps, stepOffsetInMilliseconds);
 		}
 	}
 
 	public void Release(Point position)
 	{
-		Inject(GetRelease(position));
+		Inject(GetRelease(_id, position));
 		_currentPosition = null;
 	}
 
@@ -453,7 +478,7 @@ public partial class Finger : IInjectedPointer, IDisposable
 	{
 		if (_currentPosition is { } current)
 		{
-			Inject(GetRelease(current));
+			Inject(GetRelease(_id, current));
 			_currentPosition = null;
 		}
 	}
@@ -478,7 +503,7 @@ public partial class Finger : IInjectedPointer, IDisposable
 			}
 		};
 
-	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
+	public static IEnumerable<InjectedInputTouchInfo> GetMove(uint id, Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
 	{
 		steps += 1; // We need to send at least the final location, but steps refers to the number of intermediate points
 
@@ -490,6 +515,7 @@ public partial class Finger : IInjectedPointer, IDisposable
 			{
 				PointerInfo = new()
 				{
+					PointerId = id,
 					TimeOffsetInMilliseconds = stepOffsetInMilliseconds,
 					PixelLocation = At(fromPosition.X + step * stepX, fromPosition.Y + step * stepY),
 					PointerOptions = InjectedInputPointerOptions.Update
@@ -501,11 +527,12 @@ public partial class Finger : IInjectedPointer, IDisposable
 		}
 	}
 
-	public static InjectedInputTouchInfo GetRelease(Point position)
+	public static InjectedInputTouchInfo GetRelease(uint id, Point position)
 		=> new()
 		{
 			PointerInfo = new()
 			{
+				PointerId = id,
 				PixelLocation = At(position),
 				PointerOptions = InjectedInputPointerOptions.FirstButton
 					| InjectedInputPointerOptions.PointerUp

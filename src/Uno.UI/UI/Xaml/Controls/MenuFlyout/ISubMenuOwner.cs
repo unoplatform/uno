@@ -1,43 +1,34 @@
 ﻿using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial interface ISubMenuOwner
 {
-	public partial interface ISubMenuOwner
-	{
-		void PrepareSubMenu();
+	void PrepareSubMenu();
 
-		void OpenSubMenu(Point position);
+	void OpenSubMenu(Point position);
 
-		void PositionSubMenu(Point position);
+	void PositionSubMenu(Point position);
 
-		void ClosePeerSubMenus();
+	void ClosePeerSubMenus();
 
-		void CloseSubMenu();
+	void CloseSubMenu();
 
-		void CloseSubMenuTree();
+	void CloseSubMenuTree();
 
-		void DelayCloseSubMenu();
+	void DelayCloseSubMenu();
 
-		void CancelCloseSubMenu();
+	void CancelCloseSubMenu();
 
-		void RaiseAutomationPeerExpandCollapse(bool isOpen);
+	void RaiseAutomationPeerExpandCollapse(bool isOpen);
 
-		bool IsSubMenuOpen
-		{
-			get;
-		}
+	void SetSubMenuDirection(bool isSubMenuDirectionUp);
 
-		bool IsSubMenuPositionedAbsolutely
-		{
-			get;
-		}
+	bool IsSubMenuOpen { get; }
 
-		ISubMenuOwner ParentOwner
-		{
-			get;
-			set;
-		}
-	}
+	bool IsSubMenuPositionedAbsolutely { get; }
+
+	ISubMenuOwner ParentOwner { get; set; }
 }
 
 

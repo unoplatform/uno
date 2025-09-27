@@ -133,6 +133,8 @@ internal class PackageManifest
 		public const string CSharpMarkup = nameof(CSharpMarkup);
 		public const string WasmBootstrap = nameof(WasmBootstrap);
 		public const string OSLogging = nameof(OSLogging);
+		public const string VlcNativeWindowsAssets = nameof(VlcNativeWindowsAssets);
+		public const string MicrosoftWebView2 = nameof(MicrosoftWebView2);
 		public const string CoreLogging = nameof(CoreLogging);
 		public const string UniversalImageLoading = nameof(UniversalImageLoading);
 		public const string Dsp = nameof(Dsp);
@@ -152,6 +154,7 @@ internal class PackageManifest
 		public const string UnoFonts = nameof(UnoFonts);
 		public const string AndroidMaterial = nameof(AndroidMaterial);
 		public const string AndroidXLegacySupportV4 = nameof(AndroidXLegacySupportV4);
+		public const string AndroidXSplashScreen = nameof(AndroidXSplashScreen);
 		public const string AndroidXAppCompat = nameof(AndroidXAppCompat);
 		public const string AndroidXRecyclerView = nameof(AndroidXRecyclerView);
 		public const string AndroidXActivity = nameof(AndroidXActivity);

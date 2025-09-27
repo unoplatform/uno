@@ -41,14 +41,14 @@ namespace TestRepro
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[
-			"NullableBoolConverter"
-			] = 
+			Resources["NullableBoolConverter"] = 
 			new global::TestRepro.NullableBoolConverter
 			{
 				// Source 0\MainPage.xaml (Line 10:4)
@@ -204,6 +204,7 @@ namespace TestRepro
 
 			Bindings = new MainPage_Bindings(this);
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
@@ -211,77 +212,47 @@ namespace TestRepro
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _LoadElementSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
+		}
+
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LoadElementSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton LoadElement
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_LoadElementSubject.ElementInstance;
-			}
-			set
-			{
-				_LoadElementSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_LoadElementSubject.ElementInstance;
+			set => _LoadElementSubject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ToggleLoadSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ToggleLoadSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton ToggleLoad
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_ToggleLoadSubject.ElementInstance;
-			}
-			set
-			{
-				_ToggleLoadSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_ToggleLoadSubject.ElementInstance;
+			set => _ToggleLoadSubject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.Button button1
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_button1Subject.ElementInstance;
-			}
-			set
-			{
-				_button1Subject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_button1Subject.ElementInstance;
+			set => _button1Subject.ElementInstance = value;
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton _component_0
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_component_0_Holder.Instance;
-			}
-			set
-			{
-				_component_0_Holder.Instance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
 		private global::Microsoft.UI.Xaml.ElementStub _component_1
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
-			}
-			set
-			{
-				_component_1_Holder.Instance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
+			set => _component_1_Holder.Instance = value;
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Button _component_2
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
-			}
-			set
-			{
-				_component_2_Holder.Instance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
+			set => _component_2_Holder.Instance = value;
 		}
 		private interface IMainPage_Bindings
 		{
@@ -294,6 +265,8 @@ namespace TestRepro
 		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
 		private IMainPage_Bindings Bindings;
 		#pragma warning restore 0169
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
@@ -332,6 +305,10 @@ namespace TestRepro
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
+				var owner = Owner;
+				owner._component_0.SuspendXBind();
+				owner._component_1.SuspendXBind();
+				owner._component_2.SuspendXBind();
 			}
 		}
 	}

@@ -8,7 +8,7 @@ This article covers some basic best practices when developing cross-platform app
 
 ## Questions to ask
 
-1. Which [platforms](getting-started/requirements.md) do I plan to target?
+1. Which [platforms](xref:Uno.GettingStarted.Requirements) do I plan to target?
 2. What framework features do I plan to use? Are they supported on all of my planned target platforms?
 3. Which major third-party dependencies will I use? Are they supported on all of my planned target platforms?
 
@@ -16,9 +16,9 @@ This article covers some basic best practices when developing cross-platform app
 
 Testing and debugging your application is easier and more rapid on some platforms and trickier and more time-consuming on others. Depending on where you're at in your development cycle, it may make sense to test all platforms, or it may make sense to focus on the 'easiest' platform.
 
-1. **At the beginning of the development cycle,** you should identify key features from the Uno Platform framework and 3rd-party dependencies that you plan to use. Check that framework controls you plan to use [are implemented](implemented-views.md). Consider creating a simple proof-of-concept (POC) app covering the 'riskiest' features and testing it on all platforms you're targeting.
+1. **At the beginning of the development cycle,** you should identify key features from the Uno Platform framework and 3rd-party dependencies that you plan to use. Check that the framework controls you plan to use [are implemented](implemented-views.md). Consider creating a simple proof-of-concept (POC) app covering the 'riskiest' features and testing it on all platforms you're targeting.
 
-2. **In the middle of the development cycle,** once the major pieces are in place, when you're iterating on the UI and business logic of your application, most of your day-to-day development should focus on the easiest platform to develop on. Most of the time this will be Windows, where you can take advantage of Microsoft's excellent tooling (Live Visual Tree, XAML Hot Reload, etc) and where build times are often shortest. For this reason, it's recommended to keep the Windows (UWP or WinUI 3) head project in your solution, even if you don't plan to publish your application to Windows.
+2. **In the middle of the development cycle,** once the major pieces are in place, when you're iterating on the UI and business logic of your application, most of your day-to-day development should focus on the easiest platform to develop on. Most of the time, this will be Windows, where you can take advantage of Microsoft's excellent tooling (Live Visual Tree, XAML Hot Reload, etc) and where build times are often shortest. For this reason, it's recommended to keep the Windows (WinUI 3) head project in your solution, even if you don't plan to publish your application to Windows.
 
 3. **At the end of the development cycle,** as your attention shifts to testing and fixing bugs, you'll again distribute your time more equally across all of the platforms you plan to target, ensuring that the application looks and behaves consistently everywhere.
 
@@ -26,7 +26,7 @@ Testing and debugging your application is easier and more rapid on some platform
 
 It's likely that some part of your application's code, be it C# code or XAML markup, will be specific to only one platform - perhaps because you want to access platform-specific APIs, implement a feature using native third-party libraries, or simply customize the experience to be more idiomatic to that particular platform.
 
-You can read more on the mechanics of platform-specific code [here for C#](platform-specific-csharp.md) and [here for XAML](platform-specific-xaml.md). You should also make sure you understand [an Uno Platform App solution structure](uno-app-solution-structure.md).
+You can read more on the mechanics of platform-specific code [here for C#](xref:Uno.Development.PlatformSpecificCSharp) and [here for XAML](xref:Uno.Development.PlatformSpecificXaml). You should also make sure you understand [an Uno Platform App solution structure](xref:Uno.Development.AppStructure).
 
 The main goals where platform-specific code is concerned are to:
 
@@ -50,4 +50,4 @@ Sometimes so much freedom can be paralyzing. To help you get started, we've crea
 
 ## Performance
 
- See a checklist of performance-related best practices [here](Uno-UI-Performance.md).
+See a checklist of performance-related best practices [here](Uno-UI-Performance.md).

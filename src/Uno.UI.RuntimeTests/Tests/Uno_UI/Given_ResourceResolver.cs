@@ -70,6 +70,23 @@ public class Given_ResourceResolver
 				$"SUT_TextBlock_Run1.Text={run1.Text ?? "<null>"}");
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Resolving_Parent_Local_Resources_With_NativeViews()
+	{
+		var setup = new Resolve_Parent_Resources();
+		await UITestHelper.Load(setup);
+
+		var button = setup.SUT_Button;
+
+		//We are setting these value on the Page's Resources
+		var expectedWidth = 105;
+		var expectedColor = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+
+		Assert.AreEqual(expectedWidth, button.Width);
+		Assert.AreEqual(expectedColor, button.Background);
+	}
 }
 
 #region other classes

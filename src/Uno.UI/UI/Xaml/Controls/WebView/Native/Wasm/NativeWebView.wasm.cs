@@ -18,7 +18,7 @@ using ElementId = System.IntPtr;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class NativeWebView : ICleanableNativeWebView
+internal partial class NativeWebView : ICleanableNativeWebView
 {
 	private readonly CoreWebView2 _coreWebView;
 	private readonly ElementId _elementId;
@@ -36,7 +36,7 @@ public partial class NativeWebView : ICleanableNativeWebView
 		_coreWebView = coreWebView;
 		_elementId = elementId;
 
-		NativeMethods.SetBackground(elementId, "transparent");
+		NativeMethods.InitializeStyling(elementId);
 		NativeMethods.SetupEvents(elementId);
 	}
 

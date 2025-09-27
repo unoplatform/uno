@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks

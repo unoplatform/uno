@@ -105,13 +105,24 @@ namespace Microsoft.UI.Xaml.Media
 				}
 				else if (TryOpenSourceAsync(ct, null, null, out var asyncImg))
 				{
-					asyncImg.ContinueWith(t =>
+					DispatcherQueue.TryEnqueue(async () =>
 					{
-						if (t.IsCompletedSuccessfully)
+						try
 						{
-							OnOpened(t.Result);
+							var data = await asyncImg;
+							if (!ct.IsCancellationRequested)
+							{
+								OnOpened(data);
+							}
 						}
-					}, ct);
+						catch (OperationCanceledException) when (ct.IsCancellationRequested)
+						{
+						}
+						catch (Exception error)
+						{
+							OnOpened(ImageData.FromError(error));
+						}
+					});
 				}
 				else
 				{

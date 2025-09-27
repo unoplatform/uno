@@ -43,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			const string Greenish = "#FF0ED145";
 			const string Transparent = "#00000000";
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -84,9 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			await TestHelper.RetryAssert(async () =>
 			{
 				float BorderOffset =
-#if __SKIA__
-					useRectangle ? 4 : 7;
-#elif __APPLE_UIKIT__
+#if __APPLE_UIKIT__ || __SKIA__
 					6;
 #else
 					3;

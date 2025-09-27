@@ -26,7 +26,7 @@ using Uno.UI.Dispatching;
 using Uno.UI.Runtime;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
@@ -88,9 +88,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_startInvoked = true;
 
-				SynchronizationContext.SetSynchronizationContext(
-					new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
-				);
+				SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
 				await WindowManagerInterop.InitAsync();
 

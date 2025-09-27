@@ -11,17 +11,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private IScrollSnapPointsInfo _snapPointsInfo;
 
-		private void AdjustOffsetsForSnapPoints(ref double? horizontalOffset, ref double? verticalOffset, float? zoomFactor)
+		internal void AdjustOffsetsForSnapPoints(ref double? horizontalOffset, ref double? verticalOffset, float? zoomFactor, bool canBypassSingle = false)
 		{
 			if (horizontalOffset is { } hOffset)
 			{
 				var maxOffset = Math.Max(0d, ExtentWidth - ViewportWidth);
+				var currentOffset = canBypassSingle ? hOffset : HorizontalOffset;
 
 				AdjustOffsetWithMandatorySnapPoints(
 					isForHorizontalOffset: true,
 					minOffset: 0d,
 					maxOffset: maxOffset,
-					hOffset,
+					currentOffset,
 					ExtentWidth,
 					ViewportWidth,
 					zoomFactor ?? ZoomFactor,
@@ -32,19 +33,29 @@ namespace Microsoft.UI.Xaml.Controls
 			if (verticalOffset is { } vOffset)
 			{
 				var maxOffset = Math.Max(0d, ExtentHeight - ViewportHeight);
+				var currentOffset = canBypassSingle ? vOffset : VerticalOffset;
 
 				AdjustOffsetWithMandatorySnapPoints(
 					isForHorizontalOffset: false,
 					minOffset: 0d,
 					maxOffset: maxOffset,
-					vOffset,
+					currentOffset,
 					ExtentHeight,
 					ViewportHeight,
 					zoomFactor ?? ZoomFactor,
 					ref vOffset);
 				verticalOffset = vOffset;
 			}
+
+#if __SKIA__
+			(horizontalOffset, verticalOffset) = ClampOffsetsToFocusedTextBox(horizontalOffset, verticalOffset);
+#endif
 		}
+
+		internal partial bool ShouldSnapToTouchTextBox();
+#if !__SKIA__
+		internal partial bool ShouldSnapToTouchTextBox() => false;
+#endif
 
 		private void AdjustOffsetWithMandatorySnapPoints(
 			bool isForHorizontalOffset,

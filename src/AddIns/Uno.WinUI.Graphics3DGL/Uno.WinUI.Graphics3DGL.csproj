@@ -7,10 +7,9 @@
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 
 		<Nullable>enable</Nullable>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		
 		<!-- Required as the project name does not end with `.Skia` when building for netcoremobile targets -->
-		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
+		<UnoDisableTargetFrameworkPlatformOverride Condition="!$(UnoTargetFrameworkOverride.Contains('windows10'))">true</UnoDisableTargetFrameworkPlatformOverride>
     </PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -19,7 +18,6 @@
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">

@@ -22,11 +22,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using SwipeMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode;
-using SwipeItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItem;
-using SwipeItems = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItems;
-using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
-using FontIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIconSource;
+using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
+using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
+using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
+using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
+using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 

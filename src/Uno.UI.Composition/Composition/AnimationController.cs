@@ -64,6 +64,8 @@ public partial class AnimationController
 		}
 	}
 
+	internal TimeSpan Remaining => EnsureAnimation().Remaining;
+
 	internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 	{
 		if (propertyName.Equals(nameof(Progress), StringComparison.OrdinalIgnoreCase))

@@ -63,6 +63,7 @@ namespace Uno.Foundation.Logging
 
 		public void Critical(string message) => Log(LogLevel.Critical, message);
 		public void Critical(IFormattable formattable) => Log(LogLevel.Critical, formattable.ToString());
+		public void Critical(IFormattable formattable, Exception? ex) => Log(LogLevel.Critical, formattable.ToString(), ex);
 
 		public void LogInfo(string message) => Log(LogLevel.Information, message);
 		public void LogInfo(string message, Exception? ex) => Log(LogLevel.Information, message, ex);

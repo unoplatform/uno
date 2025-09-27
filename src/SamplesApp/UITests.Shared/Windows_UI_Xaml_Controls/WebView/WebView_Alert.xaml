@@ -12,5 +12,6 @@
 	<controls:StarStackPanel Sizes="*,Auto">
 		<not_win:WebView x:Name="web" />
 		<not_win:Button Click="Load">LOAD WEBVIEW WITH ALERT SCRIPT</not_win:Button>
+		<not_win:Button Click="StopScript">STOP SCRIPT</not_win:Button>
 	</controls:StarStackPanel>
 </Page>

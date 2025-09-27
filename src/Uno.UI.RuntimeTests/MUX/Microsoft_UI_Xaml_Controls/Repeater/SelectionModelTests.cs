@@ -22,10 +22,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using SelectionModel = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectionModel;
-using IndexPath = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IndexPath;
-using SelectionModelSelectionChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectionModelSelectionChangedEventArgs;
-using SelectionModelChildrenRequestedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectionModelChildrenRequestedEventArgs;
+using SelectionModel = Microsoft.UI.Xaml.Controls.SelectionModel;
+using IndexPath = Microsoft.UI.Xaml.Controls.IndexPath;
+using SelectionModelSelectionChangedEventArgs = Microsoft.UI.Xaml.Controls.SelectionModelSelectionChangedEventArgs;
+using SelectionModelChildrenRequestedEventArgs = Microsoft.UI.Xaml.Controls.SelectionModelChildrenRequestedEventArgs;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {

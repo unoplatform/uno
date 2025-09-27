@@ -3,12 +3,12 @@
 
 using Microsoft.UI.Xaml.Controls;
 
-using NavigationViewDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewDisplayMode;
-using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
-using NavigationViewSelectionChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs;
-using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewItemSeparator = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemSeparator;
-using NavigationViewDisplayModeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs;
+using NavigationViewDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewDisplayMode;
+using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
+using NavigationViewSelectionChangedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs;
+using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewItemSeparator = Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator;
+using NavigationViewDisplayModeChangedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs;
 using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp

@@ -45,7 +45,6 @@ partial class Window
 
 	private bool _initialized;
 	private Brush? _background;
-	private bool _splashScreenDismissed;
 	private WindowType _windowType;
 
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
@@ -58,6 +57,8 @@ partial class Window
 		{
 			windowType = WindowType.CoreWindow;
 		}
+#else
+		windowType = WindowType.DesktopXamlSource; // Skia always uses "Desktop" windows.
 #endif
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -71,7 +72,6 @@ partial class Window
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
 
-		// TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
 		if (!NativeWindowFactory.SupportsMultipleWindows)
 		{
 			if (_current is not null && _current != this)
@@ -81,8 +81,6 @@ partial class Window
 					"Ensure you either use Window.Current only, or that you only create a single " +
 					"window instance and use it throughout your application.");
 			}
-
-			windowType = WindowType.CoreWindow;
 		}
 
 		_windowType = windowType;
@@ -175,11 +173,7 @@ partial class Window
 	public UIElement? Content
 	{
 		get => _windowImplementation.Content;
-		set
-		{
-			_windowImplementation.Content = value;
-			TryDismissSplashScreen();
-		}
+		set => _windowImplementation.Content = value;
 	}
 
 	/// <summary>
@@ -210,8 +204,6 @@ partial class Window
 			return _current;
 		}
 	}
-
-	internal static bool IsCurrentSet => _current is not null;
 
 #pragma warning disable RS0030 // Current is banned
 	/// <summary>
@@ -304,25 +296,9 @@ partial class Window
 
 	internal Canvas? FocusVisualLayer => _windowImplementation.XamlRoot?.VisualTree?.FocusVisualRoot;
 
-	public void Activate()
-	{
-		_windowImplementation.Activate();
-
-		TryDismissSplashScreen();
-	}
+	public void Activate() => _windowImplementation.Activate();
 
 	public void Close() => _windowImplementation.Close();
-
-	private void TryDismissSplashScreen()
-	{
-		if (Content != null && !_splashScreenDismissed)
-		{
-			DismissSplashScreenPlatform();
-			_splashScreenDismissed = true;
-		}
-	}
-
-	partial void DismissSplashScreenPlatform();
 
 	// The parameter name differs between UWP and WinUI.
 	// UWP: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.settitlebar?view=winrt-22621
@@ -354,6 +330,8 @@ partial class Window
 		}
 	}
 
+	internal void NotifyContentLoaded() => _windowImplementation.NotifyContentLoaded();
+
 	internal IDisposable RegisterBackgroundChangedEvent(EventHandler handler)
 		=> WeakEventHelper.RegisterEvent(
 			_backgroundChangedHandlers ??= new(),
@@ -376,8 +354,5 @@ partial class Window
 		);
 	}
 
-	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
-	{
-		_sizeChangedHandlers?.Invoke(this, e);
-	}
+	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => _sizeChangedHandlers?.Invoke(this, e);
 }

@@ -14,8 +14,8 @@ using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
-using Microsoft/* UWP don't rename */.UI.Xaml;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
 
 namespace Uno.UI.RemoteControl.HotReload
@@ -26,13 +26,14 @@ namespace Uno.UI.RemoteControl.HotReload
 		private HotReloadAgent? _agent;
 		private bool _supportsMetadataUpdates; // Indicates that we **expect** to get metadata updates for HR for the current environment (dev-server or VS)
 		private bool _serverMetadataUpdatesEnabled; // Indicates that the dev-server has been configured to generate metadata updates on file changes
+		private bool _runningInsideVSCodeExtension; // running with Uno VS Code extension allows Hot Reload to work while debugging
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
 		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
 		{
 			// If we get a workspace loaded message, we can assume that we are running with the dev-server
 			// This mean that HR won't work with the debugger attached.
-			if (Debugger.IsAttached)
+			if (Debugger.IsAttached && !_runningInsideVSCodeExtension)
 			{
 				_status.ReportInvalidRuntime();
 			}
@@ -75,22 +76,35 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private void CheckMetadataUpdatesSupport()
 		{
+			// Single layer uno runtime identifier
 			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
-			//var targetFramework = GetMSBuildProperty("TargetFramework");
+
+			// two layer uno runtime identifier, UnoWinRTRuntimeIdentifier defines the actual running target.
+			var unoWinRTRuntimeIdentifier = GetMSBuildProperty("UnoWinRTRuntimeIdentifier");
+
 			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
+			// This is only set when Uno's mono debugger is used inside VS Code
+			_runningInsideVSCodeExtension = Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
+
+			var unoEffectiveRuntimeIdentifier = string.IsNullOrWhiteSpace(unoWinRTRuntimeIdentifier)
+				? unoRuntimeIdentifier
+				: unoWinRTRuntimeIdentifier;
 
 			var isForcedMetadata = _forcedHotReloadMode is HotReloadMode.MetadataUpdates;
-			var isSkia = unoRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase);
-			var isWasm = unoRuntimeIdentifier.Equals("webassembly", StringComparison.OrdinalIgnoreCase);
+			var isSkia = unoEffectiveRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase);
+			var isWasm = unoEffectiveRuntimeIdentifier.Equals("webassembly", StringComparison.OrdinalIgnoreCase);
 
 			var devServerEnabled = isForcedMetadata
 
 				// CoreCLR Debugger under VS Win already handles metadata updates
-				// Debugger under VS Code prevents metadata based hot reload
+				// CoreCLR Debugger under VS Code prevents metadata based hot reload
 				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && isSkia)
 
+				// Uno's Mono Debugger under VS Code handles metadata based hot reload
+				|| _runningInsideVSCodeExtension
+
 				// Mono Debugger under VS Win already handles metadata updates
-				// Mono Debugger under VS Code & Rider prevents metadata based hot reload
+				// Mono Debugger under Rider prevents metadata based hot reload
 				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && isWasm)
 				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && OperatingSystem.IsAndroid())
 				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && OperatingSystem.IsIOS());
@@ -106,7 +120,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"ServerMetadataUpdates Enabled:{_serverMetadataUpdatesEnabled} DebuggerAttached:{Debugger.IsAttached} BuildingInsideVS: {buildingInsideVisualStudio} unorid: {unoRuntimeIdentifier}");
+				this.Log().Trace($"ServerMetadataUpdates Enabled:{_serverMetadataUpdatesEnabled} DebuggerAttached:{Debugger.IsAttached} BuildingInsideVS: {buildingInsideVisualStudio} RunningInsideVSCodeExtension: {_runningInsideVSCodeExtension} unorid: {unoRuntimeIdentifier}");
 			}
 		}
 
@@ -157,11 +171,15 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (Debugger.IsAttached)
 				{
-					if (this.Log().IsEnabled(LogLevel.Error))
+					// the work is done elsewhere but we don't want to report an error
+					if (!_runningInsideVSCodeExtension)
 					{
-						this.Log().Error("Hot Reload is not supported when the debugger is attached.");
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error("Hot Reload is not supported when the debugger is attached.");
+						}
+						_status.ReportLocalStarting([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
 					}
-					_status.ReportLocalStarting([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
 
 					return;
 				}

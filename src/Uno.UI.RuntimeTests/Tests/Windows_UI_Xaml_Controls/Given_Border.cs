@@ -23,6 +23,7 @@ using Windows.UI.Input.Preview.Injection;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Numerics;
+using Combinatorial.MSTest;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -54,8 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Layouter doesn't work properly")]
 #endif
@@ -178,7 +178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Clip_And_CornerRadius()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -213,7 +213,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Clipped_With_TransformMatrix()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -332,7 +332,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Verify that border is drawn with the same thickness with/without CornerRadius
 			const string white = "#FFFFFFFF";
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -382,7 +382,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			const string lightPink = "#FF7F7F";
 			const string lightBlue = "#7F7FFF";
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -446,7 +446,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			const string red = "#FFFF0000";
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -485,7 +485,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			const string blue = "#FF0000FF";
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -522,8 +522,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 		[Ignore("Not supported yet")]
 #endif
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task Border_CornerRadiusAndClip_Clipping(bool useNullBackground)
 		{
 			var sut = new Border
@@ -592,7 +591,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 			Assert.Inconclusive(); // iOS not working currently. https://github.com/unoplatform/uno/issues/6749
 #endif
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -744,7 +743,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task Border_CornerRadius_GradientBrush()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -843,6 +842,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await ImageAssert.AreSimilarAsync(bitmap2, bitmap2Expected, imperceptibilityThreshold: 0.7);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, (~RuntimeTestPlatforms.SkiaDesktop) | RuntimeTestPlatforms.SkiaMacOS)]
+		[RequiresScaling(1.0f)]
+		public async Task When_CornerRadius_AntiAliasing()
+		{
+			var background = new Border
+			{
+				Width = 60,
+				Height = 60,
+				Background = new SolidColorBrush(Colors.Green),
+			};
+
+			var roundedCorner = new Border
+			{
+				Width = 60,
+				Height = 60,
+				CornerRadius = new CornerRadius(30),
+				Background = new SolidColorBrush(Colors.Red),
+			};
+
+			var stackPanel = new Grid()
+			{
+				Children =
+				{
+					background,
+					roundedCorner
+				}
+			};
+
+			await UITestHelper.Load(stackPanel);
+			// await (await UITestHelper.ScreenShot(stackPanel)).Save("When_CornerRadius_AntiAliasing.png");
+			var screenShot = await UITestHelper.ScreenShot(stackPanel);
+
+			var image = new Image()
+			{
+				Height = 60,
+				Width = 60,
+				Source = "ms-appx:///Assets/When_CornerRadius_AntiAliasing.png"
+			};
+			await UITestHelper.Load(image);
+			await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(image), screenShot);
+		}
+#endif
 
 #if HAS_UNO
 		[TestMethod]

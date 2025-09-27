@@ -86,7 +86,7 @@ partial class ContentPresenter
 			// might no longer be a NativeHost
 			return;
 		}
-		var arrangeRect = TransformToVisual(null).TransformBounds(LayoutSlotWithMarginsAndAlignments);
+		var arrangeRect = this.GetAbsoluteBoundsRect();
 		var ev = GetParentViewport().Effective;
 
 		Rect clipRect;
@@ -153,7 +153,16 @@ partial class ContentPresenter
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		return _nativeElementHostingExtension.Value!.MeasureNativeElement(Content, childMeasuredSize, availableSize);
+		var ret = _nativeElementHostingExtension.Value!.MeasureNativeElement(Content, childMeasuredSize, availableSize);
+		if (ret.Width is double.PositiveInfinity or double.NaN)
+		{
+			ret.Width = 0;
+		}
+		if (ret.Height is double.PositiveInfinity or double.NaN)
+		{
+			ret.Height = 0;
+		}
+		return ret;
 	}
 
 	private void OnHitTestVisiblityChanged(DependencyObject sender, DependencyProperty dp)

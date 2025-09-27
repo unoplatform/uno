@@ -16,6 +16,7 @@
 					Opacity="0"
 					Text="This TextBlock changes opacity."
 					Loaded="BeginAnimation"
+					Unloaded="EndAnimation"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center">
 					<TextBlock.Resources>

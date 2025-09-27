@@ -486,7 +486,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Enumerated_With_StaticResource_Alias()
 		{
-			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
 			var light = xcr.ThemeDictionaries["Light"] as ResourceDictionary;
 			Assert.IsNotNull(light);
 			KeyValuePair<object, object> fromEnumeration = default;
@@ -596,18 +596,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertEx.AssertContainsColorBrushResource(rd, "LiteralColorBrush", Colors.Fuchsia);
 			AssertEx.AssertContainsColorBrushResource(rd, "ThemedLiteralColorBrush", Colors.DarkOrchid);
 
-			Assert.ThrowsException<InvalidOperationException>(() =>
+			Assert.ThrowsExactly<InvalidOperationException>(() =>
 			{
 				var _ = rd["LazyResource"];
 			});
 
-			Assert.ThrowsException<InvalidOperationException>(() =>
+			Assert.ThrowsExactly<InvalidOperationException>(() =>
 			{
 				var _ = rd["ThemedLazyResource"];
 			});
 
 			Assert.IsTrue(rd.ThemeDictionaries.ContainsKey("Nope"));
-			Assert.ThrowsException<InvalidOperationException>(() =>
+			Assert.ThrowsExactly<InvalidOperationException>(() =>
 			{
 				var _ = rd.ThemeDictionaries["Nope"];
 			});
@@ -763,7 +763,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_XamlControlsResources()
 		{
-			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
 			Assert.IsTrue(xcr.ContainsKey(typeof(Button)));
 			Assert.IsInstanceOfType(xcr[typeof(Button)], typeof(Style));
 		}
@@ -814,7 +814,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(rd);
 			Assert.IsTrue(rd.ContainsKey("TestKey"));
-			Assert.AreEqual(rd["TestKey"], "Test123");
+			Assert.AreEqual("Test123", rd["TestKey"]);
 		}
 
 		[TestMethod]
@@ -825,7 +825,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(resources);
 			Assert.IsTrue(resources.ContainsKey("TestKey"));
-			Assert.AreEqual(resources["TestKey"], "Test123");
+			Assert.AreEqual("Test123", resources["TestKey"]);
 		}
 
 		[TestMethod]

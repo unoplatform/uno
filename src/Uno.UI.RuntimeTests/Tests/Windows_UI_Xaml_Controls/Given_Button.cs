@@ -17,6 +17,8 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Color = Windows.UI.Color;
 using Microsoft.UI.Xaml.Data;
+using Combinatorial.MSTest;
+
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI
 using Colors = Microsoft.UI.Colors;
@@ -31,8 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_Button
 	{
 		[TestMethod]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_NavigationViewButtonStyles(bool useFluent)
 		{
 			using var _ = useFluent ? null : StyleHelper.UseUwpStyles();
@@ -242,7 +243,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			async Task Release(uint i)
 			{
-				var secondPress = Finger.GetRelease(SUT.GetAbsoluteBounds().GetCenter());
+				var secondPress = Finger.GetRelease(42, SUT.GetAbsoluteBounds().GetCenter());
 				var pointerInfo = secondPress.PointerInfo;
 				pointerInfo.TimeOffsetInMilliseconds = i;
 				secondPress.PointerInfo = pointerInfo;

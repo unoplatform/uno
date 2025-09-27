@@ -26,12 +26,12 @@ using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 #if HAS_UNO && !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
-using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
-using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
-using MenuBarItemAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
+using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
+using MenuBarItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
 using RuntimeTests.Windows_UI_Xaml_Controls.Flyout;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls

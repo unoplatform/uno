@@ -74,15 +74,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 249, 75), tolerance: 10); // 20x20
 			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
 
-#if __SKIA__
-			// Sub-pixel alignment is different with SkiaSharp 3
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
+#if __SKIA__
 			Assert.AreEqual(new Rect(20, 30, 59, 19), redBounds);
 			Assert.AreEqual(new Rect(20, 40, 19, 19), greenBounds);
 			Assert.AreEqual(new Rect(44, 40, 19, 19), yellowBounds);
 			Assert.AreEqual(new Rect(68, 40, 11, 19), pinkBounds);
 #else
-			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
 			Assert.AreEqual(new Rect(20, 38, 59, 18), redBounds);
 			Assert.AreEqual(new Rect(20, 41, 19, 17), greenBounds);
 			Assert.AreEqual(new Rect(44, 41, 19, 17), yellowBounds);
@@ -333,7 +331,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Image_Source_Nullify()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -390,7 +388,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Image_Is_Monochromatic()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -510,7 +508,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/help.svg")]
 		public async Task When_SVGImageSource(string imagePath)
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
 			}
@@ -525,7 +523,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_SVGImageSource_Uri_Is_Null()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -540,7 +538,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_SVGImageSource_Uri_Is_Set_Null()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -573,6 +571,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresScaling(1f)]
+		[Ignore("We are no longer using CatmullRom in favor of better performance.")]
 		public async Task When_Png_Should_Have_High_Quality()
 		{
 			var image = new Image() { Width = 100, Height = 100 };
@@ -623,7 +622,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Exif_Rotated_MsAppx()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -635,7 +634,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Exif_Rotated_MsAppx_Unequal_Dimensions()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -661,7 +660,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Exif_Rotated_MsAppData()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -691,9 +690,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20727")]
+		public async Task When_Alpha_Blending()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
+			}
+
+			// Image generated with
+			// using SkiaSharp;
+			// var width = 100;
+			// var height = 100;
+			// var bitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
+			// var idx = 0;
+			// for (int i = 0; i < height; i++)
+			// {
+			// 	for (int j = 0; j < width; j++)
+			// 	{
+			// 		bitmap.SetPixel(j, i, new SKColor(0, 127, 0, 127));
+			// 	}
+			// }
+			// using (var fs = new FileStream("when_alpha_blending.png", FileMode.OpenOrCreate))
+			// {
+			// 	bitmap.Encode(SKEncodedImageFormat.Png, 100).SaveTo(fs);
+			// }
+			var SUT = new Image { Source = new BitmapImage { UriSource = new Uri("ms-appx:///Assets/when_alpha_blending.png") } };
+			var loaded = false;
+			SUT.ImageOpened += (_, _) => loaded = true;
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.White),
+				Child = SUT
+			};
+			await UITestHelper.Load(border);
+			await UITestHelper.WaitFor(() => loaded);
+			var screenShot = await UITestHelper.ScreenShot(border);
+			ImageAssert.HasColorAt(screenShot, screenShot.Width / 2, screenShot.Height / 2, Color.FromArgb(0xFF, 0x80, 0xBF, 0x80));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Exif_Rotated_From_Stream()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}

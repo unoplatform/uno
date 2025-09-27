@@ -42,6 +42,36 @@ Refer to the [documentation](xref:Uno.Extensions.Http.Overview#Refit) to learn h
 dotnet new unoapp -http
 ```
 
+You have three levels of HTTP support to choose from:
+
+- **Basic**
+
+Wires up `UseHttp()` so you can register your own `HttpClient`‐backed endpoints and handlers for native HTTP clients, cookies, diagnostics, etc.
+
+```bash
+dotnet new unoapp -http basic
+```
+
+- **Refit**
+
+ Includes the Refit extension so you can create a strongly-typed REST Client for an API and register it via `.AddRefitClient<TInterface>`.
+
+ ```bash
+  dotnet new unoapp -http refit
+ ```
+
+See [How-To: Create a Strongly-Typed REST client for an API](xref:Uno.Extensions.Http.HowToRefit) for details.
+
+- **Kiota**
+
+ Includes the Kiota extension so you can generate a C# client from an OpenAPI/Swagger spec and wire it up with `.AddKiotaClient<TClient>`.
+
+ ```bash
+ dotnet new unoapp -http kiota
+ ```
+
+See [How-To: Create and register a Kiota client for an API](xref:Uno.Extensions.Http.HowToKiota) for details.
+
 #### Localization
 
 The Localization extension is responsible for managing globalization in your app.  

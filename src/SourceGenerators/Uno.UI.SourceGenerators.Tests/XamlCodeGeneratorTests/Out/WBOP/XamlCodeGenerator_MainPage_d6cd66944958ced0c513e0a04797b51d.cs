@@ -41,6 +41,8 @@ namespace TestRepro
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -108,6 +110,7 @@ namespace TestRepro
 
 			Bindings = new MainPage_Bindings(this);
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
@@ -115,17 +118,17 @@ namespace TestRepro
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
 		}
+
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
+		}
+
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.ToggleSwitch _component_0
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ToggleSwitch)_component_0_Holder.Instance;
-			}
-			set
-			{
-				_component_0_Holder.Instance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.ToggleSwitch)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
 		}
 		private interface IMainPage_Bindings
 		{
@@ -138,6 +141,8 @@ namespace TestRepro
 		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
 		private IMainPage_Bindings Bindings;
 		#pragma warning restore 0169
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
@@ -169,6 +174,8 @@ namespace TestRepro
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
+				var owner = Owner;
+				owner._component_0.SuspendXBind();
 			}
 		}
 	}

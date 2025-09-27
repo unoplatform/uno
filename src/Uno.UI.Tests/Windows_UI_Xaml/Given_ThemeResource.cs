@@ -591,7 +591,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		private IDisposable UseFluentResources()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
-			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
 			app.Resources.MergedDictionaries.Insert(0, xcr);
 			return new DisposableAction(() => Application.Current.Resources.MergedDictionaries.Remove(xcr));
 

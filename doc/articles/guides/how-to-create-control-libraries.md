@@ -3,9 +3,9 @@ uid: Guide.HowTo.Create-Control-Library
 ---
 # How to Create Control Libraries
 
-Uno Platform, like WinUI/WinAppSDK and UWP, supports Control Libraries. Control Libraries are a way to reuse UI components across multiple projects, either inside the solution or by using NuGet to distribute to other projects.
+Uno Platform, like WinUI/WinAppSDK, supports Control Libraries. Control Libraries are a way to reuse UI components across multiple projects, either inside the solution or by using NuGet to distribute to other projects.
 
-Creating such a library will make UI Controls compatible with all Uno Platform targets as well as WinUI or UWP.
+Creating such a library will make UI Controls compatible with all Uno Platform targets as well as WinUI.
 
 > [!NOTE]
 > Control libraries are different from "normal" libraries as they reference WinAppSDK, Uno.WinUI or Uno.UI. Those libraries are special because they have explicit dependencies on platform-specific features. "Normal" libraries (e.g. Newtonsoft.Json) do not need any special treatment to work with Uno.
@@ -21,9 +21,6 @@ You can find the [full ControlLibrary sample code](https://github.com/unoplatfor
 
 1. Right-click on the project library, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Templated Control**, name it `MyTemplatedControl`
-   > [!TIP]
-   > Choose the template flavor based on your library's flavor: UWP or WinUI. If your project uses the `Uno.UI` NuGet package, it's **UWP** otherwise **Windows App SDK** if it uses `Uno.WinUI`.
-
 1. Right click on the project library again, then **Add**, **New Folder**, call it `Themes` (case sentitive)
 1. Right click on the `Themes` folder, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Resource Dictionary**, name it `Generic.xaml` (case sensitive)
@@ -130,3 +127,9 @@ In both cases, for the build system to include the assets files, the following p
 
 > [!IMPORTANT]
 > WinAppSDK [does not support assets](https://github.com/microsoft/microsoft-ui-xaml/issues/6429) if the application is using the MSIX package mode. To use the unpackaged mode, [see this article](../features/winapp-sdk-specifics.md#unpackaged-application-support).
+
+## Considerations for the Skia Renderer
+
+When creating a library that is compatible with the Skia Renderer, it is generally best to only use the `net9.0` and `net9.0-windows10.xxx` targets frameworks.
+
+For more information, see the [Skia renderer](xref:uno.features.renderer.skia) documentation.

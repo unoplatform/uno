@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FluentAssertions;
-using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;

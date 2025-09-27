@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Generic;
+namespace Microsoft.UI.Xaml.Tests.Generic;
 
 [TestClass]
 [RequiresFullWindow]

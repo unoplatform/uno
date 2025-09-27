@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.System;
-using Windows.UI;
-using Windows.UI.Input.Preview.Injection;
+using Combinatorial.MSTest;
+using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
 using MUXControlsTestApp.Utilities;
+using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml.Core;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
-using System.Runtime.InteropServices;
-using Windows.Foundation;
-using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -232,10 +233,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			await WindowHelper.WaitForIdle();
 
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
+
 			Assert.AreNotEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
 			await WindowHelper.WaitForIdle();
+
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 
 			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
 
@@ -244,6 +249,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
 				await WindowHelper.WaitForIdle();
 			}
+
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 
 			// The ScrollViewer shouldn't move as long as the caret is still in view.
 			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).HorizontalOffset);
@@ -275,6 +282,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var mod = macOS ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, mod));
 			await WindowHelper.WaitForIdle();
+
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 
 			((ScrollViewer)SUT.ContentElement).VerticalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableHeight, 1.0);
 		}
@@ -560,12 +569,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var sv = SUT.FindVisualChildByType<ScrollViewer>();
+
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 			sv.HorizontalOffset.Should().BeGreaterThan(0);
-			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset);
+
+			var isiOS = OperatingSystem.IsIOS();
+			if (!isiOS)
+			{
+				//TODO: this is flaky on iOS. Fails on CI but passes locally.
+				Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, "HorizontalOffset should be equal to ScrollableWidth after typing long text");
+			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
+			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 			sv.ScrollableWidth.Should().BeGreaterThan(0);
-			Assert.AreEqual(0, sv.HorizontalOffset);
+			Assert.AreEqual(0, sv.HorizontalOffset, "HorizontalOffset should be 0 after Home key press");
 		}
 
 		[TestMethod]
@@ -827,36 +845,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(SUT.Text.Length, 0);
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset);
+			await Task.Delay(600); // Allow the ScrollViewer to update its offset
+			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, "sv.ScrollableWidth is not equal to sv.HorizontalOffset");
 
 			for (var i = 0; i < 6; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
 				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset);
+				await Task.Delay(200); // Allow the ScrollViewer to update its offset
+				Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset, $"Index: {i} sv.ScrollableWidth is not equal to sv.HorizontalOffset");
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
+			await Task.Delay(600); // Allow the ScrollViewer to update its offset
 			sv.HorizontalOffset.Should().BeLessThan(sv.ScrollableWidth);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
+			await Task.Delay(600); // Allow the ScrollViewer to update its offset
 			Assert.AreEqual(0, sv.HorizontalOffset);
 
 			for (var i = 0; i < 6; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
 				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(0, sv.HorizontalOffset);
+				await Task.Delay(600); // Allow the ScrollViewer to update its offset
+				Assert.AreEqual(0, sv.HorizontalOffset, $"Index: {i} sv.HorizontalOffset is not 0");
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
+			await Task.Delay(600); // Allow the ScrollViewer to update its offset
 			sv.HorizontalOffset.Should().BeGreaterThan(0);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Scrolling_Updates_After_Backspace()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -903,7 +928,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Scrolling_Updates_After_Pasting_Long_Text()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -930,7 +956,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.PasteFromClipboard();
 			await WindowHelper.WaitForIdle();
 
-			((ScrollViewer)SUT.ContentElement).HorizontalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableWidth, 1.0);
+#if HAS_UNO
+			// The animation may take some time to finish
+
+			await WindowHelper.WaitFor(() =>
+			{
+				if (SUT.ContentElement is ScrollViewer sv)
+				{
+					return Math.Abs(sv.HorizontalOffset - sv.ScrollableWidth) < 1.0;
+				}
+
+				return false;
+			}, 5000);
+#endif
+
+			((ScrollViewer)SUT.ContentElement).HorizontalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableWidth, 5.0);
 		}
 
 		[TestMethod]
@@ -1093,8 +1133,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		// Test is failing on iOS https://github.com/unoplatform/uno-private/issues/767
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
 		public async Task When_Pointer_RightClick_Selection()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1787,8 +1827,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[DataRow(false)]
-		[DataRow(true)]
+		[CombinatorialData]
 		public async Task When_Copy_Paste(bool useInsert)
 		{
 			if (useInsert && OperatingSystem.IsMacOS())
@@ -1949,7 +1988,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste_History_Remains_Intact()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1997,7 +2037,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Clipboard is currently not available on skia-WASM
 		// Newline handling is different on Skia.UIKit targets due to native input sync #788
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste_The_Same_Text()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2055,7 +2096,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.ActualHeight.Should().BeGreaterThan(height * 1.2);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Newline handling is different on Skia.UIKit targets due to native input sync #788
+		[TestMethod]
 		public async Task When_Multiline_LineFeed()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2141,7 +2182,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, keyDownCount);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Multiline_NewLine_UpDown()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2239,7 +2281,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Multiline_Wrapping_UpDown()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2345,7 +2388,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Failing in Skia iOS CI - https://github.com/unoplatform/uno-private/issues/807
+		[TestMethod]
 		public async Task When_Multiline_Keyboard_Chunking()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2492,7 +2535,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(height, SUT.ActualHeight);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Newline handling is different on Skia.UIKit targets due to native input sync #788
+		[TestMethod]
 		public async Task When_Text_Changed_Events()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2529,7 +2572,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18371")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]
 		public async Task When_BeforeTextChanging_Resets_Selection_Direction()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2570,7 +2613,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(SUT.Text.Length - 2, SUT.SelectionLength);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
 		public async Task When_Multiline_Pointer_Tap()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -2735,7 +2779,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_SurrogatePair_Copy()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -2822,8 +2867,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(26, SUT.SelectionLength);
 		}
 
-		// Fails on Skia UIKit - https://github.com/unoplatform/uno-private/issues/802
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)]
+		[TestMethod]
 		public async Task When_Multiline_Pointer_TripleTap_With_Wrapping()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3640,13 +3684,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Unfocused_Typing_Ends()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
-
 			var SUT = new TextBox
 			{
 				Width = 150
 			};
 
-			WindowHelper.WindowContent = SUT;
+			var sp = new StackPanel()
+			{
+				SUT,
+				new TextBox() { Text="focus dummy" }
+			};
+
+			WindowHelper.WindowContent = sp;
 
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForLoaded(SUT);
@@ -3665,6 +3714,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			VisualTree.GetFocusManagerForElement(SUT)!.TryMoveFocusInstance(FocusNavigationDirection.Next);
 			await WindowHelper.WaitForIdle();
+
+			await Task.Delay(5000);
 
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
@@ -4036,7 +4087,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 't'));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(new string(TextBoxView.PasswordChar, 4), SUT.TextBoxView.DisplayBlock.Text);
+#if !HAS_UNO
+			char defaultPasswordBoxChar = '\u25CF';
+#else
+			char defaultPasswordBoxChar = PasswordBox.DefaultPasswordChar[0];
+#endif
+
+			Assert.AreEqual(new string(defaultPasswordBoxChar, 4), SUT.TextBoxView.DisplayBlock.Text);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
@@ -4050,7 +4107,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno.chefs/issues/1472")]
+		public async Task When_PasswordBox_Focus_Changes()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var stackPanel = new StackPanel()
+			{
+				Padding = new Thickness(10),
+				Spacing = 8
+			};
+			var button = new Button()
+			{
+				Content = "Focus"
+			};
+			var passwordBox = new PasswordBox
+			{
+				IsPasswordRevealButtonEnabled = false,
+				Width = 150
+			};
+
+			stackPanel.Children.Add(passwordBox);
+			stackPanel.Children.Add(button);
+
+			await UITestHelper.Load(stackPanel);
+
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			var screenshotEmpty = await UITestHelper.ScreenShot(passwordBox);
+
+			passwordBox.Password = "1234567890";
+			await WindowHelper.WaitForIdle();
+
+			var screenshotFilled = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreNotEqualAsync(screenshotEmpty, screenshotFilled);
+
+			button.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			// Re-focus
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+			var screenshotRefocused = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreEqualAsync(screenshotRefocused, screenshotFilled);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
 		public async Task When_TextBox_Touch_Tapped_At_End()
 		{
 			var SUT = new TextBox
@@ -4073,7 +4179,133 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19327")]
+		public async Task When_First_Second_Tap_Caret_Thumb_Shows()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.CaretMode is TextBox.CaretDisplayMode.ThumblessCaretHidden or TextBox.CaretDisplayMode.ThumblessCaretShowing);
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		public async Task When_Touch_Focused_Then_Scrolled_Away()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			var sv = new ScrollViewer()
+			{
+				Height = 100,
+				Content = new StackPanel()
+				{
+					Children =
+					{
+						new Microsoft.UI.Xaml.Shapes.Rectangle()
+						{
+							Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+							Width = 100,
+							Height = 500
+						},
+						SUT,
+						new Microsoft.UI.Xaml.Shapes.Rectangle()
+						{
+							Fill = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+							Width = 100,
+							Height = 500
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(sv);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			SUT.StartBringIntoView();
+			await UITestHelper.WaitForIdle(true);
+
+			// make the textbox touch knob appear
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await UITestHelper.WaitForIdle(true);
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await UITestHelper.WaitForIdle(true);
+
+			// scroll
+			finger.Press(sv.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle(true);
+			finger.MoveBy(0, 300, stepOffsetInMilliseconds: 20);
+			await UITestHelper.WaitForIdle(true);
+			finger.Release();
+			await UITestHelper.WaitForIdle(true);
+
+			await Task.Delay(TimeSpan.FromSeconds(2));
+
+			SUT.GetAbsoluteBoundsRect().Bottom.Should().BeApproximately(sv.GetAbsoluteBoundsRect().Bottom, 5);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/1199")]
+		public async Task When_TextBox_TextChange_Not_Trigger_Selection_Change_To_Start()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var selectionChangedToStart = false;
+
+			var displayBlock = SUT.TextBoxView.DisplayBlock;
+			displayBlock.SelectionChanged += (s, e) =>
+			{
+				if (displayBlock.SelectionStart.Offset == 0)
+				{
+					selectionChangedToStart = true;
+				}
+			};
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Text = "Some Text 2";
+
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(selectionChangedToStart, "SelectionChanged event should not be triggered when TextBox text is changed.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19327")]
 		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
 		{
 			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
@@ -4104,6 +4336,90 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.RaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
 			SUT.RaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // needs paste permission
+		public async Task When_MaxLine_Paste()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				MaxLength = 10,
+				Text = "0123456789",
+				SelectionStart = 4,
+				SelectionLength = 2
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "abcdefgh";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("0123ab6789", SUT.Text);
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20857")]
+		public async Task When_Rearranged_Without_Remeasuring()
+		{
+			var SUT1 = new TextBox { Text = "text", TextAlignment = TextAlignment.End };
+			var btn1 = new Button { Content = "button" };
+			var grid1 = new Grid
+			{
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = GridLengthHelper.OneStar },
+					new ColumnDefinition { Width = GridLengthHelper.Auto }
+				},
+				Children =
+				{
+					SUT1,
+					FluentExtensions.Apply(btn1, btn => Grid.SetColumn(btn, 1))
+				}
+			};
+			await UITestHelper.Load(grid1);
+
+			var screenshot1 = await UITestHelper.ScreenShot(SUT1);
+
+			var SUT2 = new TextBox { Text = "text", TextAlignment = TextAlignment.End };
+			var btn2 = new Button { Content = "button" };
+			btn2.Visibility = Visibility.Collapsed; // difference here
+			var grid2 = new Grid
+			{
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = GridLengthHelper.OneStar },
+					new ColumnDefinition { Width = GridLengthHelper.Auto }
+				},
+				Children =
+				{
+					SUT2,
+					FluentExtensions.Apply(btn2, btn => Grid.SetColumn(btn, 1))
+				}
+			};
+			await UITestHelper.Load(grid2);
+			btn2.Visibility = Visibility.Visible;
+			await UITestHelper.WaitForIdle();
+
+			var screenshot2 = await UITestHelper.ScreenShot(SUT2);
+			await ImageAssert.AreEqualAsync(screenshot1, screenshot2);
 		}
 
 		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)

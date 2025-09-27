@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
+using MUIC = Microsoft.UI.Content;
 
 namespace Microsoft.UI.Xaml;
 
@@ -53,14 +54,14 @@ public sealed partial class XamlRoot
 			var rootElement = VisualTree.RootElement;
 			if (rootElement is RootVisual)
 			{
-				if (Window.CurrentSafe is null)
+				if (Window.CurrentSafe is not { } window)
 				{
 					throw new InvalidOperationException("Window.Current must be set.");
 				}
 
-				return Window.CurrentSafe.Bounds;
+				return window.Bounds;
 			}
-			else if (rootElement is XamlIsland xamlIsland)
+			else if (rootElement is XamlIslandRoot xamlIsland)
 			{
 				var width = !double.IsNaN(xamlIsland.Width) ? xamlIsland.Width : 0;
 				var height = !double.IsNaN(xamlIsland.Height) ? xamlIsland.Height : 0;

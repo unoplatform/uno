@@ -38,7 +38,7 @@ public class UnoMissingAssemblyAnalyzer : DiagnosticAnalyzer
 		context.RegisterCompilationStartAction(context =>
 		{
 			var assemblies = context.Compilation.ReferencedAssemblyNames.Select(a => a.Name).ToImmutableHashSet();
-			var progressRing = context.Compilation.GetTypeByMetadataName("Microsoft" /* UWP don't rename */ + ".UI.Xaml.Controls.ProgressRing");
+			var progressRing = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Controls.ProgressRing");
 			var mpe = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Controls.MediaPlayerElement");
 			_ = context.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.UnoRuntimeIdentifier", out var unoRuntimeIdentifier);
 			_ = context.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.IsUnoHead", out var isUnoHead);

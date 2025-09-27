@@ -29,6 +29,9 @@ using Windows.UI.Input.Preview.Injection;
 using Windows.Foundation;
 using System.Collections.Generic;
 using Uno.Extensions;
+using Windows.UI.ViewManagement;
+using Private.Infrastructure;
+using Combinatorial.MSTest;
 
 
 #if WINAPPSDK
@@ -146,6 +149,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var opacityZero = await UITestHelper.ScreenShot(grid);
 
 			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
+		}
+
+		[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsEnabled_With_Text_Changes()
+		{
+			var grid = new Grid
+			{
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var textBox = new TextBox
+			{
+				Text = "Hello!",
+				Background = new SolidColorBrush(Colors.Transparent),
+				BorderThickness = new Thickness(0),
+				BorderBrush = new SolidColorBrush(Colors.Transparent),
+				Padding = new Thickness(100),
+			};
+
+			grid.Children.Add(textBox);
+
+			await UITestHelper.Load(grid);
+
+			// Get element marked "ContentElement" from template of textBox
+			var contentElement = textBox.FindFirstChild<ScrollViewer>(tb => tb.Name == "ContentElement");
+
+			var enabledScreenshot = await UITestHelper.ScreenShot(contentElement);
+
+			textBox.IsEnabled = false;
+
+			var disabledScreenshot = await UITestHelper.ScreenShot(contentElement);
+
+			await ImageAssert.AreNotEqualAsync(enabledScreenshot, disabledScreenshot);
 		}
 
 #if __ANDROID__
@@ -747,8 +786,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[DataRow(false)]
-		[DataRow(true)]
+		[CombinatorialData]
 		public async Task When_Default_Foreground_TextBoxView(bool useDarkTheme)
 		{
 			using var _ = useDarkTheme ? ThemeHelper.UseDarkTheme() : default;
@@ -888,7 +926,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste()
 		{
 #if __SKIA__
@@ -1026,6 +1065,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ActualHeight.Should().BeApproximately(textBox.MinHeight, 0.1);
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android)]
+		public async Task When_Focus_Immediately()
+		{
+			var inputPaneShown = false;
+			void Given_TextBox_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
+			{
+				inputPaneShown = !args.OccludedRect.IsEmpty;
+			}
+			try
+			{
+				InputPane.GetForCurrentView().Showing += Given_TextBox_Showing;
+				var textBox = new TextBox();
+				textBox.MaxLength = 10;
+				TestServices.WindowHelper.WindowContent = textBox;
+				textBox.Focus(FocusState.Pointer);
+				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitFor(() => inputPaneShown);
+			}
+			finally
+			{
+				InputPane.GetForCurrentView().Showing -= Given_TextBox_Showing;
+			}
+		}
+#endif
+
+		private void Given_TextBox_Showing(InputPane sender, InputPaneVisibilityEventArgs args) => throw new NotImplementedException();
+
 		[TestMethod]
 		public async Task When_Size_Zero_Default()
 		{
@@ -1049,7 +1117,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18040")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18040")]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
@@ -1127,7 +1195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18790")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18790")]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif

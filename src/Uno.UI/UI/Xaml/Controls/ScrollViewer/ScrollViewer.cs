@@ -736,58 +736,44 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (Content is FrameworkElement fe)
 			{
-				double CalculateExtent(double @explicit, double actual, double desired, bool isStretchAlign, double margin)
+				ExtentHeight = CalculateExtent(this, fe, isHorizontal: false);
+				ExtentWidth = CalculateExtent(this, fe, isHorizontal: true);
+
+				static double CalculateExtent(ScrollViewer sv, FrameworkElement fe, bool isHorizontal)
 				{
-					var shouldIncludeMargin = true;
-					var extent = default(double);
+					var margin = isHorizontal ? GetEffectiveMargin(fe.Margin.Left, fe.Margin.Right) : GetEffectiveMargin(fe.Margin.Top, fe.Margin.Bottom);
+					var @explicit = isHorizontal ? fe.Width : fe.Height;
 					if (@explicit.IsFinite())
 					{
-						extent = @explicit;
+						return sv.LayoutRoundIfNeeded(fe, @explicit + margin);
 					}
-					else
+
+					var isStretchAlign = isHorizontal ? fe.HorizontalAlignment == HorizontalAlignment.Stretch : fe.VerticalAlignment == VerticalAlignment.Stretch;
+					var actual = isHorizontal ? fe.ActualWidth : fe.ActualHeight;
+					if (actual > 0 && isStretchAlign &&
+						// Due to #2269, TextBlock ActualSize is implemented via DesiredSize
+						// which includes the Margin already. We just let it flow to the next block
+						// to avoid including margin twice here.
+						fe is not TextBlock
+					)
 					{
-						if (actual > 0 && isStretchAlign)
-						{
-							extent = LayoutRoundIfNeeded(fe, actual);
-						}
-						else
-						{
-							// desired size has margin built-in already.
-							shouldIncludeMargin = false;
-							extent = desired;
-						}
+						return sv.LayoutRoundIfNeeded(fe, actual + margin);
 					}
 
-					return shouldIncludeMargin ? (extent + margin) : extent;
+					// DesiredSize includes the margin already, so we don't need to add it again.
+					var desired = isHorizontal ? fe.DesiredSize.Width : fe.DesiredSize.Height;
+					return sv.LayoutRoundIfNeeded(fe, desired);
 				}
-
-				ExtentHeight = CalculateExtent(
-					fe.Height,
-					fe.ActualHeight,
-					fe.DesiredSize.Height,
-					fe.VerticalAlignment == VerticalAlignment.Stretch,
+				static double GetEffectiveMargin(double leadingMargin, double trailingMargin)
+				{
 #if !__WASM__
-					fe.Margin.Top + fe.Margin.Bottom
+					return leadingMargin + trailingMargin;
 #else
-					// Issue needs to be fixed first for WASM for Bottom Margin missing
+					// Issue needs to be fixed first for WASM for missing trailing Margin
 					// Details here: https://github.com/unoplatform/uno/issues/7000
-					fe.Margin.Top
+					return leadingMargin;
 #endif
-				);
-
-				ExtentWidth = CalculateExtent(
-					fe.Width,
-					fe.ActualWidth,
-					fe.DesiredSize.Width,
-					fe.HorizontalAlignment == HorizontalAlignment.Stretch,
-#if !__WASM__
-					fe.Margin.Left + fe.Margin.Right
-#else
-					// Issue needs to be fixed first for WASM for Right Margin missing
-					// Details here: https://github.com/unoplatform/uno/issues/7000
-					fe.Margin.Left
-#endif
-				);
+				}
 			}
 			else
 			{
@@ -1237,9 +1223,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
-			var h = horizontalOffset == HorizontalOffset ? null : (double?)horizontalOffset;
-			var v = verticalOffset == VerticalOffset ? null : (double?)verticalOffset;
-
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
 
@@ -1259,19 +1242,22 @@ namespace Microsoft.UI.Xaml.Controls
 					)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
-						|| VerticalSnapPointsType != SnapPointsType.None)
+						|| VerticalSnapPointsType != SnapPointsType.None
+						|| ShouldSnapToTouchTextBox())
 					{
+						_horizontalOffsetForSnapPoints = horizontalOffset;
+						_verticalOffsetForSnapPoints = verticalOffset;
+
 						if (_snapPointsTimer == null)
 						{
 							_snapPointsTimer = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 							_snapPointsTimer.IsRepeating = false;
 							_snapPointsTimer.Interval = FeatureConfiguration.ScrollViewer.SnapDelay;
-							_snapPointsTimer.Tick += (snd, evt) => DelayedMoveToSnapPoint();
+							_snapPointsTimer.Tick += (snd, evt) =>
+							{
+								DelayedMoveToSnapPoint();
+							};
 						}
-
-						_horizontalOffsetForSnapPoints = h ?? horizontalOffset;
-						_verticalOffsetForSnapPoints = v ?? verticalOffset;
-
 						_snapPointsTimer.Start();
 					}
 				}
@@ -1512,7 +1498,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (shouldSnap)
 			{
-				AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, zoomFactor);
+				AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, zoomFactor, canBypassSingle: true);
 			}
 
 			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
@@ -1649,14 +1635,22 @@ namespace Microsoft.UI.Xaml.Controls
 			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
 			var oldVerticalOffset = Presenter.TargetVerticalOffset;
 
+			// Check whether scrolling is allowed and focus can be moved.
+			var (shouldScroll, shouldMoveFocus) = HandleKeyDownForXYNavigation(args);
+
+			if (!shouldScroll)
+			{
+				return;
+			}
+
 			var newOffset = key switch
 			{
-				VirtualKey.Up => oldVerticalOffset - GetDelta(ActualHeight),
-				VirtualKey.Down => oldVerticalOffset + GetDelta(ActualHeight),
-				VirtualKey.Left => oldHorizontalOffset - GetDelta(ActualWidth),
-				VirtualKey.Right => oldHorizontalOffset + GetDelta(ActualWidth),
-				VirtualKey.PageUp => oldVerticalOffset - ActualHeight,
-				VirtualKey.PageDown => oldVerticalOffset + ActualHeight,
+				VirtualKey.Up => Math.Max(0, oldVerticalOffset - GetDelta(ActualHeight)),
+				VirtualKey.Down => Math.Min(oldVerticalOffset + GetDelta(ActualHeight), ScrollableHeight),
+				VirtualKey.Left => Math.Max(0, oldHorizontalOffset - GetDelta(ActualWidth)),
+				VirtualKey.Right => Math.Min(oldHorizontalOffset + GetDelta(ActualWidth), ScrollableWidth),
+				VirtualKey.PageUp => Math.Max(0, oldVerticalOffset - ActualHeight),
+				VirtualKey.PageDown => Math.Min(oldVerticalOffset + ActualHeight, ScrollableHeight),
 				VirtualKey.Home => 0,
 				VirtualKey.End => ScrollableHeight,
 				_ => double.E
@@ -1683,7 +1677,13 @@ namespace Microsoft.UI.Xaml.Controls
 					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 				}
 
-				args.Handled |= key is VirtualKey.PageUp or VirtualKey.Down;
+				args.Handled |= key is VirtualKey.PageUp or VirtualKey.PageDown;
+			}
+
+			if (args.Handled && shouldMoveFocus)
+			{
+				// Continue bubbling the event so that the focus can be moved.
+				args.Handled = false;
 			}
 
 			// This gets the delta that should be applied when arrow keys are pressed as a function of the

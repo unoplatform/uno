@@ -32,6 +32,8 @@ This is included by default in the recommended preset, but not in the blank pres
 dotnet new unoapp -server
 ```
 
+You can read more about the server project [here](xref:Uno.Guides.UsingTheServerProject).
+
 #### PWA Manifest
 
 Includes a PWA ([Progressive Web Apps](https://learn.microsoft.com/microsoft-edge/progressive-web-apps-chromium)) manifest that enables easy installation of the WASM web-target as an app in the running device.
@@ -60,4 +62,25 @@ This option is only available if WASM is selected as one of the output target pl
 
 ```dotnetcli
 dotnet new unoapp -wasm-multi-threading
+```
+
+#### Renderer
+
+##### Skia
+
+Skia is the [default rendering engine](xref:uno.features.renderer.skia) for Uno Platform as of `Uno.Sdk` 6.0 or later, across all targets except **WinAppSDK**, including **Desktop (Windows, macOS, Linux)**, **WebAssembly (WASM)**, **Android**, and **iOS**.
+It provides a **consistent, pixel-perfect rendering pipeline** by drawing the entire UI using the Skia graphics library (via SkiaSharp). This is the default renderer in the **Blank** and **Recommended** presets.
+
+Learn more about Uno's Skia rendering [here](xref:uno.features.renderer.skia).
+
+```dotnetcli
+dotnet new unoapp -renderer skia
+```
+
+##### Native
+
+The Native renderer uses the **platform's native UI components** and rendering systems (e.g., **WinUI** for Windows App SDK, **UIKit** on iOS, **Android Views** on Android). This approach offers better integration with platform-specific behaviors, accessibility tools, and a more native look and feel.
+
+```dotnetcli
+dotnet new unoapp -renderer native
 ```

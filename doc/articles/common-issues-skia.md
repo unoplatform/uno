@@ -16,3 +16,7 @@ Unhandled exception. System.TypeInitializationException: The type initializer fo
 ## Linux
 
 [!include[linux-setup](includes/additional-linux-setup-inline.md)]
+
+## Additional troubleshooting
+
+You can get additional build [troubleshooting information here](uno-builds-troubleshooting.md).

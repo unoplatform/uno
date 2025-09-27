@@ -359,6 +359,16 @@ namespace Microsoft.UI.Xaml
 			return result;
 		}
 
+		internal static DependencyProperty GetProperty(string type, string name)
+		{
+			if (_registry.TryGetValueByName(type, name, out var result))
+			{
+				return result;
+			}
+
+			return null;
+		}
+
 		private static void ResetGetPropertyCache(Type ownerType, string name)
 		{
 			if (_getPropertyCache.Count != 0)

@@ -21,7 +21,8 @@ public class Given_ShapeVisual
 	[RequiresFullWindow]
 	[RequiresScaling(1f)]
 	[Timeout(300000)]
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Test times out in CI https://github.com/unoplatform/uno-private/issues/805
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Test times out in CI https://github.com/unoplatform/uno-private/issues/805
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
 	{
 		if (OperatingSystem.IsBrowser())

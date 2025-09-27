@@ -944,13 +944,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.UpdateLayout()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CancelDirectManipulations()
-		{
-			throw new global::System.NotImplementedException("The member bool UIElement.CancelDirectManipulations() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UIElement.CancelDirectManipulations%28%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.CancelDirectManipulations()
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.StartDragAsync(Microsoft.UI.Input.PointerPoint)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.StartBringIntoView()
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.StartBringIntoView(Microsoft.UI.Xaml.BringIntoViewOptions)

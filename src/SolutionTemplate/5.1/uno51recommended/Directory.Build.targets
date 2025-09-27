@@ -1,8 +1,0 @@
-﻿<Project>
-  <Target Name="ValidateIsPackable"
-          AfterTargets="CoreCompile;Build"
-          Condition="$(UsingUnoSdk) == 'true'">
-    <Error Text="Expected IsPackable='false', however it actually equals '$(IsPackable)'."
-      Condition="$(IsPackable) == 'true'" />
-  </Target>
-</Project>

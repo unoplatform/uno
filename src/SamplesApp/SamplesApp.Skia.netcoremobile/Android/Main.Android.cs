@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 using Android.App;
@@ -10,7 +11,6 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Microsoft.UI.Xaml.Media;
-using Com.Nostra13.Universalimageloader.Core;
 using Windows.Foundation.Metadata;
 using Uno.Extensions;
 using Windows.ApplicationModel.Activation;
@@ -21,6 +21,9 @@ using Uno.UI.Runtime.Skia.Android;
 using Microsoft.UI.Xaml;
 using Windows.Services.Store.Internal;
 using Uno.Foundation.Extensibility;
+using Uno.Devices.Sensors;
+using Uno.UI.Foldable;
+using Windows.UI.ViewManagement;
 using Uno.UI;
 
 [assembly: UsesPermission("android.permission.ACCESS_COARSE_LOCATION")]
@@ -38,11 +41,12 @@ using Uno.UI;
 namespace SamplesApp.Droid
 {
 	[global::Android.App.ApplicationAttribute(
-		Label = "@string/ApplicationName",
+		Label = "@string/SamplesAppName",
+		Icon = "@mipmap/icon",
 		Banner = "@drawable/banner",
 		LargeHeap = true,
 		HardwareAccelerated = true,
-		Theme = "@style/AppTheme"
+		Theme = "@style/Theme.App.Starting"
 	)]
 	public class Application : NativeApplication
 	{
@@ -108,11 +112,18 @@ namespace SamplesApp.Droid
 		{
 			base.OnCreate();
 
+#if RUNTIME_CORECLR
+			// TODO: remove once the Android+CoreCLR runtime properly inits crypto, possibly .NET 10 RC2?
+			Java.Lang.JavaSystem.LoadLibrary("System.Security.Cryptography.Native.Android");
+#endif  // RUNTIME_CORECLR
+
 			// Initialize Android-specific extensions.
 			// These would be generally registered automatically by App.xaml generator,
 			// but in our case it runs in context of SamplesApp.Skia, which does not reference
 			// this Android-specific addin.
 			ApiExtensibility.Register(typeof(IStoreContextExtension), o => new global::Uno.UI.GooglePlay.StoreContextExtension(o));
+			ApiExtensibility.Register(typeof(INativeHingeAngleSensor), o => new FoldableHingeAngleSensor(o));
+			ApiExtensibility.Register(typeof(IApplicationViewSpanningRects), o => new FoldableApplicationViewSpanningRects(o));
 		}
 	}
 }

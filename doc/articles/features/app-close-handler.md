@@ -2,48 +2,36 @@
 uid: Uno.Features.AppCloseHandler
 ---
 
-# App Close Handler
+# Preventing Window Closing
 
 > [!TIP]
-> This article covers Uno-specific information for App Close Handler. For a full description of the feature and instructions on using it, see [SystemNavigationManagerPreview.CloseRequested Event](https://learn.microsoft.com/uwp/api/windows.ui.core.preview.systemnavigationmanagerpreview.closerequested).
+> This article covers Uno Platform–specific behavior. For the full API documentation, see [AppWindow.Closing Event](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.windowing.appwindow.closing).
 
-* The `SystemNavigationManagerPreview` API allows your app to handle or prevent users' requests to close it. This only works for standard app closing requests - the user can still kill the application's process by other means.
+The `AppWindow.Closing` API lets you respond to or prevent standard app window closing requests—such as clicking the window’s close button or pressing <kbd>Alt</kbd>+<kbd>F4</kbd>. Note that this does **not** block the user from terminating the app by force (e.g., via Task Manager or `kill`).
 
-## Supported features
+## Platform Support
 
-| Feature          | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `CloseRequested` | ✔       | ✖       | ✖   | ✖          | ✔     | ✔            | ✔            |
+| Feature              | Windows App SDK | Android | iOS | Web (WASM) | Desktop (Windows) | Desktop (macOS) | Desktop (Linux) |
+|----------------------|------------------|---------|-----|------------|-------------------|------------------|------------------|
+| `AppWindow.Closing`  | ✔️               | ❌      | ❌  | ❌         | ✔️                | ✔️               | ✔️               |
 
-## Using App Close Handler with Uno
+> [!NOTE]
+> On platforms where this feature is not supported, the `Closing` event will still be raised, but setting `args.Cancel = true` has no effect.
 
-* On non-supported platforms, the `CloseRequested` event is never raised and the application will close directly.
-* To use `CloseRequested` on UWP/WinUI, the [`confirmAppClose` capability](https://learn.microsoft.com/uwp/api/windows.ui.core.preview.systemnavigationmanagerpreview.closerequested#remarks) needs to be declared in the application manifest. See [App close confirmation in UWP blog post](https://blog.mzikmund.com/2018/09/app-close-confirmation-in-uwp/) for a full example.
-* To execute asynchronous logic, get an event args `Deferral` at the beginning of the event handler and complete it after the logic is finished. See below for an example.
-
-## Example
+## Usage Example
 
 ```csharp
-SystemNavigationManagerPreview.CloseRequested += App_CloseRequested;
+MyWindow.AppWindow.Closing += OnAppWindowClosing;
 
-private async void App_CloseRequested(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
+private void OnAppWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)
 {
-    var deferral = e.GetDeferral();
-    var dialog = new ContentDialog()
-    {
-        Title = "Exit",
-        Content = "Are you sure you want to exit?",
-        XamlRoot = this.XamlRoot,
-        PrimaryButtonText = "Yes",
-        SecondaryButtonText = "No",
-        DefaultButton = ContentDialogButton.Secondary
-    };
+    // Replace with your own logic, such as checking for unsaved changes
+    bool cancelClose = ShouldWindowStayOpen();
 
-    if (await dialog.ShowAsync() == ContentDialogResult.Secondary)
-    {
-        //cancel close by handling the event
-        e.Handled = true;
-    }
-    deferral.Complete();
+    // Cancel the close request if needed
+    args.Cancel = cancelClose;
 }
 ```
+
+> [!IMPORTANT]
+> The `AppWindow.Closing` event must be handled synchronously. Asynchronous operations (e.g., showing a `ContentDialog`) are not allowed and will not delay the closing process.

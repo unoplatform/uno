@@ -25,7 +25,8 @@
       "Uno.UI.Tests\\Uno.UI.Unit.Tests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Tests.csproj",
       "Uno.UI\\Uno.UI.Tests.csproj",
-      "Uno.UWP\\Uno.Tests.csproj"
+      "Uno.UWP\\Uno.Tests.csproj",
+      "Uno.UI.RemoteControl.DevServer.Tests\\Uno.UI.RemoteControl.DevServer.Tests.csproj"
     ]
   }
 }

@@ -33,5 +33,10 @@ public sealed partial class Canvas_DependentAnimation : Page
 		};
 
 		_ = UnitTestDispatcherCompat.From(bouncingBall).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => storyboard.Begin());
+
+		Unloaded += (s, e) =>
+		{
+			storyboard.Stop();
+		};
 	}
 }

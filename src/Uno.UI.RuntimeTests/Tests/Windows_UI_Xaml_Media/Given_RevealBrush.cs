@@ -66,8 +66,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			{
 				var revealBorderBrush = new Microsoft.UI.Xaml.Media.RevealBorderBrush();
 				var revealBackgroundBrush = new Microsoft.UI.Xaml.Media.RevealBackgroundBrush();
-				var muxRevealBorderBrush = new Microsoft/* UWP don't rename */.UI.Xaml.Media.RevealBorderBrush();
-				var muxRevealBackgroundBrush = new Microsoft/* UWP don't rename */.UI.Xaml.Media.RevealBackgroundBrush();
+				var muxRevealBorderBrush = new Microsoft.UI.Xaml.Media.RevealBorderBrush();
+				var muxRevealBackgroundBrush = new Microsoft.UI.Xaml.Media.RevealBackgroundBrush();
 
 				var paint = new Android.Graphics.Paint();
 				revealBorderBrush.ApplyToStrokePaint(default, paint);

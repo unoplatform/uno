@@ -94,26 +94,6 @@ Once that's printed, go ahead and start profiling:
 dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedscope
 ```
 
-## Profiling Catalyst apps
-
-1. Launch the executable, passing the `DOTNET_DiagnosticPorts` variable directly:
-
-    ```bash
-    DOTNET_DiagnosticPorts=~/my-desktop-port,suspend ./bin/Debug/net7.0-*/*/MyTestApp.app/Contents/MacOS/MyTestApp
-    ```
-
-2. At this point it's necessary to wait until the following line shows up in the terminal:
-
-    ```bash
-    The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
-    ```
-
-3. Once that's printed, go ahead and start profiling:
-
-    ```bash
-    dotnet-trace collect --diagnostic-port ~/my-desktop-port --format speedscope
-    ```
-
 ## Profiling .NET Android applications (.NET 8)
 
 ### Enable profiling in your application
@@ -183,7 +163,11 @@ This section provides insights into what to look for when analyzing flame charts
 
 Profiling Skia-based Uno Platform targets can be done on Windows in Visual Studio 2019 and 2022 using [time and memory profilers](https://learn.microsoft.com/visualstudio/profiling/profiling-feature-tour?view=vs-2019).
 
-## Profiling WebAssembly applications
+## Profiling WebAssembly applications with runtime diagnostics
+
+As of Dotnet 10.0, runtime diagnostics like performance traces and GC dumps can be collected by calling some Javascript methods exposed by the Dotnet runtime. For more details, see the [dotnet 10.0 release notes](https://github.com/dotnet/core/blob/main/release-notes/10.0/preview/preview4/aspnetcore.md#blazor-webassembly-runtime-diagnostics)
+
+## Profiling WebAssembly applications with the browser's DevTools
 
 Profiling WebAssembly applications can be done through the use of AOT compilation, and [browsers' performance tab](https://developer.chrome.com/docs/devtools/evaluate-performance/).
 

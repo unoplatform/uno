@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml;
+
 partial class UIElement
 {
 	private bool OnNativePointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default) => OnPointerEnter(args);
@@ -46,7 +47,7 @@ partial class UIElement
 		if (IsGestureRecognizerCreated)
 		{
 			var gestures = GestureRecognizer;
-			gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
+			gestures.ProcessMoveEvents(args.GetIntermediatePoints(this));
 			if (gestures.IsDragging)
 			{
 				XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);

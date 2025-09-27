@@ -12,8 +12,8 @@ The Uno Platform **Hot Reload** feature provides a way to modify the XAML and C#
 
 ## Features
 
-- Supported in **Visual Studio 2022** (Windows), **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod) and **Rider** (Linux, macOS, Windows).
-- XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Catalyst, Android, WebAssembly, and Skia (X11, Windows, macOS and FrameBuffer)**.
+- Supported in **Visual Studio 2022** (Windows), **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod), and **Rider** (Linux, macOS, Windows).
+- XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Android, WebAssembly, and Skia (X11, Windows, macOS and FrameBuffer)**.
 - All **[C# of Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload)** in both Visual Studio, VS Code and Rider. See [supported code changes](https://learn.microsoft.com/visualstudio/debugger/supported-code-changes-csharp).
 - **Simulator and physical devices** support.
 - **Hot Reload Indicator** visuals for an enhanced development experience on Uno Platform targets (not currently supported on WinAppSDK target).
@@ -48,7 +48,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 ### [**Visual Studio Code**](#tab/vscode)
 
 - Setup your environment by following our [getting started guide](xref:Uno.GetStarted.vscode).
-- Start the application without the debugger.
+- Start the application (with or without the debugger, depending on the supported features below).
 - Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below).
 - Make changes to your XAML or C# code, then save your file.
 
@@ -62,7 +62,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 ---
 
 > [!IMPORTANT]
-> Using [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0) or later (`net9.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required.
+> Using [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0) or later (`net9.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required.
 
 ## Supported features per OS
 
@@ -116,45 +116,39 @@ For existing applications, take this opportunity to update to the [latest **Uno.
         <tr>
             <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
             <td>✅</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
         <tr>
             <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
             <td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td><td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td><td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[2]</a></sup><sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌<sup><a href="#hr-footnotes">[2]</a></sup></td>
         </tr>
         <tr>
             <td>iOS<br /><small><code>net9.0-ios</code></small></td>
-            <td>✅</a></sup></td><td>🔳</td>
-            <td>🟥</a></td><td>✅🛜</td>
-            <td>🔳</a></td><td>✅</td>
+            <td>✅</a></sup></td><td>❌</td>
+            <td>🛜</a></td><td>🛜</td>
+            <td>❌</a></td><td>✅</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net9.0-android</code></small></td>
-            <td>✅</td><td>🔳</td>
-            <td>🟥</a></td><td>✅</td>
-            <td>🔳</a></td><td>✅</td>
+            <td>✅</td><td>❌</td>
+            <td>✅</a></td><td>✅</td>
+            <td>❌</a></td><td>✅</td>
         </tr>
         </tr>
         <tr>
             <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
             <td>✅<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
             <td>✅</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
-        </tr>
-        <tr>
-            <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>✅🛜</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
     </tbody>
 </table>
@@ -179,38 +173,33 @@ For existing applications, take this opportunity to update to the [latest **Uno.
     <tbody>
         <tr>
             <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
         <tr>
             <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>iOS<br /><small><code>net9.0-ios</code></small></td>
-            <td>🟥</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+            <td>❌</td><td>✅</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net9.0-android</code></small></td>
-            <td>🟥</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+            <td>❌</td><td>✅</td>
         </tr>
         <tr>
             <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
-        </tr>
-        <tr>
-            <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
     </tbody>
 </table>
@@ -235,38 +224,33 @@ For existing applications, take this opportunity to update to the [latest **Uno.
     <tbody>
         <tr>
             <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
         <tr>
             <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>iOS<br /><small><code>net9.0-ios</code></small></td>
-            <td>🟥</td><td>✅🛜</td>
-            <td>🔳</td><td>🔳</td>
+            <td>🛜</td><td>🛜</td>
+            <td>❌</td><td>❌</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net9.0-android</code></small></td>
-            <td>🟥</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+            <td>❌</td><td>✅</td>
         </tr>
         <tr>
             <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
             <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
-        </tr>
-        <tr>
-            <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
-            <td>🔳</td><td>✅🛜</td>
-            <td>🔳</td><td>🔳</td>
+            <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
+            <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
     </tbody>
 </table>
@@ -278,8 +262,7 @@ Legend:
 - ✅ Supported
 - 🛜 Supported through [SSH to a Mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
 - ⌛ Upcoming support
-- 🟥 Not supported yet
-- 🔳 Not supported by the environment/IDE
+- ❌ Currently not supported by the environment/IDE
 
 ### Notes
 
@@ -289,6 +272,8 @@ Legend:
 - [2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
 - [3]: Unpackaged: C# & XAML / Packaged: XAML only
 - [4]: Unpackaged: C# / Packaged: none
+- [5]: VS Code Desktop and WASM [requested](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372)
+- [6]: Rider Desktop and WASM [requested](https://youtrack.jetbrains.com/issue/RIDER-124189/MetadataUpdateHandlerAttribute-Not-Working-On-Hot-Reload)
 
 ## Supported features per Platform
 
@@ -329,12 +314,6 @@ Mobile targets now support both XAML and C# Hot Reload. Debugger-specific variat
   - Hot Reload is not supported when using the debugger.
 - XAML `x:Bind` Hot Reload is limited to simple expressions and events.
 
-### [**Catalyst**](#tab/catalyst)
-
-Mobile targets now support both XAML and C# Hot Reload.
-
-- XAML `x:Bind` hot reload is limited to simple expressions and events.
-
 ### [**WinAppSDK**](#tab/winappsdk)
 
 - Hot Reload is supported by Visual Studio for WinAppSDK and provides support in unpackaged deployment mode.
@@ -352,7 +331,7 @@ Hot Reload displays a visual indicator to help you further monitor changes while
 To start using the **Hot Reload indicator** using the **latest stable 5.5 Uno.Sdk version or higher**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 
 <p align="center">
-  <img src="~/articles/Assets/features/hotreload/indicator-not-connected-with-flyout.png" alt="The Hot Reload indicator is not connected. A flyout message states that Hot Reload is available only to registered users and prompts the user to sign in via the Uno Platform Settings button." />
+  <img src="~/articles/Assets/features/hotreload/indicator-not-connected-with-flyout.png" alt="The Hot Reload indicator is not connected. A flyout message states that Hot Reload is available only to registered users and prompts the user to sign in via the Uno Platform Studio button." />
 </p>
 
 For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk/latest) to take advantage of all the latest improvements and support. Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.

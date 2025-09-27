@@ -148,8 +148,14 @@ namespace Microsoft.UI.Composition
 			get => _parent;
 			set
 			{
+				if (!ReferenceEquals(_parent, value))
+				{
+					StopAllAnimations();
+				}
+
 				_parent = value;
 #if __SKIA__
+				SetMatrixDirty();
 				SetAsNativeHostVisual(value?.IsNativeHostVisual ?? false, inherited: true);
 #endif
 			}

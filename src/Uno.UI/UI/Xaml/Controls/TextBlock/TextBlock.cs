@@ -25,7 +25,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Foundation.Logging;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
@@ -46,6 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if !__WASM__
 		// Used for text selection which is handled natively
 		private bool _isPressed;
+		private Range _selectionOnPointerPressed;
 #endif
 
 		private Hyperlink _hyperlinkOver;
@@ -152,6 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				UpdateHyperlinks();
+				Inlines.InvalidatePreorderTree();
 			}
 
 			OnInlinesChangedPartial();
@@ -309,7 +311,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateInlines(newValue);
 
 #if __SKIA__
-			if (GetTemplatedParent() is not TextBox textBox || textBox.TextBoxView?.DisplayBlock != this)
+			if (!IsTextBoxDisplay)
 #endif
 			{
 				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
@@ -868,7 +870,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (ReadLocalValue(TextProperty) == DependencyProperty.UnsetValue)
+			if (!this.IsDependencyPropertySet(TextProperty))
 			{
 				_skipInlinesChangedTextSetter = true;
 				Inlines.Clear();
@@ -904,6 +906,17 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void ClearTextPartial();
 
 		#region pointer events
+#if !__WASM__
+		// https://github.com/unoplatform/uno-private/issues/1238
+		// For pen and touch selection, we need to:
+		// * Start selection using a long-press and/or double-tap (platform specific)
+		// * Add visual anchor (platform specific) to edit selection (pointer pressed out of those anchors only scroll, tap would unselect)
+		// * Prevent scrolling to kick-in when editing selection (i.e. disable the DirectManipulation)
+		// * Automatic scroll (platform specific) when pointer is close to the edge of the parent ScrollViewer
+		// * Show a magnifier when finger can hide the text being (un)selected (platform specific)
+		private static bool SupportsSelection(PointerRoutedEventArgs args)
+			=> args.Pointer.PointerDeviceType is PointerDeviceType.Mouse;
+#endif
 
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
@@ -933,7 +946,7 @@ namespace Microsoft.UI.Xaml.Controls
 				that.CompleteGesture(); // Make sure to mute Tapped
 			}
 #if !__WASM__
-			else if (that.IsTextSelectionEnabled)
+			else if (that.IsTextSelectionEnabled && SupportsSelection(e))
 			{
 				var point = e.GetCurrentPoint(that);
 
@@ -942,6 +955,7 @@ namespace Microsoft.UI.Xaml.Controls
 #else // TODO: add an option to get the closest char to point
 				var index = that.GetCharacterIndexAtPoint(point.Position);
 #endif
+				that._selectionOnPointerPressed = that.Selection;
 				if (index >= 0) // should always be true if above TODO is addressed
 				{
 					that.Selection = new Range(index, index);
@@ -1004,6 +1018,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (sender is TextBlock that)
 			{
+#if !__WASM__
+				that._isPressed = false;
+				if (SupportsSelection(e))
+				{
+					that.Selection = that._selectionOnPointerPressed;
+				}
+#endif
+
 				e.Handled = that.AbortHyperlinkCaptures(e.Pointer);
 			}
 		};
@@ -1024,7 +1046,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 #if !__WASM__
-			if (that._isPressed && that.IsTextSelectionEnabled)
+			if (that._isPressed && that.IsTextSelectionEnabled && SupportsSelection(e))
 			{
 				var point = e.GetCurrentPoint(that);
 #if __SKIA__ // GetCharacterIndexAtPoint returns -1 if point isn't on any char. For pointers, we still want to get the closest char

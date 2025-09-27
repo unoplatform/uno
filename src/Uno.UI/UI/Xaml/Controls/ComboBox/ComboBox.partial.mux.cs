@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using DirectUI;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -646,6 +647,11 @@ partial class ComboBox
 		{
 			OnIsSelectionActiveChanged();
 		}
+		else if (args.Property == DisplayMemberPathProperty)
+		{
+			m_spPropertyPathListener?.Dispose();
+			m_spPropertyPathListener = null;
+		}
 		else if (args.Property == TextProperty)
 		{
 			if (m_tpEditableTextPart is not null && IsEditable)
@@ -874,7 +880,7 @@ partial class ComboBox
 	}
 
 	// Update the visual states when the Visibility property is changed.
-	private void OnVisibilityChanged()
+	private protected override void OnVisibilityChanged()
 	{
 		var visibility = Visibility;
 		if (Visibility.Visible != visibility)
@@ -904,16 +910,19 @@ partial class ComboBox
 		IsSelectionBoxHighlighted = value;
 	}
 
-	private void OnOpen()
-	{
-
 #if HAS_UNO
-		// Force a refresh of the popup's ItemPresenter
+	private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
+	{
+		// With virtualization, the base.UpdateItems won't handle the updates
+		// (because ShouldItemsControlManageChildren is false), so we make an
+		// explicit call to Refresh here instead.
+		base.UpdateItems(args);
 		Refresh();
-
-		RestoreSelectedItem();
+	}
 #endif
 
+	private void OnOpen()
+	{
 		// TODO Uno: BackButton support
 		//if (DXamlCore.Current.BackButtonSupported)
 		//{
@@ -937,7 +946,7 @@ partial class ComboBox
 #if HAS_UNO // Force load children
 			// This method will load the itempresenter children
 #if __ANDROID__
-			SetItemsPresenter((m_tpPopupPart.Child as Android.Views.ViewGroup).FindFirstChild<ItemsPresenter>()!);
+			SetItemsPresenter((m_tpPopupPart.Child as AViewGroup).FindFirstChild<ItemsPresenter>()!);
 #elif __APPLE_UIKIT__
 			SetItemsPresenter(m_tpPopupPart.Child.FindFirstChild<ItemsPresenter>()!);
 #endif
@@ -2840,6 +2849,7 @@ partial class ComboBox
 		object spBoxedValue;
 		object spObject = @object;
 
+#if !HAS_UNO
 		if (spObject is ICustomPropertyProvider spObjectPropertyAccessor)
 		{
 			if (pathListener != null)
@@ -2856,6 +2866,21 @@ partial class ComboBox
 				return spObjectPropertyAccessor.GetStringRepresentation();
 			}
 		}
+#else
+		if (pathListener != null)
+		{
+			// Our caller has provided us with a PropertyPathListener. By setting the source of the listener, we can pull a value out.
+			// This is our boxedValue, which we effectively ToString below.
+			pathListener.SetSource(spObject);
+			spBoxedValue = pathListener.GetValue();
+		}
+		else if (spObject is ICustomPropertyProvider spObjectPropertyAccessor)
+		{
+			// No PathListener specified, but this object implements
+			// ICustomPropertyProvider. Call .ToString on the object:
+			return spObjectPropertyAccessor.GetStringRepresentation();
+		}
+#endif
 		else
 		{
 			// Try to get the string value by unboxing the object itself.
@@ -3133,25 +3158,19 @@ partial class ComboBox
 
 	private void EnsurePropertyPathListener()
 	{
-		// TODO Uno: Property path listener is not implemented yet
-		//if (!m_spPropertyPathListener)
-		//{
-		//	wrl_wrappers::HString strDisplayMemberPath;
-		//	IFC_RETURN(get_DisplayMemberPath(strDisplayMemberPath.GetAddressOf()));
+		if (m_spPropertyPathListener is null)
+		{
+			var strDisplayMemberPath = DisplayMemberPath;
 
-		//	if (!strDisplayMemberPath.IsEmpty())
-		//	{
-		//		// If we don't have one cached, create the property path listener
-		//		// If strDisplayMemberPath contains something (a path), then use that to inform our PropertyPathListener.
-		//		auto pPropertyPathParser = std::make_unique<PropertyPathParser>();
+			if (!string.IsNullOrEmpty(strDisplayMemberPath))
+			{
+				var pPropertyPathParser = new PropertyPathParser();
+				pPropertyPathParser.SetSource(strDisplayMemberPath, null);
 
-		//		IFC_RETURN(pPropertyPathParser->SetSource(WindowsGetStringRawBuffer(strDisplayMemberPath.Get(), nullptr), FALSE));
-
-		//		IFC_RETURN(ctl::make<PropertyPathListener>(nullptr, pPropertyPathParser.get(), false /*fListenToChanges*/, false /*fUseWeakReferenceForSource*/, &m_spPropertyPathListener));
-		//	}
-		//}
-
-		//return S_OK;
+				m_spPropertyPathListener = new();
+				m_spPropertyPathListener.Initialize(pOwner: null, pPropertyPathParser, fListenToChanges: false, fUseWeakReferenceForSource: false);
+			}
+		}
 	}
 
 	private void CreateEditableContentPresenterTextBlock()
@@ -3166,8 +3185,6 @@ partial class ComboBox
 
 
 #if HAS_UNO // Not ported yet
-
-
 	private void ArrangePopup(bool value) { }
 
 	private void EnsurePresenterReadyForFullMode() { }

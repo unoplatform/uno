@@ -17,6 +17,11 @@
 							 Color="Purple" />
 		</ResourceDictionary>
 
+		<ResourceDictionary x:Key="Dark">
+			<SolidColorBrush x:Key="LoadedTestPrimaryBrush"
+			                 Color="MediumOrchid" />
+		</ResourceDictionary>
+
 	</ResourceDictionary.ThemeDictionaries>
 
 	<SolidColorBrush x:Key="ResourcesInTemplateTestBrush"

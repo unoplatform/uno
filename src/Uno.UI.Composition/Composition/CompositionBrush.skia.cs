@@ -6,9 +6,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionBrush
 	{
-		internal virtual void UpdatePaint(SKPaint paint, SKRect bounds)
-		{
-		}
+		internal virtual void Paint(SKCanvas canvas, float opacity, SKRect bounds) { }
 
 		internal virtual bool CanPaint() => false;
 

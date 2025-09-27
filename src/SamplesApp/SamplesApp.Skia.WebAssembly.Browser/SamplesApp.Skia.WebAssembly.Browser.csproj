@@ -32,7 +32,14 @@
 
 		<WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
 		<WasmBuildNative>true</WasmBuildNative>
+
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
@@ -41,6 +48,10 @@
 		<DebugSymbols>true</DebugSymbols>
 
 	</PropertyGroup>
+	
+	<ItemGroup>
+		<EmbeddedResource Include="WasmScripts\AppManifest.js" />
+	</ItemGroup>
 
 	<!--
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -91,8 +102,8 @@
 		<Compile Update="Program.cs" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive\*.Runtime.Skia.WebAssembly.Browser.props" />
-	<Import Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive\*.Runtime.Skia.WebAssembly.Browser.targets" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.props" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.targets" />
 
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>

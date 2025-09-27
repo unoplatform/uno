@@ -19,12 +19,17 @@ To create an Uno Platform app:
 
     ![Visual Studio - Configure project name and location](Assets/tutorial01/configure-new-unoplatform-app.PNG)
 
+    > [!NOTE]
+    > If you intend to add your new project to an existing solution, continue this guide then [follow our instructions](xref:Uno.Guides.AddUnoToExistingSolution).
+
 1. Choose a template preset to build your application
 
     ![Visual Studio - Configure your new project](getting-started/wizard/assets/intro.png)
 
     > [!TIP]
     > For a detailed overview of the Uno Platform project template wizard and all its options, see [this](xref:Uno.GettingStarted.UsingWizard).
+    > [!NOTE]
+    > Starting with Uno.Sdk 6.0, [Skia rendering](xref:Uno.Development.HowItWorks) is now the default rendering engine in Uno Platform templates for iOS/Android/WebAssembly. If you prefer native rendering instead, you can switch this setting in the `Features` tab under `Renderer`.
 
 1. Click the create button
 
@@ -103,7 +108,7 @@ To run the **Windows** (WinAppSDK) head:
 To debug for **iOS**:
 
 > [!NOTE]
-> For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://learn.microsoft.com/xamarin/ios/get-started/installation/windows/connecting-to-mac/). Catalyst apps are not supported in Visual Studio 2022 on Windows, you can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
+> For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://learn.microsoft.com/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
 - In the "Debug toolbar" drop-down, select framework `net9.0-ios`:
 

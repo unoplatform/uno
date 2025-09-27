@@ -59,6 +59,7 @@
 		<Content Include="$(MSBuildThisFileDirectory)Assets\square150x150logo.scale-200.png" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\square44x44logo.scale-200.png" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.png" />
+        <Content Include="$(MSBuildThisFileDirectory)Assets\When_CornerRadius_AntiAliasing.png" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\wide310x150logo.scale-200.png" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\nodpi-validationresource.jpeg" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\BackArrow.scale-300.png" />
@@ -83,18 +84,5 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="$(MSBuildThisFileDirectory)Embedded\SubFolder1\SubFolder2\" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<UnoIcon
-			Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
-			ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
-			ForegroundScale="0.65"
-			Color="#00000000" />
-		<UnoSplashScreen
-			Include="$(MSBuildThisFileDirectory)Splash\splash_screen.svg"
-			BaseSize="128,128"
-			Color="#FFFFFF" />
-
 	</ItemGroup>
 </Project>

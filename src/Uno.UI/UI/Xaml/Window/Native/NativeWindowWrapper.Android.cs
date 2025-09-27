@@ -15,6 +15,8 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
+using MUX = Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -24,6 +26,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
+	private bool _contentViewAttachedToWindow;
 
 	private Rect _previousTrueVisibleBounds;
 
@@ -78,8 +81,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	{
 		var (windowSize, visibleBounds) = GetVisualBounds();
 
-		Bounds = new Rect(default, windowSize);
-		VisibleBounds = visibleBounds;
+		SetBoundsAndVisibleBounds(new Rect(default, windowSize), visibleBounds);
 		Size = new((int)(windowSize.Width * RasterizationScale), (int)(windowSize.Height * RasterizationScale));
 		ApplySystemOverlaysTheming();
 
@@ -94,9 +96,21 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	protected override void ShowCore()
 	{
+		MUX.Application.Current.RequestedThemeChanged += () =>
+		{
+			if (MUX.Application.Current.InitializationComplete)
+			{
+				ApplySystemOverlaysTheming();
+			}
+		};
+
+		ApplicationActivity.Instance.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
+		ApplicationActivity.Instance.EnsureContentView();
 		ApplySystemOverlaysTheming();
-		RemovePreDrawListener();
 	}
+
+	private void Instance_ContentViewAttachedToWindow(object sender, EventArgs e) =>
+		_contentViewAttachedToWindow = true;
 
 	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
 	{
@@ -123,9 +137,27 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 				this.Log().LogDebug($"Insets: {insets}");
 			}
 
-			// Edge-to-edge is default on Android 15 and above
-			windowBounds = new Rect(default, GetWindowSize());
-			visibleBounds = windowBounds.DeflateBy(insets);
+			if (StatusBar.GetForCurrentView().BackgroundColor is { } && (int)Android.OS.Build.VERSION.SdkInt >= 35)
+			{
+				// quick refresher:
+				// - windowBounds: size of the rendered area, its location is ignored/unused
+				// - visibleBounds: area WITHIN windowBounds that isn't occluded/blocked by system overlays (status-bar, navigation-bar, etc.)
+				//		^ since VB calculated from WB, it is important that WB doesn't have an location/offset to be inherited by VB.
+
+				// see: StatusBar.SetStatusBarBackgroundColor (StatusBar.Android.cs)
+				// Setting a non-null StatusBar.Background in v35, will add a padding to the decor-view.
+				// This will move down the coordinates system for both windowBounds and visibleBounds,
+				// their zero(0,0) will be (0, inset.top) on the physical display.
+
+				var size = GetWindowSize();
+				windowBounds = new Rect(0, 0, size.Width, size.Height - insets.Top); // exclude top inset from rendering area
+				visibleBounds = windowBounds.DeflateBy(insets with { Top = 0 }); // apply the rest of the insets, skipping Top that is already excluded
+			}
+			else
+			{
+				windowBounds = new Rect(default, GetWindowSize());
+				visibleBounds = windowBounds.DeflateBy(insets);
+			}
 		}
 		else
 		{
@@ -191,20 +223,24 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void ApplySystemOverlaysTheming()
 	{
-		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
+		// Only apply theming if the app hasn't explicitly set a foreground
+		if (StatusBar.GetForCurrentView().ForegroundColor is null)
 		{
-			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
-			if (Microsoft.UI.Xaml.Application.Current is { } application &&
-				(ContextHelper.TryGetCurrent(out var context)) &&
-				context is Activity activity &&
-				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 			{
-				var requestedTheme = application.RequestedTheme;
+				// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
+				if (Microsoft.UI.Xaml.Application.Current is { } application &&
+					(ContextHelper.TryGetCurrent(out var context)) &&
+					context is Activity activity &&
+					activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+				{
+					var requestedTheme = application.RequestedTheme;
 
-				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
+					var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
 
-				// "appearance light" refers to status bar set to light theme == dark foreground
-				insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
+					// "appearance light" refers to status bar set to light theme == dark foreground
+					insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
+				}
 			}
 		}
 	}
@@ -306,6 +342,15 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		{
 		}
 
-		public bool OnPreDraw() => _windowWrapper.IsVisible;
+		public bool OnPreDraw()
+		{
+			if (_windowWrapper._contentViewAttachedToWindow)
+			{
+				_windowWrapper.RemovePreDrawListener();
+				return true;
+			}
+
+			return false;
+		}
 	}
 }

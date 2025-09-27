@@ -9,7 +9,7 @@ Windows uses the UI Automation framework to provide accessibility information to
 > Microsoft UI Automation is an accessibility framework for Windows. It provides programmatic access to most UI elements on the desktop. It enables assistive technology products, such as screen readers, to provide information about the UI to end users and to manipulate the UI by means other than standard input. UI Automation also allows automated test scripts to interact with the UI.\
 [UI Automation Overview](https://learn.microsoft.com/windows/desktop/WinAuto/uiauto-uiautomationoverview)
 
-Uno.UI implements a subset of UWP's UI Automation APIs, to make your applications work with each platform's built-in screen reader or accessibility support:
+Uno.UI implements a subset of WinUI's UI Automation APIs to make your applications work with each platform's built-in screen reader or accessibility support:
 
 | Windows  | Android  | iOS       | macOS     | WebAssembly                  |
 |----------|----------|-----------|-----------|------------------------------|
@@ -24,13 +24,13 @@ Read [Expose basic accessibility information](https://learn.microsoft.com/window
 
 ## SimpleAccessibility mode
 
-While we were trying to replicate UWP's behavior on iOS and Android, we realized that iOS doesn't allow nested accessible elements to be focused.
+While we were trying to replicate WinUI's behavior on iOS and Android, we realized that iOS doesn't allow nested accessible elements to be focused.
 For example, if you select a list item, the screen reader will automatically read the accessible name of all inner elements one after the other, but won't let you focus them individually (unlike Windows and Android).
 
 While this behavior comes with its own set of limitations (e.g., you can't nest buttons), it greatly simplifies the implementation of accessibility.
-By comparison, on UWP, the user would need to navigate through every inner element of every list item, unless the developer manually disables focus for each inner element and aggregate their accessible names into a single string to use as the accessible name of the list item.
+By comparison, on WinUI, the user would need to navigate through every inner element of every list item, unless the developer manually disables focus for each inner element and aggregates their accessible names into a single string to use as the accessible name of the list item.
 
-Instead of trying to replicate UWP's behavior on iOS (which *might* be doable using the `UIAccessibilityContainer` interface, although we haven't tried it yet), we decided to go along with the iOS behavior and bring it to Android as well. We called this mode SimpleAccessibility.
+Instead of trying to replicate WinUI's behavior on iOS (which *might* be doable using the `UIAccessibilityContainer` interface, although we haven't tried it yet), we decided to go along with the iOS behavior and bring it to Android as well. We called this mode SimpleAccessibility.
 
 Here's how to enable it:
 

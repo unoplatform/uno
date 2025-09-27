@@ -21,10 +21,10 @@ Create a new app using:
 dotnet new unoapp -o MyApp
 ```
 
-In the `Platforms/Desktop/Program.cs` file, the `SkiaHostBuilder` can be configured to use the Framebuffer support, in case X11 support is detected first:
+In the `Platforms/Desktop/Program.cs` file, the `UnoPlatformHostBuilder` can be configured to use the Framebuffer support, in case X11 support is detected first:
 
 ```csharp
-var host = SkiaHostBuilder.Create()
+var host = UnoPlatformHostBuilder.Create()
     .App(() => new App())
     .UseX11()
     .UseLinuxFrameBuffer()

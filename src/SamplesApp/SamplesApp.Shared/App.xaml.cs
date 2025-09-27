@@ -39,7 +39,7 @@ using Uno.UI.Helpers;
 #if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
-using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using SampleControl.Presentation;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
@@ -71,7 +71,7 @@ namespace SamplesApp
 		private static Microsoft.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
-#if __SKIA__
+#if __SKIA__ && !UNO_ISLANDS
 		private bool _gotOnLaunched;
 #endif
 
@@ -106,7 +106,7 @@ namespace SamplesApp
 			this.Suspending += OnSuspending;
 			this.Resuming += OnResuming;
 #endif
-#if __SKIA__
+#if __SKIA__ && !UNO_ISLANDS
 			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low, () =>
 			{
 				Assert.IsTrue(_gotOnLaunched);
@@ -127,14 +127,14 @@ namespace SamplesApp
 #endif
 		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ && !UNO_ISLANDS
 			_gotOnLaunched = true;
 #endif
 			EnsureMainWindow();
 
 #if __WASM__
 			DispatcherQueue.Main.TryEnqueue(
-				DispatcherQueuePriority.Low,
+				DispatcherQueuePriority.High,
 				() => InitWasmSampleRunner()
 			);
 #endif
@@ -301,7 +301,7 @@ namespace SamplesApp
 					$"PreviousState - {e.PreviousExecutionState}, " +
 					$"Uri - {protocolActivatedEventArgs.Uri}",
 					"Application activated via protocol");
-				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
+				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
 				{
 					await dlg.ShowAsync();
 				}
@@ -314,6 +314,7 @@ namespace SamplesApp
 #if DEBUG && (__SKIA__ || __WASM__)
 			_mainWindow!.EnableHotReload();
 #endif
+			// await Task.Delay(15000); // Artificial delay to simulate asynchronous activation
 			_mainWindow!.Activate();
 			_wasActivated = true;
 			MainWindowActivated?.Invoke(this, EventArgs.Empty);
@@ -436,7 +437,7 @@ namespace SamplesApp
 			Console.WriteLine("OnResuming");
 
 			// Disable for failing on Android 31 https://github.com/unoplatform/uno-private/issues/1068
-			// AssertIssue10313ResumingAfterActivate();
+			AssertIssue10313ResumingAfterActivate();
 
 			_isSuspended = false;
 		}
@@ -557,6 +558,12 @@ namespace SamplesApp
 #endif
 #if __ANDROID__
 			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
+#endif
+
+#if IS_CI_OR_DEBUG && __SKIA__
+			// Lower the framerate so that CI agents don't slow down too much
+			// as they're running with software rendering.
+			FeatureConfiguration.CompositionTarget.FrameRate = 15;
 #endif
 		}
 

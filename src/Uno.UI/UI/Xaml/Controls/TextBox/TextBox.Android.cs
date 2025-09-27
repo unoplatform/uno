@@ -27,6 +27,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Android.Widget.TextView;
 using Math = System.Math;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -118,7 +119,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ImeOptionsProperty { get; } =
-			DependencyProperty.Register("ImeOptions",
+			DependencyProperty.Register(
+				nameof(ImeOptions),
 				typeof(ImeAction),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
@@ -142,6 +144,9 @@ namespace Microsoft.UI.Xaml.Controls
 				_textBoxView.ImeOptions = imeAction;
 			}
 		}
+
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType) =>
+			OnImeOptionsChanged(inputReturnType.ToImeAction());
 
 		partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 		{
@@ -210,14 +215,6 @@ namespace Microsoft.UI.Xaml.Controls
 			var before = _textBoxView.ShowSoftInputOnFocus;
 			_textBoxView.ShowSoftInputOnFocus = false;
 			return Disposable.Create(() => _textBoxView.ShowSoftInputOnFocus = before);
-		}
-
-		partial void OnForegroundColorChangedPartial(Brush newValue)
-		{
-			if (_textBoxView != null)
-			{
-				_textBoxView.Foreground = newValue;
-			}
 		}
 
 		partial void OnInputScopeChangedPartial(InputScope newValue)
@@ -480,12 +477,12 @@ namespace Microsoft.UI.Xaml.Controls
 							// Don't show keyboard if programmatically focused and PreventKeyboardDisplayOnProgrammaticFocus is true
 							!(FocusState == FocusState.Programmatic && PreventKeyboardDisplayOnProgrammaticFocus);
 
-						var inputManager = activity?.GetSystemService(Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
+						var inputManager = activity?.GetSystemService(AContext.InputMethodService) as InputMethodManager;
 
 						//When a TextBox gains focus, we want to show the keyboard
 						if (hasFocus && needsKeyboard)
 						{
-							inputManager?.ShowSoftInput(_textBoxView, Android.Views.InputMethods.ShowFlags.Implicit);
+							inputManager?.ShowSoftInput(_textBoxView, ShowFlags.Implicit);
 						}
 
 						//When a TextBox loses focus, we want to dismiss the keyboard if no other view requiring it is focused
@@ -497,7 +494,7 @@ namespace Microsoft.UI.Xaml.Controls
 							//Seems like CurrentFocus can be null if the previously focused element is not part of the view anymore,
 							//resulting in the keyboard not being closed.
 							//We still try to get the Window token from it and if we fail, we get it from the TextBox we're currently unfocusing.
-							inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken ?? viewWindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
+							inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken ?? viewWindowToken, HideSoftInputFlags.None);
 						}
 
 						if (hasFocus)

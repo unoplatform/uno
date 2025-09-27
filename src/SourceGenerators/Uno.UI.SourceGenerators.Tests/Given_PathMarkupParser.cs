@@ -76,7 +76,7 @@ c.SetClosedState(false);
 }, global::Microsoft.UI.Xaml.Media.FillRule.Nonzero)", generatedCode);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("M0 0 10 10 20 20")]
 		[DataRow("M0,0 10,10 20,20")]
 		[DataRow("M0,0,10,10,20,20")]
@@ -92,7 +92,7 @@ c.SetClosedState(false);
 }, global::Microsoft.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("m0 0 10 10 20 20")]
 		[DataRow("m0,0 10,10 20,20")]
 		[DataRow("m0,0,10,10,20,20")]
@@ -119,7 +119,7 @@ c.SetClosedState(false);
 }, global::Microsoft.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("M5.5.5 5.5.5 5.5.5")]
 		[DataRow("F1M9.0771,11C9.1161,10.701,9.1801,10.352,9.3031,10L9.0001,10 9.0001,6.166 3.0001,9.767 3.0001,10 "
 					+ "9.99999999997669E-05,10 9.99999999997669E-05,0 3.0001,0 3.0001,0.234 9.0001,3.834 9.0001,0 "
@@ -153,7 +153,7 @@ c.SetClosedState(false);
 			_ = Parse(pathData);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("M0 0L10 10", "false")]
 		[DataRow("M0 0L10 10z", "true")]
 		[DataRow("M0 0L10 10 \n ", "false")]
@@ -171,7 +171,7 @@ c.SetClosedState({expectedClosedState});
 }}, global::Microsoft.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("M 5.5, 5 L 5.5, 5 L 5.5, 5")]
 		[DataRow("F1 M 9.0771, 11 C 9.1161, 10.701 9.1801, 10.352 9.3031, 10 L 9.0001, 10 L 9.0001, 6.166 L 3.0001, 9.767 L 3.0001, 10 "
 			+ "L 9.99999999997669E-05, 10 L 9.99999999997669E-05, 0 L 3.0001, 0 L 3.0001, 0.234 L 9.0001, 3.834 L 9.0001, 0 "
@@ -191,7 +191,7 @@ c.SetClosedState({expectedClosedState});
 			_ = Parse(pathData);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("M5.5.5 5.5.5 5.5.5", "M 5.5, 0.5 L 5.5, 0.5 L 5.5, 0.5")]
 		[DataRow("F1 M24,14 A2,2,0,1,1,20,14 A2,2,0,1,1,24,14 z", "F1 M 24, 14 A 2, 2 0 1 1 20, 14 A 2, 2 0 1 1 24, 14Z")]
 		[DataRow("F1M16,12C16,14.209 14.209,16 12,16 9.791,16 8,14.209 8,12 8,11.817 8.03,11.644 8.054,11.467L6.585,10 4,10 "
@@ -205,7 +205,7 @@ c.SetClosedState({expectedClosedState});
 			Assert.AreEqual(Parse(pathData), Parse(formattedPathData));
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow("0 0")]
 		[DataRow("j")]
 		public void Throws_InvalidDataException_On_None_Defined_Command(string pathData)

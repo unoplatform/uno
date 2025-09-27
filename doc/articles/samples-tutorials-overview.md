@@ -10,7 +10,7 @@ Here, you'll find a collection of resources designed to help you learn and explo
 
 ## Getting Started
 
-[**Counter App Tutorial**](xref:Uno.Workshop.Counter): Learn the basics of Uno Platform by creating a simple counter app. There are four variants of the Counter tutorial, combining markup language ([XAML](https://learn.microsoft.com/en-us/visualstudio/xaml-tools/xaml-overview) or [C# Markup](xref:Uno.Extensions.Markup.Overview)) and presentation framework ([MVVM](https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-and-mvvm) or [MVUX](xref:Uno.Extensions.Mvux.Overview)).
+[**Counter App Tutorial**](xref:Uno.Workshop.Counter): Learn the basics of Uno Platform by creating a simple counter app. There are four variants of the Counter tutorial, combining markup language ([XAML](https://learn.microsoft.com/en-us/visualstudio/xaml-tools/xaml-overview) or [C# Markup](xref:Uno.Extensions.Markup.Overview)) and presentation framework ([MVVM](https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-and-mvvm) or [MVUX](xref:Uno.Extensions.Mvux.Overview)). Also, you can build the Counter tutorial using our visual designer, [Hot Design](xref:Uno.HotDesign.GetStarted.CounterTutorial).
 
 ## Workshops
 
@@ -29,6 +29,8 @@ Expand your skills with these in-depth tutorials.
 ## Sample Projects
 
 Explore a range of sample projects showcasing the versatility of Uno Platform.
+
+[**Chefs**](xref:Uno.Chefs.Overview): A recipe app that combines recipe browsing with interactive features, allowing users to explore step-by-step instructions, video tutorials, nutritional information, user reviews, and even create their own personalized cookbooks, all while showcasing powerful features of the Uno Platform in a practical, real-world scenario.
 
 [**Samples Repository**](xref:Uno.Samples): A curated list of sample projects that demonstrate various functionalities and use cases ranging from small single-feature samples to larger showcase applications.
 

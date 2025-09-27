@@ -7,7 +7,7 @@
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
-using XamlIslandRoot = Uno.UI.Xaml.Islands.XamlIsland;
+using XamlIslandRoot = Uno.UI.Xaml.Islands.XamlIslandRoot;
 
 namespace Uno.UI.Xaml.Islands;
 

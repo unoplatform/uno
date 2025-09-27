@@ -20,6 +20,7 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWin
 	{
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
 	}
 
 	public override object NativeWindow => null;
@@ -37,8 +38,7 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWin
 	{
 		var bounds = new Rect(default, new Size(width, height));
 
-		Bounds = bounds;
-		VisibleBounds = bounds;
+		SetBoundsAndVisibleBounds(bounds, bounds);
 		Size = new((int)(bounds.Width * RasterizationScale), (int)(bounds.Height * RasterizationScale));
 	}
 
@@ -47,8 +47,6 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWin
 		DispatchDpiChanged();
 		WindowManagerInterop.WindowActivate();
 	}
-
-	private bool SetFullScreenMode(bool turnOn) => NativeMethods.SetFullScreenMode(turnOn);
 
 	public override string Title
 	{
@@ -65,4 +63,6 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWin
 	public override void Move(PointInt32 position) => NativeMethods.MoveWindow(position.X, position.Y);
 
 	public override void Resize(SizeInt32 size) => NativeMethods.ResizeWindow(size.Width, size.Height);
+
+	private bool SetFullScreenMode(bool turnOn) => NativeMethods.SetFullScreenMode(turnOn);
 }

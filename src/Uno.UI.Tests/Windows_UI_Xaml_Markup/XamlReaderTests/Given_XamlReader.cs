@@ -17,10 +17,11 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
-using SwipeItems = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItems;
-using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
-using SwipeMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode;
+using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
+using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
+using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
 using Uno.UI.Tests.Helpers;
+using System.Numerics;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -511,7 +512,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var root = r.FindName("root") as Grid;
 			var innerPanel = r.FindName("innerPanel") as StackPanel;
 
-			Assert.AreEqual(root.DataContext, "42");
+			Assert.AreEqual("42", root.DataContext);
 			Assert.IsNull(innerPanel.DataContext);
 		}
 
@@ -840,7 +841,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_ImplicitStyle_WithoutKey()
 		{
-			Assert.ThrowsException<InvalidOperationException>(() =>
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() =>
 			{
 				var s = GetContent(nameof(When_ImplicitStyle_WithoutKey));
 				var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
@@ -931,7 +932,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var s = GetContent(nameof(When_IList_TabView));
 			var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 
-			var tabView1 = r.FindName("tabView1") as Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
+			var tabView1 = r.FindName("tabView1") as Microsoft.UI.Xaml.Controls.TabView;
 
 			Assert.AreEqual(2, tabView1.TabItems.Count);
 		}
@@ -1085,7 +1086,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_CreateFromString_Invalid_MethodName()
 		{
 			var xaml = "<CreateFromStringInvalidMethodNameOwner Test=\"8\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
@@ -1103,14 +1104,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_CreateFromString_Non_Static_Method()
 		{
 			var xaml = "<CreateFromStringNonStaticMethodOwner Test=\"4\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
 		public void When_CreateFromString_Private_Static_Method()
 		{
 			var xaml = "<CreateFromStringPrivateStaticMethodOwner Test=\"21\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
@@ -1128,7 +1129,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_CreateFromString_Invalid_Parameters()
 		{
 			var xaml = "<CreateFromStringInvalidParametersOwner Test=\"2\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
@@ -1136,7 +1137,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		{
 			var xaml = "<CreateFromStringInvalidReturnTypeOwner Test=\"1\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
 			// TODO: This should throw XamlParseException too
-			Assert.ThrowsException<ArgumentException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
@@ -1608,7 +1609,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var root = (StackPanel)XamlReader.Load(
 				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:primitives='using:Microsoft" + /* UWP Don't rename */ @".UI.Xaml.Controls.Primitives'> 
+                        xmlns:primitives='using:Microsoft.UI.Xaml.Controls.Primitives'> 
                     <StackPanel.Resources>
                         <primitives:CornerRadiusFilterConverter x:Key='RightCornerRadiusFilterConverter' Filter='Right'/>
                     </StackPanel.Resources>
@@ -1621,6 +1622,32 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var rightRadiusGrid = (Grid)root.FindName("RightRadiusGrid");
 
 			Assert.AreEqual(new CornerRadius(0, 6, 6, 0), rightRadiusGrid.CornerRadius);
+		}
+
+		[TestMethod]
+		public void When_Vector3_Property()
+		{
+			var xaml =
+				"""
+				<VectorPropertyControl xmlns='Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests' Vec3="1,4,100" />
+				""";
+			var control = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as VectorPropertyControl;
+
+			Assert.IsNotNull(control);
+			Assert.AreEqual(new Vector3(1, 4, 100), control.Vec3);
+		}
+
+		[TestMethod]
+		public void When_Vector2_Property()
+		{
+			var xaml =
+				"""
+				<VectorPropertyControl xmlns='Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests' Vec2="31,4" />
+				""";
+			var control = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as VectorPropertyControl;
+
+			Assert.IsNotNull(control);
+			Assert.AreEqual(new Vector2(31, 4), control.Vec2);
 		}
 
 		private string GetContent(string testName)

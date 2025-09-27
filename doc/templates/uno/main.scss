@@ -1,8 +1,9 @@
+@use "variables" as *;
+@use "component/breakpoints" as *;
+@use "sass:color";
+
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:500,600,700,800,400italic,700italic,400');
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css");
-@import "variables";
-@import "component/breakpoints";
-
 
 :target::before {
   content: '';
@@ -400,36 +401,35 @@ h5 {
       color: #fff;
 
       &:hover {
-        background: darken($purple, 5);
+        background: color.adjust($purple, $lightness: -5%)
       }
     }
   }
 
   .intro {
     padding: 100px 15px 60px;
+    text-align: center;
+    font-size: 18px;
+    position: relative;
     @media screen  {
       @include media-breakpoint-up(md) {
         padding: 200px 15px 120px;
       }
     }
-    text-align: center;
-    font-size: 18px;
-    position: relative;
 
     h1 {
       font-size: 36px;
-      @media screen  {
-        @include media-breakpoint-up(md) {
-          font-size: 44px;
-        }
-      }
-
       text-transform: none;
       font-weight: 600;
       width: auto;
       max-width: 100%;
       margin: 0 auto;
       letter-spacing: normal;
+      @media screen  {
+        @include media-breakpoint-up(md) {
+          font-size: 44px;
+        }
+      }
     }
 
     p {
@@ -450,13 +450,12 @@ h5 {
     display: flex;
     flex-wrap: wrap;
     padding: 40px 15px;
+    background-color: #f4f2f3;
     @media screen  {
       @include media-breakpoint-up(md) {
         padding: 80px 15px;
       }
     }
-
-    background-color: #f4f2f3;
 
     .headerbox {
       margin: 40px auto;

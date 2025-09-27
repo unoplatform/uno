@@ -4,6 +4,7 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
+using Combinatorial.MSTest;
 
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.ProgressRingTests;
 
@@ -12,8 +13,7 @@ public class ProgressRingTests
 {
 	[TestMethod]
 	[RunsOnUIThread]
-	[DataRow(true)]
-	[DataRow(false)]
+	[CombinatorialData]
 #if !(__WASM__ || HAS_SKOTTIE)
 	[Ignore("Skottie is not supported on net6+ UWP targets")]
 #endif
@@ -24,7 +24,7 @@ public class ProgressRingTests
 			var grid = new Grid();
 			grid.Width = 100;
 			grid.Height = 100;
-			var progressRing = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressRing() { IsActive = true };
+			var progressRing = new Microsoft.UI.Xaml.Controls.ProgressRing() { IsActive = true };
 			grid.Children.Add(progressRing);
 			RunOnUIThread.Execute(() => TestServices.WindowHelper.WindowContent = grid);
 

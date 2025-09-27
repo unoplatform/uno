@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetPrevious)</TargetFrameworks>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -11,10 +10,11 @@
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
 		<!-- In external apps, this will flow from NuGet package props -->
 		<SupportsFontManifest>true</SupportsFontManifest>
+		
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -25,7 +25,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Reference.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.Skia.csproj" />
@@ -40,7 +40,7 @@
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -52,17 +52,18 @@
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" />
 
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Graph" Version="5.56.0" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<!-- TODO: Use version 8 when compiling against .NET 8? -->
 		<PackageReference Include="System.Management" Version="8.0.0" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 		<PackageReference Include="System.CommandLine" />
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug'">
+			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
+			<Version>5.56.0</Version>
+		</PackageReference>
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
@@ -93,7 +94,7 @@
 		<ItemGroup>
 			<!--
 			This removes the transitive dependency to WPF which has a requirement to
-			have net8.0-windows and not net8.0.
+			have net9.0-windows and not net9.0.
 			-->
 			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
 		</ItemGroup>

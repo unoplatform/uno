@@ -36,6 +36,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Toolkit.Extensions;
 using KeyEventArgs = Windows.UI.Core.KeyEventArgs;
+using Combinatorial.MSTest;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Input;
@@ -89,7 +90,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(10)]
 		public async Task When_Both_Layouting_Clip_And_Clip_DP(double newClipValue)
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -146,7 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		public async Task When_TranslateTransform_And_Clip()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -199,7 +200,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/17642")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17642")]
 		public async Task When_Clipping_Changes_During_Arrange()
 		{
 			await UITestHelper.Load(new ButtonChangingClipDuringArrange() { Content = "Hello" });
@@ -1250,7 +1251,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_Measure_Explicitly_Called()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -1591,8 +1592,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_Multiple_Pointer_Buttons_Pressed(bool releaseRightFirst)
 		{
 			var SUT = new Border
@@ -1662,8 +1662,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !__SKIA__
 		[Ignore("Hittesting is only accurate in this case on skia.")]
 #endif
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_ScaleTransform_HitTest(bool addClip)
 		{
 			var sut = new Rectangle
@@ -1708,9 +1707,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18770")]
-		[DataRow(true)]
-		[DataRow(false)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18770")]
+		[CombinatorialData]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
@@ -1769,8 +1767,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif __WASM__
@@ -1923,8 +1920,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif

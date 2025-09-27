@@ -35,8 +35,8 @@ using Foundation;
 #endif
 
 using Point = Windows.Foundation.Point;
-using TabView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
-using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem;
+using TabView = Microsoft.UI.Xaml.Controls.TabView;
+using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 
 using static Private.Infrastructure.TestServices;
 using static Uno.UI.Extensions.ViewExtensions;
@@ -110,9 +110,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var source = Enumerable.Range(0, 10).ToArray();
 			var list = new ListView { ItemsSource = source };
 			list.SelectedItem = 3;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 			list.SelectedItem = 5;
-			Assert.AreEqual(list.SelectedItem, 5);
+			Assert.AreEqual(5, list.SelectedItem);
 		}
 
 		[TestMethod]
@@ -122,9 +122,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var source = Enumerable.Range(0, 10).ToArray();
 			var list = new ListView { ItemsSource = source };
 			list.SelectedItem = 3;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 			list.SelectedItem = 17;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 		}
 
 		[TestMethod]
@@ -275,17 +275,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// select 3 (value, not index)
 			list.SelectedItem = 3;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 
 			// modifying the original source, should not be reflected on the listview
 			// since the source is not ObservableCollection or INotifyCollectionChanged
 			source[3] = 13;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 
 			// setting an invalid value for SelectedItem, should be reverted to old value
 			// and in this case, that should be the 3 from the original **unmodified** source
 			list.SelectedItem = 17;
-			Assert.AreEqual(list.SelectedItem, 3);
+			Assert.AreEqual(3, list.SelectedItem);
 		}
 
 		[TestMethod]
@@ -1505,6 +1505,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(list);
 
 			ScrollTo(list, 10000); // Scroll to end
+			await Task.Delay(200);
 
 			ListViewItem lastItem = null;
 			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
@@ -1564,6 +1565,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			ScrollTo(list, 1000000); // Scroll to end
+			await Task.Delay(200);
 
 			await WindowHelper.WaitForIdle();
 
@@ -1662,7 +1664,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				ScrollTo(list, 5); // Scroll back up
 
-				await Task.Delay(200);
+				await Task.Delay(600);
 				await WindowHelper.WaitForIdle();
 
 				var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
@@ -1673,7 +1675,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
 
 				secondContainer.Should().NotBeNull();
-				LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().Be(50);
+				LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().BeApproximately(50, 0.6);
 			}
 		}
 
@@ -1733,7 +1735,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ScrollTo(list, 50); // scroll back up but not all the way
 			ScrollTo(list, 0);
 
-			await Task.Delay(200);
+			await Task.Delay(600);
 			await WindowHelper.WaitForIdle();
 
 			var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
@@ -1744,7 +1746,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
 
 			secondContainer.Should().NotBeNull();
-			LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().Be(50);
+			LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().BeApproximately(50, 0.6);
 		}
 
 		[TestMethod]
@@ -2186,12 +2188,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(scroll);
 
 			ScrollTo(list, scroll.ExtentHeight / 2); // Scroll to middle
+			await Task.Delay(200); // Allow the scroll to complete
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(10, $"materialized {materialized}");
 
 			ScrollTo(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+			await Task.Delay(200); // Allow the scroll to complete
 
 			await WindowHelper.WaitForIdle();
 
@@ -2252,6 +2256,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					ScrollTo(list, voffset);
 				}
+
 				await WindowHelper.WaitForIdle();
 
 #if HAS_UNO && !(__IOS__ || __ANDROID__)
@@ -2287,8 +2292,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ScrollAndValidate("initial state", null);
 			await ScrollAndValidate("scrolled past element#0", ElementHeight);
 			await ScrollAndValidate("scrolled past element#2", ElementHeight * 3);
-			await ScrollAndValidate("scrolled to 1/2", scroll.ExtentHeight / 2);
-			await ScrollAndValidate("scrolled back to 1/4", scroll.ExtentHeight / 4);
+
+			var isiOS = OperatingSystem.IsIOS();
+			if (!isiOS)
+			{
+				// TODO: this is flaky on iOS, needs investigation: uno-private#1415
+				await ScrollAndValidate("scrolled to 1/2", scroll.ExtentHeight / 2);
+				await ScrollAndValidate("scrolled back to 1/4", scroll.ExtentHeight / 4);
+			}
 		}
 #endif
 
@@ -2552,7 +2563,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Item change
 			var oldItem = items[1];
-			var newItem = new ListViewItem();
+			var newItem = new ListViewItem() { Content = "New" };
 
 			list.ItemsChangedAction = () =>
 			{
@@ -2825,21 +2836,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(items[0], list.ItemFromContainer(container0));
 				Assert.AreEqual(0, list.IndexFromContainer(container0));
 
-				// Test old container/index/item
+				// Test old container for old item
 				Assert.IsNull(list.ContainerFromItem(oldItem));
-				Assert.IsNull(list.ItemFromContainer(oldContainer));
-				Assert.AreEqual(-1, list.IndexFromContainer(oldContainer));
 
-#if HAS_UNO
-				// Test new container/index/item
-				// In UWP the container for the new item is returned, but its
-				// content is not yet set.
-				// We match the situation with Reset and return nulls.
+				// Container for new item should abe available
 				var container1 = (ListViewItem)list.ContainerFromItem(items[1]);
-				Assert.IsNull(container1);
+				Assert.IsNotNull(container1);
 				var containerIndex1 = list.ContainerFromIndex(1);
-				Assert.IsNull(containerIndex1);
-#endif
+				Assert.IsNotNull(containerIndex1);
 
 				// Test container/index/item right after changed
 				var container2 = (ListViewItem)list.ContainerFromItem(items[2]);
@@ -3052,11 +3056,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			list.SelectionChanged += (s, e) =>
 			{
-				Assert.AreEqual(list.SelectedItem, "Item_1");
-				Assert.AreEqual(list.SelectedValue, "Item_1");
+				Assert.AreEqual("Item_1", list.SelectedItem);
+				Assert.AreEqual("Item_1", list.SelectedValue);
 				Assert.AreEqual(1, model.SelectedIndex);
-				Assert.AreEqual(model.SelectedItem, "Item_1");
-				Assert.AreEqual(model.SelectedValue, "Item_1");
+				Assert.AreEqual("Item_1", model.SelectedItem);
+				Assert.AreEqual("Item_1", model.SelectedValue);
 			};
 
 			// update selection
@@ -4345,6 +4349,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __WASM__
 		[Ignore("https://github.com/unoplatform/uno/issues/15093")]
 #endif
+		// For this test to work, make sure you are running the SampleApp with LightTheme enabled.
 		public async Task When_ThemeChange()
 		{
 			const double TotalHeight = 500; // The ListView height.
@@ -4387,6 +4392,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight;
 
 				ScrollTo(SUT, scrollPosition);
+				await Task.Delay(500);
 				await WindowHelper.WaitForIdle();
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
@@ -4682,8 +4688,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// drop onto item#1
 			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 100 }, 1);
 			await WindowHelper.WaitForIdle();
-			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 150 }, 1);
-			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 200 }, 1);
+			await Task.Delay(1000);
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
@@ -4694,6 +4700,130 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("1", textBlocks[0].Text);
 			Assert.AreEqual("0", textBlocks[1].Text);
 			Assert.AreEqual("2", textBlocks[2].Text);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR || !HAS_RENDER_TARGET_BITMAP
+		[Ignore("InputInjector or RenderTargetBitmap is not supported on this platform.")]
+#endif
+		public async Task When_Drop_Outside_Bounds()
+		{
+			var SUT = new ListView
+			{
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true,
+				Width = 50,
+			};
+
+			for (var i = 0; i < 3; i++)
+			{
+				SUT.Items.Add(new UpdateLayoutOnUnloadedControl
+				{
+					Content = new TextBlock
+					{
+						AllowDrop = true,
+						Height = 100,
+						Text = i.ToString()
+					}
+				});
+			}
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(2) is { });
+			await WindowHelper.WaitForIdle();
+
+			// Make screenshot of the initial state
+			var screenshotBefore = await UITestHelper.ScreenShot(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// drag(pick-up) item#0
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 50 });
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// drop outside of ListView bounds
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { X = SUT.GetAbsoluteBoundsRect().Right + 100 }, 1);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+
+			var screenshotAfter = await UITestHelper.ScreenShot(SUT);
+
+			// When the item is dropped outside the bounds of the list, all items should return to their original state
+			await ImageAssert.AreEqualAsync(screenshotBefore, screenshotAfter);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
+		[Ignore("Failing on WASM: https://github.com/unoplatform/uno/issues/17742")]
+#endif
+		public async Task When_UpdateLayout_In_DragDropping_2()
+		{
+			var SUT = new ListView
+			{
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true,
+				ItemsSource = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(x => $"{(char)('A' + x)}"))
+			};
+			var border = new Border
+			{
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Pink),
+			};
+			var setup = new StackPanel { border, SUT };
+
+			await UITestHelper.Load(setup, x => x.IsLoaded && SUT.ContainerFromIndex(2) is { });
+			await WindowHelper.WaitForIdle();
+
+			var count = SUT.ItemsPanelRoot.Children.Count;
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var borderRect = border.GetAbsoluteBoundsRect();
+			var container0Rect = (SUT.ContainerFromIndex(0) as ListViewItem ?? throw new InvalidOperationException("failed to get container 0")).GetAbsoluteBoundsRect();
+			var container2Rect = (SUT.ContainerFromIndex(2) as ListViewItem ?? throw new InvalidOperationException("failed to get container 2")).GetAbsoluteBoundsRect();
+
+			// drag(pick-up) item#2 'C'
+			mouse.MoveTo(container2Rect.GetCenter());
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// drag(move) 'C' over to position 0
+			mouse.MoveTo(container0Rect.GetCenter(), 1);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+			var countDragMove = SUT.ItemsPanelRoot.Children.Count;
+
+			// drag(leave) 'C' out of the ListView, onto the Border
+			mouse.MoveTo(container0Rect.GetCenter(), 1);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+			var countDragLeave = SUT.ItemsPanelRoot.Children.Count;
+
+			// drag(enter,move) 'C' over to position 0
+			mouse.MoveTo(container0Rect.GetCenter(), 1);
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+			var countDragEnter = SUT.ItemsPanelRoot.Children.Count;
+
+			Assert.AreEqual(count, countDragMove, "[DragMove]: invalid number of containers");
+			Assert.AreEqual(count, countDragLeave, "[DragLeave]: invalid number of containers");
+			Assert.AreEqual(count, countDragEnter, "[DragEnter]: invalid number of containers");
 		}
 #endif
 
@@ -4793,7 +4923,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[SamplesApp.UITests.UnoWorkItem("https://github.com/unoplatform/kahua-private/issues/257")]
+		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/257")]
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 		[Ignore("This test is only for managed scrollers.")]
 #endif

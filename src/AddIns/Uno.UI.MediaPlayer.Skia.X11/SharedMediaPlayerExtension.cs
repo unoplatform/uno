@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Media.Core;
@@ -17,20 +18,8 @@ using Uno.Helpers;
 using Uno.Media.Playback;
 using Uno.UI.Dispatching;
 using MediaPlayer = Windows.Media.Playback.MediaPlayer;
-
-#if IS_MPE_WIN32
-[assembly: ApiExtension(
-	typeof(IMediaPlayerExtension),
-	typeof(Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension),
-	ownerType: typeof(MediaPlayer),
-	operatingSystemCondition: "windows")]
-#else
-[assembly: ApiExtension(
-	typeof(IMediaPlayerExtension),
-	typeof(Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension),
-	ownerType: typeof(MediaPlayer),
-	operatingSystemCondition: "linux")]
-#endif
+using Windows.Web.Http.Headers;
+using Uno.Logging;
 
 #if IS_MPE_WIN32
 namespace Uno.UI.MediaPlayer.Skia.Win32;
@@ -40,7 +29,8 @@ namespace Uno.UI.MediaPlayer.Skia.X11;
 
 public class SharedMediaPlayerExtension : IMediaPlayerExtension
 {
-	private static readonly LibVLC _vlc = new LibVLC("--start-paused");
+	private static int _vlcInitialized;
+	private static LibVLC _vlc = null!;
 
 	private const string MsAppXScheme = "ms-appx";
 	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, SharedMediaPlayerExtension> _mediaPlayerToExtension = new();
@@ -139,10 +129,54 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 	// On Win32, EnableMouseInput needs to be false, or else libvlc will capture the pointer and we won't receive
 	// any mouse events. Attempting to do this later below doesn't work for some reason. It needs to be
 	// right after constructing the LibVLCSharp.Shared.MediaPlayer
-	internal LibVLCSharp.Shared.MediaPlayer VlcPlayer { get; } = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
+	internal LibVLCSharp.Shared.MediaPlayer VlcPlayer { get; }
+
+	public static void PreloadVlc()
+	{
+		Task.Run(() =>
+		{
+			if (Volatile.Read(ref _vlcInitialized) == 0)
+			{
+				var vlc = new LibVLC("--start-paused");
+				try
+				{
+					var mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(vlc);
+					var stream = typeof(SharedMediaPlayerExtension).Assembly.GetManifestResourceStream($"{typeof(SharedMediaPlayerExtension).Assembly.GetName().Name}.Assets.libvlc_init_sample.mp4");
+					var media = new LibVLCSharp.Shared.Media(vlc, new StreamMediaInput(stream!));
+					EventHandler<MediaParsedChangedEventArgs>? mediaOnParsedChanged = default;
+					mediaOnParsedChanged = (_, a) =>
+					{
+						if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
+						{
+							_vlc = vlc;
+						}
+						else
+						{
+							vlc.Dispose();
+						}
+						media.ParsedChanged -= mediaOnParsedChanged;
+					};
+					media.ParsedChanged += mediaOnParsedChanged;
+					mediaPlayer.Media = media;
+					mediaPlayer.Play();
+				}
+				catch (Exception e)
+				{
+					typeof(SharedMediaPlayerExtension).Log().Error(e.Message);
+					_vlc = vlc;
+				}
+			}
+		});
+	}
 
 	public SharedMediaPlayerExtension(Windows.Media.Playback.MediaPlayer player)
 	{
+		if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
+		{
+			_vlc = new LibVLC("--start-paused");
+		}
+
+		VlcPlayer = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
 		Player = player;
 		_mediaPlayerToExtension.TryAdd(player, this);
 
@@ -324,9 +358,19 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 
 	public void Dispose()
 	{
-		_timerDisposable.Dispose();
-		_mediaPlayerToExtension.Remove(Player);
-		VlcPlayer.Dispose();
+		try
+		{
+			_timerDisposable?.Dispose();
+			_mediaPlayerToExtension.Remove(Player);
+			VlcPlayer.Dispose();
+		}
+		catch (Exception)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+			{
+				this.Log().Warn("Unable to dispose MediaPlayerExtension");
+			}
+		}
 	}
 
 	private void OnPlaying(object? _, EventArgs _1)
@@ -362,12 +406,29 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 		=> NativeDispatcher.Main.Enqueue(() => Player.PlaybackSession.PlaybackState = MediaPlaybackState.Buffering);
 
 	private void OnLengthChange(object? _, MediaPlayerLengthChangedEventArgs _1)
-		=> NativeDispatcher.Main.Enqueue(() => Events?.NaturalDurationChanged());
+		=> NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (Player.PlaybackSession.NaturalDuration != NaturalDuration)
+			{
+				Events?.NaturalDurationChanged();
+			}
+		});
 
 	private void OnEndReached(object? _, EventArgs _1)
 	{
 		NativeDispatcher.Main.Enqueue(() =>
 		{
+			if (VlcPlayer.Media is { Mrl: { } url } media)
+			{
+				// without recreating the media object, any attempt at
+				// rewinding and replaying the video fails.
+				// cf. https://github.com/unoplatform/uno-private/issues/1230
+				VlcPlayer.Media.Dispose();
+				url = url.TrimStart("file:///").Replace('/', '\\');
+				VlcPlayer.Media = new LibVLCSharp.Shared.Media(_vlc, url);
+				// This doesn't start the playback. It just force-loads the media. This is the behaviour only when --start-paused
+				VlcPlayer.Play();
+			}
 			Events?.RaiseMediaEnded();
 			Player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 			if (this is { IsLoopingEnabled: false, IsLoopingAllEnabled: false })

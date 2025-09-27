@@ -5,13 +5,21 @@ using Android.Content.PM;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
+using Android.Widget;
+using AndroidX.Activity;
+using DirectUI;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
 using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
 using Windows.Graphics.Display;
@@ -20,32 +28,29 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-using Uno.UI.Xaml.Core;
-using DirectUI;
-using Uno.UI.Xaml.Input;
-using AndroidX.Activity;
-
 
 namespace Microsoft.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
 	{
+		private bool _isContentViewSet;
+
 		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
 		internal static ApplicationActivity Instance { get; private set; }
 
+		internal ViewGroup RootView { get; private set; } = null!;
+
 		internal LayoutProvider LayoutProvider { get; private set; }
 
 		private InputPane _inputPane;
 		private View _content;
-		private Android.Views.Window _window;
+		private AWindow _window;
 
-		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
+		public ApplicationActivity(IntPtr ptr, JniHandleOwnership owner) : base(ptr, owner)
 		{
 			Initialize();
 		}
@@ -65,7 +70,18 @@ namespace Microsoft.UI.Xaml
 		}
 
 		View Uno.UI.Composition.ICompositionRoot.Content => _content;
-		Android.Views.Window Uno.UI.Composition.ICompositionRoot.Window => _window ??= base.Window;
+		AWindow Uno.UI.Composition.ICompositionRoot.Window => _window ??= base.Window;
+
+		internal void EnsureContentView()
+		{
+			if (_isContentViewSet)
+			{
+				return;
+			}
+
+			SetContentView(RootView);
+			_isContentViewSet = true;
+		}
 
 		public override void OnAttachedToWindow()
 		{
@@ -118,11 +134,13 @@ namespace Microsoft.UI.Xaml
 				this.Log().Trace($"DispatchKeyEvent: {e.KeyCode} -> {virtualKey}");
 			}
 
+			var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
+
 			try
 			{
-				if (FocusManager.GetFocusedElement() is not FrameworkElement element)
+				if (FocusManager.GetFocusedElement(xamlRoot) is not FrameworkElement element)
 				{
-					element = WinUICoreServices.Instance.MainRootVisual;
+					element = WinUICoreServices.Instance.VisualRoot as FrameworkElement;
 				}
 
 				var routedArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
@@ -250,6 +268,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
+
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
@@ -280,6 +299,7 @@ namespace Microsoft.UI.Xaml
 					handler = (s, e) =>
 					{
 						LayoutProvider.Start(view);
+						ContentViewAttachedToWindow?.Invoke(this, EventArgs.Empty);
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -288,6 +308,8 @@ namespace Microsoft.UI.Xaml
 
 			base.SetContentView(view);
 		}
+
+		internal event EventHandler ContentViewAttachedToWindow;
 
 		protected override void OnResume()
 		{
@@ -405,8 +427,16 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
+#if NET10_0_OR_GREATER
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		public static string GetTypeAssemblyFullName(string type) =>
+			throw new NotSupportedException("`static` methods with [Export] are not supported on NativeAOT.");
+#else   // !NET10_0_OR_GREATER
 		[Java.Interop.Export(nameof(GetTypeAssemblyFullName))]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
+#endif  // !NET10_0_OR_GREATER
+
+		internal void SetRootElement(ViewGroup rootElement) => RootView = rootElement;
 	}
 }

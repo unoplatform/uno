@@ -159,8 +159,8 @@ namespace Microsoft.UI.Xaml.Controls
 				int targetColor = sourceColor;
 				if (sourceColor != 0)
 				{
-					int sourceAlpha = Android.Graphics.Color.GetAlphaComponent(sourceColor);
-					targetColor = new Android.Graphics.Color(targetR, targetG, targetB, sourceAlpha);
+					int sourceAlpha = AColor.GetAlphaComponent(sourceColor);
+					targetColor = new AColor(targetR, targetG, targetB, sourceAlpha);
 				}
 				targetPixels[i] = targetColor;
 			}

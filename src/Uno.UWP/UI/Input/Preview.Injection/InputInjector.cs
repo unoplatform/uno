@@ -58,7 +58,14 @@ public partial class InputInjector
 	{
 		if (_touch is not null)
 		{
-			var cancel = new InjectedInputTouchInfo { PointerInfo = new() { PointerOptions = InjectedInputPointerOptions.Canceled } };
+			var cancel = new InjectedInputTouchInfo
+			{
+				PointerInfo = new()
+				{
+					PointerId = 42,
+					PointerOptions = InjectedInputPointerOptions.Canceled
+				}
+			};
 
 			_target.InjectPointerRemoved(cancel.ToEventArgs(_touch.Value.state));
 

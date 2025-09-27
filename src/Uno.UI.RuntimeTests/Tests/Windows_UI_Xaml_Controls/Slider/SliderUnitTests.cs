@@ -7,7 +7,7 @@ using Uno.UI.RuntimeTests;
 using static Private.Infrastructure.TestServices;
 using Windows.System;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Controls;
+namespace Microsoft.UI.Xaml.Tests.Controls;
 
 [TestClass]
 [RunsOnUIThread]

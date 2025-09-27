@@ -3,46 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TabViewExternalTornOutTabsDroppedEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal TabViewExternalTornOutTabsDroppedEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int DropIndex
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int TabViewExternalTornOutTabsDroppedEventArgs.DropIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TabViewExternalTornOutTabsDroppedEventArgs.DropIndex");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object[] Items
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object[] TabViewExternalTornOutTabsDroppedEventArgs.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%5B%5D%20TabViewExternalTornOutTabsDroppedEventArgs.Items");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement[] Tabs
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UIElement[] TabViewExternalTornOutTabsDroppedEventArgs.Tabs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%5B%5D%20TabViewExternalTornOutTabsDroppedEventArgs.Tabs");
-			}
-		}
-#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppedEventArgs.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppedEventArgs.Tabs.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppedEventArgs.DropIndex.get

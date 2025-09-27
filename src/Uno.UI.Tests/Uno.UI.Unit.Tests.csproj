@@ -6,7 +6,6 @@
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
 		<AssemblyName>Uno.UI.Tests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>

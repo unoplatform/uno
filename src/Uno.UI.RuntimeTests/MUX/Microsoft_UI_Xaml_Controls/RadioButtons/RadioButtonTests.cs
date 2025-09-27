@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Common;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;

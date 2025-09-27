@@ -41,14 +41,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[
-			"Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter"
-			] = 
+			Resources["Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter"] = 
 			new global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter
 			{
 				// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 11:10)
@@ -134,29 +134,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		{
 			this.Bindings.UpdateResources();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.TextBlock topLevel
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_topLevelSubject.ElementInstance;
-			}
-			set
-			{
-				_topLevelSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_topLevelSubject.ElementInstance;
+			set => _topLevelSubject.ElementInstance = value;
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
-			}
-			set
-			{
-				_component_0_Holder.Instance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
 		}
 		private interface IBinding_Xaml_Object_With_Common_Properties_Bindings
 		{
@@ -169,6 +158,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
 		private IBinding_Xaml_Object_With_Common_Properties_Bindings Bindings;
 		#pragma warning restore 0169
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class Binding_Xaml_Object_With_Common_Properties_Bindings : IBinding_Xaml_Object_With_Common_Properties_Bindings
 		{
@@ -199,6 +190,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			}
 			void IBinding_Xaml_Object_With_Common_Properties_Bindings.StopTracking()
 			{
+				var owner = Owner;
 			}
 		}
 	}

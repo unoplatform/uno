@@ -52,4 +52,3 @@ Unsupported targets, where only the first frame is shown, as of Uno Platform 5.4
 
 - netX.0-ios
 - netX.0-android
-- netX.0-maccatalyst

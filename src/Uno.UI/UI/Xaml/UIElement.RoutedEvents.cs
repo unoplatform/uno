@@ -628,6 +628,7 @@ namespace Microsoft.UI.Xaml
 			var isHandled = IsHandled(args);
 			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
 				&& !ctx.IsInternal
+				&& !ctx.IsCleanup
 				&& _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
 				&& handlers is { Count: > 0 })
 			{

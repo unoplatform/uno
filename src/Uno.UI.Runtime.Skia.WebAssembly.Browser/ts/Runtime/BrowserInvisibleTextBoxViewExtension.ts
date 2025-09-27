@@ -2,6 +2,7 @@
 	export class BrowserInvisibleTextBoxViewExtension {
 		private static _exports: any;
 		private static readonly inputElementId = "uno-input";
+		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
 		private static inputElement: HTMLInputElement | HTMLTextAreaElement;
 		private static isInSelectionChange: boolean;
 
@@ -41,7 +42,7 @@
 			}
 		}
 
-		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean) {
+		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
 			const input = document.createElement(acceptsReturn && !isPasswordBox ? "textarea" : "input");
 			if (isPasswordBox) {
 				(input as HTMLInputElement).type = "password";
@@ -68,6 +69,9 @@
 			input.style.left = "0px";
 			input.value = text;
 
+			input.setAttribute("inputmode", inputMode);
+			input.setAttribute("enterkeyhint", enterKeyHint);
+
 			input.oninput = ev => {
 				let input = ev.target as HTMLInputElement;
 				if (input.selectionDirection == "backward") {
@@ -83,7 +87,7 @@
 			};
 
 			input.onkeydown = ev => {
-				if (ev.ctrlKey) {
+				if (ev.ctrlKey || (ev.metaKey && BrowserInvisibleTextBoxViewExtension.isMacOS)) {
 					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
 					// So, we do stopPropagation instead of preventDefault
 					if (ev.key == "c" || ev.key == "C" || ev.key == "v" || ev.key == "V" || ev.key == "x" || ev.key == "X") {
@@ -99,24 +103,38 @@
 			BrowserInvisibleTextBoxViewExtension.inputElement = input;
 		}
 
-		public static focus(focused: boolean, isPassword: boolean, text: string, acceptsReturn: boolean) {
-			if (focused) {
-				// NOTE: We can get focused as true while we have inputElement.
-				// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
-				// For such case, we do call StartEntry twice without any EndEntry in between.
-				// So, cleanup the existing inputElement and create a new one.
-				BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
-				this.createInput(isPassword, text, acceptsReturn);
-
-				// It's necessary to actually focus the native input, not just make it visible. This is particularly
-				// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
-				// events and properly recognize password inputs to not read it.
-				BrowserInvisibleTextBoxViewExtension.inputElement.focus();
-			} else {
-				// reset focus
-				(document.activeElement as HTMLElement)?.blur();
-				BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
+		public static setEnterKeyHint(enterKeyHint: string) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.setAttribute("enterkeyhint", enterKeyHint);
 			}
+		}
+
+		public static setInputMode(inputMode: string) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.setAttribute("inputmode", inputMode);
+			}
+		}
+
+		public static focus(isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+			// NOTE: We can get focused as true while we have inputElement.
+			// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
+			// For such case, we do call StartEntry twice without any EndEntry in between.
+			// So, cleanup the existing inputElement and create a new one.
+			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
+			this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
+
+			// It's necessary to actually focus the native input, not just make it visible. This is particularly
+			// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
+			// events and properly recognize password inputs to not read it.
+			BrowserInvisibleTextBoxViewExtension.inputElement.focus();
+		}
+
+		public static blur() {
+			// reset focus
+			(document.activeElement as HTMLElement)?.blur();
+			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
 		}
 
 		public static setText(text: string) {

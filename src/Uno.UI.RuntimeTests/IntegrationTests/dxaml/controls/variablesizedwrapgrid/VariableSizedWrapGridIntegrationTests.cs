@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Common;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using System.Collections.Generic;

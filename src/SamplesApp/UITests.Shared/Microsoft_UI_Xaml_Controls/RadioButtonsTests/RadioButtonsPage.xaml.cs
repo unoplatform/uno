@@ -11,12 +11,12 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using System.Collections.ObjectModel;
 
-using RadioButtons = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioButtons;
+using RadioButtons = Microsoft.UI.Xaml.Controls.RadioButtons;
 #if HAS_UNO
 using RadioButtonsTestHooks = Microsoft.UI.Private.Controls.RadioButtonsTestHooks;
 #endif
 using System.Collections;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests

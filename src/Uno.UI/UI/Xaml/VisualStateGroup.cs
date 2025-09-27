@@ -29,7 +29,6 @@ namespace Microsoft.UI.Xaml
 		private readonly SerialDisposable _parentLoadedDisposable = new();
 
 		private (VisualState state, VisualTransition transition) _current;
-		private bool _pendingOnOwnerElementChanged;
 
 		public event VisualStateChangedEventHandler CurrentStateChanging;
 
@@ -148,11 +147,25 @@ namespace Microsoft.UI.Xaml
 			if (this.GetParent() is IFrameworkElement fe)
 			{
 				OnOwnerElementChanged();
-				fe.Loaded += OnOwnerElementLoaded;
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// On Skia, we match WinUI and initialize the visual triggers of a Control in
+				// EmterImpl and/or InvokeApplyTemplate. Somehow the state triggers are also
+				// applied when the VisualStates are being set on a non-Control. We fallback
+				// to listening to Loaded to evaluate the triggers in that case.
+				if (fe is not Control)
+#endif
+				{
+					fe.Loaded += OnOwnerElementLoaded;
+				}
 				fe.Unloaded += OnOwnerElementUnloaded;
 				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
 				{
-					fe.Loaded -= OnOwnerElementLoaded;
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					if (fe is not Control)
+#endif
+					{
+						fe.Loaded -= OnOwnerElementLoaded;
+					}
 					fe.Unloaded -= OnOwnerElementUnloaded;
 				});
 			}
@@ -160,23 +173,11 @@ namespace Microsoft.UI.Xaml
 
 		private void OnOwnerElementChanged()
 		{
-			if (this.GetParent() is IFrameworkElement { IsParsing: true })
-			{
-				_pendingOnOwnerElementChanged = true;
-				return;
-			}
-
 			ExecuteOnTriggers(t => t.OnOwnerElementChanged());
 		}
 
-		private void OnOwnerElementLoaded(object sender, RoutedEventArgs args)
+		internal void OnOwnerElementLoaded(object sender, RoutedEventArgs args)
 		{
-			if (_pendingOnOwnerElementChanged)
-			{
-				_pendingOnOwnerElementChanged = false;
-				OnOwnerElementChanged();
-			}
-
 			ExecuteOnTriggers(t => t.OnOwnerElementLoaded());
 		}
 
@@ -515,11 +516,6 @@ namespace Microsoft.UI.Xaml
 
 		internal void RefreshStateTriggers(bool force = false)
 		{
-			if (this.GetParent() is IFrameworkElement { IsParsing: true })
-			{
-				return;
-			}
-
 			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
 			if (newState == oldState)

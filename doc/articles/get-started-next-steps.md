@@ -4,14 +4,15 @@ uid: Uno.GetStarted.NextSteps
 
 # Next steps
 
-If you have already [completed the initial getting started tutorial](ref:Uno.Workshop.Counter) and you’re now ready to learn more, these resources will help you on your way.
+If you have already [completed the initial getting started tutorial](xref:Uno.Workshop.Counter) and you’re now ready to learn more, these resources will help you on your way.
 
 You will find below resources provided by our team, the community and Microsoft.
 
-## Uno Platform provided Workshops / Step-by-step Tutorials (Free)
+## Uno Platform provided Workshops / Step-by-step Tutorials / Samples (Free)
 
 - [Simple Calculator Workshop](external/workshops/simple-calc/README.md). A level 100 workshop you can complete in 1 hour. It will guide you through the process of setting up your developer environment and learning essential tools, libraries, and patterns to help you develop your apps with Uno Platform.
 - [Tube Player Workshop](external/workshops/tube-player/README.md). A level 200 workshop you can complete in 2 hours. It will guide through the creation of an Uno Platform application that enables the user to search for and stream YouTube videos. You will learn how to easily import Figma designs into your application.
+- [Uno Chefs Sample](xref:Uno.Chefs.Overview). A robust sample app showcasing the power of Uno. With Uno Chefs, you’ll explore how to build an interactive recipe app, demonstrating everything from UI customization, navigation, and state management to integrating advanced features like media playback, responsive design, and external APIs. Plus, you can dive deeper into the app’s [Recipe Books](xref:Uno.Recipes.Overview) to see step-by-step guides on how to implement various Uno features and solve real-world problems.
 
 ## Community Provided Learning Resources (Free and Paid)
 
@@ -69,7 +70,7 @@ If you are looking to bring your cross-platform apps to Raspberry Pi with Uno Pl
 
 ### XAML Fundamentals for Web and Mobile (Free)
 
-Any UWP/WinUI/XAML material is a great starting point as all we do is take that over the Uno Platform bridge. To that point, one Uno Platform contributor and Microsoft MVP, Nick Randolph has been revitalizing older XAML resources on his [.NET Travels blog.](https://nicksnettravels.builttoroam.com/xaml-basics/) Uno Platform will be continuing the series on our blog.
+Any WinUI/XAML material is a great starting point, as all we do is take that over the Uno Platform bridge. To that point, one Uno Platform contributor and Microsoft MVP, Nick Randolph, has been revitalizing older XAML resources on his [.NET Travels blog](https://nicksnettravels.builttoroam.com/xaml-basics/). Uno Platform will be continuing the series on our blog.
 
 ## Microsoft docs and blogs on Uno Platform (Free)
 
@@ -83,7 +84,7 @@ Any UWP/WinUI/XAML material is a great starting point as all we do is take that 
 
 ### Uno Team Community Support
 
-If you have a question about Uno Platform that others might benefit from, post it on [Uno Platform GitHub discussions](https://github.com/unoplatform/uno/discussions) or If you think you've encountered a bug (e.g. something works on WinAppSDK or UWP but not on another platform), [check for an existing issue on GitHub]( https://github.com/unoplatform/uno/issues) and create one if none exists. We don't like bugs, but we do like bug reports!
+If you have a question about Uno Platform that others might benefit from, post it on [Uno Platform GitHub discussions](https://github.com/unoplatform/uno/discussions) or If you think you've encountered a bug (e.g. something works on WinAppSDK but not on another platform), [check for an existing issue on GitHub]( https://github.com/unoplatform/uno/issues) and create one if none exists. We don't like bugs, but we do like bug reports!
 
 For more chat-like troubleshooting, visit the Uno Platform team and community on our [Discord Server](https://platform.uno/discord). Both have our engineering team monitoring discussions and answering questions.
 

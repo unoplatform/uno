@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-	      Padding="32,38">
+	      Padding="32,32" x:Name="parentView">
 
 		<toolkit:ElevatedView Background="Gray"
 		                      ShadowColor="Black"

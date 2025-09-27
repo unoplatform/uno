@@ -14,8 +14,15 @@ public enum UnoFeature
 	[UnoArea(UnoArea.Core)]
 	Foldable,
 
+	// NOTE: Deprecated in favor of MediaPlayerElement, but kept for compatibility
 	[UnoArea(UnoArea.Core)]
 	MediaElement,
+
+	[UnoArea(UnoArea.Core)]
+	MediaPlayerElement,
+
+	[UnoArea(UnoArea.Core)]
+	WebView,
 
 	[UnoArea(UnoArea.CSharpMarkup)]
 	CSharpMarkup,
@@ -46,6 +53,12 @@ public enum UnoFeature
 
 	[UnoArea(UnoArea.Extensions)]
 	Http,
+
+	[UnoArea(UnoArea.Extensions)]
+	HttpKiota,
+
+	[UnoArea(UnoArea.Extensions)]
+	HttpRefit,
 
 	[UnoArea(UnoArea.Extensions)]
 	Localization,
@@ -102,5 +115,5 @@ public enum UnoFeature
 	Svg,
 
 	[UnoArea(UnoArea.Core)]
-	GLCanvas
+	GLCanvas,
 }

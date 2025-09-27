@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
@@ -12,6 +13,33 @@ namespace Uno.Helpers
 	{
 		internal const string QueryKey = "unoprotocolactivation";
 
+		private static readonly IEnumerable<string> _predefinedPrefixes = [
+			"bitcoin",
+			"ftp",
+			"ftps",
+			"geo",
+			"im",
+			"irc",
+			"ircs",
+			"magnet",
+			"mailto",
+			"matrix",
+			"mms",
+			"news",
+			"nntp",
+			"openpgp4fpr",
+			"sftp",
+			"sip",
+			"sms",
+			"smsto",
+			"ssh",
+			"tel",
+			"urn",
+			"webcal",
+			"wtai",
+			"xmpp"
+		];
+
 		/// <summary>
 		/// Registers a custom URI scheme for protocol activation on WASM.
 		/// </summary>
@@ -21,39 +49,38 @@ namespace Uno.Helpers
 		public static void RegisterCustomScheme(string scheme, Uri domain, string prompt)
 		{
 			// rules as per https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler
-
-			// The custom scheme's name begins with web+
-			if (!scheme.StartsWith("web+", StringComparison.Ordinal))
+			if (!_predefinedPrefixes.Contains(scheme))
 			{
-				throw new ArgumentException(
-					"Scheme must start with 'web+'",
-					nameof(scheme));
-			}
-
-			// The custom scheme's name includes at least 1 letter after the web+ prefix
-			if (scheme.Length == "web+".Length)
-			{
-				throw new ArgumentException(
-					"Scheme must include at least 1 letter after 'web+' prefix",
-					nameof(scheme));
-			}
-
-			// The custom scheme has only lowercase ASCII letters in its name.
-			for (int i = "web+".Length; i < scheme.Length; i++)
-			{
-				if (scheme[i] is not (>= 'a' and <= 'z'))
+				// The custom scheme's name begins with web+
+				if (!scheme.StartsWith("web+", StringComparison.Ordinal))
 				{
 					throw new ArgumentException(
-						"Scheme must include only lowercase ASCII letters after " +
-						"the 'web+' prefix",
+						"Scheme must start with 'web+'",
 						nameof(scheme));
+				}
+
+				// The custom scheme's name includes at least 1 letter after the web+ prefix
+				if (scheme.Length == "web+".Length)
+				{
+					throw new ArgumentException(
+						"Scheme must include at least 1 letter after 'web+' prefix",
+						nameof(scheme));
+				}
+
+				// The custom scheme has only lowercase ASCII letters in its name.
+				for (int i = "web+".Length; i < scheme.Length; i++)
+				{
+					if (scheme[i] is not (>= 'a' and <= 'z'))
+					{
+						throw new ArgumentException(
+							"Scheme must include only lowercase ASCII letters after " +
+							"the 'web+' prefix",
+							nameof(scheme));
+					}
 				}
 			}
 
-			if (domain == null)
-			{
-				throw new ArgumentNullException(nameof(domain));
-			}
+			ArgumentNullException.ThrowIfNull(domain);
 
 			if (!domain.IsAbsoluteUri)
 			{

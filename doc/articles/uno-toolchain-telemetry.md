@@ -4,7 +4,7 @@ uid: Uno.Development.ToolchainTelemetry
 
 # Uno Platform Build tools telemetry
 
-The [Uno Platform SDK](https://github.com/unoplatform/uno) includes a [telemetry feature](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.Telemetry.cs)
+The [Uno Platform SDK](https://github.com/unoplatform/uno) includes a [telemetry feature](https://github.com/unoplatform/uno.devtools.telemetry)
 that collects usage information. It is important that the Uno Platform Team understands how the build tools are used so they can be improved.
 
 The collected data is anonymous.
@@ -32,8 +32,9 @@ The feature collects the following data:
 * The step invoked
 * The duration of the step
 * The exception type if the generation fails
-* If the build is running under a CI (Travis, Azure Devops, AppVeyor, Jenkins)
-* Operating system and version
+* If the build is running under a CI (Travis, Azure Devops, AppVeyor, Jenkins, GitHub Actions, BitBucket, Build kite, Codebuild, Drone, MyGet, Space, TeamCity)
+* Operating system name, version, kernel version, and architecture
+* The current culture
 * The current Uno Platform nuget package version
 * Target frameworks
 * Hashed (SHA256) current working directory

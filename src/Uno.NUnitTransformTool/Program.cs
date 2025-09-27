@@ -76,6 +76,8 @@ namespace Uno.ReferenceImplComparer
 
 			File.WriteAllText(outputFile, string.Join(" | ", failedTests));
 
+			Console.WriteLine($"Found {failedTests.Count} failed tests in {inputFile}.");
+
 			return 0;
 		}
 

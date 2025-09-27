@@ -29,7 +29,7 @@ namespace WebAssembly
 #if NET9_0_OR_GREATER
 			public static void InvokeOnMainThread()
 			{
-				throw new NotSupportedException($"Uno Platform net9.0 does not support threading yet.");
+				throw new NotSupportedException($"Uno Platform on net10.0 does not support threading yet.");
 			}
 #else
 			// Uno-Specific implementation for https://github.com/dotnet/runtime/issues/69409.

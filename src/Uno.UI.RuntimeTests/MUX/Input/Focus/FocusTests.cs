@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
-using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;
@@ -549,7 +549,8 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			}
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		[TestProperty("Hosting:Mode", "UAP")]   // Bug 24196441: Focus engagement bugs in lifted islands
 		public async Task VerifyShiftTabWhenOnceTabFocusNavigationSet()
 		{

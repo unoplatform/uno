@@ -25,6 +25,7 @@ namespace SamplesApp.UITests.Runtime
 		private const string TestResultsOutputTempFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_TEMP_FILE_PATH";
 		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
 		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
+		private const string TestFilterVariable = "UITEST_RUNTIME_TESTS_FILTER";
 
 		[Test]
 		[AutoRetry(tryCount: 2)]
@@ -59,6 +60,7 @@ namespace SamplesApp.UITests.Runtime
 				{
 					unitTestsControl.SetDependencyPropertyValue("CITestGroup", Environment.GetEnvironmentVariable(TestGroupVariable));
 					unitTestsControl.SetDependencyPropertyValue("CITestGroupCount", Environment.GetEnvironmentVariable(TestGroupCountVariable));
+					unitTestsControl.SetDependencyPropertyValue("CITestFilter", Environment.GetEnvironmentVariable(TestFilterVariable));
 				}
 			}
 

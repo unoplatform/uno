@@ -37,21 +37,6 @@ More troubleshooting information is available [in this section](xref:Uno.Feature
 
 See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-references) to solve this issue.
 
-## Deploying an Android app takes a long time
-
-Android deployment requires a few considerations:
-
-- Android physical device
-  - Make sure to have a good cable (USB 3 or C) to have a good connection
-  - Avoid debugging through wifi
-- Android Emulators
-  - Use an Android x86_64 emulator. If not, [create a new one](https://learn.microsoft.com/dotnet/maui/android/emulator/device-manager).
-  - Ensure that you have either Hyper-V or AEHD enabled. (See [Microsoft's documentation](https://learn.microsoft.com/dotnet/maui/android/emulator/hardware-acceleration))
-  - Try disabling `Fast Deployment` in your app configuration
-        1. Open your project properties
-        1. In the android section search for `Fast Deployment`
-        1. uncheck all target platforms
-
 ### My application does not start under WSL
 
 Your application may fail to run under WSL for multiple reasons:
@@ -60,13 +45,17 @@ Your application may fail to run under WSL for multiple reasons:
 - [WSLg](xref:Uno.GetStarted.vs2022#additional-setup-for-windows-subsystem-for-linux-wsl) has not been installed
 - [X11 dependencies](xref:Uno.GetStarted.vs2022#additional-setup-for-skia-desktop-projects) have not been installed
 
+### New Projects in Existing Solutions
+
+Creating a new Uno Platform project inside an existing solution that wasn’t originally created with “Place solution and project in the same directory” is not supported by the `unoapp` templates. You can work around this by following the guide: [Adding Platforms to an Existing Project](xref:Uno.Guides.AddAdditionalPlatforms).
+
 ## Legacy issues
 
 ### The XAML editor shows `The type 'page' does not support direct content` message
 
 This issue has been fixed in Visual Studio 17.8 and later.
 
-If you're using an earlier version, XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one.
+If you're using an earlier version, XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active target framework is not the WinAppSDK one.
 
 To work around this issue, close all XAML editors, open a C# file and select the '[MyApp].Windows' in the top-left drop-down list of the text editor sector. Once selected, re-open the XAML file.
 

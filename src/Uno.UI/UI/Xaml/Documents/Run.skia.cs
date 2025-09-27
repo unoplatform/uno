@@ -36,11 +36,13 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private SegmentInfo GetSegmentStartingFrom(int i, ReadOnlySpan<char> text)
 		{
-			var fontInfo = FontInfo;
+			var skFont = FontInfo.SKFont;
+
+			var defaultTypeface = skFont.Typeface;
 
 			if (i < text.Length && text[i] == '\t')
 			{
-				return (LeadingSpaces: 0, TrailingSpaces: 0, LineBreakLength: 0, Typeface: fontInfo.SKFont.Typeface, NextStartingIndex: i + 1);
+				return (LeadingSpaces: 0, TrailingSpaces: 0, LineBreakLength: 0, Typeface: defaultTypeface, NextStartingIndex: i + 1);
 			}
 
 			int leadingSpaces = 0;
@@ -52,12 +54,14 @@ namespace Microsoft.UI.Xaml.Documents
 			while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]) && text[i] != '\t')
 			{
 				leadingSpaces++;
+
 				// The leading spaces should use the originally specified font.
 				// This is very important for two scenarios:
 				// 1. A fallback font that may be calculated later in this method may have different AdvanceX value for space character
 				// 2. The specified font could actually contain actual drawing for the space character. This is extremely uncommon and is currently
 				//    not supported by the drawing logic, where we just advance x-coordinate to emulate space characters.
-				segmentTypeface = fontInfo.SKFont.Typeface;
+				segmentTypeface = defaultTypeface;
+
 				i++;
 			}
 
@@ -80,7 +84,7 @@ namespace Microsoft.UI.Xaml.Documents
 				{
 					if (char.IsWhiteSpace(text[i]))
 					{
-						if (segmentTypeface is not null && segmentTypeface != fontInfo.SKFont.Typeface)
+						if (segmentTypeface is not null && segmentTypeface != defaultTypeface)
 						{
 							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
 							// The reasons are the same as explained for leading spaces in the beginning of this method.
@@ -96,8 +100,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 				var (codepoint, codepointLength) = GetCodePoint(text, i);
 
-				var currentTypeface = fontInfo.SKFont.ContainsGlyph(codepoint)
-					? fontInfo.SKFont.Typeface
+				var currentTypeface = skFont.ContainsGlyph(codepoint)
+					? defaultTypeface
 					: SKFontManager.Default.MatchCharacter(codepoint);
 
 				if (currentTypeface is null)
@@ -136,7 +140,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 					if (char.IsWhiteSpace(text[i]) && text[i] != '\t')
 					{
-						if (segmentTypeface is not null && segmentTypeface != fontInfo.SKFont.Typeface)
+						if (segmentTypeface is not null && segmentTypeface != defaultTypeface)
 						{
 							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
 							// The reasons are the same as explained for leading spaces in the beginning of this method.

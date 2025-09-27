@@ -52,7 +52,7 @@
 
 * [Windows.System.UserProfile](../features/windows-system-userprofile.md)
 
-* [Windows.Storage](../features/windows-storage.md)
+* [Windows.Storage](../features/file-management.md)
 
 * [Windows.Storage.Pickers](../features/windows-storage-pickers.md)
 

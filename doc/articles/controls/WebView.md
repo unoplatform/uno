@@ -1,8 +1,12 @@
-# `WebView` (`WebView2`)
+---
+uid: Uno.Controls.WebView2
+---
 
-> Uno Platform supports two `WebView` controls - a legacy `WebView` and a modernized `WebView2` control. For new development, we strongly recommend `WebView2` as it will get further improvements in the future.
+# `WebView2` (`WebView`)
 
-`WebView2` is currently supported on Windows, Android, iOS, macOS (Catalyst), Desktop (Windows), and WebAssembly.
+> Uno Platform supports two `WebView` controls - the `WebView2` control and the legacy `WebView`. For new development, we strongly recommend `WebView2` as it will get further improvements in the future.
+
+`WebView2` is supported on all Uno Platform targets.
 
 ## Basic usage
 
@@ -24,8 +28,19 @@ Afterward, you can perform actions such as navigating to an HTML string:
 MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 ```
 
+## Desktop support
+
+To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in your `.csproj`:
+
+```diff
+<UnoFeatures>
+<!-- Existing features -->
++  WebView;
+</UnoFeatures>
+```
+
 > [!IMPORTANT]
-> For Skia WPF, you should add `<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />` to your csproj.
+> If your project's desktop builder in `Platforms/Desktop/Program.cs` uses `.UseWindows()`, you'll also need to add the `<UnoUseWebView2WPF>true</UnoUseWebView2WPF>` property for the integration to work. However, it is recommended to [migrate to `.UseWin32()`](xref:Uno.Development.MigratingToUno6) for better performance and reliability.
 
 ## WebAssembly support
 
@@ -68,7 +83,7 @@ function postWebViewMessage(message){
             // Android
             unoWebView.postMessage(JSON.stringify(message));
         } else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
-            // iOS and macOS (Catalyst)
+            // iOS and macOS
             webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
         }
     }
@@ -135,9 +150,9 @@ The web files can reference each other in a relative path fashion, for example, 
 
 Is referencing a `site.js` file inside the `js` subfolder.
 
-## iOS and macOS (Catalyst) specifics
+## iOS specifics
 
-From MacOS, inspecting applications using `WebView2` controls using the Safari Developer Tools is possible. [Here's](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) a detailed guide on how to do it. To make this work, enable this feature in your app by adding the following capabilities in your `App.Xaml.cs`:
+From macOS, inspecting applications using `WebView2` controls using the Safari Developer Tools is possible. [Here's](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) a detailed guide on how to do it. To make this work, enable this feature in your app by adding the following capabilities in your `App.Xaml.cs`:
 
 ```csharp
 public App()
@@ -152,3 +167,29 @@ public App()
 > [!IMPORTANT]
 >
 > This feature will only work for security reasons when the application runs in Debug mode.
+
+## X11 specifics
+
+In order to use WebView2 on Linux, you'll need to install `libwebkit2gtk` and `libgtk3-0`:
+
+- On Ubuntu 22.04:
+
+  ```bash
+  sudo apt install libwebkit2gtk-4.0-37
+  ```
+
+- On Ubuntu 24.04:
+
+  ```bash
+  sudo apt install libgtk-3-0 libwebkit2gtk-4.1-dev
+  ```
+
+It's overall preferable to use libwebkit2gtk 4.1 whenever possible in order to get http headers support, if your environment allows for it.
+
+## WinAppSDK Specifics
+
+When using the WebView2 and running on WinAppSDK, make sure to create an `x64` or `ARM64` configuration:
+
+- In the Visual Studio configuration manager, create an `x64` or `ARM64` solution configuration
+- Assign it to the Uno Platform project
+- Debug your application using the configuration relevant to your current environment

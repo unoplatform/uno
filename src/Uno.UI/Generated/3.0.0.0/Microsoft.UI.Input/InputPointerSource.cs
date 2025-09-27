@@ -10,15 +10,15 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property Cursor
 		// Skipping already declared property DeviceKinds
-		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerMoved.add
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerEntered.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.DeviceKinds.get
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerCaptureLost.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerCaptureLost.remove
-		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerEntered.add
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Cursor.set
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerEntered.remove
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerExited.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerExited.remove
-		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Cursor.set
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerMoved.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerMoved.remove
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerPressed.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerPressed.remove

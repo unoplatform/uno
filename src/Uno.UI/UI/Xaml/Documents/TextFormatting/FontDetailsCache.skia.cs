@@ -41,7 +41,7 @@ internal static class FontDetailsCache
 			if (await StorageFileHelper.ExistsInPackage(path))
 			{
 				var manifestFile = await StorageFile.GetFileFromApplicationUriAsync(manifestUri);
-				var manifestStream = await manifestFile.OpenStreamForReadAsync();
+				using var manifestStream = await manifestFile.OpenStreamForReadAsync();
 				uri = new Uri(FontManifestHelpers.GetFamilyNameFromManifest(manifestStream, weight, style, stretch));
 			}
 		}
@@ -59,7 +59,7 @@ internal static class FontDetailsCache
 		}
 
 		var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-		var stream = await file.OpenStreamForReadAsync();
+		using var stream = await file.OpenStreamForReadAsync();
 		return stream is null ? null : SKTypeface.FromStream(stream);
 	}
 
@@ -120,15 +120,15 @@ internal static class FontDetailsCache
 
 		if (typeface == null)
 		{
-			if (typeof(Inline).Log().IsEnabled(LogLevel.Warning))
+			if (typeof(Inline).Log().IsEnabled(LogLevel.Debug))
 			{
 				if (canChange)
 				{
-					typeof(Inline).Log().LogWarning($"{key} is still loading, using system default for now.");
+					typeof(Inline).Log().LogDebug($"{key} is still loading, using system default for now.");
 				}
 				else
 				{
-					typeof(Inline).Log().LogWarning($"{key} could not be found, using system default");
+					typeof(Inline).Log().LogDebug($"{key} could not be found, using system default");
 				}
 			}
 

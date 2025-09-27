@@ -49,7 +49,6 @@ namespace Uno.UI.Runtime.Skia {
 
 			await Accessibility.setup();
 
-			document.body.addEventListener("focusin", this.onfocusin);
 			window.addEventListener("resize", x => this.resize());
 
 			window.addEventListener("contextmenu", x => {
@@ -104,18 +103,20 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		private resize() {
-			this.onResize(this.owner, document.documentElement.clientWidth, document.documentElement.clientHeight);
+			var rect = document.documentElement.getBoundingClientRect();
+			this.onResize(this.owner, rect.width, rect.height, globalThis.devicePixelRatio);
 		}
 
 		public static setCursor(cssCursor: string) {
 			document.body.style.cursor = cssCursor;
 		}
 
-		private onfocusin(event: Event) {
-			//const newFocus = event.target;
-			//const handle = (newFocus as HTMLElement).getAttribute("XamlHandle");
-			//const htmlId = handle ? Number(handle) : -1; // newFocus may not be an Uno element
-			//WindowManager.focusInMethod(htmlId);
+		public resizeWindow(width: number, height: number) {
+			window.resizeTo(width, height);
+		}
+
+		public moveWindow(x: number, y: number) {
+			window.moveTo(x, y);
 		}
 	}
 }

@@ -12,7 +12,7 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml

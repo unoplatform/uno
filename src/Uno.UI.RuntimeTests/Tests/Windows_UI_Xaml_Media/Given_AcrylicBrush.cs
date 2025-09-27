@@ -1,23 +1,22 @@
-﻿using System;
+﻿#if __SKIA__
+using System;
+using System.IO;
 using System.Threading.Tasks;
-using Uno.UI.RuntimeTests.Helpers;
+using FluentAssertions;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Windows.Storage;
-using System.IO;
-using Uno.UITest.Helpers.Queries;
-
-#if __SKIA__
 using SkiaSharp;
-#endif
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Storage;
+
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 
-#if __SKIA__
 [TestClass]
 public class Given_AcrylicBrush
 {
@@ -70,7 +69,7 @@ public class Given_AcrylicBrush
 
 		using var snapshot = surface.Snapshot();
 
-		var compositor = Window.Current.Compositor;
+		var compositor = Compositor.GetSharedCompositor();
 		using var brush = compositor.CreateSurfaceBrush(new SkiaCompositionSurface(snapshot));
 		using var visual = compositor.CreateSpriteVisual();
 		visual.Size = new(200, 200);
@@ -110,6 +109,36 @@ public class Given_AcrylicBrush
 		var actualImg = await UITestHelper.ScreenShot(actualElm);
 
 		return (expectedImg, actualImg);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20634")]
+	public async Task When_Idle()
+	{
+		var scrollBar = new ScrollBar { Orientation = Orientation.Vertical, Width = 30, Height = 200 };
+		var sp = new StackPanel
+		{
+			Children =
+			{
+				new MenuFlyoutPresenter(),
+				scrollBar
+			}
+		};
+
+		scrollBar.LayoutUpdated += (_, _) =>
+		{
+			VisualStateManager.GoToState(scrollBar, "MouseIndicator", true);
+			VisualStateManager.GoToState(scrollBar, "Expanded", true);
+		};
+
+		await UITestHelper.Load(sp);
+
+		var renderInvalidateCount = 0;
+		sp.XamlRoot.RenderInvalidated += () => renderInvalidateCount++;
+
+		await Task.Delay(TimeSpan.FromSeconds(5));
+		renderInvalidateCount.Should().BeLessThan(100);
 	}
 }
 #endif

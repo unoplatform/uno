@@ -18,8 +18,6 @@
 		<RootNamespace>Uno.UI.Runtime.Skia.MacOS</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -29,7 +27,7 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 
@@ -42,10 +40,7 @@
 	</Target>
 
 	<ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)UnoNativeMac/build/$(Configuration)/libUnoNativeMac.*"
-				PackagePath="runtimes/osx/native"
-				Pack="true"
-				Visible="False" />
+		<None Include="$(MSBuildThisFileDirectory)UnoNativeMac/build/$(Configuration)/libUnoNativeMac.*" PackagePath="runtimes/osx/native" Pack="true" Visible="False" />
 	</ItemGroup>
 
 	<ItemGroup>

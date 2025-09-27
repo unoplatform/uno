@@ -54,7 +54,6 @@ internal static class ConditionalTestHelper
 			RuntimeTestPlatforms.NativeIOS => IsNativeIOS(),
 			RuntimeTestPlatforms.NativeMacCatalyst => IsNativeMacCatalyst(),
 			RuntimeTestPlatforms.NativeTvOS => IsNativetvOS(),
-			RuntimeTestPlatforms.SkiaGtk => IsSkia() && IsSkiaGtk(),
 			RuntimeTestPlatforms.SkiaWpf => IsSkia() && IsSkiaWpf(),
 			RuntimeTestPlatforms.SkiaWin32 => IsSkia() && IsSkiaWin32(),
 			RuntimeTestPlatforms.SkiaX11 => IsSkia() && IsSkiaX11(),
@@ -89,9 +88,6 @@ internal static class ConditionalTestHelper
 #else
 		false;
 #endif
-
-	private static bool IsSkiaGtk()
-		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Gtk");
 
 	private static bool IsSkiaWpf()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Wpf");

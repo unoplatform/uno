@@ -16,38 +16,6 @@
 
 		<dependencies>
 
-			<!-- net8.0-ios17.0 -->
-			<group targetFramework="net8.0-ios17.0">
-				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
-				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
-
-				<dependency id="Newtonsoft.Json" version="13.0.3" />
-			</group>
-
-			<!-- net8.0-tvos17.0 -->
-			<group targetFramework="net8.0-tvos17.0">
-				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
-				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
-
-				<dependency id="Newtonsoft.Json" version="13.0.3" />
-			</group>
-
-			<!-- net8.0-maccatalyst17.0 -->
-			<group targetFramework="net8.0-maccatalyst17.0">
-				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
-				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
-
-				<dependency id="Newtonsoft.Json" version="13.0.3" />
-			</group>
-
-			<!-- net8.0-android -->
-			<group targetFramework="net8.0-android">
-				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
-				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
-
-				<dependency id="Newtonsoft.Json" version="13.0.3" />
-			</group>
-
 			<!-- net9.0-ios18.0 -->
 			<group targetFramework="net9.0-ios18.0">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
@@ -80,8 +48,40 @@
 				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
+			<!-- net10.0-ios18.5 -->
+			<group targetFramework="net10.0-ios18.5">
+				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
+
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
+			</group>
+
+			<!-- net10.0-tvos18.5 -->
+			<group targetFramework="net10.0-tvos18.5">
+				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
+
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
+			</group>
+
+			<!-- net10.0-maccatalyst18.5 -->
+			<group targetFramework="net10.0-maccatalyst18.5">
+				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
+
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
+			</group>
+
+			<!-- net10.0-android -->
+			<group targetFramework="net10.0-android">
+				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
+
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
+			</group>
+
 			<!-- .NET 9.0 (Reference API) -->
-			<group targetFramework="net9.0">
+			<group targetFramework="net10.0">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
@@ -90,7 +90,7 @@
 			</group>
 
 			<!-- .NET 8.0 (Reference API) -->
-			<group targetFramework="net8.0">
+			<group targetFramework="net9.0">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
@@ -99,12 +99,12 @@
 			</group>
 
 			<!-- .NET 9.0 (WinUI) -->
-			<group targetFramework="net9.0-windows10.0.19041.0">
+			<group targetFramework="net10.0-windows10.0.19041.0">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 			</group>
 
 			<!-- .NET 8.0 (WinUI) -->
-			<group targetFramework="net8.0-windows10.0.19041.0">
+			<group targetFramework="net9.0-windows10.0.19041.0">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 			</group>
 		</dependencies>
@@ -114,23 +114,11 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 		<!-- Remote Control -->
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net8.0\Uno.UI.RemoteControl.dll" target="lib\net8.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net8.0\Uno.UI.RemoteControl.pdb" target="lib\net8.0" />
-
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net9.0\Uno.UI.RemoteControl.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net9.0\Uno.UI.RemoteControl.pdb" target="lib\net9.0" />
 
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-android\Uno.UI.RemoteControl.dll" target="lib\net8.0-android" />
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-android\Uno.UI.RemoteControl.pdb" target="lib\net8.0-android" />
-
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-ios17.0\Uno.UI.RemoteControl.dll" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-ios17.0\Uno.UI.RemoteControl.pdb" target="lib\net8.0-ios17.0" />
-
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-tvos17.0\Uno.UI.RemoteControl.dll" target="lib\net8.0-tvos17.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-tvos17.0\Uno.UI.RemoteControl.pdb" target="lib\net8.0-tvos17.0" />
-
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.RemoteControl.dll" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.RemoteControl.pdb" target="lib\net8.0-maccatalyst17.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net10.0\Uno.UI.RemoteControl.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net10.0\Uno.UI.RemoteControl.pdb" target="lib\net10.0" />
 
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-android\Uno.UI.RemoteControl.dll" target="lib\net9.0-android" />
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-android\Uno.UI.RemoteControl.pdb" target="lib\net9.0-android" />
@@ -144,23 +132,27 @@
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.RemoteControl.dll" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.RemoteControl.pdb" target="lib\net9.0-maccatalyst18.0" />
 
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-android\Uno.UI.RemoteControl.dll" target="lib\net10.0-android" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-android\Uno.UI.RemoteControl.pdb" target="lib\net10.0-android" />
+
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-ios18.5\Uno.UI.RemoteControl.dll" target="lib\net10.0-ios18.5" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-ios18.5\Uno.UI.RemoteControl.pdb" target="lib\net10.0-ios18.5" />
+
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-tvos18.5\Uno.UI.RemoteControl.dll" target="lib\net10.0-tvos18.5" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-tvos18.5\Uno.UI.RemoteControl.pdb" target="lib\net10.0-tvos18.5" />
+
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-maccatalyst18.5\Uno.UI.RemoteControl.dll" target="lib\net10.0-maccatalyst18.5" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-maccatalyst18.5\Uno.UI.RemoteControl.pdb" target="lib\net10.0-maccatalyst18.5" />
+
 		<!-- Processors -->
-		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.dll" target="tools\rc\processors\net8.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.pdb" target="tools\rc\processors\net8.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\*.dll" target="tools\rc\processors\net9.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\*.pdb" target="tools\rc\processors\net9.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\BuildHost-netcore\**" target="tools\rc\processors\net9.0\BuildHost-netcore" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net10.0\*.dll" target="tools\rc\processors\net10.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net10.0\*.pdb" target="tools\rc\processors\net10.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net10.0\BuildHost-netcore\**" target="tools\rc\processors\net10.0\BuildHost-netcore" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
-
-		<!-- net8.0 WebAssembly -->
-		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net8.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net8.0\webassembly" />
-		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net8.0\Uno.UI.RemoteControl.pdb" target="uno-runtime\net8.0\webassembly" />
-
-		<!-- net8.0 Skia -->
-		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net8.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net8.0\skia" />
-		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net8.0\Uno.UI.RemoteControl.pdb" target="uno-runtime\net8.0\skia" />
 
 		<!-- net9.0 WebAssembly -->
 		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net9.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net9.0\webassembly" />
@@ -170,9 +162,17 @@
 		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net9.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net9.0\Uno.UI.RemoteControl.pdb" target="uno-runtime\net9.0\skia" />
 
+		<!-- net10.0 WebAssembly -->
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net10.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net10.0\webassembly" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net10.0\Uno.UI.RemoteControl.pdb" target="uno-runtime\net10.0\webassembly" />
+
+		<!-- net10.0 Skia -->
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net10.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net10.0\skia" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net10.0\Uno.UI.RemoteControl.pdb" target="uno-runtime\net10.0\skia" />
+
 		<!-- Remote Control host and integration -->
-		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net8.0\*.*" target="tools\rc\host\net8.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net9.0\*.*" target="tools\rc\host\net9.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net10.0\*.*" target="tools\rc\host\net10.0" />
 		
 		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.dll" target="tools\rc\17.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.pdb" target="tools\rc\17.0" />
@@ -181,10 +181,10 @@
 		<!-- Force UAP/netx-win to ignore netstandard 2.0 -->
 		<file src="_._" target="build\uap10.0.16299" />
 		<file src="_._" target="build\uap10.0.19041" />
-		<file src="_._" target="build\net8.0-windows" />
+		<file src="_._" target="build\net9.0-windows" />
+		<file src="_._" target="build\net10.0-windows10.0.19041.0" />
 		<file src="_._" target="build\net9.0-windows10.0.19041.0" />
-		<file src="_._" target="build\net8.0-windows10.0.19041.0" />
+		<file src="_._" target="lib\net10.0-windows10.0.19041.0" />
 		<file src="_._" target="lib\net9.0-windows10.0.19041.0" />
-		<file src="_._" target="lib\net8.0-windows10.0.19041.0" />
 	</files>
 </package>

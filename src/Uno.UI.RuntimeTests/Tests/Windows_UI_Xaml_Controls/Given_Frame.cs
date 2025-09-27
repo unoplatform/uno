@@ -7,6 +7,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
+using Combinatorial.MSTest;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -492,13 +494,42 @@ public class Given_Frame
 		Assert.IsTrue(navigationFailed);
 	}
 
+	[TestMethod]
+	public async Task When_BackStack_Then_Go_Back()
+	{
+		var SUT = new Frame()
+		{
+			Width = 200,
+			Height = 200
+		};
+		var navigated = false;
+
+		SUT.Navigated += (s, e) =>
+		{
+			navigated = true;
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		SUT.Navigate(typeof(FirstPage));
+		await TestServices.WindowHelper.WaitFor(() => navigated);
+		navigated = false;
+
+		Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
+
+		SUT.BackStack.Add(new PageStackEntry(typeof(SecondPage), null, new SuppressNavigationTransitionInfo()));
+		SUT.GoBack();
+
+		await TestServices.WindowHelper.WaitFor(() => navigated);
+		Assert.IsInstanceOfType(SUT.Content, typeof(SecondPage));
+	}
+
 #if HAS_UNO
 	[TestMethod]
 #if !__ANDROID__
 	[Ignore("This test specifically tests Android's NativeFramePresenter")]
 #endif
-	[DataRow(false)]
-	[DataRow(true)]
+	[CombinatorialData]
 	[Timeout(5 * 60 * 1000)] // test is really slow in CI
 	public async Task When_Navigating_NativeFrame_Pages_Get_Collected(bool backAndForth)
 	{

@@ -1,5 +1,9 @@
-﻿using System;
+﻿#nullable enable
+using System;
+using System.Diagnostics;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 
@@ -9,7 +13,13 @@ public sealed partial class XamlRoot
 {
 	private bool _renderQueued;
 
-	internal event Action InvalidateRender = () => { };
+	internal event Action? RenderInvalidated;
+
+#if __SKIA__
+	// For profiling purposes only. Do not depend on these events.
+	internal event Action? FramePainted;
+	internal event Action? FrameRendered;
+#endif
 
 	internal void InvalidateMeasure()
 	{
@@ -27,31 +37,47 @@ public sealed partial class XamlRoot
 #endif
 	}
 
-	internal void RaiseInvalidateRender()
+	internal void InvalidateRender() => RenderInvalidated?.Invoke();
+
+#if __SKIA__
+	internal void InvokeFramePainted()
 	{
-		InvalidateRender();
+		NativeDispatcher.CheckThreadAccess();
+		FramePainted?.Invoke();
 	}
+
+	internal void InvokeFrameRendered()
+	{
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			FrameRendered?.Invoke();
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(() => FrameRendered?.Invoke(), NativeDispatcherPriority.High);
+		}
+	}
+#endif
 
 	internal void QueueInvalidateRender()
 	{
-		if (!_renderQueued)
+		if (!CompositionTarget.IsRenderingActive)
 		{
-			_renderQueued = true;
-
-			DispatchQueueRender();
-		}
-	}
-
-	private void DispatchQueueRender()
-	{
-		NativeDispatcher.Main.Enqueue(() =>
-		{
-			if (_renderQueued)
+			if (!_renderQueued)
 			{
-				_renderQueued = false;
-				InvalidateRender();
+				_renderQueued = true;
+
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					if (_renderQueued)
+					{
+						_renderQueued = false;
+
+						InvalidateRender();
+					}
+				}, NativeDispatcherPriority.Idle); // Idle is necessary to avoid starving the Normal queue on some platforms (specifically skia/android), otherwise When_Child_Empty_List times out
 			}
-		}, NativeDispatcherPriority.Idle); // Idle is necessary to avoid starving the Normal queue on some platforms (specifically skia/android), otherwise When_Child_Empty_List times out
+		}
 	}
 
 	/// <summary>

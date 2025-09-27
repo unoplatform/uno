@@ -164,7 +164,7 @@ namespace Uno.UI.Xaml.Core
 		internal bool IsXamlVisible()
 		{
 			// TODO Uno: This is currently highly simplified, adjust when all islands are rooted under main tree.
-			return ContentRootCoordinator.CoreWindowContentRoot?.CompositionContent.IsSiteVisible ?? false;
+			return ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.CompositionContent.IsSiteVisible ?? false;
 		}
 
 		[NotImplemented]

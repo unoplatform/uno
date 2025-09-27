@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿// #define REPORT_FPS
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -29,8 +31,6 @@ namespace Uno.UI.Dispatching
 			new Queue<Delegate>(), // Idle
 		};
 
-		private readonly NativeDispatcherSynchronizationContext[] _synchronizationContexts;
-
 		private readonly object _gate = new();
 
 		private readonly long _startTime;
@@ -55,18 +55,14 @@ namespace Uno.UI.Dispatching
 
 			_currentPriority = NativeDispatcherPriority.Normal;
 
-			_synchronizationContexts = new NativeDispatcherSynchronizationContext[]
-			{
-				new(this, NativeDispatcherPriority.High),
-				new(this, NativeDispatcherPriority.Normal),
-				new(this, NativeDispatcherPriority.Low),
-				new(this, NativeDispatcherPriority.Idle),
-			};
+			SynchronizationContext = new NativeDispatcherSynchronizationContext(this);
 
 			Initialize();
 
 			_startTime = Stopwatch.GetTimestamp();
 		}
+
+		internal NativeDispatcherSynchronizationContext SynchronizationContext { get; }
 
 		/// <summary>
 		/// Enforce access on the UI thread.
@@ -94,8 +90,6 @@ namespace Uno.UI.Dispatching
 
 			Action? action = null;
 
-			var didEnqueue = false;
-
 			for (var p = 0; p <= 3; p++)
 			{
 				var queue = @this._queues[p];
@@ -110,8 +104,6 @@ namespace Uno.UI.Dispatching
 
 						if (Interlocked.Decrement(ref @this._globalCount) > 0)
 						{
-							didEnqueue = true;
-
 							@this.EnqueueNative(@this._currentPriority);
 						}
 
@@ -125,11 +117,6 @@ namespace Uno.UI.Dispatching
 			// Restore the priority to the default for native events
 			// (i.e. not dispatched by this running loop)
 			@this._currentPriority = NativeDispatcherPriority.Normal;
-
-			if (!didEnqueue && @this.Rendering != null)
-			{
-				@this.DispatchWakeUp();
-			}
 		}
 
 		/// <remarks>
@@ -143,7 +130,7 @@ namespace Uno.UI.Dispatching
 			{
 				try
 				{
-					using (dispatcher._synchronizationContexts[(int)dispatcher._currentPriority].Apply())
+					using (dispatcher.SynchronizationContext.Apply())
 					{
 						action();
 					}
@@ -153,22 +140,43 @@ namespace Uno.UI.Dispatching
 					dispatcher.Log().Error("NativeDispatcher unhandled exception", exception);
 				}
 			}
-			else if (dispatcher.Rendering == null && dispatcher.Log().IsEnabled(LogLevel.Debug))
+			else if (!dispatcher.IsRendering && dispatcher.Log().IsEnabled(LogLevel.Debug))
 			{
 				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
 		}
+#endif
+		internal void SynchronousDispatchRendering()
+			=> SynchronousDispatchRenderingPartial();
 
-		private async void DispatchWakeUp()
+		partial void SynchronousDispatchRenderingPartial();
+
+#if REPORT_FPS
+		static FrameRateLogger _dispatchRenderingLogger = new FrameRateLogger(typeof(NativeDispatcher), "DispatchRendering");
+#endif
+
+		internal void DispatchRendering()
 		{
-			await Task.Delay(RenderingEventThrottle);
-
-			if (Rendering != null)
+			if (IsRendering)
 			{
-				WakeUp();
+#if REPORT_FPS
+				_dispatchRenderingLogger.ReportFrame();
+#endif
+				Enqueue(() =>
+				{
+					RaiseRendered();
+				});
 			}
 		}
-#endif
+
+		private void RaiseRendered()
+		{
+			if (Rendering != null)
+			{
+				// If we raised the Rendering event we can render composition tree.
+				Rendered?.Invoke();
+			}
+		}
 
 		internal void Enqueue(Action handler, NativeDispatcherPriority priority = NativeDispatcherPriority.Normal)
 		{
@@ -439,14 +447,15 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		internal void WakeUp()
 		{
-			CheckThreadAccess();
-
-			if (Interlocked.Increment(ref _globalCount) == 1)
+			lock (_gate)
 			{
-				EnqueueNative(NativeDispatcherPriority.Normal);
-			}
+				if (Interlocked.Increment(ref _globalCount) == 1)
+				{
+					EnqueueNative(NativeDispatcherPriority.Normal);
+				}
 
-			Interlocked.Decrement(ref _globalCount);
+				Interlocked.Decrement(ref _globalCount);
+			}
 		}
 
 		/// <summary>
@@ -470,11 +479,16 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		internal static NativeDispatcher Main { get; } = new NativeDispatcher();
 
+		// Dispatching for the CompositionTarget.Rendering event
 		internal event EventHandler<object>? Rendering;
 
-		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
+#pragma warning disable CS0067
+		// Dispatching for the compositor to actually render the frame only called
+		// when there are subscribers to Rendering
+		internal event Action? Rendered;
+#pragma warning restore CS0067
 
-		internal int RenderingEventThrottle;
+		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
 
 		public static class TraceProvider
 		{

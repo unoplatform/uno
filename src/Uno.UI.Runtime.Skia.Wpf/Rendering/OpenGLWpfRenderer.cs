@@ -8,8 +8,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
@@ -20,6 +21,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private const SKColorType colorType = SKColorType.Rgba8888;
 	private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.TopLeft;
 
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
 	private WinUI.XamlRoot? _xamlRoot;
@@ -165,9 +167,10 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			return;
 		}
 
+		_xamlRoot ??= XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+
 		int width, height;
 
-		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 		var dpi = _xamlRoot!.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;
@@ -222,32 +225,27 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		var canvas = _surface.Canvas;
 
-		using (new SKAutoCanvasRestore(canvas, true))
+		if (_host.RootElement?.Visual is { } rootVisual)
 		{
-			canvas.Clear(BackgroundColor);
-			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
+			SkiaRenderHelper.RenderPicture(
+				_surface,
+				_host.Picture,
+				BackgroundColor,
+				_fpsHelper);
 
-			if (_host.RootElement?.Visual is { } rootVisual)
+			if (_host.NativeOverlayLayer is { } nativeLayer)
 			{
-				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, _surface.Canvas);
-
-				if (_host.NativeOverlayLayer is { } nativeLayer)
+				nativeLayer.Clip ??= new PathGeometry();
+				((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(_host.ClipPath?.ToSvgPathData());
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					nativeLayer.Clip ??= new PathGeometry();
-					((PathGeometry)nativeLayer.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
-				}
-				else
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
-					}
+					this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
 				}
 			}
 		}
-
-		// update the control
-		canvas.Flush();
 
 		// Copy the contents of the back buffer to the screen
 		if (_backBuffer != null)

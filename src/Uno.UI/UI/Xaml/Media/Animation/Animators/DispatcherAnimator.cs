@@ -1,5 +1,8 @@
-﻿using System;
+﻿#if !__SKIA__
+using System;
 using System.Linq;
+using Microsoft.UI.Dispatching;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -27,3 +30,4 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		protected abstract override T GetUpdatedValue(long frame, T from, T to);
 	}
 }
+#endif

@@ -22,8 +22,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation.Peers;
 #endif
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {

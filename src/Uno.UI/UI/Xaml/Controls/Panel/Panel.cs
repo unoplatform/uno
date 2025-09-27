@@ -9,7 +9,7 @@ using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using System.Collections;

@@ -31,7 +31,7 @@ namespace MUXControlsTestApp
 
 		private void FlipOrientationButton_Clicked(object sender, RoutedEventArgs e)
 		{
-			NavView.PaneDisplayMode = NavView.PaneDisplayMode == Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top ? Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Auto : Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top;
+			NavView.PaneDisplayMode = NavView.PaneDisplayMode == Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top ? Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Auto : Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top;
 		}
 	}
 }

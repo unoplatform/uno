@@ -25,7 +25,8 @@ using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
 // Hot reload tests are only available on Skia desktop targets
-[ConditionalTestClass(IgnoredPlatforms = ~RuntimeTestPlatforms.SkiaDesktop)]
+[TestClass]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 public partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;
@@ -257,6 +258,9 @@ public partial class Given_HotReloadWorkspace
 			}
 
 			var arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {Process.GetCurrentProcess().Id} --metadata-updates true";
+
+			Console.WriteLine($"Starting RCHost: {arguments}");
+
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,

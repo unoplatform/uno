@@ -34,14 +34,14 @@ This feature can be enabled by calling the method below, typically in the constr
 
 ### CommandBar and AppBarButton
 
-In essence, by enabling this, a custom renderer will be used as the control template. This renderer injects the native control into the app, and maps dependency properties (colors, content/icon, ...) and events (clicked), between the UWP controls and the native ones:
+In essence, by enabling this, a custom renderer will be used as the control template. This renderer injects the native control into the app, and maps dependency properties (colors, content/icon, ...) and events (clicked), between the WinUI controls and the native ones:
 
 WinUI Control|Native Android Control|Native iOS Control
 -|-|-
 `CommandBar`|`android.widget.Toolbar`|`UIKit.UINavigationBar`
 `AppBarButton`|`android.view.MenuItem`|`UIKit.UIBarButtonItem`
 
-As such, you can have the look and feel of the native control, including features like native swipe to go back on iOS, while programming against the UWP API. However, you are no longer able to customize the control template.
+As such, you can have the look and feel of the native control, including features like native swipe to go back on iOS, while programming against the WinUI API. However, you are no longer able to customize the control template.
 
 ### Frame
 

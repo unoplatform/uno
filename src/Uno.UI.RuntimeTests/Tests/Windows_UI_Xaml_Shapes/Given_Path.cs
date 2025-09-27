@@ -8,6 +8,8 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
+using System.Threading;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 {
@@ -16,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 	public class Given_Path
 	{
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/6846")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6846")]
 		public void Should_not_throw_if_Path_Data_is_set_to_null()
 		{
 			// Set initial Data
@@ -42,7 +44,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18694")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18694")]
 #if !__SKIA__
 		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
 #endif
@@ -113,15 +115,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18694")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18694")]
 #if !__SKIA__
 		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
 #endif
 		public async Task When_PathGeometry_Figures_Not_Filled_ImageBrush()
 		{
+			var brush = new ImageBrush() { ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/rect.png")) };
+#if !WINAPPSDK
+			var brushOpenTask = WindowHelper.WaitForOpened(brush);
+#endif
+
 			var SUT = new Path
 			{
-				Fill = new ImageBrush { ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/rect.png")) },
+				Fill = brush,
 				Data = new PathGeometry
 				{
 					Figures = new PathFigureCollection
@@ -154,8 +161,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 			await UITestHelper.Load(SUT);
 
+#if !WINAPPSDK
+			await brushOpenTask;
+#endif
+
 			var screenShot = await UITestHelper.ScreenShot(SUT);
 			ImageAssert.HasColorAt(screenShot, new Point(90, 50), "#FF38FF52");
 		}
+
+		private void Brush_ImageOpened(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => throw new NotImplementedException();
 	}
 }

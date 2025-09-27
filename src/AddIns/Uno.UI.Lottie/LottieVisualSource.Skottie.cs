@@ -28,7 +28,7 @@ using SkiaSharp.Views.Windows;
 using Windows.UI.Core;
 #else
 using SkiaSharp.Views.UWP;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO_WINUI

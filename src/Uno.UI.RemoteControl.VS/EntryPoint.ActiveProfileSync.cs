@@ -29,7 +29,8 @@ public partial class EntryPoint : IDisposable
 	private const string WasmTargetFrameworkIdentifier = "browserwasm";
 	private const string UnoSelectedTargetFrameworkProperty = "_UnoSelectedTargetFramework";
 	private CancellationTokenSource? _wasmProjectReloadTask;
-	private Stopwatch _lastOperation = new Stopwatch();
+	private Stopwatch _lastProfileOperation = new Stopwatch();
+	private Stopwatch _lastTargetOperation = new Stopwatch();
 	private TimeSpan _profileOrFrameworkDelay = TimeSpan.FromSeconds(1);
 	private bool _pendingRequestedChanged;
 	private bool _isFirstProfileTfmChange = true;
@@ -48,9 +49,9 @@ public partial class EntryPoint : IDisposable
 
 			// Always synchronize the selected target, the reported value
 			// is the right one.
-			await WriteProjectUserSettingsAsync(newFramework);
+			await WriteUnoTargetFrameworkToStartupProjectAsync(newFramework);
 
-			if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+			if (!_pendingRequestedChanged && _lastTargetOperation.IsRunning && _lastTargetOperation.Elapsed < _profileOrFrameworkDelay)
 			{
 				// This debouncing needs to happen when VS intermittently changes the active
 				// profile or target framework on project reloading. We skip the change if it
@@ -62,7 +63,7 @@ public partial class EntryPoint : IDisposable
 			}
 
 			_pendingRequestedChanged = false;
-			_lastOperation.Restart();
+			_lastTargetOperation.Restart();
 
 			if (!isFirstProfileTfmChange && !forceReload && string.IsNullOrEmpty(previousFramework))
 			{
@@ -123,7 +124,7 @@ public partial class EntryPoint : IDisposable
 		// In this case, a new TargetFramework was selected. We need to file a matching target framework, if any.
 		_debugAction?.Invoke($"OnDebugProfileChangedAsync({previousProfile},{newProfile}) isFirstProfileTfmChange:{isFirstProfileTfmChange}");
 
-		if (!isFirstProfileTfmChange && !_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+		if (!isFirstProfileTfmChange && !_pendingRequestedChanged && _lastProfileOperation.IsRunning && _lastProfileOperation.Elapsed < _profileOrFrameworkDelay)
 		{
 			// This debouncing needs to happen when VS intermittently changes the active
 			// profile or target framework on project reloading. We skip the change if it
@@ -135,7 +136,7 @@ public partial class EntryPoint : IDisposable
 		}
 
 		_pendingRequestedChanged = false;
-		_lastOperation.Restart();
+		_lastProfileOperation.Restart();
 
 		if (!isFirstProfileTfmChange && string.IsNullOrEmpty(previousProfile))
 		{
@@ -266,7 +267,7 @@ public partial class EntryPoint : IDisposable
 						{
 							// Set the property early before unloading so the msbuild cache
 							// properly keeps the value.
-							await WriteProjectUserSettingsAsync(newFramework);
+							await WriteUnoTargetFrameworkToStartupProjectAsync(newFramework);
 
 							var reloadStopWatch = Stopwatch.StartNew();
 							// Reload the project in-place. This allows to keep files related to
@@ -283,9 +284,7 @@ public partial class EntryPoint : IDisposable
 
 							_debugAction?.Invoke($"Adjust in profile/framework change delay to {_profileOrFrameworkDelay}");
 
-							var sw2 = Stopwatch.StartNew();
-
-							await WriteProjectUserSettingsAsync(newFramework);
+							await WriteUnoTargetFrameworkToStartupProjectAsync(newFramework);
 						}
 					}
 				}
@@ -293,7 +292,7 @@ public partial class EntryPoint : IDisposable
 			else
 			{
 				// No need to reload, but we still need to update the selected target framework
-				await WriteProjectUserSettingsAsync(newFramework);
+				await WriteUnoTargetFrameworkToStartupProjectAsync(newFramework);
 			}
 		}
 		catch (Exception e)
@@ -319,125 +318,73 @@ public partial class EntryPoint : IDisposable
 			: null;
 	}
 
-	private async Task OnStartupProjectChangedAsync()
+	private async Task<bool> HasUnoTargetFrameworkInStartupProjectAsync()
 	{
-		if (_dte.Solution.SolutionBuild.StartupProjects is null)
+		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is not IVsSolution solution
+			|| await _dte.GetStartupProjectsAsync() is not { Length: > 0 } startupProjects
+			|| _debuggerObserver is null)
 		{
-			// The user unloaded all projects, we need to reset the state
-			_isFirstProfileTfmChange = true;
+			_debugAction?.Invoke("Could not find .user file (1)");
+
+			return true; // Cannot find user file, assume it has TFM!
 		}
 
-		if (!await EnsureProjectUserSettingsAsync() && _debuggerObserver is not null)
+		// Convert DTE project to IVsHierarchy
+		solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);
+		if (hierarchy is not IVsBuildPropertyStorage propertyStorage)
 		{
-			_debugAction?.Invoke($"The user setting is not yet initialized, aligning framework and profile");
+			_debugAction?.Invoke("Could not read .user file (2)");
 
-			// The user settings file is not available, we have created the
-			// file, but we also need to align the profile.
-			string currentActiveDebugFramework = "";
+			return true; // Cannot find user file, assume it has TFM!
+		}
 
-			var hasTargetFramework = _debuggerObserver
+		var currentActiveDebugFramework = _debuggerObserver.CurrentActiveDebugFramework;
+		if (currentActiveDebugFramework is null)
+		{
+			_debuggerObserver
 				.UnconfiguredProject
 				?.Services
 				.ActiveConfiguredProjectProvider
 				?.ActiveConfiguredProject
 				?.ProjectConfiguration
 				.Dimensions
-				.TryGetValue("TargetFramework", out currentActiveDebugFramework) ?? false;
-
-			if (hasTargetFramework)
-			{
-				await OnDebugFrameworkChangedAsync(null, currentActiveDebugFramework, true);
-			}
+				.TryGetValue("TargetFramework", out currentActiveDebugFramework);
 		}
+
+		var currentSettingValue = propertyStorage.GetUserProperty(UnoSelectedTargetFrameworkProperty);
+		if (currentActiveDebugFramework is null || currentSettingValue is { Length: > 0 })
+		{
+			_debugAction?.Invoke($"User Setting is already set: {UnoSelectedTargetFrameworkProperty}={currentSettingValue}, currentActiveDebugFramework={currentActiveDebugFramework}");
+
+			return true;
+		}
+
+		// The UnoSelectedTargetFrameworkProperty is not defined, we need to reload the
+		// project so it can be set.
+		return false;
 	}
 
-	private async Task<bool> EnsureProjectUserSettingsAsync()
-	{
-		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
-			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
-			&& _debuggerObserver is not null)
-		{
-			// Convert DTE project to IVsHierarchy
-			solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);
-
-			if (hierarchy is IVsBuildPropertyStorage propertyStorage)
-			{
-				var currentActiveDebugFramework = _debuggerObserver.CurrentActiveDebugFramework;
-
-				if (currentActiveDebugFramework is null)
-				{
-					_debuggerObserver
-						.UnconfiguredProject
-						?.Services
-						.ActiveConfiguredProjectProvider
-						?.ActiveConfiguredProject
-						?.ProjectConfiguration
-						.Dimensions
-						.TryGetValue("TargetFramework", out currentActiveDebugFramework);
-				}
-
-				propertyStorage.GetPropertyValue(
-					UnoSelectedTargetFrameworkProperty
-					, null
-					, (uint)_PersistStorageType.PST_USER_FILE
-					, out var currentSettingValue);
-
-				if (string.IsNullOrEmpty(currentSettingValue) && currentActiveDebugFramework is not null)
-				{
-					// The UnoSelectedTargetFrameworkProperty is not defined, we need to reload the
-					// project so it can be set.
-					return false;
-				}
-				else
-				{
-					_debugAction?.Invoke($"User Setting is already set: {UnoSelectedTargetFrameworkProperty}={currentSettingValue}, currentActiveDebugFramework={currentActiveDebugFramework}");
-				}
-			}
-			else
-			{
-				_debugAction?.Invoke("Could not write .user file (2)");
-			}
-		}
-		else
-		{
-			_debugAction?.Invoke("Could not write .user file (1)");
-		}
-
-		return true;
-	}
-
-	private async Task WriteProjectUserSettingsAsync(string targetFramework)
+	private async Task WriteUnoTargetFrameworkToStartupProjectAsync(string targetFramework)
 	{
 		_debugAction?.Invoke($"WriteProjectUserSettingsAsync {targetFramework}");
 
-		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
-			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects)
-		{
-			// Convert DTE project to IVsHierarchy
-			solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);
-
-			if (hierarchy is IVsBuildPropertyStorage propertyStorage)
-			{
-				WriteUserProperty(propertyStorage, UnoSelectedTargetFrameworkProperty, targetFramework);
-			}
-			else
-			{
-				_debugAction?.Invoke("Could not write .user file (2)");
-			}
-		}
-		else
+		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is not IVsSolution solution
+			|| await _dte.GetStartupProjectsAsync() is not { Length: > 0 } startupProjects)
 		{
 			_debugAction?.Invoke("Could not write .user file (1)");
-		}
-	}
 
-	private static void WriteUserProperty(IVsBuildPropertyStorage propertyStorage, string propertyName, string propertyValue)
-	{
-		propertyStorage.SetPropertyValue(
-			propertyName,        // Property name
-			null,                 // Configuration name, null applies to all configurations
-			(uint)_PersistStorageType.PST_USER_FILE,  // Specifies that this is a user-specific property
-			propertyValue             // Property value
-		);
+			return;
+		}
+
+		// Convert DTE project to IVsHierarchy
+		solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);
+		if (hierarchy is not IVsBuildPropertyStorage propertyStorage)
+		{
+			_debugAction?.Invoke("Could not write .user file (2)");
+
+			return;
+		}
+
+		propertyStorage.SetUserProperty(UnoSelectedTargetFrameworkProperty, targetFramework);
 	}
 }

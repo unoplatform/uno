@@ -19,6 +19,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 	{
 		[Test]
 		[AutoRetry]
+		public void TextBox_Content_DoesNotInheritParentTextBlockStyle()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_ImplicitParentTextBlockStyle");
+
+			var sut = _app.Marked("textbox").FirstResult().Rect;
+
+			sut.Height.Should().BeLessThan(100);
+		}
+
+		[Test]
+		[AutoRetry]
 		public void TextBox_NaturalSize_When_Empty_Is_Right_Width()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxes.TextBox_NaturalSize");
@@ -390,6 +401,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080
 		public void TextBox_BeforeTextChanging_Validation()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_BeforeTextChanging");

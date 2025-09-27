@@ -1,11 +1,13 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using SkiaSharp;
 using Windows.Foundation;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Composition;
 
@@ -13,6 +15,7 @@ public partial class ContainerVisual : Visual
 {
 	private List<Visual>? _childrenInRenderOrder;
 	private bool _hasCustomRenderOrder;
+	private int? _subtreeVisualCount;
 
 	private (Rect rect, bool isAncestorClip)? _layoutClip;
 
@@ -20,7 +23,31 @@ public partial class ContainerVisual : Visual
 
 	partial void InitializePartial()
 	{
-		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
+		Children.CollectionChanged += (s, e) =>
+		{
+			IsChildrenRenderOrderDirty = true;
+
+			var parent = this;
+			while (parent is not null && parent._subtreeVisualCount is not null)
+			{
+				parent._subtreeVisualCount = null;
+				parent = parent.Parent;
+			}
+
+			InvalidateParentChildrenPicture(true);
+
+			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
+				&& e.OldItems is not null)
+			{
+				foreach (var i in e.OldItems)
+				{
+					if (i is CompositionObject compositionObject)
+					{
+						compositionObject.StopAllAnimations();
+					}
+				}
+			}
+		};
 
 		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 		Handle = GCHandle.ToIntPtr(_gcHandle);
@@ -29,6 +56,8 @@ public partial class ContainerVisual : Visual
 	internal IntPtr Handle { get; private set; }
 
 	internal WeakReference? Owner { get; set; }
+
+	internal string? OwnerDebugName => Owner?.Target?.GetType().Name;
 
 	/// <summary>
 	/// Layout clipping is usually applied in the element's coordinate space.
@@ -71,10 +100,10 @@ public partial class ContainerVisual : Visual
 	}
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
-	internal virtual bool HitTest(Point point) => new Rect(0, 0, Size.X, Size.Y).Contains(point);
+	internal virtual bool HitTest(Point relativeLocation) => new Rect(0, 0, Size.X, Size.Y).Contains(relativeLocation);
 
 	/// <returns>true if a ViewBox exists</returns>
-	internal bool GetArrangeClipPathInElementCoordinateSpace(SKPath dst)
+	internal bool GetArrangeClipPathInElementCoordinateSpace(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
 	{
 		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
 		{
@@ -96,9 +125,29 @@ public partial class ContainerVisual : Visual
 		return true;
 	}
 
+	internal Rect? GetArrangeClipPathInElementCoordinateSpace()
+	{
+		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
+		{
+			return default;
+		}
+
+		if (isAncestorClip)
+		{
+			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
+			var childToParentTransform = Parent!.TotalMatrix * totalMatrixInverted;
+			if (!childToParentTransform.IsIdentity)
+			{
+				rect = rect.Transform(childToParentTransform.ToMatrix3x2());
+			}
+		}
+
+		return rect;
+	}
+
 	private static SKPath _sparePrePaintingClippingPath = new SKPath();
 
-	internal override bool GetPrePaintingClipping(SKPath dst)
+	internal override bool GetPrePaintingClipping(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
 	{
 		var prePaintingClipPath = _sparePrePaintingClippingPath;
 
@@ -106,6 +155,12 @@ public partial class ContainerVisual : Visual
 
 		if (base.GetPrePaintingClipping(dst))
 		{
+			// TODO: SKPath-less
+			//if (GetArrangeClipPathInElementCoordinateSpace() is {} clipping)
+			//{
+			//	dst.AddRect(clipping.ToSKRect());
+			//}
+
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
 				dst.Op(prePaintingClipPath, SKPathOp.Intersect, dst);
@@ -115,6 +170,15 @@ public partial class ContainerVisual : Visual
 		}
 		else
 		{
+			// TODO: SKPath-less
+			//if (GetArrangeClipPathInElementCoordinateSpace() is {} clipping)
+			//{
+			//	dst.Reset();
+			//	dst.AddRect(clipping.ToSKRect());
+
+			//	return true;
+			//}
+
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
 				dst.Reset();
@@ -144,5 +208,21 @@ public partial class ContainerVisual : Visual
 		}
 
 		return false;
+	}
+
+	internal override int GetSubTreeVisualCount()
+	{
+		if (_subtreeVisualCount is { } count)
+		{
+			return count;
+		}
+		var acc = 0;
+		foreach (var visual in Children.InnerList)
+		{
+			acc += visual.GetSubTreeVisualCount();
+		}
+		_subtreeVisualCount ??= Children.Count + acc;
+
+		return _subtreeVisualCount.Value;
 	}
 }

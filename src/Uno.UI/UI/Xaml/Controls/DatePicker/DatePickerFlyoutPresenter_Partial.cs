@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		//	//(Private.SetDefaultStyleKey(
 		//	//	spInnerInspectable,
-		//	//	"Microsoft/* UWP don't rename */.UI.Xaml.Controls.DatePickerFlyoutPresenter"));
+		//	//	"Microsoft.UI.Xaml.Controls.DatePickerFlyoutPresenter"));
 		//	spInnerInstance.DefaultStyleKey = typeof(DatePickerFlyoutPresenter);
 		//}
 

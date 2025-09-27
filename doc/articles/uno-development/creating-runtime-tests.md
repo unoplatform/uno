@@ -52,7 +52,7 @@ The `Private.Infrastructure.TestServices.WindowHelper` class exposes several sta
 
  The `FindFirstChild<T>` and `FindFirstParent<T>` extension methods are helpful in the common case that you want to retrieve a descendant or ancestor element by traversing the visual tree. They optionally take a condition to be met.
 
- Note that for Android/iOS/Mac Catalyst/tvOS/macOS, the versions of the methods that allow native views to be traversed and retrieved are located in different namespaces. The complete set of usings to conditionally include is:
+ Note that for Android/iOS/macOS, the versions of the methods that allow native views to be traversed and retrieved are located in different namespaces. The complete set of usings to conditionally include is:
 
  ```csharp
  #if NETFX_CORE

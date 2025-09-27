@@ -61,6 +61,14 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private Inline[] _preorderTree;
 
+		internal void InvalidatePreorderTree() => _preorderTree = null;
+
+		/// <remarks>
+		/// The PreorderTree invalidation logic is extremely buggy because the DP parent chain is flattened
+		/// e.g. if you have a child Span, this InlineCollection will be the direct parent of these children
+		/// when read using GetParent(). The returned value here is up to date only when this is the
+		/// InlineCollection of a TextBlock.
+		/// </remarks>
 		internal Inline[] PreorderTree => _preorderTree ??= GetPreorderTree();
 
 		private Inline[] GetPreorderTree()

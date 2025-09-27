@@ -98,14 +98,11 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.FrameworkClosed.remove
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.TintOpacity.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.TintOpacity.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void ResetProperties()
+		public void RemoveAllSystemBackdropTargets()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "void DesktopAcrylicController.ResetProperties()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "void DesktopAcrylicController.RemoveAllSystemBackdropTargets()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.Kind.get
@@ -139,13 +136,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 			throw new global::System.NotImplementedException("The member bool DesktopAcrylicController.AddSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopAcrylicController.AddSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAllSystemBackdropTargets()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "void DesktopAcrylicController.RemoveAllSystemBackdropTargets()");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsClosed.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool RemoveSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
@@ -161,17 +152,26 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.StateChanged.add
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.FallbackColor.set
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.StateChanged.remove
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.FallbackColor.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.Closed.add
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.Closed.remove
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.FrameworkClosed.add
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsClosed.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.FallbackColor.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.FrameworkClosed.remove
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.LuminosityOpacity.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.LuminosityOpacity.set
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.TintColor.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.TintColor.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.TintOpacity.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.TintOpacity.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void ResetProperties()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "void DesktopAcrylicController.ResetProperties()");
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.DesktopAcrylicController()
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.DesktopAcrylicController()
 		// Skipping already declared method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported()

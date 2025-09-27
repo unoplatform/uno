@@ -6,10 +6,6 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<AssemblyName>Uno</AssemblyName>
 		<RootNamespace>Windows</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;HAS_UMBRELLA_UI;HAS_UMBRELLA_BINDING;HAS_CRIPPLEDREFLECTION</DefineConstants>
@@ -36,7 +32,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<Compile Include="..\Uno.UI\UI\Input\*.cs" />
+		<Compile Include="..\Uno.UI\UI\Input\WinRT\*.cs" />
 		<Compile Include="..\Uno.UI\UI\Colors.cs" />
 		<Compile Include="..\Uno.UI\UI\ColorHelper.cs" />
 		<Compile Include="..\Uno.UI\UI\Text\FontWeights.cs" />

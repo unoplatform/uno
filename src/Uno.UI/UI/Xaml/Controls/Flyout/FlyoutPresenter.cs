@@ -14,6 +14,18 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(FlyoutPresenter);
 		}
 
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			var spInnerScrollViewer = GetTemplateChild<ScrollViewer>("ScrollViewer");
+			if (spInnerScrollViewer is { })
+			{
+				spInnerScrollViewer.m_isFocusableOnFlyoutScrollViewer = true;
+			}
+		}
+
+
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			if (args.Property == AllowFocusOnInteractionProperty)

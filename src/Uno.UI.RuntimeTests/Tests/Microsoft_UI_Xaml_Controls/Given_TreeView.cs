@@ -31,13 +31,15 @@ using UIKit;
 using Uno.UI;
 #endif
 
-using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
-using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
-using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
-using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
+using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
+using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
+using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
+using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
+using Combinatorial.MSTest;
+
 #if HAS_UNO
 using Windows.Foundation.Metadata;
-using TreeNodeSelectionState = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeNodeSelectionState;
+using TreeNodeSelectionState = Microsoft.UI.Xaml.Controls.TreeNodeSelectionState;
 #endif
 
 using static Private.Infrastructure.TestServices;
@@ -109,8 +111,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
@@ -415,7 +416,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			treeView.SelectedItem = treeView.RootNodes[1];
 
-			var listControl = treeView.FindFirstDescendant<Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList>("ListControl");
+			var listControl = treeView.FindFirstDescendant<Microsoft.UI.Xaml.Controls.TreeViewList>("ListControl");
 			// Yes, that's how it behaves on WinUI :/
 			Assert.AreEqual(-1, listControl.SelectedIndex);
 		}
@@ -452,7 +453,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_ItemTemplateSelector_DataTemplate_Root_IsNot_TreeViewItem()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 			}
@@ -544,11 +545,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
 #endif
-		[DataRow("1", false)]
-		[DataRow("1", true)]
-		[DataRow("111", false)]
-		[DataRow("111", true)]
-		public async Task When_SelectedItem_Expanded(string labelToSelect, bool useBinding)
+		[CombinatorialData]
+		public async Task When_SelectedItem_Expanded(
+			[CombinatorialValues("1", "111")] string labelToSelect, bool useBinding)
 		{
 			var tvm = new TestTreeViewModel
 			{

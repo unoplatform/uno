@@ -9,6 +9,7 @@ using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI;
+using Microsoft.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -191,6 +192,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(expected, datePart.Padding);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_ActualThemeChanged_Throws()
+		{
+			using (StyleHelper.UseAppLevelResources(new App_Level_Resources()))
+			{
+				var border = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" BorderBrush="{ThemeResource LoadedTestPrimaryBrush}" Width="100" Height="100" />
+				""");
+				var parent = new ContentControl() { Content = border };
+				parent.ActualThemeChanged += (sender, args) => throw new Exception();
+
+				await UITestHelper.Load(parent);
+
+				Assert.AreEqual(Colors.MediumPurple, ((SolidColorBrush)border.BorderBrush).Color);
+
+				using (ThemeHelper.UseDarkTheme())
+				{
+					await UITestHelper.WaitForIdle();
+					Assert.AreEqual(Colors.MediumOrchid, ((SolidColorBrush)border.BorderBrush).Color);
+				}
+
+				await UITestHelper.WaitForIdle();
+				Assert.AreEqual(Colors.MediumPurple, ((SolidColorBrush)border.BorderBrush).Color);
+			}
+		}
+#endif
 
 		private async Task When_DefaultForeground(Color lightThemeColor, Color darkThemeColor)
 		{

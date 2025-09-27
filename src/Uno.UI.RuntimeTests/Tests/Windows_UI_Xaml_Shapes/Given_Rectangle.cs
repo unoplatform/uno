@@ -81,7 +81,7 @@ public class Given_Rectangle
 #endif
 	public async Task When_StrokeThickness_Is_GreaterThan_Or_Equals_Width(double width, double height, double strokeThickness, double expectedWidth, double expectedHeight)
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
@@ -119,7 +119,7 @@ public class Given_Rectangle
 #endif
 	public async Task When_StrokeThickness_Should_Arrange_Correctly(double strokeThickness, double expectedGreenWidth, double expectedGreenHeight)
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}

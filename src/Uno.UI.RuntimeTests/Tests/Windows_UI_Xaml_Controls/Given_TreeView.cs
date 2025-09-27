@@ -10,16 +10,18 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
-using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
+using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
+using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.TreeViewTests;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Uno.UI;
 using MUXControlsTestApp.Utilities;
+using Microsoft.UI.Xaml.Input;
+using Windows.System;
 
 #if HAS_UNO && !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -124,6 +126,40 @@ public class Given_TreeView
 
 		Assert.AreEqual(child2, child2NodeAfter.DataContext);
 	}
+
+#if __SKIA__
+	[TestMethod]
+	public async Task When_Delete_Node_With_MenuFlyout()
+	{
+		var SUT = new When_Delete_Node_With_MenuFlyout();
+		TestServices.WindowHelper.WindowContent = SUT;
+
+		var root = new MyNode();
+		root.Name = "root";
+		var child1 = new MyNode { Name = "Child 1" };
+		var child2 = new MyNode { Name = "Child 2" };
+		root.Children.Add(child1);
+		root.Children.Add(child2);
+
+		SUT.myTree.ItemsSource = new[] { root };
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var rootCt = SUT.myTree.ContainerFromItem(root) as TreeViewItem;
+		rootCt.IsExpanded = true;
+
+		rootCt.Focus(FocusState.Programmatic);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var child1Ct = SUT.myTree.ContainerFromItem(child1) as TreeViewItem;
+		child1Ct.Focus(FocusState.Programmatic);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Pressing delete or any other key should not fail when a MenuFlyout
+		child1Ct.RaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+	}
+#endif
 
 #if __ANDROID__
 	[Ignore("Test is not operational on Android, items are not returned properly https://github.com/unoplatform/uno/issues/9080")]

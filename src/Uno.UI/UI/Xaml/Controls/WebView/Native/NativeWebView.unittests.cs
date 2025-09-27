@@ -4,6 +4,6 @@ using System.Text;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class NativeWebView : FrameworkElement
+internal partial class NativeWebView : FrameworkElement
 {
 }

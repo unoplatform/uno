@@ -21,16 +21,15 @@ internal class HotReloadWorkspace
 {
 	public record UpdateResult(ImmutableArray<Diagnostic> Diagnostics, ImmutableArray<WatchHotReloadService.Update> MetadataUpdates);
 
-#if NET7_0
-	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters";
-	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes";
-#elif NET8_0
-	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType";
-	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType";
-#elif NET9_0
+#if NET9_0
 	// https://github.com/dotnet/runtime/blob/e99557baffbe864d624cc1c95c9cbf2eefae684f/src/coreclr/System.Private.CoreLib/src/System/Reflection/Metadata/MetadataUpdater.cs#L58
 	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType";
 	// https://github.com/dotnet/runtime/blob/e99557baffbe864d624cc1c95c9cbf2eefae684f/src/mono/mono/component/hot_reload.c#L3330
+	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes AddInstanceFieldToExistingType GenericAddMethodToExistingType GenericUpdateMethod UpdateParameters GenericAddFieldToExistingType";
+#elif NET10_0
+	// https://github.com/dotnet/runtime/blob/2db28217c40088686fcc8ccc52df2da0391bb712/src/coreclr/System.Private.CoreLib/src/System/Reflection/Metadata/MetadataUpdater.cs#L58
+	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType AddFieldRva";
+	// https://github.com/dotnet/runtime/blob/2db28217c40088686fcc8ccc52df2da0391bb712/src/mono/mono/component/hot_reload.c#L3349
 	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes AddInstanceFieldToExistingType GenericAddMethodToExistingType GenericUpdateMethod UpdateParameters GenericAddFieldToExistingType";
 #else
 #error This runtime is not supported yet, find the caps in the .NET runtime's sources
@@ -214,7 +213,8 @@ internal class HotReloadWorkspace
 
 		var currentSolution = workspace.CurrentSolution;
 		var frameworkReferences = BuildFrameworkReferences();
-		var references = BuildUnoReferences().Concat(frameworkReferences);
+		var unoReferences = UnoAssemblyHelper.LoadAssemblies();
+		var references = Enumerable.Concat(unoReferences, frameworkReferences);
 
 		var generatorReference = new MyGeneratorReference([new XamlGenerator.XamlCodeGenerator()]);
 
@@ -424,51 +424,6 @@ internal class HotReloadWorkspace
 				.Where(f => !f.Contains(".Native", StringComparison.OrdinalIgnoreCase))
 				.Select(f => MetadataReference.CreateFromFile(f))
 				.ToArray();
-
-	private static PortableExecutableReference[] BuildUnoReferences()
-	{
-		const string configuration =
-#if DEBUG
-			"Debug";
-#else
-			"Release";
-#endif
-
-		var availableTargets = new[] {
-			// On CI the test assemblies set must be first, as it contains all
-			// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
-			Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
-			Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
-			Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
-			Path.Combine("Uno.UI.Tests", configuration, "net9.0"),
-			Path.Combine("Uno.UI.Skia", configuration, "net9.0"),
-			Path.Combine("Uno.UI.Reference", configuration, "net9.0"),
-		};
-
-		var unoUIBase = Path.Combine(
-			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-			"..",
-			"..",
-			"..",
-			"..",
-			"..",
-			"Uno.UI",
-			"bin"
-			);
-
-		var unoTarget = availableTargets
-			.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
-			.FirstOrDefault(File.Exists);
-
-		if (unoTarget is null)
-		{
-			throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
-		}
-
-		return Directory.GetFiles(Path.GetDirectoryName(unoTarget)!, "*.dll")
-					.Select(f => MetadataReference.CreateFromFile(f))
-					.ToArray();
-	}
 }
 
 sealed class MyGeneratorReference : AnalyzerReference

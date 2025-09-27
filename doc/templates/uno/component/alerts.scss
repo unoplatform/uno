@@ -1,4 +1,4 @@
-@import '../variables';
+@use '../variables' as *;
 
 .alert {
   background-color: transparent;

@@ -8,6 +8,7 @@ DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 E_NOINTERFACE
 E_POINTER
 E_UNEXPECTED
+GDI_REGION_TYPE
 HKEY_CURRENT_USER
 HTBOTTOM
 HTBOTTOMLEFT
@@ -66,6 +67,7 @@ WM_CLIPBOARDUPDATE
 WM_CLOSE
 WM_DESTROY
 WM_DPICHANGED
+WM_ERASEBKGND
 WM_GETMINMAXINFO
 WM_KEYDOWN
 WM_KEYUP
@@ -141,6 +143,7 @@ GetClipboardData
 GetDC
 GetDpiForWindow
 GetKeyState
+GetMessage
 GetMessageTime
 GetMonitorInfo
 GetPointerInfo
@@ -148,10 +151,10 @@ GetPointerPenInfo
 GetPointerTouchInfo
 GetPointerType
 GetRegionData
-GetSaveFileName
 GetWindowLong
 GetWindowPlacement
 GetWindowRect
+GetWindowRgn
 GetWindowText
 GetWindowThreadProcessId
 glGetError
@@ -167,6 +170,7 @@ InvalidateRect
 LoadCursor
 LoadRegTypeLib
 LocalFree
+MapWindowPoints
 MonitorFromWindow
 OleInitialize
 OpenClipboard
@@ -192,11 +196,13 @@ SetCursor
 SetLayeredWindowAttributes
 SetParent
 SetPixelFormat
+SetProcessDpiAwarenessContext
 SetThreadDpiAwarenessContext
 SetWindowLong
 SetWindowPos
 SetWindowRgn
 SetWindowText
+SHCreateItemFromParsingName
 ShowWindow
 SwapBuffers
 TranslateMessage
@@ -204,4 +210,5 @@ wglCreateContext
 wglDeleteContext
 wglGetCurrentContext
 wglGetCurrentDC
+wglGetProcAddress
 wglMakeCurrent

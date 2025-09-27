@@ -10,4 +10,12 @@
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
 		<UseMaui>true</UseMaui>
 	</PropertyGroup>
+
+
+	<Target Name="_UnoIncludeUnoUIRuntimeIdentifier"
+			BeforeTargets="BeforeBuild;GetAssemblyAttributes">
+		<ItemGroup Condition=" '$(UnoUIRuntimeIdentifier)' != '' ">
+			<AssemblyMetadata Include="UnoUIRuntimeIdentifier" Value="$(UnoUIRuntimeIdentifier)" />
+		</ItemGroup>
+	</Target>
 </Project>

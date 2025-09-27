@@ -109,6 +109,14 @@ public partial class ComboBox : Selector
 			//	border.Child 
 			//}
 
+#if HAS_UNO
+			if (IsLoaded)
+			{
+				popup.Closed -= OnPopupClosed;
+				popup.Closed += OnPopupClosed;
+			}
+#endif
+
 			popup.CustomLayouter = new DropDownLayouter(this, popup);
 
 			popup.IsLightDismissEnabled = true;
@@ -344,15 +352,6 @@ public partial class ComboBox : Selector
 		return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
 	}
 
-	private void RestoreSelectedItem()
-	{
-		var selection = GetSelectionContent();
-		if (selection is _View selectionView)
-		{
-			RestoreSelectedItem(selectionView);
-		}
-	}
-
 	/// <summary>
 	/// Restore SelectedItem (or former SelectedItem) view to its position in the dropdown list.
 	/// </summary>
@@ -475,6 +474,76 @@ public partial class ComboBox : Selector
 	{
 		get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
 		set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+	}
+
+	internal void ScrollIntoView(object item, ScrollIntoViewAlignment alignment = ScrollIntoViewAlignment.Default)
+	{
+		if (ItemsPanelRoot is null)
+		{
+			// Not ready.
+			return;
+		}
+
+		if (ContainerFromItem(item) is UIElement element)
+		{
+			// The container we want to jump to is already materialized, so just jump to it.
+			// This means we're in a non-virtualizing panel or in a virtualizing panel where the container we want is materialized for some reason (e.g. partially in view)
+			ScrollIntoViewFastPath(element, alignment);
+		}
+#if !IS_UNIT_TESTS
+		else if (VirtualizingPanel?.GetLayouter() is { } layouter)
+		{
+#if __APPLE_UIKIT__ || __ANDROID__
+			// TODO
+#else
+			layouter.ScrollIntoView(item, alignment);
+#endif
+		}
+#endif
+	}
+
+	private void ScrollIntoViewFastPath(UIElement element, ScrollIntoViewAlignment alignment)
+	{
+		if (ScrollViewer is { } sv && sv.Presenter is { } presenter)
+		{
+			var offsetXY = element.TransformToVisual(presenter).TransformPoint(
+#if __SKIA__ // Skia correctly doesn't include the offsets in TransformToVisual
+				new Point(presenter.HorizontalOffset, presenter.VerticalOffset)
+#else
+				Point.Zero
+#endif
+				);
+
+			var orientation = ItemsPanelRoot?.PhysicalOrientation ?? Orientation.Vertical;
+
+			var (elementOffset, elementLength, presenterOffset, presenterViewportLength) =
+				orientation is Orientation.Vertical
+					? (offsetXY.Y, element.ActualSize.Y, presenter.VerticalOffset, presenter.ViewportHeight)
+					: (offsetXY.X, element.ActualSize.X, presenter.HorizontalOffset, presenter.ViewportWidth);
+
+			if (presenterOffset <= elementOffset && elementOffset + elementLength <= presenterOffset + presenterViewportLength)
+			{
+				// if the element is within the visible viewport, do nothing.
+				return;
+			}
+
+			// If we use the above offset directly, the item we want to jump to will be the start of the viewport, i.e. leading.
+			// For the default alignment, we move the element to either of the viewport ends (i.e. to the top or the bottom of the
+			// viewport. To move to the bottom, we scroll one "viewport page" less. This brings the element's start right after the
+			// viewport's length ends we then scroll again by elementLength so that the end of the element is the end of the viewport.
+			var newOffset = alignment is ScrollIntoViewAlignment.Default && presenterOffset < elementOffset
+				? elementOffset - presenterViewportLength + elementLength
+				: elementOffset;
+
+			if (orientation is Orientation.Vertical)
+			{
+				sv.ScrollToVerticalOffset(newOffset);
+			}
+			else
+			{
+				sv.ScrollToHorizontalOffset(newOffset);
+			}
+		}
 	}
 
 	internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =

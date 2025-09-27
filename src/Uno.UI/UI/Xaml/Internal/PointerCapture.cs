@@ -58,6 +58,9 @@ internal partial class PointerCapture
 		}
 	}
 
+	public static void ClearForFatalError()
+		=> _actives.Clear();
+
 	private UIElement? _nativeCaptureElement;
 	private readonly Dictionary<UIElement, PointerCaptureTarget> _targets = new(2);
 	private PointerCaptureOptions _currentOptions;

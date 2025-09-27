@@ -604,6 +604,24 @@ namespace Uno.UI
 			throw new InvalidOperationException($"Cannot locate resource from '{source}'");
 		}
 
+		internal static bool TryRetrieveDictionaryForSource(Uri source, out ResourceDictionary resourceDictionary)
+		{
+			if (source?.AbsoluteUri is not { } absoluteUriString)
+			{
+				resourceDictionary = null;
+				return false;
+			}
+
+			if (_registeredDictionariesByUri.TryGetValue(absoluteUriString, out var factory))
+			{
+				resourceDictionary = factory();
+				return true;
+			}
+
+			resourceDictionary = null;
+			return false;
+		}
+
 		internal static ResourceDictionary RetrieveDictionaryForFilePath(string filePath)
 		{
 			if (_registeredDictionariesByFilepath.TryGetValue(filePath, out var func))

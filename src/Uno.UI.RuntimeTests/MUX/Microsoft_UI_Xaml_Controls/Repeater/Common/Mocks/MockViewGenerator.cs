@@ -18,9 +18,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks
 {
-	using ElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactory;
-	using ElementFactoryGetArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryGetArgs;
-	using ElementFactoryRecycleArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactoryRecycleArgs;
+	using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
+	using ElementFactoryGetArgs = Microsoft.UI.Xaml.Controls.ElementFactoryGetArgs;
+	using ElementFactoryRecycleArgs = Microsoft.UI.Xaml.Controls.ElementFactoryRecycleArgs;
 	using RepeaterTestHooks = Microsoft.UI.Private.Controls.RepeaterTestHooks;
 
 	public class MockElementFactory : ElementFactory

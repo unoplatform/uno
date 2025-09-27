@@ -24,10 +24,11 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
-using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
-using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
+using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Combinatorial.MSTest;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -36,6 +37,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_Flyout
 	{
 		private string GetAllIsOpens() => string.Join(" ", VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Select(p => p.IsOpen));
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Default_ShowMode()
+		{
+			var flyout = new Flyout();
+			Assert.AreEqual(FlyoutShowMode.Standard, flyout.ShowMode);
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -310,7 +319,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// "Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?"
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_Too_Large_For_Any_Fallback()
 		{
 			var target = new TextBlock
@@ -1455,7 +1465,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_SplitButton_Flyout_XamlRoot()
 		{
 			var flyout = new Flyout();
-			var host = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
+			var host = new Microsoft.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
 			host.Flyout = flyout;
 			TestServices.WindowHelper.WindowContent = host;
 			await TestServices.WindowHelper.WaitForIdle();
@@ -1539,8 +1549,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow(true)]
-		[DataRow(false)]
+		[CombinatorialData]
 		public async Task When_CloseLightDismissablePopups(bool isLightDismissEnabled)
 		{
 			var flyout = new Flyout()
@@ -1618,7 +1627,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Unbound_FullFlyout()
+		public Task When_Unbound_FullFlyout_Any() =>
+			When_Unbound_FullFlyout_Impl(skiaFullScreen: false);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMobile)]
+		[RunsOnUIThread]
+		public Task When_Unbound_FullFlyout_SkiaMobile() =>
+			// canvas for skia mobile is in absolute fullscreen, including area taken by status bar or bottom navigation bar.
+			When_Unbound_FullFlyout_Impl(skiaFullScreen: true);
+
+		private async Task When_Unbound_FullFlyout_Impl(bool skiaFullScreen)
 		{
 			var host = new Button
 			{
@@ -1674,10 +1693,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await TestServices.WindowHelper.WaitForLoaded(presenter);
 
 				var bounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				var expected = skiaFullScreen
+					? host.XamlRoot.Size
+					: new Size(bounds.Width, bounds.Height);
 
 				Assert.IsTrue(
 					presenter.ActualWidth >= bounds.Width && presenter.ActualHeight >= bounds.Height,
-					$"flyout not taking the full size offered: flyout={presenter.ActualWidth}x{presenter.ActualHeight}, VisibleBounds={bounds.Width}x{bounds.Height}");
+					$"flyout not taking the full size offered: flyout={presenter.ActualWidth}x{presenter.ActualHeight}, {(skiaFullScreen ? "XamlRoot.Bounds" : "VisibleBounds")}={expected.Width}x{expected.Height}");
 			}
 			finally
 			{

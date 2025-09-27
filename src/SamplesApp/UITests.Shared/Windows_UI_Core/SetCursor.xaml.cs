@@ -31,7 +31,11 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 		{
 #if !__ANDROID__ && !__APPLE_UIKIT__
 			Box.SelectionChanged -= HandleSelection;
-			Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new global::Windows.UI.Core.CoreCursor(global::Windows.UI.Core.CoreCursorType.Arrow, 0);
+
+			if (Microsoft.UI.Xaml.Window.Current is not null)
+			{
+				Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new global::Windows.UI.Core.CoreCursor(global::Windows.UI.Core.CoreCursorType.Arrow, 0);
+			}
 #endif
 		}
 

@@ -50,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15460")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15460")]
 #if __ANDROID__
 		[Ignore("Doesn't pass in CI on Android")]
 #endif

@@ -13,6 +13,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core.Scaling;
+using Windows.Devices.Input;
 
 namespace DirectUI
 {
@@ -22,6 +23,7 @@ namespace DirectUI
 
 		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName;
 
+		private KeyboardCapabilities? _keyboardCapabilities;
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
 
@@ -83,7 +85,13 @@ namespace DirectUI
 		internal void OnCompositionContentStateChangedForUWP()
 		{
 			var contentRootCoordinator = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator;
-			var root = contentRootCoordinator.CoreWindowContentRoot;
+			var root = contentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
+			if (root is null)
+			{
+				// The CoreWindow is not initialized, ignore the content state change.
+				return;
+			}
+
 			var rootScale = RootScale.GetRootScaleForContentRoot(root);
 			if (rootScale is null) // Check that we still have an active tree
 			{
@@ -97,6 +105,15 @@ namespace DirectUI
 
 			// TODO Uno: Not needed now.
 			// OnUWPWindowSizeChanged();
+		}
+
+		internal bool IsKeyboardPresent
+		{
+			get
+			{
+				_keyboardCapabilities ??= new KeyboardCapabilities();
+				return _keyboardCapabilities.KeyboardPresent != 0;
+			}
 		}
 	}
 }

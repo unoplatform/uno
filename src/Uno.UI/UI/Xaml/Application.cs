@@ -26,7 +26,7 @@ using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
@@ -45,6 +45,7 @@ using UIKit;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Uno.Foundation;
 #endif
 
 namespace Microsoft.UI.Xaml
@@ -56,7 +57,7 @@ namespace Microsoft.UI.Xaml
 	{
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark;
+		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark; // Default theme in WinUI is Dark.
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 		private ResourceDictionary _resources = new ResourceDictionary();
@@ -106,6 +107,9 @@ namespace Microsoft.UI.Xaml
 		private static void RegisterExtensions()
 		{
 			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
+#if __SKIA__
+			ApiExtensibility.Register(typeof(Uno.UI.Graphics.SKCanvasVisualBaseFactory), _ => new Uno.UI.Graphics.SKCanvasVisualFactory());
+#endif
 		}
 
 		static partial void InitializePartialStatic();
@@ -203,6 +207,24 @@ namespace Microsoft.UI.Xaml
 		};
 
 		internal bool IsThemeSetExplicitly { get; private set; }
+
+		internal void SyncRequestedThemeFromXamlRoot(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			// Sync the requested theme from the XamlRoot
+			// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
+			// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
+			// This will also explicitly change the Application.Current.RequestedTheme, which does not happen in case of UWP.
+			if (xamlRoot.Content is FrameworkElement fe)
+			{
+				var theme = fe.RequestedTheme;
+				SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(theme));
+			}
+		}
 
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
@@ -447,11 +469,12 @@ namespace Microsoft.UI.Xaml
 
 		internal void OnRequestedThemeChanged()
 		{
-			ApplySystemOverlaysTheming();
+			RequestedThemeChanged?.Invoke();
+
 			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
 		}
 
-		partial void ApplySystemOverlaysTheming();
+		internal event Action RequestedThemeChanged;
 
 		private void UpdateRootElementBackground()
 		{
@@ -546,9 +569,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		[JSImport("globalThis.eval")]
-		private static partial string Eval(string js);
-
 #if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
@@ -559,7 +579,7 @@ namespace Microsoft.UI.Xaml
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{
-				return Uri.UnescapeDataString(new Uri(Eval("window.location.href")).Query.TrimStart('?'));
+				return Uri.UnescapeDataString(new Uri(WebAssemblyImports.EvalString("window.location.href")).Query.TrimStart('?'));
 			}
 			else
 			{

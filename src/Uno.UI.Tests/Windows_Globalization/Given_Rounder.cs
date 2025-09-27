@@ -11,7 +11,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 	public class Given_Rounder
 	{
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(4.48, 0, 4d)]
 		public void When_UsingRoundMethod(double value, int digits, double expected)
 		{
@@ -19,7 +19,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, rounded);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.5, true)]
 		[DataRow(0.5, true)]
 		[DataRow(-0.5, true)]
@@ -31,7 +31,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(expected, Rounder.IsFractionExactlyHalf(value));
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.3)]
 		[DataRow(1.27, 1.3)]
 		[DataRow(1.23, 1.3)]
@@ -43,7 +43,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundAwayFromZero, expected);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.3)]
 		[DataRow(1.27, 1.3)]
 		[DataRow(1.23, 1.2)]
@@ -55,7 +55,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfAwayFromZero, expected);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.3)]
 		[DataRow(1.27, 1.3)]
 		[DataRow(1.23, 1.3)]
@@ -67,7 +67,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundUp, expected);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.3)]
 		[DataRow(1.27, 1.3)]
 		[DataRow(1.23, 1.2)]
@@ -79,7 +79,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfUp, expected);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.2)]
 		[DataRow(1.27, 1.2)]
 		[DataRow(1.23, 1.2)]
@@ -91,7 +91,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundDown, expected);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.2)]
 		[DataRow(1.27, 1.3)]
 		[DataRow(1.23, 1.2)]
@@ -103,7 +103,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfDown, expected);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.2)]
 		[DataRow(1.27, 1.2)]
 		[DataRow(1.23, 1.2)]
@@ -115,7 +115,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundTowardsZero, expected);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.2)]
 		[DataRow(1.27, 1.3)]
 		[DataRow(1.23, 1.2)]
@@ -127,7 +127,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfTowardsZero, expected);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.2)]
 		[DataRow(1.27, 1.3)]
 		[DataRow(1.23, 1.2)]
@@ -145,7 +145,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundHalfToEven, expected);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(1.25, 1.3)]
 		[DataRow(1.27, 1.3)]
 		[DataRow(1.23, 1.2)]

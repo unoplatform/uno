@@ -458,5 +458,10 @@ namespace Microsoft.UI.Xaml
 		{
 			(@do as IDependencyObjectStoreProvider)?.Store.SetTemplatedParent2(tp);
 		}
+
+		internal static bool HasLocalOrModifierValue(this DependencyObject @do, DependencyProperty dp)
+		{
+			return (@do as IDependencyObjectStoreProvider).Store.HasLocalOrModifierValue(dp);
+		}
 	}
 }

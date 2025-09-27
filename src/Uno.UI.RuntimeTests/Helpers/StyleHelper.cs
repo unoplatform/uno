@@ -81,7 +81,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 			NativeDispatcher.CheckThreadAccess();
 
 			var resources = Application.Current.Resources;
-			var xamlResources = resources.MergedDictionaries.OfType<Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources>().FirstOrDefault();
+			var xamlResources = resources.MergedDictionaries.OfType<Microsoft.UI.Xaml.Controls.XamlControlsResources>().FirstOrDefault();
 			if (xamlResources is null)
 			{
 				return Disposable.Empty;

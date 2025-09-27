@@ -9,7 +9,6 @@ uid: uno.publishing.webassembly
 - [Configure deep linking](xref:UnoWasmBootstrap.Features.DeepLinking)
 - [Configure WebAssembly AOT modes](xref:Uno.Wasm.Bootstrap.Runtime.Execution)
 - [Profile the memory of your app](xref:Uno.Wasm.Bootstrap.Profiling.Memory)
-- [Enable binaries obfuscation](xref:UnoWasmBootstrap.Features.Obfuscation)
 
 You can view more on the [WebAssembly Bootstrapper](xref:UnoWasmBootstrap.Overview) options.
 
@@ -49,5 +48,5 @@ Once done, you can head over to [publishing section](xref:uno.publishing.webasse
 Publishing your app can be done to different servers and cloud providers.
 
 - [How to host a WebAssembly App](xref:Uno.Development.HostWebAssemblyApp)
-- [Publishing to Azure Static Apps](xref:Uno.Tutorials.AzureStaticWepApps)
+- [Publishing to Azure Static Apps](xref:Uno.Tutorials.AzureStaticWebApps)
 - [Server locally using dotnet-serve](https://github.com/natemcmaster/dotnet-serve)

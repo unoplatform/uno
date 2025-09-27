@@ -100,7 +100,6 @@ partial class ClientHotReloadProcessor
 		using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
 
 		var handlerActions = ElementAgent?.ElementHandlerActions;
-
 		var uiUpdating = true;
 		try
 		{
@@ -114,6 +113,21 @@ partial class ClientHotReloadProcessor
 			}
 
 			UpdateGlobalResources(updatedTypes);
+
+#if HAS_UNO_WINUI
+			var rootElement = window.Content?.XamlRoot?.VisualTree.RootElement;
+#else
+			var rootElement = window.Content?.XamlRoot?.Content;
+#endif
+			if (rootElement is null)
+			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error("Error doing UI Update - no visual root");
+				}
+
+				return;
+			}
 
 			// Action: BeforeVisualTreeUpdate
 			// This is called before the visual tree is updated
@@ -141,7 +155,7 @@ partial class ClientHotReloadProcessor
 
 			var isCapturingState = true;
 			var treeIterator = EnumerateHotReloadInstances(
-				window.Content,
+				rootElement,
 				async (fe, key) =>
 				{
 					// Get the original type of the element, in case it's been replaced
@@ -222,9 +236,9 @@ partial class ClientHotReloadProcessor
 
 				if (elementMappedType is not null)
 				{
-					if (_log.IsEnabled(LogLevel.Trace))
+					if (_log.IsEnabled(LogLevel.Debug))
 					{
-						_log.Error($"Updating element [{element}] to [{elementMappedType}]");
+						_log.Debug($"Updating element [{element}] to [{elementMappedType}]");
 					}
 
 					ReplaceViewInstance(element, elementMappedType, elementHandlers, updatedTypes);
@@ -514,6 +528,14 @@ partial class ClientHotReloadProcessor
 				{
 					_log.Warn($"Found invalid MetadataUpdateOriginalTypeAttribute for {type}");
 				}
+			}
+			catch (TypeLoadException error)
+			{
+				if (_log.IsEnabled(LogLevel.Warning))
+				{
+					_log.Warn($"Type load error while processing MetadataUpdateOriginalTypeAttribute for {type}", error);
+				}
+				hr?.ReportWarning(error);
 			}
 			catch (Exception error)
 			{

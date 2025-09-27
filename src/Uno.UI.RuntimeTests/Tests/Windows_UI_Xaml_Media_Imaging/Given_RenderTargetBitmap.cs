@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Data;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
-using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -193,6 +193,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			var bytesToCompare = bytesPerPixel * (int)sv.ViewportHeight * irBitmap1.Width;
 			CollectionAssert.AreEqual(irBitmap1.GetPixels()[..bytesToCompare], irBitmap2.GetPixels()[..bytesToCompare]);
 			CollectionAssert.AreNotEqual(svBitmap1.GetPixels()[..bytesToCompare], svBitmap2.GetPixels()[..bytesToCompare]);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("The behaviour is only correct on skia due to the changes in https://github.com/unoplatform/uno/pull/15875")]
+#endif
+		public async Task When_Large_Image()
+		{
+			var outerBorder = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Child = new Border
+				{
+					Width = 1000,
+					Height = 1000,
+					Background = new SolidColorBrush(Colors.Red),
+					BorderBrush = new SolidColorBrush(Colors.Green),
+					BorderThickness = new Thickness(10)
+				}
+			};
+
+			await UITestHelper.Load(outerBorder);
+
+			var irBitmap1 = await UITestHelper.ScreenShot(outerBorder.Child as FrameworkElement);
+
+			ImageAssert.HasColorAt(irBitmap1, irBitmap1.Width - 5, irBitmap1.Height - 5, Colors.Green);
 		}
 #endif
 	}

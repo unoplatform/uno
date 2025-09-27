@@ -10,7 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 [RunsOnUIThread]
 public class Given_GeometryData
 {
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("", FillRule.EvenOdd, "")]
 	[DataRow("F0", FillRule.EvenOdd, "")]
 	[DataRow("F1", FillRule.Nonzero, "")]
@@ -27,7 +27,7 @@ public class Given_GeometryData
 		Assert.AreEqual(data, result.Data);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("F")]
 	[DataRow("F2")]
 	[DataRow("FF")]

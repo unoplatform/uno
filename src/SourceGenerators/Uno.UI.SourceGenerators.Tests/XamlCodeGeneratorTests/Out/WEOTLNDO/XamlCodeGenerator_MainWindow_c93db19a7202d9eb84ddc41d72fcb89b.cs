@@ -41,6 +41,8 @@ namespace TestRepro
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainWindow_c93db19a7202d9eb84ddc41d72fcb89b = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void InitializeComponent()
 		{
 			var __that = this;
@@ -58,7 +60,7 @@ namespace TestRepro
 			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
 			// Class TestRepro.MainWindow
-			var Closed_Handler = new __MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_TestReproMainWindow.ApplyMethod_1_Closed_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+			var Closed_Handler = new __MainWindow_c93db19a7202d9eb84ddc41d72fcb89b.__Win_Clo_Closed_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
 			/* second level */ __p1.Closed += Closed_Handler.Invoke;
 			}
 			))
@@ -73,9 +75,9 @@ namespace TestRepro
 		partial void OnInitializeCompleted();
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_TestReproMainWindow
+		private class __MainWindow_c93db19a7202d9eb84ddc41d72fcb89b
 		{
-				public class ApplyMethod_1_Closed_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				public class __Win_Clo_Closed_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.WindowEventArgs args)
 					{

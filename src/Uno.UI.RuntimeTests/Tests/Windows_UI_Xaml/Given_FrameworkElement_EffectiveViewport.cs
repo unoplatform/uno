@@ -26,6 +26,7 @@ using static Private.Infrastructure.TestServices.WindowHelper;
 using static Windows.Foundation.Rect;
 using EffectiveViewportChangedEventArgs = Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs;
 using Uno.UI.Extensions;
+using Combinatorial.MSTest;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -448,10 +449,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		[DataRow(false, false)]
-		[DataRow(true, false)]
-		[DataRow(false, true)]
-		[DataRow(true, true)]
+		[CombinatorialData]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore(
 			"On Android and iOS the ScrollHost is not the (native)SCP but the SV, so alignments are not taken in consideration when computing the scrollport "
@@ -812,11 +810,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		[DataRow(0, 0)]
-		[DataRow(1024, 0)]
-		[DataRow(0, 1024)]
-		[DataRow(1024, 1024)]
-		public async Task EVP_When_Transform(int x, int y)
+		[CombinatorialData]
+		public async Task EVP_When_Transform(
+			[CombinatorialValues(0, 1024)] int x,
+			[CombinatorialValues(0, 1024)] int y)
 		{
 			/*
 			<local:HeadedContent Header="With transform" Background="#008018">

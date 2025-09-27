@@ -16,9 +16,16 @@ using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
+using System.Diagnostics;
+using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
+using Uno.Foundation;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -52,7 +59,7 @@ public partial class TextBox
 
 	private bool _clearHistoryOnTextChanged = true;
 
-	private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+	private static readonly VirtualKeyModifiers _platformCtrlKey;
 
 	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
 	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
@@ -75,6 +82,8 @@ public partial class TextBox
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
+	private Rect? _lastEndCaretRect;
+	private Rect? _lastStartCaretRect;
 
 	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
@@ -82,10 +91,18 @@ public partial class TextBox
 
 	internal ContentControl ContentElement => _contentElement;
 
-	private CaretDisplayMode CaretMode
+	static TextBox()
+	{
+		_platformCtrlKey =
+			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && WebAssemblyImports.EvalBool("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
+			? VirtualKeyModifiers.Windows
+			: VirtualKeyModifiers.Control;
+	}
+
+	internal CaretDisplayMode CaretMode
 	{
 		get => _caretMode;
-		set
+		private set
 		{
 			if (_caretMode != value)
 			{
@@ -159,7 +176,13 @@ public partial class TextBox
 		_currentlyTyping = newValue;
 	}
 
-	partial void OnUnloadedPartial() => _timer.Stop();
+	partial void OnUnloadedPartial()
+	{
+		_timer.Stop();
+		_selectionStartThumbfulCaret?.Hide();
+		_selectionEndThumbfulCaret?.Hide();
+		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+	}
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
 
@@ -194,12 +217,15 @@ public partial class TextBox
 		}
 	}
 
+	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType)
+	{
+		TextBoxView?.UpdateProperties();
+	}
+
 	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 	{
 		TextBoxView?.SetFlowDirectionAndTextAlignment();
 	}
-
-	private static SKPaint _spareCaretPaint = new SKPaint();
 
 	private void UpdateTextBoxView()
 	{
@@ -227,21 +253,20 @@ public partial class TextBox
 
 					var inlines = displayBlock.Inlines;
 
-					var startThumbCaretVisible = false;
-					var endThumbCaretVisible = false;
+					inlines.DrawingStarted += () =>
+					{
+						_lastStartCaretRect = null;
+						_lastEndCaretRect = null;
+					};
 
 					inlines.DrawingFinished += () =>
 					{
-						if (!startThumbCaretVisible)
+						// Only invalidate the carets after drawing is complete
+						// to avoid modifying the children visuals while they are being enumerated.
+						NativeDispatcher.Main.Enqueue(() =>
 						{
-							_selectionStartThumbfulCaret.Hide();
-						}
-						if (!endThumbCaretVisible)
-						{
-							_selectionEndThumbfulCaret.Hide();
-						}
-						startThumbCaretVisible = false;
-						endThumbCaretVisible = false;
+							UpdateFlyoutPosition();
+						}, NativeDispatcherPriority.Normal);
 					};
 
 					inlines.CaretFound += args =>
@@ -252,41 +277,50 @@ public partial class TextBox
 							var caretRect = args.rect;
 							var compositor = _visual.Compositor;
 							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-							var caretPaint = _spareCaretPaint;
 
-							caretPaint.Reset();
-
-							brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
-							args.canvas.DrawRect(
-								new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
-									(float)caretRect.Bottom), caretPaint);
+							brush.Paint(args.canvas, args.opacity, caretRect.ToSKRect());
 						}
 
-						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
-							CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+						if (args.endCaret)
 						{
-							var caret = args.endCaret ? _selectionEndThumbfulCaret : _selectionStartThumbfulCaret;
-							var left = args.rect.GetMidX() - caret.Width / 2;
-							caret.Height = args.rect.Height + 16;
-							var transform = displayBlock.TransformToVisual(null);
-							if (transform.TransformBounds(args.rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
-							{
-								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)), XamlRoot);
-								if (args.endCaret)
-								{
-									endThumbCaretVisible = true;
-								}
-								else
-								{
-									startThumbCaretVisible = true;
-								}
-							}
+							_lastEndCaretRect = args.rect;
+						}
+						else
+						{
+							_lastStartCaretRect = args.rect;
 						}
 					};
 				}
 			}
 
 			TextBoxView.SetTextNative(Text);
+		}
+	}
+
+	private void UpdateFlyoutPosition()
+	{
+		if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+		{
+			foreach (var (rectNullable, caret) in (ReadOnlySpan<(Rect?, CaretWithStemAndThumb)>)[(_lastStartCaretRect, _selectionStartThumbfulCaret), (_lastEndCaretRect, _selectionEndThumbfulCaret)])
+			{
+				if (rectNullable is not { } rect)
+				{
+					caret.Hide();
+					continue;
+				}
+				var left = rect.GetMidX() - caret.Width / 2;
+				caret.Height = rect.Height + 16;
+				var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
+				if (transform.TransformBounds(rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
+				{
+					caret.ShowAt(transform.TransformPoint(new Point(left, rect.Top)), XamlRoot);
+				}
+			}
+		}
+		else
+		{
+			_selectionStartThumbfulCaret.Hide();
+			_selectionEndThumbfulCaret.Hide();
 		}
 	}
 
@@ -333,7 +367,10 @@ public partial class TextBox
 			_selection.selectionEndsAtTheStart = false;
 			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
-		_selection = (start, length, _selection.selectionEndsAtTheStart);
+
+		var selection = (start, length, _selection.selectionEndsAtTheStart);
+		var selectionChanged = selection != _selection;
+		_selection = selection;
 
 		// Even when using Skia TextBox, we may need to call Select,
 		// which will update the native input in case of Wasm Skia for example.
@@ -355,7 +392,10 @@ public partial class TextBox
 				_timer.Start(); // restart
 			}
 
-			UpdateScrolling();
+			if (selectionChanged)
+			{
+				UpdateScrolling();
+			}
 			UpdateDisplaySelection();
 		}
 	}
@@ -404,13 +444,6 @@ public partial class TextBox
 	{
 		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
-			if (_deleteButtonVisibilityChangedSinceLastUpdateScrolling)
-			{
-				_deleteButtonVisibilityChangedSinceLastUpdateScrolling = false;
-				// enqueuing on the dispatcher is needed so that we UpdateScrolling after the button is layouted
-				DispatcherQueue.TryEnqueue(UpdateScrolling);
-			}
-
 			var horizontalOffset = sv.HorizontalOffset;
 			var verticalOffset = sv.VerticalOffset;
 
@@ -551,19 +584,20 @@ public partial class TextBox
 				// No-op when pressing these key specifically.
 				break;
 			default:
-				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey is not '\r' or '\n'))
+				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
+				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 				{
 					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
 					var end = Math.Max(selectionStart, selectionStart + selectionLength);
 
-					if (c is '\n')
+					if (key is '\n')
 					{
 						// TextBox autoconverts to \r, like WinUI
-						c = '\r';
+						key = '\r';
 					}
 
-					text = text[..start] + c + text[end..];
+					text = text[..start] + key + text[end..];
 					selectionStart = start + 1;
 					selectionLength = 0;
 				}
@@ -949,15 +983,18 @@ public partial class TextBox
 
 	private void TimerOnTick(object sender, object e)
 	{
-		if (CaretMode == CaretDisplayMode.ThumblessCaretHidden)
+		if (IsLoaded && IsFocused)
 		{
-			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			if (CaretMode == CaretDisplayMode.ThumblessCaretHidden)
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			}
+			else if (CaretMode == CaretDisplayMode.ThumblessCaretShowing)
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+			}
+			UpdateDisplaySelection();
 		}
-		else if (CaretMode == CaretDisplayMode.ThumblessCaretShowing)
-		{
-			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
-		}
-		UpdateDisplaySelection();
 	}
 
 	/// <summary>
@@ -1212,7 +1249,7 @@ public partial class TextBox
 		return baseString;
 	}
 
-	partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
+	partial void PasteFromClipboardPartial(string adjustedClipboardText, int selectionStart, string newText)
 	{
 		if (_isSkiaTextBox)
 		{
@@ -1227,7 +1264,7 @@ public partial class TextBox
 				CommitAction(new ReplaceAction(Text, newText, selectionStart));
 			}
 
-			_pendingSelection = (selectionStart + clipboardText.Length, 0);
+			_pendingSelection = (selectionStart + adjustedClipboardText.Length, 0);
 		}
 	}
 
@@ -1358,7 +1395,7 @@ public partial class TextBox
 	internal override bool IsDelegatingFocusToTemplateChild()
 		=> OperatingSystem.IsBrowser();
 
-	private enum CaretDisplayMode
+	internal enum CaretDisplayMode
 	{
 		ThumblessCaretHidden,
 		ThumblessCaretShowing,
@@ -1474,14 +1511,37 @@ public partial class TextBox
 				IsLightDismissEnabled = false,
 				XamlRoot = xamlRoot
 			};
+			_popup.PopupPanel.Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
 
 			_popup.HorizontalOffset = p.X;
 			_popup.VerticalOffset = p.Y;
-			_popup.IsOpen = true;
+			if (!_popup.IsOpen)
+			{
+				_popup.IsOpen = true;
+				// We don't have an event that fires when we actually render,
+				// so we have to settle for this somewhat-inaccurate approximation
+				// of dispatching an update call whenever InvalidateRender fires.
+				xamlRoot.RenderInvalidated += OnInvalidateRender;
+			}
+		}
+
+		private void OnInvalidateRender()
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (FocusManager.GetFocusedElement(XamlRoot!) is TextBox textBox)
+				{
+					textBox.UpdateFlyoutPosition();
+				}
+			}, NativeDispatcherPriority.Idle);
 		}
 
 		public void Hide()
 		{
+			if (XamlRoot is { })
+			{
+				XamlRoot.RenderInvalidated -= OnInvalidateRender;
+			}
 			if (_popup is not null)
 			{
 				_popup.IsOpen = false;

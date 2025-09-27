@@ -41,6 +41,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Grid_Uses_New_Assigned_ContentProperty_Syntax_9f853e56098ff21d39f15479035509ef = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -153,17 +155,11 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.Grid grid
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Grid)_gridSubject.ElementInstance;
-			}
-			set
-			{
-				_gridSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Grid)_gridSubject.ElementInstance;
+			set => _gridSubject.ElementInstance = value;
 		}
 	}
 }

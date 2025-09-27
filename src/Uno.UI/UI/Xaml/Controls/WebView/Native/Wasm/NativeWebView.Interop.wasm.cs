@@ -20,6 +20,9 @@ internal static partial class NativeWebView
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.buildImports")]
 		internal static partial void BuildImports(string assembly);
 
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.initializeStyling")]
+		internal static partial void InitializeStyling(ElementId htmlId);
+
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.reload")]
 		internal static partial void Reload(ElementId htmlId);
 
@@ -43,9 +46,6 @@ internal static partial class NativeWebView
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setAttribute")]
 		internal static partial void SetAttribute(ElementId htmlId, string attribute, string value);
-
-		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setBackground")]
-		internal static partial void SetBackground(ElementId htmlId, string value);
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setupEvents")]
 		internal static partial void SetupEvents(ElementId htmlId);

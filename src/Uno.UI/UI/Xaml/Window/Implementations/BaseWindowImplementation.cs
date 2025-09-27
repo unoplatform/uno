@@ -10,11 +10,10 @@ using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
 using Uno.UI.Core;
 using Microsoft.UI.Windowing;
-using Windows.UI.Core.Preview;
 using Uno.Disposables;
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO_WINUI
@@ -27,13 +26,17 @@ using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal abstract class BaseWindowImplementation : IWindowImplementation
+internal abstract partial class BaseWindowImplementation : IWindowImplementation
 {
 	private CoreWindowActivationState _lastActivationState = CoreWindowActivationState.Deactivated;
 	private Size _lastSize = new Size(-1, -1);
 
 	private bool _isClosing;
 	private bool _isClosed;
+
+	private bool _contentLoaded;
+	private bool _activationRequested;
+	private bool _splashDismissed;
 
 	private AppWindowClosingEventArgs? _appWindowClosingEventArgs;
 
@@ -94,9 +97,8 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			SetVisibleBoundsFromNative();
 		}
 
-		NativeWindowWrapper?.Show(true);
-
-		OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
+		_activationRequested = true;
+		TryActivate();
 	}
 
 	[MemberNotNull(nameof(NativeWindowWrapper))]
@@ -145,24 +147,6 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			{
 				return;
 			}
-
-#if __SKIA__
-			// Legacy system close handling, will be removed with https://github.com/unoplatform/uno-private/issues/922
-			var manager = SystemNavigationManagerPreview.GetForCurrentView();
-			if (manager is { HasConfirmedClose: false })
-			{
-				if (!manager.RequestAppClose())
-				{
-					// App closing was prevented, handle event
-					e.Cancel = true;
-
-					if (NativeWindowFactory.SupportsClosingCancellation)
-					{
-						return;
-					}
-				}
-			}
-#endif
 
 			if (e.Cancel && !NativeWindowFactory.SupportsClosingCancellation)
 			{
@@ -214,8 +198,10 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	private void SetVisibleBoundsFromNative()
 	{
-		ApplicationView.GetForWindowId(Window.AppWindow.Id).SetVisibleBounds(NativeWindowWrapper?.VisibleBounds ?? default);
-		XamlRoot?.VisualTree?.OnVisibleBoundChanged();
+		if (XamlRoot?.VisualTree is { } visualTree && NativeWindowWrapper is { } wrapper)
+		{
+			visualTree.VisibleBounds = wrapper.VisibleBounds;
+		}
 	}
 
 	protected virtual void OnSizeChanged(Size newSize) { }
@@ -284,13 +270,15 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			bool cancelGuard = false;
 			using var guard = Disposable.Create(() =>
 			{
+				_isClosing = false;
+
 				if (cancelGuard)
 				{
 					return;
 				}
+
 				// in case of any failure, closing and closed states
 				// will reset so that closing operation can be attempted again
-				_isClosing = false;
 				_isClosed = false;
 			});
 
@@ -328,12 +316,13 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 				// because they check if window is closed already
 				Window.SetTitleBar(null);
 				Window.Content = null;
+
+				// _windowChrome.SetDesktopWindow(null);
+
+				// Mark Desktop Window instance as 'closed'
+				_isClosed = true;
 			}
 
-			// _windowChrome.SetDesktopWindow(null);
-
-			// Mark Desktop Window instance as 'closed'
-			_isClosed = true;
 			cancelGuard = true; // success, no need to reset closing and closed states
 
 			// if (!_minimizedOrHidden)
@@ -343,11 +332,9 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 				RaiseWindowVisibilityChangedEvent(false);
 			}
 
-			if (NativeWindowFactory.SupportsMultipleWindows)
-			{
-				// Close native window, cleanup, and unregister from hwnd mapping from DXamlCore
-				Shutdown();
-			}
+
+			// Close native window, cleanup, and unregister from hwnd mapping from DXamlCore
+			Shutdown();
 
 			return true;
 		}
@@ -357,14 +344,26 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	private void Shutdown()
 	{
-		ApplicationHelper.RemoveWindow(Window);
+		if (NativeWindowFactory.SupportsMultipleWindows)
+		{
+			ApplicationHelper.RemoveWindow(Window);
+		}
 
 		if (NativeWindowWrapper is null)
 		{
 			throw new InvalidOperationException("Native window is not initialized.");
 		}
 
-		// If AppWindow closing is in progress, we don't need to do anything here.
+		NativeWindowWrapper.Hide();
+
+		// Allow the window to be re-shown on single-window targets.
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			NativeWindowWrapper.WasShown = false;
+		}
+
+		// If AppWindow closing is in progress, it means the native window
+		// itself triggered the closure and is already being closed.
 		if (_appWindowClosingEventArgs is null)
 		{
 			NativeWindowWrapper.Close();
@@ -378,4 +377,32 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		CoreWindow?.OnVisibilityChanged(args);
 		VisibilityChanged?.Invoke(Window, args);
 	}
+
+	public void NotifyContentLoaded()
+	{
+		_contentLoaded = true;
+
+		TryActivate();
+	}
+
+	private void TryActivate()
+	{
+		// To actually activate, both conditions must be true:
+		// 1. The content must be loaded
+		// 2. The activation must be requested by the user
+		if (_contentLoaded && _activationRequested)
+		{
+			NativeWindowWrapper?.Show(true);
+
+			OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
+
+			if (!_splashDismissed)
+			{
+				DismissSplashScreenPlatform();
+				_splashDismissed = true;
+			}
+		}
+	}
+
+	partial void DismissSplashScreenPlatform();
 }

@@ -308,7 +308,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return Math.Max(minOffset, Math.Min(offset, maxOffset));
 		}
 
-#elif __APPLE_UIKIT__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter                                                                                                                                                                                                                                                                                                                                                            
+#elif __APPLE_UIKIT__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter
 		protected override Size MeasureOverride(Size size)
 		{
 			var result = base.MeasureOverride(size);

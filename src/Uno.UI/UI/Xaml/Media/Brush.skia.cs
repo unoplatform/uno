@@ -3,7 +3,7 @@ using System.Numerics;
 using Uno.Disposables;
 using Microsoft.UI.Composition;
 using Windows.UI;
-using Microsoft/* UWP don't rename */.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno;
 

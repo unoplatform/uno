@@ -127,9 +127,25 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.TryRedirectForManipulation(Microsoft.UI.Input.PointerPoint)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ManipulationRedirectionMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionXSourceMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYChainingMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYChainingMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYSourceMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYSourceMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionVelocity.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.Scale.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionYRailsEnabled.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleChainingMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleChainingMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.Source.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.TryRedirectForManipulation(Microsoft.UI.Input.PointerPoint)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ManipulationRedirectionMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.DeltaPosition.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.DeltaScale.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.Position.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleVelocity.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -167,28 +183,12 @@ namespace Microsoft.UI.Composition.Interactions
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PointerWheelConfig.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionXRailsEnabled.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionYRailsEnabled.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionYRailsEnabled.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ManipulationRedirectionMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ManipulationRedirectionMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionXChainingMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionXChainingMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionXSourceMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionXSourceMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYChainingMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYChainingMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYSourceMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYSourceMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleChainingMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleChainingMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.Source.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionXRailsEnabled.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.DeltaPosition.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.DeltaScale.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.Position.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionXRailsEnabled.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionYRailsEnabled.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.VisualInteractionSource CreateFromIVisualElement(global::Microsoft.UI.Composition.IVisualElement source)

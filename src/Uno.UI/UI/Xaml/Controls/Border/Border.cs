@@ -25,7 +25,7 @@ using View = Microsoft.UI.Xaml.UIElement;
 #endif
 using _Debug = System.Diagnostics.Debug;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Controls;
 

@@ -22,9 +22,14 @@
 		<Description>This package Google Play functionality for Uno Platform based apps on Android</Description>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
 		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.14" />
+	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.18" />
+	</ItemGroup>
 
+	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>

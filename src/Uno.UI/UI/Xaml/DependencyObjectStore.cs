@@ -21,8 +21,6 @@ using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Media;
 
-
-
 #if __ANDROID__
 using View = Android.Views.View;
 #elif __APPLE_UIKIT__
@@ -1635,11 +1633,11 @@ namespace Microsoft.UI.Xaml
 						yield return fe.Resources;
 					}
 
-					candidate = fe.Parent as FrameworkElement;
+					candidate = fe.Parent;
 				}
 				else
 				{
-					candidate = VisualTreeHelper.GetParent(candidate) as DependencyObject;
+					candidate = VisualTreeHelper.GetParent(candidate);
 				}
 			}
 
@@ -1964,6 +1962,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		private static DependencyPropertyChangedEventArgsPool _dpChangedEventArgsPool =
+			new(Uno.UI.FeatureConfiguration.DependencyProperty.DependencyPropertyChangedEventArgsPoolSize);
+
 		private void InvokeCallbacks(
 			DependencyObject actualInstanceAlias,
 			DependencyProperty property,
@@ -2036,16 +2037,19 @@ namespace Microsoft.UI.Xaml
 			// dependency property value through the cache.
 			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
 
-			DependencyPropertyChangedEventArgs? eventArgs = null;
+			var eventArgs = _dpChangedEventArgsPool.Rent();
+			eventArgs.PropertyInternal = property;
+			eventArgs.OldValueInternal = previousValue;
+			eventArgs.NewValueInternal = newValue;
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS
+			eventArgs.OldPrecedenceInternal = previousPrecedence;
+			eventArgs.NewPrecedenceInternal = newPrecedence;
+			eventArgs.BypassesPropagationInternal = bypassesPropagation;
+#endif
 
 			// Raise the changes for the callback register to the property itself
 			if (propertyMetadata.HasPropertyChanged)
 			{
-				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
-#endif
-				);
 				propertyMetadata.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
 			}
 
@@ -2057,22 +2061,12 @@ namespace Microsoft.UI.Xaml
 			// but before the registered property callbacks
 			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
-				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
-#endif
-);
 				doInternal.OnPropertyChanged2(eventArgs);
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
 			if (propertyDetails.CanRaisePropertyChanged)
 			{
-				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
-#endif
-				);
 				propertyDetails.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
 			}
 
@@ -2081,13 +2075,14 @@ namespace Microsoft.UI.Xaml
 			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
 			{
 				var callback = currentCallbacks[callbackIndex];
-				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
-#endif
-				);
 				callback.Invoke(instanceRef, property, eventArgs);
 			}
+
+			// Cleanup to avoid leaks
+			eventArgs.OldValueInternal = null;
+			eventArgs.NewValueInternal = null;
+
+			_dpChangedEventArgsPool.Return(eventArgs);
 		}
 
 		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, object? newValue)
@@ -2201,6 +2196,20 @@ namespace Microsoft.UI.Xaml
 			{
 				return !object.ReferenceEquals(previousValue, newValue);
 			}
+		}
+
+		internal bool HasLocalOrModifierValue(DependencyProperty dp)
+		{
+			var precedence = GetCurrentHighestValuePrecedence(dp);
+
+			// TODO Uno Specific: The check is a bit different in WinUI, but should have the same effect.
+			bool hasLocalValue = !(
+				precedence == DependencyPropertyValuePrecedences.DefaultValue ||
+				precedence == DependencyPropertyValuePrecedences.DefaultStyle ||
+				precedence == DependencyPropertyValuePrecedences.ExplicitStyle ||
+				precedence == DependencyPropertyValuePrecedences.ImplicitStyle);
+
+			return hasLocalValue;
 		}
 
 		private void OnParentChanged(object? previousParent, object? value)

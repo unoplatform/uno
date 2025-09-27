@@ -27,7 +27,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 			this.InitializeComponent();
 
 			resultImage.ImageOpened += (s, e) => loadState.Text = "ImageOpened";
-			resultImage.ImageFailed += (s, e) => loadState.Text = "ImageFailed";
+			resultImage.ImageFailed += (s, e) => loadState.Text = "ImageFailed: " + e.ErrorMessage;
 		}
 
 		private void OnImage01(object sender, object args)

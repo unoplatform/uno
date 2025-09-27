@@ -102,7 +102,14 @@ namespace Microsoft.UI.Xaml
 
 #if SUPPORTS_RTL
 		internal Matrix3x2 GetFlowDirectionTransform()
-			=> ShouldMirrorVisual() ? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f) : Matrix3x2.Identity;
+		{
+			var inMirroredSubtree = ShouldMirrorVisual();
+			var isMirroredTextBlock = this is TextBlock { FlowDirection: FlowDirection.RightToLeft };
+
+			return inMirroredSubtree ^ isMirroredTextBlock
+				? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)
+				: Matrix3x2.Identity;
+		}
 
 		private bool ShouldMirrorVisual()
 		{
@@ -546,7 +553,8 @@ namespace Microsoft.UI.Xaml
 
 		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
 
-		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
+#nullable enable
+		internal static Matrix3x2 GetTransform(UIElement from, UIElement? to)
 		{
 			if (from == to || !from.IsInLiveTree || (to is { IsVisualTreeRoot: false, IsInLiveTree: false }))
 			{
@@ -554,15 +562,23 @@ namespace Microsoft.UI.Xaml
 			}
 
 #if __SKIA__
-			Matrix4x4.Invert(to?.Visual.TotalMatrix ?? Matrix4x4.Identity, out var invertedTotalMatrix);
-			var finalTransform = (from.Visual.TotalMatrix * invertedTotalMatrix).ToMatrix3x2();
+			Matrix3x2 from2To;
+			if (to is null)
+			{
+				from2To = from.Visual.TotalMatrix.ToMatrix3x2();
+			}
+			else
+			{
+				Matrix4x4.Invert(to.Visual.TotalMatrix /* root2To */, out var to2Root);
+				from2To = (from.Visual.TotalMatrix /* root2from */ * to2Root).ToMatrix3x2();
+			}
 
 			if (from.Log().IsEnabled(LogLevel.Trace))
 			{
-				from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {finalTransform}");
+				from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {from2To}");
 			}
 
-			return finalTransform;
+			return from2To;
 #else
 #if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
 			// If possible we try to navigate the tree upward so we have a greater chance
@@ -602,6 +618,7 @@ namespace Microsoft.UI.Xaml
 			return matrix;
 #endif
 		}
+#nullable restore
 
 #if !__SKIA__
 		/// <summary>
@@ -868,7 +885,7 @@ namespace Microsoft.UI.Xaml
 					// Workaround: Without this, the managed Skia TextBox breaks.
 					// For example, keyboard selection or double clicking to select breaks
 					// It's probably an issue with TextBox implementation itself, but for now we workaround it here.
-					root.XamlRoot.RaiseInvalidateRender();
+					root.XamlRoot.InvalidateRender();
 #endif
 				}
 #if UNO_HAS_ENHANCED_LIFECYCLE
@@ -1459,7 +1476,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void SetProtectedCursor(Microsoft /* UWP don't rename */.UI.Input.InputCursor cursor)
+		internal void SetProtectedCursor(Microsoft.UI.Input.InputCursor cursor)
 		{
 			ProtectedCursor = cursor;
 		}
@@ -1483,6 +1500,19 @@ namespace Microsoft.UI.Xaml
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
 			}
+		}
+
+		internal void SetEntireSubtreeDirty()
+		{
+#if __SKIA__
+			// TODO Uno: Implementation should be different. For now we invalidate the entire visual tree.
+			XamlRoot?.QueueInvalidateRender();
+			//if (!m_isEntireSubtreeDirty)
+			//{
+			//	NWSetDirtyFlagsAndPropagate(DirtyFlags::Render, FALSE);
+			//	m_isEntireSubtreeDirty = TRUE;
+			//}
+#endif
 		}
 	}
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
 using Microsoft.UI.Xaml;
@@ -11,6 +10,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI.Input.Preview.Injection;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 {
@@ -274,6 +275,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if !__SKIA__
+		[Ignore("This test is not supported on this platform.")]
+#endif
+		public async Task When_Tapped_Empty_Space()
+		{
+			Button button = new Button() { Content = "Button" };
+			var border = new Border()
+			{
+				Padding = new Thickness(100),
+				Child = button
+			};
+
+			TestServices.WindowHelper.WindowContent = border;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+
+			button.Focus(FocusState.Programmatic);
+
+			await TestServices.WindowHelper.WaitFor(
+				() => object.ReferenceEquals(FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot), button));
+
+			bool losingFocus = false;
+			button.LosingFocus += (s, e) => losingFocus = true;
+
+			// Tap outside of the button
+			TestServices.InputHelper.Tap(new(10, 10));
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(losingFocus, "Button should lose focus");
+
+			await TestServices.WindowHelper.WaitFor(
+				() => !object.ReferenceEquals(FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot), button));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task When_Page_Navigates_Focus_With_Outer_After()
 		{
 			var stackPanel = new StackPanel();
@@ -337,6 +375,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[Ignore("This test is flaky on CI, see #9080")]
 		public async Task When_Page_Navigates_Back_With_Outer_Before()
 		{
 			var stackPanel = new StackPanel();
@@ -525,6 +564,75 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 #endif
 
 			Assert.AreEqual(SUT.ScrollableHeight, SUT.VerticalOffset);
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/868")]
+		public async Task When_Focus_TextBox_Inside_NavigationView()
+		{
+			var SUT = new NavigationViewPage();
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			SUT.NavigationViewControl.IsPaneOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var suggestBox = SUT.SearchBox;
+
+			var waitForFocusToComplete = Task.Delay(5000);
+
+			var focusSearchBox = TestServices.RunOnUIThread(() =>
+			{
+				// We need to validate that we are returning from this operation.
+				suggestBox.Focus(FocusState.Programmatic);
+			});
+
+			var completedTask = await Task.WhenAny(focusSearchBox, waitForFocusToComplete);
+			if (completedTask == waitForFocusToComplete)
+			{
+				Assert.Fail("AutoSuggestBox did not get the focus");
+			}
+
+			suggestBox.Text = "Test";
+
+			SUT.NavigationViewControl.IsPaneOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.NavigationViewControl.IsPaneOpen);
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Focus_Same_Input_Multiple_Times()
+		{
+			const int waitAfterFocus = 600;
+			var SUT = new NavigationViewPage();
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var suggestBox = SUT.SearchBox;
+			var rootGrid = SUT.RootGrid;
+
+			for (var x = 0; x < 6; x++)
+			{
+				SUT.NavigationViewControl.IsPaneOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				suggestBox.Focus(FocusState.Pointer);
+				await Task.Delay(waitAfterFocus);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				rootGrid.Focus(FocusState.Pointer);
+				await Task.Delay(waitAfterFocus);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			// No need to assert. Test will crash when the focus logic is broken.
 		}
 
 		private async Task WaitForLoadedEvent(FocusNavigationPage page)

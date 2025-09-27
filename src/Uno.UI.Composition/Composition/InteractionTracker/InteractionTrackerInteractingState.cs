@@ -29,15 +29,7 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 
 	internal override void CompleteUserManipulation(Vector3 linearVelocity)
 	{
-		// Can this happen?
-		// Should we always get ReceiveInertiaStarting first?
-		// Anyway, it's likely still safe to go to inertia state here as interacting state can only transition to inertia.
-		if (this.Log().IsEnabled(LogLevel.Error))
-		{
-			this.Log().Error("Unexpected CompleteUserManipulation while in interacting state");
-		}
-
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, linearVelocity, requestId: 0, isFromPointerWheel: false));
+		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
 	}
 
 	internal override void ReceiveManipulationDelta(Point translationDelta)

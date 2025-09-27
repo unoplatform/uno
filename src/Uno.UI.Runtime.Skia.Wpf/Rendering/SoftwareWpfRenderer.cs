@@ -7,16 +7,17 @@ using System.Windows.Media.Imaging;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Visibility = System.Windows.Visibility;
-using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
 internal class SoftwareWpfRenderer : IWpfRenderer
 {
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
 	private WriteableBitmap? _bitmap;
@@ -47,10 +48,10 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			return;
 		}
 
+		_xamlRoot ??= XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 
 		int width, height;
 
-		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 		var dpi = _xamlRoot.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;
@@ -80,9 +81,6 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 		_bitmap.Lock();
 		using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
 		{
-			var canvas = surface.Canvas;
-			canvas.Clear(BackgroundColor);
-			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
@@ -90,12 +88,16 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 				{
 					rootVisual.Compositor.IsSoftwareRenderer = true;
 
-					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
+					SkiaRenderHelper.RenderPicture(
+						surface,
+						_host.Picture,
+						BackgroundColor,
+						_fpsHelper);
 
 					if (_host.NativeOverlayLayer is { } nativeLayer)
 					{
 						nativeLayer.Clip ??= new PathGeometry();
-						((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
+						((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(_host.ClipPath?.ToSvgPathData());
 					}
 					else
 					{

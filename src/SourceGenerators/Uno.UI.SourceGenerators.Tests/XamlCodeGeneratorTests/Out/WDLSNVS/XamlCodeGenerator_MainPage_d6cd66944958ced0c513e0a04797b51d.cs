@@ -41,6 +41,8 @@ namespace TestRepro
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -133,17 +135,11 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _LazyLoadedBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _LazyLoadedBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.Border LazyLoadedBorder
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Border)_LazyLoadedBorderSubject.ElementInstance;
-			}
-			set
-			{
-				_LazyLoadedBorderSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Border)_LazyLoadedBorderSubject.ElementInstance;
+			set => _LazyLoadedBorderSubject.ElementInstance = value;
 		}
 	}
 }

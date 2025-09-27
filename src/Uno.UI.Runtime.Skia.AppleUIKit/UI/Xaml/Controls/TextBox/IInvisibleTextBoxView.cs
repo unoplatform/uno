@@ -40,4 +40,6 @@ internal interface IInvisibleTextBoxView
 	UITextPosition BeginningOfDocument { get; }
 
 	nint GetOffsetFromPosition(UITextPosition fromPosition, UITextPosition toPosition);
+
+	TextBoxView? Owner { get; }
 }

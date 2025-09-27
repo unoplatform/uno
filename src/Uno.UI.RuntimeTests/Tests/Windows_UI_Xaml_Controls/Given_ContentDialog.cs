@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -20,6 +21,10 @@ using static Private.Infrastructure.TestServices;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml.Automation.Peers;
 using MUXControlsTestApp.Utilities;
+using Combinatorial.MSTest;
+using Microsoft.UI.Windowing;
+using Private.Infrastructure;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -118,6 +123,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)] // Very flaky on Skia Android #9080
 		public async Task When_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -146,6 +152,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				SUT.Hide();
+			}
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.Native)]
+		public async Task When_Uncapped_FullSizeDesired()
+		{
+			var SUT = new MyContentDialog(unconstrained: true)
+			{
+				Content = new Grid
+				{
+					BorderBrush = new SolidColorBrush(Colors.Red),
+					BorderThickness = new Thickness(5),
+				},
+				Background = new SolidColorBrush(Colors.SkyBlue),
+				PrimaryButtonText = "YES",
+				SecondaryButtonText = "NO",
+			};
+			SUT.FullSizeDesired = true;
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
+
+			using (ScreenHelper.OverrideVisibleBounds(new Thickness(0, 38, 0, 72), skipIfHasNativeUnsafeArea: (nativeUnsafeArea.Top + nativeUnsafeArea.Bottom) > 50))
+			{
+				try
+				{
+					await ShowDialog(SUT);
+
+					var bgeScreenRect = SUT.BackgroundElement.GetOnScreenBounds();
+					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+
+					var scale =
+#if HAS_UNO && __SKIA__
+						SUT.BackgroundElement.GetScaleFactorForLayoutRounding();
+#else
+						1;
+#endif
+					var roundingMargin = 0.5 / scale;
+
+					Assert.AreEqual(visibleBounds.Top, bgeScreenRect.Top, roundingMargin * 2);
+					Assert.AreEqual(visibleBounds.Height, bgeScreenRect.Height, roundingMargin * 2);
+				}
+				finally
+				{
+					SUT.Hide();
+				}
 			}
 		}
 
@@ -572,9 +625,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		[DataTestMethod]
-		[DataRow(true)]
-		[DataRow(false)]
+		[TestMethod]
+		[CombinatorialData]
 		[Ignore("Test is failing on all targets https://github.com/unoplatform/uno/issues/17984")]
 		public async Task When_BackButton_Pressed(bool isCloseButtonEnabled)
 		{
@@ -679,6 +731,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20842")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)]
+		public async Task When_Window_Resized()
+		{
+			if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)
+			{
+				Assert.Inconclusive("This test requires spawning a new window.");
+			}
+
+			var window = new Window();
+			try
+			{
+				bool activated = false;
+				window.Content = new Border();
+				window.Activated += (s, e) => activated = true;
+				window.Activate();
+				await TestServices.WindowHelper.WaitFor(() => activated);
+				var dialog = new ContentDialog
+				{
+					Title = "Hello World",
+					Content = "This is a sample dialog.",
+					CloseButtonText = "Close",
+					XamlRoot = window.Content.XamlRoot,
+				};
+				_ = dialog.ShowAsync();
+
+				await UITestHelper.WaitForIdle();
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(window.Content.XamlRoot)[0];
+				var panel = (ContentDialog)popup.Child;
+				var size = panel.ActualSize;
+
+				var appWindow = window.AppWindow;
+				AppWindowChangedEventArgs args = null;
+				void OnChanged(AppWindow s, AppWindowChangedEventArgs e)
+				{
+					args = e;
+				}
+				appWindow.Changed += OnChanged;
+				var originalSize = appWindow.Size;
+
+				var adjustedSize = new SizeInt32 { Width = originalSize.Width + 10, Height = originalSize.Height + 10 };
+				appWindow.Resize(adjustedSize);
+				await TestServices.WindowHelper.WaitFor(() => args is not null);
+				Assert.IsTrue(args.DidSizeChange);
+				await UITestHelper.WaitForIdle();
+				Assert.AreNotEqual(size, panel.ActualSize);
+			}
+			finally
+			{
+				window.Close();
+			}
+		}
+#endif
+
 #if __ANDROID__
 		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
 		[Ignore()]
@@ -758,18 +866,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public partial class MyContentDialog : ContentDialog
 	{
+		private readonly bool unconstrained;
+		public MyContentDialog(bool unconstrained = false)
+		{
+			this.unconstrained = unconstrained;
+		}
+
 		public Button PrimaryButton { get; private set; }
 		public Border BackgroundElement { get; private set; }
+		public Border Container { get; private set; }
 		public Grid LayoutRoot { get; private set; }
 		public ScrollViewer ContentScrollViewer { get; private set; }
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
-			PrimaryButton = GetTemplateChild("PrimaryButton") as Button;
-			BackgroundElement = GetTemplateChild("BackgroundElement") as Border;
+			Container = GetTemplateChild("Container") as Border;
 			LayoutRoot = GetTemplateChild("LayoutRoot") as Grid;
+			BackgroundElement = GetTemplateChild("BackgroundElement") as Border;
+
 			ContentScrollViewer = GetTemplateChild("ContentScrollViewer") as ScrollViewer;
+			PrimaryButton = GetTemplateChild("PrimaryButton") as Button;
+
+			if (unconstrained && BackgroundElement is { })
+			{
+				BackgroundElement.MinWidth = BackgroundElement.MinHeight = 0;
+				BackgroundElement.MaxWidth = BackgroundElement.MaxHeight = double.PositiveInfinity;
+			}
 		}
 	}
 }

@@ -4,16 +4,6 @@ uid: Uno.GetStarted.Rider
 
 # Get Started on JetBrains Rider
 
-> [!IMPORTANT]
-> Project templates from Uno Platform 5.3 or later are needed to use Rider. See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
->
-> [!IMPORTANT]
-> Depending on the version of Rider you will want to use, here are some additional information that you will want to know:
->
-> - **Current Rider (2024.2 and above)**: For the current Rider version, the Uno Platform plugin supports creating Uno Platform projects using the "New Solution" dialog.
->
-> - **Previous Rider (2024.1)**: The Uno Plugin for previous versions of Rider (2024.1) does not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. In this case, creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the <a target="_blank" href="https://aka.platform.uno/app-wizard">Uno Platform Live Wizard</a>.
-
 ## Prerequisites
 
 - [**Rider Version 2024.2+**](https://aka.platform.uno/rider-version-2024-2) or [**Previous Rider Version 2024.1**](https://aka.platform.uno/rider-version-2024-1)
@@ -27,11 +17,10 @@ uid: Uno.GetStarted.Rider
 
 |                       | **Rider for Windows** | **Rider for Mac**  | **Rider for Linux** |
 |-----------------------|-----------------------|--------------------|---------------------|
-| Windows (UWP/WinUI)   | ✔️                   | ❌                 | ❌                 |
+| Windows (WinUI)       | ✔️                   | ❌                 | ❌                 |
 | Android               | ✔️                   | ✔️                 | ✔️                |
 | iOS                   | ❌                   | ✔️                 | ❌                 |
 | Wasm                  | ✔️†                  | ✔️†                | ✔️†                |
-| Catalyst              | ❌                   | ✔️                 | ❌                 |
 | Skia Desktop          | ✔️                   | ✔️                 | ✔️                |
 
 <details>
@@ -49,9 +38,13 @@ In Rider, in the **Configure**, **Plugins** menu, open the **Marketplace** tab, 
 
 Then click the install button.
 
-## Platform specific setup
+## Platform-specific setup
 
 You may need to follow additional directions, depending on your development environment.
+
+### Android & iOS
+
+For assistance configuring Android or iOS emulators, see the [Android & iOS emulator troubleshooting guide](xref:Uno.UI.CommonIssues.MobileDebugging).
 
 ### Linux
 
@@ -62,3 +55,13 @@ You may need to follow additional directions, depending on your development envi
 ## Next Steps
 
 You're all set! You can create your [first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.Rider).
+
+> [!IMPORTANT]
+> Project templates from Uno Platform 5.3 or later are needed to use Rider. See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
+>
+> [!IMPORTANT]
+> Depending on the version of Rider you will want to use, here are some additional information that you will want to know:
+>
+> - **Current Rider (2024.2 and above)**: For the current Rider version, the Uno Platform plugin supports creating Uno Platform projects using the "New Solution" dialog.
+>
+> - **Previous Rider (2024.1)**: The Uno Plugin for previous versions of Rider (2024.1) does not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. In this case, creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the <a target="_blank" href="https://aka.platform.uno/app-wizard">Uno Platform Live Wizard</a>.

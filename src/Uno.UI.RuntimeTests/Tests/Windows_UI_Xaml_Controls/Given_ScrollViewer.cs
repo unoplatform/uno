@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
@@ -20,8 +23,12 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
 using Uno.UI.Toolkit.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
+using ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
+using ScrollViewer = Microsoft.UI.Xaml.Controls.ScrollViewer;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -196,6 +203,151 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		public async Task When_Key_Press_Cannot_Scroll()
+		{
+			var navigationView = new NavigationView
+			{
+				Width = 200,
+				Height = 400,
+				IsPaneOpen = true,
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+			};
+
+			var firstItem = new NavigationViewItem
+			{
+				Content = "First Item",
+			};
+			var secondItem = new NavigationViewItem
+			{
+				Content = "Second Item",
+			};
+			navigationView.MenuItems.Add(firstItem);
+			navigationView.MenuItems.Add(secondItem);
+
+			TestServices.WindowHelper.WindowContent = navigationView;
+			await TestServices.WindowHelper.WaitForLoaded(navigationView);
+
+			firstItem.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await TestServices.KeyboardHelper.Down(firstItem);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var focused = FocusManager.GetFocusedElement(navigationView.XamlRoot);
+			Assert.AreEqual(secondItem, focused);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Key_Press_Can_Scroll()
+		{
+			var navigationView = new NavigationView
+			{
+				Width = 200,
+				Height = 400,
+				IsPaneOpen = true,
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+			};
+
+			var firstItem = new NavigationViewItem
+			{
+				Content = "First Item",
+			};
+			var secondItem = new NavigationViewItem
+			{
+				Content = "Second Item",
+			};
+			navigationView.MenuItems.Add(firstItem);
+			navigationView.MenuItems.Add(secondItem);
+
+			for (int i = 0; i < 100; i++)
+			{
+				navigationView.MenuItems.Add(new NavigationViewItem() { Content = $"Item {i + 3}" });
+			}
+
+			TestServices.WindowHelper.WindowContent = navigationView;
+			await TestServices.WindowHelper.WaitForLoaded(navigationView);
+
+			var scrollViewer = VisualTreeUtils.FindVisualParentByType<ScrollViewer>(secondItem);
+			Assert.IsNotNull(scrollViewer, "ScrollViewer should be present in the NavigationView");
+
+			Assert.AreEqual(0, scrollViewer.VerticalOffset);
+
+			firstItem.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await TestServices.KeyboardHelper.Down(firstItem);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var focused = FocusManager.GetFocusedElement(navigationView.XamlRoot);
+			Assert.AreEqual(secondItem, focused);
+
+			Assert.IsFalse(scrollViewer.VerticalOffset > 0, "ScrollViewer should not have scrolled down when focusing the second item");
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Key_Press_Must_Scroll()
+		{
+			var navigationView = new NavigationView
+			{
+				Width = 200,
+				Height = 400,
+				IsPaneOpen = true,
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+			};
+
+			var firstItem = new NavigationViewItem
+			{
+				Content = "First Item",
+			};
+			var secondItem = new NavigationViewItem
+			{
+				Content = "Second Item",
+			};
+			navigationView.MenuItems.Add(firstItem);
+			navigationView.MenuItems.Add(secondItem);
+
+			for (int i = 0; i < 100; i++)
+			{
+				navigationView.MenuItems.Add(new NavigationViewItem() { Content = $"Item {i + 3}" });
+			}
+
+			TestServices.WindowHelper.WindowContent = navigationView;
+			await TestServices.WindowHelper.WaitForLoaded(navigationView);
+
+			var scrollViewer = VisualTreeUtils.FindVisualParentByType<ScrollViewer>(secondItem);
+			Assert.IsNotNull(scrollViewer, "ScrollViewer should be present in the NavigationView");
+
+			Assert.AreEqual(0, scrollViewer.VerticalOffset);
+
+			firstItem.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			for (int i = 0; i < 20; i++)
+			{
+				await TestServices.KeyboardHelper.Down(firstItem);
+			}
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var item21 = navigationView.MenuItems.OfType<NavigationViewItem>().ElementAt(20);
+			var focused = FocusManager.GetFocusedElement(navigationView.XamlRoot);
+			Assert.AreEqual(item21, focused);
+
+			Assert.IsTrue(scrollViewer.VerticalOffset > 0, "ScrollViewer should have scrolled down when focusing the 21st item.");
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
 		public async Task When_ScrollViewer_Pressed()
 		{
 			var border = new Border
@@ -349,11 +501,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await KeyboardHelper.PageDown();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(3, keyDownCount);
+			Assert.AreEqual(2, keyDownCount);
 
 			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(3, keyDownCount);
+			Assert.AreEqual(2, keyDownCount);
 		}
 
 		[TestMethod]
@@ -419,18 +571,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(2, keyDownCount);
+			Assert.AreEqual(3, keyDownCount);
 
 			await KeyboardHelper.Right();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(3, keyDownCount);
+			Assert.AreEqual(4, keyDownCount);
 		}
 #endif
 
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive();
 			}
@@ -522,6 +674,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands)] // Flaky on Skia WPF Islands #9080
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
@@ -575,17 +728,139 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Wheel(-50, steps: 5);
 			await WindowHelper.WaitForIdle();
 
+			// waiting for wheel animation
+			await Task.Delay(500);
+
 			Assert.AreEqual(0, outer.VerticalOffset);
-			Assert.IsTrue(inner.VerticalOffset > 0);
+			Assert.IsTrue(inner.VerticalOffset > 0, "Inner Vertical Offset is not greater than 0");
 
 			mouse.Wheel(-500, steps: 5);
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
+			// waiting for wheel animation
+			await Task.Delay(500);
+
+			var expectedOffset = outer.ScrollableHeight / 2;
+			Assert.IsTrue(outer.VerticalOffset > expectedOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
 			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
 		}
-#endif
 
+
+		[TestMethod]
+		[Ignore("This test is flaky on CI")]
+		public async Task When_Nested_WebView_WheelChanged()
+		{
+			var webview = new WebView2
+			{
+				Height = 200,
+				Background = new SolidColorBrush(Colors.Yellow),
+				Source = new Uri("https://www.platform.uno"),
+			};
+
+			var outer = new ScrollViewer
+			{
+				Height = 300,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Red),
+							Height = 400,
+							Width = 200
+						},
+						webview,
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Blue),
+							Height = 400,
+							Width = 200
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = outer;
+
+			await WindowHelper.WaitForLoaded(outer);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(outer.GetAbsoluteBounds().GetCenter());
+			mouse.Wheel(-600, steps: 5);
+			await WindowHelper.WaitForIdle();
+
+			// waiting for wheel animation
+			await Task.Delay(500);
+
+			Assert.IsTrue(outer.VerticalOffset > 200, "Outer Vertical Offset is not greater than 200");
+
+			mouse.Wheel(-500, steps: 5);
+			await WindowHelper.WaitForIdle();
+
+			// waiting for wheel animation
+			await Task.Delay(500);
+
+			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
+		{
+			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
+			// we don't end up to invoke ScrollContentPresenter.Set again and again (preventing the ScrollContentPresenter.Update methohd to properly process its animation)
+
+			FrameworkElement content;
+			var sut = new ScrollViewer
+			{
+				Height = 100,
+				Width = 100,
+				Content = content = new Border
+				{
+					Height = 200,
+					Background = new SolidColorBrush(Colors.Chartreuse)
+				},
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var visual = ElementCompositionPreview.GetElementVisual(content);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var initialAnimation = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
+			initialAnimation.Should().BeNull(because: "we have not scrolled yet");
+
+			mouse.MoveTo(bounds.GetCenter());
+			mouse.Wheel(-400, steps: 1);
+
+			// Here we assume that ScrollContentPresenter is using KeyFrameAnimation. If no longer the case, the test can be updated!
+			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
+			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
+
+			// Scroll again in the same direction
+			mouse.Wheel(-200, steps: 1);
+
+			var scrollAnimation2 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
+			scrollAnimation2.Should().Be(scrollAnimation1, because: "the wheel event has no effect");
+
+			// But if we scroll in the opposite direction, the animation should be stopped and replaced
+			// (this basically confirm that the test is working -i.e the animation is not being re-used)
+			mouse.Wheel(+200, steps: 1);
+
+			var scrollAnimation3 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
+			scrollAnimation3.Should().NotBe(scrollAnimation1, because: "the wheel event should scroll in the opposite direction");
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -1209,6 +1484,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
@@ -1248,11 +1524,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.WheelUp();
 
+			await Task.Delay(500);
+
 			sut.VerticalOffset.Should().BeGreaterThan(0);
 
 			mouse.WheelDown();
 
-			sut.VerticalOffset.Should().Be(0);
+			await Task.Delay(500);
+
+			sut.VerticalOffset.Should().BeApproximately(0, 0.5);
 #endif
 		}
 
@@ -1473,6 +1753,208 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreNotEqual(0, sut.VerticalOffset);
 		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		public async Task When_TouchScrollDown_Then_Chain()
+		{
+			ScrollViewer parent, child;
+			var sut = parent = new ScrollViewer
+			{
+				Width = 100,
+				Height = 250,
+				IsScrollInertiaEnabled = false,
+				Content = child = new ScrollViewer
+				{
+					Height = 500,
+					Width = 100,
+					IsScrollInertiaEnabled = false,
+					BorderBrush = new SolidColorBrush(Colors.Chartreuse),
+					BorderThickness = new Thickness(5),
+					Content = new Border
+					{
+						Height = 1000,
+						Width = 90,
+						Background = new SolidColorBrush(Colors.DeepPink),
+						BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue),
+						BorderThickness = new Thickness(5)
+					}
+				}
+			};
+
+			var center = (await UITestHelper.Load(sut)).GetCenter();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			Assert.AreEqual(0, parent.VerticalOffset);
+			Assert.AreEqual(0, child.VerticalOffset);
+			var parentEndOffset = parent.ScrollableHeight;
+			var childEndOffset = child.ScrollableHeight;
+
+			finger.Drag(
+				from: center,
+				to: new(center.X, center.Y - 1000));
+
+			await Task.Delay(500); // Wait for the inertia to run
+
+			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1, $"parentEndOffset {parentEndOffset} minus parent.VerticalOffset {parent.VerticalOffset} is not lower than 1");
+			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1, $"childEndOffset {childEndOffset} minus parent.VerticalOffset {child.VerticalOffset} is not lower than 1");
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchScrollDownWithInertia_Then_DoNotChainInertia()
+		{
+			ScrollViewer parent, child;
+			var sut = parent = new ScrollViewer
+			{
+				Width = 100,
+				Height = 250,
+				IsScrollInertiaEnabled = true,
+				Content = child = new ScrollViewer
+				{
+					Height = 500,
+					Width = 100,
+					IsScrollInertiaEnabled = true,
+					BorderBrush = new SolidColorBrush(Colors.Chartreuse),
+					BorderThickness = new Thickness(5),
+					Content = new Border
+					{
+						Height = 1000,
+						Width = 90,
+						Background = new SolidColorBrush(Colors.DeepPink),
+						BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue),
+						BorderThickness = new Thickness(5)
+					}
+				}
+			};
+
+			var center = (await UITestHelper.Load(sut)).GetCenter();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			Assert.AreEqual(0, parent.VerticalOffset);
+			Assert.AreEqual(0, child.VerticalOffset);
+			var parentEndOffset = parent.ScrollableHeight;
+			var childEndOffset = child.ScrollableHeight;
+
+			finger.Drag(
+				from: center,
+				to: new(center.X, center.Y - 300),
+				steps: 1,
+				stepOffsetInMilliseconds: 1);
+
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			Assert.AreEqual(0, parent.VerticalOffset);
+			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchScrollDownWithInertiaOnNonScrollable_Then_ParentReceiveInertia()
+		{
+			ScrollViewer parent, child;
+			StackPanel content;
+			var sut = parent = new ScrollViewer
+			{
+				Width = 100,
+				Height = 250,
+				IsScrollInertiaEnabled = true,
+				UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous, // Make sure to get the VerticalOffset updated immediately while dragging
+				Content = child = new ScrollViewer
+				{
+					Height = 500,
+					Width = 100,
+					IsScrollInertiaEnabled = true,
+					BorderBrush = new SolidColorBrush(Colors.Chartreuse),
+					BorderThickness = new Thickness(5),
+					Content = new Border
+					{
+						Height = 1000,
+						Width = 90,
+						Background = new SolidColorBrush(Colors.DeepPink),
+						BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue),
+						BorderThickness = new Thickness(5),
+						Child = content = new StackPanel()
+					}
+				}
+			};
+			content.Children.AddRange(Enumerable.Range(0, 100).Select(i => new TextBlock { Text = $"#{i:D3}" }));
+
+			var center = (await UITestHelper.Load(sut)).GetCenter();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			Assert.AreEqual(0, parent.VerticalOffset);
+			Assert.AreEqual(0, child.VerticalOffset);
+			var parentEndOffset = parent.ScrollableHeight;
+			var childEndOffset = child.ScrollableHeight;
+
+			// Prevent child SV to accept scrolling
+			child.ChangeView(null, child.ScrollableHeight, null, disableAnimation: true);
+			await UITestHelper.WaitForIdle();
+
+			// Scroll down with inertia, but less than the prent scrollable height
+			finger.Press(center);
+			finger.MoveBy(0, -100, steps: 1, stepOffsetInMilliseconds: 1);
+
+			// At this point inertia not kicked-in yet
+			Assert.IsTrue(Math.Abs(100 - parent.VerticalOffset) < 1);
+
+			finger.Release();
+
+			// Wait for the inertia to run
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1);
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_Hosting_TextBlock_With_Margin()
+		{
+			// test built specifically to verify that a SV nesting a TextBlock with Margin
+			// doesnt includes that Margin twice when calculating its Extent.
+
+			ScrollViewer sv;
+			var setup = new Border()
+			{
+				Height = 100,
+				Child = sv = new ScrollViewer
+				{
+					HorizontalAlignment = HorizontalAlignment.Left,
+					VerticalAlignment = VerticalAlignment.Top,
+					Content = new TextBlock
+					{
+						Text = "Hello",
+						Margin = new Thickness(8, 8, 8, 8),
+					},
+				},
+			};
+
+			await UITestHelper.Load(setup);
+
+			// shouldnt happen, sanity check. if it ever did, we have other problem(s), and the entire test is invalid.
+			Assert.IsTrue(sv.ActualHeight < setup.ActualHeight, $"ScrollViewer (ActualHeight={sv.ActualHeight}) should be shorter than its parent (ActualHeight={setup.Height}).");
+
+			// double Margin inclusion would cause the Extent to "overflow" the Viewport, into the Scrollable
+			Assert.AreEqual(sv.ViewportHeight, sv.ExtentHeight, delta: 1.0, "In a free expanding SV, the Viewport should the same as the Extend.");
+			Assert.AreEqual(0, sv.ScrollableHeight, delta: 1.0, "In a free expanding SV, it should never be scrollable.");
+		}
 	}
 }

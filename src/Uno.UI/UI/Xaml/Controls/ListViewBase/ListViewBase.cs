@@ -88,9 +88,9 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			var focusedElement = XamlRoot is null ?
-				FocusManager.GetFocusedElement() :
-				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedElement = XamlRoot is { } xamlRoot ?
+				FocusManager.GetFocusedElement(XamlRoot) :
+				null;
 			var focusedContainer = focusedElement as SelectorItem;
 
 			if (args.Key == VirtualKey.Enter ||
@@ -1112,8 +1112,8 @@ namespace Microsoft.UI.Xaml.Controls
 				var container = ContainerFromIndex(flatIndex);
 				if (container != null)
 				{
-					var item = GetDisplayItemFromIndexPath(unoIndexPath);
 #if __APPLE_UIKIT__ || __ANDROID__ // TODO: The managed ListView should similarly go through the recycling to use the proper container matching the new template
+					var item = GetDisplayItemFromIndexPath(unoIndexPath);
 					if (HasTemplateChanged(((FrameworkElement)container).DataContext, item))
 					{
 						// If items are using different templates, we should go through the native replace operation, to use a container

@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 #if USING_TAEF
@@ -31,8 +31,8 @@ using WEX.Logging.Interop;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
-	using IKeyIndexMapping = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IKeyIndexMapping;
-	using ItemsSourceView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsSourceView;
+	using IKeyIndexMapping = Microsoft.UI.Xaml.Controls.IKeyIndexMapping;
+	using ItemsSourceView = Microsoft.UI.Xaml.Controls.ItemsSourceView;
 
 	[TestClass]
 	[RequiresFullWindow]

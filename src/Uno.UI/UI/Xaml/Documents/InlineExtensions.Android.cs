@@ -12,7 +12,7 @@ using Android.Graphics;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
 namespace Microsoft.UI.Xaml.Documents
 {

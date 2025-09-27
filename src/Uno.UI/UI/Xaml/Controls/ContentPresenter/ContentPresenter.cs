@@ -1034,7 +1034,20 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
 		var dataTemplate = this.ResolveContentTemplate();
 
-		//Only apply template if it has changed
+		// Subscribe to template updates so presenter can refresh when factory changes (when feature is activated)
+		if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+		{
+			void OnCurrentTemplateUpdated()
+			{
+				// Force re-materialization on template update
+				_dataTemplateUsedLastUpdate = null;
+				SetUpdateTemplate();
+			}
+
+			Uno.UI.TemplateUpdateSubscription.Attach(this, dataTemplate, OnCurrentTemplateUpdated);
+		}
+
+		// Only apply the template if it has changed
 		if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 		{
 			_dataTemplateUsedLastUpdate = dataTemplate;
@@ -1070,11 +1083,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
 		}
 
-		var textBlock = new ImplicitTextBlock(this);
-		textBlock.SetTemplatedParent(this);
-
 		if (!IsNativeHost)
 		{
+			var textBlock = new ImplicitTextBlock(this);
+			textBlock.SetTemplatedParent(this);
+
 			TemplateBind(TextBlock.TextProperty, nameof(Content));
 			TemplateBind(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
 			TemplateBind(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
@@ -1087,10 +1100,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				{
 					RelativeSource = RelativeSource.TemplatedParent
 				});
-		}
 
-		ContentTemplateRoot = textBlock;
-		IsUsingDefaultTemplate = true;
+			ContentTemplateRoot = textBlock;
+			IsUsingDefaultTemplate = true;
+		}
 	}
 
 	partial void RegisterContentTemplateRoot();

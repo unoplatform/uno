@@ -85,7 +85,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 					_status.ReportInvalidRuntime();
 				}
 
-				var message = new ConfigureServer(_projectPath, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
+				var hrDebug = Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
+				var message = new ConfigureServer(_projectPath, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties, hrDebug);
 
 				await _rcClient.SendMessage(message);
 

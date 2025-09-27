@@ -1,14 +1,8 @@
-﻿using System.Threading.Tasks;
-using UIKit;
-using Uno.UI.Runtime.Skia.AppleUIKit;
+﻿using Uno.UI.Hosting;
 
-namespace SamplesApp.iOS;
+var host = UnoPlatformHostBuilder.Create()
+	.App(() => new SamplesApp.App())
+	.UseAppleUIKit()
+	.Build();
 
-public class Application
-{
-	public static void Main(string[] args)
-	{
-		var host = new PlatformHost(() => new SamplesApp.App());
-		host.Run();
-	}
-}
+host.Run();

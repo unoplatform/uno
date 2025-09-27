@@ -15,7 +15,6 @@
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		
 		<!-- Required for net9 workloads -->
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
@@ -42,6 +41,9 @@
 		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
 		-->
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -86,11 +88,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-
 		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Graph" Version="5.56.0" />
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
@@ -115,6 +115,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Wasm.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.WebAssembly\Uno.UI.MediaPlayer.WebAssembly.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
@@ -135,7 +136,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="WasmScripts\AppManifest.js" />
 		<None Remove="WasmScripts\TestRunner.js" />
 	</ItemGroup>
 

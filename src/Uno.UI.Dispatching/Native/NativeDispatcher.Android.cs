@@ -13,7 +13,7 @@ namespace Uno.UI.Dispatching
 {
 	internal sealed partial class NativeDispatcher
 	{
-		private static readonly string[] _animationArray = new[] { "Animation" };
+		private static readonly string[] _animationArray = ["Animation"];
 
 		private Handler _handler;
 		private NativeDispatcherImplementor _implementor;
@@ -56,6 +56,18 @@ namespace Uno.UI.Dispatching
 			_choreographer.PostFrameCallback(_animationImplementor);
 
 			return operation;
+		}
+
+		/// <summary>
+		/// Synchronous dispatching to the dispatcher when coming from the choreographer only.
+		/// </summary>
+		partial void SynchronousDispatchRenderingPartial()
+		{
+			if (IsRendering)
+			{
+				DispatchItems();
+				RaiseRendered();
+			}
 		}
 
 		private void DispatchItemsToChoreographer()

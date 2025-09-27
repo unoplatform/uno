@@ -4,6 +4,9 @@ uid: uno.articles.features.illinker
 
 # Using the IL Linker
 
+> [!NOTE]
+> This article is about the .NET IL Linker, you can also view information about [XAML and Resources Trimming](xref:Uno.Features.ResourcesTrimming).
+
 ## Support for features
 
 In order to improve the size of the application, some platforms are providing the ability to unconditionally disable features if the app is known not to use them.

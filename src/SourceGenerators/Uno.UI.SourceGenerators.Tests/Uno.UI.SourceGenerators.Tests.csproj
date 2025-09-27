@@ -51,10 +51,6 @@
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="NuGet.Packaging" Version="6.3.4" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
-		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 		<Reference Include="$(NuGetPackageRoot)\communitytoolkit.mvvm\$(CommunityToolkitMvvmVersion)\analyzers\dotnet\roslyn4.3\cs\CommunityToolkit.Mvvm.SourceGenerators.dll" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 	</ItemGroup>
 

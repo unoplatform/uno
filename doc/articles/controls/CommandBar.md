@@ -61,7 +61,9 @@ In this mode, the `CommandBar` can't be fully customized like other templatable 
 
 ### Padding
 
-You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
+You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS/Native and Android/Native.
+
+On Skia-based renderers, you'll need to set the `VisibleBoundsPadding` or `SafeArea` on the parent control of the `CommandBar`.
 
 #### Back button
 
@@ -85,7 +87,7 @@ On **iOS**, tapping the back button automatically triggers a back navigation on 
 | Height                                | x       | -   | -       | **iOS** and **Android**: Fixed and can't be changed.                                                                   |
 | HorizontalAlignment                   | x       | -   | x       | **iOS**: Always use `HorizontalAlignment.Stretch`.                                                                     |
 | Opacity                               | x       | x   | x       |                                                                                                                        |
-| Padding                               | x       | x   | x       | **iOS** and **Android**: Please refer to the `Padding` section.                                                        |
+| Padding                               | x       | x   | x       | **iOS**, **Android** and **Skia**: Please refer to the `Padding` section.                                                        |
 | PrimaryCommands                       | x       | x   | x       |                                                                                                                        |
 | SecondaryCommands                     | x       | -   | x       | **iOS**: Not supported.                                                                                                |
 | VerticalAlignment                     | x       | -   | x       | **iOS**: Always use `VerticalAlignment.Top`.                                                                           |
@@ -203,7 +205,7 @@ The height is fixed and cannot be changed.
 
 ## Extensions
 
-Extensions are attached properties that extend the **UWP** APIs to provide platform-specific features.
+Extensions are attached properties that extend the **WinUI** APIs to provide platform-specific features.
 
 They can be found in the `Uno.UI.Toolkit` namespace.
 
@@ -306,7 +308,7 @@ Gets or sets the subtitle for the `CommandBar`.
 
 ## Placement
 
-On **iOS**, the same `UINavigationBar` instance is shared throughout all pages. When navigating between two pages, you can see that the `UINavigationBar` doesn't move, and only its content and the pages have a transition. To get the same effect while still letting you use `CommandBar` as you would on **UWP** (as part of the `Page`), we have to do some magic. Namely, the `CommandBar` you define inside your `Page` is never actually rendered there, and only serves as a placeholder from which to read the information we need to pass to the shared `UINavigationBar` instance.
+On **iOS**, the same `UINavigationBar` instance is shared throughout all pages. When navigating between two pages, you can see that the `UINavigationBar` doesn't move, and only its content and the pages have a transition. To get the same effect while still letting you use `CommandBar` as you would on **WinUI** (as part of the `Page`), we have to do some magic. Namely, the `CommandBar` you define inside your `Page` is never actually rendered there, and only serves as a placeholder from which to read the information we need to pass to the shared `UINavigationBar` instance.
 
 To ensure everything works properly, you must follow a few rules:
 
@@ -326,7 +328,7 @@ On **iOS** a `CommandBarHelper` is available for this purpose, you only have to 
 
 # AppBarButton
 
-The `AppBarButton` in **Uno** is designed to be used the same way you would use the `AppBarButton` on **UWP**. In most cases, you should refer to the [official `CommandBar` documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.appbarbutton).
+The `AppBarButton` in **Uno** is designed to be used the same way you would use the `AppBarButton` on **WinUI**. In most cases, you should refer to the [official `CommandBar` documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.appbarbutton).
 
 When `AppBarButton` is used within a native `CommandBar`, its control template is completely ignored and can't be customized.
 
@@ -412,7 +414,7 @@ Gets or sets the text description displayed on the app bar button.
 
 #### Remarks
 
-Unlike on **UWP**, the `Label` will not be displayed below the `Icon`.
+Unlike on **WinUI**, the `Label` will not be displayed below the `Icon`.
 
 It is only displayed on **Android** when the `AppBarButton` is displayed from the overflow (when part of `SecondaryCommands`)
 
@@ -513,7 +515,21 @@ Gets or sets a value indicating whether the user can interact with the control.
 
 - > Why can't I overlap content over the CommandBar on iOS?
 
-  The `CommandBar` is not actually part of the `Page` on **iOS**, and you can't overlap content over it like you would on **UWP** or **Android**. Please refer to the **Placement** section for details.
+  The `CommandBar` is not actually part of the `Page` on **iOS**, and you can't overlap content over it like you would on **WinUI** or **Android**. Please refer to the **Placement** section for details.
+
+- > Why is my CommandBar going into the status bar on iOS/Android?
+
+  You must use `VisibleBoundsPadding.PaddingMask="Top"` on the parent control of `CommandBar` to properly support the notch or punch-holes on iOS and Android.
+
+  ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
+  <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
+      <CommandBar>
+        ...
+      </CommandBar>
+  </Style>
+  ```
 
 - > Why doesn't my CommandBar show a back button?
 

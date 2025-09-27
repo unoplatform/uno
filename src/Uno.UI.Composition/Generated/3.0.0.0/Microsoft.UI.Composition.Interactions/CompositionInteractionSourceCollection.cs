@@ -9,11 +9,11 @@ namespace Microsoft.UI.Composition.Interactions
 	public partial class CompositionInteractionSourceCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Interactions.ICompositionInteractionSource>
 	{
 		// Skipping already declared property Count
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.Count.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.First()
+		// Skipping already declared method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.RemoveAll()
 		// Skipping already declared method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.Add(Microsoft.UI.Composition.Interactions.ICompositionInteractionSource)
 		// Skipping already declared method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.Remove(Microsoft.UI.Composition.Interactions.ICompositionInteractionSource)
-		// Skipping already declared method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.RemoveAll()
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection.First()
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.Interactions.ICompositionInteractionSource>
 		// Processing: System.Collections.IEnumerable
 	}

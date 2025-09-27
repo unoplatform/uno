@@ -36,12 +36,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private IReporter _reporter = new Reporter();
 
 		private bool _useRoslynHotReload;
+		private bool _useHotReloadThruDebugger;
 
 		private bool InitializeMetadataUpdater(ConfigureServer configureServer, Dictionary<string, string> properties)
 		{
 			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
 
 			_useRoslynHotReload = _useRoslynHotReload || configureServer.EnableMetadataUpdates;
+			_useHotReloadThruDebugger = configureServer.EnableHotReloadThruDebugger;
 
 			if (_useRoslynHotReload)
 			{
@@ -310,20 +312,33 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				for (var i = 0; i < updates.Length; i++)
 				{
-					var updateTypesWriterStream = new MemoryStream();
-					var updateTypesWriter = new BinaryWriter(updateTypesWriterStream);
-					WriteIntArray(updateTypesWriter, updates[i].UpdatedTypes.ToArray());
+					if (_useHotReloadThruDebugger)
+					{
+						await _remoteControlServer.SendMessageToIDEAsync(
+							new Uno.UI.RemoteControl.Messaging.IdeChannel.HotReloadThruDebuggerIdeMessage(
+								updates[i].ModuleId.ToString(),
+								Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
+								Convert.ToBase64String(updates[i].ILDelta.ToArray()),
+								Convert.ToBase64String(updates[i].PdbDelta.ToArray())
+							));
+					}
+					else
+					{
+						var updateTypesWriterStream = new MemoryStream();
+						var updateTypesWriter = new BinaryWriter(updateTypesWriterStream);
+						WriteIntArray(updateTypesWriter, updates[i].UpdatedTypes.ToArray());
 
-					await _remoteControlServer.SendFrame(
-						new AssemblyDeltaReload
-						{
-							FilePaths = files,
-							ModuleId = updates[i].ModuleId.ToString(),
-							PdbDelta = Convert.ToBase64String(updates[i].PdbDelta.ToArray()),
-							ILDelta = Convert.ToBase64String(updates[i].ILDelta.ToArray()),
-							MetadataDelta = Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
-							UpdatedTypes = Convert.ToBase64String(updateTypesWriterStream.ToArray()),
-						});
+						await _remoteControlServer.SendFrame(
+							new AssemblyDeltaReload
+							{
+								FilePaths = files,
+								ModuleId = updates[i].ModuleId.ToString(),
+								PdbDelta = Convert.ToBase64String(updates[i].PdbDelta.ToArray()),
+								ILDelta = Convert.ToBase64String(updates[i].ILDelta.ToArray()),
+								MetadataDelta = Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
+								UpdatedTypes = Convert.ToBase64String(updateTypesWriterStream.ToArray()),
+							});
+					}
 				}
 			}
 

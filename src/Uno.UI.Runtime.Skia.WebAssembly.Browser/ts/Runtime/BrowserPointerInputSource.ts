@@ -83,18 +83,11 @@
 
 		private onPointerEventReceived(evt: PointerEvent): void {
 			let id = (evt.target as HTMLElement)?.id;
-			if (id != "uno-canvas" && !id.startsWith("uno-semantics-") && !id.startsWith("uno-mpe-")) {
+			if (id === "uno-enable-accessibility") {
 				// We have a div to enable accessibility (see enableA11y in WebAssemblyWindowWrapper).
 				// Pressing space on keyboard to click it will trigger pointer event which we want to ignore.
-				// So, we only care about events that come from uno-canvas.
-				// Additionally, we need to receive pointer events from the <video /> element of MPE so that
-				// we can show MTC on hover.
 				return;
 			}
-
-			// pointer events may have some side effects (like changing focus or opening a context menu on right clicking)
-			// We blanket-disable all the native behaviour so we don't have to whack-a-mole all the edge cases.
-			evt.preventDefault();
 
 			const event = BrowserPointerInputSource.toHtmlPointerEvent(evt.type);
 
@@ -126,7 +119,7 @@
 				wheelDeltaY = 0;
 			}
 
-			BrowserPointerInputSource._exports.OnNativeEvent(
+			const result = BrowserPointerInputSource._exports.OnNativeEvent(
 				this._source,
 				event, //byte @event, // ONE of NativePointerEvent
 				evt.timeStamp, //double timestamp,
@@ -143,6 +136,15 @@
 				wheelDeltaY, //double wheelDeltaY,
 				evt.relatedTarget !== null //bool hasRelatedTarget)
 			);
+
+			// pointer events may have some side effects (like changing focus or opening a context menu on right clicking)
+			// We blanket-disable all the native behaviour so we don't have to whack-a-mole all the edge cases.
+			// We only allow wheel events with ctrl key pressed to allow zooming in/out.
+			const isZooming = evt instanceof WheelEvent && evt.ctrlKey;
+			if (result == HtmlEventDispatchResult.PreventDefault ||
+				!isZooming) {
+				evt.preventDefault();
+			}
 		}
 
 		//#region WheelLineSize

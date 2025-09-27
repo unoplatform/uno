@@ -266,6 +266,21 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2ExecuteScriptResult> CoreWebView2.ExecuteScriptWithResultAsync(string javaScript) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2ExecuteScriptResult%3E%20CoreWebView2.ExecuteScriptWithResultAsync%28string%20javaScript%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.NotificationReceived.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.NotificationReceived.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.SaveAsUIShowing.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.SaveAsUIShowing.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIResult> ShowSaveAsUIAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2SaveAsUIResult> CoreWebView2.ShowSaveAsUIAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2SaveAsUIResult%3E%20CoreWebView2.ShowSaveAsUIAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.SaveFileSecurityCheckStarting.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.SaveFileSecurityCheckStarting.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ScreenCaptureStarting.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ScreenCaptureStarting.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.IsSuspended.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -607,6 +622,70 @@ namespace Microsoft.Web.WebView2.Core
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2WebResourceResponseReceivedEventArgs> CoreWebView2.WebResourceResponseReceived");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2NotificationReceivedEventArgs> NotificationReceived
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2NotificationReceivedEventArgs> CoreWebView2.NotificationReceived");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2NotificationReceivedEventArgs> CoreWebView2.NotificationReceived");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs> SaveAsUIShowing
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2SaveAsUIShowingEventArgs> CoreWebView2.SaveAsUIShowing");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2SaveAsUIShowingEventArgs> CoreWebView2.SaveAsUIShowing");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs> SaveFileSecurityCheckStarting
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2SaveFileSecurityCheckStartingEventArgs> CoreWebView2.SaveFileSecurityCheckStarting");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2SaveFileSecurityCheckStartingEventArgs> CoreWebView2.SaveFileSecurityCheckStarting");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs> ScreenCaptureStarting
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2ScreenCaptureStartingEventArgs> CoreWebView2.ScreenCaptureStarting");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2ScreenCaptureStartingEventArgs> CoreWebView2.ScreenCaptureStarting");
 			}
 		}
 #endif

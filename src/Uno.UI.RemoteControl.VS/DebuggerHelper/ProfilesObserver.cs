@@ -161,8 +161,15 @@ internal class ProfilesObserver : IDisposable
 							PropagateCompletion = true
 						};
 
-						var projectBlock = projectSubscriptionService.ProjectRuleSource.SourceBlock.SyncLinkOptions(evaluationLinkOptions, true);
-						var unconfiguredProjectBlock = ProjectDataSources.SyncLinkOptions(unconfiguredProject.Capabilities.SourceBlock);
+						var projectBlock = projectSubscriptionService.ProjectRuleSource.SourceBlock.SyncLinkOptions(
+							evaluationLinkOptions,
+							// Request for the initial values of the source
+							initialDataAsNewForProjectSubscriptionUpdate: true);
+
+						var unconfiguredProjectBlock = ProjectDataSources.SyncLinkOptions(
+							unconfiguredProject.Capabilities.SourceBlock,
+							// Request for the initial values of the source
+							initialDataAsNewForProjectSubscriptionUpdate: true);
 
 						_projectRuleSubscriptionLink = ProjectDataSources.SyncLinkTo(
 							projectBlock,
@@ -211,11 +218,31 @@ internal class ProfilesObserver : IDisposable
 		_dte.Events.CommandEvents.AfterExecute += _afterExecute;
 	}
 
+	private void UnObserveSolutionEvents()
+	{
+		if (_projectAdded is not null)
+		{
+			_dte.Events.SolutionEvents.ProjectAdded -= _projectAdded;
+		}
+		if (_projectRemoved is not null)
+		{
+			_dte.Events.SolutionEvents.ProjectRemoved -= _projectRemoved;
+		}
+		if (_projectRenamed is not null)
+		{
+			_dte.Events.SolutionEvents.ProjectRenamed -= _projectRenamed;
+		}
+		if (_afterExecute is not null)
+		{
+			_dte.Events.CommandEvents.AfterExecute -= _afterExecute;
+		}
+	}
+
 	private async Task OnUnconfiguredProject_ProjectUnloadingAsync(object? sender, EventArgs args)
 	{
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-		_debugLog($"unconfiguredProject was unloaded");
+		_debugLog($"ProfilesObserver: unconfiguredProject was unloaded");
 
 		UnsubscribeCurrentProject();
 	}
@@ -224,6 +251,8 @@ internal class ProfilesObserver : IDisposable
 	{
 		_currentActiveDebugFramework = null;
 		_currentActiveDebugProfile = null;
+		_lastActiveDebugProfile = null;
+		_lastActiveDebugFramework = null;
 
 		// Force a refresh of reflection calls
 		_projectFrameworkServices = null;
@@ -403,6 +432,7 @@ internal class ProfilesObserver : IDisposable
 
 	public void Dispose()
 	{
+		UnObserveSolutionEvents();
 		_projectRuleSubscriptionLink?.Dispose();
 		_isDisposed = true;
 	}

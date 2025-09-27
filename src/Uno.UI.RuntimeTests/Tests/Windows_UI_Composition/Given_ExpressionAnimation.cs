@@ -195,7 +195,7 @@ public partial class Given_ExpressionAnimation
 	}
 
 	[TestMethod]
-	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16570")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16570")]
 #if !__SKIA__
 	[Ignore("Only supported on Skia")]
 #endif

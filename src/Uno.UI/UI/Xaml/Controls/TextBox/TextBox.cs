@@ -29,6 +29,7 @@ using DirectUI;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+using Uno.UI.Xaml.Controls;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
@@ -221,6 +222,7 @@ namespace Microsoft.UI.Xaml.Controls
 			OnTextWrappingChanged();
 			OnFocusStateChanged(FocusState.Unfocused, FocusState, initial: true);
 			OnTextCharacterCasingChanged(CharacterCasing);
+			OnInputReturnTypeChanged(TextBoxExtensions.GetInputReturnType(this), initial: true);
 			UpdateDescriptionVisibility(true);
 			var buttonRef = _deleteButton?.GetTarget();
 
@@ -256,7 +258,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_contentElement is { })
 			{
-				_contentElement.SetProtectedCursor(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursor.Create(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape.IBeam));
+				_contentElement.SetProtectedCursor(Microsoft.UI.Input.InputSystemCursor.Create(Microsoft.UI.Input.InputSystemCursorShape.IBeam));
 			}
 
 			UpdateTextBoxView();
@@ -265,6 +267,16 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void InitializePropertiesPartial();
+
+		internal void OnInputReturnTypeChanged(InputReturnType inputReturnType, bool initial)
+		{
+			if (inputReturnType != InputReturnType.Default || !initial)
+			{
+				SetInputReturnTypePlatform(inputReturnType);
+			}
+		}
+
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType);
 
 		#region Text DependencyProperty
 
@@ -330,9 +342,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdatePlaceholderVisibility();
 
-			UpdateButtonStates();
-
 			OnTextChangedPartial();
+
+			// Update states after the text has changed, since we're
+			// using selection values to compute SV scrolling.
+			UpdateButtonStates();
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
 			if (focusManager?.FocusedElement != this &&
@@ -417,21 +431,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (MaxLength > 0 && baseString.Length > MaxLength)
 			{
+				// Reject the new string if it's longer than the MaxLength
+#if __SKIA__
+				_pendingSelection = null;
+#endif
 				return DependencyProperty.UnsetValue;
 			}
 
-#if __SKIA__
 			if (!AcceptsReturn)
 			{
 				baseString = GetFirstLine(baseString);
-				if (_pendingSelection is { } selection)
-				{
-					var start = Math.Min(selection.start, baseString.Length);
-					var end = Math.Min(selection.start + selection.length, baseString.Length);
-					_pendingSelection = (start, end - start);
-				}
 			}
-			else if (_isSkiaTextBox && !DeviceTargetHelper.IsUIKit())
+#if __SKIA__
+			else if (_isSkiaTextBox)
 			{
 				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
@@ -439,10 +451,13 @@ namespace Microsoft.UI.Xaml.Controls
 				// the native input and the managed representation.
 				baseString = RemoveLF(baseString);
 			}
-#else
-			if (!AcceptsReturn)
+
+			// make sure this coercion doesn't cause the pending selection to be out of range
+			if (_pendingSelection is { } selection2)
 			{
-				baseString = GetFirstLine(baseString);
+				var start = Math.Min(selection2.start, baseString.Length);
+				var end = Math.Min(selection2.start + selection2.length, baseString.Length);
+				_pendingSelection = (start, end - start);
 			}
 #endif
 
@@ -1098,7 +1113,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
 
-		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
+		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args, bool wasFocused);
 
 		partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e);
 
@@ -1107,9 +1122,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerReleased(args);
 
+			bool wasFocused = FocusState != FocusState.Unfocused;
 			if (!ShouldFocusOnPointerPressed(args))
 			{
-				var wasFocused = FocusState != FocusState.Unfocused;
 				Focus(FocusState.Pointer);
 #if __SKIA__
 				if (wasFocused)
@@ -1130,7 +1145,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			args.Handled = true;
 
-			OnPointerReleasedPartial(args);
+			OnPointerReleasedPartial(args, wasFocused);
 		}
 
 		protected override void OnTapped(TappedRoutedEventArgs e)
@@ -1246,8 +1261,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __SKIA__
 			_deleteButtonVisibilityChangedSinceLastUpdateScrolling |= changed;
+
+			DispatchUpdateScrolling();
 #endif
 		}
+
+
+#if __SKIA__
+		bool _pendingUpdateScrolling;
+
+		private void DispatchUpdateScrolling()
+		{
+			if (!_pendingUpdateScrolling)
+			{
+				_pendingUpdateScrolling = true;
+
+				// We may be pushing scrolling updates too often
+				// when pushing keystrokes programmatically.
+				DispatcherQueue.TryEnqueue(() =>
+				{
+					_pendingUpdateScrolling = false;
+
+					UpdateScrolling();
+				});
+			}
+		}
+#endif
 
 		/// <summary>
 		/// Respond to text input from user interaction.
@@ -1404,15 +1443,21 @@ namespace Microsoft.UI.Xaml.Controls
 			var selectionStart = SelectionStart;
 			var selectionLength = SelectionLength;
 			var currentText = Text;
+			var adjustedClipboardText = clipboardText;
 
 			if (selectionLength > 0)
 			{
 				currentText = currentText.Remove(selectionStart, selectionLength);
 			}
 
-			currentText = currentText.Insert(selectionStart, clipboardText);
+			if (MaxLength > 0)
+			{
+				var clipboardRangeToBePasted = Math.Max(0, Math.Min(clipboardText.Length, MaxLength - currentText.Length));
+				adjustedClipboardText = clipboardText[..clipboardRangeToBePasted];
+			}
 
-			PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
+			currentText = currentText.Insert(selectionStart, adjustedClipboardText);
+			PasteFromClipboardPartial(adjustedClipboardText, selectionStart, currentText);
 
 #if __SKIA__
 			try
@@ -1442,7 +1487,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		}
 
-		partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
+		partial void PasteFromClipboardPartial(string adjustedClipboardText, int selectionStart, string newText);
 
 		/// <summary>
 		/// Copies the selected content to the OS clipboard.

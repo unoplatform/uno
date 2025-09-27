@@ -1,18 +1,28 @@
-﻿#nullable enable
+﻿// #define PRINT_FRAME_TIMES
+#nullable enable
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using SkiaSharp;
+using Uno.Foundation.Logging;
+using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
+using Windows.UI.Composition;
 
 namespace Microsoft.UI.Composition;
 
 public partial class Compositor
 {
-	private List<CompositionAnimation> _runningAnimations = new();
+	private Dictionary<CompositionAnimation, ICompositionTarget> _runningAnimations = new();
+	private Dictionary<ICompositionTarget, int> _runningTargets = new();
 	private LinkedList<ColorBrushTransitionState> _backgroundTransitions = new();
+#if PRINT_FRAME_TIMES
+	private int _frameNumber;
+#endif
 
 	static partial void Initialize()
 	{
@@ -21,19 +31,69 @@ public partial class Compositor
 
 	internal bool? IsSoftwareRenderer { get; set; }
 
-	internal void RegisterAnimation(CompositionAnimation animation)
+	internal bool IsAnimating => _runningAnimations.Count > 0;
+
+	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject visual)
 	{
 		if (animation.IsTrackedByCompositor)
 		{
-			_runningAnimations.Add(animation);
+			if (visual is Visual { CompositionTarget: { } target })
+			{
+				_runningAnimations.Add(animation, target);
+
+				if (_runningTargets.TryGetValue(target, out int count))
+				{
+					_runningTargets[target] = count + 1;
+				}
+				else
+				{
+					_runningTargets[target] = 1;
+				}
+
+				if (this.Log().IsTraceEnabled())
+				{
+					this.Log().Trace($"Register running targets {target.GetHashCode():X8}={count} Animations={_runningAnimations.Count}");
+				}
+
+				CoreApplication.SetContinuousRender(target, true);
+			}
 		}
 	}
 
-	internal void UnregisterAnimation(CompositionAnimation animation)
+	internal void UnregisterAnimation(CompositionAnimation animation, CompositionObject visual)
 	{
 		if (animation.IsTrackedByCompositor)
 		{
-			_runningAnimations.Remove(animation);
+			if (_runningAnimations.TryGetValue(animation, out var target))
+			{
+				_runningAnimations.Remove(animation);
+
+				if (_runningTargets.TryGetValue(target, out int count))
+				{
+					if (this.Log().IsTraceEnabled())
+					{
+						this.Log().Trace($"Unregister running targets {target.GetHashCode():X8}={count - 1} Animations={_runningAnimations.Count}");
+					}
+
+					if (count == 1)
+					{
+						_runningTargets.Remove(target);
+
+						CoreApplication.SetContinuousRender(target, false);
+					}
+					else
+					{
+						_runningTargets[target] = count - 1;
+					}
+				}
+			}
+			else
+			{
+				if (this.Log().IsDebugEnabled())
+				{
+					this.Log().Debug($"Cannot unregister unknown animation");
+				}
+			}
 		}
 	}
 
@@ -106,20 +166,28 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, Action<SKCanvas, Visual>? postRenderAction)
+	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual)
 	{
 		if (rootVisual is null)
 		{
 			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
-		foreach (var animation in _runningAnimations.ToArray())
+		foreach (var animation in _runningAnimations.Keys.ToArray())
 		{
 			animation.RaiseAnimationFrame();
 		}
 
-		rootVisual.RenderRootVisual(canvas, null, postRenderAction);
+#if PRINT_FRAME_TIMES
+		var start = Stopwatch.GetTimestamp();
+#endif
+		rootVisual.RenderRootVisual(canvas, null);
+#if PRINT_FRAME_TIMES
+		var span = Stopwatch.GetElapsedTime(start);
+		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");
+#endif
 
+		var transitionsCount = _backgroundTransitions.Count;
 		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
 		{
 			var transition = current.Value;
@@ -133,7 +201,7 @@ public partial class Compositor
 			}
 		}
 
-		if (_runningAnimations.Count > 0)
+		if (_runningAnimations.Count > 0 || transitionsCount > 0)
 		{
 			CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget);
 		}

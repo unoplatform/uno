@@ -6,10 +6,8 @@ uid: Uno.Features.Uno.Sdk
 
 Uno Platform projects use the Uno.Sdk package that is designed to keep projects simple, yet configurable. It imports the `Microsoft.Net.Sdk` (and the `Microsoft.Net.Sdk.Web` for WebAssembly).
 
-This document explains the many features of this SDK, and how to configure its behavior.
+This document explains the many features of this SDK and how to configure its behavior.
 
-> [!NOTE]
-> The Uno.Sdk only supports the WinUI API set.
 > [!TIP]
 > Beginning with 5.2, Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio 2022 Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.
 
@@ -33,9 +31,12 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     MVUX;
     Configuration;
     Http;
+    HttpRefit;
+    HttpKiota;
     Serialization;
     Localization;
     Navigation;
+    SkiaRenderer;
 </UnoFeatures>
 ```
 
@@ -60,24 +61,28 @@ Here are the supported features:
 | `GLCanvas`           | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                   |
 | `GooglePlay`         | Adds support for [In App Reviews](xref:Uno.Features.StoreContext). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).                                                                            |
 | `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
-| `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) including the use of [Refit](xref:Uno.Extensions.Http.Overview#refit) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                       |
+| `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                |
+| `HttpRefit`          | Adds support for strongly-typed REST API clients via [Refit](xref:Uno.Extensions.Http.Overview#refit)                                                                           |
+| `HttpKiota`          | Adds support for OpenAPI-generated clients via [Kiota](xref:Uno.Extensions.Http.Overview#kiota)                                                                           |
 | `Localization`       | Adds support for [Localization](xref:Uno.Extensions.Localization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                           |
 | `Logging`            | Adds support for [Logging](xref:Uno.Extensions.Logging.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `LoggingSerilog`     | Adds support for [Serilog](https://github.com/serilog/serilog) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                       |
 | `Lottie`             | Adds support for [Lottie animations](xref:Uno.Features.Lottie).                                                                                                                                                                            |
 | `Material`           | Adds support for the [Material Design Theme](xref:Uno.Themes.Material.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Material Design Toolkit](xref:Toolkit.GettingStarted.Material) library.     |
 | `MauiEmbedding`      | Adds support for [embedding Maui controls in Uno Platform applications](xref:Uno.Extensions.Maui.Overview).                                                                                                                                |
-| `MediaElement`       | Adds native references where needed to use [MediaElement](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.mediaelement).                                                                                                |
+| `MediaPlayerElement`       | Adds native references where needed to use [MediaPlayerElement](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.mediaplayerelement).                                                                                                |
 | `Mvvm`               | Adds support for the [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm) package.                                                                                                                                |
 | `MVUX`               | Adds support for [MVUX](xref:Uno.Extensions.Mvux.Overview).                                                                                                                                                                                |
 | `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
+| `SkiaRenderer`       | Adds support for using Skia as the graphics rendering engine. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia).                                                                                               |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
-| `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
+| `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, and Android. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
-| `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |                                                                                                                                                                    |
+| `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
+| `WebView`            | Adds support for the [WebView2 control](xref:Uno.Controls.WebView2).
 
 ## Implicit Packages
 
@@ -115,6 +120,7 @@ Here are the supported properties:
 | `AndroidXBrowserVersion`            | [Xamarin.AndroidX.Browser](https://www.nuget.org/packages/Xamarin.AndroidX.Browser)                                  | Contains components to implement browser features with AndroidX.                                               |
 | `AndroidXCollectionVersion`         | [Xamarin.AndroidX.Collection](https://www.nuget.org/packages/Xamarin.AndroidX.Collection) and similar packages       | Provides AndroidX extensions for collections like sparse arrays and bundles.                                   |
 | `AndroidXLegacySupportV4Version`    | [Xamarin.AndroidX.Legacy.Support.V4](https://www.nuget.org/packages/Xamarin.AndroidX.Legacy.Support.V4)              | Supports older Android versions with AndroidX compatibility libraries.                                         |
+| `AndroidXSplashScreenVersion`    | [Xamarin.AndroidX.Core.SplashScreen](https://www.nuget.org/packages/Xamarin.AndroidX.Core.SplashScreen)              | Support for Android splash screen customization.                                         |
 | `AndroidXNavigationVersion`         | [Xamarin.AndroidX.Navigation.UI](https://www.nuget.org/packages/Xamarin.AndroidX.Navigation.UI) and similar packages | Facilitates navigation within an Android app using AndroidX.                                                   |
 | `AndroidXRecyclerViewVersion`       | [Xamarin.AndroidX.RecyclerView](https://www.nuget.org/packages/Xamarin.AndroidX.RecyclerView)                        | Implements a flexible view for providing a limited window into large datasets with AndroidX.                   |
 | `AndroidXSwipeRefreshLayoutVersion` | [Xamarin.AndroidX.SwipeRefreshLayout](https://www.nuget.org/packages/Xamarin.AndroidX.SwipeRefreshLayout)            | Provides a swipe-to-refresh UI pattern with AndroidX.                                                          |
@@ -136,10 +142,10 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
 <!-- .csproj file -->
 <Project Sdk="Uno.Sdk">
   <PropertyGroup>
-   
-   ...
 
-    <UnoFeatures>
+      ...
+
+      <UnoFeatures>
         Material;
         Dsp;
         Hosting;
@@ -153,7 +159,9 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
         Navigation;
         ThemeService;
         Mvvm;
-    </UnoFeatures>
+        SkiaRenderer;
+      </UnoFeatures>
+      
       <UnoToolkitVersion>6.3.6</UnoToolkitVersion>
       <MicrosoftLoggingVersion>9.0.1</MicrosoftLoggingVersion>
       <CommunityToolkitMvvmVersion>8.4.0</CommunityToolkitMvvmVersion>
@@ -185,7 +193,6 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 | Android | 21 |
 | iOS | 14.2 |
 | macOS | 10.14 |
-| MacCatalyst | 14.0 |
 | tvOS  | 14.2 |
 | WinUI | 10.0.18362.0 |
 
@@ -213,11 +220,6 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
         <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
-    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-      <PropertyGroup>
-        <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
-      </PropertyGroup>
-    </When>
     <When Condition="$(TargetFramework.Contains('windows10'))">
       <PropertyGroup>
         <SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
@@ -243,10 +245,7 @@ As a result, the csproj file is on disk and will show the file as modified in yo
 
 Note that we are currently tracking these Visual Studio issues, make sure to upvote them:
 
-- `net8.0-desktop` must be first for WSL debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-desktop-must-be-first-for-WSL-deb/10643714))
 - `net8.0-browserwasm` must be first for WebAssembly debugging to work ([Link](https://developercommunity.visualstudio.com/t/net80-must-be-first-for-WebAssembly-pub/10643720))
-- `net8.0-windows10` needs to be first for WinAppSDK Hot reload to work ([Link](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724))
-- [WSL HotReload does not invoke MetadataUpdater properly](https://developercommunity.visualstudio.com/t/WSL-HotReload-does-not-invoke-MetadataUp/10643733)
 - [WinAppSDK Unpackaged profile cannot be selected properly when a net8.0 mobile target is active](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735)
 
 ## Disabling Default Items
@@ -279,15 +278,21 @@ Many Uno projects and libraries make use of a `winappsdk-workaround.targets` fil
 
 By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. The supported file extensions are as shown below:
 
-- `*.crossruntime.cs` (WASM, Skia, or Reference)
 - `*.wasm.cs` (WebAssembly)
-- `*.skia.cs` (Skia)
-- `*.reference.cs` (Reference only)
-- `*.iOS.cs`, `*.iOSmacOS.cs` (iOS & MacCatalyst)
+- `*.desktop.cs` (Desktop)
+- `*.iOS.cs` (iOS)
 - `*.tvOS.cs`(tvOS)
-- `*.UIKit.cs`, `*.Apple.cs` (iOS & Mac Catalyst & tvOS)
+- `*.UIKit.cs`, `*.Apple.cs` (iOS & tvOS)
 - `*.Android.cs` (Android)
 - `*.WinAppSDK.cs` (Windows App SDK)
+
+For class libraries we also provide:
+
+- `*.reference.cs` (Reference only)
+- `*.crossruntime.cs` (WebAssembly, Desktop, or Reference)
+
+> [!NOTE]
+> For backwards compatibility, using `.skia.cs` is currently equivalent to `.desktop.cs`. This might change in the future, so we recommend using the suffixes above instead.
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
 

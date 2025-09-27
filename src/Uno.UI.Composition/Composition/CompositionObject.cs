@@ -25,6 +25,11 @@ namespace Microsoft.UI.Composition
 			Compositor = new Compositor();
 		}
 
+		~CompositionObject()
+		{
+			Dispose();
+		}
+
 		internal CompositionObject(Compositor compositor)
 		{
 			Compositor = compositor;
@@ -188,6 +193,20 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		internal void StopAllAnimations()
+		{
+			if (_animations is not null)
+			{
+				foreach (var animation in _animations)
+				{
+					animation.Value.AnimationFrame -= ReEvaluateAnimation;
+					animation.Value.Stop();
+				}
+
+				_animations.Clear();
+			}
+		}
+
 		public AnimationController? TryGetAnimationController(string propertyName)
 		{
 			if (_animations?.TryGetValue(propertyName, out var animation) == true && animation is KeyFrameAnimation keyFrameAnimation)
@@ -232,6 +251,15 @@ namespace Microsoft.UI.Composition
 
 		private protected virtual void DisposeInternal()
 		{
+			if (Dispatching.DispatcherQueue.Main.HasThreadAccess)
+			{
+				StopAllAnimations();
+			}
+			else
+			{
+				// For now, Composition is Dispatcher affine
+				Dispatching.DispatcherQueue.Main.TryEnqueue(StopAllAnimations);
+			}
 		}
 
 #if __APPLE_UIKIT__

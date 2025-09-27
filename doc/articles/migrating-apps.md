@@ -2,11 +2,11 @@
 uid: Uno.Development.MigratingApps
 ---
 
-# Migrating a UWP-only application codebase to an Uno Platform application
+# Migrating a WinUI/UWP-only application codebase to an Uno Platform application
 
-This article describes how to migrate a C# and XAML application targeting only UWP to one targeting multiple platforms using Uno Platform. The final application codebase will share 99% of the same code as the original, but the solution structure will be different.
+This article describes how to migrate a C# and XAML application targeting only WinUI/UWP to one targeting multiple platforms using Uno Platform. The final application codebase will share 99% of the same code as the original, but the solution structure will be different.
 
-It assumes you're using Visual Studio for Windows, but the steps are similar if you're using VS Code or another IDE. The basic principle is to create an empty Uno Platform app with the same name as your UWP-only app and to copy the contents of the old app into the main project of the new app.
+It assumes you're using Visual Studio for Windows, but the steps are similar if you're using VS Code or another IDE. The basic principle is to create an empty Uno Platform app with the same name as your WinUI/UWP-only app and to copy the contents of the old app into the main project of the new app.
 
 After you've migrated the files and dependencies, the general [migration guidance article](migrating-guidance.md) will take you through the final steps to adjust your code to be Uno-compatible.
 
@@ -16,11 +16,11 @@ Follow the instructions to [set up your development environment for Uno Platform
 
 ## Migrating files to the Uno solution structure
 
-Note: these steps will **destructively modify** your existing UWP-only solution. Make sure you have a copy in source control or in a back-up folder.
+Note: these steps will **destructively modify** your existing WinUI/UWP-only solution. Make sure you have a copy in source control or in a backup folder.
 
-1. In order to reuse the name of the existing UWP project, we want to first rename it and its containing folder. (If you don't want to reuse the name, you can skip this step.)
+1. In order to reuse the name of the existing WinUI/UWP project, we want to first rename it and its containing folder. (If you don't want to reuse the name, you can skip this step.)
 
-    i. First, rename the project itself within the solution, by right-clicking on the project and choosing 'Rename'. For example, if the project is called `BugTracker`, we can rename it to `BugTracker_OLD`.
+    i. First, rename the project itself within the solution by right-clicking on the project and choosing 'Rename'. For example, if the project is called `BugTracker`, we can rename it to `BugTracker_OLD`.
 
     ii. Next the folder containing the project must be renamed (assuming it still has the default name from when the project was originally created). Navigate to the folder containing the project. (Eg, by right-clicking on the project in Visual Studio and choosing 'Open Folder in File Explorer'.) Close your Visual Studio instance. Rename the folder, so that the project path becomes `./BugTracker_OLD/BugTracker_OLD.csproj`.
 
@@ -36,23 +36,23 @@ Note: these steps will **destructively modify** your existing UWP-only solution.
 
 1. Replace `App.cs` contents with everything from your existing `App.xaml.cs` except the `InitializeComponent` call in the constructor.
 
-1. Transfer all code files (C# and XAML) and assets from your old UWP-only project to the new project.
+1. Transfer all code files (C# and XAML) and assets from your old WinUI/UWP-only project to the new project.
 
 *Note: you can safely delete 'head' projects for platforms that you're sure you don't want to target.*
 
 ## Adding dependencies
 
-If your old UWP app project had dependencies, you will have to add those dependencies to each new target platform project you wish to support. These include:
+If your old WinUI/UWP app project had dependencies, you will have to add those dependencies to each new target platform project you wish to support. These include:
 
 - .NET Standard projects within the solution: you should be able to add these as dependencies to any target platform project without difficulties.
 
-- UWP projects within the solution: these will have to be modified to be cross-platform class libraries - follow the instructions [here](migrating-libraries.md).
+- WinUI/UWP projects within the solution: these will have to be modified to be cross-platform class libraries - follow the instructions [here](migrating-libraries.md).
 
 - external dependencies: [see information here](migrating-before-you-start.md) on finding equivalent dependencies for NuGet packages and framework libraries.
 
 ## Migrating app configuration
 
-For UWP, the `Package.appxmanifest` file can be copied directly from your old UWP project to the new one in the `Platforms` folder. For other platforms, you will need to manually set the app name, capabilities, and other packaging information.
+For WinUI/UWP, the `Package.appxmanifest` file can be copied directly from your old WinUI/UWP project to the new one in the `Platforms` folder. For other platforms, you will need to manually set the app name, capabilities, and other packaging information.
 
 ## Adjusting code for Uno compatibility
 

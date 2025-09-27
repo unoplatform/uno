@@ -4,7 +4,7 @@ using Uno.UI.Helpers.WinUI;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Media;
 
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 

@@ -128,7 +128,7 @@
 			"type": "bool"
 		},
 		"UnoDisable_RemoveTransitiveWPFDependency": {
-			"description": "Disables removing the transitive dependency to WPF which has a requirement to have net8.0-windows and not net8.0.",
+			"description": "Disables removing the transitive dependency to WPF which has a requirement to have net9.0-windows and not net9.0.",
 			"type": "bool"
 		},
 		"UnoDisable_RemoveRuntimeFrameworkInRuntimeConfigurationFiles": {
@@ -200,6 +200,10 @@
 		},
 		"AndroidXLegacySupportV4Version": {
 			"description": "Provides an explicit override for the version of AndroidX.Legacy.Support.V4 to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXSplashScreenVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Core.SplashScreen to use.",
 			"type": "nuget-version"
 		},
 		"AndroidXAppCompatVersion": {
@@ -423,6 +427,14 @@
 					"description": "Adds a native references where needed to use MediaElement.",
 					"helpUrl": "https://aka.platform.uno/feature-media-element"
 				},
+				"MediaPlayerElement": {
+					"description": "Adds a native references where needed to use MediaPlayerElement.",
+					"helpUrl": "https://aka.platform.uno/feature-media-element"
+				},
+				"WebView": {
+					"description": "Adds a native references where needed to use WebView and WebView2.",
+					"helpUrl": "https://aka.platform.uno/feature-webview"
+				},
 				"CSharpMarkup": {
 					"description": "Adds a reference to Uno.Extensions.Markup.WinUI (Requires UnoExtensionsVersion to be defined.)",
 					"helpUrl": "https://aka.platform.uno/feature-csharp-markup"
@@ -460,8 +472,16 @@
 					"helpUrl": "https://aka.platform.uno/feature-hosting"
 				},
 				"Http": {
-					"description": "Adds support for custom Http Clients including the use of Refit with Uno.Extensions.",
+					"description": "Adds support for custom HTTP clients.",
 					"helpUrl": "https://aka.platform.uno/feature-http"
+				},
+				"HttpKiota": {
+					"description": "Adds support for custom HTTP clients, including the use of Kiota with Uno.Extensions.",
+					"helpUrl": "https://aka.platform.uno/extensions-http-kiota"
+				},
+				"HttpRefit": {
+					"description": "Adds support for custom HTTP clients, including the use of Refit with Uno.Extensions.",
+					"helpUrl": "https://aka.platform.uno/extensions-http-refit"
 				},
 				"Localization": {
 					"description": "Adds support for Localization using Uno.Extensions.",

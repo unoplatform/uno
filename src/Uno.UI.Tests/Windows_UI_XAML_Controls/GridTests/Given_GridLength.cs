@@ -22,7 +22,6 @@ namespace Uno.UI.Tests.GridTests
 		[DataRow(" Auto", false, false, true, 1, null)]
 		[DataRow(" Auto ", false, false, true, 1, null)]
 		[DataRow(" auto ", false, false, true, 1, null)]
-		[DataRow(" auto ", false, false, true, 1, null)]
 		[DataRow("*1", false, false, true, 0, typeof(InvalidOperationException))]
 		[DataRow("Aauto", false, false, true, 0, typeof(InvalidOperationException))]
 		[DataRow("abc", false, false, true, 0, typeof(InvalidOperationException))]

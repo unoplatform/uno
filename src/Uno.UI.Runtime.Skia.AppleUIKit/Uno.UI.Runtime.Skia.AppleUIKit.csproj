@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-tvos</TargetFrameworks>
+		<TargetFrameworks>$(NetPreviousNetCoreApple)</TargetFrameworks>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -22,14 +22,12 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<DefineConstants>$(DefineConstants);UIKIT_SKIA</DefineConstants>
-		
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Uno.UI\Controls\BringIntoViewMode.Apple.cs" Link="Controls\BringIntoViewMode.Apple.cs" />
-		<Compile Include="..\Uno.UI\Controls\IRotationAwareViewController.UIKit.cs" Link="Controls\IRotationAwareViewController.UIKit.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.UIKit.cs" Link="UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.UIKit.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" Link="UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\UIKit\NativeWindowHelpers.UIKit.cs" Link="UI\Xaml\NativeWindowHelpers.UIKit.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="!$(IsTvOS)">
@@ -46,7 +44,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp.Views" />
 	</ItemGroup>
 
@@ -55,12 +53,13 @@
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive/*.*">
+		<Content Include="build/*.*">
 			<Pack>true</Pack>
-			<PackagePath>buildTransitive</PackagePath>
+			<PackagePath>build</PackagePath>
 		</Content>
 	</ItemGroup>
 

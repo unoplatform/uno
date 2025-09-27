@@ -65,7 +65,17 @@ partial class App
 			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT", runtimeTestGroupCount);
 		}
 
-		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath} (UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")})");
+		if (argsPairs.TryGetValue("--runtime-test-filter", out var runtimeTestFilter))
+		{
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER", runtimeTestFilter);
+		}
+
+		Console.WriteLine(
+			$"Automated runtime tests output file: {runtimeTestResultFilePath} (" +
+			$"UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, " +
+			$"UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")}, " +
+			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}" +
+			$")");
 
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
 		{
@@ -74,6 +84,9 @@ partial class App
 
 			// let the app finish its startup
 			await Task.Delay(TimeSpan.FromSeconds(5));
+
+			// Runtime tests should run in light theme by default
+			SampleControl.Presentation.SampleChooserViewModel.Instance.IsAppThemeLight = true;
 
 			await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
 				CancellationToken.None,

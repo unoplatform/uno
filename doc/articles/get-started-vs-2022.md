@@ -10,13 +10,13 @@ This getting started will guide you through setting up your environment to creat
 
 ## Install Visual Studio with Workloads
 
-To create Uno Platform applications you will need [**Visual Studio 2022 17.8 or later**](https://visualstudio.microsoft.com/vs/):
+To create Uno Platform applications you will need [**Visual Studio 2022 17.9 or later**](https://visualstudio.microsoft.com/vs/):
 
 1. **ASP.NET and web development** workload installed (for WebAssembly development)
 
     ![Visual Studio Installer - ASP.NET and web development workload](Assets/quick-start/vs-install-web.png)
 
-1. **.NET Multi-platform App UI development** workload installed (for iOS, Android, Mac Catalyst development).
+1. **.NET Multi-platform App UI development** workload installed (for iOS, Android development).
 
     ![Visual Studio Installer - .NET Multi-platform App UI development workload](Assets/quick-start/vs-install-dotnet-mobile.png)
 
@@ -41,7 +41,11 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.8 or 
 
 2. In the Extension Manager expand the **Online** node and search for `Uno`, install the `Uno Platform` extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.  
 
-    ![Extension Manager - Uno Platform extension](Assets/tutorial01/uno-extensions.PNG)  
+    ![Extension Manager - Uno Platform extension](Assets/tutorial01/uno-extensions.PNG)
+
+## Additional Setup for Android & iOS
+
+For assistance configuring Android or iOS emulators, see the [Android & iOS emulator troubleshooting guide](xref:Uno.UI.CommonIssues.MobileDebugging).
 
 ## Additional Setup for Windows Subsystem for Linux (WSL)
 

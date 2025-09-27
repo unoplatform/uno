@@ -8,8 +8,8 @@ using System.Collections.Specialized;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
-	using ItemsSourceView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsSourceView;
-	using IKeyIndexMapping = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IKeyIndexMapping;
+	using ItemsSourceView = Microsoft.UI.Xaml.Controls.ItemsSourceView;
+	using IKeyIndexMapping = Microsoft.UI.Xaml.Controls.IKeyIndexMapping;
 
 	class CustomItemsSource : CustomItemsSourceView
 	{

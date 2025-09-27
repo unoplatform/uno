@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;

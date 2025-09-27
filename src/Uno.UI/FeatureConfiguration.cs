@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using System.Runtime.InteropServices;
+using Microsoft.UI.Composition;
 
 namespace Uno.UI
 {
@@ -92,14 +93,24 @@ namespace Uno.UI
 
 		public static class CompositionTarget
 		{
+			private static float _frameRate = 60;
+
 			/// <summary>
-			/// The delay between invocations of the <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event, in milliseconds.
-			/// Lower values will increase the rate at which the event fires, at the expense of increased CPU usage.
-			///
-			/// This property is only used on WebAssembly.
+			/// Suggested frame rate for <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event.
+			/// This property is used by desktop skia renderers.
 			/// </summary>
-			/// <remarks>The <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event is used by Xamarin.Forms for WebAssembly for XF animations.</remarks>
-			public static int RenderEventThrottle { get; set; } = 30;
+			public static float FrameRate
+			{
+				get => _frameRate;
+				set
+				{
+					_frameRate = value;
+
+					// Use this because we do not depend on the wasm dispatching binaries
+					// at this layer (we use the reference binaries).
+					DispatchingFeatureConfiguration.DispatcherQueue.WebAssemblyFrameRate = _frameRate;
+				}
+			}
 		}
 
 		public static class ContentPresenter
@@ -286,6 +297,18 @@ namespace Uno.UI
 			/// New way is using the Layer to better position the image according to alignments.
 			/// </summary>
 			public static bool LegacyIosAlignment { get; set; }
+
+			/// <summary>
+			/// On platforms that support caching BitmapImage assets, this sets
+			/// the maximum number of entries in the cache. The value must be a
+			/// positive integer.
+			/// </summary>
+			public static int MaxBitmapImageCacheCount { get; set; } = 100;
+
+			/// <summary>
+			/// On platforms that support caching BitmapImage assets, this enables caching.
+			/// </summary>
+			public static bool EnableBitmapImageCache { get; set; } = true;
 		}
 
 		public static class Interop
@@ -338,12 +361,20 @@ namespace Uno.UI
 			/// This is mainly useful for debugging purposes, we do not recommend using this in production code.
 			/// </summary>
 			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
+
+			/// <summary>
+			/// By default, popups are constrained by the visible bounds on native renderer, but unconstrained on Skia renderer.
+			/// </summary>
+			public static bool ConstrainByVisibleBounds { get; set; }
+#if !__SKIA__
+				= true;
+#endif
 		}
 
 		public static class ProgressRing
 		{
-			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
-			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
+			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
+			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
 		}
 
 		public static class ListViewBase
@@ -428,6 +459,16 @@ namespace Uno.UI
 			/// </summary>
 			public static bool AllowRelativeTimeStamp { get; set; } = true;
 #endif
+		}
+
+		public static class ManipulationRoutedEventArgs
+		{
+			/// <summary>
+			/// In previous versions of uno, the Position property of the Manipulation&gt;Started|Delta|Complete&lt;**Routed**EventArgs
+			/// was in absolute coordinate space instead of being relative to the Container.
+			/// Enabling this flag does restore the previous behavior.
+			/// </summary>
+			public static bool IsAbsolutePositionEnabled { get; set; }
 		}
 
 		public static class SelectorItem
@@ -736,6 +777,15 @@ namespace Uno.UI
 			public static bool ForceHotReloadDisabled { get; set; }
 		}
 
+		public static class XamlReader
+		{
+			/// <summary>
+			/// When set to true, the XamlReader will throw an exception if it encounters properties in
+			/// the XAML that do not map to a property on the target object.
+			/// </summary>
+			public static bool FailOnUnknownProperties { get; set; }
+		}
+
 		public static class DatePicker
 		{
 #if __APPLE_UIKIT__
@@ -851,6 +901,66 @@ namespace Uno.UI
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>
 			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
+
+			/// <summary>
+			/// Enables certain optimizations that skip rendering some subtrees
+			/// of the visual tree that do not change often and instead caches their
+			/// rendering output. This optimization is only for skia targets.
+			/// </summary>
+			public static bool EnableVisualSubtreeSkippingOptimization
+			{
+#if __SKIA__
+				get => Visual.EnablePictureCollapsingOptimization;
+				set => Visual.EnablePictureCollapsingOptimization = value;
+#else
+				get => false;
+				set { }
+#endif
+			}
+
+			/// <summary>
+			/// When <see cref="EnableVisualSubtreeSkippingOptimization"/> is enabled, determines the number
+			/// of frames that a visual subtree needs to remain unchanged through, after which the subtree
+			/// is considered for the subtree skipping optimization.
+			/// </summary>
+			public static int VisualSubtreeSkippingOptimizationCleanFramesThreshold
+			{
+#if __SKIA__
+				get => Visual.PictureCollapsingOptimizationFrameThreshold;
+				set => Visual.PictureCollapsingOptimizationFrameThreshold = value;
+#else
+				get => 0;
+				set { }
+#endif
+			}
+
+			/// <summary>
+			/// When <see cref="EnableVisualSubtreeSkippingOptimization"/> is enabled, determines the minimum
+			/// size of visual subtrees considered for the subtree skipping optimization.
+			/// </summary>
+			public static int VisualSubtreeSkippingOptimizationVisualCountThreshold
+			{
+#if __SKIA__
+				get => Visual.PictureCollapsingOptimizationVisualCountThreshold;
+				set => Visual.PictureCollapsingOptimizationVisualCountThreshold = value;
+#else
+				get => 0;
+				set { }
+#endif
+			}
+
+			/// <summary>
+			/// Force the use of Metal (true) or Software (false) rendering on macOS.
+			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
+			/// </summary>
+			public static bool? UseMetalOnMacOS { get; set; }
+
+			/// <summary>
+			/// Wait until the UI tree is completely arranged (i.e. all <see cref="UIElement.InvalidateMeasure"/>
+			/// and <see cref="UIElement.InvalidateArrange"/> calls have been processed) to update the UI and generate
+			/// new render frames.
+			/// </summary>
+			public static bool GenerateNewFramesOnlyWhenUITreeIsArranged { get; set; }
 		}
 
 		public static class DependencyProperty
@@ -863,6 +973,11 @@ namespace Uno.UI
 			/// of having an undefined behavior and/or race conditions.
 			/// </summary>
 			public static bool DisableThreadingCheck { get; set; }
+
+			/// <summary>
+			/// Defines how many <see cref="DependencyPropertyChangedEventArgs" /> are pooled.
+			/// </summary>
+			public static int DependencyPropertyChangedEventArgsPoolSize { get; set; } = 32;
 
 			/// <summary>
 			/// Enables checks that make sure that <see cref="DependencyObjectStore.GetValue" /> and
@@ -955,5 +1070,6 @@ namespace Uno.UI
 			public static bool EnableUno19516Workaround { get; set; } = true;
 #endif
 		}
+
 	}
 }

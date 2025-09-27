@@ -54,7 +54,7 @@ public class Given_DataTypeSerializer
 		string value = "System.Int32:invalid";
 
 		// Act & Assert
-		Assert.ThrowsException<FormatException>(() => DataTypeSerializer.Deserialize(value));
+		Assert.ThrowsExactly<FormatException>(() => DataTypeSerializer.Deserialize(value));
 	}
 
 	[TestMethod]
@@ -116,7 +116,7 @@ public class Given_DataTypeSerializer
 		object value = null;
 
 		// Act & Assert
-		Assert.ThrowsException<ArgumentNullException>(() => DataTypeSerializer.Serialize(value));
+		Assert.ThrowsExactly<ArgumentNullException>(() => DataTypeSerializer.Serialize(value));
 	}
 
 	[TestMethod]
@@ -126,7 +126,7 @@ public class Given_DataTypeSerializer
 		object value = new StringBuilder();
 
 		// Act & Assert
-		Assert.ThrowsException<NotSupportedException>(() => DataTypeSerializer.Serialize(value));
+		Assert.ThrowsExactly<NotSupportedException>(() => DataTypeSerializer.Serialize(value));
 	}
 
 	[TestMethod]

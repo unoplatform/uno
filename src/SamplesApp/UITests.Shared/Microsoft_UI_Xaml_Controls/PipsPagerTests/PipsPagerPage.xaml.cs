@@ -7,11 +7,11 @@ using System;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
 using System.Linq;
-using PipsPagerButtonVisibility = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPagerButtonVisibility;
-using PipsPagerSelectedIndexChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs;
+using PipsPagerButtonVisibility = Microsoft.UI.Xaml.Controls.PipsPagerButtonVisibility;
+using PipsPagerSelectedIndexChangedEventArgs = Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 

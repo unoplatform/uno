@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Hosting;
 
 public interface IWindowsSkiaHostBuilder
 {

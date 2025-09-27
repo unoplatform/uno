@@ -158,7 +158,8 @@ namespace Uno.UI.RuntimeTests.Tests
 			Assert.AreEqual(@"Text in 'es-MX'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIOS)] // Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)] // Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.
 #if __APPLE_UIKIT__
 		[Ignore("Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.")]
 #endif

@@ -41,6 +41,8 @@ namespace TestRepro
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -99,8 +101,8 @@ namespace TestRepro
 							{
 								IsParsing = true,
 								Name = "inner2",
-								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, (__owner) => 								new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.SC0().Build(__owner)
-								)								,
+								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem)
+								,
 								// Source 0\MainPage.xaml (Line 15:5)
 							}
 							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
@@ -241,93 +243,71 @@ namespace TestRepro
 
 			Bindings = new MainPage_Bindings(this);
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
+		private static _View Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		{
+			
+			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem().Build(__owner, __settings);
+		}
+
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 		{
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
+		}
+
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner1
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.StackPanel)_inner1Subject.ElementInstance;
-			}
-			set
-			{
-				_inner1Subject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.StackPanel)_inner1Subject.ElementInstance;
+			set => _inner1Subject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.Button inner1Button
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner1ButtonSubject.ElementInstance;
-			}
-			set
-			{
-				_inner1ButtonSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_inner1ButtonSubject.ElementInstance;
+			set => _inner1ButtonSubject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner2Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner2Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.Button inner2
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner2Subject.ElementInstance;
-			}
-			set
-			{
-				_inner2Subject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_inner2Subject.ElementInstance;
+			set => _inner2Subject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner3
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.StackPanel)_inner3Subject.ElementInstance;
-			}
-			set
-			{
-				_inner3Subject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.StackPanel)_inner3Subject.ElementInstance;
+			set => _inner3Subject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.Button inner3Button
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner3ButtonSubject.ElementInstance;
-			}
-			set
-			{
-				_inner3ButtonSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Button)_inner3ButtonSubject.ElementInstance;
+			set => _inner3ButtonSubject.ElementInstance = value;
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _outerGridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _outerGridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.Grid outerGrid
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Grid)_outerGridSubject.ElementInstance;
-			}
-			set
-			{
-				_outerGridSubject.ElementInstance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Grid)_outerGridSubject.ElementInstance;
+			set => _outerGridSubject.ElementInstance = value;
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage
+		private class __MainPage_d6cd66944958ced0c513e0a04797b51d
 		{
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
-			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
-			public class SC0
+			[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+			public class __PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
@@ -336,7 +316,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1)
+				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -385,55 +365,31 @@ namespace TestRepro
 					}
 					return __rootInstance;
 				}
-				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideGridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideGridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 				private global::Microsoft.UI.Xaml.Controls.Grid gridInsideGridInsideTemplate
 				{
-					get
-					{
-						return (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideGridInsideTemplateSubject.ElementInstance;
-					}
-					set
-					{
-						_gridInsideGridInsideTemplateSubject.ElementInstance = value;
-					}
+					get => (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideGridInsideTemplateSubject.ElementInstance;
+					set => _gridInsideGridInsideTemplateSubject.ElementInstance = value;
 				}
-				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 				private global::Microsoft.UI.Xaml.Controls.Grid gridInsideTemplate
 				{
-					get
-					{
-						return (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideTemplateSubject.ElementInstance;
-					}
-					set
-					{
-						_gridInsideTemplateSubject.ElementInstance = value;
-					}
+					get => (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideTemplateSubject.ElementInstance;
+					set => _gridInsideTemplateSubject.ElementInstance = value;
 				}
 			}
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Grid _component_0
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Grid)_component_0_Holder.Instance;
-			}
-			set
-			{
-				_component_0_Holder.Instance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.Controls.Grid)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
 		private global::Microsoft.UI.Xaml.ElementStub _component_1
 		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
-			}
-			set
-			{
-				_component_1_Holder.Instance = value;
-			}
+			get => (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
+			set => _component_1_Holder.Instance = value;
 		}
 		private interface IMainPage_Bindings
 		{
@@ -446,6 +402,8 @@ namespace TestRepro
 		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
 		private IMainPage_Bindings Bindings;
 		#pragma warning restore 0169
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
@@ -482,6 +440,9 @@ namespace TestRepro
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
+				var owner = Owner;
+				owner._component_0.SuspendXBind();
+				owner._component_1.SuspendXBind();
 			}
 		}
 		private static bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)

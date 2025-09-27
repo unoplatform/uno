@@ -1,9 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using UIKit;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
+using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -12,6 +16,7 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit;
 internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
 	private readonly TextBoxView _owner;
+	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
@@ -26,10 +31,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	public void StartEntry()
 	{
 		// StartEntry can be called twice without any EndEntry.
-		// So,  do nothing if we already have non-null _nativeEditText.
-		// This happens when the managed TextBox receives Focus with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
+		// This happens when the managed TextBox receives Focus
+		// with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
 		if (_textBoxView is not null)
 		{
+			if (!_textBoxView.IsFirstResponder)
+			{
+				_textBoxView.BecomeFirstResponder();
+			}
 			return;
 		}
 
@@ -41,9 +50,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		EnsureTextBoxView(textBox);
 		SetSoftKeyboardTheme();
+
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
+		// change FirstResponder's View before removing the previous view to avoid flickering
 		_textBoxView.BecomeFirstResponder();
+
+		RemovePreviousViewFromTextInputLayer();
 
 		var start = textBox?.SelectionStart ?? 0;
 		var length = textBox?.SelectionLength ?? 0;
@@ -86,6 +99,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_textBoxView is not null)
 		{
+			// In managed, we only use \r and convert all \n's to \r's to
+			// match WinUI, so when copying from managed to native, we convert
+			// \r to \n so that in the case of typing two newlines in a row,
+			// we get \n\n from native and not \r\n (the first converted by
+			// managed, the second was just typed
+			// before conversion) which looks like a single newline.
+			// cf. https://github.com/unoplatform/uno-private/issues/965
+			text = text.Replace('\r', '\n');
 			_textBoxView.SetTextNative(text);
 		}
 	}
@@ -124,13 +145,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
 
-	public void UpdateNativeView()
-	{
-		if (_owner.TextBox is { } textBox)
-		{
-			EnsureTextBoxView(textBox);
-		}
-	}
+	public void UpdateNativeView() => UpdateProperties();
 
 	public void UpdateProperties()
 	{
@@ -145,7 +160,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		_textBoxView.SpellCheckingType = textBox.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
 		_textBoxView.AutocorrectionType = textBox.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
 
-		_textBoxView.ReturnKeyType = textBox.InputScope == InputScopes.Search ? UIReturnKeyType.Search : UIReturnKeyType.Default;
+		var inputReturnType = TextBoxExtensions.GetInputReturnType(textBox);
+		_textBoxView.ReturnKeyType = inputReturnType.ToUIReturnKeyType();
 
 		if (textBox.IsSpellCheckEnabled)
 		{
@@ -187,8 +203,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			// We need to create a new TextBoxView.
 			var inputText = GetNativeText() ?? textBox.Text;
 			_textBoxView = CreateNativeView(textBox);
+			if (_textBoxView is UIView nativeView)
+			{
+				nativeView.Alpha = 0.01f;
+			}
 			UpdateProperties();
-			SetNativeText(inputText ?? string.Empty);
+			SetText(inputText ?? string.Empty);
 		}
 	}
 
@@ -204,25 +224,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			var updatedText = textBox.ProcessTextInput(text);
 			if (text != updatedText)
 			{
-				SetNativeText(updatedText);
+				SetText(updatedText);
 			}
 		}
 	}
 
 	private string? GetNativeText() => _textBoxView?.Text;
-
-	private void SetNativeText(string text)
-	{
-		if (_textBoxView is null)
-		{
-			return;
-		}
-
-		if (_textBoxView.Text != text)
-		{
-			_textBoxView.SetTextNative(text);
-		}
-	}
 
 	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => _owner?.TextBox?.AcceptsReturn != true ?
 		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);
@@ -236,12 +243,34 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		if (GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
 		{
-			layer.AddSubview(nativeView);
+			var view = layer.Subviews.LastOrDefault();
+
+			// prevents adding the same native view multiple times. This should not happen very often.
+			if ((view as IInvisibleTextBoxView)?.Owner?.TextBox != _textBoxView?.Owner?.TextBox)
+			{
+				_latestNativeView = view;
+				layer.AddSubview(nativeView);
+				// Push the overlay native view out of the visible view - this way
+				// the blue typing suggestion overlay will not be shown to the user.
+				nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
+			}
 		}
 	}
 
 	public void RemoveViewFromTextInputLayer()
 	{
+		var xamlRoot = _owner.TextBox?.XamlRoot;
+		if (xamlRoot is null)
+		{
+			return;
+		}
+
+		var focusingView = FocusManager.GetFocusingElement(xamlRoot) as FrameworkElement;
+		if (CouldBecomeFirstResponder(focusingView))
+		{
+			return;
+		}
+
 		if (_textBoxView is not UIView nativeView)
 		{
 			return;
@@ -253,6 +282,27 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
+	private void RemovePreviousViewFromTextInputLayer()
+	{
+		if (_latestNativeView is not UIView nativeView)
+		{
+			return;
+		}
+
+		if (nativeView.Superview is not null)
+		{
+			nativeView.RemoveFromSuperview();
+			_latestNativeView = null;
+		}
+	}
+
+	private static bool CouldBecomeFirstResponder(FrameworkElement? element)
+	{
+		return element is TextBox ||
+		element is AutoSuggestBox ||
+		element is NumberBox;
+	}
+
 	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
-		AppManager.XamlRootMap.GetHostForRoot(xamlRoot)?.TextInputLayer;
+		(XamlRootMap.GetHostForRoot(xamlRoot) as IAppleUIKitXamlRootHost)?.TextInputLayer;
 }

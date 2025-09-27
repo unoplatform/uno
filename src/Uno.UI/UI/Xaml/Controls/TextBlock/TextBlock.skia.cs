@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Input;
+using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
@@ -23,35 +24,37 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
 	{
-		private readonly TextVisual _textVisual;
 		private Action? _selectionHighlightColorChanged;
 		private MenuFlyout? _contextMenu;
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+		private Size _lastInlinesArrangeWithPadding;
+
+		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
 
 		public TextBlock()
 		{
 			UpdateLastUsedTheme();
-			_textVisual = new TextVisual(Visual.Compositor, this);
-
-			Visual.Children.InsertAtBottom(_textVisual);
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 
-			DoubleTapped += (s, e) => ((TextBlock)s).OnDoubleTapped(e);
-			RightTapped += (s, e) => ((TextBlock)s).OnRightTapped(e);
-			KeyDown += (s, e) => ((TextBlock)s).OnKeyDown(e);
+			Tapped += static (s, e) => ((TextBlock)s).OnTapped(e);
+			DoubleTapped += static (s, e) => ((TextBlock)s).OnDoubleTapped(e);
+			RightTapped += static (s, e) => ((TextBlock)s).OnRightTapped(e);
+			KeyDown += static (s, e) => ((TextBlock)s).OnKeyDown(e);
 
 			GotFocus += (_, _) => UpdateSelectionRendering();
 			LostFocus += (_, _) => UpdateSelectionRendering();
 		}
 
+		internal bool IsTextBoxDisplay { get; init; }
+
 #if DEBUG
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			_textVisual.Comment = $"{Visual.Comment}#text";
+			Visual.Comment = $"{Visual.Comment}#text";
 		}
 #endif
 
@@ -84,7 +87,13 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// the entire body of the text block is considered hit-testable
-		internal override bool HitTest(Point point) => TransformToVisual((UIElement)this.GetParent()).Inverse.TransformBounds(LayoutSlotWithMarginsAndAlignments).Contains(point);
+		internal override bool HitTest(Point point)
+		{
+			// This is equivalent to using TransformToVisual but without the unnecessary MatrixTransform allocation.
+			var transform = GetTransform(this, (UIElement)this.GetParent());
+			var success = Matrix3x2.Invert(transform, out var inverted);
+			return success && inverted.Transform(LayoutSlotWithMarginsAndAlignments).Contains(point);
+		}
 
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
@@ -100,26 +109,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void ApplyFlowDirection(float width)
-		{
-			if (this.FlowDirection == FlowDirection.RightToLeft)
-			{
-				_textVisual.TransformMatrix = new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, width, 0.0f));
-			}
-			else
-			{
-				_textVisual.TransformMatrix = Matrix4x4.Identity;
-			}
-		}
-
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
-			var arrangedSizeWithoutPadding = Inlines.Arrange(availableSizeWithoutPadding);
-			_textVisual.Size = new Vector2((float)arrangedSizeWithoutPadding.Width, (float)arrangedSizeWithoutPadding.Height);
-			_textVisual.Offset = new Vector3((float)padding.Left, (float)padding.Top, 0);
-			ApplyFlowDirection((float)finalSize.Width);
+			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
+			Visual.Compositor.InvalidateRender(Visual);
+			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 
 			var result = base.ArrangeOverride(finalSize);
 			UpdateIsTextTrimmed();
@@ -152,15 +148,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-		{
-			base.OnPropertyChanged2(args);
-			if (args.Property == FlowDirectionProperty)
-			{
-				ApplyFlowDirection((float)this.RenderSize.Width);
-			}
-		}
-
 		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => Inlines.GetIndexAt(point, false, extended);
 
 		// Invalidate Inlines measure and repaint text when any IBlock properties used during measuring change:
@@ -168,9 +155,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private void InvalidateInlineAndRequireRepaint()
 		{
 			Inlines.InvalidateMeasure();
-			_textVisual.Compositor.InvalidateRender(_textVisual);
+			Visual.Compositor.InvalidateRender(Visual);
 		}
 
+		partial void InvalidateTextBlockPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnForegroundChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnInlinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnMaxLinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnTextWrappingChangedPartial() => InvalidateInlineAndRequireRepaint();
@@ -182,7 +171,13 @@ namespace Microsoft.UI.Xaml.Controls
 		string IBlock.GetText() => Text;
 
 		partial void OnSelectionChanged()
-			=> Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
+		{
+			Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
+
+			var start = Math.Min(Selection.start, Selection.end);
+			var end = Math.Max(Selection.start, Selection.end);
+			SelectedText = Text[start..end];
+		}
 
 		private static SKPaint _spareSelectionFoundPaint = new SKPaint();
 
@@ -218,6 +213,14 @@ namespace Microsoft.UI.Xaml.Controls
 					SelectAll();
 					args.Handled = true;
 					break;
+			}
+		}
+
+		private void OnTapped(TappedRoutedEventArgs _)
+		{
+			if (IsTextSelectionEnabled)
+			{
+				Selection = default;
 			}
 		}
 
@@ -331,9 +334,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Selection.start != Selection.end)
 			{
-				var start = Math.Min(Selection.start, Selection.end);
-				var end = Math.Max(Selection.start, Selection.end);
-				var text = Text[start..end];
+				var text = SelectedText;
 				var dataPackage = new DataPackage();
 				dataPackage.SetText(text);
 				Clipboard.SetContent(dataPackage);
@@ -343,6 +344,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public void SelectAll() => Selection = new Range(0, Text.Length);
 
 		// TODO: move to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
+		#region SelectionHighlightColor (DP)
 		public SolidColorBrush SelectionHighlightColor
 		{
 			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
@@ -368,12 +370,27 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
+		#endregion
+
+		#region SelectedText (DP - readonly)
+		public static DependencyProperty SelectedTextProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectedText), typeof(string),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(default(string)));
+
+		public string SelectedText
+		{
+			get => (string)this.GetValue(SelectedTextProperty);
+			private set => this.SetValue(SelectedTextProperty, value);
+		}
+		#endregion
 
 		partial void UpdateIsTextTrimmed()
 		{
 			IsTextTrimmed = IsTextTrimmable && (
-				(_textVisual.Size.X + Padding.Left + Padding.Right) > ActualWidth ||
-				(_textVisual.Size.Y + Padding.Top + Padding.Bottom) > ActualHeight
+				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
+				_lastInlinesArrangeWithPadding.Height > ActualHeight
 			);
 		}
 

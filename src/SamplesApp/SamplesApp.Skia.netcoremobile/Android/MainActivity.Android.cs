@@ -17,8 +17,8 @@ namespace SamplesApp.Droid
 	[Activity(
 			Exported = true,
 			MainLauncher = true,
-			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden,
-			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode
+			WindowSoftInputMode = SoftInput.AdjustNothing | SoftInput.StateHidden,
+			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges
 		)]
 	// Ensure ActionMain intent filter is first in order, otherwise the app won't launch for debugging.
 	[IntentFilter(
@@ -41,6 +41,8 @@ namespace SamplesApp.Droid
 
 		protected override void OnCreate(Bundle bundle)
 		{
+			AndroidX.Core.SplashScreen.SplashScreen.InstallSplashScreen(this);
+
 			var externalFilesDir = Microsoft.UI.Xaml.NativeApplication.Context.GetExternalFilesDir(null);
 			if (externalFilesDir != null)
 			{
@@ -54,7 +56,8 @@ namespace SamplesApp.Droid
 				string[] knownVariables = [
 					"UITEST_RUNTIME_TEST_GROUP",
 					"UITEST_RUNTIME_TEST_GROUP_COUNT",
-					"UITEST_RUNTIME_AUTOSTART_RESULT_FILE"
+					"UITEST_RUNTIME_AUTOSTART_RESULT_FILE",
+					"UITEST_RUNTIME_TESTS_FILTER"
 				];
 
 				foreach (var key in extras.KeySet())

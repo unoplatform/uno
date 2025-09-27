@@ -586,9 +586,17 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 				using (writer.BlockInvariant("static BindableMetadataProvider()"))
 				{
-					foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType && !k.Key.IsAbstract))
+					var linkerHintsClassName = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
+					var bindableMetadataProviderCondition = _xamlResourcesTrimming
+						? linkerHintsClassName + "." + LinkerHintsHelpers.GetPropertyAvailableName($"{_defaultNamespace}.BindableMetadataProvider")
+						: "true";
+
+					using (writer.BlockInvariant($"if ({bindableMetadataProviderCondition})"))
 					{
-						writer.AppendLineIndented($"RegisterBuilder{type.Value.Index:000}();");
+						foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType && !k.Key.IsAbstract))
+						{
+							writer.AppendLineIndented($"RegisterBuilder{type.Value.Index:000}();");
+						}
 					}
 				}
 
@@ -620,31 +628,39 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByFullName(string fullName)"))
 				{
 					writer.AppendLineIndented("ref global::Uno.UI.DataBinding.IBindableType element = ref _null;");
-					using (writer.BlockInvariant(@"switch(fullName)"))
+
+					var linkerHintsClassName = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
+					var bindableMetadataProviderCondition = _xamlResourcesTrimming
+						? linkerHintsClassName + "." + LinkerHintsHelpers.GetPropertyAvailableName($"{_defaultNamespace}.BindableMetadataProvider")
+						: "true";
+
+					using (writer.BlockInvariant($"if ({bindableMetadataProviderCondition})"))
 					{
-						foreach (var type in types)
+						using (writer.BlockInvariant(@"switch(fullName)"))
 						{
-							_cancellationToken.ThrowIfCancellationRequested();
-
-							var typeIndex = type.Value.Index;
-
-							using (writer.BlockInvariant($"case \"{type.Key}\":"))
+							foreach (var type in types)
 							{
-								writer.AppendLineIndented($"element = ref _bindableTypes[{typeIndex}];");
-								using (writer.BlockInvariant("if(element == null)"))
-								{
-									if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
-									{
-										var linkerHintsClassName = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
-										var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
+								_cancellationToken.ThrowIfCancellationRequested();
 
-										writer.AppendLineIndented($"if(global::{linkerHintsClassName}.{safeTypeName})");
+								var typeIndex = type.Value.Index;
+
+								using (writer.BlockInvariant($"case \"{type.Key}\":"))
+								{
+									writer.AppendLineIndented($"element = ref _bindableTypes[{typeIndex}];");
+									using (writer.BlockInvariant("if(element == null)"))
+									{
+										if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+										{
+											var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
+
+											writer.AppendLineIndented($"if(global::{linkerHintsClassName}.{safeTypeName})");
+										}
+
+										writer.AppendLineIndented($"element = MetadataBuilder_{typeIndex:000}.Build();");
 									}
 
-									writer.AppendLineIndented($"element = MetadataBuilder_{typeIndex:000}.Build();");
+									writer.AppendLineIndented("break;");
 								}
-
-								writer.AppendLineIndented("break;");
 							}
 						}
 					}

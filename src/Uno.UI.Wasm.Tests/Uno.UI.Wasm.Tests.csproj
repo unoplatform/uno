@@ -6,8 +6,6 @@
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
 		<EnableDefaultTypeScriptItems>false</EnableDefaultTypeScriptItems>
 	</PropertyGroup>
 

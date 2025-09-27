@@ -27,7 +27,7 @@ Depending on the version of the Windows Community Toolkit that you want to use, 
 
 ### Overview
 
-While all Windows Community Toolkit packages are supported for UWP and WinAppSDK, this is not the case for the other platforms Uno Platform supports.
+While all Windows Community Toolkit packages are supported on WinAppSDK, this is not the case for the other platforms Uno Platform supports.
 
 ### Unsupported Components
 

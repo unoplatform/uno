@@ -155,6 +155,7 @@ public partial class RuntimeTestsApp : IApp
 					{
 						PointerInfo = new()
 						{
+							PointerId = 42,
 							PixelLocation =
 							{
 								PositionX = (int)x,
@@ -218,6 +219,7 @@ public partial class RuntimeTestsApp : IApp
 						{
 							PointerInfo = new()
 							{
+								PointerId = 42,
 								PixelLocation = new()
 								{
 									PositionX = (int)(fromX + step * stepX),
@@ -235,6 +237,7 @@ public partial class RuntimeTestsApp : IApp
 					{
 						PointerInfo = new()
 						{
+							PointerId = 42,
 							PixelLocation =
 							{
 								PositionX = (int)toX,
@@ -299,6 +302,7 @@ public partial class RuntimeTestsApp : IApp
 						{
 							PointerInfo = new()
 							{
+								PointerId = 42,
 								PixelLocation = new()
 								{
 									PositionX = (int)(fromX + step * stepX),
@@ -316,6 +320,7 @@ public partial class RuntimeTestsApp : IApp
 					{
 						PointerInfo = new()
 						{
+							PointerId = 42,
 							PixelLocation =
 							{
 								PositionX = (int)toX,
