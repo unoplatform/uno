@@ -6,14 +6,15 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
-using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core.Scaling;
-using Windows.Devices.Input;
+using Uno.UI.Xaml.Islands;
+using Windows.Foundation;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace DirectUI
 {
@@ -26,6 +27,8 @@ namespace DirectUI
 		private KeyboardCapabilities? _keyboardCapabilities;
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
+
+		private Window? m_uwpWindowNoRef => Window.IsCurrentSet ? Window.CurrentSafe : null; // TODO Uno: This is different implementation, but UWP is not going to be supported.
 
 		// UNO: This should **NOT** create the singleton!
 		//		_but_ if we do return a 'null' the 'OnApplyTemplate' of the `CalendarView` will fail.
@@ -114,6 +117,41 @@ namespace DirectUI
 				_keyboardCapabilities ??= new KeyboardCapabilities();
 				return _keyboardCapabilities.KeyboardPresent != 0;
 			}
+		}
+
+		internal Rect GetContentBoundsForElement(DependencyObject dependencyObject)
+		{
+			if (dependencyObject is not null && TryGetXamlIslandBoundsForElement(dependencyObject, out var bounds))
+			{
+				return bounds;
+			}
+
+			if (m_uwpWindowNoRef is not null) //&& m_uwpWindowNoRef.HasBounds())
+			{
+				return m_uwpWindowNoRef.Bounds;
+			}
+			else
+			{
+				// Except Islands/ Win32, HasBounds should always be called before retrieving bounds. In win32/ Islands, it's okay to have no bounds
+				MUX_ASSERT(this.GetHandle().InitializationType == InitializationType.IslandsOnly);
+				return new();
+			}
+		}
+
+		// Returns the XamlIslandRoot bounds if Xaml is in XamlIslandRoot host mode. Some elements such as connected animations
+		// will always have a non-XamlIslandRoot root and will never have XamlIslandRoot bounds.
+		private bool TryGetXamlIslandBoundsForElement(DependencyObject? dependencyObject, out Rect bounds)
+		{
+			bounds = default;
+			XamlIsland? xamlIslandRoot = VisualTree.GetXamlIslandRootForElement(dependencyObject);
+			if (xamlIslandRoot is not null)
+			{
+				var size = xamlIslandRoot.GetSize();
+				bounds = new(0, 0, size.Width, size.Height);
+				return true;
+			}
+
+			return false;
 		}
 	}
 }
