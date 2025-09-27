@@ -8,7 +8,7 @@ namespace Uno.Media.Playback
 	/// <summary>
 	/// Extension interface for <see cref="MediaPlayer"/> events
 	/// </summary>
-	public interface IMediaPlayerEventsExtension
+	internal interface IMediaPlayerEventsExtension
 	{
 		/// <summary>
 		/// Raises the <see cref="MediaPlayer.SourceChanged"/> event
@@ -22,8 +22,10 @@ namespace Uno.Media.Playback
 
 		/// <summary>
 		///	Raises the <see cref="MediaPlayer.VolumeChanged"/> event
+		///	Optionally, updates the <see cref="MediaPlayer.Volume"/> property
 		/// </summary>
-		void RaiseVolumeChanged();
+		/// <param name="newVolume">The new volume, in case an external volume changed was detected.</param>
+		void RaiseVolumeChanged(double? newVolume = null);
 
 		/// <summary>
 		///	Raises the <see cref="MediaPlayer.MediaEnded"/> event
