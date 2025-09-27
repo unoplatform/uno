@@ -93,24 +93,18 @@ namespace Uno.UI
 
 		public static class CompositionTarget
 		{
-			private static float _frameRate = 60;
-
 			/// <summary>
 			/// Suggested frame rate for <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event.
 			/// This property is used by desktop skia renderers.
 			/// </summary>
-			public static float FrameRate
-			{
-				get => _frameRate;
-				set
-				{
-					_frameRate = value;
+			public static float FrameRate { get; set; } = 60;
 
-					// Use this because we do not depend on the wasm dispatching binaries
-					// at this layer (we use the reference binaries).
-					DispatchingFeatureConfiguration.DispatcherQueue.WebAssemblyFrameRate = _frameRate;
-				}
-			}
+			/// <summary>
+			/// When possible, read the screen refresh rate and use it as the target frame rate instead of
+			/// <see cref="FeatureConfiguration.CompositionTarget.FrameRate"/>.
+			/// This property is used by desktop skia renderers.
+			/// </summary>
+			public static bool SetFrameRateAsScreenRefreshRate { get; set; } = true;
 		}
 
 		public static class ContentPresenter
@@ -954,13 +948,6 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
-
-			/// <summary>
-			/// Wait until the UI tree is completely arranged (i.e. all <see cref="UIElement.InvalidateMeasure"/>
-			/// and <see cref="UIElement.InvalidateArrange"/> calls have been processed) to update the UI and generate
-			/// new render frames.
-			/// </summary>
-			public static bool GenerateNewFramesOnlyWhenUITreeIsArranged { get; set; }
 		}
 
 		public static class DependencyProperty

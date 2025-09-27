@@ -130,11 +130,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
-		_renderingEventLoop = new(start => new Thread(start)
-		{
-			Name = $"Uno X11 Rendering thread {_id}",
-			IsBackground = true
-		});
+		_renderTimer = CreateRenderTimer();
 
 		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
 		UpdateRendererBackground();
@@ -149,7 +145,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
-				_renderingEventLoop.Dispose();
+				_renderTimer.Dispose();
 			}
 		});
 	}

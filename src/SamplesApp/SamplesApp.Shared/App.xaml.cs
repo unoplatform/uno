@@ -559,12 +559,6 @@ namespace SamplesApp
 #if __ANDROID__
 			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
 #endif
-
-#if IS_CI_OR_DEBUG && __SKIA__
-			// Lower the framerate so that CI agents don't slow down too much
-			// as they're running with software rendering.
-			FeatureConfiguration.CompositionTarget.FrameRate = 15;
-#endif
 		}
 
 		/// <summary>

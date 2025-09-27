@@ -71,6 +71,7 @@ public class Given_ContainerVisual
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)] // passed locally, times out in CI waiting for UITestHelper.WaitFor
 	public async Task When_SKPicture_Collapsing_Optimization()
 	{
 		var oldValues =

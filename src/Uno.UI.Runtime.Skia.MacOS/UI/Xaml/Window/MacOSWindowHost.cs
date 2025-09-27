@@ -17,6 +17,7 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Microsoft.UI.Xaml.Media;
 using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -35,8 +36,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
-	private SKPicture? _picture;
-	private SKPath? _clipPath;
 
 	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow, XamlRoot xamlRoot)
 	{
@@ -80,29 +79,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		SizeChanged?.Invoke(this, _nativeWindowSize);
 	}
 
-	private void Draw(SKSurface surface)
-	{
-		var currentPicture = _picture;
-		var currentClipPath = _clipPath;
-
-		SkiaRenderHelper.RenderPicture(
-			surface,
-			currentPicture,
-			SKColors.Transparent,
-			_fpsHelper);
-
-		var clip = currentClipPath is null || currentClipPath.IsEmpty == true ? null : currentClipPath.ToSvgPathData();
-		if (clip != _lastSvgClipPath)
-		{
-			// if too early it's possible that the native element has not been arranged yet
-			// so the position and dimension of the element are not yet correct (0,0,0,0)
-			if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
-			{
-				_lastSvgClipPath = clip;
-			}
-		}
-	}
-
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -125,13 +101,29 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		// we can't cache anything since the texture will be different on next calls
-		using var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture));
-		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
+		GRBackendRenderTarget? target = null;
+		SKSurface? surface = null;
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
+		{
+			target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
+			surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
+			return surface.Canvas;
+		});
 
-		Draw(surface);
+		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
+		if (clip != _lastSvgClipPath)
+		{
+			// if too early it's possible that the native element has not been arranged yet
+			// so the position and dimension of the element are not yet correct (0,0,0,0)
+			if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+			{
+				_lastSvgClipPath = clip;
+			}
+		}
 
 		_context?.Flush();
-		RootElement?.XamlRoot?.InvokeFrameRendered();
+		target?.Dispose();
+		surface?.Dispose();
 	}
 
 	private unsafe void SoftDraw(double nativeWidth, double nativeHeight, nint* data, int* rowBytes, int* size)
@@ -155,25 +147,35 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		var width = (int)(nativeWidth * scale);
-		var height = (int)(nativeHeight * scale);
-		if (_bitmap == null || width != _bitmap.Width || height != _bitmap.Height)
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
 		{
 			_bitmap?.Dispose();
 			_surface?.Dispose();
 
-			var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+			var info = new SKImageInfo((int)size.Width, (int)size.Height, SKColorType.Rgba8888, SKAlphaType.Premul);
 			_bitmap = new SKBitmap(info);
 			_surface = SKSurface.Create(info, _bitmap.GetPixels());
 			_rowBytes = info.RowBytes;
+			return _surface.Canvas;
+		});
+
+		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
+		if (clip != _lastSvgClipPath)
+		{
+			// if too early it's possible that the native element has not been arranged yet
+			// so the position and dimension of the element are not yet correct (0,0,0,0)
+			if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+			{
+				_lastSvgClipPath = clip;
+			}
 		}
 
-		Draw(_surface!);
-
-		*data = _bitmap.GetPixels(out var bitmapSize);
-		*size = (int)bitmapSize;
-		*rowBytes = _rowBytes;
-		RootElement?.XamlRoot?.InvokeFrameRendered();
+		if (_bitmap is not null)
+		{
+			*data = _bitmap.GetPixels(out var bitmapSize);
+			*size = (int)bitmapSize;
+			*rowBytes = _rowBytes;
+		}
 	}
 
 	// Window management
@@ -200,33 +202,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	public UIElement? RootElement => _winUIWindow.RootElement;
 
-	void IXamlRootHost.InvalidateRender()
-	{
-		if (!SkiaRenderHelper.CanRecordPicture(_winUIWindow.RootElement))
-		{
-			// Try again next tick
-			_winUIWindow.RootElement?.XamlRoot?.QueueInvalidateRender();
-			return;
-		}
-
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Window {_nativeWindow.Handle} invalidated.");
-		}
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)_nativeWindowSize.Width,
-			(int)_nativeWindowSize.Height,
-			_winUIWindow.RootElement,
-			invertPath: false);
-
-		Interlocked.Exchange(ref _picture, picture);
-		Interlocked.Exchange(ref _clipPath, path);
-
-		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
-
-		NativeUno.uno_window_invalidate(_nativeWindow.Handle);
-	}
+	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 
 	public static void Register(nint handle, XamlRoot xamlRoot, MacOSWindowHost host)
 	{

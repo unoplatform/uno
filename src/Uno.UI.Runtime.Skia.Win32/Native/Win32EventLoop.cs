@@ -110,12 +110,10 @@ namespace Uno.UI.Runtime.Skia.Win32
 		/// </summary>
 		public static void RunOnce(TimeSpan? timeout = null)
 		{
-			// We prioritize WM_PAINT messages so that we keep painting as fast
-			// as Windows needs us to even if the message queue is full of other
-			// messages. Similarly, we need input messages to "skip ahead" in some
-			// cases like wheel scrolling where we don't want to wait for the
-			// queue to be empty before continuing to scroll.
-			if (PInvoke.PeekMessage(out var msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE | PEEK_MESSAGE_REMOVE_TYPE.PM_QS_PAINT | PEEK_MESSAGE_REMOVE_TYPE.PM_QS_INPUT)
+			// We need to prioritize input messages in some cases like wheel
+			// scrolling where we don't want to wait for the queue to be empty
+			// before continuing to scroll.
+			if (PInvoke.PeekMessage(out var msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE | PEEK_MESSAGE_REMOVE_TYPE.PM_QS_INPUT)
 				|| PInvoke.PeekMessage(out msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE))
 			{
 				PInvoke.TranslateMessage(msg);
