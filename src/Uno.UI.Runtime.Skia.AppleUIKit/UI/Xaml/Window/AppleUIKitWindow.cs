@@ -16,6 +16,14 @@ internal class AppleUIKitWindow : UIWindow
 {
 	internal event Action? FrameChanged;
 
+	public AppleUIKitWindow()
+	{
+	}
+
+	public AppleUIKitWindow(UIWindowScene scene) : base(scene)
+	{
+	}
+
 	public override CGRect Frame
 	{
 		get => base.Frame;
