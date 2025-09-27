@@ -2205,9 +2205,8 @@ namespace Microsoft.UI.Xaml
 			// TODO Uno Specific: The check is a bit different in WinUI, but should have the same effect.
 			bool hasLocalValue = !(
 				precedence == DependencyPropertyValuePrecedences.DefaultValue ||
-				precedence == DependencyPropertyValuePrecedences.DefaultStyle ||
-				precedence == DependencyPropertyValuePrecedences.ExplicitStyle ||
-				precedence == DependencyPropertyValuePrecedences.ImplicitStyle);
+				precedence == DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle ||
+				precedence == DependencyPropertyValuePrecedences.DefaultStyle);
 
 			return hasLocalValue;
 		}
