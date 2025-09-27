@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
@@ -26,7 +27,10 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 	private bool _ignorePixelScaling;
 
 	static WpfHost()
-		=> WpfExtensionsRegistrar.Register();
+	{
+		WpfExtensionsRegistrar.Register();
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaWpf;
+	}
 
 	public WpfHost(Dispatcher dispatcher, Func<WinUIApplication> appBuilder)
 	{
