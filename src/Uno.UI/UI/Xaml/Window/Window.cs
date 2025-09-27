@@ -52,15 +52,7 @@ partial class Window
 
 	internal Window(WindowType windowType)
 	{
-#if !__SKIA__
-		if (_current is null && CoreApplication.IsFullFledgedApp)
-		{
-			windowType = WindowType.CoreWindow;
-		}
-#else
-		windowType = WindowType.DesktopXamlSource; // Skia always uses "Desktop" windows.
-#endif
-
+		windowType = WindowType.DesktopXamlSource; // Always use Desktop window type.
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"Creating new window (type:{windowType})");
