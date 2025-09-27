@@ -9,6 +9,7 @@
 			"Uno.WinUI.GooglePlay",
 			"Uno.WinUI.Foldable",
 			"Uno.WinUI.MSAL",
+			"Uno.WinUI.MSAL.Runtime.Skia",
 			"Uno.WinUI.Svg",
 			"Uno.WinUI.Lottie",
 			"Uno.WinUI.DevServer",

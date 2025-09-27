@@ -111,6 +111,7 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.netcoremobile.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Reference.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Windows.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Runtime.Skia.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Wasm.csproj</_AdjustedOutputProjects>
