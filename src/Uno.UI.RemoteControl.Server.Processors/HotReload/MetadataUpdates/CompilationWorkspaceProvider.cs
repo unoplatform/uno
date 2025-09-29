@@ -108,16 +108,26 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			MSBuildBasePath = BuildMSBuildPath(workDir);
 
-			var expectedVersion = GetDotnetVersion(workDir);
+			// Determine the expected major from the selected host TFM first,
+			// falling back to the default SDK version only if not provided.
+			var expectedMajor = GetExpectedMajorFromHostOrSdk(workDir);
+
 			var currentVersion = typeof(object).Assembly.GetName().Version;
-			if (expectedVersion.Major != currentVersion?.Major)
+			var currentMajor = currentVersion?.Major ?? 0;
+
+			if (expectedMajor != currentMajor)
 			{
+				var expectedTfm = $"net{expectedMajor}.0";
+				var currentTfm = $"net{currentMajor}.0";
+
 				if (typeof(CompilationWorkspaceProvider).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(CompilationWorkspaceProvider).Log().LogError($"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Expected: net{expectedVersion.Major}, Current: net{currentVersion?.Major}. Change the TargetFramework version in your project file to match the expected version.");
+					typeof(CompilationWorkspaceProvider).Log().LogError(
+						$"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Expected: {expectedTfm}, Current: {currentTfm}. Change the TargetFramework version in your project file to match the expected version.");
 				}
 
-				throw new InvalidOperationException($"Project TargetFramework version mismatch. Expected: net{expectedVersion.Major}, Current: net{currentVersion?.Major}");
+				throw new InvalidOperationException(
+					$"Project TargetFramework version mismatch. Expected: {expectedTfm}, Current: {currentTfm}");
 			}
 
 			Environment.SetEnvironmentVariable("MSBuildSDKsPath", Path.Combine(MSBuildBasePath, "Sdks"));
@@ -128,6 +138,32 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			{
 				throw new InvalidOperationException($"Invalid dotnet installation installation (Cannot find Microsoft.Build.dll in [{MSBuildBasePath}])");
 			}
+		}
+
+		// Prefer UNO_RC_HOST_TFM (set by targets) to decide the expected major.
+		private static int GetExpectedMajorFromHostOrSdk(string? workDir)
+		{
+			var tfm = Environment.GetEnvironmentVariable("UNO_RC_HOST_TFM");
+			if (!string.IsNullOrEmpty(tfm))
+			{
+				// Accept exact "net10" or "net10.0" / "net9" or "net9.0" (case-insensitive)
+				var t = tfm.Trim();
+				var cmp = StringComparison.OrdinalIgnoreCase;
+
+				if (t.Equals("net10", cmp) || t.Equals("net10.0", cmp))
+				{
+					return 10;
+				}
+
+				if (t.Equals("net9", cmp) || t.Equals("net9.0", cmp))
+				{
+					return 9;
+				}
+			}
+
+			// Fallback to the default SDK version if env var is not present
+			var sdkVersion = GetDotnetVersion(workDir);
+			return sdkVersion.Major;
 		}
 
 		private static Version GetDotnetVersion(string? workDir)
