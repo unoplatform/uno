@@ -1,18 +1,20 @@
 ﻿using System;
 using Windows.Foundation;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using FluentAssertions.Primitives;
+using AwesomeAssertions.Execution;
+using AwesomeAssertions.Primitives;
 
 namespace Uno.UI
 {
 	internal static class SizeAssertionExtensions
 	{
-		internal static SizeAssertion Should(this Size size, double epsilon = 0.01d) => new SizeAssertion(size, epsilon);
+		internal static SizeAssertion Should(this Size size, double epsilon = 0.01d)
+			=> new SizeAssertion(size, epsilon, AssertionChain.GetOrCreate());
 
-		internal static PointAssertion Should(this Point point, double epsilon = 0.01d) => new PointAssertion(point, epsilon);
+		internal static PointAssertion Should(this Point point, double epsilon = 0.01d)
+			=> new PointAssertion(point, epsilon, AssertionChain.GetOrCreate());
 
-		internal static RectAssertion Should(this Rect rect, double epsilon = 0.01d) => new RectAssertion(rect, epsilon);
+		internal static RectAssertion Should(this Rect rect, double epsilon = 0.01d)
+			=> new RectAssertion(rect, epsilon, AssertionChain.GetOrCreate());
 
 		internal static (bool isDifferent, double difference) CheckDifference(double value1, double value2, double epsilon)
 		{
@@ -31,7 +33,8 @@ namespace Uno.UI
 		private readonly Size _size;
 		private readonly double _epsilon;
 
-		public SizeAssertion(Size size, in double epsilon)
+		public SizeAssertion(Size size, in double epsilon, AssertionChain assertionChain)
+			: base(size, assertionChain)
 		{
 			_size = size;
 			_epsilon = epsilon;
@@ -68,19 +71,20 @@ namespace Uno.UI
 		{
 			var ep = epsilon ?? _epsilon;
 			var d = SizeAssertionExtensions.CheckDifference(expected, value, ep);
-			Execute.Assertion
+			CurrentAssertionChain
 				.BecauseOf(because, becauseArgs)
 				.ForCondition(!d.isDifferent)
 				.FailWith($"Expected {field} of {_size}{{reason}} to be {expected}, but seems to be {value} (difference of {d.difference}) with a tolerance of {ep}.");
 		}
 	}
 
-	internal class PointAssertion : ReferenceTypeAssertions<Size, SizeAssertion>
+	internal class PointAssertion : ReferenceTypeAssertions<Point, PointAssertion>
 	{
 		private readonly Point _point;
 		private readonly double _epsilon;
 
-		public PointAssertion(Point point, in double epsilon)
+		public PointAssertion(Point point, in double epsilon, AssertionChain assertionChain)
+			: base(point, assertionChain)
 		{
 			_point = point;
 			_epsilon = epsilon;
@@ -104,7 +108,7 @@ namespace Uno.UI
 		{
 			var ep = epsilon ?? _epsilon;
 			var d = SizeAssertionExtensions.CheckDifference(expected, value, ep);
-			Execute.Assertion
+			CurrentAssertionChain
 				.BecauseOf(because, becauseArgs)
 				.ForCondition(!d.isDifferent)
 				.FailWith($"Expected {field} of {_point}{{reason}} to be at {expected}, but seems to be at {value} (difference of {d.difference}) with a tolerance of {ep}.");
@@ -125,12 +129,13 @@ namespace Uno.UI
 		}
 	}
 
-	internal class RectAssertion : ReferenceTypeAssertions<Size, SizeAssertion>
+	internal class RectAssertion : ReferenceTypeAssertions<Rect, RectAssertion>
 	{
 		private readonly Rect _rect;
 		private readonly double _epsilon;
 
-		public RectAssertion(Rect rect, in double epsilon)
+		public RectAssertion(Rect rect, in double epsilon, AssertionChain assertionChain)
+			: base(rect, assertionChain)
 		{
 			_rect = rect;
 			_epsilon = epsilon;
@@ -140,7 +145,7 @@ namespace Uno.UI
 
 		public AndConstraint<RectAssertion> Be(Rect expectedRect, double? epsilon = null, string because = null, params object[] becauseArgs)
 		{
-			using (new AssertionScope(AssertionScope.Current?.Context + _rect))
+			using (new AssertionScope(AssertionScope.Current?.Name() + _rect.ToString()))
 			{
 				// Note: We do NOT compare Size and Point, as Rect.Empty will throw in Size ctor on UWP.
 

@@ -131,7 +131,7 @@
 		<PackageReference Update="Svg.Skia" Version="3.0.6" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
-		<PackageReference Update="FluentAssertions" Version="5.10.3" />
+		<PackageReference Update="AwesomeAssertions" Version="9.2.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />

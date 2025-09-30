@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;

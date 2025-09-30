@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Core;
 using Windows.System;

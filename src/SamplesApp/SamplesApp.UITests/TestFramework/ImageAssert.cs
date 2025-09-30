@@ -8,8 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests._Utils;
 using Uno.UITest;
@@ -125,9 +124,10 @@ namespace SamplesApp.UITests.TestFramework
 			TryIgnoreImageAssert();
 
 			using var assertionScope = new AssertionScope($"{expected.StepName}<=={actual}");
-			assertionScope.AddReportable("expectedRect", expectedRect.ToString());
-			assertionScope.AddReportable("actualRect", actualRect.ToString());
-			assertionScope.AddReportable("expectedToActualScale", expectedToActualScale.ToString(NumberFormatInfo.InvariantInfo));
+			var assertionChain = AssertionChain.GetOrCreate();
+			assertionChain.AddReportable("expectedRect", expectedRect.ToString());
+			assertionChain.AddReportable("actualRect", actualRect.ToString());
+			assertionChain.AddReportable("expectedToActualScale", expectedToActualScale.ToString(NumberFormatInfo.InvariantInfo));
 
 			var (areEqual, context) = EqualityCheck(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 
@@ -137,7 +137,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 			else
 			{
-				assertionScope.FailWithText(context);
+				assertionChain.FailWithText(context);
 			}
 		}
 
@@ -243,7 +243,8 @@ namespace SamplesApp.UITests.TestFramework
 			}
 			else
 			{
-				AssertionScope.Current.FailWithText(result.context);
+				AssertionChain.GetOrCreate()
+					.FailWithText(result.context);
 			}
 		}
 		#endregion
@@ -401,7 +402,8 @@ namespace SamplesApp.UITests.TestFramework
 				result.AppendLine(expectation.Name);
 				if (!Validate(expectation, bitmap, 1, result))
 				{
-					assertionScope.FailWith(result.ToString());
+					AssertionChain.GetOrCreate()
+						.FailWith(result.ToString());
 				}
 			}
 		}

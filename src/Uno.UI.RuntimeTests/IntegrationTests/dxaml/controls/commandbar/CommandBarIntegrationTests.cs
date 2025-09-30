@@ -2290,6 +2290,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				overflowContentRoot = TreeHelper.GetVisualChildByNameFromOpenPopups("OverflowContentRoot", cmdBar);
 
+				Assert.IsNotNull(overflowContentRoot, $"overflowContentRoot should not be null after mouse open");
 				VERIFY_ARE_EQUAL(overflowContentRoot.MinWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_EQUAL(overflowContentRoot.ActualWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_VERY_CLOSE(Math.Round(appBarButton.ActualHeight), expectedMenuItemHeight_NonTouch, tolerance: 4);
@@ -2304,6 +2305,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				overflowContentRoot = TreeHelper.GetVisualChildByNameFromOpenPopups("OverflowContentRoot", cmdBar);
 
+				Assert.IsNotNull(overflowContentRoot, $"overflowContentRoot should not be null after keyboard open");
 				VERIFY_ARE_EQUAL(overflowContentRoot.MinWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_EQUAL(overflowContentRoot.ActualWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_VERY_CLOSE(Math.Round(appBarButton.ActualHeight), expectedMenuItemHeight_NonTouch, tolerance: 4);
@@ -2318,6 +2320,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				overflowContentRoot = TreeHelper.GetVisualChildByNameFromOpenPopups("OverflowContentRoot", cmdBar);
 
+				Assert.IsNotNull(overflowContentRoot, $"overflowContentRoot should not be null after programmatic open");
 				VERIFY_ARE_EQUAL(overflowContentRoot.MinWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_EQUAL(overflowContentRoot.ActualWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_VERY_CLOSE(Math.Round(appBarButton.ActualHeight), expectedMenuItemHeight_NonTouch, tolerance: 4);

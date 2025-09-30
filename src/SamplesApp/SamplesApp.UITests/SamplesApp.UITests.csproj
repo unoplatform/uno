@@ -15,8 +15,12 @@
 		<NoWarn>$(NoWarn);SYSLIB1045;CS1998</NoWarn>
 	</PropertyGroup>
 
+	<ItemGroup Label="GlobalUsings">
+		<Using Include="AwesomeAssertions" />
+	</ItemGroup>
+
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="NunitXml.TestLogger" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" />

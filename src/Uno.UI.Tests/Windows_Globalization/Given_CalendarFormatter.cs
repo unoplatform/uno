@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.DateTimeFormatting;
 

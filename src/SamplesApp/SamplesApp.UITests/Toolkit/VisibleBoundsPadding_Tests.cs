@@ -4,8 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;

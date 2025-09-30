@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 namespace SamplesApp.UITests
 {
@@ -27,7 +27,7 @@ namespace SamplesApp.UITests
 			return target;
 		}
 
-		public static void FailWithText(this AssertionScope scope, string text)
+		public static void FailWithText(this AssertionChain scope, string text)
 		{
 			var t = text.Replace("{", "{{").Replace("}", "}}");
 

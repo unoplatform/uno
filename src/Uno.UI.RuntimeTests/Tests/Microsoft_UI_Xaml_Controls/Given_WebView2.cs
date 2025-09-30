@@ -8,7 +8,6 @@ using Private.Infrastructure;
 using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
-using FluentAssertions;
 using Combinatorial.MSTest;
 
 

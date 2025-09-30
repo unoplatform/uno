@@ -53,6 +53,10 @@
 		<DebugSymbols>true</DebugSymbols>
 
 	</PropertyGroup>
+
+	<ItemGroup Label="GlobalUsings">
+		<Using Include="AwesomeAssertions" />
+	</ItemGroup>
 	<ItemGroup>
 		<Content Update="..\SamplesApp.Windows\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
 	</ItemGroup>

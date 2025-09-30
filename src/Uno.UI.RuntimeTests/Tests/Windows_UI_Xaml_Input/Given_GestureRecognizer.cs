@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
-using FluentAssertions;
 using RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;

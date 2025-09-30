@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Runtime.CompilerServices;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Collections;
 

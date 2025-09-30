@@ -4,8 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -1857,7 +1856,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			Assert.AreEqual(0, parent.VerticalOffset);
-			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1);
+			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1,
+				$"abs(childEndOffset - child.VerticalOffset)={Math.Abs(childEndOffset - child.VerticalOffset)}, expected to be < 1");
 		}
 
 		[TestMethod]
