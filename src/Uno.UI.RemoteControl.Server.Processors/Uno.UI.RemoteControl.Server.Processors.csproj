@@ -111,4 +111,17 @@
 				 Text="BuildHost-netcore was not found at '$(_ServerHostDir)'. The nuspec may fail to pack this TFM." />
 	</Target>
 
+	<!-- Ensure BuildHost-net472 folder exists so nuspec <file> entries resolve -->
+	<Target Name="EnsureBuildHostNet472"
+			AfterTargets="Build"
+			Condition="'$(IsCrossTargetingBuild)' != 'true' and '$(TargetFramework)' != ''">
+		<PropertyGroup>
+			<_ProcessorsHostDirNet472>$(TargetDir)BuildHost-net472</_ProcessorsHostDirNet472>
+		</PropertyGroup>
+
+		<!-- Ensure folder exists before nuspec packing. Folder will normally contain mirrored BuildHost-netcore files, but NuGet.exe requires the directory to exist even if empty. -->
+		<MakeDir Directories="$(_ProcessorsHostDirNet472)" Condition="!Exists('$(_ProcessorsHostDirNet472)')" />
+		<Message Importance="High" Text="EnsureBuildHostNet472: Ensured '$(_ProcessorsHostDirNet472)'" />
+	</Target>
+
 </Project>
