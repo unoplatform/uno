@@ -176,7 +176,10 @@
 		<!-- Remote Control host and integration -->
 		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net9.0\*.*" target="tools\rc\host\net9.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net10.0\*.*" target="tools\rc\host\net10.0" />
-		
+		<!-- BuildHost payloads required at runtime -->
+		<file src="..\..\src\Uno.UI.RemoteControl.Server\bin\Release\net9.0\BuildHost-netcore\**"  target="tools\rc\host\net9.0\BuildHost-netcore" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server\bin\Release\net10.0\BuildHost-netcore\**" target="tools\rc\host\net10.0\BuildHost-netcore" />
+
 		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.dll" target="tools\rc\17.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.pdb" target="tools\rc\17.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\Newtonsoft.Json.dll" target="tools\rc\17.0" />
