@@ -32,6 +32,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Build" Version="17.8.27" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.27" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.27" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.27" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Drawing.Common" Version="9.0.0" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\Helpers\**\*.cs" Exclude="..\Uno.UI.RemoteControl\Helpers\ServiceCollectionExtensions.cs" Link="Helpers/%(Filename)" />
 		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
 	</ItemGroup>

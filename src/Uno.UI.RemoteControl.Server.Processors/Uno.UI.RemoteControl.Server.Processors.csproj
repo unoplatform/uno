@@ -4,7 +4,7 @@
 		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<Nullable>enable</Nullable>
-		
+
 		<!-- We need all the intermediate assemblies to be located in the processors -->
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 	</PropertyGroup>
@@ -31,14 +31,15 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+		<!-- Logging aligned with .NET 9 runtime -->
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.8.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.8.0" />
-		<!-- TODO: Use version 8 when compiling against .NET 8? -->
-		<PackageReference Include="Microsoft.Build" Version="17.3.0" ExcludeAssets="runtime" />
+		<!-- MSBuild toolset aligned across TFMs -->
+		<PackageReference Include="Microsoft.Build" Version="17.8.27" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.27" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.27" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.27" ExcludeAssets="runtime" />
@@ -51,8 +52,8 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
-		<!-- TODO: Use version 9 when compiling against .NET 9? -->
-		<PackageReference Include="Microsoft.Build" Version="17.7.2" ExcludeAssets="runtime" />
+		<!-- MSBuild toolset used by Roslyn on .NET 10 -->
+		<PackageReference Include="Microsoft.Build" Version="17.8.27" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.27" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.27" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.27" ExcludeAssets="runtime" />
@@ -66,7 +67,6 @@
 		<PropertyGroup>
 			<_OverridePackageId>uno.ui</_OverridePackageId>
 			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">uno.winui</_OverridePackageId>
-
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId).devserver\$(UnoNugetOverrideVersion)\tools\rc\processors\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
@@ -79,5 +79,35 @@
 	</Target>
 
 	<Target Name="GetTargetPath" />
+
+	<!--
+		Ensure BuildHost-netcore exists and is populated for the current TFM.
+		The nuspec packs src/Uno.UI.RemoteControl.Server.Processors/bin/Release/net9.0/BuildHost-netcore/** and net10.0/BuildHost-netcore/**
+		We mirror the host payload from the Server project output into the Processors output so packing succeeds for both TFMs.
+	-->
+	<Target Name="EnsureBuildHostNetcore"
+			AfterTargets="Build">
+		<PropertyGroup>
+			<_ServerHostDir>$(MSBuildThisFileDirectory)..\Uno.UI.RemoteControl.Server\bin\$(Configuration)\$(TargetFramework)\BuildHost-netcore</_ServerHostDir>
+			<_ProcessorsHostDir>$(TargetDir)BuildHost-netcore</_ProcessorsHostDir>
+		</PropertyGroup>
+
+		<!-- If the Server project produced a host folder, mirror it -->
+		<ItemGroup Condition="Exists('$(_ServerHostDir)')">
+			<_HostFiles Include="$(_ServerHostDir)\**\*.*" />
+		</ItemGroup>
+
+		<!-- Only create the folder if it doesn’t exist -->
+		<MakeDir Directories="$(_ProcessorsHostDir)" Condition="!Exists('$(_ProcessorsHostDir)')" />
+
+		<Copy Condition="@( _HostFiles ) != ''"
+			  SourceFiles="@(_HostFiles)"
+			  DestinationFiles="@(_HostFiles->'$(_ProcessorsHostDir)\%(RecursiveDir)%(Filename)%(Extension)')"
+			  SkipUnchangedFiles="true" />
+
+		<Message Importance="High" Text="EnsureBuildHostNetcore: From='$(_ServerHostDir)' To='$(_ProcessorsHostDir)'. Files copied: @( _HostFiles->Count() )" />
+		<Warning Condition="!Exists('$(_ServerHostDir)')"
+				 Text="BuildHost-netcore was not found at '$(_ServerHostDir)'. The nuspec may fail to pack this TFM." />
+	</Target>
 
 </Project>

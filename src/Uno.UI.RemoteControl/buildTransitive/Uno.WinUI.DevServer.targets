@@ -16,7 +16,7 @@
 	</PropertyGroup>
 
 	<!-- Select the DevServer host TFM by SDK major, with fallbacks to net9.0/net10.0.
-		 Expose selected TFM as UNO_RC_HOST_TFM for the running app. -->
+       Expose selected TFM as UNO_RC_HOST_TFM for the running app. -->
 	<Target Name="GetRemoteControlHostPath">
 		<PropertyGroup>
 			<_IsRCClientRemote>false</_IsRCClientRemote>
@@ -49,11 +49,11 @@
 	<Target Name="UnoDumpRemoteControlAddIns">
 		<Message Text="&lt;RemoteControlAddIns&gt;@(UnoRemoteControlAddIns)&lt;/RemoteControlAddIns&gt;" Importance="High" />
 		<WriteLinesToFile
-			Condition="'$(UnoDumpRemoteControlAddInsTargetFile)' != ''"
-			File="$(UnoDumpRemoteControlAddInsTargetFile)"
-			Lines="@(UnoRemoteControlAddIns)"
-			Overwrite="false"
-			Encoding="Unicode" />
+		  Condition="'$(UnoDumpRemoteControlAddInsTargetFile)' != ''"
+		  File="$(UnoDumpRemoteControlAddInsTargetFile)"
+		  Lines="@(UnoRemoteControlAddIns)"
+		  Overwrite="false"
+		  Encoding="Unicode" />
 	</Target>
 
 	<!-- .NET 7 and earlier compatibility for .NET 8 msbuild CLI `getProperty` equivalent -->
@@ -69,23 +69,23 @@
 			BeforeTargets="BeforeBuild"
 			Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config') and '$(BuildingInsideVisualStudio)'!='true' and '$(Configuration)'=='Debug'">
 		<Warning
-			Text="The version of Uno Platform's extension installed on your IDE is obsolete, please update to the latest version. If error persists, try to delete the obj folder and rebuild your solution." />
+		  Text="The version of Uno Platform's extension installed on your IDE is obsolete, please update to the latest version. If error persists, try to delete the obj folder and rebuild your solution." />
 	</Target>
 
 	<!-- Android: Add DOTNET_MODIFIABLE_ASSEMBLIES=debug and UNO_RC_HOST_TFM -->
 	<Target
-		Name="_UnoHotReloadConfigAndroidEnv"
-		BeforeTargets="BeforeBuild"
-		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' and '$(Optimize)'!='true'">
+	  Name="_UnoHotReloadConfigAndroidEnv"
+	  BeforeTargets="BeforeBuild"
+	  Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'android' and '$(Optimize)'!='true'">
 
 		<PropertyGroup>
 			<_UnoHotReloadEnvironmentConfig>$(IntermediateOutputPath)environment.hotreload.conf</_UnoHotReloadEnvironmentConfig>
 		</PropertyGroup>
 
 		<WriteLinesToFile
-			Overwrite="True"
-			File="$(_UnoHotReloadEnvironmentConfig)"
-			Lines="DOTNET_MODIFIABLE_ASSEMBLIES=debug%0aUNO_RC_HOST_TFM=$(_UnoRCHostTfm)" />
+		  Overwrite="True"
+		  File="$(_UnoHotReloadEnvironmentConfig)"
+		  Lines="DOTNET_MODIFIABLE_ASSEMBLIES=debug%0aUNO_RC_HOST_TFM=$(_UnoRCHostTfm)" />
 
 		<ItemGroup>
 			<AndroidEnvironment Include="$(_UnoHotReloadEnvironmentConfig)" />
@@ -94,13 +94,13 @@
 	</Target>
 
 	<!-- iOS: Add UNO_RC_HOST_TFM and DOTNET_MODIFIABLE_ASSEMBLIES -->
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' and '$(Optimize)'!='true'">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'ios' and '$(Optimize)'!='true'">
 		<MlaunchEnvironmentVariables Include="UNO_RC_HOST_TFM" Value="$(_UnoRCHostTfm)" />
 		<MlaunchEnvironmentVariables Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
 	</ItemGroup>
 
 	<!-- BrowserWasm: Add UNO_RC_HOST_TFM and DOTNET_MODIFIABLE_ASSEMBLIES -->
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' and '$(Optimize)'!='true'">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'browserwasm' and '$(Optimize)'!='true'">
 		<WasmShellMonoEnvironment Include="UNO_RC_HOST_TFM" Value="$(_UnoRCHostTfm)" />
 		<WasmShellMonoEnvironment Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
 	</ItemGroup>
