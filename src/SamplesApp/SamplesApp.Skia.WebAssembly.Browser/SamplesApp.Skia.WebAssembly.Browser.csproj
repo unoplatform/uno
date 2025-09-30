@@ -5,6 +5,11 @@
 
 	<Import Project="../../targetframework-override-noplatform.props" />
 
+	<ItemGroup>
+		<!-- Wrapper for ICU's BreakIterator support for text handling -->
+		<NativeFileReference Include="../../Uno.UI.Runtime.Skia.WebAssembly.Browser/unoicu.a" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>$(TargetFramework)</TargetFramework>
