@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Uno;
@@ -55,6 +56,24 @@ internal readonly partial struct UnicodeText
 			}
 			else if (OperatingSystem.IsBrowser())
 			{
+				var stream = AppDomain.CurrentDomain
+					.GetAssemblies()
+					.Select(a => (a, a.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith("icudt.dat", StringComparison.InvariantCulture))))
+					.Where(t => t.Item2 != null)
+					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
+					.First()!;
+				var data = new byte[stream.Length];
+				stream.ReadExactly(data, 0, data.Length);
+				fixed (byte* dataPtr = data)
+				{
+					var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)dataPtr);
+					var errorString = Marshal.PtrToStringAnsi(errorPtr);
+					if (errorString is not null)
+					{
+						throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
+					}
+				}
+
 				// ICU is included in the dotnet runtime itself
 				// the version doesn't matter as the symbols don't have the version postfix
 				_icuVersion = 1;
@@ -162,44 +181,46 @@ internal readonly partial struct UnicodeText
 			public byte byte4;
 		}
 
-		// WASM needs all used symbols from ICU defined as DllImports to be added to emcc's exported functions.
-		private class BrowserICUSymbols
+		public class BrowserICUSymbols
 		{
+			// These methods are supplied by owr own unoicu.a static library and includes support for the BreakIterator
+			// API. The dotnet runtime version of ICU complains about mising resources when calling ubrk_open even
+			// when udata_setCommonData is called.
+			[DllImport("unoicu")]
+			public static extern IntPtr uno_udata_setCommonData(IntPtr bytes);
+
+			[DllImport("unoicu", CharSet = CharSet.Unicode)]
+			public static extern IntPtr init_line_breaker(string bytes);
+
+			[DllImport("unoicu")]
+			public static extern int next_line_breaking_opportunity(IntPtr breaker);
+
+			// These symbols come from dotnet's own ICU.
+			// WASM needs all used symbols from ICU defined as DllImports to be added to emscripten's linker EXPORTED_FUNCTIONS option.
+			// These won't actually be used and the signature of the functions can be anything, just the symbol name is enough.
 			[DllImport("__Internal")]
-			static extern IntPtr ubidi_open();
+			static extern void ubidi_open();
 
 			[DllImport("__Internal")]
-			static extern void ubidi_close(IntPtr pBiDi);
+			static extern void ubidi_close();
 
 			[DllImport("__Internal")]
-			static extern void ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
+			static extern void ubidi_setPara();
 
 			[DllImport("__Internal")]
-			static extern void ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
+			static extern void ubidi_getLogicalRun();
 
 			[DllImport("__Internal")]
-			static extern int ubidi_countRuns(IntPtr pBiDI, out int errorCode);
+			static extern void ubidi_countRuns();
 
 			[DllImport("__Internal")]
-			static extern int ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+			static extern void ubidi_getVisualRun();
 
 			[DllImport("__Internal")]
-			static extern IntPtr ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
+			static extern void u_getVersion();
 
 			[DllImport("__Internal")]
-			static extern IntPtr ubrk_close(IntPtr bi);
-
-			[DllImport("__Internal")]
-			static extern int ubrk_first(IntPtr bi);
-
-			[DllImport("__Internal")]
-			static extern int ubrk_next(IntPtr bi);
-
-			[DllImport("__Internal")]
-			static extern void u_getVersion(out UVersionInfo versionInfo);
-
-			[DllImport("__Internal")]
-			static extern void u_versionToString(IntPtr versionArray, IntPtr versionString);
+			static extern void u_versionToString();
 		}
 	}
 }

@@ -529,18 +529,29 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static unsafe IEnumerable<int> GetLineBreakingOpportunities(string text)
 	{
 		var ret = new List<int>();
-		fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+		if (OperatingSystem.IsBrowser())
 		{
-			fixed (char* textPtr = &text.GetPinnableReference())
+			var breaker = ICU.BrowserICUSymbols.init_line_breaker(text);
+			for (var next = ICU.BrowserICUSymbols.next_line_breaking_opportunity(breaker); next != -1; next = ICU.BrowserICUSymbols.next_line_breaking_opportunity(breaker))
 			{
-				var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(/* Line */ 2, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
-				ICU.CheckErrorCode<ICU.ubrk_open>(status);
-				ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
-				while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
+				ret.Add(next);
+			}
+		}
+		else
+		{
+			fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+			{
+				fixed (char* textPtr = &text.GetPinnableReference())
 				{
-					ret.Add(next);
+					var breakIterator = ICU.GetMethod<ICU.ubrk_open>()(/* Line */ 2, (IntPtr)locale, (IntPtr)textPtr, text.Length, out int status);
+					ICU.CheckErrorCode<ICU.ubrk_open>(status);
+					ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
+					while (ICU.GetMethod<ICU.ubrk_next>()(breakIterator) is var next && next != /* UBRK_DONE */ -1)
+					{
+						ret.Add(next);
+					}
+					ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
 				}
-				ICU.GetMethod<ICU.ubrk_close>()(breakIterator);
 			}
 		}
 		return ret;
