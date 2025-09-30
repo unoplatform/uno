@@ -140,9 +140,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			}
 		}
 
-		// Prefer UNO_RC_HOST_TFM (set by targets) to decide the expected major.
+		// Prefer UNO_RC_HOST_SDK_MAJOR (set by targets) to decide the expected major; fall back to legacy UNO_RC_HOST_TFM.
 		private static int GetExpectedMajorFromHostOrSdk(string? workDir)
 		{
+			var sdkMajorEnv = Environment.GetEnvironmentVariable("UNO_RC_HOST_SDK_MAJOR");
+			if (!string.IsNullOrWhiteSpace(sdkMajorEnv) && int.TryParse(sdkMajorEnv.Trim(), out var envMajor) && envMajor > 0)
+			{
+				return envMajor;
+			}
+
+			// Legacy env var: UNO_RC_HOST_TFM with values like net10.0 / net9.0
 			var tfm = Environment.GetEnvironmentVariable("UNO_RC_HOST_TFM");
 			if (!string.IsNullOrEmpty(tfm))
 			{
