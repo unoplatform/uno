@@ -73,6 +73,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="icu/cldr_data/icudt.dat" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Include="..\Uno.UI.Runtime.WebAssembly\Storage\Pickers\FileSystemAccessApiInformation.cs" Link="Storage\Pickers\FileSystemAccessApiInformation.cs" />
 	  <Compile Include="..\Uno.UI.Runtime.WebAssembly\Web\Http\Cookie.cs" Link="Web\Http\Cookie.cs" />
 	  <Compile Include="..\Uno.UI.Runtime.WebAssembly\Web\Http\CookieManager.cs" Link="Web\Http\CookieManager.cs" />
