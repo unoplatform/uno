@@ -1,7 +1,7 @@
 #nullable enable
 using System;
-using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Uno;
 using Uno.Disposables;
@@ -13,10 +13,10 @@ internal readonly partial struct UnicodeText
 {
 	private static class ICU
 	{
-		// The version number of ICU is important because the exported symbols have there names appended by
-		// the version number. For example, there's a ubrk_open_74 in ICU v74, but not a ubrl_open.
+		// The version number of ICU is important because the exported symbols have their names appended by
+		// the version number. For example, there's a ubrk_open_74 in ICU v74, but not a ubrk_open.
 		private static readonly int _icuVersion;
-		private static Func<Type, object> _getMethodMemoized;
+		private static readonly Func<Type, object> _getMethodMemoized;
 
 		static unsafe ICU()
 		{
@@ -25,23 +25,15 @@ internal readonly partial struct UnicodeText
 			{
 				// On Windows, We get the ICU binaries from the Microsoft.ICU.ICU4C.Runtime package
 				_icuVersion = 72;
-				if (NativeLibrary.TryLoad("icuuc72", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out var handle))
-				{
-					libicuuc = handle;
-				}
-				else
+				if (!NativeLibrary.TryLoad("icuuc72", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
 				{
 					throw new Exception("Failed to load libicuuc.");
 				}
 			}
-			else if (OperatingSystem.IsLinux())
+			else if (OperatingSystem.IsLinux() || OperatingSystem.IsAndroid())
 			{
 				// On Linux, we get the ICU binaries from the dynamic linker search path (usually /usr/lib64/)
-				if (NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out var handle))
-				{
-					libicuuc = handle;
-				}
-				else
+				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
 				{
 					throw new Exception("Failed to load libicuuc.");
 				}
@@ -50,10 +42,25 @@ internal readonly partial struct UnicodeText
 				// we try a wide range of versions.
 				for (int i = 100; i >= 67; i--)
 				{
-					if (NativeLibrary.TryGetExport(libicuuc, $"u_getVersion_{i}", out var getVersion))
+					if (NativeLibrary.TryGetExport(libicuuc, $"u_getVersion_{i}", out _))
 					{
 						_icuVersion = i;
 					}
+				}
+
+				if (_icuVersion == 0)
+				{
+					throw new Exception("Failed to load icuuc.");
+				}
+			}
+			else if (OperatingSystem.IsBrowser())
+			{
+				// ICU is included in the dotnet runtime itself
+				// the version doesn't matter as the symbols don't have the version postfix
+				_icuVersion = 1;
+				if (!NativeLibrary.TryLoad("__Internal", Assembly.GetEntryAssembly()!, unchecked((DllImportSearchPath)0xFFFFFFFF), out libicuuc))
+				{
+					throw new DllNotFoundException("Failed to load libicuuc.");
 				}
 			}
 			else
@@ -126,19 +133,19 @@ internal readonly partial struct UnicodeText
 		public delegate int ubidi_countRuns(IntPtr pBiDI, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		internal delegate int ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+		public delegate int ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		internal delegate IntPtr ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
+		public delegate IntPtr ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		internal delegate IntPtr ubrk_close(IntPtr bi);
+		public delegate IntPtr ubrk_close(IntPtr bi);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		internal delegate int ubrk_first(IntPtr bi);
+		public delegate int ubrk_first(IntPtr bi);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		internal delegate int ubrk_next(IntPtr bi);
+		public delegate int ubrk_next(IntPtr bi);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void u_getVersion(out UVersionInfo versionInfo);
@@ -153,6 +160,46 @@ internal readonly partial struct UnicodeText
 			public byte byte2;
 			public byte byte3;
 			public byte byte4;
+		}
+
+		// WASM needs all used symbols from ICU defined as DllImports to be added to emcc's exported functions.
+		private class BrowserICUSymbols
+		{
+			[DllImport("__Internal")]
+			static extern IntPtr ubidi_open();
+
+			[DllImport("__Internal")]
+			static extern void ubidi_close(IntPtr pBiDi);
+
+			[DllImport("__Internal")]
+			static extern void ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
+
+			[DllImport("__Internal")]
+			static extern void ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
+
+			[DllImport("__Internal")]
+			static extern int ubidi_countRuns(IntPtr pBiDI, out int errorCode);
+
+			[DllImport("__Internal")]
+			static extern int ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+
+			[DllImport("__Internal")]
+			static extern IntPtr ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
+
+			[DllImport("__Internal")]
+			static extern IntPtr ubrk_close(IntPtr bi);
+
+			[DllImport("__Internal")]
+			static extern int ubrk_first(IntPtr bi);
+
+			[DllImport("__Internal")]
+			static extern int ubrk_next(IntPtr bi);
+
+			[DllImport("__Internal")]
+			static extern void u_getVersion(out UVersionInfo versionInfo);
+
+			[DllImport("__Internal")]
+			static extern void u_versionToString(IntPtr versionArray, IntPtr versionString);
 		}
 	}
 }
