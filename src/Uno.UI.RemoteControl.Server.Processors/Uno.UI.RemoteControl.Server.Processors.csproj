@@ -86,7 +86,8 @@
 		We mirror the host payload from the Server project output into the Processors output so packing succeeds for both TFMs.
 	-->
 	<Target Name="EnsureBuildHostNetcore"
-			AfterTargets="Build">
+			AfterTargets="Build"
+			Condition="'$(IsCrossTargetingBuild)' != 'true' and '$(TargetFramework)' != ''">
 		<PropertyGroup>
 			<_ServerHostDir>$(MSBuildThisFileDirectory)..\Uno.UI.RemoteControl.Server\bin\$(Configuration)\$(TargetFramework)\BuildHost-netcore</_ServerHostDir>
 			<_ProcessorsHostDir>$(TargetDir)BuildHost-netcore</_ProcessorsHostDir>
