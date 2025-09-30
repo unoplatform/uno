@@ -7,7 +7,7 @@
 
 	<ItemGroup>
 		<!-- Wrapper for ICU's BreakIterator support for text handling -->
-		<NativeFileReference Include="../../Uno.UI.Runtime.Skia.WebAssembly.Browser/unoicu.a" />
+		<NativeFileReference Include="../../Uno.UI.Runtime.Skia.WebAssembly.Browser/icu/unoicu/unoicu.a" />
 	</ItemGroup>
 
 	<PropertyGroup>
