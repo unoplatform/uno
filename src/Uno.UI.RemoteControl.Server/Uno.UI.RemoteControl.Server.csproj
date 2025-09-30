@@ -21,13 +21,68 @@
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Build" Version="17.8.27" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.27" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.27" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.27" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Drawing.Common" Version="9.0.0" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<!-- Roslyn MSBuild Workspaces; GeneratePathProperty gives $(PkgMicrosoft_CodeAnalysis_Workspaces_MSBuild) -->
+	<ItemGroup Condition="'$(TargetFramework)'=='$(NetPrevious)'">
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.8.0" GeneratePathProperty="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='$(NetCurrent)'">
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" GeneratePathProperty="true" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
 	</ItemGroup>
+
+	<!-- Create BuildHost-netcore next to Server output using the Roslyn MSBuild tools -->
+	<Target Name="PrepareBuildHostNetcore" AfterTargets="Build">
+		<PropertyGroup>
+			<!-- Path provided by GeneratePathProperty -->
+			<_RoslynToolsRoot>$(PkgMicrosoft_CodeAnalysis_Workspaces_MSBuild)\tools</_RoslynToolsRoot>
+
+			<!-- Choose the tools TFM based on current target -->
+			<_RoslynToolsTfm Condition="'$(TargetFramework)'=='net9.0'">net9.0</_RoslynToolsTfm>
+			<_RoslynToolsTfm Condition="'$(TargetFramework)'=='net10.0'">net10.0</_RoslynToolsTfm>
+
+			<_RoslynToolsDir>$(_RoslynToolsRoot)\$(_RoslynToolsTfm)</_RoslynToolsDir>
+			<_OutDir>$(TargetDir)BuildHost-netcore</_OutDir>
+		</PropertyGroup>
+
+		<!-- Prefer /tools/<tfm>, fall back to /tools if layout differs -->
+		<ItemGroup Condition="Exists('$(_RoslynToolsDir)')">
+			<_RoslynFiles Include="$(_RoslynToolsDir)\**\*.*" />
+		</ItemGroup>
+		<ItemGroup Condition="!Exists('$(_RoslynToolsDir)') and Exists('$(_RoslynToolsRoot)')">
+			<_RoslynFiles Include="$(_RoslynToolsRoot)\**\*.*" />
+		</ItemGroup>
+
+		<MakeDir Directories="$(_OutDir)" />
+
+		<Copy Condition="@( _RoslynFiles ) != ''"
+			  SourceFiles="@(_RoslynFiles)"
+			  DestinationFiles="@(_RoslynFiles->'$(_OutDir)\%(RecursiveDir)%(Filename)%(Extension)')"
+			  SkipUnchangedFiles="true" />
+
+		<Message Importance="High"
+				 Text="PrepareBuildHostNetcore: From='$(_RoslynToolsDir)' To='$(_OutDir)'. Files: @(_RoslynFiles->Count())" />
+		<Warning Condition="@( _RoslynFiles ) == ''"
+				 Text="Roslyn BuildHost tools not found in '$(PkgMicrosoft_CodeAnalysis_Workspaces_MSBuild)'. BuildHost-netcore will be empty for $(TargetFramework)." />
+	</Target>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
