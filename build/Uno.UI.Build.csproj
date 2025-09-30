@@ -335,7 +335,7 @@
 	<Target Name="BuildNuGetPackage" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
 		<PropertyGroup>
 			<!-- NU5123: Long paths — disabled because buildTransitive targets in Uno.UI.Runtime.Skia.WebAssembly.Browser exceed path length limits -->
-			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131,NU5123;branch=$(NBGV_BuildingRef);commitid=$(NBGV_GitCommitId)</NuSpecProperties>
+			<NuSpecProperties>NoWarn=NU5100;NU5105;NU5131;NU5123;branch=$(NBGV_BuildingRef);commitid=$(NBGV_GitCommitId)</NuSpecProperties>
 			<NuSpecProperties Condition="'$(UNO_UWP_BUILD)'=='true'">$(NuSpecProperties);winuisourcepath=uap10.0.19041;winuitargetpath=UAP</NuSpecProperties>
 			<NuSpecProperties Condition="'$(UNO_UWP_BUILD)'!='true'">$(NuSpecProperties);winuisourcepath=net9.0-windows10.0.19041.0;winuitargetpath=net9.0-windows10.0.19041.0</NuSpecProperties>
 		</PropertyGroup>
