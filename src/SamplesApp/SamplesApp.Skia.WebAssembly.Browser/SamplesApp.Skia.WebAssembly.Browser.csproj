@@ -6,7 +6,8 @@
 	<Import Project="../../targetframework-override-noplatform.props" />
 
 	<ItemGroup>
-		<!-- Wrapper for ICU's BreakIterator support for text handling -->
+		<!-- This line is in Uno.UI.Runtime.Skia.WebAssembly.Browser/buildTransitive but buildTransitive doesn't
+		 	 work with ProjectReferences -->
 		<NativeFileReference Include="../../Uno.UI.Runtime.Skia.WebAssembly.Browser/icu/unoicu/unoicu.a" />
 	</ItemGroup>
 
