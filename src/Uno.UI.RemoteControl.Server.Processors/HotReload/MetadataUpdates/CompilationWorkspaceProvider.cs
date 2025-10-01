@@ -12,10 +12,11 @@ using System.Collections.Generic;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
 using System.Composition.Hosting;
+using System.Text.RegularExpressions;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
-	internal static class CompilationWorkspaceProvider
+	internal static partial class CompilationWorkspaceProvider
 	{
 		private static string MSBuildBasePath = "";
 
@@ -108,16 +109,26 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			MSBuildBasePath = BuildMSBuildPath(workDir);
 
-			var expectedVersion = GetDotnetVersion(workDir);
+			// Determine the expected major from the selected host TFM first,
+			// falling back to the default SDK version only if not provided.
+			var expectedMajor = GetExpectedMajorFromHostOrSdk(workDir);
+
 			var currentVersion = typeof(object).Assembly.GetName().Version;
-			if (expectedVersion.Major != currentVersion?.Major)
+			var currentMajor = currentVersion?.Major ?? 0;
+
+			if (expectedMajor != currentMajor)
 			{
+				var expectedTfm = $"net{expectedMajor}.0";
+				var currentTfm = $"net{currentMajor}.0";
+
 				if (typeof(CompilationWorkspaceProvider).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(CompilationWorkspaceProvider).Log().LogError($"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Expected: net{expectedVersion.Major}, Current: net{currentVersion?.Major}. Change the TargetFramework version in your project file to match the expected version.");
+					typeof(CompilationWorkspaceProvider).Log().LogError(
+						$"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Expected: {expectedTfm}, Current: {currentTfm}. Change the TargetFramework version in your project file to match the expected version.");
 				}
 
-				throw new InvalidOperationException($"Project TargetFramework version mismatch. Expected: net{expectedVersion.Major}, Current: net{currentVersion?.Major}");
+				throw new InvalidOperationException(
+					$"Project TargetFramework version mismatch. Expected: {expectedTfm}, Current: {currentTfm}");
 			}
 
 			Environment.SetEnvironmentVariable("MSBuildSDKsPath", Path.Combine(MSBuildBasePath, "Sdks"));
@@ -128,6 +139,45 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			{
 				throw new InvalidOperationException($"Invalid dotnet installation installation (Cannot find Microsoft.Build.dll in [{MSBuildBasePath}])");
 			}
+		}
+
+		[GeneratedRegex(@"^net(\d+)(\.0)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-CA")]
+		private static partial Regex NetVersionRegex();
+
+		[GeneratedRegex(@"^net(\d+)", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-CA")]
+		private static partial Regex NetMajorRegex();
+
+		private static int GetExpectedMajorFromHostOrSdk(string? workDir)
+		{
+			// Prefer UNO_RC_HOST_SDK_MAJOR (set by targets) to decide the expected major; fall back to legacy UNO_RC_HOST_TFM.
+
+			var sdkMajorEnv = Environment.GetEnvironmentVariable("UNO_RC_HOST_SDK_MAJOR");
+			if (!string.IsNullOrWhiteSpace(sdkMajorEnv) && int.TryParse(sdkMajorEnv.Trim(), out var envMajor) && envMajor > 0)
+			{
+				return envMajor;
+			}
+
+			// Legacy env var: UNO_RC_HOST_TFM with values like net10.0 / net9.0
+			var tfm = Environment.GetEnvironmentVariable("UNO_RC_HOST_TFM");
+			if (!string.IsNullOrWhiteSpace(tfm))
+			{
+				var t = tfm.Trim();
+
+				// Match pattern like "net5.0" or "net5" (case insensitive)
+				var match = NetVersionRegex().Match(t);
+				if (match.Success)
+				{
+					var versionStr = match.Groups[1].Value;
+					if (int.TryParse(versionStr, out var version) && version > 0)
+					{
+						return version;
+					}
+				}
+			}
+
+			// Fallback to the default SDK version if env var is not present
+			var sdkVersion = GetDotnetVersion(workDir);
+			return sdkVersion.Major;
 		}
 
 		private static Version GetDotnetVersion(string? workDir)
@@ -242,6 +292,5 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				throw new InvalidOperationException($"Unable to determine the ALC for {nameof(CompilationWorkspaceProvider)}");
 			}
 		}
-
 	}
 }

@@ -3,10 +3,10 @@
 
 	<ItemGroup>
 		<UnoRuntimeEnabledPackage Include="Uno.UI.DevServer" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.devserver.targets'" />
-		<UnoRuntimeEnabledPackage Include="Uno.WinUI.DevServer"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.devserver.targets'"  />
+		<UnoRuntimeEnabledPackage Include="Uno.WinUI.DevServer" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.devserver.targets'" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoRemoteControlConfigCookie) != ''">
+	<ItemGroup Condition="'$(UnoRemoteControlConfigCookie)' != ''">
 		<UpToDateCheckInput Include="$(UnoRemoteControlConfigCookie)" />
 	</ItemGroup>
 
@@ -16,32 +16,79 @@
 	</PropertyGroup>
 
 	<Target Name="GetRemoteControlHostPath">
+		<!-- Determine the .NET SDK/runtime version by running the dotnet CLI version command from the project directory
+		     so that global.json in the repo is honored. Fallbacks keep previous behavior.
+		      
+		     This is needed to pick the right Uno.UI.RemoteControl.Host.dll version, as it is built against multiple .NET versions.
+		     
+		     Important: the goal here is to detect the .NET SDK version used to build the project, **NOT THE TARGET FRAMEWORK**.
+		     As you can perfectly build and run a net9.0 project with .NET 10.x SDK. -->
+
 		<PropertyGroup>
+			<!-- Default values -->
 			<_IsRCClientRemote>false</_IsRCClientRemote>
 			<_IsRCClientRemote Condition="'$(PkgUno_Wasm_Bootstrap_DevServer)'!=''">true</_IsRCClientRemote>
-
-			<_UnoRCHostVersionPath>net9.0</_UnoRCHostVersionPath>
-
-			<!-- Use the SDK version used to build the app, not the target framework (e.g. a net9.0 app may be built with a net9 SDK)-->
-			<_UnoRCHostVersionPath Condition="'$(BundledNETCoreAppTargetFrameworkVersion)' &gt; 9">net10.0</_UnoRCHostVersionPath>
+			<_UnoSdkVersion></_UnoSdkVersion>
+			<_UnoSdkVersionFile>$(IntermediateOutputPath)dotnet.sdk.version.txt</_UnoSdkVersionFile>
 		</PropertyGroup>
 
-		<Message Text="&lt;RemoteControlHostPath&gt;$(MSBuildThisFileDirectory)../tools/rc/host/$(_UnoRCHostVersionPath)/Uno.UI.RemoteControl.Host.dll&lt;/RemoteControlHostPath&gt;" Importance="High" />
+		<!-- Ensure intermediate directory exists -->
+		<MakeDir Directories="$(IntermediateOutputPath)" Condition="!Exists('$(IntermediateOutputPath)')" />
+
+		<!-- Capture the dotnet version output into a file executed from the project directory -->
+		<Exec Command="dotnet --version &gt; &quot;$(_UnoSdkVersionFile)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" ContinueOnError="WarnAndContinue" />
+
+		<!-- Read captured version -->
+		<ReadLinesFromFile File="$(_UnoSdkVersionFile)" Condition="Exists('$(_UnoSdkVersionFile)')">
+			<Output TaskParameter="Lines" ItemName="_UnoSdkVersionLines" />
+		</ReadLinesFromFile>
+		<PropertyGroup>
+			<_UnoSdkVersion>@(_UnoSdkVersionLines)</_UnoSdkVersion>
+		</PropertyGroup>
+
+		<PropertyGroup>
+			<!-- Derive SDK major from the detected SDK version (e.g., 9.0.3 -> 9). -->
+			<_UnoRCHostMajor>$([System.Text.RegularExpressions.Regex]::Match('$(_UnoSdkVersion)', '^\d+').Value)</_UnoRCHostMajor>
+			<!-- Fallback to BundledNETCoreAppTargetFrameworkVersion if detection failed -->
+			<_UnoRCHostMajor Condition="'$(_UnoRCHostMajor)'==''">$([System.Text.RegularExpressions.Regex]::Match('$(BundledNETCoreAppTargetFrameworkVersion)', '^\d+').Value)</_UnoRCHostMajor>
+			<!-- Final fallback to 9 if everything else failed -->
+			<_UnoRCHostMajor Condition="'$(_UnoRCHostMajor)'==''">9</_UnoRCHostMajor>
+
+			<_UnoRCHostVersionPath>net$(_UnoRCHostMajor).0</_UnoRCHostVersionPath>
+			<_UnoRCHostDll>$(MSBuildThisFileDirectory)../tools/rc/host/$(_UnoRCHostVersionPath)/Uno.UI.RemoteControl.Host.dll</_UnoRCHostDll>
+
+			<!-- Fallbacks if computed host path doesn't exist -->
+			<_UnoRCHostDll Condition="!Exists('$(_UnoRCHostDll)')">$(MSBuildThisFileDirectory)../tools/rc/host/net9.0/Uno.UI.RemoteControl.Host.dll</_UnoRCHostDll>
+			<_UnoRCHostDll Condition="!Exists('$(_UnoRCHostDll)')">$(MSBuildThisFileDirectory)../tools/rc/host/net10.0/Uno.UI.RemoteControl.Host.dll</_UnoRCHostDll>
+
+			<!-- Selected host folder (e.g., net9.0 / net10.0) from the final path -->
+			<_UnoRCHostSelectedFolder>$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName('$(_UnoRCHostDll)'))))</_UnoRCHostSelectedFolder>
+			<!-- SDK major used to choose the host (not a TFM) -->
+			<_UnoRCHostSdkMajor>$(_UnoRCHostMajor)</_UnoRCHostSdkMajor>
+		</PropertyGroup>
+
+		<Error Condition="!Exists('$(_UnoRCHostDll)')"
+			   Text="Uno DevServer host not found (tried $(_UnoRCHostVersionPath), net9.0, net10.0). Ensure the package includes tools/rc/host for your .NET SDK." />
+
+		<Message Text="&lt;RemoteControlHostPath&gt;$(_UnoRCHostDll)&lt;/RemoteControlHostPath&gt;" Importance="High" />
 		<Message Text="&lt;IntermediateOutputPath&gt;$(MSBuildProjectDirectory)/$(IntermediateOutputPath)&lt;/IntermediateOutputPath&gt;" Importance="High" />
 		<Message Text="&lt;IsRCClientRemote&gt;$(_IsRCClientRemote)&lt;/IsRCClientRemote&gt;" Importance="High" />
+		<Message Text="&lt;UnoRCHostSelectedFolder&gt;$(_UnoRCHostSelectedFolder)&lt;/UnoRCHostSelectedFolder&gt;" Importance="High" />
+		<Message Text="&lt;UnoRCHostSdkMajor&gt;$(_UnoRCHostSdkMajor)&lt;/UnoRCHostSdkMajor&gt;" Importance="High" />
+		<Message Text="&lt;DetectedDotNetSdkVersion&gt;$(_UnoSdkVersion)&lt;/DetectedDotNetSdkVersion&gt;" Importance="High" />
 	</Target>
 
 	<Target Name="UnoDumpRemoteControlAddIns">
 		<Message Text="&lt;RemoteControlAddIns&gt;@(UnoRemoteControlAddIns)&lt;/RemoteControlAddIns&gt;" Importance="High" />
 		<WriteLinesToFile
-			Condition="$(UnoDumpRemoteControlAddInsTargetFile) != ''"
-			File="$(UnoDumpRemoteControlAddInsTargetFile)"
-			Lines="@(UnoRemoteControlAddIns)"
-			Overwrite="false"
-			Encoding="Unicode"/>
+		  Condition="'$(UnoDumpRemoteControlAddInsTargetFile)' != ''"
+		  File="$(UnoDumpRemoteControlAddInsTargetFile)"
+		  Lines="@(UnoRemoteControlAddIns)"
+		  Overwrite="false"
+		  Encoding="Unicode" />
 	</Target>
 
-	<!-- .NET 7 and earlier compatibility for .NET8 msbuild CLI `getProperty` equivalent -->
+	<!-- .NET 7 and earlier compatibility for .NET 8 msbuild CLI `getProperty` equivalent -->
 	<Target Name="UnoVSCodeGetProjectProperties">
 		<Message Text='{%0a  "Properties": {%0a    "TargetFramework": "$(TargetFramework)",' Importance="High" />
 		<Message Text='    "TargetFrameworks": "$(TargetFrameworks)",' Importance="High" />
@@ -53,25 +100,24 @@
 	<Target Name="InjectRemoteControlHost"
 			BeforeTargets="BeforeBuild"
 			Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config') and '$(BuildingInsideVisualStudio)'!='true' and '$(Configuration)'=='Debug'">
-
 		<Warning
-			Text="The version of uno's extension installed on your IDE is obsolete, please update to the latest version.
-				  If error persists, try to delete obj folder and rebuild your solution." />
+		  Text="The version of Uno Platform's extension installed on your IDE is obsolete, please update to the latest version. If error persists, try to delete the obj folder and rebuild your solution." />
 	</Target>
 
+	<!-- Android: Add DOTNET_MODIFIABLE_ASSEMBLIES=debug and UNO_RC_HOST_SDK_MAJOR (legacy UNO_RC_HOST_TFM kept for compatibility) -->
 	<Target
-		Name="_UnoHotReloadConfigAndroidEnv"
-		BeforeTargets="BeforeBuild"
-		Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'android' and '$(Optimize)'!='true'">
+	  Name="_UnoHotReloadConfigAndroidEnv"
+	  BeforeTargets="BeforeBuild"
+	  Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'android' and '$(Optimize)'!='true'">
 
 		<PropertyGroup>
 			<_UnoHotReloadEnvironmentConfig>$(IntermediateOutputPath)environment.hotreload.conf</_UnoHotReloadEnvironmentConfig>
 		</PropertyGroup>
 
 		<WriteLinesToFile
-			Overwrite="True"
-			File="$(_UnoHotReloadEnvironmentConfig)"
-			Lines="DOTNET_MODIFIABLE_ASSEMBLIES=debug" />
+		  Overwrite="True"
+		  File="$(_UnoHotReloadEnvironmentConfig)"
+		  Lines="DOTNET_MODIFIABLE_ASSEMBLIES=debug%0aUNO_RC_HOST_SDK_MAJOR=$(_UnoRCHostSdkMajor)%0aUNO_RC_HOST_TFM=$(_UnoRCHostSelectedFolder)" />
 
 		<ItemGroup>
 			<AndroidEnvironment Include="$(_UnoHotReloadEnvironmentConfig)" />
@@ -79,11 +125,17 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- iOS: Add UNO_RC_HOST_SDK_MAJOR (and legacy UNO_RC_HOST_TFM) and DOTNET_MODIFIABLE_ASSEMBLIES -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'ios' and '$(Optimize)'!='true'">
-		<MlaunchEnvironmentVariables  Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
+		<MlaunchEnvironmentVariables Include="UNO_RC_HOST_SDK_MAJOR" Value="$(_UnoRCHostSdkMajor)" />
+		<MlaunchEnvironmentVariables Include="UNO_RC_HOST_TFM" Value="$(_UnoRCHostSelectedFolder)" />
+		<MlaunchEnvironmentVariables Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
 	</ItemGroup>
 
+	<!-- BrowserWasm: Add UNO_RC_HOST_SDK_MAJOR (and legacy UNO_RC_HOST_TFM) and DOTNET_MODIFIABLE_ASSEMBLIES -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'browserwasm' and '$(Optimize)'!='true'">
+		<WasmShellMonoEnvironment Include="UNO_RC_HOST_SDK_MAJOR" Value="$(_UnoRCHostSdkMajor)" />
+		<WasmShellMonoEnvironment Include="UNO_RC_HOST_TFM" Value="$(_UnoRCHostSelectedFolder)" />
 		<WasmShellMonoEnvironment Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
 	</ItemGroup>
 
