@@ -29,19 +29,15 @@
 			<_IsRCClientRemote>false</_IsRCClientRemote>
 			<_IsRCClientRemote Condition="'$(PkgUno_Wasm_Bootstrap_DevServer)'!=''">true</_IsRCClientRemote>
 			<_UnoSdkVersion></_UnoSdkVersion>
-			<_UnoSdkVersionFile>$(IntermediateOutputPath)dotnet.sdk.version.txt</_UnoSdkVersionFile>
 		</PropertyGroup>
 
 		<!-- Ensure intermediate directory exists -->
 		<MakeDir Directories="$(IntermediateOutputPath)" Condition="!Exists('$(IntermediateOutputPath)')" />
 
-		<!-- Capture the dotnet version output into a file executed from the project directory -->
-		<Exec Command="dotnet --version &gt; &quot;$(_UnoSdkVersionFile)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" ContinueOnError="WarnAndContinue" />
-
-		<!-- Read captured version -->
-		<ReadLinesFromFile File="$(_UnoSdkVersionFile)" Condition="Exists('$(_UnoSdkVersionFile)')">
-			<Output TaskParameter="Lines" ItemName="_UnoSdkVersionLines" />
-		</ReadLinesFromFile>
+		<!-- Capture the dotnet version output executed from the project directory (avoids shell redirection) -->
+		<Exec Command="dotnet --version" WorkingDirectory="$(MSBuildProjectDirectory)" ConsoleToMsBuild="true" ContinueOnError="WarnAndContinue">
+			<Output TaskParameter="ConsoleOutput" ItemName="_UnoSdkVersionLines" />
+		</Exec>
 		<PropertyGroup>
 			<_UnoSdkVersion>@(_UnoSdkVersionLines)</_UnoSdkVersion>
 		</PropertyGroup>
