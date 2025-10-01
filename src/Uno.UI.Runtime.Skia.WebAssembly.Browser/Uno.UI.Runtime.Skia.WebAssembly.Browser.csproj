@@ -53,6 +53,14 @@
 			<Pack>true</Pack>
 			<PackagePath>build</PackagePath>
 		</Content>
+		<Content Include="buildTransitive/*.*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+		<Content Include="icu/unoicu/unoicu.a">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
 	</ItemGroup>
 
 	<!-- Typescript setup -->
