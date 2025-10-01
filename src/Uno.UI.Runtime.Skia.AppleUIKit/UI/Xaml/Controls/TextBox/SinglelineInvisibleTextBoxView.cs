@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using CoreGraphics;
 using Foundation;
@@ -26,6 +26,22 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	private bool _settingSelectionFromManaged;
 
 	public TextBoxView? Owner => TextBoxViewExtension?.Owner;
+
+	// Required for ObjC -> .NET rebind when UIKit gives an existing native instance
+	protected SinglelineInvisibleTextBoxView(NativeHandle handle) : base(handle)
+	{
+		_textBoxViewExtension = new WeakReference<InvisibleTextBoxViewExtension>(null!);
+		Alpha = 0;
+		Initialize();
+	}
+
+	// Common UIKit activation path
+	protected SinglelineInvisibleTextBoxView(NSObjectFlag t) : base(t)
+	{
+		_textBoxViewExtension = new WeakReference<InvisibleTextBoxViewExtension>(null!);
+		Alpha = 0;
+		Initialize();
+	}
 
 	public SinglelineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
