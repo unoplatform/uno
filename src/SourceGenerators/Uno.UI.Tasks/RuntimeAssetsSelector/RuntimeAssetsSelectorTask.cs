@@ -26,7 +26,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 	/// </summary>
 	public class RuntimeAssetsSelectorTask_v0 : Microsoft.Build.Utilities.Task
 	{
-		private const int LatestSupportedDotnetVersion = 9;
+		private const int LatestSupportedDotnetVersion = 10; // Aligned with net10.0 (Keep this comment to ease upgrade to later versions of .NET)
 
 		// Even if Uno does not support net7.0 explicitly anymore, dependencies
 		// may still be providing net7.0 runtime support files (e.g. SkiaSharp)
