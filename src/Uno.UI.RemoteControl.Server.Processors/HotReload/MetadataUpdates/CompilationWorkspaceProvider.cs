@@ -141,11 +141,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			}
 		}
 
-		[GeneratedRegex(@"^net(\d+)(\.0)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-CA")]
+		[GeneratedRegex(@"^net(?<major>\d+)", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ExplicitCapture, 500)]
 		private static partial Regex NetVersionRegex();
-
-		[GeneratedRegex(@"^net(\d+)", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-CA")]
-		private static partial Regex NetMajorRegex();
 
 		private static int GetExpectedMajorFromHostOrSdk(string? workDir)
 		{
@@ -167,7 +164,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				var match = NetVersionRegex().Match(t);
 				if (match.Success)
 				{
-					var versionStr = match.Groups[1].Value;
+					var versionStr = match.Groups["major"].Value;
 					if (int.TryParse(versionStr, out var version) && version > 0)
 					{
 						return version;
