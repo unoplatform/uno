@@ -179,7 +179,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 		private static Version GetDotnetVersion(string? workDir)
 		{
-			var result = ProcessHelper.RunProcess("dotnet.exe", "--version", workDir);
+			var result = ProcessHelper.RunProcess("dotnet", "--version", workDir);
 
 			if (result.exitCode == 0)
 			{
@@ -196,7 +196,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 		private static string BuildMSBuildPath(string? workDir)
 		{
-			var result = ProcessHelper.RunProcess("dotnet.exe", "--info", workDir);
+			var result = ProcessHelper.RunProcess("dotnet", "--info", workDir);
 
 			if (result.exitCode == 0)
 			{
