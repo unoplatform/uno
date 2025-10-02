@@ -43,6 +43,9 @@ $projects =
     # 5.3 lib
     @(1, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @()),
 
+    # 5.6 net-current runtime folder validation
+    @(1, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @()),
+
     # 5.3 Uno App with Library reference
     @(2, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @(), @()),
 
