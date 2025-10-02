@@ -53,6 +53,10 @@
     <Error Text="Missing asset $(OutputPath)\Assets\SharedAssets.md"
           Condition="!exists('$(OutputPath)\Assets\SharedAssets.md')" />
   </Target>
+  
+  <ItemGroup>
+    <Using Include="MyCustom.Logging.ILogger" Alias="ILogger" />
+  </ItemGroup>
 
   <!-- fail the build if a BundleResource.LogicalName contains a rooted path -->
   <Target Name="ValidateBundleResourceLogicalName" AfterTargets="AfterBuild">

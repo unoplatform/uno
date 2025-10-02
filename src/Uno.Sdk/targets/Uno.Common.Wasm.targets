@@ -149,7 +149,7 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-			<_UsingsDedup Include="%(Using.Identity)" KeepDuplicates="false" />
+			<_UsingsDedup Include="%(Using.Identity)" Condition="%(Using.Alias) == ''" KeepDuplicates="false" />
 			<_GlobalUsingMocksLines Include="@(_UsingsDedup->'namespace %(Identity) { class __HotReloadWorkaround__$(_FakeGlobalUsingsAssemblyName) { } }')" />
 		</ItemGroup>
 
