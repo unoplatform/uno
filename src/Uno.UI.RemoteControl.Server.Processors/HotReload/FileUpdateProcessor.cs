@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Host.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
-[assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.Host.HotReload.FileUpdateProcessor))]
+[assembly: Uno.UI.RemoteControl.Host.ServerProcessor<FileUpdateProcessor>]
 
 namespace Uno.UI.RemoteControl.Host.HotReload;
 
