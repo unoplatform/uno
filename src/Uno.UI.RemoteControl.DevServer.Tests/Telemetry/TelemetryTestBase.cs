@@ -3,6 +3,7 @@ using System.Text.Json;
 using Windows.ApplicationModel;
 using Microsoft.UI.Xaml;
 using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
+using System.Threading;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 
@@ -12,7 +13,25 @@ public abstract class TelemetryTestBase
 
 	public TestContext? TestContext { get; set; }
 
-	protected CancellationToken CT => TestContext?.CancellationTokenSource.Token ?? CancellationToken.None;
+	private CancellationToken GetTimeoutToken()
+	{
+		var baseToken = TestContext?.CancellationTokenSource.Token ?? CancellationToken.None;
+		if (!Debugger.IsAttached)
+		{
+			var cts = CancellationTokenSource.CreateLinkedTokenSource(baseToken);
+#if DEBUG
+			// 45 seconds when running locally (DEBUG) without debugger
+			cts.CancelAfter(TimeSpan.FromMinutes(.75));
+#else
+			// 2 minutes on CI
+			cts.CancelAfter(TimeSpan.FromMinutes(2));
+#endif
+			return cts.Token;
+		}
+		return baseToken;
+	}
+
+	protected CancellationToken CT => GetTimeoutToken();
 
 	protected SolutionHelper? SolutionHelper { get; private set; }
 
@@ -75,15 +94,23 @@ public abstract class TelemetryTestBase
 	/// <summary>
 	/// Creates a DevServerTestHelper with telemetry redirection to an exact file path.
 	/// </summary>
-	protected DevServerTestHelper CreateTelemetryHelperWithExactPath(string exactFilePath, string? solutionPath = null)
+	protected DevServerTestHelper CreateTelemetryHelperWithExactPath(string exactFilePath, string? solutionPath = null, bool enableNamedPipe = false)
 	{
+		var envVars = new Dictionary<string, string>
+		{
+			{ "UNO_PLATFORM_TELEMETRY_FILE", exactFilePath }
+		};
+
+		if (enableNamedPipe)
+		{
+			// Create an IDE channel GUID so the dev-server will initialize the named-pipe IDE channel
+			envVars["ideChannel"] = Guid.NewGuid().ToString();
+		}
+
 		return new DevServerTestHelper(
 			Logger,
 			solutionPath: solutionPath,
-			environmentVariables: new Dictionary<string, string>
-			{
-				{ "UNO_PLATFORM_TELEMETRY_FILE", exactFilePath },
-			});
+			environmentVariables: envVars);
 	}
 
 	/// <summary>

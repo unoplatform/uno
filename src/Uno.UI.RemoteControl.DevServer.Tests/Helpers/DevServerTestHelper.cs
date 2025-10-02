@@ -1,5 +1,9 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.IO.Pipes;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using StreamJsonRpc;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
@@ -287,63 +291,30 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// Discovers the path to the Host DLL using multiple strategies.
 	/// </summary>
 	/// <returns>The path to the Host DLL if found, null otherwise.</returns>
-	private string? DiscoverHostDllPath()
+	private string? GetCurrentBuildConfiguration()
 	{
-		// Strategy 1: Check environment variable for custom path
-		var customPath = Environment.GetEnvironmentVariable("UNO_DEVSERVER_HOST_DLL_PATH");
-		if (!string.IsNullOrEmpty(customPath) && File.Exists(customPath))
+		try
 		{
-			_logger.LogInformation("Using custom Host DLL path from environment variable: {Path}", customPath);
-			return customPath;
+			return (typeof(DevServerTestHelper)
+				.Assembly.GetCustomAttribute(typeof(AssemblyConfigurationAttribute)) as AssemblyConfigurationAttribute)
+				?.Configuration;
 		}
-
-		// Strategy 2: Try different build configurations and frameworks
-		var assemblyLocation = Path.GetDirectoryName(typeof(DevServerTestHelper).Assembly.Location)!;
-		var configurations = new[] { "Debug", "Release" };
-		var frameworks = new[] { "net10.0", "net9.0", };
-
-		foreach (var config in configurations)
+		catch (Exception ex)
 		{
-			foreach (var framework in frameworks)
-			{
-				var hostDllPath = Path.GetFullPath(Path.Combine(
-					assemblyLocation,
-					"..", "..", "..", "..",
-					"Uno.UI.RemoteControl.Host", "bin", config, framework,
-					"Uno.UI.RemoteControl.Host.dll"));
-
-				if (File.Exists(hostDllPath))
-				{
-					_logger.LogInformation("Found Host DLL using discovery: {Path}", hostDllPath);
-					return hostDllPath;
-				}
-			}
+			_logger.LogWarning(ex, "Failed to get current build configuration");
+			return null;
 		}
-
-		// Strategy 3: Try MSBuild output directory patterns
-		var possiblePaths = new[]
-		{
-			Path.Combine(assemblyLocation, "Uno.UI.RemoteControl.Host.dll"),
-			Path.Combine(assemblyLocation, "..", "Uno.UI.RemoteControl.Host", "Uno.UI.RemoteControl.Host.dll"),
-		};
-
-		foreach (var path in possiblePaths)
-		{
-			var fullPath = Path.GetFullPath(path);
-			if (File.Exists(fullPath))
-			{
-				_logger.LogInformation("Found Host DLL in output directory: {Path}", fullPath);
-				return fullPath;
-			}
-		}
-
-		_logger.LogError(
-			"Could not discover Host DLL path. Tried configurations: {Configurations}, frameworks: {Frameworks}",
-			string.Join(", ", configurations), string.Join(", ", frameworks));
-		return null;
 	}
 
-	/// <summary>
+ private string? DiscoverHostDllPath() =>
+	 ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
+		 _logger,
+		 typeof(DevServerTestHelper).Assembly,
+		 projectName: "Uno.UI.RemoteControl.Host",
+		 dllFileName: "Uno.UI.RemoteControl.Host.dll",
+		 environmentVariableName: "UNO_DEVSERVER_HOST_DLL_PATH");
+
+ /// <summary>
 	/// Determines if the server has started based on console output.
 	/// Uses multiple indicators to be more robust than just "Application started".
 	/// </summary>

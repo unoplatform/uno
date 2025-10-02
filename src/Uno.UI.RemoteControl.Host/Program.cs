@@ -212,7 +212,9 @@ namespace Uno.UI.RemoteControl.Host
 				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
 				// Display DevServer version banner
-				DisplayVersionBanner(httpPort);
+				var config = host.Services.GetRequiredService<IConfiguration>();
+				var ideChannelId = config["ideChannel"]; // GUID used as the named pipe name when IDE channel is enabled
+				DisplayVersionBanner(httpPort, ideChannelId);
 
 				// STEP 3: Use global telemetry for server-wide events
 				// Track devserver startup using global telemetry service
@@ -283,7 +285,7 @@ namespace Uno.UI.RemoteControl.Host
 		/// <summary>
 		/// Displays a banner with the DevServer version information when it starts up.
 		/// </summary>
-		private static void DisplayVersionBanner(int httpPort)
+		private static void DisplayVersionBanner(int httpPort, string? ideChannelId)
 		{
 			try
 			{
@@ -307,6 +309,7 @@ namespace Uno.UI.RemoteControl.Host
 					("Assembly", assemblyName),
 					("Location", Path.GetDirectoryName(location) ?? location, Helpers.BannerHelper.ClipMode.Start),
 					("HTTP Port", httpPort.ToString(DateTimeFormatInfo.InvariantInfo)),
+					("IDE Channel", string.IsNullOrWhiteSpace(ideChannelId) ? "Disabled" : $@"\\.\pipe\{ideChannelId}"),
 				};
 
 				Helpers.BannerHelper.Write("Uno Platform DevServer", entries);
