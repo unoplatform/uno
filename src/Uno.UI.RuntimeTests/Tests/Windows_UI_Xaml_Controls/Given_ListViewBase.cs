@@ -17,8 +17,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Helpers;
@@ -1670,7 +1669,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
 
 				firstContainer.Should().NotBeNull();
-				LayoutInformation.GetLayoutSlot(firstContainer).Y.Should().BeLessOrEqualTo(0);
+				LayoutInformation.GetLayoutSlot(firstContainer).Y.Should().BeLessThanOrEqualTo(0);
 
 				var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
 
@@ -1741,7 +1740,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
 
 			firstContainer.Should().NotBeNull();
-			LayoutInformation.GetLayoutSlot(firstContainer).Y.Should().BeLessOrEqualTo(0);
+			LayoutInformation.GetLayoutSlot(firstContainer).Y.Should().BeLessThanOrEqualTo(0);
 
 			var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
 
@@ -2285,8 +2284,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				expectedDCChanged += newItemsInEVP.Length;
 				previouslyMaterializedItems = itemsInEVP;
 
-				materialized.Should().BeLessOrEqualTo(expectedMaterialized, $"[{context}] materialized {materialized}");
-				dataContextChanged.Should().BeLessOrEqualTo(expectedDCChanged, $"[{context}] dataContextChanged {dataContextChanged}");
+				materialized.Should().BeLessThanOrEqualTo(expectedMaterialized, $"[{context}] materialized {materialized}");
+				dataContextChanged.Should().BeLessThanOrEqualTo(expectedDCChanged, $"[{context}] dataContextChanged {dataContextChanged}");
 			}
 
 			await ScrollAndValidate("initial state", null);

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Windows.Storage;
-using FluentAssertions;
 
 namespace Uno.UI.Tests.Windows_Storage;
 

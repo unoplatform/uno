@@ -15,7 +15,6 @@ using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
-using FluentAssertions;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Helpers;
@@ -110,7 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			await TestServices.WindowHelper.WaitForIdle();
 
 #if !__APPLE_UIKIT__
-			sut.Children.Count.Should().BeLessOrEqualTo(1);
+			sut.Children.Count.Should().BeLessThanOrEqualTo(1);
 #endif
 
 			sv.ChangeView(null, sv.ExtentHeight, null, disableAnimation: true);
@@ -517,7 +516,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			await Task.Delay(200);
 
 			sut.MaterializedItems.Should().NotBeEquivalentTo(items);
-			sut.MaterializedItems.Count().Should().BeGreaterOrEqualTo(3);
+			sut.MaterializedItems.Count().Should().BeGreaterThanOrEqualTo(3);
 
 			// required for the animation to complete
 			await Task.Delay(1000);

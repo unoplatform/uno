@@ -37,7 +37,6 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Uno.UI.Toolkit.Extensions;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

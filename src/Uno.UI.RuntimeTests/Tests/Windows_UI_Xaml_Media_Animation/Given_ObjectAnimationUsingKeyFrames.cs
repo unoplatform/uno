@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -70,7 +69,7 @@ namespace Uno.UI.RuntimeTests
 
 			// v3 is repeated because the target property is not a DependencyProperty
 			// and no deduplication happens in the binding engine.
-			target.History.Should().BeEquivalentTo(v1, v2, v3, v3);
+			target.History.Should().BeEquivalentTo([v1, v2, v3, v3]);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
@@ -103,7 +102,7 @@ namespace Uno.UI.RuntimeTests
 			((ITimeline)sut).Stop();
 			await Task.Delay(150, ct);
 
-			target.History.Should().BeEquivalentTo(v1, v2);
+			target.History.Should().BeEquivalentTo([v1, v2]);
 			sut.State.Should().Be(Timeline.TimelineState.Stopped);
 		}
 
@@ -136,7 +135,7 @@ namespace Uno.UI.RuntimeTests
 			((ITimeline)sut).Pause();
 
 			await Task.Delay(100, ct);
-			target.History.Should().BeEquivalentTo(v1, v2);
+			target.History.Should().BeEquivalentTo([v1, v2]);
 			sut.State.Should().Be(Timeline.TimelineState.Paused);
 
 			((ITimeline)sut).Resume();
@@ -145,7 +144,7 @@ namespace Uno.UI.RuntimeTests
 
 			// v3 is repeated because the target property is not a DependencyProperty
 			// and no deduplication happens in the binding engine.
-			target.History.Should().BeEquivalentTo(v1, v2, v3, v3);
+			target.History.Should().BeEquivalentTo([v1, v2, v3, v3]);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
@@ -178,7 +177,7 @@ namespace Uno.UI.RuntimeTests
 
 			// v3 is repeated because the target property is not a DependencyProperty
 			// and no deduplication happens in the binding engine.
-			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3, v3);
+			target.History.Should().BeEquivalentTo([v1, v2, v3, v1, v2, v3, v1, v2, v3, v3]);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
@@ -212,7 +211,7 @@ namespace Uno.UI.RuntimeTests
 			await target.GetValue(ct, 9);
 			await Task.Delay(100, ct); // Give opportunity to (wrongly) repeat again some frames
 
-			target.History.Take(9)/* Helps laggish CI! */.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+			target.History.Take(9)/* Helps laggish CI! */.Should().BeEquivalentTo([v1, v2, v3, v1, v2, v3, v1, v2, v3]);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
@@ -246,7 +245,7 @@ namespace Uno.UI.RuntimeTests
 			try
 			{
 				target.History.Count.Should().BeGreaterThan(9);
-				target.History.Take(9).Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+				target.History.Take(9).Should().BeEquivalentTo([v1, v2, v3, v1, v2, v3, v1, v2, v3]);
 				sut.State.Should().Be(Timeline.TimelineState.Active);
 			}
 			finally
@@ -282,7 +281,7 @@ namespace Uno.UI.RuntimeTests
 			await Task.Delay(5, ct);
 			((ITimeline)sut).Stop();
 
-			target.History.Should().BeEquivalentTo(/* empty */);
+			target.History.Should().BeEquivalentTo<object>(new object[0]);
 			sut.State.Should().Be(Timeline.TimelineState.Stopped);
 		}
 

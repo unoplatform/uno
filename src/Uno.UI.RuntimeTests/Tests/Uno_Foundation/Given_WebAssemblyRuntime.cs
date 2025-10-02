@@ -1,7 +1,6 @@
 ﻿#if __WASM__
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Foundation;
 

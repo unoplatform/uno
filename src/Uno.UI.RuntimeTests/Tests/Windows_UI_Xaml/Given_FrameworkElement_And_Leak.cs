@@ -11,7 +11,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -346,7 +345,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// Some platforms have a problem with GC timing and/or the way things like async methods are compiled
 				// where the last created instance of the control will remain in memory, so we check that objects from
 				// all but the last instance of the control are collected
-				RemoveDeadRefsAndGetAliveRefs().Count().Should().BeLessOrEqualTo(totalRefCount - totalRefCountExceptForLastControlInstance, retainedMessage);
+				RemoveDeadRefsAndGetAliveRefs().Count().Should().BeLessThanOrEqualTo(totalRefCount - totalRefCountExceptForLastControlInstance, retainedMessage);
 			}
 			else
 			{

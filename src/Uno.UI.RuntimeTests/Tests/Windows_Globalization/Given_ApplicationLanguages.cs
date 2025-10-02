@@ -1,5 +1,4 @@
 ﻿using Windows.Globalization;
-using FluentAssertions;
 using Windows.Storage;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Globalization;

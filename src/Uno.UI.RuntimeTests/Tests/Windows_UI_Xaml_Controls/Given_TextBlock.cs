@@ -15,7 +15,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
-using FluentAssertions;
 using System.Collections.Generic;
 using System.Drawing;
 using SamplesApp.UITests;

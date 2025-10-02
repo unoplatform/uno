@@ -10,7 +10,6 @@ using System.Linq;
 using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CanvasTests
 {

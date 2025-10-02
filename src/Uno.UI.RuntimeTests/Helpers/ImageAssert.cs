@@ -3,7 +3,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Windows.UI;
 using static System.Math;
 
@@ -186,7 +186,8 @@ public static partial class ImageAssert
 			result.AppendLine(expectation.Name);
 			if (!Validate(expectation, bitmap, 1, result))
 			{
-				assertionScope.FailWith(result.ToString());
+				AssertionChain.GetOrCreate()
+					.FailWith(result.ToString());
 			}
 		}
 	}
@@ -275,7 +276,8 @@ public static partial class ImageAssert
 		var dy = Math.Abs(actual.Height - expected.Height);
 		if (dx > resolutionTolerance || dy > resolutionTolerance)
 		{
-			assertionScope.FailWith($"Images have different resolutions. {Environment.NewLine}expected:({expected.Width},{expected.Height}){Environment.NewLine}actual  :({actual.Width},{actual.Height})");
+			AssertionChain.GetOrCreate()
+				.FailWith($"Images have different resolutions. {Environment.NewLine}expected:({expected.Width},{expected.Height}){Environment.NewLine}actual  :({actual.Width},{actual.Height})");
 		}
 
 		var quantity = actual.Width * actual.Height;
@@ -313,7 +315,8 @@ public static partial class ImageAssert
 		var sqrtMeanSquaresError = Sqrt(meanSquaresError);
 		if (sqrtMeanSquaresError >= imperceptibilityThreshold)
 		{
-			assertionScope.FailWith($"the actual image is not the same as the expected one.{Environment.NewLine}actual RSMD: {sqrtMeanSquaresError}{Environment.NewLine}threshold: {imperceptibilityThreshold}");
+			AssertionChain.GetOrCreate()
+				.FailWith($"the actual image is not the same as the expected one.{Environment.NewLine}actual RSMD: {sqrtMeanSquaresError}{Environment.NewLine}threshold: {imperceptibilityThreshold}");
 		}
 	}
 }

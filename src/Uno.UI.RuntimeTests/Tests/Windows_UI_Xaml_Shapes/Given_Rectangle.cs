@@ -16,7 +16,6 @@ using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation.Metadata;
-using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes;
 

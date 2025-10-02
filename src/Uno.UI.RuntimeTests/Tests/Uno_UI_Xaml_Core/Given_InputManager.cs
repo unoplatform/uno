@@ -16,7 +16,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
 using Microsoft.UI.Input;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -1011,7 +1010,7 @@ public class Given_InputManager
 			stepOffsetInMilliseconds: 20);
 
 		var sv1VOffsetAtEndOfSv1Drag = sv1.VerticalOffset; // Capture the initial offset after the drag
-		sv1VOffsetAtEndOfSv1Drag.Should().BeGreaterOrEqualTo(200);
+		sv1VOffsetAtEndOfSv1Drag.Should().BeGreaterThanOrEqualTo(200);
 
 		// Attempt to scroll SV2
 		finger.Drag(
@@ -1088,7 +1087,7 @@ public class Given_InputManager
 			stepOffsetInMilliseconds: 20);
 
 		var sv1VOffsetAtEndOfSv1Drag = sv1.VerticalOffset; // Capture the initial offset after the drag
-		sv1VOffsetAtEndOfSv1Drag.Should().BeGreaterOrEqualTo(200);
+		sv1VOffsetAtEndOfSv1Drag.Should().BeGreaterThanOrEqualTo(200);
 
 		// Start inertia on SV2
 		finger.Drag(
@@ -1102,7 +1101,7 @@ public class Given_InputManager
 		var sv1VOffsetAtEndOfSv2Drag = sv1.VerticalOffset; // Capture the initial offset after the drag
 		sv1VOffsetAtEndOfSv2Drag.Should().BeGreaterThan(sv1VOffsetAtEndOfSv1Drag);
 		var sv2VOffsetAtEndOfSv2Drag = sv2.VerticalOffset; // Capture the initial offset after the drag
-		sv2VOffsetAtEndOfSv2Drag.Should().BeGreaterOrEqualTo(200);
+		sv2VOffsetAtEndOfSv2Drag.Should().BeGreaterThanOrEqualTo(200);
 
 		await Task.Delay(10); // Allow time for the inertia to process more frames (to confirm it's still running even after finger2 has been released)
 
