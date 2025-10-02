@@ -2113,6 +2113,7 @@
 			<!-- END AppBarButton-->
 		</Methods>
 	</IgnoreSet>
+    
 	<IgnoreSet baseVersion="6.1">
 		<Types>
 		</Types>
@@ -2133,6 +2134,26 @@
 			<!-- BEGIN ListViewBase selection changes -->
 			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ItemsControl.GetInProgressAdjustedIndex(System.Int32 index)" reason="Not public in WinUI" />
 			<!-- END ListViewBase selection changes -->
+		</Methods>
+	</IgnoreSet>
+
+    <IgnoreSet baseVersion="6.2">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<!-- BEGIN Clear/Restore Bindings removal -->
+			<Member fullName="System\.Void .+\.(Clear|Restore)Bindings()" reason="Removed in Uno 6.2" />
+			<!-- END Clear/Restore Bindings removal -->
 		</Methods>
 	</IgnoreSet>
 	<![CDATA[

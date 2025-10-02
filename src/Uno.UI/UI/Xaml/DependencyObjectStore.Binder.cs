@@ -177,34 +177,6 @@ namespace Microsoft.UI.Xaml
 		internal DependencyProperty DataContextProperty => _dataContextProperty!;
 
 		/// <summary>
-		/// Restores the bindings that may have been cleared by <see cref="ClearBindings()"/>.
-		/// </summary>
-		/// <remarks>
-		/// Calling this method will specifically restore <see cref="UI.Xaml.Data.Binding.ElementName"/>
-		/// and <see cref="UI.Xaml.Data.Binding.Source"/> bindings, which are not restored as part of the
-		/// normal <see cref="DataContext"/> change flow.
-		/// </remarks>
-		public void RestoreBindings()
-		{
-
-		}
-
-		/// <summary>
-		/// Clears the bindings for the current binder.
-		/// </summary>
-		/// <remarks>
-		/// This method is used as an out-of-band replacement for setting the DataContext to null, which
-		/// in the case of two-way bindings, would send the fallback value if it has been set.
-		/// This method may also clear <see cref="UI.Xaml.Data.Binding.ElementName"/>
-		/// and <see cref="UI.Xaml.Data.Binding.Source"/> bindings, which need to be restored
-		/// using the <see cref="RestoreBindings()"/> method.
-		/// </remarks>
-		public void ClearBindings()
-		{
-
-		}
-
-		/// <summary>
 		/// Suspends the processing the <see cref="DataContext"/> until <see cref="ResumeBindings"/> is called.
 		/// </summary>
 		public void SuspendBindings()
