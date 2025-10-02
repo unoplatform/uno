@@ -18,8 +18,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit
 {
-	[Register(nameof(UnoSKMetalView))]
-	internal sealed class UnoSKMetalView : MTKView, IMTKViewDelegate
+	internal sealed partial class UnoSKMetalView : MTKView, IMTKViewDelegate
 	{
 		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 		private readonly GRContext? _context;
