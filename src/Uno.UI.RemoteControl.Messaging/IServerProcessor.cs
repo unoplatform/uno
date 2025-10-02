@@ -24,15 +24,13 @@ namespace Uno.UI.RemoteControl.Host
 		Task ProcessIdeMessage(IdeMessage message, CancellationToken ct);
 	}
 
-	[System.AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = true)]
-	public sealed class ServerProcessorAttribute : Attribute
+	[AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = true)]
+	public class ServerProcessorAttribute(Type processor) : Attribute
 	{
-		readonly Type processor;
-
-		// This is a positional argument
-		public ServerProcessorAttribute(Type processor) => this.processor = processor;
-
-		public Type ProcessorType
-			=> processor;
+		public Type ProcessorType => processor;
 	}
+
+	[AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = true)]
+	public sealed class ServerProcessorAttribute<T>() : ServerProcessorAttribute(typeof(T))
+		where T : IServerProcessor;
 }
