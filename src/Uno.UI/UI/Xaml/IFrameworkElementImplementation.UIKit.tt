@@ -147,7 +147,7 @@ namespace <#= mixin.NamespaceName #>
 		{
 			if(superview == null && window == null)
 			{
-				ClearBindings();
+				
 			}
 		}
 
