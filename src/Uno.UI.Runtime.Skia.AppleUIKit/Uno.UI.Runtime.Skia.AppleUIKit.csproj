@@ -5,6 +5,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<Import Project="../SourceGenerators/Uno.UI.SourceGenerators/Content/Uno.UI.SourceGenerators.props" />
 	<Import Project="../targetframework-override.props" />
 	
 	<PropertyGroup>
