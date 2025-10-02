@@ -200,7 +200,7 @@ namespace Microsoft.UI.Xaml.Controls
 			double? verticalOffset = null,
 			float? zoomFactor = null,
 			bool disableAnimation = false,
-			bool isIntermediate = false,
+			bool? isIntermediate = false,
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
 			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation, IsIntermediate: isIntermediate), callerName, callerLine);
@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
-			if (updated)
+			if (updated || options.IsIntermediate is false)
 			{
 				if (Content is UIElement contentElt)
 				{
@@ -325,7 +325,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				visual.StopAnimation(nameof(Visual.AnchorPoint));
 				visual.AnchorPoint = target;
-				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
+				Updated(horizontalOffset, verticalOffset, options.IsIntermediate ?? false);
 			}
 			else
 			{
@@ -650,7 +650,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// This is for the for inertia processor with touch scrolling where the total duration is calculated based on the velocity.
 	/// </param>
 	/// <param name="IsInertial">Indicates that the scroll is coming from an inertia processor.</param>
-	/// <param name="IsIntermediate">Indicates that the scroll is an intermediate value, not the final one.</param>
-	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsInertial = false, bool IsIntermediate = false);
+	/// <param name="IsIntermediate">Indicates the position of the scroll in an inertia sequence; true if during, false at completion, null if not part of.</param>
+	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsInertial = false, bool? IsIntermediate = null);
 }
 #endif
