@@ -1,4 +1,4 @@
-<Project Sdk="Uno.Sdk">
+<Project Sdk="Uno.Sdk.Private">
     <PropertyGroup>
         <TargetFrameworks>net10.0-desktop</TargetFrameworks>
 
