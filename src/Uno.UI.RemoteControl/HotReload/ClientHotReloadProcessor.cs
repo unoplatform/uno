@@ -53,7 +53,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 			default:
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().LogError($"Unknown frame [{frame.Scope}/{frame.Name}]");
+					this.Log().LogError($"Received unknown frame [{frame.Scope}/{frame.Name}]");
 				}
 				break;
 		}
