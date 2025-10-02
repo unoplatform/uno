@@ -19,6 +19,7 @@ using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Server.AppLaunch;
 using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
@@ -230,7 +231,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug("Unknown Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+						// Log no processors found to process this frame (give a registered processors list)
+						var processorsList = string.Join(", ", _processors.Keys);
+						this.Log().LogDebug("Unknown Frame [{Scope} / {Name}] - No processors registered. Registered processors: {processorsList}", frame.Scope, frame.Name, processorsList);
 					}
 				}
 			}
