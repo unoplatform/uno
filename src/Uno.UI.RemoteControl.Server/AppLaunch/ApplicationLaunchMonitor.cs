@@ -195,7 +195,7 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// <param name="mvid">The MVID of the root/head application being connected.</param>
 	/// <param name="platform">The name of the platform from which the connection is reported. Cannot be null or empty.</param>
 	/// <param name="isDebug">true if the connection is from a debug build; otherwise, false.</param>
-	public void ReportConnection(Guid mvid, string platform, bool isDebug)
+	public bool ReportConnection(Guid mvid, string platform, bool isDebug)
 	{
 		ArgumentException.ThrowIfNullOrEmpty(platform);
 
@@ -219,6 +219,7 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 				try
 				{
 					_options.OnConnected?.Invoke(ev);
+					return true;
 				}
 				catch
 				{
@@ -226,6 +227,8 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 				}
 			}
 		}
+
+		return false;
 	}
 
 	/// <summary>

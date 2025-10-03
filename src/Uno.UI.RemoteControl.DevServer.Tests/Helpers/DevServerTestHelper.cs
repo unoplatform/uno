@@ -264,7 +264,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 		_logger.LogInformation("Stopping dev server gracefully");
 
 		// Attempt graceful shutdown first - this method handles semaphore and cleanup internally
-		var gracefulShutdownSucceeded = await AttemptGracefulShutdown(ct);
+		var gracefulShutdownSucceeded = await AttemptGracefulShutdownAsync(ct);
 
 		if (!gracefulShutdownSucceeded)
 		{
@@ -327,15 +327,15 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 		}
 	}
 
- private string? DiscoverHostDllPath() =>
-	 ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
-		 _logger,
-		 typeof(DevServerTestHelper).Assembly,
-		 projectName: "Uno.UI.RemoteControl.Host",
-		 dllFileName: "Uno.UI.RemoteControl.Host.dll",
-		 environmentVariableName: "UNO_DEVSERVER_HOST_DLL_PATH");
+	private string? DiscoverHostDllPath() =>
+		ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
+			_logger,
+			typeof(DevServerTestHelper).Assembly,
+			projectName: "Uno.UI.RemoteControl.Host",
+			dllFileName: "Uno.UI.RemoteControl.Host.dll",
+			environmentVariableName: "UNO_DEVSERVER_HOST_DLL_PATH");
 
- /// <summary>
+	/// <summary>
 	/// Determines if the server has started based on console output.
 	/// Uses multiple indicators to be more robust than just "Application started".
 	/// </summary>
@@ -361,7 +361,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// </summary>
 	/// <param name="ct">Cancellation token for the operation.</param>
 	/// <returns>True if graceful shutdown succeeded, false otherwise.</returns>
-	public async Task<bool> AttemptGracefulShutdown(CancellationToken ct)
+	public async Task<bool> AttemptGracefulShutdownAsync(CancellationToken ct)
 	{
 		// Use semaphore to prevent race conditions with concurrent start/stop calls
 		await _startStopSemaphore.WaitAsync(ct);
@@ -375,7 +375,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 			try
 			{
 				// Attempt platform-specific graceful shutdown
-				var signalSent = await SendGracefulShutdownSignal(_devServerProcess);
+				var signalSent = await SendGracefulShutdownSignalAsync(_devServerProcess);
 				_logger.LogDebug("Graceful shutdown signal sent: {SignalSent}", signalSent);
 
 				// Wait for the process to exit gracefully (up to 5 seconds)
@@ -420,7 +420,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// </summary>
 	/// <param name="process">The process to send the signal to.</param>
 	/// <returns>True if the signal was sent successfully, false otherwise.</returns>
-	private async Task<bool> SendGracefulShutdownSignal(Process process)
+	private async Task<bool> SendGracefulShutdownSignalAsync(Process process)
 	{
 		try
 		{

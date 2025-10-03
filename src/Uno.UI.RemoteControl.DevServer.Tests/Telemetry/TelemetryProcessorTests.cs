@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 
@@ -24,7 +25,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 		var telemetryFilePath = Path.Combine(tempDir, telemetryFileName);
 
 		// Arrange - Creation of a solution is required for processors discovery
-		await solution.CreateSolutionFile();
+		await solution.CreateSolutionFileAsync();
 
 		// Use DevServerTestHelper to start a server with telemetry redirection
 		await using var helper = CreateTelemetryHelperWithExactPath(telemetryFilePath, solutionPath: solution.SolutionFile);
@@ -43,34 +44,30 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			);
 			await client.SendMessage(new KeepAliveMessage());
 
-			// Locate the test processor DLL path
-			// Look in the common build output directories where our test processor will be built
-
+			// Locate the test processor DLL path using ExternalDllDiscoveryHelper
 			const string testProcessorName = "Uno.UI.RemoteControl.TestProcessor.dll";
 
-			var testProcessorPath = Directory.EnumerateFiles(
-					path: Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "Uno.UI.RemoteControl.TestProcessor", "bin"),
-					searchPattern: testProcessorName,
-					searchOption: SearchOption.AllDirectories)
-				.FirstOrDefault();
+			var testProcessorPath = ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
+				Logger,
+				typeof(DevServerTestHelper).Assembly,
+				projectName: "Uno.UI.RemoteControl.TestProcessor",
+				dllFileName: testProcessorName);
 
-			if (testProcessorPath == null)
+			if (string.IsNullOrWhiteSpace(testProcessorPath) || !File.Exists(testProcessorPath))
 			{
 				Assert.Fail(
 					$"Could not find test processor assembly. Make sure {testProcessorName} is built before running this test.");
 			}
 
-			testProcessorPath = Path.GetFullPath(testProcessorPath);
-
 			// Send processor discovery message pointing directly to the test processor DLL
 			Logger.LogInformation("Using test processor at: {Path}", testProcessorPath);
-			await client.SendMessage(new ProcessorsDiscovery(testProcessorPath));
+			await client.SendMessage(new ProcessorsDiscovery(testProcessorPath, appInstanceId));
 
 			// Wait for processor discovery and telemetry logging to complete
 			await Task.Delay(2000, CT);
 
 			// Ensure graceful shutdown to flush telemetry
-			await helper.AttemptGracefulShutdown(CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
 
 			// Assert - Check telemetry file was created and contains expected events
 			File.Exists(telemetryFilePath).Should().BeTrue("Telemetry file should be created");
@@ -91,17 +88,6 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			// Check for processor discovery events
 			AssertHasEvent(events, "uno/dev-server/processor-discovery-start");
 			AssertHasEvent(events, "uno/dev-server/processor-discovery-complete");
-
-			// Log all events for debugging
-			Logger.LogInformation("Found {Count} telemetry events:", events.Count);
-			foreach (var (prefix, json) in events.Take(20))
-			{
-				if (json.RootElement.TryGetProperty("EventName", out var eventName))
-				{
-					Logger.LogInformation(" - Prefix: {Prefix}, EventName: {EventName}",
-						prefix, eventName.GetString());
-				}
-			}
 
 			// Our test processor should have generated an initialization event when it was created
 			// This event name will have the prefix defined in the TestProcessor assembly
@@ -128,14 +114,14 @@ public class TelemetryProcessorTests : TelemetryTestBase
 		{
 			Logger.LogError(ex, "Test failed with exception");
 
-			Console.Error.WriteLine(helper.ConsoleOutput);
+			await Console.Error.WriteLineAsync(helper.ConsoleOutput);
 			throw;
 		}
 		finally
 		{
 			// Cleanup - Stop the server and remove test files
 			await helper.StopAsync(CT);
-			await CleanupTelemetryTest(helper, telemetryFilePath);
+			await CleanupTelemetryTestAsync(helper, telemetryFilePath);
 		}
 	}
 
@@ -155,7 +141,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 		var telemetryFilePath = Path.Combine(tempDir, telemetryFileName);
 
 		// Arrange - Creation of a solution is required for processors discovery
-		await solution.CreateSolutionFile();
+		await solution.CreateSolutionFileAsync();
 
 		// Use DevServerTestHelper to start a server with telemetry redirection
 		await using var helper = CreateTelemetryHelperWithExactPath(telemetryFilePath, solutionPath: solution.SolutionFile);
@@ -194,13 +180,13 @@ public class TelemetryProcessorTests : TelemetryTestBase
 
 			// Send processor discovery message pointing to the HotReload processor DLL
 			Logger.LogInformation("Using HotReload processor at: {Path}", hotReloadProcessorPath);
-			await client.SendMessage(new ProcessorsDiscovery(hotReloadProcessorPath));
+			await client.SendMessage(new ProcessorsDiscovery(hotReloadProcessorPath, appInstanceId));
 
 			// Wait for processor discovery and telemetry logging to complete
 			await Task.Delay(3000, CT); // Longer wait for HotReload processor
 
 			// Ensure graceful shutdown to flush telemetry
-			await helper.AttemptGracefulShutdown(CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
 
 			// Assert - Check telemetry file was created and contains expected events
 			File.Exists(telemetryFilePath).Should().BeTrue("Telemetry file should be created");
@@ -253,14 +239,14 @@ public class TelemetryProcessorTests : TelemetryTestBase
 		{
 			Logger.LogError(ex, "ServerHotReloadProcessor test failed with exception");
 
-			Console.Error.WriteLine(helper.ConsoleOutput);
+			await Console.Error.WriteLineAsync(helper.ConsoleOutput);
 			throw;
 		}
 		finally
 		{
 			// Cleanup - Stop the server and remove test files
 			await helper.StopAsync(CT);
-			await CleanupTelemetryTest(helper, telemetryFilePath);
+			await CleanupTelemetryTestAsync(helper, telemetryFilePath);
 		}
 	}
 }

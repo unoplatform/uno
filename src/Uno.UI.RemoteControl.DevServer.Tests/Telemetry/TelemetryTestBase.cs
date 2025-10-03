@@ -117,18 +117,18 @@ public abstract class TelemetryTestBase
 	/// Runs a complete telemetry test cycle: start server, wait, shutdown.
 	/// </summary>
 	/// <returns>True if the server started successfully</returns>
-	protected async Task<bool> RunTelemetryTestCycle(DevServerTestHelper helper, int waitTimeMs = 2000)
+	protected async Task<bool> RunTelemetryTestCycleAsync(DevServerTestHelper helper, int waitTimeMs = 2000)
 	{
 		var started = await helper.StartAsync(CT);
 		helper.EnsureStarted();
 
 		await Task.Delay(waitTimeMs, CT);
-		await helper.AttemptGracefulShutdown(CT);
+		await helper.AttemptGracefulShutdownAsync(CT);
 
 		return started;
 	}
 
-	protected async Task CleanupTelemetryTest(DevServerTestHelper helper, string tempDir, string filePattern)
+	protected async Task CleanupTelemetryTestAsync(DevServerTestHelper helper, string tempDir, string filePattern)
 	{
 		await helper.StopAsync(CT);
 
@@ -140,7 +140,7 @@ public abstract class TelemetryTestBase
 		}
 	}
 
-	protected async Task CleanupTelemetryTest(DevServerTestHelper helper, string filePath)
+	protected async Task CleanupTelemetryTestAsync(DevServerTestHelper helper, string filePath)
 	{
 		await helper.StopAsync(CT);
 
@@ -149,17 +149,6 @@ public abstract class TelemetryTestBase
 			try { File.Delete(filePath); }
 			catch { /* ignore cleanup errors */ }
 		}
-	}
-
-	protected async Task<T> WaitFor<T>(Func<CancellationToken, Task<T>> test, CancellationToken ct, int interations = 5,
-		int timeBetweenIterationsInMs = 250)
-	{
-		for (var i = 0; i < interations; i++)
-		{
-			try { return await test(ct); }
-			catch { await Task.Delay(timeBetweenIterationsInMs, ct); if (i == interations - 1) throw; }
-		}
-		throw new InvalidOperationException();
 	}
 
 	/// <summary>
@@ -217,7 +206,7 @@ public abstract class TelemetryTestBase
 	{
 		events.Any(e => e.Prefix == prefix).Should().BeTrue($"Should contain at least one event with prefix '{prefix}'");
 	}
-	
+
 	protected void WriteEventsList(List<(string Prefix, JsonDocument Json)> events)
 	{
 		TestContext!.WriteLine($"Found {events.Count} telemetry events:");
