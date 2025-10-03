@@ -19,7 +19,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 		{
 			// Act & Assert - Start the dev server to validate that scoped services work correctly
 			// ASP.NET Core automatically provides per-connection scoping via context.RequestServices
-			var started = await RunTelemetryTestCycle(helper);
+			var started = await RunTelemetryTestCycleAsync(helper);
 			started.Should().BeTrue("dev server should start successfully with scoped telemetry services");
 		}
 		finally
@@ -38,7 +38,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 		try
 		{
 			// Act
-			var started = await RunTelemetryTestCycle(helper);
+			var started = await RunTelemetryTestCycleAsync(helper);
 
 			// Assert - Telemetry should be written to file during server startup/shutdown
 			started.Should().BeTrue("dev server should start successfully");
@@ -52,7 +52,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 		}
 		finally
 		{
-			await CleanupTelemetryTest(helper, tempFile);
+			await CleanupTelemetryTestAsync(helper, tempFile);
 		}
 	}
 
@@ -66,7 +66,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 		try
 		{
 			// Act
-			var started = await RunTelemetryTestCycle(helper);
+			var started = await RunTelemetryTestCycleAsync(helper);
 
 			// Assert - Telemetry should be written to file with connection metadata
 			started.Should().BeTrue("dev server should start successfully");
@@ -82,7 +82,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 		}
 		finally
 		{
-			await CleanupTelemetryTest(helper, tempFile);
+			await CleanupTelemetryTestAsync(helper, tempFile);
 		}
 	}
 }

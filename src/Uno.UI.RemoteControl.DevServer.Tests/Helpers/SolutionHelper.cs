@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
+#pragma warning disable VSTHRD002 // Async methods must run in sync context here
+
 public class SolutionHelper : IDisposable
 {
 	private readonly string _solutionFileName;
@@ -25,7 +27,7 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
-	public async Task CreateSolutionFile()
+	public async Task CreateSolutionFileAsync()
 	{
 		if (isDisposed)
 		{
@@ -69,7 +71,7 @@ public class SolutionHelper : IDisposable
 					CreateNoWindow = true,
 					WorkingDirectory = _tempFolder,
 				};
-				var (checkExit, checkOutput) = ProcessUtil.RunProcessAsync(checkInfo).GetAwaiter().GetResult();
+				var (checkExit, checkOutput) = ProcessUtil.RunProcessAsync(checkInfo).Result;
 
 				if (checkExit != 0)
 				{
@@ -86,7 +88,7 @@ public class SolutionHelper : IDisposable
 						CreateNoWindow = true,
 						WorkingDirectory = _tempFolder,
 					};
-					var (installExit, installOutput) = ProcessUtil.RunProcessAsync(installInfo).GetAwaiter().GetResult();
+					var (installExit, installOutput) = ProcessUtil.RunProcessAsync(installInfo).Result;
 
 					if (installExit != 0)
 					{

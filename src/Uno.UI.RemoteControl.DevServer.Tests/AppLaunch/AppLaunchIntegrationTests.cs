@@ -11,7 +11,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch;
 public class AppLaunchIntegrationTests : TelemetryTestBase
 {
 	private static readonly string? _serverProcessorAssembly = ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
-		Logger, 
+		Logger,
 		typeof(DevServerTestHelper).Assembly,
 		projectName: "Uno.UI.RemoteControl.Server.Processors",
 		dllFileName: "Uno.UI.RemoteControl.Server.Processors.dll");
@@ -24,7 +24,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	{
 		// PRE-ARRANGE: Create a solution file
 		var solution = SolutionHelper!;
-		await solution.CreateSolutionFile();
+		await solution.CreateSolutionFileAsync();
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_success"));
 		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile, enableIdeChannel: false);
@@ -54,12 +54,12 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 				[new ServerEndpointAttribute("localhost", helper.Port)],
 				_serverProcessorAssembly,
 				autoRegisterAppIdentity: true);
-			
+
 			await WaitForClientConnectionAsync(rcClient, TimeSpan.FromSeconds(10));
 
 			// ACT - STEP 3: Stop and gather telemetry events
 			await Task.Delay(1500, CT);
-			await helper.AttemptGracefulShutdown(CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
 
 			// ASSERT
 			var events = ParseTelemetryFileIfExists(filePath);
@@ -87,7 +87,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	{
 		// PRE-ARRANGE: Create a solution file
 		var solution = SolutionHelper!;
-		await solution.CreateSolutionFile();
+		await solution.CreateSolutionFileAsync();
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_success_idechannel"));
 		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile, enableIdeChannel: true);
@@ -122,7 +122,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 
 			// ACT - STEP 3: Stop and gather telemetry events
 			await Task.Delay(1500, CT);
-			await helper.AttemptGracefulShutdown(CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
 
 			// ASSERT
 			var events = ParseTelemetryFileIfExists(filePath);
@@ -143,12 +143,6 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			TestContext.WriteLine(helper.ConsoleOutput);
 		}
 	}
-	
-	// [TestMethod]
-	// public async Task WhenRegisteredAndNoRuntimeConnects_TimeoutEventEmitted()
-	// {
-	// 	throw new NotImplementedException("TODO");
-	// }
 
 	private static List<(string Prefix, JsonDocument Json)> ParseTelemetryFileIfExists(string path)
 		=> File.Exists(path) ? ParseTelemetryEvents(File.ReadAllText(path)) : [];
