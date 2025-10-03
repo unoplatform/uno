@@ -30,7 +30,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 namespace Microsoft.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
-	public class ApplicationActivity : Controls.NativePage
+	public partial class ApplicationActivity : Controls.NativePage
 	{
 		private static UnoSKCanvasView? _skCanvasView;
 		private static ClippedRelativeLayout? _nativeLayerHost;
@@ -450,7 +450,7 @@ namespace Microsoft.UI.Xaml
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName!;
 #endif  // !NET10_0_OR_GREATER
 
-		internal class ClippedRelativeLayout : RelativeLayout
+		internal partial class ClippedRelativeLayout : RelativeLayout
 		{
 			private SKPath _path = new SKPath();
 			private Path _androidPath = new Path();

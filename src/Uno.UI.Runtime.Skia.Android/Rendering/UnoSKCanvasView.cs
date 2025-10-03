@@ -22,7 +22,7 @@ using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
-internal sealed class UnoSKCanvasView : GLSurfaceView
+internal sealed partial class UnoSKCanvasView : GLSurfaceView
 {
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private SKPicture? _picture;
