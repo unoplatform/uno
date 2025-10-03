@@ -23,6 +23,7 @@ using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Server.AppLaunch;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -176,11 +177,15 @@ namespace Uno.UI.RemoteControl.Host
 					.ConfigureAppConfiguration((hostingContext, config) =>
 					{
 						config.AddCommandLine(args);
+						config.AddEnvironmentVariables("UNO_PLATFORM_DEVSERVER_");
 					})
 					.ConfigureServices(services =>
 					{
 						services.AddSingleton<IIdeChannel>(_ => globalServiceProvider.GetRequiredService<IIdeChannel>());
 						services.AddSingleton<UnoDevEnvironmentService>();
+
+						services.AddSingleton<ApplicationLaunchMonitor>(
+							_ => globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
 
 						// Add the global service provider to the DI container
 						services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
@@ -298,11 +303,15 @@ namespace Uno.UI.RemoteControl.Host
 				var runtimeText = targetFrameworkAttr is not null
 					? $"dotnet v{Environment.Version} (Assembly target: {targetFrameworkAttr.FrameworkDisplayName})"
 					: $"dotnet v{Environment.Version}";
+#if DEBUG
+				var lastWriteTime = File.GetLastWriteTime(location);
+#endif
 
 				var entries = new List<Host.Helpers.BannerHelper.BannerEntry>()
 				{
 #if DEBUG
 					("Build", "DEBUG"),
+					("Build Date/Time", $"{lastWriteTime:yyyy-MM-dd/HH:mm:ss} ({DateTime.Now - lastWriteTime:g} ago)"),
 #endif
 					("Version", version),
 					("Runtime", runtimeText),
