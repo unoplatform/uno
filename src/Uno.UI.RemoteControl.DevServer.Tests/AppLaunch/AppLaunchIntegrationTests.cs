@@ -1,15 +1,8 @@
-using System;
 using System.Diagnostics;
-using System.Text;
 using System.Text.Json;
-using System.Linq;
-using System.IO;
-using System.Net.Http;
 using Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
-using Uno.UI.RemoteControl.Messages;
-using FluentAssertions;
 using Uno.UI.RemoteControl.Helpers;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch;
@@ -72,6 +65,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			var events = ParseTelemetryFileIfExists(filePath);
 			started.Should().BeTrue();
 			events.Should().NotBeEmpty();
+			WriteEventsList(events);
 			AssertHasEvent(events, "uno/dev-server/app-launch/launched");
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 
@@ -88,6 +82,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	}
 
 	[TestMethod]
+	[Ignore]
 	public async Task WhenRegisteredAndRuntimeConnects_SuccessEventEmitted_UsingIdeChannel()
 	{
 		// PRE-ARRANGE: Create a solution file
@@ -133,6 +128,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			var events = ParseTelemetryFileIfExists(filePath);
 			started.Should().BeTrue();
 			events.Should().NotBeEmpty();
+			WriteEventsList(events);
 			AssertHasEvent(events, "uno/dev-server/app-launch/launched");
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 

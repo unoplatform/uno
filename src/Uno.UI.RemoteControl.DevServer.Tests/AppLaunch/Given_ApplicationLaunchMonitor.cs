@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Microsoft.Extensions.Time.Testing;
 using Uno.UI.RemoteControl.Server.AppLaunch;
 
@@ -138,7 +137,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch
 			}
 
 			// Assert: at least K should have timed out, and we should have L connections in FIFO order
-			timeouts.Count.Should().BeGreaterOrEqualTo(K);
+			timeouts.Count.Should().BeGreaterThanOrEqualTo(K);
 			connections.Should().HaveCount(L);
 			for (var i = 1; i < connections.Count; i++)
 			{
