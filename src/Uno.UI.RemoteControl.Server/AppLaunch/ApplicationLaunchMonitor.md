@@ -6,7 +6,6 @@
 - When a launched application fails to connect, it is reported as a timeout thru the OnTimeout callback.
 - It is thread-safe / Disposable.
 - It used the MVID as the key. This is the _Module Version ID_ of the app (head) assembly, which is unique per build. More info: https://learn.microsoft.com/en-us/dotnet/api/system.reflection.module.moduleversionid
-- It uses the MVID as the key. This is the _Module Version ID_ of the app (head) assembly, which is unique per build. More info: https://learn.microsoft.com/en-us/dotnet/api/system.reflection.module.moduleversionid
 
 ## How to use
 ### 1) Create the monitor (optionally with callbacks and a custom timeout):
@@ -43,6 +42,25 @@ That’s it. The monitor pairs the connection with the oldest pending launch for
 - Platform must not be null or empty (ArgumentException).
 - Registrations are consumed in FIFO order per key.
 - Always dispose the monitor (use "using" as shown).
+
+## Analytics Events (emitted by dev-server)
+When integrated in the dev-server, the monitor emits telemetry events (prefix `uno/dev-server/` omitted below):
+
+| Event Name                         | When                                                        | Properties              | Measurements     |
+|------------------------------------|-------------------------------------------------------------|-------------------------|------------------|
+| `app-launch/launched`              | IDE registers a launch                                      | platform, debug         | (none)           |
+| `app-launch/connected`             | Runtime connects and matches a pending registration         | platform, debug         | latencyMs        |
+| `app-launch/connection-timeout`    | Registration expired without a matching runtime connection  | platform, debug         | timeoutSeconds   |
+
+`latencyMs` is the elapsed time between registration and connection, measured internally. `timeoutSeconds` equals the configured timeout.
+
+## IDE / Runtime Messages
+To enable correlation end-to-end, two messages flow through the system:
+
+1. IDE → DevServer: `AppLaunchRegisterIdeMessage` (scope: `AppLaunch`) carrying MVID, Platform, IsDebug. Triggers `RegisterLaunch`.
+2. Runtime → DevServer: `AppIdentityMessage` (scope: `RemoteControlServer`) carrying MVID, Platform, IsDebug, automatically sent after WebSocket connection. Triggers `ReportConnection`.
+
+If no matching `AppIdentityMessage` arrives before timeout, a timeout event is emitted.
 
 ### Testing / Time control
 
