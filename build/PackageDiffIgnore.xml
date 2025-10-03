@@ -1010,7 +1010,7 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.UnregisterPropertyChangedCallback(Microsoft.UI.Xaml.DependencyProperty dp, System.Int64 token)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.add_DataContextChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.FrameworkElement,Microsoft.UI.Xaml.DataContextChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.remove_DataContextChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.FrameworkElement,Microsoft.UI.Xaml.DataContextChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.ClearBindings()" reason="Not present in WinAppSDK 1.2" />
+	        <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.ClearBindings()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.RestoreBindings()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.ApplyCompiledBindings()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Object Microsoft.UI.Xaml.Controls.ElementFactory.get_DataContext()" reason="Not present in WinAppSDK 1.2" />
@@ -2114,7 +2114,7 @@
 		</Methods>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="6.1">
-		<Types>
+	    <Types>
 		</Types>
 
 		<Events>
@@ -2135,6 +2135,22 @@
 			<!-- END ListViewBase selection changes -->
 		</Methods>
 	</IgnoreSet>
+
+    <IgnoreSet baseVersion="6.2">
+        <Types>
+        </Types>
+        <Events>
+        </Events>
+        <Fields>
+        </Fields>
+        <Properties>
+        </Properties>
+        <Methods>
+            <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.ClearBindings()" reason="Removed in Uno 6.2" />
+            <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.RestoreBindings()" reason="Removed in Uno 6.2" />
+        </Methods>
+    </IgnoreSet>
+
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
