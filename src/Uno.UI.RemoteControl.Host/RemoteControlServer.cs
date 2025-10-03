@@ -258,7 +258,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				this.Log().LogDebug("Received app launch register message from IDE, mvid={Mvid}, platform={Platform}, isDebug={IsDebug}", appLaunchRegisterIdeMessage.Mvid, appLaunchRegisterIdeMessage.Platform, appLaunchRegisterIdeMessage.IsDebug);
 			}
 			var monitor = _serviceProvider.GetRequiredService<ApplicationLaunchMonitor>();
-			
+
 			monitor.RegisterLaunch(appLaunchRegisterIdeMessage.Mvid, appLaunchRegisterIdeMessage.Platform, appLaunchRegisterIdeMessage.IsDebug);
 		}
 		else if (_processors.TryGetValue(message.Scope, out var processor))
@@ -308,7 +308,14 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				case AppLaunchStep.Connected:
 					if (_serviceProvider.GetService<ApplicationLaunchMonitor>() is { } monitor2)
 					{
-						monitor2.ReportConnection(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+						var success = monitor2.ReportConnection(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+						if (!success)
+						{
+							if (this.Log().IsEnabled(LogLevel.Error))
+							{
+								this.Log().LogError("App Connected: MVID={Mvid} Platform={Platform} Debug={Debug} - Failed to report connected: APP LAUNCH NOT REGISTERED.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+							}
+						}
 					}
 					break;
 			}
