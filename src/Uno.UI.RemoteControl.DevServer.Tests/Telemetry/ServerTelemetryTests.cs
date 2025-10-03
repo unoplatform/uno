@@ -17,7 +17,7 @@ public class TelemetryServerTests : TelemetryTestBase
 		var fileName = GetTestTelemetryFileName("serverconn");
 		var tempDir = Path.GetTempPath();
 		var filePath = Path.Combine(tempDir, fileName);
-		await solution.CreateSolutionFile();
+		await solution.CreateSolutionFileAsync();
 		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile);
 
 		try
@@ -31,7 +31,7 @@ public class TelemetryServerTests : TelemetryTestBase
 			);
 			await client.SendMessage(new KeepAliveMessage());
 			await Task.Delay(1000, CT);
-			await helper.AttemptGracefulShutdown(CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
 			var fileExists = File.Exists(filePath);
 			var fileContent = fileExists ? await File.ReadAllTextAsync(filePath, CT) : string.Empty;
 			var events = fileContent.Length > 0 ? ParseTelemetryEvents(fileContent) : new();
@@ -64,7 +64,7 @@ public class TelemetryServerTests : TelemetryTestBase
 		var fileName = GetTestTelemetryFileName("eventsprefix");
 		var tempDir = Path.GetTempPath();
 		var filePath = Path.Combine(tempDir, fileName);
-		await solution.CreateSolutionFile();
+		await solution.CreateSolutionFileAsync();
 		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile);
 
 		try
@@ -75,7 +75,7 @@ public class TelemetryServerTests : TelemetryTestBase
 
 			// Wait a bit for telemetry to be written
 			await Task.Delay(1000, CT);
-			await helper.AttemptGracefulShutdown(CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
 
 			var fileExists = File.Exists(filePath);
 			var fileContent = fileExists ? await File.ReadAllTextAsync(filePath, CT) : string.Empty;
