@@ -32,6 +32,44 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly, svc.GetRequiredService<TelemetrySession>()));
 			services.AddSingleton(typeof(ITelemetry<>), typeof(TelemetryGenericAdapter<>));
 
+			services.AddSingleton(sp =>
+			{
+				var telemetry = sp.GetRequiredService<ITelemetry>();
+				var launchOptions = new AppLaunch.ApplicationLaunchMonitor.Options();
+
+				launchOptions.OnRegistered = ev =>
+				{
+					telemetry.TrackEvent("app-launch/launched", [
+						("platform", ev.Platform),
+						("debug", ev.IsDebug.ToString())
+					], null);
+				};
+
+				launchOptions.OnConnected = ev =>
+				{
+					var latencyMs = (DateTimeOffset.UtcNow - ev.RegisteredAt).TotalMilliseconds;
+					telemetry.TrackEvent("app-launch/connected",
+						[
+							("platform", ev.Platform),
+							("debug", ev.IsDebug.ToString()),
+						],
+						[("latencyMs", latencyMs)]);
+				};
+
+				launchOptions.OnTimeout = ev =>
+				{
+					var timeoutSeconds = launchOptions.Timeout.TotalSeconds;
+					telemetry.TrackEvent("app-launch/connection-timeout",
+						[
+							("platform", ev.Platform),
+							("debug", ev.IsDebug.ToString()),
+						],
+						[("timeoutSeconds", timeoutSeconds)]);
+				};
+
+				return new AppLaunch.ApplicationLaunchMonitor(options: launchOptions);
+			});
+
 			return services;
 		}
 
