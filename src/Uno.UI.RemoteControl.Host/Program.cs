@@ -19,6 +19,7 @@ using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Server.AppLaunch;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -118,11 +119,15 @@ namespace Uno.UI.RemoteControl.Host
 					.ConfigureAppConfiguration((hostingContext, config) =>
 					{
 						config.AddCommandLine(args);
+						config.AddEnvironmentVariables("UNO_PLATFORM_DEVSERVER_");
 					})
 					.ConfigureServices(services =>
 					{
 						services.AddSingleton<IIdeChannel, IdeChannelServer>();
 						services.AddSingleton<UnoDevEnvironmentService>();
+
+						services.AddSingleton<ApplicationLaunchMonitor>(
+							_ => globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
 
 						// Add the global service provider to the DI container
 						services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
@@ -156,7 +161,9 @@ namespace Uno.UI.RemoteControl.Host
 				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
 				// Display DevServer version banner
-				DisplayVersionBanner(httpPort);
+				var config = host.Services.GetRequiredService<IConfiguration>();
+				var ideChannelId = config["ideChannel"]; // GUID used as the named pipe name when IDE channel is enabled
+				DisplayVersionBanner(httpPort, ideChannelId);
 
 				// STEP 3: Use global telemetry for server-wide events
 				// Track devserver startup using global telemetry service
@@ -220,7 +227,7 @@ namespace Uno.UI.RemoteControl.Host
 		/// <summary>
 		/// Displays a banner with the DevServer version information when it starts up.
 		/// </summary>
-		private static void DisplayVersionBanner(int httpPort)
+		private static void DisplayVersionBanner(int httpPort, string? ideChannelId)
 		{
 			try
 			{
@@ -233,17 +240,22 @@ namespace Uno.UI.RemoteControl.Host
 				var runtimeText = targetFrameworkAttr is not null
 					? $"dotnet v{Environment.Version} (Assembly target: {targetFrameworkAttr.FrameworkDisplayName})"
 					: $"dotnet v{Environment.Version}";
+#if DEBUG
+				var lastWriteTime = File.GetLastWriteTime(location);
+#endif
 
 				var entries = new List<Host.Helpers.BannerHelper.BannerEntry>()
 				{
 #if DEBUG
 					("Build", "DEBUG"),
+					("Build Date/Time", $"{lastWriteTime:yyyy-MM-dd/HH:mm:ss} ({DateTime.Now - lastWriteTime:g} ago)"),
 #endif
 					("Version", version),
 					("Runtime", runtimeText),
 					("Assembly", assemblyName),
 					("Location", Path.GetDirectoryName(location) ?? location, Helpers.BannerHelper.ClipMode.Start),
 					("HTTP Port", httpPort.ToString(DateTimeFormatInfo.InvariantInfo)),
+					("IDE Channel", string.IsNullOrWhiteSpace(ideChannelId) ? "Disabled" : $@"\\.\pipe\{ideChannelId}"),
 				};
 
 				Helpers.BannerHelper.Write("Uno Platform DevServer", entries);
