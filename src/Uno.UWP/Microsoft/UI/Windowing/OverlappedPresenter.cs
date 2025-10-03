@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Windowing.Native;
@@ -16,6 +17,10 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	private bool _isAlwaysOnTop;
 	private bool _hasBorder;
 	private bool _hasTitleBar;
+	private int? _preferredMinimumHeight;
+	private int? _preferredMinimumWidth;
+	private int? _preferredMaximumWidth;
+	private int? _preferredMaximumHeight;
 
 	internal OverlappedPresenter() : base(AppWindowPresenterKind.Overlapped)
 	{
@@ -80,6 +85,70 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	public OverlappedPresenterState State => Native?.State ?? OverlappedPresenterState.Restored;
 
 	public static OverlappedPresenterState RequestedStartupState { get; } = OverlappedPresenterState.Restored;
+
+	/// <summary>
+	/// Gets or sets the preferred minimum width for the window.
+	/// </summary>
+	public int? PreferredMinimumWidth
+	{
+		get => _preferredMinimumWidth;
+		set
+		{
+			if (_preferredMinimumWidth != value)
+			{
+				_preferredMinimumWidth = value;
+				SetNativeWindowConstraints();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred minimum height for the window.
+	/// </summary>
+	public int? PreferredMinimumHeight
+	{
+		get => _preferredMinimumHeight;
+		set
+		{
+			if (_preferredMinimumHeight != value)
+			{
+				_preferredMinimumHeight = value;
+				SetNativeWindowConstraints();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred maximum width for the window.
+	/// </summary>
+	public int? PreferredMaximumWidth
+	{
+		get => _preferredMaximumWidth;
+		set
+		{
+			if (_preferredMaximumWidth != value)
+			{
+				_preferredMaximumWidth = value;
+				SetNativeWindowConstraints();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred maximum height for the window.
+	/// </summary>
+	public int? PreferredMaximumHeight
+	{
+		get => _preferredMaximumHeight;
+		set
+		{
+			if (_preferredMaximumHeight != value)
+			{
+				_preferredMaximumHeight = value;
+				SetNativeWindowConstraints();
+			}
+		}
+	}
 
 	public void Restore() => Restore(false);
 
@@ -195,5 +264,30 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			Native.SetIsAlwaysOnTop(IsAlwaysOnTop);
 			Native.SetBorderAndTitleBar(HasBorder, HasTitleBar);
 		}
+	}
+
+	private void SetNativeWindowConstraints()
+	{
+		Native?.SetPreferredMaximumSize(GetEffectiveMaxWidth(), GetEffectiveMaxHeight());
+		Native?.SetPreferredMinimumSize(PreferredMinimumWidth, PreferredMinimumHeight);
+	}
+
+	private int? GetEffectiveMaxWidth()
+	{
+		if (PreferredMaximumWidth is not null && PreferredMinimumWidth is not null)
+		{
+			return Math.Max(PreferredMaximumWidth.Value, PreferredMinimumWidth.Value);
+		}
+
+		return PreferredMaximumWidth;
+	}
+
+	private int? GetEffectiveMaxHeight()
+	{
+		if (PreferredMaximumHeight is not null && PreferredMinimumHeight is not null)
+		{
+			return Math.Max(PreferredMaximumHeight.Value, PreferredMinimumHeight.Value);
+		}
+		return PreferredMaximumHeight;
 	}
 }
