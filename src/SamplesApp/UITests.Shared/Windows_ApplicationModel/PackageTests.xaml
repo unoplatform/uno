@@ -4,8 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Shared.Windows_ApplicationModel"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:generic="using:System.Collections.Generic"
+	mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 	<UserControl.Resources>
@@ -13,28 +13,16 @@
 			<Setter Property="FontWeight" Value="Bold" />
 		</Style>
 	</UserControl.Resources>
-	<StackPanel Margin="12" Spacing="4">
-		<TextBlock Text="Display Name" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind DisplayName}" />
-		<TextBlock Text="Installed Path" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind InstalledPath}" />
-		<TextBlock Text="Architecture" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind Architecture}" />
-		<TextBlock Text="FamilyName" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind FamilyName}" />
-		<TextBlock Text="FullName" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind FullName}" />
-		<TextBlock Text="Name" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind Name}" />
-		<TextBlock Text="ProductId" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind ProductId}" />
-		<TextBlock Text="Publisher" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind Publisher}" />
-		<TextBlock Text="PublisherId" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind PublisherId}" />
-		<TextBlock Text="ResourceId" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind ResourceId}" />
-		<TextBlock Text="Version" Style="{StaticResource LabelStyle}" />
-		<TextBlock Text="{x:Bind Version}" />
-	</StackPanel>
+	<ListView ItemsSource="{x:Bind Items}" Margin="12">
+		<ListView.ItemTemplate>
+			<DataTemplate x:DataType="local:PackageProperty">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock>
+						<Run Text="{x:Bind Name}" FontWeight="Bold" /><Run Text=":" />
+						<Run Text="{x:Bind Value}" />
+					</TextBlock>
+				</StackPanel>
+			</DataTemplate>
+		</ListView.ItemTemplate>
+	</ListView>
 </UserControl>
