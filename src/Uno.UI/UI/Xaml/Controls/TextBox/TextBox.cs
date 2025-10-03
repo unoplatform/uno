@@ -76,6 +76,8 @@ namespace Microsoft.UI.Xaml.Controls
 		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
 
+		public event TypedEventHandler<TextBox, TextBoxSelectionChangingEventArgs> SelectionChanging;
+
 #if !IS_UNIT_TESTS
 		/// <summary>
 		/// Occurs when text is pasted into the control.
@@ -1344,10 +1346,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnDeleteButtonClickPartial();
 
-		internal void OnSelectionChanged()
-		{
-			SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
-		}
+		internal void OnSelectionChanged() => SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
 
 		public void OnTemplateRecycled()
 		{
@@ -1399,8 +1398,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			SelectPartial(start, length);
-			OnSelectionChanged();
+			var textBoxSelectionChangingEventArgs = new TextBoxSelectionChangingEventArgs(start, length);
+			SelectionChanging?.Invoke(this, textBoxSelectionChangingEventArgs);
+			if (!textBoxSelectionChangingEventArgs.Cancel || textBoxSelectionChangingEventArgs.SelectionStart + textBoxSelectionChangingEventArgs.SelectionLength > Text.Length)
+			{
+				SelectPartial(start, length);
+				OnSelectionChanged();
+			}
 		}
 
 		public void SelectAll() => SelectAllPartial();
