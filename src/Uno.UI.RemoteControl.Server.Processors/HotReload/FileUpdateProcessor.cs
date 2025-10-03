@@ -26,11 +26,9 @@ partial class FileUpdateProcessor : IServerProcessor, IDisposable
 	// This processor will only handle requests made on the old scope, like old version of the runtime-test engine.
 	// The new processor that is handling those messages is now the ServerHotReloadProcessor.
 
-	private readonly IRemoteControlServer _remoteControlServer;
-
 	public FileUpdateProcessor(IRemoteControlServer remoteControlServer)
 	{
-		_remoteControlServer = remoteControlServer;
+		// Parameter is unused, but required by the DI system.
 	}
 
 	public string Scope => WellKnownScopes.Testing;
