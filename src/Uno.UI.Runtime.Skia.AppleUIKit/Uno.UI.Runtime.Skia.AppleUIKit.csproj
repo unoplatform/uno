@@ -29,6 +29,7 @@
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.UIKit.cs" Link="UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.UIKit.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" Link="UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\UIKit\NativeWindowHelpers.UIKit.cs" Link="UI\Xaml\NativeWindowHelpers.UIKit.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\UnoUISceneDelegate.UIKit.cs" Link="UnoUISceneDelegate.UIKit.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="!$(IsTvOS)">
