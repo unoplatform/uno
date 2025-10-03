@@ -217,6 +217,19 @@ public abstract class TelemetryTestBase
 	{
 		events.Any(e => e.Prefix == prefix).Should().BeTrue($"Should contain at least one event with prefix '{prefix}'");
 	}
+	
+	protected void WriteEventsList(List<(string Prefix, JsonDocument Json)> events)
+	{
+		TestContext!.WriteLine($"Found {events.Count} telemetry events:");
+		var index = 1;
+		foreach (var (prefix, json) in events)
+		{
+			if (json.RootElement.TryGetProperty("EventName", out var eventName))
+			{
+				TestContext!.WriteLine($"[{index++}] Prefix: {prefix}, EventName: {eventName.GetString()}");
+			}
+		}
+	}
 
 	/// <summary>
 	/// Assert that at least one event with the given event name exists (optionally for a given prefix).
