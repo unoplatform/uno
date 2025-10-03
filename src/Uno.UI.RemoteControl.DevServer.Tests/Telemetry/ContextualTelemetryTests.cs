@@ -21,6 +21,7 @@ public class TelemetryContextualTests : TelemetryTestBase
 			var fileExists = File.Exists(filePath);
 			var fileContent = fileExists ? await File.ReadAllTextAsync(filePath, CT) : string.Empty;
 			var events = fileContent.Length > 0 ? ParseTelemetryEvents(fileContent) : new();
+			WriteEventsList(events);
 
 			// Assert
 			started.Should().BeTrue();

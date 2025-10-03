@@ -76,6 +76,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			File.Exists(telemetryFilePath).Should().BeTrue("Telemetry file should be created");
 			var fileContent = await File.ReadAllTextAsync(telemetryFilePath, CT);
 			var events = ParseTelemetryEvents(fileContent);
+			WriteEventsList(events);
 
 			// There should be multiple telemetry events including our processor's initialization event
 			events.Should().NotBeEmpty("Telemetry file should contain events");
@@ -205,6 +206,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			File.Exists(telemetryFilePath).Should().BeTrue("Telemetry file should be created");
 			var fileContent = await File.ReadAllTextAsync(telemetryFilePath, CT);
 			var events = ParseTelemetryEvents(fileContent);
+			WriteEventsList(events);
 
 			// There should be multiple telemetry events
 			events.Should().NotBeEmpty("Telemetry file should contain events");

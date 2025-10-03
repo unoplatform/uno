@@ -52,7 +52,7 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	private readonly record struct Key(Guid Mvid, string Platform, bool IsDebug);
 
 	private readonly ConcurrentDictionary<Key, ConcurrentQueue<LaunchEvent>> _pending = new();
-	
+
 	// Track timeout timers for each launch event
 	private readonly ConcurrentDictionary<LaunchEvent, IDisposable> _timeoutTasks = new();
 

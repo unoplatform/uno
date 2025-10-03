@@ -489,7 +489,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// That's lazy approach that should work often enough for CI.
 	/// </remarks>
 	/// <returns>A random port number.</returns>
-	private static int GetRandomPort() => new Random().Next(10000, 65536);
+	private static int GetRandomPort() => new Random().Next(10_000, 65_500);
 
 	public async ValueTask DisposeAsync()
 	{

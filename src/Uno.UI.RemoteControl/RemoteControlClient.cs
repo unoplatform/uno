@@ -29,10 +29,10 @@ using static Uno.UI.RemoteControl.RemoteControlStatus;
 
 namespace Uno.UI.RemoteControl;
 
-public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposable 
+public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposable
 {
 	private readonly string? _additionnalServerProcessorsDiscoveryPath;
-	private readonly bool _autoRegisterAppIdentity; 
+	private readonly bool _autoRegisterAppIdentity;
 
 	public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
 	public delegate void RemoteControlClientEventEventHandler(object sender, ClientEventEventArgs args);
@@ -400,7 +400,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			Connection? connection = default;
 			while (connection is null && pending is { Count: > 0 })
 			{
-				var task = await Task.WhenAny([..pending.Keys, timeout]);
+				var task = await Task.WhenAny([.. pending.Keys, timeout]);
 				if (task == timeout)
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
@@ -717,7 +717,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	}
 
 	private bool _appIdentitySent;
-	
+
 	public async Task SendAppIdentityAsync()
 	{
 		if (_appIdentitySent)
@@ -787,7 +787,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		if (frame.TryGetContent(out ProcessorsDiscoveryResponse? response))
 		{
 			_status.ReportServerProcessors(response);
-			
+
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"Server loaded processors: \r\n{response.Processors.Select(p => $"\t- {p.Type} v {p.Version} (from {p.AssemblyPath})").JoinBy("\r\n")}.");
@@ -848,16 +848,16 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			anyDiscoveryRequested = true;
 			await SendMessage(new ProcessorsDiscovery(_additionnalServerProcessorsDiscoveryPath));
 		}
-		
+
 		if (AppType.Assembly.GetCustomAttributes(typeof(ServerProcessorsConfigurationAttribute), false) is ServerProcessorsConfigurationAttribute[] { Length: > 0 } configs)
 		{
 			var config = configs.First();
-			
+
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"{nameof(ServerProcessorsConfigurationAttribute)} ProcessorsPath={config.ProcessorsPath}");
 			}
-			
+
 			anyDiscoveryRequested = true;
 			await SendMessage(new ProcessorsDiscovery(config.ProcessorsPath));
 		}
@@ -868,7 +868,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				this.Log().LogDebug($"Unable to find any [{nameof(ServerProcessorsConfigurationAttribute)}]");
 			}
 		}
-		
+
 		// If there is nothing to discover, send the AppIdentity message now.
 		if (!anyDiscoveryRequested && _autoRegisterAppIdentity)
 		{
