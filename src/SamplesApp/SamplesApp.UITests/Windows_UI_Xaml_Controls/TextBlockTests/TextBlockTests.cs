@@ -433,6 +433,32 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		public void When_Overflow_MaxLines_IsTextTrimmed_Changed()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_IsTextTrimmed");
+
+			var slider = _app.Marked("WidthSlider");
+			var tb = _app.Marked("LongText");
+
+			slider.SetDependencyPropertyValue("Value", "3");
+			var isTextTrimmed = tb.GetDependencyPropertyValue<bool>("IsTextTrimmed");
+			isTextTrimmed.Should().BeTrue();
+
+			slider.SetDependencyPropertyValue("Value", "23");
+			isTextTrimmed = tb.GetDependencyPropertyValue<bool>("IsTextTrimmed");
+			isTextTrimmed.Should().BeFalse();
+
+			slider.SetDependencyPropertyValue("Value", "10");
+			isTextTrimmed = tb.GetDependencyPropertyValue<bool>("IsTextTrimmed");
+			isTextTrimmed.Should().BeTrue();
+
+			slider.SetDependencyPropertyValue("Value", "0");
+			isTextTrimmed = tb.GetDependencyPropertyValue<bool>("IsTextTrimmed");
+			isTextTrimmed.Should().BeFalse();
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)]
 		public void When_TextTrimming_Is_Set_Then_Ellipsis_Is_Used()
 		{
