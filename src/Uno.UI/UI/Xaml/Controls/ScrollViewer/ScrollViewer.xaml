@@ -326,9 +326,4 @@
 		</Setter>
 	</Style>
 
-	<macos:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
-	<netstdref:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
-	<ios:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
-	<android:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
-
 </ResourceDictionary>
