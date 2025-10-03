@@ -192,18 +192,19 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		{
 			try
 			{
-				if (frame.Scope == "RemoteControlServer")
+				if (frame.Scope == WellKnownScopes.DevServerChannel)
 				{
-					if (frame.Name == ProcessorsDiscovery.Name)
+					switch (frame.Name)
 					{
-						await ProcessDiscoveryFrame(frame);
-						continue;
-					}
-
-					if (frame.Name == KeepAliveMessage.Name)
-					{
-						await ProcessPingFrame(frame);
-						continue;
+						case ProcessorsDiscovery.Name:
+							await ProcessDiscoveryFrame(frame);
+							continue;
+						case KeepAliveMessage.Name:
+							await ProcessPingFrame(frame);
+							continue;
+						case AppLaunchMessage.Name:
+							await ProcessAppLaunchFrame(frame);
+							continue;
 					}
 				}
 
@@ -249,7 +250,18 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 	private void ProcessIdeMessage(object? sender, IdeMessage message)
 	{
-		if (_processors.TryGetValue(message.Scope, out var processor))
+		Console.WriteLine($"Received message from IDE: {message.GetType().Name}");
+		if (message is AppLaunchRegisterIdeMessage appLaunchRegisterIdeMessage)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug("Received app launch register message from IDE, mvid={Mvid}, platform={Platform}, isDebug={IsDebug}", appLaunchRegisterIdeMessage.Mvid, appLaunchRegisterIdeMessage.Platform, appLaunchRegisterIdeMessage.IsDebug);
+			}
+			var monitor = _serviceProvider.GetRequiredService<ApplicationLaunchMonitor>();
+			
+			monitor.RegisterLaunch(appLaunchRegisterIdeMessage.Mvid, appLaunchRegisterIdeMessage.Platform, appLaunchRegisterIdeMessage.IsDebug);
+		}
+		else if (_processors.TryGetValue(message.Scope, out var processor))
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -274,6 +286,42 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				this.Log().LogTrace("Unknown Frame [{Scope} / {Name}]", message.Scope, message.GetType().Name);
 			}
 		}
+	}
+
+	private async Task ProcessAppLaunchFrame(Frame frame)
+	{
+		if (frame.TryGetContent(out AppLaunchMessage? appLaunch))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug("App {Step}: MVID={Mvid} Platform={Platform} Debug={Debug}", appLaunch.Step, appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+			}
+
+			switch (appLaunch.Step)
+			{
+				case AppLaunchStep.Launched:
+					if (_serviceProvider.GetService<ApplicationLaunchMonitor>() is { } monitor)
+					{
+						monitor.RegisterLaunch(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+					}
+					break;
+				case AppLaunchStep.Connected:
+					if (_serviceProvider.GetService<ApplicationLaunchMonitor>() is { } monitor2)
+					{
+						monitor2.ReportConnection(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+					}
+					break;
+			}
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Got an invalid app launch frame ({frame.Content})");
+			}
+		}
+
+		await Task.CompletedTask;
 	}
 
 	private async Task ProcessPingFrame(Frame frame)

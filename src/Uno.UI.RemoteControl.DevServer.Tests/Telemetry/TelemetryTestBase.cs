@@ -94,17 +94,17 @@ public abstract class TelemetryTestBase
 	/// <summary>
 	/// Creates a DevServerTestHelper with telemetry redirection to an exact file path.
 	/// </summary>
-	protected DevServerTestHelper CreateTelemetryHelperWithExactPath(string exactFilePath, string? solutionPath = null, bool enableNamedPipe = false)
+	protected DevServerTestHelper CreateTelemetryHelperWithExactPath(string exactFilePath, string? solutionPath = null, bool enableIdeChannel = false)
 	{
 		var envVars = new Dictionary<string, string>
 		{
 			{ "UNO_PLATFORM_TELEMETRY_FILE", exactFilePath }
 		};
 
-		if (enableNamedPipe)
+		if (enableIdeChannel)
 		{
 			// Create an IDE channel GUID so the dev-server will initialize the named-pipe IDE channel
-			envVars["ideChannel"] = Guid.NewGuid().ToString();
+			envVars["UNO_PLATFORM_DEVSERVER_ideChannel"] = Guid.NewGuid().ToString();
 		}
 
 		return new DevServerTestHelper(

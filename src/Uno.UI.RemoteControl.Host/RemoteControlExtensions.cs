@@ -12,6 +12,9 @@ using Uno.Extensions;
 using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Server.Telemetry;
+using Uno.UI.RemoteControl.Server.AppLaunch;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -109,6 +112,47 @@ namespace Uno.UI.RemoteControl.Host
 							app.Log().LogInformation($"Disposing connection from {context.Connection.RemoteIpAddress}");
 						}
 					}
+				});
+
+				// HTTP GET endpoint to register an app launch
+				router.MapGet("applaunch/{mvid}", async context =>
+				{
+					var mvidValue = context.GetRouteValue("mvid")?.ToString();
+					if (!Guid.TryParse(mvidValue, out var mvid))
+					{
+						context.Response.StatusCode = StatusCodes.Status400BadRequest;
+						await context.Response.WriteAsync("Invalid MVID - must be a valid GUID.");
+						return;
+					}
+
+					string? platform = null;
+					var isDebug = false;
+
+					// Query string support: ?platform=...&isDebug=true
+					if (context.Request.Query.TryGetValue("platform", out var p))
+					{
+						platform = p.ToString();
+					}
+					if (context.Request.Query.TryGetValue("isDebug", out var d))
+					{
+						if (bool.TryParse(d.ToString(), out var qParsed))
+						{
+							isDebug = qParsed;
+						}
+					}
+
+					if (string.IsNullOrWhiteSpace(platform))
+					{
+						context.Response.StatusCode = StatusCodes.Status400BadRequest;
+						await context.Response.WriteAsync("Missing required 'platform'.");
+						return;
+					}
+
+					var monitor = context.RequestServices.GetRequiredService<ApplicationLaunchMonitor>();
+					monitor.RegisterLaunch(mvid, platform!, isDebug);
+
+					context.Response.StatusCode = StatusCodes.Status200OK;
+					await context.Response.WriteAsync("registered");
 				});
 			});
 

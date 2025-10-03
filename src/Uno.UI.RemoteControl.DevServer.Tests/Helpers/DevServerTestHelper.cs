@@ -56,9 +56,31 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	public bool IsRunning => _devServerProcess != null && !_devServerProcess.HasExited;
 
 	/// <summary>
+	/// Gets the IDE channel ID if available from environment variables.
+	/// </summary>
+	public Guid? IdeChannelId
+	{
+		get
+		{
+			if (_environmentVariables?.TryGetValue("UNO_PLATFORM_DEVSERVER_ideChannel", out var v) is true)
+			{
+				return Guid.TryParse(v, out var g) ? g : null;
+			}
+
+			return null;
+		}
+	}
+
+	/// <summary>
 	/// Gets the HTTP port that the dev server is using.
 	/// </summary>
 	public int Port => _httpPort;
+
+	/// <summary>
+	/// Creates a simple test IDE channel client that can send IDE messages to the running dev-server.
+	/// This is a lightweight helper used by integration tests.
+	/// </summary>
+	public TestIdeClient CreateIdeChannelClient() => new(this);
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DevServerTestHelper"/> class.
@@ -123,7 +145,6 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 				WorkingDirectory = Path.GetDirectoryName(hostDllPath) // Set working directory to ensure all dependencies are found
 			};
 
-			// Merge environment variables more safely
 			if (_environmentVariables != null)
 			{
 				foreach (var variable in _environmentVariables)
@@ -496,4 +517,85 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	}
 
 	public int? GetProcessId() => _devServerProcess?.Id;
+}
+
+/// <summary>
+/// Lightweight IDE channel client for tests.
+/// Uses HTTP endpoint of the dev-server to post IDE messages over the IDE channel if available.
+/// For the purposes of these integration tests we only implement SendToDevServerAsync used by tests.
+/// </summary>
+public sealed class TestIdeClient : IDisposable
+{
+	private readonly DevServerTestHelper _helper;
+
+	private NamedPipeClientStream? _pipeClient;
+	private JsonRpc? _rpcClient;
+
+	internal TestIdeClient(DevServerTestHelper helper)
+	{
+		_helper = helper;
+	}
+
+	public void Dispose()
+	{
+		try
+		{
+			_rpcClient?.Dispose();
+		}
+		catch { }
+		try
+		{
+			_pipeClient?.Dispose();
+		}
+		catch { }
+	}
+
+
+	public async Task EnsureConnectedAsync(CancellationToken ct)
+	{
+		if (_rpcClient != null)
+		{
+			return;
+		}
+
+		var ideChannel = _helper.IdeChannelId?.ToString();
+
+		if (string.IsNullOrWhiteSpace(ideChannel))
+		{
+			return;
+		}
+
+		_pipeClient = new NamedPipeClientStream(
+			serverName: ".",
+			pipeName: ideChannel,
+			direction: PipeDirection.InOut,
+			options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+
+		await _pipeClient.ConnectAsync(ct);
+
+		// Attach a lightweight proxy to invoke SendToDevServerAsync on the server
+		_rpcClient = JsonRpc.Attach(_pipeClient);
+	}
+
+	public async Task SendToDevServerAsync(Uno.UI.RemoteControl.Messaging.IdeChannel.IdeMessage envelope, CancellationToken ct)
+	{
+		try
+		{
+			await EnsureConnectedAsync(ct);
+			if (_rpcClient is null)
+			{
+				// not connected
+				return;
+			}
+
+			// IIdeChannelServer.SendToDevServerAsync accepts an IdeMessageEnvelope and a CancellationToken
+			// Call the method by name using JsonRpc
+			await _rpcClient.InvokeWithParameterObjectAsync("SendToDevServerAsync", new object[] { envelope, ct });
+		}
+		catch (Exception ex)
+		{
+			// Best-effort logging into helper output
+			try { _helper?.ConsoleOutput.Contains(ex.Message); } catch { }
+		}
+	}
 }
