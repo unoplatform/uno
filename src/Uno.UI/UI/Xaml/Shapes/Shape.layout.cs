@@ -68,7 +68,18 @@ namespace Microsoft.UI.Xaml.Shapes
 					width = Math.Max(width, height);
 				}
 
-				return new Size(width, height);
+				// Yes, it's intentional for this to be width, width.
+				// This is the same as WinUI is doing.
+				// The reasoning for this is if you have some code like:
+				//
+				// <Grid Width="150" Height="150" BorderBrush="Green" BorderThickness="1">
+				//     <Ellipse Width="300" Stretch="UniformToFill"
+				//              HorizontalAlignment="Left" VerticalAlignment="Bottom" Fill="Red" />
+				// </Grid >
+				//
+				// In order to get "VerticalAlignment" working as expected, we need
+				// to force the height to 300
+				return new Size(width, width);
 			}
 
 			return new Size(feWidth, feHeight);
