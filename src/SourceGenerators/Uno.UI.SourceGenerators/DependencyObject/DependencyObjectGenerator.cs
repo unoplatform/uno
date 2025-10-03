@@ -483,20 +483,6 @@ private void __InitializeBinder()
 	}}
 }}
 
-/// <summary>
-/// Obsolete method kept for binary compatibility
-/// </summary>
-[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-
-
-/// <summary>
-/// Obsolete method kept for binary compatibility
-/// </summary>
-[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-
-
 private global::Uno.UI.DataBinding.ManagedWeakReference _selfWeakReference;
 global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakReference
 {{
