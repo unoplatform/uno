@@ -77,13 +77,40 @@ public static class UITestHelper
 		[CallerLineNumber] int lineNumber = 0
 	) => TestServices.WindowHelper.WaitFor(condition, timeoutMS, message, callerMemberName, lineNumber);
 
+	public static async Task WaitForRender(
+		int frameCount = 1,
+		int timeoutMS = 1000,
+		string? message = null,
+		[CallerMemberName] string? callerMemberName = null,
+		[CallerLineNumber] int lineNumber = 0)
+	{
+#if __SKIA__
+		var renderingCount = 0;
+		EventHandler<object> callback = (_, _) => renderingCount++;
+		CompositionTarget.Rendering += callback;
+		try
+		{
+			var currentRenderingCount = renderingCount;
+			await WaitFor(() => renderingCount - currentRenderingCount >= frameCount, timeoutMS, message, callerMemberName, lineNumber);
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= callback;
+		}
+#else
+		await WaitForIdle();
+		await Task.Delay(timeoutMS);
+#endif
+	}
+
+
 	public static async Task WaitForIdle(bool waitForCompositionAnimations = false)
 	{
 #if __SKIA__
 		do
 		{
 			await TestServices.WindowHelper.WaitForIdle();
-		} while (waitForCompositionAnimations && (TestServices.WindowHelper.WindowContent?.Visual?.Compositor?.IsAnimating ?? false));
+		} while (waitForCompositionAnimations && (TestServices.WindowHelper.WindowContent?.Visual?.Compositor.IsAnimating ?? false));
 #else
 		await TestServices.WindowHelper.WaitForIdle();
 #endif

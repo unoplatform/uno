@@ -24,9 +24,6 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed partial class UnoSKCanvasView : GLSurfaceView
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-	private SKPicture? _picture;
-
 	internal UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	internal TextInputPlugin TextInputPlugin { get; }
 
@@ -38,7 +35,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 	{
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
-		SetRenderer(_renderer = new InternalRenderer(this));
+		SetRenderer(_renderer = new InternalRenderer());
 		Instance = this;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
@@ -53,22 +50,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 		SetWillNotDraw(false);
 
-		// Start the render thread paused
 		RenderMode = Rendermode.WhenDirty;
-
-		CompositionTarget.RenderingActiveChanged += OnCompositionRenderingActiveChanged;
-	}
-
-	private void OnCompositionRenderingActiveChanged()
-	{
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"OnCompositionRenderingActiveChanged: {CompositionTarget.IsRenderingActive}");
-		}
-
-		RenderMode = CompositionTarget.IsRenderingActive
-			? Rendermode.Continuously
-			: Rendermode.WhenDirty;
 	}
 
 	internal void ResetRendererContext()
@@ -78,39 +60,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 	internal void InvalidateRender()
 	{
-		if (Microsoft.UI.Xaml.Window.CurrentSafe is not { RootElement: { } root } window)
-		{
-			return;
-		}
-
-		if (!SkiaRenderHelper.CanRecordPicture(root))
-		{
-			root?.XamlRoot?.QueueInvalidateRender();
-			return;
-		}
-
 		ExploreByTouchHelper.InvalidateRoot();
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)window.Bounds.Width,
-			(int)window.Bounds.Height,
-			root,
-			invertPath: false);
-
-		var scale = root.XamlRoot is { } xamlRoot
-			? xamlRoot.RasterizationScale
-			: 1.0f;
-
-		_fpsHelper.Scale = (float)scale;
-
-		if (ApplicationActivity.NativeLayerHost is { } nativeLayerHost)
-		{
-			nativeLayerHost.Path = path;
-			nativeLayerHost.Invalidate();
-		}
-
-		Interlocked.Exchange(ref _picture, picture);
-
 		// Request the call of IRenderer.OnDrawFrame for one frame
 		RequestRender();
 	}
@@ -189,7 +139,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 	// Copied from https://github.com/mono/SkiaSharp/blob/main/source/SkiaSharp.Views/SkiaSharp.Views/Platform/Android/SKGLSurfaceView.cs
 	// and modified to also add rendering without OpenGL
-	private class InternalRenderer(UnoSKCanvasView surfaceView) : Java.Lang.Object, IRenderer
+	private class InternalRenderer() : Java.Lang.Object, IRenderer
 	{
 		private const SKColorType ColorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
@@ -203,19 +153,9 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 		private SKSurface? _glBackedSurface;
 		private SKSurface? _softwareSurface;
 
-		private SKSizeI _lastSize;
-		private SKSizeI _newSize;
-
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
-			var currentPicture = Volatile.Read(ref surfaceView._picture);
-
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
-
-			if (currentPicture is null)
-			{
-				return;
-			}
 
 			// create the contexts if not done already
 			if (_context == null)
@@ -224,12 +164,10 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 				_context = GRContext.CreateGl(glInterface);
 			}
 
-			// manage the drawing surface
-			if (_renderTarget == null || _lastSize != _newSize || !_renderTarget.IsValid)
+			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
+			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas,
+			size =>
 			{
-				// create or update the dimensions
-				_lastSize = _newSize;
-
 				// read the info from the buffer
 				var buffer = new int[3];
 				GLES20.GlGetIntegerv(GLES20.GlFramebufferBinding, buffer, 0);
@@ -252,33 +190,26 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 				// re-create the render target
 				_renderTarget?.Dispose();
-				_renderTarget = new GRBackendRenderTarget(_newSize.Width, _newSize.Height, samples, buffer[1], _glInfo);
-			}
+				_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, samples, buffer[1], _glInfo);
 
-			// create the surface
-			if (_glBackedSurface == null)
-			{
-				_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
-			}
+				if (_glBackedSurface == null)
+				{
+					_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
+				}
 
-			if (!_hardwareAccelerated && _softwareSurface is null)
-			{
-				var info = new SKImageInfo(_newSize.Width, _lastSize.Height, ColorType);
-				_softwareSurface = SKSurface.Create(info);
-			}
+				if (!_hardwareAccelerated && _softwareSurface is null)
+				{
+					var info = new SKImageInfo((int)size.Width, (int)size.Height, ColorType);
+					_softwareSurface = SKSurface.Create(info);
+				}
 
-			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
+				surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
+				return surface!.Canvas;
+			});
 
-			if (surface is not null)
-			{
-				SkiaRenderHelper.RenderPicture(
-					surface,
-					currentPicture,
-					SKColors.Transparent,
-					surfaceView._fpsHelper);
-			}
+			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 
-			if (!_hardwareAccelerated)
+			if (!_hardwareAccelerated && _glBackedSurface is not null)
 			{
 				var glBackedCanvas = _glBackedSurface.Canvas;
 				glBackedCanvas.Clear(SKColors.Transparent);
@@ -288,26 +219,11 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 			// else : we already drew directly on the OpenGL-backed canvas
 
 			_context!.Flush();
-
-			if (!CompositionTarget.IsRenderingActive && ReferenceEquals(currentPicture, Volatile.Read(ref surfaceView._picture)))
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace("Suspend drawing");
-				}
-
-				surfaceView.RenderMode = Rendermode.WhenDirty;
-			}
-
-			Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement?.XamlRoot?.InvokeFrameRendered();
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)
 		{
 			GLES20.GlViewport(0, 0, width, height);
-
-			// get the new surface size
-			_newSize = new SKSizeI(width, height);
 		}
 
 		void IRenderer.OnSurfaceCreated(IGL10? gl, Javax.Microedition.Khronos.Egl.EGLConfig? config)

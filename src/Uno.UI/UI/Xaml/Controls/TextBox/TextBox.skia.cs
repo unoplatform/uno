@@ -1518,14 +1518,11 @@ public partial class TextBox
 			if (!_popup.IsOpen)
 			{
 				_popup.IsOpen = true;
-				// We don't have an event that fires when we actually render,
-				// so we have to settle for this somewhat-inaccurate approximation
-				// of dispatching an update call whenever InvalidateRender fires.
-				xamlRoot.RenderInvalidated += OnInvalidateRender;
+				((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
 			}
 		}
 
-		private void OnInvalidateRender()
+		private void OnFrameRendered()
 		{
 			NativeDispatcher.Main.Enqueue(() =>
 			{
@@ -1538,9 +1535,9 @@ public partial class TextBox
 
 		public void Hide()
 		{
-			if (XamlRoot is { })
+			if (Visual.CompositionTarget is CompositionTarget target)
 			{
-				XamlRoot.RenderInvalidated -= OnInvalidateRender;
+				target.FrameRendered -= OnFrameRendered;
 			}
 			if (_popup is not null)
 			{

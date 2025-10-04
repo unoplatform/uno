@@ -1,5 +1,4 @@
-﻿#if !__TVOS__
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using CoreAnimation;
@@ -20,10 +19,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 {
 	internal sealed partial class UnoSKMetalView : MTKView, IMTKViewDelegate
 	{
-		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 		private readonly GRContext? _context;
 		private readonly IMTLCommandQueue? _queue;
-		private readonly Action _onFrameDrawn;
 
 		private RootViewController? _owner;
 		private CADisplayLink _link;
@@ -33,10 +30,9 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		/// Creates a new instance of <see cref="UnoSKMetalView"/>.
 		/// </summary>
 		/// <param name="onFrameDrawn">A delegate that will be called on a separate thread once per frame draw.</param>
-		public UnoSKMetalView(Action onFrameDrawn)
+		public UnoSKMetalView()
 			: base(CGRect.Empty, null)
 		{
-			_onFrameDrawn = onFrameDrawn;
 			_link = CADisplayLink.Create(() => this.Draw());
 			var device = MTLDevice.SystemDefault;
 
@@ -67,7 +63,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
 			SampleCount = 1;
 
-#if !__TVOS__
 			FramebufferOnly = false;
 
 			// Disable UIKit’s display‑link
@@ -75,7 +70,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			// We're drawing ourselves
 			EnableSetNeedsDisplay = false;
-#endif
 
 			var fps = UIScreen.MainScreen.MaximumFramesPerSecond;
 			PreferredFramesPerSecond = fps;
@@ -136,22 +130,16 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		void IMTKViewDelegate.Draw(MTKView view)
 		{
-			_onFrameDrawn();
-
 #if REPORT_FPS
 			_drawFpsLogger.ReportFrame();
 #endif
-			var currentPicture = _owner?.Picture;
+
+			_link.Paused = true;
 
 			var size = DrawableSize;
 
 			var width = (int)size.Width;
 			var height = (int)size.Height;
-
-			if (width <= 0 || height <= 0)
-			{
-				return;
-			}
 
 			SKSurface? surface = null;
 			SKCanvas? canvas = null;
@@ -161,15 +149,15 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			try
 			{
 				// Defer the acquisition of the drawable
+#if __TVOS__ // TODO: tvOS is not supported yet.
+				surface = SKSurface.CreateNull(width, height);
+#else
 				surface = SKSurface.Create(_context, this, GRSurfaceOrigin.TopLeft, (int)SampleCount, SKColorType.Bgra8888);
+#endif
 
 				canvas = surface.Canvas;
 
-				SkiaRenderHelper.RenderPicture(
-					surface,
-					currentPicture,
-					SKColors.Transparent,
-					_fpsHelper);
+				_owner?.OnRenderFrameRequested(canvas);
 
 				// Flush
 				_context!.Flush(submit: true);
@@ -192,13 +180,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				((IDisposable?)drawable)?.Dispose();
 				((IDisposable?)canvas)?.Dispose();
 				((IDisposable?)surface)?.Dispose();
-				_owner?.RootElement?.XamlRoot?.InvokeFrameRendered();
 			}
-
-			var newPicture = _owner?.Picture;
-			_link.Paused = ReferenceEquals(currentPicture, newPicture)
-				&& !CompositionTarget.IsRenderingActive;
 		}
 	}
 }
-#endif

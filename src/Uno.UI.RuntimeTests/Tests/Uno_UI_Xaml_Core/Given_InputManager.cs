@@ -1019,12 +1019,12 @@ public class Given_InputManager
 			steps: 1);
 		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
 
-		await Task.Delay(1); // Allow time for the inertia to process at least one frame
+		await UITestHelper.WaitForRender(); // Allow time for the inertia to process at least one frame
 
 		var sv1VOffsetAtEndOfSv2Drag = sv1.VerticalOffset; // Capture the initial offset after the drag
 		sv1VOffsetAtEndOfSv2Drag.Should().BeGreaterThan(sv1VOffsetAtEndOfSv1Drag, because: "Inertia should still be running after SV2 interaction");
 
-		await Task.Delay(10); // Allow time for the inertia to process more frames (to confirm it's still running even after finger2 has been released)
+		await UITestHelper.WaitForRender(); // Allow time for the inertia to process more frames (to confirm it's still running even after finger2 has been released)
 
 		sv1.VerticalOffset.Should().BeGreaterThan(sv1VOffsetAtEndOfSv2Drag, because: "Inertia should still be running");
 	}
@@ -1096,14 +1096,14 @@ public class Given_InputManager
 			steps: 1,
 			stepOffsetInMilliseconds: 20);
 
-		await Task.Delay(1); // Allow time for the inertia to process at least one frame
+		await UITestHelper.WaitForRender(); // Allow time for the inertia to process at least one frame
 
 		var sv1VOffsetAtEndOfSv2Drag = sv1.VerticalOffset; // Capture the initial offset after the drag
 		sv1VOffsetAtEndOfSv2Drag.Should().BeGreaterThan(sv1VOffsetAtEndOfSv1Drag);
 		var sv2VOffsetAtEndOfSv2Drag = sv2.VerticalOffset; // Capture the initial offset after the drag
 		sv2VOffsetAtEndOfSv2Drag.Should().BeGreaterThanOrEqualTo(200);
 
-		await Task.Delay(10); // Allow time for the inertia to process more frames (to confirm it's still running even after finger2 has been released)
+		await UITestHelper.WaitForRender(); // Allow time for the inertia to process more frames (to confirm it's still running even after finger2 has been released)
 
 		sv1.VerticalOffset.Should().BeGreaterThan(sv1VOffsetAtEndOfSv1Drag, because: "Inertia should still be running on sv1");
 		sv2.VerticalOffset.Should().BeGreaterThan(sv2VOffsetAtEndOfSv2Drag, because: "Inertia should still be running on sv2");
@@ -1114,7 +1114,7 @@ public class Given_InputManager
 		var sv1VOffsetAfterSv2Tap = sv1.VerticalOffset;
 		var sv2VOffsetAfterSv2Tap = sv2.VerticalOffset;
 
-		await Task.Delay(1); // Allow time for the inertia to process at least one frame
+		await UITestHelper.WaitForRender(); // Allow time for the inertia to process at least one frame
 
 		sv1.VerticalOffset.Should().BeGreaterThan(sv1VOffsetAfterSv2Tap, because: "Inertia should still be running on sv1");
 		sv2.VerticalOffset.Should().Be(sv2VOffsetAfterSv2Tap, because: "Inertia should have been stopped on sv2");

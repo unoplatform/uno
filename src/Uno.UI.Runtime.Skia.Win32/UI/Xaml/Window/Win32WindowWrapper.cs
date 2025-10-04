@@ -6,19 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.JavaScript;
-using System.Threading;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using SkiaSharp;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.Helpers.Theming;
-using Uno.UI.Dispatching;
-using Uno.UI.Helpers;
-using Uno.UI.Hosting;
-using Uno.UI.NativeElementHosting;
-using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
@@ -29,6 +16,16 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using SkiaSharp;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
+using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -54,10 +51,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
-	private bool _isFirstEraseBkgnd = true;
-
-	private SKPicture? _picture;
-	private SKPath? _clipPath;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -100,6 +93,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
+		_renderTimer = CreateRenderTimer();
 		_renderer = FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
 			? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
 			: new SoftwareRenderer(_hwnd);
@@ -236,25 +230,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 				return new LRESULT(0);
-			case PInvoke.WM_ERASEBKGND:
-				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
-				if (_isFirstEraseBkgnd)
-				{
-					// Without painting on the first WM_ERASEBKGND, we get an initial white frame
-					_isFirstEraseBkgnd = false;
-					Paint();
-					return new LRESULT(1);
-				}
-				else
-				{
-					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
-					// only do it the first time when we really need to
-					return new LRESULT(0);
-				}
-			case PInvoke.WM_PAINT:
-				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_PAINT)} message.");
-				Paint();
-				break;
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
@@ -532,30 +507,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	}
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
-
-	unsafe void IXamlRootHost.InvalidateRender()
-	{
-		if (!SkiaRenderHelper.CanRecordPicture(Window?.RootElement))
-		{
-			// Try again next tick
-			Window?.RootElement?.XamlRoot?.QueueInvalidateRender();
-			return;
-		}
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(Window.Bounds.Width),
-			(int)(Window.Bounds.Height),
-			Window.RootElement,
-			invertPath: false);
-
-		Interlocked.Exchange(ref _picture, picture);
-		Interlocked.Exchange(ref _clipPath, path);
-
-		RenderingNegativePathReevaluated?.Invoke(this, path);
-
-		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }
-	}
 
 	private void RegisterForBackgroundColor()
 	{

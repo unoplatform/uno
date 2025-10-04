@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Hosting;
@@ -22,6 +24,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 	private readonly Lazy<IntPtr> _display;
 	private IntPtr Display => _display.Value;
+	private IDisposable? _frameRenderedDisposable;
 
 	public X11NativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
@@ -53,8 +56,16 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			HideWindowFromTaskBar(nativeWindow);
 
-			xamlRoot.RenderInvalidated += UpdateLayout;
-			xamlRoot.QueueInvalidateRender(); // to force initial layout and clipping
+			var compositionTarget = (CompositionTarget)_presenter.Visual.CompositionTarget!;
+			compositionTarget.FrameRendered += UpdateLayout;
+
+			Debug.Assert(_frameRenderedDisposable is null);
+			_frameRenderedDisposable = Disposable.Create(() =>
+			{
+				compositionTarget.FrameRendered -= UpdateLayout;
+			});
+
+			_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual); // to force initial layout and clipping
 		}
 		else
 		{
@@ -134,7 +145,9 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_lastClipRect = null;
 			_lastArrangeRect = null;
 
-			xamlRoot.RenderInvalidated -= UpdateLayout;
+			Debug.Assert(_frameRenderedDisposable is not null);
+			_frameRenderedDisposable?.Dispose();
+			_frameRenderedDisposable = null;
 		}
 		else
 		{
@@ -147,7 +160,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		_lastArrangeRect = arrangeRect;
 		_lastClipRect = clipRect;
 		_layoutDirty = true;
-		XamlRoot?.QueueInvalidateRender();
+		_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual);
 		// we don't update the layout right now. We wait for the next render to happen, as
 		// xlib calls are expensive and it's better to update the layout once at the end when multiple arrange
 		// calls are fired sequentially.

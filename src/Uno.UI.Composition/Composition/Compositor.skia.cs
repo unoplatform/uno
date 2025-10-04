@@ -48,14 +48,13 @@ public partial class Compositor
 				else
 				{
 					_runningTargets[target] = 1;
+					target.RequestNewFrame();
 				}
 
 				if (this.Log().IsTraceEnabled())
 				{
 					this.Log().Trace($"Register running targets {target.GetHashCode():X8}={count} Animations={_runningAnimations.Count}");
 				}
-
-				CoreApplication.SetContinuousRender(target, true);
 			}
 		}
 	}
@@ -78,8 +77,6 @@ public partial class Compositor
 					if (count == 1)
 					{
 						_runningTargets.Remove(target);
-
-						CoreApplication.SetContinuousRender(target, false);
 					}
 					else
 					{
@@ -203,7 +200,7 @@ public partial class Compositor
 
 		if (_runningAnimations.Count > 0 || transitionsCount > 0)
 		{
-			CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget);
+			rootVisual.CompositionTarget?.RequestNewFrame();
 		}
 	}
 
@@ -211,6 +208,6 @@ public partial class Compositor
 	{
 		visual.SetMatrixDirty(); // TODO: only invalidate matrix when specific properties are changed
 		visual.InvalidatePaint(); // TODO: only repaint when "dependent" properties are changed
-		CoreApplication.QueueInvalidateRender(visual.CompositionTarget);
+		visual.CompositionTarget?.RequestNewFrame();
 	}
 }
