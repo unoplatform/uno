@@ -38,7 +38,7 @@ public abstract class TelemetryTestBase
 	[TestInitialize]
 	public void TestInitialize()
 	{
-		SolutionHelper = new SolutionHelper();
+		SolutionHelper = new SolutionHelper(TestContext!);
 		SolutionHelper.EnsureUnoTemplatesInstalled();
 	}
 
@@ -63,16 +63,6 @@ public abstract class TelemetryTestBase
 	protected static void GlobalClassInitialize<T>(TestContext context) where T : class
 	{
 		InitializeLogger<T>();
-	}
-
-	private static void InitializeLogger(Type type)
-	{
-		var loggerFactory = LoggerFactory.Create(builder =>
-		{
-			builder.AddConsole();
-			builder.AddDebug();
-		});
-		Logger = loggerFactory.CreateLogger(type);
 	}
 
 	/// <summary>

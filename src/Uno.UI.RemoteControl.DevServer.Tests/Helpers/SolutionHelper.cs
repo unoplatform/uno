@@ -8,16 +8,18 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
 public class SolutionHelper : IDisposable
 {
+	private readonly TestContext _testContext;
 	private readonly string _solutionFileName;
 	private readonly string _tempFolder;
 
 	public string TempFolder => _tempFolder;
 	public string SolutionFile => Path.Combine(_tempFolder, _solutionFileName + ".sln");
 
-	private bool isDisposed;
+	private bool _isDisposed;
 
-	public SolutionHelper(string solutionFileName = "MyApp")
+	public SolutionHelper(TestContext testContext, string solutionFileName = "MyApp")
 	{
+		_testContext = testContext;
 		_solutionFileName = solutionFileName;
 		_tempFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
@@ -27,17 +29,22 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
-	public async Task CreateSolutionFileAsync()
+	public async Task CreateSolutionFileAsync(
+		bool copyGlobalJson = false,
+		string platforms = "wasm,desktop")
 	{
-		if (isDisposed)
+		if (_isDisposed)
 		{
 			throw new ObjectDisposedException(nameof(SolutionHelper));
 		}
 
+		var platformArgs = string.Join(" ", platforms.Split(',').Select(p => $"-platforms \"{p.Trim()}\""));
+		var arguments = $"new unoapp -n {_solutionFileName} -o {_tempFolder} -preset \"recommended\" {platformArgs}";
+
 		var startInfo = new ProcessStartInfo
 		{
 			FileName = "dotnet",
-			Arguments = $"new unoapp -n {_solutionFileName} -o {_tempFolder} -preset \"recommended\" -platforms \"wasm\" -platforms \"desktop\"",
+			Arguments = arguments,
 			RedirectStandardOutput = true,
 			RedirectStandardError = true,
 			UseShellExecute = false,
@@ -48,7 +55,45 @@ public class SolutionHelper : IDisposable
 		var (exitCode, output) = await ProcessUtil.RunProcessAsync(startInfo);
 		if (exitCode != 0)
 		{
-			throw new InvalidOperationException($"dotnet new unoapp failed with exit code {exitCode} / {output}");
+			throw new InvalidOperationException($"dotnet new unoapp failed with exit code {exitCode} / {output}.\n>dotnet {arguments}");
+		}
+
+		// Optionally copy the global.json from the Uno repo to the temp folder to ensure we use the correct SDK version
+		// This is critical for CI environments where .NET 10 prerelease might be installed
+		if (copyGlobalJson)
+		{
+			CopyGlobalJsonToTempFolder();
+		}
+	}
+
+	private void CopyGlobalJsonToTempFolder()
+	{
+		// Find the global.json in the Uno repo (walking up from the current assembly location)
+		var assemblyLocation = Path.GetDirectoryName(typeof(SolutionHelper).Assembly.Location)!;
+		var currentDir = assemblyLocation;
+		string? globalJsonPath = null;
+
+		// Walk up the directory tree to find global.json
+		while (currentDir != null)
+		{
+			var candidatePath = Path.Combine(currentDir, "global.json");
+			if (File.Exists(candidatePath))
+			{
+				globalJsonPath = candidatePath;
+				break;
+			}
+			currentDir = Path.GetDirectoryName(currentDir);
+		}
+
+		if (globalJsonPath != null)
+		{
+			var targetPath = Path.Combine(_tempFolder, "global.json");
+			File.Copy(globalJsonPath, targetPath, overwrite: true);
+			Console.WriteLine($"[DEBUG_LOG] Copied global.json from {globalJsonPath} to {targetPath}");
+		}
+		else
+		{
+			Console.WriteLine("[DEBUG_LOG] Warning: Could not find global.json in parent directories");
 		}
 	}
 
@@ -129,9 +174,26 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
+	public async Task ShowDotnetVersionAsync()
+	{
+		var startInfo = new ProcessStartInfo
+		{
+			FileName = "dotnet",
+			Arguments = "--info",
+			RedirectStandardOutput = true,
+			RedirectStandardError = true,
+			UseShellExecute = false,
+			CreateNoWindow = true,
+			WorkingDirectory = _tempFolder,
+		};
+
+		var (exitCode, output) = await ProcessUtil.RunProcessAsync(startInfo);
+		_testContext.WriteLine($"dotnet --info output:\n{output}");
+	}
+
 	public void Dispose()
 	{
-		isDisposed = true;
+		_isDisposed = true;
 
 		// Force delete temp folder
 		Directory.Delete(_tempFolder, true);

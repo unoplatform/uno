@@ -5,7 +5,7 @@
 - You tell it that an app was launched, then you report when a matching app connects. It matches them 1:1 in launch order and handles timeouts.
 - When a launched application fails to connect, it is reported as a timeout thru the OnTimeout callback.
 - It is thread-safe / Disposable.
-- It used the MVID as the key. This is the _Module Version ID_ of the app (head) assembly, which is unique per build. More info: https://learn.microsoft.com/en-us/dotnet/api/system.reflection.module.moduleversionid
+- It uses a composite key: MVID + Platform + IsDebug. The MVID is the _Module Version ID_ of the app (head) assembly, which is unique per build. More info: https://learn.microsoft.com/en-us/dotnet/api/system.reflection.module.moduleversionid
 
 ## How to use
 ### 1) Create the monitor (optionally with callbacks and a custom timeout):
@@ -54,13 +54,18 @@ When integrated in the dev-server, the monitor emits telemetry events (prefix `u
 
 `latencyMs` is the elapsed time between registration and connection, measured internally. `timeoutSeconds` equals the configured timeout.
 
-## IDE / Runtime Messages
-To enable correlation end-to-end, two messages flow through the system:
+## Integration points (IDE, WebSocket, HTTP)
+The dev-server can receive registration and connection events through multiple channels:
 
-1. IDE → DevServer: `AppLaunchRegisterIdeMessage` (scope: `AppLaunch`) carrying MVID, Platform, IsDebug. Triggers `RegisterLaunch`.
-2. Runtime → DevServer: `AppIdentityMessage` (scope: `RemoteControlServer`) carrying MVID, Platform, IsDebug, automatically sent after WebSocket connection. Triggers `ReportConnection`.
+- IDE → DevServer: `AppLaunchRegisterIdeMessage` (scope: `AppLaunch`) carrying MVID, Platform, IsDebug. Triggers `RegisterLaunch`.
+- Runtime → DevServer over WebSocket (scope: `DevServerChannel`): `AppLaunchMessage` with `Step = Launched`. Triggers `RegisterLaunch`.
+- HTTP GET → DevServer: `GET /applaunch/{mvid}?platform={platform}&isDebug={true|false}`. Triggers `RegisterLaunch`.
 
-If no matching `AppIdentityMessage` arrives before timeout, a timeout event is emitted.
+Connections are reported by the runtime after establishing the WebSocket connection:
+
+- Runtime → DevServer over WebSocket (scope: `DevServerChannel`): `AppLaunchMessage` with `Step = Connected`. Triggers `ReportConnection`.
+
+If no matching `Connected` message arrives before timeout, a timeout event is emitted.
 
 ### Testing / Time control
 
