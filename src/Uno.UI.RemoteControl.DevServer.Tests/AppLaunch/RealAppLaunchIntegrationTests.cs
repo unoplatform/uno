@@ -18,7 +18,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 	{
 		// PRE-ARRANGE: Create a real Uno solution file (will contain desktop project)
 		var solution = SolutionHelper!;
-		await solution.CreateSolutionFileAsync();
+		await solution.CreateSolutionFileAsync(copyGlobalJson: false, platforms: "desktop");
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_app_success"));
 		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile, enableIdeChannel: false);
@@ -56,7 +56,17 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 
 			helper.ConsoleOutput.Length.Should().BeGreaterThan(0, "Dev server should produce some output");
+#if DEBUG
+			await solution.ShowDotnetVersionAsync();
+#endif
 		}
+#if !DEBUG
+		catch
+		{
+			await solution.ShowDotnetVersionAsync();
+			throw;
+		}
+#endif
 		finally
 		{
 			// Clean up app process if it's still running
@@ -122,10 +132,11 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 
 		// Build the project with devserver configuration so the generators create the right ServerEndpointAttribute
 		// Using MSBuild properties directly to override any .csproj.user or Directory.Build.props values
+		// Explicitly targeting net9.0-desktop to avoid any multi-targeting issues with .NET 10 SDK
 		var buildInfo = new ProcessStartInfo
 		{
 			FileName = "dotnet",
-			Arguments = $"build \"{appProject}\" --configuration Debug --verbosity minimal -p:UnoRemoteControlHost=localhost -p:UnoRemoteControlPort={devServerPort}",
+			Arguments = $"build \"{appProject}\" --configuration Debug --verbosity minimal --framework net9.0-desktop -p:UnoRemoteControlHost=localhost -p:UnoRemoteControlPort={devServerPort}",
 			RedirectStandardOutput = true,
 			RedirectStandardError = true,
 			UseShellExecute = false,
