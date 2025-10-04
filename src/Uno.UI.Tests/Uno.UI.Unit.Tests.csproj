@@ -9,6 +9,7 @@
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
 		<AssemblyName>Uno.UI.Tests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>
+		<DefineConstants Condition=" '$(SkiaPublishAot)' == 'true' ">$(DefineConstants);RUNTIME_NATIVE_AOT</DefineConstants>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />

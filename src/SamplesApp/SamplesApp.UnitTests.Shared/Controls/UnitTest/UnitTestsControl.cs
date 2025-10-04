@@ -881,9 +881,9 @@ namespace Uno.UI.Samples.Tests
 										var methodParameters = test.Method.GetParameters();
 										if (methodParameters.Length > methodArguments.Length)
 										{
-											methodArguments = ExpandArgumentsWithDefaultValues(methodArguments, methodParameters);
+											methodArguments = ExpandArgumentsWithDefaultValues(test.Method, methodArguments, methodParameters);
 										}
-										returnValue = test.Method.Invoke(instance, methodArguments);
+										returnValue = InvokeMethod(test.Method, methodParameters, instance, methodArguments);
 
 										sw.Stop();
 
@@ -917,7 +917,7 @@ namespace Uno.UI.Samples.Tests
 									await initializeReturnTask;
 								}
 
-								returnValue = test.Method.Invoke(instance, methodArguments);
+								returnValue = InvokeMethod(test.Method, null, instance, methodArguments);
 								sw.Stop();
 							}
 
@@ -1136,12 +1136,58 @@ namespace Uno.UI.Samples.Tests
 			await tcs.Task;
 		}
 
-		private static object[] ExpandArgumentsWithDefaultValues(object[] methodArguments, ParameterInfo[] methodParameters)
+		static string GetTestMethodPrototype(MethodInfo method, ParameterInfo[] parameters)
+			=> $"{method.DeclaringType?.FullName ?? "[unknown]"}.{method.Name}(" +
+			string.Join(", ", parameters.Select(p => p.ParameterType.FullName)) +
+			")";
+
+		static object InvokeMethod(MethodInfo method, ParameterInfo[] methodParameters, object instance, object[] methodArguments)
+		{
+			try
+			{
+				return method.Invoke(instance, methodArguments);
+			}
+			catch (Exception e)
+			{
+				if (e is TargetInvocationException tie &&
+						tie.InnerException is AssertInconclusiveException)
+				{
+					throw;
+				}
+
+				throw new InvalidOperationException(
+					$"Exception thrown while invoking {GetTestMethodPrototype(method, methodParameters ?? method.GetParameters())} " +
+					$"with arguments {{ {string.Join(", ", methodArguments.Select(a => PrintValue(a)))} }}.",
+					e);
+			}
+		}
+
+		static string PrintValue(object value)
+		{
+			if (value is object[] array)
+			{
+				return $"{value.GetType().FullName}{{ {string.Join(", ", array.Select(a => PrintValue(a)))} }}";
+			}
+			return $"{value?.ToString() ?? "null"} as {value?.GetType().FullName ?? "null"}";
+		}
+
+		private static object[] ExpandArgumentsWithDefaultValues(MethodInfo testMethod, object[] methodArguments, ParameterInfo[] methodParameters)
 		{
 			var expandedArguments = new List<object>(methodParameters.Length);
 			for (int i = 0; i < methodArguments.Length; i++)
 			{
-				expandedArguments.Add(methodArguments[i]);
+				// HACK to try to work around "extra array wrapping" under NativeAOT
+				var arg = methodArguments[i];
+				if (arg is object[] nestedArray &&
+						!typeof(object[]).IsAssignableFrom(methodParameters[i].ParameterType) &&
+						!typeof(System.Collections.IEnumerable).IsAssignableFrom(methodParameters[i].ParameterType))
+				{
+					expandedArguments.AddRange(nestedArray);
+				}
+				else
+				{
+					expandedArguments.Add(methodArguments[i]);
+				}
 			}
 			// Try to get default values for the rest
 			for (int i = 0; i < methodParameters.Length - methodArguments.Length; i++)
@@ -1149,7 +1195,11 @@ namespace Uno.UI.Samples.Tests
 				var parameter = methodParameters[methodArguments.Length + i];
 				if (!parameter.HasDefaultValue)
 				{
-					throw new InvalidOperationException("Missing parameter does not have default value");
+					throw new InvalidOperationException(
+						$"Parameter {methodArguments.Length + i} in test method " +
+						GetTestMethodPrototype(testMethod, methodParameters) +
+						" does not have a default value."
+					);
 				}
 				else
 				{
