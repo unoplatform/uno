@@ -10,6 +10,8 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch;
 [TestClass]
 public class RealAppLaunchIntegrationTests : TelemetryTestBase
 {
+	private const string? _targetFramework = "net9.0";
+
 	[ClassInitialize]
 	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<RealAppLaunchIntegrationTests>(context);
 
@@ -18,7 +20,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 	{
 		// PRE-ARRANGE: Create a real Uno solution file (will contain desktop project)
 		var solution = SolutionHelper!;
-		await solution.CreateSolutionFileAsync(copyGlobalJson: false, platforms: "desktop");
+		await solution.CreateSolutionFileAsync(platforms: "desktop", targetFramework: _targetFramework);
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_app_success"));
 		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile, enableIdeChannel: false);
@@ -96,7 +98,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 	{
 		var projectDir = Path.GetDirectoryName(projectPath)!;
 		var assemblyName = Path.GetFileNameWithoutExtension(projectPath);
-		var tfm = "net9.0-desktop";
+		var tfm = $"{_targetFramework}-desktop";
 		var assemblyPath = Path.Combine(projectDir, "bin", "Debug", tfm, assemblyName + ".dll");
 
 		TestContext!.WriteLine($"Reading assembly info from: {assemblyPath}");
@@ -132,11 +134,11 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 
 		// Build the project with devserver configuration so the generators create the right ServerEndpointAttribute
 		// Using MSBuild properties directly to override any .csproj.user or Directory.Build.props values
-		// Explicitly targeting net9.0-desktop to avoid any multi-targeting issues with .NET 10 SDK
+		// Explicitly targeting the detected framework (net10.0 on CI, net9.0 locally)
 		var buildInfo = new ProcessStartInfo
 		{
 			FileName = "dotnet",
-			Arguments = $"build \"{appProject}\" --configuration Debug --verbosity minimal --framework net9.0-desktop -p:UnoRemoteControlHost=localhost -p:UnoRemoteControlPort={devServerPort}",
+			Arguments = $"build \"{appProject}\" --configuration Debug --verbosity minimal --framework {_targetFramework}-desktop -p:UnoRemoteControlHost=localhost -p:UnoRemoteControlPort={devServerPort}",
 			RedirectStandardOutput = true,
 			RedirectStandardError = true,
 			UseShellExecute = false,
@@ -165,7 +167,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 		try
 		{
 			var projectDir = Path.GetDirectoryName(projectPath)!;
-			var appTfm = "net9.0-desktop";
+			var appTfm = $"{_targetFramework}-desktop";
 			var appOutputDir = Path.Combine(projectDir, "bin", "Debug", appTfm);
 			var freshRcDll = typeof(Uno.UI.RemoteControl.RemoteControlClient).Assembly.Location;
 			var destRcDll = Path.Combine(appOutputDir, Path.GetFileName(freshRcDll));
