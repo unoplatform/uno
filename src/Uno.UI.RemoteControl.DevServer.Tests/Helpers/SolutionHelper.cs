@@ -30,8 +30,8 @@ public class SolutionHelper : IDisposable
 	}
 
 	public async Task CreateSolutionFileAsync(
-		bool copyGlobalJson = false,
-		string platforms = "wasm,desktop")
+		string platforms = "wasm,desktop",
+		string? targetFramework = null)
 	{
 		if (_isDisposed)
 		{
@@ -39,7 +39,8 @@ public class SolutionHelper : IDisposable
 		}
 
 		var platformArgs = string.Join(" ", platforms.Split(',').Select(p => $"-platforms \"{p.Trim()}\""));
-		var arguments = $"new unoapp -n {_solutionFileName} -o {_tempFolder} -preset \"recommended\" {platformArgs}";
+		var tfmArg = targetFramework != null ? $"-tfm \"{targetFramework}\"" : "";
+		var arguments = $"new unoapp -n {_solutionFileName} -o {_tempFolder} -preset \"recommended\" {platformArgs} {tfmArg}".Trim();
 
 		var startInfo = new ProcessStartInfo
 		{
@@ -56,44 +57,6 @@ public class SolutionHelper : IDisposable
 		if (exitCode != 0)
 		{
 			throw new InvalidOperationException($"dotnet new unoapp failed with exit code {exitCode} / {output}.\n>dotnet {arguments}");
-		}
-
-		// Optionally copy the global.json from the Uno repo to the temp folder to ensure we use the correct SDK version
-		// This is critical for CI environments where .NET 10 prerelease might be installed
-		if (copyGlobalJson)
-		{
-			CopyGlobalJsonToTempFolder();
-		}
-	}
-
-	private void CopyGlobalJsonToTempFolder()
-	{
-		// Find the global.json in the Uno repo (walking up from the current assembly location)
-		var assemblyLocation = Path.GetDirectoryName(typeof(SolutionHelper).Assembly.Location)!;
-		var currentDir = assemblyLocation;
-		string? globalJsonPath = null;
-
-		// Walk up the directory tree to find global.json
-		while (currentDir != null)
-		{
-			var candidatePath = Path.Combine(currentDir, "global.json");
-			if (File.Exists(candidatePath))
-			{
-				globalJsonPath = candidatePath;
-				break;
-			}
-			currentDir = Path.GetDirectoryName(currentDir);
-		}
-
-		if (globalJsonPath != null)
-		{
-			var targetPath = Path.Combine(_tempFolder, "global.json");
-			File.Copy(globalJsonPath, targetPath, overwrite: true);
-			Console.WriteLine($"[DEBUG_LOG] Copied global.json from {globalJsonPath} to {targetPath}");
-		}
-		else
-		{
-			Console.WriteLine("[DEBUG_LOG] Warning: Could not find global.json in parent directories");
 		}
 	}
 
