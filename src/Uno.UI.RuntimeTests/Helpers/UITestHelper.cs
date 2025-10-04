@@ -22,7 +22,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Markup;
 using Private.Infrastructure;
 using SamplesApp.UITests;
-using Uno.Disposables;
 
 #if !HAS_UNO
 using System.Runtime.InteropServices;
