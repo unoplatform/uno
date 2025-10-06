@@ -1,6 +1,6 @@
 ﻿namespace Uno.UI.Helpers;
 
-public enum UnoRuntimePlatform
+internal enum UnoRuntimePlatform
 {
 	Unknown = 0,
 	NativeWinUI = 1 << 0,
