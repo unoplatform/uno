@@ -35,6 +35,8 @@ public class AddIns
 			var result = ProcessHelper.RunProcess("dotnet", command, wd);
 			var targetFrameworks = Read(tmp);
 
+			_log.Log(LogLevel.Warning, $"Temp output file content: {File.Exists(tmp) switch { true => string.Join(Environment.NewLine, File.ReadAllLines(tmp)), false => "<file not found>" }}");
+
 			if (targetFrameworks.IsEmpty)
 			{
 				if (_log.IsEnabled(LogLevel.Warning))
@@ -42,6 +44,10 @@ public class AddIns
 					var msg = $"Failed to get target frameworks of solution '{solutionFile}'. "
 						+ "This usually indicates that the solution is in an invalid state (e.g. a referenced project is missing on disk). "
 						+ $"Please fix and restart your IDE (command used: `dotnet {command}`).";
+
+					_log.Log(LogLevel.Warning, $"Command output: {result.output}");
+					_log.Log(LogLevel.Warning, $"Error details: {result.error}");
+
 					if (result.error is { Length: > 0 })
 					{
 						_log.Log(LogLevel.Warning, new Exception(result.error), msg + " (cf. inner exception for more details.)");
@@ -52,7 +58,10 @@ public class AddIns
 						result = ProcessHelper.RunProcess("dotnet", DumpTFM($"\"-bl:{binlog}.binlog\""), wd);
 
 						_log.Log(LogLevel.Warning, msg);
-						_log.Log(LogLevel.Debug, result.output);
+						if (result.error is { Length: > 0 })
+						{
+							_log.Log(LogLevel.Warning, $"Error details: {result.error}");
+						}
 					}
 				}
 
