@@ -89,7 +89,7 @@ public class SolutionHelper : IDisposable
 					var installInfo = new ProcessStartInfo
 					{
 						FileName = "dotnet",
-						Arguments = "new install Uno.Templates::*-*",
+						Arguments = "new install Uno.Templates@*-*",
 						RedirectStandardOutput = true,
 						RedirectStandardError = true,
 						UseShellExecute = false,
