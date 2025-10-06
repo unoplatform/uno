@@ -31,9 +31,10 @@ internal readonly partial struct UnicodeText
 					throw new Exception("Failed to load libicuuc.");
 				}
 			}
-			else if (OperatingSystem.IsLinux() || OperatingSystem.IsAndroid())
+			else if (OperatingSystem.IsLinux() || OperatingSystem.IsAndroid() || OperatingSystem.IsMacOS())
 			{
-				// On Linux, we get the ICU binaries from the dynamic linker search path (usually /usr/lib64/)
+				// On Linux and Android, we get the ICU binaries from the dynamic linker search path
+				// On MacOS, we get the ICU binaries from the uno.icu-macos package.
 				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
 				{
 					throw new Exception("Failed to load libicuuc.");
