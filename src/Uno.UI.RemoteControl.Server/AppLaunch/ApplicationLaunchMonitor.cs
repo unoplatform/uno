@@ -36,8 +36,23 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 
 		/// <summary>
 		/// Callback invoked when a registered application successfully connected.
+		/// The boolean parameter indicates whether the launch previously timed out (OnTimeout was invoked)
+		/// before the connection.
 		/// </summary>
-		public Action<LaunchEvent>? OnConnected { get; set; }
+		public Action<LaunchEvent, bool>? OnConnected { get; set; }
+
+		/// <summary>
+		/// How long to retain launch entries before scavenging them from internal storage.
+		/// This is independent from <see cref="Timeout"/> which only triggers the OnTimeout callback.
+		/// Default: 24 hours.
+		/// </summary>
+		public TimeSpan Retention { get; set; } = TimeSpan.FromHours(1);
+
+		/// <summary>
+		/// How often the monitor runs a scavenging pass to remove very old entries.
+		/// Default: 1 minute.
+		/// </summary>
+		public TimeSpan ScavengeInterval { get; set; } = TimeSpan.FromMinutes(5);
 	}
 
 	/// <summary>
@@ -56,6 +71,12 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	// Track timeout timers for each launch event
 	private readonly ConcurrentDictionary<LaunchEvent, IDisposable> _timeoutTasks = new();
 
+	// Track whether a given launch event has previously timed out
+	private readonly ConcurrentDictionary<LaunchEvent, bool> _timedOut = new();
+
+	// Periodic scavenger timer (removes very old entries beyond Retention)
+	private readonly IDisposable? _scavengeTimer;
+
 	/// <summary>
 	/// Creates a new instance of <see cref="ApplicationLaunchMonitor"/>.
 	/// </summary>
@@ -65,6 +86,21 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	{
 		_timeProvider = timeProvider ?? TimeProvider.System;
 		_options = options ?? new Options();
+
+		// Start periodic scavenger to remove very old entries. Use a periodic timer via TimeProvider so tests can control it.
+		try
+		{
+			_scavengeTimer = _timeProvider.CreateTimer(
+				static s => ((ApplicationLaunchMonitor)s!).RunScavengePass(),
+				this,
+				_options.ScavengeInterval,
+				_options.ScavengeInterval);
+		}
+		catch
+		{
+			// best-effort: if timer creation isn't supported, the monitor will still function but won't scavenge automatically.
+			_scavengeTimer = null;
+		}
 	}
 
 	/// <summary>
@@ -141,49 +177,17 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// <param name="key">The key for the launch event.</param>
 	private void HandleTimeout(LaunchEvent launchEvent, Key key)
 	{
-		// Remove the timed out event from the pending queue
-		if (_pending.TryGetValue(key, out var queue))
+		// Instead of removing the timed-out event from pending, we keep it available for future connections
+		// but still invoke the OnTimeout callback to inform listeners that the timeout elapsed.
+		// Record the timed-out state so ReportConnection can notify callers that this event previously timed out.
+		_timedOut[launchEvent] = true;
+		try
 		{
-			var tempQueue = new List<LaunchEvent>();
-			LaunchEvent? removedEvent = null;
-
-			// Collect all items except the one that timed out
-			while (queue.TryDequeue(out var ev))
-			{
-				if (ev.Equals(launchEvent) && removedEvent == null)
-				{
-					removedEvent = ev;
-				}
-				else
-				{
-					tempQueue.Add(ev);
-				}
-			}
-
-			// Put back the non-timed-out events
-			foreach (var ev in tempQueue)
-			{
-				queue.Enqueue(ev);
-			}
-
-			// If queue is empty, remove it
-			if (queue.IsEmpty)
-			{
-				_pending.TryRemove(key, out _);
-			}
-
-			// Invoke timeout callback for the removed event
-			if (removedEvent != null)
-			{
-				try
-				{
-					_options.OnTimeout?.Invoke(removedEvent);
-				}
-				catch
-				{
-					// swallow
-				}
-			}
+			_options.OnTimeout?.Invoke(launchEvent);
+		}
+		catch
+		{
+			// swallow
 		}
 	}
 
@@ -200,35 +204,84 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 		ArgumentException.ThrowIfNullOrEmpty(platform);
 
 		var key = new Key(mvid, platform, isDebug);
-		if (_pending.TryGetValue(key, out var queue))
+		// Try consume the oldest pending event if present. We prefer to dequeue an event that may have timed out
+		// previously (it's still in the queue). When consuming, cancel its timeout timer if any and invoke OnConnected.
+		if (_pending.TryGetValue(key, out var queue) && queue.TryDequeue(out var ev))
 		{
-			if (queue.TryDequeue(out var ev))
+			// Cancel / dispose the timeout timer for this event if still present
+			if (_timeoutTasks.TryRemove(ev, out var timeoutTimer))
 			{
-				// Cancel / dispose the timeout timer for this event
-				if (_timeoutTasks.TryRemove(ev, out var timeoutTimer))
+				try { timeoutTimer.Dispose(); } catch { }
+			}
+
+			// If queue is now empty, remove it from dictionary
+			if (queue.IsEmpty)
+			{
+				_pending.TryRemove(key, out _);
+			}
+
+			try
+			{
+				var wasTimedOut = false;
+				if (_timedOut.TryRemove(ev, out var flag))
 				{
-					try { timeoutTimer.Dispose(); } catch { }
+					wasTimedOut = flag;
 				}
 
-				// If queue is now empty, remove it from dictionary
-				if (queue.IsEmpty)
-				{
-					_pending.TryRemove(key, out _);
-				}
-
-				try
-				{
-					_options.OnConnected?.Invoke(ev);
-					return true;
-				}
-				catch
-				{
-					// swallow
-				}
+				_options.OnConnected?.Invoke(ev, wasTimedOut);
+				return true;
+			}
+			catch
+			{
+				// swallow
 			}
 		}
 
 		return false;
+	}
+
+	/// <summary>
+	/// Runs a scavenging pass removing entries whose RegisteredAt is older than Retention.
+	/// This reclaims memory for entries that will never connect.
+	/// </summary>
+	private void RunScavengePass()
+	{
+		var cutoff = _timeProvider.GetUtcNow() - _options.Retention;
+		// Clean pending queues
+		foreach (var kvp in _pending.ToArray())
+		{
+			var key = kvp.Key;
+			var queue = kvp.Value;
+			var temp = new Queue<LaunchEvent>();
+			while (queue.TryDequeue(out var ev))
+			{
+				if (ev.RegisteredAt >= cutoff)
+				{
+					temp.Enqueue(ev);
+				}
+				else
+				{
+					// dispose any associated timeout task
+					if (_timeoutTasks.TryRemove(ev, out var t))
+					{
+						try { t.Dispose(); } catch { }
+					}
+					// remove any record of timed-out state for scavenged items
+					_timedOut.TryRemove(ev, out _);
+				}
+			}
+
+			// re-enqueue remaining
+			while (temp.Count > 0)
+			{
+				queue.Enqueue(temp.Dequeue());
+			}
+
+			if (queue.IsEmpty)
+			{
+				_pending.TryRemove(key, out _);
+			}
+		}
 	}
 
 	/// <summary>
@@ -245,6 +298,7 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 		}
 
 		_timeoutTasks.Clear();
+		_timedOut.Clear();
 		_pending.Clear();
 	}
 }
