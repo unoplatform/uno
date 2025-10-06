@@ -45,13 +45,14 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 					], null);
 				};
 
-				launchOptions.OnConnected = ev =>
+				launchOptions.OnConnected = (ev, wasTimedOut) =>
 				{
 					var latencyMs = (DateTimeOffset.UtcNow - ev.RegisteredAt).TotalMilliseconds;
 					telemetry.TrackEvent("app-launch/connected",
 						[
 							("platform", ev.Platform),
 							("debug", ev.IsDebug.ToString()),
+							("wasTimedOut", wasTimedOut.ToString())
 						],
 						[("latencyMs", latencyMs)]);
 				};
