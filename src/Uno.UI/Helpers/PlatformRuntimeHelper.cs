@@ -1,10 +1,10 @@
 ﻿namespace Uno.UI.Helpers;
 
-public static class PlatformRuntimeHelper
+internal static class PlatformRuntimeHelper
 {
 	internal static UnoRuntimePlatform SkiaPlatform { get; set; } = UnoRuntimePlatform.Unknown;
 
-	public static UnoRuntimePlatform Current => GetPlatform();
+	internal static UnoRuntimePlatform Current => GetPlatform();
 
 	private static UnoRuntimePlatform GetPlatform() =>
 #if __ANDROID__
