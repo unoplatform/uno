@@ -138,7 +138,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 		var buildInfo = new ProcessStartInfo
 		{
 			FileName = "dotnet",
-			Arguments = $"build \"{appProject}\" --configuration Debug --verbosity minimal --framework {_targetFramework}-desktop -p:UnoRemoteControlHost=localhost -p:UnoRemoteControlPort={devServerPort}",
+			Arguments = $"build \"{appProject}\" --configuration Debug --verbosity minimal -p:UnoRemoteControlHost=localhost -p:UnoRemoteControlPort={devServerPort}",
 			RedirectStandardOutput = true,
 			RedirectStandardError = true,
 			UseShellExecute = false,
