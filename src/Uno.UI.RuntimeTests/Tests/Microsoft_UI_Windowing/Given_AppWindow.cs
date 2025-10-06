@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Private.Infrastructure;
