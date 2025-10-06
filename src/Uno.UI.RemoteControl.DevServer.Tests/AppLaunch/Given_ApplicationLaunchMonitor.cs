@@ -99,7 +99,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch
 		{
 			// Arrange: ensure timeouts can expire earlier registrations and FIFO is preserved for active ones
 			using var sut = CreateMonitor(
-				out var clock, 
+				out var clock,
 				out _,
 				out var timeouts,
 				out var connections,

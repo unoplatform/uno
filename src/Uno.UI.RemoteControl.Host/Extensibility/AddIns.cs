@@ -49,7 +49,7 @@ public class AddIns
 					else
 					{
 						var binlog = Path.GetTempFileName();
-						result = ProcessHelper.RunProcess("dotnet", DumpTFM($"\"-bl:{binlog}\""), wd);
+						result = ProcessHelper.RunProcess("dotnet", DumpTFM($"\"-bl:{binlog}.binlog\""), wd);
 
 						_log.Log(LogLevel.Warning, msg);
 						_log.Log(LogLevel.Debug, result.output);
