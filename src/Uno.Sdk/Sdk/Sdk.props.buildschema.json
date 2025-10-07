@@ -507,13 +507,17 @@
 					"description": "Adds support for Serilog using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-serilog"
 				},
-				"Storage": {
-					"description": "Adds support for Storage using Uno.Extensions.",
-					"helpUrl": "https://aka.platform.uno/feature-storage"
-				},
 				"Serialization": {
 					"description": "Adds support for Serialization using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-serialization"
+				},
+				"SkiaRenderer": {
+					"description": "Adds support for using Skia as a UI renderer on all targets.",
+					"helpUrl": "https://aka.platform.uno/skia-rendering"
+				},
+				"Storage": {
+					"description": "Adds support for Storage using Uno.Extensions.",
+					"helpUrl": "https://aka.platform.uno/feature-storage"
 				},
 				"Toolkit": {
 					"description": "Adds support for the Uno.Toolkit.",
