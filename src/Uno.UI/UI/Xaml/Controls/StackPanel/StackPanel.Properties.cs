@@ -1,8 +1,8 @@
 ﻿using System;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class StackPanel
 {
@@ -67,8 +67,8 @@ partial class StackPanel
 	/// </summary>
 	public Thickness BorderThickness
 	{
-		get => (Thickness)GetValue(BorderThicknessProperty);
-		set => SetValue(BorderThicknessProperty, value);
+		get => GetBorderThicknessValue();
+		set => SetBorderThicknessValue(value);
 	}
 
 	/// <summary>
@@ -84,8 +84,8 @@ partial class StackPanel
 	/// </summary>
 	public CornerRadius CornerRadius
 	{
-		get => (CornerRadius)GetValue(CornerRadiusProperty);
-		set => SetValue(CornerRadiusProperty, value);
+		get => GetCornerRadiusValue();
+		set => SetCornerRadiusValue(value);
 	}
 
 	/// <summary>
@@ -110,6 +110,8 @@ partial class StackPanel
 	/// </summary>
 	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty OrientationProperty { get; } = CreateOrientationProperty();
+
+	private static Orientation GetOrientationDefaultValue() => Orientation.Vertical;
 
 	/// <summary>
 	/// Gets or sets the distance between the border and its child object.
