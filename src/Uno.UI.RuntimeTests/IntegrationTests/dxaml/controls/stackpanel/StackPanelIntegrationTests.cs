@@ -4,12 +4,12 @@ using Microsoft.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.IntegrationTests.dcontrols.stackpanel;
@@ -387,11 +387,11 @@ public class StackPanelIntegrationTests
 	public async Task VerifySnapPoints()
 	{
 		LOG_OUTPUT("Validating horizontal SnapPoints.");
-		VerifySnapPointsOrientation(Orientation.Horizontal, 50, 25);
+		await VerifySnapPointsOrientation(Orientation.Horizontal, 50, 25);
 		LOG_OUTPUT("Validating vertical SnapPoints.");
-		VerifySnapPointsOrientation(Orientation.Vertical, 50, 25);
+		await VerifySnapPointsOrientation(Orientation.Vertical, 50, 25);
 	}
-	
+
 	private async Task VerifySnapPointsOrientation(Orientation orientation, int elementWidth, int elementHeight)
 	{
 		StackPanel stackPanel = null;
@@ -424,11 +424,11 @@ public class StackPanelIntegrationTests
 
 		if (orientation == Orientation.Horizontal)
 		{
-			WindowHelper.WaitFor(() => stackPanelHorizontalSnapPointsChangedEvent);
+			await WindowHelper.WaitFor(() => stackPanelHorizontalSnapPointsChangedEvent);
 		}
 		else
 		{
-			WindowHelper.WaitFor(() => stackPanelVerticalSnapPointsChangedEvent);
+			await WindowHelper.WaitFor(() => stackPanelVerticalSnapPointsChangedEvent);
 		}
 
 		await RunOnUIThread(() =>
@@ -475,11 +475,11 @@ public class StackPanelIntegrationTests
 
 		if (orientation == Orientation.Horizontal)
 		{
-			WindowHelper.WaitFor(() => stackPanelHorizontalSnapPointsChangedEvent);
+			await WindowHelper.WaitFor(() => stackPanelHorizontalSnapPointsChangedEvent);
 		}
 		else
 		{
-			WindowHelper.WaitFor(() => stackPanelVerticalSnapPointsChangedEvent);
+			await WindowHelper.WaitFor(() => stackPanelVerticalSnapPointsChangedEvent);
 		}
 
 		await RunOnUIThread(() =>
@@ -621,7 +621,7 @@ public class StackPanelIntegrationTests
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.WindowHelper.SynchronouslyTickUIThread(2);
+		await TestServices.WindowHelper.SynchronouslyTickUIThread(2);
 		TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
 	}
 

@@ -1,6 +1,6 @@
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides methods to let an item be inserted between other items in a drag-and-drop operation.

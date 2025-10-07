@@ -1,6 +1,6 @@
 ﻿// MUX Reference StackPanel.h
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class StackPanel
 {

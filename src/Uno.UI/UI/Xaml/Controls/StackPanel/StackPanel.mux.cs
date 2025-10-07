@@ -2,7 +2,7 @@
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class StackPanel
 {
