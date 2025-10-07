@@ -40,4 +40,4 @@ Uno Platform applications run on all macOS versions supported by .NET, currently
 
 ## Linux
 
-Uno Platform applications run on Linux distributions and versions where .NET 8 and later are supported, [listed here](https://learn.microsoft.com/dotnet/core/install/linux), using the `net9.0-desktop` target framework. Supported environments are X11 and Framebuffer.
+Uno Platform applications run on Linux distributions and versions where latest .NET versions are supported, [listed here](https://learn.microsoft.com/dotnet/core/install/linux), using the `net9.0-desktop` target framework. Supported environments are X11 and Framebuffer.
