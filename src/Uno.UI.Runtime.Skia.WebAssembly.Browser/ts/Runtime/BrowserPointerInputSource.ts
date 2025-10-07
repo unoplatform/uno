@@ -119,9 +119,7 @@
 				}
 
 				// Only if parentNode is null, check for a shadow boundary.
-				const rootNode: any = typeof (currentNode as any).getRootNode === "function"
-					? (currentNode as any).getRootNode()
-					: null;
+				const rootNode = currentNode.getRootNode();
 
 				// If we're inside a shadow root, jump to its host to continue traversal
 				if (rootNode instanceof ShadowRoot && rootNode.host) {
