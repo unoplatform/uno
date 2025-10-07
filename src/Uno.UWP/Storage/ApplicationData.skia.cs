@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Uno;
 using Windows.ApplicationModel;
 
@@ -21,6 +22,8 @@ partial class ApplicationData
 	private const string SettingsFolderName = "Settings";
 
 	private static string? _appSpecificSubpath;
+
+	internal Task EnablePersistenceAsync() => Task.CompletedTask;
 
 	partial void InitializePartial() => WinRTFeatureConfiguration.ApplicationData.IsApplicationDataInitialized = true;
 
