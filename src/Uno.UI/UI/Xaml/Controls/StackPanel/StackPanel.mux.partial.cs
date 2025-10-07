@@ -196,7 +196,7 @@ partial class StackPanel
 		}
 	}
 
-	private void GetClosestElementInfo(Point position, out (int, bool) elementInfo)
+	internal void GetClosestElementInfo(Point position, out (int, bool) elementInfo)
 	{
 		var childIndex = GetClosestOrInsertionIndex(position, false);
 		elementInfo = (childIndex, false);
@@ -242,7 +242,7 @@ partial class StackPanel
 			out isBottomBoundary);
 	}
 
-	private Rect GetItemsBounds() => new Rect(0, 0, ActualWidth, ActualHeight);
+	internal Rect GetItemsBounds() => new Rect(0, 0, ActualWidth, ActualHeight);
 
 	//// This method is used for getting closest as well as Insertion Index
 	private int GetClosestOrInsertionIndex(Point position, bool isInsertionIndex)
