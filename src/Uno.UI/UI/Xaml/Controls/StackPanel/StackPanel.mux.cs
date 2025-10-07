@@ -16,6 +16,7 @@ partial class StackPanel
 
 		var children = GetUnsortedChildren();
 		var childrenCount = children.Count;
+		int visibleChildrenCount = 0;
 
 		for (int childIndex = 0; childIndex < childrenCount; childIndex++)
 		{
@@ -35,14 +36,19 @@ partial class StackPanel
 				stackDesiredSize.Width += currentChild.DesiredSize.Width;//currentChild.GetLayoutStorage().m_desiredSize.Width;
 				stackDesiredSize.Height = Math.Max(stackDesiredSize.Height, currentChild.DesiredSize.Height);//currentChild.GetLayoutStorage().m_desiredSize.Height);
 			}
+
+			if (currentChild.IsVisible())
+			{
+				visibleChildrenCount++;
+			}
 		}
 
 		stackDesiredSize.Width += combinedThickness.Width;
 		stackDesiredSize.Height += combinedThickness.Height;
 
-		if (childrenCount > 1)
+		if (visibleChildrenCount > 1)
 		{
-			double combinedSpacing = Spacing * (childrenCount - 1);
+			double combinedSpacing = Spacing * (visibleChildrenCount - 1);
 			if (Orientation == Orientation.Vertical)
 			{
 				stackDesiredSize.Height += combinedSpacing;
@@ -87,13 +93,16 @@ partial class StackPanel
 			currentChild.Arrange(arrangeRect);
 
 			// Offset the rect for the next child.
-			if (Orientation == Orientation.Vertical)
+			if (currentChild.IsVisible())
 			{
-				arrangeRect.Y += arrangeRect.Height + spacing;
-			}
-			else
-			{
-				arrangeRect.X += arrangeRect.Width + spacing;
+				if (Orientation == Orientation.Vertical)
+				{
+					arrangeRect.Y += arrangeRect.Height + spacing;
+				}
+				else
+				{
+					arrangeRect.X += arrangeRect.Width + spacing;
+				}
 			}
 		}
 

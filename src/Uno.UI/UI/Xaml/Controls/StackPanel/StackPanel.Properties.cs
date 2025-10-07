@@ -74,7 +74,7 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the BorderThickness dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty]
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 	private static Thickness GetBorderThicknessDefaultValue() => default;
@@ -125,7 +125,7 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the Padding dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty]
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 	private static Thickness GetPaddingDefaultValue() => default;
