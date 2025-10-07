@@ -363,6 +363,73 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20571")]
+		public async Task When_Decimal_Size()
+		{
+			var flipView = new FlipView
+			{
+				Width = 301.333,
+				Items =
+				{
+					new FlipViewItem
+					{
+						Content = new Grid
+						{
+							Background = new SolidColorBrush(Colors.LightCoral),
+							Children =
+							{
+								new TextBlock
+								{
+									Text = "First item",
+									Foreground = new SolidColorBrush(Colors.White)
+								}
+							}
+						}
+					},
+					new FlipViewItem
+					{
+						Content = new Grid
+						{
+							Background = new SolidColorBrush(Colors.LightSeaGreen),
+							Children =
+							{
+								new TextBlock
+								{
+									Text = "Second item",
+									Foreground = new SolidColorBrush(Colors.White)
+								}
+							}
+						}
+					},
+					new FlipViewItem
+					{
+						Content = new Grid
+						{
+							Background = new SolidColorBrush(Colors.Gold),
+							Children =
+							{
+								new TextBlock
+								{
+									Text = "Third item",
+									Foreground = new SolidColorBrush(Colors.Black)
+								}
+							}
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = flipView;
+			await WindowHelper.WaitForLoaded(flipView);
+
+			flipView.SelectedIndex = 2;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(300);
+
+			Assert.AreEqual(2, flipView.SelectedIndex);
+		}
+
+		[TestMethod]
 		public async Task When_Navigate_Skips_An_Item()
 		{
 			var flipView = new FlipView
