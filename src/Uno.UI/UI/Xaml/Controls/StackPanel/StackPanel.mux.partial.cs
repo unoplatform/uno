@@ -75,10 +75,12 @@ partial class StackPanel
 			out pSnapPoints,
 			out cSnapPoints);
 
-		// TODO:MZ: improve this
-		var copy = new float[cSnapPoints];
-		Array.Copy(pSnapPoints, copy, cSnapPoints);
-		return copy;
+		if (pSnapPoints is null)
+		{
+			return Array.Empty<float>();
+		}
+
+		return pSnapPoints.AsReadOnly();
 	}
 
 	/// <summary>
