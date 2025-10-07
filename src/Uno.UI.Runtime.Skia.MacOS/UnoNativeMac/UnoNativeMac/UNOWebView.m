@@ -93,6 +93,9 @@ NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
     config.preferences.javaScriptCanOpenWindowsAutomatically = YES;
     config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeVideo | WKAudiovisualMediaTypeAudio;
     
+    // Enable file access from file URLs to support relative paths in local HTML content
+    [config.preferences setValue:@YES forKey:@"allowFileAccessFromFileURLs"];
+    
     UNOWebView* webview = [[UNOWebView alloc] initWithFrame:NSMakeRect(0,0,0,0) configuration:config];
 #if DEBUG
     NSLog(@"uno_webview_create %p", webview);

@@ -88,6 +88,9 @@ public
 
 		Configuration.UserContentController.AddScriptMessageHandler(this, WebMessageHandlerName);
 
+		// Enable file access from file URLs to support relative paths in local HTML content
+		Configuration.Preferences.SetValueForKey(NSObject.FromObject(true), (NSString)"allowFileAccessFromFileURLs");
+
 		// Set strings with fallback to default English
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
 		CancelString = !string.IsNullOrEmpty(cancel) ? cancel : "Cancel";
