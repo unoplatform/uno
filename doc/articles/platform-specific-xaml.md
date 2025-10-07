@@ -149,7 +149,7 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 
 ### XAML prefixes in cross-targeted libraries
 
-For Uno Platform 6.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm/Native in a library, since both platforms use the `net8.0`/`net9.0` target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
+For Uno Platform 6.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm/Native in a library, since both platforms use the `net9.0`/`net10.0` target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
 
 The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm builds. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm/Native are similar, it is often not necessary to make the distinction.
 
