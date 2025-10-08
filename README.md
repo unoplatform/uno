@@ -1,4 +1,4 @@
-﻿<h1 align=center>
+<h1 align=center>
  <img alt="Uno Platform Banner" align=center width="95%" src="https://github.com/user-attachments/assets/ac1b6c72-a6ed-4c3f-9e0d-a8eca96bdc4e" />
 </h1>
 
@@ -136,6 +136,53 @@ Uno Platform unifies cross-platform development by abstracting platform-specific
   * **[Hot Reload](https://aka.platform.uno/hot-reload)**
   * **[Design-to-Code](https://aka.platform.uno/Design-to-Code)**
 * **[Uno Playground](https://playground.platform.uno/)**: Experiment with code snippets and see live previews.
+
+## Testing File Picker Functionality
+
+We've added comprehensive testing for the `FileOpenPicker` functionality, which is now available for WebAssembly (WASM) targets. This implementation demonstrates how to use the Uno Platform's file picker to select files in a cross-platform application.
+
+### Key Features
+
+- **Cross-Platform Support**: Seamlessly works across all Uno Platform targets with a consistent API
+- **File Type Filtering**: Easily specify which file types users can select
+- **Asynchronous Operation**: Non-blocking file selection with proper async/await pattern
+- **Error Handling**: Comprehensive error handling for all file operations
+
+### Example Usage
+
+```csharp
+var picker = new FileOpenPicker
+{
+    ViewMode = PickerViewMode.Thumbnail,
+    SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+};
+
+// Add file type filters
+picker.FileTypeFilter.Add(".txt");
+picker.FileTypeFilter.Add(".jpg");
+picker.FileTypeFilter.Add(".png");
+picker.FileTypeFilter.Add("*");
+
+// Open the file picker
+var file = await picker.PickSingleFileAsync();
+
+if (file != null)
+{
+    // File was selected
+    // Access file properties or read content
+}
+```
+
+### Running Tests
+
+To run the FileOpenPicker tests:
+
+1. Build the solution
+2. Use the test explorer in your IDE
+3. Look for `FileOpenPicker_Tests` in the test list
+
+The tests verify both successful file selection and cancellation scenarios, ensuring robust file handling in your application.
+
 * **[Uno Gallery](https://gallery.platform.uno/)**: Explore various UI themes and components in action.
 * **[Workshops & Code Samples](https://aka.platform.uno/samples-tutorials)**: Access practical tutorials and sample projects to accelerate learning.
 * **[Case Studies](https://platform.uno/case-studies/)**: Learn from real-world applications built using the Uno Platform.
