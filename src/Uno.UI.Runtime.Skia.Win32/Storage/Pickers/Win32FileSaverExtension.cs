@@ -140,6 +140,18 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 				this.LogError()?.Error($"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 				return Task.FromResult<StorageFile?>(null);
 			}
+
+			// Set default extension (e.g., "txt" from "*.txt")
+			var firstPattern = !string.IsNullOrEmpty(picker.DefaultFileExtension) ? picker.DefaultFileExtension : picker.FileTypeChoices.First().Value.FirstOrDefault();
+			if (!string.IsNullOrEmpty(firstPattern) && firstPattern.StartsWith('.'))
+			{
+				hResult = iFileSaveDialog.Value->SetDefaultExtension(firstPattern.TrimStart('.'));
+				if (hResult.Failed)
+				{
+					this.LogError()?.Error($"{nameof(IFileDialog.SetDefaultExtension)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+					return Task.FromResult<StorageFile?>(null);
+				}
+			}
 		}
 
 		hResult = iFileSaveDialog.Value->SetOkButtonLabel(string.IsNullOrEmpty(picker.CommitButtonText) ? ResourceAccessor.GetLocalizedStringResource("FILE_SAVER_ACCEPT_LABEL") : picker.CommitButtonText);

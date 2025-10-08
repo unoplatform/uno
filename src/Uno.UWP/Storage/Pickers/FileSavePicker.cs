@@ -14,6 +14,7 @@ namespace Windows.Storage.Pickers
 		private string _suggestedFileName = string.Empty;
 		private string _settingsIdentifier = string.Empty;
 		private string _commitButtonText = string.Empty;
+		private string _defaultFileExtension = string.Empty;
 
 		/// <summary>
 		/// Gets the collection of valid file types that the user can choose to assign to a file.
@@ -42,6 +43,18 @@ namespace Windows.Storage.Pickers
 			get => _settingsIdentifier;
 			set => _settingsIdentifier = value ?? throw new ArgumentNullException(nameof(value));
 		}
+
+#if __SKIA__ || __NETSTD_REFERENCE__
+		/// <summary>
+		/// Gets or sets the default file name extension that the fileSavePicker gives to files to be saved.
+		/// </summary>
+		/// <remarks>Use format starting with a dot, e.g. ".xyz"</remarks>
+		public string DefaultFileExtension
+		{
+			get => _defaultFileExtension;
+			set => _defaultFileExtension = value ?? throw new ArgumentNullException(nameof(value));
+		}
+#endif
 
 		/// <summary>
 		/// Gets or sets the storageFile that the file picker suggests to the user for saving a file.
