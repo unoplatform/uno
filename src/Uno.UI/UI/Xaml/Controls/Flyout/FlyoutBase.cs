@@ -95,7 +95,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				child.Loaded += OnPresenterLoaded;
 
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
-				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 
 				InitializePopupPanel();
 
@@ -242,7 +241,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(FlyoutBase), new FrameworkPropertyMetadata(null, (s, e) => ((FlyoutBase)s).OnLightDismissOverlayBackgroundChanged(e)));
+
+		private void OnLightDismissOverlayBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (_popup is Popup winUIPopup)
+			{
+				winUIPopup.LightDismissOverlayBackground = (Brush)e.NewValue;
+			}
+		}
 
 		public DependencyObject OverlayInputPassThroughElement
 		{
