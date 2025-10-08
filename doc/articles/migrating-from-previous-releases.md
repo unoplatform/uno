@@ -33,6 +33,7 @@ A few considerations to keep in mind:
 
 - Moving to .NET 10 or upgrading existing projects requires using **.NET 10 RC1** along with:
   - **Visual Studio** — the latest version of [Visual Studio 2026 Insiders](https://visualstudio.microsoft.com/insiders/), as recommended by Microsoft in their [announcement](https://devblogs.microsoft.com/dotnet/dotnet-10-rc-1/#🚀-get-started).
+    Use version **18.0.0 [11104.47]** or later to ensure compatibility with the [latest stable Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace).
   - **Visual Studio Code** — the latest version of [Visual Studio Code](https://code.visualstudio.com/Download) and the [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) extension, as also recommended by Microsoft in the same [announcement](https://devblogs.microsoft.com/dotnet/dotnet-10-rc-1/#🚀-get-started).
   - **Rider** — the latest stable version, as .NET 10 support has been available since [Rider 2025.1](https://www.jetbrains.com/rider/whatsnew/2025-1/).
 
