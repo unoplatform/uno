@@ -188,7 +188,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			// FileSavePicker creates the file if it does not exist yet.
 			if (!File.Exists(path))
 			{
-				File.Create(path).Dispose();
+				File.WriteAllBytes(path, Array.Empty<byte>());
 			}
 		}
 		catch (Exception ex)
