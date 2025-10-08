@@ -81,14 +81,16 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 
 		if (picker.SuggestedStartLocation != PickerLocationId.Unspecified)
 		{
-			var initialDirectory = PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocation);
-
-			if (!string.IsNullOrEmpty(initialDirectory))
+			hResult = default;
+			if (picker.SuggestedStartLocation == PickerLocationId.ComputerFolder)
 			{
-				hResult = PInvoke.SHCreateItemFromParsingName(initialDirectory, null, IShellItem.IID_Guid, out var defaultFolderItemRaw);
+				var folderGuid = PickerHelpers.WindowsComputerFolderGUID;
+
+				hResult = PInvoke.SHCreateItemInKnownFolder(folderGuid, KNOWN_FOLDER_FLAG.KF_FLAG_DEFAULT, null, IShellItem.IID_Guid, out var defaultFolderItemRaw);
+
 				if (hResult.Failed)
 				{
-					this.LogError()?.Error($"{nameof(PInvoke.SHCreateItemFromParsingName)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+					this.LogError()?.Error($"{nameof(PInvoke.SHCreateItemInKnownFolder)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 					return Task.FromResult<StorageFile?>(null);
 				}
 
@@ -99,6 +101,30 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 				{
 					this.LogError()?.Error($"{nameof(IFileDialog.SetDefaultFolder)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 					return Task.FromResult<StorageFile?>(null);
+				}
+			}
+			else
+			{
+				var initialDirectory = PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocation);
+
+				if (!string.IsNullOrEmpty(initialDirectory))
+				{
+					hResult = PInvoke.SHCreateItemFromParsingName(initialDirectory, null, IShellItem.IID_Guid, out var defaultFolderItemRaw);
+
+					if (hResult.Failed)
+					{
+						this.LogError()?.Error($"{nameof(PInvoke.SHCreateItemFromParsingName)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+						return Task.FromResult<StorageFile?>(null);
+					}
+
+					using ComScope<IShellItem> defaultFolderItem = new((IShellItem*)defaultFolderItemRaw);
+
+					hResult = iFileSaveDialog.Value->SetDefaultFolder(defaultFolderItem);
+					if (hResult.Failed)
+					{
+						this.LogError()?.Error($"{nameof(IFileDialog.SetDefaultFolder)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+						return Task.FromResult<StorageFile?>(null);
+					}
 				}
 			}
 		}
