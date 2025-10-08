@@ -44,6 +44,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		private string _statusMessage = string.Empty;
 		private string _suggestedFileName = string.Empty;
 		private string _fileChoiceExtension = string.Empty;
+		private string _defaultExtension = string.Empty;
 
 		private StorageFile _suggestedSaveFile = null;
 		private StorageFile _pickedFile = null;
@@ -202,6 +203,16 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			}
 		}
 
+		public string DefaultExtension
+		{
+			get => _defaultExtension;
+			set
+			{
+				_defaultExtension = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public async void PickSuggestedSaveFile()
 		{
 			ErrorMessage = string.Empty;
@@ -252,6 +263,12 @@ namespace UITests.Shared.Windows_Storage.Pickers
 				{
 					fileSavePicker.FileTypeChoices.Add(fileTypeChoice.Name, fileTypeChoice.Extensions);
 				}
+
+				if (!string.IsNullOrEmpty(DefaultExtension))
+				{
+					fileSavePicker.DefaultFileExtension = DefaultExtension;
+				}
+
 				var pickedFile = await fileSavePicker.PickSaveFileAsync();
 				if (pickedFile != null)
 				{
