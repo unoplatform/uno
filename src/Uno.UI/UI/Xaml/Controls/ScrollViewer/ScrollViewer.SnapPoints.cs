@@ -15,7 +15,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (horizontalOffset is { } hOffset)
 			{
-				var maxOffset = Math.Max(0d, ExtentWidth - ViewportWidth);
+				var viewportPixelWidth = AdjustPixelViewportDim(ViewportWidth);
+				var maxOffset = Math.Max(0d, ExtentWidth - viewportPixelWidth);
 				var currentOffset = canBypassSingle ? hOffset : HorizontalOffset;
 
 				AdjustOffsetWithMandatorySnapPoints(
@@ -24,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 					maxOffset: maxOffset,
 					currentOffset,
 					ExtentWidth,
-					ViewportWidth,
+					viewportPixelWidth,
 					zoomFactor ?? ZoomFactor,
 					ref hOffset);
 				horizontalOffset = hOffset;
@@ -32,7 +33,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (verticalOffset is { } vOffset)
 			{
-				var maxOffset = Math.Max(0d, ExtentHeight - ViewportHeight);
+				var viewportPixelHeight = AdjustPixelViewportDim(ViewportHeight);
+				var maxOffset = Math.Max(0d, ExtentHeight - viewportPixelHeight);
 				var currentOffset = canBypassSingle ? vOffset : VerticalOffset;
 
 				AdjustOffsetWithMandatorySnapPoints(
@@ -41,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 					maxOffset: maxOffset,
 					currentOffset,
 					ExtentHeight,
-					ViewportHeight,
+					viewportPixelHeight,
 					zoomFactor ?? ZoomFactor,
 					ref vOffset);
 				verticalOffset = vOffset;
@@ -50,6 +52,15 @@ namespace Microsoft.UI.Xaml.Controls
 #if __SKIA__
 			(horizontalOffset, verticalOffset) = ClampOffsetsToFocusedTextBox(horizontalOffset, verticalOffset);
 #endif
+		}
+
+		private double AdjustPixelViewportDim(double pixelViewportDim)
+		{
+			// Round to the closest lower integer.
+			// +3.000 --> +3.0
+			// +8.731 --> +8.0
+			// +5.999 --> +5.0
+			return (double)(long)pixelViewportDim;
 		}
 
 		internal partial bool ShouldSnapToTouchTextBox();
