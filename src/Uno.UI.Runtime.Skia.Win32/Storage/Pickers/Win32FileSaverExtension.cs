@@ -16,6 +16,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Helpers;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -156,7 +157,22 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			return Task.FromResult<StorageFile?>(null);
 		}
 
-		return Task.FromResult<StorageFile?>(StorageFile.GetFileFromPath(new string(resultName)));
+		var path = new string(resultName);
+		try
+		{
+			// FileSavePicker creates the file if it does not exist yet.
+			if (!File.Exists(path))
+			{
+				File.Create(path).Dispose();
+			}
+		}
+		catch (Exception ex)
+		{
+			this.LogError()?.Error($"Could not create file at '{path}'", ex);
+		}
+
+		var file = StorageFile.GetFileFromPath(path);
+		return Task.FromResult<StorageFile?>(file);
 	}
 
 	private List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName, Win32Helper.NativeNulTerminatedUtf16String pattern)> GetFilterString()
