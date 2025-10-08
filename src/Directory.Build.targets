@@ -61,8 +61,8 @@
 	</Target>
 
 	<PropertyGroup>
-		<MSTestVersion>3.10.0</MSTestVersion>
-		<MicrosoftTestingPlatformVersion>1.8.0</MicrosoftTestingPlatformVersion>
+		<MSTestVersion>3.11.0</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>1.9.0</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
 	</PropertyGroup>
@@ -88,10 +88,9 @@
 		<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 		<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
 		<PackageReference Update="NUnit" Version="3.14.0" />
-		<PackageReference Update="NUnit3TestAdapter" Version="5.0.0" />
+		<PackageReference Update="NUnit3TestAdapter" Version="5.2.0" />
 		<PackageReference Update="NunitXml.TestLogger" Version="3.1.15" />
 		<PackageReference Update="Microsoft.Testing.Extensions.TrxReport" Version="$(MicrosoftTestingPlatformVersion)" />
-		<PackageReference Update="Microsoft.Testing.Extensions.VSTestBridge" Version="$(MicrosoftTestingPlatformVersion)" />
 		<PackageReference Update="Uno.UITest" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />

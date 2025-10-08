@@ -32,7 +32,6 @@
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="Microsoft.Testing.Extensions.HangDump" />
-		<PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" />
 	</ItemGroup>
 
 	<ItemGroup>
