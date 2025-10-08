@@ -1,8 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Disposables;
+using Uno.Extensions.Storage.Pickers;
+using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
+using Uno.UI.Helpers.WinUI;
+using Uno.UI.Runtime.Skia.Win32.Storage.Pickers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Win32;
@@ -10,13 +18,6 @@ using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.Shell.Common;
-using Uno.Disposables;
-using Uno.Extensions.Storage.Pickers;
-using Uno.Foundation.Logging;
-using Uno.UI.Helpers.WinUI;
-using Uno.UI.Helpers;
-using System.Runtime.InteropServices;
-using System.IO;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -79,42 +80,9 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			iFileSaveDialog.Value->SetFileName(picker.SuggestedFileName);
 		}
 
-		if (picker.SuggestedStartLocation != PickerLocationId.Unspecified)
-		{
-			Guid? folderGuid = picker.SuggestedStartLocation is PickerLocationId.ComputerFolder ?
-				PickerHelpers.WindowsComputerFolderGUID :
-				null;
-
-			var folderPath = folderGuid is null ?
-				PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocation) :
-				null;
-
-			if (folderGuid is not null || !string.IsNullOrEmpty(folderPath))
-			{
-				void* defaultFolderItemRaw;
-				hResult = folderGuid is not null
-					? PInvoke.SHCreateItemInKnownFolder(folderGuid.Value, KNOWN_FOLDER_FLAG.KF_FLAG_DEFAULT, null, IShellItem.IID_Guid, out defaultFolderItemRaw)
-					: PInvoke.SHCreateItemFromParsingName(folderPath, null, IShellItem.IID_Guid, out defaultFolderItemRaw);
-
-				if (hResult.Failed)
-				{
-					var methodName = folderGuid is not null ?
-						nameof(PInvoke.SHCreateItemInKnownFolder) :
-						nameof(PInvoke.SHCreateItemFromParsingName);
-					this.LogError()?.Error($"{methodName} failed: {Win32Helper.GetErrorMessage(hResult)}");
-					return Task.FromResult<StorageFile?>(null);
-				}
-
-				using ComScope<IShellItem> defaultFolderItem = new((IShellItem*)defaultFolderItemRaw);
-
-				hResult = iFileSaveDialog.Value->SetDefaultFolder(defaultFolderItem);
-				if (hResult.Failed)
-				{
-					this.LogError()?.Error($"{nameof(IFileDialog.SetDefaultFolder)} failed: {Win32Helper.GetErrorMessage(hResult)}");
-					return Task.FromResult<StorageFile?>(null);
-				}
-			}
-		}
+		using var defaultFolder = SuggestedStartLocationHandler.SetDefaultFolder(
+			picker.SuggestedStartLocation,
+			i => iFileSaveDialog.Value->SetDefaultFolder(i));
 
 		if (fileTypeList.Count > 0)
 		{
