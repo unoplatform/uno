@@ -41,6 +41,26 @@ A few considerations to keep in mind:
 
 For an up-to-date list of **known issues** when using **.NET 10** with Uno Platform, please refer to our [Health Status page](https://aka.platform.uno/health-status).
 
+### API Changes for Android
+
+Starting with Uno Platform **6.3**, the following methods now throw `NotSupportedException` under **.NET 10** or later:
+
+- `Microsoft.UI.Xaml.ApplicationActivity.GetTypeAssemblyFullName(string)` (Android + Native renderer)
+- `Microsoft.UI.Xaml.ApplicationActivity.GetTypeAssemblyFullName(string)` (Android + Skia renderer)
+- `Microsoft.UI.Xaml.NativeApplication.GetTypeAssemblyFullName(string)`
+
+This change was introduced in [PR #21199](https://github.com/unoplatform/uno/pull/21199) ([commit 4d84ee3](https://github.com/unoplatform/uno/commit/4d84ee31adb3e7ecd3fcbdc248b79fee78211d3e)).
+Methods with the [`[Java.Interop.ExportAttribute]` custom attribute](https://learn.microsoft.com/dotnet/api/java.interop.exportattribute?view=net-android-34.0) are not supported within certain runtime environments.
+
+If your application calls any of the affected methods:
+
+- Remove any direct usage of `GetTypeAssemblyFullName`.
+- Consider removing methods with the `[Export]` custom attribute, as they may not work in certain runtime environments. Consider using managed interop or dependency injection alternatives instead.
+- If you relied on these APIs for reflection or interop, migrate that logic to managed code executed at runtime.
+- Rebuild and test your Android and Android+Skia apps with .NET 10 or later to ensure compatibility.
+
+These changes prevent runtime exceptions and improve compatibility for builds on Android.
+
 ## Uno Platform 6.2
 
 Uno Platform 6.2 does not contain breaking changes that require attention when upgrading.
