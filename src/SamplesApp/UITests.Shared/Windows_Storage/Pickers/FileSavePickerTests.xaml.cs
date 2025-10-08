@@ -21,7 +21,10 @@ using Microsoft.UI.Xaml.Media.Imaging;
 namespace UITests.Shared.Windows_Storage.Pickers
 {
 	[Sample("Windows.Storage", ViewModelType = typeof(FileSavePickerTestsViewModel), IsManualTest = true,
-		Description = "Allows testing all features of FileSavePicker. Not selecting a file should not cause an exception.")]
+		Description =
+			"Allows testing all features of FileSavePicker. Not selecting a file should not cause an exception. " +
+			"Default extension should work on Windows. " +
+			"When the requested file does not exist yet, it should be created before the picker returns.")]
 	public sealed partial class FileSavePickerTests : Page
 	{
 		public FileSavePickerTests()
