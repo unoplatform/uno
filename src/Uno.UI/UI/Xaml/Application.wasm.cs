@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml
 
 				await WindowManagerInterop.InitAsync();
 
-				await global::Windows.Storage.ApplicationData.Current.EnablePersistenceAsync();
+				_ = global::Windows.Storage.ApplicationData.Current.EnablePersistenceAsync();
 
 				callback(new ApplicationInitializationCallbackParams());
 			}
