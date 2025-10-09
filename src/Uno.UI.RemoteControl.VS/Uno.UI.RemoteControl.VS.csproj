@@ -42,6 +42,9 @@
 		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
 		<!-- End of Microsoft.VisualStudio.Extensibility.Sdk direct refs -->
 
+		<!-- Polyfill for System.TimeProvider on net48 -->
+		<PackageReference Include="Microsoft.Bcl.TimeProvider" Version="9.0.9" />
+
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
