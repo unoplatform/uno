@@ -393,8 +393,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[CombinatorialData]
-		public async Task When_Text_Changed_Sequence(bool waitBetweenActions)
+		public async Task When_Text_Changed_Sequence()
 		{
 			var SUT = new AutoSuggestBox()
 			{
@@ -415,11 +414,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			expectations.Add(SuggestionChosen);
 			SUT.Focus(FocusState.Programmatic);
 			SUT.ChoseItem("ab");
-			await Wait();
+			await WindowHelper.WaitForIdle();
 
 			expectations.Add(ProgrammaticChange);
 			SUT.Text = "other";
-			await Wait();
+			await WindowHelper.WaitForIdle();
 
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
@@ -428,11 +427,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #else
 			textBox.ProcessTextInput("manual");
 #endif
-			await Wait();
+			await WindowHelper.WaitForIdle();
 
 			expectations.Add(SuggestionChosen);
 			SUT.ChoseItem("ab");
-			await Wait();
+			await WindowHelper.WaitForIdle();
 
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
@@ -441,39 +440,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #else
 			textBox.ProcessTextInput("manual");
 #endif
-			await Wait();
+			await WindowHelper.WaitForIdle();
 
 			expectations.Add(ProgrammaticChange);
 			SUT.Focus(FocusState.Programmatic);
 			SUT.Text = "other";
-			await Wait();
+			await WindowHelper.WaitForIdle();
 
 			expectations.Add(SuggestionChosen);
 			SUT.ChoseItem("ab");
-			await Wait();
-
 			await WindowHelper.WaitForIdle();
 
-			// We want to test the behaviour of "typing individual characters in sequence", not setting the Text in one shot. The behaviour is currently only accurate on skia.
-			if (!waitBetweenActions)
-			{
-				// skia is closer to what happens on WinUI. On WinUI, if there is no delay between changes,
-				// AutoSuggestBox.TextChanged is fired once (but TextBox.TextChanged fires everytime)
-				expectations = new() { SuggestionChosen };
-			}
+			// remove repeating UserInputs in a sequence as a result of typing individual characters. WinUI has a timer
+			// that will only fire an event with UserInput once it has waited a bit and found no new characters coming
+			reasons = reasons
+				.Where((reason, i) => i == 0 || !(reason == UserInput && reasons[i - 1] == UserInput))
+				.ToList();
 
 			CollectionAssert.AreEquivalent(expectations, reasons, string.Join("; ",
 				$"expectations[{expectations.Count}]: {string.Join(",", expectations)}",
 				$"actual[{reasons.Count}]: {string.Join(",", reasons)}"
 			));
-
-			async Task Wait()
-			{
-				if (waitBetweenActions)
-				{
-					await WindowHelper.WaitForIdle();
-				}
-			}
 		}
 
 		[TestMethod]

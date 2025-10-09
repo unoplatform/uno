@@ -283,11 +283,21 @@ namespace Private.Infrastructure
 									}
 								}
 							}
+
+#if HAS_UNO
+							// To allow TextBox to fully process the key events
+							await TestServices.WindowHelper.WaitForIdle();
+#endif
 						}
 					}
 
 					posStart = posEnd + 1;
 					posEnd = keys.IndexOf("#", posStart);
+
+#if HAS_UNO
+					// To allow TextBox to fully process the key events
+					await TestServices.WindowHelper.WaitForIdle();
+#endif
 				}
 
 				async Task RaiseOnElementDispatcherAsync(UIElement element, RoutedEvent routedEvent, KeyRoutedEventArgs args, bool isTunneling = false)

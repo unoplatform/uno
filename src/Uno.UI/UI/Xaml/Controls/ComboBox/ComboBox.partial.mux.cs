@@ -1628,7 +1628,8 @@ partial class ComboBox
 		if (!pArgs.Handled && pArgs.UnicodeKey is not null)
 		{
 			// Temporary as Uno doesn't yet implement CharacterReceived event.
-			OnCharacterReceived(this, new CharacterReceivedRoutedEventArgs(pArgs.UnicodeKey ?? default, default));
+			// The queuing is necessary because the Text of the TextBox is not updated until after KeyDown is processed.
+			DispatcherQueue.TryEnqueue(() => OnCharacterReceived(this, new CharacterReceivedRoutedEventArgs(pArgs.UnicodeKey.Value, default)));
 		}
 #endif
 	}
