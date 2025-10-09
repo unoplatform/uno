@@ -12,6 +12,8 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 {
+	private OverlappedPresenterState? _pendingState;
+
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
 		// The WasShown guards are so that if a call to ApplyFullScreenPresenter is made before
@@ -35,10 +37,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		if (WasShown)
-		{
-			presenter.SetNative(this);
-		}
+		presenter.SetNative(this);
 		return base.ApplyOverlappedPresenter(presenter);
 	}
 
@@ -79,11 +78,41 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		}
 	}
 
-	public void Maximize() => PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
+	public void Maximize()
+	{
+		if (WasShown)
+		{
+			PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Maximized;
+		}
+	}
 
-	public void Minimize(bool activateWindow) => PInvoke.ShowWindow(_hwnd, activateWindow ? SHOW_WINDOW_CMD.SW_MINIMIZE : SHOW_WINDOW_CMD.SW_SHOWMINNOACTIVE);
+	public void Minimize(bool activateWindow)
+	{
+		if (WasShown)
+		{
+			PInvoke.ShowWindow(_hwnd, activateWindow ? SHOW_WINDOW_CMD.SW_MINIMIZE : SHOW_WINDOW_CMD.SW_SHOWMINNOACTIVE);
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Minimized;
+		}
+	}
 
-	public void Restore(bool activateWindow) => PInvoke.ShowWindow(_hwnd, activateWindow ? SHOW_WINDOW_CMD.SW_SHOWNORMAL : SHOW_WINDOW_CMD.SW_SHOWNOACTIVATE);
+	public void Restore(bool activateWindow)
+	{
+		if (WasShown)
+		{
+			PInvoke.ShowWindow(_hwnd, activateWindow ? SHOW_WINDOW_CMD.SW_SHOWNORMAL : SHOW_WINDOW_CMD.SW_SHOWNOACTIVATE);
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Restored;
+		}
+	}
 
 	public OverlappedPresenterState State
 	{

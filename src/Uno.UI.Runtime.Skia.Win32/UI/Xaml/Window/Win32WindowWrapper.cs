@@ -379,6 +379,24 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			SetWindowStyle(WINDOW_STYLE.WS_DLGFRAME, false);
 			_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
 		}
+		else if (Window?.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
+		{
+			switch (_pendingState)
+			{
+				case OverlappedPresenterState.Maximized:
+					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
+					break;
+				case OverlappedPresenterState.Minimized:
+					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
+					break;
+				case OverlappedPresenterState.Restored:
+					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_RESTORE);
+					break;
+				default:
+					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+					break;
+			}
+		}
 		else
 		{
 			PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
