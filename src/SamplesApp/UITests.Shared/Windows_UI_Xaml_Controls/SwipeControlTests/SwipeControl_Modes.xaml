@@ -58,7 +58,7 @@
             <!--  SwipeItems mode set to Reveal and appears to work correctly  -->
             <ListView ItemsSource="{x:Bind ItemsUsingReveal}">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:MainModel">
+                    <DataTemplate x:DataType="local:SwipeControlModesModel">
                         <SwipeControl>
                             <SwipeControl.LeftItems>
                                 <SwipeItems Mode="Reveal">
