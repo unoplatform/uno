@@ -15,7 +15,8 @@ using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEve
 
 namespace UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 {
-	[Sample("SwipeControl", "ListView", IgnoreInSnapshotTests = true)]
+	[Sample("SwipeControl", "ListView", IgnoreInSnapshotTests = true, IsManualTest = true,
+		Description = "On each page you can swipe in either horizontal or vertical direction to show commands.")]
 	public sealed partial class SwipeControl_Modes : Page
 	{
 		public ObservableCollection<SwipeControlModesModel> ItemsUsingReveal { get; set; }
