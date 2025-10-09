@@ -211,9 +211,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			if (XLib.XRRQueryExtension(display, out _, out _) != 0 &&
 				XLib.XRRQueryVersion(display, out var major, out var minor) != 0 &&
 				(major > 1 || (major == 1 && minor >= 3)) &&
-				GetDisplayInformationXRandR1_3(display, window) is { } details)
+				GetDisplayInformationXRandR1_3(display, window) is { details: var details, fps: var fps })
 			{
 				_details = details;
+				if (fps is not null)
+				{
+					_host.UpdateRenderTimerFps(fps.Value);
+				}
 			}
 			else // naive implementation from xdpyinfo
 			{
@@ -370,7 +374,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		// END OF EXCERPT 3
 
 		// 2009 spec, notably does not use monitors. Relies on "transforms" which may or may not be be part of RandR 1.2
-		private unsafe DisplayInformationDetails? GetDisplayInformationXRandR1_3(IntPtr display, IntPtr window)
+		private unsafe (DisplayInformationDetails details, double? fps)? GetDisplayInformationXRandR1_3(IntPtr display, IntPtr window)
 		{
 			using var lockDiposable = X11Helper.XLock(display);
 
@@ -448,14 +452,50 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			// the required scaling. We don't need to do any scale by <x|y>Scaling ourselves.
 			var rawScale = _scaleOverride ?? (TryGetXResource(XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : 1);
 
-			return new DisplayInformationDetails(
+			// Note: This returns nondeterministic values when testing on WSL or on a VM. Testing on a real device
+			// with the same Ubuntu version returns accurate results.
+			static double? mode_refresh(X11Helper.XRRModeInfo* mode_info)
+			{
+				double? rate;
+				double vTotal = mode_info->vTotal;
+
+				if ((mode_info->modeFlags & /* RR_DoubleScan */ 0x00000020) != 0)
+				{
+					/* doublescan doubles the number of lines */
+					vTotal *= 2;
+				}
+
+				if ((mode_info->modeFlags & /* RR_Interlace */ 0x00000010) != 0)
+				{
+					/* interlace splits the frame into two fields */
+					/* the field rate is what is typically reported by monitors */
+					vTotal /= 2;
+				}
+
+				if (mode_info->hTotal != 0 && vTotal != 0)
+				{
+					rate = (mode_info->dotClock / (mode_info->hTotal * vTotal));
+				}
+				else
+				{
+					rate = null;
+				}
+
+				return rate;
+			}
+
+			// xrandr does something similar to this, except it reads the XRRModeInfo from outputInfo->modes by picking
+			// a "best fit" mode and reading it, but this can actually result in dotClock == 0 in some cases and this
+			// show when calling xrandr. Reading from the CRTC info struct returns a more accurate result
+			var fps = mode_refresh((X11Helper.XRRModeInfo*)&crtcInfo->mode);
+
+			return (new DisplayInformationDetails(
 				rawWidth,
 				rawHeight,
 				(float)(rawScale * DisplayInformation.BaseDpi),
 				rawScale,
 				(ResolutionScale)(rawScale * 100),
-				Math.Sqrt(outputInfo->mm_width * outputInfo->mm_width + outputInfo->mm_height * outputInfo->mm_height) / InchesToMilliMeters
-			);
+				Math.Sqrt(outputInfo->mm_width * outputInfo->mm_width + outputInfo->mm_height * outputInfo->mm_height) / InchesToMilliMeters), fps);
 		}
 	}
 }

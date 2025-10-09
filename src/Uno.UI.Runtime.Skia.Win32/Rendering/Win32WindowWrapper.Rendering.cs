@@ -1,27 +1,41 @@
 using System;
 using System.Drawing;
+using System.Timers;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-
+	private readonly Timer _renderTimer;
 	private int _renderCount;
-	private Size? _lastSize;
 	private SKSurface? _surface;
 	private bool _rendering;
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
-	private void Paint()
+	private Timer CreateRenderTimer()
+	{
+		var timer = new Timer { AutoReset = false, Interval = TimeSpan.FromSeconds(1.0 / _refreshRate).TotalMilliseconds };
+		timer.Elapsed += (_, _) => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.High);
+		return timer;
+	}
+
+	unsafe void IXamlRootHost.InvalidateRender()
+	{
+		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }
+		_renderTimer.Enabled = true;
+	}
+
+	private void Render()
 	{
 		if (_rendererDisposed || _rendering)
 		{
@@ -44,37 +58,26 @@ internal partial class Win32WindowWrapper
 			return;
 		}
 
-		if (_surface is null || _lastSize != clientRect.Size)
+		// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
+		// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
+		// Paint() becoming reentrant which can cause crashes.
+		_rendering = true;
+		try
 		{
-			_lastSize = clientRect.Size;
-			_renderer.Reset();
-			_surface?.Dispose();
-			_surface = _renderer.UpdateSize(clientRect.Width, clientRect.Height);
+			var nativeElementClipPath = ((CompositionTarget)((IXamlRootHost)this).RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+			{
+				_renderer.Reset();
+				_surface?.Dispose();
+				_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
+				return _surface.Canvas;
+			});
+			RenderingNegativePathReevaluated?.Invoke(this, nativeElementClipPath);
+		}
+		finally
+		{
+			_rendering = false;
 		}
 
-		if (XamlRoot?.VisualTree.RootElement.Visual is { } rootVisual)
-		{
-			var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
-			// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
-			// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
-			// Paint() becoming reentrant which can cause crashes.
-			_rendering = true;
-			try
-			{
-				rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
-
-				SkiaRenderHelper.RenderPicture(
-					_surface,
-					_picture,
-					_background,
-					_fpsHelper);
-			}
-			finally
-			{
-				_rendering = false;
-				rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
-			}
-		}
 
 		// this may call WM_ERASEBKGND
 		_renderer.CopyPixels(clientRect.Width, clientRect.Height);

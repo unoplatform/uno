@@ -82,10 +82,6 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 
 		CoreDispatcher.DispatchOverride = MacOSDispatcher.DispatchNativeSingle;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
-
-		// We do not have a display timer on this target, we can use
-		// a constant timer.
-		CompositionTargetTimer.Start();
 	}
 
 	// called from native code to ensure NSApplication is fully initialized

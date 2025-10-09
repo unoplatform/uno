@@ -16,6 +16,9 @@ public partial class CompositionTarget : ICompositionTarget
 	internal CompositionTarget(ContentRoot contentRoot)
 	{
 		ContentRoot = contentRoot;
+#if __SKIA__
+		_targets.Add(this, null);
+#endif
 	}
 
 	event EventHandler ICompositionTarget.RasterizationScaleChanged

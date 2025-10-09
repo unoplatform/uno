@@ -7,18 +7,15 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
-using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
-using Uno.UI.Xaml.Core;
-using MUX = Microsoft.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
 using WpfControl = System.Windows.Controls.Control;
-using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 using WpfWindow = System.Windows.Window;
+using MUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
@@ -63,9 +60,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	private readonly RenderingLayerHost _renderLayer;
 
 	private readonly SerialDisposable _backgroundDisposable = new();
-
-	private SKPicture? _picture;
-	private SKPath? _clipPath;
+	private bool _invalidateRenderEnqueued;
 
 	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, MUX.Window winUIWindow)
 	{
@@ -94,9 +89,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	public WpfControl RenderLayer => _renderLayer;
 	public WpfControl BottomLayer => _renderLayer;
-
-	SKPicture? IWpfXamlRootHost.Picture => _picture;
-	SKPath? IWpfXamlRootHost.ClipPath => _clipPath;
 
 	internal void InitializeRenderer()
 	{
@@ -155,25 +147,18 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		if (!SkiaRenderHelper.CanRecordPicture(_winUIWindow.RootElement))
+		if (!Interlocked.Exchange(ref _invalidateRenderEnqueued, true))
 		{
-			// Try again next tick
-			_winUIWindow.RootElement?.XamlRoot?.QueueInvalidateRender();
-			return;
+			// We schedule on Idle here because if you invalidate directly, it can cause a hang if
+			// the rendering is continuously invalidated (e.g. animations). Try Given_SKCanvasElement to confirm.
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				Interlocked.Exchange(ref _invalidateRenderEnqueued, false);
+				_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
+				_renderLayer.InvalidateVisual();
+				InvalidateVisual();
+			}, NativeDispatcherPriority.Idle);
 		}
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(_winUIWindow.Bounds.Width),
-			(int)(_winUIWindow.Bounds.Height),
-			_winUIWindow.RootElement,
-			invertPath: false);
-
-		Interlocked.Exchange(ref _picture, picture);
-		Interlocked.Exchange(ref _clipPath, path);
-
-		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
-		_renderLayer.InvalidateVisual();
-		InvalidateVisual();
 	}
 
 	WpfCanvas IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;

@@ -58,18 +58,6 @@ namespace Uno.UI.Dispatching
 			return operation;
 		}
 
-		/// <summary>
-		/// Synchronous dispatching to the dispatcher when coming from the choreographer only.
-		/// </summary>
-		partial void SynchronousDispatchRenderingPartial()
-		{
-			if (IsRendering)
-			{
-				DispatchItems();
-				RaiseRendered();
-			}
-		}
-
 		private void DispatchItemsToChoreographer()
 		{
 			var ts = Stopwatch.GetTimestamp();

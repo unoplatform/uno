@@ -38,8 +38,6 @@ namespace Microsoft.UI.Xaml
 		[ThreadStatic]
 		private static string? _argumentsOverride;
 
-		private static HashSet<Visual> _continuousTargets = new();
-
 		internal static void SetArguments(string arguments)
 			=> _argumentsOverride = arguments;
 
@@ -52,10 +50,6 @@ namespace Microsoft.UI.Xaml
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
-
-			CoreApplication.SetInvalidateRender(OnInvalidateRender, OnSetContinuousRender);
-
-			NativeDispatcher.Main.Rendered += OnRendered;
 		}
 
 #if REPORT_FPS
@@ -63,105 +57,6 @@ namespace Microsoft.UI.Xaml
 #endif
 		private long _lastRender = Stopwatch.GetTimestamp();
 
-		private void OnRendered()
-		{
-			if (CompositionTargetTimer.IsRunning
-				&& Stopwatch.GetElapsedTime(_lastRender) < TimeSpan.FromSeconds(1 / FeatureConfiguration.CompositionTarget.FrameRate))
-			{
-				// Throttle rendering to the expected frame rate
-				return;
-			}
-
-			_lastRender = Stopwatch.GetTimestamp();
-
-#if REPORT_FPS
-			_renderFpsLogger.ReportFrame();
-#endif
-
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"OnRendered");
-			}
-
-			foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
-			{
-				if (cRoot?.XamlRoot is { } xRoot)
-				{
-					xRoot.InvalidateRender();
-				}
-			}
-		}
-
-		private void OnSetContinuousRender(object? compositionTarget, bool enabled)
-		{
-			Debug.Assert(compositionTarget is null or CompositionTarget);
-
-			if (compositionTarget is CompositionTarget { Root: { } root })
-			{
-				var originalCount = _continuousTargets.Count;
-
-				if (_continuousTargets.Contains(root))
-				{
-					if (!enabled)
-					{
-						_continuousTargets.Remove(root);
-					}
-				}
-				else
-				{
-					if (enabled)
-					{
-						_continuousTargets.Add(root);
-					}
-				}
-
-				if (originalCount != _continuousTargets.Count)
-				{
-					if (_continuousTargets.Count == 0)
-					{
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().Trace($"OnSetContinuousRender({enabled}) detach (Count:{_continuousTargets.Count})");
-						}
-
-						// We have no targets anymore, unhook from the composition target
-						CompositionTarget.Rendering -= OnContinuousRender;
-					}
-					else
-					{
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().Trace($"OnSetContinuousRender({enabled}) attach (Count:{_continuousTargets.Count})");
-						}
-
-						// We have at least one target, we need to start the render loop
-						CompositionTarget.Rendering += OnContinuousRender;
-					}
-				}
-			}
-		}
-
-		private void OnContinuousRender(object? sender, object e)
-		{
-			// Intentionally empty to force enable continous mode.
-		}
-
-		private void OnInvalidateRender(object? compositionTarget)
-		{
-			Debug.Assert(compositionTarget is null or CompositionTarget);
-
-			if (compositionTarget is CompositionTarget { Root: { } root })
-			{
-				foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
-				{
-					if (cRoot?.XamlRoot is { } xRoot && ReferenceEquals(xRoot.VisualTree.RootElement.Visual, root))
-					{
-						xRoot.QueueInvalidateRender();
-						return;
-					}
-				}
-			}
-		}
 
 		internal ISkiaApplicationHost? Host { get; set; }
 

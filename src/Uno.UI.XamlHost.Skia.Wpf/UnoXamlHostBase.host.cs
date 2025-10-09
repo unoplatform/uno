@@ -5,9 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.UI.Content;
-using SkiaSharp;
 using Uno.UI.Dispatching;
-using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
@@ -32,18 +30,13 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 	private Microsoft.UI.Xaml.UIElement? _rootElement;
 	private ContentSite _contentSite;
 	private WpfWindow? _window;
-	private SKPicture? _picture;
-	private SKPath? _clipPath;
+	private bool _invalidateRenderEnqueued;
 
 	/// <summary>
 	/// Gets or sets the current Skia Render surface type.
 	/// </summary>
 	/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 	public RenderSurfaceType? RenderSurfaceType { get; set; }
-
-	SKPicture? IWpfXamlRootHost.Picture => _picture;
-
-	SKPath? IWpfXamlRootHost.ClipPath => _clipPath;
 
 	public bool IgnorePixelScaling
 	{
@@ -122,25 +115,17 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		var rootElement = ((IXamlRootHost)this).RootElement;
-		if (!SkiaRenderHelper.CanRecordPicture(rootElement))
+		if (!Interlocked.Exchange(ref _invalidateRenderEnqueued, true))
 		{
-			// Try again next tick
-			rootElement?.XamlRoot?.QueueInvalidateRender();
-			return;
+			// We schedule on Idle here because if you invalidate directly, it can cause a hang if
+			// the rendering is continuously invalidated (e.g. animations). Try Given_SKCanvasElement to confirm.
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				ChildInternal?.XamlRoot?.InvalidateOverlays();
+				InvalidateVisual();
+				Interlocked.Exchange(ref _invalidateRenderEnqueued, false);
+			}, NativeDispatcherPriority.Idle);
 		}
-
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(ActualWidth),
-			(int)(ActualHeight),
-			rootElement,
-			invertPath: false);
-
-		Interlocked.Exchange(ref _picture, picture);
-		Interlocked.Exchange(ref _clipPath, path);
-
-		ChildInternal?.XamlRoot?.InvalidateOverlays();
-		InvalidateVisual();
 	}
 
 	WinUI.UIElement? IXamlRootHost.RootElement => _rootElement ??= _xamlSource?.GetVisualTreeRoot();
