@@ -19,6 +19,8 @@ using Uno.UI;
 using Windows.UI.Text;
 using System.Collections.Generic;
 using Microsoft.UI.Composition;
+using Windows.Storage;
+
 
 #if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
@@ -102,6 +104,8 @@ namespace Microsoft.UI.Xaml
 
 			if (OperatingSystem.IsBrowser())
 			{
+				_ = ApplicationData.Current.EnablePersistenceAsync();
+
 				// Force a schedule to let the dotnet exports be initialized properly
 				DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
 			}
