@@ -59,6 +59,8 @@
 
 		private _source: any;
 		private _bootTime: Number;
+		// Cached reference to #uno-native-element-host. Refreshed if detached/replaced.
+		private _nativeElementHost: HTMLElement | null = null;
 
 		private constructor(manageSource: any) {
 			this._bootTime = Date.now() - performance.now();
@@ -81,11 +83,68 @@
 			element.addEventListener("wheel", this.onPointerEventReceived.bind(this), { capture: true, passive: false });
 		}
 
+
+		// Retrieve and cache the native element host reference.
+		// Refreshes if the node was detached or replaced (e.g., during hot reload).
+		private getNativeElementHostCached(): HTMLElement | null {
+			if (this._nativeElementHost === null || this._nativeElementHost.isConnected === false) {
+				this._nativeElementHost = document.getElementById("uno-native-element-host") as HTMLElement | null;
+			}
+			return this._nativeElementHost;
+		}
+
+
+		// Returns true if the event originated from within the native host subtree.
+		// Traverses regular DOM first, then crosses Shadow DOM boundaries when required.
+		// Uses identity comparisons only; avoids selector matching, allocations, and redundant lookups.
+		private isEventFromNativeElementHost(eventTarget: EventTarget | null) {
+			const hostElement = this.getNativeElementHostCached();
+			if (hostElement === null) {
+				return false; // No host exists; nothing to filter.
+			}
+
+			let currentNode = eventTarget as Node | null;
+
+			while (currentNode !== null) {
+				// Fast identity comparison.
+				if (currentNode === hostElement) {
+					return true;
+				}
+
+				// Normal DOM climb first (fastest path)
+				const parent = (currentNode as any).parentNode as Node | null;
+				if (parent) {
+					currentNode = parent;
+					continue;
+				}
+
+				// Only if parentNode is null, check for a shadow boundary.
+				const rootNode = currentNode.getRootNode();
+
+				// If we're inside a shadow root, jump to its host to continue traversal
+				if (rootNode instanceof ShadowRoot && rootNode.host) {
+					currentNode = rootNode.host as Node; // cross shadow boundary
+					continue;
+				}
+
+				// Reached the top (Document or no further nodes)
+				break;
+			}
+
+			return false;
+		}
+
 		private onPointerEventReceived(evt: PointerEvent): void {
 			let id = (evt.target as HTMLElement)?.id;
 			if (id === "uno-enable-accessibility") {
 				// We have a div to enable accessibility (see enableA11y in WebAssemblyWindowWrapper).
 				// Pressing space on keyboard to click it will trigger pointer event which we want to ignore.
+				return;
+			}
+
+			if (this.isEventFromNativeElementHost(evt.target)) {
+				// Events from the native host are handled by the native control directly.
+				// We don't want to interfere with them.
 				return;
 			}
 
