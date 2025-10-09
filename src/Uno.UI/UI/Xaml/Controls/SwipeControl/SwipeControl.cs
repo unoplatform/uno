@@ -20,19 +20,13 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Windows.UI;
-
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
+using Microsoft.UI.Composition.Interactions;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SwipeControl : ContentControl
 	{
-
 		// Change to 'true' to turn on debugging outputs in Output window
 		//bool SwipeControlTrace.s_IsDebugOutputEnabled = false;
 		//bool SwipeControlTrace.s_IsVerboseDebugOutputEnabled = false;
@@ -48,13 +42,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			s_lastInteractedWithSwipeControl ??= new WeakReference<SwipeControl>(null);
 
-			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_SwipeControl);
 			this.SetDefaultStyleKey();
-
 			Loaded += UnfinalizeOnLoad;
 			Unloaded += FinalizeOnUnload;
 		}
 
+#if HAS_UNO
 		// [BEGIN] Uno workaround:
 		//  + we make sure to un-subscribe from events on unload to avoid leaks
 		//  + we must not use finalizer on uno (invoked from a bg thread)
@@ -73,6 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 				AttachEventHandlers(isUnoUnfinalizer: true);
 			}
 		}
+#endif
 
 		private void SwipeControl_Finalizer()
 		//~SwipeControl()
