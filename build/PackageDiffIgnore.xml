@@ -2138,7 +2138,6 @@
 	<IgnoreSet baseVersion="6.2">
 	  <Types>
 		  <Member fullName="Uno.Media.Playback.IMediaPlayerEventsExtension" reason="Does not exist in WinUI" />
-		  <Member fullName="Uno.Media.Playback.IMediaPlayerExtension" reason="Does not exist in WinUI" />
 		  <Member fullName="Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension" reason="Does not exist in WinUI" />
 		  <Member fullName="Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension" reason="Does not exist in WinUI" />
 	  </Types>
