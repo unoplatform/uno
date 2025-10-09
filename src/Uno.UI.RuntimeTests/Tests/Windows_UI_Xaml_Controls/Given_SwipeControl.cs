@@ -115,8 +115,8 @@ public class Given_SwipeControl : SampleControlUITestBase
 			_ => throw new NotSupportedException("Unknown EdgeTransitionLocation"),
 		};
 
-		ImageAssert.HasColorAt(screenshotAfter, new (firstItemRect.X + 4, firstItemRect.Y + 4), Colors.Red);
-		ImageAssert.HasColorAt(screenshotAfter, new (secondItemRect.X + 4, secondItemRect.Y + 4), Colors.Blue);
+		ImageAssert.HasColorAt(screenshotAfter, new(firstItemRect.X + 4, firstItemRect.Y + 4), Colors.Red);
+		ImageAssert.HasColorAt(screenshotAfter, new(secondItemRect.X + 4, secondItemRect.Y + 4), Colors.Blue);
 
 		var drawingRectangleFirst = new System.Drawing.Rectangle((int)firstItemRect.X, (int)firstItemRect.Y, (int)firstItemRect.Width, (int)firstItemRect.Height);
 		var drawingRectangleSecond = new System.Drawing.Rectangle((int)secondItemRect.X, (int)secondItemRect.Y, (int)secondItemRect.Width, (int)secondItemRect.Height);
