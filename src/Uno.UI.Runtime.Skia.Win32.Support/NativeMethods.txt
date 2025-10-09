@@ -203,6 +203,7 @@ SetWindowPos
 SetWindowRgn
 SetWindowText
 SHCreateItemFromParsingName
+SHCreateItemInKnownFolder
 ShowWindow
 SwapBuffers
 TranslateMessage

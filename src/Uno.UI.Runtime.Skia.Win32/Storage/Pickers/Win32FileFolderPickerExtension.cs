@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Disposables;
+using Uno.Extensions.Storage.Pickers;
+using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
+using Uno.UI.Helpers.WinUI;
+using Uno.UI.Runtime.Skia.Win32.Storage.Pickers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Win32;
@@ -10,10 +16,6 @@ using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.Shell.Common;
-using Uno.Disposables;
-using Uno.Extensions.Storage.Pickers;
-using Uno.Foundation.Logging;
-using Uno.UI.Helpers.WinUI;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -94,6 +96,12 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 				this.LogError()?.Error($"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 				return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 			}
+		}
+
+		using var defaultFolder = SuggestedStartLocationHandler.GetStartLocationShellItem(picker.SuggestedStartLocationInternal);
+		if (defaultFolder != default)
+		{
+			iFileOpenDialog.Value->SetDefaultFolder(defaultFolder);
 		}
 
 		hResult = iFileOpenDialog.Value->SetOkButtonLabel(string.IsNullOrEmpty(picker.CommitButtonTextInternal) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonTextInternal);
