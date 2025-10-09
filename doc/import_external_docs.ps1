@@ -18,7 +18,7 @@ $external_docs = @{
     "uno.resizetizer"    = @{ ref="6466544fb9a3b8c4c7fd92518442cc11166d532a" } #latest main commit
     "uno.uitest"         = @{ ref="94d027295b779e28064aebf99aeaee2b393ad558" } #latest master commit
     "uno.extensions"     = @{ ref="737c828179c2ce0a822f5523349c112c2f1ef4b5" } #latest release/stable/6.2 branch commit
-    "workshops"          = @{ ref="e3c2a11a588b184d8cd3a6f88813e5615cca891d" } #latest master commit
+    "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" } #latest master commit
     "uno.samples"        = @{ ref="11137484a1c8929b0bcb1a805eedc798590d835a" } #latest master commit
     "uno.chefs"          = @{ ref="754767e050dc725721e7c7aa134adf1ed93ea9a4" } #latest main commit
     "hd-docs"            = @{ ref="73eab0751f2a510ab658b17f3672b50cf1c2558a"; dest="studio/Hot Design" } #latest main commit
