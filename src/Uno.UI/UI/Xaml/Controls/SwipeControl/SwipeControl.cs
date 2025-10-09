@@ -797,7 +797,7 @@ namespace Microsoft.UI.Xaml.Controls
 						CloseIfNotRemainOpenExecuteItem();
 					});
 					xamlRootContent.AddHandler(KeyDownEvent, keyHandler, true);
-					m_xamlRootKeyDownEventRevoker = Disposable.Create(() => xamlRootContent.RemoveHandler(KeyDownEvent, handler));
+					m_xamlRootKeyDownEventRevoker = Disposable.Create(() => xamlRootContent.RemoveHandler(KeyDownEvent, keyHandler));
 				}
 
 				xamlRoot.Changed += CurrentXamlRootChanged;
