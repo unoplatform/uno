@@ -143,7 +143,7 @@
             <!--  SwipeItems mode set to Execute and appears to work correctly  -->
             <ListView Height="500" ItemsSource="{x:Bind ItemsUsingExecute}">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:MainModel">
+                    <DataTemplate x:DataType="local:SwipeControlModesModel">
                         <SwipeControl>
                             <SwipeControl.TopItems>
                                 <SwipeItems Mode="Execute">
@@ -187,7 +187,7 @@
             <!--  SwipeItems mode set to Reveal and appears to work correctly  -->
             <ListView ItemsSource="{x:Bind ItemsUsingReveal}">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:MainModel">
+                    <DataTemplate x:DataType="local:SwipeControlModesModel">
                         <SwipeControl>
                             <SwipeControl.TopItems>
                                 <SwipeItems Mode="Reveal">
