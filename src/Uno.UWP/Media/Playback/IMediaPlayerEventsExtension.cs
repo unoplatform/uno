@@ -8,7 +8,7 @@ namespace Uno.Media.Playback
 	/// <summary>
 	/// Extension interface for <see cref="MediaPlayer"/> events
 	/// </summary>
-	internal interface IMediaPlayerEventsExtension
+	public interface IMediaPlayerEventsExtension
 	{
 		/// <summary>
 		/// Raises the <see cref="MediaPlayer.SourceChanged"/> event
