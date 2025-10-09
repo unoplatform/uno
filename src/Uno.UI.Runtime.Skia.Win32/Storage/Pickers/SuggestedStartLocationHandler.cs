@@ -19,11 +19,11 @@ namespace Uno.UI.Runtime.Skia.Win32.Storage.Pickers;
 
 internal static class SuggestedStartLocationHandler
 {
-	internal static unsafe IDisposable SetDefaultFolder(PickerLocationId startLocation, Func<ComScope<IShellItem>, HRESULT> defaultFolderSetter)
+	internal static unsafe ComScope<IShellItem> GetStartLocationShellItem(PickerLocationId startLocation)
 	{
 		if (startLocation == PickerLocationId.Unspecified)
 		{
-			return Disposable.Empty;
+			return default;
 		}
 
 		Guid? folderGuid = startLocation is PickerLocationId.ComputerFolder ?
@@ -49,20 +49,9 @@ internal static class SuggestedStartLocationHandler
 				typeof(SuggestedStartLocationHandler).LogError()?.Error($"{methodName} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			}
 
-			ComScope<IShellItem> defaultFolderItem = new((IShellItem*)defaultFolderItemRaw);
-
-			hResult = defaultFolderSetter.Invoke(defaultFolderItem);
-			if (hResult.Failed)
-			{
-				typeof(SuggestedStartLocationHandler).LogError()?.Error($"{nameof(IFileDialog.SetDefaultFolder)} failed: {Win32Helper.GetErrorMessage(hResult)}");
-			}
-
-			return Disposable.Create(() =>
-			{
-				defaultFolderItem.Dispose();
-			});
+			return new((IShellItem*)defaultFolderItemRaw);
 		}
 
-		return Disposable.Empty;
+		return default;
 	}
 }

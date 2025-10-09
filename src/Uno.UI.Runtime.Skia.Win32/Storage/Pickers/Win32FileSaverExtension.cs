@@ -80,9 +80,11 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			iFileSaveDialog.Value->SetFileName(picker.SuggestedFileName);
 		}
 
-		using var defaultFolder = SuggestedStartLocationHandler.SetDefaultFolder(
-			picker.SuggestedStartLocation,
-			i => iFileSaveDialog.Value->SetDefaultFolder(i));
+		using var defaultFolder = SuggestedStartLocationHandler.GetStartLocationShellItem(picker.SuggestedStartLocation);
+		if (defaultFolder != default)
+		{
+			iFileSaveDialog.Value->SetDefaultFolder(defaultFolder);
+		}
 
 		if (fileTypeList.Count > 0)
 		{

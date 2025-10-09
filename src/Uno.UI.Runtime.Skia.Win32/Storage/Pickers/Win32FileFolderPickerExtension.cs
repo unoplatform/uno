@@ -98,9 +98,11 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 			}
 		}
 
-		using var defaultFolder = SuggestedStartLocationHandler.SetDefaultFolder(
-			picker.SuggestedStartLocationInternal,
-			i => iFileOpenDialog.Value->SetDefaultFolder(i));
+		using var defaultFolder = SuggestedStartLocationHandler.GetStartLocationShellItem(picker.SuggestedStartLocationInternal);
+		if (defaultFolder != default)
+		{
+			iFileOpenDialog.Value->SetDefaultFolder(defaultFolder);
+		}
 
 		hResult = iFileOpenDialog.Value->SetOkButtonLabel(string.IsNullOrEmpty(picker.CommitButtonTextInternal) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonTextInternal);
 		if (hResult.Failed)
