@@ -24,6 +24,7 @@
 	<!-- Link the ApplicationLaunchMonitor source directly so tests can compile without referencing the Server project output -->
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\ApplicationLaunchMonitor.cs" Link="AppLaunch\ApplicationLaunchMonitor.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.VS\AppLaunch\VsAppLaunchStateService.cs" Link="AppLaunch\VsAppLaunchStateService.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
