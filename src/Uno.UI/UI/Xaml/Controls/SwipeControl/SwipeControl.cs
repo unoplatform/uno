@@ -802,8 +802,8 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						CloseIfNotRemainOpenExecuteItem();
 					});
-					xamlRootContent.AddHandler(KeyDownEvent, handler, true);
-					m_xamlRootKeyDownEventRevoker = Disposable.Create(() => xamlRootContent.RemoveHandler(PointerPressedEvent, handler));
+					xamlRootContent.AddHandler(KeyDownEvent, keyHandler, true);
+					m_xamlRootKeyDownEventRevoker = Disposable.Create(() => xamlRootContent.RemoveHandler(KeyDownEvent, handler));
 				}
 
 				xamlRoot.Changed += CurrentXamlRootChanged;
