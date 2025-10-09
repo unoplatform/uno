@@ -14,7 +14,7 @@
             <!--  SwipeItems mode set to Execute and appears to work correctly  -->
             <ListView Height="500" ItemsSource="{x:Bind ItemsUsingExecute}">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:MainModel">
+                    <DataTemplate x:DataType="local:SwipeControlModesModel">
                         <SwipeControl>
                             <SwipeControl.LeftItems>
                                 <SwipeItems Mode="Execute">
