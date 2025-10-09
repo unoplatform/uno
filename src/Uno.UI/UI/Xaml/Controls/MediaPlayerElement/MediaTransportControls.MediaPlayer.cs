@@ -458,7 +458,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2;
 		}
 
-		private void OnVolumeChanged(object sender, RangeBaseValueChangedEventArgs e)
+		private void OnVolumeSliderVolumeChanged(object sender, RangeBaseValueChangedEventArgs e)
 		{
 			if (_mediaPlayer is not null)
 			{
