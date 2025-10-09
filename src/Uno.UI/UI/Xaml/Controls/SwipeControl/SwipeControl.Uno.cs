@@ -238,7 +238,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						_desiredStackPanelPosition.X = (float)(m_content.ActualWidth * 0.5 + _desiredPosition.X * 0.5);
+						_desiredStackPanelPosition.X = 0;
 					}
 					_desiredStackPanelPosition.Y = 0;
 					break;
@@ -253,7 +253,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						_desiredStackPanelPosition.Y = (float)(m_content.ActualHeight * 0.5 + _desiredPosition.Y * 0.5);
+						_desiredStackPanelPosition.Y = 0;
 					}
 					_desiredStackPanelPosition.X = 0;
 					break;
