@@ -65,7 +65,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 			uri = new Uri(uriString);
 		}
 
-		_coreWebView.OnDocumentTitleChanged();
+		_coreWebView.OnDocumentTitleChanged(DocumentTitle);
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 	}
 

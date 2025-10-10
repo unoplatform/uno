@@ -984,7 +984,7 @@ public
 		if (_previousTitle != currentTitle)
 		{
 			_previousTitle = currentTitle;
-			_coreWebView!.OnDocumentTitleChanged();
+			_coreWebView!.OnDocumentTitleChanged(currentTitle);
 		}
 	}
 }
