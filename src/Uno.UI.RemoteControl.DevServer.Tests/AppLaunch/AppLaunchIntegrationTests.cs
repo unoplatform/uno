@@ -107,7 +107,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			{
 				// The assembly path should be URL-encoded
 				var encodedPath = Uri.EscapeDataString(asmPath);
-				var url = $"http://localhost:{helper.Port}/app-launch/{encodedPath}?IsDebug={isDebug.ToString().ToLowerInvariant()}";
+				var url = $"http://localhost:{helper.Port}/applaunch/asm/{encodedPath}?IsDebug={isDebug.ToString().ToLowerInvariant()}";
 				var response = await http.GetAsync(url, CT);
 				response.EnsureSuccessStatusCode();
 				TestContext!.WriteLine("Http Response: " + await response.Content.ReadAsStringAsync());
