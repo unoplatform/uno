@@ -71,6 +71,7 @@ public partial class EntryPoint : IDisposable
 	private IUnoDevelopmentEnvironmentIndicator? _udei;
 	private IdeCommandHandler _commands;
 	private VsAppLaunchIdeBridge? _appLaunchIdeBridge;
+	private VsAppLaunchStateConsumer? _appLaunchStateConsumer;
 
 	// Legacy API v2
 	public EntryPoint(
@@ -214,6 +215,7 @@ public partial class EntryPoint : IDisposable
 		};
 
 		_appLaunchIdeBridge = await VsAppLaunchIdeBridge.CreateAsync(asyncPackage, _dte2, stateService);
+		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient);
 	}
 
 	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -839,6 +841,7 @@ public partial class EntryPoint : IDisposable
 			_infoBarFactory?.Dispose();
 			_unoMenuCommand?.Dispose();
 			_appLaunchIdeBridge?.Dispose();
+			_appLaunchStateConsumer?.Dispose();
 		}
 		catch (Exception e)
 		{
