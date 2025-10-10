@@ -153,11 +153,11 @@ namespace Uno.UI.RemoteControl.Host
 					await context.Response.WriteAsync("registered");
 				});
 
-				// New HTTP GET endpoint to register an app launch by providing the absolute assembly file path.
-				// Example: /app-launch/C:/path/to/MyApp.dll?IsDebug=true
-				router.MapGet("app-launch/{*assemblyPath}", async context =>
+				// Alternate HTTP GET endpoint to register an app launch by providing the absolute assembly file path with encoded path string
+				// Example: /app-launch/asm/C%3A%5Cpath%5Cto%5Capp.dll?IsDebug=true
+				router.MapGet("applaunch/asm/{*assemblyPath}", async context =>
 				{
-					var assemblyPathValue = context.GetRouteValue("assemblyPath")?.ToString();
+					var assemblyPathValue = Uri.UnescapeDataString(context.GetRouteValue("assemblyPath")?.ToString() ?? string.Empty);
 					if (string.IsNullOrWhiteSpace(assemblyPathValue))
 					{
 						context.Response.StatusCode = StatusCodes.Status400BadRequest;
@@ -175,7 +175,7 @@ namespace Uno.UI.RemoteControl.Host
 					}
 
 					var isDebug = false;
-					if (context.Request.Query.TryGetValue("IsDebug", out var isDebugVal))
+					if (context.Request.Query.TryGetValue("isDebug", out var isDebugVal))
 					{
 						if (!bool.TryParse(isDebugVal.ToString(), out isDebug))
 						{
