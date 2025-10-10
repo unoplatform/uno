@@ -63,6 +63,25 @@ internal sealed class VsAppLaunchIdeBridge : IDisposable
 		// Determine if this is a debug launch based on command ID
 		var isDebug = id == (int)VSConstants.VSStd97CmdID.Start; // Start = debug, StartNoDebug = no debug
 
+		// Only intercept launches for Debug builds. Match the logic used in RemoteControlGenerator
+		// which checks the MSBuild Configuration property equals "Debug".
+		// Use DTE to get the active solution configuration name when possible.
+		try
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+			var activeConfigName = _dte?.Solution?.SolutionBuild?.ActiveConfiguration?.Name;
+			if (!string.Equals(activeConfigName, "Debug", StringComparison.OrdinalIgnoreCase))
+			{
+				// Not a Debug configuration, do not intercept launch
+				return;
+			}
+		}
+		catch
+		{
+			// If we fail to determine configuration, conservatively bypass interception.
+			return;
+		}
+
 		// Fire-and-forget; collect details on UI thread when needed
 		_package.JoinableTaskFactory.RunAsync(async () =>
 		{
