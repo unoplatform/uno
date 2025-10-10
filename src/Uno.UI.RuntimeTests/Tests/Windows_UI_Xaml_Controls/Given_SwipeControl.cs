@@ -37,9 +37,9 @@ public class Given_SwipeControl : SampleControlUITestBase
 		{
 			Mode = SwipeMode.Reveal
 		};
-		var homeIcon = new SymbolIconSource() { Symbol = Symbol.Home };
-		swipeItems.Add(new SwipeItem { Text = "Item1", Background = new SolidColorBrush(Colors.Red), Foreground = new SolidColorBrush(Colors.Green), IconSource = homeIcon });
-		swipeItems.Add(new SwipeItem { Text = "Item2", Background = new SolidColorBrush(Colors.Blue), Foreground = new SolidColorBrush(Colors.Pink), IconSource = homeIcon });
+		var starIcon = new FontIconSource() { Glyph = "\uE735" };
+		swipeItems.Add(new SwipeItem { Text = "Item1", Background = new SolidColorBrush(Colors.Red), Foreground = new SolidColorBrush(Colors.Green), IconSource = starIcon });
+		swipeItems.Add(new SwipeItem { Text = "Item2", Background = new SolidColorBrush(Colors.Blue), Foreground = new SolidColorBrush(Colors.Pink), IconSource = starIcon });
 		switch (itemsLocation)
 		{
 			case EdgeTransitionLocation.Left:
