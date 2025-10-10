@@ -38,6 +38,8 @@
 	<ItemGroup>
 		<!-- Include BannerHelper source file directly for testing -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
+		<!-- Reuse the AssemblyInfoReader implementation from the VS project to avoid duplication -->
+		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\AssemblyInfoReader.cs" Link="Helpers\AssemblyInfoReader.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

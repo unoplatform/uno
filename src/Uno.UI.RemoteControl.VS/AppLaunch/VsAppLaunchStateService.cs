@@ -116,7 +116,8 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 			case BuildNotification.Began:
 				if (State == LaunchState.PlayInvokedPendingBuild)
 				{
-					SetState(LaunchState.BuildInProgress, details);
+					// Preserve the original correlated details instance when transitioning to BuildInProgress
+					SetState(LaunchState.BuildInProgress, _snapshot.StateDetails);
 					ResetTimer(startNew: false);
 				}
 				break;
@@ -126,12 +127,14 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 				break;
 
 			case BuildNotification.CompletedSuccess:
-				SetState(LaunchState.BuildSucceeded, details);
+				// Ensure the BuildSucceeded event carries the same correlated details
+				SetState(LaunchState.BuildSucceeded, _snapshot.StateDetails);
 				Reset();
 				break;
 
 			case BuildNotification.CompletedFailure:
-				SetState(LaunchState.BuildFailed, details);
+				// Ensure the BuildFailed event carries the same correlated details
+				SetState(LaunchState.BuildFailed, _snapshot.StateDetails);
 				Reset();
 				break;
 		}
@@ -151,7 +154,7 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 
 	public void Dispose() => Reset();
 
-	private void SetState(LaunchState state, TStateDetails? details)
+	private void SetState(LaunchState state, TStateDetails? details = default)
 	{
 		var prev = _snapshot.State;
 		var prevDetails = _snapshot.StateDetails;
@@ -169,7 +172,7 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 		}
 		else
 		{
-			_snapshot = new Snapshot(details, state);
+			_snapshot = new Snapshot(details ?? prevDetails, state);
 		}
 
 		StateChanged?.Invoke(this, new StateChangedEventArgs<TStateDetails>(_timeProvider.GetUtcNow(), prev, state, _snapshot.StateDetails));
@@ -237,5 +240,5 @@ internal sealed class StateChangedEventArgs<TStateDetails>(
 	public VsAppLaunchStateService<TStateDetails>.LaunchState Previous { get; } = previous;
 	public VsAppLaunchStateService<TStateDetails>.LaunchState Current { get; } = current;
 	public TStateDetails? StateDetails { get; } = details;
-	public bool Succeeded => Current == VsAppLaunchStateService<TStateDetails>.LaunchState.BuildSucceeded;
+	public bool BuildSucceeded => Current == VsAppLaunchStateService<TStateDetails>.LaunchState.BuildSucceeded;
 }
