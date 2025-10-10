@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Uno.UI.RemoteControl.Server.AppLaunch;
 
@@ -290,6 +289,8 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// </summary>
 	public void Dispose()
 	{
+		_scavengeTimer?.Dispose();
+
 		// Dispose all timers and clear pending timeout tasks
 		foreach (var kvp in _timeoutTasks.ToArray())
 		{
