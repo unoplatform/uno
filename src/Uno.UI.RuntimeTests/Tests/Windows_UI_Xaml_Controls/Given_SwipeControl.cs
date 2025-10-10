@@ -19,6 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public class Given_SwipeControl : SampleControlUITestBase
 {
+#if HAS_UNO
 	[TestMethod]
 	[CombinatorialData]
 	[RunsOnUIThread]
@@ -123,4 +124,5 @@ public class Given_SwipeControl : SampleControlUITestBase
 		ImageAssert.HasColorInRectangle(screenshotAfter, drawingRectangleFirst, Colors.Green);
 		ImageAssert.HasColorInRectangle(screenshotAfter, drawingRectangleSecond, Colors.Pink);
 	}
+#endif
 }
