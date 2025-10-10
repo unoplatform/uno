@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPager.h, tag winui3/release/1.4.2
+// MUX reference PipsPager.h, tag winui3/release/1.8-stable
 
 using System.Collections.ObjectModel;
 using Uno.Disposables;
@@ -17,6 +17,7 @@ public partial class PipsPager
 	private ScrollViewer m_pipsPagerScrollViewer;
 	private Button m_previousPageButton;
 	private Button m_nextPageButton;
+	private StackLayout m_itemsRepeaterStackLayout;
 
 	/* Revokers */
 	private SerialDisposable m_previousPageButtonClickRevoker = new SerialDisposable();
@@ -25,6 +26,7 @@ public partial class PipsPager
 	private SerialDisposable m_pipsAreaGettingFocusRevoker = new SerialDisposable();
 	private SerialDisposable m_pipsAreaBringIntoViewRequestedRevoker = new SerialDisposable();
 	private SerialDisposable m_scrollViewerBringIntoViewRequestedRevoker = new SerialDisposable();
+	private SerialDisposable m_itemsRepeaterStackLayoutChangedRevoker = new SerialDisposable();
 
 	/* Items */
 	private ObservableCollection<int> m_pipsPagerItems;
@@ -35,6 +37,7 @@ public partial class PipsPager
 	private int m_lastSelectedPageIndex = -1;
 	private bool m_isPointerOver = false;
 	private bool m_isFocused = false;
+	private bool m_cachedIsVirtualizationEnabledFlag = true;
 
 	private readonly DispatcherHelper m_dispatcherHelper = new DispatcherHelper();
 }
