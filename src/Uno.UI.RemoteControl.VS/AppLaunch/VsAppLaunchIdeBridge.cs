@@ -60,11 +60,16 @@ internal sealed class VsAppLaunchIdeBridge : IDisposable
 
 	private void OnBeforeExecute(string guid, int id, object customIn, object customOut, ref bool cancelDefault)
 	{
+		// Determine if this is a debug launch based on command ID
+		var isDebug = id == (int)VSConstants.VSStd97CmdID.Start; // Start = debug, StartNoDebug = no debug
+
 		// Fire-and-forget; collect details on UI thread when needed
 		_package.JoinableTaskFactory.RunAsync(async () =>
 		{
 			var details = await CollectStartupInfoAsync();
-			_stateService.Start(details);
+			// Update the details with debug information
+			var detailsWithDebug = details with { IsDebug = isDebug };
+			_stateService.Start(detailsWithDebug);
 		}).FileAndForget("uno/appLaunch/onBeforeExecute");
 	}
 

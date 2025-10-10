@@ -175,6 +175,39 @@ public class Given_VsAppLaunchStateService
 	}
 
 	[TestMethod]
+	public void StartKeepsOriginalInstance_WhenNotifyBuildReceivedWithEqualDifferentInstance()
+	{
+		// Arrange - use a details type that compares equal only on Key, but carries extra info
+		using var sut = CreateService<Details>(out var clock, out var events, window: TimeSpan.FromSeconds(5));
+		var original = new Details { Key = 42, Extra = "original" };
+		var equivalent = new Details { Key = 42, Extra = "other" };
+
+		// Act
+		sut.Start(original);
+
+		// Assert initial event contains the original instance (reference)
+		events.Should().HaveCount(1);
+		events[0].StateDetails.Should().BeSameAs(original);
+
+		// Act: notify build using an equivalent but different instance
+		sut.NotifyBuild(equivalent, BuildNotification.Began);
+
+		// Assert: the state moved to BuildInProgress and the StateDetails kept the original instance
+		events.Should().HaveCount(2);
+		events[1].Current.Should().Be(VsAppLaunchStateService<Details>.LaunchState.BuildInProgress);
+		events[1].StateDetails.Should().BeSameAs(original, "the service must preserve the original instance and not replace it with an equal one");
+	}
+
+	private sealed class Details
+	{
+		public int Key { get; set; }
+		public string? Extra { get; set; }
+
+		public override bool Equals(object? obj) => obj is Details d && d.Key == Key;
+		public override int GetHashCode() => Key.GetHashCode();
+	}
+
+	[TestMethod]
 	public void WhenSuccessReportedWithoutBegan_ThenBuildSucceededThenIdleAndKeyCleared()
 	{
 		// Arrange
