@@ -339,4 +339,80 @@ public class Given_VsAppLaunchStateService
 		// Basic sanity: we produced a lot of events but the final state is Idle with no active key
 		sut.State.Should().Be(VsAppLaunchStateService<int>.LaunchState.Idle);
 	}
+
+	[TestMethod]
+	public void WhenLaunchedArrivesBeforeRegister_ItIsRetainedAndMatchedOnStart()
+	{
+		// Arrange
+		using var sut = CreateService<Guid>(out var clock, out var events, window: TimeSpan.FromSeconds(5));
+		var key = Guid.NewGuid();
+
+		// Act: Launched arrives before register
+		var launchedAt = clock.GetUtcNow();
+		sut.NotifyLaunched(key, launchedAt);
+
+		// No events should be emitted yet
+		events.Should().BeEmpty();
+
+		// Now Register/Start occurs shortly after
+		clock.Advance(TimeSpan.FromSeconds(1));
+		sut.Start(key);
+
+		// Assert
+		// The Start should emit PlayInvokedPendingBuild and also a StateChanged carrying the computed negative
+		// or small delay value via RegisterToLaunchedDelay on the same or subsequent event depending on timing.
+		events.Should().NotBeEmpty();
+		// First event must be PlayInvokedPendingBuild
+		events[0].Current.Should().Be(VsAppLaunchStateService<Guid>.LaunchState.PlayInvokedPendingBuild);
+		// There should be a StateChanged with RegisterToLaunchedDelay not null (emitted during Start)
+		var matching = events.FirstOrDefault(e => e.RegisterToLaunchedDelay.HasValue);
+		matching.Should().NotBeNull("Start should produce an event that carries the RegisterToLaunchedDelay");
+		// Because the launched event arrived earlier than the register time, the computed delay must be negative
+		matching!.RegisterToLaunchedDelay.HasValue.Should().BeTrue();
+		matching!.RegisterToLaunchedDelay!.Value.Should().BeLessThan(TimeSpan.Zero);
+	}
+
+	[TestMethod]
+	public void WhenLaunchedIsNotMatched_ItIsScavengedAfterRetentionWindow()
+	{
+		// Arrange
+		var retention = TimeSpan.FromMilliseconds(200);
+		using var sut = CreateService<Guid>(out var clock, out var events, window: TimeSpan.FromSeconds(5));
+		// Replace options to set LaunchedRetention via reflection is cumbersome; instead create service directly
+		var options = new VsAppLaunchStateService<Guid>.Options { BuildWaitWindow = TimeSpan.FromSeconds(5), LaunchedRetention = retention };
+		clock = new FakeTimeProvider(DateTimeOffset.UtcNow);
+		var evts = new List<StateChangedEventArgs<Guid>>();
+		var sut2 = new VsAppLaunchStateService<Guid>(clock, options);
+		sut2.StateChanged += (_, e) => evts.Add(e);
+
+		var key = Guid.NewGuid();
+
+		// Act: Launched arrives
+		var launchedAt = clock.GetUtcNow();
+		sut2.NotifyLaunched(key, launchedAt);
+
+		// Advance less than retention: still retained
+		clock.Advance(TimeSpan.FromMilliseconds(100));
+
+		// Start now should match
+		sut2.Start(key);
+		// We expect matching: Start emitted and RegisterToLaunchedDelay present
+		evts.Should().NotBeEmpty();
+		evts.Any(e => e.RegisterToLaunchedDelay.HasValue).Should().BeTrue();
+
+		// Now test scavenging: create another service and send launched but do not start; ensure it is removed
+		var key2 = Guid.NewGuid();
+		var sut3 = new VsAppLaunchStateService<Guid>(clock, options);
+		var evts3 = new List<StateChangedEventArgs<Guid>>();
+		sut3.StateChanged += (_, e) => evts3.Add(e);
+		sut3.NotifyLaunched(key2, clock.GetUtcNow());
+
+		// Advance past retention window
+		clock.Advance(retention + TimeSpan.FromMilliseconds(50));
+
+		// Now Start should not find retained entry; Start should emit normal PlayInvokedPendingBuild with no RegisterToLaunchedDelay
+		sut3.Start(key2);
+		evts3.Should().NotBeEmpty();
+		evts3.Any(e => e.RegisterToLaunchedDelay.HasValue).Should().BeFalse();
+	}
 }
