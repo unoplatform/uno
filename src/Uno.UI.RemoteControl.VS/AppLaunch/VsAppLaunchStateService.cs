@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading;
 
 namespace Uno.UI.RemoteControl.VS.AppLaunch;
@@ -16,10 +17,16 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 	public sealed class Options
 	{
 		/// <summary>
-		/// Time window during which a build is expected after Play is pressed.
-		/// Default is 5 seconds.
+		/// Time window during which a build is expected to start after Play is pressed.
+		/// Default is 8 seconds.
 		/// </summary>
-		public TimeSpan BuildWaitWindow { get; init; } = TimeSpan.FromSeconds(5);
+		public TimeSpan BuildWaitWindow { get; init; } = TimeSpan.FromSeconds(8);
+
+		/// <summary>
+		/// How long to retain an "app launched" notification received before a Register/Start so it can
+		/// be matched later. Default is 30 seconds.
+		/// </summary>
+		public TimeSpan LaunchedRetention { get; init; } = TimeSpan.FromSeconds(30);
 	}
 
 	/// <summary>
@@ -61,15 +68,20 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 	private readonly TimeProvider _timeProvider;
 	private readonly Options _options;
 	private ITimer? _timer;
+	// Retained launched notifications for details that arrived before a Register/Start.
+	// We keep an immutable collection of (details, launchedAt, timer) and update it atomically using
+	// ImmutableInterlocked.Update to ensure thread-safety without locking. Expected size is small.
+	private ImmutableArray<(TStateDetails? Details, DateTimeOffset LaunchedAt, ITimer? Timer)> _launchedEntries
+		= ImmutableArray<(TStateDetails?, DateTimeOffset, ITimer?)>.Empty;
 	private static readonly IEqualityComparer<TStateDetails?> _detailsComparer = EqualityComparer<TStateDetails?>.Default;
 
 	/// <summary>
 	/// Immutable snapshot of the current cycle and state.
 	/// Contains the correlation StateDetails and current high-level state.
 	/// </summary>
-	private record struct Snapshot(TStateDetails? StateDetails, LaunchState State);
+	private record struct Snapshot(TStateDetails? StateDetails, LaunchState State, DateTimeOffset? StartTimestampUtc);
 
-	private Snapshot _snapshot = new Snapshot(default, LaunchState.Idle);
+	private Snapshot _snapshot = new Snapshot(default, LaunchState.Idle, null);
 
 	/// <summary>
 	/// Current state of the state machine.
@@ -96,8 +108,106 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 		// Cancel any previous wait timer and initialize the new cycle for the provided details.
 		try { _timer?.Dispose(); } catch { }
 		_timer = null;
-		SetState(LaunchState.PlayInvokedPendingBuild, details);
+
+		// If we have a retained launched entry for these details, compute the register->launched delay
+		// (launchedAt - registerTime). Note: if the launchedAt is earlier than registerTime this will be negative,
+		// which is expected per requirements.
+		TimeSpan? registerToLaunchedDelay = null;
+		var registerTime = _timeProvider.GetUtcNow();
+		// Atomically remove a retained entry for these details (if any) and capture the removed value.
+		(bool removed, DateTimeOffset LaunchedAt, ITimer? Timer) removedEntry = (false, default, null);
+		ImmutableInterlocked.Update(ref _launchedEntries, current =>
+		{
+			var idx = -1;
+			for (var i = 0; i < current.Length; i++)
+			{
+				if (_detailsComparer.Equals(current[i].Details, details))
+				{
+					idx = i;
+					break;
+				}
+			}
+			if (idx < 0) return current;
+			removedEntry = (true, current[idx].LaunchedAt, current[idx].Timer);
+			return current.RemoveAt(idx);
+		});
+		if (removedEntry.removed)
+		{
+			registerToLaunchedDelay = removedEntry.LaunchedAt - registerTime;
+			try { removedEntry.Timer?.Dispose(); } catch { }
+		}
+
+		SetState(LaunchState.PlayInvokedPendingBuild, details, startTimestampUtc: registerTime, registerToLaunchedDelay: registerToLaunchedDelay);
 		ResetTimer(startNew: true);
+	}
+
+	/// <summary>
+	/// Notify that the application has launched (e.g., the runtime reported back) at the given timestamp.
+	/// This may arrive before or after a Register/Start. If it arrives earlier it will be retained for
+	/// <see cref="Options.LaunchedRetention"/> and matched when a Register/Start occurs. If it arrives while a
+	/// cycle is active, an event will be emitted that includes the computed delay.
+	/// </summary>
+	public void NotifyLaunched(TStateDetails details, DateTimeOffset launchedAtUtc)
+	{
+		// If there is an active snapshot for the same details, compute delay vs the snapshot's start timestamp
+		// and emit an event immediately so listeners can correlate the two.
+		if (_detailsComparer.Equals(details, _snapshot.StateDetails) && _snapshot.StartTimestampUtc is { } startTs)
+		{
+			var delay = launchedAtUtc - startTs;
+			// Raise an informational StateChanged event preserving the current state but including the delay.
+			StateChanged?.Invoke(this, new StateChangedEventArgs<TStateDetails>(_timeProvider.GetUtcNow(), _snapshot.State, _snapshot.State, _snapshot.StateDetails, delay));
+			return;
+		}
+
+		// Otherwise retain it until a Register/Start or until scavenging.
+		// Replace any existing retained entry for these details.
+		// Atomically remove any existing entry for these details and dispose its timer.
+		ImmutableInterlocked.Update(ref _launchedEntries, current =>
+		{
+			var idx = -1;
+			for (var i = 0; i < current.Length; i++)
+			{
+				if (_detailsComparer.Equals(current[i].Details, details))
+				{
+					idx = i;
+					break;
+				}
+			}
+			if (idx < 0) return current;
+			try { current[idx].Timer?.Dispose(); } catch { }
+			return current.RemoveAt(idx);
+		});
+
+		// Create a scavenging timer to remove the entry after the retention window.
+		ITimer? thisTimer = null;
+		thisTimer = _timeProvider.CreateTimer(_ =>
+		{
+			try
+			{
+				// Remove the entry matching details (if still present) and dispose its timer.
+				ImmutableInterlocked.Update(ref _launchedEntries, current =>
+					{
+						var idx = -1;
+						for (var i = 0; i < current.Length; i++)
+						{
+							if (_detailsComparer.Equals(current[i].Details, details))
+							{
+								idx = i;
+								break;
+							}
+						}
+						if (idx < 0) return current;
+						try { current[idx].Timer?.Dispose(); } catch { }
+						return current.RemoveAt(idx);
+					});
+			}
+			finally
+			{
+				try { thisTimer?.Dispose(); } catch { }
+			}
+		}, null, dueTime: _options.LaunchedRetention, period: Timeout.InfiniteTimeSpan);
+
+		ImmutableInterlocked.Update(ref _launchedEntries, current => current.Add((details, launchedAtUtc, thisTimer)));
 	}
 
 	/// <summary>
@@ -117,7 +227,7 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 				if (State == LaunchState.PlayInvokedPendingBuild)
 				{
 					// Preserve the original correlated details instance when transitioning to BuildInProgress
-					SetState(LaunchState.BuildInProgress, _snapshot.StateDetails);
+					SetState(LaunchState.BuildInProgress, _snapshot.StateDetails, startTimestampUtc: _snapshot.StartTimestampUtc);
 					ResetTimer(startNew: false);
 				}
 				break;
@@ -128,13 +238,13 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 
 			case BuildNotification.CompletedSuccess:
 				// Ensure the BuildSucceeded event carries the same correlated details
-				SetState(LaunchState.BuildSucceeded, _snapshot.StateDetails);
+				SetState(LaunchState.BuildSucceeded, _snapshot.StateDetails, startTimestampUtc: _snapshot.StartTimestampUtc);
 				Reset();
 				break;
 
 			case BuildNotification.CompletedFailure:
 				// Ensure the BuildFailed event carries the same correlated details
-				SetState(LaunchState.BuildFailed, _snapshot.StateDetails);
+				SetState(LaunchState.BuildFailed, _snapshot.StateDetails, startTimestampUtc: _snapshot.StartTimestampUtc);
 				Reset();
 				break;
 		}
@@ -149,16 +259,17 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 		try { _timer?.Dispose(); } catch { }
 		_timer = null;
 		// Clear active StateDetails and emit Idle with no correlation details.
-		SetState(LaunchState.Idle, default);
+		SetState(LaunchState.Idle, default, startTimestampUtc: null);
 	}
 
 	public void Dispose() => Reset();
 
-	private void SetState(LaunchState state, TStateDetails? details = default)
+	private void SetState(LaunchState state, TStateDetails? details = default, DateTimeOffset? startTimestampUtc = null, TimeSpan? registerToLaunchedDelay = null)
 	{
 		var prev = _snapshot.State;
 		var prevDetails = _snapshot.StateDetails;
-		if (prev == state && _detailsComparer.Equals(details, prevDetails))
+		var prevStartTs = _snapshot.StartTimestampUtc;
+		if (prev == state && _detailsComparer.Equals(details, prevDetails) && Nullable.Equals(startTimestampUtc, prevStartTs))
 		{
 			return;
 		}
@@ -168,14 +279,14 @@ internal sealed class VsAppLaunchStateService<TStateDetails> : IDisposable
 			// When transitioning back to Idle, set the snapshot to the provided details so listeners
 			// receive the correlated StateDetails for the cycle that just ended. Callers (Reset)
 			// may clear the snapshot afterwards.
-			_snapshot = new Snapshot(details, LaunchState.Idle);
+			_snapshot = new Snapshot(details, LaunchState.Idle, startTimestampUtc);
 		}
 		else
 		{
-			_snapshot = new Snapshot(details ?? prevDetails, state);
+			_snapshot = new Snapshot(details ?? prevDetails, state, startTimestampUtc ?? prevStartTs);
 		}
 
-		StateChanged?.Invoke(this, new StateChangedEventArgs<TStateDetails>(_timeProvider.GetUtcNow(), prev, state, _snapshot.StateDetails));
+		StateChanged?.Invoke(this, new StateChangedEventArgs<TStateDetails>(_timeProvider.GetUtcNow(), prev, state, _snapshot.StateDetails, registerToLaunchedDelay));
 	}
 
 	private void ResetTimer(bool startNew)
@@ -233,12 +344,19 @@ internal sealed class StateChangedEventArgs<TStateDetails>(
 	DateTimeOffset timestampUtc,
 	VsAppLaunchStateService<TStateDetails>.LaunchState previous,
 	VsAppLaunchStateService<TStateDetails>.LaunchState current,
-	TStateDetails? details)
+	TStateDetails? details,
+	TimeSpan? registerToLaunchedDelay = null)
 	: EventArgs
 {
 	public DateTimeOffset TimestampUtc { get; } = timestampUtc;
 	public VsAppLaunchStateService<TStateDetails>.LaunchState Previous { get; } = previous;
 	public VsAppLaunchStateService<TStateDetails>.LaunchState Current { get; } = current;
 	public TStateDetails? StateDetails { get; } = details;
+
+	/// <summary>
+	/// If not null, indicates a delay computed between register/start and a previously received launched notification.
+	/// **May be negative** if the launched event arrived earlier than register time.
+	/// </summary>
+	public TimeSpan? RegisterToLaunchedDelay { get; } = registerToLaunchedDelay;
 	public bool BuildSucceeded => Current == VsAppLaunchStateService<TStateDetails>.LaunchState.BuildSucceeded;
 }
