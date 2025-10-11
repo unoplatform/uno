@@ -41,6 +41,9 @@ namespace Uno.UI.RuntimeTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_Animate()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -74,6 +77,9 @@ namespace Uno.UI.RuntimeTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_Stop()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -107,6 +113,9 @@ namespace Uno.UI.RuntimeTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_PauseResume()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -149,6 +158,9 @@ namespace Uno.UI.RuntimeTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_RepeatCount()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -184,7 +196,9 @@ namespace Uno.UI.RuntimeTests
 		[TestMethod]
 #if __SKIA__
 		[Ignore("Flaky on Skia targets, see https://github.com/unoplatform/uno/issues/9080")]
-#endif
+#elif RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_RepeatDuration()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -216,6 +230,9 @@ namespace Uno.UI.RuntimeTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_RepeatForever()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -255,6 +272,9 @@ namespace Uno.UI.RuntimeTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_BeginTime()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
