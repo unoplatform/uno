@@ -1,4 +1,5 @@
 using System;
+using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
 using Uno.UI.Composition;
@@ -18,6 +19,18 @@ public partial class CompositionTarget : ICompositionTarget
 		ContentRoot = contentRoot;
 #if __SKIA__
 		_targets.Add(this, null);
+		var xamlRoot = ContentRoot.GetOrCreateXamlRoot();
+		lock (_xamlRootBoundsGate)
+		{
+			_xamlRootBounds = new Size((int)(xamlRoot.Bounds.Width * xamlRoot.RasterizationScale), (int)(xamlRoot.Bounds.Height * xamlRoot.RasterizationScale));
+		}
+		xamlRoot.Changed += (sender, _) =>
+		{
+			lock (_xamlRootBoundsGate)
+			{
+				_xamlRootBounds = new Size((int)(sender.Bounds.Width * sender.RasterizationScale), (int)(sender.Bounds.Height * sender.RasterizationScale));
+			}
+		};
 #endif
 	}
 
