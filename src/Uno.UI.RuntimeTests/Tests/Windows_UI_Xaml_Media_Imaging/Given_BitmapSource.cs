@@ -71,6 +71,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			Assert.IsTrue(success);
 		}
 
+#if __SKIA__
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_LocalResource_ScaleQualifier()
+		{
+			var path = new Uri("ms-appx:///Assets/scale-test.png");
+			var resolved = await BitmapImage.TryResolveLocalResource(path, scaleOverride: Windows.Graphics.Display.ResolutionScale.Scale400Percent);
+
+			Assert.IsTrue(resolved.PathAndQuery.Contains("scale-400"), $"Resolved asset path did not contain the expected .scale-400 qualifier: {resolved}");
+		}
+#endif
+
 #if __SKIA__ // Not yet supported on the other platforms (https://github.com/unoplatform/uno/issues/8909)
 		[TestMethod]
 		public async Task When_MsAppData()

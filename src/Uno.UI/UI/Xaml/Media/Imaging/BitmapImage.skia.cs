@@ -64,8 +64,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 					if (uri.IsLocalResource())
 					{
-						// GetScaledPath uses DisplayInformation so it needs to be called on the UI thread
-						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+						uri = await TryResolveLocalResource(uri);
 					}
 
 					var ignoreCache = CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
@@ -140,7 +139,36 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			(int)ResolutionScale.Scale500Percent
 		};
 
-		internal static string GetScaledPath(string rawPath)
+		internal static async Task<Uri> TryResolveLocalResource(Uri uri, ResolutionScale? scaleOverride = null)
+		{
+			if (!uri.IsLocalResource())
+			{
+				return uri;
+			}
+
+			// GetScaledPath uses DisplayInformation so it needs to be called on the UI thread
+			if (OperatingSystem.IsIOS())
+			{
+				// For iOS, [Uno.netcoremobile]\PlatformImageHelpers.GetScaledPath just returns the input uri back as is.
+				// Presumably under the assumption that the native control will handle the resultion of @2x @3x assets accordingly.
+				// However, on skia-ios, this is handled by uno (right here),
+				// so we need to resolve the appropriate asset here, with the scale-XYZ qualifier if available.
+
+				var path = uri.PathAndQuery;
+				if (uri.Host is { Length: > 0 } host)
+				{
+					path = host + "/" + path.TrimStart('/');
+				}
+
+				return new Uri(GetScaledPath(path, scaleOverride));
+			}
+			else
+			{
+				return new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride));
+			}
+		}
+
+		internal static string GetScaledPath(string rawPath, ResolutionScale? scaleOverride = null)
 		{
 			// Avoid querying filesystem if we already seen this file
 			if (_scaledBitmapPathCache.TryGetValue(rawPath, out var result))
@@ -153,7 +181,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
 				);
 
-			var resolutionScale = (int)DisplayInformation.GetForCurrentView().ResolutionScale;
+			var resolutionScale = (int)(scaleOverride ?? DisplayInformation.GetForCurrentView().ResolutionScale);
 
 			var baseDirectory = Path.GetDirectoryName(originalLocalPath);
 			var baseFileName = Path.GetFileNameWithoutExtension(originalLocalPath);
