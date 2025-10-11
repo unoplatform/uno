@@ -1,3 +1,7 @@
+using System;
+using System.Text.Json;
+using Uno.Foundation.Logging;
+
 namespace Microsoft.Web.WebView2.Core;
 
 /// <summary>
@@ -21,6 +25,23 @@ public partial class CoreWebView2WebMessageReceivedEventArgs
 	/// <returns></returns>
 	public string TryGetWebMessageAsString()
 	{
-		throw new global::System.NotImplementedException("The member string CoreWebView2WebMessageReceivedEventArgs.TryGetWebMessageAsString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CoreWebView2WebMessageReceivedEventArgs.TryGetWebMessageAsString%28%29");
+		if (string.IsNullOrWhiteSpace(WebMessageAsJson))
+		{
+			return WebMessageAsJson;
+		}
+
+		try
+		{
+			return JsonSerializer.Deserialize<string>(WebMessageAsJson);
+		}
+		catch (Exception)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("The message could not be deserialized to a string.");
+			}
+
+			return null;
+		}
 	}
 }
