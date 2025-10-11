@@ -47,7 +47,7 @@
                                 <Rectangle
                                     Grid.Row="1"
                                     Height="2"
-                                    Background="Black" />
+                                    Fill="Black" />
                             </Grid>
                         </SwipeControl>
                     </DataTemplate>
@@ -131,7 +131,7 @@
                                 <Rectangle
                                     Grid.Row="1"
                                     Height="2"
-                                    Background="Black" />
+                                    Fill="Black" />
                             </Grid>
                         </SwipeControl>
                     </DataTemplate>
@@ -176,7 +176,7 @@
                                 <Rectangle
                                     Grid.Row="1"
                                     Height="2"
-                                    Background="Black" />
+                                    Fill="Black" />
                             </Grid>
                         </SwipeControl>
                     </DataTemplate>
@@ -244,7 +244,7 @@
                                 <Rectangle
                                     Grid.Row="1"
                                     Height="2"
-                                    Background="Black" />
+                                    Fill="Black" />
                             </Grid>
                         </SwipeControl>
                     </DataTemplate>
