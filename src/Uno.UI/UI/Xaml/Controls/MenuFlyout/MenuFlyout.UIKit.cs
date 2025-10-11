@@ -12,57 +12,52 @@ using Microsoft.UI.Xaml.Controls;
 using UIKit;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class MenuFlyout
 {
-	public partial class MenuFlyout
+	private static DependencyProperty CancelTextIosOverrideProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutExtensions", "CancelTextIosOverride");
+
+	private string LocalizedCancelString => NSBundle.FromIdentifier("com.apple.UIKit")
+		.GetLocalizedString("Cancel", null);
+
+	internal protected override void Open()
 	{
-		private static DependencyProperty CancelTextIosOverrideProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutExtensions", "CancelTextIosOverride");
-
-		private string LocalizedCancelString => NSBundle.FromIdentifier("com.apple.UIKit")
-			.GetLocalizedString("Cancel", null);
-
-		internal protected override void Open()
+		if (UseNativePopup)
 		{
-			if (UseNativePopup)
-			{
 
-				if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-				{
-					ShowAlert(Target);
-				}
-#if !__TVOS__
-				else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
-				{
-					ShowActionSheet(Target);
-				}
-#endif
-			}
-			else
+			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
 			{
-				base.Open();
+				ShowAlert(Target);
+			}
+			else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+			{
+				ShowActionSheet(Target);
 			}
 		}
-
-		internal protected override void Close()
+		else
 		{
-			if (UseNativePopup)
-			{
+			base.Open();
+		}
+	}
 
-				if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-				{
-					HideAlert();
-				}
-#if !__TVOS__
-				else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
-				{
-					HideActionSheet();
-				}
-#endif
-			}
-			else
+	internal protected override void Close()
+	{
+		if (UseNativePopup)
+		{
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
 			{
-				base.Close();
+				HideAlert();
 			}
+			else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+			{
+				HideActionSheet();
+			}
+		}
+		else
+		{
+			base.Close();
 		}
 	}
 }
