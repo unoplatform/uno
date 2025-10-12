@@ -1,4 +1,4 @@
-namespace UnoApp4.Presentation;
+namespace UITests.Windows_UI_Xaml_Controls.SwipeControlTests;
 
 public partial record SwipeControlModesModel
 {
