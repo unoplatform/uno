@@ -7,7 +7,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
-using UnoApp4.Presentation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
