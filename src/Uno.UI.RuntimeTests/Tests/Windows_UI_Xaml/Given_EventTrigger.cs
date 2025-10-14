@@ -147,4 +147,30 @@ public class Given_EventTrigger
 		Assert.AreEqual(1, action1Executed, "First storyboard should have executed");
 		Assert.AreEqual(1, action2Executed, "Second storyboard should have executed");
 	}
+
+	[TestMethod]
+	public void When_EventTrigger_With_Non_Loaded_Event_Throws()
+	{
+		var eventTrigger = new EventTrigger();
+
+		// Create a custom routed event (not Loaded)
+		var customEvent = new RoutedEvent(Uno.UI.Xaml.RoutedEventFlag.None, "CustomEvent");
+
+		// Attempting to set a non-Loaded RoutedEvent should throw
+		Assert.ThrowsException<NotSupportedException>(() =>
+		{
+			eventTrigger.RoutedEvent = customEvent;
+		}, "Setting a non-Loaded RoutedEvent should throw NotSupportedException");
+	}
+
+	[TestMethod]
+	public void When_EventTrigger_With_Loaded_Event_Succeeds()
+	{
+		var eventTrigger = new EventTrigger();
+
+		// Setting the Loaded event should succeed
+		eventTrigger.RoutedEvent = FrameworkElement.LoadedEvent;
+
+		Assert.AreEqual(FrameworkElement.LoadedEvent, eventTrigger.RoutedEvent);
+	}
 }

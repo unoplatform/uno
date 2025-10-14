@@ -41,22 +41,8 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
+			// EventTrigger only supports Loaded event, so we fire all EventTrigger actions when Loaded fires
 			foreach (var trigger in _triggers.OfType<EventTrigger>())
-			{
-				RegisterEventTrigger(trigger);
-			}
-		}
-
-		private void RegisterEventTrigger(EventTrigger trigger)
-		{
-			if (trigger.RoutedEvent == null)
-			{
-				// Default to Loaded event if no RoutedEvent is specified
-				trigger.RoutedEvent = LoadedEvent;
-			}
-
-			// Hook up the event based on the RoutedEvent
-			if (trigger.RoutedEvent == LoadedEvent)
 			{
 				trigger.FireActions();
 			}
