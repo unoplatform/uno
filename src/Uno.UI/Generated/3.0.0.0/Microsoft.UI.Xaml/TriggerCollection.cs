@@ -8,73 +8,8 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class TriggerCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.TriggerBase>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.TriggerBase>
 	{
-		private readonly global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.TriggerBase> _triggers = new global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.TriggerBase>();
-
-		internal TriggerCollection()
-		{
-		}
-
-		public uint Size => (uint)_triggers.Count;
-
-		public int Count => _triggers.Count;
-
-		public bool IsReadOnly => false;
-
-		public global::Microsoft.UI.Xaml.TriggerBase this[int index]
-		{
-			get => _triggers[index];
-			set => _triggers[index] = value;
-		}
-
-		public void Add(global::Microsoft.UI.Xaml.TriggerBase item)
-		{
-			_triggers.Add(item);
-		}
-
-		public void Clear()
-		{
-			_triggers.Clear();
-		}
-
-		public bool Contains(global::Microsoft.UI.Xaml.TriggerBase item)
-		{
-			return _triggers.Contains(item);
-		}
-
-		public void CopyTo(global::Microsoft.UI.Xaml.TriggerBase[] array, int arrayIndex)
-		{
-			_triggers.CopyTo(array, arrayIndex);
-		}
-
-		public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Xaml.TriggerBase> GetEnumerator()
-		{
-			return _triggers.GetEnumerator();
-		}
-
-		public int IndexOf(global::Microsoft.UI.Xaml.TriggerBase item)
-		{
-			return _triggers.IndexOf(item);
-		}
-
-		public void Insert(int index, global::Microsoft.UI.Xaml.TriggerBase item)
-		{
-			_triggers.Insert(index, item);
-		}
-
-		public bool Remove(global::Microsoft.UI.Xaml.TriggerBase item)
-		{
-			return _triggers.Remove(item);
-		}
-
-		public void RemoveAt(int index)
-		{
-			_triggers.RemoveAt(index);
-		}
-
-		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			return _triggers.GetEnumerator();
-		}
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.TriggerCollection()
+		// Skipping already declared property Microsoft.UI.Xaml.TriggerCollection.Size
 		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.GetAt(uint)
 		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.Size.get
 		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.GetView()
