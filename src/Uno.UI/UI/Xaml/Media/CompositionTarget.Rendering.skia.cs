@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -22,12 +23,15 @@ public partial class CompositionTarget
 	private static bool _isRenderingActive;
 
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
-	private readonly object _frameGate = new();
+	private readonly Lock _frameGate = new();
+	private readonly Lock _xamlRootBoundsGate = new();
 
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (SKPicture frame, SKPath nativeElementClipPath, Size size)? _lastRenderedFrame;
+	private (SKPicture frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
+	// only set on the UI thread and read from the drawing thread
+	private Size _xamlRootBounds;
 
 	internal event Action? FrameRendered;
 
@@ -75,7 +79,7 @@ public partial class CompositionTarget
 			rootElement,
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
 			applyScaling: FrameRenderingOptions.applyScalingToNativeElementClipPath);
-		var lastRenderedFrame = (picture, path, new Size((int)(bounds.Width * scale), (int)(bounds.Height * scale)));
+		var lastRenderedFrame = (picture, path);
 		lock (_frameGate)
 		{
 			_lastRenderedFrame = lastRenderedFrame;
@@ -99,7 +103,7 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
-		(SKPicture frame, SKPath nativeElementClipPath, Size size)? lastRenderedFrameNullable;
+		(SKPicture frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -111,10 +115,15 @@ public partial class CompositionTarget
 		}
 		else
 		{
-			if (canvas is null || _lastCanvasSize != lastRenderedFrame.size)
+			Size xamlRootBounds;
+			lock (_xamlRootBoundsGate)
 			{
-				canvas = resizeFunc(lastRenderedFrame.size);
-				_lastCanvasSize = lastRenderedFrame.size;
+				xamlRootBounds = _xamlRootBounds;
+			}
+			if (canvas is null || _lastCanvasSize != xamlRootBounds)
+			{
+				canvas = resizeFunc(xamlRootBounds);
+				_lastCanvasSize = xamlRootBounds;
 			}
 
 			SkiaRenderHelper.RenderPicture(
