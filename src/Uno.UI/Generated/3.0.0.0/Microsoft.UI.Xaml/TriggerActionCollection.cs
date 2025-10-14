@@ -8,73 +8,8 @@ namespace Microsoft.UI.Xaml
 #endif
 public partial class TriggerActionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.TriggerAction>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.TriggerAction>
 {
-private readonly global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.TriggerAction> _actions = new global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.TriggerAction>();
-
-public TriggerActionCollection()
-{
-}
-
-public uint Size => (uint)_actions.Count;
-
-public int Count => _actions.Count;
-
-public bool IsReadOnly => false;
-
-public global::Microsoft.UI.Xaml.TriggerAction this[int index]
-{
-get => _actions[index];
-set => _actions[index] = value;
-}
-
-public void Add(global::Microsoft.UI.Xaml.TriggerAction item)
-{
-_actions.Add(item);
-}
-
-public void Clear()
-{
-_actions.Clear();
-}
-
-public bool Contains(global::Microsoft.UI.Xaml.TriggerAction item)
-{
-return _actions.Contains(item);
-}
-
-public void CopyTo(global::Microsoft.UI.Xaml.TriggerAction[] array, int arrayIndex)
-{
-_actions.CopyTo(array, arrayIndex);
-}
-
-public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Xaml.TriggerAction> GetEnumerator()
-{
-return _actions.GetEnumerator();
-}
-
-public int IndexOf(global::Microsoft.UI.Xaml.TriggerAction item)
-{
-return _actions.IndexOf(item);
-}
-
-public void Insert(int index, global::Microsoft.UI.Xaml.TriggerAction item)
-{
-_actions.Insert(index, item);
-}
-
-public bool Remove(global::Microsoft.UI.Xaml.TriggerAction item)
-{
-return _actions.Remove(item);
-}
-
-public void RemoveAt(int index)
-{
-_actions.RemoveAt(index);
-}
-
-global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-{
-return _actions.GetEnumerator();
-}
+// Skipping already declared property Microsoft.UI.Xaml.TriggerActionCollection.Size
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.TriggerActionCollection()
 // Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.TriggerActionCollection()
 // Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetAt(uint)
 // Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Size.get
