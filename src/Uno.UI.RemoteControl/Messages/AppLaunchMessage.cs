@@ -12,7 +12,7 @@ public record AppLaunchMessage : IMessage
 
 	public Guid Mvid { get; init; }
 
-	public string Platform { get; init; } = string.Empty;
+	public string? Platform { get; init; }
 
 	public bool IsDebug { get; init; }
 
