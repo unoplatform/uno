@@ -27,6 +27,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			remove => _completedHandlers?.Remove(value);
 		}
 
+		public bool AutoReverse
+		{
+			get => (bool)GetValue(AutoReverseProperty);
+			set => SetValue(AutoReverseProperty, value);
+		}
+
+		public static DependencyProperty AutoReverseProperty { get; } =
+			DependencyProperty.Register("AutoReverse", typeof(bool), typeof(Timeline), new FrameworkPropertyMetadata(false));
+
 		public Timeline()
 		{
 			IsAutoPropertyInheritanceEnabled = false;

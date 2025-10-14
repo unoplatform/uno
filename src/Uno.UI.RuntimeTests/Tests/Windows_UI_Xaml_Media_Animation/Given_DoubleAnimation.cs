@@ -391,5 +391,143 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				// And, when the animation is completed, this native value is reset even for HoldEnd animation.
 				: translate.Y;
 #endif
+
+		[TestMethod]
+		public async Task When_AutoReverse_True()
+		{
+			var target = new TextBlock() { Text = "Test AutoReverse" };
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(target);
+
+			var transform = new TranslateTransform();
+			target.RenderTransform = transform;
+
+			var animation = new DoubleAnimation()
+			{
+				From = 0,
+				To = 100,
+				Duration = TimeSpan.FromMilliseconds(500),
+				AutoReverse = true,
+				FillBehavior = FillBehavior.HoldEnd,
+			};
+			Storyboard.SetTarget(animation, transform);
+			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.X));
+
+			var storyboard = new Storyboard();
+			storyboard.Children.Add(animation);
+
+			bool completed = false;
+			storyboard.Completed += (s, e) => completed = true;
+
+			storyboard.Begin();
+
+			// Wait for quarter of the animation (forward phase)
+			await Task.Delay(250);
+			var valueAt25Percent = transform.X;
+
+			// Wait for just past halfway (should be near the end of forward phase)
+			await Task.Delay(300);
+			var valueAt55Percent = transform.X;
+
+			// Wait for 75% of total duration (should be in reverse phase)
+			await Task.Delay(250);
+			var valueAt80Percent = transform.X;
+
+			// Wait for completion
+			await WindowHelper.WaitFor(() => completed, timeoutMS: 2000);
+
+			// Final value should be back at start (0) with HoldEnd
+			var finalValue = transform.X;
+
+			// Verify animation went forward then backward
+			Assert.IsTrue(valueAt25Percent > 0 && valueAt25Percent < 100, 
+				$"At 25%, value should be between 0 and 100, got {valueAt25Percent}");
+			Assert.IsTrue(valueAt55Percent > valueAt25Percent, 
+				$"At 55%, value should be greater than at 25%, got {valueAt55Percent} vs {valueAt25Percent}");
+			Assert.IsTrue(valueAt80Percent < valueAt55Percent, 
+				$"At 80% (reverse phase), value should be less than at 55%, got {valueAt80Percent} vs {valueAt55Percent}");
+			Assert.IsTrue(Math.Abs(finalValue) < 10, 
+				$"Final value should be close to 0, got {finalValue}");
+		}
+
+		[TestMethod]
+		public async Task When_AutoReverse_False()
+		{
+			var target = new TextBlock() { Text = "Test No AutoReverse" };
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(target);
+
+			var transform = new TranslateTransform();
+			target.RenderTransform = transform;
+
+			var animation = new DoubleAnimation()
+			{
+				From = 0,
+				To = 100,
+				Duration = TimeSpan.FromMilliseconds(500),
+				AutoReverse = false,
+				FillBehavior = FillBehavior.HoldEnd,
+			};
+			Storyboard.SetTarget(animation, transform);
+			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.X));
+
+			var storyboard = new Storyboard();
+			storyboard.Children.Add(animation);
+
+			bool completed = false;
+			storyboard.Completed += (s, e) => completed = true;
+
+			storyboard.Begin();
+
+			// Wait for completion
+			await WindowHelper.WaitFor(() => completed, timeoutMS: 2000);
+
+			// Final value should stay at end (100) with HoldEnd and no AutoReverse
+			var finalValue = transform.X;
+			Assert.IsTrue(Math.Abs(finalValue - 100) < 10, 
+				$"Final value should be close to 100, got {finalValue}");
+		}
+
+		[TestMethod]
+		public async Task When_AutoReverse_WithRepeat()
+		{
+			var target = new TextBlock() { Text = "Test AutoReverse with Repeat" };
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(target);
+
+			var transform = new TranslateTransform();
+			target.RenderTransform = transform;
+
+			var animation = new DoubleAnimation()
+			{
+				From = 0,
+				To = 50,
+				Duration = TimeSpan.FromMilliseconds(250),
+				AutoReverse = true,
+				RepeatBehavior = new RepeatBehavior(2), // Repeat twice (4 total half-cycles)
+				FillBehavior = FillBehavior.HoldEnd,
+			};
+			Storyboard.SetTarget(animation, transform);
+			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.X));
+
+			var storyboard = new Storyboard();
+			storyboard.Children.Add(animation);
+
+			bool completed = false;
+			storyboard.Completed += (s, e) => completed = true;
+
+			storyboard.Begin();
+
+			// Wait for completion (2 repeats * 2 phases * 250ms = 1000ms)
+			await WindowHelper.WaitFor(() => completed, timeoutMS: 2500);
+
+			// Final value should be back at start (0)
+			var finalValue = transform.X;
+			Assert.IsTrue(Math.Abs(finalValue) < 10, 
+				$"Final value should be close to 0 after repeating with AutoReverse, got {finalValue}");
+		}
 	}
 }
