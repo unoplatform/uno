@@ -63,16 +63,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property BaseUri
 		// Skipping already declared property IsLoaded
 		// Skipping already declared property Parent
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TriggerCollection Triggers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TriggerCollection FrameworkElement.Triggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TriggerCollection%20FrameworkElement.Triggers");
-			}
-		}
-#endif
+		// Skipping already declared property Triggers
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualHeightProperty { get; } =

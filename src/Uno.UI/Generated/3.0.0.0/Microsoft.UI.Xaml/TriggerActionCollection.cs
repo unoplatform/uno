@@ -3,159 +3,108 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented]
+#if false || false || false || false || false || false || false
+[global::Uno.NotImplemented]
 #endif
-	public partial class TriggerActionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.TriggerAction>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.TriggerAction>
-	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint TriggerActionCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20TriggerActionCollection.Size");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public TriggerActionCollection()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.TriggerActionCollection", "TriggerActionCollection.TriggerActionCollection()");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.TriggerActionCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.IndexOf(Microsoft.UI.Xaml.TriggerAction, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.SetAt(uint, Microsoft.UI.Xaml.TriggerAction)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.InsertAt(uint, Microsoft.UI.Xaml.TriggerAction)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Append(Microsoft.UI.Xaml.TriggerAction)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetMany(uint, Microsoft.UI.Xaml.TriggerAction[])
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.ReplaceAll(Microsoft.UI.Xaml.TriggerAction[])
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.First()
-		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerAction>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerAction>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(global::Microsoft.UI.Xaml.TriggerAction item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerAction>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, global::Microsoft.UI.Xaml.TriggerAction item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerAction>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TriggerAction this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerAction>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerAction>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::Microsoft.UI.Xaml.TriggerAction item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerAction>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerAction>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::Microsoft.UI.Xaml.TriggerAction item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerAction>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Microsoft.UI.Xaml.TriggerAction[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerAction>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(global::Microsoft.UI.Xaml.TriggerAction item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.TriggerAction>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.TriggerAction>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Xaml.TriggerAction> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-		// Processing: System.Collections.IEnumerable
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-	}
+public partial class TriggerActionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.TriggerAction>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.TriggerAction>
+{
+private readonly global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.TriggerAction> _actions = new global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.TriggerAction>();
+
+public TriggerActionCollection()
+{
+}
+
+public uint Size => (uint)_actions.Count;
+
+public int Count => _actions.Count;
+
+public bool IsReadOnly => false;
+
+public global::Microsoft.UI.Xaml.TriggerAction this[int index]
+{
+get => _actions[index];
+set => _actions[index] = value;
+}
+
+public void Add(global::Microsoft.UI.Xaml.TriggerAction item)
+{
+_actions.Add(item);
+}
+
+public void Clear()
+{
+_actions.Clear();
+}
+
+public bool Contains(global::Microsoft.UI.Xaml.TriggerAction item)
+{
+return _actions.Contains(item);
+}
+
+public void CopyTo(global::Microsoft.UI.Xaml.TriggerAction[] array, int arrayIndex)
+{
+_actions.CopyTo(array, arrayIndex);
+}
+
+public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Xaml.TriggerAction> GetEnumerator()
+{
+return _actions.GetEnumerator();
+}
+
+public int IndexOf(global::Microsoft.UI.Xaml.TriggerAction item)
+{
+return _actions.IndexOf(item);
+}
+
+public void Insert(int index, global::Microsoft.UI.Xaml.TriggerAction item)
+{
+_actions.Insert(index, item);
+}
+
+public bool Remove(global::Microsoft.UI.Xaml.TriggerAction item)
+{
+return _actions.Remove(item);
+}
+
+public void RemoveAt(int index)
+{
+_actions.RemoveAt(index);
+}
+
+global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
+{
+return _actions.GetEnumerator();
+}
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.TriggerActionCollection()
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetAt(uint)
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Size.get
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetView()
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.IndexOf(Microsoft.UI.Xaml.TriggerAction, out uint)
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.SetAt(uint, Microsoft.UI.Xaml.TriggerAction)
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.InsertAt(uint, Microsoft.UI.Xaml.TriggerAction)
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.RemoveAt(uint)
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Append(Microsoft.UI.Xaml.TriggerAction)
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.RemoveAtEnd()
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Clear()
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetMany(uint, Microsoft.UI.Xaml.TriggerAction[])
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.ReplaceAll(Microsoft.UI.Xaml.TriggerAction[])
+// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.First()
+// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerAction>
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.IndexOf(Microsoft.UI.Xaml.TriggerAction)
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Insert(int, Microsoft.UI.Xaml.TriggerAction)
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.RemoveAt(int)
+// Skipping already declared indexer Microsoft.UI.Xaml.TriggerActionCollection.this[int]
+// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerAction>
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Add(Microsoft.UI.Xaml.TriggerAction)
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Clear()
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Contains(Microsoft.UI.Xaml.TriggerAction)
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.CopyTo(Microsoft.UI.Xaml.TriggerAction[], int)
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Remove(Microsoft.UI.Xaml.TriggerAction)
+// Skipping already declared property Microsoft.UI.Xaml.TriggerActionCollection.Count
+// Skipping already declared property Microsoft.UI.Xaml.TriggerActionCollection.IsReadOnly
+// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.TriggerAction>
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.GetEnumerator()
+// Processing: System.Collections.IEnumerable
+// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.System.Collections.IEnumerable.GetEnumerator()
+}
 }
