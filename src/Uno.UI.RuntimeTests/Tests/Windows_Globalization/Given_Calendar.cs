@@ -42,6 +42,9 @@ public class Given_Calendar
 	[DataRow("GregorianCalendar", "29", -1)]
 	[DataRow("GregorianCalendar", "29", 0)]
 	[DataRow("GregorianCalendar", "28", 1)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("DataRowAttribute.GetData() wraps data in an extra array under NativeAOT; not yet understood why.")]
+#endif  // RUNTIME_NATIVE_AOT
 	public void When_Calendar_Unspecified_DateTimeKind_Different_Offsets(string identifier, string expectedDayAsString, double offset)
 	{
 		if (TimeZoneInfo.Local.IsDaylightSavingTime(DateTimeOffset.Now))

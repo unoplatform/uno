@@ -55,6 +55,9 @@
 		<RestoreEnablePackagePruning>true</RestoreEnablePackagePruning>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
+		<DefineConstants Condition=" '$(SkiaPublishAot)' == 'true' ">$(DefineConstants);RUNTIME_NATIVE_AOT</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup>
