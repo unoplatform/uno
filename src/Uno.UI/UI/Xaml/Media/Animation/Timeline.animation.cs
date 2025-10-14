@@ -195,7 +195,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				}
 
 				// Set property to its final value
-				var value = ComputeToValue();
+				// With AutoReverse, the final value is the starting value (after reversing back)
+				var value = AutoReverse ? ComputeFromValue() : ComputeToValue();
 				SetValue(value);
 
 				OnEnd();
