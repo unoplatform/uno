@@ -45,12 +45,31 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 	public void SetIsResizable(bool isResizable) => SetWindowStyle(WINDOW_STYLE.WS_SIZEBOX, isResizable);
 	public void SetIsMinimizable(bool isMinimizable) => SetWindowStyle(WINDOW_STYLE.WS_MINIMIZEBOX, isMinimizable);
-	public void SetIsMaximizable(bool isMaximizable) => SetWindowStyle(WINDOW_STYLE.WS_MINIMIZEBOX, isMaximizable);
+	public void SetIsMaximizable(bool isMaximizable) => SetWindowStyle(WINDOW_STYLE.WS_MAXIMIZEBOX, isMaximizable);
 
 	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
 	{
+		// Toggle the standard caption (title bar)
 		SetWindowStyle(WINDOW_STYLE.WS_CAPTION, hasTitleBar);
+		// Toggle the resize border (thick frame)
 		SetWindowStyle(WINDOW_STYLE.WS_SIZEBOX, hasBorder);
+
+		// Apply non-client frame changes immediately
+		var success = PInvoke.SetWindowPos(
+			_hwnd,
+			HWND.Null,
+			0,
+			0,
+			0,
+			0,
+			SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED);
+		if (!success)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+
+		// Ensure our cached bounds reflect the new client area
+		OnWindowSizeOrLocationChanged();
 	}
 
 	private void SetWindowStyle(WINDOW_STYLE style, bool on)

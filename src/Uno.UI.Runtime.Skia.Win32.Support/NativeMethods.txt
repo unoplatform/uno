@@ -72,6 +72,7 @@ WM_GETMINMAXINFO
 WM_KEYDOWN
 WM_KEYUP
 WM_MOVE
+WM_NCCALCSIZE
 WM_PAINT
 WM_POINTERCAPTURECHANGED
 WM_POINTERDOWN
@@ -96,6 +97,7 @@ IEnumUnknown
 IFileOpenDialog
 IFileSaveDialog
 IGlobalInterfaceTable
+MARGINS
 MINMAXINFO
 MONITORINFOEXW
 PIXELFORMATDESCRIPTOR
@@ -118,6 +120,7 @@ DescribePixelFormat
 DestroyWindow
 DispatchMessage
 DragQueryFile
+DwmExtendFrameIntoClientArea
 DwmSetWindowAttribute
 EmptyClipboard
 EnableMouseInPointer

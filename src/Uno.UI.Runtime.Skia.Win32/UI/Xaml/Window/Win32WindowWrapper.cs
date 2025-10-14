@@ -114,12 +114,28 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
 	}
 
+	private bool _extendsContentIntoTitleBar;
+
 	private void OnExtendsContentIntoTitleBarChanged(bool extends)
 	{
-		// When extending content into the title bar, remove the standard caption so the
-		// client area reaches the top of the window. Restoring will bring the system
-		// title bar back.
-		SetWindowStyle(WINDOW_STYLE.WS_CAPTION, !extends);
+		_extendsContentIntoTitleBar = extends;
+
+		// Use DwmExtendFrameIntoClientArea to extend the frame into the client area.
+		// When extending, we set the top margin to a non-zero value to indicate we want
+		// the frame extended. Setting margins to {0,0,0,0} restores the default behavior.
+		var margins = new Windows.Win32.UI.Controls.MARGINS
+		{
+			cxLeftWidth = 0,
+			cxRightWidth = 0,
+			cyTopHeight = extends ? 1 : 0, // Extend from the top when enabled
+			cyBottomHeight = 0
+		};
+
+		var hResult = PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
+		if (hResult != 0) // S_OK = 0
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.DwmExtendFrameIntoClientArea)} failed with HRESULT: 0x{hResult:X8}");
+		}
 
 		// Notify the system the frame has changed so non-client metrics are recalculated.
 		var success = PInvoke.SetWindowPos(
@@ -137,6 +153,37 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		// Update cached bounds to reflect the new client area.
 		OnWindowSizeOrLocationChanged();
+	}
+
+	private unsafe bool OnWmNcCalcSize(WPARAM wParam, LPARAM lParam)
+	{
+		// When extending content into the title bar, we handle WM_NCCALCSIZE to remove the
+		// top non-client area (title bar) while keeping the caption buttons visible.
+		// This is inspired by Avalonia's implementation:
+		// https://github.com/AvaloniaUI/Avalonia/blob/39a8e3dc15a0899682dbe0c1ca841528510dc0ea/src/Windows/Avalonia.Win32/WindowImpl.cs
+		if (!_extendsContentIntoTitleBar)
+		{
+			return false; // Use default processing
+		}
+
+		if (wParam == 0)
+		{
+			return false; // Not the extended version, use default
+		}
+
+		// wParam is TRUE, so lParam points to an NCCALCSIZE_PARAMS structure
+		// The structure has an array of 3 RECTs as the first member
+		// rgrc[0] contains the new window rectangle
+		// By not modifying it (or only modifying the top), we tell Windows that the entire
+		// window rectangle is the client area, effectively removing the title bar while
+		// keeping the caption buttons.
+
+		// The system will still draw the caption buttons, but the client area extends to the top.
+		// We return 0 to indicate we've handled the message but want to keep the default frame.
+
+		this.LogTrace()?.Trace($"WndProc received a WM_NCCALCSIZE message.");
+
+		return true; // We handled it, return 0
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
@@ -255,6 +302,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 				return new LRESULT(0);
+			case PInvoke.WM_NCCALCSIZE:
+				if (OnWmNcCalcSize(wParam, lParam))
+				{
+					return new LRESULT(0);
+				}
+				break;
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
