@@ -349,7 +349,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				if (AutoReverse && !_isReversing)
 				{
 					_isReversing = true;
-					Replay(); // Replay in reverse
+					Play(); // Replay in reverse (don't increment _replayCount yet)
 					return;
 				}
 
