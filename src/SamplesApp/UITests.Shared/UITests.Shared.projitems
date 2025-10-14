@@ -10049,6 +10049,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_placeholder _hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_placeholder.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_set.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\image with space in path.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_set_hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset_hc.png" />
