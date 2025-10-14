@@ -1,3 +1,5 @@
+using System;
+
 namespace Microsoft.UI.Xaml
 {
 	public partial class EventTrigger : TriggerBase
@@ -12,7 +14,16 @@ namespace Microsoft.UI.Xaml
 		public RoutedEvent RoutedEvent
 		{
 			get => _routedEvent;
-			set => _routedEvent = value;
+			set
+			{
+				// EventTrigger only supports the Loaded event, matching WinUI behavior
+				// See: https://github.com/microsoft/microsoft-ui-xaml/blob/b1db15715bfead9fe8ad2e7f78b0172589225e69/src/dxaml/xcp/dxaml/lib/EventTrigger_Partial.cpp#L5
+				if (value != null && value != FrameworkElement.LoadedEvent)
+				{
+					throw new NotSupportedException("EventTrigger only supports the Loaded event.");
+				}
+				_routedEvent = value;
+			}
 		}
 
 		public TriggerActionCollection Actions { get; }
