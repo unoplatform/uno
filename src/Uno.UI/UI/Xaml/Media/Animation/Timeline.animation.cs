@@ -36,6 +36,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			private int _replayCount = 1;
 			private T? _startingValue;
 			private T? _endValue;
+			private bool _isReversing = false; // Track if we're in the reverse phase of AutoReverse
 
 			// Initialize the field with zero capacity, as it may stay empty more often than it is being used.
 			private readonly CompositeDisposable _subscriptions = new CompositeDisposable(0);
@@ -61,6 +62,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			private TimeSpan? BeginTime => _owner?.BeginTime;
 			private Duration Duration => _owner?.Duration ?? default(Duration);
 			private FillBehavior FillBehavior => _owner?.FillBehavior ?? default(FillBehavior);
+			private bool AutoReverse => _owner?.AutoReverse ?? false;
 
 			private T? From => AnimationOwner?.From;
 			private T? To => AnimationOwner?.To;
@@ -94,6 +96,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				_activeDuration.Restart();
 				_replayCount = 1;
+				_isReversing = false; // Reset reversing state when beginning
 
 				//Start the animation
 				Play();
@@ -225,7 +228,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				_endValue = ComputeToValue();
 
-				_animator = AnimatorFactory.Create(_owner, _startingValue.Value, _endValue.Value);
+				// If we're in the reverse phase, swap the from and to values
+				var fromValue = _isReversing ? _endValue.Value : _startingValue.Value;
+				var toValue = _isReversing ? _startingValue.Value : _endValue.Value;
+
+				_animator = AnimatorFactory.Create(_owner, fromValue, toValue);
 
 				_animator.SetEasingFunction(this.EasingFunction); //Set the Easing Function of the animator
 
@@ -336,6 +343,20 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			private void OnEnd()
 			{
 				_animator?.Dispose();
+
+				// Handle AutoReverse: if enabled and we just finished the forward animation, reverse it
+				if (AutoReverse && !_isReversing)
+				{
+					_isReversing = true;
+					Replay(); // Replay in reverse
+					return;
+				}
+
+				// If we were reversing, we've now completed both forward and reverse
+				if (_isReversing)
+				{
+					_isReversing = false;
+				}
 
 				// If the animation was GPU based, remove the animated value
 
