@@ -349,7 +349,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				if (AutoReverse && !_isReversing)
 				{
 					_isReversing = true;
-					Play(); // Replay in reverse (don't increment _replayCount yet)
+					// Use Play() instead of Replay() to avoid incrementing _replayCount during the reverse phase.
+					// This ensures RepeatBehavior counts complete cycles (forward + reverse) as single iterations.
+					Play();
 					return;
 				}
 
