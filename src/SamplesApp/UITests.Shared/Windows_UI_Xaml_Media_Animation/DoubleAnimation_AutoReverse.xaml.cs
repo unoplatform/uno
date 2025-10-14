@@ -20,12 +20,28 @@ namespace GenericApp.Views.Content.UITests.Animations
 		{
 			if (_storyboard == null)
 			{
-				_storyboard = (Storyboard)((Grid)((DataTemplate)((SampleControl)Content).SampleContent).LoadContent()).Resources["MoveStoryboard"];
-				_storyboard.Completed += OnStoryboardCompleted;
+				// Get the storyboard from the template resources
+				var sampleControl = Content as SampleControl;
+				if (sampleControl?.SampleContent is DataTemplate template)
+				{
+					var grid = template.LoadContent() as Grid;
+					if (grid?.Resources["MoveStoryboard"] is Storyboard storyboard)
+					{
+						_storyboard = storyboard;
+						_storyboard.Completed += OnStoryboardCompleted;
+					}
+				}
 			}
 
-			StatusText.Text = "Animation started...";
-			_storyboard.Begin();
+			if (_storyboard != null)
+			{
+				StatusText.Text = "Animation started...";
+				_storyboard.Begin();
+			}
+			else
+			{
+				StatusText.Text = "Error: Could not load storyboard";
+			}
 		}
 
 		private void StopAnimation(object sender, RoutedEventArgs e)
