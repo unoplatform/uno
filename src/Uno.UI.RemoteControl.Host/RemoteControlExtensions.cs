@@ -12,208 +12,199 @@ using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Server.AppLaunch;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Uno.UI.RemoteControl.VS.Helpers;
 
 namespace Uno.UI.RemoteControl.Host
 {
-	static class RemoteControlExtensions
+	internal static class RemoteControlExtensions
 	{
-		public static IApplicationBuilder UseRemoteControlServer(
-			this IApplicationBuilder app,
+		public static WebApplication UseRemoteControlServer(
+			this WebApplication app,
 			RemoteControlOptions options)
 		{
-			app.UseRouter(router =>
-			{
-				router.MapGet("rc", async context =>
+			app
+				.MapGet(
+					"/rc",
+					async context =>
+					{
+						await HandleWebSocketConnectionRequest(app, context);
+					}).WithName("RC Protocol");
+
+			// HTTP GET endpoint to register an app launch
+			app.MapGet(
+				"/applaunch/{mvid:guid}",
+				async (HttpContext context, Guid mvid, [FromQuery] string? platform, [FromQuery] bool? isDebug) =>
 				{
-					if (!context.WebSockets.IsWebSocketRequest)
+					await HandleAppLaunchRegistrationRequest(context, mvid, platform, isDebug);
+				})
+				.WithName("AppLaunchRegistration");
+
+			// Alternate HTTP GET endpoint to register an app launch by providing the absolute assembly file path with encoded path string
+			// Example: /app-launch/asm/C%3A%5Cpath%5Cto%5Capp.dll?IsDebug=true
+			app.MapGet(
+					"/applaunch/asm/{*assemblyPath}",
+					async (HttpContext context, string assemblyPath, [FromQuery] bool? isDebug) =>
 					{
-						context.Response.StatusCode = 400;
-						return;
-					}
+						await HandleAppLaunchRegistrationRequest(app, assemblyPath, context, isDebug);
+					})
+				.WithName("AppLaunchRegistration(Assembly)");
+			return app;
+		}
 
-					if (app.Log().IsEnabled(LogLevel.Information))
+		private static async Task HandleWebSocketConnectionRequest(WebApplication app, HttpContext context)
+		{
+			if (!context.WebSockets.IsWebSocketRequest)
+			{
+				context.Response.StatusCode = 400;
+				return;
+			}
+
+			if (app.Log().IsEnabled(LogLevel.Information))
+			{
+				app.Log().LogInformation("Accepted connection from {ConnectionRemoteIpAddress}", context.Connection.RemoteIpAddress);
+			}
+
+			try
+			{
+				if (context.RequestServices.GetService<IConfiguration>() is { } configuration)
+				{
+					// Populate the scoped ConnectionContext with connection metadata
+					var connectionContext = context.RequestServices.GetService<ConnectionContext>();
+					if (connectionContext != null)
 					{
-						app.Log().LogInformation($"Accepted connection from {context.Connection.RemoteIpAddress}");
-					}
+						connectionContext.ConnectedAt = DateTimeOffset.UtcNow;
 
-					try
-					{
-						if (context.RequestServices.GetService<IConfiguration>() is { } configuration)
-						{
-							// Populate the scoped ConnectionContext with connection metadata
-							var connectionContext = context.RequestServices.GetService<ConnectionContext>();
-							if (connectionContext != null)
-							{
-								connectionContext.ConnectedAt = DateTimeOffset.UtcNow;
-
-								// Track client connection in telemetry
-								var telemetry = context.RequestServices.GetService<ITelemetry>();
-								if (telemetry != null)
-								{
-									var properties = new Dictionary<string, string>
-									{
-										["ConnectionId"] = connectionContext.ConnectionId,
-									};
-
-									telemetry.TrackEvent("client-connection-opened", properties, null);
-								}
-
-								if (app.Log().IsEnabled(LogLevel.Debug))
-								{
-									app.Log().LogDebug($"Populated connection context: {connectionContext}");
-								}
-							}
-
-							// Use context.RequestServices directly - it already contains both global and scoped services
-							// The global service provider was injected as Singleton in Program.cs, so it's accessible here
-							using var server = new RemoteControlServer(
-								configuration,
-								context.RequestServices.GetService<IIdeChannel>() ?? throw new InvalidOperationException("IIdeChannel is required"),
-								context.RequestServices);
-
-							await server.RunAsync(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
-						}
-						else
-						{
-							if (app.Log().IsEnabled(LogLevel.Error))
-							{
-								app.Log().LogError($"Unable to find configuration service");
-							}
-						}
-					}
-					finally
-					{
-						// Track client disconnection in telemetry
-						var connectionContext = context.RequestServices.GetService<ConnectionContext>();
+						// Track client connection in telemetry
 						var telemetry = context.RequestServices.GetService<ITelemetry>();
-						if (telemetry != null && connectionContext != null)
+						if (telemetry != null)
 						{
-							var connectionDuration = DateTimeOffset.UtcNow - connectionContext.ConnectedAt;
-
 							var properties = new Dictionary<string, string>
 							{
-								["ConnectionId"] = connectionContext.ConnectionId
+								["ConnectionId"] = connectionContext.ConnectionId,
 							};
 
-							var measurements = new Dictionary<string, double>
-							{
-								["ConnectionDurationSeconds"] = connectionDuration.TotalSeconds
-							};
-
-							telemetry.TrackEvent("client-connection-closed", properties, measurements);
+							telemetry.TrackEvent("client-connection-opened", properties, null);
 						}
 
-						if (app.Log().IsEnabled(LogLevel.Information))
+						if (app.Log().IsEnabled(LogLevel.Debug))
 						{
-							app.Log().LogInformation($"Disposing connection from {context.Connection.RemoteIpAddress}");
+							app.Log().LogDebug("Populated connection context: {ConnectionContext}", connectionContext);
 						}
 					}
-				});
 
-				// HTTP GET endpoint to register an app launch
-				router.MapGet("applaunch/{mvid}", async context =>
+					// Use context.RequestServices directly - it already contains both global and scoped services
+					// The global service provider was injected as Singleton in Program.cs, so it's accessible here
+					using var server = new RemoteControlServer(
+						configuration,
+						context.RequestServices.GetService<IIdeChannel>() ??
+						throw new InvalidOperationException("IIdeChannel is required"),
+						context.RequestServices);
+
+					await server.RunAsync(await context.WebSockets.AcceptWebSocketAsync(),
+						CancellationToken.None);
+				}
+				else
 				{
-					var mvidValue = context.GetRouteValue("mvid")?.ToString();
-					if (!Guid.TryParse(mvidValue, out var mvid))
+					if (app.Log().IsEnabled(LogLevel.Error))
 					{
-						context.Response.StatusCode = StatusCodes.Status400BadRequest;
-						await context.Response.WriteAsync("Invalid MVID - must be a valid GUID.");
-						return;
+						app.Log().LogError($"Unable to find configuration service");
 					}
-
-					string? platform = null;
-					var isDebug = false;
-
-					// Query string support: ?platform=...&isDebug=true
-					if (context.Request.Query.TryGetValue("platform", out var p))
-					{
-						platform = p.ToString();
-					}
-
-					if (context.Request.Query.TryGetValue("isDebug", out var d))
-					{
-						if (bool.TryParse(d.ToString(), out var qParsed))
-						{
-							isDebug = qParsed;
-						}
-					}
-
-					if (string.IsNullOrWhiteSpace(platform))
-					{
-						context.Response.StatusCode = StatusCodes.Status400BadRequest;
-						await context.Response.WriteAsync("Missing required 'platform'.");
-						return;
-					}
-
-					var monitor = context.RequestServices.GetRequiredService<ApplicationLaunchMonitor>();
-					monitor.RegisterLaunch(mvid, platform!, isDebug);
-
-					context.Response.StatusCode = StatusCodes.Status200OK;
-					await context.Response.WriteAsync("registered");
-				});
-
-				// Alternate HTTP GET endpoint to register an app launch by providing the absolute assembly file path with encoded path string
-				// Example: /app-launch/asm/C%3A%5Cpath%5Cto%5Capp.dll?IsDebug=true
-				router.MapGet("applaunch/asm/{*assemblyPath}", async context =>
+				}
+			}
+			finally
+			{
+				// Track client disconnection in telemetry
+				var connectionContext = context.RequestServices.GetService<ConnectionContext>();
+				var telemetry = context.RequestServices.GetService<ITelemetry>();
+				if (telemetry != null && connectionContext != null)
 				{
-					var assemblyPathValue = Uri.UnescapeDataString(context.GetRouteValue("assemblyPath")?.ToString() ?? string.Empty);
-					if (string.IsNullOrWhiteSpace(assemblyPathValue))
+					var connectionDuration = DateTimeOffset.UtcNow - connectionContext.ConnectedAt;
+
+					var properties = new Dictionary<string, string>
 					{
-						context.Response.StatusCode = StatusCodes.Status400BadRequest;
-						await context.Response.WriteAsync("Missing assembly path.");
-						return;
-					}
+						["ConnectionId"] = connectionContext.ConnectionId
+					};
 
-					// On Windows, the route will capture slashes; ensure it is a full path
-					var assemblyPath = assemblyPathValue!;
-					if (!Path.IsPathRooted(assemblyPath) || !File.Exists(assemblyPath))
+					var measurements = new Dictionary<string, double>
 					{
-						context.Response.StatusCode = StatusCodes.Status400BadRequest;
-						await context.Response.WriteAsync("Assembly path must be an existing absolute path.");
-						return;
-					}
+						["ConnectionDurationSeconds"] = connectionDuration.TotalSeconds
+					};
 
-					var isDebug = false;
-					if (context.Request.Query.TryGetValue("isDebug", out var isDebugVal))
-					{
-						if (!bool.TryParse(isDebugVal.ToString(), out isDebug))
-						{
-							isDebug = false;
-						}
-					}
+					telemetry.TrackEvent("client-connection-closed", properties, measurements);
+				}
 
-					try
-					{
-						// Read MVID and TargetPlatform without loading the assembly
-						var (mvid, platform) = AssemblyInfoReader.Read(assemblyPath);
+				if (app.Log().IsEnabled(LogLevel.Information))
+				{
+					app.Log().LogInformation(
+						"Disposing connection from {ConnectionRemoteIpAddress}", context.Connection.RemoteIpAddress);
+				}
+			}
+		}
 
-						var monitor = context.RequestServices.GetRequiredService<ApplicationLaunchMonitor>();
-						monitor.RegisterLaunch(mvid, platform ?? "Desktop", isDebug);
+		private static async Task HandleAppLaunchRegistrationRequest(
+			HttpContext context,
+			Guid mvid,
+			string? platform,
+			bool? isDebug)
+		{
+			if (platform == string.Empty)
+			{
+				platform = null;
+			}
 
-						context.Response.StatusCode = StatusCodes.Status200OK;
-						await context.Response.WriteAsync("registered - application with MVID=" + mvid + " and platform=" + platform + " is now registered for launch.");
-					}
-					catch (BadImageFormatException)
-					{
-						context.Response.StatusCode = StatusCodes.Status400BadRequest;
-						await context.Response.WriteAsync("The specified file is not a valid .NET assembly.");
-					}
-					catch (Exception ex)
-					{
-						if (app.Log().IsEnabled(LogLevel.Error))
-						{
-							app.Log().LogError(ex, "Failed to read assembly info for path: {path}", assemblyPath);
-						}
+			var monitor = context.RequestServices.GetRequiredService<ApplicationLaunchMonitor>();
+			monitor.RegisterLaunch(mvid, platform, isDebug ?? false);
 
-						context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-						await context.Response.WriteAsync("Failed to process assembly path.");
-					}
-				});
-			});
+			context.Response.StatusCode = StatusCodes.Status200OK;
+			await context.Response.WriteAsync("registered");
+		}
 
+		private static async Task HandleAppLaunchRegistrationRequest(
+			WebApplication app,
+			string assemblyPath,
+			HttpContext context,
+			bool? isDebug)
+		{
+			// Decode the path, if necessary (can be url-encoded)
+			assemblyPath = Uri.UnescapeDataString(assemblyPath);
 
-			return app;
+			// On Windows, the route will capture slashes; ensure it is a full path
+			if (!Path.IsPathRooted(assemblyPath) || !File.Exists(assemblyPath))
+			{
+				context.Response.StatusCode = StatusCodes.Status400BadRequest;
+				await context.Response.WriteAsync("Assembly path must be an existing absolute path.");
+				return;
+			}
+
+			try
+			{
+				// Read MVID and TargetPlatform without loading the assembly
+				var (mvid, platform) = AssemblyInfoReader.Read(assemblyPath);
+
+				var monitor = context.RequestServices.GetRequiredService<ApplicationLaunchMonitor>();
+				monitor.RegisterLaunch(mvid, platform, isDebug ?? false);
+
+				context.Response.StatusCode = StatusCodes.Status200OK;
+				await context.Response.WriteAsync(
+					$"registered - application with MVID={mvid} and platform={platform} is now registered for launch.");
+			}
+			catch (BadImageFormatException)
+			{
+				context.Response.StatusCode = StatusCodes.Status400BadRequest;
+				await context.Response.WriteAsync("The specified file is not a valid .NET assembly.");
+			}
+			catch (Exception ex)
+			{
+				if (app.Log().IsEnabled(LogLevel.Error))
+				{
+					app.Log().LogError(ex, "Failed to read assembly info for path: {path}", assemblyPath);
+				}
+
+				context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+				await context.Response.WriteAsync("Failed to process assembly path.");
+			}
 		}
 	}
 }

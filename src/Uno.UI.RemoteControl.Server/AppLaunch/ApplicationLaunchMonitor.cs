@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,6 +14,8 @@ namespace Uno.UI.RemoteControl.Server.AppLaunch;
 /// </summary>
 public sealed class ApplicationLaunchMonitor : IDisposable
 {
+	private const string DefaultPlatform = "Unknown";
+
 	/// <summary>
 	/// Options that control the behavior of <see cref="ApplicationLaunchMonitor"/>.
 	/// </summary>
@@ -110,8 +113,9 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// <param name="mvid">The MVID of the root/head application.</param>
 	/// <param name="platform">The platform used to run the application. Cannot be null or empty.</param>
 	/// <param name="isDebug">Whether the debugger is used.</param>
-	public void RegisterLaunch(Guid mvid, string platform, bool isDebug)
+	public void RegisterLaunch(Guid mvid, string? platform, bool isDebug)
 	{
+		platform ??= DefaultPlatform;
 		ArgumentException.ThrowIfNullOrEmpty(platform);
 
 		var now = _timeProvider.GetUtcNow();
@@ -122,7 +126,7 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 		queue.Enqueue(ev);
 
 		// Schedule automatic timeout
-		ScheduleTimeout(ev, key);
+		ScheduleAppLaunchTimeout(ev, key);
 
 		try
 		{
@@ -139,7 +143,7 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// </summary>
 	/// <param name="launchEvent">The launch event to schedule timeout for.</param>
 	/// <param name="key">The key for the launch event.</param>
-	private void ScheduleTimeout(LaunchEvent launchEvent, Key key)
+	private void ScheduleAppLaunchTimeout(LaunchEvent launchEvent, Key key)
 	{
 		// Create a one-shot timer using the injected TimeProvider. When it fires, it will invoke HandleTimeout.
 		var timer = _timeProvider.CreateTimer(
@@ -198,8 +202,9 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// <param name="mvid">The MVID of the root/head application being connected.</param>
 	/// <param name="platform">The name of the platform from which the connection is reported. Cannot be null or empty.</param>
 	/// <param name="isDebug">true if the connection is from a debug build; otherwise, false.</param>
-	public bool ReportConnection(Guid mvid, string platform, bool isDebug)
+	public bool ReportConnection(Guid mvid, string? platform, bool isDebug)
 	{
+		platform ??= DefaultPlatform;
 		ArgumentException.ThrowIfNullOrEmpty(platform);
 
 		var key = new Key(mvid, platform, isDebug);

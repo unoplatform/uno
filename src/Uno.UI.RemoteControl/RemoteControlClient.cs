@@ -729,7 +729,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		{
 			var asm = AppType.Assembly;
 			var mvid = ApplicationInfoHelper.GetMvid(asm);
-			var platform = ApplicationInfoHelper.GetTargetPlatformOrDefault(asm);
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm);
 			var isDebug = Debugger.IsAttached;
 
 			await SendMessage(new AppLaunchMessage { Mvid = mvid, Platform = platform, IsDebug = isDebug, Step = AppLaunchStep.Connected });

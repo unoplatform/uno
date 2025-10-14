@@ -11,8 +11,8 @@ internal static class ApplicationInfoHelper
 	/// <summary>
 	/// Gets the target platform value from the assembly's TargetPlatformAttribute when present; otherwise returns the provided default ("Desktop" by default).
 	/// </summary>
-	public static string GetTargetPlatformOrDefault(Assembly assembly, string @default = "Desktop")
-		=> assembly.GetCustomAttribute<TargetPlatformAttribute>()?.PlatformName ?? @default;
+	public static string? GetTargetPlatform(Assembly assembly)
+		=> assembly.GetCustomAttribute<TargetPlatformAttribute>()?.PlatformName;
 
 	/// <summary>
 	/// Returns the MVID (Module Version Id) of the given assembly.

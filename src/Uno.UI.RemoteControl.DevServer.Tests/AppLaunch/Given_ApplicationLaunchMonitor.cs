@@ -230,9 +230,7 @@ public class Given_ApplicationLaunchMonitor
 		using var sut = CreateMonitor(out _, out _, out _, out _, out _);
 		var mvid = Guid.NewGuid();
 
-		sut.Invoking(m => m.RegisterLaunch(mvid, null!, true)).Should().Throw<ArgumentException>();
 		sut.Invoking(m => m.RegisterLaunch(mvid, string.Empty, true)).Should().Throw<ArgumentException>();
-		sut.Invoking(m => m.ReportConnection(mvid, null!, true)).Should().Throw<ArgumentException>();
 		sut.Invoking(m => m.ReportConnection(mvid, string.Empty, true)).Should().Throw<ArgumentException>();
 	}
 
