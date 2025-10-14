@@ -6,8 +6,10 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Options;
@@ -133,7 +135,7 @@ namespace Uno.UI.RemoteControl.Host
 				// During init, we dump the logs to the console, until the logger is set up
 				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = LoggerFactory.Create(builder => builder.SetMinimumLevel(logLevel).AddConsole());
 
-				// STEP 1: Create the global service provider BEFORE WebHostBuilder
+				// STEP 1: Create the global service provider BEFORE WebApplication
 				// This contains services that live for the entire duration of the server process
 				var globalServices = new ServiceCollection();
 
@@ -159,21 +161,27 @@ namespace Uno.UI.RemoteControl.Host
 				globalServiceProvider.GetService<IIdeChannel>();
 
 #pragma warning disable ASPDEPR004
-				// WebHostBuilder is deprecated in .NET 10 RC1.
-				// As we still build for .NET 9, ignore this warning until $(NetPrevious)=net10.
-				// https://github.com/aspnet/Announcements/issues/526
+				// STEP 2: Create the WebApplication builder with reference to the global service provider
+				var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+				{
+					Args = args,
+					ContentRootPath = Directory.GetCurrentDirectory(),
+				});
 
-				// STEP 2: Create the WebHost with reference to the global service provider
-				var builder = new WebHostBuilder()
-					.UseSetting("UseIISIntegration", false.ToString())
+				// Configure Kestrel and URLs
+				builder.WebHost
 					.UseKestrel()
 					.UseUrls($"http://*:{httpPort}/")
 					.UseContentRoot(Directory.GetCurrentDirectory())
 					.UseStartup<Startup>()
-					.ConfigureLogging(logging => logging
-						.ClearProviders()
-						.AddConsole()
-						.SetMinimumLevel(LogLevel.Debug))
+					.ConfigureLogging(logging =>
+					{
+						logging.ClearProviders();
+						logging.AddConsole();
+						logging.SetMinimumLevel(LogLevel.Debug);
+						logging.AddFilter("Microsoft.", LogLevel.Information);
+						logging.AddFilter("Microsoft.AspNetCore.Routing", LogLevel.Warning);
+					})
 					.ConfigureAppConfiguration((hostingContext, config) =>
 					{
 						config.AddCommandLine(args);
@@ -181,18 +189,26 @@ namespace Uno.UI.RemoteControl.Host
 					})
 					.ConfigureServices(services =>
 					{
-						services.AddSingleton<IIdeChannel>(_ => globalServiceProvider.GetRequiredService<IIdeChannel>());
+						services.AddSingleton<IIdeChannel, IdeChannelServer>();
 						services.AddSingleton<UnoDevEnvironmentService>();
-
-						services.AddSingleton<ApplicationLaunchMonitor>(
-							_ => globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
-
-						// Add the global service provider to the DI container
-						services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
-
-						// Add connection-specific telemetry services (Scoped)
-						services.AddConnectionTelemetry(solution);
+						services.AddRouting();
+						services.Configure<RemoteControlOptions>(builder.Configuration);
 					});
+
+				builder.Services.AddSingleton<IIdeChannel, IdeChannelServer>();
+				builder.Services.AddSingleton<UnoDevEnvironmentService>();
+
+				builder.Services.AddSingleton<ApplicationLaunchMonitor>(
+					_ => globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
+
+				// Add the global service provider to the DI container
+				builder.Services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
+
+				// Add connection-specific telemetry services (Scoped)
+				builder.Services.AddConnectionTelemetry(solution);
+
+				// Apply Startup.ConfigureServices for compatibility with existing Startup class
+				new Startup(builder.Configuration).ConfigureServices(builder.Services);
 
 				if (solution is not null)
 				{
@@ -202,7 +218,7 @@ namespace Uno.UI.RemoteControl.Host
 				else
 				{
 					typeof(Program).Log().Log(LogLevel.Warning, "No solution file specified, add-ins will not be loaded which means that you won't be able to use any of the uno-studio features. Usually this indicates that your version of uno's IDE extension is too old.");
-					builder.ConfigureServices(services => services.AddSingleton(AddInsStatus.Empty));
+					builder.Services.AddSingleton(AddInsStatus.Empty);
 				}
 #pragma warning restore ASPDEPR004
 
@@ -211,8 +227,11 @@ namespace Uno.UI.RemoteControl.Host
 				var host = builder.Build();
 #pragma warning restore ASPDEPR008
 
+				// Apply Startup.Configure using Minimal APIs app instance
+				new Startup(host.Configuration).Configure(host);
+
 				// Once the app has started, we use the logger from the host
-				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
+				LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
 
 				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
@@ -235,9 +254,10 @@ namespace Uno.UI.RemoteControl.Host
 				ambientRegistry = new AmbientRegistry(host.Services.GetRequiredService<ILogger<AmbientRegistry>>());
 				ambientRegistry.Register(solution, parentPID, httpPort);
 
+				await host.StartAsync(ct.Token);
 				try
 				{
-					await host.RunAsync(ct.Token);
+					await host.WaitForShutdownAsync(ct.Token);
 				}
 				finally
 				{

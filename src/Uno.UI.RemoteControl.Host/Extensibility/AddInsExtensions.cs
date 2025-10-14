@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Uno.Utils.DependencyInjection;
 using Uno.UI.RemoteControl.Helpers;
@@ -26,5 +27,21 @@ public static class AddInsExtensions
 			services.AddFromAttributes(assemblies);
 			services.AddSingleton(new AddInsStatus(discovery, loadResults));
 		});
+	}
+
+	public static WebApplicationBuilder ConfigureAddIns(this WebApplicationBuilder builder, string solutionFile, ITelemetry? telemetry = null)
+	{
+		var discovery = AddIns.Discover(solutionFile, telemetry);
+		var loadResults = AssemblyHelper.Load(discovery.AddIns, telemetry, throwIfLoadFailed: false);
+
+		var assemblies = loadResults
+			.Where(result => result.Assembly is not null)
+			.Select(result => result.Assembly)
+			.ToImmutableArray();
+
+		builder.Services.AddFromAttributes(assemblies);
+		builder.Services.AddSingleton(new AddInsStatus(discovery, loadResults));
+
+		return builder;
 	}
 }

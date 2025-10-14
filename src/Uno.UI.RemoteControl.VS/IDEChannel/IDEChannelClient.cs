@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,7 +35,10 @@ internal class IdeChannelClient
 	public void ConnectToHost()
 	{
 		_IDEChannelCancellation?.Cancel();
-		_IDEChannelCancellation = new CancellationTokenSource();
+		var cts = new CancellationTokenSource();
+		_IDEChannelCancellation = cts;
+
+		var ct = cts.Token;
 
 		_connectTask = Task.Run(async () =>
 		{
@@ -48,18 +52,18 @@ internal class IdeChannelClient
 
 				_logger.Debug($"Creating IDE Channel to Dev Server ({_pipeGuid})");
 
-				await _pipeServer.ConnectAsync(_IDEChannelCancellation.Token);
+				await _pipeServer.ConnectAsync(ct);
 
 				_devServer = JsonRpc.Attach<IIdeChannelServer>(_pipeServer);
 				_devServer.MessageFromDevServer += ProcessDevServerMessage;
 
-				_ = Task.Run(StartKeepAliveAsync);
+				ScheduleKeepAlive(ct);
 			}
 			catch (Exception e)
 			{
 				_logger.Error($"Error creating IDE channel: {e}");
 			}
-		}, _IDEChannelCancellation.Token);
+		}, ct);
 	}
 
 	public async Task SendToDevServerAsync(IdeMessage message, CancellationToken ct)
@@ -70,19 +74,27 @@ internal class IdeChannelClient
 				? CancellationTokenSource.CreateLinkedTokenSource(ct, _IDEChannelCancellation!.Token).Token
 				: _IDEChannelCancellation!.Token;
 			await _devServer.SendToDevServerAsync(IdeMessageSerializer.Serialize(message), ct);
+			ScheduleKeepAlive(_IDEChannelCancellation!.Token);
 		}
 	}
 
-	private async Task StartKeepAliveAsync()
+	private const int KeepAliveDelay = 10000; // 10 seconds in milliseconds
+	private Timer? _keepAliveTimer;
+
+	private void ScheduleKeepAlive(CancellationToken ct)
 	{
 		Connected?.Invoke(this, EventArgs.Empty);
 
-		while (_IDEChannelCancellation is { IsCancellationRequested: false })
+		_keepAliveTimer?.Dispose();
+		_keepAliveTimer = new Timer(_ =>
 		{
-			await _devServer!.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage("IDE")), default);
-
-			await Task.Delay(5000, _IDEChannelCancellation.Token);
-		}
+			if (ct is { IsCancellationRequested: false } && _devServer is not null)
+			{
+				_keepAliveTimer!.Dispose();
+				var t = _devServer.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage("IDE")), ct);
+				ScheduleKeepAlive(_IDEChannelCancellation!.Token);
+			}
+		}, null, KeepAliveDelay, Timeout.Infinite);
 	}
 
 	private void ProcessDevServerMessage(object sender, IdeMessageEnvelope devServerMessageEnvelope)
@@ -93,13 +105,11 @@ internal class IdeChannelClient
 
 			var devServerMessage = IdeMessageSerializer.Deserialize(devServerMessageEnvelope);
 
-			_logger.Verbose($"IDE: IDEChannel message received {devServerMessage}");
-
 			var process = Task.CompletedTask;
 			switch (devServerMessage)
 			{
-				case KeepAliveIdeMessage:
-					_logger.Verbose($"Keep alive from Dev Server");
+				case KeepAliveIdeMessage ka:
+					_logger.Verbose($"Keep alive from {ka.Source}");
 					break;
 				case IdeMessage message:
 					_logger.Verbose($"Dev Server Message {message.GetType()} requested");
@@ -125,6 +135,7 @@ internal class IdeChannelClient
 	internal void Dispose()
 	{
 		_IDEChannelCancellation?.Cancel();
+		_keepAliveTimer?.Dispose();
 		_pipeServer?.Dispose();
 	}
 }

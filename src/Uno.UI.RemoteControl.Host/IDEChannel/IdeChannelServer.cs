@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,15 +45,19 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 		if (_proxy is null)
 		{
-			this.Log().Log(LogLevel.Information, "Received an message to send to the IDE, but there is no connection available for that.");
+			this.Log().LogInformation(
+				"Received a message {MessageType} to send to the IDE, but there is no connection available for that.",
+				message.Scope);
 		}
 		else
 		{
 			_proxy.SendToIde(message);
+			ScheduleKeepAlive();
 		}
 
 		await Task.Yield();
 	}
+
 	#endregion
 
 	/// <inheritdoc />
@@ -108,7 +113,9 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 				_logger.LogDebug("IDE channel successfully initialized.");
 			}
 
-			_ = StartKeepAliveAsync();
+			ScheduleKeepAlive();
+
+			SendKeepAlive(); // Send a keep-alive message immediately after connection
 
 			return true;
 		}
@@ -123,16 +130,28 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 		}
 	}
 
-	private async Task StartKeepAliveAsync()
+	private const int KeepAliveDelay = 10000; // 10 seconds in milliseconds
+	private Timer? _keepAliveTimer;
+
+	private void ScheduleKeepAlive()
 	{
-		// Note: The dev-server is expected to send message regularly ... and AS SOON AS POSSIBLE (the Task.Delay is after the first SendToIde()!).
 		while (_pipeServer?.IsConnected ?? false)
 		{
-			_proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
-
-			await Task.Delay(5000);
+			_keepAliveTimer?.Dispose();
 		}
+
+		_keepAliveTimer = new Timer(_ =>
+		{
+			_keepAliveTimer!.Dispose();
+			_keepAliveTimer = null;
+
+			SendKeepAlive();
+			ScheduleKeepAlive();
+		}, null, KeepAliveDelay, Timeout.Infinite);
 	}
+
+	private void SendKeepAlive() => _proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
+
 
 	/// <inheritdoc />
 	public void Dispose()

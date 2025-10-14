@@ -37,14 +37,15 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 
 			var asm = typeof(AppLaunchIntegrationTests).Assembly;
 			var mvid = ApplicationInfoHelper.GetMvid(asm);
-			var platform = ApplicationInfoHelper.GetTargetPlatformOrDefault(asm);
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm) is { } p ? "&platform=" + Uri.EscapeDataString(p) : null;
 			var isDebug = Debugger.IsAttached;
 
 			// ACT - STEP 1: Register app launch via HTTP GET (simulating IDE -> dev server)
 			using (var http = new HttpClient())
 			{
-				var url = $"http://localhost:{helper.Port}/applaunch/{mvid}?platform={Uri.EscapeDataString(platform)}&isDebug={isDebug.ToString().ToLowerInvariant()}";
+				var url = $"http://localhost:{helper.Port}/applaunch/{mvid}?isDebug={isDebug.ToString().ToLowerInvariant()}{platform}";
 				var response = await http.GetAsync(url, CT);
+				var body = await response.Content.ReadAsStringAsync();
 				response.EnsureSuccessStatusCode();
 			}
 
@@ -99,7 +100,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 
 			var asm = typeof(AppLaunchIntegrationTests).Assembly;
 			var asmPath = asm.Location;
-			var platform = ApplicationInfoHelper.GetTargetPlatformOrDefault(asm);
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm);
 			var isDebug = Debugger.IsAttached;
 
 			// ACT - STEP 1: Register app launch via HTTP GET using assembly path (new endpoint)
@@ -165,7 +166,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 
 			var asm = typeof(AppLaunchIntegrationTests).Assembly;
 			var mvid = ApplicationInfoHelper.GetMvid(asm);
-			var platform = ApplicationInfoHelper.GetTargetPlatformOrDefault(asm);
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm);
 			var isDebug = Debugger.IsAttached;
 
 			// ACT - STEP 1: Register app launch via IDE channel (IDE -> dev server)
