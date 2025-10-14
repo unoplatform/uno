@@ -441,13 +441,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			var finalValue = transform.X;
 
 			// Verify animation went forward then backward
-			Assert.IsTrue(valueAt25Percent > 0 && valueAt25Percent < 100, 
+			Assert.IsTrue(valueAt25Percent > 0 && valueAt25Percent < 100,
 				$"At 25%, value should be between 0 and 100, got {valueAt25Percent}");
-			Assert.IsTrue(valueAt55Percent > valueAt25Percent, 
+			Assert.IsTrue(valueAt55Percent > valueAt25Percent,
 				$"At 55%, value should be greater than at 25%, got {valueAt55Percent} vs {valueAt25Percent}");
-			Assert.IsTrue(valueAt80Percent < valueAt55Percent, 
+			Assert.IsTrue(valueAt80Percent < valueAt55Percent,
 				$"At 80% (reverse phase), value should be less than at 55%, got {valueAt80Percent} vs {valueAt55Percent}");
-			Assert.IsTrue(Math.Abs(finalValue) < 10, 
+			Assert.IsTrue(Math.Abs(finalValue) < 10,
 				$"Final value should be close to 0, got {finalValue}");
 		}
 
@@ -486,7 +486,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 			// Final value should stay at end (100) with HoldEnd and no AutoReverse
 			var finalValue = transform.X;
-			Assert.IsTrue(Math.Abs(finalValue - 100) < 10, 
+			Assert.IsTrue(Math.Abs(finalValue - 100) < 10,
 				$"Final value should be close to 100, got {finalValue}");
 		}
 
@@ -526,7 +526,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 			// Final value should be back at start (0)
 			var finalValue = transform.X;
-			Assert.IsTrue(Math.Abs(finalValue) < 10, 
+			Assert.IsTrue(Math.Abs(finalValue) < 10,
 				$"Final value should be close to 0 after repeating with AutoReverse, got {finalValue}");
 		}
 	}
