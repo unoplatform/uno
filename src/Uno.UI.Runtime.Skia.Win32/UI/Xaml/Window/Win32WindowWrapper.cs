@@ -111,7 +111,32 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			Resize(new SizeInt32((int)(Size.Width * RasterizationScale), (int)(Size.Height * RasterizationScale)));
 		}
 
-		// TODO: extending into titlebar
+		window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
+	}
+
+	private void OnExtendsContentIntoTitleBarChanged(bool extends)
+	{
+		// When extending content into the title bar, remove the standard caption so the
+		// client area reaches the top of the window. Restoring will bring the system
+		// title bar back.
+		SetWindowStyle(WINDOW_STYLE.WS_CAPTION, !extends);
+
+		// Notify the system the frame has changed so non-client metrics are recalculated.
+		var success = PInvoke.SetWindowPos(
+			_hwnd,
+			HWND.Null,
+			0,
+			0,
+			0,
+			0,
+			SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED);
+		if (!success)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+
+		// Update cached bounds to reflect the new client area.
+		OnWindowSizeOrLocationChanged();
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
@@ -275,6 +300,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
+		if (_window is not null)
+		{
+			_window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= OnExtendsContentIntoTitleBarChanged;
+		}
 		Win32Host.UnregisterWindow(_hwnd);
 		_renderer.Dispose();
 		_rendererDisposed = true;
