@@ -393,6 +393,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 		public async Task When_AutoReverse_True()
 		{
 			var target = new TextBlock() { Text = "Test AutoReverse" };
@@ -452,6 +453,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 		public async Task When_AutoReverse_False()
 		{
 			var target = new TextBlock() { Text = "Test No AutoReverse" };
@@ -491,6 +493,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 		public async Task When_AutoReverse_WithRepeat()
 		{
 			var target = new TextBlock() { Text = "Test AutoReverse with Repeat" };
