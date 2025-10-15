@@ -54,11 +54,11 @@ variables:
   windows2019HostedVMImage: 'windows-2019'
   windows2022HostedVMImage: 'windows-2022'
   windowsScaledPool: 'Windows2022-20250720-1'
-  linuxVMImage: 'ubuntu-22.04'
-  linuxScaledPool: 'Ubuntu2204-20230918'
+  linuxVMImage: 'ubuntu-24.04'
+  linuxScaledPool: 'Ubuntu2404-20251016'
   macOSVMImage: 'macOS-15'
   macOSVMImage_UITests: 'macOS-14'
-  xCodeRoot: '/Applications/Xcode_16.4.app'
+  xCodeRoot: '/Applications/Xcode_26.0.1.app'
   xCodeRoot_iOS_UITests: '/Applications/Xcode_15.3.app'
 
   # Offline validation to improve build performance
@@ -69,7 +69,7 @@ variables:
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
-  GlobalUnoCheckVersion: '1.33.0-dev.7'
+  GlobalUnoCheckVersion: '1.33.0-dev.26'
 
 stages:
 - template: build/ci/.azure-devops-stages.yml
