@@ -16,6 +16,10 @@ public record AppLaunchMessage : IMessage
 
 	public bool IsDebug { get; init; }
 
+	public string? Ide { get; init; }
+
+	public string? Plugin { get; init; }
+
 	public required AppLaunchStep Step { get; init; }
 
 	public string Scope => WellKnownScopes.DevServerChannel;
