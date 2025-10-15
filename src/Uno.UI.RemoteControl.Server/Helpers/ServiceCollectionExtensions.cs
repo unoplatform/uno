@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,8 +39,10 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 				launchOptions.OnRegistered = ev =>
 				{
 					telemetry.TrackEvent("app-launch/launched", [
-						("platform", ev.Platform),
-						("debug", ev.IsDebug.ToString())
+						("Platform", ev.Platform),
+						("Debug", ev.IsDebug.ToString()),
+						("Ide", ev.Ide),
+						("Plugin", ev.Plugin),
 					], null);
 				};
 
@@ -50,11 +51,13 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 					var latencyMs = (DateTimeOffset.UtcNow - ev.RegisteredAt).TotalMilliseconds;
 					telemetry.TrackEvent("app-launch/connected",
 						[
-							("platform", ev.Platform),
-							("debug", ev.IsDebug.ToString()),
-							("wasTimedOut", wasTimedOut.ToString())
+							("Platform", ev.Platform),
+							("Debug", ev.IsDebug.ToString()),
+							("WasTimedOut", wasTimedOut.ToString()),
+							("Ide", ev.Ide),
+							("Plugin", ev.Plugin),
 						],
-						[("latencyMs", latencyMs)]);
+						[("LatencyMs", latencyMs)]);
 				};
 
 				launchOptions.OnTimeout = ev =>
@@ -62,10 +65,12 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 					var timeoutSeconds = launchOptions.Timeout.TotalSeconds;
 					telemetry.TrackEvent("app-launch/connection-timeout",
 						[
-							("platform", ev.Platform),
-							("debug", ev.IsDebug.ToString()),
+							("Platform", ev.Platform),
+							("Debug", ev.IsDebug.ToString()),
+							("Ide", ev.Ide),
+							("Plugin", ev.Plugin),
 						],
-						[("timeoutSeconds", timeoutSeconds)]);
+						[("TimeoutSeconds", timeoutSeconds)]);
 				};
 
 				return new AppLaunch.ApplicationLaunchMonitor(options: launchOptions);
