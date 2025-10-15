@@ -28,11 +28,14 @@ using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
+using MARGINS = Windows.Win32.UI.Controls.MARGINS;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 {
+	public const double StandardDpi = 96;
+
 	private const string WindowClassName = "UnoPlatformRegularWindow";
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
@@ -118,27 +121,168 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private void OnExtendsContentIntoTitleBarChanged(bool extends)
 	{
-		// When extending content into the title bar, remove the standard caption so the
-		// client area reaches the top of the window. Restoring will bring the system
-		// title bar back.
-		SetWindowStyle(WINDOW_STYLE.WS_CAPTION, !extends);
-
-		// Notify the system the frame has changed so non-client metrics are recalculated.
-		var success = PInvoke.SetWindowPos(
-			_hwnd,
-			HWND.Null,
-			0,
-			0,
-			0,
-			0,
-			SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED);
-		if (!success)
+		if (_window is null)
 		{
-			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+			throw new InvalidOperationException("Cannot extend client area before the Window is set.");
 		}
 
-		// Update cached bounds to reflect the new client area.
-		OnWindowSizeOrLocationChanged();
+		if (!WasShown)
+		{
+			return;
+		}
+
+		if (PInvoke.DwmIsCompositionEnabled(out var compositionEnabled) < 0 || !compositionEnabled)
+		{
+			_window.ExtendsContentIntoTitleBar = false;
+			return;
+		}
+		PInvoke.GetWindowRect(_hwnd, out var rcWindow);
+
+		var extendContentIntoTitleBar = _window.AppWindow.TitleBar.ExtendsContentIntoTitleBar;
+
+		if (extendContentIntoTitleBar && _window.AppWindow.Presenter is not FullScreenPresenter)
+		{
+			var margins = GetMargins();
+			PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
+
+			unsafe
+			{
+				int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
+				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
+			}
+		}
+		else
+		{
+			var margins = new MARGINS();
+			PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
+
+			//_offScreenMargin = new Thickness();
+			//_extendedMargins = new Thickness();
+
+			unsafe
+			{
+				int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DEFAULT;
+				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
+			}
+		}
+
+		//if (!extendContentIntoTitleBar || (_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.SystemChrome) &&
+		//	!_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.PreferSystemChrome)))
+		//{
+		//	EnableCloseButton(_hwnd);
+		//}
+		//else
+		//{
+		//	DisableCloseButton(_hwnd);
+		//}
+
+		if (extendContentIntoTitleBar)
+		{
+			PInvoke.SetWindowText(_hwnd, string.Empty);
+			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, IntPtr.Zero);
+			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, IntPtr.Zero);
+
+			unsafe
+			{
+				int transparent = 0x00000000; // ARGB (A=0 -> transparent)
+				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_CAPTION_COLOR, &transparent, sizeof(int));
+				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_TEXT_COLOR, &transparent, sizeof(int));
+
+				// Disable system backdrop painting
+				int backdropNone = 1; // 0=None, 1=Mica, 2=Acrylic, 3=Tabbed
+				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, &backdropNone, sizeof(int));
+			}
+		}
+
+		// Inform the application of the frame change.
+		PInvoke.SetWindowPos(_hwnd,
+			HWND.Null,
+			rcWindow.left, rcWindow.top,
+			0, 0,
+			SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
+	}
+
+
+	private MARGINS GetMargins()
+	{
+		RECT borderThickness = new RECT();
+		RECT borderCaptionThickness = new RECT();
+
+		var scaling = (uint)(RasterizationScale * StandardDpi);
+		//var relativeScaling = RenderScaling / PrimaryScreenRenderScaling;
+		//PInvoke.GetV
+		//if (Win32Platform.WindowsVersion < PlatformConstants.Windows10_1607)
+		//{
+		//	AdjustWindowRectEx(ref borderCaptionThickness, (uint)GetStyle(), false, 0);
+		//	AdjustWindowRectEx(ref borderThickness, (uint)(GetStyle() & ~WindowStyles.WS_CAPTION), false, 0);
+
+		//	borderCaptionThickness.top = (int)(borderCaptionThickness.top * relativeScaling);
+		//	borderCaptionThickness.right = (int)(borderCaptionThickness.right * relativeScaling);
+		//	borderCaptionThickness.left = (int)(borderCaptionThickness.left * relativeScaling);
+		//	borderCaptionThickness.bottom = (int)(borderCaptionThickness.bottom * relativeScaling);
+
+		//	borderThickness.top = (int)(borderThickness.top * relativeScaling);
+		//	borderThickness.right = (int)(borderThickness.right * relativeScaling);
+		//	borderThickness.left = (int)(borderThickness.left * relativeScaling);
+		//	borderThickness.bottom = (int)(borderThickness.bottom * relativeScaling);
+		//}
+		//else
+		//{
+		PInvoke.AdjustWindowRectExForDpi(ref borderCaptionThickness, GetStyle(), false, 0, scaling);
+		PInvoke.AdjustWindowRectExForDpi(ref borderThickness, GetStyle() & ~WINDOW_STYLE.WS_CAPTION, false, 0, scaling);
+		//}
+
+		borderThickness.left *= -1;
+		borderThickness.top *= -1;
+		borderCaptionThickness.left *= -1;
+		borderCaptionThickness.top *= -1;
+
+		bool wantsTitleBar = true;//_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.SystemChrome) || _extendTitleBarHint == -1;
+
+		if (!wantsTitleBar)
+		{
+			borderCaptionThickness.top = 1;
+		}
+
+		//using a default margin of 0 when using WinUiComp removes artefacts when resizing. See issue #8316
+		var defaultMargin = 1; //UseRedirectionBitmap ? 1 : 0;
+
+		MARGINS margins = new MARGINS();
+		margins.cxLeftWidth = defaultMargin;
+		margins.cxRightWidth = defaultMargin;
+		margins.cyBottomHeight = defaultMargin;
+
+		//if (_extendTitleBarHint != -1)
+		//{
+		//	borderCaptionThickness.top = (int)(_extendTitleBarHint * RenderScaling);
+		//}
+
+		margins.cyTopHeight = defaultMargin; //_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.SystemChrome) && !_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.PreferSystemChrome) ? borderCaptionThickness.top : defaultMargin;
+
+		//if (WindowState == WindowState.Maximized)
+		//{
+		//	_extendedMargins = new Thickness(0, (borderCaptionThickness.top - borderThickness.top) / RenderScaling, 0, 0);
+		//	_offScreenMargin = new Thickness(borderThickness.left / RenderScaling, borderThickness.top / RenderScaling, borderThickness.right / RenderScaling, borderThickness.bottom / RenderScaling);
+		//}
+		//else
+		//{
+		//	_extendedMargins = new Thickness(0, (borderCaptionThickness.top) / RenderScaling, 0, 0);
+		//	_offScreenMargin = new Thickness();
+		//}
+
+		return margins;
+	}
+
+	private WINDOW_STYLE GetStyle()
+	{
+		//if (_isFullScreenActive)
+		//{
+		//	return _savedWindowInfo.Style;
+		//}
+		//else
+		//{
+		return (WINDOW_STYLE)PInvoke.GetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
+		//}
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
@@ -304,6 +448,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					return new LRESULT(0);
 				}
 				break;
+			//case PInvoke.WM_NCCALCSIZE:
+			//	{
+			//		if (_window!.AppWindow.TitleBar.ExtendsContentIntoTitleBar)//ToInt32(wParam) == 1 && (_windowProperties.Decorations == SystemDecorations.None || _isClientAreaExtended))
+			//		{
+			//			return new LRESULT(0);
+			//		}
+
+			//		break;
+			//	}
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
