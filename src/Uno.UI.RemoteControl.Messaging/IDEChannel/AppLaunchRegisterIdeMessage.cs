@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
@@ -8,4 +9,4 @@ namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 /// <param name="Mvid">The MVID (Module Version ID) of the head application assembly.</param>
 /// <param name="Platform">The target platform (case-sensitive, e.g. "Wasm", "Android").</param>
 /// <param name="IsDebug">Whether the app was launched under a debugger (Debug configuration).</param>
-public record AppLaunchRegisterIdeMessage(Guid Mvid, string Platform, bool IsDebug) : IdeMessage(WellKnownScopes.DevServerChannel);
+public record AppLaunchRegisterIdeMessage(Guid Mvid, string? Platform, bool IsDebug, string Ide, string Plugin) : IdeMessage(WellKnownScopes.DevServerChannel);

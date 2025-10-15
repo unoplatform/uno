@@ -59,7 +59,7 @@ public class Given_ApplicationLaunchMonitor
 		var mvid = Guid.NewGuid();
 
 		// Act
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: true);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
 		clock.Advance(TimeSpan.FromSeconds(5));
 
 		// Assert
@@ -79,7 +79,7 @@ public class Given_ApplicationLaunchMonitor
 			out var connections,
 			out _);
 		var mvid = Guid.NewGuid();
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: true);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
 
 		// Act
 		sut.ReportConnection(mvid, "Wasm", isDebug: true);
@@ -108,14 +108,14 @@ public class Given_ApplicationLaunchMonitor
 		var mvid = Guid.NewGuid();
 
 		// First registration - will be expired
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: true);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
 		// Advance beyond timeout so the first one expires
 		clock.Advance(TimeSpan.FromMilliseconds(600));
 
 		// Two active registrations that should remain in FIFO order
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: true);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
 		clock.Advance(TimeSpan.FromMilliseconds(1));
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: true);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
 
 		// Act
 		sut.ReportConnection(mvid, "Wasm", isDebug: true);
@@ -147,7 +147,7 @@ public class Given_ApplicationLaunchMonitor
 		// Register K entries which will be expired
 		for (var i = 0; i < K; i++)
 		{
-			sut.RegisterLaunch(mvid, "Wasm", isDebug: false);
+			sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
 			clock.Advance(TimeSpan.FromTicks(1));
 		}
 
@@ -157,7 +157,7 @@ public class Given_ApplicationLaunchMonitor
 		// Register L active entries without advancing the global clock so they remain within the timeout window
 		for (var i = 0; i < L; i++)
 		{
-			sut.RegisterLaunch(mvid, "Wasm", isDebug: false);
+			sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
 			clock.Advance(TimeSpan.FromTicks(1));
 			// Do NOT advance the clock here: advancing would make early active entries expire before we report connections.
 		}
@@ -190,7 +190,7 @@ public class Given_ApplicationLaunchMonitor
 			out _,
 			timeout: TimeSpan.FromSeconds(10));
 		var mvid = Guid.NewGuid();
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: false);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
 
 		// Act
 		clock.Advance(TimeSpan.FromSeconds(11));
@@ -210,9 +210,9 @@ public class Given_ApplicationLaunchMonitor
 			out var connections,
 			out _);
 		var mvid = Guid.NewGuid();
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: false); // will expire
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin"); // will expire
 		clock.Advance(TimeSpan.FromSeconds(5));
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: false); // still active
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin"); // still active
 
 		// Act
 		clock.Advance(TimeSpan.FromSeconds(6)); // first expired, second still active
@@ -230,7 +230,7 @@ public class Given_ApplicationLaunchMonitor
 		using var sut = CreateMonitor(out _, out _, out _, out _, out _);
 		var mvid = Guid.NewGuid();
 
-		sut.Invoking(m => m.RegisterLaunch(mvid, string.Empty, true)).Should().Throw<ArgumentException>();
+		sut.Invoking(m => m.RegisterLaunch(mvid, string.Empty, true, ide: "UnitTestIDE", plugin: "unit-plugin")).Should().Throw<ArgumentException>();
 		sut.Invoking(m => m.ReportConnection(mvid, string.Empty, true)).Should().Throw<ArgumentException>();
 	}
 
@@ -239,7 +239,7 @@ public class Given_ApplicationLaunchMonitor
 	{
 		using var sut = CreateMonitor(out var clock, out _, out _, out var connections, out _);
 		var mvid = Guid.NewGuid();
-		sut.RegisterLaunch(mvid, "Wasm", true);
+		sut.RegisterLaunch(mvid, "Wasm", true, ide: "UnitTestIDE", plugin: "unit-plugin");
 		clock.Advance(TimeSpan.FromSeconds(1)); // bellow timeout
 
 		sut.ReportConnection(mvid, "wasm", true);
@@ -256,7 +256,7 @@ public class Given_ApplicationLaunchMonitor
 		sut.ReportConnection(mvid, "Wasm", isDebug: true).Should().BeFalse();
 
 		// Register and then report -> true
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: true);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
 		sut.ReportConnection(mvid, "Wasm", isDebug: true).Should().BeTrue();
 
 		// Already consumed -> false
@@ -274,7 +274,7 @@ public class Given_ApplicationLaunchMonitor
 			out _,
 			timeout: TimeSpan.FromSeconds(5));
 		var mvid = Guid.NewGuid();
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: false);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
 
 		// Advance past timeout so OnTimeout is invoked
 		clock.Advance(TimeSpan.FromSeconds(6));
@@ -303,7 +303,7 @@ public class Given_ApplicationLaunchMonitor
 			scavengeInterval: TimeSpan.FromSeconds(1));
 
 		var mvid = Guid.NewGuid();
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: false);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
 
 		// Advance time past retention and run multiple scavenge intervals to ensure the periodic scavenge executed more than once
 		clock.Advance(TimeSpan.FromSeconds(3)); // now > retention
@@ -332,11 +332,11 @@ public class Given_ApplicationLaunchMonitor
 		var mvid = Guid.NewGuid();
 
 		// Register first entry
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: false);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
 		clock.Advance(TimeSpan.FromSeconds(1));
 
 		// Register second entry (newer)
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: false);
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
 
 		// We only advance enough time so multiple scavenge passes run (scavenge interval = 1s)
 		// but the newer entry (registered 1s after the first) is still within the retention window.

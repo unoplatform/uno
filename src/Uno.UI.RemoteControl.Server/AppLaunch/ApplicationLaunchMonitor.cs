@@ -60,7 +60,13 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// <summary>
 	/// Describes a single launch event recorded by the monitor.
 	/// </summary>
-	public sealed record LaunchEvent(Guid Mvid, string Platform, bool IsDebug, DateTimeOffset RegisteredAt);
+	public sealed record LaunchEvent(
+		Guid Mvid,
+		string Platform,
+		bool IsDebug,
+		string Ide,
+		string Plugin,
+		DateTimeOffset RegisteredAt);
 
 	private readonly TimeProvider _timeProvider;
 	private readonly Options _options;
@@ -113,13 +119,15 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	/// <param name="mvid">The MVID of the root/head application.</param>
 	/// <param name="platform">The platform used to run the application. Cannot be null or empty.</param>
 	/// <param name="isDebug">Whether the debugger is used.</param>
-	public void RegisterLaunch(Guid mvid, string? platform, bool isDebug)
+	/// <param name="ide">The IDE used to launch the application.</param>
+	/// <param name="plugin">The Uno plugin version used to launch the application.</param>
+	public void RegisterLaunch(Guid mvid, string? platform, bool isDebug, string ide, string plugin)
 	{
 		platform ??= DefaultPlatform;
 		ArgumentException.ThrowIfNullOrEmpty(platform);
 
 		var now = _timeProvider.GetUtcNow();
-		var ev = new LaunchEvent(mvid, platform, isDebug, now);
+		var ev = new LaunchEvent(mvid, platform, isDebug, ide, plugin, now);
 		var key = new Key(mvid, platform, isDebug);
 
 		var queue = _pending.GetOrAdd(key, static _ => new ConcurrentQueue<LaunchEvent>());

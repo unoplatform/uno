@@ -27,7 +27,8 @@ using var monitor = new ApplicationLaunchMonitor(options: options);
 
 ### 2) When you start a target app, register the launch:
 ```csharp
-monitor.RegisterLaunch(mvid, "Wasm", isDebug: true);
+// New signature includes IDE and Uno plugin version
+monitor.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "VisualStudio", plugin: "uno-vs-extension-1.2.3");
 ```
 
 ### 3) When the app connects back to the dev server, report the connection:
@@ -44,15 +45,7 @@ That’s it. The monitor pairs the connection with the oldest pending launch for
 - Always dispose the monitor (use "using" as shown).
 
 ## Analytics Events (emitted by dev-server)
-When integrated in the dev-server, the monitor emits telemetry events (prefix `uno/dev-server/` omitted below):
-
-| Event Name                         | When                                                        | Properties              | Measurements     |
-|------------------------------------|-------------------------------------------------------------|-------------------------|------------------|
-| `app-launch/launched`              | IDE registers a launch                                      | platform, debug         | (none)           |
-| `app-launch/connected`             | Runtime connects and matches a pending registration         | platform, debug         | latencyMs        |
-| `app-launch/connection-timeout`    | Registration expired without a matching runtime connection  | platform, debug         | timeoutSeconds   |
-
-`latencyMs` is the elapsed time between registration and connection, measured internally. `timeoutSeconds` equals the configured timeout.
+Events emitted by the monitor are prefixed with `uno/dev-server/app-launch/`. See `Telemetry.md` in the `.Host` project for more info.
 
 ## Integration points (IDE, WebSocket, HTTP)
 The dev-server can receive registration and connection events through multiple channels:

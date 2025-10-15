@@ -174,7 +174,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			{
 				await ide.EnsureConnectedAsync(CT);
 				await Task.Delay(1500, CT);
-				await ide.SendToDevServerAsync(new AppLaunchRegisterIdeMessage(mvid, platform, isDebug), CT);
+				await ide.SendToDevServerAsync(new AppLaunchRegisterIdeMessage(mvid, platform, isDebug, "UnitTestIDE", "unit-plugin"), CT);
 			}
 
 			// ACT - STEP 2: Connect from application (app -> dev server)

@@ -17,25 +17,39 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 	private readonly AsyncPackage _package;
 	private readonly VsAppLaunchStateService<AppLaunchDetails> _stateService;
 	private readonly Func<IdeChannelClient?> _ideChannelAccessor;
+	private readonly string _packageVersion;
 
 	private VsAppLaunchStateConsumer(
 		AsyncPackage package,
 		VsAppLaunchStateService<AppLaunchDetails> stateService,
-		Func<IdeChannelClient?> ideChannelAccessor)
+		Func<IdeChannelClient?> ideChannelAccessor,
+		string packageVersion)
 	{
 		_package = package;
 		_stateService = stateService;
 		_ideChannelAccessor = ideChannelAccessor;
+		_packageVersion = packageVersion;
 	}
 
 	public static async Task<VsAppLaunchStateConsumer> CreateAsync(
 		AsyncPackage package,
 		VsAppLaunchStateService<AppLaunchDetails> stateService,
-		Func<IdeChannelClient?> ideChannelAccessor)
+		Func<IdeChannelClient?> ideChannelAccessor,
+		string packageVersion)
 	{
-		var c = new VsAppLaunchStateConsumer(package, stateService, ideChannelAccessor);
+		var c = new VsAppLaunchStateConsumer(package, stateService, ideChannelAccessor, packageVersion);
 		await c.InitializeAsync();
 		return c;
+	}
+
+	// Backward-compatible overload: compute package version when caller doesn't provide it.
+	public static Task<VsAppLaunchStateConsumer> CreateAsync(
+		AsyncPackage package,
+		VsAppLaunchStateService<AppLaunchDetails> stateService,
+		Func<IdeChannelClient?> ideChannelAccessor)
+	{
+		var packageVersion = typeof(VsAppLaunchStateConsumer).Assembly.GetName().Version?.ToString() ?? string.Empty;
+		return CreateAsync(package, stateService, ideChannelAccessor, packageVersion);
 	}
 
 	private Task InitializeAsync()
@@ -75,7 +89,10 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 			var ideChannel = _ideChannelAccessor();
 			if (ideChannel != null && details.IsDebug is { } isDebug)
 			{
-				var message = new AppLaunchRegisterIdeMessage(mvid, platform, isDebug);
+				// Provide IDE and plugin metadata. For Visual Studio host, report product name and unknown plugin version when not available.
+				var ideName = "VisualStudio";
+				var pluginVersion = _packageVersion;
+				var message = new AppLaunchRegisterIdeMessage(mvid, platform, isDebug, ideName, pluginVersion);
 				await ideChannel.SendToDevServerAsync(message, CancellationToken.None);
 			}
 		}

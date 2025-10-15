@@ -255,11 +255,16 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug("Received app launch register message from IDE, mvid={Mvid}, platform={Platform}, isDebug={IsDebug}", appLaunchRegisterIdeMessage.Mvid, appLaunchRegisterIdeMessage.Platform, appLaunchRegisterIdeMessage.IsDebug);
+				this.Log().LogDebug("Received app launch register message from IDE: {Msg}", appLaunchRegisterIdeMessage);
 			}
 			var monitor = _serviceProvider.GetRequiredService<ApplicationLaunchMonitor>();
 
-			monitor.RegisterLaunch(appLaunchRegisterIdeMessage.Mvid, appLaunchRegisterIdeMessage.Platform, appLaunchRegisterIdeMessage.IsDebug);
+			monitor.RegisterLaunch(
+				appLaunchRegisterIdeMessage.Mvid,
+				appLaunchRegisterIdeMessage.Platform,
+				appLaunchRegisterIdeMessage.IsDebug,
+				appLaunchRegisterIdeMessage.Ide,
+				appLaunchRegisterIdeMessage.Plugin);
 		}
 		else if (_processors.TryGetValue(message.Scope, out var processor))
 		{
@@ -294,27 +299,41 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug("App {Step}: MVID={Mvid} Platform={Platform} Debug={Debug}", appLaunch.Step, appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+				this.Log().LogDebug("App {Step}: {Msg}", appLaunch.Step, appLaunch);
 			}
+
+			var monitor = _serviceProvider.GetRequiredService<ApplicationLaunchMonitor>();
 
 			switch (appLaunch.Step)
 			{
 				case AppLaunchStep.Launched:
-					if (_serviceProvider.GetService<ApplicationLaunchMonitor>() is { } monitor)
+					if (appLaunch.Ide is null)
 					{
-						monitor.RegisterLaunch(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
-					}
-					break;
-				case AppLaunchStep.Connected:
-					if (_serviceProvider.GetService<ApplicationLaunchMonitor>() is { } monitor2)
-					{
-						var success = monitor2.ReportConnection(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
-						if (!success)
+						if (this.Log().IsEnabled(LogLevel.Error))
 						{
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().LogError("App Connected: MVID={Mvid} Platform={Platform} Debug={Debug} - Failed to report connected: APP LAUNCH NOT REGISTERED.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
-							}
+							this.Log().LogError("App Launched: MVID={Mvid} Platform={Platform} Debug={Debug} - No IDE provided.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+						}
+						break;
+					}
+
+					if (appLaunch.Plugin is null)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError("App Launched: MVID={Mvid} Platform={Platform} Debug={Debug} - No Plugin provided.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+						}
+						break;
+					}
+					monitor.RegisterLaunch(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug, appLaunch.Ide, appLaunch.Plugin);
+					break;
+
+				case AppLaunchStep.Connected:
+					var success = monitor.ReportConnection(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+					if (!success)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError("App Connected: MVID={Mvid} Platform={Platform} Debug={Debug} - Failed to report connected: APP LAUNCH NOT REGISTERED.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
 						}
 					}
 					break;

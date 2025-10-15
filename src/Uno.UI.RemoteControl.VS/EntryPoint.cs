@@ -215,8 +215,10 @@ public partial class EntryPoint : IDisposable
 			_debugAction?.Invoke($"[AppLaunch] {e.Previous} -> {e.Current} key={key}");
 		};
 
+		var packageVersion = GetAssemblyVersion();
+
 		_appLaunchIdeBridge = await VsAppLaunchIdeBridge.CreateAsync(asyncPackage, _dte2, stateService);
-		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient);
+		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient, packageVersion);
 	}
 
 	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -293,15 +295,15 @@ public partial class EntryPoint : IDisposable
 		_infoAction($"Uno Remote Control initialized ({GetAssemblyVersion()})");
 	}
 
-	private object GetAssemblyVersion()
+	private string GetAssemblyVersion()
 	{
 		var assembly = GetType().GetTypeInfo().Assembly;
 
-		if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
+		if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is { } aiva)
 		{
 			return aiva.InformationalVersion;
 		}
-		else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is AssemblyVersionAttribute ava)
+		else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is { } ava)
 		{
 			return ava.Version;
 		}
