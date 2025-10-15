@@ -72,6 +72,7 @@ WM_GETMINMAXINFO
 WM_KEYDOWN
 WM_KEYUP
 WM_MOVE
+WM_NCCALCSIZE
 WM_PAINT
 WM_POINTERCAPTURECHANGED
 WM_POINTERDOWN
@@ -100,8 +101,13 @@ MINMAXINFO
 MONITORINFOEXW
 PIXELFORMATDESCRIPTOR
 RECT
+MARGINS
+
+// Enums
+DWM_WINDOW_CORNER_PREFERENCE
 
 // Functions
+AdjustWindowRectExForDpi
 AddClipboardFormatListener
 BeginPaint
 BitBlt
@@ -118,6 +124,9 @@ DescribePixelFormat
 DestroyWindow
 DispatchMessage
 DragQueryFile
+DwmSetWindowAttribute
+DwmIsCompositionEnabled
+DwmExtendFrameIntoClientArea
 DwmSetWindowAttribute
 EmptyClipboard
 EnableMouseInPointer
@@ -186,6 +195,7 @@ RegOpenKeyEx
 ReleaseDC
 ReleaseCapture
 ReleaseStgMedium
+RtlGetVersion
 ScreenToClient
 SelectObject
 SendMessage
