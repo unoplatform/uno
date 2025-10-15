@@ -4,62 +4,55 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:controls="using:Uno.UI.Samples.Controls"
 	mc:Ignorable="d"
 	d:DesignHeight="600"
 	d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="Test AutoReverse functionality. The rectangle should move right then back to the start position.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
 
-					<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="10">
-						<Button x:Name="StartButton" Content="Start" Click="StartAnimation" />
-						<Button x:Name="StopButton" Content="Stop" Click="StopAnimation" />
-					</StackPanel>
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="10">
+			<Button x:Name="StartButton" Content="Start" Click="StartAnimation" />
+			<Button x:Name="StopButton" Content="Stop" Click="StopAnimation" />
+		</StackPanel>
 
-					<TextBlock Grid.Row="1" x:Name="StatusText" Text="Click Start to begin animation" Margin="10" />
+		<TextBlock Grid.Row="1" x:Name="StatusText" Text="Click Start to begin animation" Margin="10" />
 
-					<Grid Grid.Row="2" Margin="20">
-						<Rectangle x:Name="AnimatedRectangle"
-							Width="50"
-							Height="50"
-							Fill="{ThemeResource SystemAccentColorBrush}"
-							HorizontalAlignment="Left"
-							VerticalAlignment="Top">
-							<Rectangle.RenderTransform>
-								<TranslateTransform x:Name="RectTransform" />
-							</Rectangle.RenderTransform>
-						</Rectangle>
+		<Grid Grid.Row="2" Margin="20">
+			<Rectangle x:Name="AnimatedRectangle"
+				Width="50"
+				Height="50"
+				Fill="{ThemeResource SystemAccentColorBrush}"
+				HorizontalAlignment="Left"
+				VerticalAlignment="Top">
+				<Rectangle.RenderTransform>
+					<TranslateTransform x:Name="RectTransform" />
+				</Rectangle.RenderTransform>
+			</Rectangle>
 
-						<StackPanel VerticalAlignment="Bottom" Margin="10">
-							<TextBlock Text="AutoReverse=True" FontWeight="Bold" Margin="0,0,0,10" />
-							<TextBlock Text="Duration: 2 seconds" />
-							<TextBlock Text="From: 0, To: 300" />
-							<TextBlock Text="Expected: Move right, then back to start" TextWrapping="Wrap" />
-						</StackPanel>
-					</Grid>
+			<StackPanel VerticalAlignment="Bottom" Margin="10">
+				<TextBlock Text="AutoReverse=True" FontWeight="Bold" Margin="0,0,0,10" />
+				<TextBlock Text="Duration: 2 seconds" />
+				<TextBlock Text="From: 0, To: 300" />
+				<TextBlock Text="Expected: Move right, then back to start" TextWrapping="Wrap" />
+			</StackPanel>
+		</Grid>
 
-					<Grid.Resources>
-						<Storyboard x:Key="MoveStoryboard">
-							<DoubleAnimation
-								Storyboard.TargetName="RectTransform"
-								Storyboard.TargetProperty="X"
-								From="0"
-								To="300"
-								Duration="0:0:2"
-								AutoReverse="True"
-								FillBehavior="HoldEnd" />
-						</Storyboard>
-					</Grid.Resources>
-				</Grid>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+		<Grid.Resources>
+			<Storyboard x:Key="MoveStoryboard">
+				<DoubleAnimation
+					Storyboard.TargetName="RectTransform"
+					Storyboard.TargetProperty="X"
+					From="0"
+					To="300"
+					Duration="0:0:2"
+					AutoReverse="True"
+					FillBehavior="HoldEnd" />
+			</Storyboard>
+		</Grid.Resources>
+	</Grid>
 </UserControl>

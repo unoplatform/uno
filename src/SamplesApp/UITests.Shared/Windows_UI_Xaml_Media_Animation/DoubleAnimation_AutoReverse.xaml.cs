@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace GenericApp.Views.Content.UITests.Animations
 {
-	[SampleControlInfo("Animations", "DoubleAnimation_AutoReverse", description: "Demonstrates AutoReverse functionality for animations")]
+	[Sample("Animations", Description = "Demonstrates AutoReverse functionality. The rectangle should move right then back to the start position.")]
 	public sealed partial class DoubleAnimation_AutoReverse : UserControl
 	{
 		private Storyboard _storyboard;
@@ -20,28 +20,12 @@ namespace GenericApp.Views.Content.UITests.Animations
 		{
 			if (_storyboard == null)
 			{
-				// Get the storyboard from the template resources
-				var sampleControl = Content as SampleControl;
-				if (sampleControl?.SampleContent is DataTemplate template)
-				{
-					var grid = template.LoadContent() as Grid;
-					if (grid?.Resources["MoveStoryboard"] is Storyboard storyboard)
-					{
-						_storyboard = storyboard;
-						_storyboard.Completed += OnStoryboardCompleted;
-					}
-				}
+				_storyboard = (Storyboard)Resources["MoveStoryboard"];
+				_storyboard.Completed += OnStoryboardCompleted;
 			}
 
-			if (_storyboard != null)
-			{
-				StatusText.Text = "Animation started...";
-				_storyboard.Begin();
-			}
-			else
-			{
-				StatusText.Text = "Error: Could not load storyboard";
-			}
+			StatusText.Text = "Animation started...";
+			_storyboard.Begin();
 		}
 
 		private void StopAnimation(object sender, RoutedEventArgs e)
