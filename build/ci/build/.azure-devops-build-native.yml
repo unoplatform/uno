@@ -28,6 +28,8 @@ jobs:
 
   - template: ../templates/gitversion.yml
   
+  - template: ../templates/dotnet-install.yml
+
   - bash: |
       cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
       chmod +x build.sh
