@@ -210,6 +210,70 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 		}
 	}
 
+	[TestMethod]
+	public async Task WhenRegisteredButNoConnection_TimeoutEventEmitted()
+	{
+		// PRE-ARRANGE: Create a solution file
+		var solution = SolutionHelper!;
+		await solution.CreateSolutionFileAsync();
+
+		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_timeout"));
+
+		// Create helper with environment variable for short timeout (0.5 seconds)
+		var envVars = new Dictionary<string, string>
+		{
+			{ "UNO_PLATFORM_TELEMETRY_FILE", filePath },
+			{ "UNO_DEVSERVER_APPLAUNCH_TIMEOUT", "0.5" } // 0.5 second timeout
+		};
+
+		await using var helper = new DevServerTestHelper(Logger, solutionPath: solution.SolutionFile, environmentVariables: envVars);
+
+		try
+		{
+			// ARRANGE
+			var started = await helper.StartAsync(CT);
+			helper.EnsureStarted();
+
+			var asm = typeof(AppLaunchIntegrationTests).Assembly;
+			var mvid = ApplicationInfoHelper.GetMvid(asm);
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm) is { } p ? "&platform=" + Uri.EscapeDataString(p) : null;
+			var isDebug = Debugger.IsAttached;
+
+			// ACT - STEP 1: Register app launch via HTTP GET (simulating IDE -> dev server)
+			using (var http = new HttpClient())
+			{
+				var url = $"http://localhost:{helper.Port}/applaunch/{mvid}?isDebug={isDebug.ToString().ToLowerInvariant()}{platform}";
+				var response = await http.GetAsync(url, CT);
+				var body = await response.Content.ReadAsStringAsync();
+				response.EnsureSuccessStatusCode();
+			}
+
+			// ACT - STEP 2: Wait for timeout to occur
+			await Task.Delay(5_000, CT); // Wait 5 seconds (should be far more than enough for the timeout to occur)
+
+			// ACT - STEP 3: Stop and gather telemetry events
+			await helper.AttemptGracefulShutdownAsync(CT);
+
+			// ASSERT
+			var events = ParseTelemetryFileIfExists(filePath);
+			started.Should().BeTrue();
+			events.Should().NotBeEmpty();
+			WriteEventsList(events);
+			AssertHasEvent(events, "uno/dev-server/app-launch/launched");
+			AssertHasEvent(events, "uno/dev-server/app-launch/connection-timeout");
+
+			helper.ConsoleOutput.Length.Should().BeGreaterThan(0, "Dev server should produce some output");
+		}
+		finally
+		{
+			await helper.StopAsync(CT);
+			DeleteIfExists(filePath);
+
+			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine(helper.ConsoleOutput);
+		}
+	}
+
 	private static List<(string Prefix, JsonDocument Json)> ParseTelemetryFileIfExists(string path)
 		=> File.Exists(path) ? ParseTelemetryEvents(File.ReadAllText(path)) : [];
 
