@@ -14,9 +14,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Build" Version="17.5.0" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.27" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.27" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.27" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.43" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.43" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(SyncGeneratorCodeAnalysisVersion)" />
