@@ -96,6 +96,7 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 	private async Task StartKeepAliveAsync()
 	{
+		// Note: The dev-server is expected to send message regularly ... and AS SOON AS POSSIBLE (the Task.Delay is after the first SendToIde()!).
 		while (_pipeServer?.IsConnected ?? false)
 		{
 			_proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));

@@ -134,12 +134,18 @@ namespace Uno.UI.RemoteControl.Host
 					.SetMinimumLevel(LogLevel.Debug));
 
 				globalServices.AddGlobalTelemetry(); // Global telemetry services (Singleton)
+				globalServices.AddSingleton<IIdeChannel, IdeChannelServer>();
 
 #pragma warning disable ASP0000 // Do not call ConfigureServices after calling UseKestrel.
 				var globalServiceProvider = globalServices.BuildServiceProvider();
 #pragma warning restore ASP0000
 
 				telemetry = globalServiceProvider.GetRequiredService<ITelemetry>();
+
+				// Force resolution of the IDEChannel to enable connection (Note: We should use a BackgroundService instead)
+				// Note: The IDE channel is expected to inform IDE that we are up as soon as possible.
+				//		 This is required for UDEI to **not** log invalid timeout message.
+				globalServiceProvider.GetService<IIdeChannel>();
 
 #pragma warning disable ASPDEPR004
 				// WebHostBuilder is deprecated in .NET 10 RC1.
@@ -163,7 +169,7 @@ namespace Uno.UI.RemoteControl.Host
 					})
 					.ConfigureServices(services =>
 					{
-						services.AddSingleton<IIdeChannel, IdeChannelServer>();
+						services.AddSingleton<IIdeChannel>(_ => globalServiceProvider.GetRequiredService<IIdeChannel>());
 						services.AddSingleton<UnoDevEnvironmentService>();
 
 						// Add the global service provider to the DI container
@@ -193,8 +199,6 @@ namespace Uno.UI.RemoteControl.Host
 				// Once the app has started, we use the logger from the host
 				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
 
-				// Force resolution of the IDEChannel to enable connection (Note: We should use a BackgroundService instead)
-				host.Services.GetService<IIdeChannel>();
 				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
 				// Display DevServer version banner
