@@ -74,7 +74,7 @@
 	<PropertyGroup>
 		<MSTestVersion>4.1.0</MSTestVersion>
 		<MicrosoftTestingPlatformVersion>2.1.0</MicrosoftTestingPlatformVersion>
-		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
+		<SkiaSharpVersion>3.119.1</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.2.0-dev.11</UnoICUVersion>
 	</PropertyGroup>
