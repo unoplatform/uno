@@ -149,11 +149,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			try
 			{
 				// Defer the acquisition of the drawable
-#if __TVOS__ // TODO: tvOS is not supported yet.
-				surface = SKSurface.CreateNull(width, height);
-#else
 				surface = SKSurface.Create(_context, this, GRSurfaceOrigin.TopLeft, (int)SampleCount, SKColorType.Bgra8888);
-#endif
 
 				canvas = surface.Canvas;
 
