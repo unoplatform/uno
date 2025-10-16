@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -15,7 +13,6 @@ partial class ContentPresenter
 	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
-	private Rect _lastFinalRect;
 #if DEBUG
 	private bool _nativeElementAttached;
 #endif
@@ -112,7 +109,6 @@ partial class ContentPresenter
 			arrangeRect.Y + clipRect.Y,
 			clipRect.Width,
 			clipRect.Height);
-		_lastFinalRect = arrangeRect.IntersectWith(clipInGlobalCoordinates) ?? new Rect(arrangeRect.X, arrangeRect.Y, 0, 0);
 
 		_nativeElementHostingExtension.Value!.ArrangeNativeElement(
 			Content,
