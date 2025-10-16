@@ -105,6 +105,8 @@ namespace Microsoft.UI.Xaml
 
 		private readonly DragUI? _ui;
 		private readonly TranslateTransform _transform;
+		private FrameworkElement? _toolTipPanel = null;
+
 
 		private Point _location;
 		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
@@ -116,6 +118,31 @@ namespace Microsoft.UI.Xaml
 			RenderTransform = _transform = new TranslateTransform();
 
 			Content = ui?.Content;
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			if (_toolTipPanel is not null)
+			{
+				_toolTipPanel.SizeChanged -= OnToolTipPanelSizeChanged;
+			}
+
+			_toolTipPanel = GetTemplateChild("ToolTipPanel") as FrameworkElement;
+
+			if (_toolTipPanel is not null)
+			{
+				_toolTipPanel.SizeChanged += OnToolTipPanelSizeChanged;
+			}
+		}
+
+		private void OnToolTipPanelSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			if (_toolTipPanel is { Visibility: Visibility.Visible, RenderTransform: TranslateTransform translate })
+			{
+				translate.X = -args.NewSize.Width / 2;
+			}
 		}
 
 		public void SetLocation(Point location)
