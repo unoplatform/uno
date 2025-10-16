@@ -67,6 +67,7 @@ public partial class EntryPoint : IDisposable
 	private _dispBuildEvents_OnBuildProjConfigBeginEventHandler? _onBuildProjConfigBeginHandler;
 	private UnoMenuCommand? _unoMenuCommand;
 	private IUnoDevelopmentEnvironmentIndicator? _udei;
+	private IdeCommandHandler _commands;
 
 	// Legacy API v2
 	public EntryPoint(
@@ -80,6 +81,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
+		_commands = new(new Logger(this));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -101,6 +103,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
+		_commands = new(new Logger(this));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -110,7 +113,8 @@ public partial class EntryPoint : IDisposable
 					typeof(Uno.IDE.IUnoDevelopmentEnvironmentIndicator)
 				],
 				localServices: [
-					(typeof(Uno.IDE.IGlobalPropertiesProvider), new GlobalPropertiesProvider(OnProvideGlobalPropertiesAsync))
+					(typeof(Uno.IDE.IGlobalPropertiesProvider), new GlobalPropertiesProvider(OnProvideGlobalPropertiesAsync)),
+					(typeof(Uno.IDE.ICommandHandler), _commands)
 				],
 				_ct.Token);
 
@@ -493,6 +497,11 @@ public partial class EntryPoint : IDisposable
 				_ = TrackConnectionTimeoutAsync(_ideChannelClient);
 				_ideChannelClient.OnMessageReceived += OnMessageReceivedAsync;
 				_ideChannelClient.ConnectToHost();
+
+				// Use scoped DI instead of this!
+				var remoteCommands = new DevServerCommandHandler(_ideChannelClient);
+				devServerCt.Token.Register(remoteCommands.Dispose);
+				_commands.SetRemoteHandler(remoteCommands);
 			}
 			else
 			{
