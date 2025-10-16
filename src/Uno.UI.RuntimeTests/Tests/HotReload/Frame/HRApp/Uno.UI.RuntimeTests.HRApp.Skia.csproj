@@ -40,7 +40,7 @@
 		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
-		<PackageReference Include="SkiaSharp" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp" Version="3.119.1" />
 		<PackageReference Include="HarfBuzzSharp" Version="8.3.1.1" />
 		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
@@ -50,8 +50,8 @@
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.0" />
-		<PackageReference Include="SkiaSharp.Skottie" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.1" />
+		<PackageReference Include="SkiaSharp.Skottie" Version="3.119.1" />
 		<PackageReference Include="Uno.WinUI.DevServer" Version="4.8.33" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.8.33" />
 		-->
