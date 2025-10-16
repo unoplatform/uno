@@ -207,7 +207,7 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="*|ARM64" Project="false" />
     </Project>
-    <Project Path="Uno.UWPSyncGenerator.Reference/Uno.UWPSyncGenerator.Reference.csproj">
+    <Project Path="Uno.UWPSyncGenerator.Reference/Uno.UWPSyncGenerator.Reference.csproj" Id="44b48aa5-e344-43a7-9919-d12cc2bdc686">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Platform Solution="*|Any CPU" Project="x86" />
       <Platform Solution="*|ARM" Project="ARM" />
