@@ -2,7 +2,7 @@
 uid: Uno.Controls.SKCanvasElement
 ---
 
-## Introduction
+# SKCanvasElement
 
 When creating an Uno Platform application, developers might want to create elaborate 2D graphics using a library such as [Skia](https://skia.org) or [Cairo](https://www.cairographics.org), rather than using, for example, a simple [Canvas](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.canvas). To support this use case, SkiaSharp comes with an [SKXamlCanvas](https://learn.microsoft.com/dotnet/api/skiasharp.views.windows.skxamlcanvas) element that allows for drawing in an area using SkiaSharp.
 
@@ -10,8 +10,6 @@ On Uno Platform targets with Skia rendering, we can utilize the pre-existing int
 
 > [!IMPORTANT]
 > . The `Uno.WinUI.Graphics2DSK` package which provides the `SKCanvasElement` class is referenced for you by Uno.Sdk automatically when the `Skia` or `SkiaRenderer` features are present, and is always referenced on the netX.0-desktop target. However, the class is only supported (i.e. `SKCanvasElement.IsSupportedOnCurrentPlatform` returns true) on the netX.0-desktop target and on other targets that use skia rendering, for example netX.0-android with the `SkiaRenderer` feature.
-
-## SKCanvasElement
 
 `SKCanvasElement` is an abstract `FrameworkElement` for 2D drawing with Skia. To use `SKCanvasElement`, create a subclass of `SKCanvasElement` and override the `RenderOverride` method, which takes the canvas that will be drawn on and the clipping area inside the canvas.
 
