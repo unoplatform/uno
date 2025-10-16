@@ -39,8 +39,6 @@ partial class ContentPresenter
 		});
 	}
 
-	private IDisposable _nativeElementDisposable;
-
 	partial void TryRegisterNativeElement(object oldValue, object newValue)
 	{
 		if (IsNativeHost && IsInLiveTree)
@@ -126,11 +124,6 @@ partial class ContentPresenter
 		_nativeHosts.Add(this);
 		EffectiveViewportChanged += OnEffectiveViewportChanged;
 		LayoutUpdated += OnLayoutUpdated;
-		var visiblityToken = RegisterPropertyChangedCallback(HitTestVisibilityProperty, OnHitTestVisiblityChanged);
-		_nativeElementDisposable = Disposable.Create(() =>
-		{
-			UnregisterPropertyChangedCallback(HitTestVisibilityProperty, visiblityToken);
-		});
 	}
 
 	partial void DetachNativeElement(object content)
@@ -143,7 +136,6 @@ partial class ContentPresenter
 		EffectiveViewportChanged -= OnEffectiveViewportChanged;
 		LayoutUpdated -= OnLayoutUpdated;
 		_nativeElementHostingExtension.Value!.DetachNativeElement(content);
-		_nativeElementDisposable?.Dispose();
 	}
 
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
@@ -159,11 +151,6 @@ partial class ContentPresenter
 			ret.Height = 0;
 		}
 		return ret;
-	}
-
-	private void OnHitTestVisiblityChanged(DependencyObject sender, DependencyProperty dp)
-	{
-		_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(Content, HitTestVisibility != HitTestability.Collapsed);
 	}
 
 	internal static void UpdateNativeHostContentPresentersOpacities()

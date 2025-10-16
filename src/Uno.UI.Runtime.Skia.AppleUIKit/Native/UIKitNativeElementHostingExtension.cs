@@ -72,14 +72,6 @@ internal sealed class UIKitNativeElementHostingExtension : ContentPresenter.INat
 		}
 	}
 
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		if (content is UIView view)
-		{
-			view.Opaque = visible;
-		}
-	}
-
 	public object? CreateSampleComponent(string text)
 	{
 		if (OverlayLayer is null)

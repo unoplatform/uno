@@ -198,11 +198,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize) => availableSize;
 
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		// no need to do anything here, airspace clipping logic will take care of it automatically
-	}
-
 	// This doesn't seem to work as most (all?) WMs won't change the opacity for subwindows, only top-level windows
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{

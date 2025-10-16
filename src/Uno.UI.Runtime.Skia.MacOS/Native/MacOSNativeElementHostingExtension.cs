@@ -74,19 +74,6 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 	}
 
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		if (content is MacOSNativeElement element)
-		{
-			// https://developer.apple.com/documentation/appkit/nsview/1483369-hidden?language=objc
-			NativeUno.uno_native_set_visibility(element.NativeHandle, visible);
-		}
-		else if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-		}
-	}
-
 	public object? CreateSampleComponent(string text)
 	{
 		if (_window is null)

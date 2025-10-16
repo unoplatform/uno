@@ -19,8 +19,6 @@ partial class ContentPresenter
 
 		object CreateSampleComponent(string text);
 
-		void ChangeNativeElementVisibility(object content, bool visible);
-
 		void ChangeNativeElementOpacity(object content, double opacity);
 #endif
 	}

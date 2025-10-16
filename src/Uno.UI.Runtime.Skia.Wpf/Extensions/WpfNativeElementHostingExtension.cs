@@ -60,14 +60,6 @@ internal partial class WpfNativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		if (content is System.Windows.UIElement contentAsUIElement)
-		{
-			contentAsUIElement.Visibility = visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
-		}
-	}
-
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)

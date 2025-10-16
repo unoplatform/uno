@@ -77,14 +77,6 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		}
 	}
 
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		if (content is View view)
-		{
-			view.Visibility = visible ? ViewStates.Visible : ViewStates.Invisible;
-		}
-	}
-
 	public object? CreateSampleComponent(string text)
 	{
 		if (ApplicationActivity.NativeLayerHost is not { } host)
