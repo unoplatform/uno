@@ -15,18 +15,19 @@ namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper
 {
+	private static readonly SKPictureRecorder _recorder = new();
+
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
 	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
-		using var recorder = new SKPictureRecorder();
-		using var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+		var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 		using var _ = new SKAutoCanvasRestore(canvas, true);
 		canvas.Clear(SKColors.Transparent);
 		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
 		var path = CalculateClippingPath(width, height, rootVisual, invertPath);
-		var picture = recorder.EndRecording();
+		var picture = _recorder.EndRecording();
 
 		return (picture, path);
 	}
