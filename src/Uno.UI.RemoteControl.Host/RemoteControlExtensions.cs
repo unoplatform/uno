@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,6 +14,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Uno.UI.RemoteControl.VS.Helpers;
+using System.Text.Json;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -164,7 +164,11 @@ namespace Uno.UI.RemoteControl.Host
 			monitor.RegisterLaunch(mvid, platform, isDebug ?? false, ide, plugin);
 
 			context.Response.StatusCode = StatusCodes.Status200OK;
-			await context.Response.WriteAsync("registered");
+			context.Response.ContentType = "application/json";
+
+			var response = new { mvid = mvid, targetFramework = platform ?? "unknown" };
+
+			await context.Response.WriteAsync(JsonSerializer.Serialize(response));
 		}
 
 		private static async Task HandleAppLaunchRegistrationRequest(
@@ -195,8 +199,11 @@ namespace Uno.UI.RemoteControl.Host
 				monitor.RegisterLaunch(mvid, platform, isDebug ?? false, ide, plugin);
 
 				context.Response.StatusCode = StatusCodes.Status200OK;
-				await context.Response.WriteAsync(
-					$"registered - application with MVID={mvid} and platform={platform} is now registered for launch.");
+				context.Response.ContentType = "application/json";
+
+				var response = new { mvid = mvid, targetFramework = platform ?? "unknown" };
+
+				await context.Response.WriteAsync(JsonSerializer.Serialize(response));
 			}
 			catch (BadImageFormatException)
 			{
