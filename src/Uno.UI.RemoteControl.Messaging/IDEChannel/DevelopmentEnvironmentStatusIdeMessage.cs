@@ -25,16 +25,20 @@ public record DevelopmentEnvironmentStatusIdeMessage(
 /// The unique identifier of the development environment component
 /// (e.g. uno.dev_server)
 /// </param>
+/// <param name="Name">
+/// A user-friendly name of the development environment component
+/// (e.g. "Dev-server.").
+/// </param>
 /// <param name="Description">
 /// A user-friendly description of the development environment component
 /// (e.g. "The local server that allows the application to interact with the IDE and the file-system.").
 /// </param>
-public record DevelopmentEnvironmentComponent(string Id, string Description)
+public record DevelopmentEnvironmentComponent(string Id, string Name, string Description)
 {
 	// Well-known components of the development environment, this is **NOT** an exhaustive list!
-	public static DevelopmentEnvironmentComponent Solution { get; } = new("uno.solution", "Load of the solution, resolution of nuget packages and validation of uno's SDK version.");
-	public static DevelopmentEnvironmentComponent UnoCheck { get; } = new("uno.check", "Validates all external dependencies has been installed on the computer.");
-	public static DevelopmentEnvironmentComponent DevServer { get; } = new("uno.dev_server", "The local server that allows the application to interact with the IDE and the file-system.");
+	public static DevelopmentEnvironmentComponent Solution { get; } = new("uno.solution", "Solution", "Load of the solution, resolution of nuget packages and validation of uno's SDK version.");
+	public static DevelopmentEnvironmentComponent UnoCheck { get; } = new("uno.check", "Uno-check", "Validates all external dependencies has been installed on the computer.");
+	public static DevelopmentEnvironmentComponent DevServer { get; } = new("uno.dev_server", "Dev-server", "The local server that allows the application to interact with the IDE and the file-system.");
 }
 
 /// <summary>
