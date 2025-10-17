@@ -238,6 +238,11 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 					}
 				}
 			}
+			catch(WebSocketException) when (socket.State == WebSocketState.Closed)
+			{
+				// Ignore "The remote party closed the WebSocket connection without completing the close handshake."
+				// It's making noise in the logs.
+			}
 			catch (Exception error)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
