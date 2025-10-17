@@ -183,4 +183,7 @@
 
 	<Import Project="Uno.SingleProject.VS.Build.targets"
 			Condition=" '$(UnoSingleProject)' == 'true' AND '$(BuildingInsideVisualStudio)' == 'true' " />
+
+	<!-- App Launch notification target for IDE integrations -->
+	<Import Project="Uno.AppLaunch.targets" />
 </Project>
