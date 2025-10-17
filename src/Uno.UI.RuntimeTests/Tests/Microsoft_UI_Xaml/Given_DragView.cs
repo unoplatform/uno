@@ -152,5 +152,5 @@ public class Given_DragView
 		Assert.AreEqual(expectedX, translateTransform.X, 0.1,
 			"TranslateTransform.X should center the panel after visibility change");
 	}
-}
 #endif
+}
