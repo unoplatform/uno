@@ -11,16 +11,19 @@
 	 a different mechanism to do the same thing. The implementation in this version is in the `AppLaunch` folder
 	 of the `Uno.UI.RemoteControl.VS` project.
 	 
+	 IMPORTANT: This target should only be called with Debug configuration (-c:Debug or -p:Configuration=Debug).
+	 It will fail with an error if called with any other configuration (e.g., Release).
+	 
 	 Other IDEs will call this target by specifying the `UnoRemoteControlPort` property using the following command:
 	 
 	 ```shell
-	 dotnet build <app csproj> -t:UnoNotifyAppLaunch -p:TargetFramework=<tfm to launch> -p:NoBuild=true -restore:false -v:d -noLogo -low -p:Ide=<ide info> -p:Plugin=<Uno plugin version> -p:IsDebug=false
+	 dotnet build <app csproj> -c:Debug -t:UnoNotifyAppLaunch -p:TargetFramework=<tfm to launch> -p:NoBuild=true -restore:false -v:d -noLogo -low -p:Ide=<ide info> -p:Plugin=<Uno plugin version> -p:IsDebug=false
 	 ```
 	 
 	 To retrieve the HTTP response content (MVID and target framework info), use -getProperty:
 	 
 	 ```shell
-	 dotnet build <app csproj> -t:UnoNotifyAppLaunch -getProperty:UnoNotifyAppLaunchHttpResponse -p:TargetFramework=<tfm> -p:NoBuild=true -restore:false -p:Ide=<ide> -p:Plugin=<version> -p:IsDebug=false
+	 dotnet build <app csproj> -c:Debug -t:UnoNotifyAppLaunch -getProperty:UnoNotifyAppLaunchHttpResponse -p:TargetFramework=<tfm> -p:NoBuild=true -restore:false -p:Ide=<ide> -p:Plugin=<version> -p:IsDebug=false
 	 ```
 	 -->
 
@@ -140,7 +143,10 @@
 			Condition="'$(TargetFramework)'!=''">
 
 		<Message Importance="Low"
-				 Text="NotifyAppLaunch: TFM=$(TargetFramework)  TargetPath=$(TargetPath)"/>
+				 Text="NotifyAppLaunch: TFM=$(TargetFramework)  TargetPath=$(TargetPath)  Configuration=$(Configuration)"/>
+
+		<Error Text="UnoNotifyAppLaunch target should only be called with Debug configuration. Current configuration: $(Configuration)"
+			   Condition="'$(Configuration)' != 'Debug'"/>
 
 		<Error Text="UnoRemoteControlPort property must be defined to use UnoNotifyAppLaunch target."
 			   Condition="'$(UnoRemoteControlPort)' == ''"/>
@@ -159,15 +165,12 @@
 			<Output TaskParameter="ResponseContent" PropertyName="UnoNotifyAppLaunchHttpResponse"/>
 		</UnoNotifyAppLaunchToDevServer>
 
-		<Error Text="Failed to notify devserver for assembly: $(TargetPath)"
-			   Condition="'$(_UnoLaunchSuccess)' != 'True'"/>
+		<Error Text="Failed to notify devserver for assembly: $(TargetPath)" Importance="High"  Condition="'$(_UnoLaunchSuccess)' != 'True'"/>
 
-		<Message Importance="High"
-				 Text="Successfully notified devserver for assembly: $(TargetPath)"
+		<Message Text="Successfully notified devserver for assembly: $(TargetPath)"
 				 Condition="'$(_UnoLaunchSuccess)' == 'True'"/>
 
-		<Message Importance="High"
-				 Text="DevServer response: $(UnoNotifyAppLaunchHttpResponse)"
+		<Message Text="DevServer response: $(UnoNotifyAppLaunchHttpResponse)"
 				 Condition="'$(_UnoLaunchSuccess)' == 'True' AND '$(UnoNotifyAppLaunchHttpResponse)' != ''"/>
 	</Target>
 
