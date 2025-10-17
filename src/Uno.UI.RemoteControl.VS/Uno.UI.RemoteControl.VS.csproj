@@ -81,5 +81,4 @@
 	<!-- VS2022 build issue -->
 	<Target Name="GetTargetPath" />
 	<Target Name="GetCopyToPublishDirectoryItems" />
-
 </Project>

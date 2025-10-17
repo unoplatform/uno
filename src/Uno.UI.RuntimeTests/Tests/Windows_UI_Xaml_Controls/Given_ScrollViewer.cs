@@ -23,6 +23,7 @@ using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
 using Uno.UI.Toolkit.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Toolkit.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;

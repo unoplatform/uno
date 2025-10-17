@@ -21,6 +21,7 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if HAS_UNO_WINUI
 using GestureRecognizer = Microsoft.UI.Input.GestureRecognizer;

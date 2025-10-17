@@ -264,3 +264,4 @@ mergedstyles.xaml
 
 !build/ci/publish
 /doc/articles/llms/llms-full.txt
+/src/Uno.UI.DevServer.Cli/Properties/launchSettings.json

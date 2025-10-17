@@ -33,12 +33,26 @@ namespace Private.Infrastructure
 		public static class WindowHelper
 		{
 			private static UIElement _originalWindowContent;
+			private static Window _currentTestWindow;
 
 			public static XamlRoot XamlRoot { get; set; }
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Microsoft.UI.Xaml.Window CurrentTestWindow { get; set; }
+			public static Microsoft.UI.Xaml.Window CurrentTestWindow
+			{
+				get => _currentTestWindow;
+				set
+				{
+					_currentTestWindow = value;
+
+#if !HAS_UNO
+					// Inject the current test window in the finger test service to avoid a
+					// dependency on TestServices in the Uno.UI.Toolkit project
+					Uno.UI.Toolkit.DevTools.Input.Finger.TestServices_WindowHelper_CurrentTestWindow = value;
+#endif
+				}
+			}
 
 			public static bool UseActualWindowRoot { get; set; }
 

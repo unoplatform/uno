@@ -496,6 +496,7 @@ public partial class EntryPoint : IDisposable
 				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
 				_ = TrackConnectionTimeoutAsync(_ideChannelClient);
 				_ideChannelClient.OnMessageReceived += OnMessageReceivedAsync;
+				_ideChannelClient.Connected += OnIdeChannelConnected;
 				_ideChannelClient.ConnectToHost();
 
 				// Use scoped DI instead of this!
@@ -563,6 +564,11 @@ public partial class EntryPoint : IDisposable
 			await EnsureServerAsync();
 		}
 	}
+
+	private void OnIdeChannelConnected(object sender, EventArgs e) =>
+		// As we're here, we know that the devserver has started properly
+		_ = SetupMcpAsync(_ct.Token);
+
 
 	private async Task OnMessageReceivedAsync(object? sender, IdeMessage devServerMessage)
 	{

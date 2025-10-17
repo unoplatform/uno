@@ -21,6 +21,7 @@ internal class IdeChannelClient
 	private readonly ILogger _logger;
 
 	public event AsyncEventHandler<IdeMessage>? OnMessageReceived;
+	public event EventHandler? Connected;
 
 	public long MessagesReceivedCount { get; private set; }
 
@@ -74,6 +75,8 @@ internal class IdeChannelClient
 
 	private async Task StartKeepAliveAsync()
 	{
+		Connected?.Invoke(this, EventArgs.Empty);
+
 		while (_IDEChannelCancellation is { IsCancellationRequested: false })
 		{
 			await _devServer!.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage("IDE")), default);

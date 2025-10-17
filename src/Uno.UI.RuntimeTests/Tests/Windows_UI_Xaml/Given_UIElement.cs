@@ -36,6 +36,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Toolkit.Extensions;
 using KeyEventArgs = Windows.UI.Core.KeyEventArgs;
 using Combinatorial.MSTest;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Input;

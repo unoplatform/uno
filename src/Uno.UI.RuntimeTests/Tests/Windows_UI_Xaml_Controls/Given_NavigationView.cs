@@ -12,6 +12,7 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.ListViewPages;
+using Uno.UI.Toolkit.DevTools.Input;
 #if __APPLE_UIKIT__
 using UIKit;
 #else
