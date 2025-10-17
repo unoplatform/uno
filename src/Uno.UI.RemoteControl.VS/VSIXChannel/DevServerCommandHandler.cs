@@ -7,8 +7,8 @@ namespace Uno.IDE;
 
 internal class DevServerCommandHandler(IdeChannelClient ideChannel) : ICommandHandler, IDisposable
 {
-	private CancellationTokenSource _ct = new();
-	
+	private readonly CancellationTokenSource _ct = new();
+
 	/// <inheritdoc />
 	public void Execute(Command command)
 	{
