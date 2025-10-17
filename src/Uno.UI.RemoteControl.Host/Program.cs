@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Options;
@@ -19,6 +21,7 @@ using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Server.AppLaunch;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -81,7 +84,7 @@ namespace Uno.UI.RemoteControl.Host
 				// During init, we dump the logs to the console, until the logger is set up
 				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = LoggerFactory.Create(builder => builder.SetMinimumLevel(logLevel).AddConsole());
 
-				// STEP 1: Create the global service provider BEFORE WebHostBuilder
+				// STEP 1: Create the global service provider BEFORE WebApplication
 				// This contains services that live for the entire duration of the server process
 				var globalServices = new ServiceCollection();
 
@@ -100,36 +103,47 @@ namespace Uno.UI.RemoteControl.Host
 				telemetry = globalServiceProvider.GetRequiredService<ITelemetry>();
 
 #pragma warning disable ASPDEPR004
-				// WebHostBuilder is deprecated in .NET 10 RC1.
-				// As we still build for .NET 9, ignore this warning until $(NetPrevious)=net10.
-				// https://github.com/aspnet/Announcements/issues/526
+				// STEP 2: Create the WebApplication builder with reference to the global service provider
+				var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+				{
+					Args = args,
+					ContentRootPath = Directory.GetCurrentDirectory(),
+				});
 
-				// STEP 2: Create the WebHost with reference to the global service provider
-				var builder = new WebHostBuilder()
-					.UseSetting("UseIISIntegration", false.ToString())
+				// Configure Kestrel and URLs
+				builder.WebHost
 					.UseKestrel()
-					.UseUrls($"http://*:{httpPort}/")
-					.UseContentRoot(Directory.GetCurrentDirectory())
-					.UseStartup<Startup>()
-					.ConfigureLogging(logging => logging
-						.ClearProviders()
-						.AddConsole()
-						.SetMinimumLevel(LogLevel.Debug))
-					.ConfigureAppConfiguration((hostingContext, config) =>
-					{
-						config.AddCommandLine(args);
-					})
-					.ConfigureServices(services =>
-					{
-						services.AddSingleton<IIdeChannel, IdeChannelServer>();
-						services.AddSingleton<UnoDevEnvironmentService>();
+					.UseUrls($"http://*:{httpPort}/");
 
-						// Add the global service provider to the DI container
-						services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
+				// Logging
+				builder.Logging.ClearProviders();
+				builder.Logging.AddConsole();
+				builder.Logging.SetMinimumLevel(LogLevel.Debug);
+				builder.Logging.AddFilter("Microsoft.", LogLevel.Information);
+				builder.Logging.AddFilter("Microsoft.AspNetCore.Routing", LogLevel.Warning);
 
-						// Add connection-specific telemetry services (Scoped)
-						services.AddConnectionTelemetry(solution);
-					});
+				// Configuration
+				builder.Configuration.AddCommandLine(args);
+				builder.Configuration.AddEnvironmentVariables("UNO_PLATFORM_DEVSERVER_");
+
+				// Services
+				builder.Services.AddRouting();
+				builder.Services.Configure<RemoteControlOptions>(builder.Configuration);
+
+				builder.Services.AddSingleton<IIdeChannel, IdeChannelServer>();
+				builder.Services.AddSingleton<UnoDevEnvironmentService>();
+
+				builder.Services.AddSingleton<ApplicationLaunchMonitor>(
+					_ => globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
+
+				// Add the global service provider to the DI container
+				builder.Services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
+
+				// Add connection-specific telemetry services (Scoped)
+				builder.Services.AddConnectionTelemetry(solution);
+
+				// Apply Startup.ConfigureServices for compatibility with existing Startup class
+				new Startup(builder.Configuration).ConfigureServices(builder.Services);
 
 				if (solution is not null)
 				{
@@ -139,7 +153,7 @@ namespace Uno.UI.RemoteControl.Host
 				else
 				{
 					typeof(Program).Log().Log(LogLevel.Warning, "No solution file specified, add-ins will not be loaded which means that you won't be able to use any of the uno-studio features. Usually this indicates that your version of uno's IDE extension is too old.");
-					builder.ConfigureServices(services => services.AddSingleton(AddInsStatus.Empty));
+					builder.Services.AddSingleton(AddInsStatus.Empty);
 				}
 #pragma warning restore ASPDEPR004
 
@@ -148,15 +162,20 @@ namespace Uno.UI.RemoteControl.Host
 				var host = builder.Build();
 #pragma warning restore ASPDEPR008
 
+				// Apply Startup.Configure using Minimal APIs app instance
+				new Startup(host.Configuration).Configure(host);
+
 				// Once the app has started, we use the logger from the host
-				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
+				LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
 
 				// Force resolution of the IDEChannel to enable connection (Note: We should use a BackgroundService instead)
 				host.Services.GetService<IIdeChannel>();
 				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
 				// Display DevServer version banner
-				DisplayVersionBanner(httpPort);
+				var config = host.Services.GetRequiredService<IConfiguration>();
+				var ideChannelId = config["ideChannel"]; // GUID used as the named pipe name when IDE channel is enabled
+				DisplayVersionBanner(httpPort, ideChannelId);
 
 				// STEP 3: Use global telemetry for server-wide events
 				// Track devserver startup using global telemetry service
@@ -169,9 +188,10 @@ namespace Uno.UI.RemoteControl.Host
 
 				_ = ParentProcessObserver.ObserveAsync(parentPID, ct.Cancel, telemetry, ct.Token);
 
+				await host.StartAsync(ct.Token);
 				try
 				{
-					await host.RunAsync(ct.Token);
+					await host.WaitForShutdownAsync(ct.Token);
 				}
 				finally
 				{
@@ -220,7 +240,7 @@ namespace Uno.UI.RemoteControl.Host
 		/// <summary>
 		/// Displays a banner with the DevServer version information when it starts up.
 		/// </summary>
-		private static void DisplayVersionBanner(int httpPort)
+		private static void DisplayVersionBanner(int httpPort, string? ideChannelId)
 		{
 			try
 			{
@@ -233,17 +253,22 @@ namespace Uno.UI.RemoteControl.Host
 				var runtimeText = targetFrameworkAttr is not null
 					? $"dotnet v{Environment.Version} (Assembly target: {targetFrameworkAttr.FrameworkDisplayName})"
 					: $"dotnet v{Environment.Version}";
+#if DEBUG
+				var lastWriteTime = File.GetLastWriteTime(location);
+#endif
 
 				var entries = new List<Host.Helpers.BannerHelper.BannerEntry>()
 				{
 #if DEBUG
 					("Build", "DEBUG"),
+					("Build Date/Time", $"{lastWriteTime:yyyy-MM-dd/HH:mm:ss} ({DateTime.Now - lastWriteTime:g} ago)"),
 #endif
 					("Version", version),
 					("Runtime", runtimeText),
 					("Assembly", assemblyName),
 					("Location", Path.GetDirectoryName(location) ?? location, Helpers.BannerHelper.ClipMode.Start),
 					("HTTP Port", httpPort.ToString(DateTimeFormatInfo.InvariantInfo)),
+					("IDE Channel", string.IsNullOrWhiteSpace(ideChannelId) ? "Disabled" : $@"\\.\pipe\{ideChannelId}"),
 				};
 
 				Helpers.BannerHelper.Write("Uno Platform DevServer", entries);

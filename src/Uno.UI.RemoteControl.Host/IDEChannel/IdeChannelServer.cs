@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,11 +46,14 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 		if (_proxy is null)
 		{
-			this.Log().Log(LogLevel.Information, "Received an message to send to the IDE, but there is no connection available for that.");
+			this.Log().LogInformation(
+				"Received a message {MessageType} to send to the IDE, but there is no connection available for that.",
+				message.Scope);
 		}
 		else
 		{
 			_proxy.SendToIde(message);
+			ScheduleKeepAlive();
 		}
 
 		await Task.Yield();
@@ -90,19 +94,27 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 		_proxy = new(this);
 		_rpcServer = JsonRpc.Attach(_pipeServer, _proxy);
 
-		_ = StartKeepAliveAsync();
+		ScheduleKeepAlive();
+
 		return true;
 	}
 
-	private async Task StartKeepAliveAsync()
-	{
-		while (_pipeServer?.IsConnected ?? false)
-		{
-			_proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
+	private const int KeepAliveDelay = 10000; // 10 seconds in milliseconds
+	private Timer? _keepAliveTimer;
 
-			await Task.Delay(5000);
-		}
+	private void ScheduleKeepAlive()
+	{
+		_keepAliveTimer?.Dispose();
+		_keepAliveTimer = new Timer(_ =>
+		{
+			_keepAliveTimer!.Dispose();
+			_keepAliveTimer = null;
+
+			_proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
+			ScheduleKeepAlive();
+		}, null, KeepAliveDelay, Timeout.Infinite);
 	}
+
 
 	/// <inheritdoc />
 	public void Dispose()
