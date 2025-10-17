@@ -42,6 +42,7 @@ namespace Uno.UI.RemoteControl.Host
 				var httpPort = 0;
 				var parentPID = 0;
 				var solution = default(string);
+				var ideChannel = Guid.Empty;
 				var command = default(string);
 				var workingDir = default(string);
 				var timeoutMs = 30000;
@@ -73,6 +74,14 @@ namespace Uno.UI.RemoteControl.Host
 							}
 
 							solution = s;
+						}
+					},
+					{
+						"ideChannel=", s => {
+							if(!Guid.TryParse(s, out ideChannel))
+							{
+								throw new ArgumentException($"The ide channel parameter is invalid {s}");
+							}
 						}
 					},
 					{
@@ -134,6 +143,7 @@ namespace Uno.UI.RemoteControl.Host
 					.SetMinimumLevel(LogLevel.Debug));
 
 				globalServices.AddGlobalTelemetry(); // Global telemetry services (Singleton)
+				globalServices.AddOptions<IdeChannelServerOptions>().Configure(opts => opts.ChannelId = ideChannel);
 				globalServices.AddSingleton<IIdeChannel, IdeChannelServer>();
 
 #pragma warning disable ASP0000 // Do not call ConfigureServices after calling UseKestrel.
