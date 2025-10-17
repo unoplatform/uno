@@ -353,28 +353,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		return ExecuteScriptAsync(adjustedScript.ToString(), token);
 	}
 
-	public void ProcessNavigation(Uri uri)
-	{
-		string? url;
-		if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
-		{
-			var baseUrl = AppDomain.CurrentDomain.BaseDirectory;
-			url = $"file://{baseUrl}{uri.PathAndQuery}";
-		}
-		else if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
-		{
-			var relativePath = uri.PathAndQuery;
-			var sep = relativePath.StartsWith('/') ? "" : "/";
-			var baseUrl = AppDomain.CurrentDomain.BaseDirectory;
-			url = $"file://{baseUrl}{folderName}{sep}{relativePath}";
-		}
-		else
-		{
-			url = uri.AbsoluteUri;
-		}
-
-		_nativeWebView.Navigate(url);
-	}
+	public void ProcessNavigation(Uri uri) => _nativeWebView.Navigate(uri.ToString());
 
 	public void ProcessNavigation(string html) => _nativeWebView.NavigateToString(html);
 
