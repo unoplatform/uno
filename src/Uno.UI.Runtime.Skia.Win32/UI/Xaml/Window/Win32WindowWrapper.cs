@@ -448,15 +448,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					return new LRESULT(0);
 				}
 				break;
-			//case PInvoke.WM_NCCALCSIZE:
-			//	{
-			//		if (_window!.AppWindow.TitleBar.ExtendsContentIntoTitleBar)//ToInt32(wParam) == 1 && (_windowProperties.Decorations == SystemDecorations.None || _isClientAreaExtended))
-			//		{
-			//			return new LRESULT(0);
-			//		}
+			case PInvoke.WM_NCCALCSIZE:
+				{
+					if (_window!.AppWindow.TitleBar.ExtendsContentIntoTitleBar)//ToInt32(wParam) == 1 && (_windowProperties.Decorations == SystemDecorations.None || _isClientAreaExtended))
+					{
+						return new LRESULT(0);
+					}
 
-			//		break;
-			//	}
+					break;
+				}
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
