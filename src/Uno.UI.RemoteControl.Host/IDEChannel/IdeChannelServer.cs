@@ -83,7 +83,7 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 		{
 			_logger.LogWarning(error, "An error occurred while disposing the existing IDE channel server. Continuing initialization.");
 		}
-		
+
 		try
 		{
 			if (channelId == Guid.Empty)
