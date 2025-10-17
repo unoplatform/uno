@@ -29,7 +29,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public static void Register() => ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new MacOSNativeElementHostingExtension(o));
 
-	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
 		if (content is MacOSNativeElement element)
 		{
@@ -39,7 +39,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			}
 			else
 			{
-				NativeUno.uno_native_arrange(element.NativeHandle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height, clipRect.Left, clipRect.Top, clipRect.Width, clipRect.Height);
+				NativeUno.uno_native_arrange(element.NativeHandle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height);
 			}
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))

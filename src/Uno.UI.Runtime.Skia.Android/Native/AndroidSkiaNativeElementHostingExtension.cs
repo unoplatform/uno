@@ -18,7 +18,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		_owner = owner;
 	}
 
-	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
 		if (content is View view)
 		{

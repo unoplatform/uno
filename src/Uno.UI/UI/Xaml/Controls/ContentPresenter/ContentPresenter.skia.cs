@@ -110,8 +110,7 @@ partial class ContentPresenter
 
 		_nativeElementHostingExtension.Value!.ArrangeNativeElement(
 			Content,
-			arrangeRect,
-			clipRect);
+			arrangeRect);
 	}
 
 	partial void AttachNativeElement()

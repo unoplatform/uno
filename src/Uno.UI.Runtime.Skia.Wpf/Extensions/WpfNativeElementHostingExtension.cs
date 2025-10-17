@@ -68,7 +68,7 @@ internal partial class WpfNativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
+	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{

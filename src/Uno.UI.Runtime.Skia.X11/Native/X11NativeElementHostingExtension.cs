@@ -18,7 +18,6 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private Rect? _lastArrangeRect;
-	private Rect? _lastClipRect;
 	private bool _layoutDirty = true;
 	private readonly ContentPresenter _presenter;
 
@@ -142,7 +141,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_ = XLib.XUnmapWindow(Display, nativeWindow.WindowId);
 			_ = XLib.XSync(Display, false);
 
-			_lastClipRect = null;
 			_lastArrangeRect = null;
 
 			Debug.Assert(_frameRenderedDisposable is not null);
@@ -155,10 +153,9 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
 		_lastArrangeRect = arrangeRect;
-		_lastClipRect = clipRect;
 		_layoutDirty = true;
 		_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual);
 		// we don't update the layout right now. We wait for the next render to happen, as
@@ -175,7 +172,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		_layoutDirty = false;
 		if (_presenter.Content is X11NativeWindow nativeWindow &&
 			_lastArrangeRect is { } arrangeRect &&
-			_lastClipRect is { } clipRect &&
 			XamlRoot is { } xamlRoot &&
 			XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{

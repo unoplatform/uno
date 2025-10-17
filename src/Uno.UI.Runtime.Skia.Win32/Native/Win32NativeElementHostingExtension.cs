@@ -286,7 +286,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
 
-	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
 		if (content is not Win32NativeWindow window)
 		{

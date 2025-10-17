@@ -33,7 +33,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		NativeMethods.DetachNativeElement(((BrowserHtmlElement)content).ElementId);
 	}
 
-	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
+	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect)
 	{
 		Debug.Assert(content is BrowserHtmlElement);
 		NativeMethods.ArrangeNativeElement(((BrowserHtmlElement)content).ElementId, arrangeRect.X, arrangeRect.Y, arrangeRect.Width, arrangeRect.Height);

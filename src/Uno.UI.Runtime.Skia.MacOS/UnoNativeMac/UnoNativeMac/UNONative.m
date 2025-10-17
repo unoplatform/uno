@@ -47,14 +47,13 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
     return sample;
 }
 
-void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight)
+void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight)
 {
     NSRect arrange = NSMakeRect(arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight);
     element.frame = arrange;
 #if DEBUG
-    NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g) clip(%g,%g,%g,%g)", element,
-          arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight,
-          clipLeft, clipTop, clipWidth, clipHeight);
+    NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g)", element,
+          arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight);
 #endif
 }
 

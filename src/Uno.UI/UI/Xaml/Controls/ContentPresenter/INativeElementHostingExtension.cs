@@ -13,7 +13,7 @@ partial class ContentPresenter
 
 		void DetachNativeElement(object content);
 
-		void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect);
+		void ArrangeNativeElement(object content, Rect arrangeRect);
 
 		Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize);
 
