@@ -925,7 +925,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	{
 		base.LeaveImpl(@params);
 
-		if (IsNativeHost)
+		if (IsNativeHost && _nativeElementAttached)
 		{
 			DetachNativeElement(Content);
 		}

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -13,6 +16,7 @@ partial class ContentPresenter
 	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
+	private (Rect layoutRect, int zOrder)? _lastNativeArrangeArgs;
 #if DEBUG
 	private bool _nativeElementAttached;
 #endif
@@ -73,7 +77,7 @@ partial class ContentPresenter
 		}
 	}
 
-	private void ArrangeNativeElement()
+	private void ArrangeNativeElement(int zOrder)
 	{
 		if (!IsNativeHost)
 		{
@@ -82,35 +86,15 @@ partial class ContentPresenter
 			return;
 		}
 		var arrangeRect = this.GetAbsoluteBoundsRect();
-		var ev = GetParentViewport().Effective;
 
-		Rect clipRect;
-		if (ev.IsEmpty)
+		var nativeArrangeArgs = (arrangeRect, zOrder);
+		if (_lastNativeArrangeArgs != nativeArrangeArgs)
 		{
-			clipRect = new Rect(0, 0, 0, 0);
+			_lastNativeArrangeArgs = nativeArrangeArgs;
+			_nativeElementHostingExtension.Value!.ArrangeNativeElement(
+				Content,
+				arrangeRect);
 		}
-		else if (ev.IsInfinite)
-		{
-			clipRect = null;
-		}
-		else
-		{
-			var top = Math.Min(Math.Max(0, ev.Y), ActualHeight);
-			var height = Math.Max(0, Math.Min(ev.Height + ev.Y, ActualHeight - top));
-			var left = Math.Min(Math.Max(0, ev.X), ActualWidth);
-			var width = Math.Max(0, Math.Min(ev.Width + ev.X, ActualWidth - left));
-			clipRect = new Rect(left, top, width, height);
-		}
-
-		var clipInGlobalCoordinates = new Rect(
-			arrangeRect.X + clipRect.X,
-			arrangeRect.Y + clipRect.Y,
-			clipRect.Width,
-			clipRect.Height);
-
-		_nativeElementHostingExtension.Value!.ArrangeNativeElement(
-			Content,
-			arrangeRect);
 	}
 
 	partial void AttachNativeElement()
@@ -121,8 +105,6 @@ partial class ContentPresenter
 #endif
 		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
 		_nativeHosts.Add(this);
-		EffectiveViewportChanged += OnEffectiveViewportChanged;
-		LayoutUpdated += OnLayoutUpdated;
 	}
 
 	partial void DetachNativeElement(object content)
@@ -131,9 +113,8 @@ partial class ContentPresenter
 		global::System.Diagnostics.Debug.Assert(IsNativeHost && _nativeElementAttached);
 		_nativeElementAttached = false;
 #endif
+		_lastNativeArrangeArgs = null;
 		_nativeHosts.Remove(this);
-		EffectiveViewportChanged -= OnEffectiveViewportChanged;
-		LayoutUpdated -= OnLayoutUpdated;
 		_nativeElementHostingExtension.Value!.DetachNativeElement(content);
 	}
 
@@ -168,19 +149,36 @@ partial class ContentPresenter
 		}
 	}
 
-	private void OnLayoutUpdated(object sender, object e)
+	/// <remarks>
+	/// <see cref="visualToLayoutRect"/> is read-only and won't be modified.
+	/// </remarks>
+	internal static void OnFrameRendered(List<Visual> visualToLayoutRect)
 	{
-		// Not quite sure why we need to queue the arrange call, but the native element either explodes or doesn't
-		// respect alignments correctly otherwise. This is particularly relevant for the initial load.
-		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
-	}
+		foreach (var host in _nativeHosts.Where(cp => !visualToLayoutRect.Contains(cp.Visual)).ToList())
+		{
+			host.DetachNativeElement(host.Content);
+		}
 
-	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
-	{
-		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		// The arrange call here is queued because EVPChanged is fired before the layout of the ContentPresenter is updated,
-		// so calling ArrangeNativeElement synchronously would get outdated coordinates.
-		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
+		for (var index = 0; index < visualToLayoutRect.Count; index++)
+		{
+			var entry = visualToLayoutRect[index];
+			var host = (ContentPresenter)((ContainerVisual)entry).Owner!.Target;
+			if (host._lastNativeArrangeArgs is { } lastNativeArrangeArgs && lastNativeArrangeArgs.zOrder != index)
+			{
+				host.DetachNativeElement(host.Content);
+				host.AttachNativeElement();
+				host.ArrangeNativeElement(index);
+			}
+			else if (!host._nativeElementAttached)
+			{
+				host.AttachNativeElement();
+				host.ArrangeNativeElement(index);
+			}
+			else
+			{
+				host.ArrangeNativeElement(index);
+			}
+		}
 	}
 
 	internal object CreateSampleComponent(string text)
