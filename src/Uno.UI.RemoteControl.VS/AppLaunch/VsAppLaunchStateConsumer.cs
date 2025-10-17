@@ -90,7 +90,7 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 			if (ideChannel != null && details.IsDebug is { } isDebug)
 			{
 				// Provide IDE and plugin metadata. For Visual Studio host, report product name and unknown plugin version when not available.
-				var ideName = "VisualStudio";
+				var ideName = "vswin-<version>";
 				var pluginVersion = _packageVersion;
 				var message = new AppLaunchRegisterIdeMessage(mvid, platform, isDebug, ideName, pluginVersion);
 				await ideChannel.SendToDevServerAsync(message, CancellationToken.None);
