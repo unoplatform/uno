@@ -14,7 +14,8 @@ internal static partial class PlatformImageHelpers
 
 	internal static Task<string> GetScaledPath(Uri uri, ResolutionScale? scaleOverride)
 	{
-		var path = uri.PathAndQuery;
+		// Unescaping is necessary for things like spaces that are valid in a file system path but not in a URI
+		var path = Uri.UnescapeDataString(uri.AbsolutePath);
 		if (uri.Host is { Length: > 0 } host)
 		{
 			path = host + "/" + path.TrimStart('/');
@@ -32,7 +33,7 @@ internal static partial class PlatformImageHelpers
 			);
 
 #pragma warning disable RS0030 // Do not use banned APIs // TODO MZ: Avoid this by using XamlRoot
-		var resolutionScale = (int)DisplayInformation.GetForCurrentView().ResolutionScale;
+		var resolutionScale = (int)(scaleOverride ?? DisplayInformation.GetForCurrentView().ResolutionScale);
 #pragma warning restore RS0030 // Do not use banned APIs
 		var baseDirectory = Path.GetDirectoryName(originalLocalPath);
 		var baseFileName = Path.GetFileNameWithoutExtension(originalLocalPath);
