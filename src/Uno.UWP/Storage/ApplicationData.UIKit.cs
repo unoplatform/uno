@@ -26,7 +26,7 @@ namespace Windows.Storage
 		/// On this platform, persistence is always enabled or not applicable, so this method is a no-op.
 		/// Returns a completed task to satisfy the cross-platform interface.
 		/// </summary>
-		internal Task EnablePersistenceAsync() => Task.CompletedTask;
+		internal System.Threading.Tasks.Task EnablePersistenceAsync() => Task.CompletedTask;
 
 		private static string GetTemporaryFolder()
 			=> Path.GetTempPath();

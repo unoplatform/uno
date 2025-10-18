@@ -9,7 +9,7 @@ namespace Windows.Storage
 		/// On Android, persistence is always enabled and requires no additional setup.
 		/// This method is provided for cross-platform compatibility and returns a completed task.
 		/// </summary>
-		internal Task EnablePersistenceAsync() => Task.CompletedTask;
+		internal System.Threading.Tasks.Task EnablePersistenceAsync() => Task.CompletedTask;
 
 		private static string GetLocalCacheFolder()
 			=> GetAndroidAppContext().CacheDir.AbsolutePath;
