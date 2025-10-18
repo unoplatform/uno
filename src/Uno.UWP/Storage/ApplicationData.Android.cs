@@ -5,6 +5,8 @@ namespace Windows.Storage
 {
 	partial class ApplicationData
 	{
+		internal Task EnablePersistenceAsync() => Task.CompletedTask;
+
 		private static string GetLocalCacheFolder()
 			=> GetAndroidAppContext().CacheDir.AbsolutePath;
 

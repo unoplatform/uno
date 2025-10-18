@@ -22,6 +22,8 @@ namespace Windows.Storage
 			}
 		}
 
+		internal Task EnablePersistenceAsync() => Task.CompletedTask;
+
 		private static string GetTemporaryFolder()
 			=> Path.GetTempPath();
 
