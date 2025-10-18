@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using static Private.Infrastructure.TestServices;
+using Uno.UI.Toolkit.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {

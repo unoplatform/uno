@@ -142,6 +142,7 @@ internal class PackageManifest
 		public const string SdkExtras = nameof(SdkExtras);
 		public const string Settings = nameof(Settings);
 		public const string HotDesign = nameof(HotDesign);
+		public const string AppMcp = nameof(AppMcp);
 		public const string SkiaSharp = nameof(SkiaSharp);
 		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);

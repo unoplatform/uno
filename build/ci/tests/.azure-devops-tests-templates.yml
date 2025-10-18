@@ -37,8 +37,13 @@ jobs:
   - template: ../templates/dotnet-mobile-install-windows.yml
   - template: ../templates/uno-dev-feed.yml
 
-  - script: copy $(System.ArtifactsDirectory)\Nuget_Packages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+  - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
+    inputs:
+      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      Contents: '*.nupkg'
+      TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
+      OverWrite: true
 
   - task: PowerShell@2
     displayName: Run Project Templates Tests
@@ -101,8 +106,13 @@ jobs:
   - template: ../templates/dotnet-mobile-install-mac.yml
   - template: ../templates/uno-dev-feed.yml
 
-  - powershell: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+  - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
+    inputs:
+      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      Contents: '*.nupkg'
+      TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
+      OverWrite: true
 
   - bash: brew install ninja
     displayName: Install ninja build for WebAssembly Skia build
@@ -152,8 +162,13 @@ jobs:
   - template: ../templates/uno-dev-feed.yml
   - template: ../templates/host-cleanup-linux.yml
 
-  - script: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+  - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
+    inputs:
+      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      Contents: '*.nupkg'
+      TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
+      OverWrite: true
 
   - template: ../templates/dotnet-install.yml
 
@@ -202,3 +217,68 @@ jobs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
       ArtifactName: template-tests-binlogs-net7-linux
       ArtifactType: Container
+
+
+- job: Dotnet_Tests_Validate_DevServerCli
+  displayName: 'DevServer CLI Tests'
+  timeoutInMinutes: 120
+  cancelTimeoutInMinutes: 1
+
+  pool:
+    name: $(poolName)
+    vmImage: $(vmImage)
+
+  strategy:
+    matrix:
+      hosted_ubuntu:
+        poolName: '${{ parameters.vmPoolLinux }}'
+        vmImage:
+      hosted_windows:
+        poolName: '${{ parameters.poolName }}'
+        vmImage:
+      macos:
+        vmImage: 'macOS-15' # explicit because of parsing issues with matrix and parameters
+        poolName:
+
+  variables:
+    # don't validate transitive dependencies for template tests
+    NuGetAuditMode: direct
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: 'Nuget_Packages'
+
+  - template: ../templates/gitversion.yml
+  - template: ../templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/uno-dev-feed.yml
+
+  - task: CopyFiles@2
+    displayName: Copy Artifacts to PackageCache
+    inputs:
+      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      Contents: '*.nupkg'
+      TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
+      OverWrite: true
+
+  - task: PowerShell@2
+    displayName: Setup local package feed globally
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Required for the uno-devserver command nuget package install, and must be outside
+        # of the sources directory.
+        cd $(Agent.WorkFolder)
+        dotnet nuget add source $(Build.SourcesDirectory)/src/PackageCache -n "local-source"
+
+  - task: PowerShell@2
+    displayName: Run DevServer Tests
+    inputs:
+      targetType: 'inline'
+      script: |
+        dotnet nuget add source https://pkgs.dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_packaging/unoplatformdev/nuget/v3/index.json -n "uno-dev"
+        build/test-scripts/run-devserver-cli-tests.ps1
+      pwsh: true # Use PowerShell core (required for IsWindows to run)
+    env:
+      BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
+      NBGV_SemVer2: $(NBGV_SemVer2)

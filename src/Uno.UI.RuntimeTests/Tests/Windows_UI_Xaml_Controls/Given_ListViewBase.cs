@@ -24,6 +24,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if !WINAPPSDK
 using Uno.UI;

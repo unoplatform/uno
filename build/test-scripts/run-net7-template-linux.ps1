@@ -19,20 +19,10 @@ $default = @('-v', 'n', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableW
 $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'
 
-# WinUI
 cd src/SolutionTemplate
 
-# replace the uno.sdk field value in global.json, recursively in all folders
-Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
-    
-    $globalJsonfilePath = $_.FullName;
 
-    Write-Host "Updated $globalJsonfilePath with $env:NBGV_SemVer2"
-
-    $globalJson = (Get-Content $globalJsonfilePath) -replace '^\s*//.*' | ConvertFrom-Json
-    $globalJson.'msbuild-sdks'.'Uno.Sdk.Private' = $env:NBGV_SemVer2
-    $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
-}
+& $env:BUILD_SOURCESDIRECTORY/build/test-scripts/update-uno-sdk-globaljson.ps1
 
 $projects =
 @(

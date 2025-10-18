@@ -13,6 +13,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI;
+using Uno.UI.Toolkit.DevTools.Input;
 
 using Color = Windows.UI.Color;
 

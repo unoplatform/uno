@@ -6,12 +6,13 @@ using Windows.UI.Input.Preview.Injection;
 using RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if WINAPPSDK
 using Uno.UI.Toolkit.Extensions;
 #endif
 
-#if HAS_UNO_WINUI || WINAPPSDK
+#if HAS_UNO_WINUI
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;

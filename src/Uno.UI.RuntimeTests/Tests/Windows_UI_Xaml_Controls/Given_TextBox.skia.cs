@@ -23,6 +23,7 @@ using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
+using Uno.UI.Toolkit.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

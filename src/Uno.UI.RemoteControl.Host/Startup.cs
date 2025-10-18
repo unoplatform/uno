@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using CommonServiceLocator;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using CommonServiceLocator;
+using Uno.Extensions;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -31,7 +30,8 @@ namespace Uno.UI.RemoteControl.Host
 			app
 				.UseDeveloperExceptionPage()
 				.UseWebSockets()
-				.UseRemoteControlServer(options);
+				.UseRemoteControlServer(options)
+				.UseRouting();
 
 			app.Use(async (context, next) =>
 			{
@@ -43,6 +43,22 @@ namespace Uno.UI.RemoteControl.Host
 				context.Response.Headers.Append("Cross-Origin-Embedder-Policy", "require-corp");
 				context.Response.Headers.Append("Cross-Origin-Opener-Policy", "same-origin");
 				await next();
+			});
+
+			app.UseEndpoints(endpoints =>
+			{
+				try
+				{
+					endpoints.MapMcp("/mcp");
+				}
+				catch (Exception ex)
+				{
+					// MCP registration may fail if no MCP tooling is resolved
+					// through ServiceCollectionExtensionAttribute. This might indicate
+					// a missing package reference in the Uno.SDK.
+
+					typeof(Program).Log().Log(LogLevel.Warning, ex, "Unable to find the MCP Tooling in the environment, the MCP feature is disabled.");
+				}
 			});
 		}
 	}

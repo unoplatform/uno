@@ -173,17 +173,7 @@ else
 $debug = $default + '-p:Configuration=Debug'
 $release = $default + '-p:Configuration=Release'
 
-# replace the uno.sdk field value in global.json, recursively in all folders
-Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
-    
-    $globalJsonfilePath = $_.FullName;
-
-    Write-Host "Updated $globalJsonfilePath with $env:NBGV_SemVer2"
-
-    $globalJson = (Get-Content $globalJsonfilePath) -replace '^\s*//.*' | ConvertFrom-Json
-    $globalJson.'msbuild-sdks'.'Uno.Sdk.Private' = $env:NBGV_SemVer2
-    $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
-}
+& $env:BUILD_SOURCESDIRECTORY/build/test-scripts/update-uno-sdk-globaljson.ps1
 
 $sdkFeatures = $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeatures=Material%3BToolkit" });
 

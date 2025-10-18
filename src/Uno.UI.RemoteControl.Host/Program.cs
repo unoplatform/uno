@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
+using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.Versioning;
@@ -22,7 +26,7 @@ using Uno.UI.RemoteControl.Helpers;
 
 namespace Uno.UI.RemoteControl.Host
 {
-	class Program
+	partial class Program
 	{
 		static async Task Main(string[] args)
 		{
@@ -31,12 +35,16 @@ namespace Uno.UI.RemoteControl.Host
 			ITelemetry? telemetry = null;
 
 			using var ct = ConsoleHelper.CreateCancellationToken();
+			AmbientRegistry? ambientRegistry = null;
 
 			try
 			{
 				var httpPort = 0;
 				var parentPID = 0;
 				var solution = default(string);
+				var command = default(string);
+				var workingDir = default(string);
+				var timeoutMs = 30000;
 
 				var p = new OptionSet
 				{
@@ -66,10 +74,44 @@ namespace Uno.UI.RemoteControl.Host
 
 							solution = s;
 						}
+					},
+					{
+						"c|command=", s => command = s
+					},
+					{
+						"workingDir=", s => workingDir = s
+					},
+					{
+						"timeoutMs=", s => int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out timeoutMs)
 					}
 				};
 
 				p.Parse(args);
+
+				// Controller mode
+				if (!string.IsNullOrWhiteSpace(command))
+				{
+					var verb = command.ToLowerInvariant();
+					switch (verb)
+					{
+						case "start":
+							await StartCommandAsync(httpPort, parentPID, solution, workingDir, timeoutMs);
+							return;
+						case "stop":
+							await StopCommandAsync();
+							return;
+						case "list":
+							await ListCommandAsync();
+							return;
+						case "cleanup":
+							await CleanupCommandAsync();
+							return;
+						default:
+							await Console.Error.WriteLineAsync($"Unknown command '{command}'. Supported: start, stop, list, cleanup");
+							Environment.ExitCode = 1;
+							return;
+					}
+				}
 
 				if (httpPort == 0)
 				{
@@ -169,6 +211,9 @@ namespace Uno.UI.RemoteControl.Host
 
 				_ = ParentProcessObserver.ObserveAsync(parentPID, ct.Cancel, telemetry, ct.Token);
 
+				ambientRegistry = new AmbientRegistry(host.Services.GetRequiredService<ILogger<AmbientRegistry>>());
+				ambientRegistry.Register(solution, parentPID, httpPort);
+
 				try
 				{
 					await host.RunAsync(ct.Token);
@@ -214,6 +259,10 @@ namespace Uno.UI.RemoteControl.Host
 					await telemetry.FlushAsync(CancellationToken.None);
 					throw;
 				}
+			}
+			finally
+			{
+				ambientRegistry?.Unregister();
 			}
 		}
 

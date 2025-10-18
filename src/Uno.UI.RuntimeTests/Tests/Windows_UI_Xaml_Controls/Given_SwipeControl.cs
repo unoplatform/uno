@@ -11,6 +11,7 @@ using SamplesApp.UITests;
 using Uno.Extensions;
 using Uno.Testing;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 

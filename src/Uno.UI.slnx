@@ -85,7 +85,10 @@
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
   </Folder>
-  <Folder Name="/RemoteControl/">
+  <Folder Name="/DevServer/">
+    <Project Path="Uno.UI.DevServer.Cli/Uno.UI.DevServer.Cli.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
     <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
@@ -144,7 +147,7 @@
       <Build Solution="Release_NoSamples|Any CPU" Project="false" />
     </Project>
     <Project Path="SamplesApp/SamplesApp.UnitTests.Shared/SamplesApp.UnitTests.Shared.shproj" />
-    <Project Path="SamplesApp/SamplesApp.Wasm.UITests/SamplesApp.Wasm.UITests.njsproj">
+    <Project Path="SamplesApp/SamplesApp.Wasm.UITests/SamplesApp.Wasm.UITests.njsproj" Id="b4c15c47-85e2-444e-b9f3-d970e35601a9">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Platform Project="AnyCPU" />
       <Build Solution="*|ARM" />
@@ -207,7 +210,7 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="*|ARM64" Project="false" />
     </Project>
-    <Project Path="Uno.UWPSyncGenerator.Reference/Uno.UWPSyncGenerator.Reference.csproj">
+    <Project Path="Uno.UWPSyncGenerator.Reference/Uno.UWPSyncGenerator.Reference.csproj" Id="44b48aa5-e344-43a7-9919-d12cc2bdc686">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Platform Solution="*|Any CPU" Project="x86" />
       <Platform Solution="*|ARM" Project="ARM" />

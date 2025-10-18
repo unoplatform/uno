@@ -36,6 +36,7 @@
       "Uno.UI.Runtime.Skia.Win32\\Uno.UI.Runtime.Skia.Win32.csproj",
       "Uno.UI.Runtime.Skia.Win32.Support\\Uno.UI.Runtime.Skia.Win32.Support.csproj",
       "Uno.UI.Runtime.Skia\\Uno.UI.Runtime.Skia.csproj",
+      "Uno.UI.DevServer.Cli\\Uno.UI.DevServer.Cli.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
       "Uno.UI.XamlHost.Skia.Wpf\\Uno.UI.XamlHost.Skia.Wpf.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Skia.csproj",

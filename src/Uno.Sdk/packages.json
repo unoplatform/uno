@@ -373,5 +373,12 @@
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
+	},
+	{
+		"group": "AppMcp",
+		"version": "1.0-dev.15",
+		"packages": [
+			"Uno.UI.App.Mcp"
+		]
 	}
 ]
