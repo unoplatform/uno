@@ -265,6 +265,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _metadataHelper.FindPropertyByOwnerSymbol(type, xamlMember.Name);
 		}
 
+		private ISymbol? FindProperty(XamlMemberDefinition xamlMemberDefinition)
+		{
+			var declaringType = xamlMemberDefinition.Member.DeclaringType;
+
+			var type = IsCustomMarkupExtensionType(declaringType)
+				? GetMarkupExtensionType(declaringType)
+				: FindType(xamlMemberDefinition.Member.DeclaringType);
+
+			return _metadataHelper.FindPropertyByOwnerSymbol(type, xamlMemberDefinition.Member.Name);
+		}
+
 		private INamedTypeSymbol? FindPropertyType(XamlMember xamlMember) => FindProperty(xamlMember)?.FindDependencyPropertyType();
 
 		private bool IsAttachedProperty(XamlMemberDefinition member)
