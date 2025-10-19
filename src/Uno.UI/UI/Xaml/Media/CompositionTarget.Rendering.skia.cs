@@ -1,9 +1,12 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Windows.Foundation;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
@@ -32,6 +35,8 @@ public partial class CompositionTarget
 	private (SKPicture frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
 	// only set on the UI thread and read from the drawing thread
 	private Size _xamlRootBounds;
+	// only set and read on the UI thread
+	private List<Visual> _nativeVisualsInZOrder = new();
 
 	internal event Action? FrameRendered;
 
@@ -73,7 +78,7 @@ public partial class CompositionTarget
 		var bounds = ContentRoot.VisualTree.Size;
 		var scale = ContentRoot.XamlRoot?.RasterizationScale ?? 1;
 
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
+		var (picture, path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(int)(bounds.Width * scale),
 			(int)(bounds.Height * scale),
 			rootElement,
@@ -94,6 +99,25 @@ public partial class CompositionTarget
 		if (rootElement.XamlRoot is not null)
 		{
 			XamlRootMap.GetHostForRoot(rootElement.XamlRoot)?.InvalidateRender();
+		}
+
+		var nativeVisualsZOrderChanged = _nativeVisualsInZOrder.Count != nativeVisualsInZOrder.Count;
+		if (!nativeVisualsZOrderChanged)
+		{
+			for (int i = 0; i < nativeVisualsInZOrder.Count; i++)
+			{
+				if (nativeVisualsInZOrder[i] != _nativeVisualsInZOrder[i])
+				{
+					nativeVisualsZOrderChanged = true;
+					break;
+				}
+			}
+		}
+
+		if (nativeVisualsZOrderChanged)
+		{
+			_nativeVisualsInZOrder = nativeVisualsInZOrder;
+			ContentPresenter.OnNativeHostsRenderOrderChanged(nativeVisualsInZOrder);
 		}
 
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");

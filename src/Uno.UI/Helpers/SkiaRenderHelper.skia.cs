@@ -21,7 +21,7 @@ internal static class SkiaRenderHelper
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath, bool applyScaling)
+	internal static (SKPicture picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath, bool applyScaling)
 	{
 		var xamlRoot = rootElement.XamlRoot;
 		var scale = (float)(xamlRoot?.RasterizationScale ?? 1.0f);
@@ -35,8 +35,7 @@ internal static class SkiaRenderHelper
 		var (path, nativeVisualsInZOrder) = CalculateClippingPath(width, height, rootElement.Visual, canvas, invertPath, applyScaling);
 		var picture = recorder.EndRecording();
 
-		ContentPresenter.OnFrameRendered(nativeVisualsInZOrder);
-		return (picture, path);
+		return (picture, path, nativeVisualsInZOrder);
 	}
 
 	internal static void RenderPicture(SKCanvas canvas, SKPicture? picture, SKColor background, FpsHelper fpsHelper)

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
@@ -77,26 +79,6 @@ partial class ContentPresenter
 		}
 	}
 
-	private void ArrangeNativeElement(int zOrder)
-	{
-		if (!IsNativeHost)
-		{
-			// the ArrangeNativeElement call is queued on the dispatcher, so by the time we get here, the ContentPresenter
-			// might no longer be a NativeHost
-			return;
-		}
-		var arrangeRect = this.GetAbsoluteBoundsRect();
-
-		var nativeArrangeArgs = (arrangeRect, zOrder);
-		if (_lastNativeArrangeArgs != nativeArrangeArgs)
-		{
-			_lastNativeArrangeArgs = nativeArrangeArgs;
-			_nativeElementHostingExtension.Value!.ArrangeNativeElement(
-				Content,
-				arrangeRect);
-		}
-	}
-
 	partial void AttachNativeElement()
 	{
 #if DEBUG
@@ -150,33 +132,38 @@ partial class ContentPresenter
 	}
 
 	/// <remarks>
-	/// <see cref="visualToLayoutRect"/> is read-only and won't be modified.
+	/// <see cref="nativeVisualsInZOrder"/> is read-only and won't be modified.
 	/// </remarks>
-	internal static void OnFrameRendered(List<Visual> visualToLayoutRect)
+	internal static void OnNativeHostsRenderOrderChanged(List<Visual> nativeVisualsInZOrder)
 	{
-		foreach (var host in _nativeHosts.Where(cp => !visualToLayoutRect.Contains(cp.Visual)).ToList())
+		var rentedArray = ArrayPool<(int, ContentPresenter)>.Shared.Rent(_nativeHosts.Count);
+		using var _ = new DisposableStruct<(int, ContentPresenter)[]>(static rentedArray => ArrayPool<(int, ContentPresenter)>.Shared.Return(rentedArray, clearArray: true), rentedArray);
+
+		var count = 0;
+		foreach (var host in _nativeHosts)
 		{
+			rentedArray[count++] = (nativeVisualsInZOrder.IndexOf(host.Visual), host);
+		}
+		new Span<(int, ContentPresenter)>(rentedArray, 0, _nativeHosts.Count).Sort((one, two) => one.Item1 - two.Item1);
+
+		for (var index = 0; index < _nativeHosts.Count; index++)
+		{
+			var host = rentedArray[index].Item2;
+
 			host.DetachNativeElement(host.Content);
+			host.AttachNativeElement();
+			ArrangeNativeElement(host, index);
 		}
 
-		for (var index = 0; index < visualToLayoutRect.Count; index++)
+		static void ArrangeNativeElement(ContentPresenter host, int zOrder)
 		{
-			var entry = visualToLayoutRect[index];
-			var host = (ContentPresenter)((ContainerVisual)entry).Owner!.Target;
-			if (host._lastNativeArrangeArgs is { } lastNativeArrangeArgs && lastNativeArrangeArgs.zOrder != index)
+			var arrangeRect = host.GetAbsoluteBoundsRect();
+
+			var nativeArrangeArgs = (arrangeRect, zOrder);
+			if (host._lastNativeArrangeArgs != nativeArrangeArgs)
 			{
-				host.DetachNativeElement(host.Content);
-				host.AttachNativeElement();
-				host.ArrangeNativeElement(index);
-			}
-			else if (!host._nativeElementAttached)
-			{
-				host.AttachNativeElement();
-				host.ArrangeNativeElement(index);
-			}
-			else
-			{
-				host.ArrangeNativeElement(index);
+				host._lastNativeArrangeArgs = nativeArrangeArgs;
+				host._nativeElementHostingExtension.Value!.ArrangeNativeElement(host.Content, arrangeRect);
 			}
 		}
 	}

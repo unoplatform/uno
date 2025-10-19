@@ -489,11 +489,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		if (IsNativeHostVisual)
-		{
-			nativeVisualsInZOrder.Add(this);
-		}
-
 		var localClipCombinedByClipFromParent = _pathPool.Allocate();
 		using var rentedArrayDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), localClipCombinedByClipFromParent);
 		localClipCombinedByClipFromParent.Rewind();
@@ -512,6 +507,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (IsNativeHostVisual || CanPaint())
 		{
 			outPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, outPath);
+		}
+
+		if (IsNativeHostVisual && !localClipCombinedByClipFromParent.IsEmpty)
+		{
+			nativeVisualsInZOrder.Add(this);
 		}
 
 		if (GetPostPaintingClipping() is { } postClip)
