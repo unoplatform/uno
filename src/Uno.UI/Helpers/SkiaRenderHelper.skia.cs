@@ -17,6 +17,9 @@ internal static class SkiaRenderHelper
 {
 	private static readonly SKPictureRecorder _recorder = new();
 
+	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
+	private static readonly SKPath _emptyClipPath = new();
+
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
@@ -25,8 +28,13 @@ internal static class SkiaRenderHelper
 		var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 		using var _ = new SKAutoCanvasRestore(canvas, true);
 		canvas.Clear(SKColors.Transparent);
+
 		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
-		var path = CalculateClippingPath(width, height, rootVisual, invertPath);
+
+		var path = !invertPath && !ContentPresenter.HasNativeElements() ?
+			_emptyClipPath :
+			CalculateClippingPath(width, height, rootVisual, invertPath);
+
 		var picture = _recorder.EndRecording();
 
 		return (picture, path);
