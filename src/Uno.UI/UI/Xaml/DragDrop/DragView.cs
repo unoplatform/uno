@@ -134,6 +134,12 @@ namespace Microsoft.UI.Xaml
 			if (_toolTipPanel is not null)
 			{
 				_toolTipPanel.SizeChanged += OnToolTipPanelSizeChanged;
+
+				// Apply initial centering if the panel is already visible and sized
+				if (_toolTipPanel is { Visibility: Visibility.Visible, ActualWidth: > 0, RenderTransform: TranslateTransform t })
+				{
+					t.X = -_toolTipPanel.ActualWidth / 2;
+				}
 			}
 		}
 
