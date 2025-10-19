@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -20,7 +21,7 @@ public class Given_DragView
 	public async Task When_ToolTipPanel_SizeChanged_Then_TranslateX_Is_HalfWidth()
 	{
 		// Arrange - Create a DragView with tooltip content
-		var dragView = new DragView(new DragUI());
+		var dragView = new DragView(new DragUI(PointerDeviceType.Mouse));
 		dragView.Caption = "Test Caption";
 		dragView.TooltipVisibility = Visibility.Visible;
 
@@ -56,7 +57,7 @@ public class Given_DragView
 	public async Task When_ToolTipPanel_Resized_Then_TranslateX_Updates()
 	{
 		// Arrange
-		var dragView = new DragView(new DragUI());
+		var dragView = new DragView(new DragUI(PointerDeviceType.Mouse));
 		dragView.Caption = "Short";
 		dragView.TooltipVisibility = Visibility.Visible;
 		dragView.MaxWidth = 200;
@@ -100,7 +101,7 @@ public class Given_DragView
 	public async Task When_ToolTipPanel_NotVisible_Then_TranslateX_NotSet()
 	{
 		// Arrange - Create a DragView with tooltip hidden
-		var dragView = new DragView(new DragUI());
+		var dragView = new DragView(new DragUI(PointerDeviceType.Mouse));
 		dragView.Caption = "Test Caption";
 
 		await UITestHelper.Load(dragView);
@@ -123,7 +124,7 @@ public class Given_DragView
 	public async Task When_ToolTipPanel_Visibility_Changes_Then_Centering_Applied()
 	{
 		// Arrange
-		var dragView = new DragView(new DragUI());
+		var dragView = new DragView(new DragUI(PointerDeviceType.Mouse));
 		dragView.Caption = "Test Caption";
 
 		await UITestHelper.Load(dragView);

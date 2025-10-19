@@ -136,18 +136,20 @@ namespace Microsoft.UI.Xaml
 				_toolTipPanel.SizeChanged += OnToolTipPanelSizeChanged;
 
 				// Apply initial centering if the panel is already visible and sized
-				if (_toolTipPanel is { Visibility: Visibility.Visible, ActualWidth: > 0, RenderTransform: TranslateTransform t })
-				{
-					t.X = -_toolTipPanel.ActualWidth / 2;
-				}
+				UpdateToolTipTranslation();
 			}
 		}
 
-		private void OnToolTipPanelSizeChanged(object sender, SizeChangedEventArgs args)
+		private void OnToolTipPanelSizeChanged(object sender, SizeChangedEventArgs args) =>
+			UpdateToolTipTranslation();
+
+		private void UpdateToolTipTranslation()
 		{
-			if (_toolTipPanel is { Visibility: Visibility.Visible, RenderTransform: TranslateTransform translate })
+			if (_toolTipPanel is { Visibility: Visibility.Visible, ActualWidth: > 0, RenderTransform: TranslateTransform translate })
 			{
-				translate.X = -args.NewSize.Width / 2;
+				translate.X = -_toolTipPanel.ActualWidth / 2;
+				translate.Y = _ui?.PointerDeviceType == UI.Input.PointerDeviceType.Touch ?
+					-ToolTip.DEFAULT_TOUCH_OFFSET : -ToolTip.DEFAULT_MOUSE_OFFSET;
 			}
 		}
 
