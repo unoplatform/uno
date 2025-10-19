@@ -16,6 +16,7 @@ internal sealed partial class WindowChrome : ContentControl
 	private readonly SerialDisposable m_closeButtonClickedEventHandler = new();
 	private readonly SerialDisposable m_minimizeButtonClickedEventHandler = new();
 	private readonly SerialDisposable m_maximizeButtonClickedEventHandler = new();
+	private readonly SerialDisposable m_presenterDisposable = new();
 	private readonly Window _window;
 
 	private FrameworkElement? m_tpTitleBarMinMaxCloseContainerPart;
@@ -33,10 +34,30 @@ internal sealed partial class WindowChrome : ContentControl
 		VerticalContentAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch;
 
 		IsTabStop = false;
-		CaptionVisibility = Visibility.Visible;
-
+		parent.AppWindow.Changed += OnAppWindowChanged;
+		parent.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
 		Loaded += OnLoaded;
 		_window = parent;
+	}
+
+	private void OnAppWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
+	{
+		if (args.DidPresenterChange)
+		{
+			m_presenterDisposable.Disposable = null;
+			if (_window.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
+			{
+				void OnBorderAndTitleBarChanged(object? s, object? e)
+				{
+					ConfigureWindowChrome();
+				}
+				overlappedPresenter.BorderAndTitleBarChanged += OnBorderAndTitleBarChanged;
+				m_presenterDisposable.Disposable = Disposable.Create(() =>
+				{
+					overlappedPresenter.BorderAndTitleBarChanged -= OnBorderAndTitleBarChanged;
+				});
+			}
+		}
 	}
 
 	// to apply min, max and close style definitions to custom titlebar,
@@ -202,6 +223,20 @@ internal sealed partial class WindowChrome : ContentControl
 		ConfigureWindowChrome();
 	}
 
-	private void ConfigureWindowChrome() { }
+	private void ConfigureWindowChrome()
+	{
+		var extendIntoTitleBar = _window.AppWindow.TitleBar.ExtendsContentIntoTitleBar;
+		var hasTitleBar = true;
+		if (_window.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
+		{
+			hasTitleBar = overlappedPresenter.HasTitleBar;
+		}
+
+		CaptionVisibility = hasTitleBar && extendIntoTitleBar ?
+			Visibility.Visible :
+			Visibility.Collapsed;
+	}
+
+	private void OnExtendsContentIntoTitleBarChanged(bool extends) => ConfigureWindowChrome();
 }
 
