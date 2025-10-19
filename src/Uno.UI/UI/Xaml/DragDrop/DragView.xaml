@@ -43,34 +43,34 @@
                                 <TranslateTransform X="{TemplateBinding ContentAnchor.X}" Y="{TemplateBinding ContentAnchor.Y}" />
                             </Image.RenderTransform>
                         </Image>
-                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-                            <StackPanel
-                                x:Name="ToolTipPanel"
-                                MaxWidth="{TemplateBinding MaxWidth}"
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="{TemplateBinding CornerRadius}"
-                                Orientation="Horizontal"
-                                Spacing="4"
-                                Visibility="{TemplateBinding TooltipVisibility}">
-                                <StackPanel.RenderTransform>
-                                    <!--  The caption is above the pointer  -->
-                                    <TranslateTransform Y="-40" />
-                                </StackPanel.RenderTransform>
-                                <FontIcon
-                                    VerticalAlignment="Center"
-                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                    Glyph="{TemplateBinding Glyph}"
-                                    Visibility="{TemplateBinding GlyphVisibility}" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Text="{TemplateBinding Caption}"
-                                    Visibility="{TemplateBinding CaptionVisibility}" />
-                            </StackPanel>
-                        </Grid>
+                        <StackPanel
+                            x:Name="ToolTipPanel"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            MaxWidth="{TemplateBinding MaxWidth}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Orientation="Horizontal"
+                            Spacing="4"
+                            Visibility="{TemplateBinding TooltipVisibility}">
+                            <StackPanel.RenderTransform>
+                                <!--  The caption is above the pointer  -->
+                                <TranslateTransform Y="-40" />
+                            </StackPanel.RenderTransform>
+                            <FontIcon
+                                VerticalAlignment="Center"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                Glyph="{TemplateBinding Glyph}"
+                                Visibility="{TemplateBinding GlyphVisibility}" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Text="{TemplateBinding Caption}"
+                                Visibility="{TemplateBinding CaptionVisibility}" />
+                        </StackPanel>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
