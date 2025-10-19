@@ -9,6 +9,10 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class DragUI
 	{
+		public DragUI()
+		{
+		}
+
 		internal DragUI(PointerDeviceType pointerDeviceType)
 		{
 			PointerDeviceType = pointerDeviceType;

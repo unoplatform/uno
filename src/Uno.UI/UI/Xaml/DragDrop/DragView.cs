@@ -148,8 +148,10 @@ namespace Microsoft.UI.Xaml
 			if (_toolTipPanel is { Visibility: Visibility.Visible, ActualWidth: > 0, RenderTransform: TranslateTransform translate })
 			{
 				translate.X = -_toolTipPanel.ActualWidth / 2;
-				translate.Y = _ui?.PointerDeviceType == UI.Input.PointerDeviceType.Touch ?
-					-ToolTip.DEFAULT_TOUCH_OFFSET : -ToolTip.DEFAULT_MOUSE_OFFSET;
+
+				var toolTipVerticalOffset = (_ui?.PointerDeviceType == UI.Input.PointerDeviceType.Touch ?
+					ToolTip.DEFAULT_TOUCH_OFFSET : ToolTip.DEFAULT_MOUSE_OFFSET) / 2;
+				translate.Y = -_toolTipPanel.ActualHeight - toolTipVerticalOffset;
 			}
 		}
 
