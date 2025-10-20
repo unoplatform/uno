@@ -29,7 +29,7 @@ internal static class SkiaRenderHelper
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath, bool applyScaling)
+	internal static (IntPtr, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath, bool applyScaling)
 	{
 		var xamlRoot = rootElement.XamlRoot;
 		var scale = (float)(xamlRoot?.RasterizationScale ?? 1.0f);
@@ -46,21 +46,24 @@ internal static class SkiaRenderHelper
 				GetOrUpdateX11ClippingPath(width, height, scale) :
 			CalculateClippingPath(width, height, rootElement.Visual, scale, applyScaling, invertPath);
 
-		var picture = _recorder.EndRecording();
+		var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 
 		return (picture, path);
 	}
 
-	internal static void RenderPicture(SKCanvas canvas, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
+	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, FpsHelper fpsHelper)
 	{
 		using var fpsHelperDisposable = fpsHelper.BeginFrame();
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(background);
-			if (picture is not null)
+			if (picture != IntPtr.Zero)
 			{
 				// This might happen if we get render request before the first frame is painted
-				canvas.DrawPicture(picture);
+				unsafe
+				{
+					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, picture, null, IntPtr.Zero);
+				}
 			}
 
 			fpsHelper.DrawFps(canvas);

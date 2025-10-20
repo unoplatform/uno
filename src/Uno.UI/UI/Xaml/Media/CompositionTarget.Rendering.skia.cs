@@ -29,7 +29,7 @@ public partial class CompositionTarget
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (SKPicture frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
+	private (IntPtr frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
 	// only set on the UI thread and read from the drawing thread
 	private Size _xamlRootBounds;
 
@@ -73,16 +73,24 @@ public partial class CompositionTarget
 		var bounds = ContentRoot.VisualTree.Size;
 		var scale = ContentRoot.XamlRoot?.RasterizationScale ?? 1;
 
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
+		var renderedFrame = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(int)(bounds.Width * scale),
 			(int)(bounds.Height * scale),
 			rootElement,
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
 			applyScaling: FrameRenderingOptions.applyScalingToNativeElementClipPath);
-		var lastRenderedFrame = (picture, path);
+		var previousFrame = default((IntPtr frame, SKPath path)?);
 		lock (_frameGate)
 		{
-			_lastRenderedFrame = lastRenderedFrame;
+			previousFrame = _lastRenderedFrame;
+
+			_lastRenderedFrame = renderedFrame;
+		}
+
+		// Delete previous SKPicture now since we are swapping it
+		if (previousFrame != null)
+		{
+			UnoSkiaApi.sk_refcnt_safe_unref(previousFrame.Value.frame);
 		}
 
 		if (_isRenderingActive)
@@ -103,10 +111,13 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
-		(SKPicture frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
+		(IntPtr frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
+
+			// Borrow frame temporarily
+			_lastRenderedFrame = null;
 		}
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
@@ -122,6 +133,8 @@ public partial class CompositionTarget
 			}
 			if (xamlRootBounds.Width <= 0 || xamlRootBounds.Height <= 0)
 			{
+				ReturnFrame(lastRenderedFrame);
+
 				// Besides being an optimization step, returning early here also avoids resizing
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
@@ -138,11 +151,35 @@ public partial class CompositionTarget
 				SKColors.Transparent,
 				_fpsHelper);
 
+			ReturnFrame(lastRenderedFrame);
+
 			InvokeRendering();
 
-			GC.KeepAlive(lastRenderedFrame.frame);
-
 			return lastRenderedFrame.nativeElementClipPath;
+		}
+	}
+
+	private void ReturnFrame((IntPtr picture, SKPath path) frame)
+	{
+		var pictureToDelete = IntPtr.Zero;
+
+		lock (_frameGate)
+		{
+			// Put the frame back unless it has changed
+			if (_lastRenderedFrame == null)
+			{
+				_lastRenderedFrame = frame;
+			}
+			else
+			{
+				pictureToDelete = frame.picture;
+			}
+		}
+
+		// Delete it then
+		if (pictureToDelete != IntPtr.Zero)
+		{
+			UnoSkiaApi.sk_refcnt_safe_unref(pictureToDelete);
 		}
 	}
 
