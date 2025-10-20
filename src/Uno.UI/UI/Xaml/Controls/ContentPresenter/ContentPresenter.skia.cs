@@ -90,12 +90,15 @@ partial class ContentPresenter
 	partial void DetachNativeElement(object content)
 	{
 #if DEBUG
-		global::System.Diagnostics.Debug.Assert(IsNativeHost && _nativeElementAttached);
-		_nativeElementAttached = false;
+		global::System.Diagnostics.Debug.Assert(IsNativeHost);
 #endif
 		_lastNativeArrangeArgs = null;
 		_nativeHosts.Remove(this);
-		_nativeElementHostingExtension.Value!.DetachNativeElement(content);
+		if (_nativeElementAttached)
+		{
+			_nativeElementAttached = false;
+			_nativeElementHostingExtension.Value!.DetachNativeElement(content);
+		}
 	}
 
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
@@ -153,6 +156,7 @@ partial class ContentPresenter
 				// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
 				Debug.Assert(host.IsNativeHost);
 				host._nativeElementAttached = false;
+				host._lastNativeArrangeArgs = null;
 				host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
 			}
 			else if (host._nativeElementAttached)
