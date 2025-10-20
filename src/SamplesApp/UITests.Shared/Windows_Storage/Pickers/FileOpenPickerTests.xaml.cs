@@ -20,7 +20,8 @@ namespace UITests.Shared.Windows_Storage.Pickers
 - Selecting a file should show information below the file picker buttons.
 - It should be possible to pick multiple files, even if PicturesLibrary is selected and .jpg is used as file type.
 - Important (iOS): iOS 17 changed the way the file picker works. When testing this sample make sure to test it on iOS 17 or higher and iOS 16 or lower.
-- Important (Linux): Make sure that extension-less files can be picked
+- Important (Linux): Make sure that extension-less files can be picked.
+- Win32: When multiple filters are specified (e.g. .jpg and .png) and there is no wildcard (*), the picker should include and preselect a merged filter (e.g. "All files (*.jpg, *.png)").
 """
 	)]
 	public sealed partial class FileOpenPickerTests : Page
