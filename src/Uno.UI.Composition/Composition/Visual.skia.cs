@@ -35,10 +35,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _pictureCollapsingOptimizationFrameThreshold;
 	private int _pictureCollapsingOptimizationVisualCountThreshold;
 
-	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
-	// If we move to a UI-thread-per-window model, then we need multiple recorders.
-	[ThreadStatic]
-	private static SKPictureRecorder? _recorder;
+	private static SKPictureRecorder _recorder = new();
 
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
@@ -399,7 +396,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				if ((visual._flags & VisualFlags.PaintDirty) != 0)
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
-					_recorder ??= new SKPictureRecorder();
+
 					var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
