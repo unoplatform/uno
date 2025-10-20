@@ -15,6 +15,9 @@ using ModelContextProtocol;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.IO;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -49,7 +52,7 @@ internal class McpProxy
 
 	private async Task<(bool success, int? exitCode)> StartProcess(string hostPath, int port, List<string> forwardedArgs, CancellationToken ct)
 	{
-		var useDotnet = hostPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
+		var useDotnet = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || hostPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
 
 		var startInfo = new ProcessStartInfo
 		{
@@ -62,9 +65,16 @@ internal class McpProxy
 			WorkingDirectory = Directory.GetCurrentDirectory(),
 		};
 
+		// If invoking via dotnet and the package provides an .exe, switch to the .dll equivalent
+		var hostArgPath = hostPath;
 		if (useDotnet)
 		{
-			startInfo.ArgumentList.Add(hostPath);
+			if (hostArgPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+			{
+				hostArgPath = Path.ChangeExtension(hostArgPath, ".dll");
+			}
+
+			startInfo.ArgumentList.Add(hostArgPath);
 		}
 
 		startInfo.ArgumentList.Add("--command");
@@ -99,7 +109,8 @@ internal class McpProxy
 		if (controller.ExitCode != 0)
 		{
 			_logger.LogError("DevServer controller exited with code {ExitCode}", controller.ExitCode);
-			var so = await stdoutCapture; var se = await stderrCapture;
+			var so = await stdoutCapture;
+			var se = await stderrCapture;
 
 			if (!string.IsNullOrWhiteSpace(so))
 			{
@@ -130,7 +141,7 @@ internal class McpProxy
 			.WithStdioServerTransport()
 			.WithCallToolHandler(async (ctx, ct) =>
 			{
-				_logger.LogDebug("Invoking MCP tool {ExitCode}", ctx.Params!.Name);
+				_logger.LogDebug("Invoking MCP tool {Tool}", ctx.Params!.Name);
 
 				var name = ctx.Params!.Name;
 				var args = ctx.Params.Arguments ?? new Dictionary<string, JsonElement>();
@@ -186,7 +197,10 @@ internal class McpProxy
 		}
 		finally
 		{
-			await upstreamClient.DisposeAsync();
+			if (upstreamClient != null)
+			{
+				await upstreamClient.DisposeAsync();
+			}
 		}
 
 		return 0;
@@ -223,10 +237,10 @@ internal class McpProxy
 							return default;
 						})
 					],
-				}
+				},
 			};
 
-			log.LogInformation("Connecting to upstream MCP at {Url}�", url);
+			log.LogInformation("Connecting to upstream MCP at {Url}", url);
 			var client = await McpClientFactory.CreateAsync(clientTransport, options);
 			log.LogInformation("Connected to upstream: {Name} {Version}", client.ServerInfo.Name, client.ServerInfo.Version);
 			return client;
