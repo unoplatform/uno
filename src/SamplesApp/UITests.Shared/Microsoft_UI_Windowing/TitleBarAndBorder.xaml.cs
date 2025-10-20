@@ -20,6 +20,9 @@ public sealed partial class TitleBarAndBorder : Page
 		WindowExtends.IsChecked = App.MainWindow.ExtendsContentIntoTitleBar;
 		AppWindowExtends.IsChecked = App.MainWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar;
 		PresenterNameText.Text = $"Presenter: {_presenter.GetType().Name}";
+
+		HasBorderCheck.IsChecked = _presenter.HasBorder;
+		HasTitleBarCheck.IsChecked = _presenter.HasTitleBar;
 	}
 
 	private void OnWindowExtendsChecked(object sender, RoutedEventArgs e) => App.MainWindow.ExtendsContentIntoTitleBar = true;
