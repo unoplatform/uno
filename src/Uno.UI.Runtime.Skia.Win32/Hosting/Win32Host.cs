@@ -149,7 +149,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		// This will keep running until the event loop has no queued actions left and all the windows are closed
 		while (true)
 		{
-			Win32EventLoop.RunOnce(TimeSpan.FromSeconds(1));
+			Win32EventLoop.RunOnce();
 
 			if (_allWindowsClosed && !Win32EventLoop.HasMessages())
 			{
