@@ -27,7 +27,7 @@ jobs:
     parameters:
       UnoCheckParameters: '--tfm net10.0-android'
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -r android-x64 -f net10.0-android -p:UnoTargetFrameworkOverride=net10.0-android -p:ApplicationId=uno.platform.samplesapp.skia.nativeaot -p:SkiaPublishAot=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-android-nativeaot.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -r android-x64 -f net10.0-android -p:UnoTargetFrameworkOverride=net10.0-android -p:ApplicationId=uno.platform.samplesapp.skia.nativeaot -p:SkiaPublishAot=true -p:SkiaSharpVersion=3.119.2-preview.1 /bl:$(build.artifactstagingdirectory)/logs/build-skia-android-nativeaot.binlog
     displayName: Build Android+NativeAOT Skia Head
 
   - script: >
