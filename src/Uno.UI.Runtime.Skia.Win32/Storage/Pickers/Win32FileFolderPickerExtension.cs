@@ -187,6 +187,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 	{
 		var list = new List<(Win32Helper.NativeNulTerminatedUtf16String, Win32Helper.NativeNulTerminatedUtf16String)>();
 
+		var hasAnyFilePattern = false;
 		var wildcardPatterns = new List<string>(picker.FileTypeFilterInternal.Count);
 		foreach (var pattern in picker.FileTypeFilterInternal.Distinct())
 		{
@@ -197,8 +198,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 
 			if (pattern == "*")
 			{
-				list.Add((new Win32Helper.NativeNulTerminatedUtf16String("All files"), new Win32Helper.NativeNulTerminatedUtf16String("*.*")));
-				wildcardPatterns.Add("*.*");
+				hasAnyFilePattern = true;
 			}
 			else if (pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
 			{
@@ -211,17 +211,17 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 			}
 		}
 
-		if (wildcardPatterns.Count > 1)
+		if (hasAnyFilePattern || list.Count == 0)
+		{
+			list.Insert(0, (new Win32Helper.NativeNulTerminatedUtf16String("All files"), new Win32Helper.NativeNulTerminatedUtf16String("*")));
+		}
+		else if (wildcardPatterns.Count > 1)
 		{
 			// If there are multiple patterns, add an "All Files" entry with all patterns merged.
 			var allPatterns = string.Join(';', wildcardPatterns);
 			list.Insert(0, (new Win32Helper.NativeNulTerminatedUtf16String("All files"), new Win32Helper.NativeNulTerminatedUtf16String(allPatterns)));
 		}
-		else if (list.Count == 0)
-		{
-			// If no filter was provided, add a wildcard filter.
-			list.Add((new Win32Helper.NativeNulTerminatedUtf16String("All files"), new Win32Helper.NativeNulTerminatedUtf16String("*.*")));
-		}
+
 		return list;
 	}
 }
