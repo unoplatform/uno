@@ -42,6 +42,9 @@
 
 		<NetUWPOrWinUI>uap10.0.19041</NetUWPOrWinUI>
 		<NetUWPOrWinUI Condition="'$(UNO_UWP_BUILD)'!='true'">$(NetPrevious)-windows10.0.19041.0</NetUWPOrWinUI>
+
+		<!-- MSTEST0001: Explicitly enable or disable tests parallelization -->
+		<NoWarn>$(NoWarn);MSTEST0001</NoWarn>
 	</PropertyGroup>
 
 </Project>
