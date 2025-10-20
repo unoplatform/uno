@@ -21,6 +21,8 @@ public partial class OverlappedPresenter : AppWindowPresenter
 
 	internal INativeOverlappedPresenter Native { get; private set; }
 
+	internal EventHandler StateChanged;
+
 	internal EventHandler BorderAndTitleBarChanged;
 
 	public bool IsResizable
@@ -88,6 +90,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		if (Native is not null)
 		{
 			Native.Maximize();
+			StateChanged?.Invoke(this, EventArgs.Empty);
 		}
 		else
 		{
@@ -109,6 +112,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		if (Native is not null)
 		{
 			Native.Minimize(activateWindow);
+			StateChanged?.Invoke(this, EventArgs.Empty);
 		}
 		else
 		{
@@ -134,6 +138,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		if (Native is not null)
 		{
 			Native.Restore(activateWindow);
+			StateChanged?.Invoke(this, EventArgs.Empty);
 		}
 		else
 		{
@@ -238,6 +243,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			{
 				Native.Restore(false);
 			}
+			StateChanged?.Invoke(this, EventArgs.Empty);
 
 			_pendingState = null;
 		}

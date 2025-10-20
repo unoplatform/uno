@@ -36,8 +36,21 @@ internal sealed partial class WindowChrome : ContentControl
 		IsTabStop = false;
 		parent.AppWindow.Changed += OnAppWindowChanged;
 		parent.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
+		parent.Activated += OnActivate;
 		Loaded += OnLoaded;
 		_window = parent;
+	}
+
+	private void OnActivate(object sender, WindowActivatedEventArgs e)
+	{
+		if (e.WindowActivationState is Windows.UI.Core.CoreWindowActivationState.CodeActivated or Windows.UI.Core.CoreWindowActivationState.PointerActivated)
+		{
+			VisualStateManager.GoToState(this, "Normal", true);
+		}
+		else
+		{
+			VisualStateManager.GoToState(this, "WindowInactive", true);
+		}
 	}
 
 	private void OnAppWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
@@ -52,13 +65,17 @@ internal sealed partial class WindowChrome : ContentControl
 					ConfigureWindowChrome();
 				}
 				overlappedPresenter.BorderAndTitleBarChanged += OnBorderAndTitleBarChanged;
+				overlappedPresenter.StateChanged += OnStateChanged;
 				m_presenterDisposable.Disposable = Disposable.Create(() =>
 				{
 					overlappedPresenter.BorderAndTitleBarChanged -= OnBorderAndTitleBarChanged;
+					overlappedPresenter.StateChanged -= OnStateChanged;
 				});
 			}
 		}
 	}
+
+	private void OnStateChanged(object? sender, EventArgs e) => UpdateContainerSize();
 
 	// to apply min, max and close style definitions to custom titlebar,
 	// one needs to apply Content Control style with key WindowChromeStyle defined in generic.xaml
@@ -183,6 +200,39 @@ internal sealed partial class WindowChrome : ContentControl
 		xamlIslandRoot!.ContentRoot.AddPendingXamlRootChangedEvent(ContentRoot.ChangeType.Content);
 	}
 
+	private void NotifyUpdate(OverlappedPresenterState state)
+	{
+		var maximizeButton = m_tpMaximizeButtonPart;
+		if (maximizeButton is not null)
+		{
+			SetTooltip(maximizeButton, state == OverlappedPresenterState.Maximized ? "TEXT_TOOLTIP_RESTORE" : "TEXT_TOOLTIP_MAXIMIZE");
+		}
+	}
+
+	private void UpdateContainerSize()
+	{
+		if (_window.AppWindow.Presenter is not OverlappedPresenter overlapped)
+		{
+			return;
+		}
+
+		var maximizeButton = m_tpMaximizeButtonPart;
+		switch (overlapped.State)
+		{
+			case OverlappedPresenterState.Maximized:
+				VisualStateManager.GoToState(maximizeButton, "WindowStateMaximized", false);
+				NotifyUpdate(overlapped.State);
+				break;
+			default:
+				VisualStateManager.GoToState(maximizeButton, "WindowStateNormal", false);
+				NotifyUpdate(overlapped.State);
+				break;
+		}
+
+		//UpdateCompIslandWindowSizePosition(compIslandWindowHandle);
+		//OnTitleBarSizeChanged();
+	}
+
 	private void CloseWindow() => _window.Close();
 
 	private void MinimizeWindow()
@@ -208,6 +258,8 @@ internal sealed partial class WindowChrome : ContentControl
 		}
 	}
 
+	private void OnLoaded(object sender, RoutedEventArgs args) => ConfigureWindowChrome();
+
 	private bool IsWindowMaximized()
 	{
 		if (_window.AppWindow.Presenter is OverlappedPresenter presenter)
@@ -218,10 +270,6 @@ internal sealed partial class WindowChrome : ContentControl
 		return false;
 	}
 
-	private void OnLoaded(object sender, RoutedEventArgs args)
-	{
-		ConfigureWindowChrome();
-	}
 
 	private void ConfigureWindowChrome()
 	{
