@@ -53,6 +53,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		if (content is MacOSNativeElement element)
 		{
 			NativeUno.uno_native_attach(element.NativeHandle);
+			element.Detached = false;
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
