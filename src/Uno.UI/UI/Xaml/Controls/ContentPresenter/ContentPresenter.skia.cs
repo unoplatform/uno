@@ -19,9 +19,7 @@ partial class ContentPresenter
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
 	private (Rect layoutRect, int zOrder)? _lastNativeArrangeArgs;
-#if DEBUG
 	private bool _nativeElementAttached;
-#endif
 
 	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
 
@@ -150,9 +148,19 @@ partial class ContentPresenter
 		{
 			var host = rentedArray[index].Item2;
 
-			host.DetachNativeElement(host.Content);
-			host.AttachNativeElement();
-			ArrangeNativeElement(host, index);
+			if (index == -1 && host._nativeElementAttached)
+			{
+				// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
+				Debug.Assert(host.IsNativeHost);
+				host._nativeElementAttached = false;
+				host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+			}
+			else if (host._nativeElementAttached)
+			{
+				host.DetachNativeElement(host.Content);
+				host.AttachNativeElement();
+				ArrangeNativeElement(host, index);
+			}
 		}
 
 		static void ArrangeNativeElement(ContentPresenter host, int zOrder)
