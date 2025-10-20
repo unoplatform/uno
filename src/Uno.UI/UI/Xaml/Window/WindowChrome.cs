@@ -160,9 +160,9 @@ internal sealed partial class WindowChrome : ContentControl
 			}
 
 			m_tpMaximizeButtonPart.Click += OnRestoreOrMaximizeButtonClicked;
-			m_minimizeButtonClickedEventHandler.Disposable = Disposable.Create(() =>
+			m_maximizeButtonClickedEventHandler.Disposable = Disposable.Create(() =>
 			{
-				m_tpMinimizeButtonPart!.Click -= OnRestoreOrMaximizeButtonClicked;
+				m_tpMaximizeButtonPart!.Click -= OnRestoreOrMaximizeButtonClicked;
 			});
 
 			SetTooltip(m_tpMaximizeButtonPart, IsWindowMaximized() ? "TEXT_TOOLTIP_RESTORE" : "TEXT_TOOLTIP_MAXIMIZE");
