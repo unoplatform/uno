@@ -28,7 +28,7 @@ internal static class SkiaRenderHelper
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
+	internal static (IntPtr, SKPath) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
 		var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 		using var _ = new SKAutoCanvasRestore(canvas, true);
@@ -42,21 +42,24 @@ internal static class SkiaRenderHelper
 				GetOrUpdateInvertedClippingPath(width, height) :
 			CalculateClippingPath(width, height, rootVisual, invertPath);
 
-		var picture = _recorder.EndRecording();
+		var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 
 		return (picture, path);
 	}
 
-	internal static void RenderPicture(SKCanvas canvas, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
+	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, FpsHelper fpsHelper)
 	{
 		using var fpsHelperDisposable = fpsHelper.BeginFrame();
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(background);
-			if (picture is not null)
+			if (picture != IntPtr.Zero)
 			{
 				// This might happen if we get render request before the first frame is painted
-				canvas.DrawPicture(picture);
+				unsafe
+				{
+					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, picture, null, IntPtr.Zero);
+				}
 			}
 
 			fpsHelper.DrawFps(canvas);
