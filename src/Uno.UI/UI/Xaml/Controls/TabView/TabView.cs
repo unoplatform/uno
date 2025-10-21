@@ -164,12 +164,18 @@ public partial class TabView : Control
 				{
 					listView.DragItemsCompleted -= OnListViewDragItemsCompleted;
 				});
-				listView.Drop += OnListViewDrop;
+
+				listView.DragOver += OnListViewDragOver;
 				m_listViewDragOverRevoker.Disposable = Disposable.Create(() =>
+				{
+					listView.DragOver -= OnListViewDragOver;
+				});
+
+				listView.Drop += OnListViewDrop;
+				m_listViewDropRevoker.Disposable = Disposable.Create(() =>
 				{
 					listView.Drop -= OnListViewDrop;
 				});
-
 				listView.DragEnter += OnListViewDragEnter;
 				m_listViewDragEnterRevoker.Disposable = Disposable.Create(() =>
 				{
@@ -181,11 +187,6 @@ public partial class TabView : Control
 					listView.DragLeave -= OnListViewDragLeave;
 				});
 
-				listView.Drop += OnListViewDrop;
-				m_listViewDropRevoker.Disposable = Disposable.Create(() =>
-				{
-					listView.Drop -= OnListViewDrop;
-				});
 
 				listView.GettingFocus += OnListViewGettingFocus;
 				m_listViewGettingFocusRevoker.Disposable = Disposable.Create(() =>
