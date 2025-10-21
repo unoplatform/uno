@@ -65,6 +65,7 @@
 		<MicrosoftTestingPlatformVersion>1.9.0</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
+		<UnoICUVersion>77.1.0-dev.43</UnoICUVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -160,6 +161,12 @@
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.4.0.2" />
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.8.7.4" />
 		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.28" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageVersion Include="Uno.icu-macos" Version="$(UnoICUVersion)" />
+		<PackageVersion Include="Uno.icu-wasm" Version="$(UnoICUVersion)" />
+		<PackageVersion Include="Uno.icu-ios" Version="$(UnoICUVersion)" />
 	</ItemGroup>
 
 	<Target Name="ValidateSolutionPath" BeforeTargets="Build">

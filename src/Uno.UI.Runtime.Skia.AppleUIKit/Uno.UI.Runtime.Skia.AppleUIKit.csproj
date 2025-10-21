@@ -47,6 +47,7 @@
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp.Views" />
+		<PackageReference Include="Uno.icu-ios" />
 	</ItemGroup>
 
 	<ItemGroup>

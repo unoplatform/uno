@@ -37,7 +37,7 @@
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
-		<PackageReference Include="Uno.icu-wasm" Version="77.1.0-dev.43" />
+		<PackageReference Include="Uno.icu-wasm" />
 	</ItemGroup>
 
 	<ItemGroup>
