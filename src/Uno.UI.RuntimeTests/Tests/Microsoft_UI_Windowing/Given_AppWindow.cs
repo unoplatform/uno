@@ -184,6 +184,28 @@ public class Given_AppWindow
 		}
 	}
 
+	[TestMethod]
+	public async Task When_WindowHandleAndIds_Should_BeConsistent()
+	{
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var button = new Microsoft.UI.Xaml.Controls.Button { Content = "Test" };
+		window.Content = button;
+
+		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForLoaded(button);
+
+		var hwnd = global::WinRT.Interop.WindowNative.GetWindowHandle(window);
+		var appWindowId = window.AppWindow.Id;
+		var xamlAppWindowId = button.XamlRoot.ContentIslandEnvironment.AppWindowId;
+
+		// HWND should be non-zero
+		Assert.AreNotEqual(IntPtr.Zero, hwnd, "Window handle should not be zero");
+
+		// All IDs should be the same (including HWND as WindowId)
+		Assert.AreEqual((long)appWindowId.Value, hwnd.ToInt64(), "AppWindow.Id should equal WindowId from HWND");
+		Assert.AreEqual(appWindowId, xamlAppWindowId, "AppWindow.Id should equal XamlRoot.ContentIslandEnvironment.AppWindowId");
+	}
+
 	private void AssertPositioningAndSizingSupport()
 	{
 		if (!OperatingSystem.IsLinux() &&
