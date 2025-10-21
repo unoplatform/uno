@@ -35,6 +35,12 @@ internal readonly partial struct UnicodeText
 			{
 				// On Linux and Android, we get the ICU binaries from the dynamic linker search path
 				// On MacOS, we get the ICU binaries from the uno.icu-macos package.
+				if (OperatingSystem.IsMacOS() && !NativeLibrary.TryLoad("icudata", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out _))
+				{
+					// MacOS doesn't automatically load icudata from icuuc for some reason even though the icuuc binary
+					// lists icudata in the `otool -L` output, so we have to load it by hand
+					throw new Exception("Failed to load libicudata.");
+				}
 				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
 				{
 					throw new Exception("Failed to load libicuuc.");
