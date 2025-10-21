@@ -6,7 +6,7 @@
 	},
 	"test": {
 		"runner": "Microsoft.Testing.Platform"
-	}
+	},
 	"tools": {
 		"dotnet": "10.0.100"
 	},
