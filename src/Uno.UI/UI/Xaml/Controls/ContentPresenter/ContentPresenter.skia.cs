@@ -81,8 +81,8 @@ partial class ContentPresenter
 	{
 #if DEBUG
 		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null && !_nativeElementAttached);
-		_nativeElementAttached = true;
 #endif
+		_nativeElementAttached = true;
 		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
 		_nativeHosts.Add(this);
 	}
