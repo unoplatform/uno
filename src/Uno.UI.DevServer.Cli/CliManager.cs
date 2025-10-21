@@ -4,8 +4,6 @@ using System.Net.Sockets;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Uno.UI.DevServer.Cli.Helpers;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -35,113 +33,15 @@ internal class CliManager
 				return 1; // errors already logged
 			}
 
-			// If the command is 'list' or 'cleanup' we want the subprocess to write directly to the console
 			var isDirectOutputCommand = originalArgs.Length > 0 && (
 				string.Equals(originalArgs[0], "list", StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(originalArgs[0], "cleanup", StringComparison.OrdinalIgnoreCase)
 			);
 
-			// Build args: prepend --command and forward user args as-is
-			var forwardedArgs = BuildHostArgs(hostPath, originalArgs, redirectOutput: !isDirectOutputCommand);
+			var startInfo = BuildHostArgs(hostPath, originalArgs, redirectOutput: !isDirectOutputCommand);
 
-			_logger.LogDebug("Starting host process: {FileName} {Arguments}", forwardedArgs.FileName, string.Join(" ", forwardedArgs.ArgumentList));
-			var process = Process.Start(forwardedArgs);
-			_logger.LogDebug("Started Host process: {pid}", process?.Id);
-
-			if (process is null)
-			{
-				_logger.LogError("Failed to start DevServer Host process.");
-				return 1;
-			}
-
-			if (isDirectOutputCommand)
-			{
-				// When not redirecting, just wait for exit — output goes to console directly.
-				await process.WaitForExitAsync();
-
-				if (process.ExitCode != 0)
-				{
-					_logger.LogError("Host exited with code {ExitCode}", process.ExitCode);
-					return process.ExitCode;
-				}
-
-				_logger.LogInformation("Command completed successfully.");
-				return 0;
-			}
-
-			var outputSb = new StringBuilder();
-			var errorSb = new StringBuilder();
-
-			process.OutputDataReceived += (s, e) =>
-			{
-				if (e.Data != null)
-				{
-					outputSb.AppendLine(e.Data);
-
-					if (_logger.IsEnabled(LogLevel.Debug))
-					{
-						_logger.LogDebug("[DevServer:stdout] " + e.Data);
-					}
-				}
-			};
-
-			process.ErrorDataReceived += (s, e) =>
-			{
-				if (e.Data != null)
-				{
-					errorSb.AppendLine(e.Data);
-
-					if (_logger.IsEnabled(LogLevel.Debug))
-					{
-						_logger.LogDebug("[DevServer:stderr] " + e.Data);
-					}
-				}
-			};
-
-			// Start asynchronous read of output streams to avoid potential deadlocks on Windows
-			try
-			{
-				process.BeginOutputReadLine();
-				process.BeginErrorReadLine();
-			}
-			catch (InvalidOperationException)
-			{
-				// Streams might not be available; fall back to not reading asynchronously
-			}
-
-			var processExited = new TaskCompletionSource();
-
-			process.Exited += (e, s) =>
-			{
-				_logger.LogTrace("Host has exited (code: {ExitCode})", process.ExitCode);
-				processExited.TrySetResult();
-			};
-
-			// Wait for both process exit event and WaitForExitAsync, in
-			// case some std is blocking the process exit.
-			await Task.WhenAny(process.WaitForExitAsync(), processExited.Task);
-
-			var output = outputSb.ToString();
-			var errorOutput = errorSb.ToString();
-
-			if (process.ExitCode != 0)
-			{
-				_logger.LogError("Host exited with code {ExitCode}", process.ExitCode);
-
-				if (!string.IsNullOrWhiteSpace(output))
-				{
-					_logger.LogError("Host standard output for troubleshooting:\n{Output}", output);
-				}
-				if (!string.IsNullOrWhiteSpace(errorOutput))
-				{
-					_logger.LogError("Host error output for troubleshooting:\n{ErrorOutput}", errorOutput);
-				}
-
-				return process.ExitCode;
-			}
-
-			_logger.LogInformation("Command completed successfully.");
-			return 0;
+			var result = await DevServerProcessHelper.RunHostProcessAsync(startInfo, _logger);
+			return result.ExitCode;
 		}
 		catch (Exception ex)
 		{
@@ -234,48 +134,21 @@ internal class CliManager
 
 	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, bool redirectOutput = true)
 	{
-		// Use dotnet on non-Windows platforms or when the host is a DLL
-		var useDotnet = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || hostPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
-
-		var psi = new ProcessStartInfo
-		{
-			FileName = useDotnet ? "dotnet" : hostPath,
-			UseShellExecute = false,
-			CreateNoWindow = true,
-			RedirectStandardOutput = redirectOutput,
-			RedirectStandardError = redirectOutput,
-			WorkingDirectory = Directory.GetCurrentDirectory(),
-		};
-
-		var hostArgPath = hostPath;
-		if (useDotnet)
-		{
-			// If the package provides an .exe but we're invoking via dotnet (non-Windows),
-			// switch to the .dll equivalent so dotnet can run it.
-			if (hostArgPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-			{
-				// Use span-based concat to avoid allocations warning (CA1845)
-				hostArgPath = string.Concat(hostArgPath.AsSpan(0, hostArgPath.Length - 4), ".dll");
-			}
-
-			psi.ArgumentList.Add(hostArgPath);
-		}
-
-		psi.ArgumentList.Add("--command");
+		var args = new List<string> { "--command" };
 		if (originalArgs.Length > 0)
 		{
-			psi.ArgumentList.Add(originalArgs[0]);
+			args.Add(originalArgs[0]);
 			for (int i = 1; i < originalArgs.Length; i++)
 			{
-				psi.ArgumentList.Add(originalArgs[i]);
+				args.Add(originalArgs[i]);
 			}
 		}
 		else
 		{
-			psi.ArgumentList.Add("start");
+			args.Add("start");
 		}
 
-		return psi;
+		return DevServerProcessHelper.CreateHostProcessStartInfo(hostPath, args, redirectOutput);
 	}
 
 	private static string? FindGlobalJson(string startPath)
