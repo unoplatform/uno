@@ -6,6 +6,7 @@ using Windows.UI.Popups;
 using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using Private.Infrastructure;
+using SamplesApp;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 {
@@ -22,6 +23,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 			{
 				var messageDialog = new Windows.UI.Popups.MessageDialog("No internet connection has been found.");
 
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
+
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
 
@@ -29,6 +35,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 			{
 				var messageDialog = new Windows.UI.Popups.MessageDialog("No internet connection has been found.");
 				messageDialog.Title = "Internet Connectivity";
+
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
@@ -40,6 +51,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 
 				messageDialog.Commands.Add(new UICommand("Acknowledge", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.Title = "Internet Connectivity";
+
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
@@ -54,6 +70,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 
 				messageDialog.Commands.Add(new UICommand("Cancel", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.DefaultCommandIndex = 1;
+
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
@@ -71,6 +92,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				messageDialog.Commands.Add(new UICommand("Cancel", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.CancelCommandIndex = 2;
 
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
+
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
 
@@ -78,12 +104,22 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 			{
 				var messageDialog = new Windows.UI.Popups.MessageDialog("\"Sample \\\"force escape test\\\" \\n \\t \\r continued sample.\"");
 
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
+
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
 
 			WithProgrammaticDismissal.Tapped += (snd, evt) =>
 			{
 				var messageDialog = new Windows.UI.Popups.MessageDialog("It will dismiss in 2000 ms", "Programatically Dismiss");
+
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 
 				var cts = new CancellationTokenSource(2000);
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync().AsTask(cts.Token));
