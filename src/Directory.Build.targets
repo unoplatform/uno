@@ -164,9 +164,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageVersion Include="Uno.icu-macos" Version="$(UnoICUVersion)" />
-		<PackageVersion Include="Uno.icu-wasm" Version="$(UnoICUVersion)" />
-		<PackageVersion Include="Uno.icu-ios" Version="$(UnoICUVersion)" />
+		<PackageReference Update="Uno.icu-macos" Version="$(UnoICUVersion)" />
+		<PackageReference Update="Uno.icu-wasm" Version="$(UnoICUVersion)" />
+		<PackageReference Update="Uno.icu-ios" Version="$(UnoICUVersion)" />
 	</ItemGroup>
 
 	<Target Name="ValidateSolutionPath" BeforeTargets="Build">
