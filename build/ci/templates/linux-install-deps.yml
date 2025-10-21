@@ -9,7 +9,7 @@ steps:
       echo '#!/bin/sh' | sudo tee /usr/bin/mandb >/dev/null
       echo 'exit 0' | sudo tee -a /usr/bin/mandb >/dev/null
       sudo chmod 755 /usr/bin/mandb
-    name: Disable man-db
+    displayName: Disable man-db
 
   - bash: |
       sudo apt-get update
