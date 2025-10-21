@@ -120,6 +120,12 @@ public partial class CompositionTarget
 			{
 				xamlRootBounds = _xamlRootBounds;
 			}
+			if (xamlRootBounds.Width <= 0 || xamlRootBounds.Height <= 0)
+			{
+				// Besides being an optimization step, returning early here also avoids resizing
+				// the canvas to 0x0 which may crash on some targets
+				return lastRenderedFrame.nativeElementClipPath;
+			}
 			if (canvas is null || _lastCanvasSize != xamlRootBounds)
 			{
 				canvas = resizeFunc(xamlRootBounds);
