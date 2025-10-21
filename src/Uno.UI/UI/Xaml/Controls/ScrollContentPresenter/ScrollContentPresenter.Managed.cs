@@ -488,12 +488,21 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var v0 = (scrollable.Horizontally, scrollable.Vertically) switch
 				{
-					(true, false) => args.Velocities.Linear.X,
-					(false, true) => args.Velocities.Linear.Y,
+					(true, false) => Math.Abs(args.Velocities.Linear.X),
+					(false, true) => Math.Abs(args.Velocities.Linear.Y),
 					(true, true) => (Math.Abs(args.Velocities.Linear.X) + Math.Abs(args.Velocities.Linear.Y)) / 2,
 					_ => 0
 				};
-				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, 2750);
+
+				// calculate the duration based on PKScrollView.prototype.stepThroughDecelerationAnimation from https://github.com/jimeh/PastryKit
+				// momentum should decay by 5% each frame, at 60fps, until the minimum threshold is reached.
+				const double PKScrollViewDecelerationFrictionFactor = 0.95;
+				const double PKScrollViewDesiredAnimationFrameRate = 1000 / 60.0;
+				const double PKScrollViewMinimumVelocity = 0.01;
+				var frames = Math.Log(PKScrollViewMinimumVelocity / v0, PKScrollViewDecelerationFrictionFactor);
+				var duration = frames * PKScrollViewDesiredAnimationFrameRate;
+
+				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, duration);
 			}
 			else if (OperatingSystem.IsAndroid())
 			{
