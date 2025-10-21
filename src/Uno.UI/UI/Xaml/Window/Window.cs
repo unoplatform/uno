@@ -25,6 +25,7 @@ using Uno.UI;
 using Windows.Devices.PointOfService;
 using Windows.ApplicationModel.Core;
 using System.Diagnostics;
+using Microsoft.UI.Content;
 
 namespace Microsoft.UI.Xaml;
 
@@ -69,9 +70,6 @@ partial class Window
 		InitialWindow ??= this;
 		_current ??= this; // TODO:MZ: Do we want this?
 
-		AppWindow = new AppWindow();
-		_appWindowMap[AppWindow] = this;
-
 		if (!NativeWindowFactory.SupportsMultipleWindows)
 		{
 			if (_current is not null && _current != this)
@@ -103,9 +101,6 @@ partial class Window
 		{
 			Initialize();
 		}
-
-		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
-		global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
 	}
 
 	internal INativeWindowWrapper? NativeWrapper => _windowImplementation.NativeWindowWrapper;
@@ -155,7 +150,7 @@ partial class Window
 	internal
 #endif
 	AppWindow AppWindow
-	{ get; }
+	{ get; private set; } = null!;
 
 	/// <summary>
 	/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
@@ -248,6 +243,17 @@ partial class Window
 		}
 
 		_windowImplementation.Initialize();
+
+		AppWindow = new AppWindow(_windowImplementation.NativeWindowWrapper!.NativeWindowId);
+		_appWindowMap[AppWindow] = this;
+
+		if (_windowImplementation is DesktopWindow { DesktopWindowXamlSource: { } desktopWindowXamlSource })
+		{
+			desktopWindowXamlSource.XamlIsland.ContentIslandEnvironment = new ContentIslandEnvironment(AppWindow.Id);
+		}
+
+		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
+		global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
 
 #if !HAS_UNO_WINUI
 		RaiseCreated();

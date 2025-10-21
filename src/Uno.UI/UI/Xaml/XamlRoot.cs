@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
+using Microsoft.UI.Content;
 
 namespace Microsoft.UI.Xaml;
 

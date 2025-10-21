@@ -80,11 +80,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		var success = PInvoke.SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) != 0;
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetThreadDpiAwarenessContext)} failed: {Win32Helper.GetErrorMessage()}"); }
 
-		// this must come before CreateWindow(), which sends a WM_GETMINMAXINFO message that reads from _applicationView
-		_applicationView = ApplicationView.GetForWindowId(window.AppWindow.Id);
-		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
-
 		_hwnd = CreateWindow();
+
+		_applicationView = ApplicationView.GetOrCreateForWindowId(new((ulong)_hwnd.Value));
+		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 
 		XamlRootMap.Register(xamlRoot, this);
 
@@ -117,6 +116,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
+
+	public override ulong NativeWindowId => (ulong)_hwnd.Value;
 
 	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
 	{
@@ -229,6 +230,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
+				if (_applicationView is null)
+				{
+					break;
+				}
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 				return new LRESULT(0);

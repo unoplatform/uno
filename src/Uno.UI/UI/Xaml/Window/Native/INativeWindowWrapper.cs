@@ -12,6 +12,8 @@ namespace Uno.UI.Xaml.Controls;
 
 internal interface INativeWindowWrapper : INativeAppWindow
 {
+	ulong NativeWindowId { get; }
+
 	ContentSiteView ContentSiteView { get; }
 
 	Rect Bounds { get; }

@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property IsHostVisible
 		// Skipping already declared property RasterizationScale
 		// Skipping already declared property Size
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Content.ContentIslandEnvironment ContentIslandEnvironment
 		{
