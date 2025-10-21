@@ -117,6 +117,8 @@ internal partial class XamlIslandRoot
 
 	internal ContentIsland? ContentIsland => ContentRoot?.CompositionContent;
 
+	internal ContentIslandEnvironment? ContentIslandEnvironment { get; set; }
+
 	internal void OnStateChanged()
 	{
 		// In the scope if this handler, we may find the the XamlRoot has changed in various ways.  This RAII

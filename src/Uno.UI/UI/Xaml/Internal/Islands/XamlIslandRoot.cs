@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Content;
 
 namespace Uno.UI.Xaml.Islands;
 
