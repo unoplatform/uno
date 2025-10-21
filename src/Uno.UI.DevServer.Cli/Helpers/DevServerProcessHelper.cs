@@ -51,14 +51,12 @@ internal static class DevServerProcessHelper
 	public static async Task<(int ExitCode, string StdOut, string StdErr)> RunHostProcessAsync(ProcessStartInfo startInfo, ILogger logger)
 	{
 		logger.LogDebug("Starting host process: {File} {Args}", startInfo.FileName, string.Join(" ", startInfo.ArgumentList));
-		var process = Process.Start(startInfo);
-		logger.LogDebug("Started Host process: {Pid}", process?.Id);
 
-		if (process is null)
+		Process process = new()
 		{
-			logger.LogError("Failed to start DevServer Host process.");
-			return (ExitCode: 1, StdOut: string.Empty, StdErr: string.Empty);
-		}
+			StartInfo = startInfo,
+			EnableRaisingEvents = true
+		};
 
 		var outputSb = new StringBuilder();
 		var errorSb = new StringBuilder();
@@ -92,6 +90,16 @@ internal static class DevServerProcessHelper
 				}
 			};
 		}
+		var processExited = new TaskCompletionSource();
+		process.Exited += (_, __) =>
+		{
+			logger.LogTrace("Host has exited (code: {ExitCode})", process.ExitCode);
+			processExited.TrySetResult();
+		};
+
+		process.Start();
+
+		logger.LogDebug("Started Host process: {Pid}", process.Id);
 
 		// Begin async reads if redirected
 		try
@@ -110,13 +118,9 @@ internal static class DevServerProcessHelper
 			// Streams may not be available
 		}
 
-		var processExited = new TaskCompletionSource();
-		process.Exited += (_, __) =>
-		{
-			logger.LogTrace("Host has exited (code: {ExitCode})", process.ExitCode);
-			processExited.TrySetResult();
-		};
 
+		// Wait for both process exit event and WaitForExitAsync, in
+		// case some std is blocking the process exit.
 		await Task.WhenAny(process.WaitForExitAsync(), processExited.Task);
 
 		var stdOut = outputSb.ToString();
