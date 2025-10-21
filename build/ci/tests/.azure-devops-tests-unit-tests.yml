@@ -65,7 +65,7 @@ jobs:
       ArtifactType: Container
 
   - pwsh: |
-      dotnet test src/Uno.UI-UnitTests-only.slnf -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\unit-tests-run-$(XAML_FLAVOR_BUILD).binlog --no-build --no-progress --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
+      dotnet test --solution src/Uno.UI-UnitTests-only.slnf -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\unit-tests-run-$(XAML_FLAVOR_BUILD).binlog --no-build --no-progress --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
     displayName: Run unit tests
 
   - task: PublishTestResults@2
