@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __SKIA__
+#if false
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Content.ContentIslandEnvironment ContentIslandEnvironment
 		{
