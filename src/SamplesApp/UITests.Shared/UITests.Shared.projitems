@@ -5662,6 +5662,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorder.xaml.cs">
       <DependentUpon>TitleBarAndBorder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorderViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ExpanderTests\Expander_Bindings_TemplatedControl.xaml.cs">
       <DependentUpon>Expander_Bindings_TemplatedControl.xaml</DependentUpon>
     </Compile>

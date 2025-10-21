@@ -13,22 +13,23 @@
 
             <StackPanel Spacing="4">
                 <TextBlock Text="ExtendsContentIntoTitleBar" FontWeight="Bold" />
-                <CheckBox x:Name="WindowExtends" Content="Window.ExtendsContentIntoTitleBar" Checked="OnWindowExtendsChecked" Unchecked="OnWindowExtendsUnchecked"/>
-                <CheckBox x:Name="AppWindowExtends" Content="AppWindow.TitleBar.ExtendsContentIntoTitleBar" Checked="OnAppWindowExtendsChecked" Unchecked="OnAppWindowExtendsUnchecked"/>
+                <CheckBox x:Name="WindowExtends" Content="Window.ExtendsContentIntoTitleBar" IsChecked="{Binding WindowExtends, Mode=TwoWay}"/>
+                <CheckBox x:Name="AppWindowExtends" Content="AppWindow.TitleBar.ExtendsContentIntoTitleBar" IsChecked="{Binding AppWindowExtends, Mode=TwoWay}"/>
                 <TextBlock Text="Note: Effects depend on platform support." TextWrapping="Wrap"/>
             </StackPanel>
 
             <StackPanel Spacing="4">
                 <TextBlock Text="SetBorderAndTitleBar (OverlappedPresenter)" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <CheckBox x:Name="HasBorderCheck" Content="Has border"/>
-                    <CheckBox x:Name="HasTitleBarCheck" Content="Has title bar"/>
+                    <CheckBox x:Name="HasBorderCheck" Content="Has border" IsChecked="{Binding HasBorder, Mode=TwoWay}"/>
+                    <CheckBox x:Name="HasTitleBarCheck" Content="Has title bar" IsChecked="{Binding HasTitleBar, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Button Click="OnApplySetBorderAndTitleBar">Apply SetBorderAndTitleBar</Button>
-                    <Button Click="OnResetPresenter">Reset presenter</Button>
+                    <Button Content="Apply SetBorderAndTitleBar" Command="{Binding ApplyCommand}" />
+                    <Button Content="Reset presenter" Command="{Binding ResetCommand}" />
                 </StackPanel>
-                <TextBlock x:Name="PresenterNameText"/>
+                <TextBlock x:Name="PresenterNameText" Text="{Binding PresenterDescription}"/>
+                <TextBlock Foreground="Red" Text="{Binding LastError}" TextWrapping="Wrap"/>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>
