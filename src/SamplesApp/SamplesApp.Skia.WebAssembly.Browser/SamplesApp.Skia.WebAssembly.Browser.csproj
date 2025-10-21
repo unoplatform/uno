@@ -51,6 +51,15 @@
 	
 	<ItemGroup>
 		<EmbeddedResource Include="WasmScripts\AppManifest.js" />
+	
+		<Content Include="..\LinkedFiles\WebContent\**\*.*">
+			<Link>WebContent\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+
+		<WasmShellExtraFilesToDeploy Include="..\LinkedFiles\WebContent\**\*.*">
+			<TargetPath>WebContent/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+		</WasmShellExtraFilesToDeploy>
 	</ItemGroup>
 
 	<!--
