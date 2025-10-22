@@ -1253,7 +1253,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static int TrailingCRLFCount(string str, int start, int end)
 	{
-		if (str[end - 2] == '\r' && str[end - 1] == '\n')
+		if (str is [.., '\r', '\n'])
 		{
 			return 2;
 		}
