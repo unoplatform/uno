@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
+using Uno.UI.Xaml.Media;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
 
@@ -870,30 +871,51 @@ internal readonly partial struct UnicodeText : IParsedText
 						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.GlyphPosition.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.GlyphPosition.YOffset * run.fontDetails.TextScale.textScaleY);
 					}
 
+					void DrawText(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<SKPoint> positions, Visual.PaintingSession session, Brush brush)
+					{
+						textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
+						var blob1 = textBlobBuilder.Build(); // Build resets the blob builder
+						var paint = SetupPaint(brush, session.Opacity);
+						session.Canvas.DrawText(blob1, currentLineX, line.baselineOffset, paint);
+					}
+
 					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart < run.endInInline + run.inline.StartIndex && run.startInInline + run.inline.StartIndex < sd.selectionClusterEnd.sourceTextStart))
 					{
+						int selectionLeft;
+						int selectionRight; // the selection ends to the left of positions[selectionRight].X
 						if (run.rtl)
 						{
-							var leftX = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length ? positions[sd.selectionClusterEnd.glyphInRunIndexEnd - 1].X + GlyphWidth(run.glyphs[sd.selectionClusterEnd.glyphInRunIndexEnd - 1].position, run.fontDetails) : positions[0].X;
-							var rightX = sd.selectionClusterStart.layoutedRun == run ? positions[sd.selectionClusterStart.glyphInRunIndexStart].X + GlyphWidth(run.glyphs[sd.selectionClusterStart.glyphInRunIndexStart].position, run.fontDetails) : positions[^1].X + GlyphWidth(run.glyphs[^1].position, run.fontDetails);
-							var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
-							sd.brush.Paint(session.Canvas, session.Opacity, selectionRect);
+							selectionLeft = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length ? sd.selectionClusterEnd.glyphInRunIndexEnd : 0;
+							selectionRight = sd.selectionClusterStart.layoutedRun == run ? sd.selectionClusterStart.glyphInRunIndexStart + 1 : run.glyphs.Length;
 						}
 						else
 						{
-							var leftX = sd.selectionClusterStart.layoutedRun == run ? positions[sd.selectionClusterStart.glyphInRunIndexStart].X : positions[0].X;
-							var rightX = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length
-								? positions[sd.selectionClusterEnd.glyphInRunIndexStart].X
-								: positions[^1].X + GlyphWidth(run.glyphs[^1].position, run.fontDetails);
-							var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
-							sd.brush.Paint(session.Canvas, session.Opacity, selectionRect);
+							selectionLeft = sd.selectionClusterStart.layoutedRun == run ? sd.selectionClusterStart.glyphInRunIndexStart : 0;
+							selectionRight = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length ? sd.selectionClusterEnd.glyphInRunIndexStart : run.glyphs.Length;
+						}
+
+						var leftX = positions[selectionLeft].X;
+						var rightX = positions[selectionRight - 1].X + GlyphWidth(run.glyphs[selectionRight - 1].position, run.fontDetails);
+						var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
+						sd.brush.Paint(session.Canvas, session.Opacity, selectionRect);
+
+						var glyphsSpan = glyphs.AsSpan();
+						var positionsSpan = positions.AsSpan();
+						if (selectionLeft > 0)
+						{
+							DrawText(glyphsSpan[..selectionLeft], positionsSpan[..selectionLeft], session, run.inline.Foreground);
+						}
+						DrawText(glyphsSpan[selectionLeft..selectionRight], positionsSpan[selectionLeft..selectionRight], session, DefaultBrushes.SelectedTextHighlightColor);
+						if (selectionRight < run.glyphs.Length)
+						{
+							DrawText(glyphsSpan[selectionRight..], positionsSpan[selectionRight..], session, run.inline.Foreground);
 						}
 					}
+					else
+					{
+						DrawText(glyphs, positions, session, run.inline.Foreground);
+					}
 
-					textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
-
-					var paint = SetupPaint(run.inline.Foreground, session.Opacity);
-					session.Canvas.DrawText(textBlobBuilder.Build(), currentLineX, line.baselineOffset, paint);
 					currentLineX += run.width;
 				}
 			}
