@@ -10,7 +10,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch;
 [TestClass]
 public class RealAppLaunchIntegrationTests : TelemetryTestBase
 {
-	private const string? _targetFramework = "net9.0";
+	private const string? _targetFramework = "net10.0";
 
 	[ClassInitialize]
 	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<RealAppLaunchIntegrationTests>(context);
@@ -163,11 +163,12 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 	/// </summary>
 	private async Task<Process> StartSkiaDesktopAppAsync(string projectPath, int devServerPort)
 	{
+		var appTfm = $"{_targetFramework}-desktop";
+
 		// Before starting the app, make sure it will run with the freshly compiled RemoteControlClient
 		try
 		{
 			var projectDir = Path.GetDirectoryName(projectPath)!;
-			var appTfm = $"{_targetFramework}-desktop";
 			var appOutputDir = Path.Combine(projectDir, "bin", "Debug", appTfm);
 			var freshRcDll = typeof(Uno.UI.RemoteControl.RemoteControlClient).Assembly.Location;
 			var destRcDll = Path.Combine(appOutputDir, Path.GetFileName(freshRcDll));
@@ -191,7 +192,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 		var runInfo = new ProcessStartInfo
 		{
 			FileName = "dotnet",
-			Arguments = $"run --project \"{projectPath}\" --configuration Debug --framework net9.0-desktop --no-build",
+			Arguments = $"run --project \"{projectPath}\" --configuration Debug --framework {appTfm} --no-build",
 			RedirectStandardOutput = true,
 			RedirectStandardError = true,
 			UseShellExecute = false,
