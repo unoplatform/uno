@@ -147,6 +147,11 @@ public partial class ClientHotReloadProcessor
 			{
 				this.Log().Error("Failed to notify the status changed.", error);
 			}
+
+			foreach (var serverOp in _serverOperations)
+			{
+				owner.ReportDiagnostics(serverOp.Value.Diagnostics);
+			}
 		}
 
 		private Status BuildStatus()
@@ -161,6 +166,24 @@ public partial class ClientHotReloadProcessor
 			};
 
 			return new(globalState, (serverState, _serverOperations.Values.ToImmutableArray()), (localState, _localOperations));
+		}
+	}
+
+	private void ReportDiagnostics(IImmutableList<string>? diagnostics)
+	{
+		if (
+			diagnostics is { Count: > 0 }
+
+			// We should only report this when server metadata
+			// updates are enabled, other targets don't set diagnostics.
+			&& _serverMetadataUpdatesEnabled)
+		{
+			_log.Error("The Hot Reload compilation failed with the following errors:");
+
+			foreach (var operation in diagnostics)
+			{
+				_log.Error(operation);
+			}
 		}
 	}
 
