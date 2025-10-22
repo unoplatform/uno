@@ -16,6 +16,23 @@ For a refresher on what Uno is and what it does and does not do, read [What is t
 
 Get an [in-depth introduction to how Uno works](uno-internals-overview.md), or jump straight to platform-specific details on how Uno works on [Android](uno-internals-android.md), [iOS](uno-internals-ios.md), [WebAssembly](uno-internals-wasm.md), or [macOS](uno-internals-macos.md).
 
+### Understanding Skia vs. Native Rendering
+
+Uno Platform provides two rendering modes that determine how your application's UI is drawn on the screen:
+
+- **Skia Rendering** - Uses the [Skia](https://skia.org) drawing library to render all UI elements on a hardware-accelerated canvas. This provides a unified, pixel-perfect rendering experience across all platforms (iOS, Android, macOS, Windows, Linux, and WebAssembly). The Skia renderer is the default in the **Blank** and **Recommended** project templates and offers very efficient performance for large UIs.
+
+- **Native Rendering** - Uses the native UI components and APIs of each platform (e.g., `UIView` on iOS, `ViewGroup` on Android, `div` on WebAssembly). This provides deeper integration with platform-specific features like accessibility and input methods, but may result in slight visual differences across platforms.
+
+When contributing to Uno, you'll work with different solution filters depending on which rendering mode and platform you're targeting:
+
+- `Uno.UI-Skia-only.slnf` - For all Skia-based implementations (including Skia variants on iOS, Android, macOS, and WebAssembly)
+- `Uno.UI-Wasm-only.slnf` - For native WebAssembly rendering
+- `Uno.UI-netcore-mobile-only.slnf` - For native mobile platforms (iOS and Android)
+- `Uno.UI-Windows-only.slnf` - For Windows (uses WinAppSDK, not Uno rendering)
+
+For more details, see [How Uno Platform Works](../how-uno-works.md), particularly the sections on [Skia Rendering](../how-uno-works.md#skia-rendering) and [Native Rendering](../how-uno-works.md#native-rendering).
+
 ## Building and debugging Uno
 
 For the prerequisites you'll need, as well as useful tips like using [solution filters](https://learn.microsoft.com/visualstudio/ide/filtered-solutions) and cross-targeting overrides to quickly load and build Uno for a single platform, start with the guide to [Building Uno.UI](building-uno-ui.md). The guide to [Debugging Uno.UI](debugging-uno-ui.md) will show you how to debug Uno.UI code either in the included UI samples or in an application outside the Uno.UI solution.

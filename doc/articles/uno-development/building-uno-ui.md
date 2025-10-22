@@ -41,17 +41,38 @@ Building for a single target platform is considerably faster, much less RAM-inte
 
 It involves two things - setting an override for the target framework that will be picked up by the (normally multi-targeted) projects inside the Uno solution, and opening a preconfigured [solution filter](https://learn.microsoft.com/visualstudio/ide/filtered-solutions) which will only load the projects needed for the current platform.
 
-The step-by-step process is:
+### Understanding Platform and Rendering Choices
+
+Before building, it's important to understand that Uno Platform supports two rendering modes:
+
+- **Skia Rendering** - Uses the Skia graphics library for consistent, pixel-perfect rendering across all platforms. This is the recommended approach for most contributions as it's faster to build and provides a unified codebase.
+- **Native Rendering** - Uses platform-specific UI components (UIView on iOS, ViewGroup on Android, etc.) for deeper platform integration.
+
+Your choice of target framework and solution filter determines both the platform and rendering mode:
+
+| Solution Filter | Rendering Mode | Platforms Supported |
+|----------------|----------------|---------------------|
+| `Uno.UI-Skia-only.slnf` | Skia | iOS, Android, macOS, Windows, Linux, WebAssembly |
+| `Uno.UI-Wasm-only.slnf` | Native WebAssembly | WebAssembly |
+| `Uno.UI-netcore-mobile-only.slnf` | Native | iOS, Android, macOS Catalyst, tvOS |
+| `Uno.UI-Windows-only.slnf` | Windows App SDK | Windows (not Uno rendering) |
+
+**Recommendation for contributors**: Start with `Uno.UI-Skia-only.slnf` and `net10.0` target framework unless you're working on platform-specific native features.
+
+### Step-by-step Build Process
 
 1. Make sure you don't have the Uno.UI solution opened in any Visual Studio instance. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed)
 1. Make a copy of the [`src/crosstargeting_override.props.sample`](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
 1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>xxx</UnoTargetFrameworkOverride>`
 1. Set the build target inside `<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>` to the identifier for the target platform you wish to build for (Identifiers for each platform are listed in the `crosstargeting_override.props` file), then save the file.
+   - For Skia rendering (recommended): Use `net10.0` or `net9.0`
+   - For native mobile: Use `net10.0-ios`, `net10.0-android`, etc.
+   - For Windows: Use `net10.0-windows10.0.19041.0`
 1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf` (or the name listed in `crosstargeting_override.props` for the selected `UnoTargetFrameworkOverride`), and open it.
 1. To confirm that everything works:
-   - For iOS/Android native you can right-click on the `Uno.UI` project
-   - For WebAssembly/native, you can right-click on the `Uno.UI.Runtime.WebAssembly` project
-   - For Skia, you can right-click on the corresponding `Uno.UI.Runtime.Skia.[Win32|X11|macOS|iOS|Android|Wpf]` project
+   - For iOS/Android native rendering: right-click on the `Uno.UI` project
+   - For WebAssembly native rendering: right-click on the `Uno.UI.Runtime.WebAssembly` project
+   - For Skia rendering: right-click on the corresponding `Uno.UI.Runtime.Skia.[Win32|X11|macOS|iOS|Android|Wpf]` project
 1. Optionally adjust additional parameters in `crosstargeting_override.props`, such as `UnoDisableNetAnalyzers`, which can improve the build time during debugging sessions.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
