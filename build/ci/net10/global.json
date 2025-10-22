@@ -1,11 +1,11 @@
 {
 	"sdk": {
-		"version": "10.0.100-rc.1.25451.107",
+		"version": "10.0.100-rc.2.25502.107",
 		"allowPrerelease": true,
 		"rollForward": "latestMinor"
 	},
 	"tools": {
-		"dotnet": "10.0.100-rc.1.25451.107"
+		"dotnet": "10.0.100-rc.2.25502.107"
 	},
 	"msbuild-sdks": {
 		"MSBuild.Sdk.Extras": "3.0.44",
