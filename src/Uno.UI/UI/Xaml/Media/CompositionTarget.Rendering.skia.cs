@@ -140,6 +140,8 @@ public partial class CompositionTarget
 
 			InvokeRendering();
 
+			GC.KeepAlive(lastRenderedFrame.frame);
+
 			return lastRenderedFrame.nativeElementClipPath;
 		}
 	}
