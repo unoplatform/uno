@@ -57,6 +57,8 @@ internal class IdeChannelClient
 				_devServer = JsonRpc.Attach<IIdeChannelServer>(_pipeServer);
 				_devServer.MessageFromDevServer += ProcessDevServerMessage;
 
+				// Signal connection established once
+				Connected?.Invoke(this, EventArgs.Empty);
 				ScheduleKeepAlive(ct);
 			}
 			catch (Exception e)
@@ -83,8 +85,6 @@ internal class IdeChannelClient
 
 	private void ScheduleKeepAlive(CancellationToken ct)
 	{
-		Connected?.Invoke(this, EventArgs.Empty);
-
 		// Replace recursive re-scheduling with a single periodic timer
 		var oldTimer = Interlocked.Exchange(ref _keepAliveTimer, null);
 		oldTimer?.Dispose();
@@ -93,7 +93,22 @@ internal class IdeChannelClient
 		{
 			if (ct is { IsCancellationRequested: false } && _devServer is not null)
 			{
-				_ = _devServer.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage("IDE")), ct);
+				try
+				{
+					_ = _devServer
+						.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage("IDE")), ct)
+						.ContinueWith(t =>
+						{
+							if (t.IsFaulted && t.Exception is { } ex)
+							{
+								_logger.Verbose($"Keep-alive send failed: {ex.Flatten().Message}");
+							}
+						}, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.Default);
+				}
+				catch (Exception ex)
+				{
+					_logger.Verbose($"Keep-alive send exception: {ex.Message}");
+				}
 			}
 			else
 			{
@@ -147,6 +162,12 @@ internal class IdeChannelClient
 	{
 		_IDEChannelCancellation?.Cancel();
 		_keepAliveTimer?.Dispose();
+
+		if (_devServer is not null)
+		{
+			_devServer.MessageFromDevServer -= ProcessDevServerMessage;
+		}
+
 		_pipeServer?.Dispose();
 	}
 }
