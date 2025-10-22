@@ -255,7 +255,10 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 	private void ProcessIdeMessage(object? sender, IdeMessage message)
 	{
-		Console.WriteLine($"Received message from IDE: {message.GetType().Name}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug("Received message from IDE: {MessageType}", message.GetType().Name);
+		}
 		if (message is AppLaunchRegisterIdeMessage appLaunchRegisterIdeMessage)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))

@@ -31,7 +31,7 @@ namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposable
 {
-	private readonly string? _additionnalServerProcessorsDiscoveryPath;
+	private readonly string? _additionalServerProcessorsDiscoveryPath;
 	private readonly bool _autoRegisterAppIdentity;
 
 	public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
@@ -129,7 +129,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// </summary>
 	/// <param name="appType">The type of the application entry point.</param>
 	/// <param name="endpoints">Optional list of fallback endpoints to try when connecting to the dev-server.</param>
-	/// <param name="additionnalServerProcessorsDiscoveryPath">An optional absolute or relative path used to discover additional server processors.</param>
+	/// <param name="additionalServerProcessorsDiscoveryPath">An optional absolute or relative path used to discover additional server processors.</param>
 	/// <param name="autoRegisterAppIdentity">Whether to automatically register the app identity (mvid - platform...) with the dev-server.</param>
 	/// <returns>The initialized RemoteControlClient singleton instance.</returns>
 	/// <remarks>
@@ -140,9 +140,9 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	internal static RemoteControlClient Initialize(
 		Type appType,
 		ServerEndpointAttribute[]? endpoints,
-		string? additionnalServerProcessorsDiscoveryPath,
+		string? additionalServerProcessorsDiscoveryPath,
 		bool autoRegisterAppIdentity = true)
-		=> Instance = new RemoteControlClient(appType, endpoints, additionnalServerProcessorsDiscoveryPath, autoRegisterAppIdentity);
+		=> Instance = new RemoteControlClient(appType, endpoints, additionalServerProcessorsDiscoveryPath, autoRegisterAppIdentity);
 
 	public event RemoteControlFrameReceivedEventHandler? FrameReceived;
 	public event RemoteControlClientEventEventHandler? ClientEvent;
@@ -213,11 +213,11 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 	private RemoteControlClient(Type appType,
 		ServerEndpointAttribute[]? endpoints = null,
-		string? additionnalServerProcessorsDiscoveryPath = null,
+		string? additionalServerProcessorsDiscoveryPath = null,
 		bool autoRegisterAppIdentity = true)
 	{
 		AppType = appType;
-		_additionnalServerProcessorsDiscoveryPath = additionnalServerProcessorsDiscoveryPath;
+		_additionalServerProcessorsDiscoveryPath = additionalServerProcessorsDiscoveryPath;
 		_autoRegisterAppIdentity = autoRegisterAppIdentity;
 
 		_status = new StatusSink(this);
@@ -843,10 +843,10 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private async Task InitializeServerProcessors()
 	{
 		var anyDiscoveryRequested = false;
-		if (_additionnalServerProcessorsDiscoveryPath is not null)
+		if (_additionalServerProcessorsDiscoveryPath is not null)
 		{
 			anyDiscoveryRequested = true;
-			await SendMessage(new ProcessorsDiscovery(_additionnalServerProcessorsDiscoveryPath));
+			await SendMessage(new ProcessorsDiscovery(_additionalServerProcessorsDiscoveryPath));
 		}
 
 		if (AppType.Assembly.GetCustomAttributes(typeof(ServerProcessorsConfigurationAttribute), false) is ServerProcessorsConfigurationAttribute[] { Length: > 0 } configs)
@@ -950,7 +950,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		// Stop the keep alive timer
 		Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
 
-		// Remove the instance if it's the current one' (should not happen in regular usage)
+		// Remove the instance if it's the current one (should not happen in regular usage)
 		if (ReferenceEquals(Instance, this))
 		{
 			Instance = null;
