@@ -16,7 +16,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 	[TestMethod]
 	public async Task Telemetry_ProcessorDiscovery_LogsDiscoveryEvents()
 	{
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 		var appInstanceId = Guid.NewGuid().ToString("N");
 
 		// Arrange - Create a temporary file for telemetry output
@@ -132,7 +132,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 	[TestMethod]
 	public async Task Telemetry_ServerHotReloadProcessor_ResolvesCorrectly()
 	{
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 		var appInstanceId = Guid.NewGuid().ToString("N");
 
 		// Arrange - Create a temporary file for telemetry output

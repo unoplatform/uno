@@ -11,11 +11,11 @@ public abstract class TelemetryTestBase
 {
 	protected static ILogger Logger { get; private set; } = null!;
 
-	public TestContext? TestContext { get; set; }
+	public TestContext TestContext { get; set; } = null!;
 
 	private CancellationToken GetTimeoutToken()
 	{
-		var baseToken = TestContext?.CancellationTokenSource.Token ?? CancellationToken.None;
+		var baseToken = TestContext.CancellationTokenSource.Token;
 		if (!Debugger.IsAttached)
 		{
 			var cts = CancellationTokenSource.CreateLinkedTokenSource(baseToken);
@@ -33,7 +33,7 @@ public abstract class TelemetryTestBase
 
 	protected CancellationToken CT => GetTimeoutToken();
 
-	protected SolutionHelper? SolutionHelper { get; private set; }
+	protected SolutionHelper SolutionHelper { get; private set; } = null!;
 
 	[TestInitialize]
 	public void TestInitialize()
@@ -45,8 +45,8 @@ public abstract class TelemetryTestBase
 	[TestCleanup]
 	public void TestCleanup()
 	{
-		SolutionHelper?.Dispose();
-		SolutionHelper = null;
+		SolutionHelper.Dispose();
+		SolutionHelper = null!;
 	}
 
 	private static void InitializeLogger<T>() where T : class
@@ -199,13 +199,13 @@ public abstract class TelemetryTestBase
 
 	protected void WriteEventsList(List<(string Prefix, JsonDocument Json)> events)
 	{
-		TestContext!.WriteLine($"Found {events.Count} telemetry events:");
+		TestContext.WriteLine($"Found {events.Count} telemetry events:");
 		var index = 1;
 		foreach (var (prefix, json) in events)
 		{
 			if (json.RootElement.TryGetProperty("EventName", out var eventName))
 			{
-				TestContext!.WriteLine($"[{index++}] Prefix: {prefix}, EventName: {eventName.GetString()}");
+				TestContext.WriteLine($"[{index++}] Prefix: {prefix}, EventName: {eventName.GetString()}");
 			}
 		}
 	}

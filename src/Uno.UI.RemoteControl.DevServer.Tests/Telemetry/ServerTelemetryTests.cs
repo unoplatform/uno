@@ -11,7 +11,7 @@ public class TelemetryServerTests : TelemetryTestBase
 	[TestMethod]
 	public async Task Telemetry_Server_LogsConnectionEvents()
 	{
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 
 		// Arrange
 		var fileName = GetTestTelemetryFileName("serverconn");
@@ -58,7 +58,7 @@ public class TelemetryServerTests : TelemetryTestBase
 	[TestMethod]
 	public async Task Telemetry_FileTelemetry_AppliesEventsPrefix()
 	{
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 
 		// Arrange
 		var fileName = GetTestTelemetryFileName("eventsprefix");
