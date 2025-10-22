@@ -23,7 +23,8 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	public async Task WhenRegisteredAndRuntimeConnects_SuccessEventEmitted()
 	{
 		// PRE-ARRANGE: Create a solution file
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
+		Assert.IsNotNull(solution);
 		await solution.CreateSolutionFileAsync();
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_success"));
@@ -80,7 +81,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			await helper.StopAsync(CT);
 			DeleteIfExists(filePath);
 
-			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine("Dev Server Output:");
 			TestContext.WriteLine(helper.ConsoleOutput);
 		}
 	}
@@ -89,7 +90,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	public async Task WhenRegisteredByAssemblyPathAndRuntimeConnects_SuccessEventEmitted()
 	{
 		// PRE-ARRANGE: Create a solution file
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 		await solution.CreateSolutionFileAsync();
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_success_by_path"));
@@ -114,7 +115,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 				var url = $"http://localhost:{helper.Port}/applaunch/asm/{encodedPath}?IsDebug={isDebug.ToString().ToLowerInvariant()}";
 				var response = await http.GetAsync(url, CT);
 				response.EnsureSuccessStatusCode();
-				TestContext!.WriteLine("Http Response: " + await response.Content.ReadAsStringAsync());
+				TestContext.WriteLine("Http Response: " + await response.Content.ReadAsStringAsync());
 			}
 
 			// ACT - STEP 2: Connect from application (simulating app -> dev server)
@@ -148,7 +149,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			await helper.StopAsync(CT);
 			DeleteIfExists(filePath);
 
-			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine("Dev Server Output:");
 			TestContext.WriteLine(helper.ConsoleOutput);
 		}
 	}
@@ -158,7 +159,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	public async Task WhenRegisteredAndRuntimeConnects_SuccessEventEmitted_UsingIdeChannel()
 	{
 		// PRE-ARRANGE: Create a solution file
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 		await solution.CreateSolutionFileAsync();
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_success_idechannel"));
@@ -211,7 +212,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			await helper.StopAsync(CT);
 			DeleteIfExists(filePath);
 
-			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine("Dev Server Output:");
 			TestContext.WriteLine(helper.ConsoleOutput);
 		}
 	}
@@ -220,7 +221,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	public async Task WhenRegisteredButNoConnection_TimeoutEventEmitted()
 	{
 		// PRE-ARRANGE: Create a solution file
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 		await solution.CreateSolutionFileAsync();
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_timeout"));
@@ -275,7 +276,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			await helper.StopAsync(CT);
 			DeleteIfExists(filePath);
 
-			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine("Dev Server Output:");
 			TestContext.WriteLine(helper.ConsoleOutput);
 		}
 	}
@@ -284,7 +285,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	public async Task WhenConnectedBeforeRegistered_ThenAssociatedAfterRegistration()
 	{
 		// PRE-ARRANGE: Create a solution file
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 		await solution.CreateSolutionFileAsync();
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_connected_before_registered"));
@@ -341,7 +342,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			await helper.StopAsync(CT);
 			DeleteIfExists(filePath);
 
-			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine("Dev Server Output:");
 			TestContext.WriteLine(helper.ConsoleOutput);
 		}
 	}
@@ -350,7 +351,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 	public async Task WhenConnectedWithoutRegistration_ThenClassifiedAsNonIdeLaunch()
 	{
 		// PRE-ARRANGE: Create a solution file
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 		await solution.CreateSolutionFileAsync();
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_unsolicited_connection"));
@@ -393,7 +394,7 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			await helper.StopAsync(CT);
 			DeleteIfExists(filePath);
 
-			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine("Dev Server Output:");
 			TestContext.WriteLine(helper.ConsoleOutput);
 		}
 	}

@@ -19,7 +19,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 	public async Task WhenRealAppBuiltAndRunWithDevServer_RealConnectionEstablished()
 	{
 		// PRE-ARRANGE: Create a real Uno solution file (will contain desktop project)
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 		await solution.CreateSolutionFileAsync(platforms: "desktop", targetFramework: _targetFramework);
 
 		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_app_success"));
@@ -81,7 +81,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 				}
 				catch (Exception ex)
 				{
-					TestContext!.WriteLine($"Error stopping Skia process: {ex.Message}");
+					TestContext.WriteLine($"Error stopping Skia process: {ex.Message}");
 				}
 				appProcess.Dispose();
 			}
@@ -89,7 +89,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 			await helper.StopAsync(CT);
 			DeleteIfExists(filePath);
 
-			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine("Dev Server Output:");
 			TestContext.WriteLine(helper.ConsoleOutput);
 		}
 	}
@@ -101,14 +101,14 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 		var tfm = $"{_targetFramework}-desktop";
 		var assemblyPath = Path.Combine(projectDir, "bin", "Debug", tfm, assemblyName + ".dll");
 
-		TestContext!.WriteLine($"Reading assembly info from: {assemblyPath}");
+		TestContext.WriteLine($"Reading assembly info from: {assemblyPath}");
 		var (mvid, platformName) = AssemblyInfoReader.Read(assemblyPath);
 		var platform = platformName ?? "Desktop";
 
 		using (var http = new HttpClient())
 		{
 			var url = $"http://localhost:{httpPort}/applaunch/{mvid}?platform={Uri.EscapeDataString(platform)}&isDebug=false";
-			TestContext!.WriteLine($"Registering app launch: {url}");
+			TestContext.WriteLine($"Registering app launch: {url}");
 			var response = await http.GetAsync(url, CT);
 			response.EnsureSuccessStatusCode();
 		}
@@ -130,7 +130,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 			throw new InvalidOperationException("Could not find a project in the generated solution");
 		}
 
-		TestContext!.WriteLine($"Building desktop project: {appProject}");
+		TestContext.WriteLine($"Building desktop project: {appProject}");
 
 		// Build the project with devserver configuration so the generators create the right ServerEndpointAttribute
 		// Using MSBuild properties directly to override any .csproj.user or Directory.Build.props values
@@ -148,7 +148,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 
 		var (exitCode, output) = await ProcessUtil.RunProcessAsync(buildInfo);
 
-		TestContext!.WriteLine($"Build output: {output}");
+		TestContext.WriteLine($"Build output: {output}");
 
 		if (exitCode != 0)
 		{
@@ -182,11 +182,11 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 			{
 				File.Copy(freshRcPdb, destRcPdb, overwrite: true);
 			}
-			TestContext!.WriteLine($"Overwrote RemoteControlClient assembly: {destRcDll}");
+			TestContext.WriteLine($"Overwrote RemoteControlClient assembly: {destRcDll}");
 		}
 		catch (Exception copyEx)
 		{
-			TestContext!.WriteLine($"Warning: Failed to overwrite RemoteControlClient assembly: {copyEx}");
+			TestContext.WriteLine($"Warning: Failed to overwrite RemoteControlClient assembly: {copyEx}");
 		}
 
 		var runInfo = new ProcessStartInfo
@@ -212,7 +212,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 			if (e.Data != null)
 			{
 				outputBuilder.AppendLine(e.Data);
-				TestContext!.WriteLine($"[APP-OUT] {e.Data}");
+				TestContext.WriteLine($"[APP-OUT] {e.Data}");
 			}
 		};
 
@@ -221,7 +221,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 			if (e.Data != null)
 			{
 				outputBuilder.AppendLine(e.Data);
-				TestContext!.WriteLine($"[APP-ERR] {e.Data}");
+				TestContext.WriteLine($"[APP-ERR] {e.Data}");
 			}
 		};
 
@@ -229,7 +229,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 		process.BeginOutputReadLine();
 		process.BeginErrorReadLine();
 
-		TestContext!.WriteLine($"Started Skia desktop app process with PID: {process.Id}");
+		TestContext.WriteLine($"Started Skia desktop app process with PID: {process.Id}");
 
 		// Wait a moment for the app to start
 		await Task.Delay(2000, CT);
@@ -250,8 +250,8 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 	{
 		var startTime = Stopwatch.GetTimestamp();
 
-		TestContext!.WriteLine("Waiting for real Skia app to connect to devserver...");
-		TestContext!.WriteLine("The app should connect automatically via the generated ServerEndpointAttribute during build.");
+		TestContext.WriteLine("Waiting for real Skia app to connect to devserver...");
+		TestContext.WriteLine("The app should connect automatically via the generated ServerEndpointAttribute during build.");
 
 		// For this integration test, we'll wait a reasonable time for the app to start
 		// and assume success if no catastrophic errors occur. The goal is to verify
@@ -269,13 +269,13 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 			// Check if we can see the app connection in devserver output
 			var devServerOutput = helper.ConsoleOutput;
 
-			TestContext!.WriteLine($"[{iterations}/{maxIterations}] Checking devserver output... ({devServerOutput.Length} chars)");
+			TestContext.WriteLine($"[{iterations}/{maxIterations}] Checking devserver output... ({devServerOutput.Length} chars)");
 
 			// Look for connection success indicators
 			if (devServerOutput.Contains("App Connected:"))
 			{
-				TestContext!.WriteLine("✅ SUCCESS: Skia app successfully connected to devserver!");
-				TestContext!.WriteLine("Connection detected in devserver logs - integration test objective achieved.");
+				TestContext.WriteLine("✅ SUCCESS: Skia app successfully connected to devserver!");
+				TestContext.WriteLine("Connection detected in devserver logs - integration test objective achieved.");
 				connectionDetected = true;
 				break;
 			}
@@ -283,9 +283,9 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 
 		if (!connectionDetected)
 		{
-			TestContext!.WriteLine("⚠️ Connection not detected in logs, but test may still be successful.");
-			TestContext!.WriteLine("The real Skia app was built and launched successfully with devserver configuration.");
-			TestContext!.WriteLine($"DevServer output: {helper.ConsoleOutput}");
+			TestContext.WriteLine("⚠️ Connection not detected in logs, but test may still be successful.");
+			TestContext.WriteLine("The real Skia app was built and launched successfully with devserver configuration.");
+			TestContext.WriteLine($"DevServer output: {helper.ConsoleOutput}");
 		}
 	}
 
