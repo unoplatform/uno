@@ -85,24 +85,27 @@ internal class IdeChannelClient
 	{
 		Connected?.Invoke(this, EventArgs.Empty);
 
-		// Capture and dispose the current timer to avoid race conditions
+		// Replace recursive re-scheduling with a single periodic timer
 		var oldTimer = Interlocked.Exchange(ref _keepAliveTimer, null);
 		oldTimer?.Dispose();
 
-		_keepAliveTimer = new Timer(_ =>
+		var timer = new Timer(state =>
 		{
 			if (ct is { IsCancellationRequested: false } && _devServer is not null)
 			{
-				// Capture the timer instance to safely dispose it after scheduling the next one
-				var currentTimer = _keepAliveTimer;
-
-				var t = _devServer.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage("IDE")), ct);
-				ScheduleKeepAlive(_IDEChannelCancellation!.Token);
-
-				// Dispose the captured timer after the new one is scheduled
-				currentTimer?.Dispose();
+				_ = _devServer.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage("IDE")), ct);
 			}
-		}, null, KeepAliveDelay, Timeout.Infinite);
+			else
+			{
+				// Stop the timer when disconnected or canceled
+				Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
+			}
+		}, null, KeepAliveDelay, KeepAliveDelay);
+
+		if (Interlocked.CompareExchange(ref _keepAliveTimer, timer, null) is not null)
+		{
+			timer.Dispose();
+		}
 	}
 
 	private void ProcessDevServerMessage(object sender, IdeMessageEnvelope devServerMessageEnvelope)

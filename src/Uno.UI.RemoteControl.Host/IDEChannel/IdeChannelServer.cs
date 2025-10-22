@@ -135,25 +135,28 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 	private void ScheduleKeepAlive()
 	{
-		// Capture and dispose the current timer to avoid race conditions
+		// Ensure a single periodic timer is running; dispose any previous instance safely
 		var oldTimer = Interlocked.Exchange(ref _keepAliveTimer, null);
 		oldTimer?.Dispose();
-		
-		while (_pipeServer?.IsConnected ?? false)
+
+		// Start a periodic keep-alive timer. If the pipe disconnects, stop the timer.
+		var timer = new Timer(_ =>
 		{
-			_keepAliveTimer?.Dispose();
+			if (_pipeServer?.IsConnected ?? false)
+			{
+				SendKeepAlive();
+			}
+			else
+			{
+				Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
+			}
+		}, null, KeepAliveDelay, KeepAliveDelay);
+
+		// Publish the new timer instance; if another thread already set one, dispose this one
+		if (Interlocked.CompareExchange(ref _keepAliveTimer, timer, null) is not null)
+		{
+			timer.Dispose();
 		}
-		_keepAliveTimer = new Timer(_ =>
-		{
-			// Capture the timer instance to safely dispose it after scheduling the next one
-			var currentTimer = _keepAliveTimer;
-
-			SendKeepAlive();
-			ScheduleKeepAlive();
-
-			// Dispose the captured timer after the new one is scheduled
-			currentTimer?.Dispose();
-		}, null, KeepAliveDelay, Timeout.Infinite);
 	}
 
 	private void SendKeepAlive() => _proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
@@ -165,6 +168,7 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 		_configSubscription?.Dispose();
 		_rpcServer?.Dispose();
 		_pipeServer?.Dispose();
+		Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
 	}
 
 	private class Proxy(IdeChannelServer Owner) : IIdeChannelServer
