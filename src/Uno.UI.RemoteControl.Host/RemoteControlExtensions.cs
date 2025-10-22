@@ -207,7 +207,8 @@ namespace Uno.UI.RemoteControl.Host
 			{
 				if (app.Log().IsEnabled(LogLevel.Error))
 				{
-					app.Log().LogError(ex, "Failed to read assembly info for path: {path}", assemblyPath);
+					var fileName = Path.GetFileName(assemblyPath);
+					app.Log().LogError(ex, "Failed to read assembly info for assembly file: {AssemblyFileName}", fileName);
 				}
 
 				context.Response.StatusCode = StatusCodes.Status500InternalServerError;
