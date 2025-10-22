@@ -56,7 +56,7 @@
 			{
 				[Required] public string Port { get; set; } = string.Empty;
 				[Required] public string TargetPath { get; set; } = string.Empty;
-				[Required] public string IsDebug { get; set; } = string.Empty;
+				public string IsDebug { get; set; } = string.Empty;
 				public string Ide { get; set; } = string.Empty;
 				public string Plugin { get; set; } = string.Empty;
 			
@@ -89,17 +89,13 @@
 					Add("ide", Ide);
 					Add("plugin", Plugin);
 			
-					// Normalize IsDebug to "true"/"false" if it's a recognizable bool; otherwise pass as-is.
-					if (string.IsNullOrEmpty(IsDebug))
+					// IsDebug is optional: treat empty/null as "false"
+					var isDebugValue = false;
+					if (!string.IsNullOrEmpty(IsDebug) && bool.TryParse(IsDebug, out var parsed))
 					{
-						Log.LogError("IsDebug is required.");
-						return Success = false;
+						isDebugValue = parsed;
 					}
-			
-					if (bool.TryParse(IsDebug, out var b))
-						Add("isDebug", b ? "true" : "false");
-					else
-						Add("isDebug", IsDebug);
+					Add("isDebug", isDebugValue ? "true" : "false");
 			
 					var qs = parts.Count > 0 ? "?" + string.Join("&", parts) : string.Empty;
 					var url = $"http://localhost:{portNum}/applaunch/asm/{encodedPath}{qs}";
