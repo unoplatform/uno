@@ -173,7 +173,6 @@ namespace Uno.UI.RemoteControl.Host
 					.UseKestrel()
 					.UseUrls($"http://*:{httpPort}/")
 					.UseContentRoot(Directory.GetCurrentDirectory())
-					.UseStartup<Startup>()
 					.ConfigureLogging(logging =>
 					{
 						logging.ClearProviders();
