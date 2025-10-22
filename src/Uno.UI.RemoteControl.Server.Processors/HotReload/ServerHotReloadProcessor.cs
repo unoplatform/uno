@@ -439,7 +439,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						HotReloadServerResult.Aborted,
 						new TimeoutException("An more recent hot-reload operation has completed."),
 						isFromNext: true,
-						diagnostics: diagnostics);
+						diagnostics: null);
 				}
 
 				if (!isFromNext) // Only the head of the list should request update

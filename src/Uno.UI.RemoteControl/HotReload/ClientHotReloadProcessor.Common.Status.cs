@@ -104,6 +104,13 @@ public partial class ClientHotReloadProcessor
 				_serverState = status.State; // Do not override the state if it has already been set (debugger attached with dev-server)
 			}
 			ImmutableInterlocked.Update(ref _serverOperations, UpdateOperations, status.Operations);
+
+			// For tooling purposes, we dump the diagnosticss in the log of the application.
+			foreach (var serverOp in _serverOperations)
+			{
+				owner.ReportDiagnostics(serverOp.Value.Diagnostics);
+			}
+
 			NotifyStatusChanged();
 
 			static ImmutableDictionary<long, HotReloadServerOperationData> UpdateOperations(ImmutableDictionary<long, HotReloadServerOperationData> history, IImmutableList<HotReloadServerOperationData> udpated)
@@ -147,11 +154,6 @@ public partial class ClientHotReloadProcessor
 			{
 				this.Log().Error("Failed to notify the status changed.", error);
 			}
-
-			foreach (var serverOp in _serverOperations)
-			{
-				owner.ReportDiagnostics(serverOp.Value.Diagnostics);
-			}
 		}
 
 		private Status BuildStatus()
@@ -171,12 +173,7 @@ public partial class ClientHotReloadProcessor
 
 	private void ReportDiagnostics(IImmutableList<string>? diagnostics)
 	{
-		if (
-			diagnostics is { Count: > 0 }
-
-			// We should only report this when server metadata
-			// updates are enabled, other targets don't set diagnostics.
-			&& _serverMetadataUpdatesEnabled)
+		if (diagnostics is { Count: > 0 })
 		{
 			_log.Error("The Hot Reload compilation failed with the following errors:");
 
