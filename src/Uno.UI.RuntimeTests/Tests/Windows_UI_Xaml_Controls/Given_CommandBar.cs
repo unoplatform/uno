@@ -20,6 +20,10 @@ using Uno.UI.Helpers.WinUI;
 using UIKit;
 #endif
 
+#if __ANDROID__
+using Uno.UI.Controls;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -232,6 +236,99 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
 			Assert.AreEqual(1, popups.Count);
+		}
+
+		[TestMethod]
+#if !__ANDROID__
+		[Ignore("This test is specific to Android native CommandBar.")]
+#endif
+		public async Task When_CommandBar_Has_Long_Content_Then_PrimaryCommands_Remain_Visible()
+		{
+			var contentTextBlock = new TextBlock
+			{
+				Text = "This is a very long text that should be truncated to prevent primary commands from being pushed off screen",
+				TextTrimming = TextTrimming.CharacterEllipsis,
+				TextWrapping = TextWrapping.NoWrap,
+				VerticalAlignment = VerticalAlignment.Center
+			};
+
+			var primaryButton = new AppBarButton
+			{
+				Label = "Action",
+				Name = "PrimaryButton"
+			};
+
+			var SUT = new CommandBar
+			{
+				Content = contentTextBlock,
+				PrimaryCommands = { primaryButton }
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			// Wait for layout to complete
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+
+#if __ANDROID__
+			// Get the native toolbar
+			var renderer = SUT.GetRenderer(() => throw new InvalidOperationException("Renderer not found"));
+			var toolbar = renderer?.Native as AndroidX.AppCompat.Widget.Toolbar;
+			Assert.IsNotNull(toolbar, "Native toolbar should be available");
+
+			// Get the content container (Border)
+			var contentContainer = SUT.FindName("CommandBarRendererContentHolder") as Border;
+			if (contentContainer == null)
+			{
+				// Try to find it through visual tree search
+				contentContainer = FindInVisualTree<Border>(SUT, b => b.Name == "CommandBarRendererContentHolder");
+			}
+			Assert.IsNotNull(contentContainer, "Content container should exist");
+
+			// Verify that MaxWidth is set and reasonable
+			Assert.IsTrue(contentContainer.MaxWidth > 0, $"Content MaxWidth should be greater than 0, but was {contentContainer.MaxWidth}");
+			Assert.IsTrue(contentContainer.MaxWidth < toolbar.Width, $"Content MaxWidth ({contentContainer.MaxWidth}) should be less than toolbar width ({toolbar.Width})");
+
+			// Verify that content is actually constrained
+			var contentBounds = contentTextBlock.GetAbsoluteBounds();
+			var toolbarBounds = SUT.GetAbsoluteBounds();
+			
+			// Content width should not exceed the toolbar width
+			Assert.IsTrue(contentBounds.Width <= toolbarBounds.Width, 
+				$"Content width ({contentBounds.Width}) should not exceed toolbar width ({toolbarBounds.Width})");
+
+			// Verify primary button is visible and within bounds
+			var buttonBounds = primaryButton.GetAbsoluteBounds();
+			Assert.IsTrue(buttonBounds.Right <= toolbarBounds.Right, 
+				$"Primary button right edge ({buttonBounds.Right}) should be within toolbar bounds ({toolbarBounds.Right})");
+#endif
+		}
+
+		private static T? FindInVisualTree<T>(DependencyObject parent, Func<T, bool>? predicate = null) where T : DependencyObject
+		{
+			if (parent == null)
+			{
+				return null;
+			}
+
+			var childCount = VisualTreeHelper.GetChildrenCount(parent);
+			for (int i = 0; i < childCount; i++)
+			{
+				var child = VisualTreeHelper.GetChild(parent, i);
+				if (child is T typed && (predicate == null || predicate(typed)))
+				{
+					return typed;
+				}
+
+				var result = FindInVisualTree(child, predicate);
+				if (result != null)
+				{
+					return result;
+				}
+			}
+
+			return null;
 		}
 	}
 
