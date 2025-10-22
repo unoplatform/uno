@@ -1,5 +1,6 @@
 using Windows.Foundation;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -7,7 +8,7 @@ internal interface IParsedText
 {
 	void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
-		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection); // null to skip drawing a selection
+		(int selectionStart, int selectionEnd, CompositionBrush selectedTextBackgroundBrush, Brush selectedTextForegroundBrush)? selection); // null to skip drawing a selection
 
 	Rect GetRectForIndex(int adjustedIndex);
 

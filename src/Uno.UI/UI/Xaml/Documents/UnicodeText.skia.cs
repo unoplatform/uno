@@ -826,15 +826,15 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	public void Draw(in Visual.PaintingSession session, (int index, CompositionBrush brush, float thickness)? caret,
-		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection)
+		(int selectionStart, int selectionEnd, CompositionBrush selectedTextBackgroundBrush, Brush selectedTextForegroundBrush)? selection)
 	{
 		// if selection is out of range, this means that the parent TextBlock/TextBox updated the text and the
 		// selection but a new UnicodeText instance has not been created yet. In that case, skip rendering
 		// the selection this frame and wait to be called again after measuring.
-		(int selectionIndexStart, int selectionIndexEnd, Cluster selectionClusterStart, Cluster selectionClusterEnd, CompositionBrush brush)? selectionDetails = null;
+		(int selectionIndexStart, int selectionIndexEnd, Cluster selectionClusterStart, Cluster selectionClusterEnd, CompositionBrush background, Brush foreground)? selectionDetails = null;
 		if (selection is { } s && s.selectionStart != s.selectionEnd && s.selectionStart <= _text.Length && s.selectionEnd <= _text.Length && _text.Length > 0)
 		{
-			selectionDetails = (s.selectionStart, s.selectionEnd, _textIndexToGlyph[s.selectionStart], _textIndexToGlyph[Math.Min(_textIndexToGlyph.Length - 1, s.selectionEnd)], s.brush);
+			selectionDetails = (s.selectionStart, s.selectionEnd, _textIndexToGlyph[s.selectionStart], _textIndexToGlyph[Math.Min(_textIndexToGlyph.Length - 1, s.selectionEnd)], s.selectedTextBackgroundBrush, s.selectedTextForegroundBrush);
 		}
 
 		for (var index = 0; index < _lines.Count; index++)
@@ -897,7 +897,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						var leftX = positions[selectionLeft].X;
 						var rightX = positions[selectionRight - 1].X + GlyphWidth(run.glyphs[selectionRight - 1].position, run.fontDetails);
 						var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
-						sd.brush.Paint(session.Canvas, session.Opacity, selectionRect);
+						sd.background.Paint(session.Canvas, session.Opacity, selectionRect);
 
 						var glyphsSpan = glyphs.AsSpan();
 						var positionsSpan = positions.AsSpan();
@@ -905,7 +905,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						{
 							DrawText(glyphsSpan[..selectionLeft], positionsSpan[..selectionLeft], session, run.inline.Foreground);
 						}
-						DrawText(glyphsSpan[selectionLeft..selectionRight], positionsSpan[selectionLeft..selectionRight], session, DefaultBrushes.SelectedTextHighlightColor);
+						DrawText(glyphsSpan[selectionLeft..selectionRight], positionsSpan[selectionLeft..selectionRight], session, sd.foreground);
 						if (selectionRight < run.glyphs.Length)
 						{
 							DrawText(glyphsSpan[selectionRight..], positionsSpan[selectionRight..], session, run.inline.Foreground);

@@ -344,7 +344,7 @@ internal readonly struct ParsedText : IParsedText
 
 	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
-		(int selectionStart, int selectionEnd, CompositionBrush brush)? selection)
+		(int selectionStart, int selectionEnd, CompositionBrush selectedTextBackgroundBrush, Brush selectedTextForegroundBrush)? selection)
 	{
 		if (_renderLines.Count == 0)
 		{
@@ -496,7 +496,7 @@ internal readonly struct ParsedText : IParsedText
 				if (selection is not null)
 				{
 					var selectionDetails = CalculateSelection(selection.Value.selectionStart, selection.Value.selectionEnd);
-					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, selection.Value.brush, session.Opacity);
+					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, selection.Value.selectedTextBackgroundBrush, session.Opacity);
 					RenderText(selectionDetails, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y + baselineOffsetY, paint);
 				}
 				else
