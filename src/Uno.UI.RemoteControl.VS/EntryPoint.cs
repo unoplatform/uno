@@ -527,7 +527,8 @@ public partial class EntryPoint : IDisposable
 
 		async Task TrackConnectionTimeoutAsync(IdeChannelClient ideChannel)
 		{
-			await Task.Delay(5000, devServerCt.Token);
+			// The dev-server is expected to connect back to the IDE as soon as possible, 10sec should be more than enough.
+			await Task.Delay(10_000, devServerCt.Token);
 			if (ideChannel.MessagesReceivedCount is 0 && _udei is not null && !devServerCt.IsCancellationRequested)
 			{
 				await _udei.NotifyDevServerTimeoutAsync(devServerCt.Token);
