@@ -40,7 +40,7 @@ namespace Windows.Storage
 				=> Task.FromResult<IRandomAccessStreamWithContentType>(new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateLocal(Path, ToFileAccess(accessMode), ToFileShare(options)), ContentType));
 
 			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> Task.FromResult<Stream>(File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options)));
+				=> Task.FromResult<Stream>(File.Open(Path, ToFileMode(accessMode), ToFileAccess(accessMode), ToFileShare(options)));
 
 			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option)
 				=> Task.FromResult(new StorageStreamTransaction(Owner, ToFileShare(option)));
