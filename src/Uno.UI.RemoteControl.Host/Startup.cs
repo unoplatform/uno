@@ -54,21 +54,23 @@ namespace Uno.UI.RemoteControl.Host
 				await next();
 			});
 
-			app.UseEndpoints(endpoints =>
-			{
-				try
-				{
-					endpoints.MapMcp("/mcp");
-				}
-				catch (Exception ex)
-				{
-					// MCP registration may fail if no MCP tooling is resolved
-					// through ServiceCollectionExtensionAttribute. This might indicate
-					// a missing package reference in the Uno.SDK.
+			app.UseRouting();
 
-					typeof(Program).Log().Log(LogLevel.Warning, ex, "Unable to find the MCP Tooling in the environment, the MCP feature is disabled.");
-				}
-			});
+			app.UseEndpoints(endpoints =>
+				{
+					try
+					{
+						endpoints.MapMcp("/mcp");
+					}
+					catch (Exception ex)
+					{
+						// MCP registration may fail if no MCP tooling is resolved
+						// through ServiceCollectionExtensionAttribute. This might indicate
+						// a missing package reference in the Uno.SDK.
+
+						typeof(Program).Log().Log(LogLevel.Warning, ex, "Unable to find the MCP Tooling in the environment, the MCP feature is disabled.");
+					}
+				});
 		}
 	}
 }

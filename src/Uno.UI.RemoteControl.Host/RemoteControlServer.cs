@@ -238,7 +238,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 					}
 				}
 			}
-			catch(WebSocketException) when (socket.State == WebSocketState.Closed)
+			catch (WebSocketException) when (socket.State == WebSocketState.Closed)
 			{
 				// Ignore "The remote party closed the WebSocket connection without completing the close handshake."
 				// It's making noise in the logs.
@@ -334,12 +334,9 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 				case AppLaunchStep.Connected:
 					var success = monitor.ReportConnection(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
-					if (!success)
+					if (!success && this.Log().IsEnabled(LogLevel.Debug))
 					{
-						if (this.Log().IsEnabled(LogLevel.Error))
-						{
-							this.Log().LogError("App Connected: MVID={Mvid} Platform={Platform} Debug={Debug} - Failed to report connected: APP LAUNCH NOT REGISTERED.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
-						}
+						this.Log().LogDebug("App Connected: MVID={Mvid} Platform={Platform} Debug={Debug} - No immediate match, pending handled by ApplicationLaunchMonitor.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
 					}
 					break;
 			}
@@ -644,6 +641,8 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	public void Dispose()
 	{
 		_ct.Cancel(false);
+
+		// Nothing to flush explicitly: pending is handled internally by ApplicationLaunchMonitor
 
 		foreach (var processor in _processors)
 		{

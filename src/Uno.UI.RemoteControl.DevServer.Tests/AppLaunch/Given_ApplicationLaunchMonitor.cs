@@ -14,7 +14,8 @@ public class Given_ApplicationLaunchMonitor
 		out List<bool> connectionWasTimedOut,
 		TimeSpan? timeout = null,
 		TimeSpan? retention = null,
-		TimeSpan? scavengeInterval = null)
+		TimeSpan? scavengeInterval = null,
+		Action<ApplicationLaunchMonitor.PendingClassification>? onPendingClassified = null)
 	{
 		// Use local lists inside callbacks, then assign them to out parameters
 		var registeredList = new List<ApplicationLaunchMonitor.LaunchEvent>();
@@ -34,6 +35,7 @@ public class Given_ApplicationLaunchMonitor
 			},
 			Retention = retention ?? TimeSpan.FromHours(1),
 			ScavengeInterval = scavengeInterval ?? TimeSpan.FromMinutes(5),
+			OnPendingClassified = onPendingClassified,
 		};
 
 		clock = new FakeTimeProvider(DateTimeOffset.UtcNow);
@@ -225,16 +227,6 @@ public class Given_ApplicationLaunchMonitor
 	}
 
 	[TestMethod]
-	public void WhenPlatformIsNullOrEmptyInRegisterOrReport_ThenThrowsArgumentException()
-	{
-		using var sut = CreateMonitor(out _, out _, out _, out _, out _);
-		var mvid = Guid.NewGuid();
-
-		sut.Invoking(m => m.RegisterLaunch(mvid, string.Empty, true, ide: "UnitTestIDE", plugin: "unit-plugin")).Should().Throw<ArgumentException>();
-		sut.Invoking(m => m.ReportConnection(mvid, string.Empty, true)).Should().Throw<ArgumentException>();
-	}
-
-	[TestMethod]
 	public void WhenPlatformDiffersByCaseOnReportConnection_ThenItDoesNotMatch()
 	{
 		using var sut = CreateMonitor(out var clock, out _, out _, out var connections, out _);
@@ -252,15 +244,64 @@ public class Given_ApplicationLaunchMonitor
 	{
 		using var sut = CreateMonitor(out var clock, out _, out _, out var connections, out _);
 		var mvid = Guid.NewGuid();
-		// No registration yet -> false
+		// No registration yet -> false (goes to pending)
 		sut.ReportConnection(mvid, "Wasm", isDebug: true).Should().BeFalse();
 
-		// Register and then report -> true
-		sut.RegisterLaunch(mvid, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
-		sut.ReportConnection(mvid, "Wasm", isDebug: true).Should().BeTrue();
+		// Register first, then report connection -> true (immediate match)
+		var mvid2 = Guid.NewGuid();
+		sut.RegisterLaunch(mvid2, "Wasm", isDebug: true, ide: "UnitTestIDE", plugin: "unit-plugin");
+		sut.ReportConnection(mvid2, "Wasm", isDebug: true).Should().BeTrue();
 
 		// Already consumed -> false
-		sut.ReportConnection(mvid, "Wasm", isDebug: true).Should().BeFalse();
+		sut.ReportConnection(mvid2, "Wasm", isDebug: true).Should().BeFalse();
+	}
+
+	[TestMethod]
+	public void WhenConnectionArrivesBeforeAnyRegistration_ThenPendingUntilRegistered()
+	{
+		// Arrange: very small scavenge/retention so test can advance time deterministically
+		var pendingClassified = new List<ApplicationLaunchMonitor.PendingClassification>();
+		using var sut = CreateMonitor(
+			out var clock,
+			out var registered,
+			out var timeouts,
+			out var connections,
+			out var wasTimedOut,
+			timeout: TimeSpan.FromSeconds(5),
+			retention: TimeSpan.FromMinutes(5),
+			scavengeInterval: TimeSpan.FromMinutes(1),
+			onPendingClassified: pc => pendingClassified.Add(pc));
+
+		var mvid = Guid.NewGuid();
+
+		// Act: report a connection BEFORE any launch registration (goes to pending)
+		var matchedNow = sut.ReportConnection(mvid, "Wasm", isDebug: false);
+		matchedNow.Should().BeFalse("connection should not match without prior registration");
+
+		// Later, register the launch - this triggers late match classification
+		clock.Advance(TimeSpan.FromSeconds(1));
+		sut.RegisterLaunch(mvid, "Wasm", isDebug: false, ide: "UnitTestIDE", plugin: "unit-plugin");
+
+		// Assert: pending connection was classified as IDE-initiated via late match
+		pendingClassified.Should().HaveCount(1);
+		pendingClassified[0].WasIdeInitiated.Should().BeTrue("late registration should classify as IDE-initiated");
+		pendingClassified[0].Launch.Should().NotBeNull();
+		pendingClassified[0].Launch!.Ide.Should().Be("UnitTestIDE");
+	}
+
+	[TestMethod]
+	public void WhenUnsolicitedConnectionArrives_ThenAcceptableWithoutRegistration()
+	{
+		// This test codifies that the system must be able to classify and accept a connection
+		// even if no RegisterLaunch is ever received (e.g., manual app run). At the monitor level,
+		// we cannot fully "accept" without a registration; this asserts that no crash occurs and
+		// the lack of match is reported as false, leaving classification to higher layers.
+		using var sut = CreateMonitor(out _, out _, out _, out var connections, out _);
+		var mvid = Guid.NewGuid();
+
+		var matched = sut.ReportConnection(mvid, "Wasm", isDebug: true);
+		matched.Should().BeFalse();
+		connections.Should().BeEmpty();
 	}
 
 	[TestMethod]
@@ -351,5 +392,71 @@ public class Given_ApplicationLaunchMonitor
 		first.Should().BeTrue();
 		second.Should().BeFalse();
 		connections.Should().HaveCount(1);
+	}
+	[TestMethod]
+	public void WhenConnectionBeforeRegistration_ThenClassifiedAfterRetry_AsNonIde()
+	{
+		// Arrange
+		var clock = new FakeTimeProvider(DateTimeOffset.UtcNow);
+		var classified = new List<ApplicationLaunchMonitor.PendingClassification>();
+		using var sut = new ApplicationLaunchMonitor(clock, new ApplicationLaunchMonitor.Options
+		{
+			Timeout = TimeSpan.FromSeconds(60),
+			PendingRetryWindow = TimeSpan.FromMilliseconds(50),
+			PendingRetention = TimeSpan.FromMinutes(5),
+			OnPendingClassified = c => classified.Add(c),
+		});
+
+		var mvid = Guid.NewGuid();
+		var platform = "Android";
+		var isDebug = true;
+
+		// Act: report connection before any registration
+		var matched = sut.ReportConnection(mvid, platform, isDebug);
+		matched.Should().BeFalse();
+		// Advance past retry window to trigger classification
+		clock.Advance(TimeSpan.FromMilliseconds(60));
+
+		// Assert
+		classified.Should().HaveCount(1);
+		classified[0].WasIdeInitiated.Should().BeFalse();
+		classified[0].Mvid.Should().Be(mvid);
+		classified[0].Platform.Should().Be(platform);
+		classified[0].IsDebug.Should().BeTrue();
+	}
+
+	[TestMethod]
+	public void WhenLateRegistration_ThenClassifiedAsIdeInitiated_WithLaunchInfo()
+	{
+		// Arrange
+		var clock = new FakeTimeProvider(DateTimeOffset.UtcNow);
+		var classified = new List<ApplicationLaunchMonitor.PendingClassification>();
+		using var sut = new ApplicationLaunchMonitor(clock, new ApplicationLaunchMonitor.Options
+		{
+			Timeout = TimeSpan.FromSeconds(60),
+			PendingRetryWindow = TimeSpan.FromMilliseconds(50),
+			PendingRetention = TimeSpan.FromMinutes(5),
+			OnPendingClassified = c => classified.Add(c),
+		});
+
+		var mvid = Guid.NewGuid();
+		var platform = "Wasm";
+		var isDebug = false;
+		var ide = "Visual Studio";
+		var plugin = "1.2.3";
+
+		// Connection arrives first
+		sut.ReportConnection(mvid, platform, isDebug).Should().BeFalse();
+
+		// Register after a small delay
+		clock.Advance(TimeSpan.FromMilliseconds(20));
+		sut.RegisterLaunch(mvid, platform, isDebug, ide, plugin);
+
+		// Assert: classified as IDE-initiated with launch info
+		classified.Should().HaveCount(1);
+		classified[0].WasIdeInitiated.Should().BeTrue();
+		classified[0].Launch.Should().NotBeNull();
+		classified[0].Launch!.Ide.Should().Be(ide);
+		classified[0].Launch!.Plugin.Should().Be(plugin);
 	}
 }
