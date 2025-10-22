@@ -16,7 +16,7 @@ A small, deterministic state machine that decides when a VS "Play" (Debug/Run) s
 - `event StateChanged(object sender, StateChangedEventArgs<TStateDetails> e)`: raised on every state transition with `TimestampUtc`, `Previous`, `Current`, `StateDetails`. The convenience property `e.Succeeded` is true only when `Current == BuildSucceeded`.
 
 ## Options
-- `Options.BuildWaitWindow` (default 5 seconds): time to wait after `Start` for a build to begin.
+- `Options.BuildWaitWindow` (default 8 seconds): time to wait after `Start` for a build to begin.
 
 ## States
 - `Idle`

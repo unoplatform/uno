@@ -17,7 +17,8 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 		dllFileName: "Uno.UI.RemoteControl.Server.Processors.dll");
 
 	[ClassInitialize]
-	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<AppLaunchIntegrationTests>(context);
+	public static void ClassInitialize(TestContext context) =>
+		GlobalClassInitialize<AppLaunchIntegrationTests>(context);
 
 	[TestMethod]
 	public async Task WhenRegisteredAndRuntimeConnects_SuccessEventEmitted()
@@ -38,7 +39,9 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 
 			var asm = typeof(AppLaunchIntegrationTests).Assembly;
 			var mvid = ApplicationInfoHelper.GetMvid(asm);
-			var platform = ApplicationInfoHelper.GetTargetPlatform(asm) is { } p ? "&platform=" + Uri.EscapeDataString(p) : null;
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm) is { } p
+				? "&platform=" + Uri.EscapeDataString(p)
+				: null;
 			var isDebug = Debugger.IsAttached;
 
 			// ACT - STEP 1: Register app launch via HTTP GET (simulating IDE -> dev server)
@@ -72,7 +75,11 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 
 			// Normal IDE-initiated launch: registration came before connection
-			AssertEventHasProperty(events, "uno/dev-server/app-launch/connected", "WasIdeInitiated", "True");
+			AssertEventHasProperty(
+				events,
+				"uno/dev-server/app-launch/connected",
+				"WasIdeInitiated",
+				"True");
 
 			helper.ConsoleOutput.Length.Should().BeGreaterThan(0, "Dev server should produce some output");
 		}
@@ -140,8 +147,11 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 
 			// Normal IDE-initiated launch: registration came before connection
-			AssertEventHasProperty(events, "uno/dev-server/app-launch/connected", "WasIdeInitiated", "True");
-
+			AssertEventHasProperty(
+				events,
+				"uno/dev-server/app-launch/connected",
+				"WasIdeInitiated",
+				"True");
 			helper.ConsoleOutput.Length.Should().BeGreaterThan(0, "Dev server should produce some output");
 		}
 		finally
@@ -243,7 +253,9 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 
 			var asm = typeof(AppLaunchIntegrationTests).Assembly;
 			var mvid = ApplicationInfoHelper.GetMvid(asm);
-			var platform = ApplicationInfoHelper.GetTargetPlatform(asm) is { } p ? "&platform=" + Uri.EscapeDataString(p) : null;
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm) is { } p
+				? "&platform=" + Uri.EscapeDataString(p)
+				: null;
 			var isDebug = Debugger.IsAttached;
 
 			// ACT - STEP 1: Register app launch via HTTP GET (simulating IDE -> dev server)
@@ -288,8 +300,10 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 		var solution = SolutionHelper;
 		await solution.CreateSolutionFileAsync();
 
-		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_connected_before_registered"));
-		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile, enableIdeChannel: false);
+		var filePath = Path.Combine(Path.GetTempPath(),
+			GetTestTelemetryFileName("applaunch_connected_before_registered"));
+		await using var helper =
+			CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile, enableIdeChannel: false);
 
 		try
 		{
@@ -314,8 +328,11 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			// ACT - STEP 2: Register app launch LATER via HTTP GET (simulating late IDE -> dev server)
 			using (var http = new HttpClient())
 			{
-				var platformQs = platform is { Length: > 0 } ? "&platform=" + Uri.EscapeDataString(platform) : string.Empty;
-				var url = $"http://localhost:{helper.Port}/applaunch/{mvid}?isDebug={isDebug.ToString().ToLowerInvariant()}{platformQs}";
+				var platformQs = platform is { Length: > 0 }
+					? "&platform=" + Uri.EscapeDataString(platform)
+					: string.Empty;
+				var url =
+					$"http://localhost:{helper.Port}/applaunch/{mvid}?isDebug={isDebug.ToString().ToLowerInvariant()}{platformQs}";
 				var response = await http.GetAsync(url, CT);
 				response.EnsureSuccessStatusCode();
 			}
@@ -335,7 +352,11 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 
 			// The connection should be flagged as IDE-initiated since a registration was received (even if late)
-			AssertEventHasProperty(events, "uno/dev-server/app-launch/connected", "WasIdeInitiated", "True");
+			AssertEventHasProperty(
+				events,
+				"uno/dev-server/app-launch/connected",
+				"WasIdeInitiated",
+				"True");
 		}
 		finally
 		{
@@ -387,7 +408,11 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 
 			// CRITICAL: The connection should be flagged as NOT IDE-initiated (manual launch, F5 in browser, etc.)
-			AssertEventHasProperty(events, "uno/dev-server/app-launch/connected", "WasIdeInitiated", "False");
+			AssertEventHasProperty(
+				events,
+				"uno/dev-server/app-launch/connected",
+				"WasIdeInitiated",
+				"False");
 		}
 		finally
 		{
@@ -404,6 +429,10 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 
 	private static void DeleteIfExists(string path)
 	{
-		if (File.Exists(path)) { try { File.Delete(path); } catch { } }
+		if (File.Exists(path))
+		{
+			try { File.Delete(path); }
+			catch { }
+		}
 	}
 }

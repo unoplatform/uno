@@ -135,18 +135,24 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 	private void ScheduleKeepAlive()
 	{
+		// Capture and dispose the current timer to avoid race conditions
+		var oldTimer = Interlocked.Exchange(ref _keepAliveTimer, null);
+		oldTimer?.Dispose();
+		
 		while (_pipeServer?.IsConnected ?? false)
 		{
 			_keepAliveTimer?.Dispose();
 		}
-
 		_keepAliveTimer = new Timer(_ =>
 		{
-			_keepAliveTimer!.Dispose();
-			_keepAliveTimer = null;
+			// Capture the timer instance to safely dispose it after scheduling the next one
+			var currentTimer = _keepAliveTimer;
 
 			SendKeepAlive();
 			ScheduleKeepAlive();
+
+			// Dispose the captured timer after the new one is scheduled
+			currentTimer?.Dispose();
 		}, null, KeepAliveDelay, Timeout.Infinite);
 	}
 
