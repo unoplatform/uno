@@ -18,26 +18,30 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 	private readonly VsAppLaunchStateService<AppLaunchDetails> _stateService;
 	private readonly Func<IdeChannelClient?> _ideChannelAccessor;
 	private readonly string _packageVersion;
+	private readonly string _ideVersion;
 
 	private VsAppLaunchStateConsumer(
 		AsyncPackage package,
 		VsAppLaunchStateService<AppLaunchDetails> stateService,
 		Func<IdeChannelClient?> ideChannelAccessor,
-		string packageVersion)
+		string packageVersion,
+		string ideVersion)
 	{
 		_package = package;
 		_stateService = stateService;
 		_ideChannelAccessor = ideChannelAccessor;
 		_packageVersion = packageVersion;
+		_ideVersion = ideVersion;
 	}
 
 	public static async Task<VsAppLaunchStateConsumer> CreateAsync(
 		AsyncPackage package,
 		VsAppLaunchStateService<AppLaunchDetails> stateService,
 		Func<IdeChannelClient?> ideChannelAccessor,
-		string packageVersion)
+		string packageVersion,
+		string ideVersion)
 	{
-		var c = new VsAppLaunchStateConsumer(package, stateService, ideChannelAccessor, packageVersion);
+		var c = new VsAppLaunchStateConsumer(package, stateService, ideChannelAccessor, packageVersion, ideVersion);
 		await c.InitializeAsync();
 		return c;
 	}
@@ -49,7 +53,8 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 		Func<IdeChannelClient?> ideChannelAccessor)
 	{
 		var packageVersion = typeof(VsAppLaunchStateConsumer).Assembly.GetName().Version?.ToString() ?? string.Empty;
-		return CreateAsync(package, stateService, ideChannelAccessor, packageVersion);
+		var ideVersion = "vswin";
+		return CreateAsync(package, stateService, ideChannelAccessor, packageVersion, ideVersion);
 	}
 
 	private Task InitializeAsync()
@@ -89,10 +94,7 @@ internal sealed class VsAppLaunchStateConsumer : IDisposable
 			var ideChannel = _ideChannelAccessor();
 			if (ideChannel != null && details.IsDebug is { } isDebug)
 			{
-				// Provide IDE and plugin metadata. For Visual Studio host, report product name and unknown plugin version when not available.
-				var ideName = "vswin-<version>";
-				var pluginVersion = _packageVersion;
-				var message = new AppLaunchRegisterIdeMessage(mvid, platform, isDebug, ideName, pluginVersion);
+				var message = new AppLaunchRegisterIdeMessage(mvid, platform, isDebug, _ideVersion, _packageVersion);
 				await ideChannel.SendToDevServerAsync(message, CancellationToken.None);
 			}
 		}

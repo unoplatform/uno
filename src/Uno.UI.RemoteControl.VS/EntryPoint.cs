@@ -216,9 +216,10 @@ public partial class EntryPoint : IDisposable
 		};
 
 		var packageVersion = GetAssemblyVersion();
+		var ideVersion = GetIdeVersion();
 
 		_appLaunchIdeBridge = await VsAppLaunchIdeBridge.CreateAsync(asyncPackage, _dte2, stateService);
-		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient, packageVersion);
+		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient, packageVersion, ideVersion);
 	}
 
 	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -311,6 +312,25 @@ public partial class EntryPoint : IDisposable
 		{
 			return "Unknown";
 		}
+	}
+
+	private string GetIdeVersion()
+	{
+		try
+		{
+			// DTE2.Version gives the Visual Studio version (e.g., "17.0" for VS 2022)
+			var vsVersion = _dte2?.Version;
+			if (!string.IsNullOrEmpty(vsVersion))
+			{
+				return $"vswin-{vsVersion}";
+			}
+		}
+		catch
+		{
+			// Swallow any exceptions when retrieving VS version
+		}
+
+		return "vswin";
 	}
 
 	private async Task UpdateProjectsAsync()
