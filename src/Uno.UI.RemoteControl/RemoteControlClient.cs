@@ -35,7 +35,9 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private readonly bool _autoRegisterAppIdentity;
 
 	public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
+
 	public delegate void RemoteControlClientEventEventHandler(object sender, ClientEventEventArgs args);
+
 	public delegate void SendMessageFailedEventHandler(object sender, SendMessageFailedEventArgs args);
 
 	public static RemoteControlClient? Instance
@@ -158,6 +160,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// </summary>
 	/// <remarks>This applies only if a connection has been established once and has been lost by then.</remarks>
 	public TimeSpan ConnectionRetryInterval { get; } = TimeSpan.FromMilliseconds(_connectionRetryInterval);
+
 	private const int _connectionRetryInterval = 5_000;
 
 	private readonly StatusSink _status;
@@ -171,7 +174,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private Timer? _keepAliveTimer;
 	private KeepAliveMessage _ping = new();
 
-	private record Connection(RemoteControlClient Owner, Uri EndPoint, Stopwatch Since, WebSocket? Socket) : IAsyncDisposable
+	private record Connection(RemoteControlClient Owner, Uri EndPoint, Stopwatch Since, WebSocket? Socket)
+		: IAsyncDisposable
 	{
 		private static class States
 		{
@@ -206,6 +210,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					await Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client disconnected", CancellationToken.None);
 				}
 				catch { }
+
 				Socket.Dispose();
 			}
 		}

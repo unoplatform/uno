@@ -46,9 +46,9 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 		/// <summary>
 		/// How long to retain launch entries before scavenging them from internal storage.
 		/// This is independent from <see cref="Timeout"/> which only triggers the OnTimeout callback.
-		/// Default: 24 hours.
+		/// Default: 0.5 hour.
 		/// </summary>
-		public TimeSpan Retention { get; set; } = TimeSpan.FromHours(1);
+		public TimeSpan Retention { get; set; } = TimeSpan.FromHours(0.5);
 
 		/// <summary>
 		/// Retry window for pending connections (connections that arrived before any matching registration).
