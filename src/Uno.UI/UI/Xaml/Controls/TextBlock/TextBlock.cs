@@ -1142,9 +1142,10 @@ namespace Microsoft.UI.Xaml.Controls
 			_hyperlinkOver = null;
 			var previousHyperLinks = _hyperlinks.ToHashSet();
 			_hyperlinks.Clear();
-			foreach (var hyperlinkTuple in _hyperlinks)
+			foreach (var hyperlink in Inlines.TraversedTree.preorderTree.OfType<Hyperlink>())
 			{
-				previousHyperLinks.Remove(hyperlinkTuple);
+				_hyperlinks.Add(hyperlink);
+				previousHyperLinks.Remove(hyperlink);
 			}
 
 			// Make sure to clear the pressed state of removed hyperlinks
