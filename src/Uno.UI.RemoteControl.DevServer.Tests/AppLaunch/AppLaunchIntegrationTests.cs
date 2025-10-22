@@ -70,6 +70,9 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			AssertHasEvent(events, "uno/dev-server/app-launch/launched");
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
 
+			// Normal IDE-initiated launch: registration came before connection
+			AssertEventHasProperty(events, "uno/dev-server/app-launch/connected", "WasIdeInitiated", "True");
+
 			helper.ConsoleOutput.Length.Should().BeGreaterThan(0, "Dev server should produce some output");
 		}
 		finally
@@ -134,6 +137,9 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			WriteEventsList(events);
 			AssertHasEvent(events, "uno/dev-server/app-launch/launched");
 			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
+
+			// Normal IDE-initiated launch: registration came before connection
+			AssertEventHasProperty(events, "uno/dev-server/app-launch/connected", "WasIdeInitiated", "True");
 
 			helper.ConsoleOutput.Length.Should().BeGreaterThan(0, "Dev server should produce some output");
 		}
@@ -263,6 +269,124 @@ public class AppLaunchIntegrationTests : TelemetryTestBase
 			AssertHasEvent(events, "uno/dev-server/app-launch/connection-timeout");
 
 			helper.ConsoleOutput.Length.Should().BeGreaterThan(0, "Dev server should produce some output");
+		}
+		finally
+		{
+			await helper.StopAsync(CT);
+			DeleteIfExists(filePath);
+
+			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine(helper.ConsoleOutput);
+		}
+	}
+
+	[TestMethod]
+	public async Task WhenConnectedBeforeRegistered_ThenAssociatedAfterRegistration()
+	{
+		// PRE-ARRANGE: Create a solution file
+		var solution = SolutionHelper!;
+		await solution.CreateSolutionFileAsync();
+
+		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_connected_before_registered"));
+		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile, enableIdeChannel: false);
+
+		try
+		{
+			// ARRANGE
+			var started = await helper.StartAsync(CT);
+			helper.EnsureStarted();
+
+			var asm = typeof(AppLaunchIntegrationTests).Assembly;
+			var mvid = ApplicationInfoHelper.GetMvid(asm);
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm);
+			var isDebug = Debugger.IsAttached;
+
+			// ACT - STEP 1: Connect from application FIRST (app -> dev server)
+			var rcClient = RemoteControlClient.Initialize(
+				typeof(AppLaunchIntegrationTests),
+				[new ServerEndpointAttribute("localhost", helper.Port)],
+				_serverProcessorAssembly,
+				autoRegisterAppIdentity: true);
+
+			await WaitForClientConnectionAsync(rcClient, TimeSpan.FromSeconds(10));
+
+			// ACT - STEP 2: Register app launch LATER via HTTP GET (simulating late IDE -> dev server)
+			using (var http = new HttpClient())
+			{
+				var platformQs = platform is { Length: > 0 } ? "&platform=" + Uri.EscapeDataString(platform) : string.Empty;
+				var url = $"http://localhost:{helper.Port}/applaunch/{mvid}?isDebug={isDebug.ToString().ToLowerInvariant()}{platformQs}";
+				var response = await http.GetAsync(url, CT);
+				response.EnsureSuccessStatusCode();
+			}
+
+			// ACT - STEP 3: Stop and gather telemetry events
+			await Task.Delay(1500, CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
+
+			// ASSERT
+			var events = ParseTelemetryFileIfExists(filePath);
+			started.Should().BeTrue();
+			events.Should().NotBeEmpty();
+			WriteEventsList(events);
+
+			// Desired behavior: even if connection arrived before registration, we should eventually see both events
+			AssertHasEvent(events, "uno/dev-server/app-launch/launched");
+			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
+
+			// The connection should be flagged as IDE-initiated since a registration was received (even if late)
+			AssertEventHasProperty(events, "uno/dev-server/app-launch/connected", "WasIdeInitiated", "True");
+		}
+		finally
+		{
+			await helper.StopAsync(CT);
+			DeleteIfExists(filePath);
+
+			TestContext!.WriteLine("Dev Server Output:");
+			TestContext.WriteLine(helper.ConsoleOutput);
+		}
+	}
+
+	[TestMethod]
+	public async Task WhenConnectedWithoutRegistration_ThenClassifiedAsNonIdeLaunch()
+	{
+		// PRE-ARRANGE: Create a solution file
+		var solution = SolutionHelper!;
+		await solution.CreateSolutionFileAsync();
+
+		var filePath = Path.Combine(Path.GetTempPath(), GetTestTelemetryFileName("applaunch_unsolicited_connection"));
+		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile, enableIdeChannel: false);
+
+		try
+		{
+			// ARRANGE
+			var started = await helper.StartAsync(CT);
+			helper.EnsureStarted();
+
+			// ACT - connect an app but never register a launch (unsolicited connection)
+			var rcClient = RemoteControlClient.Initialize(
+				typeof(AppLaunchIntegrationTests),
+				[new ServerEndpointAttribute("localhost", helper.Port)],
+				_serverProcessorAssembly,
+				autoRegisterAppIdentity: true);
+
+			await WaitForClientConnectionAsync(rcClient, TimeSpan.FromSeconds(10));
+
+			// Allow some time for the server to potentially classify this case
+			await Task.Delay(3000, CT);
+
+			// Stop and gather telemetry
+			await helper.AttemptGracefulShutdownAsync(CT);
+
+			var events = ParseTelemetryFileIfExists(filePath);
+			started.Should().BeTrue();
+			events.Should().NotBeEmpty();
+			WriteEventsList(events);
+
+			// Desired behavior: an unsolicited connection should still be logged as a connection, even without IDE registration
+			AssertHasEvent(events, "uno/dev-server/app-launch/connected");
+
+			// CRITICAL: The connection should be flagged as NOT IDE-initiated (manual launch, F5 in browser, etc.)
+			AssertEventHasProperty(events, "uno/dev-server/app-launch/connected", "WasIdeInitiated", "False");
 		}
 		finally
 		{

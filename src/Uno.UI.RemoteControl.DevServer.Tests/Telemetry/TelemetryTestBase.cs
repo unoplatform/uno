@@ -220,5 +220,31 @@ public abstract class TelemetryTestBase
 			.Should().BeTrue($"Should contain event '{eventName}'{(prefix != null ? $" with prefix '{prefix}'" : "")}");
 	}
 
+	/// <summary>
+	/// Assert that at least one event with the given event name exists and has the specified property with the expected value.
+	/// </summary>
+	protected static void AssertEventHasProperty(
+		List<(string Prefix, JsonDocument Json)> events,
+		string eventName,
+		string propertyName,
+		string expectedValue,
+		string? prefix = null)
+	{
+		var filtered = prefix == null ? events : events.Where(e => e.Prefix == prefix);
+		var matchingEvents = filtered
+			.Where(e => e.Json.RootElement.TryGetProperty("EventName", out var n) && n.GetString() == eventName)
+			.ToList();
+
+		matchingEvents.Should().NotBeEmpty($"Should contain at least one event '{eventName}'{(prefix != null ? $" with prefix '{prefix}'" : "")}");
+
+		var hasProperty = matchingEvents.Any(e =>
+			e.Json.RootElement.TryGetProperty("Properties", out var props) &&
+			props.TryGetProperty(propertyName, out var prop) &&
+			prop.GetString() == expectedValue);
+
+		hasProperty.Should().BeTrue(
+			$"Event '{eventName}' should have property '{propertyName}' with value '{expectedValue}'{(prefix != null ? $" (prefix: '{prefix}')" : "")}");
+	}
+
 	protected static string GetTestTelemetryFileName(string testKey) => $"telemetry_{testKey}_{Guid.NewGuid():N}.log";
 }

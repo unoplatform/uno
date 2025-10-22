@@ -21,10 +21,14 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<!-- Link the ApplicationLaunchMonitor source directly so tests can compile without referencing the Server project output -->
 	<ItemGroup>
+		<!-- Link sources directly so unit tests can compile without directly referencing the project output -->
 		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\ApplicationLaunchMonitor.cs" Link="AppLaunch\ApplicationLaunchMonitor.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AppLaunch\VsAppLaunchStateService.cs" Link="AppLaunch\VsAppLaunchStateService.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
+
+		<!-- Reuse the AssemblyInfoReader implementation from the VS project to avoid duplication -->
+		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\AssemblyInfoReader.cs" Link="Helpers\AssemblyInfoReader.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,13 +37,6 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" ReferenceOutputAssembly="false" AdditionalProperties="UnoTargetFrameworkOverride=net9.0" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server.Processors\Uno.UI.RemoteControl.Server.Processors.csproj" ReferenceOutputAssembly="false" AdditionalProperties="UnoTargetFrameworkOverride=net9.0" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.TestProcessor\Uno.UI.RemoteControl.TestProcessor.csproj" ReferenceOutputAssembly="false" AdditionalProperties="UnoTargetFrameworkOverride=net9.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<!-- Include BannerHelper source file directly for testing -->
-		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
-		<!-- Reuse the AssemblyInfoReader implementation from the VS project to avoid duplication -->
-		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\AssemblyInfoReader.cs" Link="Helpers\AssemblyInfoReader.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

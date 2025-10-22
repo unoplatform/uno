@@ -14,7 +14,7 @@ namespace Uno.UI.RemoteControl.Server.AppLaunch;
 /// </summary>
 public sealed class ApplicationLaunchMonitor : IDisposable
 {
-	private const string DefaultPlatform = "Unknown";
+	internal const string DefaultPlatform = "Unspecified";
 
 	/// <summary>
 	/// Options that control the behavior of <see cref="ApplicationLaunchMonitor"/>.
@@ -51,6 +51,26 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 		public TimeSpan Retention { get; set; } = TimeSpan.FromHours(1);
 
 		/// <summary>
+		/// Retry window for pending connections (connections that arrived before any matching registration).
+		/// After this delay, a best-effort match is attempted, and if still unmatched, the connection is
+		/// classified as non-IDE initiated. Default: 2 seconds.
+		/// </summary>
+		public TimeSpan PendingRetryWindow { get; set; } = TimeSpan.FromSeconds(2);
+
+		/// <summary>
+		/// Retention duration for pending connections allowing a late match (registration after connection).
+		/// Default: 1 hour.
+		/// </summary>
+		public TimeSpan PendingRetention { get; set; } = TimeSpan.FromHours(1);
+
+		/// <summary>
+		/// Callback invoked when a pending connection is classified, either as non-IDE initiated (no match)
+		/// or as IDE-initiated (late match found). For late matches, the associated <see cref="LaunchEvent"/>
+		/// is provided.
+		/// </summary>
+		public Action<PendingClassification>? OnPendingClassified { get; set; }
+
+		/// <summary>
 		/// How often the monitor runs a scavenging pass to remove very old entries.
 		/// Default: 1 minute.
 		/// </summary>
@@ -68,6 +88,17 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 		string Plugin,
 		DateTimeOffset RegisteredAt);
 
+	/// <summary>
+	/// A classification result for a pending connection.
+	/// </summary>
+	public sealed record PendingClassification(
+		Guid Mvid,
+		string Platform,
+		bool IsDebug,
+		DateTimeOffset ConnectedAt,
+		bool WasIdeInitiated,
+		LaunchEvent? Launch);
+
 	private readonly TimeProvider _timeProvider;
 	private readonly Options _options;
 
@@ -84,6 +115,11 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 
 	// Periodic scavenger timer (removes very old entries beyond Retention)
 	private readonly IDisposable? _scavengeTimer;
+
+	// Pending connections map (connections that arrived without a matching registration)
+	private readonly ConcurrentDictionary<Key, PendingItem> _pendingConnections = new();
+
+	private sealed record PendingItem(DateTimeOffset ConnectedAt, IDisposable? RetryTimer);
 
 	/// <summary>
 	/// Creates a new instance of <see cref="ApplicationLaunchMonitor"/>.
@@ -124,7 +160,6 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	public void RegisterLaunch(Guid mvid, string? platform, bool isDebug, string ide, string plugin)
 	{
 		platform ??= DefaultPlatform;
-		ArgumentException.ThrowIfNullOrEmpty(platform);
 
 		var now = _timeProvider.GetUtcNow();
 		var ev = new LaunchEvent(mvid, platform, isDebug, ide, plugin, now);
@@ -143,6 +178,28 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 		catch
 		{
 			// best-effort, swallow
+		}
+
+		// If there's already a pending connection for this key (late match), classify it immediately as IDE-initiated
+		if (_pendingConnections.TryRemove(key, out var pending))
+		{
+			try { pending.RetryTimer?.Dispose(); } catch { }
+			// Consume the launch event without invoking OnConnected to avoid double telemetry
+			if (TryDequeueLaunch(key, out var matched, out var wasTimedOut) && matched is not null)
+			{
+				// Don't invoke OnConnected; instead, classify the pending connection as IDE-initiated
+				try
+				{
+					_options.OnPendingClassified?.Invoke(new PendingClassification(
+						key.Mvid,
+						key.Platform,
+						key.IsDebug,
+						pending.ConnectedAt,
+						true,
+						matched));
+				}
+				catch { }
+			}
 		}
 	}
 
@@ -213,17 +270,51 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 	public bool ReportConnection(Guid mvid, string? platform, bool isDebug)
 	{
 		platform ??= DefaultPlatform;
-		ArgumentException.ThrowIfNullOrEmpty(platform);
 
 		var key = new Key(mvid, platform, isDebug);
-		// Try consume the oldest pending event if present. We prefer to dequeue an event that may have timed out
-		// previously (it's still in the queue). When consuming, cancel its timeout timer if any and invoke OnConnected.
-		if (_pending.TryGetValue(key, out var queue) && queue.TryDequeue(out var ev))
+
+		// Consume first the oldest pending event if present (registered launch).
+		// When consuming, cancel its timeout timer and invoke OnConnected with it.
+		if (TryDequeueLaunch(key, out var ev, out var wasTimedOut) && ev is not null)
+		{
+			try
+			{
+				_options.OnConnected?.Invoke(ev, wasTimedOut);
+			}
+			catch
+			{
+				// swallow
+			}
+
+			return true; // successfully consumed a registered launch
+		}
+
+		// No registered launch to consume: create a pending connection with a retry timer
+		SchedulePendingConnection(key);
+		return false;
+	}
+
+	/// <summary>
+	/// Attempts to dequeue a registered launch for the specified key, cancelling its timeout timer and indicating
+	/// whether the launch had previously timed out.
+	/// </summary>
+	private bool TryDequeueLaunch(Key key, out LaunchEvent? ev, out bool wasTimedOut)
+	{
+		wasTimedOut = false;
+		ev = default!;
+		if (_pending.TryGetValue(key, out var queue) && queue.TryDequeue(out ev))
 		{
 			// Cancel / dispose the timeout timer for this event if still present
 			if (_timeoutTasks.TryRemove(ev, out var timeoutTimer))
 			{
-				try { timeoutTimer.Dispose(); } catch { }
+				try
+				{
+					timeoutTimer.Dispose();
+				}
+				catch
+				{
+					// Swallow any exceptions during timer disposal
+				}
 			}
 
 			// If queue is now empty, remove it from dictionary
@@ -232,24 +323,90 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 				_pending.TryRemove(key, out _);
 			}
 
-			try
+			if (_timedOut.TryRemove(ev, out var flag))
 			{
-				var wasTimedOut = false;
-				if (_timedOut.TryRemove(ev, out var flag))
-				{
-					wasTimedOut = flag;
-				}
+				wasTimedOut = flag;
+			}
 
-				_options.OnConnected?.Invoke(ev, wasTimedOut);
-				return true;
-			}
-			catch
-			{
-				// swallow
-			}
+			return true;
 		}
 
 		return false;
+	}
+
+	private void SchedulePendingConnection(Key key)
+	{
+		var now = _timeProvider.GetUtcNow();
+		// Replace any existing pending with latest timestamp
+		if (_pendingConnections.TryRemove(key, out var existing))
+		{
+			try
+			{
+				existing.RetryTimer?.Dispose();
+			}
+			catch
+			{
+				// Swallow any exceptions during timer disposal
+			}
+		}
+
+		IDisposable? timer = null;
+		try
+		{
+			timer = _timeProvider.CreateTimer(
+				static s =>
+				{
+					var (self, k) = ((ApplicationLaunchMonitor, Key))s!;
+					self.HandlePendingRetry(k);
+				},
+				(this, key),
+				_options.PendingRetryWindow,
+				Timeout.InfiniteTimeSpan);
+		}
+		catch { /* best-effort */ }
+
+		_pendingConnections[key] = new PendingItem(now, timer);
+	}
+
+	private void HandlePendingRetry(Key key)
+	{
+		// Try to find a launch now
+		if (TryDequeueLaunch(key, out var ev, out var wasTimedOut))
+		{
+			if (_pendingConnections.TryRemove(key, out var pending))
+			{
+				try { pending.RetryTimer?.Dispose(); } catch { }
+				try
+				{
+					_options.OnPendingClassified?.Invoke(new PendingClassification(
+						key.Mvid,
+						key.Platform,
+						key.IsDebug,
+						pending.ConnectedAt,
+						true,
+						ev));
+				}
+				catch { }
+			}
+		}
+		else
+		{
+			// Still unmatched: classify as non-IDE initiated but keep it for a late match
+			if (_pendingConnections.TryGetValue(key, out var pending))
+			{
+				try
+				{
+					_options.OnPendingClassified?.Invoke(new PendingClassification(
+						key.Mvid,
+						key.Platform,
+						key.IsDebug,
+						pending.ConnectedAt,
+						false,
+						null));
+				}
+				catch { }
+			}
+		}
 	}
 
 	/// <summary>
@@ -294,6 +451,19 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 				_pending.TryRemove(key, out _);
 			}
 		}
+
+		// Clean pending connections older than retention
+		var pendingCutoff = _timeProvider.GetUtcNow() - _options.PendingRetention;
+		foreach (var kvp in _pendingConnections.ToArray())
+		{
+			if (kvp.Value.ConnectedAt < pendingCutoff)
+			{
+				if (_pendingConnections.TryRemove(kvp.Key, out var pending))
+				{
+					try { pending.RetryTimer?.Dispose(); } catch { }
+				}
+			}
+		}
 	}
 
 	/// <summary>
@@ -314,5 +484,25 @@ public sealed class ApplicationLaunchMonitor : IDisposable
 		_timeoutTasks.Clear();
 		_timedOut.Clear();
 		_pending.Clear();
+
+		// Flush pending connections as non-IDE initiated
+		foreach (var kvp in _pendingConnections.ToArray())
+		{
+			if (_pendingConnections.TryRemove(kvp.Key, out var pending))
+			{
+				try { pending.RetryTimer?.Dispose(); } catch { }
+				try
+				{
+					_options.OnPendingClassified?.Invoke(new PendingClassification(
+						kvp.Key.Mvid,
+						kvp.Key.Platform,
+						kvp.Key.IsDebug,
+						pending.ConnectedAt,
+						false,
+						null));
+				}
+				catch { }
+			}
+		}
 	}
 }

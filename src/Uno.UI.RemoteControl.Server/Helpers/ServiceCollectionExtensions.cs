@@ -61,6 +61,7 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 							("TargetPlatform", ev.Platform),
 							("IsDebug", ev.IsDebug.ToString()),
 							("WasTimedOut", wasTimedOut.ToString()),
+							("WasIdeInitiated", "True"), // Always true for matched connections
 							("IDE", ev.Ide),
 							("PluginVersion", ev.Plugin),
 						],
@@ -78,6 +79,27 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 							("PluginVersion", ev.Plugin),
 						],
 						[("TimeoutSeconds", timeoutSeconds)]);
+				};
+
+				// Hook pending classification (unsolicited and late-match)
+				launchOptions.OnPendingClassified = pc =>
+				{
+					var ide = pc.WasIdeInitiated ? (pc.Launch?.Ide ?? "Unknown") : "None";
+					var plugin = pc.WasIdeInitiated ? (pc.Launch?.Plugin ?? "Unknown") : "None";
+					var latencyMs = pc.WasIdeInitiated
+						? (DateTimeOffset.UtcNow - (pc.Launch?.RegisteredAt ?? pc.ConnectedAt)).TotalMilliseconds
+						: 0.0;
+
+					telemetry.TrackEvent("app-launch/connected",
+						[
+							("TargetPlatform", pc.Platform),
+							("IsDebug", pc.IsDebug.ToString()),
+							("WasTimedOut", "False"),
+							("WasIdeInitiated", pc.WasIdeInitiated.ToString()),
+							("IDE", ide),
+							("PluginVersion", plugin),
+						],
+						pc.WasIdeInitiated ? [("LatencyMs", latencyMs)] : null);
 				};
 
 				return new AppLaunch.ApplicationLaunchMonitor(options: launchOptions);

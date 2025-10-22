@@ -37,8 +37,6 @@ namespace Uno.UI.RemoteControl.Host
 				"/applaunch/{mvid:guid}",
 				async (HttpContext context, Guid mvid, [FromQuery] string? platform, [FromQuery] bool? isDebug, [FromQuery] string? ide, [FromQuery] string? plugin) =>
 				{
-					ide ??= "Unknown";
-					plugin ??= "Unknown";
 					await HandleAppLaunchRegistrationRequest(context, mvid, platform, isDebug, ide, plugin);
 				})
 				.WithName("AppLaunchRegistration");
@@ -152,21 +150,16 @@ namespace Uno.UI.RemoteControl.Host
 			Guid mvid,
 			string? platform,
 			bool? isDebug,
-			string ide,
-			string plugin)
+			string? ide,
+			string? plugin)
 		{
-			if (platform == string.Empty)
-			{
-				platform = null;
-			}
-
 			var monitor = context.RequestServices.GetRequiredService<ApplicationLaunchMonitor>();
-			monitor.RegisterLaunch(mvid, platform, isDebug ?? false, ide, plugin);
+			monitor.RegisterLaunch(mvid, platform, isDebug ?? false, ide ?? "Unknown", plugin ?? "Unknown");
 
 			context.Response.StatusCode = StatusCodes.Status200OK;
 			context.Response.ContentType = "application/json";
 
-			var response = new { mvid = mvid, targetFramework = platform ?? "unknown" };
+			var response = new { mvid = mvid, targetPlatform = platform };
 
 			await context.Response.WriteAsync(JsonSerializer.Serialize(response));
 		}
