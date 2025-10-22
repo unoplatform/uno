@@ -18,6 +18,7 @@ using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -51,6 +52,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
+	private bool _beforeFirstEraseBkgnd = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -230,6 +232,28 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 				return new LRESULT(0);
+			case PInvoke.WM_ERASEBKGND:
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
+				if (_beforeFirstEraseBkgnd)
+				{
+					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
+					// Note that we don't call OnRenderFrameOpportunity here, but before showing
+					// the window in ShowCore. The problem is that any minor delay will cause
+					// a split-second white flash, so we're keeping the "time to blit" to a
+					// minimum by "rendering" before the window is shown and only drawing when
+					// receiving the first WM_ERASEBKGND
+					_beforeFirstEraseBkgnd = false;
+					// The render timer might already be running. This is fine. The CompositionTarget
+					// contract allows calling OnNativePlatformFrameRequested multiple times.
+					Render();
+					return new LRESULT(1);
+				}
+				else
+				{
+					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
+					// only do it the first time when we really need to
+					return new LRESULT(0);
+				}
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
@@ -372,6 +396,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	protected override void ShowCore()
 	{
+		// see the comment in WndProc's WM_ERASEBKGND handling
+		if (_beforeFirstEraseBkgnd)
+		{
+			(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+		}
+
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but
