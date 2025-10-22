@@ -23,7 +23,7 @@ Event name prefix: uno/dev-server
 | **client-connection-opened** [[src]](RemoteControlExtensions.cs#L92)               | ConnectionId                                                              |                                                                                                                   | Metadata fields are anonymized                                                      | Per-connection |
 | **client-connection-closed** [[src]](RemoteControlExtensions.cs#L139)               | ConnectionId                                                              | ConnectionDurationSeconds                                                                                         |                                                                                     | Per-connection |
 | **app-launch/launched** [[src]](../Uno.UI.RemoteControl.Server/Helpers/ServiceCollectionExtensions.cs#L48)                    | TargetPlatform, IsDebug, IDE, PluginVersion                                              |                                                                                                                   | No identifiers (MVID not sent)                                                      | Global         |
-| **app-launch/connected** [[src]](../Uno.UI.RemoteControl.Server/Helpers/ServiceCollectionExtensions.cs#L59)                   | TargetPlatform, IsDebug, IDE, PluginVersion, WasTimedOut                                              | LatencyMs                                                                                                         | No identifiers (MVID not sent)                                                      | Global         |
+| **app-launch/connected** [[src]](../Uno.UI.RemoteControl.Server/Helpers/ServiceCollectionExtensions.cs#L59)                   | TargetPlatform, IsDebug, IDE, PluginVersion, WasTimedOut, WasIdeInitiated                                              | LatencyMs                                                                                                         | No identifiers (MVID not sent)                                                      | Global         |
 | **app-launch/connection-timeout** [[src]](../Uno.UI.RemoteControl.Server/Helpers/ServiceCollectionExtensions.cs#L73)          | TargetPlatform, IsDebug, IDE, PluginVersion                                              | TimeoutSeconds                                                                                                    | No identifiers (MVID not sent)                                                      | Global         |
 
 ## Property Value Examples
@@ -47,9 +47,10 @@ Event name prefix: uno/dev-server
 - **ConnectionId**: `"conn-abc123"`, `"conn-xyz789"`
 - **TargetPlatform**: `"Desktop1.0"`, `"Android35.0"`, `"BrowerWasm1.0"`, `"iOS18.5"`...
 - **IsDebug**: `"True"`, `"False"`
-- **IDE**: `"vswin"`, `"rider-2025.2.0.1"`, `"vscode-1.105.0"`, `"Unknown"`
-- **PluginVersion**: `"1.0.0"`, `"2.1.5"`
+- **IDE**: `"vswin"`, `"rider-2025.2.0.1"`, `"vscode-1.105.0"`, `"Unknown"`, `"None"`
+- **PluginVersion**: `"1.0.0"`, `"2.1.5"`, `"Unknown"`, `"None"`
 - **WasTimedOut**: `"True"`, `"False"`
+- **WasIdeInitiated**: `"True"`, `"False"`
 
 ## Notes
 - ErrorMessage and StackTrace are sent as raw values and may contain sensitive information; handle with care.
