@@ -34,6 +34,7 @@ namespace Uno.UI.Controls
 		private static DependencyProperty BackButtonIconProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonIcon");
 
 		private static string? _actionBarUpDescription;
+		private ToolbarLayoutListener? _layoutListener;
 		private static string? ActionBarUpDescription
 		{
 			get
@@ -95,6 +96,11 @@ namespace Uno.UI.Controls
 			native.AddView(_contentContainer);
 			yield return Disposable.Create(() => native.RemoveView(_contentContainer));
 			yield return _contentContainer.RegisterParentChangedCallback(this, OnContentContainerParentChanged!);
+
+			// Listen to layout changes to dynamically constrain content width
+			_layoutListener = new ToolbarLayoutListener(this);
+			native.AddOnLayoutChangeListener(_layoutListener);
+			yield return Disposable.Create(() => native.RemoveOnLayoutChangeListener(_layoutListener));
 
 			// Commands.Click
 			native.MenuItemClick += Native_MenuItemClick;
@@ -295,6 +301,9 @@ namespace Uno.UI.Controls
 
 			// Opacity
 			native.Alpha = (float)element.Opacity;
+
+			// Update content max width after rendering to account for changes in navigation icon or menu items
+			UpdateContentMaxWidth();
 		}
 
 		private IEnumerable<IMenuItem?> GetMenuItems(Android.Views.IMenu menu)
@@ -349,6 +358,77 @@ namespace Uno.UI.Controls
 			{
 				var imm = ContextHelper.Current.GetSystemService(Context.InputMethodService) as InputMethodManager;
 				imm?.HideSoftInputFromWindow(focused.WindowToken, HideSoftInputFlags.None);
+			}
+		}
+
+		private void UpdateContentMaxWidth()
+		{
+			if (_contentContainer == null)
+			{
+				return;
+			}
+
+			var native = Native;
+			var toolbarWidth = native.Width;
+
+			if (toolbarWidth <= 0)
+			{
+				return;
+			}
+
+			// Calculate the width used by other toolbar elements
+			var usedWidth = 0;
+
+			// Navigation icon (back button) width - typically ~56dp
+			if (native.NavigationIcon != null)
+			{
+				usedWidth += (int)(56 * native.Context!.Resources!.DisplayMetrics!.Density);
+			}
+
+			// Count visible menu items (primary commands) and estimate their width
+			if (native.Menu != null)
+			{
+				var visibleItemCount = 0;
+				for (int i = 0; i < native.Menu.Size(); i++)
+				{
+					var item = native.Menu.GetItem(i);
+					if (item?.IsVisible == true)
+					{
+						visibleItemCount++;
+					}
+				}
+				// Each action button is typically ~48dp wide
+				usedWidth += (int)(visibleItemCount * 48 * native.Context!.Resources!.DisplayMetrics!.Density);
+			}
+
+			// Add padding (16dp on each side)
+			usedWidth += (int)(32 * native.Context!.Resources!.DisplayMetrics!.Density);
+
+			// Calculate available width for content
+			var availableWidth = toolbarWidth - usedWidth;
+
+			// Ensure we have a reasonable minimum width
+			if (availableWidth > 0)
+			{
+				// Convert from physical pixels to logical pixels
+				var logicalWidth = availableWidth / ViewHelper.Scale;
+				_contentContainer.MaxWidth = logicalWidth;
+			}
+		}
+
+		private class ToolbarLayoutListener : Java.Lang.Object, View.IOnLayoutChangeListener
+		{
+			private readonly CommandBarRenderer _renderer;
+
+			public ToolbarLayoutListener(CommandBarRenderer renderer)
+			{
+				_renderer = renderer;
+			}
+
+			public void OnLayoutChange(View? v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+			{
+				// Update content max width when toolbar layout changes
+				_renderer.UpdateContentMaxWidth();
 			}
 		}
 	}
