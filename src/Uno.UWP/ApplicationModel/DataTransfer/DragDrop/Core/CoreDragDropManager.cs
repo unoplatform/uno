@@ -57,8 +57,6 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private IDragDropManager? _manager;
 
-		public AppWindow AppWindow => AppWindow.GetFromWindowId(_windowId)!;
-
 		public bool AreConcurrentOperationsEnabled
 		{
 			get => _manager?.AreConcurrentOperationsEnabled ?? false;
