@@ -20,7 +20,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		Description =
 		"""
 		- This test showcases the common scenario of dragging files and/or folders from another window (usually a file explorer) into a specific rectangle that accepts the drop. The files that were dragged and dropped should be seen as a list.
-		- If you have non-100% scaling of your screen, the drag indicator should always render above your mouse cursor, irrespective on where in the app's window you move it.
+		- If you have non-100% scaling of your screen, the drag indicator should always render above your mouse cursor, irrespective of where in the app's window you move it.
 		""",
 		IsManualTest = true,
 		IgnoreInSnapshotTests = true)]
