@@ -65,7 +65,6 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 	{
 		var xamlRoot = _manager.ContentRoot.GetOrCreateXamlRoot();
 		return new Point(x / xamlRoot.RasterizationScale, y / xamlRoot.RasterizationScale);
-
 	}
 
 	unsafe HRESULT IDropTarget.Interface.DragEnter(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
