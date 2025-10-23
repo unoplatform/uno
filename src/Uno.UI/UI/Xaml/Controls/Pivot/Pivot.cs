@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_isTemplateApplied = true;
 
-			UpdateProperties();
+			UpdatePivotProperties();
 
 #if __WASM__ || __SKIA__
 			//TODO: Workaround for https://github.com/unoplatform/uno/issues/5144
@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateProperties()
+		private void UpdatePivotProperties()
 		{
 			if (
 				_isUWPTemplate
@@ -334,7 +334,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (pivot._isUWPTemplate)
 				{
-					pivot.UpdateProperties();
+					pivot.UpdatePivotProperties();
 				}
 			}
 		}

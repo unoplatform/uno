@@ -21,7 +21,7 @@ public sealed partial class XamlRoot_Properties : UserControl
 
 		Loaded += (s, e) =>
 		{
-			UpdateProperties();
+			UpdateXamlRootProperties();
 			XamlRoot.Changed += XamlRoot_Changed;
 		};
 
@@ -34,9 +34,9 @@ public sealed partial class XamlRoot_Properties : UserControl
 	public ObservableCollection<string> ChangeLog { get; } = new();
 
 	private void XamlRoot_Changed(Microsoft.UI.Xaml.XamlRoot sender, XamlRootChangedEventArgs args) =>
-		UpdateProperties();
+		UpdateXamlRootProperties();
 
-	private void UpdateProperties()
+	private void UpdateXamlRootProperties()
 	{
 		RasterizationScaleRun.Text = XamlRoot.RasterizationScale.ToString();
 		IsHostVisibleRun.Text = XamlRoot.IsHostVisible.ToString();
