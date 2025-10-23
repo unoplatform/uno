@@ -29,7 +29,8 @@ The Uno Bootstrapper can automatically embed any asset and deploy it with the ap
 
 Embedding native JavaScript elements is done through the `Uno.UI.NativeElementHosting.BrowserHtmlElement` class, which serves as an entry point to interact with your native element.
 
-> [!IMPORTANT] The `BrowserHtmlElement` class is available on all target frameworks, avoid the need for condition `#if` code, yet it is only useable on WebAssembly. You'll need to guard its use by validating the platform with the `OperatingSystem` class.
+> [!IMPORTANT]
+> The `BrowserHtmlElement` class is available on all target frameworks, eliminating the need for `#if` condition code, but it is only usable on WebAssembly. You'll need to guard its use by validating the platform with the `OperatingSystem` class.
 
 ```csharp
 using Uno.UI.NativeElementHosting.BrowserHtmlElement;
