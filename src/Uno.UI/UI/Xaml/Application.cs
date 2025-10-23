@@ -107,6 +107,9 @@ namespace Microsoft.UI.Xaml
 		private static void RegisterExtensions()
 		{
 			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
+#if __SKIA__
+			ApiExtensibility.Register(typeof(Uno.UI.Graphics.SKCanvasVisualBaseFactory), _ => new Uno.UI.Graphics.SKCanvasVisualFactory());
+#endif
 		}
 
 		static partial void InitializePartialStatic();
@@ -204,6 +207,24 @@ namespace Microsoft.UI.Xaml
 		};
 
 		internal bool IsThemeSetExplicitly { get; private set; }
+
+		internal void SyncRequestedThemeFromXamlRoot(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			// Sync the requested theme from the XamlRoot
+			// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
+			// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
+			// This will also explicitly change the Application.Current.RequestedTheme, which does not happen in case of UWP.
+			if (xamlRoot.Content is FrameworkElement fe)
+			{
+				var theme = fe.RequestedTheme;
+				SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(theme));
+			}
+		}
 
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{

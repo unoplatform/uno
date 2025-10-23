@@ -24,11 +24,41 @@ See [this article](working-with-the-samples-apps.md) for more information on wor
 
 It is also possible to debug Uno.UI code in an application outside the Uno.UI solution. The Uno.UI build process has an opt-in mechanism to overwrite the contents of the NuGet cache, causing the application to use your local build of Uno.
 
+> [!NOTE]
+> This will **overwrite your local NuGet cache**.
+
 This is useful when debugging a problem that can't easily be reproduced outside the context of the app where it was discovered.
 
 It can even speed up your development loop when working on a new feature or fixing a bug with a standalone repro, because a small 'Hello World' app builds considerably faster than the full SamplesApp.
 
-First, you'll need to install, in the app you want to debug with, a published Uno.WinUI package version which is close to your branch's code, preferably a `-dev.xxx` version. When using an Uno.SDK app, this version can be found in the readme file of the Uno.Sdk package, or in the solution explorer packages node for the project.
+First, update `global.json` of the app you will be debugging to instead use a `-dev.xxx` version:
+
+```diff
+ {
+   // To update the version of Uno please update the version of the Uno.Sdk here. See https://aka.platform.uno/upgrade-uno-packages for more information.
+   "msbuild-sdks": {
+-    "Uno.Sdk": "6.1.23"
++    "Uno.Sdk": "6.2.0-dev.59"
+   },
+```
+
+The versions of Uno.Sdk are listed on [NuGet.org](https://www.nuget.org/packages/Uno.Sdk/). Typically, you want to use the latest one, in order to match the most recent commit on the `master` branch of uno.
+
+Once `global.json` has been updated, restore your app's solution:
+
+```dotnetcli
+dotnet restore
+```
+
+Next, determine the _`$(UnoNugetOverrideVersion)` value_ for your selected `-dev.xxx` version:
+
+1. View the specified `Uno.Sdk` package version on NuGet.org, e.g. <https://www.nuget.org/packages/Uno.Sdk/6.2.0-dev.59>
+1. Select the **README** tab.
+1. On the **README** tab, determine the value of the `UnoVersion*` property.
+
+    For the Uno.Sdk 6.2.0-dev.59 NuGet package, the `UnoVersion*` property is `6.2.0-dev.171`.
+
+    This is the `$(UnoNugetOverrideVersion)` value.
 
 Then, here are the steps to use a local build of Uno.UI in another application:
 
@@ -36,11 +66,8 @@ Then, here are the steps to use a local build of Uno.UI in another application:
 1. Close any instances of Visual Studio with the Uno.UI solution opened.
 1. Open the solution containing the application you wish to debug to ensure the package is restored and cached.
 1. Prepare the application
-   1. Replace the Uno.Sdk references to `Uno.Sdk.Private` everywhere in the app (e.g. `global.json`, `props`, `csproj`, and `targets` files). Make sure to wait for the NuGet packages to be restored entirely.
-   1. Note the NuGet version of Uno.WinUI (or Uno.WinUI.WebAssembly/Uno.WinUI.Skia) or Uno.Sdk being used by the application (eg `5.1.0-dev.432`).
 1. Make a copy of `src/crosstargeting_override.props.sample` and name it as `src/crosstargeting_override.props`.
-1. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->` as well as the `UnoTargetFrameworkOverride` to match your app's debugging target.
-1. Replace the version number with the version being used by the application you wish to debug.
+1. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->` and set the `$(UnoNugetOverrideVersion)` value to the value determined in the previous section, e.g. `6.2.0-dev.171`.  You want to use the `UnoVersion*` version here. _Do not mix it up with `Uno.Sdk` version_.
 1. Open the appropriate Uno.UI solution filter and build the following:
    - For iOS/Android native, you can right-click on the `Uno.UI` project
    - For WebAssembly/native, you can right-click on the `Uno.UI.Runtime.WebAssembly` project
@@ -66,6 +93,8 @@ To debug Uno.UI code in the application, follow these steps (using `FrameworkEle
 - The NuGet override process only works on already installed versions. The best way to ensure that the override is successful is to build the debugged application once before overriding the Uno.UI version the app uses.
 
 - Make sure to close the application that uses the overridden nuget package, to avoid locked files issues on Windows.
+
+- Verify that your updated files are actually used.  View [diagnostic logs](https://learn.microsoft.com/en-us/visualstudio/msbuild/obtaining-build-logs-with-msbuild?view=vs-2022), search for the assembly that you are modifying, and verify that it contains the updated `$(UnoNugetOverrideVersion)` value in the path, e.g. that the `@(RuntimeCopyLocalItems)` item group contains `%USERPROFILE%\.nuget\packages\uno.winrt\6.2.0-dev.171\lib\net9.0-android30.0\Uno.UI.Dispatching.dll` (Windows) or `$HOME/.nuget/packages/uno.winrt/6.2.0-dev.171/lib/net9.0-android30.0/Uno.UI.Dispatching.dll` (Linux, macOS).
 
 ### Troubleshooting
 

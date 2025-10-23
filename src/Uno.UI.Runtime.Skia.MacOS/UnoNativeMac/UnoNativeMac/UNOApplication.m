@@ -93,6 +93,21 @@ void uno_set_application_can_exit_callback(application_can_exit_fn_ptr p)
     application_can_exit = p;
 }
 
+static application_start_fn_ptr application_start;
+
+inline application_start_fn_ptr uno_get_application_start_callback(void)
+{
+    return application_start;
+}
+
+void uno_set_application_start_callback(application_start_fn_ptr p)
+{
+    application_start = p;
+}
+
+typedef void (*application_start_fn_ptr)(void);
+application_start_fn_ptr uno_get_application_start_callback(void);
+
 bool uno_application_is_bundled(void)
 {
     return NSRunningApplication.currentApplication.bundleIdentifier != nil;
@@ -116,6 +131,8 @@ void uno_application_quit(void)
     NSLog(@"UNOApplicationDelegate.applicationDidFinishLaunching notification %@ win %@", notification, win);
 #endif
     // creating the window will call `makeKeyWindow` and `orderFrontRegardless`
+
+    uno_get_application_start_callback()();
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {

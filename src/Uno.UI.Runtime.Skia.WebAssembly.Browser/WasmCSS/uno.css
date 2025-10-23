@@ -71,6 +71,8 @@ input::-ms-clear {
 
 #uno-canvas {
     position: fixed;
+    width: 100%;
+    height: 100%;
 }
 
 /* Uno has its own HR indicator: hide default dotnet indicator. */

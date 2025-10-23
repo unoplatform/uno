@@ -78,7 +78,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			var completionSource = new TaskCompletionSource<bool>();
 
-			activityViewController.CompletionWithItemsHandler = (NSString activityType, bool completed, NSExtensionItem[] returnedItems, NSError error) =>
+			activityViewController.CompletionWithItemsHandler = (activityType, completed, returnedItems, error) =>
 			{
 				completionSource.SetResult(completed);
 			};

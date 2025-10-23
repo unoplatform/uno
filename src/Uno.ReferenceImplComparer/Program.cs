@@ -21,8 +21,8 @@ namespace Uno.ReferenceImplComparer
 			Console.WriteLine($"Validating package {args[0]}");
 
 			var referenceTargetFrameworks = new[] {
-				"net8.0",
-				"net9.0"
+				"net9.0",
+				"net10.0"
 			};
 
 			foreach (var targetFramework in referenceTargetFrameworks)

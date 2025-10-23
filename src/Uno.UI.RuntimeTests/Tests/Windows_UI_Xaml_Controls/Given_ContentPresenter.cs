@@ -16,7 +16,6 @@ using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Extensions;
 using System.Text.RegularExpressions;
-using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -414,7 +413,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
-	[DynamicData(nameof(GetAlignments), DynamicDataSourceType.Method)]
+	[DynamicData(nameof(GetAlignments))]
 	public async Task When_Content_Aligned_Position_And_Size(AlignmentTestConfiguration configuration)
 	{
 		var contentPresenter = new ContentPresenter()
@@ -491,7 +490,7 @@ public partial class Given_ContentPresenter
 		}, sp => sp.IsLoaded);
 
 		Assert.AreEqual(200, SUT.ActualWidth);
-		SUT.ActualHeight.Should().BeLessOrEqualTo(200); // WPf returns 200, everywhere else returns 0
+		SUT.ActualHeight.Should().BeLessThanOrEqualTo(200); // WPf returns 200, everywhere else returns 0
 	}
 #endif
 }

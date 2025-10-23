@@ -185,20 +185,30 @@ partial class PopupPanel
 						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Full:
-#if __SKIA__
-					// For skia-ios/droid, we let the flyout to occupy the entire area available,
-					// as dictated by the root skia-canvas. This extends into status bar, and bottom bar if present.
-					childDesiredSize = m_unclippedDesiredSize
-#elif !__APPLE_UIKIT__
-					childDesiredSize = visibleBounds.Size
+					if (FeatureConfiguration.Popup.ConstrainByVisibleBounds)
+					{
+#if !__APPLE_UIKIT__
+						childDesiredSize = visibleBounds.Size;
 #else
-					// The mobile status bar should always remain visible.
-					// On droid, this panel is placed beneath the status bar.
-					// On iOS, this panel will cover the status bar, so we have to substract it out.
-					childDesiredSize = new Size(ActualWidth, ActualHeight)
-						.Subtract(0, visibleBounds.Y)
+						// The mobile status bar should always remain visible.
+						// On droid, this panel is placed beneath the status bar.
+						// On iOS, this panel will cover the status bar, so we have to substract it out.
+						childDesiredSize = new Size(ActualWidth, ActualHeight)
+							.Subtract(0, visibleBounds.Y)
+							.AtMost(maxSize);
 #endif
-						.AtMost(maxSize);
+					}
+					else
+					{
+						// When ConstrainByVisibleBounds is false, we let the flyout to occupy the entire area available,
+						// as dictated by the root skia-canvas. This extends into the status bar, and bottom bar if present.
+#if __SKIA__
+						childDesiredSize = m_unclippedDesiredSize;
+#else
+						childDesiredSize = DesiredSize;
+#endif
+					}
+
 					finalPosition = new Point(
 #if __SKIA__
 						x: FindOptimalOffset(childDesiredSize.Width, visibleBounds.X, visibleBounds.Width, (Parent as FrameworkElement)?.ActualWidth ?? ActualWidth),

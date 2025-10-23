@@ -12,8 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 namespace Uno.UI.Tests.BorderTests
 {

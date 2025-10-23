@@ -759,7 +759,6 @@ namespace Uno.UI.Xaml
 	{
 		internal static partial class NativeMethods
 		{
-			private const string StaticThis = "globalThis.Uno.UI.WindowManager";
 			private const string InstancedThis = "globalThis.Uno.UI.WindowManager.current";
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.arrangeElementNativeFast")]

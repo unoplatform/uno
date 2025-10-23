@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
+
 public sealed partial class XBind_ResourceDictionary : ResourceDictionary
 {
 	public XBind_ResourceDictionary()

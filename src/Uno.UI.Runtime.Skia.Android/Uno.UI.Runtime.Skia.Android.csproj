@@ -5,6 +5,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<Import Project="../SourceGenerators/Uno.UI.SourceGenerators/Content/Uno.UI.SourceGenerators.props" />
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
@@ -22,25 +23,36 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<DefineConstants>$(DefineConstants);ANDROID_SKIA</DefineConstants>
+		<!--
+		  Ignore warnings from generated code:
+		  - obj/**/generated/src/Uno.UI.IUnoWebViewHandlerJavascriptInterface.cs
+		  - obj/**/generated/src/__NamespaceMapping__.cs
+		 -->
+		<NoWarn>$(NoWarn);IDE0055</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
-		<Compile Include="..\Uno.UI\ActivityHelper.Android.cs" />
-		<Compile Include="..\Uno.UI\Extensions\PermissionsHelper.Android.cs" Link="PermissionsHelper.Android.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\DatePicker\NativeDatePickerFlyout.Android.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.Android.cs" Link="Microsoft\UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.Android.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.Android.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\UnoTimePickerDialog.Android.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.Android.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\NativeApplication.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\NativeWindowWrapper.Android.cs" />
-		<Compile Include="..\Uno.UI\DelegateActivity.Android.cs" />
-		<Compile Include="..\Uno.UI\OnActivityResultArgs.Android.cs" />
+		<Compile Include="..\Uno.UI\ActivityHelper.Android.cs" Link="Helpers\ActivityHelper.Android.cs" />
+		<Compile Include="..\Uno.UI\Extensions\PermissionsHelper.Android.cs" Link="Helpers\PermissionsHelper.Android.cs" />
+		<Compile Include="..\Uno.UI\GlobalUsings.cs" Link="Helpers\GlobalUsings.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\DatePicker\NativeDatePickerFlyout.Android.cs" Link="UI\Xaml\Controls\DatePicker\NativeDatePickerFlyout.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.Android.cs" Link="UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.Android.cs" Link="UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.cs" Link="UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\UnoTimePickerDialog.Android.cs" Link="UI\Xaml\Controls\TimePicker\UnoTimePickerDialog.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" Link="UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\NativeApplication.cs" Link="UI\Xaml\NativeApplication.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\NativeWindowWrapper.Android.cs" Link="UI\Xaml\Window\NativeWindowWrapper.Android.cs" />
+		<Compile Include="..\Uno.UI\DelegateActivity.Android.cs" Link="UI\Xaml\Window\DelegateActivity.Android.cs" />
+		<Compile Include="..\Uno.UI\OnActivityResultArgs.Android.cs" Link="UI\Xaml\Window\OnActivityResultArgs.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AndroidJavaSource Include="..\Uno.UI.BindingHelper.Android\Uno\UI\UnoWebViewHandlerJavascriptInterface.java" />
 	</ItemGroup>
 
 	<ItemGroup>

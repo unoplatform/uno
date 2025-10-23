@@ -16,7 +16,7 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 		SubscribeBackgroundNotifications();
 	}
 
-	public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
+	public override bool FinishedLaunching(UIApplication application, NSDictionary? launchOptions)
 	{
 		this.LogDebug()?.LogDebug($"Application finished launching");
 		Application.Start(AppleUIKitHost.CreateAppAction);

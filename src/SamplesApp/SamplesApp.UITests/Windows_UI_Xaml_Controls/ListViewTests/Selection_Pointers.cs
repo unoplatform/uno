@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
-using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.Testing;
@@ -40,7 +39,8 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 #endif
 #if IS_RUNTIME_UI_TESTS
 	// https://github.com/unoplatform/uno/issues/9080
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.Skia)]
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia)]
 #else
 	[Test]
 	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080

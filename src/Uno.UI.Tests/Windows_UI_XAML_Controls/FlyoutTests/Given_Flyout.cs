@@ -185,8 +185,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			var panel = flyout.GetPopupPanel();
 
 			var visibleBounds = new Rect(0, 0, 410, 815);
-			var applicationView = ApplicationView.GetForCurrentView();
-			using (applicationView.SetTemporaryVisibleBounds(visibleBounds))
+			using (SetTemporaryVisibleBounds(visibleBounds, button.XamlRoot))
 			{
 				panel.Measure(visibleBounds.Size);
 				panel.Arrange(visibleBounds);
@@ -229,8 +228,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			var panel = flyout.GetPopupPanel();
 
 			var visibleBounds = new Rect(0, 0, 410, 815);
-			var applicationView = ApplicationView.GetForCurrentView();
-			using (applicationView.SetTemporaryVisibleBounds(visibleBounds))
+			using (SetTemporaryVisibleBounds(visibleBounds, button.XamlRoot))
 			{
 				panel.Measure(visibleBounds.Size);
 				panel.Arrange(visibleBounds);
@@ -265,6 +263,13 @@ namespace Uno.UI.Tests.FlyoutTests
 			SUT.AddChild(button);
 
 			app.HostView.Children.Add(SUT);
+		}
+
+		private IDisposable SetTemporaryVisibleBounds(Rect newVisibleBounds, XamlRoot xamlRoot)
+		{
+			xamlRoot.VisualTree.VisibleBoundsOverride = newVisibleBounds;
+
+			return new DisposableAction(() => xamlRoot.VisualTree.VisibleBoundsOverride = null);
 		}
 	}
 }

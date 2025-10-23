@@ -8,8 +8,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
@@ -166,39 +167,13 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			return;
 		}
 
-		using var _ = _fpsHelper.BeginFrame();
-
-		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
-		{
-			_host.InvalidateRender();
-			return;
-		}
-
-		int width, height;
-
-		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
-		var dpi = _xamlRoot!.RasterizationScale;
-		double dpiScaleX = dpi;
-		double dpiScaleY = dpi;
-		if (_host.IgnorePixelScaling)
-		{
-			width = (int)_hostControl.ActualWidth;
-			height = (int)_hostControl.ActualHeight;
-		}
-		else
-		{
-			var matrix = PresentationSource.FromVisual(_hostControl).CompositionTarget.TransformToDevice;
-			dpiScaleX = matrix.M11;
-			dpiScaleY = matrix.M22;
-			width = (int)(_hostControl.ActualWidth * dpiScaleX);
-			height = (int)(_hostControl.ActualHeight * dpiScaleY);
-		}
+		_xamlRoot ??= XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 
 #pragma warning disable CA1806 // Do not ignore method results
 		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
 #pragma warning restore CA1806 // Do not ignore method results
 
-		if (_renderTarget == null || _surface == null || _renderTarget.Width != width || _renderTarget.Height != height)
+		var nativeElementClipPath = ((Microsoft.UI.Xaml.Media.CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			// create or update the dimensions
 			_renderTarget?.Dispose();
@@ -213,64 +188,46 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			var glInfo = new GRGlFramebufferInfo((uint)framebuffer, colorType.ToGlSizedFormat());
 
-			_renderTarget = new GRBackendRenderTarget(width, height, samples, stencil, glInfo);
+			_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Width, samples, stencil, glInfo);
 
 			// create the surface
 			_surface?.Dispose();
 			_surface = SKSurface.Create(_grContext, _renderTarget, surfaceOrigin, colorType);
 
-			_backBuffer = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
+			_backBuffer = new WriteableBitmap((int)size.Width, (int)size.Width, 96, 96, PixelFormats.Pbgra32, null);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"Recreate render surface {width}x{height} colorType:{colorType} sample:{samples}");
+				this.Log().Trace($"Recreate render surface {(int)size.Width}x{(int)size.Width} colorType:{colorType} sample:{samples}");
 			}
-		}
+			return _surface.Canvas;
+		});
 
 		WindowsRenderingNativeMethods.glClear(WindowsRenderingNativeMethods.GL_COLOR_BUFFER_BIT | WindowsRenderingNativeMethods.GL_STENCIL_BUFFER_BIT | WindowsRenderingNativeMethods.GL_DEPTH_BUFFER_BIT);
 
-		var canvas = _surface.Canvas;
-
-		using (new SKAutoCanvasRestore(canvas, true))
+		if (_host.NativeOverlayLayer is { } nativeLayer)
 		{
-			canvas.Clear(BackgroundColor);
-			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
-
-			if (_host.RootElement?.Visual is { } rootVisual)
+			nativeLayer.Clip ??= new PathGeometry();
+			((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(nativeElementClipPath.ToSvgPathData());
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, _surface.Canvas);
-				_fpsHelper.DrawFps(canvas);
-
-				if (_host.NativeOverlayLayer is { } nativeLayer)
-				{
-					nativeLayer.Clip ??= new PathGeometry();
-					((PathGeometry)nativeLayer.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
-				}
-				else
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
-					}
-				}
-				_host.RootElement?.XamlRoot?.InvokeFramePainted();
+				this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
 			}
 		}
-
-		// update the control
-		canvas.Flush();
 
 		// Copy the contents of the back buffer to the screen
 		if (_backBuffer != null)
 		{
 			_backBuffer.Lock();
-			WindowsRenderingNativeMethods.glReadPixels(0, 0, width, height, WindowsRenderingNativeMethods.GL_BGRA_EXT, WindowsRenderingNativeMethods.GL_UNSIGNED_BYTE, _backBuffer.BackBuffer);
-			_backBuffer.AddDirtyRect(new Int32Rect(0, 0, width, height));
+			WindowsRenderingNativeMethods.glReadPixels(0, 0, _backBuffer.PixelWidth, _backBuffer.PixelHeight, WindowsRenderingNativeMethods.GL_BGRA_EXT, WindowsRenderingNativeMethods.GL_UNSIGNED_BYTE, _backBuffer.BackBuffer);
+			_backBuffer.AddDirtyRect(new Int32Rect(0, 0, _backBuffer.PixelWidth, _backBuffer.PixelHeight));
 			_backBuffer.Unlock();
 
 			drawingContext.DrawImage(_backBuffer, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
 		}
-		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
 	}
 
 	public void Dispose() => Release();

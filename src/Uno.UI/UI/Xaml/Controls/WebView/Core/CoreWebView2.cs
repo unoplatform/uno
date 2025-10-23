@@ -161,6 +161,9 @@ public partial class CoreWebView2
 	{
 		_nativeWebView = GetNativeWebViewFromTemplate();
 
+		// Signal that native WebView is now initialized
+		_nativeWebViewInitializedTcs.TrySetResult(true);
+
 		//The native WebView already navigate to a blank page if no source is set.
 		//Avoid a bug where invoke GoBack() on WebView do nothing in Android 4.4
 		UpdateFromInternalSource();
@@ -249,6 +252,8 @@ public partial class CoreWebView2
 		handled = args.Handled;
 	}
 
+	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new TaskCompletionSource<bool>();
+	internal Task EnsureNativeWebViewAsync() => _nativeWebViewInitializedTcs.Task;
 	internal static bool GetIsHistoryEntryValid(string url) =>
 		!url.IsNullOrWhiteSpace() &&
 		!url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);

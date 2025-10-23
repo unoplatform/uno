@@ -17,12 +17,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="Combinatorial.MSTest" />
 		<ProjectReference Include="..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Label="GlobalUsings">
+		<Using Include="AwesomeAssertions" />
 	</ItemGroup>
 
 	<ItemGroup>

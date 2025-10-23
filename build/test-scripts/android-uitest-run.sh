@@ -31,6 +31,7 @@ then
 fi
 
 export UITEST_IS_LOCAL=${UITEST_IS_LOCAL=false}
+export UNO_ANDROID_BUILD_TOOLS_VERSION="35.0.1"
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 export UNO_UITEST_APP_ID="uno.platform.unosampleapp"
 export UNO_UITEST_PLATFORM=Android
@@ -61,7 +62,8 @@ cd $BUILD_SOURCESDIRECTORY/build
 #
 export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
 export ANDROID_SDK_ROOT=$BUILD_SOURCESDIRECTORY/build/android-sdk
-export CMDLINETOOLS=commandlinetools-mac-8512546_latest.zip
+export CMDLINETOOLS=commandlinetools-linux-8512546_latest.zip
+export ANDROID_AVD_HOME="${ANDROID_AVD_HOME:=$HOME/.android/avd}"
 
 if [[ ! -d $ANDROID_HOME ]];
 then
@@ -77,7 +79,7 @@ fi
 # sudo installer -verbose -pkg Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg -target /
 
 AVD_NAME=xamarin_android_emulator
-AVD_CONFIG_FILE=~/.android/avd/$AVD_NAME.avd/config.ini
+AVD_CONFIG_FILE="$ANDROID_AVD_HOME/$AVD_NAME.avd/config.ini"
 
 if [[ ! -f $AVD_CONFIG_FILE ]];
 then
@@ -91,7 +93,7 @@ then
 	# Install AVD files
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;33.0.0' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "build-tools;$UNO_ANDROID_BUILD_TOOLS_VERSION" | tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-28;google_apis_playstore;$EMU_ARCH" | tr '\r' '\n' | uniq
@@ -246,6 +248,11 @@ else
 	# new parameters must include the ":" to separate parameter options
 	# the response file contains only the filters, in order to get proper stderr
 	echo "--filter:\"$UNO_TESTS_FILTER\"" > tests.rsp
+
+	# Workaround for https://github.com/dotnet/maui/issues/31072
+	# Create a fake file that Xamarin.UITest will recognize and keep going
+	touch assemblies.blob
+	zip -u "$UNO_UITEST_ANDROIDAPK_PATH" assemblies.blob
 
 	## Run NUnit tests
 	dotnet run -c Release -bl:$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/android-test.binlog -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings @tests.rsp || true

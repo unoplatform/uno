@@ -29,7 +29,7 @@ partial class CommandBarFlyoutCommandBar
 {
 	public CommandBarFlyoutCommandBar()
 	{
-		DefaultStyleKey = typeof(CommandBarFlyoutCommandBar);
+		this.SetDefaultStyleKey();
 
 		SetValue(FlyoutTemplateSettingsProperty, new CommandBarFlyoutCommandBarTemplateSettings());
 
@@ -339,7 +339,7 @@ partial class CommandBarFlyoutCommandBar
 			secondaryItemsRoot.SizeChanged += sizeChangedHandler;
 			m_secondaryItemsRootSizeChangedRevoker.Disposable = Disposable.Create(() => secondaryItemsRoot.SizeChanged -= sizeChangedHandler);
 
-			if (ApiInformation.IsEventPresent("Microsoft.UI.Xaml.UIElement", "PreviewKeyDown"))
+			if (ApiInformation.IsEventPresent("Microsoft.UI.Xaml.UIElement, Uno.UI", "PreviewKeyDown"))
 			{
 				void previewKeyDownHandler(object sender, KeyRoutedEventArgs args)
 				{
@@ -450,7 +450,7 @@ partial class CommandBarFlyoutCommandBar
 
 				void OnItemSizeChanged(object? sender, SizeChangedEventArgs args)
 				{
-					UpdateItemVisualState(sender as Control, true /* isPrimaryControl */);
+					UpdateItemVisualState(sender as Control, false /* isPrimaryControl */);
 					UpdateTemplateSettings();
 				}
 				commandAsFE.SizeChanged += OnItemSizeChanged;

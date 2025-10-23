@@ -43,46 +43,58 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			var renderSize = element.RenderSize;
 			var visual = element.Visual;
 
-			if (renderSize is { IsEmpty: true } or { Width: 0, Height: 0 })
+			var previousClip = visual.LayoutClip;
+
+			try
 			{
-				return (0, 0, 0);
+				// Remove any existing layout clip, we want to render the full element, not
+				// the clipped part based on the existing parent's layout slot.
+				visual.LayoutClip = null;
+
+				if (renderSize is { IsEmpty: true } or { Width: 0, Height: 0 })
+				{
+					return (0, 0, 0);
+				}
+
+				// Note: RenderTargetBitmap returns images with the current DPI (a 50x50 Border rendered on WinUI will return a 75x75 image)
+				var dpi = element.XamlRoot?.VisualTree.RootScale.GetEffectiveRasterizationScale() ?? DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
+				var (width, height) = ((int)(renderSize.Width * dpi), (int)(renderSize.Height * dpi));
+				var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
+				using var surface = SKSurface.Create(info);
+				//Ensure Clear
+				var canvas = surface.Canvas;
+				canvas.Clear(SKColors.Transparent);
+				canvas.Scale((float)dpi);
+				visual.RenderRootVisual(canvas, offsetOverride: Vector2.Zero);
+
+				var img = surface.Snapshot();
+
+				var bitmap = img.ToSKBitmap();
+				if (scaledSize.HasValue)
+				{
+					var scaledBitmap = bitmap.Resize(
+						new SKImageInfo((int)scaledSize.Value.Width, (int)scaledSize.Value.Height, SKColorType.Bgra8888, SKAlphaType.Premul),
+						new SKSamplingOptions(SKCubicResampler.CatmullRom));
+					bitmap.Dispose();
+					bitmap = scaledBitmap;
+					(width, height) = (bitmap.Width, bitmap.Height);
+				}
+
+				var byteCount = bitmap.ByteCount;
+				EnsureBuffer(ref buffer, byteCount);
+				unsafe
+				{
+					bitmap.GetPixelSpan().CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
+				}
+				bitmap?.Dispose();
+
+				return (byteCount, width, height);
 			}
-
-			// Note: RenderTargetBitmap returns images with the current DPI (a 50x50 Border rendered on WinUI will return a 75x75 image)
-			var dpi = element.XamlRoot?.VisualTree.RootScale.GetEffectiveRasterizationScale() ?? DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
-			var (width, height) = ((int)(renderSize.Width * dpi), (int)(renderSize.Height * dpi));
-			var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
-			using var surface = SKSurface.Create(info);
-			//Ensure Clear
-			var canvas = surface.Canvas;
-			canvas.Clear(SKColors.Transparent);
-			canvas.Scale((float)dpi);
-			visual.RenderRootVisual(canvas, offsetOverride: Vector2.Zero);
-
-			var img = surface.Snapshot();
-
-			var bitmap = img.ToSKBitmap();
-			if (scaledSize.HasValue)
+			finally
 			{
-				var scaledBitmap = bitmap.Resize(
-					new SKImageInfo((int)scaledSize.Value.Width, (int)scaledSize.Value.Height, SKColorType.Bgra8888, SKAlphaType.Premul),
-					new SKSamplingOptions(SKCubicResampler.CatmullRom));
-				bitmap.Dispose();
-				bitmap = scaledBitmap;
-				(width, height) = (bitmap.Width, bitmap.Height);
+				visual.LayoutClip = previousClip;
+				compositor.IsSoftwareRenderer = previousCompMode;
 			}
-
-			var byteCount = bitmap.ByteCount;
-			EnsureBuffer(ref buffer, byteCount);
-			unsafe
-			{
-				bitmap.GetPixelSpan().CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
-			}
-			bitmap?.Dispose();
-
-			compositor.IsSoftwareRenderer = previousCompMode;
-
-			return (byteCount, width, height);
 		}
 	}
 }

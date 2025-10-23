@@ -48,7 +48,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(12.34, 6, 0, "001,234%")]
 		[DataRow(12.3456, 2, 2, "1,234.56%")]
 		[DataRow(12.340, 6, 2, "001,234.00%")]
-		[DataRow(12.340, 6, 0, "001,234%")]
 		public void When_FormatDoubleWithIsGroupSetTrue(double value, int integerDigits, int fractionDigits, string expected)
 		{
 			var sut = MakeFormatter();

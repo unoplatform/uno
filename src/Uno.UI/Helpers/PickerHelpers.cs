@@ -8,6 +8,8 @@ namespace Uno.UI.Helpers
 {
 	internal static class PickerHelpers
 	{
+		// These GUIDs are documented at https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid
+		internal static readonly Guid WindowsComputerFolderGUID = new("0AC0837C-BBF8-452A-850D-79D08E667CA7");
 		private static readonly Guid WindowsDownloadsGUID = new("374DE290-123F-4565-9164-39C4925E467B");
 
 		public static string GetInitialDirectory(PickerLocationId location)

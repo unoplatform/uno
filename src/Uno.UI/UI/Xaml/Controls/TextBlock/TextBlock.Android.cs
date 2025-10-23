@@ -13,6 +13,7 @@ using System.Text;
 using System.Linq;
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Documents;
+using Android.OS;
 using Android.Text;
 using Android.Text.Style;
 using Android.Widget;
@@ -54,9 +55,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly static TextUtils.TruncateAt TruncateEnd = TextUtils.TruncateAt.End;
 
-		private readonly static Android.Text.Layout.Alignment LayoutAlignCenter = Android.Text.Layout.Alignment.AlignCenter;
-		private readonly static Android.Text.Layout.Alignment LayoutAlignOpposite = Android.Text.Layout.Alignment.AlignOpposite;
-		private readonly static Android.Text.Layout.Alignment LayoutAlignNormal = Android.Text.Layout.Alignment.AlignNormal;
+		private readonly static ALayoutAlignment LayoutAlignCenter = ALayoutAlignment.AlignCenter;
+		private readonly static ALayoutAlignment LayoutAlignOpposite = ALayoutAlignment.AlignOpposite;
+		private readonly static ALayoutAlignment LayoutAlignNormal = ALayoutAlignment.AlignNormal;
 
 		private readonly static Java.Lang.String EmptyString = new Java.Lang.String();
 		private static Java.Lang.Reflect.Constructor _maxLinedStaticLayout;
@@ -66,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		static TextBlock()
 		{
-			if ((int)Android.OS.Build.VERSION.SdkInt < 28)
+			if ((int)ABuild.VERSION.SdkInt < 28)
 			{
 				InitializeStaticLayoutInterop();
 			}
@@ -92,7 +93,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_textDirectionHeuristics == null)
 			{
-				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+				if (ABuild.VERSION.SdkInt >= BuildVersionCodes.Kitkat)
 				{
 					_textDirectionHeuristics = (Java.Lang.Object)TextDirectionHeuristics.FirststrongLtr;
 				}
@@ -121,13 +122,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private Java.Lang.ICharSequence _textFormatted;
 		private TextPaint _paint;
 		private TextUtils.TruncateAt _ellipsize;
-		private Android.Text.Layout.Alignment _layoutAlignment;
+		private ALayoutAlignment _layoutAlignment;
 		private JustificationMode _justificationMode;
 
 		/// <summary>
 		/// Used by unit tests to verify that the displayed color matches the nominal managed color.
 		/// </summary>
-		internal Android.Graphics.Color? NativeArrangedColor => _arrangeLayout?.Layout.Paint?.Color;
+		internal AColor? NativeArrangedColor => _arrangeLayout?.Layout.Paint?.Color;
 
 		private void InitializePartial()
 		{
@@ -394,7 +395,7 @@ namespace Microsoft.UI.Xaml.Controls
 				//If the measure height is the arrange height.
 				isSameHeight = isSameHeight || isSameMeasuredHeight || isSameUnboundHeight;
 
-				if (!isTextConstrained && isSameWidth && isSameHeight && _layoutAlignment == Android.Text.Layout.Alignment.AlignNormal)
+				if (!isTextConstrained && isSameWidth && isSameHeight && _layoutAlignment == ALayoutAlignment.AlignNormal)
 				{
 					// We can reuse the measure layout as the arrange layout, since it
 					// renders as the same visible surface.
@@ -507,7 +508,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			private readonly Java.Lang.ICharSequence _textFormatted;
 			private readonly TextUtils.TruncateAt _ellipsize;
-			private readonly Android.Text.Layout.Alignment _layoutAlignment;
+			private readonly ALayoutAlignment _layoutAlignment;
 			private readonly JustificationMode _justificationMode;
 			private readonly TextWrapping _textWrapping;
 			private readonly int _maxLines;
@@ -529,7 +530,7 @@ namespace Microsoft.UI.Xaml.Controls
 			/// <summary>
 			/// The layout to be drawn
 			/// </summary>
-			public Android.Text.Layout Layout { get; private set; }
+			public ALayout Layout { get; private set; }
 
 			/// <summary>
 			/// Builds a new layout with the specified parameters.
@@ -538,7 +539,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Java.Lang.ICharSequence textFormatted,
 				TextPaint paint,
 				TextUtils.TruncateAt ellipsize,
-				Android.Text.Layout.Alignment layoutAlignment,
+				ALayoutAlignment layoutAlignment,
 				JustificationMode isJustifiedText,
 				TextWrapping textWrapping,
 				int maxLines,
@@ -626,7 +627,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// use the measured width of the text.
 						desiredWidth = Math.Min(
 							maxWidth.Value,
-							(int)Math.Ceiling(Android.Text.Layout.GetDesiredWidth(_textFormatted, _paint))
+							(int)Math.Ceiling(ALayout.GetDesiredWidth(_textFormatted, _paint))
 						);
 					}
 					else
@@ -634,7 +635,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// We need to return the size of the text, no matter what
 						// the available size it: the layout engine will automatically
 						// apply clipping when required.
-						desiredWidth = (int)Math.Ceiling(Android.Text.Layout.GetDesiredWidth(_textFormatted, _paint));
+						desiredWidth = (int)Math.Ceiling(ALayout.GetDesiredWidth(_textFormatted, _paint));
 					}
 
 					MakeLayout(
@@ -645,7 +646,7 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					// No constraint, this is going to be a text on a single line.
-					desiredWidth = (int)Math.Ceiling(Android.Text.Layout.GetDesiredWidth(_textFormatted, _paint));
+					desiredWidth = (int)Math.Ceiling(ALayout.GetDesiredWidth(_textFormatted, _paint));
 
 					MakeLayout(desiredWidth);
 				}
@@ -676,7 +677,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (lineAtHeight == 1)
 					{
-						desiredWidth = (int)Math.Ceiling(Android.Text.Layout.GetDesiredWidth(_textFormatted, _paint));
+						desiredWidth = (int)Math.Ceiling(ALayout.GetDesiredWidth(_textFormatted, _paint));
 					}
 
 					MakeLayout(
@@ -770,7 +771,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				if ((int)Android.OS.Build.VERSION.SdkInt < 28)
+				if ((int)ABuild.VERSION.SdkInt < 28)
 				{
 					Layout = UnoStaticLayoutBuilder.Build(
 						/*source:*/ _textFormatted,
@@ -796,7 +797,7 @@ namespace Microsoft.UI.Xaml.Controls
 						.SetIncludePad(true);
 
 					// JustificationMode was introduced in Android 8.
-					if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+					if (ABuild.VERSION.SdkInt >= BuildVersionCodes.O)
 					{
 						builder.SetJustificationMode(_justificationMode);
 					}
@@ -826,7 +827,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var physicalPoint = point.LogicalToPhysicalPixels();
 
 			var layout = _arrangeLayout.Layout;
-			var rect = new Android.Graphics.Rect(0, 0, layout.Width, layout.Height);
+			var rect = new ARect(0, 0, layout.Width, layout.Height);
 			if (rect.Contains((int)physicalPoint.X, (int)physicalPoint.Y))
 			{
 				int line = layout.GetLineForVertical((int)physicalPoint.Y);

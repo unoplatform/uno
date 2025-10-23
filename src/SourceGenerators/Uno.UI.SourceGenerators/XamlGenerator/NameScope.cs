@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Uno.Extensions;
+using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -17,13 +18,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	/// <param name="ClassName"></param>
 	internal record NameScope(ImmutableStack<NameScope> Parents, string FileUniqueId, string Namespace, string ClassName)
 	{
+		private readonly Dictionary<string, Action<IIndentedStringBuilder>> _methods = new();
+
 		public string Name => $"{Namespace.Replace(".", "")}{ClassName}";
 
 		/// <summary>
 		/// Name of the root class for all sub-classes
 		/// </summary>
 		/// <remarks>All sub-classes will be generated nested to this class, which is flagged with CreateNewOnMetadataUpdate attribute to avoid issues with HR.</remarks>
-		public string SubClassesRoot => $"__{FileUniqueId}_{string.Join("_", [Name, .. Parents.Select(scope => scope.Name)])}";
+		public string SubClassesRoot => $"__{FileUniqueId}"; // Note: The SubClassesRoot is no longer relative to the current scope!
 
 		/// <summary>
 		/// Used to detect duplicate x:Name and report error for those.
@@ -54,14 +57,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public List<string> XBindTryGetMethodDeclarations { get; } = [];
 
-		public List<string> ExplicitApplyMethods { get; } = [];
+		public int ComponentCount => Components.Count;
 
 		/// <summary>
 		/// Set of method builders to be generated for the current scope.
 		/// This is usually used to avoid delegates like for event handlers.
 		/// </summary>
-		public List<Action<IIndentedStringBuilder>> CallbackMethods { get; } = [];
+		public IImmutableList<Action<IIndentedStringBuilder>> Methods => _methods.Values.ToImmutableList();
 
-		public int ComponentCount => Components.Count;
+		/// <summary>
+		/// Registers a method to be generated in the current scope.
+		/// </summary>
+		/// <param name="name">The suggested method name.</param>
+		/// <param name="methodBuilder">Method builder accepting the effective name of the method as parameter.</param>
+		/// <returns>The effective method name.</returns>
+		public string RegisterMethod(string name, Action<string, IIndentedStringBuilder> methodBuilder)
+		{
+			return name = NamingHelper.AddUnique(_methods, name, BuildMethod);
+
+			void BuildMethod(IIndentedStringBuilder builder)
+				=> methodBuilder(name, builder);
+		}
 	}
 }

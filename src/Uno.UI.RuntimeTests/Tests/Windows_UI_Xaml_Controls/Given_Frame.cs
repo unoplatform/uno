@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Combinatorial.MSTest;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -33,7 +34,7 @@ public class Given_Frame
 			Assert.IsFalse(navigating);
 			Assert.IsFalse(navigated);
 			navigating = true;
-			Assert.AreEqual(e.SourcePageType, typeof(FrameNavigateFirstPage));
+			Assert.AreEqual(typeof(FrameNavigateFirstPage), e.SourcePageType);
 		};
 		frame.Navigated += (snd, e) =>
 		{
@@ -491,6 +492,36 @@ public class Given_Frame
 		var exception = Assert.ThrowsExactly<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInOnNavigatedToPage)));
 		Assert.AreEqual("Crashed", exception.Message);
 		Assert.IsTrue(navigationFailed);
+	}
+
+	[TestMethod]
+	public async Task When_BackStack_Then_Go_Back()
+	{
+		var SUT = new Frame()
+		{
+			Width = 200,
+			Height = 200
+		};
+		var navigated = false;
+
+		SUT.Navigated += (s, e) =>
+		{
+			navigated = true;
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		SUT.Navigate(typeof(FirstPage));
+		await TestServices.WindowHelper.WaitFor(() => navigated);
+		navigated = false;
+
+		Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
+
+		SUT.BackStack.Add(new PageStackEntry(typeof(SecondPage), null, new SuppressNavigationTransitionInfo()));
+		SUT.GoBack();
+
+		await TestServices.WindowHelper.WaitFor(() => navigated);
+		Assert.IsInstanceOfType(SUT.Content, typeof(SecondPage));
 	}
 
 #if HAS_UNO

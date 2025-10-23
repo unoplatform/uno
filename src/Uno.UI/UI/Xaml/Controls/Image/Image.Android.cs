@@ -501,7 +501,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var translateX = ViewHelper.LogicalToPhysicalPixels(sourceRect.X);
 			var translateY = ViewHelper.LogicalToPhysicalPixels(sourceRect.Y);
 
-			var matrix = new Android.Graphics.Matrix();
+			var matrix = new AMatrix();
 			matrix.PostScale((float)scaleX, (float)scaleY);
 			matrix.PostTranslate(translateX, translateY);
 			_nativeImageView.ImageMatrix = matrix;

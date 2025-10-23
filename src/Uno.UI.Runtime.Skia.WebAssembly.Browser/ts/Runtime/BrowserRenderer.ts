@@ -5,8 +5,6 @@ namespace Uno.UI.Runtime.Skia {
 		requestRender: any;
 		static anyGL: any;
 		glCtx: any;
-		continousRender: boolean;
-		queued: boolean;
 
 		constructor(managedHandle: number) {
 			this.managedHandle = managedHandle;
@@ -32,8 +30,9 @@ namespace Uno.UI.Runtime.Skia {
 
 		private setCanvasSize() {
 			var scale = window.devicePixelRatio || 1;
-			var width = document.documentElement.clientWidth;
-			var height = document.documentElement.clientHeight
+			var rect = document.documentElement.getBoundingClientRect();
+			var width = rect.width;
+			var height = rect.height;
 			var w = width * scale
 			var h = height * scale;
 
@@ -42,55 +41,17 @@ namespace Uno.UI.Runtime.Skia {
 			if (this.canvas.height !== h)
 				this.canvas.height = h;
 
-			this.canvas.style.width = `${width}px`;
-			this.canvas.style.height = `${height}px`;
-
 			// We request to repaint on the next frame. Without this, the first frame after resizing the window will be
 			// blank and will cause a flickering effect when you drag the window's border to resize.
 			// See also https://github.com/unoplatform/uno-private/issues/902.
 			BrowserRenderer.invalidate(this);
 		}
 
-		static setContinousRender(instance: BrowserRenderer, enabled: boolean) {
-			instance.continousRender = enabled;
-
-			if (enabled) {
-				BrowserRenderer.invalidate(instance);
-			}
-		}
-
 		static invalidate(instance: BrowserRenderer) {
-
-			const render = () => {
-				// Allow for another queuing to happen in callees of `requestRender`
-				instance.queued = false;
-
-				if (instance.requestRender) {
-					// make current for this canvas instance
-					(<any>window).GL.makeContextCurrent(instance.glCtx);
-
-					instance.requestRender();
-
-					if (
-						// If we're in continuous render mode, we need to requeue
-						instance.continousRender
-
-						// unless there's already another queueued render
-						&& !instance.queued) {
-
-							queueRender();
-					}
-				}
-			};
-
-			const queueRender = () => {
-				instance.queued = true;
-				window.requestAnimationFrame(() => render());
-			};
-
-			if (!instance.queued) {
-				queueRender();
-			}
+			window.requestAnimationFrame(() => {
+				(<any>window).GL.makeContextCurrent(instance.glCtx);
+				instance.requestRender();
+			});
 		}
 
 		public static createContextStatic(instance: BrowserRenderer, canvasOrCanvasId: any) {

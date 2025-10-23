@@ -77,13 +77,40 @@ public static class UITestHelper
 		[CallerLineNumber] int lineNumber = 0
 	) => TestServices.WindowHelper.WaitFor(condition, timeoutMS, message, callerMemberName, lineNumber);
 
+	public static async Task WaitForRender(
+		int frameCount = 1,
+		int timeoutMS = 1000,
+		string? message = null,
+		[CallerMemberName] string? callerMemberName = null,
+		[CallerLineNumber] int lineNumber = 0)
+	{
+#if __SKIA__
+		var renderingCount = 0;
+		EventHandler<object> callback = (_, _) => renderingCount++;
+		CompositionTarget.Rendering += callback;
+		try
+		{
+			var currentRenderingCount = renderingCount;
+			await WaitFor(() => renderingCount - currentRenderingCount >= frameCount, timeoutMS, message, callerMemberName, lineNumber);
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= callback;
+		}
+#else
+		await WaitForIdle();
+		await Task.Delay(timeoutMS);
+#endif
+	}
+
+
 	public static async Task WaitForIdle(bool waitForCompositionAnimations = false)
 	{
 #if __SKIA__
 		do
 		{
 			await TestServices.WindowHelper.WaitForIdle();
-		} while (waitForCompositionAnimations && (TestServices.WindowHelper.WindowContent?.Visual?.Compositor?.IsAnimating ?? false));
+		} while (waitForCompositionAnimations && (TestServices.WindowHelper.WindowContent?.Visual?.Compositor.IsAnimating ?? false));
 #else
 		await TestServices.WindowHelper.WaitForIdle();
 #endif
@@ -351,435 +378,8 @@ public partial class DynamicDataTemplatePresenter : ContentPresenter
 	}
 }
 
-
-public static class InputInjectorExtensions
-{
-	public static IInjectedPointer GetPointer(this InputInjector injector, PointerDeviceType pointer)
-		=> pointer switch
-		{
-			PointerDeviceType.Touch => GetFinger(injector),
-#if !WINAPPSDK
-			PointerDeviceType.Mouse => GetMouse(injector),
-#endif
-			_ => throw new NotSupportedException($"Injection of {pointer} is not supported on this platform.")
-		};
-
-	public static Finger GetFinger(this InputInjector injector, uint id = 42)
-		=> new(injector, id);
-
-#if !WINAPPSDK
-	public static Mouse GetMouse(this InputInjector injector)
-		=> new(injector);
-#endif
-}
-
-public interface IInjectedPointer
-{
-	void Press(Point position);
-
-	void MoveTo(Point position, uint? steps = null, uint? stepOffsetInMilliseconds = null);
-
-	void MoveBy(double deltaX = 0, double deltaY = 0);
-
-	void Release();
-}
-
 public static class FrameworkElementExtensions
 {
 	public static Rect GetAbsoluteBounds(this FrameworkElement element)
 		=> element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
 }
-
-public static class PointExtensions
-{
-	public static Point OffsetLinear(this Point point, double xAndY)
-		=> new(point.X + xAndY, point.Y + xAndY);
-
-	public static Point Offset(this Point point, double x = 0, double y = 0)
-		=> new(point.X + x, point.Y + y);
-}
-
-public static class InjectedPointerExtensions
-{
-	public static void Press(this IInjectedPointer pointer, double x, double y)
-		=> pointer.Press(new(x, y));
-
-	public static void MoveTo(this IInjectedPointer pointer, double x, double y)
-		=> pointer.MoveTo(new(x, y));
-
-	public static void Drag(this IInjectedPointer pointer, Point from, Point to, uint? steps = null, uint? stepOffsetInMilliseconds = null)
-	{
-		pointer.Press(from);
-		pointer.MoveTo(to, steps, stepOffsetInMilliseconds);
-		pointer.Release();
-	}
-
-	public static void Tap(this IInjectedPointer pointer, Point location)
-	{
-		pointer.Press(location);
-		pointer.Release();
-	}
-}
-
-public partial class Finger : IInjectedPointer, IDisposable
-{
-	private const uint _defaultMoveSteps = 10;
-	private const uint _defaultStepOffsetInMilliseconds = 1;
-
-	private readonly InputInjector _injector;
-	private readonly uint _id;
-
-	private Point? _currentPosition;
-
-	public Finger(InputInjector injector, uint id)
-	{
-		_injector = injector;
-		_id = id;
-
-		_injector.InitializeTouchInjection(InjectedInputVisualizationMode.Default);
-	}
-
-	public void Press(Point position)
-	{
-		if (_currentPosition is null)
-		{
-			Inject(GetPress(_id, position));
-			_currentPosition = position;
-		}
-	}
-
-	void IInjectedPointer.MoveTo(Point position, uint? steps, uint? stepOffsetInMilliseconds) =>
-		MoveTo(position, steps ?? _defaultMoveSteps, stepOffsetInMilliseconds ?? _defaultStepOffsetInMilliseconds);
-	public void MoveTo(Point position, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
-	{
-		if (_currentPosition is { } current)
-		{
-			Inject(GetMove(_id, current, position, steps, stepOffsetInMilliseconds));
-			_currentPosition = position;
-		}
-	}
-
-	void IInjectedPointer.MoveBy(double deltaX, double deltaY) => MoveBy(deltaX, deltaY);
-	public void MoveBy(double x = 0, double y = 0, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
-	{
-		if (_currentPosition is { } current)
-		{
-			MoveTo(current.Offset(x, y), steps, stepOffsetInMilliseconds);
-		}
-	}
-
-	public void Release(Point position)
-	{
-		Inject(GetRelease(_id, position));
-		_currentPosition = null;
-	}
-
-	public void Release()
-	{
-		if (_currentPosition is { } current)
-		{
-			Inject(GetRelease(_id, current));
-			_currentPosition = null;
-		}
-	}
-
-	public void Dispose()
-	{
-		Release();
-		_injector.UninitializeTouchInjection();
-	}
-
-	public static InjectedInputTouchInfo GetPress(uint id, Point position)
-		=> new()
-		{
-			PointerInfo = new()
-			{
-				PointerId = id,
-				PixelLocation = At(position),
-				PointerOptions = InjectedInputPointerOptions.New
-					| InjectedInputPointerOptions.FirstButton
-					| InjectedInputPointerOptions.PointerDown
-					| InjectedInputPointerOptions.InContact
-			}
-		};
-
-	public static IEnumerable<InjectedInputTouchInfo> GetMove(uint id, Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
-	{
-		steps += 1; // We need to send at least the final location, but steps refers to the number of intermediate points
-
-		var stepX = (toPosition.X - fromPosition.X) / steps;
-		var stepY = (toPosition.Y - fromPosition.Y) / steps;
-		for (var step = 1; step <= steps; step++)
-		{
-			yield return new()
-			{
-				PointerInfo = new()
-				{
-					PointerId = id,
-					TimeOffsetInMilliseconds = stepOffsetInMilliseconds,
-					PixelLocation = At(fromPosition.X + step * stepX, fromPosition.Y + step * stepY),
-					PointerOptions = InjectedInputPointerOptions.Update
-						| InjectedInputPointerOptions.FirstButton
-						| InjectedInputPointerOptions.InContact
-						| InjectedInputPointerOptions.InRange
-				}
-			};
-		}
-	}
-
-	public static InjectedInputTouchInfo GetRelease(uint id, Point position)
-		=> new()
-		{
-			PointerInfo = new()
-			{
-				PointerId = id,
-				PixelLocation = At(position),
-				PointerOptions = InjectedInputPointerOptions.FirstButton
-					| InjectedInputPointerOptions.PointerUp
-			}
-		};
-
-	private void Inject(IEnumerable<InjectedInputTouchInfo> infos)
-		=> _injector.InjectTouchInput(infos.ToArray());
-
-	private void Inject(params InjectedInputTouchInfo[] infos)
-		=> _injector.InjectTouchInput(infos);
-
-	// Note: This a patch until Uno's pointer injection is being relative to the screen
-	private static InjectedInputPoint At(Point position)
-		=> At(position.X, position.Y);
-
-#if !HAS_UNO
-	[LibraryImport("user32.dll", SetLastError = true)]
-	[return: MarshalAs(UnmanagedType.Bool)]
-	private static partial bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
-	[StructLayout(LayoutKind.Sequential)]
-	private struct RECT
-	{
-		public int Left;
-		public int Top;
-		public int Right;
-		public int Bottom;
-	}
-
-#endif
-
-	private static InjectedInputPoint At(double x, double y)
-#if HAS_UNO
-		=> new() { PositionX = (int)x, PositionY = (int)y };
-#else
-	{
-		RECT rect = new();
-		GetWindowRect(WinRT.Interop.WindowNative.GetWindowHandle(TestServices.WindowHelper.CurrentTestWindow), ref rect);
-		var scale = TestServices.WindowHelper.CurrentTestWindow.Content.XamlRoot.RasterizationScale;
-
-		return new()
-		{
-			PositionX = (int)((rect.Left + x) * scale),
-			PositionY = (int)((rect.Top + y) * scale),
-		};
-	}
-#endif
-}
-
-#if !WINAPPSDK
-public class Mouse : IInjectedPointer, IDisposable
-{
-	private readonly InputInjector _input;
-
-	public Mouse(InputInjector input)
-	{
-		_input = input;
-	}
-
-	private Point Current => _input.Mouse.Position;
-
-	public void Press(Point position)
-		=> Inject(GetMoveTo(position.X, position.Y, null).Concat(new[] { GetPress() }));
-
-	public void PressRight(Point position)
-		=> Inject(GetMoveTo(position.X, position.Y, null).Concat(new[] { GetRightPress() }));
-
-	internal void Press(Point position, VirtualKeyModifiers modifiers)
-	{
-		var infos = GetMoveTo(position.X, position.Y, null).Concat(new[] { GetPress() });
-		Inject(infos.Select(info => (info, modifiers)));
-	}
-
-	public void Press()
-		=> Inject(GetPress());
-
-	public void Press(VirtualKeyModifiers modifiers)
-		=> Inject((GetPress(), modifiers));
-
-	public void Release(VirtualKeyModifiers modifiers)
-		=> Inject((GetRelease(), modifiers));
-
-	public void Release()
-		=> Inject(GetRelease());
-
-	public void PressRight()
-		=> Inject(GetRightPress());
-
-	public void ReleaseRight()
-		=> Inject(GetRightRelease());
-
-	public void ReleaseAny()
-	{
-		var options = default(InjectedInputMouseOptions);
-
-		var current = _input.Mouse;
-		if (current.Properties.IsLeftButtonPressed)
-		{
-			options |= InjectedInputMouseOptions.LeftUp;
-		}
-
-		if (current.Properties.IsMiddleButtonPressed)
-		{
-			options |= InjectedInputMouseOptions.MiddleUp;
-		}
-
-		if (current.Properties.IsRightButtonPressed)
-		{
-			options |= InjectedInputMouseOptions.RightUp;
-		}
-
-		if (current.Properties.IsXButton1Pressed)
-		{
-			options |= InjectedInputMouseOptions.XUp;
-		}
-
-		if (options != default)
-		{
-			Inject(new InjectedInputMouseInfo
-			{
-				TimeOffsetInMilliseconds = 1,
-				MouseOptions = options
-			});
-		}
-	}
-
-	public void MoveBy(double deltaX, double deltaY)
-		=> Inject(GetMoveBy(deltaX, deltaY, 1));
-
-	public void MoveTo(Point position, uint? steps = null, uint? stepOffsetInMilliseconds = null)
-		=> Inject(GetMoveTo(position.X, position.Y, steps, stepOffsetInMilliseconds));
-
-	public void WheelUp() => Wheel(ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
-	public void WheelDown() => Wheel(-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
-	public void WheelRight() => Wheel(ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, isHorizontal: true);
-	public void WheelLeft() => Wheel(-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, isHorizontal: true);
-
-	public void Wheel(double delta, bool isHorizontal = false, uint steps = 1)
-		=> Inject(GetWheel(delta, isHorizontal, steps));
-
-	private IEnumerable<InjectedInputMouseInfo> GetMoveTo(double x, double y, uint? steps, uint? stepOffsetInMilliseconds = null)
-	{
-		var x0 = Current.X;
-		var y0 = Current.Y;
-		var deltaX = x - x0;
-		var deltaY = y - y0;
-
-		steps ??= (uint)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
-		stepOffsetInMilliseconds ??= 1;
-
-		if (steps is 0)
-		{
-			yield break;
-		}
-
-		// Could probably use Bresenham's algorithm if performance issues appear
-		var stepX = deltaX / steps.Value;
-		var stepY = deltaY / steps.Value;
-
-		var prevPositionX = (int)Math.Round(x0);
-		var prevPositionY = (int)Math.Round(y0);
-
-		for (var i = 1; i <= steps; i++)
-		{
-			var newPositionX = (int)Math.Round(x0 + i * stepX);
-			var newPositionY = (int)Math.Round(y0 + i * stepY);
-
-			yield return GetMoveBy(newPositionX - prevPositionX, newPositionY - prevPositionY, stepOffsetInMilliseconds.Value);
-
-			prevPositionX = newPositionX;
-			prevPositionY = newPositionY;
-		}
-	}
-
-	private void Inject(IEnumerable<InjectedInputMouseInfo> infos)
-		=> _input.InjectMouseInput(infos);
-
-	private void Inject(IEnumerable<(InjectedInputMouseInfo, VirtualKeyModifiers)> infos)
-		=> _input.InjectMouseInput(infos);
-
-	private void Inject(params InjectedInputMouseInfo[] infos)
-		=> _input.InjectMouseInput(infos);
-
-	private void Inject(params (InjectedInputMouseInfo, VirtualKeyModifiers)[] infos)
-		=> _input.InjectMouseInput(infos);
-
-	public void Dispose()
-		=> ReleaseAny();
-
-	private static InjectedInputMouseInfo GetPress()
-		=> new()
-		{
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.LeftDown,
-		};
-
-	private static InjectedInputMouseInfo GetRightPress()
-		=> new()
-		{
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.RightDown,
-		};
-
-	private static InjectedInputMouseInfo GetMoveBy(double deltaX, double deltaY, uint stepOffsetInMilliseconds)
-		=> new()
-		{
-			DeltaX = (int)deltaX,
-			DeltaY = (int)deltaY,
-			TimeOffsetInMilliseconds = stepOffsetInMilliseconds,
-			MouseOptions = InjectedInputMouseOptions.MoveNoCoalesce,
-		};
-
-	private static InjectedInputMouseInfo GetRelease()
-		=> new()
-		{
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.LeftUp,
-		};
-
-	private static InjectedInputMouseInfo GetRightRelease()
-		=> new()
-		{
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.RightUp,
-		};
-
-	public static IEnumerable<InjectedInputMouseInfo> GetWheel(double delta, bool isHorizontal, uint steps = 1)
-	{
-		if (steps is 0)
-		{
-			yield break;
-		}
-
-		var stepSize = delta / steps;
-
-		var prev = 0;
-
-		for (var i = 1; i <= steps; i++)
-		{
-			var current = (int)Math.Round(i * stepSize);
-
-			yield return isHorizontal
-				? new() { TimeOffsetInMilliseconds = 1, DeltaX = current - prev, MouseOptions = InjectedInputMouseOptions.HWheel }
-				: new() { TimeOffsetInMilliseconds = 1, DeltaY = current - prev, MouseOptions = InjectedInputMouseOptions.Wheel };
-
-			prev = current;
-		}
-	}
-}
-#endif

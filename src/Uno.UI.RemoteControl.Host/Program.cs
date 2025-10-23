@@ -3,23 +3,30 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.Versioning;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
+using Uno.UI.RemoteControl.Helpers;
 
 namespace Uno.UI.RemoteControl.Host
 {
-	class Program
+	partial class Program
 	{
 		static async Task Main(string[] args)
 		{
@@ -27,66 +34,18 @@ namespace Uno.UI.RemoteControl.Host
 
 			ITelemetry? telemetry = null;
 
-			// Set up graceful shutdown handling
-			using var cancellationTokenSource = new CancellationTokenSource();
-			var shutdownRequested = false;
-
-			Console.CancelKeyPress += (sender, e) =>
-			{
-				if (!shutdownRequested)
-				{
-					shutdownRequested = true;
-					e.Cancel = true; // Prevent immediate termination
-					Console.WriteLine("Graceful shutdown requested...");
-					cancellationTokenSource.Cancel();
-				}
-			};
-
-			// Monitor stdin for CTRL-C character (ASCII 3) for graceful shutdown
-			_ = Task.Run(async () =>
-			{
-				try
-				{
-					if (!Console.IsInputRedirected)
-						return;
-
-					using var reader = new StreamReader(Console.OpenStandardInput());
-
-					var buffer = new char[1];
-					while (!cancellationTokenSource.Token.IsCancellationRequested)
-					{
-						var read = await reader.ReadAsync(buffer, 0, 1);
-						if (read == 0)
-						{
-							break; // EOF
-						}
-
-						if (buffer[0] != '\x03') // CTRL-C (ASCII 3)
-						{
-							continue;
-						}
-
-						if (!shutdownRequested)
-						{
-							shutdownRequested = true;
-							Console.WriteLine("Graceful shutdown requested via stdin...");
-							await cancellationTokenSource.CancelAsync();
-						}
-
-						break;
-					}
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"Error monitoring stdin: {ex.Message}");
-				}
-			}, cancellationTokenSource.Token);
+			using var ct = ConsoleHelper.CreateCancellationToken();
+			AmbientRegistry? ambientRegistry = null;
 
 			try
 			{
 				var httpPort = 0;
 				var parentPID = 0;
 				var solution = default(string);
+				var ideChannel = Guid.Empty;
+				var command = default(string);
+				var workingDir = default(string);
+				var timeoutMs = 30000;
 
 				var p = new OptionSet
 				{
@@ -116,10 +75,52 @@ namespace Uno.UI.RemoteControl.Host
 
 							solution = s;
 						}
+					},
+					{
+						"ideChannel=", s => {
+							if(!Guid.TryParse(s, out ideChannel))
+							{
+								throw new ArgumentException($"The ide channel parameter is invalid {s}");
+							}
+						}
+					},
+					{
+						"c|command=", s => command = s
+					},
+					{
+						"workingDir=", s => workingDir = s
+					},
+					{
+						"timeoutMs=", s => int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out timeoutMs)
 					}
 				};
 
 				p.Parse(args);
+
+				// Controller mode
+				if (!string.IsNullOrWhiteSpace(command))
+				{
+					var verb = command.ToLowerInvariant();
+					switch (verb)
+					{
+						case "start":
+							await StartCommandAsync(httpPort, parentPID, solution, workingDir, timeoutMs);
+							return;
+						case "stop":
+							await StopCommandAsync();
+							return;
+						case "list":
+							await ListCommandAsync();
+							return;
+						case "cleanup":
+							await CleanupCommandAsync();
+							return;
+						default:
+							await Console.Error.WriteLineAsync($"Unknown command '{command}'. Supported: start, stop, list, cleanup");
+							Environment.ExitCode = 1;
+							return;
+					}
+				}
 
 				if (httpPort == 0)
 				{
@@ -142,12 +143,24 @@ namespace Uno.UI.RemoteControl.Host
 					.SetMinimumLevel(LogLevel.Debug));
 
 				globalServices.AddGlobalTelemetry(); // Global telemetry services (Singleton)
+				globalServices.AddOptions<IdeChannelServerOptions>().Configure(opts => opts.ChannelId = ideChannel);
+				globalServices.AddSingleton<IIdeChannel, IdeChannelServer>();
 
 #pragma warning disable ASP0000 // Do not call ConfigureServices after calling UseKestrel.
 				var globalServiceProvider = globalServices.BuildServiceProvider();
 #pragma warning restore ASP0000
 
 				telemetry = globalServiceProvider.GetRequiredService<ITelemetry>();
+
+				// Force resolution of the IDEChannel to enable connection (Note: We should use a BackgroundService instead)
+				// Note: The IDE channel is expected to inform IDE that we are up as soon as possible.
+				//		 This is required for UDEI to **not** log invalid timeout message.
+				globalServiceProvider.GetService<IIdeChannel>();
+
+#pragma warning disable ASPDEPR004
+				// WebHostBuilder is deprecated in .NET 10 RC1.
+				// As we still build for .NET 9, ignore this warning until $(NetPrevious)=net10.
+				// https://github.com/aspnet/Announcements/issues/526
 
 				// STEP 2: Create the WebHost with reference to the global service provider
 				var builder = new WebHostBuilder()
@@ -156,18 +169,18 @@ namespace Uno.UI.RemoteControl.Host
 					.UseUrls($"http://*:{httpPort}/")
 					.UseContentRoot(Directory.GetCurrentDirectory())
 					.UseStartup<Startup>()
-					.ConfigureLogging(logging =>
-						logging
-							.ClearProviders()
-							.AddConsole()
-							.SetMinimumLevel(LogLevel.Debug))
+					.ConfigureLogging(logging => logging
+						.ClearProviders()
+						.AddConsole()
+						.SetMinimumLevel(LogLevel.Debug))
 					.ConfigureAppConfiguration((hostingContext, config) =>
 					{
 						config.AddCommandLine(args);
 					})
 					.ConfigureServices(services =>
 					{
-						services.AddSingleton<IIdeChannel, IdeChannelServer>();
+						services.AddSingleton<IIdeChannel>(_ => globalServiceProvider.GetRequiredService<IIdeChannel>());
+						services.AddSingleton<UnoDevEnvironmentService>();
 
 						// Add the global service provider to the DI container
 						services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
@@ -184,40 +197,40 @@ namespace Uno.UI.RemoteControl.Host
 				else
 				{
 					typeof(Program).Log().Log(LogLevel.Warning, "No solution file specified, add-ins will not be loaded which means that you won't be able to use any of the uno-studio features. Usually this indicates that your version of uno's IDE extension is too old.");
+					builder.ConfigureServices(services => services.AddSingleton(AddInsStatus.Empty));
 				}
+#pragma warning restore ASPDEPR004
 
+#pragma warning disable ASPDEPR008
+				// Ditto: https://github.com/aspnet/Announcements/issues/526
 				var host = builder.Build();
+#pragma warning restore ASPDEPR008
 
 				// Once the app has started, we use the logger from the host
 				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
 
-				host.Services.GetService<IIdeChannel>();
+				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
 				// Display DevServer version banner
-				DisplayVersionBanner();
+				DisplayVersionBanner(httpPort);
 
 				// STEP 3: Use global telemetry for server-wide events
 				// Track devserver startup using global telemetry service
 				var startupProperties = new Dictionary<string, string>
 				{
-					["devserver/Startup/HasSolution"] = (solution != null).ToString(),
+					["StartupHasSolution"] = (solution != null).ToString(),
 				};
 
-				telemetry?.TrackEvent("DevServer.Startup", startupProperties, null);
+				telemetry?.TrackEvent("startup", startupProperties, null);
 
-				_ = ParentProcessObserver.ObserveAsync(
-					parentPID,
-					() =>
-					{
-						shutdownRequested = true;
-						cancellationTokenSource.Cancel();
-					},
-					telemetry,
-					cancellationTokenSource.Token);
+				_ = ParentProcessObserver.ObserveAsync(parentPID, ct.Cancel, telemetry, ct.Token);
+
+				ambientRegistry = new AmbientRegistry(host.Services.GetRequiredService<ILogger<AmbientRegistry>>());
+				ambientRegistry.Register(solution, parentPID, httpPort);
 
 				try
 				{
-					await host.RunAsync(cancellationTokenSource.Token);
+					await host.RunAsync(ct.Token);
 				}
 				finally
 				{
@@ -227,14 +240,14 @@ namespace Uno.UI.RemoteControl.Host
 						var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
 						var shutdownProperties = new Dictionary<string, string>
 						{
-							["devserver/ShutdownType"] = shutdownRequested ? "Graceful" : "Crash",
+							["ShutdownType"] = ct.IsCancellationRequested ? "Graceful" : "Crash",
 						};
 						var shutdownMeasurements = new Dictionary<string, double>
 						{
-							["devserver/UptimeSeconds"] = uptime.TotalSeconds,
+							["UptimeSeconds"] = uptime.TotalSeconds,
 						};
 
-						telemetry.TrackEvent("DevServer.Shutdown", shutdownProperties, shutdownMeasurements);
+						telemetry.TrackEvent("shutdown", shutdownProperties, shutdownMeasurements);
 						await telemetry.FlushAsync(CancellationToken.None);
 					}
 				}
@@ -247,58 +260,59 @@ namespace Uno.UI.RemoteControl.Host
 					var uptime = TimeSpan.FromTicks(Stopwatch.GetElapsedTime(startTime).Ticks);
 					var errorProperties = new Dictionary<string, string>
 					{
-						["devserver/Startup/ErrorMessage"] = ex.Message,
-						["devserver/Startup/ErrorType"] = ex.GetType().Name,
-						["devserver/Startup/StackTrace"] = ex.StackTrace ?? "",
+						["StartupErrorMessage"] = ex.Message,
+						["StartupErrorType"] = ex.GetType().Name,
+						["StartupStackTrace"] = ex.StackTrace ?? "",
 					};
 					var errorMeasurements = new Dictionary<string, double>
 					{
-						["devserver/UptimeSeconds"] = uptime.TotalSeconds,
+						["UptimeSeconds"] = uptime.TotalSeconds,
 					};
 
-					telemetry.TrackEvent("DevServer.StartupFailure", errorProperties, errorMeasurements);
+					telemetry.TrackEvent("startup-failure", errorProperties, errorMeasurements);
 					await telemetry.FlushAsync(CancellationToken.None);
 					throw;
 				}
+			}
+			finally
+			{
+				ambientRegistry?.Unregister();
 			}
 		}
 
 		/// <summary>
 		/// Displays a banner with the DevServer version information when it starts up.
 		/// </summary>
-		private static void DisplayVersionBanner()
+		private static void DisplayVersionBanner(int httpPort)
 		{
 			try
 			{
 				var assembly = typeof(Program).Assembly;
-				var version = assembly.GetName().Version?.ToString() ?? "Unknown";
+				var version = VersionHelper.GetVersion(assembly);
 				var assemblyName = assembly.GetName().Name ?? "Uno.UI.RemoteControl.Host";
 				var location = assembly.Location;
 
-				Console.WriteLine();
-				Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
-				Console.WriteLine("║                    Uno Platform DevServer                   ║");
-				Console.WriteLine("╠══════════════════════════════════════════════════════════════╣");
-				Console.WriteLine($"║ Version: {version,-47} ║");
-				Console.WriteLine($"║ Assembly: {assemblyName,-46} ║");
-				if (!string.IsNullOrEmpty(location))
+				var targetFrameworkAttr = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
+				var runtimeText = targetFrameworkAttr is not null
+					? $"dotnet v{Environment.Version} (Assembly target: {targetFrameworkAttr.FrameworkDisplayName})"
+					: $"dotnet v{Environment.Version}";
+
+				var entries = new List<Host.Helpers.BannerHelper.BannerEntry>()
 				{
-					var shortLocation = location.Length > 45 ? $"...{location.AsSpan(location.Length - 42)}" : location;
-					Console.WriteLine($"║ Location: {shortLocation,-46} ║");
-				}
-				Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
-				Console.WriteLine();
+#if DEBUG
+					("Build", "DEBUG"),
+#endif
+					("Version", version),
+					("Runtime", runtimeText),
+					("Assembly", assemblyName),
+					("Location", Path.GetDirectoryName(location) ?? location, Helpers.BannerHelper.ClipMode.Start),
+					("HTTP Port", httpPort.ToString(DateTimeFormatInfo.InvariantInfo)),
+				};
+
+				Helpers.BannerHelper.Write("Uno Platform DevServer", entries);
 			}
 			catch (Exception ex)
 			{
-				// Fallback in case of any issues with version extraction
-				Console.WriteLine();
-				Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
-				Console.WriteLine("║                    Uno Platform DevServer                   ║");
-				Console.WriteLine("║                         Started                              ║");
-				Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
-				Console.WriteLine();
-
 				// Log the error for debugging purposes
 				Console.WriteLine($"Warning: Could not extract version information: {ex.Message}");
 			}

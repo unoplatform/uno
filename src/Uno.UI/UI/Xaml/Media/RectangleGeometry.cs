@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Media
 		#region Geometry implementation (not implemented)
 
 #if __ANDROID__
-		public override Android.Graphics.Path ToPath()
+		public override APath ToPath()
 		{
 			throw new NotImplementedException();
 		}

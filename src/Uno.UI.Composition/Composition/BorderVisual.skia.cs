@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
 using SkiaSharp;
@@ -130,10 +131,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			session.Canvas.Save();
 			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
 			// E.g. effect brushes will draw outside the intended area if they're not clipped.
-			if (_backgroundClip?.GetClipPath(this) is { } bgClip)
-			{
-				session.Canvas.ClipPath(bgClip, SKClipOperation.Intersect, true);
-			}
+			_backgroundClip?.ApplyClip(this, session.Canvas);
 			backgroundShape.Render(in session);
 			session.Canvas.Restore();
 		}
@@ -183,6 +181,20 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				? path.Op(baseClip, SKPathOp.Intersect)
 				: path
 			: base.GetPostPaintingClipping();
+	}
+
+	private protected override void ApplyPostPaintingClipping(SKCanvas canvas)
+	{
+		if (base.GetPostPaintingClipping() is null)
+		{
+			// At the time of writing, this branch is always taken
+			UpdatePathsAndCornerClip();
+			_childClipCausedByCornerRadius?.ApplyClip(this, canvas);
+		}
+		else if (GetPostPaintingClipping() is { } clip)
+		{
+			canvas.ClipPath(clip);
+		}
 	}
 
 	private void UpdatePathsAndCornerClip()

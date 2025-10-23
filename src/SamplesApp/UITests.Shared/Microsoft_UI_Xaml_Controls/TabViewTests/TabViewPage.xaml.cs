@@ -23,9 +23,11 @@ using Windows.ApplicationModel.DataTransfer;
 using MUXControlsTestApp.Utilities;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
-using System.Linq;
+using UITests.Microsoft_UI_Xaml_Controls.TabViewTests;
+using Microsoft.UI.Xaml.Shapes;
+using System.Reflection;
 
-namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
+namespace MUXControlsTestApp
 {
 	public partial class TabDataItem : DependencyObject
 	{
@@ -35,7 +37,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 	}
 
 	[Sample("TabView", "MUX")]
-	public sealed partial class TabViewPage : Page
+	public sealed partial class TabViewPage : TestPage
 	{
 		int _newTabNumber = 1;
 		SymbolIconSource _iconSource;
@@ -43,9 +45,11 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		public TabViewPage()
 		{
 			this.InitializeComponent();
-			DisabledTab.Loaded += TabViewPage_Loaded;
+
 			_iconSource = new SymbolIconSource();
 			_iconSource.Symbol = Symbol.Placeholder;
+
+			Tabs.TabItemsChanged += Tabs_TabItemsChanged;
 
 			ObservableCollection<TabDataItem> itemSource = new ObservableCollection<TabDataItem>();
 			for (int i = 0; i < 5; i++)
@@ -57,18 +61,21 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 				itemSource.Add(item);
 			}
 			DataBindingTabView.TabItemsSource = itemSource;
+
+			backgroundColorCache = BackgroundGrid.Background;
+			activeTabContentBackgroundBrushCache = FirstTabContent.Background;
+			CacheFirstTabSelectedBackgroundPathFill();
 		}
 
-		private void TabViewPage_Loaded(object sender, RoutedEventArgs e)
+		private void Tabs_TabItemsChanged(TabView sender, Windows.Foundation.Collections.IVectorChangedEventArgs args)
 		{
-			var layoutRoot = (Grid)VisualTreeHelper.GetChild(DisabledTab, 0);
-			VisualStateManager.GetVisualStateGroups(layoutRoot).Single(s => s.Name == "DisabledStates").CurrentStateChanged += CurrentStateChanged;
+			TabsItemChangedEventArgsTextBlock.Text = args.CollectionChange.ToString();
+			TabsItemChangedEventArgsIndexTextBlock.Text = args.Index.ToString();
 		}
 
-		private void CurrentStateChanged(object sender, VisualStateChangedEventArgs e)
-		{
-			DisabledTabStateText.Text = "Disabled tab state: " + e.NewState.Name;
-		}
+		private Brush backgroundColorCache;
+		private Brush activeTabSelectedBackgroundPathBrushCache;
+		private Brush activeTabContentBackgroundBrushCache;
 
 		protected
 #if HAS_UNO
@@ -300,9 +307,10 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			// This event is called when we're dragging between different TabViews
 			// It is responsible for handling the drop of the item into the second TabView
 
-			object obj;
-			object objOriginTabView;
-			if (e.DataView.Properties.TryGetValue(DataIdentifier, out obj) && e.DataView.Properties.TryGetValue(DataTabView, out objOriginTabView))
+			object obj = null;
+			object objOriginTabView = null;
+			if (e.DataView.Properties.TryGetValue(DataIdentifier, out obj) &&
+				e.DataView.Properties.TryGetValue(DataTabView, out objOriginTabView))
 			{
 				// TODO - BUG: obj should never be null, but occassionally is. Why?
 				if (obj == null || objOriginTabView == null)
@@ -355,13 +363,13 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		public void SetTabViewWidth_Click(object sender, RoutedEventArgs e)
 		{
 			// This is the smallest width that fits our content without any scrolling.
-			Tabs.Width = 740;
+			Tabs.Width = 752;
 		}
 
 		public void GetScrollButtonsVisible_Click(object sender, RoutedEventArgs e)
 		{
-			var scrollDecrease = VisualTreeUtils.FindVisualChildByName(Tabs, "ScrollDecreaseButton") as FrameworkElement;
-			var scrollIncrease = VisualTreeUtils.FindVisualChildByName(Tabs, "ScrollIncreaseButton") as FrameworkElement;
+			var scrollDecrease = VisualTreeUtils.FindVisualChildByName(Tabs, "ScrollDecreaseButtonContainer") as FrameworkElement;
+			var scrollIncrease = VisualTreeUtils.FindVisualChildByName(Tabs, "ScrollIncreaseButtonContainer") as FrameworkElement;
 			if (scrollDecrease.Visibility == Visibility.Visible && scrollIncrease.Visibility == Visibility.Visible)
 			{
 				ScrollButtonsVisible.Text = "True";
@@ -408,23 +416,128 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 		private void TabViewSizingPageButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.GetFrame().Navigate(typeof(TabViewSizingPage));
+			this.Frame.Navigate(typeof(TabViewSizingPage));
 		}
 
 		private void TabViewTabClosingBehaviorButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.GetFrame().Navigate(typeof(TabViewTabClosingBehaviorPage));
+			this.Frame.Navigate(typeof(TabViewTabClosingBehaviorPage));
 		}
 
 		private void TabViewTabItemsSourcePageButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.GetFrame().Navigate(typeof(TabViewTabItemsSourcePage));
+			this.Frame.Navigate(typeof(TabViewTabItemsSourcePage));
 		}
 
 		private void ShortLongTextButton_Click(object sender, RoutedEventArgs e)
 		{
 			FirstTab.Header = "s";
 			LongHeaderTab.Header = "long long long long long long long long";
+		}
+
+		private void HomeTabOverlapCheck_Click(object sender, RoutedEventArgs e)
+		{
+			var redBrush = new SolidColorBrush();
+			redBrush.Color = Colors.Red;
+			BackgroundGrid.Background = redBrush;
+
+			var tabBrush = new SolidColorBrush();
+			tabBrush.Color = Colors.Blue;
+			SetFirstTabSelectedBackgroundPathFill(tabBrush);
+
+			var contentBrush = new SolidColorBrush();
+			contentBrush.Color = Colors.Green;
+			FirstTabContent.Background = contentBrush;
+		}
+
+		private void SetActiveTabTransparent_Click(object sender, RoutedEventArgs e)
+		{
+			var tabBrush = new SolidColorBrush();
+			tabBrush.Color = Colors.Transparent;
+			SetFirstTabSelectedBackgroundPathFill(tabBrush);
+		}
+
+		private void SetActiveContentTransparent_Click(object sender, RoutedEventArgs e)
+		{
+			var contentBrush = new SolidColorBrush();
+			contentBrush.Color = Colors.Transparent;
+			FirstTabContent.Background = contentBrush;
+		}
+
+		private void ClearOverlapCheck_Click(object sender, RoutedEventArgs e)
+		{
+			BackgroundGrid.Background = backgroundColorCache;
+
+			if (activeTabSelectedBackgroundPathBrushCache != null)
+			{
+				FrameworkElement selectedBackgroundPath = FindFrameworkElementWithName("SelectedBackgroundPath", FirstTab);
+				if (selectedBackgroundPath != null)
+				{
+					(selectedBackgroundPath as Path).Fill = activeTabSelectedBackgroundPathBrushCache;
+				}
+			}
+
+			if (activeTabContentBackgroundBrushCache != null)
+			{
+				FirstTabContent.Background = activeTabContentBackgroundBrushCache;
+			}
+		}
+
+		private void CacheFirstTabSelectedBackgroundPathFill()
+		{
+			FrameworkElement selectedBackgroundPath = FindFrameworkElementWithName("SelectedBackgroundPath", FirstTab);
+			if (selectedBackgroundPath != null)
+			{
+				activeTabSelectedBackgroundPathBrushCache = (selectedBackgroundPath as Path).Fill;
+			}
+		}
+
+		private void SetFirstTabSelectedBackgroundPathFill(Brush newBrush)
+		{
+			FrameworkElement selectedBackgroundPath = FindFrameworkElementWithName("SelectedBackgroundPath", FirstTab);
+			if (selectedBackgroundPath != null)
+			{
+				(selectedBackgroundPath as Path).Fill = newBrush;
+			}
+		}
+
+		private FrameworkElement FindFrameworkElementWithName(string name, DependencyObject startNode)
+		{
+			int count = VisualTreeHelper.GetChildrenCount(startNode);
+			for (int i = 0; i < count; i++)
+			{
+				DependencyObject current = VisualTreeHelper.GetChild(startNode, i);
+				if ((current.GetType()).Equals(typeof(FrameworkElement)) || (current.GetType().GetTypeInfo().IsSubclassOf(typeof(FrameworkElement))))
+				{
+					FrameworkElement fe = (FrameworkElement)current;
+					if (fe.Name == name)
+					{
+						return fe;
+					}
+				}
+				var result = FindFrameworkElementWithName(name, current);
+				if (result != null)
+				{
+					return result;
+				}
+			}
+			return null;
+		}
+
+		private void SetColorsButton_Click(object sender, RoutedEventArgs e)
+		{
+			var foregroundBrush = new SolidColorBrush();
+			foregroundBrush.Color = Colors.Blue;
+			SecondTab.Foreground = foregroundBrush;
+			var backgroundBrush = new SolidColorBrush();
+			backgroundBrush.Color = Colors.Purple;
+			SecondTab.Background = backgroundBrush;
+		}
+
+		private void ClearColorsButton_Click(object sender, RoutedEventArgs e)
+		{
+			SecondTab.ClearValue(ForegroundProperty);
+			SecondTab.ClearValue(BackgroundProperty);
 		}
 
 		private void GetScrollDecreaseButtonToolTipButton_Click(object sender, RoutedEventArgs e)
@@ -441,50 +554,6 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			{
 				GetToolTipStringForUIElement(scrollIncreaseButton, ScrollIncreaseButtonToolTipTextBlock);
 			}
-		}
-
-		private void GetSecondTabHeaderForegroundButton_Click(object sender, RoutedEventArgs e)
-		{
-			if (FindVisualChildByName(SecondTab, "ContentPresenter") is ContentPresenter presenter
-				&& presenter.Foreground is SolidColorBrush brush)
-			{
-				SecondTabHeaderForegroundTextBlock.Text = brush.Color.ToString();
-			}
-		}
-
-		//TODO: Move to MUX test page base when TreeView PR is merged
-		public static DependencyObject FindVisualChildByName(FrameworkElement parent, string name)
-		{
-			if (parent.Name == name)
-			{
-				return parent;
-			}
-
-			int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-
-			for (int i = 0; i < childrenCount; i++)
-			{
-				FrameworkElement childAsFE = VisualTreeHelper.GetChild(parent, i) as FrameworkElement;
-
-				if (childAsFE != null)
-				{
-					DependencyObject result = FindVisualChildByName(childAsFE, name);
-
-					if (result != null)
-					{
-						return result;
-					}
-				}
-			}
-
-			return null;
-		}
-
-		// Uno Specific sample subpage navigation
-		private Frame GetFrame()
-		{
-			NavFrameGrid.Visibility = Visibility.Visible;
-			return NavFrame;
 		}
 	}
 }

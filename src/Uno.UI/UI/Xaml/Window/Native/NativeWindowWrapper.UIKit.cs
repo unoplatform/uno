@@ -70,10 +70,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	{
 		var newWindowSize = GetWindowSize();
 
-		Bounds = new Rect(default, newWindowSize);
+		SetBoundsAndVisibleBounds(new Rect(default, newWindowSize), GetVisibleBounds(_nativeWindow, newWindowSize));
 		Size = new((int)(newWindowSize.Width * RasterizationScale), (int)(newWindowSize.Height * RasterizationScale));
-
-		SetVisibleBounds(_nativeWindow, newWindowSize);
 	}
 
 	private void ObserveOrientationAndSize()
@@ -112,7 +110,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		return new Size(nativeFrame.Width, nativeFrame.Height);
 	}
 
-	private void SetVisibleBounds(UIWindow keyWindow, Size windowSize)
+	private Rect GetVisibleBounds(UIWindow keyWindow, Size windowSize)
 	{
 		var windowBounds = new Rect(default, windowSize);
 
@@ -140,7 +138,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			height: windowBounds.Height - inset.Top - inset.Bottom
 		);
 
-		VisibleBounds = newVisibleBounds;
+		return newVisibleBounds;
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);

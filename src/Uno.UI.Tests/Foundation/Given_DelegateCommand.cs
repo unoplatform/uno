@@ -25,7 +25,7 @@ namespace Uno.UI.Tests.Foundation
 			var cmd = new DelegateCommand<int>(i => target = i);
 
 			Assert.AreEqual(0, target);
-			Assert.ThrowsException<InvalidCastException>(() => cmd.Execute("10"));
+			Assert.ThrowsExactly<InvalidCastException>(() => cmd.Execute("10"));
 		}
 
 		[TestMethod]
@@ -46,7 +46,7 @@ namespace Uno.UI.Tests.Foundation
 			var cmd = new DelegateCommand<int>(i => target = i);
 
 			Assert.AreEqual(0, target);
-			Assert.ThrowsException<InvalidCastException>(() => cmd.Execute(null));
+			Assert.ThrowsExactly<InvalidCastException>(() => cmd.Execute(null));
 		}
 	}
 }

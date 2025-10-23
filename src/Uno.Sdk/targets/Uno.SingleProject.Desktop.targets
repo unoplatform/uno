@@ -46,7 +46,7 @@
 		<ItemGroup>
 			<!--
 			This removes the transitive dependency to WPF which has a requirement to 
-			have net8.0-windows and not net8.0.
+			have net9.0-windows and not net9.0.
 			-->
 			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
 		</ItemGroup>
@@ -63,6 +63,28 @@
 			<_RuntimeFrameworkToRemove Include="@(RuntimeFramework)" Condition="'%(Identity)'=='Microsoft.WindowsDesktop.App'" />
 			<RuntimeFramework Remove="@(_RuntimeFrameworkToRemove)" />
 		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoRemoveSkiaNativeLibraries"
+			AfterTargets="ResolvePackageAssets"
+			Condition="'$(UnoIncludeAllSkiaNativeLibraries)'!='true' AND '$(RuntimeIdentifier)'==''">
+
+		<PropertyGroup>
+			<UnoSkiaNativeLibraries Condition="'$(UnoSkiaNativeLibraries)'==''">win-arm64;win-x64;osx;linux-arm;linux-arm64;linux-x64</UnoSkiaNativeLibraries>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_UnoSkiaAllNativeLibraries Include="@(RuntimeTargetsCopyLocalItems)"
+				Condition="'%(Filename)'=='libSkiaSharp' OR '%(Filename)'=='libHarfBuzzSharp'" />
+
+			<_UnoSkiaNativeLibrariesToKeep Include="@(_UnoSkiaAllNativeLibraries)"
+				Condition="$(UnoSkiaNativeLibraries.Contains('%(RuntimeIdentifier)'))" />
+
+			<_UnoSkiaNativeLibrariesToRemove Include="@(_UnoSkiaAllNativeLibraries)" Exclude="@(_UnoSkiaNativeLibrariesToKeep)" />
+
+			<RuntimeTargetsCopyLocalItems Remove="@(_UnoSkiaNativeLibrariesToRemove)" />
+		</ItemGroup>
+
 	</Target>
 
 	<!-- 

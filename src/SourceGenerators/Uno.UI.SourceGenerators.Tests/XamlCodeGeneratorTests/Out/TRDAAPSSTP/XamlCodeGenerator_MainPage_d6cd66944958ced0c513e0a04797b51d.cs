@@ -68,13 +68,9 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.ResourceDictionary
 						{
 							IsParsing = true,
-							[
-							"PrimaryColor"
-							] = 
+							["PrimaryColor"] = 
 							global::Microsoft.UI.Colors.Yellow							,
-							[
-							"SecondaryColor"
-							] = 
+							["SecondaryColor"] = 
 							global::Microsoft.UI.Colors.Red							,
 						}
 						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
@@ -127,12 +123,13 @@ namespace TestRepro
 		{
 			this.Bindings.UpdateResources();
 		}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Page _component_0
-			{
-				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_0_Holder.Instance;
-				set => _component_0_Holder.Instance = value;
-			}
+
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.Page _component_0
+		{
+			get => (global::Microsoft.UI.Xaml.Controls.Page)_component_0_Holder.Instance;
+			set => _component_0_Holder.Instance = value;
+		}
 		private interface IMainPage_Bindings
 		{
 			void Initialize();

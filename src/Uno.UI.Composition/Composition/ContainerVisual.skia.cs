@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using SkiaSharp;
 using Windows.Foundation;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Composition;
 
@@ -33,6 +34,8 @@ public partial class ContainerVisual : Visual
 				parent = parent.Parent;
 			}
 
+			InvalidateParentChildrenPicture(true);
+
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)
 			{
@@ -53,6 +56,8 @@ public partial class ContainerVisual : Visual
 	internal IntPtr Handle { get; private set; }
 
 	internal WeakReference? Owner { get; set; }
+
+	internal string? OwnerDebugName => Owner?.Target?.GetType().Name;
 
 	/// <summary>
 	/// Layout clipping is usually applied in the element's coordinate space.
@@ -120,6 +125,26 @@ public partial class ContainerVisual : Visual
 		return true;
 	}
 
+	internal Rect? GetArrangeClipPathInElementCoordinateSpace()
+	{
+		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
+		{
+			return default;
+		}
+
+		if (isAncestorClip)
+		{
+			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
+			var childToParentTransform = Parent!.TotalMatrix * totalMatrixInverted;
+			if (!childToParentTransform.IsIdentity)
+			{
+				rect = rect.Transform(childToParentTransform.ToMatrix3x2());
+			}
+		}
+
+		return rect;
+	}
+
 	private static SKPath _sparePrePaintingClippingPath = new SKPath();
 
 	internal override bool GetPrePaintingClipping(SKPath dst) // TODO: Do not use SKPath here, bad for perf and prevents usage for IDirectManipulationHandler.IsInBoundsForResume
@@ -130,6 +155,12 @@ public partial class ContainerVisual : Visual
 
 		if (base.GetPrePaintingClipping(dst))
 		{
+			// TODO: SKPath-less
+			//if (GetArrangeClipPathInElementCoordinateSpace() is {} clipping)
+			//{
+			//	dst.AddRect(clipping.ToSKRect());
+			//}
+
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
 				dst.Op(prePaintingClipPath, SKPathOp.Intersect, dst);
@@ -139,6 +170,15 @@ public partial class ContainerVisual : Visual
 		}
 		else
 		{
+			// TODO: SKPath-less
+			//if (GetArrangeClipPathInElementCoordinateSpace() is {} clipping)
+			//{
+			//	dst.Reset();
+			//	dst.AddRect(clipping.ToSKRect());
+
+			//	return true;
+			//}
+
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
 				dst.Reset();

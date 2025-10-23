@@ -1,6 +1,8 @@
 ﻿using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Uno.Extensions;
+using Uno.UI;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -26,7 +28,9 @@ namespace Microsoft.UI.Xaml.Input
 
 			Pointers = args.Pointers;
 			PointerDeviceType = args.PointerDeviceType;
-			Position = args.Position;
+			Position = FeatureConfiguration.ManipulationRoutedEventArgs.IsAbsolutePositionEnabled
+				? args.Position
+				: UIElement.GetTransform(container, null).Inverse().Transform(args.Position);
 			Cumulative = args.Cumulative;
 		}
 

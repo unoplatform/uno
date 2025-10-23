@@ -21,7 +21,7 @@ class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatf
 	static FrameworkTemplatePoolDefaultPlatformProvider()
 	{
 		_canUseMemoryManager =
-			ApiInformation.IsPropertyPresent("Windows.System.MemoryManager", "AppMemoryUsage")
+			ApiInformation.IsPropertyPresent("Windows.System.MemoryManager, Uno", "AppMemoryUsage")
 			&& MemoryManager.AppMemoryUsage > 0;
 	}
 

@@ -10,6 +10,7 @@ using static Private.Infrastructure.TestServices;
 using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
 using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
 using Private.Infrastructure;
+using Uno.UI.Toolkit.DevTools.Input;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 

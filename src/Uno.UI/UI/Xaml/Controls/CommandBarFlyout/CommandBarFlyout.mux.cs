@@ -3,18 +3,16 @@
 // MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout.cpp, tag winui3/release/1.7.3, commit 65718e2813a90fc900e8775d2ddc580b268fcc2f
 
 using System;
+using System.Numerics;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using CommandBarFlyoutCommandBar = Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar;
-using System.Numerics;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -195,32 +193,31 @@ partial class CommandBarFlyout
 				}
 
 				SharedHelpers.QueueCallbackForCompositionRendering(() =>
+				{
+					if (commandBar is { } commandBarFlyoutCommandBar)
 					{
-						if (commandBar is { } commandBarFlyoutCommandBar)
+						using var scopeGuard = Disposable.Create(() =>
 						{
-							using var scopeGuard = Disposable.Create(() =>
-							{
-								commandBarFlyoutCommandBar.m_commandBarFlyoutIsOpening = false;
-							});
+							commandBarFlyoutCommandBar.m_commandBarFlyoutIsOpening = false;
+						});
 
-							commandBarFlyoutCommandBar.m_commandBarFlyoutIsOpening = true;
+						commandBarFlyoutCommandBar.m_commandBarFlyoutIsOpening = true;
 
-							// If we don't have IFlyoutBase5 available, then we assume a standard show mode.
-							if (ShowMode == FlyoutShowMode.Standard)
-							{
+						// If we don't have IFlyoutBase5 available, then we assume a standard show mode.
+						if (ShowMode == FlyoutShowMode.Standard)
+						{
 #if HAS_UNO
-								// In case of Uno Platform, the callback is executed too early, before CommandBarFlyoutCommandBar.OnApplyTemplate.
-								// This causes unexpected behavior https://github.com/unoplatform/uno/issues/20984. To avoid this, we schedule the IsOpen change
-								// on the next tick.
-								DispatcherQueue.TryEnqueue(() =>
-								{
-									commandBar.IsOpen = true;
-								});
+							// In case of Uno Platform, the callback is executed too early, before CommandBarFlyoutCommandBar.OnApplyTemplate.
+							// This causes unexpected behavior https://github.com/unoplatform/uno/issues/20984. To avoid this, we schedule the IsOpen change
+							// on the next tick.
+							DispatcherQueue.TryEnqueue(() =>
+							{
+								commandBar.IsOpen = true;
+							});
 #endif
-							}
 						}
 					}
-				);
+				});
 			}
 
 			if (m_primaryCommands.Count > 0)

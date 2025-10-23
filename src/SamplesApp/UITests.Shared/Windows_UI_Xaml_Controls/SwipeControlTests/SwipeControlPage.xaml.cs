@@ -125,7 +125,7 @@ namespace MUXControlsTestApp
 		//SwipeTestHooks.LastInteractedWithSwipeControlChanged += SwipeTestHooks_LastInteractedWithSwipeControlChanged;
 		//         MaterialHelperTestApiSetup();
 
-		//         if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand"))
+		//         if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand, Uno.UI"))
 		//         {
 		//             XamlUICommand uiCommand = new XamlUICommand
 		//             {

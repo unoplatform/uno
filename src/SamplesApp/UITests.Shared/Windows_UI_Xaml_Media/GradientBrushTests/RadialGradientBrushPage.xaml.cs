@@ -141,7 +141,7 @@ namespace MUXControlsTestApp
 			var centerColor = GetPixelAtPoint(new Point(rtb.PixelWidth / 2, rtb.PixelHeight / 2), rtb, pixelArray);
 			var outerColor = GetPixelAtPoint(new Point(0, 0), rtb, pixelArray);
 
-			if (ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionRadialGradientBrush"))
+			if (ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionRadialGradientBrush, Uno.UI.Composition"))
 			{
 				// If CompositionRadialGradientBrush is available then should be rendering a gradient.
 				if (centerColor == Microsoft.UI.Colors.Orange && outerColor == Microsoft.UI.Colors.Green)

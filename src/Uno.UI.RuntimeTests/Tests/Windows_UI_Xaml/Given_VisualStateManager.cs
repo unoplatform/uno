@@ -14,6 +14,8 @@ using SamplesApp.UITests;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Private.Infrastructure;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
@@ -81,6 +83,104 @@ public partial class Given_VisualStateManager
 		// check if the visual-state is set
 		var states = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
 		Assert.IsTrue(states.Contains("MultiSelectEnabled"), $"container2 is not in 'MultiSelectEnabled' state: states={states.JoinBy(",")}");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/339")]
+	public async Task When_VisualState_In_UserControl_No_Trigger()
+	{
+		var SUT = new VisualStateUserControlWithoutTrigger
+		{
+			Mode = ButtonMode.Task
+		};
+
+		Assert.IsTrue(SUT.IsTaskState);
+
+		await UITestHelper.Load(SUT);
+
+		Assert.IsTrue(SUT.IsTaskState);
+		Assert.IsTrue(SUT.IsTaskTextVisible);
+		Assert.IsFalse(SUT.IsMessageTextVisible);
+		Assert.AreEqual(true, SUT.LastGoToStateResult);
+
+		SUT.Mode = ButtonMode.Message;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(SUT.IsMessageState);
+		Assert.IsTrue(SUT.IsMessageTextVisible);
+		Assert.IsFalse(SUT.IsTaskTextVisible);
+		Assert.AreEqual(true, SUT.LastGoToStateResult);
+
+		SUT = new VisualStateUserControlWithoutTrigger
+		{
+			Mode = ButtonMode.Message
+		};
+
+		Assert.IsTrue(SUT.IsMessageState);
+
+		await UITestHelper.Load(SUT);
+
+		SUT.Mode = ButtonMode.Message;
+		Assert.IsTrue(SUT.IsMessageState);
+		Assert.IsTrue(SUT.IsMessageTextVisible);
+		Assert.IsFalse(SUT.IsTaskTextVisible);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/339")]
+	public async Task When_VisualState_In_UserControl_With_Trigger_Min()
+	{
+		var SUT = new VisualStateUserControlWithTrigger
+		{
+			Mode = ButtonMode.Task
+		};
+
+		Assert.IsTrue(SUT.IsTaskState);
+
+		await UITestHelper.Load(SUT);
+
+		// By default, the trigger activates for window width >= 1 == always
+
+		Assert.IsTrue(SUT.IsTriggerState);
+
+		// We can override the trigger
+
+		SUT.Mode = ButtonMode.Message;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(SUT.IsMessageState);
+		Assert.IsTrue(SUT.IsMessageTextVisible);
+		Assert.IsFalse(SUT.IsTriggerState);
+		Assert.AreEqual(true, SUT.LastGoToStateResult);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/339")]
+	public async Task When_VisualState_In_UserControl_With_Trigger_Max()
+	{
+		var SUT = new VisualStateUserControlWithTrigger
+		{
+			Mode = ButtonMode.Task
+		};
+
+		Assert.IsTrue(SUT.IsTaskState);
+
+		SUT.SetTriggerSize(100000); // Too large window size, so the trigger won't be active
+
+		await UITestHelper.Load(SUT);
+
+		Assert.IsTrue(SUT.IsTaskState);
+		Assert.IsFalse(SUT.IsTriggerState);
+
+		// We can still set another state
+
+		SUT.Mode = ButtonMode.Message;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(SUT.IsMessageState);
+		Assert.IsTrue(SUT.IsMessageTextVisible);
+		Assert.IsFalse(SUT.IsTriggerState);
+		Assert.AreEqual(true, SUT.LastGoToStateResult);
 	}
 
 #if HAS_UNO

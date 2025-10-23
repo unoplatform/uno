@@ -31,7 +31,7 @@ public class TelemetryTestProcessor : IServerProcessor, IDisposable
 
 		// Log a test event immediately to verify telemetry resolution works
 		_telemetry.TrackEvent(
-			"TelemetryTest.Initialized",
+			"telemetry-test-initialized",
 			new Dictionary<string, string> { ["ProcessorType"] = GetType().Name, ["ServerScope"] = Scope },
 			new Dictionary<string, double> { ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() });
 	}
@@ -49,7 +49,7 @@ public class TelemetryTestProcessor : IServerProcessor, IDisposable
 		Console.WriteLine("TelemetryTestProcessor processing frame...");
 
 		_telemetry.TrackEvent(
-			"TelemetryTest.ProcessFrame",
+			"telemetry-test-process-frame",
 			new Dictionary<string, string> { ["FrameName"] = frame.Name },
 			null);
 
@@ -62,7 +62,7 @@ public class TelemetryTestProcessor : IServerProcessor, IDisposable
 	public Task ProcessIdeMessage(IdeMessage message, CancellationToken ct)
 	{
 		_telemetry.TrackEvent(
-			"TelemetryTest.ProcessIdeMessage",
+			"telemetry-test-process-ide-message",
 			new Dictionary<string, string> { ["MessageType"] = message.GetType().Name },
 			null);
 

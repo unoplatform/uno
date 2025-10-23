@@ -18,10 +18,6 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.AppleUIKit" PrivateAssets="all" IncludeAssets="None" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skiarenderer;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';skiarenderer;')) AND $(UnoFeatures.Contains(';mauiembedding;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI.Runtime.Skia" ProjectSystem="true" />
 	</ItemGroup>

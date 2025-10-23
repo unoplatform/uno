@@ -61,7 +61,7 @@
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
-		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
+		<EmbeddedResource Include="UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -76,12 +76,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="$(PlatformItemsBasePath)Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
+		<EmbeddedResource Include="$(PlatformItemsBasePath)UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
 		<PRIResource Include="$(PlatformItemsBasePath)**\*.resw" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
+		<Folder Include="UI\Xaml\Controls\Repeater\" />
 		<Folder Include="obj\Uno.UI.Wasm\Debug\" />
 		<Folder Include="tsBindings\" />
 	</ItemGroup>

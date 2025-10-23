@@ -35,7 +35,7 @@ internal class ParentProcessObserver
 				{
 					log.LogWarning($"Parent process {ppid} not found, initiating graceful shutdown...");
 					telemetry?.TrackEvent(
-						"DevServer.ParentProcessLost",
+						"parent-process-lost",
 						default(Dictionary<string, string>),
 						null);
 
@@ -43,7 +43,7 @@ internal class ParentProcessObserver
 
 					await Task.Delay(5_500, ct);
 					telemetry?.TrackEvent(
-						"DevServer.ParentProcessLost.ForcedExit",
+						"parent-process-lost-forced-exit",
 						default(Dictionary<string, string>),
 						null);
 

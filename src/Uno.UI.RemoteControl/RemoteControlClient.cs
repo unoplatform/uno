@@ -551,10 +551,21 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		StartKeepAliveTimer();
 
-		while (await WebSocketHelper.ReadFrame(socket, ct) is HotReload.Messages.Frame frame)
+		while (await WebSocketHelper.ReadFrame(socket, ct) is { } frame)
 		{
 			try
 			{
+				// Central handling for some cross-cutting frames
+				if (frame is { Scope: WellKnownScopes.HotReload, Name: HotReloadStatusMessage.Name })
+				{
+					if (frame.TryGetContent(out HotReloadStatusMessage? hrStatus))
+					{
+						// Report any server initialization error to the global client status sink.
+						// If ServerError is empty/null, this will clear any previously reported fatal server error
+						// and allow the UI to transition back to a normal state when the server recovers.
+						_status.ReportHotReloadServerError(string.IsNullOrEmpty(hrStatus.ServerError) ? null : hrStatus.ServerError);
+					}
+				}
 				if (frame.Scope == WellKnownScopes.DevServerChannel)
 				{
 					if (frame.Name == KeepAliveMessage.Name)

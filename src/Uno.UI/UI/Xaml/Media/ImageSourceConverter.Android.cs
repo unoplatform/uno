@@ -8,19 +8,19 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		partial void CanConvertFromPartial(Type sourceType, ref bool canConvert)
 		{
-			canConvert = sourceType == typeof(Android.Graphics.Bitmap)
-				|| sourceType == typeof(Android.Graphics.Drawables.BitmapDrawable);
+			canConvert = sourceType == typeof(ABitmap)
+				|| sourceType == typeof(ABitmapDrawable);
 		}
 		partial void ConvertFromPartial(object value, ref ImageSource result)
 		{
-			if (value is Android.Graphics.Bitmap)
+			if (value is ABitmap)
 			{
-				result = (Android.Graphics.Bitmap)value;
+				result = (ABitmap)value;
 				return;
 			}
-			if (value is Android.Graphics.Drawables.BitmapDrawable)
+			if (value is ABitmapDrawable)
 			{
-				result = (Android.Graphics.Drawables.BitmapDrawable)value;
+				result = (ABitmapDrawable)value;
 				return;
 			}
 		}

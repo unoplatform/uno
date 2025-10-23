@@ -4,8 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -23,6 +22,8 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
 using Uno.UI.Toolkit.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Toolkit.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
@@ -581,7 +582,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive();
 			}
@@ -673,6 +674,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands)] // Flaky on Skia WPF Islands #9080
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
@@ -724,19 +726,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.MoveTo(inner.GetAbsoluteBounds().GetCenter());
 			mouse.Wheel(-50, steps: 5);
-			await WindowHelper.WaitForIdle();
 
 			// waiting for wheel animation
-			await Task.Delay(500);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			Assert.AreEqual(0, outer.VerticalOffset);
 			Assert.IsTrue(inner.VerticalOffset > 0, "Inner Vertical Offset is not greater than 0");
 
 			mouse.Wheel(-500, steps: 5);
-			await WindowHelper.WaitForIdle();
 
 			// waiting for wheel animation
-			await Task.Delay(500);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			var expectedOffset = outer.ScrollableHeight / 2;
 			Assert.IsTrue(outer.VerticalOffset > expectedOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
@@ -1399,6 +1399,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_TouchScroll_Then_NestedElementReceivePointerEvents()
 		{
 			var nested = new Border
@@ -1443,6 +1446,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_TouchTap_Then_NestedElementReceivePointerEvents()
 		{
 			var nested = new Border
@@ -1482,6 +1488,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
@@ -1521,13 +1528,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.WheelUp();
 
-			await Task.Delay(500);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			sut.VerticalOffset.Should().BeGreaterThan(0);
 
 			mouse.WheelDown();
 
-			await Task.Delay(500);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			sut.VerticalOffset.Should().BeApproximately(0, 0.5);
 #endif
@@ -1851,10 +1858,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				steps: 1,
 				stepOffsetInMilliseconds: 1);
 
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await UITestHelper.WaitForRender();
 
 			Assert.AreEqual(0, parent.VerticalOffset);
-			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1);
+			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1,
+				$"abs(childEndOffset - child.VerticalOffset)={Math.Abs(childEndOffset - child.VerticalOffset)}, expected to be < 1");
 		}
 
 		[TestMethod]
@@ -1917,7 +1925,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 
 			// Wait for the inertia to run
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await UITestHelper.WaitForRender();
 			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1);
 		}
 #endif

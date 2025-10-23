@@ -816,7 +816,7 @@ internal partial class NavigationHistory
 		if (spTransitionInfo is not null)
 		{
 			// Write NavigationTransitionInfo type.
-			NavigationHelpers.WriteHSTRINGToString(spTransitionInfo.GetType().FullName, buffer);
+			NavigationHelpers.WriteHSTRINGToString(spTransitionInfo.GetType().AssemblyQualifiedName, buffer);
 
 			// Write NavigationTransitionInfo.
 			strTransitionInfo = spTransitionInfo.GetNavigationStateCoreInternal();

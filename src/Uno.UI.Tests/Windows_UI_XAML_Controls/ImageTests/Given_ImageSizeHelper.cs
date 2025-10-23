@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rect = Windows.Foundation.Rect;
 using Size = Windows.Foundation.Size;

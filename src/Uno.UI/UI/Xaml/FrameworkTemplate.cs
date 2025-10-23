@@ -30,10 +30,27 @@ namespace Microsoft.UI.Xaml
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
-		internal readonly NewFrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
-		private readonly bool _isLegacyTemplate;
+		private readonly bool _isLegacyTemplate = true; // Tests fails if set to false, so we keep it true for now.
+
+		/// <summary>
+		/// The template builder factory. This field is mutable and may be updated at runtime
+		/// only when Uno.UI.TemplateManager enables "template materialization override mode".
+		/// In this mode, the factory can be replaced to support dynamic template materialization
+		/// scenarios (e.g., hot reload, design-time updates). Outside of this mode, the field
+		/// should remain unchanged. See Uno.UI.TemplateManager for details.
+		/// </summary>
+		internal NewFrameworkTemplateBuilder? _viewFactory;
+
+		/// <summary>
+		/// Sets the view factory. Internal method to avoid unwanted changes from outside the framework.
+		/// </summary>
+		/// <param name="factory">The new factory to set</param>
+		internal void SetViewFactory(NewFrameworkTemplateBuilder? factory)
+		{
+			_viewFactory = factory;
+		}
 
 		/// <summary>
 		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.
@@ -95,7 +112,8 @@ namespace Microsoft.UI.Xaml
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
-		internal protected View? LoadContentCachedCore(DependencyObject? templatedParent) => FrameworkTemplatePool.Instance.DequeueTemplate(this, templatedParent);
+		internal protected View? LoadContentCachedCore(DependencyObject? templatedParent) =>
+			FrameworkTemplatePool.Instance.DequeueTemplate(this, templatedParent);
 
 		/// <summary>
 		/// Manually return an unused template root created by <see cref="LoadContentCached"/> to the pool.
@@ -103,7 +121,8 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>
 		/// This is only used in specialized contexts. Normally the template reuse will be automatically handled by the pool.
 		/// </remarks>
-		internal void ReleaseTemplateRoot(View templateRoot) => FrameworkTemplatePool.Instance.ReleaseTemplateRoot(templateRoot, this);
+		internal void ReleaseTemplateRoot(View templateRoot) =>
+			FrameworkTemplatePool.Instance.ReleaseTemplateRoot(templateRoot, this);
 
 		/// <summary>
 		/// Creates a new instance of the current template.
@@ -152,9 +171,7 @@ namespace Microsoft.UI.Xaml
 
 		public override bool Equals(object? obj)
 		{
-			var other = obj as FrameworkTemplate;
-
-			if (other != null)
+			if (obj is FrameworkTemplate other)
 			{
 				if (FrameworkTemplateEqualityComparer.Default.Equals(other, this))
 				{
@@ -192,9 +209,48 @@ namespace Microsoft.UI.Xaml
 				|| (
 					ReferenceEquals(left?._viewFactory?.Target, right?._viewFactory?.Target)
 					&& left?._viewFactory?.Method == right?._viewFactory?.Method
-					);
+				);
 
 			public int GetHashCode(FrameworkTemplate obj) => obj._hashCode;
+		}
+
+		// --- Uno extension points for template factory injection and update notifications ---
+
+		// Use weak attached field to avoid adding a field to every FrameworkTemplate instance
+		// when the dynamic template update feature is not used
+		private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<FrameworkTemplate, global::Windows.UI.Core.WeakEventHelper.WeakEventCollection> _templateUpdatedHandlers = new();
+
+		internal IDisposable RegisterTemplateUpdated(Action handler)
+		{
+			var handlers = _templateUpdatedHandlers.GetOrCreateValue(this);
+			return global::Windows.UI.Core.WeakEventHelper.RegisterEvent(
+				handlers,
+				handler,
+				(h, s, a) => (h as Action)?.Invoke()
+			);
+		}
+
+		internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factory)
+		{
+			// Special case to update the factory without creating a new instance.
+			// A special mode is required for it to work and is activated directly in the Uno.UI.TemplateManager.
+
+			var previous = _viewFactory;
+			var newFactory = factory?.Invoke(previous);
+			if (newFactory != previous)
+			{
+				_viewFactory = newFactory;
+
+				// Only invoke handlers if they exist for this instance
+				if (_templateUpdatedHandlers.TryGetValue(this, out var handlers))
+				{
+					handlers.Invoke(this, null);
+				}
+
+				return true;
+			}
+
+			return false;
 		}
 	}
 }

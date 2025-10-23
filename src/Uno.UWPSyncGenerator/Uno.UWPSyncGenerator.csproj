@@ -14,9 +14,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Build" Version="17.5.0" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.27" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.27" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.27" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.43" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.43" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(SyncGeneratorCodeAnalysisVersion)" />
@@ -27,13 +27,6 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
-
-		<!-- BEGIN WORKAROUND: These are included transitively, but the transitive versions have vulnerabilities -->
-		<!-- Note that this is actually a false positive from NuGet side -->
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
-		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
-		<!-- END WORKAROUND -->
 	</ItemGroup>
 
 	<ItemGroup>

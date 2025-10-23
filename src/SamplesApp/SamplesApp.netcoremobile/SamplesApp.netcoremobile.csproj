@@ -44,6 +44,9 @@
 
 		<!-- We need all the intermediate assemblies -->
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
+
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -57,7 +60,11 @@
 			<DefineConstants>$(DefineConstants);HAS_TESTCLOUD_AGENT</DefineConstants>
 		</PropertyGroup>
 	</Target>
-	
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.netcoremobile.csproj" />
+	</ItemGroup>
+
 	<Choose>
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios'">
@@ -179,8 +186,15 @@
 				<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
 			</PropertyGroup>
 			
-			<ItemGroup>
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+			</ItemGroup>
+
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
+			</ItemGroup>
+
+			<ItemGroup>
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.37" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
@@ -228,7 +242,6 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Resizetizer" />
-		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -15,6 +15,10 @@
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
 	</PropertyGroup>
 	
+	<ItemGroup Label="GlobalUsings">
+		<Using Include="AwesomeAssertions" />
+	</ItemGroup>
+
 	<!--
 	Uncomment this block to enable generated source debugging
 	<PropertyGroup>
@@ -24,7 +28,7 @@
 	-->
 
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="Combinatorial.MSTest" />
@@ -66,11 +70,12 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.csproj" />
+		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

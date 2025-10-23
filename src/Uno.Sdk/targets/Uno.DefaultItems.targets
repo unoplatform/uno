@@ -1,14 +1,15 @@
 <Project>
-	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.xaml" Exclude="$(DefaultItemExcludes)" IsDefaultItem="true" />
-	</ItemGroup>
-	
+	<!-- Excludes -->
 	<PropertyGroup>
 		<!-- It's never useful to include bin/obj folders, even when UseArtifactsOutput is false  -->
 		<DefaultItemExcludes Condition="!$(DefaultItemExcludes.Contains('bin/**'))">$(DefaultItemExcludes);bin/**</DefaultItemExcludes>
 		<DefaultItemExcludes Condition="!$(DefaultItemExcludes.Contains('obj/**'))">$(DefaultItemExcludes);obj/**</DefaultItemExcludes>
+
+		<!-- Exclude the Stories folder when in Optimize (aka Release) build configuration -->
+		<DefaultItemExcludes Condition=" '$(Optimize)' == 'true' AND '$(HotDesignStoriesFolder)' != '' ">$(HotDesignStoriesFolder)/**</DefaultItemExcludes>
 	</PropertyGroup>
 
+	<!-- Default Includes-->
 	<ItemGroup Condition=" !$(IsWinAppSdk) ">
 		<!-- Include all images by default - matches the __WindowsAppSdkDefaultImageIncludes property in the WindowsAppSDK -->
 		<Content Include="$(AssetsFolder)**"
@@ -40,6 +41,9 @@
 			IsDefaultItem="true" />
 		<Page Include="**\*.xaml"
 			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Page);App.xaml"
+			IsDefaultItem="true" />
+		<UpToDateCheckInput Include="**\*.xaml"
+			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"
 			IsDefaultItem="true" />
 		<Compile Update="**\*.xaml.cs"
 			DependentUpon="%(Filename)"

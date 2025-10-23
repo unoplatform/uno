@@ -502,22 +502,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.SelectionChanged
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TextBox, global::Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs> SelectionChanging
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event TypedEventHandler<TextBox, TextBoxSelectionChangingEventArgs> TextBox.SelectionChanging");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event TypedEventHandler<TextBox, TextBoxSelectionChangingEventArgs> TextBox.SelectionChanging");
-			}
-		}
-#endif
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.TextChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.TextChanging
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

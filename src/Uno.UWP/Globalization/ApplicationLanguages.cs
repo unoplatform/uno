@@ -12,6 +12,11 @@ using System.Collections.Generic;
 using Windows.System.UserProfile;
 using System.Diagnostics.CodeAnalysis;
 
+#if __ANDROID__
+using Android.OS;
+using Environment = global::System.Environment;
+#endif
+
 namespace Windows.Globalization;
 
 public static partial class ApplicationLanguages
@@ -119,10 +124,23 @@ public static partial class ApplicationLanguages
 		string AdjustCultureName(string? name)
 			=> string.IsNullOrEmpty(name) ? "en-US" : name;
 
+#if __ANDROID__
+		string? lt = null;
+		var config = ContextHelper.Current?.Resources?.Configuration;
+		if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
+		{
+			lt = config?.Locales?.Get(0)?.ToLanguageTag();
+		}
+		else
+		{
+			lt = config?.Locale?.ToLanguageTag();
+		}
+#endif
+
 		var languages = new[]
 		{
 #if __ANDROID__
-			ContextHelper.Current?.Resources?.Configuration?.Locales?.Get(0)?.ToLanguageTag(),
+			lt,
 #endif
 			AdjustCultureName(CultureInfo.InstalledUICulture?.Name),
 			AdjustCultureName(CultureInfo.CurrentUICulture?.Name),

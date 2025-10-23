@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Uno.UI.Helpers;
@@ -512,7 +511,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var root = r.FindName("root") as Grid;
 			var innerPanel = r.FindName("innerPanel") as StackPanel;
 
-			Assert.AreEqual(root.DataContext, "42");
+			Assert.AreEqual("42", root.DataContext);
 			Assert.IsNull(innerPanel.DataContext);
 		}
 
@@ -758,6 +757,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void When_Grid_Uses_Common_Syntax()
 		{
 			using var _ = new AssertionScope();
@@ -785,6 +787,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void When_Grid_Uses_New_Succinct_Syntax()
 		{
 			using var _ = new AssertionScope();
@@ -812,6 +817,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void When_Grid_Uses_New_Assigned_ContentProperty_Syntax()
 		{
 			using var _ = new AssertionScope();
@@ -841,7 +849,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_ImplicitStyle_WithoutKey()
 		{
-			Assert.ThrowsException<InvalidOperationException>(() =>
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() =>
 			{
 				var s = GetContent(nameof(When_ImplicitStyle_WithoutKey));
 				var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
@@ -1086,7 +1094,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_CreateFromString_Invalid_MethodName()
 		{
 			var xaml = "<CreateFromStringInvalidMethodNameOwner Test=\"8\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
@@ -1104,14 +1112,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_CreateFromString_Non_Static_Method()
 		{
 			var xaml = "<CreateFromStringNonStaticMethodOwner Test=\"4\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
 		public void When_CreateFromString_Private_Static_Method()
 		{
 			var xaml = "<CreateFromStringPrivateStaticMethodOwner Test=\"21\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
@@ -1129,7 +1137,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_CreateFromString_Invalid_Parameters()
 		{
 			var xaml = "<CreateFromStringInvalidParametersOwner Test=\"2\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
@@ -1137,7 +1145,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		{
 			var xaml = "<CreateFromStringInvalidReturnTypeOwner Test=\"1\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
 			// TODO: This should throw XamlParseException too
-			Assert.ThrowsException<ArgumentException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]

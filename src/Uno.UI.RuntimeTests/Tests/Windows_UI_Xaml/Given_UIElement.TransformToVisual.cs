@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -173,13 +173,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var sv = listView.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(sv);
-			sv.ChangeView(null, 10, null, disableAnimation: true);
+			sv.ChangeView(null, 10, null);
 			await WaitForEqual(10, () => sv.VerticalOffset);
 
 			AssertItem(0, -10);
 			AssertItem(1, 19);
 
-			sv.ChangeView(null, 40, null, disableAnimation: true);
+			sv.ChangeView(null, 40, null);
 
 			await WaitForEqual(40, () => sv.VerticalOffset);
 
@@ -285,14 +285,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			AssertTransformOffset(SUT, 76);
 			AssertTransformOffset(innerBorder, 216);
 
-			SUT.ChangeView(null, 96, null, true);
+			SUT.ChangeView(null, 96, null);
 
 			await TestServices.WindowHelper.WaitForEqual(96, () => SUT.VerticalOffset);
 
 			AssertTransformOffset(SUT, 76);
 			AssertTransformOffset(innerBorder, 120);
 
-			SUT.ChangeView(null, 2000, null, true);
+			SUT.ChangeView(null, 2000, null);
 
 			await TestServices.WindowHelper.WaitForEqual(520, () => SUT.VerticalOffset);
 

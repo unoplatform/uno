@@ -16,7 +16,8 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 {
 	internal record HotReloadStatusMessage(
 		[property: JsonProperty] HotReloadState State,
-		[property: JsonProperty] IImmutableList<HotReloadServerOperationData> Operations)
+		[property: JsonProperty] IImmutableList<HotReloadServerOperationData> Operations,
+		[property: JsonProperty] string? ServerError = null)
 		: IMessage
 	{
 		public const string Name = nameof(HotReloadStatusMessage);

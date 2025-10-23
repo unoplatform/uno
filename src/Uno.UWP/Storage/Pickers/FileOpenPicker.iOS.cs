@@ -65,12 +65,38 @@ namespace Windows.Storage.Pickers
 			{
 				case PickerLocationId.PicturesLibrary when multiple is false || iOS14AndAbove is false:
 				case PickerLocationId.VideosLibrary when multiple is false || iOS14AndAbove is false:
-					return new UIImagePickerController()
+					var controller = new UIImagePickerController()
 					{
 						SourceType = UIImagePickerControllerSourceType.PhotoLibrary,
-						MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary),
 						ImagePickerControllerDelegate = new ImageOpenPickerDelegate(completionSource)
 					};
+
+					var mediaTypesFromPhotoLibrary = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary) ?? [];
+					var types = new List<string>();
+
+					if (FileTypeFilter.Count == 0 || FileTypeFilter.Contains("*"))
+					{
+						types.AddRange(mediaTypesFromPhotoLibrary);
+					}
+					else
+					{
+						var isImageSupported = mediaTypesFromPhotoLibrary.Contains(UTType.Image.ToString());
+						var isVideoSupported = mediaTypesFromPhotoLibrary.Contains(UTType.Movie.ToString());
+
+						if (isImageSupported && FilterHasImage(FileTypeFilter))
+						{
+							types.Add(UTType.Image.ToString());
+						}
+
+						if (isVideoSupported && FilterHasVideo(FileTypeFilter))
+						{
+							types.Add(UTType.Movie.ToString());
+						}
+					}
+
+					controller.MediaTypes = [.. types];
+
+					return controller;
 
 				case PickerLocationId.PicturesLibrary when multiple is true && iOS14AndAbove is true:
 					var imageConfiguration = new PHPickerConfiguration
@@ -270,6 +296,52 @@ namespace Windows.Storage.Pickers
 
 			public override void DidDismiss(UIPresentationController controller) =>
 				_taskCompletionSource.SetResult(Array.Empty<StorageFile?>());
+		}
+
+		private static bool FilterHasVideo(IList<string> filters)
+		{
+			var videoExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+			{
+				".mov",
+				".mp4",
+				".m4v",
+				".avi",
+				".mkv",
+				".3gp",
+				".3g2",
+				".wmv",
+				".flv",
+				".f4v",
+				".mpg",
+				".mpeg",
+				".ts",
+				".webm"
+			};
+
+			return filters.Any(videoExtensions.Contains);
+		}
+
+		private static bool FilterHasImage(IList<string> filters)
+		{
+			var imageExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+			{
+				".jpg",
+				".jpeg",
+				".png",
+				".gif",
+				".tiff",
+				".tif",
+				".bmp",
+				".heic",
+				".heif",
+				".webp",
+				".ico",
+				".raw",
+				".svg",
+				".pdf"
+			};
+
+			return filters.Any(imageExtensions.Contains);
 		}
 	}
 }

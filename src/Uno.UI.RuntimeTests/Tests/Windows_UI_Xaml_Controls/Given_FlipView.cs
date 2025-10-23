@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -20,6 +19,7 @@ using static Private.Infrastructure.TestServices;
 using Windows.UI.Input.Preview.Injection;
 using Uno.Extensions;
 using Windows.Foundation;
+using Uno.UI.Toolkit.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -61,7 +61,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_Given_Infinite_Width()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 			}
@@ -103,7 +103,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Background_Color()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.
 			}
@@ -361,6 +361,73 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 			}
 
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20571")]
+		public async Task When_Decimal_Size()
+		{
+			var flipView = new FlipView
+			{
+				Width = 301.333,
+				Items =
+				{
+					new FlipViewItem
+					{
+						Content = new Grid
+						{
+							Background = new SolidColorBrush(Colors.LightCoral),
+							Children =
+							{
+								new TextBlock
+								{
+									Text = "First item",
+									Foreground = new SolidColorBrush(Colors.White)
+								}
+							}
+						}
+					},
+					new FlipViewItem
+					{
+						Content = new Grid
+						{
+							Background = new SolidColorBrush(Colors.LightSeaGreen),
+							Children =
+							{
+								new TextBlock
+								{
+									Text = "Second item",
+									Foreground = new SolidColorBrush(Colors.White)
+								}
+							}
+						}
+					},
+					new FlipViewItem
+					{
+						Content = new Grid
+						{
+							Background = new SolidColorBrush(Colors.Gold),
+							Children =
+							{
+								new TextBlock
+								{
+									Text = "Third item",
+									Foreground = new SolidColorBrush(Colors.Black)
+								}
+							}
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = flipView;
+			await WindowHelper.WaitForLoaded(flipView);
+
+			flipView.SelectedIndex = 2;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(300);
+
+			Assert.AreEqual(2, flipView.SelectedIndex);
 		}
 
 		[TestMethod]

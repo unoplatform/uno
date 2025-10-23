@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
+
 internal partial class PointerCapture
 {
 	partial void CaptureNative(UIElement target, Pointer pointer)

@@ -122,7 +122,6 @@ public partial class ComboBox : Selector
 			popup.IsLightDismissEnabled = true;
 
 			popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
-			popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 		}
 
 
@@ -352,15 +351,6 @@ public partial class ComboBox : Selector
 		return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
 	}
 
-	private void RestoreSelectedItem()
-	{
-		var selection = GetSelectionContent();
-		if (selection is _View selectionView)
-		{
-			RestoreSelectedItem(selectionView);
-		}
-	}
-
 	/// <summary>
 	/// Restore SelectedItem (or former SelectedItem) view to its position in the dropdown list.
 	/// </summary>
@@ -556,7 +546,15 @@ public partial class ComboBox : Selector
 	}
 
 	internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
-		DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new FrameworkPropertyMetadata(null));
+		DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new FrameworkPropertyMetadata(null, (s, e) => ((ComboBox)s).OnLightDismissOverlayBackgroundChanged(e)));
+
+	private void OnLightDismissOverlayBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+		if (_popup is Popup winUIPopup)
+		{
+			winUIPopup.LightDismissOverlayBackground = (Brush)e.NewValue;
+		}
+	}
 
 	private class DropDownLayouter : Popup.IDynamicPopupLayouter
 	{

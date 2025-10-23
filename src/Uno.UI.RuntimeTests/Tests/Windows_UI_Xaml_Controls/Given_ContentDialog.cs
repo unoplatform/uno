@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -21,7 +22,10 @@ using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml.Automation.Peers;
 using MUXControlsTestApp.Utilities;
 using Combinatorial.MSTest;
+using Microsoft.UI.Windowing;
+using Private.Infrastructure;
 using Uno.UI.Extensions;
+using Uno.UI.Toolkit.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -119,7 +123,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaAndroid)] // Very flaky on Skia Android #9080
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)] // Very flaky on Skia Android #9080
 		public async Task When_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -151,7 +156,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.Native)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.Native)]
 		public async Task When_Uncapped_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog(unconstrained: true)
@@ -620,7 +626,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		[DataTestMethod]
+		[TestMethod]
 		[CombinatorialData]
 		[Ignore("Test is failing on all targets https://github.com/unoplatform/uno/issues/17984")]
 		public async Task When_BackButton_Pressed(bool isCloseButtonEnabled)
@@ -722,6 +728,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				SUT.Hide();
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20842")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)]
+		public async Task When_Window_Resized()
+		{
+			if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)
+			{
+				Assert.Inconclusive("This test requires spawning a new window.");
+			}
+
+			var window = new Window();
+			try
+			{
+				bool activated = false;
+				window.Content = new Border();
+				window.Activated += (s, e) => activated = true;
+				window.Activate();
+				await TestServices.WindowHelper.WaitFor(() => activated);
+				var dialog = new ContentDialog
+				{
+					Title = "Hello World",
+					Content = "This is a sample dialog.",
+					CloseButtonText = "Close",
+					XamlRoot = window.Content.XamlRoot,
+				};
+				_ = dialog.ShowAsync();
+
+				await UITestHelper.WaitForIdle();
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(window.Content.XamlRoot)[0];
+				var panel = (ContentDialog)popup.Child;
+				var size = panel.ActualSize;
+
+				var appWindow = window.AppWindow;
+				AppWindowChangedEventArgs args = null;
+				void OnChanged(AppWindow s, AppWindowChangedEventArgs e)
+				{
+					args = e;
+				}
+				appWindow.Changed += OnChanged;
+				var originalSize = appWindow.Size;
+
+				var adjustedSize = new SizeInt32 { Width = originalSize.Width + 10, Height = originalSize.Height + 10 };
+				appWindow.Resize(adjustedSize);
+				await TestServices.WindowHelper.WaitFor(() => args is not null);
+				Assert.IsTrue(args.DidSizeChange);
+				await UITestHelper.WaitForIdle();
+				Assert.AreNotEqual(size, panel.ActualSize);
+			}
+			finally
+			{
+				window.Close();
 			}
 		}
 #endif

@@ -19,6 +19,9 @@
 		<RollForward>Major</RollForward>
 		
 		<ApplicationManifest>app.manifest</ApplicationManifest>
+
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -133,7 +136,7 @@
 		<ItemGroup>
 			<!--
 			This removes the transitive dependency to WPF which has a requirement to 
-			have net8.0-windows and not net8.0.
+			have net9.0-windows and not net9.0.
 			-->
 			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
 		</ItemGroup>

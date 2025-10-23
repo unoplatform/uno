@@ -3,8 +3,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -37,7 +36,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.Android | RuntimeTestPlatforms.IOS)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Android | RuntimeTestPlatforms.IOS)]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Fails on Android and iOS")]
 #endif

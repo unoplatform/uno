@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference RatingControl.xaml, tag winui3/release/1.5.3, commit commit 2a60e27c591846556fa9ec4d8f305afdf0f96dc1 -->
+<!-- MUX Reference RatingControl_themeresources.xaml, tag winui3/release/1.7.3, commit commit 65718e2813a90f -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Default">
@@ -36,13 +36,17 @@
       <controls:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;" UnsetGlyph="&#xE734;" />
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
+  <!-- 32 = 2 * [default fontsize] - because of double size rendering, remove when MSFT #10030063 is done -->
+  <x:Double x:Key="RatingControlFontSizeForRendering">32</x:Double>
+  <x:Double x:Key="RatingControlItemSpacing">8</x:Double>
+  <x:Double x:Key="RatingControlCaptionTopMargin">-12.5</x:Double>
   <DataTemplate x:Key="BackgroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
-    <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="32" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
+    <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="{StaticResource RatingControlFontSizeForRendering}" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
   </DataTemplate>
   <DataTemplate x:Key="ForegroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
-    <TextBlock Margin="-8,-8,0,0" FontSize="32" Text="&#xE735;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
+    <TextBlock Margin="-8,-8,0,0" FontSize="{StaticResource RatingControlFontSizeForRendering}" Text="&#xE735;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
   </DataTemplate>
   <DataTemplate x:Key="BackgroundImageDefaultTemplate">
     <Image Margin="-8,-8,0,0" AutomationProperties.AccessibilityView="Raw" />

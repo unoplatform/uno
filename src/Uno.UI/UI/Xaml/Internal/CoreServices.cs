@@ -10,6 +10,7 @@ using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Core
@@ -106,6 +107,10 @@ namespace Uno.UI.Xaml.Core
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					root.UpdateLayout();
 				}
+
+#if __SKIA__
+				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+#endif
 			}
 		}
 #endif

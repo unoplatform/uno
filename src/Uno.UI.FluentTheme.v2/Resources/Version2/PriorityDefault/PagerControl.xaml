@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX reference PagerControl.xaml, tag winui3/release/1.4.2 -->
+<!-- MUX Reference PagerControl.xaml, tag winui3/release/1.7.3, commit 65718e2813a -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <Style TargetType="controls:PagerControl">
     <Setter Property="AutomationProperties.LandmarkType" Value="Navigation" />

@@ -93,6 +93,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? UnoHotDesignVersion { get; set; }
 
+	public string? UnoAppMcpVersion { get; set; }
+
 	public string? MicrosoftLoggingVersion { get; set; }
 
 	public string? WinAppSdkVersion { get; set; }
@@ -253,6 +255,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.SdkExtras, UnoSdkExtrasVersion)
 			.UpdateManifest(PackageManifest.Group.Settings, UnoSettingsVersion)
 			.UpdateManifest(PackageManifest.Group.HotDesign, UnoHotDesignVersion)
+			.UpdateManifest(PackageManifest.Group.AppMcp, UnoAppMcpVersion)
 			.UpdateManifest(PackageManifest.Group.SkiaSharp, SkiaSharpVersion)
 			.UpdateManifest(PackageManifest.Group.SvgSkia, SvgSkiaVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdk, WinAppSdkVersion)

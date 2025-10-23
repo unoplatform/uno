@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml
 {
@@ -15,6 +16,10 @@ namespace Microsoft.UI.Xaml
 			Initialize();
 			InitializePointers();
 		}
+
+		// Used only on Skia. It's here and not in UIElement.skia.cs because it's accessed by SKCanvasElement which
+		// builds against the reference API
+		private protected virtual ContainerVisual CreateElementVisual() => throw new NotSupportedException("Reference assembly");
 
 		public IntPtr Handle { get; }
 

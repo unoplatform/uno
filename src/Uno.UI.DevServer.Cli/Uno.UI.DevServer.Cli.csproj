@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<PackAsTool>true</PackAsTool>
+		<ToolCommandName>uno-devserver</ToolCommandName>
+		<RollForward>Major</RollForward>
+		<BuildDate>$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd"))</BuildDate>
+		<NoWarn>$(NoWarn);CS1998</NoWarn>
+
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<PackageId>Uno.DevServer</PackageId>
+		<PackageDescription>A dotnet tool to manage the devserver in a CLI environment</PackageDescription>
+		<Title>Uno Platform DevServer CLI tool</Title>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.4" />
+		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.3.0-preview.4" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="Services\" />
+	</ItemGroup>
+</Project>

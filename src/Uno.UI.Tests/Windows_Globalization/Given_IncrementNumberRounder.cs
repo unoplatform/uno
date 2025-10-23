@@ -73,6 +73,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(8, 3, 9)]
 		[DataRow(0.2, 0.5, 0)]
 		[DataRow(1 + 1e-22, 1e-20, 1 + 1e-22)]
+#if RUNTIME_NATIVE_AOT
+		[Ignore("DataRowAttribute.GetData() wraps data in an extra array under NativeAOT; not yet understood why.")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void When_UsingVariousIncrements(double value, double increment, double expected)
 		{
 			var sut = new IncrementNumberRounder();

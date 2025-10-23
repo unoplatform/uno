@@ -2,6 +2,8 @@
 uid: Uno.Controls.GLCanvasElement
 ---
 
+# GLCanvasElement
+
 > [!IMPORTANT]
 > This functionality is only available on WinAppSDK and Skia Desktop (`netX.0-desktop`) targets that are running on platforms with support for hardware acceleration. On Windows and Linux, OpenGL 3.0+ is used directly and on macOS, Metal is used through the [ANGLE](https://en.wikipedia.org/wiki/ANGLE_(software)) library.
 

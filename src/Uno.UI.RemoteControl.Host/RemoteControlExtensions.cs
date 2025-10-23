@@ -52,10 +52,10 @@ namespace Uno.UI.RemoteControl.Host
 								{
 									var properties = new Dictionary<string, string>
 									{
-										["devserver/ConnectionId"] = connectionContext.ConnectionId,
+										["ConnectionId"] = connectionContext.ConnectionId,
 									};
 
-									telemetry.TrackEvent("Client.Connection.Opened", properties, null);
+									telemetry.TrackEvent("client-connection-opened", properties, null);
 								}
 
 								if (app.Log().IsEnabled(LogLevel.Debug))
@@ -93,15 +93,15 @@ namespace Uno.UI.RemoteControl.Host
 
 							var properties = new Dictionary<string, string>
 							{
-								["devserver/ConnectionId"] = connectionContext.ConnectionId
+								["ConnectionId"] = connectionContext.ConnectionId
 							};
 
 							var measurements = new Dictionary<string, double>
 							{
-								["devserver/ConnectionDurationSeconds"] = connectionDuration.TotalSeconds
+								["ConnectionDurationSeconds"] = connectionDuration.TotalSeconds
 							};
 
-							telemetry.TrackEvent("Client.Connection.Closed", properties, measurements);
+							telemetry.TrackEvent("client-connection-closed", properties, measurements);
 						}
 
 						if (app.Log().IsEnabled(LogLevel.Information))

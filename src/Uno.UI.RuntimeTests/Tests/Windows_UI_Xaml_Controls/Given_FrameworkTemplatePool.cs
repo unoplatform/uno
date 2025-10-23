@@ -10,7 +10,6 @@ using static Private.Infrastructure.TestServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
-using FluentAssertions;
 using MUXControlsTestApp.Utilities;
 using System.Runtime.InteropServices;
 using System.Diagnostics;

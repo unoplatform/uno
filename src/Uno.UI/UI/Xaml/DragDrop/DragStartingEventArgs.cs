@@ -17,13 +17,15 @@ namespace Microsoft.UI.Xaml
 			_pointer = pointer;
 
 			CanBubbleNatively = false;
+
+			DragUI = new DragUI(_pointer.Pointer.PointerDeviceType);
 		}
 
 		public bool Cancel { get; set; }
 
 		public DataPackage Data { get; } = new DataPackage();
 
-		public DragUI DragUI { get; } = new DragUI();
+		public DragUI DragUI { get; }
 
 		public DataPackageOperation AllowedOperations { get; set; } = DataPackageOperation.Copy | DataPackageOperation.Move | DataPackageOperation.Link;
 

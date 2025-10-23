@@ -92,7 +92,7 @@ namespace Uno.UI.Tests.Animations
 		}
 
 		[TestMethod]
-		[DynamicData(nameof(GetParsingTestData), DynamicDataSourceType.Method)]
+		[DynamicData(nameof(GetParsingTestData))]
 		public void When_RepeatBehavior_From_String(string raw, RepeatBehavior expected)
 		{
 			Assert.AreEqual<RepeatBehavior>(expected, raw);

@@ -59,6 +59,8 @@
 
 		private _source: any;
 		private _bootTime: Number;
+		// Cached reference to #uno-native-element-host. Refreshed if detached/replaced.
+		private _nativeElementHost: HTMLElement | null = null;
 
 		private constructor(manageSource: any) {
 			this._bootTime = Date.now() - performance.now();
@@ -81,6 +83,57 @@
 			element.addEventListener("wheel", this.onPointerEventReceived.bind(this), { capture: true, passive: false });
 		}
 
+
+		// Retrieve and cache the native element host reference.
+		// Refreshes if the node was detached or replaced (e.g., during hot reload).
+		private getNativeElementHostCached(): HTMLElement | null {
+			if (this._nativeElementHost === null || this._nativeElementHost.isConnected === false) {
+				this._nativeElementHost = document.getElementById("uno-native-element-host") as HTMLElement | null;
+			}
+			return this._nativeElementHost;
+		}
+
+
+		// Returns true if the event originated from within the native host subtree.
+		// Traverses regular DOM first, then crosses Shadow DOM boundaries when required.
+		// Uses identity comparisons only; avoids selector matching, allocations, and redundant lookups.
+		private isEventFromNativeElementHost(eventTarget: EventTarget | null) {
+			const hostElement = this.getNativeElementHostCached();
+			if (hostElement === null) {
+				return false; // No host exists; nothing to filter.
+			}
+
+			let currentNode = eventTarget as Node | null;
+
+			while (currentNode !== null) {
+				// Fast identity comparison.
+				if (currentNode === hostElement) {
+					return true;
+				}
+
+				// Normal DOM climb first (fastest path)
+				const parent = (currentNode as any).parentNode as Node | null;
+				if (parent) {
+					currentNode = parent;
+					continue;
+				}
+
+				// Only if parentNode is null, check for a shadow boundary.
+				const rootNode = currentNode.getRootNode();
+
+				// If we're inside a shadow root, jump to its host to continue traversal
+				if (rootNode instanceof ShadowRoot && rootNode.host) {
+					currentNode = rootNode.host as Node; // cross shadow boundary
+					continue;
+				}
+
+				// Reached the top (Document or no further nodes)
+				break;
+			}
+
+			return false;
+		}
+
 		private onPointerEventReceived(evt: PointerEvent): void {
 			let id = (evt.target as HTMLElement)?.id;
 			if (id === "uno-enable-accessibility") {
@@ -89,9 +142,11 @@
 				return;
 			}
 
-			// pointer events may have some side effects (like changing focus or opening a context menu on right clicking)
-			// We blanket-disable all the native behaviour so we don't have to whack-a-mole all the edge cases.
-			evt.preventDefault();
+			if (this.isEventFromNativeElementHost(evt.target)) {
+				// Events from the native host are handled by the native control directly.
+				// We don't want to interfere with them.
+				return;
+			}
 
 			const event = BrowserPointerInputSource.toHtmlPointerEvent(evt.type);
 
@@ -123,7 +178,7 @@
 				wheelDeltaY = 0;
 			}
 
-			BrowserPointerInputSource._exports.OnNativeEvent(
+			const result = BrowserPointerInputSource._exports.OnNativeEvent(
 				this._source,
 				event, //byte @event, // ONE of NativePointerEvent
 				evt.timeStamp, //double timestamp,
@@ -140,6 +195,15 @@
 				wheelDeltaY, //double wheelDeltaY,
 				evt.relatedTarget !== null //bool hasRelatedTarget)
 			);
+
+			// pointer events may have some side effects (like changing focus or opening a context menu on right clicking)
+			// We blanket-disable all the native behaviour so we don't have to whack-a-mole all the edge cases.
+			// We only allow wheel events with ctrl key pressed to allow zooming in/out.
+			const isZooming = evt instanceof WheelEvent && evt.ctrlKey;
+			if (result == HtmlEventDispatchResult.PreventDefault ||
+				!isZooming) {
+				evt.preventDefault();
+			}
 		}
 
 		//#region WheelLineSize

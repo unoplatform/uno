@@ -516,8 +516,23 @@ namespace Microsoft.UI.Xaml
 
 		internal void RefreshStateTriggers(bool force = false)
 		{
+			// If no visual state in this group has triggers, we should not try to overwrite
+			// the currently set state with "null" - skip the refresh.
+			if (!HasStateTriggers())
+			{
+				return;
+			}
+
 			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
+
+			var currentStateHasTriggers = oldState is { StateTriggers: { Count: > 0 } };
+			if (newState is null && !currentStateHasTriggers)
+			{
+				// We didn't activate any trigger state, we should keep the current non-trigger state.
+				return;
+			}
+
 			if (newState == oldState)
 			{
 				if (!force)
@@ -548,6 +563,18 @@ namespace Microsoft.UI.Xaml
 			GoToState(parent, newState, false, OnStateChanged);
 		}
 
+		private bool HasStateTriggers()
+		{
+			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
+			{
+				var state = States[stateIndex];
+				if (state.StateTriggers.Count > 0)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 
 		/// <remarks>
 		/// This method is not using LINQ for performance considerations.

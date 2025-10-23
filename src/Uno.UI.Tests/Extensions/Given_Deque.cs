@@ -28,10 +28,10 @@ namespace UnitTests
 		public void Capacity_SetNegative_ActsLikeList()
 		{
 			var list = new List<int>();
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { list.Capacity = -1; });
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { list.Capacity = -1; });
 
 			var deque = new Deque<int>();
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { deque.Capacity = -1; });
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { deque.Capacity = -1; });
 		}
 
 		[TestMethod]
@@ -79,11 +79,11 @@ namespace UnitTests
 		{
 			var list = new List<int>(new int[] { 1, 2, 3 });
 			Assert.AreEqual(3, list.Capacity);
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { list.Capacity = 2; });
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { list.Capacity = 2; });
 
 			var deque = new Deque<int>(new int[] { 1, 2, 3 });
 			Assert.AreEqual(3, deque.Capacity);
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { deque.Capacity = 2; });
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { deque.Capacity = 2; });
 		}
 
 		[TestMethod]
@@ -126,9 +126,9 @@ namespace UnitTests
 		[TestMethod]
 		public void Constructor_NegativeCapacity_ActsLikeList()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<int>(-1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new List<int>(-1));
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Deque<int>(-1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Deque<int>(-1));
 		}
 
 		[TestMethod]
@@ -250,10 +250,10 @@ namespace UnitTests
 		public void CopyTo_NullArray_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentNullException>(() => ((ICollection<int>)list).CopyTo(null, 0));
+			Assert.ThrowsExactly<ArgumentNullException>(() => ((ICollection<int>)list).CopyTo(null, 0));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentNullException>(() => ((ICollection<int>)deque).CopyTo(null, 0));
+			Assert.ThrowsExactly<ArgumentNullException>(() => ((ICollection<int>)deque).CopyTo(null, 0));
 		}
 
 		[TestMethod]
@@ -261,10 +261,10 @@ namespace UnitTests
 		{
 			var destination = new int[3];
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => ((ICollection<int>)list).CopyTo(destination, -1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ((ICollection<int>)list).CopyTo(destination, -1));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => ((ICollection<int>)deque).CopyTo(destination, -1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ((ICollection<int>)deque).CopyTo(destination, -1));
 		}
 
 		[TestMethod]
@@ -272,10 +272,10 @@ namespace UnitTests
 		{
 			var destination = new int[3];
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentException>(() => ((ICollection<int>)list).CopyTo(destination, 1));
+			Assert.ThrowsExactly<ArgumentException>(() => ((ICollection<int>)list).CopyTo(destination, 1));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentException>(() => ((ICollection<int>)deque).CopyTo(destination, 1));
+			Assert.ThrowsExactly<ArgumentException>(() => ((ICollection<int>)deque).CopyTo(destination, 1));
 		}
 
 		[TestMethod]
@@ -300,20 +300,20 @@ namespace UnitTests
 		public void RemoveFromFront_Empty_ActsLikeStack()
 		{
 			var stack = new Stack<int>();
-			Assert.ThrowsException<InvalidOperationException>(() => stack.Pop());
+			Assert.ThrowsExactly<InvalidOperationException>(() => stack.Pop());
 
 			var deque = new Deque<int>();
-			Assert.ThrowsException<InvalidOperationException>(() => deque.RemoveFromFront());
+			Assert.ThrowsExactly<InvalidOperationException>(() => deque.RemoveFromFront());
 		}
 
 		[TestMethod]
 		public void RemoveFromBack_Empty_ActsLikeQueue()
 		{
 			var queue = new Queue<int>();
-			Assert.ThrowsException<InvalidOperationException>(() => queue.Dequeue());
+			Assert.ThrowsExactly<InvalidOperationException>(() => queue.Dequeue());
 
 			var deque = new Deque<int>();
-			Assert.ThrowsException<InvalidOperationException>(() => deque.RemoveFromBack());
+			Assert.ThrowsExactly<InvalidOperationException>(() => deque.RemoveFromBack());
 		}
 
 		[TestMethod]
@@ -366,20 +366,20 @@ namespace UnitTests
 		public void Insert_NegativeIndex_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.Insert(-1, 0));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.Insert(-1, 0));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => deque.Insert(-1, 0));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => deque.Insert(-1, 0));
 		}
 
 		[TestMethod]
 		public void Insert_IndexTooLarge_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.Insert(list.Count + 1, 0));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.Insert(list.Count + 1, 0));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => deque.Insert(deque.Count + 1, 0));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => deque.Insert(deque.Count + 1, 0));
 		}
 
 		[TestMethod]
@@ -416,20 +416,20 @@ namespace UnitTests
 		public void RemoveAt_NegativeIndex_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.RemoveAt(-1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.RemoveAt(-1));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => deque.RemoveAt(-1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => deque.RemoveAt(-1));
 		}
 
 		[TestMethod]
 		public void RemoveAt_IndexTooLarge_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.RemoveAt(list.Count));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.RemoveAt(list.Count));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => deque.RemoveAt(deque.Count));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => deque.RemoveAt(deque.Count));
 		}
 
 		[TestMethod]
@@ -554,10 +554,10 @@ namespace UnitTests
 		public void Remove_NegativeCount_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.RemoveRange(1, -1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.RemoveRange(1, -1));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => deque.RemoveRange(1, -1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => deque.RemoveRange(1, -1));
 		}
 
 		[TestMethod]
@@ -584,20 +584,20 @@ namespace UnitTests
 		public void GetItem_IndexTooLarge_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list[3]);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list[3]);
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => deque[3]);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => deque[3]);
 		}
 
 		[TestMethod]
 		public void GetItem_NegativeIndex_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list[-1]);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list[-1]);
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => deque[-1]);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => deque[-1]);
 		}
 
 		[TestMethod]
@@ -626,20 +626,20 @@ namespace UnitTests
 		public void SetItem_IndexTooLarge_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { list[3] = 13; });
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { list[3] = 13; });
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { deque[3] = 13; });
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { deque[3] = 13; });
 		}
 
 		[TestMethod]
 		public void SetItem_NegativeIndex_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { list[-1] = 13; });
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { list[-1] = 13; });
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { deque[-1] = 13; });
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { deque[-1] = 13; });
 		}
 
 		[TestMethod]
@@ -736,10 +736,10 @@ namespace UnitTests
 		public void NongenericCopyTo_NullArray_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => list.CopyTo(null, 0));
+			Assert.ThrowsExactly<ArgumentNullException>(() => list.CopyTo(null, 0));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => deque.CopyTo(null, 0));
+			Assert.ThrowsExactly<ArgumentNullException>(() => deque.CopyTo(null, 0));
 		}
 
 		[TestMethod]
@@ -747,10 +747,10 @@ namespace UnitTests
 		{
 			var destination = new int[3];
 			var list = new List<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.CopyTo(destination, -1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.CopyTo(destination, -1));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => deque.CopyTo(destination, -1));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => deque.CopyTo(destination, -1));
 		}
 
 		[TestMethod]
@@ -758,10 +758,10 @@ namespace UnitTests
 		{
 			var destination = new int[3];
 			var list = new List<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentException>(() => list.CopyTo(destination, 1));
+			Assert.ThrowsExactly<ArgumentException>(() => list.CopyTo(destination, 1));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentException>(() => deque.CopyTo(destination, 1));
+			Assert.ThrowsExactly<ArgumentException>(() => deque.CopyTo(destination, 1));
 		}
 
 		[TestMethod]
@@ -769,10 +769,10 @@ namespace UnitTests
 		{
 			var destination = new IList[3];
 			var list = new List<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentException>(() => list.CopyTo(destination, 0));
+			Assert.ThrowsExactly<ArgumentException>(() => list.CopyTo(destination, 0));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentException>(() => deque.CopyTo(destination, 0));
+			Assert.ThrowsExactly<ArgumentException>(() => deque.CopyTo(destination, 0));
 		}
 
 		[TestMethod]
@@ -780,20 +780,20 @@ namespace UnitTests
 		{
 			var destination = new int[3, 3];
 			var list = new List<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentException>(() => list.CopyTo(destination, 0));
+			Assert.ThrowsExactly<ArgumentException>(() => list.CopyTo(destination, 0));
 
 			var deque = new Deque<int>(new[] { 1, 2, 3 }) as IList;
-			Assert.ThrowsException<ArgumentException>(() => deque.CopyTo(destination, 0));
+			Assert.ThrowsExactly<ArgumentException>(() => deque.CopyTo(destination, 0));
 		}
 
 		[TestMethod]
 		public void NongenericAdd_WrongType_ActsLikeList()
 		{
 			var list = new List<int>() as IList;
-			Assert.ThrowsException<ArgumentException>(() => list.Add(this));
+			Assert.ThrowsExactly<ArgumentException>(() => list.Add(this));
 
 			var deque = new Deque<int>() as IList;
-			Assert.ThrowsException<ArgumentException>(() => deque.Add(this));
+			Assert.ThrowsExactly<ArgumentException>(() => deque.Add(this));
 		}
 
 		[TestMethod]
@@ -830,20 +830,20 @@ namespace UnitTests
 		public void NongenericStruct_AddNull_ActsLikeList()
 		{
 			var list = new List<int>() as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => list.Add(null));
+			Assert.ThrowsExactly<ArgumentNullException>(() => list.Add(null));
 
 			var deque = new Deque<int>() as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => deque.Add(null));
+			Assert.ThrowsExactly<ArgumentNullException>(() => deque.Add(null));
 		}
 
 		[TestMethod]
 		public void NongenericGenericStruct_AddNull_ActsLikeList()
 		{
 			var list = new List<KeyValuePair<int, int>>() as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => list.Add(null));
+			Assert.ThrowsExactly<ArgumentNullException>(() => list.Add(null));
 
 			var deque = new Deque<KeyValuePair<int, int>>() as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => deque.Add(null));
+			Assert.ThrowsExactly<ArgumentNullException>(() => deque.Add(null));
 		}
 
 		[TestMethod]
@@ -880,20 +880,20 @@ namespace UnitTests
 		public void NongenericInsert_WrongType_ActsLikeList()
 		{
 			var list = new List<int>() as IList;
-			Assert.ThrowsException<ArgumentException>(() => list.Insert(0, this));
+			Assert.ThrowsExactly<ArgumentException>(() => list.Insert(0, this));
 
 			var deque = new Deque<int>() as IList;
-			Assert.ThrowsException<ArgumentException>(() => deque.Insert(0, this));
+			Assert.ThrowsExactly<ArgumentException>(() => deque.Insert(0, this));
 		}
 
 		[TestMethod]
 		public void NongenericStruct_InsertNull_ActsMostlyLikeList()
 		{
 			var list = new List<int>() as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => list.Insert(0, null)); // Should probably be "value".
+			Assert.ThrowsExactly<ArgumentNullException>(() => list.Insert(0, null)); // Should probably be "value".
 
 			var deque = new Deque<int>() as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => deque.Insert(0, null));
+			Assert.ThrowsExactly<ArgumentNullException>(() => deque.Insert(0, null));
 		}
 
 		[TestMethod]
@@ -940,20 +940,20 @@ namespace UnitTests
 		public void NongenericSet_WrongType_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 13 }) as IList;
-			Assert.ThrowsException<ArgumentException>(() => { list[0] = this; });
+			Assert.ThrowsExactly<ArgumentException>(() => { list[0] = this; });
 
 			var deque = new Deque<int>(new[] { 13 }) as IList;
-			Assert.ThrowsException<ArgumentException>(() => { deque[0] = this; });
+			Assert.ThrowsExactly<ArgumentException>(() => { deque[0] = this; });
 		}
 
 		[TestMethod]
 		public void NongenericStruct_SetNull_ActsLikeList()
 		{
 			var list = new List<int>(new[] { 13 }) as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => { list[0] = null; });
+			Assert.ThrowsExactly<ArgumentNullException>(() => { list[0] = null; });
 
 			var deque = new Deque<int>(new[] { 13 }) as IList;
-			Assert.ThrowsException<ArgumentNullException>(() => { deque[0] = null; });
+			Assert.ThrowsExactly<ArgumentNullException>(() => { deque[0] = null; });
 		}
 
 		[TestMethod]

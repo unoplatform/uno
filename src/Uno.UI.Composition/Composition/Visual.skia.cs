@@ -5,13 +5,16 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.CodeAnalysis.PooledObjects;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Helpers;
+using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
 
 namespace Microsoft.UI.Composition;
@@ -112,7 +115,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
-		InvalidateParentChildrenPicture();
+		InvalidateParentChildrenPicture(false);
 		return !matrixDirty;
 	}
 
@@ -207,12 +210,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		_picture?.Dispose();
 		_picture = null;
 		_flags |= VisualFlags.PaintDirty;
-		InvalidateParentChildrenPicture();
+		InvalidateParentChildrenPicture(false);
 	}
 
-	private void InvalidateParentChildrenPicture()
+	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
-		var parent = this.Parent;
+		var parent = includeSelf ? this : Parent;
 		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
 			parent._childrenPicture?.Dispose();
@@ -416,10 +419,20 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		static void PostPaintingClipStep(Visual visual, SKCanvas canvas)
 		{
+#if DEBUG
+			canvas.Save();
 			if (visual.GetPostPaintingClipping() is { } postClip)
 			{
 				canvas.ClipPath(postClip, antialias: true);
 			}
+
+			var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
+			canvas.Restore();
+#endif
+			visual.ApplyPostPaintingClipping(canvas);
+#if DEBUG
+			Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
+#endif
 		}
 
 		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
@@ -452,8 +465,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 						child.Render(in childSession, applyChildOptimization: false);
 					}
 				}
-				visual._childrenPicture = recorder.EndRecording();
-				session.Canvas.DrawPicture(visual._childrenPicture);
+
+				var picture = recorder.EndRecording();
+				session.Canvas.DrawPicture(picture);
+
+				// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
+				// In such case, we should not cache this picture. Not only it is outdated, it will also lead to a corrupted state,
+				// where subtree rendering is skipped with the cached picture,
+				// and its descendant can't invalidate the cached picture since they area already on a ChildrenSKPictureInvalid path.
+				if ((visual._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+				{
+					visual._childrenPicture = picture;
+				}
 			}
 		}
 	}
@@ -531,6 +554,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
 	private protected virtual SKPath? GetPostPaintingClipping() => null;
+	/// <summary>This can be overriden if some Visuals can apply the clipping more optimally than generating a path
+	/// and then applying the clip. Specifically, if the clipping is a simple rectangle, creating an SKPath with the
+	/// rectangle might be a lot more overhead than just calling SKCanvas.ClipRect, specifically on WASM.</summary>
+	private protected virtual void ApplyPostPaintingClipping(SKCanvas canvas)
+	{
+		if (GetPostPaintingClipping() is { } postClip)
+		{
+			canvas.ClipPath(postClip, antialias: true);
+		}
+	}
 
 	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
 	// NOTE: Returning List<Visual> so that enumerating doesn't cause boxing.
@@ -570,15 +603,45 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				totalMatrix = TotalMatrix * rootTransform;
 			}
 
-			// this avoids the matrix copying in canvas.SetMatrix()
-			UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+			if (!_totalMatrix.isLocalMatrixIdentity)
+			{
+				// this avoids the matrix copying in canvas.SetMatrix()
+				UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+			}
 		}
 #if DEBUG
 		else
 		{
-			Debug.Assert(Unsafe.IsNullRef(ref rootTransform) ? canvas.TotalMatrix == TotalMatrix.ToSKMatrix() : canvas.TotalMatrix == (TotalMatrix * rootTransform).ToSKMatrix());
+			Debug.Assert(Unsafe.IsNullRef(ref rootTransform)
+				? canvas.TotalMatrix == TotalMatrix.ToSKMatrix()
+				// Due to the limit precision of doubles, instead of comparing the two matrices directly we compare the Frobenius norm of their difference to zero
+				: CompositionMathHelpers.IsCloseRealZero((canvas.TotalMatrix.ToMatrix4x4() - TotalMatrix * rootTransform).ToSKMatrix().Values.Sum(i => i * i), 1e-5f));
 		}
 #endif
+	}
+
+	internal void PrintSubtree(StringBuilder sb, int indent = 0)
+	{
+		var indentation = new string(' ', indent * 2);
+		sb.Append(indentation);
+		sb.Append('[');
+		sb.Append(Comment);
+		sb.Append("]: ");
+		sb.Append("Subtree count: [");
+		sb.Append(GetSubTreeVisualCount());
+		sb.Append("], flags: [");
+		sb.Append(_flags);
+		sb.Append("], _totalMatrix: [");
+		sb.Append(_totalMatrix.matrix);
+		sb.Append(']');
+		sb.Append("], _framesSinceSubtreeNotChanged: [");
+		sb.Append(_framesSinceSubtreeNotChanged);
+		sb.Append(']');
+		sb.AppendLine();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.PrintSubtree(sb, indent + 1);
+		}
 	}
 
 	[Flags]

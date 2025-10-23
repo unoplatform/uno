@@ -55,13 +55,20 @@
 		<RestoreEnablePackagePruning>true</RestoreEnablePackagePruning>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
+		<DefineConstants Condition=" '$(SkiaPublishAot)' == 'true' ">$(DefineConstants);RUNTIME_NATIVE_AOT</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<!--
+		Enable only when requiring specific versions of the compiler, otherwise, use the one
+		bundled with the SDK.
 		<MicrosoftNetCompilersToolsetVersion>4.14.0</MicrosoftNetCompilersToolsetVersion>
+		-->
 	</PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(MicrosoftNetCompilersToolsetVersion)' != ''">
     <!--This override is used to validate the use of specific version of the C# Compiler-->
 	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
@@ -70,7 +77,7 @@
 
 	<PropertyGroup>
 		<!-- When updating this in the future, please also update CSharpLangVersion constant in src\Uno.UWPSyncGenerator\Generator.cs -->
-		<LangVersion>12.0</LangVersion>
+		<LangVersion>13.0</LangVersion>
 	</PropertyGroup>
 
 	<!--
@@ -246,7 +253,7 @@
 		<WarningsNotAsErrors Condition="'$(Configuration)' == 'Debug'">$(WarningsNotAsErrors);IDE0051;IDE0055</WarningsNotAsErrors>
 		
 		<!-- Disable package checks -->
-		<WarningsNotAsErrors Condition="'$(Configuration)' == 'Debug'">$(WarningsNotAsErrors);NU1202;NU1701;NU1903;NU1604</WarningsNotAsErrors>
+		<WarningsNotAsErrors Condition="'$(Configuration)' == 'Debug'">$(WarningsNotAsErrors);NU1202;NU1701;NU1901;NU1902;NU1903;NU1904;NU1604</WarningsNotAsErrors>
 		
 		<!-- Disable warning about cross platform call sites -->
 		<NoWarn>$(NoWarn);CA1416</NoWarn>

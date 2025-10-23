@@ -180,3 +180,5 @@ To upgrade:
     ```
 
     Uno Platform handles image loading entirely with the Skia Rendering mode.
+
+- If you had platform specific modifications to your `UIApplicationDelegate` in App.xaml.cs, [some modifications](xref:Uno.Features.CustomizingUIApplicationDelegate) are needed to upgrade.

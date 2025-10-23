@@ -42,7 +42,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[Test]
 		[Ignore("Flaky")]
 #else
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // https://github.com/unoplatform/uno-private/issues/809
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // https://github.com/unoplatform/uno-private/issues/809
 #endif
 		public async Task When_Dragging_TreeView_Item()
 		{

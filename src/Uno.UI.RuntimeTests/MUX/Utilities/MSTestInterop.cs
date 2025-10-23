@@ -158,7 +158,7 @@ namespace Common
 
 		public static void Fail(string message, params object[] args)
 		{
-			Assert.Fail(message, args);
+			Assert.Fail(string.Format(message, args));
 		}
 
 		public static void Throws<T>(Action action, string message) where T : Exception

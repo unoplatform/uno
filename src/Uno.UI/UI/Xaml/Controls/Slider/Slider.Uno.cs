@@ -29,6 +29,9 @@ public partial class Slider
 		{
 			AttachHorizontalThumbSubscriptions();
 		}
+
+		// workaround for #21543 slider thumb not being positioned correctly on reload
+		UpdateTrackLayout();
 	}
 
 	private void Slider_Unloaded(object sender, RoutedEventArgs e)
