@@ -24,13 +24,13 @@ Some of the points of guidance may be specific to Windows 10's [Fluent design la
 
 ## Individual controls
 
-* [Controls list](https://learn.microsoft.com/windows/apps/design/controls-and-patterns/) _(note: not all controls may be implemented on non-Windows platforms - check the [individual control entries](implemented-views.md) in the Uno Platform API reference for details)_
+* [Controls list](https://learn.microsoft.com/windows/apps/design/controls/) _(note: not all controls may be implemented on non-Windows platforms - check the [individual control entries](implemented-views.md) in the Uno Platform API reference for details)_
 
 ## Patterns
 
-* [Forms](https://learn.microsoft.com/windows/apps/design/controls-and-patterns/forms)
-* [Master/details pattern](https://learn.microsoft.com/windows/apps/design/controls-and-patterns/master-details)
-* [Integrating search](https://learn.microsoft.com/windows/apps/design/controls-and-patterns/search)
+* [Forms](https://learn.microsoft.com/windows/apps/design/controls/forms)
+* [Master/details pattern](https://learn.microsoft.com/en-us/windows/apps/design/controls/list-details)
+* [Integrating search](https://learn.microsoft.com/windows/apps/design-and-patterns/search) <!-- TODO: Update link to new location. There is no "search" control or path available. Could be AutoSuggestBox or TitleBar-->
 
 ## Writing
 
