@@ -61,6 +61,13 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		_dropTarget.Dispose();
 	}
 
+	private Point GetScaledPosition(float x, float y)
+	{
+		var xamlRoot = _manager.ContentRoot.GetOrCreateXamlRoot();
+		return new Point(x / xamlRoot.RasterizationScale, y / xamlRoot.RasterizationScale);
+
+	}
+
 	unsafe HRESULT IDropTarget.Interface.DragEnter(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
 	{
 		Debug.Assert(_manager is not null && _coreDragDropManager is not null);
@@ -87,9 +94,12 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		}
 
 		var position = new System.Drawing.Point(pt.x, pt.y);
+
 		var success = PInvoke.ScreenToClient(_hwnd, ref position);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-		var src = new DragEventSource(position.X, position.Y, grfKeyState);
+		var scaledPosition = GetScaledPosition(position.X, position.Y);
+
+		var src = new DragEventSource(scaledPosition, grfKeyState);
 
 		var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -154,7 +164,8 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		var position = new System.Drawing.Point(pt.x, pt.y);
 		var success = PInvoke.ScreenToClient(_hwnd, ref position);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-		var src = new DragEventSource(position.X, position.Y, grfKeyState);
+		var scaledPosition = GetScaledPosition(position.X, position.Y);
+		var src = new DragEventSource(scaledPosition, grfKeyState);
 
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragOver)} @ {position}");
 
@@ -177,7 +188,8 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		var position = new System.Drawing.Point(pt.x, pt.y);
 		var success = PInvoke.ScreenToClient(_hwnd, ref position);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-		var src = new DragEventSource(position.X, position.Y, grfKeyState);
+		var scaledPosition = GetScaledPosition(position.X, position.Y);
+		var src = new DragEventSource(scaledPosition, grfKeyState);
 
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {position}");
 
@@ -188,10 +200,10 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new System.NotImplementedException();
 
-	private readonly struct DragEventSource(int x, int y, MODIFIERKEYS_FLAGS modifierFlags) : IDragEventSource
+	private readonly struct DragEventSource(Point point, MODIFIERKEYS_FLAGS modifierFlags) : IDragEventSource
 	{
 		private static long _nextFrameId;
-		private readonly Point _location = new(x, y);
+		private readonly Point _location = point;
 
 		public long Id => _fakePointerId;
 
