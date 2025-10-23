@@ -9,7 +9,7 @@ namespace Microsoft.UI.Input
 		// Skipping already declared field Microsoft.UI.Input.PointerDeviceType.Touch
 		// Skipping already declared field Microsoft.UI.Input.PointerDeviceType.Pen
 		// Skipping already declared field Microsoft.UI.Input.PointerDeviceType.Mouse
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		Touchpad = 3,
 #endif
 	}
