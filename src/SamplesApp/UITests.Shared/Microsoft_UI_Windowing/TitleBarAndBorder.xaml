@@ -4,32 +4,79 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
     <ScrollViewer Padding="12">
         <StackPanel Spacing="8">
-            <TextBlock Text="Manual sample demonstrating SetBorderAndTitleBar and ExtendsContentIntoTitleBar APIs" TextWrapping="Wrap"/>
+            <TextBlock Text="Manual sample demonstrating SetBorderAndTitleBar and ExtendsContentIntoTitleBar APIs" TextWrapping="Wrap" />
 
             <StackPanel Spacing="4">
-                <TextBlock Text="ExtendsContentIntoTitleBar" FontWeight="Bold" />
-                <CheckBox x:Name="WindowExtends" Content="Window.ExtendsContentIntoTitleBar" IsChecked="{Binding WindowExtends, Mode=TwoWay}"/>
-                <CheckBox x:Name="AppWindowExtends" Content="AppWindow.TitleBar.ExtendsContentIntoTitleBar" IsChecked="{Binding AppWindowExtends, Mode=TwoWay}"/>
-                <TextBlock Text="Note: Effects depend on platform support." TextWrapping="Wrap"/>
+                <TextBlock FontWeight="Bold" Text="ExtendsContentIntoTitleBar" />
+                <CheckBox
+                    x:Name="WindowExtends"
+                    Content="Window.ExtendsContentIntoTitleBar"
+                    IsChecked="{Binding WindowExtends, Mode=TwoWay}" />
+                <CheckBox
+                    x:Name="AppWindowExtends"
+                    Content="AppWindow.TitleBar.ExtendsContentIntoTitleBar"
+                    IsChecked="{Binding AppWindowExtends, Mode=TwoWay}" />
+                <TextBlock Text="Note: Effects depend on platform support." TextWrapping="Wrap" />
             </StackPanel>
 
             <StackPanel Spacing="4">
-                <TextBlock Text="SetBorderAndTitleBar (OverlappedPresenter)" FontWeight="Bold" />
+                <TextBlock FontWeight="Bold" Text="SetBorderAndTitleBar (OverlappedPresenter)" />
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <CheckBox x:Name="HasBorderCheck" Content="Has border" IsChecked="{Binding HasBorder, Mode=TwoWay}"/>
-                    <CheckBox x:Name="HasTitleBarCheck" Content="Has title bar" IsChecked="{Binding HasTitleBar, Mode=TwoWay}"/>
+                    <CheckBox
+                        x:Name="HasBorderCheck"
+                        Content="Has border"
+                        IsChecked="{Binding HasBorder, Mode=TwoWay}" />
+                    <CheckBox
+                        x:Name="HasTitleBarCheck"
+                        Content="Has title bar"
+                        IsChecked="{Binding HasTitleBar, Mode=TwoWay}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Button Content="Apply SetBorderAndTitleBar" Command="{Binding ApplyCommand}" />
-                    <Button Content="Reset presenter" Command="{Binding ResetCommand}" />
+                    <Button Command="{Binding ApplyCommand}" Content="Apply SetBorderAndTitleBar" />
+                    <Button Command="{Binding ResetCommand}" Content="Reset presenter" />
                 </StackPanel>
-                <TextBlock x:Name="PresenterNameText" Text="{Binding PresenterDescription}"/>
-                <TextBlock Foreground="Red" Text="{Binding LastError}" TextWrapping="Wrap"/>
+                <TextBlock x:Name="PresenterNameText" Text="{Binding PresenterDescription}" />
+                <TextBlock
+                    Foreground="Red"
+                    Text="{Binding LastError}"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+
+            <!--  UI to test the AppWindow.TitleBar.SetDragRectangles API  -->
+            <StackPanel Spacing="4">
+                <TextBlock FontWeight="Bold" Text="SetDragRectangles" />
+                <NumberBox
+                    x:Name="DragRectX"
+                    Header="Drag Rectangle X Position"
+                    Maximum="1000"
+                    Minimum="0"
+                    Value="{Binding DragRectX, Mode=TwoWay}" />
+                <NumberBox
+                    x:Name="DragRectY"
+                    Header="Drag Rectangle Y Position"
+                    Maximum="1000"
+                    Minimum="0"
+                    Value="{Binding DragRectY, Mode=TwoWay}" />
+                <NumberBox
+                    x:Name="DragRectWidth"
+                    Header="Drag Rectangle Width"
+                    Maximum="1000"
+                    Minimum="0"
+                    Value="{Binding DragRectWidth, Mode=TwoWay}" />
+                <NumberBox
+                    x:Name="DragRectHeight"
+                    Header="Drag Rectangle Height"
+                    Maximum="1000"
+                    Minimum="0"
+                    Value="{Binding DragRectHeight, Mode=TwoWay}" />
+                <Button Command="{Binding SetDragRectanglesCommand}" Content="Set Drag Rectangles" />
+                <Button Command="{Binding ClearDragRectanglesCommand}" Content="Clear Drag Rectangles" />
+                <TextBlock Text="Note: Drag rectangles define areas in the title bar that can be used to drag the window." TextWrapping="Wrap" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>
