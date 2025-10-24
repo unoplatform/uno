@@ -8,6 +8,9 @@ namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 /// The unique identifier of the development environment component
 /// (e.g. uno.dev_server)
 /// </param>
+/// <param name="Priority">
+/// The relative priority of the development environment component, cf. <see cref="DevelopmentEnvironmentComponentPriorities"/>.
+/// </param>
 /// <param name="Name">
 /// A user-friendly name of the development environment component
 /// (e.g. "Dev-server.").
@@ -16,4 +19,4 @@ namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 /// A user-friendly description of the development environment component
 /// (e.g. "The local server that allows the application to interact with the IDE and the file-system.").
 /// </param>
-public partial record DevelopmentEnvironmentComponent(string Id, string Name, string Description);
+public partial record DevelopmentEnvironmentComponent(string Id, int Priority, string Name, string Description);
