@@ -3,11 +3,13 @@ using System;
 
 namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
-public partial record DevelopmentEnvironmentStatusIdeMessage
+partial record DevelopmentEnvironmentStatusIdeMessage
 {
 	public static class DevServer
 	{
-		private static readonly Command _doc = Command.OpenBrowser("Details", new Uri("https://aka.platform.uno/?udei-why"));
+		private static readonly Command _doc = Command.OpenBrowser("Learn More", new Uri("https://aka.platform.uno/dev-server"));
+		private static readonly Command _troubleshoot = Command.OpenBrowser("Troubleshoot", new Uri("https://aka.platform.uno/dev-server-troubleshooting"));
+		private static readonly Command _restart = new("Restart", "uno.dev_server.restart");
 
 		/// <summary>
 		/// Indicates dev-server is starting successfully.
@@ -15,21 +17,21 @@ public partial record DevelopmentEnvironmentStatusIdeMessage
 		public static DevelopmentEnvironmentStatusIdeMessage Starting { get; } = new(
 			DevelopmentEnvironmentComponent.DevServer,
 			DevelopmentEnvironmentStatus.Initializing,
-			"Starting",
+			"Starting...",
 			null,
 			null,
 			[_doc]);
 
 		/// <summary>
-		/// Indicates dev-server process has been killed (and will not restart by its own).
+		/// Indicates dev-server process is unable to start (and will not restart by its own).
 		/// </summary>
 		public static DevelopmentEnvironmentStatusIdeMessage Failed(Exception error) => new(
 			DevelopmentEnvironmentComponent.DevServer,
 			DevelopmentEnvironmentStatus.Error,
-			"Not running",
-			null,
-			null,
-			[_doc]);
+			"Failed",
+			error.Message,
+			error.StackTrace,
+			[_restart, _doc]);
 
 		/// <summary>
 		/// Indicates dev-server is restarting.
@@ -37,7 +39,7 @@ public partial record DevelopmentEnvironmentStatusIdeMessage
 		public static DevelopmentEnvironmentStatusIdeMessage Restarting { get; } = new(
 			DevelopmentEnvironmentComponent.DevServer,
 			DevelopmentEnvironmentStatus.Warning,
-			"Restarting",
+			"Restarting...",
 			null,
 			null,
 			[_doc]);
@@ -51,31 +53,42 @@ public partial record DevelopmentEnvironmentStatusIdeMessage
 			"Timeout",
 			"Dev-server didn't connected back to IDE in the given delay",
 			null,
+			[_restart, _doc]);
+
+		/// <summary>
+		/// Indicates dev-server is being disabled (as it's not a uno solution).
+		/// </summary>
+		public static DevelopmentEnvironmentStatusIdeMessage NotStarted { get; } = new(
+			DevelopmentEnvironmentComponent.DevServer,
+			DevelopmentEnvironmentStatus.Error,
+			"Uno solution not found",
+			null,
+			null,
 			[_doc]);
 
 		public static DevelopmentEnvironmentStatusIdeMessage Ready { get; } = new(
 			DevelopmentEnvironmentComponent.DevServer,
 			DevelopmentEnvironmentStatus.Ready,
-			"Dev-server is ready",
+			"Ready",
 			null,
 			null,
 			[_doc]);
 
 		// Factory helpers for messages that include runtime details
-		public static DevelopmentEnvironmentStatusIdeMessage FailedToDiscover(string? details) => new(
+		public static DevelopmentEnvironmentStatusIdeMessage FailedToDiscoverAddIns(string? details) => new(
 			DevelopmentEnvironmentComponent.DevServer,
 			DevelopmentEnvironmentStatus.Warning,
-			"Failed to discover add-ins",
+			"Studio unavailable",
 			details,
 			null,
-			[_doc]);
+			[_troubleshoot, _doc]);
 
-		public static DevelopmentEnvironmentStatusIdeMessage FailedToLoad(string? details) => new(
+		public static DevelopmentEnvironmentStatusIdeMessage FailedToLoadAddIns(string? details) => new(
 			DevelopmentEnvironmentComponent.DevServer,
 			DevelopmentEnvironmentStatus.Warning,
-			"Failed to load add-ins",
+			"Unable to load Studio",
 			details,
 			null,
-			[_doc]);
+			[_troubleshoot, _doc]);
 	}
 }

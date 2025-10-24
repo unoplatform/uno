@@ -1,6 +1,6 @@
 ﻿namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
-public partial record DevelopmentEnvironmentComponent
+partial record DevelopmentEnvironmentComponent
 {
 	// Well-known components of the development environment, this is **NOT** an exhaustive list!
 
