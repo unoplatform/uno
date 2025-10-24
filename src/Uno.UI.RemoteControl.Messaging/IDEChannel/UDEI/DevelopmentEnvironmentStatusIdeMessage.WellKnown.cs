@@ -51,7 +51,7 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 			DevelopmentEnvironmentComponent.DevServer,
 			DevelopmentEnvironmentStatus.Error,
 			"Timeout",
-			"Dev-server didn't connected back to IDE in the given delay",
+			"Dev-server didn't connect back to IDE in the given delay",
 			null,
 			[_restart, _doc]);
 
