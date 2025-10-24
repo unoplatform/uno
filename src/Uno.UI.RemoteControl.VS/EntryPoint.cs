@@ -29,6 +29,7 @@ using Uno.UI.RemoteControl.VS.IdeChannel;
 using Uno.UI.RemoteControl.VS.Notifications;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
+using _udeiMsg = Uno.UI.RemoteControl.Messaging.IdeChannel.DevelopmentEnvironmentStatusIdeMessage;
 
 #pragma warning disable VSTHRD010
 #pragma warning disable VSTHRD109
@@ -444,7 +445,7 @@ public partial class EntryPoint : IDisposable
 			devServerCt = CancellationTokenSource.CreateLinkedTokenSource(_ct.Token);
 			if (_udei is not null)
 			{
-				await _udei.NotifyDevServerStartingAsync(devServerCt.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Starting, devServerCt.Token);
 			}
 
 			if (EnsureTcpPort(ref port) || portMisConfigured)
@@ -516,7 +517,7 @@ public partial class EntryPoint : IDisposable
 			_errorAction?.Invoke($"Failed to start server: {e}");
 			if (_udei is not null)
 			{
-				await _udei.NotifyDevServerKilledAsync(_ct.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Killed, _ct.Token);
 			}
 			devServerCt?.Cancel();
 		}
@@ -531,7 +532,7 @@ public partial class EntryPoint : IDisposable
 			await Task.Delay(10_000, devServerCt.Token);
 			if (ideChannel.MessagesReceivedCount is 0 && _udei is not null && !devServerCt.IsCancellationRequested)
 			{
-				await _udei.NotifyDevServerTimeoutAsync(devServerCt.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Timeout, devServerCt.Token);
 			}
 		}
 
@@ -549,7 +550,7 @@ public partial class EntryPoint : IDisposable
 			// If not closing, restart!
 			if (_udei is not null)
 			{
-				await _udei.NotifyDevServerRestartAsync(_ct.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Restarting, _ct.Token);
 			}
 
 			_debugAction?.Invoke($"Remote Control server exited ({_devServer?.process.ExitCode}). It will restart in 5sec.");
