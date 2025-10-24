@@ -171,6 +171,7 @@ public partial class ClientHotReloadProcessor
 		}
 	}
 
+#if HAS_UNO_WINUI
 	private void ReportDiagnostics(IImmutableList<string>? diagnostics)
 	{
 		if (diagnostics is { Count: > 0 })
@@ -183,6 +184,7 @@ public partial class ClientHotReloadProcessor
 			}
 		}
 	}
+#endif
 
 	public class HotReloadClientOperation
 	{
