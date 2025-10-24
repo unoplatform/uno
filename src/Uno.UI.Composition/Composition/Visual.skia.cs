@@ -481,7 +481,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
-	internal void GetNativeViewPath(SKPath clipFromParent, SKPath outPath)
+	internal void GetNativeViewPath(SKPath clipFromParent, SKPath clipPath)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false } || clipFromParent.IsEmpty)
 		{
@@ -505,7 +505,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		if (IsNativeHostVisual || CanPaint())
 		{
-			outPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, outPath);
+			clipPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, clipPath);
 		}
 
 		if (GetPostPaintingClipping() is { } postClip)
@@ -515,7 +515,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 		foreach (var child in GetChildrenInRenderOrder())
 		{
-			child.GetNativeViewPath(localClipCombinedByClipFromParent, outPath);
+			child.GetNativeViewPath(localClipCombinedByClipFromParent, clipPath);
 		}
 	}
 

@@ -66,30 +66,36 @@ internal static class SkiaRenderHelper
 		canvas.Flush();
 	}
 
+	private static readonly SKPath _spareParentClipPath = new();
+
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
-	/// Takes the current TotalMatrix of the surface's canvas into account
 	/// </summary>
 	private static SKPath CalculateClippingPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
-		SKPath outPath = new SKPath();
-		if (ContentPresenter.HasNativeElements())
-		{
-			var parentClipPath = new SKPath();
-			parentClipPath.AddRect(new SKRect(0, 0, width, height));
-			rootVisual.GetNativeViewPath(parentClipPath, outPath);
-		}
+		var clipPath = new SKPath();
 
-		if (invertPath)
+		var rect = new SKRect(0f, 0f, width, height);
+
+		var parentClipPath = _spareParentClipPath;
+		parentClipPath.Rewind();
+		parentClipPath.AddRect(rect);
+
+		rootVisual.GetNativeViewPath(parentClipPath, clipPath);
+
+		if (!invertPath)
 		{
-			var invertedPath = new SKPath();
-			invertedPath.AddRect(new SKRect(0, 0, width, height));
-			invertedPath.Op(outPath, SKPathOp.Difference, invertedPath);
-			return invertedPath;
+			return clipPath;
 		}
 		else
 		{
-			return outPath;
+			var invertedPath = new SKPath();
+			invertedPath.AddRect(rect);
+			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
+
+			clipPath.Dispose();
+
+			return invertedPath;
 		}
 	}
 
