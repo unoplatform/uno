@@ -21,15 +21,19 @@ public partial class CompositionTarget : ICompositionTarget
 		_targets.Add(this, null);
 		var xamlRoot = ContentRoot.GetOrCreateXamlRoot();
 		xamlRoot.Changed += (_, _) => UpdateXamlRootBounds();
-		UpdateXamlRootBounds();
 		void UpdateXamlRootBounds()
 		{
+			// _rasterizationScale is asynchronously updated and this can cause problems
+			// for the very first frame on app startup where _rasterizationScale is still
+			// not set. We read from the DisplayInformation directly instead
+			var rasterizationScale = XamlRoot.GetDisplayInformation(xamlRoot).RawPixelsPerViewPixel;
 			lock (_xamlRootBoundsGate)
 			{
 				// Rounding instead of flooring here is specifically necessary on hardware-accelerated Win32, which draws bottom-up,
 				// so if there's a mismatch between the actual window height and _xamlRootBounds.Height, the first row of pixels
 				// may or not be offset correctly depending on floating point errors
-				_xamlRootBounds = new Size(Math.Round(xamlRoot.Bounds.Width * xamlRoot.RasterizationScale), Math.Round(xamlRoot.Bounds.Height * xamlRoot.RasterizationScale));
+				_xamlRootBounds = xamlRoot.Bounds.Size;
+				_xamlRootRasterizationScale = (float)rasterizationScale;
 			}
 		}
 #endif
