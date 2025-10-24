@@ -44,7 +44,7 @@ internal static class SkiaRenderHelper
 			!invertPath ?
 				_emptyClipPath :
 				GetOrUpdateX11ClippingPath(width, height, scale) :
-			CalculateClippingPath(width, height, rootElement.Visual, canvas, invertPath, applyScaling);
+			CalculateClippingPath(width, height, rootElement.Visual, scale, applyScaling, invertPath);
 
 		var picture = _recorder.EndRecording();
 
@@ -70,38 +70,52 @@ internal static class SkiaRenderHelper
 		canvas.Flush();
 	}
 
+	private static readonly SKPath _spareParentClipPath = new();
+
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
-	/// Takes the current TotalMatrix of the surface's canvas into account
+	/// Takes the current display scale into account
 	/// </summary>
-	private static SKPath CalculateClippingPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas, bool invertPath, bool applyScaling)
+	private static SKPath CalculateClippingPath(int width, int height, ContainerVisual rootVisual, float scale, bool applyScaling, bool invertPath)
 	{
-		SKPath outPath = new SKPath();
-		if (ContentPresenter.HasNativeElements())
+		var clipPath = new SKPath();
+
+		var rect = new SKRect(0f, 0f, width, height);
+
+		var parentClipPath = _spareParentClipPath;
+		parentClipPath.Rewind();
+		parentClipPath.AddRect(rect);
+
+		rootVisual.GetNativeViewPath(parentClipPath, clipPath);
+
+		var matrix = default(SKMatrix);
+
+		if (applyScaling && scale != 1f)
 		{
-			var parentClipPath = new SKPath();
-			parentClipPath.AddRect(new SKRect(0, 0, width, height));
-			rootVisual.GetNativeViewPath(parentClipPath, outPath);
-			if (applyScaling)
-			{
-				outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
-			}
+			matrix = SKMatrix.CreateScale(scale, scale);
+
+			clipPath.Transform(matrix, clipPath);
 		}
 
-		if (invertPath)
+		if (!invertPath)
 		{
-			var invertedPath = new SKPath();
-			invertedPath.AddRect(new SKRect(0, 0, width, height));
-			if (applyScaling)
-			{
-				invertedPath.Transform(canvas.TotalMatrix, invertedPath);
-			}
-			invertedPath.Op(outPath, SKPathOp.Difference, invertedPath);
-			return invertedPath;
+			return clipPath;
 		}
 		else
 		{
-			return outPath;
+			var invertedPath = new SKPath();
+			invertedPath.AddRect(rect);
+
+			if (applyScaling && scale != 1f)
+			{
+				invertedPath.Transform(matrix, invertedPath);
+			}
+
+			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
+
+			clipPath.Dispose();
+
+			return invertedPath;
 		}
 	}
 
