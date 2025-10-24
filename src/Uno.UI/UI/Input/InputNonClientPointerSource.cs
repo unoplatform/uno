@@ -4,7 +4,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using Windows.Graphics;
-
+#pragma warning disable CS0067
 namespace Microsoft.UI.Input;
 
 /// <summary>
@@ -42,7 +42,6 @@ public partial class InputNonClientPointerSource
 	/// <param name="region">The non-client region kind to clear.</param>
 	public void ClearRegionRects(NonClientRegionKind region)
 	{
-		Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "void InputNonClientPointerSource.ClearRegionRects(NonClientRegionKind region)");
 	}
 
 	/// <summary>
@@ -53,7 +52,7 @@ public partial class InputNonClientPointerSource
 	/// <returns>An array of <see cref="Windows.Graphics.RectInt32"/> describing the region, or an empty array if none are registered.</returns>
 	public RectInt32[] GetRegionRects(NonClientRegionKind region)
 	{
-		throw new global::System.NotImplementedException("The member RectInt32[] InputNonClientPointerSource.GetRegionRects(NonClientRegionKind region) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%5B%5D%20InputNonClientPointerSource.GetRegionRects%28NonClientRegionKind%20region%29");
+		return Array.Empty<RectInt32>();
 	}
 
 	/// <summary>
@@ -64,7 +63,6 @@ public partial class InputNonClientPointerSource
 	/// <param name="rects">An array of <see cref="Windows.Graphics.RectInt32"/> specifying the rectangles for the region.</param>
 	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects)
 	{
-		Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "void InputNonClientPointerSource.SetRegionRects(NonClientRegionKind region, RectInt32[] rects)");
 	}
 
 	/// <summary>
@@ -73,7 +71,6 @@ public partial class InputNonClientPointerSource
 	/// </summary>
 	public void ClearAllRegionRects()
 	{
-		Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "void InputNonClientPointerSource.ClearAllRegionRects()");
 	}
 
 	/// <summary>
