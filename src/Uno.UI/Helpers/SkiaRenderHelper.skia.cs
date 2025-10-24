@@ -20,6 +20,12 @@ internal static class SkiaRenderHelper
 	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
 	private static readonly SKPath _emptyClipPath = new();
 
+	// This is used on X11, when no native elements are present - DO NOT MODIFY
+	private static int _x11Width;
+	private static int _x11Height;
+	private static float _x11Scale;
+	private static SKPath? _x11ClipPath;
+
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
@@ -34,8 +40,10 @@ internal static class SkiaRenderHelper
 		canvas.Scale(scale);
 		rootElement.Visual.Compositor.RenderRootVisual(canvas, rootElement.Visual);
 
-		var path = !invertPath && !ContentPresenter.HasNativeElements() ?
-			_emptyClipPath :
+		var path = !ContentPresenter.HasNativeElements() ?
+			!invertPath ?
+				_emptyClipPath :
+				GetOrUpdateX11ClippingPath(width, height, scale) :
 			CalculateClippingPath(width, height, rootElement.Visual, canvas, invertPath, applyScaling);
 
 		var picture = _recorder.EndRecording();
@@ -94,6 +102,35 @@ internal static class SkiaRenderHelper
 		else
 		{
 			return outPath;
+		}
+	}
+
+	private static SKPath GetOrUpdateX11ClippingPath(int width, int height, float scale)
+	{
+		if (_x11ClipPath != null && _x11Width == width && _x11Height == height && _x11Scale == scale)
+		{
+			return _x11ClipPath;
+		}
+		else
+		{
+			var result = new SKPath();
+			result.AddRect(new SKRect(0f, 0f, width, height));
+
+			if (scale != 1f)
+			{
+				var matrix = SKMatrix.CreateScale(scale, scale);
+
+				result.Transform(matrix, result);
+			}
+
+			result.Op(_emptyClipPath, SKPathOp.Difference, result);
+
+			_x11Width = width;
+			_x11Height = height;
+			_x11Scale = scale;
+			_x11ClipPath = result;
+
+			return result;
 		}
 	}
 
