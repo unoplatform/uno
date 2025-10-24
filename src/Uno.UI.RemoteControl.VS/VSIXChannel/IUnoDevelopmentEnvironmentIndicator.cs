@@ -14,5 +14,13 @@ public interface IUnoDevelopmentEnvironmentIndicator
 	*
 	*/
 
-	ValueTask NotifyAsync(DevelopmentEnvironmentStatusIdeMessage message, CancellationToken ct);
+	ValueTask NotifyAsync(DevelopmentEnvironmentStatusIdeMessage message, CancellationToken ct); // For backward compat with VS.RC, we keep this directly on the interface instead of moving it to extension method!
+
+	ValueTask NotifyAsync(DevelopmentEnvironmentStatusIdeMessage[] messages, CancellationToken ct);
+
+	/// <summary>
+	/// Request to cleanup the indicator (e.g. on solution close).
+	/// This will remove all components from the indicator and show only the provided messages.
+	/// </summary>
+	ValueTask CleanupAsync(DevelopmentEnvironmentStatusIdeMessage[] messages, CancellationToken ct);
 }
