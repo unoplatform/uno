@@ -56,6 +56,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource),
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
+		ApiExtensibility.Register<AppWindow>(typeof(INativeInputNonClientPointerSource), appWindow => (Win32WindowWrapper)appWindow.NativeAppWindow);
 
 		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => Win32SystemThemeHelperExtension.Instance);
@@ -81,7 +82,6 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register<DragDropManager>(typeof(IDragDropExtension), manager => new Win32DragDropExtension(manager));
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new Win32NativeElementHostingExtension(o));
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new Win32NativeWebViewProvider(o));
-
 		// We used to do this ApiExtensibility with ApiExtensionAttribute and a condition that makes it only run
 		// on Windows, but this causes problem on Wpf because we're registering Win32's MPE implementation even on WPF.
 		// This way, the Win32 MPE implementation is only registered when we're using
