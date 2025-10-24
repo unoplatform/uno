@@ -20,6 +20,11 @@ internal static class SkiaRenderHelper
 	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
 	private static readonly SKPath _emptyClipPath = new();
 
+	// This is used on X11, when no native elements are present - DO NOT MODIFY
+	private static float _invertedClipPathWidth;
+	private static float _invertedClipPathHeight;
+	private static SKPath? _invertedClipPath;
+
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
@@ -31,8 +36,10 @@ internal static class SkiaRenderHelper
 
 		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
 
-		var path = !invertPath && !ContentPresenter.HasNativeElements() ?
-			_emptyClipPath :
+		var path = !ContentPresenter.HasNativeElements() ?
+			!invertPath ?
+				_emptyClipPath :
+				GetOrUpdateInvertedClippingPath(width, height) :
 			CalculateClippingPath(width, height, rootVisual, invertPath);
 
 		var picture = _recorder.EndRecording();
@@ -83,6 +90,26 @@ internal static class SkiaRenderHelper
 		else
 		{
 			return outPath;
+		}
+	}
+
+	private static SKPath GetOrUpdateInvertedClippingPath(float width, float height)
+	{
+		if (_invertedClipPath != null && _invertedClipPathWidth == width && _invertedClipPathHeight == height)
+		{
+			return _invertedClipPath;
+		}
+		else
+		{
+			var result = new SKPath();
+			result.AddRect(new SKRect(0f, 0f, width, height));
+			result.Op(_emptyClipPath, SKPathOp.Difference, result);
+
+			_invertedClipPathWidth = width;
+			_invertedClipPathHeight = height;
+			_invertedClipPath = result;
+
+			return result;
 		}
 	}
 
