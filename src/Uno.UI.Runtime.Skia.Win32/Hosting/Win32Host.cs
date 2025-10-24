@@ -31,6 +31,7 @@ using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Graphics;
+using Uno.UI.UI.Input.Internal;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -55,6 +56,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource),
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
+
 		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => Win32SystemThemeHelperExtension.Instance);
 

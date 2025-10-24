@@ -6,6 +6,16 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
+using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
@@ -16,19 +26,7 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.Helpers.Theming;
-using Uno.UI.Dispatching;
-using Uno.UI.Hosting;
-using Uno.UI.NativeElementHosting;
-using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
-using MARGINS = Windows.Win32.UI.Controls.MARGINS;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -221,6 +219,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
+
+		var customCaptionResult = CustomCaptionProc(hwnd, msg, wParam, lParam, out var handledInCustomCaption);
+		if (handledInCustomCaption)
+		{
+			return customCaptionResult;
+		}
+
 		switch (msg)
 		{
 			case PInvoke.WM_ACTIVATE:
@@ -299,6 +304,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					SetCursor(PointerCursor);
 					return new LRESULT(0);
 				}
+				break;
+			case PInvoke.WM_NCCALCSIZE:
+				if (wParam.Value == 1 && (!_hasBorder || !_hasTitleBar))
+				{
+					return new LRESULT(IntPtr.Zero);
+				}
+
 				break;
 		}
 
