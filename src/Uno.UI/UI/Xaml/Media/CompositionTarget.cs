@@ -20,17 +20,18 @@ public partial class CompositionTarget : ICompositionTarget
 #if __SKIA__
 		_targets.Add(this, null);
 		var xamlRoot = ContentRoot.GetOrCreateXamlRoot();
-		lock (_xamlRootBoundsGate)
-		{
-			_xamlRootBounds = new Size((int)(xamlRoot.Bounds.Width * xamlRoot.RasterizationScale), (int)(xamlRoot.Bounds.Height * xamlRoot.RasterizationScale));
-		}
-		xamlRoot.Changed += (sender, _) =>
+		xamlRoot.Changed += (_, _) => UpdateXamlRootBounds();
+		UpdateXamlRootBounds();
+		void UpdateXamlRootBounds()
 		{
 			lock (_xamlRootBoundsGate)
 			{
-				_xamlRootBounds = new Size((int)(sender.Bounds.Width * sender.RasterizationScale), (int)(sender.Bounds.Height * sender.RasterizationScale));
+				// Rounding instead of flooring here is specifically necessary on hardware-accelerated Win32, which draws bottom-up,
+				// so if there's a mismatch between the actual window height and _xamlRootBounds.Height, the first row of pixels
+				// may or not be offset correctly depending on floating point errors
+				_xamlRootBounds = new Size(Math.Round(xamlRoot.Bounds.Width * xamlRoot.RasterizationScale), Math.Round(xamlRoot.Bounds.Height * xamlRoot.RasterizationScale));
 			}
-		};
+		}
 #endif
 	}
 
