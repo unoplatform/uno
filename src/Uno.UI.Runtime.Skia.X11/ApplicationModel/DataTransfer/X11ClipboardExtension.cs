@@ -1,4 +1,4 @@
-// This implementation has a lot of the structure of Avalonia's implementation
+﻿// This implementation has a lot of the structure of Avalonia's implementation
 // with the actual logic ported from xsel
 
 // The MIT License (MIT)
@@ -91,10 +91,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 	// these are only valid if CurrentlyOwningClipboard. However, reading outdated values is benign, so no lock needed for now
 	private IntPtr _ownershipTimestamp;
 	private DataPackageView _clipboardData;
+	private volatile bool _isMonitoringEnabled;
+	private int _xfixesEventBase = -1;
 
-#pragma warning disable CS0067 // Event is never used
 	public event EventHandler<object> ContentChanged;
-#pragma warning restore CS0067 // Event is never used
 
 	public static X11ClipboardExtension Instance { get; } = new X11ClipboardExtension();
 
@@ -111,20 +111,16 @@ internal class X11ClipboardExtension : IClipboardExtension
 				this.Log().Error("XLIB ERROR: Cannot connect to X server");
 			}
 		}
-
 		int screen = XLib.XDefaultScreen(display);
 
-		IntPtr window = XLib.XCreateSimpleWindow(
-			display,
-			XLib.XRootWindow(display, screen),
-			0,
-			0,
-			1,
-			1,
-			0,
-			XLib.XBlackPixel(display, screen),
-			XLib.XWhitePixel(display, screen));
+		IntPtr window = XLib.XCreateSimpleWindow(display, XLib.XRootWindow(display, screen), 0, 0, 1, 1, 0, 0, 0);
 
+		// Query XFixes extension to get the event base for clipboard monitoring
+		if (XLib.XQueryExtension(display, "XFIXES", out _, out _xfixesEventBase, out _))
+		{
+			IntPtr clipboard = X11Helper.GetAtom(display, X11Helper.CLIPBOARD);
+			XLib.XFixesSelectSelectionInput(display, window, clipboard, 1);
+		}
 		_ = XLib.XFlush(display); // unnecessary on most Xlib implementations
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -150,8 +146,23 @@ internal class X11ClipboardExtension : IClipboardExtension
 		selThread.Start();
 	}
 
-	public void StartContentChanged() => throw new NotImplementedException();
-	public void StopContentChanged() => throw new NotImplementedException();
+	public void StartContentChanged()
+	{
+		_isMonitoringEnabled = true;
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace("XCLIP: Clipboard monitoring enabled");
+		}
+	}
+
+	public void StopContentChanged()
+	{
+		_isMonitoringEnabled = false;
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace("XCLIP: Clipboard monitoring disabled");
+		}
+	}
 
 	public void Clear() => SetContent(new DataPackage());
 
@@ -445,6 +456,20 @@ internal class X11ClipboardExtension : IClipboardExtension
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
 						this.Log().Trace($"XSEL EVENT: {event_.type}");
+					}
+
+					// Check if this is an XFixes SetSelectionOwner event
+					if ((int)event_.type == _xfixesEventBase + (int)SelectionEvent.SetSelectionOwner)
+					{
+						var selectionNotify = event_.SelectionNotifyEvent;
+						if (selectionNotify.selection == X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
+						{
+							if (_isMonitoringEnabled)
+							{
+								ContentChanged?.Invoke(null, EventArgs.Empty);
+							}
+						}
+						continue;
 					}
 
 					if (!_currentlyOwningClipboard)
