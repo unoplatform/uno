@@ -4,6 +4,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Windowing.Native;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Dwm;

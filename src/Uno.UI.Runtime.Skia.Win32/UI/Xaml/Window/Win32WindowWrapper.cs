@@ -310,7 +310,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				{
 					return new LRESULT(IntPtr.Zero);
 				}
-
 				break;
 		}
 

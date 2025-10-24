@@ -1,4 +1,5 @@
 using System;
+using Windows.Graphics;
 
 namespace Microsoft.UI.Windowing;
 #nullable enable
@@ -37,5 +38,10 @@ public partial class AppWindowTitleBar
 	/// </summary>
 	/// <returns>True if the title bar can be customized; otherwise, false.</returns>
 	/// <remarks>Title bar customization is currently not available on any Uno Platform target except WinAppSDK.</remarks>
-	public static bool IsCustomizationSupported() => false;
+	public static bool IsCustomizationSupported() => OperatingSystem.IsWindows();
+
+	public void SetDragRectangles(RectInt32[] value) =>
+		DragRectanglesChanged?.Invoke(this, value);
+
+	internal event EventHandler<RectInt32[]> DragRectanglesChanged;
 }

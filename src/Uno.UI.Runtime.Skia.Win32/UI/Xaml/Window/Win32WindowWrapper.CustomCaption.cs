@@ -2,6 +2,7 @@
 using System.Drawing;
 using Microsoft.UI.Windowing;
 using Uno.UI.Runtime.Skia.Win32.UI.Xaml.Window;
+using Uno.UI.UI.Input.Internal;
 using Windows.Foundation;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -25,6 +26,10 @@ partial class Win32WindowWrapper
 		PInvoke.GetWindowRect(hWnd, out var rcWindow);
 		var scaling = (uint)(RasterizationScale * StandardDpi);
 		var relativeScaling = RasterizationScale / RasterizationScale;
+
+		///////
+		// TODO: If custom drag are was provided, use that instead
+		///////
 
 		// Get the frame rectangle, adjusted for the style without a caption.
 		var rcFrame = new RECT();
