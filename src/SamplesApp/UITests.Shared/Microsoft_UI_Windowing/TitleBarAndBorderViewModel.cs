@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Microsoft.UI.Windowing;
 using SamplesApp;
 using Uno.UI.Samples.UITests.Helpers;
+using Windows.Graphics;
 
 namespace UITests.Microsoft_UI_Windowing
 {
@@ -19,6 +20,10 @@ namespace UITests.Microsoft_UI_Windowing
 		private bool _hasTitleBar;
 		private string _presenterDescription = string.Empty;
 		private string _lastError = string.Empty;
+		private double _dragRectX;
+		private double _dragRectY;
+		private double _dragRectWidth;
+		private double _dragRectHeight;
 
 		public TitleBarAndBorderViewModel()
 		{
@@ -84,7 +89,63 @@ namespace UITests.Microsoft_UI_Windowing
 			private set => Set(ref _lastError, value);
 		}
 
+		public double DragRectX
+		{
+			get => _dragRectX;
+			set => Set(ref _dragRectX, value);
+		}
+
+		public double DragRectY
+		{
+			get => _dragRectY;
+			set => Set(ref _dragRectY, value);
+		}
+
+		public double DragRectWidth
+		{
+			get => _dragRectWidth;
+			set => Set(ref _dragRectWidth, value);
+		}
+
+		public double DragRectHeight
+		{
+			get => _dragRectHeight;
+			set => Set(ref _dragRectHeight, value);
+		}
+
+		public ICommand SetDragRectanglesCommand => GetOrCreateCommand(() =>
+		{
+			try
+			{
+				var rect = new Windows.Graphics.RectInt32(
+					(int)DragRectX,
+					(int)DragRectY,
+					(int)DragRectWidth,
+					(int)DragRectHeight);
+				App.MainWindow.AppWindow.TitleBar.SetDragRectangles(new[] { rect });
+				LastError = string.Empty;
+			}
+			catch (Exception ex)
+			{
+				LastError = ex.Message;
+			}
+		});
+
+		public ICommand ClearDragRectanglesCommand => GetOrCreateCommand(() =>
+		{
+			try
+			{
+				App.MainWindow.AppWindow.TitleBar.SetDragRectangles(Array.Empty<RectInt32>());
+				LastError = string.Empty;
+			}
+			catch (Exception ex)
+			{
+				LastError = ex.Message;
+			}
+		});
+
 		public ICommand ApplyCommand => GetOrCreateCommand(ApplySetBorderAndTitleBar);
+
 		public ICommand ResetCommand => GetOrCreateCommand(ResetPresenter);
 
 		private void ApplySetBorderAndTitleBar()
