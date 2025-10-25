@@ -6,6 +6,16 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
+using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
@@ -16,23 +26,14 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.Helpers.Theming;
-using Uno.UI.Dispatching;
-using Uno.UI.Hosting;
-using Uno.UI.NativeElementHosting;
-using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 {
+	public const double StandardDpi = 96;
+
 	private const string WindowClassName = "UnoPlatformRegularWindow";
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
@@ -113,7 +114,25 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			Resize(new SizeInt32((int)(Size.Width * RasterizationScale), (int)(Size.Height * RasterizationScale)));
 		}
 
-		// TODO: extending into titlebar
+		window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
+	}
+
+	private void OnExtendsContentIntoTitleBarChanged(bool extends)
+	{
+		if (_window is null)
+		{
+			throw new InvalidOperationException("Cannot extend client area before the Window is set.");
+		}
+
+		if (!WasShown)
+		{
+			return;
+		}
+
+		if (_window.AppWindow.Presenter is OverlappedPresenter overlapped)
+		{
+			SetBorderAndTitleBar(overlapped.HasBorder, overlapped.HasTitleBar);
+		}
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
@@ -200,6 +219,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
+
+		var customCaptionResult = CustomCaptionProc(hwnd, msg, wParam, lParam, out var handledInCustomCaption);
+		if (handledInCustomCaption)
+		{
+			return customCaptionResult;
+		}
+
 		switch (msg)
 		{
 			case PInvoke.WM_ACTIVATE:
@@ -279,6 +305,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					return new LRESULT(0);
 				}
 				break;
+			case PInvoke.WM_NCCALCSIZE:
+				if (wParam.Value == 1 && (!_hasBorder || !_hasTitleBar))
+				{
+					return new LRESULT(IntPtr.Zero);
+				}
+				break;
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
@@ -299,6 +331,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
+		if (_window is not null)
+		{
+			_window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= OnExtendsContentIntoTitleBarChanged;
+		}
 		Win32Host.UnregisterWindow(_hwnd);
 		_renderer.Dispose();
 		_rendererDisposed = true;
