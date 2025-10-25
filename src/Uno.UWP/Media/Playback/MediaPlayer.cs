@@ -58,9 +58,12 @@ namespace Windows.Media.Playback
 			get => _volume;
 			set
 			{
-				_volume = value;
-				OnVolumeChanged();
-				VolumeChanged?.Invoke(this, _volume);
+				if (value >= 0.0 && value <= 1.0)
+				{
+					_volume = value;
+					OnVolumeChanged();
+					VolumeChanged?.Invoke(this, _volume);
+				}
 			}
 		}
 
