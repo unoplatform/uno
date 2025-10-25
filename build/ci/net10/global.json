@@ -4,6 +4,9 @@
 		"allowPrerelease": true,
 		"rollForward": "latestMinor"
 	},
+	"test": {
+		"runner": "Microsoft.Testing.Platform"
+	},
 	"tools": {
 		"dotnet": "10.0.100-rc.2.25502.107"
 	},
