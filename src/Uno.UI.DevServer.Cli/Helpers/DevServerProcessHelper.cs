@@ -100,7 +100,7 @@ internal static class DevServerProcessHelper
 		var stdOut = outputSb.ToString();
 		var stdErr = errorSb.ToString();
 
-		return (gracePeriodTask == resultTask ? null : process.ExitCode, stdOut, stdErr);
+		return (gracePeriodTask == resultTask || !process.HasExited ? null : process.ExitCode, stdOut, stdErr);
 	}
 
 	private static (StringBuilder output, StringBuilder error) ObserveOutputs(ProcessStartInfo startInfo, string displayName, ILogger logger, Process process)
