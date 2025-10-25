@@ -25,7 +25,12 @@ internal class CliManager
 				return await RunMcpProxyAsync(originalArgs.Where(a => a != "--mcp").ToArray());
 			}
 
-			_logger.LogInformation("Uno Platform DevServer CLI");
+			ShowBanner();
+
+			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
+			{
+				return await OpenSettings(originalArgs);
+			}
 
 			var hostPath = await ResolveHostExecutableAsync();
 			if (hostPath is null)
@@ -40,13 +45,67 @@ internal class CliManager
 
 			var startInfo = BuildHostArgs(hostPath, originalArgs, redirectOutput: !isDirectOutputCommand);
 
-			var result = await DevServerProcessHelper.RunHostProcessAsync(startInfo, _logger);
+			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
 			return result.ExitCode;
 		}
 		catch (Exception ex)
 		{
 			_logger.LogError(ex, "Error running command: {ErrorMessage}", ex.Message);
 			return 1;
+		}
+	}
+
+	private void ShowBanner()
+	{
+		// get the assembly informational version
+		var attrs = typeof(CliManager).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false);
+
+		if (attrs.Length > 0 && attrs[0] is System.Reflection.AssemblyInformationalVersionAttribute versionAttr)
+		{
+			// Take only what's before a `+`, we don't want the commit hash here
+			var items = versionAttr.InformationalVersion.Split('+', StringSplitOptions.RemoveEmptyEntries);
+
+			_logger.LogInformation("Uno Platform DevServer CLI - Version {Version}", items[0]);
+		}
+		else
+		{
+			_logger.LogInformation("Uno Platform DevServer CLI - Dev Version");
+		}
+	}
+
+	private async Task<int> OpenSettings(string[] originalArgs)
+	{
+		var studioExecutable = await ResolveSettingsExecutableAsync();
+
+		if (studioExecutable is null)
+		{
+			return 1; // errors already logged
+		}
+
+		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, redirectOutput: true);
+
+		var (exitCode, stdOut, stdErr) = await DevServerProcessHelper.RunGuiProcessAsync(startInfo, _logger, TimeSpan.FromSeconds(3));
+
+		if (exitCode is not null)
+		{
+			// Display output for debugging purposes
+			if (!string.IsNullOrWhiteSpace(stdOut))
+			{
+				_logger.LogDebug("Settings application stdout:\n{Stdout}", stdOut);
+			}
+			if (!string.IsNullOrWhiteSpace(stdErr))
+			{
+				_logger.LogError("Settings application stderr:\n{Stderr}", stdErr);
+			}
+
+			_logger.LogError("Settings application exited with code {ExitCode}", exitCode);
+
+			return 1;
+		}
+		else
+		{
+			_logger.LogInformation("Settings application started successfully");
+			return 0;
 		}
 	}
 
@@ -105,6 +164,38 @@ internal class CliManager
 		}
 	}
 
+	private async Task<string?> ResolveSettingsExecutableAsync()
+	{
+		var sdkVersion = await GetSdkVersionFromGlobalJson();
+
+		if (sdkVersion.sdkVersion == null || sdkVersion.sdkPackage == null)
+		{
+			_logger.LogError("Could not determine SDK version from global.json.");
+			return null;
+		}
+
+		_logger.LogDebug("SDK Version: {SdkPackage} {SdkVersion}", sdkVersion.sdkPackage, sdkVersion.sdkVersion);
+
+		var unoSdkPath = await EnsureNugetPackage(sdkVersion.sdkPackage, sdkVersion.sdkVersion);
+
+		if (unoSdkPath == null)
+		{
+			_logger.LogError("Uno SDK package version {SdkPackage} {SdkVersion} not found. Please ensure the Uno SDK is properly installed.", sdkVersion.sdkPackage, sdkVersion.sdkVersion);
+			return null;
+		}
+		_logger.LogDebug("Found Uno SDK: {UnoSdkPath}", unoSdkPath);
+
+		var studioPath = await GetSettingsExecutable(unoSdkPath);
+
+		if (studioPath is null)
+		{
+			_logger.LogError("Could not determine Settings application executable path.");
+			return null;
+		}
+
+		return studioPath;
+	}
+
 	private async Task<string?> ResolveHostExecutableAsync()
 	{
 		var sdkVersion = await GetSdkVersionFromGlobalJson();
@@ -148,7 +239,7 @@ internal class CliManager
 			args.Add("start");
 		}
 
-		return DevServerProcessHelper.CreateHostProcessStartInfo(hostPath, args, redirectOutput);
+		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, redirectOutput);
 	}
 
 	private static string? FindGlobalJson(string startPath)
@@ -325,7 +416,52 @@ internal class CliManager
 		}
 	}
 
+	private async Task<string?> GetSettingsExecutable(string unoSdkPath)
+	{
+		try
+		{
+			var devServerPackageVersion = await GetSettingsPackageVersion(unoSdkPath);
+			if (devServerPackageVersion is null)
+			{
+				return null;
+			}
+
+			var dotnetVersion = await GetDotNetVersion();
+			if (dotnetVersion is null)
+			{
+				return null;
+			}
+
+			var licensingPackagePath = await EnsureNugetPackage("uno.settings.devserver", devServerPackageVersion, false);
+			if (licensingPackagePath is null)
+			{
+				return null;
+			}
+
+			var hostExe = Path.Combine(licensingPackagePath, "tools", "manager", "Uno.Settings.dll");
+			if (File.Exists(hostExe))
+			{
+				_logger.LogDebug("Found Settings App: {Path}", hostExe);
+				return hostExe;
+			}
+
+			_logger.LogError("Settings App executable not found in package at expected paths");
+			return null;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to locate Settings App executable: {Message}", ex.Message);
+			return null;
+		}
+	}
+
 	private async Task<string?> GetDevServerPackageVersion(string unoSdkPath)
+		=> await GetUnoPackageVersionFromManifest(unoSdkPath, "uno.winui.devserver");
+
+	private async Task<string?> GetSettingsPackageVersion(string unoSdkPath)
+		=> await GetUnoPackageVersionFromManifest(unoSdkPath, "uno.settings.devserver");
+
+	private async Task<string?> GetUnoPackageVersionFromManifest(string unoSdkPath, string packageName)
 	{
 		try
 		{
@@ -352,10 +488,10 @@ internal class CliManager
 						{
 							foreach (var package in packagesElement.EnumerateArray())
 							{
-								var packageName = package.GetString();
-								if (packageName != null && packageName.Equals("Uno.WinUI.DevServer", StringComparison.OrdinalIgnoreCase))
+								var manifestPackageName = package.GetString();
+								if (manifestPackageName != null && manifestPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase))
 								{
-									_logger.LogDebug("Found Uno.WinUI.DevServer package version {Version} in packages.json", version);
+									_logger.LogDebug("Found {PackageName} package version {Version} in packages.json", packageName, version);
 									return version;
 								}
 							}

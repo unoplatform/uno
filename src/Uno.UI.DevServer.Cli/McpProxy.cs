@@ -52,9 +52,9 @@ internal class McpProxy
 		};
 		args.AddRange(forwardedArgs);
 
-		var startInfo = DevServerProcessHelper.CreateHostProcessStartInfo(hostPath, args, redirectOutput: true, redirectInput: true);
+		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, redirectOutput: true, redirectInput: true);
 
-		var (exitCode, stdout, stderr) = await DevServerProcessHelper.RunHostProcessAsync(startInfo, _logger);
+		var (exitCode, stdout, stderr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
 		if (exitCode != 0)
 		{
 			// Already logged by helper
