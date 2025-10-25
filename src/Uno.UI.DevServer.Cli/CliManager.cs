@@ -189,7 +189,7 @@ internal class CliManager
 
 		if (studioPath is null)
 		{
-			_logger.LogError("Could not determine DevServer host executable path.");
+			_logger.LogError("Could not determine Settings application executable path.");
 			return null;
 		}
 
