@@ -342,7 +342,7 @@ internal static partial class NativeUno
 	internal static partial nint uno_native_create_sample(nint window, string text);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_native_arrange(nint element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight);
+	internal static partial void uno_native_arrange(nint element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_native_attach(nint element);

@@ -19,8 +19,6 @@ static NSMutableSet<NSView*> *elements;
     self.layer.backgroundColor = NSColor.redColor.CGColor;
 }
 
-@synthesize visible;
-
 - (void)detach {
     // nothing needed
 }
@@ -47,14 +45,13 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
     return sample;
 }
 
-void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight)
+void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight)
 {
     NSRect arrange = NSMakeRect(arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight);
     element.frame = arrange;
 #if DEBUG
-    NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g) clip(%g,%g,%g,%g)", element,
-          arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight,
-          clipLeft, clipTop, clipWidth, clipHeight);
+    NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g)", element,
+          arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight);
 #endif
 }
 
@@ -110,15 +107,4 @@ void uno_native_set_opacity(NSView* element, double opacity)
     NSLog(@"uno_native_set_opacity #%p : %g -> %g", element, element.alphaValue, opacity);
 #endif
     element.alphaValue = opacity;
-}
-
-void uno_native_set_visibility(NSView<UNONativeElement>* element, bool visible)
-{
-#if DEBUG
-    NSLog(@"uno_native_set_visibility #%p : hidden %s -> visible %s", element, element.hidden ? "TRUE" : "FALSE", visible ? "TRUE" : "FALSE");
-#endif
-    element.visible = visible;
-    // hidden is controlled by both visible and clipping
-    if (!visible)
-        element.hidden = true;
 }

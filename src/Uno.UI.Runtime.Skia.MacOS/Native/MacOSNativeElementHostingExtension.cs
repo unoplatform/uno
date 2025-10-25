@@ -29,7 +29,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public static void Register() => ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new MacOSNativeElementHostingExtension(o));
 
-	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
 		if (content is MacOSNativeElement element)
 		{
@@ -39,7 +39,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			}
 			else
 			{
-				NativeUno.uno_native_arrange(element.NativeHandle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height, clipRect.Left, clipRect.Top, clipRect.Width, clipRect.Height);
+				NativeUno.uno_native_arrange(element.NativeHandle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height);
 			}
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
@@ -53,6 +53,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		if (content is MacOSNativeElement element)
 		{
 			NativeUno.uno_native_attach(element.NativeHandle);
+			element.Detached = false;
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -67,19 +68,6 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			// https://developer.apple.com/documentation/appkit/nsview/1483560-alphavalue?language=objc
 			// note: no marshaling needed as CGFloat is double for 64bits apps
 			NativeUno.uno_native_set_opacity(element.NativeHandle, opacity);
-		}
-		else if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-		}
-	}
-
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		if (content is MacOSNativeElement element)
-		{
-			// https://developer.apple.com/documentation/appkit/nsview/1483369-hidden?language=objc
-			NativeUno.uno_native_set_visibility(element.NativeHandle, visible);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{

@@ -573,6 +573,4 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
     }
 }
 
-@synthesize visible;
-
 @end

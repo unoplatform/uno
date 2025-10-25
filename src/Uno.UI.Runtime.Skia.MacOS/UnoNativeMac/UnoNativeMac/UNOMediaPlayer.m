@@ -511,8 +511,6 @@ id timeObserver;
     return true;
 }
 
-@synthesize visible;
-
 // UNONativeElement
 
 - (void)detach {

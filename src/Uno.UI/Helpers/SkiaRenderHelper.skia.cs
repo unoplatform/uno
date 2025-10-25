@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
@@ -15,10 +16,12 @@ namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper
 {
+	private static readonly List<Visual> _emptyList = new();
+
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath, bool applyScaling)
+	internal static (SKPicture picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath, bool applyScaling)
 	{
 		var xamlRoot = rootElement.XamlRoot;
 		var scale = (float)(xamlRoot?.RasterizationScale ?? 1.0f);
@@ -29,10 +32,10 @@ internal static class SkiaRenderHelper
 		canvas.Clear(SKColors.Transparent);
 		canvas.Scale(scale);
 		rootElement.Visual.Compositor.RenderRootVisual(canvas, rootElement.Visual);
-		var path = CalculateClippingPath(width, height, rootElement.Visual, canvas, invertPath, applyScaling);
+		var (path, nativeVisualsInZOrder) = CalculateClippingPath(width, height, rootElement.Visual, canvas, invertPath, applyScaling);
 		var picture = recorder.EndRecording();
 
-		return (picture, path);
+		return (picture, path, nativeVisualsInZOrder);
 	}
 
 	internal static void RenderPicture(SKCanvas canvas, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
@@ -58,14 +61,16 @@ internal static class SkiaRenderHelper
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
 	/// Takes the current TotalMatrix of the surface's canvas into account
 	/// </summary>
-	private static SKPath CalculateClippingPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas, bool invertPath, bool applyScaling)
+	private static (SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) CalculateClippingPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas, bool invertPath, bool applyScaling)
 	{
-		SKPath outPath = new SKPath();
+		var outPath = new SKPath();
+		var nativeVisualsInZOrder = _emptyList;
 		if (ContentPresenter.HasNativeElements())
 		{
 			var parentClipPath = new SKPath();
 			parentClipPath.AddRect(new SKRect(0, 0, width, height));
-			rootVisual.GetNativeViewPath(parentClipPath, outPath);
+			nativeVisualsInZOrder = new List<Visual>();
+			rootVisual.GetNativeViewPathAndZOrder(parentClipPath, outPath, nativeVisualsInZOrder);
 			if (applyScaling)
 			{
 				outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
@@ -81,11 +86,11 @@ internal static class SkiaRenderHelper
 				invertedPath.Transform(canvas.TotalMatrix, invertedPath);
 			}
 			invertedPath.Op(outPath, SKPathOp.Difference, invertedPath);
-			return invertedPath;
+			return (invertedPath, nativeVisualsInZOrder);
 		}
 		else
 		{
-			return outPath;
+			return (outPath, nativeVisualsInZOrder);
 		}
 	}
 
