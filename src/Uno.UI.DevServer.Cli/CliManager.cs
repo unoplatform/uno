@@ -27,7 +27,7 @@ internal class CliManager
 
 			ShowBanner();
 
-			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login"))
+			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
 			{
 				return await OpenSettings(originalArgs);
 			}
