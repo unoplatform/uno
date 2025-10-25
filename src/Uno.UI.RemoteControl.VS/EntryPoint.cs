@@ -517,7 +517,7 @@ public partial class EntryPoint : IDisposable
 			_errorAction?.Invoke($"Failed to start server: {e}");
 			if (_udei is not null)
 			{
-				await _udei.NotifyAsync(_udeiMsg.DevServer.Killed, _ct.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Failed(e), _ct.Token);
 			}
 			devServerCt?.Cancel();
 		}
