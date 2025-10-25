@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Imaging;
@@ -27,6 +28,7 @@ using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
 using Uno.UI.RemoteControl.VS.Notifications;
+using Uno.UI.RemoteControl.VS.AppLaunch;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
 
@@ -68,6 +70,8 @@ public partial class EntryPoint : IDisposable
 	private UnoMenuCommand? _unoMenuCommand;
 	private IUnoDevelopmentEnvironmentIndicator? _udei;
 	private IdeCommandHandler _commands;
+	private VsAppLaunchIdeBridge? _appLaunchIdeBridge;
+	private VsAppLaunchStateConsumer? _appLaunchStateConsumer;
 
 	// Legacy API v2
 	public EntryPoint(
@@ -171,6 +175,8 @@ public partial class EntryPoint : IDisposable
 		_onBuildProjConfigBeginHandler = (string project, string projectConfig, string platform, string solutionConfig) => _ = UpdateProjectsAsync();
 		_dte.Events.BuildEvents.OnBuildProjConfigBegin += _onBuildProjConfigBeginHandler;
 
+		await InitializeAppLaunchTrackingAsync(asyncPackage);
+
 		// Start the RC server early, as iOS and Android projects capture the globals early
 		// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
 		//
@@ -196,6 +202,23 @@ public partial class EntryPoint : IDisposable
 		_ = _debuggerObserver.ObserveProfilesAsync();
 
 		TelemetryHelper.DataModelTelemetrySession.AddSessionChannel(new TelemetryEventListener(this));
+	}
+
+	private async Task InitializeAppLaunchTrackingAsync(AsyncPackage asyncPackage)
+	{
+		// Initialize App Launch tracking (Play/Build events → state machine)
+		var stateService = new VsAppLaunchStateService<AppLaunchDetails>();
+		stateService.StateChanged += (s, e) =>
+		{
+			var key = e.StateDetails is var d ? d.StartupProjectPath : null;
+			_debugAction?.Invoke($"[AppLaunch] {e.Previous} -> {e.Current} key={key}");
+		};
+
+		var packageVersion = GetAssemblyVersion();
+		var ideVersion = GetIdeVersion();
+
+		_appLaunchIdeBridge = await VsAppLaunchIdeBridge.CreateAsync(asyncPackage, _dte2, stateService);
+		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient, packageVersion, ideVersion);
 	}
 
 	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -272,15 +295,15 @@ public partial class EntryPoint : IDisposable
 		_infoAction($"Uno Remote Control initialized ({GetAssemblyVersion()})");
 	}
 
-	private object GetAssemblyVersion()
+	private string GetAssemblyVersion()
 	{
 		var assembly = GetType().GetTypeInfo().Assembly;
 
-		if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
+		if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is { } aiva)
 		{
 			return aiva.InformationalVersion;
 		}
-		else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is AssemblyVersionAttribute ava)
+		else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is { } ava)
 		{
 			return ava.Version;
 		}
@@ -288,6 +311,25 @@ public partial class EntryPoint : IDisposable
 		{
 			return "Unknown";
 		}
+	}
+
+	private string GetIdeVersion()
+	{
+		try
+		{
+			// DTE2.Version gives the Visual Studio version (e.g., "17.0" for VS 2022)
+			var vsVersion = _dte2?.Version;
+			if (!string.IsNullOrEmpty(vsVersion))
+			{
+				return $"vswin-{vsVersion}";
+			}
+		}
+		catch
+		{
+			// Swallow any exceptions when retrieving VS version
+		}
+
+		return "vswin";
 	}
 
 	private async Task UpdateProjectsAsync()
@@ -820,6 +862,8 @@ public partial class EntryPoint : IDisposable
 			_debuggerObserver?.Dispose();
 			_infoBarFactory?.Dispose();
 			_unoMenuCommand?.Dispose();
+			_appLaunchIdeBridge?.Dispose();
+			_appLaunchStateConsumer?.Dispose();
 		}
 		catch (Exception e)
 		{
