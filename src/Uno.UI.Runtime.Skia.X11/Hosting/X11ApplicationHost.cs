@@ -15,6 +15,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.Helpers.Theming;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Extensions.System;
@@ -50,6 +51,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 				XLib.XSetLocaleModifiers("@im=none");
 			}
 		}
+
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaX11;
 
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => new X11CoreApplicationExtension());
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new X11ApplicationViewExtension(o));
