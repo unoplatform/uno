@@ -105,8 +105,8 @@ public partial class ClientHotReloadProcessor
 			}
 			ImmutableInterlocked.Update(ref _serverOperations, UpdateOperations, status.Operations);
 
-			// For tooling purposes, we dump the diagnosticss in the log of the application.
-			foreach (var serverOp in _serverOperations)
+			// For tooling purposes, we dump the diagnostics in the log of the application.
+			foreach (var serverOp in status.Operations)
 			{
 				owner.ReportDiagnostics(serverOp.Value.Diagnostics);
 			}
