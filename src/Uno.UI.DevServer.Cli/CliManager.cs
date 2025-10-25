@@ -62,7 +62,7 @@ internal class CliManager
 
 		if (attrs.Length > 0 && attrs[0] is System.Reflection.AssemblyInformationalVersionAttribute versionAttr)
 		{
-			// Take only what's before a `+`, we dont want the commit hash here
+			// Take only what's before a `+`, we don't want the commit hash here
 			var items = versionAttr.InformationalVersion.Split('+', StringSplitOptions.RemoveEmptyEntries);
 
 			_logger.LogInformation("Uno Platform DevServer CLI - Version {Version}", items[0]);
