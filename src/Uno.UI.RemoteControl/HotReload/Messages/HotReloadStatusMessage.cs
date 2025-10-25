@@ -36,5 +36,6 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		DateTimeOffset StartTime,
 		ImmutableHashSet<string> FilePaths,
 		DateTimeOffset? EndTime,
-		HotReloadServerResult? Result);
+		HotReloadServerResult? Result,
+		IImmutableList<string>? Diagnostics);
 }

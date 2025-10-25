@@ -3,11 +3,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -249,8 +252,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 							state = HotReloadState.Processing;
 						}
 
+						var diagnosticsResult = operation.Diagnostics
+							?.Where(d => d.Severity >= DiagnosticSeverity.Warning)
+							.Select(d => CSharpDiagnosticFormatter.Instance.Format(d, CultureInfo.InvariantCulture))
+							.ToImmutableList() ?? ImmutableList<string>.Empty;
+
 						foundCompleting |= operation == completing;
-						infos.Add(new(operation.Id, operation.StartTime, operation.FilePaths, operation.CompletionTime, operation.Result));
+						infos.Add(new(operation.Id, operation.StartTime, operation.FilePaths, operation.CompletionTime, operation.Result, diagnosticsResult));
 						operation = operation.Previous!;
 					}
 				}
@@ -281,6 +289,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			private ImmutableHashSet<string> _filePaths;
 			private int /* HotReloadResult */ _result = -1;
 			private CancellationTokenSource? _deferredCompletion;
+			private ImmutableArray<Diagnostic>? _diagnostics;
 
 			// In VS we forcefully request to VS to hot-reload application, but in some cases the changes are not detected by VS and it returns a NoChanges result.
 			// In such cases we can retry the hot-reload request to VS to let it process the file updates.
@@ -296,6 +305,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			public HotReloadServerOperation? Previous => _previous;
 
 			public ImmutableHashSet<string> FilePaths => _filePaths;
+
+			public ImmutableArray<Diagnostic>? Diagnostics => _diagnostics;
 
 			public HotReloadServerResult? Result => _result is -1 ? null : (HotReloadServerResult)_result;
 
@@ -384,10 +395,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			}
 
-			public ValueTask Complete(HotReloadServerResult result, Exception? exception = null)
-				=> Complete(result, exception, isFromNext: false);
+			public ValueTask Complete(HotReloadServerResult result, Exception? exception = null, ImmutableArray<Diagnostic>? diagnostics = null)
+				=> Complete(result, exception, isFromNext: false, diagnostics: diagnostics);
 
-			private async ValueTask Complete(HotReloadServerResult result, Exception? exception, bool isFromNext)
+			private async ValueTask Complete(HotReloadServerResult result, Exception? exception, bool isFromNext, ImmutableArray<Diagnostic>? diagnostics)
 			{
 				if (_result is -1
 					&& result is HotReloadServerResult.NoChanges
@@ -416,6 +427,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return; // Already completed
 				}
 
+				_diagnostics = diagnostics;
+
 				CompletionTime = DateTimeOffset.Now;
 				await _timeout.DisposeAsync();
 
@@ -425,7 +438,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					await _previous.Complete(
 						HotReloadServerResult.Aborted,
 						new TimeoutException("An more recent hot-reload operation has completed."),
-						isFromNext: true);
+						isFromNext: true,
+						diagnostics: null);
 				}
 
 				if (!isFromNext) // Only the head of the list should request update
