@@ -19,7 +19,7 @@ internal sealed class IdeCommandHandler(ILogger log) : ICommandHandler
 
 	public void Execute(Command command)
 	{
-		switch (command.Name)
+		switch (command.Name.ToLowerInvariant())
 		{
 			case "ide.open_browser" when command.Parameter is not null && Uri.TryCreate(command.Parameter, UriKind.Absolute, out var target):
 				// Note: We validate the URI is valid to avoid potential security issues with Process.Start

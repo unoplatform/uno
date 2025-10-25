@@ -39,6 +39,8 @@
         href: xref:Uno.UI.CommonIssues
       - name: Hot Reload
         topicHref: xref:Uno.Features.HotReload#troubleshooting
+      - name: Uno Platform Status
+        topicHref: xref:Uno.Development.UnoPlatformStatus#troubleshooting
       - name: Development Environments
         topicHref: xref:Uno.UI.CommonIssues.AllIDEs
         items:
@@ -718,6 +720,10 @@
       href: external/uno.wasm.bootstrap/doc/toc.yml
     - name: Uno Check
       href: external/uno.check/doc/toc.yml
+    - name: Uno Platform Status
+      href: xref:Uno.UnoPlatformStatus
+    - name: Dev Server
+      href: xref:Uno.DevServer
     - name: Xaml Merging
       href: external/uno.xamlmerge.task/doc/toc.yml
     - name: Uno Resizetizer
