@@ -15,36 +15,55 @@ namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper
 {
+	private static readonly SKPictureRecorder _recorder = new();
+
+	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
+	private static readonly SKPath _emptyClipPath = new();
+
+	// This is used on X11, when no native elements are present - DO NOT MODIFY
+	private static int _x11Width;
+	private static int _x11Height;
+	private static float _x11Scale;
+	private static SKPath? _x11ClipPath;
+
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (SKPicture, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath, bool applyScaling)
+	internal static (IntPtr, SKPath) RecordPictureAndReturnPath(int width, int height, UIElement rootElement, bool invertPath, bool applyScaling)
 	{
 		var xamlRoot = rootElement.XamlRoot;
 		var scale = (float)(xamlRoot?.RasterizationScale ?? 1.0f);
 
-		using var recorder = new SKPictureRecorder();
-		using var canvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+		var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 		using var _ = new SKAutoCanvasRestore(canvas, true);
 		canvas.Clear(SKColors.Transparent);
 		canvas.Scale(scale);
 		rootElement.Visual.Compositor.RenderRootVisual(canvas, rootElement.Visual);
-		var path = CalculateClippingPath(width, height, rootElement.Visual, canvas, invertPath, applyScaling);
-		var picture = recorder.EndRecording();
+
+		var path = !ContentPresenter.HasNativeElements() ?
+			!invertPath ?
+				_emptyClipPath :
+				GetOrUpdateX11ClippingPath(width, height, scale) :
+			CalculateClippingPath(width, height, rootElement.Visual, scale, applyScaling, invertPath);
+
+		var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 
 		return (picture, path);
 	}
 
-	internal static void RenderPicture(SKCanvas canvas, SKPicture? picture, SKColor background, FpsHelper fpsHelper)
+	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, FpsHelper fpsHelper)
 	{
 		using var fpsHelperDisposable = fpsHelper.BeginFrame();
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(background);
-			if (picture is not null)
+			if (picture != IntPtr.Zero)
 			{
 				// This might happen if we get render request before the first frame is painted
-				canvas.DrawPicture(picture);
+				unsafe
+				{
+					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, picture, null, IntPtr.Zero);
+				}
 			}
 
 			fpsHelper.DrawFps(canvas);
@@ -54,38 +73,81 @@ internal static class SkiaRenderHelper
 		canvas.Flush();
 	}
 
+	private static readonly SKPath _spareParentClipPath = new();
+
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
-	/// Takes the current TotalMatrix of the surface's canvas into account
+	/// Takes the current display scale into account
 	/// </summary>
-	private static SKPath CalculateClippingPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas, bool invertPath, bool applyScaling)
+	private static SKPath CalculateClippingPath(int width, int height, ContainerVisual rootVisual, float scale, bool applyScaling, bool invertPath)
 	{
-		SKPath outPath = new SKPath();
-		if (ContentPresenter.HasNativeElements())
+		var clipPath = new SKPath();
+
+		var rect = new SKRect(0f, 0f, width, height);
+
+		var parentClipPath = _spareParentClipPath;
+		parentClipPath.Rewind();
+		parentClipPath.AddRect(rect);
+
+		rootVisual.GetNativeViewPath(parentClipPath, clipPath);
+
+		var matrix = default(SKMatrix);
+
+		if (applyScaling && scale != 1f)
 		{
-			var parentClipPath = new SKPath();
-			parentClipPath.AddRect(new SKRect(0, 0, width, height));
-			rootVisual.GetNativeViewPath(parentClipPath, outPath);
-			if (applyScaling)
-			{
-				outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
-			}
+			matrix = SKMatrix.CreateScale(scale, scale);
+
+			clipPath.Transform(matrix, clipPath);
 		}
 
-		if (invertPath)
+		if (!invertPath)
 		{
-			var invertedPath = new SKPath();
-			invertedPath.AddRect(new SKRect(0, 0, width, height));
-			if (applyScaling)
-			{
-				invertedPath.Transform(canvas.TotalMatrix, invertedPath);
-			}
-			invertedPath.Op(outPath, SKPathOp.Difference, invertedPath);
-			return invertedPath;
+			return clipPath;
 		}
 		else
 		{
-			return outPath;
+			var invertedPath = new SKPath();
+			invertedPath.AddRect(rect);
+
+			if (applyScaling && scale != 1f)
+			{
+				invertedPath.Transform(matrix, invertedPath);
+			}
+
+			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
+
+			clipPath.Dispose();
+
+			return invertedPath;
+		}
+	}
+
+	private static SKPath GetOrUpdateX11ClippingPath(int width, int height, float scale)
+	{
+		if (_x11ClipPath != null && _x11Width == width && _x11Height == height && _x11Scale == scale)
+		{
+			return _x11ClipPath;
+		}
+		else
+		{
+			var result = new SKPath();
+			result.AddRect(new SKRect(0f, 0f, width, height));
+
+			if (scale != 1f)
+			{
+				var matrix = SKMatrix.CreateScale(scale, scale);
+
+				result.Transform(matrix, result);
+			}
+
+			result.Op(_emptyClipPath, SKPathOp.Difference, result);
+
+			_x11Width = width;
+			_x11Height = height;
+			_x11Scale = scale;
+			_x11ClipPath = result;
+
+			return result;
 		}
 	}
 

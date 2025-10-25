@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Numerics;
 using SkiaSharp;
 using Uno.Extensions;
@@ -9,9 +10,8 @@ namespace Microsoft.UI.Composition;
 
 partial class RectangleClip
 {
-	private static readonly SKPoint[] _radiiStore = new SKPoint[4];
-
 	private SKRoundRect? _skRoundRect;
+	private static readonly SKPath _spareClipPath = new();
 
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
@@ -24,7 +24,8 @@ partial class RectangleClip
 
 	internal override SKPath GetClipPath(Visual visual)
 	{
-		var path = new SKPath();
+		var path = _spareClipPath;
+		path.Rewind();
 		path.AddRoundRect(GetClipRoundedRect(visual));
 		return path;
 	}
@@ -50,12 +51,16 @@ partial class RectangleClip
 		{
 			_skRoundRect ??= new SKRoundRect();
 
-			_radiiStore[0] = new SKPoint(_topLeftRadius.X, _topLeftRadius.Y);
-			_radiiStore[1] = new SKPoint(_topRightRadius.X, _topRightRadius.Y);
-			_radiiStore[2] = new SKPoint(_bottomRightRadius.X, _bottomRightRadius.Y);
-			_radiiStore[3] = new SKPoint(_bottomLeftRadius.X, _bottomLeftRadius.Y);
+			Span<SKPoint> radii = stackalloc SKPoint[]
+			{
+				new SKPoint(_topLeftRadius.X, _topLeftRadius.Y),
+				new SKPoint(_topRightRadius.X, _topRightRadius.Y),
+				new SKPoint(_bottomRightRadius.X, _bottomRightRadius.Y),
+				new SKPoint(_bottomLeftRadius.X, _bottomLeftRadius.Y),
+			};
 
-			_skRoundRect.SetRectRadii(bounds.ToSKRect(), _radiiStore);
+			_skRoundRect.SetRectRadii(bounds.ToSKRect(), radii);
+
 			return _skRoundRect;
 		}
 		else

@@ -426,7 +426,7 @@ namespace Uno.UI.Dispatching
 
 		private void EnqueueCore(Delegate handler, NativeDispatcherPriority priority)
 		{
-			Debug.Assert((int)priority >= 0 && (int)priority <= 4);
+			Debug.Assert((int)priority >= 0 && (int)priority <= 3);
 
 			bool shouldEnqueue;
 
@@ -492,8 +492,6 @@ namespace Uno.UI.Dispatching
 		/// Gets the dispatcher for the main thread.
 		/// </summary>
 		internal static NativeDispatcher Main { get; } = new NativeDispatcher();
-
-		// Dispatching for the CompositionTarget.Rendering event
 
 		public static class TraceProvider
 		{

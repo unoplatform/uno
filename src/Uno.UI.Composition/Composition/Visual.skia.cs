@@ -35,17 +35,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _pictureCollapsingOptimizationFrameThreshold;
 	private int _pictureCollapsingOptimizationVisualCountThreshold;
 
-	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
-	// If we move to a UI-thread-per-window model, then we need multiple recorders.
-	[ThreadStatic]
-	private static SKPictureRecorder? _recorder;
+	private static SKPictureRecorder _recorder = new();
 
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private (Matrix4x4 matrix, bool isLocalMatrixIdentity) _totalMatrix = (Matrix4x4.Identity, true);
-	private SKPicture? _picture;
-	private SKPicture? _childrenPicture;
+	private IntPtr _picture;
+	private IntPtr _childrenPicture;
 	private int _framesSinceSubtreeNotChanged;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
@@ -207,8 +204,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </remarks>
 	internal void InvalidatePaint()
 	{
-		_picture?.Dispose();
-		_picture = null;
+		if (_picture != IntPtr.Zero)
+		{
+			UnoSkiaApi.sk_refcnt_safe_unref(_picture);
+			_picture = IntPtr.Zero;
+		}
 		_flags |= VisualFlags.PaintDirty;
 		InvalidateParentChildrenPicture(false);
 	}
@@ -218,8 +218,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var parent = includeSelf ? this : Parent;
 		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
-			parent._childrenPicture?.Dispose();
-			parent._childrenPicture = null;
+			if (parent._childrenPicture != IntPtr.Zero)
+			{
+				UnoSkiaApi.sk_refcnt_safe_unref(parent._childrenPicture);
+				parent._childrenPicture = IntPtr.Zero;
+			}
 			parent._flags |= VisualFlags.ChildrenSKPictureInvalid;
 			parent = parent.Parent;
 		}
@@ -376,9 +379,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					PostPaintingClipStep(this, recordingCanvas);
 					RenderChildrenStep(this, childSession, applyChildOptimization);
 				}
-				var childrenPicture = recorder.EndRecording();
-				canvas.DrawPicture(childrenPicture, ShadowState.ShadowOnlyPaint);
-				canvas.DrawPicture(childrenPicture);
+
+				unsafe
+				{
+					var childrenPicture = UnoSkiaApi.sk_picture_recorder_end_recording(recorder.Handle);
+
+					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, childrenPicture, null, ShadowState.ShadowOnlyPaint.Handle);
+					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, childrenPicture, null, IntPtr.Zero);
+
+					UnoSkiaApi.sk_refcnt_safe_unref(childrenPicture);
+				}
 			}
 		}
 
@@ -399,17 +409,28 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				if ((visual._flags & VisualFlags.PaintDirty) != 0)
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
-					_recorder ??= new SKPictureRecorder();
+
 					var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
-					visual._picture = _recorder.EndRecording();
+
+					var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
+
+					if (visual._picture != IntPtr.Zero)
+					{
+						UnoSkiaApi.sk_refcnt_safe_unref(visual._picture);
+					}
+
+					visual._picture = picture;
 				}
 
-				if (visual._picture is not null)
+				if (visual._picture != IntPtr.Zero)
 				{
-					session.Canvas.DrawPicture(visual._picture);
+					unsafe
+					{
+						UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
+					}
 				}
 			}
 #if DEBUG
@@ -437,9 +458,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
 		{
-			if (visual._childrenPicture is not null)
+			if (visual._childrenPicture != IntPtr.Zero)
 			{
-				session.Canvas.DrawPicture(visual._childrenPicture);
+				unsafe
+				{
+					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._childrenPicture, null, IntPtr.Zero);
+				}
 			}
 			else if (!visual._enablePictureCollapsingOptimization
 					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
@@ -466,8 +490,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					}
 				}
 
-				var picture = recorder.EndRecording();
-				session.Canvas.DrawPicture(picture);
+				var picture = IntPtr.Zero;
+
+				unsafe
+				{
+					picture = UnoSkiaApi.sk_picture_recorder_end_recording(recorder.Handle);
+					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, picture, null, IntPtr.Zero);
+				}
 
 				// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
 				// In such case, we should not cache this picture. Not only it is outdated, it will also lead to a corrupted state,
@@ -475,13 +504,22 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				// and its descendant can't invalidate the cached picture since they area already on a ChildrenSKPictureInvalid path.
 				if ((visual._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 				{
+					if (visual._childrenPicture != IntPtr.Zero)
+					{
+						UnoSkiaApi.sk_refcnt_safe_unref(visual._childrenPicture);
+					}
+
 					visual._childrenPicture = picture;
+				}
+				else
+				{
+					UnoSkiaApi.sk_refcnt_safe_unref(picture);
 				}
 			}
 		}
 	}
 
-	internal void GetNativeViewPath(SKPath clipFromParent, SKPath outPath)
+	internal void GetNativeViewPath(SKPath clipFromParent, SKPath clipPath)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false } || clipFromParent.IsEmpty)
 		{
@@ -505,7 +543,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		if (IsNativeHostVisual || CanPaint())
 		{
-			outPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, outPath);
+			clipPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, clipPath);
 		}
 
 		if (GetPostPaintingClipping() is { } postClip)
@@ -515,7 +553,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 		foreach (var child in GetChildrenInRenderOrder())
 		{
-			child.GetNativeViewPath(localClipCombinedByClipFromParent, outPath);
+			child.GetNativeViewPath(localClipCombinedByClipFromParent, clipPath);
 		}
 	}
 
