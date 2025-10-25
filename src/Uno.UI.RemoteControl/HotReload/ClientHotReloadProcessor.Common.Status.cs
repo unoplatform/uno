@@ -108,7 +108,7 @@ public partial class ClientHotReloadProcessor
 			// For tooling purposes, we dump the diagnostics in the log of the application.
 			foreach (var serverOp in status.Operations)
 			{
-				owner.ReportDiagnostics(serverOp.Value.Diagnostics);
+				owner.ReportDiagnostics(serverOp.Diagnostics);
 			}
 
 			NotifyStatusChanged();
