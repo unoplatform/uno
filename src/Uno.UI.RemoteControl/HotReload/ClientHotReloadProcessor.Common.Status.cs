@@ -104,6 +104,13 @@ public partial class ClientHotReloadProcessor
 				_serverState = status.State; // Do not override the state if it has already been set (debugger attached with dev-server)
 			}
 			ImmutableInterlocked.Update(ref _serverOperations, UpdateOperations, status.Operations);
+
+			// For tooling purposes, we dump the diagnostics in the log of the application.
+			foreach (var serverOp in status.Operations)
+			{
+				owner.ReportDiagnostics(serverOp.Diagnostics);
+			}
+
 			NotifyStatusChanged();
 
 			static ImmutableDictionary<long, HotReloadServerOperationData> UpdateOperations(ImmutableDictionary<long, HotReloadServerOperationData> history, IImmutableList<HotReloadServerOperationData> udpated)
@@ -163,6 +170,21 @@ public partial class ClientHotReloadProcessor
 			return new(globalState, (serverState, _serverOperations.Values.ToImmutableArray()), (localState, _localOperations));
 		}
 	}
+
+#if HAS_UNO_WINUI
+	private void ReportDiagnostics(IImmutableList<string>? diagnostics)
+	{
+		if (diagnostics is { Count: > 0 })
+		{
+			_log.Error("The Hot Reload compilation failed with the following errors:");
+
+			foreach (var operation in diagnostics)
+			{
+				_log.Error(operation);
+			}
+		}
+	}
+#endif
 
 	public class HotReloadClientOperation
 	{
