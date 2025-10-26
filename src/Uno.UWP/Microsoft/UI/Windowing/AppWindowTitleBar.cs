@@ -1,8 +1,9 @@
+#nullable enable
+
 using System;
 using Windows.Graphics;
 
 namespace Microsoft.UI.Windowing;
-#nullable enable
 
 /// <summary>
 /// Represents the title bar of an app window.
@@ -40,8 +41,12 @@ public partial class AppWindowTitleBar
 	/// <remarks>Title bar customization is currently not available on any Uno Platform target except WinAppSDK.</remarks>
 	public static bool IsCustomizationSupported() => OperatingSystem.IsWindows();
 
+    /// <summary>
+    /// Sets the drag regions for the window.
+    /// </summary>
+    /// <param name="value">An array of RectInt32, where each rectangle must be within the client area of the window to which the title bar belongs.</param>
 	public void SetDragRectangles(RectInt32[] value) =>
 		DragRectanglesChanged?.Invoke(this, value);
 
-	internal event EventHandler<RectInt32[]> DragRectanglesChanged;
+	internal event EventHandler<RectInt32[]>? DragRectanglesChanged;
 }
