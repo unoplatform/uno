@@ -68,8 +68,8 @@ public sealed partial class TitleBar_SetDragRectangles : Page
 		DynamicGrid.RowDefinitions.Clear();
 		DynamicGrid.ColumnDefinitions.Clear();
 
-		int rows = _rand.Next(1, 6); //1..5
-		int cols = _rand.Next(1, 6); //1..5
+		int rows = _rand.Next(1, 16); //1..16
+		int cols = _rand.Next(1, 16); //1..16
 
 		for (int r = 0; r < rows; r++)
 		{
@@ -136,10 +136,10 @@ public sealed partial class TitleBar_SetDragRectangles : Page
 			var bottomPx = (int)Math.Ceiling(bottomRight.Y * scale);
 
 			// Clamp to non-negative and cast to int
-			int x = Math.Max(0, (int)Math.Floor(topLeft.X));
-			int y = Math.Max(0, (int)Math.Floor(topLeft.Y));
-			int w = Math.Max(0, (int)Math.Ceiling(bottomRight.X) - x);
-			int h = Math.Max(0, (int)Math.Ceiling(bottomRight.Y) - y);
+			int x = Math.Max(0, leftPx);
+			int y = Math.Max(0, topPx);
+			int w = Math.Max(0, rightPx - x);
+			int h = Math.Max(0, bottomPx - y);
 
 			if (w > 0 && h > 0)
 			{
