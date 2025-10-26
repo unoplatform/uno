@@ -61,4 +61,9 @@ internal class DesktopWindow : BaseWindowImplementation
 		_desktopWindowXamlSource.XamlIsland.Width = newSize.Width;
 		_desktopWindowXamlSource.XamlIsland.Height = newSize.Height;
 	}
+
+	public override void SetTitleBar(UIElement? titleBar)
+	{
+		_windowChrome?.SetTitleBar(titleBar);
+	}
 }

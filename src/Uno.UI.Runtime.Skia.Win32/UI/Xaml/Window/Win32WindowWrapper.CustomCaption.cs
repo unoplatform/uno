@@ -4,6 +4,7 @@ using Microsoft.UI.Windowing;
 using Uno.UI.Runtime.Skia.Win32.UI.Xaml.Window;
 using Uno.UI.UI.Input.Internal;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -26,10 +27,6 @@ partial class Win32WindowWrapper
 		PInvoke.GetWindowRect(hWnd, out var rcWindow);
 		var scaling = (uint)(RasterizationScale * StandardDpi);
 		var relativeScaling = RasterizationScale / RasterizationScale;
-
-		///////
-		// TODO: If custom drag are was provided, use that instead
-		///////
 
 		// Get the frame rectangle, adjusted for the style without a caption.
 		var rcFrame = new RECT();
@@ -99,11 +96,32 @@ partial class Win32WindowWrapper
 			uRow = 2;
 		}
 
-		var captionAreaHitTest = _window?.AppWindow.Presenter is FullScreenPresenter ? Win32NonClientHitTestKind.HTNOWHERE : Win32NonClientHitTestKind.HTCAPTION;
+		bool hasCustomDragRects = false;
+
+		if (_regionRects.TryGetValue(Microsoft.UI.Input.NonClientRegionKind.Caption, out var dragRects))
+		{
+			hasCustomDragRects = true;
+			foreach (var rect in dragRects)
+			{
+				var scaledRect = new RectInt32
+				(
+					(int)(rcWindow.left / relativeScaling) + rect.X,
+					(int)(rcWindow.top / relativeScaling) + rect.Y,
+					(int)(rect.Width),
+					(int)(rect.Height)
+				);
+				if (scaledRect.Contains(new PointInt32((int)(ptMouse.X / relativeScaling), (int)(ptMouse.Y / relativeScaling))))
+				{
+					return Win32NonClientHitTestKind.HTCAPTION;
+				}
+			}
+		}
+
+		var captionAreaHitTest = _window?.AppWindow.Presenter is FullScreenPresenter || hasCustomDragRects ? Win32NonClientHitTestKind.HTNOWHERE : Win32NonClientHitTestKind.HTCAPTION;
 		ReadOnlySpan<Win32NonClientHitTestKind> hitZones = stackalloc Win32NonClientHitTestKind[]
 		{
-			Win32NonClientHitTestKind.HTTOPLEFT, onResizeBorder ? Win32NonClientHitTestKind.HTTOP : captionAreaHitTest,
-			Win32NonClientHitTestKind.HTTOPRIGHT, Win32NonClientHitTestKind.HTLEFT, Win32NonClientHitTestKind.HTNOWHERE, Win32NonClientHitTestKind.HTRIGHT,
+			Win32NonClientHitTestKind.HTTOPLEFT, onResizeBorder ? Win32NonClientHitTestKind.HTTOP : captionAreaHitTest, Win32NonClientHitTestKind.HTTOPRIGHT,
+			Win32NonClientHitTestKind.HTLEFT, Win32NonClientHitTestKind.HTNOWHERE, Win32NonClientHitTestKind.HTRIGHT,
 			Win32NonClientHitTestKind.HTBOTTOMLEFT, Win32NonClientHitTestKind.HTBOTTOM, Win32NonClientHitTestKind.HTBOTTOMRIGHT
 		};
 

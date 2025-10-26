@@ -2,6 +2,7 @@
 
 using System;
 using DirectUI;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,12 +18,17 @@ internal sealed partial class WindowChrome : ContentControl
 	private readonly SerialDisposable m_minimizeButtonClickedEventHandler = new();
 	private readonly SerialDisposable m_maximizeButtonClickedEventHandler = new();
 	private readonly SerialDisposable m_presenterDisposable = new();
+	private SerialDisposable m_userTitleBarDisposable = new();
+	private UIElement? m_userTitleBar;
 	private readonly Window _window;
 
 	private FrameworkElement? m_tpTitleBarMinMaxCloseContainerPart;
 	private Button? m_tpCloseButtonPart;
 	private Button? m_tpMinimizeButtonPart;
 	private Button? m_tpMaximizeButtonPart;
+
+
+	private InputNonClientPointerSource? m_inputNonClientPtrSrc;
 
 	public WindowChrome(Microsoft.UI.Xaml.Window parent)
 	{
@@ -286,5 +292,153 @@ internal sealed partial class WindowChrome : ContentControl
 	}
 
 	private void OnExtendsContentIntoTitleBarChanged(bool extends) => ConfigureWindowChrome();
+
+	internal void SetTitleBar(UIElement? titleBar)
+	{
+		if (m_inputNonClientPtrSrc is null)
+		{
+			var appWindow = _window.AppWindow;
+
+			if (appWindow is not null)
+			{
+				var id = appWindow.Id;
+
+				m_inputNonClientPtrSrc = InputNonClientPointerSource.GetForWindowId(id);
+			}
+		}
+
+		//detach everything from existing titlebar
+		if (m_userTitleBar is not null)
+		{
+			m_userTitleBarDisposable.Disposable = null;
+			m_userTitleBar = null;
+		}
+
+		// attach everything to new titlebar
+		if (titleBar is not null)
+		{
+			var newTitleBar = titleBar;
+
+			m_userTitleBar = newTitleBar;
+
+			if (m_userTitleBar is FrameworkElement fe)
+			{
+				void OnSizeChanged(object sender, object args)
+				{
+					OnTitleBarSizeChanged();
+				}
+				fe.SizeChanged += OnSizeChanged;
+				m_userTitleBarDisposable.Disposable = Disposable.Create(() =>
+				{
+					fe.SizeChanged -= OnSizeChanged;
+				});
+			}
+		}
+
+		// Update size of the titleBar container
+		OnTitleBarSizeChanged();
+	}
+
+	private void OnTitleBarSizeChanged()
+	{
+		//// if top-level window is getting minimized then no need to resize titlebar and dragbar window as they get minimized
+		////if (::IsIconic(m_topLevelWindow))
+		////{
+		////	return S_OK;
+		////}
+
+		//bool didRectChange = false;
+		//if (!IsChromeActive())
+		//{
+		//	RECT empty = { 0, 0, 0, 0 };
+		//	if (m_enabledDrag != m_enabledDragCached || !::EqualRect(&m_dragRegionCached, &empty))
+		//	{
+		//		didRectChange = true;
+		//		IFC_RETURN(SetDragRegion(empty));
+		//	}
+		//}
+		//else
+		//{
+		//	auto userTitlebar = GetPeer()->GetUserTitleBarNoRef();
+		//	const wf::Rect logicalWindowRect = WindowHelpers::GetLogicalWindowCoordinates(m_topLevelWindow);
+		//	if (userTitlebar)
+		//	{
+		//		// this function gets called multiple times, in some times layout has not finished 
+		//		// so width or height can be 0 in those case. skip setting the values in those times
+		//		if (userTitlebar->GetActualWidth() == 0 || userTitlebar->GetActualHeight() == 0)
+		//		{
+		//			return S_OK;
+		//		}
+
+		//		RECT dragBarRect = WindowHelpers::GetClientAreaLogicalRectForUIElement(userTitlebar);
+		//		if (m_enabledDrag != m_enabledDragCached || !::EqualRect(&m_dragRegionCached, &dragBarRect))
+		//		{
+		//			didRectChange = true;
+		//			IFC_RETURN(SetDragRegion(dragBarRect));
+		//		}
+		//	}
+		//}
+
+		//if (didRectChange)
+		//{
+		//	IFC_RETURN(RefreshToolbarOffset());
+		//}
+	}
+
+	//private void SetDragRegion(RECT rf)
+	//{
+	//	//UINT32 captionRectLength;
+	//	//wil::unique_cotaskmem_ptr<wgr::RectInt32[]> captionRects;
+
+	//	//IFC_RETURN(GetPeer()->GetNonClientInputPtrSrc()->GetRegionRects(mui::NonClientRegionKind_Caption, &captionRectLength, wil::out_param(captionRects)));
+
+	//	//std::vector<wgr::RectInt32> captionRegions{ captionRects.get(), captionRects.get() + captionRectLength }
+	//	//;
+
+	//	//// We'll remove the region rect we previously added. We'll add the new one later, if we need to.
+	//	//captionRegions.erase(
+	//	//	std::remove_if(
+	//	//		captionRegions.begin(),
+	//	//		captionRegions.end(),
+	//	//		[&](wgr::RectInt32 const&rect)
+	//	//          {
+	//	//	return rect.X == m_scaledDragRegionCached.X &&
+	//	//		rect.Y == m_scaledDragRegionCached.Y &&
+	//	//		rect.Width == m_scaledDragRegionCached.Width &&
+	//	//		rect.Height == m_scaledDragRegionCached.Height;
+	//	//}),
+	//	//      captionRegions.end());
+
+	//	//// sometimes dragging needs to be disabled temporarily
+	//	//// for example : when content dialog's smoke screen is displayed
+	//	//if (m_enabledDrag && !IsRectEmpty(&rf))
+	//	//{
+	//	//	// Xaml works with logical (dpi-applied) client coordinates
+	//	//	// InputNonClientPointerSource apis take non-dpi client coordinates
+	//	//	// physical client coordinates = dpi applied coordinates * dpi scale
+	//	//	float scale = WindowHelpers::GetCurrentDpiScale(m_topLevelWindow);
+	//	//	m_scaledDragRegionCached = {
+	//	//		static_cast<int>(std::round(rf.left * scale)),
+	//	//          static_cast<int>(std::round(rf.top * scale)),
+	//	//          static_cast<int>(std::round(RectHelpers::rectWidth(rf) * scale)),
+	//	//          static_cast<int>(std::round(RectHelpers::rectHeight(rf) * scale))
+
+	//	//}
+	//	//	;
+	//	//}
+	//	//else
+	//	//{
+	//	//	m_scaledDragRegionCached = { 0, 0, 0, 0 }
+	//	//	;
+	//	//}
+
+	//	//captionRegions.push_back(m_scaledDragRegionCached);
+
+	//	//IFC_RETURN(GetPeer()->GetNonClientInputPtrSrc()->SetRegionRects(mui::NonClientRegionKind_Caption, captionRegions.size(), captionRegions.data()));
+
+	//	//m_dragRegionCached = rf;
+	//	//m_enabledDragCached = m_enabledDrag;
+	//	//return S_OK;
+	//}
 }
 
