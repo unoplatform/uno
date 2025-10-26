@@ -28,10 +28,13 @@ public partial class CompositionTarget
 
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
+	private float _lastRasterizationScale = 1;
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	private (SKPicture frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
-	// only set on the UI thread and read from the drawing thread
+	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
+	// only set and read under _xamlRootBoundsGate
+	private float _xamlRootRasterizationScale;
 
 	internal event Action? FrameRendered;
 
@@ -71,14 +74,11 @@ public partial class CompositionTarget
 
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
-		var scale = ContentRoot.XamlRoot?.RasterizationScale ?? 1;
-
 		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
-			(int)(bounds.Width * scale),
-			(int)(bounds.Height * scale),
-			rootElement,
-			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
-			applyScaling: FrameRenderingOptions.applyScalingToNativeElementClipPath);
+			(float)bounds.Width,
+			(float)bounds.Height,
+			rootElement.Visual,
+			invertPath: FrameRenderingOptions.invertNativeElementClipPath);
 		var lastRenderedFrame = (picture, path);
 		lock (_frameGate)
 		{
@@ -116,9 +116,11 @@ public partial class CompositionTarget
 		else
 		{
 			Size xamlRootBounds;
+			float rasterizationScale;
 			lock (_xamlRootBoundsGate)
 			{
 				xamlRootBounds = _xamlRootBounds;
+				rasterizationScale = _xamlRootRasterizationScale;
 			}
 			if (xamlRootBounds.Width <= 0 || xamlRootBounds.Height <= 0)
 			{
@@ -126,23 +128,35 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			if (canvas is null || _lastCanvasSize != xamlRootBounds)
+			if (canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale)
 			{
-				canvas = resizeFunc(xamlRootBounds);
+				canvas = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;
+				_lastRasterizationScale = rasterizationScale;
 			}
 
+			canvas.Save();
+			if (rasterizationScale != 1)
+			{
+				canvas.Scale(rasterizationScale, rasterizationScale);
+			}
 			SkiaRenderHelper.RenderPicture(
 				canvas,
 				lastRenderedFrame.frame,
 				SKColors.Transparent,
 				_fpsHelper);
+			canvas.Restore();
 
 			InvokeRendering();
 
 			GC.KeepAlive(lastRenderedFrame.frame);
 
-			return lastRenderedFrame.nativeElementClipPath;
+			var path = lastRenderedFrame.nativeElementClipPath;
+			if (FrameRenderingOptions.applyScalingToNativeElementClipPath && rasterizationScale != 1)
+			{
+				path.Transform(SKMatrix.CreateScale(rasterizationScale, rasterizationScale), path);
+			}
+			return path;
 		}
 	}
 
