@@ -1,0 +1,22 @@
+<Page
+ x:Class="UITests.Microsoft_UI_Windowing.TitleBar_SetDragRectangles"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ mc:Ignorable="d">
+
+ <StackPanel Spacing="8" Padding="12">
+ <TextBlock Text="Manual sample demonstrating AppWindowTitleBar.SetDragRectangles" TextWrapping="Wrap" />
+
+ <StackPanel Orientation="Horizontal" Spacing="8">
+ <Button x:Name="GenerateButton" Content="Generate Grid + Rectangles" Click="OnGenerateClick" />
+ <Button x:Name="ApplyButton" Content="Apply Drag Rectangles" Click="OnApplyClick" />
+ <Button x:Name="ResetButton" Content="Reset Drag Rectangles" Click="OnResetClick" />
+ </StackPanel>
+
+ <Grid x:Name="DynamicGrid" MinHeight="200" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+
+ <TextBlock x:Name="StatusText" TextWrapping="Wrap" />
+ </StackPanel>
+</Page>
