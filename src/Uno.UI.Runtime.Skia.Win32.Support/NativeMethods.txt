@@ -115,6 +115,7 @@ MARGINS
 DWM_WINDOW_CORNER_PREFERENCE
 
 // Functions
+AdjustWindowRectEx
 AdjustWindowRectExForDpi
 AddClipboardFormatListener
 BeginPaint

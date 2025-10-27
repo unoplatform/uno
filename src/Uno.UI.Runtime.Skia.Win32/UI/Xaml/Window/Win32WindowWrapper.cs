@@ -221,8 +221,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
 
-		var customCaptionResult = CustomCaptionProc(hwnd, msg, wParam, lParam, out var handledInCustomCaption);
-		if (handledInCustomCaption)
+		if (TryHandleCustomCaptionMessage(hwnd, msg, wParam, lParam, out var customCaptionResult))
 		{
 			return customCaptionResult;
 		}

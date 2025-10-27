@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.UI.Input;
+using Microsoft.UI.Windowing;
+using Uno.UI.Runtime.Skia.Win32.UI.Xaml.Window;
 using Uno.UI.UI.Input.Internal;
 using Windows.Graphics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
 partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 {
-	private readonly Dictionary<NonClientRegionKind, List<RectInt32>> _regionRects = new();
+	private readonly Dictionary<NonClientRegionKind, RectInt32[]> _regionRects = new();
 
 	private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
@@ -36,11 +39,111 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		=> _regionRects.Remove(region);
 
 	public RectInt32[] GetRegionRects(NonClientRegionKind region)
-		=> _regionRects.TryGetValue(region, out var list) ? list.ToArray() : Array.Empty<RectInt32>();
+		=> _regionRects.TryGetValue(region, out var list) ? list : Array.Empty<RectInt32>();
 
 	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects)
 	{
-		_regionRects[region] = new List<RectInt32>(rects);
+		_regionRects[region] = rects;
+	}
+
+	private Win32NonClientHitTestKind NonClientAreaHitTest(HWND hWnd, WPARAM wParam, LPARAM lParam)
+	{
+		// Get the point coordinates for the hit test (screen space).
+		var ptMouse = PointFromLParam(lParam);
+
+		// Get the window rectangle.
+		PInvoke.GetWindowRect(hWnd, out var rcWindow);
+		var scaling = (uint)(RasterizationScale * StandardDpi);
+
+		// Get the frame rectangle, adjusted for the style without a caption.
+		var rcFrame = new RECT();
+		var borderThickness = new RECT();
+		if (Environment.OSVersion.Version < new Version(10, 0, 14393))
+		{
+			PInvoke.AdjustWindowRectEx(ref rcFrame, WINDOW_STYLE.WS_OVERLAPPEDWINDOW & ~WINDOW_STYLE.WS_CAPTION, false, 0);
+			PInvoke.AdjustWindowRectEx(ref borderThickness, GetStyle(), false, 0);
+		}
+		else
+		{
+			PInvoke.AdjustWindowRectExForDpi(ref rcFrame, WINDOW_STYLE.WS_OVERLAPPEDWINDOW & ~WINDOW_STYLE.WS_CAPTION, false, 0, scaling);
+			PInvoke.AdjustWindowRectExForDpi(ref borderThickness, GetStyle(), false, 0, scaling);
+		}
+
+		borderThickness.left *= -1;
+		borderThickness.top *= -1;
+
+		//TODO
+		//var appWindowTitleBar = _window!.AppWindow.TitleBar;
+		//if (appWindowTitleBar.Height > 0)
+		//{
+		//	borderThickness.top = (int)(appWindowTitleBar.Height * scaling);
+		//}
+
+		// Determine if the hit test is for resizing. Default middle (1,1).
+		ushort uRow = 1;
+		ushort uCol = 1;
+		bool onResizeBorder = false;
+
+		// Determine if the point is at the left or right of the window.
+		if (ptMouse.X >= rcWindow.left && ptMouse.X < rcWindow.left + borderThickness.left)
+		{
+			uCol = 0;
+		}
+		else if (ptMouse.X < rcWindow.right && ptMouse.X >= rcWindow.right - borderThickness.right)
+		{
+			uCol = 2;
+		}
+
+		// Determine if the point is at the top or bottom of the window.
+		if (ptMouse.Y >= rcWindow.top && ptMouse.Y < rcWindow.top + borderThickness.top)
+		{
+			onResizeBorder = (ptMouse.Y < (rcWindow.top - rcFrame.top));
+
+			// Two cases where we have a valid row 0 hit test:
+			// - window resize border (top resize border hit)
+			// - area below resize border that is actual titlebar (caption hit).
+			if (onResizeBorder || uCol == 1)
+			{
+				uRow = 0;
+			}
+		}
+		else if (ptMouse.Y < rcWindow.bottom && ptMouse.Y >= rcWindow.bottom - borderThickness.bottom)
+		{
+			uRow = 2;
+		}
+
+		bool hasCustomDragRects = false;
+
+		if (_regionRects.TryGetValue(Microsoft.UI.Input.NonClientRegionKind.Caption, out var dragRects))
+		{
+			hasCustomDragRects = true;
+			foreach (var rect in dragRects)
+			{
+				var scaledRect = new RectInt32
+				(
+					rcWindow.left + rect.X,
+					rcWindow.top + rect.Y,
+					rect.Width,
+					rect.Height
+				);
+				if (scaledRect.Contains(new PointInt32((int)(ptMouse.X), (int)(ptMouse.Y))))
+				{
+					return Win32NonClientHitTestKind.HTCAPTION;
+				}
+			}
+		}
+
+		var captionAreaHitTest = _window?.AppWindow.Presenter is FullScreenPresenter || hasCustomDragRects ? Win32NonClientHitTestKind.HTNOWHERE : Win32NonClientHitTestKind.HTCAPTION;
+		ReadOnlySpan<Win32NonClientHitTestKind> hitZones = stackalloc Win32NonClientHitTestKind[]
+		{
+			Win32NonClientHitTestKind.HTTOPLEFT, onResizeBorder ? Win32NonClientHitTestKind.HTTOP : captionAreaHitTest, Win32NonClientHitTestKind.HTTOPRIGHT,
+			Win32NonClientHitTestKind.HTLEFT, Win32NonClientHitTestKind.HTNOWHERE, Win32NonClientHitTestKind.HTRIGHT,
+			Win32NonClientHitTestKind.HTBOTTOMLEFT, Win32NonClientHitTestKind.HTBOTTOM, Win32NonClientHitTestKind.HTBOTTOMRIGHT
+		};
+
+		var zoneIndex = uRow * 3 + uCol;
+
+		return hitZones[zoneIndex];
 	}
 
 	private bool TryHandleNonClientHitTest(HWND hWnd, WPARAM wParam, LPARAM lParam, out IntPtr result)
