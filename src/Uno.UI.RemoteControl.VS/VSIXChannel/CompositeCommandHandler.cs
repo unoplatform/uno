@@ -56,9 +56,9 @@ internal sealed class CompositeCommandHandler(ILogger log, params ImmutableList<
 	}
 
 	/// <inheritdoc />
-	public void Unregister(string name, ICommandHandler handler)
+	public void Unregister(ICommandHandler handler)
 	{
-		if (ImmutableInterlocked.Update(ref _registrations, static (handlers, handler) => handlers.Remove(handler), new Registration(name, handler)))
+		if (ImmutableInterlocked.Update(ref _registrations, static (handlers, handler) => handlers.RemoveAll(reg => reg.Handler == handler), handler))
 		{
 			handler.CanExecuteChanged -= OnHandlerCanExecuteChanged;
 		}

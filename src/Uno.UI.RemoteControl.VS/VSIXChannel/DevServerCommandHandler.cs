@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Threading;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
-using Uno.UI.RemoteControl.VS.IdeChannel;
+using Uno.UI.RemoteControl.VS;
 
 namespace Uno.IDE;
 
-internal class DevServerCommandHandler(IdeChannelClient ideChannel) : ICommandHandler, IDisposable
+internal sealed class DevServerCommandHandler(EntryPoint devServerManager) : ICommandHandler
 {
-	private readonly CancellationTokenSource _ct = new();
-
 #pragma warning disable CS0067 // Event is never used
 	/// <inheritdoc />
 	public event EventHandler? CanExecuteChanged;
@@ -16,23 +14,14 @@ internal class DevServerCommandHandler(IdeChannelClient ideChannel) : ICommandHa
 
 	/// <inheritdoc />
 	public bool CanExecute(Command command)
-		=> true; // Dev-server does not support command querying yet
+		=> command.Name.Equals(DevelopmentEnvironmentStatusIdeMessage.DevServer.Restart.Name, StringComparison.OrdinalIgnoreCase);
 
 	/// <inheritdoc />
 	public void Execute(Command command)
 	{
-		if (_ct.IsCancellationRequested)
+		if (CanExecute(command))
 		{
-			return;
+			_ = devServerManager.RestartDevServerAsync(CancellationToken.None);
 		}
-
-		_ = ideChannel.SendToDevServerAsync(new CommandRequestIdeMessage(System.Diagnostics.Process.GetCurrentProcess().Id, command.Name, command.Parameter), _ct.Token);
-	}
-
-	/// <inheritdoc />
-	public void Dispose()
-	{
-		_ct.Cancel();
-		_ct.Dispose();
 	}
 }

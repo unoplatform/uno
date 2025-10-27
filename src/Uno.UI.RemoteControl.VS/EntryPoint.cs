@@ -82,7 +82,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
-		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser));
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -104,7 +104,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
-		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser));
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -309,31 +309,8 @@ public partial class EntryPoint : IDisposable
 		_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
 
 		_closing = true;
-		if (_devServer is { process: var devServer, attachedServices: var ct })
-		{
-			try
-			{
-				_debugAction?.Invoke($"Terminating Remote Control server (pid: {devServer.Id})");
-				ct.Cancel();
-				devServer.Kill();
-				_debugAction?.Invoke($"Terminated Remote Control server (pid: {devServer.Id})");
-
-				_ideChannelClient?.Dispose();
-				_ideChannelClient = null;
+		StopDevServer();
 			}
-			catch (Exception e)
-			{
-				_debugAction?.Invoke($"Failed to terminate Remote Control server (pid: {devServer.Id}): {e}");
-			}
-			finally
-			{
-				_devServer = null;
-
-				// Invoke Dispose to make sure other event handlers are detached
-				Dispose();
-			}
-		}
-	}
 
 	private int GetDotnetMajorVersion()
 	{
@@ -501,9 +478,13 @@ public partial class EntryPoint : IDisposable
 				_ideChannelClient.ConnectToHost();
 
 				// Use scoped DI instead of this!
-				var remoteCommands = new DevServerCommandHandler(_ideChannelClient);
-				devServerCt.Token.Register(remoteCommands.Dispose);
-				_commands.Register("Dev Server", remoteCommands);
+				var remoteCommands = new IdeChannelCommandHandler(_ideChannelClient);
+				_commands.Register("Send to Dev Server", remoteCommands);
+				devServerCt.Token.Register(() =>
+				{
+					_commands.Unregister(remoteCommands);
+					remoteCommands.Dispose();
+				});
 			}
 			else
 			{
@@ -565,6 +546,41 @@ public partial class EntryPoint : IDisposable
 
 			await EnsureServerAsync();
 		}
+	}
+
+	private void StopDevServer()
+	{
+		if (_devServer is { process: var devServer, attachedServices: var ct })
+		{
+			try
+			{
+				_debugAction?.Invoke($"Terminating Remote Control server (pid: {devServer.Id})");
+				ct.Cancel();
+				devServer.Kill();
+				_debugAction?.Invoke($"Terminated Remote Control server (pid: {devServer.Id})");
+
+				_ideChannelClient?.Dispose();
+				_ideChannelClient = null;
+			}
+			catch (Exception e)
+			{
+				_debugAction?.Invoke($"Failed to terminate Remote Control server (pid: {devServer.Id}): {e}");
+			}
+			finally
+			{
+				_devServer = null;
+
+				// Invoke Dispose to make sure other event handlers are detached
+				Dispose();
+			}
+		}
+	}
+
+	public async Task RestartDevServerAsync(CancellationToken ct)
+	{
+		StopDevServer();
+
+		await EnsureServerAsync();
 	}
 
 	private void OnIdeChannelConnected(object sender, EventArgs e) =>
