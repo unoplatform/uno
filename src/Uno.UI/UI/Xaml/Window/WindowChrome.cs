@@ -13,6 +13,12 @@ namespace Uno.UI.Xaml.Controls;
 
 internal sealed partial class WindowChrome : ContentControl
 {
+	private const string ToolTipRestore = "TEXT_TOOLTIP_RESTORE";
+	private const string ToolTipMaximize = "TEXT_TOOLTIP_MAXIMIZE";
+	private const string ToolTipMinimize = "TEXT_TOOLTIP_MINIMIZE";
+	private const string ToolTipClose = "TEXT_TOOLTIP_CLOSE";
+
+
 	private readonly SerialDisposable m_titleBarMinMaxCloseContainerLayoutUpdatedEventHandler = new();
 	private readonly SerialDisposable m_closeButtonClickedEventHandler = new();
 	private readonly SerialDisposable m_minimizeButtonClickedEventHandler = new();
@@ -137,7 +143,7 @@ internal sealed partial class WindowChrome : ContentControl
 				m_tpCloseButtonPart!.Click -= OnCloseButtonClicked;
 			});
 
-			SetTooltip(m_tpCloseButtonPart, "TEXT_TOOLTIP_CLOSE");
+			SetTooltip(m_tpCloseButtonPart, ToolTipClose);
 		}
 
 		// minimize button
@@ -154,7 +160,7 @@ internal sealed partial class WindowChrome : ContentControl
 				m_tpMinimizeButtonPart!.Click -= OnMinimizeButtonClicked;
 			});
 
-			SetTooltip(m_tpMinimizeButtonPart, "TEXT_TOOLTIP_MINIMIZE");
+			SetTooltip(m_tpMinimizeButtonPart, ToolTipMinimize);
 		}
 
 		// maximize button/restore button
@@ -171,7 +177,7 @@ internal sealed partial class WindowChrome : ContentControl
 				m_tpMaximizeButtonPart!.Click -= OnRestoreOrMaximizeButtonClicked;
 			});
 
-			SetTooltip(m_tpMaximizeButtonPart, IsWindowMaximized() ? "TEXT_TOOLTIP_RESTORE" : "TEXT_TOOLTIP_MAXIMIZE");
+			SetTooltip(m_tpMaximizeButtonPart, IsWindowMaximized() ? ToolTipRestore : ToolTipMaximize);
 		}
 	}
 
@@ -211,7 +217,7 @@ internal sealed partial class WindowChrome : ContentControl
 		var maximizeButton = m_tpMaximizeButtonPart;
 		if (maximizeButton is not null)
 		{
-			SetTooltip(maximizeButton, state == OverlappedPresenterState.Maximized ? "TEXT_TOOLTIP_RESTORE" : "TEXT_TOOLTIP_MAXIMIZE");
+			SetTooltip(maximizeButton, state == OverlappedPresenterState.Maximized ? ToolTipRestore : ToolTipMaximize);
 		}
 	}
 

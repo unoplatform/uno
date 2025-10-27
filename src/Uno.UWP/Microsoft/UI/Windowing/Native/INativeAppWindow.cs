@@ -16,6 +16,8 @@ internal interface INativeAppWindow
 
 	bool IsVisible { get; }
 
+	float RasterizationScale { get; }
+
 	PointInt32 Position { get; }
 
 	SizeInt32 Size { get; }
