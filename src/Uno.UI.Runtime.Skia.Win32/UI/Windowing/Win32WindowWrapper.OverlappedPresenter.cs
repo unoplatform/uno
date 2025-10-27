@@ -4,7 +4,6 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Windowing.Native;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Dwm;
@@ -50,7 +49,9 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 	public void SetIsModal(bool isModal) { /* TODO: Implement modal */ }
 
 	public void SetIsResizable(bool isResizable) => SetWindowStyle(WINDOW_STYLE.WS_SIZEBOX, isResizable);
+
 	public void SetIsMinimizable(bool isMinimizable) => SetWindowStyle(WINDOW_STYLE.WS_MINIMIZEBOX, isMinimizable);
+
 	public void SetIsMaximizable(bool isMaximizable) => SetWindowStyle(WINDOW_STYLE.WS_MINIMIZEBOX, isMaximizable);
 
 	public unsafe void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
@@ -84,36 +85,17 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			var margins = GetMargins();
 			PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
 
-			unsafe
-			{
-				int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
-				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
-			}
+			int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
+			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
 		}
 		else
 		{
 			var margins = new MARGINS();
 			PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
 
-			//_offScreenMargin = new Thickness();
-			//_extendedMargins = new Thickness();
-
-			unsafe
-			{
-				int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DEFAULT;
-				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
-			}
+			int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DEFAULT;
+			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
 		}
-
-		//if (!extendContentIntoTitleBar || (_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.SystemChrome) &&
-		//	!_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.PreferSystemChrome)))
-		//{
-		//	EnableCloseButton(_hwnd);
-		//}
-		//else
-		//{
-		//	DisableCloseButton(_hwnd);
-		//}
 
 		if (extendContentIntoTitleBar)
 		{
@@ -121,16 +103,12 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, IntPtr.Zero);
 			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, IntPtr.Zero);
 
-			unsafe
-			{
-				int transparent = 0x00000000; // ARGB (A=0 -> transparent)
-				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_CAPTION_COLOR, &transparent, sizeof(int));
-				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_TEXT_COLOR, &transparent, sizeof(int));
+			int transparent = 0x00000000; // ARGB (A=0 -> transparent)
+			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_CAPTION_COLOR, &transparent, sizeof(int));
+			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_TEXT_COLOR, &transparent, sizeof(int));
 
-				// Disable system backdrop painting
-				int backdropNone = 1; // 0=None, 1=Mica, 2=Acrylic, 3=Tabbed
-				PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, &backdropNone, sizeof(int));
-			}
+			int backdropNone = 1; // 1 == Mica, 2 == Acrylic, 3 == Tabbed
+			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, &backdropNone, sizeof(int));
 		}
 
 		// Inform the application of the frame change.
@@ -147,73 +125,42 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		Resize(new Windows.Graphics.SizeInt32(width, Size.Height));
 	}
 
-
 	private MARGINS GetMargins()
 	{
 		RECT borderThickness = new RECT();
 		RECT borderCaptionThickness = new RECT();
 
 		var scaling = (uint)(RasterizationScale * StandardDpi);
-		//var relativeScaling = RenderScaling / PrimaryScreenRenderScaling;
-		//PInvoke.GetV
-		//if (Win32Platform.WindowsVersion < PlatformConstants.Windows10_1607)
-		//{
-		//	AdjustWindowRectEx(ref borderCaptionThickness, (uint)GetStyle(), false, 0);
-		//	AdjustWindowRectEx(ref borderThickness, (uint)(GetStyle() & ~WindowStyles.WS_CAPTION), false, 0);
-
-		//	borderCaptionThickness.top = (int)(borderCaptionThickness.top * relativeScaling);
-		//	borderCaptionThickness.right = (int)(borderCaptionThickness.right * relativeScaling);
-		//	borderCaptionThickness.left = (int)(borderCaptionThickness.left * relativeScaling);
-		//	borderCaptionThickness.bottom = (int)(borderCaptionThickness.bottom * relativeScaling);
-
-		//	borderThickness.top = (int)(borderThickness.top * relativeScaling);
-		//	borderThickness.right = (int)(borderThickness.right * relativeScaling);
-		//	borderThickness.left = (int)(borderThickness.left * relativeScaling);
-		//	borderThickness.bottom = (int)(borderThickness.bottom * relativeScaling);
-		//}
-		//else
-		//{
-		PInvoke.AdjustWindowRectExForDpi(ref borderCaptionThickness, GetStyle(), false, 0, scaling);
-		PInvoke.AdjustWindowRectExForDpi(ref borderThickness, GetStyle() & ~WINDOW_STYLE.WS_CAPTION, false, 0, scaling);
-		//}
+		if (Environment.OSVersion.Version < new Version(10, 0, 14393))
+		{
+			PInvoke.AdjustWindowRectEx(ref borderCaptionThickness, GetStyle(), false, 0);
+			PInvoke.AdjustWindowRectEx(ref borderThickness, GetStyle() & ~WINDOW_STYLE.WS_CAPTION, false, 0);
+		}
+		else
+		{
+			PInvoke.AdjustWindowRectExForDpi(ref borderCaptionThickness, GetStyle(), false, 0, scaling);
+			PInvoke.AdjustWindowRectExForDpi(ref borderThickness, GetStyle() & ~WINDOW_STYLE.WS_CAPTION, false, 0, scaling);
+		}
 
 		borderThickness.left *= -1;
 		borderThickness.top *= -1;
 		borderCaptionThickness.left *= -1;
 		borderCaptionThickness.top *= -1;
 
-		bool wantsTitleBar = true;//_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.SystemChrome) || _extendTitleBarHint == -1;
+		bool wantsTitleBar = (!_window?.AppWindow.TitleBar.ExtendsContentIntoTitleBar) ?? true;
 
 		if (!wantsTitleBar)
 		{
 			borderCaptionThickness.top = 1;
 		}
 
-		//using a default margin of 0 when using WinUiComp removes artefacts when resizing. See issue #8316
-		var defaultMargin = 0; //UseRedirectionBitmap ? 1 : 0;
+		var defaultMargin = 0;
 
 		MARGINS margins = new MARGINS();
 		margins.cxLeftWidth = defaultMargin;
 		margins.cxRightWidth = defaultMargin;
 		margins.cyBottomHeight = defaultMargin;
-
-		//if (_extendTitleBarHint != -1)
-		//{
-		//	borderCaptionThickness.top = (int)(_extendTitleBarHint * RenderScaling);
-		//}
-
-		margins.cyTopHeight = defaultMargin; //_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.SystemChrome) && !_extendChromeHints.HasAllFlags(ExtendClientAreaChromeHints.PreferSystemChrome) ? borderCaptionThickness.top : defaultMargin;
-
-		//if (WindowState == WindowState.Maximized)
-		//{
-		//	_extendedMargins = new Thickness(0, (borderCaptionThickness.top - borderThickness.top) / RenderScaling, 0, 0);
-		//	_offScreenMargin = new Thickness(borderThickness.left / RenderScaling, borderThickness.top / RenderScaling, borderThickness.right / RenderScaling, borderThickness.bottom / RenderScaling);
-		//}
-		//else
-		//{
-		//	_extendedMargins = new Thickness(0, (borderCaptionThickness.top) / RenderScaling, 0, 0);
-		//	_offScreenMargin = new Thickness();
-		//}
+		margins.cyTopHeight = defaultMargin;
 
 		return margins;
 	}

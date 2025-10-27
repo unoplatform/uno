@@ -43,6 +43,12 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 
 	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects)
 	{
+		if (rects.Length == 0)
+		{
+			_regionRects.Remove(region);
+			return;
+		}
+
 		_regionRects[region] = rects;
 	}
 

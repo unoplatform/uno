@@ -72,8 +72,11 @@ public partial class AppWindowTitleBar
 	/// Sets the drag regions for the window.
 	/// </summary>
 	/// <param name="value">An array of RectInt32, where each rectangle must be within the client area of the window to which the title bar belongs.</param>
-	public void SetDragRectangles(RectInt32[] value) =>
+	public void SetDragRectangles(RectInt32[] value)
+	{
+		ArgumentNullException.ThrowIfNull(value);
 		DragRectanglesChanged?.Invoke(this, value);
+	}
 
 	internal event EventHandler<RectInt32[]>? DragRectanglesChanged;
 }
