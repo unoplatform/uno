@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -55,6 +56,8 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private void OnActivate(object sender, WindowActivatedEventArgs e)
 	{
+		DefaultBrushes.ResetDefaultThemeBrushes();
+		this.SetValue(ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 		if (e.WindowActivationState is Windows.UI.Core.CoreWindowActivationState.CodeActivated or Windows.UI.Core.CoreWindowActivationState.PointerActivated)
 		{
 			VisualStateManager.GoToState(this, "Normal", true);
@@ -77,11 +80,9 @@ internal sealed partial class WindowChrome : ContentControl
 					ConfigureWindowChrome();
 				}
 				overlappedPresenter.BorderAndTitleBarChanged += OnBorderAndTitleBarChanged;
-				overlappedPresenter.StateChanged += OnStateChanged;
 				m_presenterDisposable.Disposable = Disposable.Create(() =>
 				{
 					overlappedPresenter.BorderAndTitleBarChanged -= OnBorderAndTitleBarChanged;
-					overlappedPresenter.StateChanged -= OnStateChanged;
 				});
 			}
 		}
@@ -229,6 +230,11 @@ internal sealed partial class WindowChrome : ContentControl
 		}
 
 		var maximizeButton = m_tpMaximizeButtonPart;
+		if (maximizeButton is null)
+		{
+			return;
+		}
+
 		switch (overlapped.State)
 		{
 			case OverlappedPresenterState.Maximized:

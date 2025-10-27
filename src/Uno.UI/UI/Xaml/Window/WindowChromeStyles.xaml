@@ -159,8 +159,7 @@
                             x:Name="ClientAreaPresenter"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
-                            ContentTransitions="{TemplateBinding ContentTransitions}"
-                            Foreground="{TemplateBinding Foreground}" />
+                            ContentTransitions="{TemplateBinding ContentTransitions}" />
                         <Grid
                             x:Name="TitleBarMinMaxCloseContainer"
                             HorizontalAlignment="Right"
