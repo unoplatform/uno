@@ -25,8 +25,78 @@ $yamlRx  = '(?ms)^---\s*.*?^---\s*'                 # YAML front-matter
 $uidLine = '^\s*uid:\s*(.+)$'                       # uid: XYZ
 $inlineX = '<xref:([\w\.\-]+)(?:#[\w\.\-]+)?>'      # <xref:Id#frag>
 $linkX   = '\]\(xref:([\w\.\-]+)(?:#[\w\.\-]+)?\)'  # [txt](xref:Id#frag)
+# DocFX include: [!include[optional label](path/to/file.md)] -- we drop the label and inline the file
+# Case-insensitive include regex: allow optional space, optional label, and consume trailing closing bracket(s)
+$includeX = '(?i)\[!include\s*(?:\[[^\]]*\])?\s*\(([^)]+)\)\]+'
 
 $parts = [System.Collections.Generic.List[string]]::new()
+
+# Recursive include expander: expands include directives inside content, resolving paths relative to current base directory.
+function Expand-Includes {
+    param(
+        [string] $content,
+        [string] $currentBase,
+        [string] $sourceFile = "",
+        [int] $depth = 0
+    )
+
+    if ($null -eq $content -or $content -eq '') { return $content }
+    if ($depth -ge 12) { return "<!-- Max include depth reached -->`n$content" }
+
+    return [regex]::Replace($content, $includeX, {
+        param($match)
+        $rel = $match.Groups[1].Value.Trim()
+
+        # Build a list of candidate absolute paths to try resolving the include
+        $candidates = [System.Collections.Generic.List[string]]::new()
+
+        # 1) As provided (may be absolute)
+        $candidates.Add($rel)
+
+        # 2) Relative to current file base
+        if ($currentBase) { $candidates.Add((Join-Path $currentBase $rel)) }
+
+        # 3) Relative to InputFolder root (if available)
+        if ($InputFolder) {
+            $rootResolved = Resolve-Path -Path $InputFolder -ErrorAction SilentlyContinue
+            if ($rootResolved) { $candidates.Add((Join-Path $rootResolved.Path $rel)) }
+        }
+
+        # 4) Relative to current working directory
+        $candidates.Add((Join-Path (Get-Location).Path $rel))
+
+        # For each candidate, also try swapping slashes to handle mixed separators
+        $expandedCandidates = [System.Collections.Generic.List[string]]::new()
+        foreach ($c in $candidates) {
+            if (-not $c) { continue }
+            $expandedCandidates.Add($c)
+            $swap1 = $c -replace '/', '\\'
+            $swap2 = $c -replace '\\', '/'
+            if ($swap1 -and $swap1 -ne $c) { $expandedCandidates.Add($swap1) }
+            if ($swap2 -and $swap2 -ne $c -and $swap2 -ne $swap1) { $expandedCandidates.Add($swap2) }
+        }
+
+        # Try each candidate and pick the first that exists (Resolve-Path to handle relative ..)
+        $found = $null
+        foreach ($cand in $expandedCandidates) {
+            if (-not $cand) { continue }
+            $res = Resolve-Path -Path $cand -ErrorAction SilentlyContinue
+            if ($res) { $found = $res.Path; break }
+            if (Test-Path $cand) { $found = (Get-Item $cand).FullName; break }
+        }
+
+        if (-not $found) { return "<!-- Include not found: $rel -->" }
+
+        try {
+            $inc = Get-Content $found -Raw
+            $inc = [regex]::Replace($inc, $yamlRx, '')
+            $inc = Expand-Includes $inc (Split-Path -Path $found -Parent) $found ($depth + 1)
+            return $inc.TrimEnd()
+        } catch {
+            return "<!-- Error including: $rel -->"
+        }
+    })
+}
 
 # ── 1) Optional header file ─────────────────────────────────────────────────────
 $headerResolved = $null
@@ -43,6 +113,13 @@ Get-ChildItem $InputFolder -Recurse -Filter '*.md' |
         # Skip header file and .github folder
         if ($_.FullName -eq $headerResolved) { return $false }
         if ($_.FullName -match '[\\/]\.github[\\/]') { return $false }
+        
+        # Skip output files (combined.md, out_*.md, etc.)
+        if ($_.Name -match '^(combined|out_).*\.md$') { return $false }
+        
+        # Skip inline include files (meant to be included in other files)
+        if ($_.Name -match '-inline') { return $false }
+        if ($_.FullName -match '[\\/]inline[\\/]') { return $false }
 
         # Normalize path to forward slashes for easier matching
         $norm = ($_.FullName -replace '\\\\', '/')
@@ -115,6 +192,10 @@ Get-ChildItem $InputFolder -Recurse -Filter '*.md' |
         # rewrite xrefs → in-file anchors
         $text = $text -replace $inlineX, '[${1}](#${1})'
         $text = $text -replace $linkX,   '](#${1})'
+
+        # expand DocFX include directives (recursively)
+        $baseDir = Split-Path -Path $_.FullName -Parent
+        $text = Expand-Includes $text $baseDir $_.FullName 0
 
         # section header + source comment
         $parts.Add("<!-- Source: $relPath -->`n## $uid`n")
