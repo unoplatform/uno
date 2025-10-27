@@ -72,12 +72,13 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		borderThickness.left *= -1;
 		borderThickness.top *= -1;
 
-		//TODO
-		//var appWindowTitleBar = _window!.AppWindow.TitleBar;
-		//if (appWindowTitleBar.Height > 0)
-		//{
-		//	borderThickness.top = (int)(appWindowTitleBar.Height * scaling);
-		//}
+		var appWindowTitleBar = _window?.AppWindow.TitleBar;
+		if (appWindowTitleBar?.Height > 0 && _hasTitleBar)
+		{
+			borderThickness.top = appWindowTitleBar.Height;
+		}
+
+		var titleBarHeightForDraggingRects = _hasTitleBar ? borderThickness.top : 0;
 
 		// Determine if the hit test is for resizing. Default middle (1,1).
 		ushort uRow = 1;
@@ -113,7 +114,6 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		}
 
 		bool hasCustomDragRects = false;
-
 		if (_regionRects.TryGetValue(Microsoft.UI.Input.NonClientRegionKind.Caption, out var dragRects))
 		{
 			hasCustomDragRects = true;
@@ -122,7 +122,7 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 				var scaledRect = new RectInt32
 				(
 					rcWindow.left + rect.X,
-					rcWindow.top + rect.Y,
+					rcWindow.top + rect.Y + titleBarHeightForDraggingRects,
 					rect.Width,
 					rect.Height
 				);
