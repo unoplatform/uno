@@ -1,4 +1,5 @@
-﻿using Uno.UI.RemoteControl.Messaging.IdeChannel;
+﻿using System;
+using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.IDE;
 
@@ -11,6 +12,10 @@ internal interface ICommandHandler
 	* In order to avoid versioning issues, avoid modifications and **DO NOT** remove any member from this interface.
 	*
 	*/
+
+	event EventHandler? CanExecuteChanged;
+
+	bool CanExecute(Command command);
 
 	void Execute(Command command);
 }

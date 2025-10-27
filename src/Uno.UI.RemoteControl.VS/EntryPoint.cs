@@ -68,7 +68,7 @@ public partial class EntryPoint : IDisposable
 	private _dispBuildEvents_OnBuildProjConfigBeginEventHandler? _onBuildProjConfigBeginHandler;
 	private UnoMenuCommand? _unoMenuCommand;
 	private IUnoDevelopmentEnvironmentIndicator? _udei;
-	private IdeCommandHandler _commands;
+	private CompositeCommandHandler _commands;
 
 	// Legacy API v2
 	public EntryPoint(
@@ -82,7 +82,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
-		_commands = new(new Logger(this));
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -104,7 +104,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
-		_commands = new(new Logger(this));
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -503,7 +503,7 @@ public partial class EntryPoint : IDisposable
 				// Use scoped DI instead of this!
 				var remoteCommands = new DevServerCommandHandler(_ideChannelClient);
 				devServerCt.Token.Register(remoteCommands.Dispose);
-				_commands.SetRemoteHandler(remoteCommands);
+				_commands.Register("Dev Server", remoteCommands);
 			}
 			else
 			{
