@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS;
 
@@ -13,15 +14,18 @@ internal sealed class DevServerCommandHandler(EntryPoint devServerManager) : ICo
 #pragma warning restore CS0067
 
 	/// <inheritdoc />
-	public bool CanExecute(Command command)
-		=> command.Name.Equals(DevelopmentEnvironmentStatusIdeMessage.DevServer.Restart.Name, StringComparison.OrdinalIgnoreCase);
+	public Task<bool> CanExecuteAsync(Command command, CancellationToken ct)
+		=> Task.FromResult(CanExecute(command));
 
 	/// <inheritdoc />
-	public void Execute(Command command)
+	public async Task ExecuteAsync(Command command, CancellationToken ct)
 	{
 		if (CanExecute(command))
 		{
-			_ = devServerManager.RestartDevServerAsync(CancellationToken.None);
+			await devServerManager.RestartDevServerAsync(CancellationToken.None);
 		}
 	}
+
+	private bool CanExecute(Command command)
+		=> command.Name.Equals(DevelopmentEnvironmentStatusIdeMessage.DevServer.Restart.Name, StringComparison.OrdinalIgnoreCase);
 }

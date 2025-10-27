@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI.RemoteControl.VS.Helpers;
 using _Command = Uno.UI.RemoteControl.Messaging.IdeChannel.Command;
 
@@ -21,13 +23,13 @@ internal sealed class CompositeCommandHandler(ILogger log, params ImmutableList<
 	public event EventHandler? CanExecuteChanged;
 
 	/// <inheritdoc />
-	public bool CanExecute(_Command command)
-		=> GetHandler(command) is not null;
+	public async Task<bool> CanExecuteAsync(_Command command, CancellationToken ct)
+		=> await GetHandlerAsync(command, ct) is not null;
 
 	/// <inheritdoc />
-	public void Execute(_Command command)
+	public async Task ExecuteAsync(_Command command, CancellationToken ct)
 	{
-		var reg = GetHandler(command);
+		var reg = await GetHandlerAsync(command, ct);
 		if (reg is null)
 		{
 			log.Warn($"No handler found for command '{command.Name}'.");
@@ -38,7 +40,7 @@ internal sealed class CompositeCommandHandler(ILogger log, params ImmutableList<
 
 		try
 		{
-			reg.Handler.Execute(command);
+			await reg.Handler.ExecuteAsync(command, ct);
 		}
 		catch (Exception error)
 		{
@@ -67,13 +69,13 @@ internal sealed class CompositeCommandHandler(ILogger log, params ImmutableList<
 	private void OnHandlerCanExecuteChanged(object sender, EventArgs e)
 		=> CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 
-	private Registration? GetHandler(_Command command)
+	private async ValueTask<Registration?> GetHandlerAsync(_Command command, CancellationToken ct)
 	{
 		foreach (var reg in _registrations)
 		{
 			try
 			{
-				if (reg.Handler.CanExecute(command))
+				if (await reg.Handler.CanExecuteAsync(command, ct))
 				{
 					return reg;
 				}

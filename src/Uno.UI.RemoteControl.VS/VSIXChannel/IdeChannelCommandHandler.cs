@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.IdeChannel;
 
@@ -15,18 +16,19 @@ internal class IdeChannelCommandHandler(IdeChannelClient ideChannel) : ICommandH
 #pragma warning restore CS0067
 
 	/// <inheritdoc />
-	public bool CanExecute(Command command)
-		=> true; // Dev-server does not support command querying yet
+	public Task<bool> CanExecuteAsync(Command command, CancellationToken ct)
+		=> Task.FromResult(true); // Dev-server does not support command querying yet
 
 	/// <inheritdoc />
-	public void Execute(Command command)
+	public async Task ExecuteAsync(Command command, CancellationToken ct)
 	{
-		if (_ct.IsCancellationRequested)
+		ct = CancellationTokenSource.CreateLinkedTokenSource(ct, _ct.Token).Token;
+		if (ct.IsCancellationRequested)
 		{
 			return;
 		}
 
-		_ = ideChannel.SendToDevServerAsync(new CommandRequestIdeMessage(System.Diagnostics.Process.GetCurrentProcess().Id, command.Name, command.Parameter), _ct.Token);
+		await ideChannel.SendToDevServerAsync(new CommandRequestIdeMessage(System.Diagnostics.Process.GetCurrentProcess().Id, command.Name, command.Parameter), ct);
 	}
 
 	/// <inheritdoc />

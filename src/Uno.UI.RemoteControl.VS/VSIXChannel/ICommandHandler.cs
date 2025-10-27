@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.IDE;
@@ -15,7 +17,7 @@ internal interface ICommandHandler
 
 	event EventHandler? CanExecuteChanged;
 
-	bool CanExecute(Command command);
+	Task<bool> CanExecuteAsync(Command command, CancellationToken ct);
 
-	void Execute(Command command);
+	Task ExecuteAsync(Command command, CancellationToken ct);
 }
