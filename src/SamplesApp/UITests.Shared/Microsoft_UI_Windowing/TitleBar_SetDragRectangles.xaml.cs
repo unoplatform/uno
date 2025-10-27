@@ -12,7 +12,7 @@ using Windows.Graphics;
 
 namespace UITests.Microsoft_UI_Windowing;
 
-[Sample("Windowing", Name = "TitleBar.SetDragRectangles", IsManualTest = true, Description = "Currently only applies to Win32. Generate rectangles in a grid and apply their bounds as AppWindowTitleBar drag rectangles. Draggin on the red areas should drag the window. Dragging outside these areas should not.")]
+[Sample("Windowing", Name = "TitleBar.SetDragRectangles", IsManualTest = true, Description = "Currently only applies to Win32. Generate rectangles in a grid and apply their bounds as AppWindowTitleBar drag rectangles. Dragging on the red areas should drag the window. Dragging outside these areas should not.")]
 public sealed partial class TitleBar_SetDragRectangles : Page
 {
 	private readonly Random _rand = new Random();
