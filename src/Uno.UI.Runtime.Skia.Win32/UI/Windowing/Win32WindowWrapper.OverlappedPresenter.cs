@@ -139,6 +139,12 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			rcWindow.left, rcWindow.top,
 			0, 0,
 			SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
+
+		// TODO Temporary workaround - when the title bar is removed, the rendering becomes
+		// broken until a resize.
+		var width = Size.Width;
+		Resize(new Windows.Graphics.SizeInt32(width + 1, Size.Height));
+		Resize(new Windows.Graphics.SizeInt32(width, Size.Height));
 	}
 
 
