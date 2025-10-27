@@ -16,6 +16,7 @@ using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
+using Uno.UI.Runtime.Skia.Win32.UI.Xaml.Window;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -314,6 +315,34 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
+	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
+	{
+		return new System.Drawing.Point((int)(lParam.Value) & 0xffff, (int)(lParam.Value) >> 16);
+	}
+
+	private bool TryHandleCustomCaptionMessage(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam, out LRESULT result)
+	{
+		var handled = PInvoke.DwmDefWindowProc(hWnd, msg, wParam, lParam, out result);
+
+		switch (msg)
+		{
+			case PInvoke.WM_NCHITTEST:
+				if (result == IntPtr.Zero)
+				{
+					var hittestResult = NonClientAreaHitTest(hWnd, wParam, lParam);
+
+					if (hittestResult != Win32NonClientHitTestKind.HTNOWHERE)
+					{
+						result = new LRESULT((IntPtr)hittestResult);
+						handled = true;
+					}
+				}
+				break;
+		}
+
+		return handled;
 	}
 
 	private unsafe void OnWmDpiChanged(WPARAM wParam, LPARAM lParam)
