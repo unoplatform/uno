@@ -288,10 +288,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			Render(e.Surface.Canvas, saveRestoreAndCleanCanvas: true);
 		}
 
+#if __SKIA__
 		private void OnRenderOverride(SKCanvas canvas, Size area)
 		{
 			Render(canvas, saveRestoreAndCleanCanvas: false);
 		}
+#endif
 
 		private void Render(SKCanvas canvas, bool saveRestoreAndCleanCanvas)
 		{
