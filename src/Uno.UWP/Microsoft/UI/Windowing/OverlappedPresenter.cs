@@ -1,3 +1,4 @@
+using System;
 using Microsoft.UI.Windowing.Native;
 
 namespace Microsoft.UI.Windowing;
@@ -7,13 +8,11 @@ namespace Microsoft.UI.Windowing;
 /// </summary>
 public partial class OverlappedPresenter : AppWindowPresenter
 {
-	private bool _isResizable;
+	private bool _isResizable = true;
 	private bool _isModal;
 	private bool _isMinimizable;
 	private bool _isMaximizable;
 	private bool _isAlwaysOnTop;
-	private bool _hasBorder;
-	private bool _hasTitleBar;
 	private OverlappedPresenterState? _pendingState;
 
 	internal OverlappedPresenter() : base(AppWindowPresenterKind.Overlapped)
@@ -21,6 +20,8 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	}
 
 	internal INativeOverlappedPresenter Native { get; private set; }
+
+	internal event EventHandler BorderAndTitleBarChanged;
 
 	public bool IsResizable
 	{
@@ -72,9 +73,9 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		}
 	}
 
-	public bool HasBorder => _hasBorder;
+	public bool HasBorder { get; private set; } = true;
 
-	public bool HasTitleBar => _hasTitleBar;
+	public bool HasTitleBar { get; private set; } = true;
 
 	public OverlappedPresenterState State => Native?.State ?? _pendingState ?? OverlappedPresenterState.Restored;
 
@@ -87,6 +88,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		if (Native is not null)
 		{
 			Native.Maximize();
+			NotifyAppWindow();
 		}
 		else
 		{
@@ -108,6 +110,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		if (Native is not null)
 		{
 			Native.Minimize(activateWindow);
+			NotifyAppWindow();
 		}
 		else
 		{
@@ -122,8 +125,9 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	/// <param name="hasTitleBar">True if this window has a title bar; otherwise, false.</param>
 	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
 	{
-		_hasBorder = hasBorder;
-		_hasTitleBar = hasTitleBar;
+		HasBorder = hasBorder;
+		HasTitleBar = hasTitleBar;
+		BorderAndTitleBarChanged?.Invoke(this, EventArgs.Empty);
 		Native?.SetBorderAndTitleBar(hasBorder, hasTitleBar);
 	}
 
@@ -132,6 +136,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		if (Native is not null)
 		{
 			Native.Restore(activateWindow);
+			NotifyAppWindow();
 		}
 		else
 		{
@@ -237,7 +242,11 @@ public partial class OverlappedPresenter : AppWindowPresenter
 				Native.Restore(false);
 			}
 
+			NotifyAppWindow();
+
 			_pendingState = null;
 		}
 	}
+
+	internal void NotifyAppWindow() => Owner?.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
 }

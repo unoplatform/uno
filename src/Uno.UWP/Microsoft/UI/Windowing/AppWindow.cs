@@ -8,13 +8,7 @@ using Windows.Graphics;
 using Windows.UI.ViewManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
 using Windows.ApplicationModel.Core;
-
-
-#if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
-#else
-using Windows.System;
-#endif
 
 namespace Microsoft.UI.Windowing;
 
@@ -57,6 +51,8 @@ partial class AppWindow
 	public event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> Closing;
 
 	internal static MUXWindowId MainWindowId { get; } = new(1);
+
+	internal INativeAppWindow NativeAppWindow => _nativeAppWindow;
 
 	/// <summary>
 	/// Gets the title bar of the app window.

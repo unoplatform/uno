@@ -22,6 +22,7 @@ internal class DesktopWindow : BaseWindowImplementation
 	public override void Initialize()
 	{
 		_windowChrome = new WindowChrome(Window);
+		_windowChrome.ApplyStylingForMinMaxCloseButtons();
 		_desktopWindowXamlSource = new DesktopWindowXamlSource();
 		_desktopWindowXamlSource.AttachToWindow(Window);
 		_desktopWindowXamlSource.Content = _windowChrome;
@@ -59,5 +60,10 @@ internal class DesktopWindow : BaseWindowImplementation
 
 		_desktopWindowXamlSource.XamlIsland.Width = newSize.Width;
 		_desktopWindowXamlSource.XamlIsland.Height = newSize.Height;
+	}
+
+	public override void SetTitleBar(UIElement? titleBar)
+	{
+		_windowChrome?.SetTitleBar(titleBar);
 	}
 }
