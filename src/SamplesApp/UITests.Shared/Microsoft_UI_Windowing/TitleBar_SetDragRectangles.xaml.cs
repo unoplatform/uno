@@ -50,7 +50,7 @@ public sealed partial class TitleBar_SetDragRectangles : Page
 		try
 		{
 #if HAS_UNO_WINUI
-			SamplesApp.App.MainWindow.AppWindow.TitleBar.SetDragRectangles(null);
+			SamplesApp.App.MainWindow.AppWindow.TitleBar.SetDragRectangles(Array.Empty<RectInt32>());
 			StatusText.Text = "Reset to default drag regions.";
 #else
 			StatusText.Text = "AppWindow APIs not available on this head.";

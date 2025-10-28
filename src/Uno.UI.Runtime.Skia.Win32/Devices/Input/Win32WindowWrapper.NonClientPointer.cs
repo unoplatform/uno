@@ -14,24 +14,6 @@ namespace Uno.UI.Runtime.Skia.Win32;
 partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 {
 	private readonly Dictionary<NonClientRegionKind, RectInt32[]> _regionRects = new();
-
-	private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-	// --- Win32 constants
-	private const int WM_NCHITTEST = 0x0084;
-	private const int GWLP_WNDPROC = -4;
-	private const int HTCLIENT = 1;
-	private const int HTCAPTION = 2;
-	private const int HTSYSMENU = 3;
-	private const int HTMINBUTTON = 8;
-	private const int HTMAXBUTTON = 9;
-	private const int HTLEFT = 10;
-	private const int HTRIGHT = 11;
-	private const int HTTOP = 12;
-	private const int HTBOTTOM = 15;
-	private const int HTCLOSE = 20;
-
-	// 🪟 Implement the INativeInputNonClientPointerSource contract
 	public void ClearAllRegionRects()
 		=> _regionRects.Clear();
 
@@ -151,50 +133,18 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 
 		return hitZones[zoneIndex];
 	}
-
-	private bool TryHandleNonClientHitTest(HWND hWnd, WPARAM wParam, LPARAM lParam, out IntPtr result)
+	private static Win32NonClientHitTestKind RegionKindToHitTest(NonClientRegionKind kind) => kind switch
 	{
-		var defResult = PInvoke.DefWindowProc(hWnd, WM_NCHITTEST, wParam, lParam);
-
-		if ((int)defResult == HTCLIENT && _regionRects.Count > 0)
-		{
-			int x = (short)(lParam.Value.ToInt32() & 0xFFFF);
-			int y = (short)((lParam.Value.ToInt32() >> 16) & 0xFFFF);
-
-			var p = new System.Drawing.Point { X = x, Y = y };
-			PInvoke.ScreenToClient(hWnd, ref p);
-
-			foreach (var kv in _regionRects)
-			{
-				foreach (var rect in kv.Value)
-				{
-					var contains = p.X >= rect.X && p.X < rect.X + rect.Width &&
-								   p.Y >= rect.Y && p.Y < rect.Y + rect.Height;
-					if (contains)
-					{
-						result = RegionKindToHitTest(kv.Key);
-						return true;
-					}
-				}
-			}
-		}
-
-		result = (IntPtr)defResult;
-		return true;
-	}
-
-	private static int RegionKindToHitTest(NonClientRegionKind kind) => kind switch
-	{
-		NonClientRegionKind.Close => HTCLOSE,
-		NonClientRegionKind.Maximize => HTMAXBUTTON,
-		NonClientRegionKind.Minimize => HTMINBUTTON,
-		NonClientRegionKind.Icon => HTSYSMENU,
-		NonClientRegionKind.Caption => HTCAPTION,
-		NonClientRegionKind.TopBorder => HTTOP,
-		NonClientRegionKind.LeftBorder => HTLEFT,
-		NonClientRegionKind.BottomBorder => HTBOTTOM,
-		NonClientRegionKind.RightBorder => HTRIGHT,
-		NonClientRegionKind.Passthrough => HTCLIENT,
-		_ => HTCLIENT
+		NonClientRegionKind.Close => Win32NonClientHitTestKind.HTCLOSE,
+		NonClientRegionKind.Maximize => Win32NonClientHitTestKind.HTMAXBUTTON,
+		NonClientRegionKind.Minimize => Win32NonClientHitTestKind.HTMINBUTTON,
+		NonClientRegionKind.Icon => Win32NonClientHitTestKind.HTSYSMENU,
+		NonClientRegionKind.Caption => Win32NonClientHitTestKind.HTCAPTION,
+		NonClientRegionKind.TopBorder => Win32NonClientHitTestKind.HTTOP,
+		NonClientRegionKind.LeftBorder => Win32NonClientHitTestKind.HTLEFT,
+		NonClientRegionKind.BottomBorder => Win32NonClientHitTestKind.HTBOTTOM,
+		NonClientRegionKind.RightBorder => Win32NonClientHitTestKind.HTRIGHT,
+		NonClientRegionKind.Passthrough => Win32NonClientHitTestKind.HTCLIENT,
+		_ => Win32NonClientHitTestKind.HTCLIENT
 	};
 }
