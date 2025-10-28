@@ -52,6 +52,11 @@ public partial class ClientHotReloadProcessor
 		public bool? ForceSaveToDisk { get; init; }
 
 		/// <summary>
+		/// Indicates if the file can be created or deleted.
+		/// </summary>
+		public bool IsCreateDeleteAllowed { get; init; }
+
+		/// <summary>
 		/// The max delay to wait for the server to process a file update request.
 		/// </summary>
 		/// <remarks>This includes the time to send the request to the server, the server to process it and send a reply.</remarks>

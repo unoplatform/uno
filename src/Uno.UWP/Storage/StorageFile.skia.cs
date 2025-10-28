@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Helpers;
 using Windows.ApplicationModel;
+using Windows.Storage;
 
 namespace Windows.Storage
 {
@@ -35,5 +36,39 @@ namespace Windows.Storage
 				throw new FileNotFoundException($"The file [{path}] cannot be found  in the package directory");
 			}
 		}
+	}
+}
+
+namespace Uno.Storage
+{
+	internal class StorageFile
+	{
+		public void RegisterProvider(IStorageFileProvider provider, StorageFileProviderPriority priority)
+		{
+			
+		}
+	}
+
+	internal enum StorageFileProviderPriority
+	{
+		/// <summary>
+		/// Prioerity used by default file system lookup if no other is specified.
+		/// </summary>
+		Default = 0,
+
+		/// <summary>
+		/// Used to register low priority providers that should be used only if no other provider matches.
+		/// </summary>
+		Low = -100,
+
+		/// <summary>
+		/// Represents a high priority level with a value of 100.
+		/// </summary>
+		High = 100,
+	}
+
+	internal interface IStorageFileProvider
+	{
+		public ValueTask<StorageFile> GetFileAsync(Uri uri, CancellationToken ct);
 	}
 }

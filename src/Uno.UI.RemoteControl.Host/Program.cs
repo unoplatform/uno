@@ -37,6 +37,8 @@ namespace Uno.UI.RemoteControl.Host
 			using var ct = ConsoleHelper.CreateCancellationToken();
 			AmbientRegistry? ambientRegistry = null;
 
+			Debugger.Launch();
+			
 			try
 			{
 				var httpPort = 0;

@@ -22,6 +22,11 @@ public static class WellKnownScopes
 	public const string HotReload = "HotReload";
 
 	/// <summary>
+	/// For hot-reload messages, client, server and IDE.
+	/// </summary>
+	public const string HotAssets = "HotAssets";
+
+	/// <summary>
 	/// For messages used for testing purpose (e.g. UpdateFile)
 	/// </summary>
 	public const string Testing = "UnoRuntimeTests";

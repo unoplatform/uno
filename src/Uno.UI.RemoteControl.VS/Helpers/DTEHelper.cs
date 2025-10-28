@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -9,6 +10,8 @@ using EnvDTE80;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Uno.UI.Helpers;
+using VSLangProj;
 using VSLangProj110;
 
 namespace Uno.UI.RemoteControl.VS.Helpers;
@@ -237,5 +240,72 @@ internal static class DTEHelper
 		}
 
 		return null;
+	}
+
+	/// <summary>
+	/// Retrieves the path to the .csproj file associated with the specified file by traversing upward in the directory hierarchy.
+	/// </summary>
+	/// <param name="filePath">The absolute path of the file for which the associated .csproj file is to be located.</param>
+	/// <returns>The full path to the .csproj file.</returns>
+	/// <exception cref="InvalidOperationException">
+	/// Thrown if the provided <paramref name="filePath"/> is not valid, no .csproj file is found in the directory tree, 
+	/// or multiple .csproj files are found in a directory, making it ambiguous to determine the correct one.
+	/// </exception>
+	private static string GetCsprojForFile(string filePath)
+		=> Path.GetDirectoryName(filePath) is not { Length: > 0 } fileDir
+			? throw new InvalidOperationException($"File path '{filePath}' is not valid (should be absolute).")
+			: GetCsprojRecursive(new DirectoryInfo(fileDir));
+
+	private static string GetCsprojRecursive(DirectoryInfo dir)
+		=> dir.GetFiles("*.csproj", SearchOption.TopDirectoryOnly) switch
+		{
+			null or [] when dir.Parent is { } parentDir => GetCsprojRecursive(parentDir),
+			null or [] => throw new InvalidOperationException($"No .csproj file found in {dir.FullName} or any of its parent directories."),
+			[var singleProject] => singleProject.FullName,
+			_ => throw new InvalidOperationException($"Multiple .csproj files found in {dir.FullName}, unable to determine which one to use."),
+		};
+
+	private static IEnumerable<string> GetAllCsprojRecursive(DirectoryInfo? dir)
+	{
+		while (dir is not null)
+		{
+			foreach (var csproj in dir.GetFiles("*.csproj", SearchOption.TopDirectoryOnly))
+			{
+				yield return csproj.FullName;
+			}
+
+			dir = dir.Parent;
+		}
+	}
+
+	//private static Project FindProjectInSolution(this DTE2 dte, string projectFilePath)
+	//{
+	//	foreach (Project project in dte.Solution.Projects)
+	//	{
+	//		var p = FindProjectRecursive(project, projectFilePath);
+	//		if (p != null) return p;
+	//	}
+	//	return null;
+	//}
+
+	public static async ValueTask<Project?> FindProjectForFileAsync(this DTE2 dte, string filePath, ProjectAttribute? attributes = null)
+	{
+		if (Path.GetDirectoryName(filePath) is not { Length: > 0 } fileDir)
+		{
+			throw new InvalidOperationException($"File path '{filePath}' is not valid (should be absolute).");
+		}
+
+		var projects = (await dte.GetProjectsAsync(attributes)).ToList();
+		return GetAllCsprojRecursive(new DirectoryInfo(fileDir))
+			.Select(projectFile => projects.FirstOrDefault(p => p?.FullName is { } pfn && StringComparer.OrdinalIgnoreCase.Equals(pfn, projectFile)))
+			.FirstOrDefault(project => project is not null);
+	}
+
+	public static async ValueTask AddFileAsync(this Project project, string filePath, string buildAction = "Compile")
+	{
+		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+		var item = project.ProjectItems.AddFromFile(filePath);
+		item.Properties.Item("ItemType").Value = buildAction;
 	}
 }

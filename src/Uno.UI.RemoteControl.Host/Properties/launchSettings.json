@@ -1,11 +1,12 @@
 {
-	"profiles": {
-		"Uno.UI.RemoteControl.Host": {
-			"commandName": "Project",
-			"commandLineArgs": "--httpPort 53487",
-			"environmentVariables": {
-				"UNO_PLATFORM_TELEMETRY_FILE": "./telemetry.log"
-			}
-		}
-	}
+  "profiles": {
+    "Uno.UI.RemoteControl.Host": {
+      "commandName": "Project",
+      "commandLineArgs": "--httpPort 53487 --solution V:\\source\\TestHRConsoleApp\\TestHRConsoleApp.sln",
+      "workingDirectory": "V:\\source\\TestHRConsoleApp",
+      "environmentVariables": {
+        "UNO_PLATFORM_TELEMETRY_FILE": "./telemetry.log"
+      }
+    }
+  }
 }

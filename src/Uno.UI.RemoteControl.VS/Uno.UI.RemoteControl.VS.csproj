@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<NoWarn>$(NoWarn);NU1701;NU1510</NoWarn>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>

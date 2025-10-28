@@ -610,7 +610,6 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-
 			index = -1;
 			return false;
 		}

@@ -44,8 +44,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			// This is called from ProcessConfigureServer() during initialization.
 
-			_isRunningInsideVisualStudio = properties
-				.TryGetValue("BuildingInsideVisualStudio", out var vs) && vs.Equals("true", StringComparison.OrdinalIgnoreCase);
+			_isRunningInsideVisualStudio = properties.TryGetValue("BuildingInsideVisualStudio", out var vs)
+				&& vs.Equals("true", StringComparison.OrdinalIgnoreCase);
 		}
 
 		public async Task ProcessFrame(Frame frame)
@@ -85,7 +85,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		#region Hot-reload state
-		private HotReloadState _globalState; // This actually contains only the initializing stat (i.e. Disabled, Initializing, Idle). Processing state is _current != null.
+		private HotReloadState _globalState; // This actually contains only the initializing state (i.e. Disabled, Initializing, Idle). Processing state is _current != null.
 		private HotReloadServerOperation? _current; // I.e. head of the operation chain list
 
 		public enum HotReloadEventSource
@@ -158,8 +158,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			}
 
-			_telemetry.TrackEvent("notify-start", properties, measurements);
-
 			try
 			{
 				switch (evt)
@@ -209,10 +207,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						_telemetry.TrackEvent("notify-rude-edit", properties, measurements);
 						break;
 				}
-
-				properties["NewState"] = _globalState.ToString();
-				properties["HasCurrentOperation"] = (_current != null).ToString();
-				_telemetry.TrackEvent("notify-complete", properties, measurements);
 			}
 			catch (Exception ex)
 			{
@@ -530,38 +524,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 		#endregion
 
-		#region SendAndWaitForResult
-		private readonly ConcurrentDictionary<long, TaskCompletionSource<Result>> _pendingRequestsToIde = new();
-
-		private long _lasIdeCorrelationId;
-
-		private long GetNextIdeCorrelationId() => Interlocked.Increment(ref _lasIdeCorrelationId);
-
-		private async Task<Result> SendAndWaitForResult<TMessage>(TMessage message)
-			where TMessage : IdeMessageWithCorrelationId
-		{
-			var tcs = new TaskCompletionSource<Result>();
-			try
-			{
-				using var cts = new CancellationTokenSource(_waitForIdeResultTimeout);
-				await using var ctReg = cts.Token.Register(() => tcs.TrySetCanceled());
-
-				_pendingRequestsToIde.TryAdd(message.CorrelationId, tcs);
-				await _remoteControlServer.SendMessageToIDEAsync(message);
-
-				return await tcs.Task;
-			}
-			catch (Exception ex)
-			{
-				return Result.Fail(ex);
-			}
-			finally
-			{
-				_pendingRequestsToIde.TryRemove(message.CorrelationId, out _);
-			}
-		}
-		#endregion
-
 		#region UpdateFile
 
 		private async Task ProcessUpdateFile(UpdateFile message)
@@ -570,29 +532,28 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			try
 			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogTrace($"[FileUpdate#{message.RequestId}] Updating file: '{message.FilePath}'.");
+				}
+
 				var (result, error) = message switch
 				{
 					{ FilePath: null or { Length: 0 } } => (FileUpdateResult.BadRequest, "Invalid request (file path is empty)"),
-					{ OldText: not null, NewText: not null } => await (_isRunningInsideVisualStudio
-						? DoRemoteUpdateInIde(message.NewText)
-						: DoUpdateOnDisk(message.OldText, message.NewText)),
-					{ OldText: null, NewText: not null } => await (_isRunningInsideVisualStudio
-						? DoRemoteUpdateInIde(message.NewText)
-						: DoWriteToDisk(message.NewText)),
+					{ OldText: not null, NewText: not null } => await DoUpdateOnDisk(message.OldText, message.NewText),
+					{ OldText: null, NewText: not null, IsCreateDeleteAllowed: true } when _isRunningInsideVisualStudio && !File.Exists(message.FilePath) => await DoRemoteAddInIde(message.NewText),
+					{ OldText: null, NewText: not null } when _isRunningInsideVisualStudio => await DoRemoteWriteInIde(message.NewText),
+					{ OldText: null, NewText: not null } => await DoWriteToDisk(message.NewText),
 					{ NewText: null, IsCreateDeleteAllowed: true } => await DoDeleteFromDisk(),
 					_ => (FileUpdateResult.BadRequest, "Invalid request")
 				};
 
-				var isIdeSupportingHotReload = _isRunningInsideVisualStudio;
-
-				if (message.IsForceHotReloadDisabled is false && (int)result < 300)
+				if (_isRunningInsideVisualStudio // We can/need to forcefully request a hot-reload only if running inside VS
+					&& message.IsForceHotReloadDisabled is false
+					&& (int)result < 300)
 				{
 					hotReload.EnableAutoRetryIfNoChanges(message.ForceHotReloadAttempts, message.ForceHotReloadDelay);
-
-					if (isIdeSupportingHotReload)
-					{
-						await RequestHotReloadToIde();
-					}
+					await RequestHotReloadToIde();
 				}
 
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", result, error, hotReload.Id));
@@ -603,13 +564,25 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", FileUpdateResult.Failed, ex.Message));
 			}
 
-			async Task<(FileUpdateResult, string?)> DoRemoteUpdateInIde(string newText)
+			async Task<(FileUpdateResult, string?)> DoRemoteAddInIde(string newText)
+			{
+				// Right now, when running on VS, we're delegating the file update to the code that is running inside VS.
+				// we're not doing this for other file operations because they are not/less required for hot-reload. We may need to revisit this eventually.
+				var ideMsg = new AddFileIdeMessage(GetNextIdeCorrelationId(), message.FilePath, newText);
+				var result = await SendAndWaitForResult(ideMsg);
+
+				return result.IsSuccess
+					? (FileUpdateResult.Success, null)
+					: (FileUpdateResult.Failed, result.Error);
+			}
+
+			async Task<(FileUpdateResult, string?)> DoRemoteWriteInIde(string newText)
 			{
 				var saveToDisk = message.ForceSaveOnDisk ?? true; // Temporary set to true until this issue is fixed: https://github.com/unoplatform/uno.hotdesign/issues/3454
 
 				// Right now, when running on VS, we're delegating the file update to the code that is running inside VS.
 				// we're not doing this for other file operations because they are not/less required for hot-reload. We may need to revisit this eventually.
-				var ideMsg = new UpdateFileIdeMessage(GetNextIdeCorrelationId(), message.FilePath, newText, saveToDisk);
+				var ideMsg = new WriteFileIdeMessage(GetNextIdeCorrelationId(), message.FilePath, newText, saveToDisk);
 				var result = await SendAndWaitForResult(ideMsg);
 
 				return result.IsSuccess
@@ -623,7 +596,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
+						this.Log().LogDebug($"[FileUpdate#{message.RequestId}] Requested file '{message.FilePath}' does not exists.");
 					}
 
 					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
@@ -632,20 +605,20 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				var originalContent = await File.ReadAllTextAsync(message.FilePath);
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().LogTrace($"Original content: {originalContent} [{message.RequestId}].");
+					this.Log().LogTrace($"[FileUpdate#{message.RequestId}] Original content:\r\n{originalContent}.");
 				}
 
 				var updatedContent = originalContent.Replace(oldText, newText);
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().LogTrace($"Updated content: {updatedContent} [{message.RequestId}].");
+					this.Log().LogTrace($"[FileUpdate#{message.RequestId}] Updated content:\r\n{updatedContent}.");
 				}
 
 				if (updatedContent == originalContent)
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"No changes detected in {message.FilePath} [{message.RequestId}].");
+						this.Log().LogDebug($"[FileUpdate#{message.RequestId}] No changes detected in '{message.FilePath}'.");
 					}
 
 					return (FileUpdateResult.NoChanges, null);
@@ -664,7 +637,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
+						this.Log().LogDebug($"[FileUpdate#{message.RequestId}] Requested file '{message.FilePath}' does not exists.");
 					}
 
 					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
@@ -672,7 +645,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().LogTrace($"Write content: {newText} [{message.RequestId}].");
+					this.Log().LogTrace($"[FileUpdate#{message.RequestId}] Writing content:\r\n{newText}.");
 				}
 
 				var effectiveUpdate = WaitForFileUpdated();
@@ -688,10 +661,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
+						this.Log().LogDebug($"[FileUpdate#{message.RequestId}] Requested file '{message.FilePath}' does not exists.");
 					}
 
 					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().LogTrace($"[FileUpdate#{message.RequestId}] Deleting file.");
 				}
 
 				var effectiveUpdate = WaitForFileUpdated();
@@ -768,10 +746,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter)
 			=> Observable.Create<Task<ImmutableHashSet<string>>>(o =>
 			{
-				// Create an observable instead of using the FromEventPattern which
-				// does not register to events properly.
-				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
-				// Visual Studio uses to save files.
+				// Create an observable instead of using the FromEventPattern which does not register to events properly.
+				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that Visual Studio uses to save files.
 
 				var gate = new object();
 				var buffer = default((ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task)?);
@@ -837,6 +813,39 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					bufferTimer.Dispose();
 				});
 			});
+
+		#region SendAndWaitForResult
+		private readonly ConcurrentDictionary<long, TaskCompletionSource<Result>> _pendingRequestsToIde = new();
+
+		private long _lasIdeCorrelationId;
+
+		private long GetNextIdeCorrelationId() => Interlocked.Increment(ref _lasIdeCorrelationId);
+
+		private async Task<Result> SendAndWaitForResult<TMessage>(TMessage message)
+			where TMessage : IdeMessageWithCorrelationId
+		{
+			var tcs = new TaskCompletionSource<Result>();
+			try
+			{
+				using var cts = new CancellationTokenSource(_waitForIdeResultTimeout);
+				await using var ctReg = cts.Token.Register(() => tcs.TrySetCanceled());
+
+				_pendingRequestsToIde.TryAdd(message.CorrelationId, tcs);
+				await _remoteControlServer.SendMessageToIDEAsync(message);
+
+				return await tcs.Task;
+			}
+			catch (Exception ex)
+			{
+				return Result.Fail(ex);
+			}
+			finally
+			{
+				_pendingRequestsToIde.TryRemove(message.CorrelationId, out _);
+			}
+		}
+		#endregion
+
 		#endregion
 	}
 }

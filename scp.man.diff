@@ -1,0 +1,88 @@
+diff --git a/src/Uno.UI/UI/Xaml/Controls/ScrollContentPresenter/ScrollContentPresenter.Managed.cs b/src/Uno.UI/UI/Xaml/Controls/ScrollContentPresenter/ScrollContentPresenter.Managed.cs
+index efd98efaff..f0cbb3a35a 100644
+--- a/src/Uno.UI/UI/Xaml/Controls/ScrollContentPresenter/ScrollContentPresenter.Managed.cs
++++ b/src/Uno.UI/UI/Xaml/Controls/ScrollContentPresenter/ScrollContentPresenter.Managed.cs
+@@ -245,7 +245,7 @@ namespace Microsoft.UI.Xaml.Controls
+ 
+ 			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | opts: {options})");
+ 
+-			if (!options.IsInertial)
++			if (!options.IsTouch)
+ 			{
+ 				// If we get a request to scroll to a specific offset **that is not flagged as IsInertial** (i.e. not coming from the inertia processing),
+ 				// we stop the pending inertia processor.
+@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls
+ 
+ 			var updatedHorizontalOffset = HorizontalOffset;
+ 			var updatedVerticalOffset = VerticalOffset;
+-			if (updated)
++			if (updated || options.IsTouch)
+ 			{
+ 				if (Content is UIElement contentElt)
+ 				{
+@@ -321,7 +321,7 @@ namespace Microsoft.UI.Xaml.Controls
+ 			}
+ 
+ 
+-			if (options is { DisableAnimation: true } or { IsInertial: true })
++			if (options is { DisableAnimation: true } or { IsTouch: true })
+ 			{
+ 				visual.StopAnimation(nameof(Visual.AnchorPoint));
+ 				visual.AnchorPoint = target;
+@@ -435,7 +435,7 @@ namespace Microsoft.UI.Xaml.Controls
+ 				Set(
+ 					horizontalOffset: HorizontalOffset + deltaX,
+ 					verticalOffset: VerticalOffset + deltaY,
+-					options: new(DisableAnimation: true, IsInertial: true, IsIntermediate: true));
++					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
+ 			}
+ 			else
+ 			{
+@@ -445,7 +445,7 @@ namespace Microsoft.UI.Xaml.Controls
+ 				Set(
+ 					horizontalOffset: HorizontalOffset + deltaX,
+ 					verticalOffset: VerticalOffset + deltaY,
+-					options: new(DisableAnimation: true, IsInertial: true, IsIntermediate: true));
++					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
+ 
+ 				if (!sv.IsHorizontalScrollChainingEnabled)
+ 				{
+@@ -539,7 +539,7 @@ namespace Microsoft.UI.Xaml.Controls
+ 				}
+ 
+ 				sv.AdjustOffsetsForSnapPoints(ref h, ref v, null);
+-				Set(horizontalOffset: h, verticalOffset: v, disableAnimation: false, isIntermediate: false);
++				Set(horizontalOffset: h, verticalOffset: v, disableAnimation: false, isIntermediate: false); // Not: IsTouch = true as we are not in the touch scrolling anymore here, we are just snapping.
+ 			}
+ 			else
+ 			{
+@@ -553,7 +553,7 @@ namespace Microsoft.UI.Xaml.Controls
+ 				Set(
+ 					horizontalOffset: HorizontalOffset + deltaX,
+ 					verticalOffset: VerticalOffset + deltaY,
+-					options: new(DisableAnimation: false, IsInertial: true, IsIntermediate: true));
++					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
+ 			}
+ 
+ 			return true;
+@@ -570,7 +570,7 @@ namespace Microsoft.UI.Xaml.Controls
+ 
+ 			_touchInertia = null;
+ 
+-			Set(disableAnimation: true, isIntermediate: false);
++			Set(options: new ScrollOptions(DisableAnimation: true, IsTouch: true, IsIntermediate: false));
+ 		}
+ 
+ 		private ScrollDirection GetDirection(ManipulationVelocities velocities)
+@@ -649,8 +649,8 @@ namespace Microsoft.UI.Xaml.Controls
+ 	/// Requests to use a linear animation with a specific duration instead of the default animation strategy.
+ 	/// This is for the for inertia processor with touch scrolling where the total duration is calculated based on the velocity.
+ 	/// </param>
+-	/// <param name="IsInertial">Indicates that the scroll is coming from an inertia processor.</param>
+-	/// <param name="IsIntermediate">Indicates that the scroll is an intermediate value, not the final one.</param>
+-	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsInertial = false, bool IsIntermediate = false);
++	/// <param name="IsTouch">Indicates that the scroll is coming from an inertia processor.</param>
++	/// <param name="IsIntermediate">Indicates that the scroll is an intermediate value, not the final one (i.e. active touch scrolling, touch scroll inertia or scroll animation).</param>
++	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false);
+ }
+ #endif

@@ -20,7 +20,7 @@ public class UpdateFile : IMessage
 	public string FilePath { get; set; } = string.Empty;
 
 	/// <summary>
-	/// The old text to replace in the file, or `null` to create a new file (only if <see cref="IsCreateDeleteAllowed"/> is true).
+	/// The old text to replace in the file, or `null` to override all file content (or create a new file if <see cref="IsCreateDeleteAllowed"/> is true).
 	/// </summary>
 	[JsonProperty]
 	public string? OldText { get; set; }
@@ -60,7 +60,7 @@ public class UpdateFile : IMessage
 	public TimeSpan? ForceHotReloadDelay { get; set; }
 
 	/// <summary>
-	/// Number of times to retry the hot reload in Visual Studio **if not changes are detected**.
+	/// Number of times to retry the hot reload in Visual Studio **if no changes are detected**.
 	/// </summary>
 	[JsonProperty]
 	public int? ForceHotReloadAttempts { get; set; }

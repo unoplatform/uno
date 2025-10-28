@@ -33,6 +33,7 @@ using _udeiMsg = Uno.UI.RemoteControl.Messaging.IdeChannel.DevelopmentEnvironmen
 
 #pragma warning disable VSTHRD010
 #pragma warning disable VSTHRD109
+#pragma warning disable CS1998
 
 namespace Uno.UI.RemoteControl.VS;
 
@@ -78,6 +79,8 @@ public partial class EntryPoint : IDisposable
 		, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider
 		, Func<Task> globalPropertiesChanged)
 	{
+		System.Diagnostics.Debugger.Launch();
+
 		_dte = dte2 as DTE;
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
@@ -100,6 +103,8 @@ public partial class EntryPoint : IDisposable
 		AsyncPackage asyncPackage,
 		string vsixChannelHandle)
 	{
+		System.Diagnostics.Debugger.Launch();
+
 		_dte = dte2 as DTE;
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
@@ -600,8 +605,11 @@ public partial class EntryPoint : IDisposable
 				case ForceHotReloadIdeMessage fhr:
 					await OnForceHotReloadRequestedAsync(fhr);
 					break;
-				case UpdateFileIdeMessage ufm:
-					await OnUpdateFileRequestedAsync(ufm);
+				case WriteFileIdeMessage ufm:
+					await OnWriteFileRequestedAsync(ufm);
+					break;
+				case AddFileIdeMessage afm:
+					await OnAddFileRequestedAsync(afm);
 					break;
 				case NotificationRequestIdeMessage nr:
 					await OnNotificationRequestedAsync(sender, nr);
@@ -616,6 +624,16 @@ public partial class EntryPoint : IDisposable
 					_debugAction?.Invoke($"Unknown message type {devServerMessage?.GetType()} from DevServer");
 					break;
 			}
+
+			if (devServerMessage is IdeMessageWithCorrelationId msgWithId && _ideChannelClient is not null)
+			{
+				await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(msgWithId.CorrelationId, Result.Success()), _ct.Token);
+			}
+		}
+		catch (Exception e) when (devServerMessage is IdeMessageWithCorrelationId msgWithId && _ideChannelClient is not null)
+		{
+			await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(msgWithId.CorrelationId, Result.Fail(e)), _ct.Token);
+			_debugAction?.Invoke($"Failed to handle IdeMessage with message {e.Message}");
 		}
 		catch (Exception e)
 		{
@@ -698,86 +716,77 @@ public partial class EntryPoint : IDisposable
 
 	private async Task OnForceHotReloadRequestedAsync(ForceHotReloadIdeMessage request)
 	{
-		try
-		{
-			// Programmatically trigger the "Apply Code Changes" command in Visual Studio.
-			// Which will trigger the hot reload.
-			_dte.ExecuteCommand("Debug.ApplyCodeChanges");
+		// Programmatically trigger the "Apply Code Changes" command in Visual Studio.
+		// Which will trigger the hot reload.
+		_dte.ExecuteCommand("Debug.ApplyCodeChanges");
+	}
 
-			// Send a message back to indicate that the request has been received and acted upon.
-			if (_ideChannelClient is not null)
-			{
-				await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
-			}
+	private async Task OnWriteFileRequestedAsync(WriteFileIdeMessage request)
+	{
+		if (request.FileContent is not { Length: > 0 } fileContent)
+		{
+			throw new ArgumentNullException(nameof(request.FileContent), "IDE updates does not support deleting file yet.");
 		}
-		catch (Exception e) when (_ideChannelClient is not null)
-		{
-			await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Fail(e)), _ct.Token);
 
-			throw;
+		var filePath = request.FilePath;
+
+		// Update the file content in the IDE using the DTE API.
+		var document = _dte2
+			.Documents
+			.OfType<Document>()
+			.FirstOrDefault(d => AbsolutePathComparer.ComparerIgnoreCase.Equals(d.FullName, filePath));
+
+		var textDocument = document?.Object("TextDocument") as TextDocument;
+
+		if (textDocument is null) // The document is not open in the IDE, so we need to open it.
+		{
+			// Resolve the path to the document (in case it's not open in the IDE).
+			// The path may contain a mix of forward and backward slashes, so we normalize it by using Path.GetFullPath.
+			var adjustedPathForOpening = Path.GetFullPath(filePath);
+
+			document = _dte2.Documents.Open(adjustedPathForOpening);
+			textDocument = document?.Object("TextDocument") as TextDocument;
+		}
+
+		if (document is null || textDocument is null)
+		{
+			throw new InvalidOperationException($"Failed to open document {filePath}");
+		}
+
+		// Override the content of the document with the new content.
+
+		// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
+		// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
+		const int flags = 0b0000_0011;
+
+		textDocument
+			.StartPoint
+			.CreateEditPoint()
+			.ReplaceText(textDocument.EndPoint, fileContent, flags);
+
+		if (request.ForceSaveOnDisk)
+		{
+			// Save the document.
+			document.Save();
 		}
 	}
 
-	private async Task OnUpdateFileRequestedAsync(UpdateFileIdeMessage request)
+	private async Task OnAddFileRequestedAsync(AddFileIdeMessage request)
 	{
-		try
+		var filePath = request.FullName;
+		var project = await _dte2.FindProjectForFileAsync(filePath);
+		if (project is null)
 		{
-			if (request.FileContent is { Length: > 0 } fileContent)
-			{
-				var filePath = request.FileFullName;
-
-				// Update the file content in the IDE using the DTE API.
-				var document = _dte2.Documents
-					.OfType<Document>()
-					.FirstOrDefault(d => AbsolutePathComparer.ComparerIgnoreCase.Equals(d.FullName, filePath));
-
-				var textDocument = document?.Object("TextDocument") as TextDocument;
-
-				if (textDocument is null) // The document is not open in the IDE, so we need to open it.
-				{
-					// Resolve the path to the document (in case it's not open in the IDE).
-					// The path may contain a mix of forward and backward slashes, so we normalize it by using Path.GetFullPath.
-					var adjustedPathForOpening = Path.GetFullPath(filePath);
-
-					document = _dte2.Documents.Open(adjustedPathForOpening);
-					textDocument = document?.Object("TextDocument") as TextDocument;
-				}
-
-				if (document is null || textDocument is null)
-				{
-					throw new InvalidOperationException($"Failed to open document {filePath}");
-				}
-
-				// Replace the content of the document with the new content.
-
-				// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
-				// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
-				const int flags = 0b0000_0011;
-
-				textDocument.StartPoint.CreateEditPoint()
-					.ReplaceText(textDocument.EndPoint, fileContent, flags);
-
-				if (request.ForceSaveOnDisk)
-				{
-					// Save the document.
-					document.Save();
-				}
-
-				// Send a message back to indicate that the request has been received and acted upon.
-				if (_ideChannelClient is not null)
-				{
-					await _ideChannelClient.SendToDevServerAsync(
-						new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
-				}
-			}
+			throw new InvalidOperationException($"Failed to find project for file '{filePath}'.");
 		}
-		catch (Exception e) when (_ideChannelClient is not null)
+
+		using (var fs = File.Open(filePath, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
+		using (var writer = new StreamWriter(fs) { AutoFlush = true })
 		{
-			// Send a message back to indicate that the request has failed.
-			await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Fail(e)), _ct.Token);
-
-			throw;
+			await writer.WriteAsync(request.FileContent);
 		}
+
+		await project.AddFileAsync(filePath, "Compile");
 	}
 
 	private bool EnsureTcpPort(ref int port)
