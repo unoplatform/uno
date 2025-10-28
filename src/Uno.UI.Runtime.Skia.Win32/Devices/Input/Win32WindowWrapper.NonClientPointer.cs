@@ -102,21 +102,24 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		}
 
 		bool hasCustomDragRects = false;
-		if (_regionRects.TryGetValue(Microsoft.UI.Input.NonClientRegionKind.Caption, out var dragRects))
+		// Go through all the available rects
+		foreach (var region in _regionRects)
 		{
-			hasCustomDragRects = true;
-			foreach (var rect in dragRects)
+			if (region.Key == NonClientRegionKind.Caption && region.Value.Length > 0)
 			{
-				var scaledRect = new RectInt32
-				(
-					rcWindow.left + rect.X,
-					rcWindow.top + rect.Y + titleBarHeightForDraggingRects,
+				hasCustomDragRects = true;
+			}
+
+			foreach (var rect in region.Value)
+			{
+				var adjustedRect = new RectInt32(
+					rect.X + rcWindow.left,
+					titleBarHeightForDraggingRects + rect.Y + rcWindow.top,
 					rect.Width,
-					rect.Height
-				);
-				if (scaledRect.Contains(new PointInt32((int)(ptMouse.X), (int)(ptMouse.Y))))
+					rect.Height);
+				if (adjustedRect.Contains(new PointInt32(ptMouse.X, ptMouse.Y)))
 				{
-					return Win32NonClientHitTestKind.HTCAPTION;
+					return RegionKindToHitTest(region.Key);
 				}
 			}
 		}
@@ -147,4 +150,17 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		NonClientRegionKind.Passthrough => Win32NonClientHitTestKind.HTCLIENT,
 		_ => Win32NonClientHitTestKind.HTCLIENT
 	};
+
+	private bool ShouldRedirectNonClientInput(HWND hWnd, WPARAM wParam, IntPtr lParam)
+	{
+		var hitTestResult = NonClientAreaHitTest(hWnd, wParam, lParam);
+
+		return hitTestResult
+			is Win32NonClientHitTestKind.HTMINBUTTON
+			or Win32NonClientHitTestKind.HTMAXBUTTON
+			or Win32NonClientHitTestKind.HTCLOSE
+			or Win32NonClientHitTestKind.HTHELP
+			or Win32NonClientHitTestKind.HTMENU
+			or Win32NonClientHitTestKind.HTSYSMENU;
+	}
 }

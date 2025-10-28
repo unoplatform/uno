@@ -18,6 +18,7 @@ using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia.Win32.UI.Xaml.Window;
 using Uno.UI.Xaml.Controls;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
@@ -336,6 +337,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 						result = new LRESULT((IntPtr)hittestResult);
 						handled = true;
 					}
+				}
+				break;
+			case PInvoke.WM_NCPOINTERUPDATE:
+			case PInvoke.WM_NCPOINTERDOWN:
+			case PInvoke.WM_NCPOINTERUP:
+				if (!handled
+					&& ShouldRedirectNonClientInput(hWnd, wParam, lParam))
+				{
+					OnPointer(msg, wParam, hWnd);
+					handled = true;
 				}
 				break;
 		}
