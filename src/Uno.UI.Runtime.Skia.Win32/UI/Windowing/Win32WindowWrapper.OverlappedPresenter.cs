@@ -52,7 +52,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 	public void SetIsMinimizable(bool isMinimizable) => SetWindowStyle(WINDOW_STYLE.WS_MINIMIZEBOX, isMinimizable);
 
-	public void SetIsMaximizable(bool isMaximizable) => SetWindowStyle(WINDOW_STYLE.WS_MINIMIZEBOX, isMaximizable);
+	public void SetIsMaximizable(bool isMaximizable) => SetWindowStyle(WINDOW_STYLE.WS_MAXIMIZEBOX, isMaximizable);
 
 	public unsafe void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
 	{
@@ -119,7 +119,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
 
 		// TODO Temporary workaround - when the title bar is removed, the rendering becomes
-		// broken until a resize.
+		// broken until a resize. Tracked in https://github.com/unoplatform/uno/issues/21688
 		var width = Size.Width;
 		Resize(new Windows.Graphics.SizeInt32(width + 1, Size.Height));
 		Resize(new Windows.Graphics.SizeInt32(width, Size.Height));
@@ -130,7 +130,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		RECT borderThickness = new RECT();
 		RECT borderCaptionThickness = new RECT();
 
-		var scaling = (uint)(RasterizationScale * StandardDpi);
+		var scaling = (uint)(RasterizationScale * PInvoke.USER_DEFAULT_SCREEN_DPI);
 		if (Environment.OSVersion.Version < new Version(10, 0, 14393))
 		{
 			PInvoke.AdjustWindowRectEx(ref borderCaptionThickness, GetStyle(), false, 0);

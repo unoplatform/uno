@@ -34,8 +34,6 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 {
-	public const double StandardDpi = 96;
-
 	private const string WindowClassName = "UnoPlatformRegularWindow";
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions

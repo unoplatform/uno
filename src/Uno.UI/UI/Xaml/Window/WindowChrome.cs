@@ -56,6 +56,8 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private void OnActivate(object sender, WindowActivatedEventArgs e)
 	{
+		// TODO: Remove workaround for theme brushes and foreground reset when the underlying issue is resolved.  
+		// See: https://github.com/unoplatform/uno/issues/21688
 		DefaultBrushes.ResetDefaultThemeBrushes();
 		this.SetValue(ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 		if (e.WindowActivationState is Windows.UI.Core.CoreWindowActivationState.CodeActivated or Windows.UI.Core.CoreWindowActivationState.PointerActivated)

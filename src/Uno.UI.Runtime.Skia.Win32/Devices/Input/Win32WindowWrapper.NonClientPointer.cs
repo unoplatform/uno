@@ -41,7 +41,7 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 
 		// Get the window rectangle.
 		PInvoke.GetWindowRect(hWnd, out var rcWindow);
-		var scaling = (uint)(RasterizationScale * StandardDpi);
+		var scaling = (uint)(RasterizationScale * PInvoke.USER_DEFAULT_SCREEN_DPI);
 
 		// Get the frame rectangle, adjusted for the style without a caption.
 		var rcFrame = new RECT();

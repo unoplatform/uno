@@ -1,4 +1,6 @@
 #nullable enable
+#pragma warning disable CS0067
+#pragma warning disable CS8618
 
 using System;
 using System.Collections.Concurrent;
@@ -8,8 +10,6 @@ using Uno.Foundation.Extensibility;
 using Uno.UI.UI.Input.Internal;
 using Windows.Foundation;
 using Windows.Graphics;
-#pragma warning disable CS0067
-#pragma warning disable CS8618
 namespace Microsoft.UI.Input;
 
 /// <summary>
