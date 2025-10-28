@@ -7,9 +7,9 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 {
 	public static class DevServer
 	{
-		private static readonly Command _doc = Command.OpenBrowser("Learn More", new Uri("https://aka.platform.uno/dev-server"));
-		private static readonly Command _troubleshoot = Command.OpenBrowser("Troubleshoot", new Uri("https://aka.platform.uno/dev-server-troubleshooting"));
-		private static readonly Command _restart = new("Restart", "uno.dev_server.restart");
+		public static readonly Command Doc = Command.OpenBrowser("Learn More", new Uri("https://aka.platform.uno/dev-server"));
+		public static readonly Command Troubleshoot = Command.OpenBrowser("Troubleshoot", new Uri("https://aka.platform.uno/dev-server-troubleshooting"));
+		public static readonly Command Restart = new("Restart", "uno.dev_server.restart");
 
 		/// <summary>
 		/// Indicates dev-server is starting successfully.
@@ -20,7 +20,7 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 			"Starting...",
 			null,
 			null,
-			[_doc]);
+			[Doc]);
 
 		/// <summary>
 		/// Indicates dev-server process is unable to start (and will not restart by its own).
@@ -31,7 +31,7 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 			"Failed",
 			error.Message,
 			error.StackTrace,
-			[_restart, _doc]);
+			[Restart, Doc]);
 
 		/// <summary>
 		/// Indicates dev-server is restarting.
@@ -42,7 +42,7 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 			"Restarting...",
 			null,
 			null,
-			[_doc]);
+			[Doc]);
 
 		/// <summary>
 		/// Indicates dev-server didn't connected back to IDE channel in the given delay.
@@ -53,7 +53,7 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 			"Timeout",
 			"Dev-server didn't connect back to IDE in the given delay",
 			null,
-			[_restart, _doc]);
+			[Restart, Doc]);
 
 		/// <summary>
 		/// Indicates dev-server is being disabled (as it's not a uno solution).
@@ -64,7 +64,7 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 			"Uno solution not found",
 			null,
 			null,
-			[_doc]);
+			[Doc]);
 
 		public static DevelopmentEnvironmentStatusIdeMessage Ready { get; } = new(
 			DevelopmentEnvironmentComponent.DevServer,
@@ -72,7 +72,7 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 			"Ready",
 			null,
 			null,
-			[_doc]);
+			[Doc]);
 
 		// Factory helpers for messages that include runtime details
 		public static DevelopmentEnvironmentStatusIdeMessage FailedToDiscoverAddIns(string? details) => new(
@@ -81,7 +81,7 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 			"Studio unavailable",
 			details,
 			null,
-			[_troubleshoot, _doc]);
+			[Troubleshoot, Doc]);
 
 		public static DevelopmentEnvironmentStatusIdeMessage FailedToLoadAddIns(string? details) => new(
 			DevelopmentEnvironmentComponent.DevServer,
@@ -89,6 +89,6 @@ partial record DevelopmentEnvironmentStatusIdeMessage
 			"Unable to load Studio",
 			details,
 			null,
-			[_troubleshoot, _doc]);
+			[Troubleshoot, Doc]);
 	}
 }

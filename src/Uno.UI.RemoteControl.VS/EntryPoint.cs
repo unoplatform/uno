@@ -310,7 +310,7 @@ public partial class EntryPoint : IDisposable
 
 		_closing = true;
 		StopDevServer();
-			}
+	}
 
 	private int GetDotnetMajorVersion()
 	{
