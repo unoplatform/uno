@@ -1655,6 +1655,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Tapped_Recognizer_Owner_Not_Pointer_Event_OriginalSource()
+		{
+			var inner = new Border
+			{
+				Width = 100,
+				Height = 100,
+				HorizontalAlignment = HorizontalAlignment.Right,
+				VerticalAlignment = VerticalAlignment.Bottom,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+			var outer = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+				Width = 300,
+				Height = 300,
+				Child = inner
+			};
+
+			var tappedCount = 0;
+			var tappedPos = new Windows.Foundation.Point(0, 0);
+			outer.Tapped += (_, e) =>
+			{
+				tappedCount++;
+				tappedPos = e.GetPosition(null);
+			};
+
+			await UITestHelper.Load(outer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Tap(inner.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, tappedCount);
+			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(tappedPos), $"tappedPos: {tappedPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
