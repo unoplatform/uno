@@ -42,6 +42,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowTitleBarProperties.xaml" />
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\SingleWindowClose.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5660,6 +5661,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UWPViewHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\WaitableSampleImageHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowTitleBarProperties.xaml.cs">
+      <DependentUpon>AppWindowTitleBarProperties.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorder.xaml.cs">
       <DependentUpon>TitleBarAndBorder.xaml</DependentUpon>
     </Compile>
