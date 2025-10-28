@@ -81,7 +81,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
 	private X11Renderer? _renderer;
-	private readonly SKPictureRecorder _recorder = new SKPictureRecorder();
 
 	private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 

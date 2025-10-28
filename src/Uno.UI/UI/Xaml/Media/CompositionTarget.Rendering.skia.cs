@@ -28,9 +28,12 @@ public partial class CompositionTarget
 
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
+	private static SKPath? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
+	private static SKPath? _lastScaledNativeClipPath;
+
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (SKPicture frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
+	private (IntPtr frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
@@ -74,15 +77,24 @@ public partial class CompositionTarget
 
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
-		var (picture, path) = SkiaRenderHelper.RecordPictureAndReturnPath(
+
+		var renderedFrame = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(float)bounds.Width,
 			(float)bounds.Height,
 			rootElement.Visual,
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath);
-		var lastRenderedFrame = (picture, path);
+		var previousFrame = default((IntPtr frame, SKPath path)?);
 		lock (_frameGate)
 		{
-			_lastRenderedFrame = lastRenderedFrame;
+			previousFrame = _lastRenderedFrame;
+
+			_lastRenderedFrame = renderedFrame;
+		}
+
+		// Delete previous SKPicture now since we are swapping it
+		if (previousFrame != null)
+		{
+			UnoSkiaApi.sk_refcnt_safe_unref(previousFrame.Value.frame);
 		}
 
 		if (_isRenderingActive)
@@ -103,10 +115,13 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
-		(SKPicture frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
+		(IntPtr frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
+
+			// Borrow frame temporarily
+			_lastRenderedFrame = null;
 		}
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
@@ -124,6 +139,8 @@ public partial class CompositionTarget
 			}
 			if (xamlRootBounds.Width <= 0 || xamlRootBounds.Height <= 0)
 			{
+				ReturnFrame(lastRenderedFrame);
+
 				// Besides being an optimization step, returning early here also avoids resizing
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
@@ -133,6 +150,7 @@ public partial class CompositionTarget
 				canvas = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;
 				_lastRasterizationScale = rasterizationScale;
+				_lastScaledNativeClipPath = null;
 			}
 
 			canvas.Save();
@@ -147,16 +165,51 @@ public partial class CompositionTarget
 				_fpsHelper);
 			canvas.Restore();
 
+			ReturnFrame(lastRenderedFrame);
+
 			InvokeRendering();
 
-			GC.KeepAlive(lastRenderedFrame.frame);
-
-			var path = lastRenderedFrame.nativeElementClipPath;
 			if (FrameRenderingOptions.applyScalingToNativeElementClipPath && rasterizationScale != 1)
 			{
-				path.Transform(SKMatrix.CreateScale(rasterizationScale, rasterizationScale), path);
+				if (_lastNativeClipPath != lastRenderedFrame.nativeElementClipPath || _lastScaledNativeClipPath == null)
+				{
+					_lastScaledNativeClipPath = new();
+
+					lastRenderedFrame
+						.nativeElementClipPath
+						.Transform(SKMatrix.CreateScale(rasterizationScale, rasterizationScale), _lastScaledNativeClipPath);
+
+					_lastNativeClipPath = lastRenderedFrame.nativeElementClipPath;
+				}
+
+				return _lastScaledNativeClipPath;
 			}
-			return path;
+
+			return lastRenderedFrame.nativeElementClipPath;
+		}
+	}
+
+	private void ReturnFrame((IntPtr picture, SKPath path) frame)
+	{
+		var pictureToDelete = IntPtr.Zero;
+
+		lock (_frameGate)
+		{
+			// Put the frame back unless it has changed
+			if (_lastRenderedFrame == null)
+			{
+				_lastRenderedFrame = frame;
+			}
+			else
+			{
+				pictureToDelete = frame.picture;
+			}
+		}
+
+		// Delete it then
+		if (pictureToDelete != IntPtr.Zero)
+		{
+			UnoSkiaApi.sk_refcnt_safe_unref(pictureToDelete);
 		}
 	}
 
