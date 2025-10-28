@@ -94,7 +94,7 @@ public abstract class TelemetryTestBase
 		if (enableIdeChannel)
 		{
 			// Create an IDE channel GUID so the dev-server will initialize the named-pipe IDE channel
-			envVars["UNO_PLATFORM_DEVSERVER_ideChannel"] = Guid.NewGuid().ToString();
+			envVars["UNO_DEVSERVER_ideChannel"] = Guid.NewGuid().ToString();
 		}
 
 		return new DevServerTestHelper(

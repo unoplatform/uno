@@ -24,10 +24,23 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	private NamedPipeServerStream? _pipeServer;
 	private JsonRpc? _rpcServer;
 	private Proxy? _proxy;
+	private readonly Timer _keepAliveTimer;
 
 	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
 	{
 		_logger = logger;
+
+		_keepAliveTimer = new Timer(_ =>
+		{
+			if (_pipeServer?.IsConnected ?? false)
+			{
+				SendKeepAlive();
+			}
+			else
+			{
+				_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
+			}
+		});
 
 		_initializeTask = Task.Run(() => InitializeServer(config.CurrentValue.ChannelId));
 		_configSubscription = config.OnChange(opts => _initializeTask = InitializeServer(opts.ChannelId));
@@ -131,44 +144,18 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	}
 
 	private const int KeepAliveDelay = 10000; // 10 seconds in milliseconds
-	private Timer? _keepAliveTimer;
 
-	private void ScheduleKeepAlive()
-	{
-		// Ensure a single periodic timer is running; dispose any previous instance safely
-		var oldTimer = Interlocked.Exchange(ref _keepAliveTimer, null);
-		oldTimer?.Dispose();
-
-		// Start a periodic keep-alive timer. If the pipe disconnects, stop the timer.
-		var timer = new Timer(_ =>
-		{
-			if (_pipeServer?.IsConnected ?? false)
-			{
-				SendKeepAlive();
-			}
-			else
-			{
-				Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
-			}
-		}, null, KeepAliveDelay, KeepAliveDelay);
-
-		// Publish the new timer instance; if another thread already set one, dispose this one
-		if (Interlocked.CompareExchange(ref _keepAliveTimer, timer, null) is not null)
-		{
-			timer.Dispose();
-		}
-	}
+	private void ScheduleKeepAlive() => _keepAliveTimer.Change(KeepAliveDelay, KeepAliveDelay);
 
 	private void SendKeepAlive() => _proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
-
 
 	/// <inheritdoc />
 	public void Dispose()
 	{
+		_keepAliveTimer.Dispose();
 		_configSubscription?.Dispose();
 		_rpcServer?.Dispose();
 		_pipeServer?.Dispose();
-		Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
 	}
 
 	private class Proxy(IdeChannelServer Owner) : IIdeChannelServer

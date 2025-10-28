@@ -62,7 +62,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	{
 		get
 		{
-			if (_environmentVariables?.TryGetValue("UNO_PLATFORM_DEVSERVER_ideChannel", out var v) is true)
+			if (_environmentVariables?.TryGetValue("UNO_DEVSERVER_ideChannel", out var v) is true)
 			{
 				return Guid.TryParse(v, out var g) ? g : null;
 			}

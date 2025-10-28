@@ -50,13 +50,11 @@ public class AddIns
 					else
 					{
 						var binlog = Path.GetTempFileName();
+						// Important: the output file extension must be .binlog, otherwise the build will fail.
 						result = ProcessHelper.RunProcess("dotnet", DumpTFM($"\"-bl:{binlog}.binlog\""), wd);
 
 						_log.Log(LogLevel.Warning, msg);
-						if (result.error is { Length: > 0 })
-						{
-							_log.Log(LogLevel.Debug, $"Error details: {result.error}");
-						}
+						_log.Log(LogLevel.Debug, $"Error details: {result.output}");
 					}
 				}
 

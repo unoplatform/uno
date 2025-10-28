@@ -184,17 +184,15 @@ namespace Uno.UI.RemoteControl.Host
 					.ConfigureAppConfiguration((hostingContext, config) =>
 					{
 						config.AddCommandLine(args);
-						config.AddEnvironmentVariables("UNO_PLATFORM_DEVSERVER_");
+						config.AddEnvironmentVariables("UNO_DEVSERVER_");
 					})
 					.ConfigureServices(services =>
 					{
-						services.AddSingleton<IIdeChannel, IdeChannelServer>();
-						services.AddSingleton<UnoDevEnvironmentService>();
 						services.AddRouting();
 						services.Configure<RemoteControlOptions>(builder.Configuration);
 					});
 
-				builder.Services.AddSingleton<IIdeChannel, IdeChannelServer>();
+				builder.Services.AddSingleton<IIdeChannel>(_ => globalServiceProvider.GetRequiredService<IIdeChannel>());
 				builder.Services.AddSingleton<UnoDevEnvironmentService>();
 
 				builder.Services.AddSingleton<ApplicationLaunchMonitor>(
