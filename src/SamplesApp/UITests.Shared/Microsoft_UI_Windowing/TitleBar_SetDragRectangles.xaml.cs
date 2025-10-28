@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ABI.Windows.Foundation;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using SamplesApp;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -31,13 +34,11 @@ public sealed partial class TitleBar_SetDragRectangles : Page
 	{
 		try
 		{
-#if HAS_UNO_WINUI // AppWindow APIs only in WinUI flavor
 			var rects = GetRectanglesBoundsInWindowCoordinates();
-			SamplesApp.App.MainWindow.AppWindow.TitleBar.SetDragRectangles(rects);
+
+			InputNonClientPointerSource.GetForWindowId(App.MainWindow.AppWindow.Id)
+				.SetRegionRects(NonClientRegionKind.Caption, rects);
 			StatusText.Text = $"Applied {rects.Length} drag rectangles.";
-#else
-			StatusText.Text = "AppWindow APIs not available on this head.";
-#endif
 		}
 		catch (Exception ex)
 		{
@@ -49,12 +50,9 @@ public sealed partial class TitleBar_SetDragRectangles : Page
 	{
 		try
 		{
-#if HAS_UNO_WINUI
-			SamplesApp.App.MainWindow.AppWindow.TitleBar.SetDragRectangles(Array.Empty<RectInt32>());
+			InputNonClientPointerSource.GetForWindowId(App.MainWindow.AppWindow.Id)
+				.SetRegionRects(NonClientRegionKind.Caption, Array.Empty<RectInt32>());
 			StatusText.Text = "Reset to default drag regions.";
-#else
-			StatusText.Text = "AppWindow APIs not available on this head.";
-#endif
 		}
 		catch (Exception ex)
 		{
