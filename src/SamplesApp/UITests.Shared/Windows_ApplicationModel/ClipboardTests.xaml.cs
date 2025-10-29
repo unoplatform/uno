@@ -154,7 +154,7 @@ namespace UITests.Windows_ApplicationModel
 			{
 				var html = await content.GetHtmlFormatAsync();
 				// Truncate long HTML for better display
-				var displayHtml = html.Length > 200 ? html.Substring(0, 200) + "..." : html;
+				var displayHtml = html.Length > 200 ? html[..200] + "..." : html;
 				Text = $"HTML: {displayHtml}";
 			}
 			else

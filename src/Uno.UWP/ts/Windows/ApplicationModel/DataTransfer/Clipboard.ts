@@ -98,7 +98,7 @@ namespace Uno.Utils {
 					return "";
 				}
 			}
-			return Promise.resolve("")
+			return Promise.resolve("");
 		}
 
 		public static async setHtml(html: string, text: string): Promise<void> {

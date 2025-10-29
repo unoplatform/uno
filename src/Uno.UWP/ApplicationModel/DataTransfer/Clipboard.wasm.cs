@@ -28,18 +28,21 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var data = content?.GetView(); // Freezes the DataPackage
 
-			// Check if HTML format is available
-			if (data?.Contains(StandardDataFormats.Html) ?? false)
+			// Handle both HTML and text formats - both should be written if present
+			var hasHtml = data?.Contains(StandardDataFormats.Html) ?? false;
+			var hasText = data?.Contains(StandardDataFormats.Text) ?? false;
+
+			if (hasHtml)
 			{
 				var html = await data.GetHtmlFormatAsync();
-				// Also get text for fallback
-				var text = data.Contains(StandardDataFormats.Text)
+				// Get text for fallback - either from explicit text or extract from HTML
+				var text = hasText
 					? await data.GetTextAsync()
 					: "";
 
 				await SetClipboardHtml(html, text);
 			}
-			else if (data?.Contains(StandardDataFormats.Text) ?? false)
+			else if (hasText)
 			{
 				var text = await data.GetTextAsync();
 				SetClipboardText(text);
