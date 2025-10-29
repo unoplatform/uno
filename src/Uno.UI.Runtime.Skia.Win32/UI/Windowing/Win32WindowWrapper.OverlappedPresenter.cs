@@ -60,6 +60,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		{
 			// The window state changed, notify the AppWindow.
 			_window?.AppWindow.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
+			_lastWindowSizeChange = wParam.Value;
 		}
 	}
 
