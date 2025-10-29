@@ -163,7 +163,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			borderCaptionThickness.top = 1;
 		}
 
-		var defaultMargin = 100000;
+		var defaultMargin = 1;
 
 		MARGINS margins = new MARGINS();
 		margins.cxLeftWidth = defaultMargin;
