@@ -82,14 +82,14 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	/// <summary>
 	/// Initialize as dev-server (cf. IdeChannelClient for init as IDE)
 	/// </summary>
-	private async Task<bool> InitializeServer(Guid channelId)
+	private async Task<bool> InitializeServer(string? channelId)
 	{
 		try
 		{
-			// First we remove the proxy to prevent messages being sent while we are re-initializing
+			// First, we remove the proxy to prevent messages being sent while we are re-initializing
 			_proxy = null;
 
-			// Dispose any existing server
+			// Disposing any previous server
 			_rpcServer?.Dispose();
 			if (_pipeServer is { } server)
 			{
@@ -104,13 +104,13 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 		try
 		{
-			if (channelId == Guid.Empty)
+			if (string.IsNullOrWhiteSpace(channelId))
 			{
 				return false;
 			}
 
 			_pipeServer = new NamedPipeServerStream(
-				pipeName: channelId.ToString(),
+				pipeName: channelId,
 				direction: PipeDirection.InOut,
 				maxNumberOfServerInstances: 1,
 				transmissionMode: PipeTransmissionMode.Byte,

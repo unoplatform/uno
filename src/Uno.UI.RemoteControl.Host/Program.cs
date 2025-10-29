@@ -3,18 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
-using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Mono.Options;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.Versioning;
@@ -22,6 +18,7 @@ using Uno.Extensions;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Server.Helpers;
+using Uno.UI.RemoteControl.Host.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Helpers;
@@ -42,63 +39,27 @@ namespace Uno.UI.RemoteControl.Host
 
 			try
 			{
-				var httpPort = 0;
-				var parentPID = 0;
-				var solution = default(string);
-				var ideChannel = Guid.Empty;
-				var command = default(string);
-				var workingDir = default(string);
-				var timeoutMs = 30000;
-
-				var p = new OptionSet
+				var switchMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 				{
-					{
-						"httpPort=", s => {
-							if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out httpPort))
-							{
-								throw new ArgumentException($"The httpPort parameter is invalid {s}");
-							}
-						}
-					},
-					{
-						"ppid=", s => {
-							if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out parentPID))
-							{
-								throw new ArgumentException($"The parent process id parameter is invalid {s}");
-							}
-						}
-					},
-					{
-						"solution=", s =>
-						{
-							if (string.IsNullOrWhiteSpace(s) || !File.Exists(s))
-							{
-								throw new ArgumentException($"The provided solution path '{s}' does not exists");
-							}
-
-							solution = s;
-						}
-					},
-					{
-						"ideChannel=", s => {
-							if(!Guid.TryParse(s, out ideChannel))
-							{
-								throw new ArgumentException($"The ide channel parameter is invalid {s}");
-							}
-						}
-					},
-					{
-						"c|command=", s => command = s
-					},
-					{
-						"workingDir=", s => workingDir = s
-					},
-					{
-						"timeoutMs=", s => int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out timeoutMs)
-					}
+					["-c"] = "command",
 				};
 
-				p.Parse(args);
+				var globalConfiguration = new ConfigurationBuilder()
+					.AddEnvironmentVariables("UNO_DEVSERVER_")
+					.AddCommandLine(args, switchMappings)
+					.Build();
+
+				var httpPort = globalConfiguration.ParseOptionalInt("httpPort");
+				var parentPID = globalConfiguration.ParseOptionalInt("ppid");
+				var command = globalConfiguration.GetOptionalString("command");
+				var workingDir = globalConfiguration.GetOptionalString("workingDir");
+				var timeoutMs = globalConfiguration.ParseIntOrDefault("timeoutMs", 30000);
+
+				var solution = globalConfiguration.GetOptionalString("solution");
+				if (!string.IsNullOrWhiteSpace(solution) && !File.Exists(solution))
+				{
+					throw new ArgumentException($"The provided solution path '{solution}' does not exists");
+				}
 
 				// Controller mode
 				if (!string.IsNullOrWhiteSpace(command))
@@ -119,7 +80,8 @@ namespace Uno.UI.RemoteControl.Host
 							await CleanupCommandAsync();
 							return;
 						default:
-							await Console.Error.WriteLineAsync($"Unknown command '{command}'. Supported: start, stop, list, cleanup");
+							await Console.Error.WriteLineAsync(
+								$"Unknown command '{command}'. Supported: start, stop, list, cleanup");
 							Environment.ExitCode = 1;
 							return;
 					}
@@ -127,17 +89,19 @@ namespace Uno.UI.RemoteControl.Host
 
 				if (httpPort == 0)
 				{
-					throw new ArgumentException($"The httpPort parameter is required.");
+					throw new ArgumentException("The httpPort parameter is required.");
 				}
 
 				const LogLevel logLevel = LogLevel.Debug;
 
 				// During init, we dump the logs to the console, until the logger is set up
-				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = LoggerFactory.Create(builder => builder.SetMinimumLevel(logLevel).AddConsole());
+				Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory =
+					LoggerFactory.Create(builder => builder.SetMinimumLevel(logLevel).AddConsole());
 
 				// STEP 1: Create the global service provider BEFORE WebApplication
 				// This contains services that live for the entire duration of the server process
 				var globalServices = new ServiceCollection();
+				globalServices.AddSingleton<IConfiguration>(globalConfiguration);
 
 				// Add logging services to the global container
 				// This is necessary for services like IdeChannelServer that require ILogger<T>
@@ -146,7 +110,11 @@ namespace Uno.UI.RemoteControl.Host
 					.SetMinimumLevel(LogLevel.Debug));
 
 				globalServices.AddGlobalTelemetry(); // Global telemetry services (Singleton)
-				globalServices.AddOptions<IdeChannelServerOptions>().Configure(opts => opts.ChannelId = ideChannel);
+				globalServices.AddOptions<IdeChannelServerOptions>()
+					.Configure<IConfiguration>((opts, configuration) =>
+					{
+						opts.ChannelId = configuration.GetOptionalString("ideChannel");
+					});
 				globalServices.AddSingleton<IIdeChannel, IdeChannelServer>();
 
 #pragma warning disable ASP0000 // Do not call ConfigureServices after calling UseKestrel.
@@ -183,8 +151,7 @@ namespace Uno.UI.RemoteControl.Host
 					})
 					.ConfigureAppConfiguration((hostingContext, config) =>
 					{
-						config.AddCommandLine(args);
-						config.AddEnvironmentVariables("UNO_DEVSERVER_");
+						config.AddConfiguration(globalConfiguration);
 					})
 					.ConfigureServices(services =>
 					{
@@ -192,11 +159,12 @@ namespace Uno.UI.RemoteControl.Host
 						services.Configure<RemoteControlOptions>(builder.Configuration);
 					});
 
-				builder.Services.AddSingleton<IIdeChannel>(_ => globalServiceProvider.GetRequiredService<IIdeChannel>());
+				builder.Services.AddSingleton<IIdeChannel>(_ =>
+					globalServiceProvider.GetRequiredService<IIdeChannel>());
 				builder.Services.AddSingleton<UnoDevEnvironmentService>();
 
-				builder.Services.AddSingleton<ApplicationLaunchMonitor>(
-					_ => globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
+				builder.Services.AddSingleton<ApplicationLaunchMonitor>(_ =>
+					globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
 
 				// Add the global service provider to the DI container
 				builder.Services.AddKeyedSingleton<IServiceProvider>("global", globalServiceProvider);
@@ -214,7 +182,8 @@ namespace Uno.UI.RemoteControl.Host
 				}
 				else
 				{
-					typeof(Program).Log().Log(LogLevel.Warning, "No solution file specified, add-ins will not be loaded which means that you won't be able to use any of the uno-studio features. Usually this indicates that your version of uno's IDE extension is too old.");
+					typeof(Program).Log().Log(LogLevel.Warning,
+						"No solution file specified, add-ins will not be loaded which means that you won't be able to use any of the uno-studio features. Usually this indicates that your version of uno's IDE extension is too old.");
 					builder.Services.AddSingleton(AddInsStatus.Empty);
 				}
 #pragma warning restore ASPDEPR004
@@ -230,11 +199,12 @@ namespace Uno.UI.RemoteControl.Host
 				// Once the app has started, we use the logger from the host
 				LogExtensionPoint.AmbientLoggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
 
-				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>().StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
+				_ = host.Services.GetRequiredService<UnoDevEnvironmentService>()
+					.StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
 				// Display DevServer version banner
-				var config = host.Services.GetRequiredService<IConfiguration>();
-				var ideChannelId = config["ideChannel"]; // GUID used as the named pipe name when IDE channel is enabled
+				var ideChannelOptions = host.Services.GetRequiredService<IOptionsMonitor<IdeChannelServerOptions>>();
+				var ideChannelId = ideChannelOptions.CurrentValue.ChannelId;
 				DisplayVersionBanner(httpPort, ideChannelId);
 
 				// STEP 3: Use global telemetry for server-wide events
@@ -288,10 +258,7 @@ namespace Uno.UI.RemoteControl.Host
 						["StartupErrorType"] = ex.GetType().Name,
 						["StartupStackTrace"] = ex.StackTrace ?? "",
 					};
-					var errorMeasurements = new Dictionary<string, double>
-					{
-						["UptimeSeconds"] = uptime.TotalSeconds,
-					};
+					var errorMeasurements = new Dictionary<string, double> { ["UptimeSeconds"] = uptime.TotalSeconds, };
 
 					telemetry.TrackEvent("startup-failure", errorProperties, errorMeasurements);
 					await telemetry.FlushAsync(CancellationToken.None);
