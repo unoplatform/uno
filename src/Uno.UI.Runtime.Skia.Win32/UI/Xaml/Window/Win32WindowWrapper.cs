@@ -247,6 +247,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
+				UpdateWindowState(wParam);
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
