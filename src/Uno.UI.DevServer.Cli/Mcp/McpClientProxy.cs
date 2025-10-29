@@ -16,6 +16,7 @@ internal class McpClientProxy
 	private readonly ILogger<McpClientProxy> _logger;
 	private readonly DevServerMonitor _monitor;
 	private Func<Task>? _toolListChanged;
+	private readonly CancellationTokenSource _disposeCts = new();
 
 	public IMcpClient? UpstreamClient { get; internal set; }
 
@@ -33,16 +34,16 @@ internal class McpClientProxy
 		{
 			try
 			{
-				UpstreamClient = await ConnectOrDieAsync(url, _logger);
+				UpstreamClient = await ConnectOrDieAsync(url, _logger, _disposeCts.Token);
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Failed to connect to upstream MCP server at {Url}", url);
 			}
-		});
+		}, _disposeCts.Token);
 	}
 
-	async Task<IMcpClient> ConnectOrDieAsync(string url, Microsoft.Extensions.Logging.ILogger log)
+	async Task<IMcpClient> ConnectOrDieAsync(string url, Microsoft.Extensions.Logging.ILogger log, CancellationToken ct)
 	{
 		try
 		{
@@ -77,7 +78,7 @@ internal class McpClientProxy
 			};
 
 			log.LogInformation("Connecting to upstream MCP at {Url}", url);
-			var client = await McpClientFactory.CreateAsync(clientTransport, options);
+			var client = await McpClientFactory.CreateAsync(clientTransport, options, cancellationToken: ct);
 			log.LogInformation("Connected to upstream: {Name} {Version}", client.ServerInfo.Name, client.ServerInfo.Version);
 			return client;
 		}
@@ -93,6 +94,8 @@ internal class McpClientProxy
 
 	internal async Task DisposeAsync()
 	{
+		_disposeCts.Cancel();
+
 		if (UpstreamClient is not null)
 		{
 			_logger.LogInformation("Disconnecting from upstream MCP");
