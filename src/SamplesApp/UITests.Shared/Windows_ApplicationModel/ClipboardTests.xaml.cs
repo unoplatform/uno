@@ -46,6 +46,7 @@ namespace UITests.Windows_ApplicationModel
 		private bool _isObservingContentChanged = false;
 		private string _lastContentChangedDate = "";
 		private string _text = "";
+		private string _html = "<p><strong>Bold</strong> and <em>italic</em> text</p>";
 		private BitmapSource _bmp;
 
 		public ClipboardTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
@@ -89,6 +90,16 @@ namespace UITests.Windows_ApplicationModel
 			}
 		}
 
+		public string Html
+		{
+			get => _html;
+			set
+			{
+				_html = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public BitmapSource Bitmap
 		{
 			get => _bmp;
@@ -103,9 +114,13 @@ namespace UITests.Windows_ApplicationModel
 
 		public ICommand CopyCommand => GetOrCreateCommand(Copy);
 
+		public ICommand CopyHtmlCommand => GetOrCreateCommand(CopyHtml);
+
 		public ICommand CopyImageCommand => GetOrCreateCommand(CopyImage);
 
 		public ICommand PasteTextCommand => GetOrCreateCommand(PasteText);
+
+		public ICommand PasteHtmlCommand => GetOrCreateCommand(PasteHtml);
 
 		public ICommand PasteImageCommand => GetOrCreateCommand(PasteImage);
 
@@ -124,10 +139,31 @@ namespace UITests.Windows_ApplicationModel
 			Clipboard.SetContent(dataPackage);
 		}
 
+		private void CopyHtml()
+		{
+			DataPackage dataPackage = new DataPackage();
+			dataPackage.SetText(Text);
+			dataPackage.SetHtmlFormat(Html);
+			Clipboard.SetContent(dataPackage);
+		}
+
 		private async void PasteText()
 		{
 			var content = Clipboard.GetContent();
 			Text = await content.GetTextAsync();
+		}
+
+		private async void PasteHtml()
+		{
+			var content = Clipboard.GetContent();
+			if (content.Contains(StandardDataFormats.Html))
+			{
+				Html = await content.GetHtmlFormatAsync();
+			}
+			else
+			{
+				Html = "(No HTML in clipboard)";
+			}
 		}
 
 		private void Flush() => Clipboard.Flush();
