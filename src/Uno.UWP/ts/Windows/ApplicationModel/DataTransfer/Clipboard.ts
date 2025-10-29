@@ -1,8 +1,21 @@
 ﻿// Type declarations for Clipboard API
 // https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API
+interface ClipboardItem {
+	readonly types: ReadonlyArray<string>;
+	getType(type: string): Promise<Blob>;
+}
+
+interface ClipboardItemConstructor {
+	new(items: Record<string, Blob | string | Promise<Blob | string>>): ClipboardItem;
+}
+
+declare var ClipboardItem: ClipboardItemConstructor;
+
 interface Clipboard {
 	writeText(newClipText: string): Promise<void>;
 	readText(): Promise<string>;
+	write(data: ClipboardItem[]): Promise<void>;
+	read(): Promise<ClipboardItem[]>;
 }
 
 interface NavigatorClipboard {
@@ -63,6 +76,57 @@ namespace Uno.Utils {
 				});
 			}
 			return Promise.resolve("")
+		}
+
+		public static async setHtml(text: string, html: string): Promise<void> {
+			const nav = navigator as any;
+			if (nav.clipboard && typeof ClipboardItem !== 'undefined') {
+				try {
+					// Create a ClipboardItem with both text/plain and text/html
+					const textBlob = new Blob([text], { type: 'text/plain' });
+					const htmlBlob = new Blob([html], { type: 'text/html' });
+					const clipboardItem = new ClipboardItem({
+						'text/plain': textBlob,
+						'text/html': htmlBlob
+					});
+					await nav.clipboard.write([clipboardItem]);
+					// Trigger change notification
+					Clipboard.onClipboardChanged();
+				} catch (error) {
+					console.error(`Failed to write HTML to clipboard: ${error}`);
+					throw error;
+				}
+			} else {
+				// Fallback for older browsers - use execCommand with a temporary element
+				const listener = (e: ClipboardEvent) => {
+					e.preventDefault();
+					if (e.clipboardData) {
+						e.clipboardData.setData('text/plain', text);
+						e.clipboardData.setData('text/html', html);
+					}
+				};
+				document.addEventListener('copy', listener);
+				document.execCommand('copy');
+				document.removeEventListener('copy', listener);
+			}
+		}
+
+		public static async getHtml(): Promise<string> {
+			const nav = navigator as any;
+			if (nav.clipboard && typeof ClipboardItem !== 'undefined') {
+				try {
+					const items = await nav.clipboard.read();
+					for (const item of items) {
+						if (item.types.includes('text/html')) {
+							const blob = await item.getType('text/html');
+							return await blob.text();
+						}
+					}
+				} catch (error) {
+					console.error(`Failed to read HTML from clipboard: ${error}`);
+				}
+			}
+			return "";
 		}
 
 		private static onClipboardChanged() {

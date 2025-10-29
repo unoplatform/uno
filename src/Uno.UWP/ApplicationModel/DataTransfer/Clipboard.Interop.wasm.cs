@@ -15,6 +15,12 @@ namespace __Windows.ApplicationModel.DataTransfer
 			[JSImport($"{JsType}.setText")]
 			internal static partial void SetText(string text);
 
+			[JSImport($"{JsType}.getHtml")]
+			internal static partial Task<string> GetHtmlAsync();
+
+			[JSImport($"{JsType}.setHtml")]
+			internal static partial Task SetHtmlAsync(string text, string html);
+
 			[JSImport($"{JsType}.startContentChanged")]
 			internal static partial void StartContentChanged();
 

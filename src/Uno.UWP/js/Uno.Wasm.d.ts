@@ -38,9 +38,19 @@ declare namespace Windows.ApplicationModel.Core {
         static initializeExports(): Promise<void>;
     }
 }
+interface ClipboardItem {
+    readonly types: ReadonlyArray<string>;
+    getType(type: string): Promise<Blob>;
+}
+interface ClipboardItemConstructor {
+    new (items: Record<string, Blob | string | Promise<Blob | string>>): ClipboardItem;
+}
+declare var ClipboardItem: ClipboardItemConstructor;
 interface Clipboard {
     writeText(newClipText: string): Promise<void>;
     readText(): Promise<string>;
+    write(data: ClipboardItem[]): Promise<void>;
+    read(): Promise<ClipboardItem[]>;
 }
 interface NavigatorClipboard {
     readonly clipboard?: Clipboard;
@@ -55,6 +65,8 @@ declare namespace Uno.Utils {
         static stopContentChanged(): void;
         static setText(text: string): string;
         static getText(): Promise<string>;
+        static setHtml(text: string, html: string): Promise<void>;
+        static getHtml(): Promise<string>;
         private static onClipboardChanged;
     }
 }
