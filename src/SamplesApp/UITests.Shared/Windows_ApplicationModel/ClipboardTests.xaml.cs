@@ -103,9 +103,13 @@ namespace UITests.Windows_ApplicationModel
 
 		public ICommand CopyCommand => GetOrCreateCommand(Copy);
 
+		public ICommand CopyHtmlCommand => GetOrCreateCommand(CopyHtml);
+
 		public ICommand CopyImageCommand => GetOrCreateCommand(CopyImage);
 
 		public ICommand PasteTextCommand => GetOrCreateCommand(PasteText);
+
+		public ICommand PasteHtmlCommand => GetOrCreateCommand(PasteHtml);
 
 		public ICommand PasteImageCommand => GetOrCreateCommand(PasteImage);
 
@@ -124,10 +128,34 @@ namespace UITests.Windows_ApplicationModel
 			Clipboard.SetContent(dataPackage);
 		}
 
+		private void CopyHtml()
+		{
+			DataPackage dataPackage = new DataPackage();
+			// Create HTML from the text, making it bold as a demo
+			var html = $"<p><strong>{Text}</strong></p>";
+			dataPackage.SetHtmlFormat(html);
+			dataPackage.SetText(Text); // Also set plain text as fallback
+			Clipboard.SetContent(dataPackage);
+		}
+
 		private async void PasteText()
 		{
 			var content = Clipboard.GetContent();
 			Text = await content.GetTextAsync();
+		}
+
+		private async void PasteHtml()
+		{
+			var content = Clipboard.GetContent();
+			if (content.Contains(StandardDataFormats.Html))
+			{
+				var html = await content.GetHtmlFormatAsync();
+				Text = $"HTML: {html}";
+			}
+			else
+			{
+				Text = "No HTML content in clipboard";
+			}
 		}
 
 		private void Flush() => Clipboard.Flush();
