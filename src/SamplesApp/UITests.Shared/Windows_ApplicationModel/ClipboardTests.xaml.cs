@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
 using Uno.Disposables;
@@ -132,7 +133,9 @@ namespace UITests.Windows_ApplicationModel
 		{
 			DataPackage dataPackage = new DataPackage();
 			// Create HTML from the text, making it bold as a demo
-			var html = $"<p><strong>{Text}</strong></p>";
+			// Use HTML encoding to prevent XSS
+			var encodedText = WebUtility.HtmlEncode(Text);
+			var html = $"<p><strong>{encodedText}</strong></p>";
 			dataPackage.SetHtmlFormat(html);
 			dataPackage.SetText(Text); // Also set plain text as fallback
 			Clipboard.SetContent(dataPackage);
@@ -150,7 +153,9 @@ namespace UITests.Windows_ApplicationModel
 			if (content.Contains(StandardDataFormats.Html))
 			{
 				var html = await content.GetHtmlFormatAsync();
-				Text = $"HTML: {html}";
+				// Truncate long HTML for better display
+				var displayHtml = html.Length > 200 ? html.Substring(0, 200) + "..." : html;
+				Text = $"HTML: {displayHtml}";
 			}
 			else
 			{
