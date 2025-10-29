@@ -368,6 +368,9 @@ namespace SamplesApp
 				{
 					rootFrame.Navigate(startingPageType);
 				}
+
+				var mainPage = (MainPage)rootFrame!.Content!;
+				mainPage.ViewModel.SetWindow(_mainWindow);
 			}
 		}
 

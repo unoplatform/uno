@@ -1,594 +1,680 @@
 ﻿<UserControl
-	x:Class="Uno.UI.Samples.Controls.SampleChooserControl"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:converters="using:Uno.UI.Samples.Converters"
-	xmlns:u="using:Uno.UI.Samples.Controls"
-	xmlns:ub="using:Uno.UI.Samples.Behaviors"
-	xmlns:uc="using:Uno.UI.Samples.Converters"
-	xmlns:helper="using:Uno.UI.Samples.Behaviors"
-	xmlns:entities="using:SampleControl.Entities"
-	xmlns:ios="http://umbrella/ios"
-	xmlns:not_win="http://uno.ui/not_win"
-	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:toolkit="using:Uno.UI.Toolkit"
-	xmlns:not_ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d ios not_win"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+    x:Class="Uno.UI.Samples.Controls.SampleChooserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:Uno.UI.Samples.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:entities="using:SampleControl.Entities"
+    xmlns:helper="using:Uno.UI.Samples.Behaviors"
+    xmlns:ios="http://umbrella/ios"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:toolkit="using:Uno.UI.Toolkit"
+    xmlns:u="using:Uno.UI.Samples.Controls"
+    xmlns:ub="using:Uno.UI.Samples.Behaviors"
+    xmlns:uc="using:Uno.UI.Samples.Converters"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d ios not_win">
 
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<!-- Merged Dictionaries -->
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="../Styles/Application/_Application.xaml" />
-				<ResourceDictionary Source="../Styles/Controls/_Controls.xaml" />
-				<ResourceDictionary Source="../Styles/SampleControl.xaml" />
-			</ResourceDictionary.MergedDictionaries>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <!--  Merged Dictionaries  -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Application/_Application.xaml" />
+                <ResourceDictionary Source="../Styles/Controls/_Controls.xaml" />
+                <ResourceDictionary Source="../Styles/SampleControl.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-			<Thickness x:Key="NavIconMargin">0,0,0,4</Thickness>
-			<x:Double x:Key="TitleContainerHeight">45</x:Double>
+            <Thickness x:Key="NavIconMargin">0,0,0,4</Thickness>
+            <x:Double x:Key="TitleContainerHeight">45</x:Double>
 
-			<uc:FromNullableBoolToReverseBoolConverter x:Key="reverseBoolConverter" />
+            <uc:FromNullableBoolToReverseBoolConverter x:Key="reverseBoolConverter" />
 
-			<!-- Styles -->
-			<Style x:Key="BaseTitleGridContainerStyle"
-				   TargetType="Grid">
-				<Setter Property="Margin" Value="4" />
-				<Setter Property="Background"
-						Value="{ThemeResource NavigationViewExpandedPaneBackground}" />
-			</Style>
+            <!--  Styles  -->
+            <Style x:Key="BaseTitleGridContainerStyle" TargetType="Grid">
+                <Setter Property="Margin" Value="4" />
+                <Setter Property="Background" Value="{ThemeResource NavigationViewExpandedPaneBackground}" />
+            </Style>
 
-			<Style x:Key="BaseTitleContainerStyle"
-				   TargetType="Border">
-				<Setter Property="HorizontalAlignment"
-						Value="Stretch" />
-			</Style>
+            <Style x:Key="BaseTitleContainerStyle" TargetType="Border">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
 
-			<Style x:Key="NarrowTitleContainerStyle"
-				   TargetType="Border"
-				   BasedOn="{StaticResource BaseTitleContainerStyle}">
-				<Setter Property="Padding"
-						Value="0,25,0,10" />
-			</Style>
+            <Style
+                x:Key="NarrowTitleContainerStyle"
+                BasedOn="{StaticResource BaseTitleContainerStyle}"
+                TargetType="Border">
+                <Setter Property="Padding" Value="0,25,0,10" />
+            </Style>
 
-			<Style x:Key="WideTitleContainerStyle"
-				   TargetType="Border"
-				   BasedOn="{StaticResource BaseTitleContainerStyle}">
-				<Setter Property="MinHeight"
-						Value="{StaticResource TitleContainerHeight}" />
-			</Style>
+            <Style
+                x:Key="WideTitleContainerStyle"
+                BasedOn="{StaticResource BaseTitleContainerStyle}"
+                TargetType="Border">
+                <Setter Property="MinHeight" Value="{StaticResource TitleContainerHeight}" />
+            </Style>
 
-			<Style x:Key="TemplateContainerStyle"
-				   TargetType="Border">
-				<Setter Property="Margin"
-						Value="4,0,4,0" />
-				<Setter Property="Padding"
-						Value="8" />
-				<Setter Property="MinHeight"
-						Value="40" />
-			</Style>
+            <Style x:Key="TemplateContainerStyle" TargetType="Border">
+                <Setter Property="Margin" Value="4,0,4,0" />
+                <Setter Property="Padding" Value="8" />
+                <Setter Property="MinHeight" Value="40" />
+            </Style>
 
-			<!--Data Templates-->
-			<DataTemplate x:Key="CategoriesTemplate">
-				<Border Style="{StaticResource TemplateContainerStyle}">
-					<u:StarStackPanel Orientation="Horizontal"
-									  Sizes="*,Auto,Auto">
-						<TextBlock Style="{StaticResource Typo03}"
-								   VerticalAlignment="Center"
-								   TextTrimming="CharacterEllipsis"
-								   TextWrapping="NoWrap">
-							<Run Text="{Binding Category}" />
-						</TextBlock>
-						<TextBlock Opacity="0.8" Text="{Binding Count}" Margin="8,0" VerticalAlignment="Center" FontSize="11" />
-						<FontIcon Glyph="&#xE76C;" Opacity="0.8" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" />
-					</u:StarStackPanel>
-				</Border>
-			</DataTemplate>
+            <!--  Data Templates  -->
+            <DataTemplate x:Key="CategoriesTemplate">
+                <Border Style="{StaticResource TemplateContainerStyle}">
+                    <u:StarStackPanel Orientation="Horizontal" Sizes="*,Auto,Auto">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Style="{StaticResource Typo03}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap">
+                            <Run Text="{Binding Category}" />
+                        </TextBlock>
+                        <TextBlock
+                            Margin="8,0"
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            Opacity="0.8"
+                            Text="{Binding Count}" />
+                        <FontIcon
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            Glyph="&#xE76C;"
+                            Opacity="0.8" />
+                    </u:StarStackPanel>
+                </Border>
+            </DataTemplate>
 
-			<DataTemplate x:Key="SampleTemplate">
-				<Border Style="{StaticResource TemplateContainerStyle}">
-					<u:StarStackPanel Orientation="Horizontal"
-									  Sizes="*,Auto,Auto">
-						<TextBlock Text="{Binding ControlName}"
-								   Style="{StaticResource Typo03}"
-								   TextWrapping="NoWrap"
-								   TextTrimming="CharacterEllipsis"
-								   VerticalAlignment="Center" />
+            <DataTemplate x:Key="SampleTemplate">
+                <Border Style="{StaticResource TemplateContainerStyle}">
+                    <u:StarStackPanel Orientation="Horizontal" Sizes="*,Auto,Auto">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Style="{StaticResource Typo03}"
+                            Text="{Binding ControlName}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap" />
 
-						<u:PathControl Style="{StaticResource Icon_Favorite_Full}"
-									   Visibility="{Binding IsFavorite, Converter={StaticResource TrueToVisible}}"
-									   VerticalContentAlignment="Center"
-									   HorizontalContentAlignment="Right" />
-					</u:StarStackPanel>
-				</Border>
-			</DataTemplate>
+                        <u:PathControl
+                            HorizontalContentAlignment="Right"
+                            VerticalContentAlignment="Center"
+                            Style="{StaticResource Icon_Favorite_Full}"
+                            Visibility="{Binding IsFavorite, Converter={StaticResource TrueToVisible}}" />
+                    </u:StarStackPanel>
+                </Border>
+            </DataTemplate>
 
-			<DataTemplate x:Key="CategoriesList">
-				<ListView ItemsSource="{Binding Categories}"
-						  SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
-						  ItemTemplate="{StaticResource CategoriesTemplate}"
-						  ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
-						  Style="{StaticResource StretchedListViewStyle}"
-						  helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
-						  helper:ListViewBaseCommand.CommandParameter="Samples">
-				</ListView>
-			</DataTemplate>
+            <DataTemplate x:Key="CategoriesList">
+                <ListView
+                    helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
+                    helper:ListViewBaseCommand.CommandParameter="Samples"
+                    ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
+                    ItemTemplate="{StaticResource CategoriesTemplate}"
+                    ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                    Style="{StaticResource StretchedListViewStyle}" />
+            </DataTemplate>
 
-			<DataTemplate x:Key="SamplesList">
-				<ListView ItemsSource="{Binding SampleContents}"
-						  SelectedItem="{Binding SelectedLibrarySample, Mode=TwoWay}"
-						  ItemTemplate="{StaticResource SampleTemplate}"
-						  ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
-						  Style="{StaticResource StretchedListViewStyle}"
-						  helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
-						  helper:ListViewBaseCommand.CommandParameter="SamplesContent"
-							ub:SplitViewBehavior.CloseOnClick="True">
-				</ListView>
-			</DataTemplate>
+            <DataTemplate x:Key="SamplesList">
+                <ListView
+                    helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
+                    helper:ListViewBaseCommand.CommandParameter="SamplesContent"
+                    ub:SplitViewBehavior.CloseOnClick="True"
+                    ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
+                    ItemTemplate="{StaticResource SampleTemplate}"
+                    ItemsSource="{Binding SampleContents}"
+                    SelectedItem="{Binding SelectedLibrarySample, Mode=TwoWay}"
+                    Style="{StaticResource StretchedListViewStyle}" />
+            </DataTemplate>
 
-			<DataTemplate x:Key="FavoritesList">
-				<ListView ItemsSource="{Binding FavoriteSamples}"
-						  SelectedItem="{Binding SelectedFavoriteSample, Mode=TwoWay}"
-						  ItemTemplate="{StaticResource SampleTemplate}"
-						  ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
-						  Style="{StaticResource StretchedListViewStyle}"
-						  helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
-						  helper:ListViewBaseCommand.CommandParameter="FavoritesContent"
-							ub:SplitViewBehavior.CloseOnClick="True">
-				</ListView>
-			</DataTemplate>
+            <DataTemplate x:Key="FavoritesList">
+                <ListView
+                    helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
+                    helper:ListViewBaseCommand.CommandParameter="FavoritesContent"
+                    ub:SplitViewBehavior.CloseOnClick="True"
+                    ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
+                    ItemTemplate="{StaticResource SampleTemplate}"
+                    ItemsSource="{Binding FavoriteSamples}"
+                    SelectedItem="{Binding SelectedFavoriteSample, Mode=TwoWay}"
+                    Style="{StaticResource StretchedListViewStyle}" />
+            </DataTemplate>
 
-			<DataTemplate x:Key="RecentSamplesList">
-				<ListView ItemsSource="{Binding RecentSamples}"
-						  SelectedItem="{Binding SelectedRecentSample, Mode=TwoWay}"
-						  ItemTemplate="{StaticResource SampleTemplate}"
-						  ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
-						  Style="{StaticResource StretchedListViewStyle}"
-						  helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
-						  helper:ListViewBaseCommand.CommandParameter="RecentsContent"
-							ub:SplitViewBehavior.CloseOnClick="True">
-				</ListView>
-			</DataTemplate>
+            <DataTemplate x:Key="RecentSamplesList">
+                <ListView
+                    helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
+                    helper:ListViewBaseCommand.CommandParameter="RecentsContent"
+                    ub:SplitViewBehavior.CloseOnClick="True"
+                    ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
+                    ItemTemplate="{StaticResource SampleTemplate}"
+                    ItemsSource="{Binding RecentSamples}"
+                    SelectedItem="{Binding SelectedRecentSample, Mode=TwoWay}"
+                    Style="{StaticResource StretchedListViewStyle}" />
+            </DataTemplate>
 
-			<DataTemplate x:Key="SearchList">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
+            <DataTemplate x:Key="SearchList">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-					<TextBox Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-							 Style="{StaticResource SearchTextBoxStyle}"
-							 KeyDown="OnSearchEnterKey_KeyDown"
-							 PlaceholderText="Search"
-							 Margin="8" />
+                    <TextBox
+                        Margin="8"
+                        KeyDown="OnSearchEnterKey_KeyDown"
+                        PlaceholderText="Search"
+                        Style="{StaticResource SearchTextBoxStyle}"
+                        Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-					<ListView Grid.Row="1"
-							  ItemsSource="{Binding FilteredSamples}"
-							  SelectedItem="{Binding SelectedSearchSample, Mode=TwoWay}"
-							  ItemTemplate="{StaticResource SampleTemplate}"
-							  ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
-							  Style="{StaticResource StretchedListViewStyle}"
-							  helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
-							  helper:ListViewBaseCommand.CommandParameter="SearchContent"
-								ub:SplitViewBehavior.CloseOnClick="True">
-					</ListView>
-				</Grid>
-			</DataTemplate>
+                    <ListView
+                        Grid.Row="1"
+                        helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
+                        helper:ListViewBaseCommand.CommandParameter="SearchContent"
+                        ub:SplitViewBehavior.CloseOnClick="True"
+                        ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
+                        ItemTemplate="{StaticResource SampleTemplate}"
+                        ItemsSource="{Binding FilteredSamples}"
+                        SelectedItem="{Binding SelectedSearchSample, Mode=TwoWay}"
+                        Style="{StaticResource StretchedListViewStyle}" />
+                </Grid>
+            </DataTemplate>
 
-			<DataTemplate x:Key="SamplesTitle">
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="50" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="50" />
-					</Grid.ColumnDefinitions>
+            <DataTemplate x:Key="SamplesTitle">
+                <Grid Style="{StaticResource BaseTitleGridContainerStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="50" />
+                    </Grid.ColumnDefinitions>
 
-					<Button Style="{StaticResource IconButtonStyle}"
-							Margin="8,0,0,0"
-							HorizontalContentAlignment="Left"
-							Command="{Binding ShowPreviousSectionCommand}">
-						<StackPanel Orientation="Horizontal">
-							<FontIcon Glyph="&#xE72B;" FontSize="14" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
-						</StackPanel>
-					</Button>
+                    <Button
+                        Margin="8,0,0,0"
+                        HorizontalContentAlignment="Left"
+                        Command="{Binding ShowPreviousSectionCommand}"
+                        Style="{StaticResource IconButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon
+                                FontSize="14"
+                                Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                                Glyph="&#xE72B;" />
+                        </StackPanel>
+                    </Button>
 
-					<TextBlock Text="{Binding SelectedCategory.Category}"
-							   Style="{StaticResource Typo03}"
-							   HorizontalAlignment="Center"
-							   TextAlignment="Center"
-							   TextWrapping="NoWrap"
-							   VerticalAlignment="Center"
-							   Grid.Column="1" />
-				</Grid>
-			</DataTemplate>
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource Typo03}"
+                        Text="{Binding SelectedCategory.Category}"
+                        TextAlignment="Center"
+                        TextWrapping="NoWrap" />
+                </Grid>
+            </DataTemplate>
 
-		</ResourceDictionary>
-	</UserControl.Resources>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<VisualStateManager.VisualStateGroups>
-			<VisualStateGroup>
-				<VisualState x:Name="TabletState">
-					<VisualState.StateTriggers>
-						<AdaptiveTrigger MinWindowWidth="500" />
-					</VisualState.StateTriggers>
-					<VisualState.Setters>
-						<Setter Target="SplitView.DisplayMode"
-								Value="Inline" />
-					</VisualState.Setters>
-				</VisualState>
-			</VisualStateGroup>
-		</VisualStateManager.VisualStateGroups>
-		<SplitView x:Name="SplitView"
-			   IsPaneOpen="{Binding IsSplitVisible, Mode=TwoWay}"
-			   OpenPaneLength="280"
-			   DisplayMode="Overlay">
-			<SplitView.Pane>
-				<Grid Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}"
-				  toolkit:VisibleBoundsPadding.PaddingMask="All">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <SplitView
+            x:Name="SplitView"
+            DisplayMode="Overlay"
+            IsPaneOpen="{Binding IsSplitVisible, Mode=TwoWay}"
+            OpenPaneLength="280">
+            <SplitView.Pane>
+                <Grid toolkit:VisibleBoundsPadding.PaddingMask="All" Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}">
 
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-					<!-- LIBRARY (Categories)-->
-					<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
-					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
+                    <!--  LIBRARY (Categories)  -->
+                    <Grid Style="{StaticResource BaseTitleGridContainerStyle}" Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
 
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-						<!-- Runtime tests button -->
-						<Button Style="{StaticResource IconButtonStyle}"
-							VerticalAlignment="Center"
-							HorizontalAlignment="Right"
-							Command="{Binding OpenRuntimeTestsCommand}">
-							<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
-									   Margin="5,0" />
-						</Button>
+                        <!--  Runtime tests button  -->
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Command="{Binding OpenRuntimeTestsCommand}"
+                            Style="{StaticResource IconButtonStyle}">
+                            <u:PathControl Margin="5,0" Style="{StaticResource Icon_RuntimeTests}" />
+                        </Button>
 
-						<!-- Playground button -->
-						<Button Style="{StaticResource IconButtonStyle}"
-							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
-							Grid.Column="1"
-							VerticalAlignment="Center"
-							HorizontalAlignment="Right"
-							Command="{Binding OpenPlaygroundCommand}">
-							<FontIcon Glyph="&#xE7FC;" />
-						</Button>
+                        <!--  Playground button  -->
+                        <Button
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Command="{Binding OpenPlaygroundCommand}"
+                            Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                            Style="{StaticResource IconButtonStyle}">
+                            <FontIcon Glyph="&#xE7FC;" />
+                        </Button>
 
-						<!-- Title -->
-						<StackPanel Grid.Column="2" VerticalAlignment="Center">
-							<Image Source="ms-appx:///Assets/AppLogoSmall.png" Width="32" Margin="0,0,0,2" />
-							<TextBlock FontSize="10" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding TargetPlatform}" />
-							<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" TextTrimming="CharacterEllipsis" />
-						</StackPanel>
+                        <!--  Title  -->
+                        <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                            <Image
+                                Width="32"
+                                Margin="0,0,0,2"
+                                Source="ms-appx:///Assets/AppLogoSmall.png" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="10"
+                                FontWeight="Bold"
+                                Text="{Binding TargetPlatform}" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="9"
+                                Opacity="0.8"
+                                Text="{Binding RepositoryPath}"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
 
-						<Button Style="{StaticResource IconButtonStyle}"
-							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
-							Grid.Column="3"
-							VerticalAlignment="Center"
-							HorizontalAlignment="Right"
-							Command="{Binding CreateNewWindowCommand}">
-							<FontIcon Glyph="&#xE8A7;" />
-						</Button>
+                        <Button
+                            Grid.Column="3"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Command="{Binding CreateNewWindowCommand}"
+                            Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                            Style="{StaticResource IconButtonStyle}">
+                            <FontIcon Glyph="&#xE8A7;" />
+                        </Button>
 
-						<!-- Record All Tests Button -->
-						<Button
-						Grid.Column="4"
-						Style="{StaticResource IconButtonStyle}"
-						VerticalAlignment="Center"
-						HorizontalAlignment="Right"
-						Command="{Binding RecordAllTestsCommand}">
-							<u:PathControl Style="{StaticResource Icon_RunAll}" Margin="5,0" />
-						</Button>
-					</Grid>
+                        <!--  Record All Tests Button  -->
+                        <Button
+                            Grid.Column="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Command="{Binding RecordAllTestsCommand}"
+                            Style="{StaticResource IconButtonStyle}">
+                            <u:PathControl Margin="5,0" Style="{StaticResource Icon_RunAll}" />
+                        </Button>
+                    </Grid>
 
-					<!-- Search -->
-					<StackPanel IsTabStop="True" Grid.Row="1" Spacing="4" Padding="4">
-						<AutoSuggestBox PlaceholderText="Search..."
-						TextChanged="SearchBox_TextChanged"
-						TextMemberPath="ControlName"
-						QueryIcon="Find"
-						ItemsSource="{Binding FilteredSamples}"
-						HorizontalAlignment="Stretch"
-						QuerySubmitted="SearchBox_QuerySubmitted"
-						SuggestionChosen="SearchBox_SuggestionChosen">
-							<AutoSuggestBox.ItemTemplate>
-								<DataTemplate x:DataType="entities:SampleChooserContent">
-									<TextBlock Text="{x:Bind ControlName}" />
-								</DataTemplate>
-							</AutoSuggestBox.ItemTemplate>
-						</AutoSuggestBox>
-
-
-						<CheckBox Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Center" 
-							  IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}" Content="Manual tests only" />
-					</StackPanel>
-
-					<ContentControl ContentTemplate="{StaticResource CategoriesList}"
-								Grid.Row="2"
-								HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}" />
-
-					<!--SAMPLES-->
-					<ContentControl HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}"
-								ContentTemplate="{StaticResource SamplesTitle}" />
+                    <!--  Search  -->
+                    <StackPanel
+                        Grid.Row="1"
+                        Padding="4"
+                        IsTabStop="True"
+                        Spacing="4">
+                        <AutoSuggestBox
+                            HorizontalAlignment="Stretch"
+                            ItemsSource="{Binding FilteredSamples}"
+                            PlaceholderText="Search..."
+                            QueryIcon="Find"
+                            QuerySubmitted="SearchBox_QuerySubmitted"
+                            SuggestionChosen="SearchBox_SuggestionChosen"
+                            TextChanged="SearchBox_TextChanged"
+                            TextMemberPath="ControlName">
+                            <AutoSuggestBox.ItemTemplate>
+                                <DataTemplate x:DataType="entities:SampleChooserContent">
+                                    <TextBlock Text="{x:Bind ControlName}" />
+                                </DataTemplate>
+                            </AutoSuggestBox.ItemTemplate>
+                        </AutoSuggestBox>
 
 
-					<ContentControl HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Grid.Row="2"
-								Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}"
-								ContentTemplate="{StaticResource SamplesList}" />
+                        <CheckBox
+                            Grid.Row="1"
+                            Grid.ColumnSpan="5"
+                            HorizontalAlignment="Center"
+                            Content="Manual tests only"
+                            IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}" />
+                    </StackPanel>
 
-					<!--FAVORITES-->
-					<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
-					  Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}">
-						<TextBlock Style="{StaticResource Typo03}"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   Text="Favorites" />
-					</Grid>
-					<ContentControl HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Grid.Row="2"
-								Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}"
-								ContentTemplate="{StaticResource FavoritesList}" />
+                    <ContentControl
+                        Grid.Row="2"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        ContentTemplate="{StaticResource CategoriesList}"
+                        Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}" />
 
-					<!--RECENTS-->
-					<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
-					  Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}">
-						<TextBlock Style="{StaticResource Typo03}"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   Text="History" />
-					</Grid>
-					<ContentControl HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Grid.Row="2"
-								Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}"
-								ContentTemplate="{StaticResource RecentSamplesList}" />
+                    <!--  SAMPLES  -->
+                    <ContentControl
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        ContentTemplate="{StaticResource SamplesTitle}"
+                        Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}" />
 
-					<!--NAVIGATION BUTTONS-->
-					<Border Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}"
-						Height="50"
-						Grid.Row="3">
-						<u:StarStackPanel VerticalAlignment="Stretch"
-									  Sizes="*,*,*"
-									  Orientation="Horizontal">
-							<!--Button foreground has to be set by converter instead of Button's visual state
-							because path foreground doesn't change through visual states.-->
-							<RadioButton GroupName="SelectedSectionPhone"
-									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
-									 IsChecked="{Binding CategoriesSelected, Mode=TwoWay}"
-									 Command="{Binding ShowNewSectionCommand}"
-									 CommandParameter="Library">
-								<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-									<FontIcon Glyph="&#xE8F1;" />
-									<TextBlock Style="{StaticResource Typo06}"
-										   VerticalAlignment="Bottom"
-										   Text="Library" />
-								</StackPanel>
-							</RadioButton>
 
-							<RadioButton GroupName="SelectedSectionPhone"
-									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
-									 IsChecked="{Binding FavoritesSelected, Mode=TwoWay}"
-									 Command="{Binding ShowNewSectionCommand}"
-									 CommandParameter="Favorites">
-								<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-									<FontIcon Glyph="&#xE734;" />
-									<TextBlock Style="{StaticResource Typo06}"
-										   VerticalAlignment="Bottom"
-										   Text="Favorites" />
-								</StackPanel>
-							</RadioButton>
+                    <ContentControl
+                        Grid.Row="2"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        ContentTemplate="{StaticResource SamplesList}"
+                        Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}" />
 
-							<RadioButton GroupName="SelectedSectionPhone"
-									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
-									 IsChecked="{Binding RecentsSelected, Mode=TwoWay}"
-									 Command="{Binding ShowNewSectionCommand}"
-									 CommandParameter="Recents">
-								<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-									<FontIcon Glyph="&#xE823;" />
-									<TextBlock Style="{StaticResource Typo06}"
-										   VerticalAlignment="Bottom"
-										   Text="History" />
-								</StackPanel>
-							</RadioButton>
-						</u:StarStackPanel>
-					</Border>
-				</Grid>
-			</SplitView.Pane>
-			<SplitView.Content>
-				<Grid Background="{ThemeResource NavigationViewContentBackground}"
-				  toolkit:VisibleBoundsPadding.PaddingMask="All">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-					<!-- CONTENT -->
-					<Grid Style="{StaticResource BaseTitleGridContainerStyle}" Background="{ThemeResource NavigationViewTopPaneBackground}" ColumnSpacing="4">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="50" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
+                    <!--  FAVORITES  -->
+                    <Grid Style="{StaticResource BaseTitleGridContainerStyle}" Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource Typo03}"
+                            Text="Favorites" />
+                    </Grid>
+                    <ContentControl
+                        Grid.Row="2"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        ContentTemplate="{StaticResource FavoritesList}"
+                        Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}" />
 
-						<!-- Back Button -->
-						<ToggleButton Style="{StaticResource BurgerButtonStyle}"
-								  IsChecked="{Binding IsPaneOpen, ElementName=SplitView, Mode=TwoWay}"
-								  IsEnabled="{Binding IsRecordAllTests, Converter={StaticResource reverseBoolConverter}}"
-								  HorizontalAlignment="Left"
-								  VerticalAlignment="Center" />
+                    <!--  RECENTS  -->
+                    <Grid Style="{StaticResource BaseTitleGridContainerStyle}" Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource Typo03}"
+                            Text="History" />
+                    </Grid>
+                    <ContentControl
+                        Grid.Row="2"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        ContentTemplate="{StaticResource RecentSamplesList}"
+                        Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}" />
 
-						<!-- Sample Name -->
-						<TextBlock Text="{Binding CurrentSelectedSample.ControlName}"
-							   Style="{StaticResource Typo03}"
-							   HorizontalAlignment="Center"
-							   TextAlignment="Center"
-							   TextWrapping="NoWrap"
-							   IsTextSelectionEnabled="True"
-							   VerticalAlignment="Center"
-							   Grid.Column="1" />
+                    <!--  NAVIGATION BUTTONS  -->
+                    <Border
+                        Grid.Row="3"
+                        Height="50"
+                        Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}">
+                        <u:StarStackPanel
+                            VerticalAlignment="Stretch"
+                            Orientation="Horizontal"
+                            Sizes="*,*,*">
+                            <!--
+                                Button foreground has to be set by converter instead of Button's visual state
+                                because path foreground doesn't change through visual states.
+                            -->
+                            <RadioButton
+                                Command="{Binding ShowNewSectionCommand}"
+                                CommandParameter="Library"
+                                GroupName="SelectedSectionPhone"
+                                IsChecked="{Binding CategoriesSelected, Mode=TwoWay}"
+                                Style="{StaticResource SampleChooserNavRadioButtonStyle}">
+                                <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+                                    <FontIcon Glyph="&#xE8F1;" />
+                                    <TextBlock
+                                        VerticalAlignment="Bottom"
+                                        Style="{StaticResource Typo06}"
+                                        Text="Library" />
+                                </StackPanel>
+                            </RadioButton>
 
-						<!-- Info Button -->
-						<Button Style="{StaticResource IconButtonStyle}"
-							x:Name="InfoButton"
-							Grid.Column="2"
-							FontWeight="SemiBold"
-							FontSize="24"
-							VerticalAlignment="Center"
-							VerticalContentAlignment="Center"
-							HorizontalContentAlignment="Center"
-							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
-							Visibility="{Binding IsDebug}">
-							<Button.Content>
-								<SymbolIcon Symbol="Help" />
-							</Button.Content>
-							<Button.Flyout>
-								<Flyout>
-									<u:SampleInfoControl DataContext="{Binding CurrentSelectedSample}" />
-								</Flyout>
-							</Button.Flyout>
-						</Button>
+                            <RadioButton
+                                Command="{Binding ShowNewSectionCommand}"
+                                CommandParameter="Favorites"
+                                GroupName="SelectedSectionPhone"
+                                IsChecked="{Binding FavoritesSelected, Mode=TwoWay}"
+                                Style="{StaticResource SampleChooserNavRadioButtonStyle}">
+                                <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+                                    <FontIcon Glyph="&#xE734;" />
+                                    <TextBlock
+                                        VerticalAlignment="Bottom"
+                                        Style="{StaticResource Typo06}"
+                                        Text="Favorites" />
+                                </StackPanel>
+                            </RadioButton>
 
-						<!-- Previous Button -->
-						<Button Style="{StaticResource IconButtonStyle}"
-					        Grid.Column="3"
-					        Command="{Binding LoadPreviousTestCommand}"
-					        CommandParameter="{Binding CurrentSelectedSample}">
-							<FontIcon Glyph="&#xE76B;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
-						</Button>
+                            <RadioButton
+                                Command="{Binding ShowNewSectionCommand}"
+                                CommandParameter="Recents"
+                                GroupName="SelectedSectionPhone"
+                                IsChecked="{Binding RecentsSelected, Mode=TwoWay}"
+                                Style="{StaticResource SampleChooserNavRadioButtonStyle}">
+                                <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+                                    <FontIcon Glyph="&#xE823;" />
+                                    <TextBlock
+                                        VerticalAlignment="Bottom"
+                                        Style="{StaticResource Typo06}"
+                                        Text="History" />
+                                </StackPanel>
+                            </RadioButton>
+                        </u:StarStackPanel>
+                    </Border>
+                </Grid>
+            </SplitView.Pane>
+            <SplitView.Content>
+                <Grid toolkit:VisibleBoundsPadding.PaddingMask="All" Background="{ThemeResource NavigationViewContentBackground}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!--  CONTENT  -->
+                    <Border Height="{Binding TitleBarVisualHeight}" />
+                    <Grid
+                        Grid.Row="1"
+                        Background="{ThemeResource NavigationViewTopPaneBackground}"
+                        ColumnSpacing="4"
+                        Style="{StaticResource BaseTitleGridContainerStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-						<!-- Reload Button -->
-						<Button Style="{StaticResource IconButtonStyle}"
-					        Grid.Column="4"
-					        Command="{Binding ReloadCurrentTestCommand}"
-					        CommandParameter="{Binding CurrentSelectedSample}">
-							<FontIcon Glyph="&#xE72C;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
-						</Button>
+                        <!--  Back Button  -->
+                        <ToggleButton
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding IsPaneOpen, ElementName=SplitView, Mode=TwoWay}"
+                            IsEnabled="{Binding IsRecordAllTests, Converter={StaticResource reverseBoolConverter}}"
+                            Style="{StaticResource BurgerButtonStyle}" />
 
-						<!-- Next Button -->
-						<Button Style="{StaticResource IconButtonStyle}"
-					        Grid.Column="5"
-					        Command="{Binding LoadNextTestCommand}"
-					        CommandParameter="{Binding CurrentSelectedSample}">
-							<FontIcon Glyph="&#xE76C;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
-						</Button>
+                        <!--  Sample Name  -->
+                        <TextBlock
+                            Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsTextSelectionEnabled="True"
+                            Style="{StaticResource Typo03}"
+                            Text="{Binding CurrentSelectedSample.ControlName}"
+                            TextAlignment="Center"
+                            TextWrapping="NoWrap" />
 
-						<!-- Favorite Button -->
-						<Button Style="{StaticResource IconButtonStyle}"
-							Grid.Column="6"
-							Command="{Binding ToggleFavoriteCommand}"
-							CommandParameter="{Binding CurrentSelectedSample}">
-							<Grid>
-								<FontIcon Glyph="&#xE734;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToCollapsed}}" />
-								<FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE735;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToVisible}}" />
-							</Grid>
+                        <!--  Info Button  -->
+                        <Button
+                            x:Name="InfoButton"
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            FontSize="24"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                            Style="{StaticResource IconButtonStyle}"
+                            Visibility="{Binding IsDebug}">
+                            <Button.Content>
+                                <SymbolIcon Symbol="Help" />
+                            </Button.Content>
+                            <Button.Flyout>
+                                <Flyout>
+                                    <u:SampleInfoControl DataContext="{Binding CurrentSelectedSample}" />
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
 
-						</Button>
+                        <!--  Previous Button  -->
+                        <Button
+                            Grid.Column="3"
+                            Command="{Binding LoadPreviousTestCommand}"
+                            CommandParameter="{Binding CurrentSelectedSample}"
+                            Style="{StaticResource IconButtonStyle}">
+                            <FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE76B;" />
+                        </Button>
 
-						<!-- Overflow More(...) Button -->
-						<Button Grid.Column="10"
-							Margin="0,0,8,0"
-							Style="{StaticResource SampleControlButtonStyle}">
-							<SymbolIcon Symbol="More" />
-							<Button.Flyout>
-								<MenuFlyout>
-									<MenuFlyoutSubItem Text="Theme" x:Name="ThemeMenuFlyout">
-										<MenuFlyoutSubItem.Icon>
-											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
-										</MenuFlyoutSubItem.Icon>
-										<RadioMenuFlyoutItem Text="System" IsChecked="{Binding IsAppThemeSystem, Mode=TwoWay}" Tag="Auto" GroupName="AppTheme" />
-										<RadioMenuFlyoutItem Text="Light" IsChecked="{Binding IsAppThemeLight, Mode=TwoWay}" Tag="Light" GroupName="AppTheme" />
-										<RadioMenuFlyoutItem Text="Dark" IsChecked="{Binding IsAppThemeDark, Mode=TwoWay}" Tag="Dark" GroupName="AppTheme" />
-									</MenuFlyoutSubItem>
-									<ToggleMenuFlyoutItem Text="Use Fluent styles" IsChecked="{Binding UseFluentStyles, Mode=TwoWay}">
-										<ToggleMenuFlyoutItem.Icon>
-											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
-										</ToggleMenuFlyoutItem.Icon>
-									</ToggleMenuFlyoutItem>
-									<ToggleMenuFlyoutItem Text="Flow text right-to-left" IsChecked="{Binding UseRtl, Mode=TwoWay}">
-										<ToggleMenuFlyoutItem.Icon>
-											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9AB;" />
-										</ToggleMenuFlyoutItem.Icon>
-									</ToggleMenuFlyoutItem>
-									<not_win:ToggleMenuFlyoutItem Text="Keep popups open on breakpoints" IsChecked="{Binding PreventLightDismissOnWindowDeactivated, Mode=TwoWay}">
-										<not_win:ToggleMenuFlyoutItem.Icon>
-											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE92F;" />
-										</not_win:ToggleMenuFlyoutItem.Icon>
-									</not_win:ToggleMenuFlyoutItem>
-									<not_win:ToggleMenuFlyoutItem Text="Simulate touch" IsChecked="{Binding SimulateTouch, Mode=TwoWay}">
-										<not_win:ToggleMenuFlyoutItem.Icon>
-											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE815;" />
-										</not_win:ToggleMenuFlyoutItem.Icon>
-									</not_win:ToggleMenuFlyoutItem>
-									<ToggleMenuFlyoutItem Text="Show FPS Indicator" IsChecked="{Binding ShowFpsIndicator, Mode=TwoWay}">
-										<ToggleMenuFlyoutItem.Icon>
-											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC4A;" />
-										</ToggleMenuFlyoutItem.Icon>
-									</ToggleMenuFlyoutItem>
-									<MenuFlyoutItem Text="Log view dump" Command="{Binding LogViewDumpCommand}" Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
-										<MenuFlyoutItem.Icon>
-											<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
-										</MenuFlyoutItem.Icon>
-									</MenuFlyoutItem>
-								</MenuFlyout>
-							</Button.Flyout>
-						</Button>
-					</Grid>
+                        <!--  Reload Button  -->
+                        <Button
+                            Grid.Column="4"
+                            Command="{Binding ReloadCurrentTestCommand}"
+                            CommandParameter="{Binding CurrentSelectedSample}"
+                            Style="{StaticResource IconButtonStyle}">
+                            <FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE72C;" />
+                        </Button>
 
-					<!-- Sample Content -->
-					<ContentControl Content="{Binding ContentPhone}"
-								HorizontalAlignment="Stretch"
-								HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Grid.Row="1"/>
+                        <!--  Next Button  -->
+                        <Button
+                            Grid.Column="5"
+                            Command="{Binding LoadNextTestCommand}"
+                            CommandParameter="{Binding CurrentSelectedSample}"
+                            Style="{StaticResource IconButtonStyle}">
+                            <FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE76C;" />
+                        </Button>
 
-					<StackPanel Grid.Row="2"
-							Padding="8"
-							Background="{ThemeResource NavigationViewExpandedPaneBackground}"
-							Visibility="{Binding CurrentSelectedSample.Description, Converter={StaticResource StringEmptyToVisibilityConverter}}">
-						<TextBlock Text="Description"
-							Style="{StaticResource Typo03}"
-							Margin="0,0,0,4" />
-						<TextBlock Text="{Binding CurrentSelectedSample.Description}"
-							Style="{StaticResource Typo05}"
-							MaxHeight="80" />
-					</StackPanel>
-				</Grid>
-			</SplitView.Content>
-		</SplitView>
-	</Grid>
+                        <!--  Favorite Button  -->
+                        <Button
+                            Grid.Column="6"
+                            Command="{Binding ToggleFavoriteCommand}"
+                            CommandParameter="{Binding CurrentSelectedSample}"
+                            Style="{StaticResource IconButtonStyle}">
+                            <Grid>
+                                <FontIcon Glyph="&#xE734;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToCollapsed}}" />
+                                <FontIcon
+                                    Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                                    Glyph="&#xE735;"
+                                    Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToVisible}}" />
+                            </Grid>
+
+                        </Button>
+
+                        <!--  Overflow More(...) Button  -->
+                        <Button
+                            Grid.Column="10"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource SampleControlButtonStyle}">
+                            <SymbolIcon Symbol="More" />
+                            <Button.Flyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutSubItem x:Name="ThemeMenuFlyout" Text="Theme">
+                                        <MenuFlyoutSubItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
+                                        </MenuFlyoutSubItem.Icon>
+                                        <RadioMenuFlyoutItem
+                                            GroupName="AppTheme"
+                                            IsChecked="{Binding IsAppThemeSystem, Mode=TwoWay}"
+                                            Tag="Auto"
+                                            Text="System" />
+                                        <RadioMenuFlyoutItem
+                                            GroupName="AppTheme"
+                                            IsChecked="{Binding IsAppThemeLight, Mode=TwoWay}"
+                                            Tag="Light"
+                                            Text="Light" />
+                                        <RadioMenuFlyoutItem
+                                            GroupName="AppTheme"
+                                            IsChecked="{Binding IsAppThemeDark, Mode=TwoWay}"
+                                            Tag="Dark"
+                                            Text="Dark" />
+                                    </MenuFlyoutSubItem>
+                                    <ToggleMenuFlyoutItem IsChecked="{Binding UseFluentStyles, Mode=TwoWay}" Text="Use Fluent styles">
+                                        <ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
+                                        </ToggleMenuFlyoutItem.Icon>
+                                    </ToggleMenuFlyoutItem>
+                                    <ToggleMenuFlyoutItem IsChecked="{Binding ExtendContentIntoTitleBar, Mode=TwoWay}" Text="Extend content into title bar">
+                                        <ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE737;" />
+                                        </ToggleMenuFlyoutItem.Icon>
+                                    </ToggleMenuFlyoutItem>
+                                    <ToggleMenuFlyoutItem IsChecked="{Binding UseRtl, Mode=TwoWay}" Text="Flow text right-to-left">
+                                        <ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9AB;" />
+                                        </ToggleMenuFlyoutItem.Icon>
+                                    </ToggleMenuFlyoutItem>
+                                    <not_win:ToggleMenuFlyoutItem IsChecked="{Binding PreventLightDismissOnWindowDeactivated, Mode=TwoWay}" Text="Keep popups open on breakpoints">
+                                        <not_win:ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE92F;" />
+                                        </not_win:ToggleMenuFlyoutItem.Icon>
+                                    </not_win:ToggleMenuFlyoutItem>
+                                    <not_win:ToggleMenuFlyoutItem IsChecked="{Binding SimulateTouch, Mode=TwoWay}" Text="Simulate touch">
+                                        <not_win:ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE815;" />
+                                        </not_win:ToggleMenuFlyoutItem.Icon>
+                                    </not_win:ToggleMenuFlyoutItem>
+                                    <ToggleMenuFlyoutItem IsChecked="{Binding ShowFpsIndicator, Mode=TwoWay}" Text="Show FPS Indicator">
+                                        <ToggleMenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC4A;" />
+                                        </ToggleMenuFlyoutItem.Icon>
+                                    </ToggleMenuFlyoutItem>
+                                    <MenuFlyoutItem
+                                        Command="{Binding LogViewDumpCommand}"
+                                        Text="Log view dump"
+                                        Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                </MenuFlyout>
+                            </Button.Flyout>
+                        </Button>
+                    </Grid>
+
+                    <!--  Sample Content  -->
+                    <ContentControl
+                        Grid.Row="2"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Content="{Binding ContentPhone}" />
+
+                    <StackPanel
+                        Grid.Row="3"
+                        Padding="8"
+                        Background="{ThemeResource NavigationViewExpandedPaneBackground}"
+                        Visibility="{Binding CurrentSelectedSample.Description, Converter={StaticResource StringEmptyToVisibilityConverter}}">
+                        <TextBlock
+                            Margin="0,0,0,4"
+                            Style="{StaticResource Typo03}"
+                            Text="Description" />
+                        <TextBlock
+                            MaxHeight="80"
+                            Style="{StaticResource Typo05}"
+                            Text="{Binding CurrentSelectedSample.Description}" />
+                    </StackPanel>
+                </Grid>
+            </SplitView.Content>
+        </SplitView>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="TabletState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="500" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SplitView.DisplayMode" Value="Inline" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
 </UserControl>
