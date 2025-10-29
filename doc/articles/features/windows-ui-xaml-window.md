@@ -109,6 +109,83 @@ The `nativeWindow` is an `object`, so you need to cast it to the specific type o
 
 `Window` type has a static `Current` property which previously served as a way to access the main, singleton window instance. This is no longer relevant in multi-window scenarios. For legacy reasons and to maintain compatibility with existing Uno Platform apps, we opted to keep this property and it returns the first window that was created. You should not rely on this behavior going forward as it will be deprecated.
 
+## Customizing window border and title bar
+
+### Setting border and title bar visibility
+
+The `OverlappedPresenter.SetBorderAndTitleBar` method allows you to control whether the window displays a border and title bar:
+
+```csharp
+var overlappedPresenter = (OverlappedPresenter)myWindow.AppWindow.Presenter;
+// Remove both border and title bar
+overlappedPresenter.SetBorderAndTitleBar(hasBorder: false, hasTitleBar: false);
+
+// Show border but hide title bar
+overlappedPresenter.SetBorderAndTitleBar(hasBorder: true, hasTitleBar: false);
+
+// Show both border and title bar
+overlappedPresenter.SetBorderAndTitleBar(hasBorder: true, hasTitleBar: true);
+```
+
+> [!NOTE]
+> This API is currently only supported on WinUI (WinAppSDK) target. On other platforms, the method exists but may have limited or no effect.
+
+### Extending content into title bar
+
+The `AppWindowTitleBar.ExtendsContentIntoTitleBar` property allows you to extend your app content into the title bar area, giving you full control over the title bar region:
+
+```csharp
+myWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+```
+
+When you extend content into the title bar, you typically want to provide a custom title bar element using `Window.SetTitleBar`:
+
+```csharp
+myWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+myWindow.SetTitleBar(myCustomTitleBarElement);
+```
+
+> [!NOTE]
+> This API is currently only supported on WinUI (WinAppSDK) target. On other platforms, the property exists but may have limited or no effect.
+
+### Configuring title bar height
+
+When extending content into the title bar, you can control the height of the title bar using the `PreferredHeightOption` property:
+
+```csharp
+// Standard height (32px at default DPI)
+myWindow.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
+
+// Tall height (48px at default DPI)
+myWindow.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+
+// Collapsed (0px)
+myWindow.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Collapsed;
+```
+
+The actual height in pixels is calculated based on the DPI scaling of the window and can be retrieved from the `Height` property:
+
+```csharp
+int titleBarHeight = myWindow.AppWindow.TitleBar.Height;
+```
+
+> [!NOTE]
+> `PreferredHeightOption` is supported on Win32 (WinUI/WinAppSDK) when the title bar is extended into the content area.
+
+### Checking if title bar customization is supported
+
+You can check if title bar customization is available on the current platform using:
+
+```csharp
+if (AppWindowTitleBar.IsCustomizationSupported())
+{
+    // Customize the title bar
+    myWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+}
+```
+
+Currently, `IsCustomizationSupported()` returns `true` only on WinUI (WinAppSDK) target.
+
 ## Setting the background color for the Window
 
 WinUI and UWP does not support the ability to provide a background color for `Window`, but Uno provides such an API through:
