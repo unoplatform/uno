@@ -67,8 +67,11 @@ public partial class AppWindowTitleBar
 		get => _preferredHeightOption;
 		set
 		{
-			_preferredHeightOption = value;
-			Changed?.Invoke(this, EventArgs.Empty);
+			if (_preferredHeightOption != value)
+			{
+				_preferredHeightOption = value;
+				Changed?.Invoke(this, EventArgs.Empty);
+			}
 		}
 	}
 
