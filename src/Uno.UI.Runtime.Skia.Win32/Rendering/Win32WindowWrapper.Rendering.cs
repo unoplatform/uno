@@ -55,7 +55,6 @@ internal partial class Win32WindowWrapper
 		{
 			var nativeElementClipPath = ((CompositionTarget)((IXamlRootHost)this).RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 			{
-				_renderer.Reset();
 				_surface?.Dispose();
 				_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
 				return _surface.Canvas;

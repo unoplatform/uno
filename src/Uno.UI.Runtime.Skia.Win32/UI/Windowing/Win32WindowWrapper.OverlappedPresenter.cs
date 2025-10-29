@@ -4,6 +4,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Windowing.Native;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Dwm;
@@ -117,12 +118,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			rcWindow.left, rcWindow.top,
 			0, 0,
 			SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
-
-		// TODO Temporary workaround - when the title bar is removed, the rendering becomes
-		// broken until a resize. Tracked in https://github.com/unoplatform/uno/issues/21688
-		var width = Size.Width;
-		Resize(new Windows.Graphics.SizeInt32(width + 1, Size.Height));
-		Resize(new Windows.Graphics.SizeInt32(width, Size.Height));
+		_renderer.OnWindowExtendedIntoTitleBar();
 	}
 
 	private MARGINS GetMargins()
