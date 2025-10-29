@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using DirectUI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -218,13 +219,18 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private void SetTooltip(DependencyObject element, string resourceStringID)
 	{
-		//var toolTipText = DXamlCore.Current.GetLocalizedResourceString(resourceStringID);
-		//var toolTip = new ToolTip()
-		//{
-		//	Content = toolTipText
-		//};
+		// Windows automatically provides the tooltips when the caption button
+		// regions are reported to it.
+		if (!OperatingSystem.IsWindows())
+		{
+			var toolTipText = DXamlCore.Current.GetLocalizedResourceString(resourceStringID);
+			var toolTip = new ToolTip()
+			{
+				Content = toolTipText
+			};
 
-		//ToolTipService.SetToolTip(element, toolTip);
+			ToolTipService.SetToolTip(element, toolTip);
+		}
 	}
 
 	private void OnTitleBarMinMaxCloseContainerSizePositionChanged()
