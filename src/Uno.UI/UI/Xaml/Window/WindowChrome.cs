@@ -392,7 +392,7 @@ internal sealed partial class WindowChrome : ContentControl
 
 		// On Windows, maximized window stretches out of the bounds of the screen slightly.
 		// https://www.reddit.com/r/csharp/comments/921k9l/fixing_8_pixel_overhang_on_maximized_window_state/
-		var shouldHavePadding = 
+		var shouldHavePadding =
 			OperatingSystem.IsWindows() &&
 			(extendIntoTitleBar || !hasTitleBar) &&
 			IsWindowMaximized();

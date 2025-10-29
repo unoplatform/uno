@@ -555,78 +555,78 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		{
 			Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
+	}
 
-		void SetIcon(string iconPath)
+	public override unsafe void SetIcon(string iconPath)
+	{
+		// https://github.com/libsdl-org/SDL/blob/fc12cc6dfd859a4e01376162a58f12208e539ac6/src/video/windows/SDL_windowswindow.c#L827
+		// This software is provided 'as-is', without any express or implied
+		// warranty.  In no event will the authors be held liable for any damages
+		// arising from the use of this software.
+		//
+		// Permission is granted to anyone to use this software for any purpose,
+		// including commercial applications, and to alter it and redistribute it
+		// freely, subject to the following restrictions:
+		//
+		// 1. The origin of this software must not be misrepresented; you must not
+		//    claim that you wrote the original software. If you use this software
+		//    in a product, an acknowledgment in the product documentation would be
+		//    appreciated but is not required.
+		// 2. Altered source versions must be plainly marked as such, and must not be
+		//    misrepresented as being the original software.
+		// 3. This notice may not be removed or altered from any source distribution.
+
+		if (!File.Exists(iconPath))
 		{
-			// https://github.com/libsdl-org/SDL/blob/fc12cc6dfd859a4e01376162a58f12208e539ac6/src/video/windows/SDL_windowswindow.c#L827
-			// This software is provided 'as-is', without any express or implied
-			// warranty.  In no event will the authors be held liable for any damages
-			// arising from the use of this software.
-			//
-			// Permission is granted to anyone to use this software for any purpose,
-			// including commercial applications, and to alter it and redistribute it
-			// freely, subject to the following restrictions:
-			//
-			// 1. The origin of this software must not be misrepresented; you must not
-			//    claim that you wrote the original software. If you use this software
-			//    in a product, an acknowledgment in the product documentation would be
-			//    appreciated but is not required.
-			// 2. Altered source versions must be plainly marked as such, and must not be
-			//    misrepresented as being the original software.
-			// 3. This notice may not be removed or altered from any source distribution.
-
-			if (!File.Exists(iconPath))
-			{
-				this.LogError()?.Error($"Couldn't find icon file [{iconPath}].");
-				return;
-			}
-
-			var image = SKImage.FromEncodedData(iconPath);
-			if (image is null)
-			{
-				this.LogError()?.Error($"Couldn't load icon file [{iconPath}].");
-				return;
-			}
-			using var imageDisposable = new DisposableStruct<SKImage>(static image => image.Dispose(), image);
-
-			var maskLength = image.Height * (image.Width + 7) / 8;
-			var imageSize = image.Height * image.Width * Marshal.SizeOf<uint>();
-			var iconLength = Marshal.SizeOf<BITMAPINFOHEADER>() + imageSize + maskLength;
-			var presBits = stackalloc byte[iconLength];
-
-			var bmi = (BITMAPINFOHEADER*)presBits;
-			bmi->biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
-			bmi->biWidth = image.Width;
-			bmi->biHeight = image.Height * 2; // the multiplication by 2 is unexplainable, it seems to draw only half the image without the multiplication
-			bmi->biPlanes = 1;
-			bmi->biBitCount = 32;
-			bmi->biCompression = /* BI_RGB */ 0x0000;
-
-			// Write the pixels upside down into the bitmap buffer
-			var info = new SKImageInfo(image.Width, image.Height, SKColorType.Bgra8888);
-			using (var surface = SKSurface.Create(info))
-			{
-				var canvas = surface.Canvas;
-				canvas.Translate(0, image.Height);
-				canvas.Scale(1, -1);
-				canvas.DrawImage(image, 0, 0);
-				surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
-			}
-
-			// Write the mask
-			new Span<byte>(presBits + iconLength - maskLength, maskLength).Fill(0xFF);
-
-			// No need to destroy icons created with CreateIconFromResource
-			var hIcon = PInvoke.CreateIconFromResource(presBits, (uint)iconLength, true, 0x00030000);
-			if (hIcon == HICON.Null)
-			{
-				this.LogError()?.Error($"{nameof(PInvoke.CreateIconFromResource)} failed: {Win32Helper.GetErrorMessage()}");
-				return;
-			}
-
-			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value);
-			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value);
+			this.LogError()?.Error($"Couldn't find icon file [{iconPath}].");
+			return;
 		}
+
+		var image = SKImage.FromEncodedData(iconPath);
+		if (image is null)
+		{
+			this.LogError()?.Error($"Couldn't load icon file [{iconPath}].");
+			return;
+		}
+		using var imageDisposable = new DisposableStruct<SKImage>(static image => image.Dispose(), image);
+
+		var maskLength = image.Height * (image.Width + 7) / 8;
+		var imageSize = image.Height * image.Width * Marshal.SizeOf<uint>();
+		var iconLength = Marshal.SizeOf<BITMAPINFOHEADER>() + imageSize + maskLength;
+		var presBits = stackalloc byte[iconLength];
+
+		var bmi = (BITMAPINFOHEADER*)presBits;
+		bmi->biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
+		bmi->biWidth = image.Width;
+		bmi->biHeight = image.Height * 2; // the multiplication by 2 is unexplainable, it seems to draw only half the image without the multiplication
+		bmi->biPlanes = 1;
+		bmi->biBitCount = 32;
+		bmi->biCompression = /* BI_RGB */ 0x0000;
+
+		// Write the pixels upside down into the bitmap buffer
+		var info = new SKImageInfo(image.Width, image.Height, SKColorType.Bgra8888);
+		using (var surface = SKSurface.Create(info))
+		{
+			var canvas = surface.Canvas;
+			canvas.Translate(0, image.Height);
+			canvas.Scale(1, -1);
+			canvas.DrawImage(image, 0, 0);
+			surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
+		}
+
+		// Write the mask
+		new Span<byte>(presBits + iconLength - maskLength, maskLength).Fill(0xFF);
+
+		// No need to destroy icons created with CreateIconFromResource
+		var hIcon = PInvoke.CreateIconFromResource(presBits, (uint)iconLength, true, 0x00030000);
+		if (hIcon == HICON.Null)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.CreateIconFromResource)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value);
+		PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value);
 	}
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;

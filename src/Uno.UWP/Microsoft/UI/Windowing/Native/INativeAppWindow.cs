@@ -37,4 +37,5 @@ internal interface INativeAppWindow
 	void Show(bool activateWindow);
 
 	void SetPresenter(AppWindowPresenter presenter);
+	void SetIcon(string iconPath);
 }
