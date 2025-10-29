@@ -1679,11 +1679,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 
 			var tappedCount = 0;
+			var doubleTappedCount = 0;
 			var tappedPos = new Windows.Foundation.Point(0, 0);
+			var doubleTappedPos = new Windows.Foundation.Point(0, 0);
+			UIElement tappedOriginalSource = null;
+			UIElement doubleTappedOriginalSource = null;
 			outer.Tapped += (_, e) =>
 			{
 				tappedCount++;
 				tappedPos = e.GetPosition(null);
+				tappedOriginalSource = e.OriginalSource as UIElement;
+			};
+			outer.DoubleTapped += (_, e) =>
+			{
+				doubleTappedCount++;
+				doubleTappedPos = e.GetPosition(null);
+				doubleTappedOriginalSource = e.OriginalSource as UIElement;
 			};
 
 			await UITestHelper.Load(outer);
@@ -1695,7 +1706,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, tappedCount);
+			Assert.AreEqual(0, doubleTappedCount);
+			Assert.AreEqual(inner, tappedOriginalSource);
 			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(tappedPos), $"tappedPos: {tappedPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
+
+			await Task.Delay(TimeSpan.FromMicroseconds(GestureRecognizer.MultiTapMaxDelayMicroseconds));
+
+			finger.Tap(inner.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+			finger.Tap(inner.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, tappedCount);
+			Assert.AreEqual(1, doubleTappedCount);
+			Assert.AreEqual(inner, tappedOriginalSource);
+			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(tappedPos), $"tappedPos: {tappedPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
+			Assert.AreEqual(inner, doubleTappedOriginalSource);
+			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(doubleTappedPos), $"doubleTappedPos: {doubleTappedPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
+
 		}
 
 #if HAS_UNO
