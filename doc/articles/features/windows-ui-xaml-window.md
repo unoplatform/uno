@@ -128,7 +128,7 @@ overlappedPresenter.SetBorderAndTitleBar(hasBorder: true, hasTitleBar: true);
 ```
 
 > [!NOTE]
-> This API is currently only supported on WinUI (WinAppSDK) target. On other platforms, the method exists but may have limited or no effect.
+> This API is currently supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets. On other platforms, the method exists but may have limited or no effect.
 
 ### Extending content into title bar
 
@@ -146,7 +146,7 @@ myWindow.SetTitleBar(myCustomTitleBarElement);
 ```
 
 > [!NOTE]
-> This API is currently only supported on WinUI (WinAppSDK) target. On other platforms, the property exists but may have limited or no effect.
+> This API is currently supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets. On other platforms, the property exists but may have limited or no effect.
 
 ### Configuring title bar height
 
@@ -170,7 +170,7 @@ int titleBarHeight = myWindow.AppWindow.TitleBar.Height;
 ```
 
 > [!NOTE]
-> `PreferredHeightOption` is supported on Win32 (WinUI/WinAppSDK) when the title bar is extended into the content area.
+> `PreferredHeightOption` is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets when the title bar is extended into the content area.
 
 ### Checking if title bar customization is supported
 
@@ -184,7 +184,7 @@ if (AppWindowTitleBar.IsCustomizationSupported())
 }
 ```
 
-Currently, `IsCustomizationSupported()` returns `true` only on WinUI (WinAppSDK) target.
+Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
 
 ## Setting the background color for the Window
 
