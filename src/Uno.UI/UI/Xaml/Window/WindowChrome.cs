@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using DirectUI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -59,8 +58,6 @@ internal sealed partial class WindowChrome : ContentControl
 	private void OnTitleBarChanged(object? sender, EventArgs e)
 	{
 		ConfigureWindowChrome();
-
-		ResizeCaptionButtons();
 	}
 
 	private void ResizeCaptionButtons()
@@ -109,6 +106,9 @@ internal sealed partial class WindowChrome : ContentControl
 			m_presenterDisposable.Disposable = null;
 			if (_window.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
 			{
+				UpdateContainerSize();
+				ConfigureWindowChrome();
+
 				void OnBorderAndTitleBarChanged(object? s, object? e)
 				{
 					ConfigureWindowChrome();
@@ -383,6 +383,17 @@ internal sealed partial class WindowChrome : ContentControl
 		CaptionVisibility = shouldBeVisible ?
 			Visibility.Visible :
 			Visibility.Collapsed;
+
+		if (OperatingSystem.IsWindows() && (extendIntoTitleBar || !hasTitleBar) && IsWindowMaximized())
+		{
+			Padding = new Thickness(4);
+		}
+		else
+		{
+			Padding = new Thickness(0);
+		}
+
+		ResizeCaptionButtons();
 	}
 
 	private void OnExtendsContentIntoTitleBarChanged(bool extends) => ConfigureWindowChrome();
