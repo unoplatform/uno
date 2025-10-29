@@ -25,7 +25,7 @@ uid: Uno.Features.Clipboard
 
 > [!Video https://www.youtube-nocookie.com/embed/bfT4_LZrSQQ]
 
-* `SetContent` and `GetContent` APIs currently support textual data on all platforms. On Android, they also support URI and HTML formats, but the clipboard can hold only one item. Setting multiple items at once does not work reliably.
+* `SetContent` and `GetContent` APIs currently support textual data on all platforms. On Android and WebAssembly, they also support HTML formats. On Android, they additionally support URI format, but the clipboard can hold only one item. Setting multiple items at once does not work reliably.
 * `ContentChanged` event can observe clipboard changes only when the application is in the foreground. On macOS, the `ContentChanged` event checks for clipboard changes by polling the current `NSPasteboard` change count in 1-second intervals. The polling starts only after the first subscriber attaches to the `ContentChanged` event and stops after the last subscriber unsubscribes.
 * `Flush` operation has an empty implementation. In contrast to WinUI, on other platforms, data automatically remains in the clipboard even after the application is closed.
 
@@ -54,5 +54,25 @@ Clipboard.ContentChanged += Clipboard_ContentChanged;
 private void Clipboard_ContentChanged(object sender, object e)
 {
     // ...
+}
+```
+
+### Copying HTML to clipboard (Android, WebAssembly)
+
+```csharp
+var dataPackage = new DataPackage();
+dataPackage.SetText("Bold text"); // Fallback plain text
+dataPackage.SetHtmlFormat("<p><strong>Bold</strong> text</p>");
+Clipboard.SetContent(dataPackage);
+```
+
+### Pasting HTML from the clipboard (Android, WebAssembly)
+
+```csharp
+var content = Clipboard.GetContent();
+if (content.Contains(StandardDataFormats.Html))
+{
+    var html = await content.GetHtmlFormatAsync();
+    // Use the HTML content
 }
 ```

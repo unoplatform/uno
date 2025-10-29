@@ -93,10 +93,10 @@ namespace Uno.UI.RuntimeTests.Tests
 				await Task.Delay(100);
 
 				var clipboardView = Clipboard.GetContent();
-				
+
 				// Verify HTML content is available
 				Assert.IsTrue(clipboardView.Contains(StandardDataFormats.Html), "Clipboard should contain HTML format");
-				
+
 				var htmlFromClipboard = await clipboardView.GetHtmlFormatAsync();
 				Assert.AreEqual(html, htmlFromClipboard);
 			}
@@ -127,14 +127,14 @@ namespace Uno.UI.RuntimeTests.Tests
 				await Task.Delay(100);
 
 				var clipboardView = Clipboard.GetContent();
-				
+
 				// Verify both formats are available
 				Assert.IsTrue(clipboardView.Contains(StandardDataFormats.Text), "Clipboard should contain Text format");
 				Assert.IsTrue(clipboardView.Contains(StandardDataFormats.Html), "Clipboard should contain HTML format");
-				
+
 				var textFromClipboard = await clipboardView.GetTextAsync();
 				var htmlFromClipboard = await clipboardView.GetHtmlFormatAsync();
-				
+
 				Assert.AreEqual(text, textFromClipboard);
 				Assert.AreEqual(html, htmlFromClipboard);
 			}
