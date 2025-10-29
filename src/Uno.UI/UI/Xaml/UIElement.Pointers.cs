@@ -365,15 +365,16 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
 		{
-			var src = (UIElement)sender.Owner;
+			var that = (UIElement)sender.Owner;
+			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			if (args.TapCount == 1)
 			{
-				src.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args));
+				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args, that));
 			}
 			else // i.e. args.TapCount == 2
 			{
-				src.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(src, args));
+				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(src, args, that));
 			}
 		};
 
