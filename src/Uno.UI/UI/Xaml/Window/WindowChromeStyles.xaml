@@ -3,8 +3,8 @@
 
         <ResourceDictionary x:Key="Default">
             <!--  WindowChrome min max close styles  -->
-            <StaticResource x:Key="WindowCaptionBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-            <StaticResource x:Key="WindowCaptionBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <SolidColorBrush x:Key="WindowCaptionBackground" Color="Transparent" />
+            <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled" Color="Transparent" />
             <StaticResource x:Key="WindowCaptionForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="WindowCaptionForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
             <x:Double x:Key="WindowCaptionButtonStrokeWidth">0.7</x:Double>
@@ -22,8 +22,8 @@
 
         <ResourceDictionary x:Key="HighContrast">
             <!--  WindowChrome min max close styles  -->
-            <StaticResource x:Key="WindowCaptionBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-            <StaticResource x:Key="WindowCaptionBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <SolidColorBrush x:Key="WindowCaptionBackground" Color="Transparent" />
+            <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled" Color="Transparent" />
             <StaticResource x:Key="WindowCaptionForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="WindowCaptionForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
             <x:Double x:Key="WindowCaptionButtonStrokeWidth">3.0</x:Double>
@@ -41,8 +41,8 @@
 
         <ResourceDictionary x:Key="Light">
             <!--  WindowChrome min max close styles  -->
-            <StaticResource x:Key="WindowCaptionBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-            <StaticResource x:Key="WindowCaptionBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <SolidColorBrush x:Key="WindowCaptionBackground" Color="Transparent" />
+            <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled" Color="Transparent" />
             <StaticResource x:Key="WindowCaptionForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="WindowCaptionForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
             <x:Double x:Key="WindowCaptionButtonStrokeWidth">0.7</x:Double>
@@ -65,7 +65,6 @@
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Width" Value="46" />
-        <Setter Property="Height" Value="28" />
         <Setter Property="FontSize" Value="10" />
         <Setter Property="Template">
             <Setter.Value>
@@ -148,7 +147,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContentControl">
-                    <Grid x:Name="LayoutRoot">
+                    <Grid x:Name="LayoutRoot" Padding="{TemplateBinding Padding}">
                         <ContentPresenter
                             x:Name="ClientAreaPresenter"
                             Content="{TemplateBinding Content}"
@@ -213,6 +212,32 @@
                                 </Button>
                             </Grid>
                         </Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Target="TitleBarMinMaxCloseContainer.Background" Value="{ThemeResource WindowCaptionBackground}" />
+                                        <Setter Target="MinimizeButton.Foreground" Value="{ThemeResource WindowCaptionForeground}" />
+                                        <Setter Target="MinimizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                        <Setter Target="MaximizeButton.Foreground" Value="{ThemeResource WindowCaptionForeground}" />
+                                        <Setter Target="MaximizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource WindowCaptionForeground}" />
+                                        <Setter Target="CloseButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="WindowInactive">
+                                    <VisualState.Setters>
+                                        <Setter Target="TitleBarMinMaxCloseContainer.Background" Value="{ThemeResource WindowCaptionBackgroundDisabled}" />
+                                        <Setter Target="MinimizeButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
+                                        <Setter Target="MinimizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                        <Setter Target="MaximizeButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
+                                        <Setter Target="MaximizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
+                                        <Setter Target="CloseButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
