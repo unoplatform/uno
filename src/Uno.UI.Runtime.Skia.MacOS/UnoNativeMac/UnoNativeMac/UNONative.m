@@ -8,6 +8,8 @@ static NSMutableSet<NSView*> *elements;
 
 @implementation UNORedView : NSView
 
+@synthesize originalSuperView;
+
 // make the background red for easier tracking
 - (BOOL)wantsUpdateLayer
 {
@@ -23,6 +25,15 @@ static NSMutableSet<NSView*> *elements;
     // nothing needed
 }
 
+- (void)dispose {
+#if DEBUG
+    NSLog(@"UNORedView %p disposing with superview %p", self, self.superview);
+#endif
+    if (self.superview) {
+        [self removeFromSuperview];
+    }
+}
+
 @end
 
 NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
@@ -36,12 +47,12 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
     label.stringValue = [NSString stringWithUTF8String:text];
     label.frame = NSMakeRect(0, 0, label.fittingSize.width, label.fittingSize.height);
 
-    NSView* sample = [[UNORedView alloc] initWithFrame:label.frame];
+    UNORedView* sample = [[UNORedView alloc] initWithFrame:label.frame];
     [sample addSubview:label];
 #if DEBUG
     NSLog(@"uno_native_create_sample #%p label: %@", sample, label.stringValue);
 #endif
-    [window.contentViewController.view addSubview:sample];
+    sample.originalSuperView = window.contentViewController.view;
     return sample;
 }
 
@@ -55,34 +66,35 @@ void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, d
 #endif
 }
 
-void uno_native_attach(NSView* element)
+void uno_native_attach(NSView<UNONativeElement>* element)
 {
-#if DEBUG
-    NSLog(@"uno_native_attach %p -> %s attached", element, [elements containsObject:element] ? "already" : "not previously");
-#endif
+    bool already_attached = NO;
     if (!elements) {
         elements = [[NSMutableSet alloc] initWithCapacity:10];
+    } else {
+        already_attached = [elements containsObject:element];
     }
-    // note: it's too early to add a mask since the layer has not been set yet
-    [elements addObject:element];
+#if DEBUG
+    NSLog(@"uno_native_attach %p -> %s attached", element, already_attached ? "already" : "not previously");
+#endif
+    if (!already_attached) {
+        // note: it's too early to add a mask since the layer has not been set yet
+        [elements addObject:element];
+    }
+    [element.originalSuperView addSubview:element];
 }
 
-void uno_native_detach(NSView *element)
+void uno_native_detach(NSView<UNONativeElement>* element)
 {
 #if DEBUG
     NSLog(@"uno_native_detach %p", element);
 #endif
     element.layer.mask = nil;
-    if (elements) {
-        if ([element conformsToProtocol:@protocol(UNONativeElement)]) {
-            id<UNONativeElement> native = (id<UNONativeElement>) element;
-            [native detach];
-        }
-        [elements removeObject:element];
-    }
+    [elements removeObject:element];
+    [element removeFromSuperview];
 }
 
-bool uno_native_is_attached(NSView* element)
+bool uno_native_is_attached(NSView<UNONativeElement>* element)
 {
     bool attached = elements ? [elements containsObject:element] : NO;
 #if DEBUG
@@ -91,7 +103,7 @@ bool uno_native_is_attached(NSView* element)
     return attached;
 }
 
-void uno_native_measure(NSView* element, double childWidth, double childHeight, double availableWidth, double availableHeight, double* width, double* height)
+void uno_native_measure(NSView<UNONativeElement>* element, double childWidth, double childHeight, double availableWidth, double availableHeight, double* width, double* height)
 {
     CGSize size = element.subviews.firstObject.frame.size;
     *width = size.width;
@@ -101,10 +113,18 @@ void uno_native_measure(NSView* element, double childWidth, double childHeight, 
 #endif
 }
 
-void uno_native_set_opacity(NSView* element, double opacity)
+void uno_native_set_opacity(NSView<UNONativeElement>* element, double opacity)
 {
 #if DEBUG
     NSLog(@"uno_native_set_opacity #%p : %g -> %g", element, element.alphaValue, opacity);
 #endif
     element.alphaValue = opacity;
+}
+
+void uno_native_dispose(NSView<UNONativeElement>* element)
+{
+#if DEBUG
+    NSLog(@"uno_native_dispose #%p", element);
+#endif
+    [element dispose];
 }

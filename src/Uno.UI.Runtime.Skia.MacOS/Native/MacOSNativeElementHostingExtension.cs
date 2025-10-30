@@ -11,6 +11,14 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 {
+	public MacOSNativeElement()
+	{
+		Unloaded += (s, e) =>
+		{
+			NativeUno.uno_native_dispose(NativeHandle);
+		};
+	}
+
 	public nint NativeHandle { get; internal set; }
 
 	internal bool Detached { get; set; }

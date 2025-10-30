@@ -361,6 +361,9 @@ internal static partial class NativeUno
 	internal static partial void uno_native_measure(nint element, double childWidth, double childHeight, double availableWidth, double availableHeight, out double width, out double height);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_dispose(nint element);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial nint uno_set_execute_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -380,9 +383,6 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial nint uno_webview_create(nint window, string ok, string cancel);
-
-	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_webview_dispose(nint webview);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string uno_webview_get_title(nint webview);
