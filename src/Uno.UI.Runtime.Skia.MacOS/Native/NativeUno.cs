@@ -358,9 +358,6 @@ internal static partial class NativeUno
 	internal static partial void uno_native_set_opacity(nint element, double opacity);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_native_set_visibility(nint element, [MarshalAs(UnmanagedType.I1)] bool visible);
-
-	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_native_measure(nint element, double childWidth, double childHeight, double availableWidth, double availableHeight, out double width, out double height);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
