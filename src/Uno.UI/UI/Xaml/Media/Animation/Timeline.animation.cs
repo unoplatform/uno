@@ -286,7 +286,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				{ // Don't start the animator its a dependent animation
 					// However, we still need to complete the animation to maintain consistency with WinUI
 					State = TimelineState.Active;
-					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+					_ = _owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 					{
 						if (State == TimelineState.Stopped)
 						{
