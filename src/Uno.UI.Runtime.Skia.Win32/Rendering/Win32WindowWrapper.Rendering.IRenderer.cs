@@ -12,7 +12,7 @@ internal partial class Win32WindowWrapper
 
 		SKSurface UpdateSize(int width, int height);
 		void CopyPixels(int width, int height);
-		void Reset();
 		bool IsSoftware();
+		void OnWindowExtendedIntoTitleBar();
 	}
 }

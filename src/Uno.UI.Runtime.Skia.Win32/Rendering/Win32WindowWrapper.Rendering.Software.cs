@@ -20,6 +20,12 @@ internal partial class Win32WindowWrapper
 
 		unsafe SKSurface IRenderer.UpdateSize(int width, int height)
 		{
+			if (_hBitmap != HBITMAP.Null)
+			{
+				var success = PInvoke.DeleteObject(_hBitmap) == 1;
+				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}"); }
+			}
+
 			BITMAPINFO bitmapinfo = new BITMAPINFO
 			{
 				bmiHeader = new BITMAPINFOHEADER
@@ -40,16 +46,6 @@ internal partial class Win32WindowWrapper
 			}
 
 			return SKSurface.Create(new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul), (IntPtr)bits);
-		}
-
-		void IRenderer.Reset()
-		{
-			if (_hBitmap != HBITMAP.Null)
-			{
-				var success = PInvoke.DeleteObject(_hBitmap) == 1;
-				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}"); }
-				_hBitmap = HBITMAP.Null;
-			}
 		}
 
 		void IRenderer.CopyPixels(int width, int height)
@@ -90,6 +86,12 @@ internal partial class Win32WindowWrapper
 
 		bool IRenderer.IsSoftware() => true;
 
-		void IDisposable.Dispose() => ((IRenderer)this).Reset();
+		void IRenderer.OnWindowExtendedIntoTitleBar() { }
+
+		void IDisposable.Dispose()
+		{
+			var success = PInvoke.DeleteObject(_hBitmap) == 1;
+			if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}"); }
+		}
 	}
 }
