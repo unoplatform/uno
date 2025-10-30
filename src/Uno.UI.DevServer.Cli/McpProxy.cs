@@ -1,13 +1,6 @@
-using System.Collections.Concurrent;
-using System.CommandLine;
-using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
+using System;
+using System.Collections.Generic;
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -15,14 +8,16 @@ using ModelContextProtocol;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
+using System.Threading;
+using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli;
 
 internal class McpProxy
 {
-	private readonly Microsoft.Extensions.Logging.ILogger _logger; // Use MS ILogger with LogX methods
+	private readonly ILogger _logger;
 
-	public McpProxy(Microsoft.Extensions.Logging.ILogger logger) => _logger = logger;
+	public McpProxy(ILogger logger) => _logger = logger;
 
 	public async Task<int> RunAsync(string hostPath, int port, List<string> forwardedArgs, CancellationToken ct)
 	{
@@ -49,74 +44,32 @@ internal class McpProxy
 
 	private async Task<(bool success, int? exitCode)> StartProcess(string hostPath, int port, List<string> forwardedArgs, CancellationToken ct)
 	{
-		var useDotnet = hostPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
-
-		var startInfo = new ProcessStartInfo
+		var args = new List<string>
 		{
-			FileName = useDotnet ? "dotnet" : hostPath,
-			UseShellExecute = false,
-			RedirectStandardOutput = true,
-			RedirectStandardError = true,
-			RedirectStandardInput = true, // important, otherwise stdin stays captured and the mcp server can't use it
-			CreateNoWindow = true,
-			WorkingDirectory = Directory.GetCurrentDirectory(),
+			"--command", "start",
+			"--httpPort", port.ToString(System.Globalization.CultureInfo.InvariantCulture),
+			"--ppid", Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture)
 		};
+		args.AddRange(forwardedArgs);
 
-		if (useDotnet)
+		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, redirectOutput: true, redirectInput: true);
+
+		var (exitCode, stdout, stderr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
+		if (exitCode != 0)
 		{
-			startInfo.ArgumentList.Add(hostPath);
-		}
-
-		startInfo.ArgumentList.Add("--command");
-		startInfo.ArgumentList.Add("start");
-		startInfo.ArgumentList.Add("--httpPort");
-		startInfo.ArgumentList.Add(port.ToString(System.Globalization.CultureInfo.InvariantCulture));
-
-		// Tie the lifetime of the devserver to this MCP server
-		startInfo.ArgumentList.Add("--ppid");
-		startInfo.ArgumentList.Add(Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture));
-
-		foreach (var fa in forwardedArgs)
-		{
-			startInfo.ArgumentList.Add(fa);
-		}
-
-		_logger.LogInformation("Launching devserver controller: {File} {Args}", startInfo.FileName, string.Join(" ", startInfo.ArgumentList));
-
-		var controller = Process.Start(startInfo);
-		if (controller is null)
-		{
-			_logger.LogError("Failed to start devserver controller process");
-			return (success: false, exitCode: 1);
-		}
-
-		var stdoutCapture = controller.StandardOutput.ReadToEndAsync();
-		var stderrCapture = controller.StandardError.ReadToEndAsync();
-
-		// We launch the devserver controller, which in turn launches the actual devserver.
-		await controller.WaitForExitAsync(ct);
-
-		if (controller.ExitCode != 0)
-		{
-			_logger.LogError("DevServer controller exited with code {ExitCode}", controller.ExitCode);
-			var so = await stdoutCapture; var se = await stderrCapture;
-
-			if (!string.IsNullOrWhiteSpace(so))
+			// Already logged by helper
+			if (!string.IsNullOrWhiteSpace(stdout))
 			{
-				_logger.LogDebug("Controller stdout:\n{Stdout}", so);
+				_logger.LogDebug("Controller stdout:\n{Stdout}", stdout);
 			}
-
-			if (!string.IsNullOrWhiteSpace(se))
+			if (!string.IsNullOrWhiteSpace(stderr))
 			{
-				_logger.LogError("Controller stderr:\n{Stderr}", se);
+				_logger.LogError("Controller stderr:\n{Stderr}", stderr);
 			}
-
-			return (success: false, exitCode: controller.ExitCode);
+			return (false, exitCode);
 		}
 
-		controller.Dispose();
-
-		return (success: true, exitCode: null);
+		return (true, null);
 	}
 
 	private async Task<int> StartMcpStdIoProxyAsync(string remoteEndpoint, CancellationToken ct)
@@ -130,7 +83,7 @@ internal class McpProxy
 			.WithStdioServerTransport()
 			.WithCallToolHandler(async (ctx, ct) =>
 			{
-				_logger.LogDebug("Invoking MCP tool {ExitCode}", ctx.Params!.Name);
+				_logger.LogDebug("Invoking MCP tool {Tool}", ctx.Params!.Name);
 
 				var name = ctx.Params!.Name;
 				var args = ctx.Params.Arguments ?? new Dictionary<string, JsonElement>();
@@ -186,7 +139,10 @@ internal class McpProxy
 		}
 		finally
 		{
-			await upstreamClient.DisposeAsync();
+			if (upstreamClient != null)
+			{
+				await upstreamClient.DisposeAsync();
+			}
 		}
 
 		return 0;
@@ -223,10 +179,10 @@ internal class McpProxy
 							return default;
 						})
 					],
-				}
+				},
 			};
 
-			log.LogInformation("Connecting to upstream MCP at {Url}�", url);
+			log.LogInformation("Connecting to upstream MCP at {Url}", url);
 			var client = await McpClientFactory.CreateAsync(clientTransport, options);
 			log.LogInformation("Connected to upstream: {Name} {Version}", client.ServerInfo.Name, client.ServerInfo.Version);
 			return client;

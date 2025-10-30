@@ -29,6 +29,7 @@ using Uno.UI.RemoteControl.VS.IdeChannel;
 using Uno.UI.RemoteControl.VS.Notifications;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
+using _udeiMsg = Uno.UI.RemoteControl.Messaging.IdeChannel.DevelopmentEnvironmentStatusIdeMessage;
 
 #pragma warning disable VSTHRD010
 #pragma warning disable VSTHRD109
@@ -67,7 +68,7 @@ public partial class EntryPoint : IDisposable
 	private _dispBuildEvents_OnBuildProjConfigBeginEventHandler? _onBuildProjConfigBeginHandler;
 	private UnoMenuCommand? _unoMenuCommand;
 	private IUnoDevelopmentEnvironmentIndicator? _udei;
-	private IdeCommandHandler _commands;
+	private CompositeCommandHandler _commands;
 
 	// Legacy API v2
 	public EntryPoint(
@@ -81,7 +82,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
-		_commands = new(new Logger(this));
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -103,7 +104,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
-		_commands = new(new Logger(this));
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -308,30 +309,7 @@ public partial class EntryPoint : IDisposable
 		_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
 
 		_closing = true;
-		if (_devServer is { process: var devServer, attachedServices: var ct })
-		{
-			try
-			{
-				_debugAction?.Invoke($"Terminating Remote Control server (pid: {devServer.Id})");
-				ct.Cancel();
-				devServer.Kill();
-				_debugAction?.Invoke($"Terminated Remote Control server (pid: {devServer.Id})");
-
-				_ideChannelClient?.Dispose();
-				_ideChannelClient = null;
-			}
-			catch (Exception e)
-			{
-				_debugAction?.Invoke($"Failed to terminate Remote Control server (pid: {devServer.Id}): {e}");
-			}
-			finally
-			{
-				_devServer = null;
-
-				// Invoke Dispose to make sure other event handlers are detached
-				Dispose();
-			}
-		}
+		StopDevServer();
 	}
 
 	private int GetDotnetMajorVersion()
@@ -444,7 +422,7 @@ public partial class EntryPoint : IDisposable
 			devServerCt = CancellationTokenSource.CreateLinkedTokenSource(_ct.Token);
 			if (_udei is not null)
 			{
-				await _udei.NotifyDevServerStartingAsync(devServerCt.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Starting, devServerCt.Token);
 			}
 
 			if (EnsureTcpPort(ref port) || portMisConfigured)
@@ -500,9 +478,13 @@ public partial class EntryPoint : IDisposable
 				_ideChannelClient.ConnectToHost();
 
 				// Use scoped DI instead of this!
-				var remoteCommands = new DevServerCommandHandler(_ideChannelClient);
-				devServerCt.Token.Register(remoteCommands.Dispose);
-				_commands.SetRemoteHandler(remoteCommands);
+				var remoteCommands = new IdeChannelCommandHandler(_ideChannelClient);
+				_commands.Register("Send to Dev Server", remoteCommands);
+				devServerCt.Token.Register(() =>
+				{
+					_commands.Unregister(remoteCommands);
+					remoteCommands.Dispose();
+				});
 			}
 			else
 			{
@@ -516,7 +498,7 @@ public partial class EntryPoint : IDisposable
 			_errorAction?.Invoke($"Failed to start server: {e}");
 			if (_udei is not null)
 			{
-				await _udei.NotifyDevServerKilledAsync(_ct.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Failed(e), _ct.Token);
 			}
 			devServerCt?.Cancel();
 		}
@@ -527,10 +509,11 @@ public partial class EntryPoint : IDisposable
 
 		async Task TrackConnectionTimeoutAsync(IdeChannelClient ideChannel)
 		{
-			await Task.Delay(5000, devServerCt.Token);
+			// The dev-server is expected to connect back to the IDE as soon as possible, 10sec should be more than enough.
+			await Task.Delay(10_000, devServerCt.Token);
 			if (ideChannel.MessagesReceivedCount is 0 && _udei is not null && !devServerCt.IsCancellationRequested)
 			{
-				await _udei.NotifyDevServerTimeoutAsync(devServerCt.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Timeout, devServerCt.Token);
 			}
 		}
 
@@ -548,7 +531,7 @@ public partial class EntryPoint : IDisposable
 			// If not closing, restart!
 			if (_udei is not null)
 			{
-				await _udei.NotifyDevServerRestartAsync(_ct.Token);
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Restarting, _ct.Token);
 			}
 
 			_debugAction?.Invoke($"Remote Control server exited ({_devServer?.process.ExitCode}). It will restart in 5sec.");
@@ -563,6 +546,41 @@ public partial class EntryPoint : IDisposable
 
 			await EnsureServerAsync();
 		}
+	}
+
+	private void StopDevServer()
+	{
+		if (_devServer is { process: var devServer, attachedServices: var ct })
+		{
+			try
+			{
+				_debugAction?.Invoke($"Terminating Remote Control server (pid: {devServer.Id})");
+				ct.Cancel();
+				devServer.Kill();
+				_debugAction?.Invoke($"Terminated Remote Control server (pid: {devServer.Id})");
+
+				_ideChannelClient?.Dispose();
+				_ideChannelClient = null;
+			}
+			catch (Exception e)
+			{
+				_debugAction?.Invoke($"Failed to terminate Remote Control server (pid: {devServer.Id}): {e}");
+			}
+			finally
+			{
+				_devServer = null;
+
+				// Invoke Dispose to make sure other event handlers are detached
+				Dispose();
+			}
+		}
+	}
+
+	public async Task RestartDevServerAsync(CancellationToken ct)
+	{
+		StopDevServer();
+
+		await EnsureServerAsync();
 	}
 
 	private void OnIdeChannelConnected(object sender, EventArgs e) =>

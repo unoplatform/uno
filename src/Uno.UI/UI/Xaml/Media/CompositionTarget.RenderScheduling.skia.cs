@@ -156,6 +156,13 @@ public partial class CompositionTarget
 		}
 	}
 
+	/// <summary>
+	/// This method is called from each platform's rendering logic in response to the native windowing/composition
+	/// engine's signal requesting the Uno app to draw something _right now_, usually synced to the refresh rate
+	/// of the screen (e.g. Android's IRenderer.OnDrawFrame). This class does not assume that this method will only
+	/// be called once per <see cref="IXamlRootHost.InvalidateRender"/> call, but the contract allows any number
+	/// of repeated calls, even if no new invalidations are requested.
+	/// </summary>
 	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");

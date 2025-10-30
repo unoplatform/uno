@@ -50,6 +50,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorder.xaml" />
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBar_SetDragRectangles.xaml" />
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\AnimatedIconTests\AnimatedIconPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5662,6 +5664,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UWPViewHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\WaitableSampleImageHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorder.xaml.cs">
+      <DependentUpon>TitleBarAndBorder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorderViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBar_SetDragRectangles.xaml.cs">
+      <DependentUpon>TitleBar_SetDragRectangles.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ExpanderTests\Expander_Bindings_TemplatedControl.xaml.cs">
       <DependentUpon>Expander_Bindings_TemplatedControl.xaml</DependentUpon>
     </Compile>
@@ -10069,6 +10078,11 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset_hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rect.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Reveal.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-400.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ScrollViewer.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\search.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Slices.png" />

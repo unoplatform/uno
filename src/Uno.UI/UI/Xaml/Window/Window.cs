@@ -303,15 +303,7 @@ partial class Window
 	// The parameter name differs between UWP and WinUI.
 	// UWP: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.settitlebar?view=winrt-22621
 	// WinUI: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window.settitlebar?view=windows-app-sdk-1.3
-	public void SetTitleBar(
-#if HAS_UNO_WINUI
-		UIElement? titleBar
-#else
-		UIElement? value
-#endif
-		)
-	{
-	}
+	public void SetTitleBar(UIElement? titleBar) => _windowImplementation.SetTitleBar(titleBar);
 
 	public bool ExtendsContentIntoTitleBar
 	{

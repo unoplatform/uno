@@ -35,6 +35,9 @@
 
 		<!-- Keep full exception strings in release -->
 		<UseSystemResourceKeys>false</UseSystemResourceKeys>
+
+		<!-- Attempt workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
+		<WasmFingerprintAssets>false</WasmFingerprintAssets>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -47,17 +47,6 @@ internal partial class Win32WindowWrapper
 		_renderer.StartPaint();
 		using var paintDisposable = new DisposableStruct<IRenderer>(static r => r.EndPaint(), _renderer);
 
-		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
-		if (clientRect.IsEmpty)
-		{
-			return;
-		}
-
 		// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
 		// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
 		// Paint() becoming reentrant which can cause crashes.
@@ -78,7 +67,11 @@ internal partial class Win32WindowWrapper
 			_rendering = false;
 		}
 
-
+		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
 		// this may call WM_ERASEBKGND
 		_renderer.CopyPixels(clientRect.Width, clientRect.Height);
 	}

@@ -4,8 +4,6 @@ using System.Net.Sockets;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Uno.UI.DevServer.Cli.Helpers;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -27,7 +25,12 @@ internal class CliManager
 				return await RunMcpProxyAsync(originalArgs.Where(a => a != "--mcp").ToArray());
 			}
 
-			_logger.LogInformation("Uno Platform DevServer CLI");
+			ShowBanner();
+
+			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
+			{
+				return await OpenSettings(originalArgs);
+			}
 
 			var hostPath = await ResolveHostExecutableAsync();
 			if (hostPath is null)
@@ -35,118 +38,74 @@ internal class CliManager
 				return 1; // errors already logged
 			}
 
-			// If the command is 'list' or 'cleanup' we want the subprocess to write directly to the console
 			var isDirectOutputCommand = originalArgs.Length > 0 && (
 				string.Equals(originalArgs[0], "list", StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(originalArgs[0], "cleanup", StringComparison.OrdinalIgnoreCase)
 			);
 
-			// Build args: prepend --command and forward user args as-is
-			var forwardedArgs = BuildHostArgs(hostPath, originalArgs, redirectOutput: !isDirectOutputCommand);
+			var startInfo = BuildHostArgs(hostPath, originalArgs, redirectOutput: !isDirectOutputCommand);
 
-			_logger.LogDebug("Starting host process: {FileName} {Arguments}", forwardedArgs.FileName, string.Join(" ", forwardedArgs.ArgumentList));
-			var process = Process.Start(forwardedArgs);
-			_logger.LogDebug("Started Host process: {pid}", process?.Id);
-
-			if (process is null)
-			{
-				_logger.LogError("Failed to start DevServer Host process.");
-				return 1;
-			}
-
-			if (isDirectOutputCommand)
-			{
-				// When not redirecting, just wait for exit — output goes to console directly.
-				await process.WaitForExitAsync();
-
-				if (process.ExitCode != 0)
-				{
-					_logger.LogError("Host exited with code {ExitCode}", process.ExitCode);
-					return process.ExitCode;
-				}
-
-				_logger.LogInformation("Command completed successfully.");
-				return 0;
-			}
-
-			var outputSb = new StringBuilder();
-			var errorSb = new StringBuilder();
-
-			process.OutputDataReceived += (s, e) =>
-			{
-				if (e.Data != null)
-				{
-					outputSb.AppendLine(e.Data);
-
-					if (_logger.IsEnabled(LogLevel.Debug))
-					{
-						_logger.LogDebug("[DevServer:stdout] " + e.Data);
-					}
-				}
-			};
-
-			process.ErrorDataReceived += (s, e) =>
-			{
-				if (e.Data != null)
-				{
-					errorSb.AppendLine(e.Data);
-
-					if (_logger.IsEnabled(LogLevel.Debug))
-					{
-						_logger.LogDebug("[DevServer:stderr] " + e.Data);
-					}
-				}
-			};
-
-			// Start asynchronous read of output streams to avoid potential deadlocks on Windows
-			try
-			{
-				process.BeginOutputReadLine();
-				process.BeginErrorReadLine();
-			}
-			catch (InvalidOperationException)
-			{
-				// Streams might not be available; fall back to not reading asynchronously
-			}
-
-			var processExited = new TaskCompletionSource();
-
-			process.Exited += (e, s) =>
-			{
-				_logger.LogTrace("Host has exited (code: {ExitCode})", process.ExitCode);
-				processExited.TrySetResult();
-			};
-
-			// Wait for both process exit event and WaitForExitAsync, in
-			// case some std is blocking the process exit.
-			await Task.WhenAny(process.WaitForExitAsync(), processExited.Task);
-
-			var output = outputSb.ToString();
-			var errorOutput = errorSb.ToString();
-
-			if (process.ExitCode != 0)
-			{
-				_logger.LogError("Host exited with code {ExitCode}", process.ExitCode);
-
-				if (!string.IsNullOrWhiteSpace(output))
-				{
-					_logger.LogError("Host standard output for troubleshooting:\n{Output}", output);
-				}
-				if (!string.IsNullOrWhiteSpace(errorOutput))
-				{
-					_logger.LogError("Host error output for troubleshooting:\n{ErrorOutput}", errorOutput);
-				}
-
-				return process.ExitCode;
-			}
-
-			_logger.LogInformation("Command completed successfully.");
-			return 0;
+			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
+			return result.ExitCode;
 		}
 		catch (Exception ex)
 		{
 			_logger.LogError(ex, "Error running command: {ErrorMessage}", ex.Message);
 			return 1;
+		}
+	}
+
+	private void ShowBanner()
+	{
+		// get the assembly informational version
+		var attrs = typeof(CliManager).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false);
+
+		if (attrs.Length > 0 && attrs[0] is System.Reflection.AssemblyInformationalVersionAttribute versionAttr)
+		{
+			// Take only what's before a `+`, we don't want the commit hash here
+			var items = versionAttr.InformationalVersion.Split('+', StringSplitOptions.RemoveEmptyEntries);
+
+			_logger.LogInformation("Uno Platform DevServer CLI - Version {Version}", items[0]);
+		}
+		else
+		{
+			_logger.LogInformation("Uno Platform DevServer CLI - Dev Version");
+		}
+	}
+
+	private async Task<int> OpenSettings(string[] originalArgs)
+	{
+		var studioExecutable = await ResolveSettingsExecutableAsync();
+
+		if (studioExecutable is null)
+		{
+			return 1; // errors already logged
+		}
+
+		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, redirectOutput: true);
+
+		var (exitCode, stdOut, stdErr) = await DevServerProcessHelper.RunGuiProcessAsync(startInfo, _logger, TimeSpan.FromSeconds(3));
+
+		if (exitCode is not null)
+		{
+			// Display output for debugging purposes
+			if (!string.IsNullOrWhiteSpace(stdOut))
+			{
+				_logger.LogDebug("Settings application stdout:\n{Stdout}", stdOut);
+			}
+			if (!string.IsNullOrWhiteSpace(stdErr))
+			{
+				_logger.LogError("Settings application stderr:\n{Stderr}", stdErr);
+			}
+
+			_logger.LogError("Settings application exited with code {ExitCode}", exitCode);
+
+			return 1;
+		}
+		else
+		{
+			_logger.LogInformation("Settings application started successfully");
+			return 0;
 		}
 	}
 
@@ -205,6 +164,38 @@ internal class CliManager
 		}
 	}
 
+	private async Task<string?> ResolveSettingsExecutableAsync()
+	{
+		var sdkVersion = await GetSdkVersionFromGlobalJson();
+
+		if (sdkVersion.sdkVersion == null || sdkVersion.sdkPackage == null)
+		{
+			_logger.LogError("Could not determine SDK version from global.json.");
+			return null;
+		}
+
+		_logger.LogDebug("SDK Version: {SdkPackage} {SdkVersion}", sdkVersion.sdkPackage, sdkVersion.sdkVersion);
+
+		var unoSdkPath = await EnsureNugetPackage(sdkVersion.sdkPackage, sdkVersion.sdkVersion);
+
+		if (unoSdkPath == null)
+		{
+			_logger.LogError("Uno SDK package version {SdkPackage} {SdkVersion} not found. Please ensure the Uno SDK is properly installed.", sdkVersion.sdkPackage, sdkVersion.sdkVersion);
+			return null;
+		}
+		_logger.LogDebug("Found Uno SDK: {UnoSdkPath}", unoSdkPath);
+
+		var studioPath = await GetSettingsExecutable(unoSdkPath);
+
+		if (studioPath is null)
+		{
+			_logger.LogError("Could not determine Settings application executable path.");
+			return null;
+		}
+
+		return studioPath;
+	}
+
 	private async Task<string?> ResolveHostExecutableAsync()
 	{
 		var sdkVersion = await GetSdkVersionFromGlobalJson();
@@ -234,48 +225,21 @@ internal class CliManager
 
 	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, bool redirectOutput = true)
 	{
-		// Use dotnet on non-Windows platforms or when the host is a DLL
-		var useDotnet = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || hostPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
-
-		var psi = new ProcessStartInfo
-		{
-			FileName = useDotnet ? "dotnet" : hostPath,
-			UseShellExecute = false,
-			CreateNoWindow = true,
-			RedirectStandardOutput = redirectOutput,
-			RedirectStandardError = redirectOutput,
-			WorkingDirectory = Directory.GetCurrentDirectory(),
-		};
-
-		var hostArgPath = hostPath;
-		if (useDotnet)
-		{
-			// If the package provides an .exe but we're invoking via dotnet (non-Windows),
-			// switch to the .dll equivalent so dotnet can run it.
-			if (hostArgPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-			{
-				// Use span-based concat to avoid allocations warning (CA1845)
-				hostArgPath = string.Concat(hostArgPath.AsSpan(0, hostArgPath.Length - 4), ".dll");
-			}
-
-			psi.ArgumentList.Add(hostArgPath);
-		}
-
-		psi.ArgumentList.Add("--command");
+		var args = new List<string> { "--command" };
 		if (originalArgs.Length > 0)
 		{
-			psi.ArgumentList.Add(originalArgs[0]);
+			args.Add(originalArgs[0]);
 			for (int i = 1; i < originalArgs.Length; i++)
 			{
-				psi.ArgumentList.Add(originalArgs[i]);
+				args.Add(originalArgs[i]);
 			}
 		}
 		else
 		{
-			psi.ArgumentList.Add("start");
+			args.Add("start");
 		}
 
-		return psi;
+		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, redirectOutput);
 	}
 
 	private static string? FindGlobalJson(string startPath)
@@ -452,7 +416,52 @@ internal class CliManager
 		}
 	}
 
+	private async Task<string?> GetSettingsExecutable(string unoSdkPath)
+	{
+		try
+		{
+			var devServerPackageVersion = await GetSettingsPackageVersion(unoSdkPath);
+			if (devServerPackageVersion is null)
+			{
+				return null;
+			}
+
+			var dotnetVersion = await GetDotNetVersion();
+			if (dotnetVersion is null)
+			{
+				return null;
+			}
+
+			var licensingPackagePath = await EnsureNugetPackage("uno.settings.devserver", devServerPackageVersion, false);
+			if (licensingPackagePath is null)
+			{
+				return null;
+			}
+
+			var hostExe = Path.Combine(licensingPackagePath, "tools", "manager", "Uno.Settings.dll");
+			if (File.Exists(hostExe))
+			{
+				_logger.LogDebug("Found Settings App: {Path}", hostExe);
+				return hostExe;
+			}
+
+			_logger.LogError("Settings App executable not found in package at expected paths");
+			return null;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to locate Settings App executable: {Message}", ex.Message);
+			return null;
+		}
+	}
+
 	private async Task<string?> GetDevServerPackageVersion(string unoSdkPath)
+		=> await GetUnoPackageVersionFromManifest(unoSdkPath, "uno.winui.devserver");
+
+	private async Task<string?> GetSettingsPackageVersion(string unoSdkPath)
+		=> await GetUnoPackageVersionFromManifest(unoSdkPath, "uno.settings.devserver");
+
+	private async Task<string?> GetUnoPackageVersionFromManifest(string unoSdkPath, string packageName)
 	{
 		try
 		{
@@ -479,10 +488,10 @@ internal class CliManager
 						{
 							foreach (var package in packagesElement.EnumerateArray())
 							{
-								var packageName = package.GetString();
-								if (packageName != null && packageName.Equals("Uno.WinUI.DevServer", StringComparison.OrdinalIgnoreCase))
+								var manifestPackageName = package.GetString();
+								if (manifestPackageName != null && manifestPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase))
 								{
-									_logger.LogDebug("Found Uno.WinUI.DevServer package version {Version} in packages.json", version);
+									_logger.LogDebug("Found {PackageName} package version {Version} in packages.json", packageName, version);
 									return version;
 								}
 							}

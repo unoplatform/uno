@@ -104,62 +104,23 @@ namespace Uno.UI.Runtime.Skia.Win32
 			=> PInvoke.PeekMessage(out var msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_NOREMOVE);
 
 		/// <summary>
-		/// By default, uses PeekMessage to get a message if available and does nothing if
-		/// the message pump is empty. If the timeout is set, blocks with GetMessage for
-		/// the duration of the timeout and then exits if there are no messages.
+		/// By default, uses PeekMessage to get input messages if available and does nothing if
+		/// the message pump is empty. Otherwise, blocks with GetMessage.
 		/// </summary>
-		public static void RunOnce(TimeSpan? timeout = null)
+		public static void RunOnce()
 		{
 			// We need to prioritize input messages in some cases like wheel
 			// scrolling where we don't want to wait for the queue to be empty
 			// before continuing to scroll.
 			if (PInvoke.PeekMessage(out var msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE | PEEK_MESSAGE_REMOVE_TYPE.PM_QS_INPUT)
-				|| PInvoke.PeekMessage(out msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE))
+				|| PInvoke.GetMessage(out msg, HWND.Null, 0, 0).Value != -1)
 			{
 				PInvoke.TranslateMessage(msg);
 				PInvoke.DispatchMessage(msg);
 			}
-			else if (timeout.HasValue)
+			else
 			{
-				// In the common case, we never hit this path as the dispatcher runs inside the message pump and
-				// will continue to have messages. This only hits when the app is idle and we need to stop
-				// spamming PeekMessage. Instead, we use GetMessage but we make sure to unblock it every
-				// second to see if we should continue or not, otherwise the GetMessage call could be stuck forever.
-				var cts = new CancellationTokenSource();
-				_ = Task.Run(async () =>
-				{
-					try
-					{
-						for (var i = 0; i < 10; i++)
-						{
-							await Task.Delay(timeout.Value / 10);
-							if (cts.IsCancellationRequested)
-							{
-								return;
-							}
-						}
-						// This sends an UnoWin32DispatcherMsg and unblocks the GetMessage call.
-						if (!cts.IsCancellationRequested)
-						{
-							NativeDispatcher.Main.Enqueue(() => { });
-						}
-					}
-					catch (TaskCanceledException)
-					{
-						// No need to unblock anything.
-					}
-				}, cts.Token);
-
-				if (PInvoke.GetMessage(out var msg2, HWND.Null, 0, 0).Value != -1)
-				{
-					cts.Cancel();
-					PInvoke.TranslateMessage(msg2);
-					PInvoke.DispatchMessage(msg2);
-				}
-				else
-				{
-					typeof(Win32EventLoop).LogError()?.Error($"{nameof(PInvoke.GetMessage)} failed: {Win32Helper.GetErrorMessage()}");
-				}
+				typeof(Win32EventLoop).LogError()?.Error($"{nameof(PInvoke.GetMessage)} failed: {Win32Helper.GetErrorMessage()}");
 			}
 		}
 	}

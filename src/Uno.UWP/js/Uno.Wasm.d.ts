@@ -132,12 +132,23 @@ declare namespace Uno.Devices.Midi.Internal {
         static getMidi(): WebMidi.MIDIAccess;
     }
 }
+declare class Accelerometer {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+    removeEventListener(type: "reading", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+    start(): void;
+    stop(): void;
+    x: number;
+    y: number;
+    z: number;
+}
 interface Window {
-    DeviceMotionEvent(): void;
+    Accelerometer: typeof Accelerometer;
 }
 declare namespace Windows.Devices.Sensors {
     class Accelerometer {
         private static dispatchReading;
+        private static accelerometer;
         static initialize(): boolean;
         static startReading(): void;
         static stopReading(): void;

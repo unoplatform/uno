@@ -23,6 +23,10 @@ using Microsoft.UI.Xaml.Media;
 using System.Text;
 using System.IO;
 
+#if __SKIA__
+using Uno.WinUI.Graphics2DSK;
+#endif
+
 #if HAS_UNO_WINUI
 using SkiaSharp.Views.Windows;
 using Windows.UI.Core;
@@ -49,6 +53,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 #if USE_HARDWARE_ACCELERATION
 		private SKSwapChainPanel? _hardwareCanvas;
+#elif __SKIA__
+		private SKCanvasElement? _skCanvasElement;
 #else
 		private SKXamlCanvas? _softwareCanvas;
 #endif
@@ -209,6 +215,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			AdjustHardwareCanvasOpacity();
 #endif
 			return _hardwareCanvas;
+#elif __SKIA__
+			_skCanvasElement = new LottieSKCanvasElement(this);
+			return _skCanvasElement;
 #else
 			_softwareCanvas = new();
 			_softwareCanvas.PaintSurface += OnSoftwareCanvas_PaintSurface;
@@ -261,7 +270,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				_hardwareCanvas.PaintSurface -= OnHardwareCanvas_PaintSurface;
 			}
-#else
+#elif !__SKIA__
 			if (_softwareCanvas != null)
 			{
 				_softwareCanvas.PaintSurface -= OnSoftwareCanvas_PaintSurface;
@@ -271,20 +280,25 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void OnSoftwareCanvas_PaintSurface(object? sender, SKPaintSurfaceEventArgs e)
 		{
-			Render(e.Surface);
+			Render(e.Surface.Canvas, saveRestoreAndCleanCanvas: true);
 		}
 
 		private void OnHardwareCanvas_PaintSurface(object? sender, SKPaintGLSurfaceEventArgs e)
 		{
-			Render(e.Surface);
+			Render(e.Surface.Canvas, saveRestoreAndCleanCanvas: true);
 		}
 
-		private void Render(SKSurface surface)
+#if __SKIA__
+		private void OnRenderOverride(SKCanvas canvas, Size area)
+		{
+			Render(canvas, saveRestoreAndCleanCanvas: false);
+		}
+#endif
+
+		private void Render(SKCanvas canvas, bool saveRestoreAndCleanCanvas)
 		{
 			lock (_gate)
 			{
-				var canvas = surface.Canvas;
-
 				var animation = _animation;
 				if (animation is null || _player is null)
 				{
@@ -299,7 +313,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				var frameTime = GetFrameTime();
 
-				var localSize = surface.Canvas.LocalClipBounds.Size;
+				var localSize = canvas.LocalClipBounds.Size;
 
 				var scale = ImageSizeHelper.BuildScale(_player.Stretch, localSize.ToSize(), animation.Size.ToSize());
 				var scaledSize = new Windows.Foundation.Size(animation.Size.Width * scale.x, animation.Size.Height * scale.y);
@@ -309,16 +323,21 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				animation.SeekFrameTime(frameTime, _invalidationController);
 
-				canvas.Save();
-
-				canvas.Clear(GetBackgroundColor());
+				if (saveRestoreAndCleanCanvas)
+				{
+					canvas.Save();
+					canvas.Clear(GetBackgroundColor());
+				}
 
 				canvas.Translate((float)x, (float)y);
 				canvas.Scale((float)(scaledSize.Width / animation.Size.Width), (float)(scaledSize.Height / animation.Size.Height));
 
 				animation.Render(canvas, new SKRect(0, 0, animation.Size.Width, animation.Size.Height));
 
-				canvas.Restore();
+				if (saveRestoreAndCleanCanvas)
+				{
+					canvas.Restore();
+				}
 
 				_invalidationController.Reset();
 			}
@@ -396,6 +415,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 #if USE_HARDWARE_ACCELERATION
 			_hardwareCanvas?.Invalidate();
+#elif __SKIA__
+			_skCanvasElement?.Invalidate();
 #else
 			_softwareCanvas?.Invalidate();
 #endif
@@ -472,6 +493,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			=> _animation?.Size is { } size
 				? new Size(size.Width, size.Height)
 				: default;
+
+#if __SKIA__
+		private partial class LottieSKCanvasElement(LottieVisualSourceBase owner) : SKCanvasElement
+		{
+			protected override void RenderOverride(SKCanvas canvas, Size area) => owner.OnRenderOverride(canvas, area);
+		}
+#endif
 	}
 }
 #endif

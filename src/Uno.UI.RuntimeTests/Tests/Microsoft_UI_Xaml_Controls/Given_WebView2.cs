@@ -311,7 +311,6 @@ public class Given_WebView2
 	[Ignore("Crashes")]
 #endif
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32)] // passes locally but fails in CI
 	public async Task When_LocalFolder_File()
 	{
 		async Task Do()

@@ -14,7 +14,10 @@ using SKMatrix = SkiaSharp.SKMatrix;
 using SKRect = SkiaSharp.SKRect;
 #if HAS_UNO_WINUI
 using SkiaSharp.Views.Windows;
-#if __MACCATALYST__ || !(__APPLE_UIKIT__ || __ANDROID__)
+
+#if __SKIA__
+using SkiaCanvas = global::Uno.WinUI.Graphics2DSK.SKCanvasElement;
+#elif __MACCATALYST__ || !(__APPLE_UIKIT__ || __ANDROID__)
 using SkiaCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
 #else
@@ -113,16 +116,28 @@ internal partial class SvgCanvas : SkiaCanvas
 		return finalSize;
 	}
 
+#if __SKIA__
+	protected override void RenderOverride(SKCanvas canvas, Size area)
+	{
+		Draw(canvas, (float)area.Width, (float)area.Height);
+	}
+#else
 	protected override void OnPaintSurface(SkiaPaintEventArgs e)
 	{
-		var scale = (float)GetScaleFactorForLayoutRounding();
 		var canvas = e.Surface.Canvas;
+		var scale = (float)GetScaleFactorForLayoutRounding();
 		canvas.SetMatrix(SKMatrix.CreateScale(scale, scale));
 		canvas.Clear(SKColors.Transparent);
+		Draw(canvas, (float)_lastArrangeSize.Width, (float)_lastArrangeSize.Height);
+	}
+#endif
+
+	private void Draw(SKCanvas canvas, float width, float height)
+	{
 		if (_svgImageSource.UseRasterized && _svgProvider.SkBitmap is { } bitmap)
 		{
 			var sourceRect = new SKRect(0, 0, bitmap.Width, bitmap.Height);
-			var destRect = new SKRect(0, 0, (float)_lastArrangeSize.Width, (float)_lastArrangeSize.Height);
+			var destRect = new SKRect(0, 0, width, height);
 			canvas.DrawBitmap(bitmap, sourceRect, destRect);
 		}
 		else if (_svgProvider.SkSvg?.Picture is { } picture)
@@ -131,7 +146,6 @@ internal partial class SvgCanvas : SkiaCanvas
 			canvas.DrawPicture(picture, in svgScaleMatrix);
 		}
 	}
-
 	private SKMatrix CreateScaleMatrix()
 	{
 		if (_lastArrangeSize == default)

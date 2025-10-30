@@ -6,6 +6,18 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.UI.Input;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
+using Uno.UI.Runtime.Skia.Win32.UI.Xaml.Window;
+using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
@@ -16,16 +28,6 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using SkiaSharp;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.Helpers.Theming;
-using Uno.UI.Dispatching;
-using Uno.UI.Hosting;
-using Uno.UI.NativeElementHosting;
-using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -51,6 +53,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
+	private bool _beforeFirstEraseBkgnd = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -111,7 +114,25 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			Resize(new SizeInt32((int)(Size.Width * RasterizationScale), (int)(Size.Height * RasterizationScale)));
 		}
 
-		// TODO: extending into titlebar
+		window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
+	}
+
+	private void OnExtendsContentIntoTitleBarChanged(bool extends)
+	{
+		if (_window is null)
+		{
+			throw new InvalidOperationException("Cannot extend client area before the Window is set.");
+		}
+
+		if (!WasShown)
+		{
+			return;
+		}
+
+		if (_window.AppWindow.Presenter is OverlappedPresenter overlapped)
+		{
+			SetBorderAndTitleBar(overlapped.HasBorder, overlapped.HasTitleBar);
+		}
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
@@ -198,6 +219,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
+
+		if (TryHandleCustomCaptionMessage(hwnd, msg, wParam, lParam, out var customCaptionResult))
+		{
+			return customCaptionResult;
+		}
+
 		switch (msg)
 		{
 			case PInvoke.WM_ACTIVATE:
@@ -230,6 +257,28 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 				return new LRESULT(0);
+			case PInvoke.WM_ERASEBKGND:
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
+				if (_beforeFirstEraseBkgnd)
+				{
+					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
+					// Note that we don't call OnRenderFrameOpportunity here, but before showing
+					// the window in ShowCore. The problem is that any minor delay will cause
+					// a split-second white flash, so we're keeping the "time to blit" to a
+					// minimum by "rendering" before the window is shown and only drawing when
+					// receiving the first WM_ERASEBKGND
+					_beforeFirstEraseBkgnd = false;
+					// The render timer might already be running. This is fine. The CompositionTarget
+					// contract allows calling OnNativePlatformFrameRequested multiple times.
+					Render();
+					return new LRESULT(1);
+				}
+				else
+				{
+					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
+					// only do it the first time when we really need to
+					return new LRESULT(0);
+				}
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
@@ -255,9 +304,43 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					return new LRESULT(0);
 				}
 				break;
+			case PInvoke.WM_NCCALCSIZE:
+				if (wParam.Value == 1 && (!_hasBorder || !_hasTitleBar))
+				{
+					return new LRESULT(IntPtr.Zero);
+				}
+				break;
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
+	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
+	{
+		return new System.Drawing.Point((int)(lParam.Value) & 0xffff, (int)(lParam.Value) >> 16);
+	}
+
+	private bool TryHandleCustomCaptionMessage(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam, out LRESULT result)
+	{
+		var handled = PInvoke.DwmDefWindowProc(hWnd, msg, wParam, lParam, out result);
+
+		switch (msg)
+		{
+			case PInvoke.WM_NCHITTEST:
+				if (result == IntPtr.Zero)
+				{
+					var hittestResult = NonClientAreaHitTest(hWnd, wParam, lParam);
+
+					if (hittestResult != Win32NonClientHitTestKind.HTNOWHERE)
+					{
+						result = new LRESULT((IntPtr)hittestResult);
+						handled = true;
+					}
+				}
+				break;
+		}
+
+		return handled;
 	}
 
 	private unsafe void OnWmDpiChanged(WPARAM wParam, LPARAM lParam)
@@ -275,6 +358,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
+		if (_window is not null)
+		{
+			_window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= OnExtendsContentIntoTitleBarChanged;
+		}
 		Win32Host.UnregisterWindow(_hwnd);
 		_renderer.Dispose();
 		_rendererDisposed = true;
@@ -372,6 +459,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	protected override void ShowCore()
 	{
+		// see the comment in WndProc's WM_ERASEBKGND handling
+		if (_beforeFirstEraseBkgnd)
+		{
+			(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+		}
+
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but
