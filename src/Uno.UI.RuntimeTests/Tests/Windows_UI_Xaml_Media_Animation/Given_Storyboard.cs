@@ -50,4 +50,71 @@ public class Given_Storyboard
 		Assert.AreEqual(ClockState.Active, storyboard.GetCurrentState());
 		await TestServices.WindowHelper.WaitFor(() => completed);
 	}
+
+	[TestMethod]
+	public async Task When_DependentAnimation_Without_EnableDependentAnimation_Completes()
+	{
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100
+		};
+
+		var animation = new DoubleAnimation
+		{
+			From = 100,
+			To = 200,
+			Duration = new Duration(System.TimeSpan.FromMilliseconds(100)),
+			EnableDependentAnimation = false // Explicitly set to false
+		};
+
+		Storyboard.SetTarget(animation, border);
+		Storyboard.SetTargetProperty(animation, "Height");
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		bool completed = false;
+		storyboard.Completed += (s, e) => completed = true;
+
+		storyboard.Begin();
+
+		// The Completed event should fire even though the animation doesn't actually run
+		await TestServices.WindowHelper.WaitFor(() => completed, timeoutMS: 2000);
+		Assert.IsTrue(completed, "Storyboard.Completed should fire even for dependent animations without EnableDependentAnimation");
+	}
+
+	[TestMethod]
+	public async Task When_DependentAnimation_Stopped_Before_Completion()
+	{
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100
+		};
+
+		var animation = new DoubleAnimation
+		{
+			From = 100,
+			To = 200,
+			Duration = new Duration(System.TimeSpan.FromMilliseconds(100)),
+			EnableDependentAnimation = false
+		};
+
+		Storyboard.SetTarget(animation, border);
+		Storyboard.SetTargetProperty(animation, "Height");
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		bool completed = false;
+		storyboard.Completed += (s, e) => completed = true;
+
+		storyboard.Begin();
+		storyboard.Stop(); // Stop immediately
+
+		// Completed should not fire when stopped before completion
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsFalse(completed, "Storyboard.Completed should not fire when stopped before completion");
+	}
 }
