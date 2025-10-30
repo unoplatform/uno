@@ -220,14 +220,7 @@ namespace Uno.Xaml
 				else if (c == '\'') isInQuot = !isInQuot;
 				else if (isInQuot) { }
 				else if (c == '{') bracketDepth++;
-				else if (c == '}')
-				{
-					bracketDepth--;
-					if (bracketDepth > 0)
-					{
-						throw Error("Unexpected '}}' in markup extension: '{0}'", raw);
-					}
-				}
+				else if (c == '}') bracketDepth--;
 				else if (c == ',' && bracketDepth == 0)
 				{
 					yield return vargs.Substring(lastSliceIndex + 1, i - lastSliceIndex - 1).Trim();
