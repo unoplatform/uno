@@ -409,7 +409,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(TopX11Window.Display))
 		{
-			_renderer = new X11OpenGLRenderer(this, TopX11Window);
+			_renderer = new X11EGLRenderer(this, TopX11Window);
 		}
 		else
 		{
