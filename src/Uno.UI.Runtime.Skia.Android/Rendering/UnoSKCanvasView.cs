@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Android.Content;
 using Android.Graphics;
 using Android.Opengl;
@@ -9,63 +8,97 @@ using Android.Util;
 using Android.Views;
 using Android.Views.Autofill;
 using Android.Views.InputMethods;
-using AndroidX.Core.Graphics;
 using AndroidX.Core.View;
-using Javax.Microedition.Khronos.Opengles;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
+using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Dispatching;
-using Uno.UI.Helpers;
-using Windows.Graphics.Display;
+using MUXWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
-internal sealed partial class UnoSKCanvasView : GLSurfaceView
+internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 {
+	private const uint DefaultFramebuffer = 0;
+
+	private UIElement? _rootElement;
+	private EGLDisplay? _eglDisplay;
+	private EGLContext? _glContext;
+	private EGLSurface? _eglWindowSurface;
+	private GRContext? _grContext;
+	private int _stencil;
+	private GRBackendRenderTarget? _renderTarget;
+	private SKSurface? _surface;
+
+	public event EventHandler<SKSurface>? PaintSurface;
+
+	internal UIElement? RootElement => _rootElement ??= Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement;
 	internal UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	internal TextInputPlugin TextInputPlugin { get; }
 
 	internal static UnoSKCanvasView? Instance { get; private set; }
 
-	private readonly InternalRenderer _renderer;
-
 	public UnoSKCanvasView(Context context) : base(context)
 	{
-		SetEGLContextClientVersion(2);
-		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
-		SetRenderer(_renderer = new InternalRenderer());
 		Instance = this;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
 		Focusable = true;
 		FocusableInTouchMode = true;
-		PreserveEGLContextOnPause = true;
 		if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
 		{
 			ImportantForAutofill = ImportantForAutofill.Yes;
 		}
 
 		SetWillNotDraw(false);
-
-		RenderMode = Rendermode.WhenDirty;
+		this.Holder?.AddCallback(this);
 	}
 
-	internal void ResetRendererContext()
+	internal IDisposable MakeCurrent()
 	{
-		_renderer.ResetContext();
+		var glContext = EGL14.EglGetCurrentContext();
+		var display = EGL14.EglGetCurrentDisplay();
+		var readSurface = EGL14.EglGetCurrentSurface(EGL14.EglRead);
+		var drawSurface = EGL14.EglGetCurrentSurface(EGL14.EglDraw);
+		if (!EGL14.EglMakeCurrent(_eglDisplay, _eglWindowSurface, _eglWindowSurface, _glContext))
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(EGL14.EglMakeCurrent)} failed.");
+			}
+		}
+		return Disposable.Create(() =>
+		{
+			if (!EGL14.EglMakeCurrent(display, drawSurface, readSurface, glContext))
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(EGL14.EglMakeCurrent)} failed.");
+				}
+			}
+		});
 	}
 
-	internal void InvalidateRender()
+	protected override void OnDraw(Canvas canvas)
 	{
-		ExploreByTouchHelper.InvalidateRoot();
-		// Request the call of IRenderer.OnDrawFrame for one frame
-		RequestRender();
+		base.OnDraw(canvas);
+
+		if (_surface is null)
+		{
+			return;
+		}
+
+		using var _ = MakeCurrent();
+
+		PaintSurface?.Invoke(this, _surface);
+
+		_surface.Flush();
+		EGL14.EglSwapBuffers(_eglDisplay, _eglWindowSurface);
 	}
 
 	public override bool OnCheckIsTextEditor()
+
 		// Required for the InputConnection to be created
 		=> true;
 
@@ -117,7 +150,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 			return;
 		}
 
-		TextInputPlugin.OnProvideAutofillVirtualStructure(structure);
+		TextInputPlugin?.OnProvideAutofillVirtualStructure(structure);
 	}
 
 	public override void Autofill(SparseArray values)
@@ -137,118 +170,134 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 	public override IInputConnection? OnCreateInputConnection(EditorInfo? outAttrs)
 		=> TextInputPlugin.OnCreateInputConnection(outAttrs!);
 
-	// Copied from https://github.com/mono/SkiaSharp/blob/main/source/SkiaSharp.Views/SkiaSharp.Views/Platform/Android/SKGLSurfaceView.cs
-	// and modified to also add rendering without OpenGL
-	private class InternalRenderer() : Java.Lang.Object, IRenderer
+	void ISurfaceHolderCallback.SurfaceCreated(ISurfaceHolder holder)
 	{
-		private const SKColorType ColorType = SKColorType.Rgba8888;
-		private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
-
-		private readonly bool _hardwareAccelerated = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
-
-		private GRContext? _context;
-		private GRGlFramebufferInfo _glInfo;
-		private GRBackendRenderTarget? _renderTarget;
-
-		private SKSurface? _glBackedSurface;
-		private SKSurface? _softwareSurface;
-
-		void IRenderer.OnDrawFrame(IGL10? gl)
+		_eglDisplay = EGL14.EglGetDisplay(EGL14.EglDefaultDisplay);
+		if (_eglDisplay == EGL14.EglNoDisplay)
 		{
-			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
-
-			// create the contexts if not done already
-			if (_context == null)
-			{
-				var glInterface = GRGlInterface.Create();
-				_context = GRContext.CreateGl(glInterface);
-			}
-
-			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas,
-			size =>
-			{
-				// read the info from the buffer
-				var buffer = new int[3];
-				GLES20.GlGetIntegerv(GLES20.GlFramebufferBinding, buffer, 0);
-				GLES20.GlGetIntegerv(GLES20.GlStencilBits, buffer, 1);
-				GLES20.GlGetIntegerv(GLES20.GlSamples, buffer, 2);
-				var samples = buffer[2];
-				var maxSamples = _context.GetMaxSurfaceSampleCount(ColorType);
-				if (samples > maxSamples)
-				{
-					samples = maxSamples;
-				}
-
-				_glInfo = new GRGlFramebufferInfo((uint)buffer[0], ColorType.ToGlSizedFormat());
-
-				// destroy the old surface
-				_glBackedSurface?.Dispose();
-				_softwareSurface?.Dispose();
-				_glBackedSurface = null;
-				_softwareSurface = null;
-
-				// re-create the render target
-				_renderTarget?.Dispose();
-				_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, samples, buffer[1], _glInfo);
-
-				if (_glBackedSurface == null)
-				{
-					_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
-				}
-
-				if (!_hardwareAccelerated && _softwareSurface is null)
-				{
-					var info = new SKImageInfo((int)size.Width, (int)size.Height, ColorType);
-					_softwareSurface = SKSurface.Create(info);
-				}
-
-				surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-				return surface!.Canvas;
-			});
-
-			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
-
-			if (!_hardwareAccelerated && _glBackedSurface is not null)
-			{
-				var glBackedCanvas = _glBackedSurface.Canvas;
-				glBackedCanvas.Clear(SKColors.Transparent);
-				glBackedCanvas.DrawSurface(_softwareSurface, 0, 0);
-				glBackedCanvas.Flush();
-			}
-			// else : we already drew directly on the OpenGL-backed canvas
-
-			_context!.Flush();
+			throw new InvalidOperationException($"{nameof(EGL14.EglGetDisplay)} returned no display.");
 		}
 
-		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)
+		int[] major = new int[1];
+		int[] minor = new int[1];
+		var success = EGL14.EglInitialize(_eglDisplay, major, 0, minor, 0);
+		if (!success)
 		{
-			GLES20.GlViewport(0, 0, width, height);
+			throw new InvalidOperationException($"{nameof(EGL14.EglInitialize)} failed: {(EglError)EGL14.EglGetError()}");
 		}
 
-		void IRenderer.OnSurfaceCreated(IGL10? gl, Javax.Microedition.Khronos.Egl.EGLConfig? config)
+		int[] pi32ConfigAttribs =
 		{
+			EGL14.EglRenderableType, EGL14.EglOpenglEs2Bit, // Every Android device MUST implement OpenGL ES 2, and almost all implement ES3 as well, but let's go with the common denominator
+			EGL14.EglRedSize, 8,
+			EGL14.EglGreenSize, 8,
+			EGL14.EglBlueSize, 8,
+			EGL14.EglAlphaSize, 8,
+			EGL14.EglStencilSize, 1, // necessary for skia, which internally uses the stencil buffer
+			EGL14.EglNone
+		};
+		EGLConfig[] configs = new EGLConfig[1];
+		int[] numConfigs = new int[1];
+		success = EGL14.EglChooseConfig(_eglDisplay, pi32ConfigAttribs, 0, configs, 0, configs.Length, numConfigs, 0);
+		if (!success)
+		{
+			throw new InvalidOperationException($"{nameof(EGL14.EglChooseConfig)} failed: {(EglError)EGL14.EglGetError()}");
+		}
+		if (numConfigs[0] == 0)
+		{
+			throw new InvalidOperationException($"{nameof(EGL14.EglChooseConfig)} returned no compatible configs.");
 		}
 
-		protected override void Dispose(bool disposing)
+		_glContext = EGL14.EglCreateContext(_eglDisplay, configs[0], EGL14.EglNoContext, new[] { EGL14.EglContextClientVersion, 2, EGL14.EglNone }, 0);
+		if (_glContext is null || _glContext == EGL14.EglNoContext)
 		{
-			if (disposing)
-			{
-				FreeContext();
-			}
-			base.Dispose(disposing);
+			throw new InvalidOperationException($"{nameof(EGL14.EglCreateContext)} returned {(_glContext is null ? "null" : "EglNoContext")} : {(EglError)EGL14.EglGetError()}");
 		}
 
-		private void FreeContext()
+		_eglWindowSurface = EGL14.EglCreateWindowSurface(_eglDisplay, configs[0], this.Holder?.Surface, new[] { EGL14.EglNone }, 0);
+		if (_eglWindowSurface is null)
 		{
-			_glBackedSurface?.Dispose();
-			_glBackedSurface = null;
+			throw new InvalidOperationException($"{nameof(EGL14.EglCreateWindowSurface)} returned null : {(EglError)EGL14.EglGetError()}");
+		}
+
+		using var _ = MakeCurrent();
+
+		var glInterface = GRGlInterface.Create();
+		if (glInterface is null)
+		{
+			throw new InvalidOperationException($"{nameof(GRGlInterface)} creation failed.");
+		}
+
+		_grContext = GRContext.CreateGl(glInterface);
+		if (_grContext is null)
+		{
+			throw new InvalidOperationException($"{nameof(GRContext)} creation failed.");
+		}
+
+		int[] stencil = new int[1];
+		if (EGL14.EglGetConfigAttrib(_eglDisplay, configs[0], EGL14.EglStencilSize, stencil, 0))
+		{
+			_stencil = stencil[0];
+		}
+	}
+
+	void ISurfaceHolderCallback.SurfaceChanged(ISurfaceHolder holder, Format format, int width, int height)
+	{
+		if (_grContext is not null)
+		{
+			using var _ = MakeCurrent();
+
+			const SKColorType skColorType = SKColorType.Rgba8888; // this is Rgba8888 regardless of SKImageInfo.PlatformColorType
+			const GRSurfaceOrigin grSurfaceOrigin = GRSurfaceOrigin.BottomLeft; // to match OpenGL's origin
+
+			var glInfo = new GRGlFramebufferInfo(DefaultFramebuffer, skColorType.ToGlSizedFormat());
+
 			_renderTarget?.Dispose();
-			_renderTarget = null;
-			_context?.Dispose();
-			_context = null;
+			_renderTarget = new GRBackendRenderTarget(width, height, 0, _stencil, glInfo);
+			_surface?.Dispose();
+			_surface = SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, skColorType);
+		}
+	}
+
+	// This never gets called, so it's currently untested and just here for safety.
+	void ISurfaceHolderCallback.SurfaceDestroyed(ISurfaceHolder holder)
+	{
+		_stencil = 0;
+
+		_grContext?.Dispose();
+		_grContext = null;
+
+		if (_eglDisplay is { } && _eglWindowSurface is { })
+		{
+			EGL14.EglDestroySurface(_eglDisplay, _eglWindowSurface);
+		}
+		if (_eglDisplay is { } && _glContext is { })
+		{
+			EGL14.EglDestroyContext(_eglDisplay, _glContext);
 		}
 
-		internal void ResetContext() => FreeContext();
+		_eglWindowSurface = null;
+		_glContext = null;
+		_eglDisplay = null;
+	}
+
+	// https://github.com/KhronosGroup/EGL-Registry/blob/29c4314e0ef04c730992d295f91b76635019fbba/api/EGL/egl.h
+	private enum EglError
+	{
+		EGL_SUCCESS = 0x3000,
+		EGL_NOT_INITIALIZED,
+		EGL_BAD_ACCESS,
+		EGL_BAD_ALLOC,
+		EGL_BAD_ATTRIBUTE,
+		EGL_BAD_CONFIG,
+		EGL_BAD_CONTEXT,
+		EGL_BAD_CURRENT_SURFACE,
+		EGL_BAD_DISPLAY,
+		EGL_BAD_MATCH,
+		EGL_BAD_NATIVE_PIXMAP,
+		EGL_BAD_NATIVE_WINDOW,
+		EGL_BAD_PARAMETER,
+		EGL_BAD_SURFACE,
+		EGL_CONTEXT_LOST
 	}
 }
