@@ -86,7 +86,7 @@ internal static class SkiaRenderHelper
 		parentClipPath.AddRect(rect);
 
 		var nativeVisualsInZOrder = new List<Visual>();
-		rootVisual.GetNativeViewPath(parentClipPath, clipPath, nativeVisualsInZOrder);
+		rootVisual.GetNativeViewPathAndZOrder(parentClipPath, clipPath, nativeVisualsInZOrder);
 
 		if (!invertPath)
 		{
