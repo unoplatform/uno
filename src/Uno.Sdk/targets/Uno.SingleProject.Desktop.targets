@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
-		<_TargetPlatformFiles Include="$(DesktopProjectFolder)/**/*" Condition="Exists('$(DesktopProjectFolder)')"/>
+		<_TargetPlatformFiles Include="$(DesktopProjectFolder)/**/*" Condition="'$(DesktopProjectFolder)' != '' AND Exists('$(DesktopProjectFolder)')"/>
 		<_AllPlatformFiles Include="$(PlatformsProjectFolder)/**/*" />
 		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
