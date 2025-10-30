@@ -214,6 +214,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
 			{ // Don't start the animator its a dependent animation
+				// However, we still need to complete the animation to maintain consistency with WinUI
+				State = TimelineState.Active;
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+				{
+					if (State == TimelineState.Stopped)
+					{
+						// If the animation was force-stopped, don't trigger completion
+						return;
+					}
+					OnEnd();
+				});
 				return;
 			}
 
