@@ -290,6 +290,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 		}
 
+		[TestMethod]
+		public async Task When_OpenStreamForWriteAsync_On_New_File()
+		{
+			var rootFolder = await GetRootFolderAsync();
+			var fileName = GetRandomTextFileName();
+			var filePath = Path.Combine(rootFolder.Path, fileName);
+			
+			try
+			{
+				// Ensure the file does not exist
+				if (File.Exists(filePath))
+				{
+					File.Delete(filePath);
+				}
+
+				// Get a reference to a file that doesn't exist yet
+				var storageFile = await StorageFile.GetFileFromPathAsync(filePath);
+
+				// This should not throw FileNotFoundException
+				using var stream = await storageFile.OpenStreamForWriteAsync();
+				using var writer = new StreamWriter(stream);
+				await writer.WriteAsync("Test content");
+				await writer.FlushAsync();
+
+				// Verify the file was created and contains the expected content
+				Assert.IsTrue(File.Exists(filePath), "File should have been created");
+				var content = await FileIO.ReadTextAsync(storageFile);
+				Assert.AreEqual("Test content", content);
+			}
+			finally
+			{
+				if (File.Exists(filePath))
+				{
+					File.Delete(filePath);
+				}
+				await CleanupRootFolderAsync();
+			}
+		}
+
 		private string GetRandomFolderName() => Guid.NewGuid().ToString();
 
 		private string GetRandomTextFileName() => Guid.NewGuid().ToString() + ".txt";
