@@ -279,4 +279,16 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			}
 		}
 	}
+
+	private void NotifyMinMaxSizeChange()
+	{
+		if (!PInvoke.GetWindowRect(_hwnd, out var rect))
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.GetWindowRect)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+		// We are setting the window rect to itself to trigger a WM_GETMINMAXINFO
+		var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+	}
 }
