@@ -132,7 +132,7 @@ internal class NativeOverlappedPresenter : INativeOverlappedPresenter
 		}
 		else
 		{
-			_wpfWindow.MaxHeight = preferredMinimumHeight.Value / _windowWrapper.RasterizationScale;
+			_wpfWindow.MaxHeight = preferredMaximumHeight.Value / _windowWrapper.RasterizationScale;
 		}
 	}
 }

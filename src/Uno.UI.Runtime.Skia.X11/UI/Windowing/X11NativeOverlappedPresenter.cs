@@ -165,7 +165,7 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 		hints.min_height = minHeight;
 		hints.max_width = maxWidth;
 		hints.max_height = maxHeight;
-		hints.flags |= (int)XSizeHintsFlags.PMinSize;
+		hints.flags = (int)XSizeHintsFlags.PMinSize | (int)XSizeHintsFlags.PMaxSize;
 		XLib.XSetWMNormalHints(x11Window.Display, x11Window.Window, ref hints);
 	}
 }
