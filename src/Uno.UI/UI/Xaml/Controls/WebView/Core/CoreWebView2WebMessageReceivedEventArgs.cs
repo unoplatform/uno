@@ -36,18 +36,7 @@ public partial class CoreWebView2WebMessageReceivedEventArgs
 
 		try
 		{
-			var serializerOptions = new JsonSerializerOptions
-			{
-				TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
-				Converters =
-				{
-					JsonMetadataServices.StringConverter,
-				},
-			};
-
-			var info = JsonTypeInfo.CreateJsonTypeInfo<string>(serializerOptions);
-
-			return JsonSerializer.Deserialize<string>(WebMessageAsJson, info);
+			return JsonSerializer.Deserialize<string>(WebMessageAsJson, s_stringJsonTypeInfo);
 		}
 		catch (Exception)
 		{
@@ -59,4 +48,16 @@ public partial class CoreWebView2WebMessageReceivedEventArgs
 			throw new ArgumentException("The message posted is some other kind of JavaScript type.");
 		}
 	}
+
+	private static readonly JsonSerializerOptions s_serializerOptions = new JsonSerializerOptions
+	{
+		TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+		Converters =
+		{
+			JsonMetadataServices.StringConverter,
+		},
+	};
+
+	private static readonly JsonTypeInfo<string> s_stringJsonTypeInfo = JsonTypeInfo.CreateJsonTypeInfo<string>(s_serializerOptions);
+
 }
