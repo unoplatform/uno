@@ -6,6 +6,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
@@ -41,9 +42,22 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		/// <remarks>
 		/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 		/// </remarks>
-		public FrameBufferHost(Func<WUX.Application> appBuilder)
+		public FrameBufferHost(Func<WUX.Application> appBuilder) : this(appBuilder, (FramebufferHostBuilder?)null)
+		{
+		}
+
+		/// <summary>
+		/// Creates a host for a Uno Skia FrameBuffer application.
+		/// </summary>
+		/// <param name="appBuilder">App builder.</param>
+		/// <param name="builder">The framebuffer host builder configuration.</param>
+		/// <remarks>
+		/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
+		/// </remarks>
+		public FrameBufferHost(Func<WUX.Application> appBuilder, FramebufferHostBuilder? builder)
 		{
 			_appBuilder = appBuilder;
+			DisplayScale = builder?.ConfiguredDisplayScale;
 
 			_eventLoop = new EventLoop();
 			_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
