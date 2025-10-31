@@ -36,6 +36,13 @@ public partial class ContainerVisual : Visual
 
 			InvalidateParentChildrenPicture(true);
 
+			// We need to force a redraw because at this point it's not necessarily true that
+			// a visual in the composition tree was changed, only that it was added/removed,
+			// so it's possible that no InvalidatePaint() calls were fired in response to this change, 
+			// so we need to force a new frame even though no paint invalidations happened just so that
+			// already-clean added/removed visuals are reflected in the UI
+			CompositionTarget?.RequestNewFrame();
+
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)
 			{
