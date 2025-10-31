@@ -77,6 +77,8 @@ void uno_window_set_maximizable(NSWindow* window, bool isMaximizable);
 void uno_window_set_minimizable(NSWindow* window, bool isMinimizable);
 bool uno_window_set_modal(NSWindow *window, bool isModal);
 void uno_window_set_resizable(NSWindow *window, bool isResizable);
+void uno_window_set_min_size(NSWindow* window, double width, double height);
+void uno_window_set_max_size(NSWindow* window, double width, double height);
 
 // https://learn.microsoft.com/en-us/uwp/api/windows.system.virtualkey?view=winrt-22621
 typedef NS_ENUM(sint32, VirtualKey) {
