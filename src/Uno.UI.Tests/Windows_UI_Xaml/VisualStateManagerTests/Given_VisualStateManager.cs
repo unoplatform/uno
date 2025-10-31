@@ -324,5 +324,177 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 				return base.GoToStateCore(control, templateRoot, stateName, @group, state, useTransitions);
 			}
 		}
+
+		#region Transition Selection Tests
+
+		[TestMethod]
+		public void When_Transition_With_Both_From_And_To_Matches()
+		{
+			var (control, group) = Setup();
+			var transition = Transition(control, from: 1, to: 2, frames: 0);
+			group.Transitions.Add(transition);
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			// Transition should be applied
+			Assert.IsTrue(new[] { "initial", "state1", "transition_from_state1_to_state2_frame_0", "state2" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_Transition_With_Only_From_Matches()
+		{
+			var (control, group) = Setup();
+			var transition = Transition(control, from: 1, to: null, frames: 0);
+			group.Transitions.Add(transition);
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			// Transition should be applied (matches "from state1")
+			Assert.IsTrue(new[] { "initial", "state1", "transition_from_state1_frame_0", "state2" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_Transition_With_Only_To_Matches()
+		{
+			var (control, group) = Setup();
+			var transition = Transition(control, from: null, to: 2, frames: 0);
+			group.Transitions.Add(transition);
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			// Transition should be applied (matches "to state2")
+			Assert.IsTrue(new[] { "initial", "state1", "transition_to_state2_frame_0", "state2" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_Multiple_Transitions_PerfectMatch_Takes_Precedence()
+		{
+			var (control, group) = Setup();
+			// Add transitions in specific order to test precedence
+			var transitionFrom = Transition(control, from: 1, to: null, frames: 10);
+			var transitionTo = Transition(control, from: null, to: 2, frames: 20);
+			var transitionPerfect = Transition(control, from: 1, to: 2, frames: 0);
+
+			group.Transitions.Add(transitionFrom);
+			group.Transitions.Add(transitionTo);
+			group.Transitions.Add(transitionPerfect);
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			// Perfect match (both from and to) should be selected
+			Assert.IsTrue(new[] { "initial", "state1", "transition_from_state1_to_state2_frame_0", "state2" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_Multiple_Transitions_From_Takes_Precedence_Over_To()
+		{
+			var (control, group) = Setup();
+			// Add transitions - From should take precedence over To
+			var transitionTo = Transition(control, from: null, to: 2, frames: 20);
+			var transitionFrom = Transition(control, from: 1, to: null, frames: 10);
+
+			group.Transitions.Add(transitionTo);
+			group.Transitions.Add(transitionFrom);
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			// "From" transition should be selected over "To" transition
+			Assert.IsTrue(new[] { "initial", "state1", "transition_from_state1_frame_10", "state2" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_No_Transition_Matches()
+		{
+			var (control, group) = Setup();
+			// Add a transition that doesn't match the state change
+			var transition = Transition(control, from: 2, to: 1, frames: 0);
+			group.Transitions.Add(transition);
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			// No transition should be applied
+			Assert.IsTrue(new[] { "initial", "state1", "state2" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_First_Matching_Transition_Is_Selected()
+		{
+			var (control, group) = Setup();
+			// Add multiple transitions with same From - first should win
+			var transitionFirst = Transition(control, from: 1, to: null, frames: 10);
+			var transitionSecond = Transition(control, from: 1, to: null, frames: 20);
+
+			group.Transitions.Add(transitionFirst);
+			group.Transitions.Add(transitionSecond);
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			// First matching transition should be selected
+			Assert.IsTrue(new[] { "initial", "state1", "transition_from_state1_frame_10", "state2" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_Transition_From_Initial_To_State1()
+		{
+			var (control, group) = Setup();
+			// Transition from initial (null/empty) to state1
+			var transition = Transition(control, from: null, to: 1, frames: 0);
+			group.Transitions.Add(transition);
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+
+			// Transition should be applied when transitioning from initial state
+			Assert.IsTrue(new[] { "initial", "transition_to_state1_frame_0", "state1" }.SequenceEqual(tags));
+		}
+
+		[TestMethod]
+		public void When_UseTransitions_False_No_Transition_Applied()
+		{
+			var (control, group) = Setup();
+			var transition = Transition(control, from: 1, to: 2, frames: 0);
+			group.Transitions.Add(transition);
+
+			var tags = new List<string> { (string)control.Tag };
+			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", false); // useTransitions = false
+
+			// No transition should be applied when useTransitions is false
+			Assert.IsTrue(new[] { "initial", "state1", "state2" }.SequenceEqual(tags));
+		}
+
+		#endregion
 	}
 }
