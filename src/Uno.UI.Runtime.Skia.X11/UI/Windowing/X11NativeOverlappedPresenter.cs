@@ -154,31 +154,27 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 		return span.ToArray();
 	}
 
-	public void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight)
+	public unsafe void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight)
 	{
 		var minWidth = preferredMinimumWidth ?? 0;
 		var minHeight = preferredMinimumHeight ?? 0;
-		var hints = new XSizeHints
-		{
-			flags = (int)XSizeHintsFlags.PMinSize,
-			min_width = minWidth,
-			min_height = minHeight,
-		};
-
+		XSizeHints hints;
+		XLib.XGetWMNormalHints(x11Window.Display, x11Window.Window, &hints, out _);
+		hints.min_width = minWidth;
+		hints.min_height = minHeight;
+		hints.flags |= (int)XSizeHintsFlags.PMinSize;
 		XLib.XSetWMNormalHints(x11Window.Display, x11Window.Window, ref hints);
 	}
 
-	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMaximumHeight)
+	public unsafe void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMaximumHeight)
 	{
 		var maxWidth = preferredMaximumWidth ?? int.MaxValue;
 		var maxHeight = preferredMaximumHeight ?? int.MaxValue;
-		var hints = new XSizeHints
-		{
-			flags = (int)XSizeHintsFlags.PMaxSize,
-			max_width = maxWidth,
-			max_height = maxHeight,
-		};
-
+		XSizeHints hints;
+		XLib.XGetWMNormalHints(x11Window.Display, x11Window.Window, &hints, out _);
+		hints.max_width = maxWidth;
+		hints.max_height = maxHeight;
+		hints.flags |= (int)XSizeHintsFlags.PMaxSize;
 		XLib.XSetWMNormalHints(x11Window.Display, x11Window.Window, ref hints);
 	}
 }
