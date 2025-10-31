@@ -54,7 +54,7 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.SetValue(BinderLocalCache_Data.MyValueProperty, 42);
 			Assert.AreEqual(42, SUT.MyValue);
 
-			SUT.SetValue(BinderLocalCache_Data.MyValueProperty, 43, DependencyPropertyValuePrecedences.ImplicitStyle);
+			SUT.SetValue(BinderLocalCache_Data.MyValueProperty, 43, DependencyPropertyValuePrecedences.DefaultStyle);
 			Assert.AreEqual(42, SUT.MyValue);
 		}
 
