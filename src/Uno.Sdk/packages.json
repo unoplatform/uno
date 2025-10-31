@@ -188,12 +188,12 @@
 	},
 	{
 		"group": "AndroidMaterial",
-		"version": "1.12.0.4",
+		"version": "1.12.0.5",
 		"packages": [
 			"Xamarin.Google.Android.Material"
 		],
 		"versionOverride": {
-			"net10.0": "1.12.0.4"
+			"net10.0": "1.12.0.5"
 		}
 	},
 	{
@@ -238,32 +238,32 @@
 	},
 	{
 		"group": "AndroidXActivity",
-		"version": "1.10.1.2",
+		"version": "1.10.1.3",
 		"packages": [
 			"Xamarin.AndroidX.Activity"
 		],
 		"versionOverride": {
-			"net10.0": "1.10.1.2"
+			"net10.0": "1.10.1.3"
 		}
 	},
 	{
 		"group": "AndroidXBrowser",
-		"version": "1.8.0.10",
+		"version": "1.8.0.11",
 		"packages": [
 			"Xamarin.AndroidX.Browser"
 		],
 		"versionOverride": {
-			"net10.0": "1.8.0.10"
+			"net10.0": "1.8.0.11"
 		}
 	},
 	{
 		"group": "AndroidXSwipeRefreshLayout",
-		"version": "1.1.0.28",
+		"version": "1.1.0.29",
 		"packages": [
 			"Xamarin.AndroidX.SwipeRefreshLayout"
 		],
 		"versionOverride": {
-			"net10.0": "1.1.0.28"
+			"net10.0": "1.1.0.29"
 		}
 	},
 	{
@@ -274,17 +274,20 @@
 			"Xamarin.AndroidX.Navigation.Fragment",
 			"Xamarin.AndroidX.Navigation.Runtime",
 			"Xamarin.AndroidX.Navigation.Common"
-		]
+		],
+		"versionOverride": {
+			"net10.0": "2.9.2.1"
+		}
 	},
 	{
 		"group": "AndroidXCollection",
-		"version": "1.5.0.2",
+		"version": "1.5.0.3",
 		"packages": [
 			"Xamarin.AndroidX.Collection",
 			"Xamarin.AndroidX.Collection.Ktx"
 		],
 		"versionOverride": {
-			"net10.0": "1.5.0.2"
+			"net10.0": "1.5.0.3"
 		}
 	},
 	{
