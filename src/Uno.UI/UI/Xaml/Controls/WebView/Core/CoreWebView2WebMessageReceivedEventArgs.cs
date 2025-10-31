@@ -23,7 +23,10 @@ public partial class CoreWebView2WebMessageReceivedEventArgs
 	/// <summary>
 	/// Gets the message posted from the WebView content to the host as a string.
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>The message posted from the WebView content to the host.</returns>
+	/// <exception cref="T:System.ArgumentException">
+	/// The message posted is some other kind of JavaScript type.
+	/// </exception>
 	public string TryGetWebMessageAsString()
 	{
 		if (string.IsNullOrWhiteSpace(WebMessageAsJson))
@@ -53,7 +56,7 @@ public partial class CoreWebView2WebMessageReceivedEventArgs
 				this.Log().Warn("The message could not be deserialized to a string.");
 			}
 
-			return null;
+			throw new ArgumentException("The message posted is some other kind of JavaScript type.");
 		}
 	}
 }
