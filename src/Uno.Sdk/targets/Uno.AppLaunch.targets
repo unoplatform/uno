@@ -17,13 +17,13 @@
 	 Other IDEs will call this target by specifying the `UnoRemoteControlPort` property using the following command:
 	 
 	 ```shell
-	 dotnet build <app csproj> -c:Debug -t:UnoNotifyAppLaunch -p:TargetFramework=<tfm to launch> -p:NoBuild=true -restore:false -v:d -noLogo -low -p:Ide=<ide info> -p:Plugin=<Uno plugin version> -p:IsDebug=false
+		 dotnet build <app csproj> -c:Debug -t:UnoNotifyAppLaunch -p:TargetFramework=<tfm to launch> -p:NoBuild=true -restore:false -v:d -noLogo -low -p:UnoIde=<ide info> -p:UnoPlugin=<Uno plugin version> -p:UnoIsDebug=false
 	 ```
 	 
 	 To retrieve the HTTP response content (MVID and target framework info), use -getProperty:
 	 
 	 ```shell
-	 dotnet build <app csproj> -c:Debug -t:UnoNotifyAppLaunch -getProperty:UnoNotifyAppLaunchHttpResponse -p:TargetFramework=<tfm> -p:NoBuild=true -restore:false -p:Ide=<ide> -p:Plugin=<version> -p:IsDebug=false
+		 dotnet build <app csproj> -c:Debug -t:UnoNotifyAppLaunch -getProperty:UnoNotifyAppLaunchHttpResponse -p:TargetFramework=<tfm> -p:NoBuild=true -restore:false -p:UnoIde=<ide> -p:UnoPlugin=<version> -p:UnoIsDebug=false
 	 ```
 	 -->
 
@@ -53,9 +53,9 @@
 		<UnoNotifyAppLaunchToDevServer_v0
 			Port="$(UnoRemoteControlPort)"
 			TargetPath="$(TargetPath)"
-			Ide="$(Ide)"
-			Plugin="$(Plugin)"
-			IsDebug="$(IsDebug)">
+			Ide="$(UnoIde)"
+			Plugin="$(UnoPlugin)"
+			IsDebug="$(UnoIsDebug)">
 			<Output TaskParameter="Success" PropertyName="_UnoLaunchSuccess"/>
 			<Output TaskParameter="ResponseContent" PropertyName="UnoNotifyAppLaunchHttpResponse"/>
 		</UnoNotifyAppLaunchToDevServer_v0>
