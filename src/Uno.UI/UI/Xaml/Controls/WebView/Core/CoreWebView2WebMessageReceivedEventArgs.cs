@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Uno.Foundation.Logging;
 
 namespace Microsoft.Web.WebView2.Core;
@@ -32,7 +33,18 @@ public partial class CoreWebView2WebMessageReceivedEventArgs
 
 		try
 		{
-			return JsonSerializer.Deserialize<string>(WebMessageAsJson);
+			var serializerOptions = new JsonSerializerOptions
+			{
+				TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+				Converters =
+				{
+					JsonMetadataServices.StringConverter,
+				},
+			};
+
+			var info = JsonTypeInfo.CreateJsonTypeInfo<string>(serializerOptions);
+
+			return JsonSerializer.Deserialize<string>(WebMessageAsJson, info);
 		}
 		catch (Exception)
 		{
