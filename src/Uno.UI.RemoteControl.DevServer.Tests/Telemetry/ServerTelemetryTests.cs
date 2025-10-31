@@ -11,13 +11,13 @@ public class TelemetryServerTests : TelemetryTestBase
 	[TestMethod]
 	public async Task Telemetry_Server_LogsConnectionEvents()
 	{
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 
 		// Arrange
 		var fileName = GetTestTelemetryFileName("serverconn");
 		var tempDir = Path.GetTempPath();
 		var filePath = Path.Combine(tempDir, fileName);
-		await solution.CreateSolutionFile();
+		await solution.CreateSolutionFileAsync();
 		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile);
 
 		try
@@ -31,10 +31,11 @@ public class TelemetryServerTests : TelemetryTestBase
 			);
 			await client.SendMessage(new KeepAliveMessage());
 			await Task.Delay(1000, CT);
-			await helper.AttemptGracefulShutdown(CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
 			var fileExists = File.Exists(filePath);
 			var fileContent = fileExists ? await File.ReadAllTextAsync(filePath, CT) : string.Empty;
 			var events = fileContent.Length > 0 ? ParseTelemetryEvents(fileContent) : new();
+			WriteEventsList(events);
 
 			// Assert
 			started.Should().BeTrue();
@@ -57,13 +58,13 @@ public class TelemetryServerTests : TelemetryTestBase
 	[TestMethod]
 	public async Task Telemetry_FileTelemetry_AppliesEventsPrefix()
 	{
-		var solution = SolutionHelper!;
+		var solution = SolutionHelper;
 
 		// Arrange
 		var fileName = GetTestTelemetryFileName("eventsprefix");
 		var tempDir = Path.GetTempPath();
 		var filePath = Path.Combine(tempDir, fileName);
-		await solution.CreateSolutionFile();
+		await solution.CreateSolutionFileAsync();
 		await using var helper = CreateTelemetryHelperWithExactPath(filePath, solutionPath: solution.SolutionFile);
 
 		try
@@ -74,7 +75,7 @@ public class TelemetryServerTests : TelemetryTestBase
 
 			// Wait a bit for telemetry to be written
 			await Task.Delay(1000, CT);
-			await helper.AttemptGracefulShutdown(CT);
+			await helper.AttemptGracefulShutdownAsync(CT);
 
 			var fileExists = File.Exists(filePath);
 			var fileContent = fileExists ? await File.ReadAllTextAsync(filePath, CT) : string.Empty;
@@ -95,14 +96,7 @@ public class TelemetryServerTests : TelemetryTestBase
 				.BeTrue("Events should have the EventsPrefix 'uno/dev-server/' applied to event names");
 
 			// Log some events for debugging
-			Console.WriteLine($"[DEBUG_LOG] Found {events.Count} telemetry events:");
-			foreach (var (prefix, json) in events.Take(5))
-			{
-				if (json.RootElement.TryGetProperty("EventName", out var eventName))
-				{
-					Console.WriteLine($"[DEBUG_LOG] Prefix: {prefix}, EventName: {eventName.GetString()}");
-				}
-			}
+			WriteEventsList(events);
 		}
 		finally
 		{

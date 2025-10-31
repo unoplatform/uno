@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +30,80 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			// Register global telemetry service as singleton
 			services.AddSingleton<ITelemetry>(svc => CreateTelemetry(typeof(ITelemetry).Assembly, svc.GetRequiredService<TelemetrySession>()));
 			services.AddSingleton(typeof(ITelemetry<>), typeof(TelemetryGenericAdapter<>));
+
+			services.AddSingleton(sp =>
+			{
+				var telemetry = sp.GetRequiredService<ITelemetry>();
+				var launchOptions = new AppLaunch.ApplicationLaunchMonitor.Options();
+
+				// Support for configuring timeout via environment variable
+				var timeoutEnv = Environment.GetEnvironmentVariable("UNO_DEVSERVER_APPLAUNCH_TIMEOUT");
+				if (!string.IsNullOrEmpty(timeoutEnv) && double.TryParse(timeoutEnv, out var timeoutSeconds))
+				{
+					launchOptions.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+				}
+
+				launchOptions.OnRegistered = ev =>
+				{
+					telemetry.TrackEvent("app-launch/launched", [
+						("TargetPlatform", ev.Platform),
+						("IsDebug", ev.IsDebug.ToString()),
+						("IDE", ev.Ide),
+						("PluginVersion", ev.Plugin),
+					], null);
+				};
+
+				launchOptions.OnConnected = (ev, wasTimedOut) =>
+				{
+					var latencyMs = (DateTimeOffset.UtcNow - ev.RegisteredAt).TotalMilliseconds;
+					telemetry.TrackEvent("app-launch/connected",
+						[
+							("TargetPlatform", ev.Platform),
+							("IsDebug", ev.IsDebug.ToString()),
+							("WasTimedOut", wasTimedOut.ToString()),
+							("WasIdeInitiated", "True"), // Always true for matched connections
+							("IDE", ev.Ide),
+							("PluginVersion", ev.Plugin),
+						],
+						[("LatencyMs", latencyMs)]);
+				};
+
+				launchOptions.OnTimeout = ev =>
+				{
+					var timeoutSeconds = launchOptions.Timeout.TotalSeconds;
+					telemetry.TrackEvent("app-launch/connection-timeout",
+						[
+							("TargetPlatform", ev.Platform),
+							("IsDebug", ev.IsDebug.ToString()),
+							("IDE", ev.Ide),
+							("PluginVersion", ev.Plugin),
+						],
+						[("TimeoutSeconds", timeoutSeconds)]);
+				};
+
+				// Hook pending classification (unsolicited and late-match)
+				launchOptions.OnPendingClassified = pc =>
+				{
+					var ide = pc.WasIdeInitiated ? (pc.Launch?.Ide ?? "Unknown") : "None";
+					var plugin = pc.WasIdeInitiated ? (pc.Launch?.Plugin ?? "Unknown") : "None";
+					var latencyMs = pc.WasIdeInitiated
+						? (DateTimeOffset.UtcNow - (pc.Launch?.RegisteredAt ?? pc.ConnectedAt)).TotalMilliseconds
+						: 0.0;
+
+					telemetry.TrackEvent("app-launch/connected",
+						[
+							("TargetPlatform", pc.Platform),
+							("IsDebug", pc.IsDebug.ToString()),
+							("WasTimedOut", "False"),
+							("WasIdeInitiated", pc.WasIdeInitiated.ToString()),
+							("IDE", ide),
+							("PluginVersion", plugin),
+						],
+						pc.WasIdeInitiated ? [("LatencyMs", latencyMs)] : null);
+				};
+
+				return new AppLaunch.ApplicationLaunchMonitor(options: launchOptions);
+			});
 
 			return services;
 		}
