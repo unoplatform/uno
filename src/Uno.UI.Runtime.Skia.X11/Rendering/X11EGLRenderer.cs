@@ -50,18 +50,23 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		protected override void MakeCurrent()
 		{
-			if (!GlxInterface.glXMakeCurrent(_x11Window.Display, _x11Window.Window, _x11Window.glXInfo!.Value.context))
+			if (!EglHelper.EglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _glContext))
 			{
-				this.LogError()?.Error($"glXMakeCurrent failed for Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(EglHelper.EglMakeCurrent)} failed.");
+				}
 			}
 		}
 
 		protected override void Flush()
 		{
-			GlxInterface.glXSwapBuffers(_x11Window.Display, _x11Window.Window);
-			if (!GlxInterface.glXMakeCurrent(_x11Window.Display, X11Helper.None, IntPtr.Zero))
+			if (!EglHelper.EglSwapBuffers(_eglDisplay, _eglSurface))
 			{
-				throw new NotSupportedException($"glXMakeCurrent failed for Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(EglHelper.EglSwapBuffers)} failed.");
+				}
 			}
 		}
 
@@ -83,7 +88,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				EglHelper.EGL_ALPHA_SIZE, 8,
 				EglHelper.EGL_DEPTH_SIZE, 8,
 				EglHelper.EGL_STENCIL_SIZE, 1,
-				EglHelper.EGL_RENDERABLE_TYPE, EglHelper.EGL_OPENGL_ES2_BIT,
+				EglHelper.EGL_RENDERABLE_TYPE, EglHelper.EGL_OPENGL_ES3_BIT,
 				EglHelper.EGL_NONE
 			};
 
@@ -104,8 +109,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			var window = _x11Window.Window;
 			var windowPtr = new IntPtr(&window);
-			_eglSurface = EglHelper.EglCreatePbufferSurface(_eglDisplay, configs[0], [EglHelper.EGL_NONE]);
-			MakeCurrentPrivate();
+			_eglSurface = EglHelper.EglCreatePlatformWindowSurface(_eglDisplay, configs[0], windowPtr, [EglHelper.EGL_NONE]);
+			MakeCurrent();
 
 			var glInterface = GRGlInterface.CreateGles(EglHelper.EglGetProcAddress);
 
@@ -114,7 +119,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				throw new NotSupportedException($"OpenGL is not supported in this system");
 			}
 
-			var context = GRContext.CreateGl(glInterface, new GRContextOptions() { AvoidStencilBuffers = true });
+			var context = GRContext.CreateGl(glInterface);
 
 			if (context == null)
 			{
@@ -124,43 +129,43 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			return context;
 		}
 
-		private IntPtr GetMethodProc(string name)
-		{
-			IntPtr handle;
-			if (NativeLibrary.TryGetExport(_libGles, name, out handle) || NativeLibrary.TryGetExport(_libEgl, name, out handle))
-			{
-				return handle;
-			}
-			else
-			{
-				this.Log().Error($"EGL initialization: a symbol with name='{name}' not found in GLES or EGL.");
-				return IntPtr.Zero;
-			}
-		}
+		// private IntPtr GetMethodProc(string name)
+		// {
+		// 	IntPtr handle;
+		// 	if (NativeLibrary.TryGetExport(_libGles, name, out handle) || NativeLibrary.TryGetExport(_libEgl, name, out handle))
+		// 	{
+		// 		return handle;
+		// 	}
+		// 	else
+		// 	{
+		// 		this.Log().Error($"EGL initialization: a symbol with name='{name}' not found in GLES or EGL.");
+		// 		return IntPtr.Zero;
+		// 	}
+		// }
 
-		private IDisposable MakeCurrentPrivate()
-		{
-			var glContext = EglHelper.EglGetCurrentContext();
-			var display = EglHelper.EglGetCurrentDisplay();
-			var readSurface = EglHelper.EglGetCurrentSurface(EglHelper.EGL_READ);
-			var drawSurface = EglHelper.EglGetCurrentSurface(EglHelper.EGL_DRAW);
-			if (!EglHelper.EglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _glContext))
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"{nameof(EglHelper.EglMakeCurrent)} failed.");
-				}
-			}
-			return Disposable.Create(() =>
-			{
-				if (!EglHelper.EglMakeCurrent(display, drawSurface, readSurface, glContext))
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error($"{nameof(EglHelper.EglMakeCurrent)} failed.");
-					}
-				}
-			});
-		}
+		// private IDisposable MakeCurrentPrivate()
+		// {
+		// 	var glContext = EglHelper.EglGetCurrentContext();
+		// 	var display = EglHelper.EglGetCurrentDisplay();
+		// 	var readSurface = EglHelper.EglGetCurrentSurface(EglHelper.EGL_READ);
+		// 	var drawSurface = EglHelper.EglGetCurrentSurface(EglHelper.EGL_DRAW);
+		// 	if (!EglHelper.EglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _glContext))
+		// 	{
+		// 		if (this.Log().IsEnabled(LogLevel.Error))
+		// 		{
+		// 			this.Log().Error($"{nameof(EglHelper.EglMakeCurrent)} failed.");
+		// 		}
+		// 	}
+		// 	return Disposable.Create(() =>
+		// 	{
+		// 		if (!EglHelper.EglMakeCurrent(display, drawSurface, readSurface, glContext))
+		// 		{
+		// 			if (this.Log().IsEnabled(LogLevel.Error))
+		// 			{
+		// 				this.Log().Error($"{nameof(EglHelper.EglMakeCurrent)} failed.");
+		// 			}
+		// 		}
+		// 	});
+		// }
 	}
 }

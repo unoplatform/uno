@@ -22,6 +22,7 @@ internal class EglHelper
 	public const int EGL_READ = 0x305A;
 	public const int EGL_RENDERABLE_TYPE = 0x3040;
 	public const int EGL_OPENGL_ES2_BIT = 0x04;
+	public const int EGL_OPENGL_ES3_BIT = 0x40;
 
 	public static bool IsAvailable()
 	{
@@ -81,6 +82,9 @@ internal class EglHelper
 	[DllImport(libEGL, EntryPoint = "eglMakeCurrent")]
 	[return: MarshalAs(UnmanagedType.I1)]
 	public static extern bool EglMakeCurrent(IntPtr dpy, IntPtr draw, IntPtr read, IntPtr ctx);
+
+	[DllImport(libEGL, EntryPoint = "eglSwapBuffers")]
+	public static extern bool EglSwapBuffers(IntPtr display, IntPtr surface);
 
 	public enum ErrorCode
 	{
