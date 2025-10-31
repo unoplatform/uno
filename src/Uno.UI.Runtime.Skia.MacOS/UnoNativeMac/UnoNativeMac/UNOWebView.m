@@ -95,14 +95,8 @@ NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
     webview.okString = [NSString stringWithUTF8String:ok];
     webview.cancelString = [NSString stringWithUTF8String:cancel];
 
-    [window.contentViewController.view addSubview:webview positioned:NSWindowBelow relativeTo:nil];
+    webview.originalSuperView = window.contentViewController.view;
     return webview;
-}
-
-void uno_webview_dispose(WKWebView *webview)
-{
-    [webview stopLoading];
-    [webview removeFromSuperview];
 }
 
 const char* uno_webview_get_title(WKWebView *webview)
@@ -335,10 +329,14 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
 
 // UNONativeElement
 
-- (void) detach {
+- (void) dispose {
 #if DEBUG
-    NSLog(@"detach webview %p", self);
+    NSLog(@"UNOWebView %p disposing with superview %p", self, self.superview);
 #endif
+    if (self.superview) {
+        [self stopLoading];
+        [self removeFromSuperview];
+    }
     [self.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebView"];
 }
 
@@ -573,6 +571,6 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
     }
 }
 
-@synthesize visible;
+@synthesize originalSuperView;
 
 @end

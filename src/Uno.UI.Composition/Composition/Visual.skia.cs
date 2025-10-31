@@ -9,6 +9,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Windows.Foundation;
 using Microsoft.CodeAnalysis.PooledObjects;
 using SkiaSharp;
 using Uno.Disposables;
@@ -519,7 +520,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
-	internal void GetNativeViewPath(SKPath clipFromParent, SKPath clipPath)
+	internal void GetNativeViewPathAndZOrder(SKPath clipFromParent, SKPath clipPath, List<Visual> nativeVisualsInZOrder)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false } || clipFromParent.IsEmpty)
 		{
@@ -546,6 +547,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			clipPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, clipPath);
 		}
 
+		if (IsNativeHostVisual && !localClipCombinedByClipFromParent.IsEmpty)
+		{
+			nativeVisualsInZOrder.Add(this);
+		}
+
 		if (GetPostPaintingClipping() is { } postClip)
 		{
 			postClip.Transform(TotalMatrix.ToSKMatrix(), postClip);
@@ -553,7 +559,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 		foreach (var child in GetChildrenInRenderOrder())
 		{
-			child.GetNativeViewPath(localClipCombinedByClipFromParent, clipPath);
+			child.GetNativeViewPathAndZOrder(localClipCombinedByClipFromParent, clipPath, nativeVisualsInZOrder);
 		}
 	}
 

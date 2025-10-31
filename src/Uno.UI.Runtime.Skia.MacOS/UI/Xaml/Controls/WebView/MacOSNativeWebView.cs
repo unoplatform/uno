@@ -59,7 +59,6 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 
 		Unloaded += (s, e) =>
 		{
-			NativeUno.uno_webview_dispose(NativeHandle);
 			_webViews.Remove(NativeHandle);
 		};
 
@@ -382,6 +381,10 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 		{
 			var message = messageBody == null ? "" : new string(messageBody);
 			webview._owner.RaiseWebMessageReceived(message);
+		}
+		else if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(MacOSNativeWebView).Log().Warn($"MacOSNativeWebView.DidReceiveScriptMessage could not map 0x{handle:X} with an WKWebView");
 		}
 	}
 
