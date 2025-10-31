@@ -12,8 +12,11 @@ namespace SamplesApp
 		{
 			this.InitializeComponent();
 
-			sampleControl.DataContext = new SampleChooserViewModel(sampleControl);
+			ViewModel = new SampleChooserViewModel(sampleControl);
+			sampleControl.DataContext = ViewModel;
 		}
+
+		internal SampleChooserViewModel ViewModel { get; }
 
 #if UNO_HAS_ENHANCED_LIFECYCLE || !HAS_UNO
 		protected

@@ -141,6 +141,11 @@ partial class AppWindow
 	}
 
 	/// <summary>
+	/// Sets the icon for the window.
+	/// </summary>
+	public void SetIcon(string iconPath) => _nativeAppWindow.SetIcon(iconPath);
+
+	/// <summary>
 	/// Shows the window and activates it.
 	/// </summary>
 	public void Show() => Show(true);

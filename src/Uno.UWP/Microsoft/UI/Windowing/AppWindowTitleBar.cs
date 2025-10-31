@@ -11,6 +11,7 @@ namespace Microsoft.UI.Windowing;
 public partial class AppWindowTitleBar
 {
 	private bool _extendsContentIntoTitleBar;
+	private TitleBarHeightOption _preferredHeightOption;
 	private readonly AppWindow _appWindow;
 
 	internal AppWindowTitleBar(AppWindow appWindow)
@@ -19,6 +20,8 @@ public partial class AppWindowTitleBar
 	}
 
 	internal event Action<bool>? ExtendsContentIntoTitleBarChanged;
+
+	internal event EventHandler? Changed;
 
 	/// <summary>
 	/// Gets or sets a value that specifies whether app content extends into the title bar area.
@@ -59,7 +62,18 @@ public partial class AppWindowTitleBar
 	/// Gets or sets a value that specifies the height options of the title bar
 	/// when the AppWindowTitleBar.ExtendsContentIntoTitleBar property is true.
 	/// </summary>
-	public TitleBarHeightOption PreferredHeightOption { get; set; }
+	public TitleBarHeightOption PreferredHeightOption
+	{
+		get => _preferredHeightOption;
+		set
+		{
+			if (_preferredHeightOption != value)
+			{
+				_preferredHeightOption = value;
+				Changed?.Invoke(this, EventArgs.Empty);
+			}
+		}
+	}
 
 	/// <summary>
 	/// Gets a value that indicates whether the title bar can be customized.

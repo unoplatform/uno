@@ -3,11 +3,11 @@
 
         <ResourceDictionary x:Key="Default">
             <!--  WindowChrome min max close styles  -->
-            <StaticResource x:Key="WindowCaptionBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-            <StaticResource x:Key="WindowCaptionBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <SolidColorBrush x:Key="WindowCaptionBackground" Color="Transparent" />
+            <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled" Color="Transparent" />
             <StaticResource x:Key="WindowCaptionForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="WindowCaptionForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-            <x:Double x:Key="WindowCaptionButtonStrokeWidth">0.51</x:Double>
+            <x:Double x:Key="WindowCaptionButtonStrokeWidth">0.7</x:Double>
             <StaticResource x:Key="WindowCaptionButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
             <StaticResource x:Key="WindowCaptionButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
             <StaticResource x:Key="WindowCaptionButtonStroke" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -22,8 +22,8 @@
 
         <ResourceDictionary x:Key="HighContrast">
             <!--  WindowChrome min max close styles  -->
-            <StaticResource x:Key="WindowCaptionBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-            <StaticResource x:Key="WindowCaptionBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <SolidColorBrush x:Key="WindowCaptionBackground" Color="Transparent" />
+            <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled" Color="Transparent" />
             <StaticResource x:Key="WindowCaptionForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="WindowCaptionForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
             <x:Double x:Key="WindowCaptionButtonStrokeWidth">3.0</x:Double>
@@ -41,11 +41,11 @@
 
         <ResourceDictionary x:Key="Light">
             <!--  WindowChrome min max close styles  -->
-            <StaticResource x:Key="WindowCaptionBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-            <StaticResource x:Key="WindowCaptionBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+            <SolidColorBrush x:Key="WindowCaptionBackground" Color="Transparent" />
+            <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled" Color="Transparent" />
             <StaticResource x:Key="WindowCaptionForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="WindowCaptionForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-            <x:Double x:Key="WindowCaptionButtonStrokeWidth">0.51</x:Double>
+            <x:Double x:Key="WindowCaptionButtonStrokeWidth">0.7</x:Double>
             <StaticResource x:Key="WindowCaptionButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
             <StaticResource x:Key="WindowCaptionButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
             <StaticResource x:Key="WindowCaptionButtonStroke" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -64,8 +64,8 @@
         <Setter Property="Background" Value="{ThemeResource WindowCaptionBackground}" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Width" Value="40" />
-        <Setter Property="Height" Value="28" />
+        <Setter Property="Width" Value="46" />
+        <Setter Property="FontSize" Value="10" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -78,17 +78,10 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                        <Path
-                            x:Name="Path"
-                            Width="9"
-                            Height="9"
-                            Data="{TemplateBinding Content}"
-                            Stretch="Fill"
-                            Stroke="{TemplateBinding Foreground}"
-                            StrokeEndLineCap="Round"
-                            StrokeStartLineCap="Round"
-                            StrokeThickness="{ThemeResource WindowCaptionButtonStrokeWidth}"
-                            UseLayoutRounding="True" />
+                        <FontIcon
+                            x:Name="IconElement"
+                            FontSize="{TemplateBinding FontSize}"
+                            Glyph="{TemplateBinding Content}" />
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
@@ -132,12 +125,12 @@
                             <VisualStateGroup x:Name="MinMaxStates">
                                 <VisualState x:Name="WindowStateNormal">
                                     <VisualState.Setters>
-                                        <Setter Target="Path.Data" Value="M 1.516 -0.001 L 7.451 0.009 C 8.751 0.019 9 1 8.981 1.477 L 9.002 7.558 M 9.002 7.547 C 8.929 8.669 8 9 7.43 9.015 L 1.464 9.005 C 0.374 8.973 0 8 -0.004 7.484 L -0.004 1.477 C 0 1 0.415 0.009 1.527 -0.001" />
+                                        <Setter Target="IconElement.Glyph" Value="&#xE922;" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="WindowStateMaximized">
                                     <VisualState.Setters>
-                                        <Setter Target="Path.Data" Value="M 1.516 -0.001 L 7.451 0.009 C 8.751 0.019 9 1 8.981 1.477 L 9.002 7.558 M 11 6 L 11 2 C 11 0 10 -2 8.011 -1.946 L 7.06 -1.969 L 3 -2 M 9.002 7.547 C 8.929 8.669 8 9 7.43 9.015 L 1.464 9.005 C 0.374 8.973 0 8 -0.004 7.484 L -0.004 1.477 C 0 1 0.415 0.009 1.527 -0.001" />
+                                        <Setter Target="IconElement.Glyph" Value="&#xE923;" />
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
@@ -154,7 +147,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContentControl">
-                    <Grid x:Name="LayoutRoot">
+                    <Grid x:Name="LayoutRoot" Padding="{TemplateBinding Padding}">
                         <ContentPresenter
                             x:Name="ClientAreaPresenter"
                             Content="{TemplateBinding Content}"
@@ -175,7 +168,7 @@
                                     Grid.Column="0"
                                     AutomationProperties.AutomationId="_MinimizeButton"
                                     AutomationProperties.Name="Minimize"
-                                    Content="M 0 0 H 10"
+                                    Content="&#xE921;"
                                     Style="{StaticResource WindowCaptionButton}" />
 
                                 <Button
@@ -183,14 +176,14 @@
                                     Grid.Column="1"
                                     AutomationProperties.AutomationId="_MaximizeButton"
                                     AutomationProperties.Name="Maximize"
-                                    Content="M 0 0 H 10 V 10 H 0 V 0"
+                                    Content="&#xE922;"
                                     Style="{StaticResource WindowCaptionButton}" />
                                 <Button
                                     x:Name="CloseButton"
                                     Grid.Column="2"
                                     AutomationProperties.AutomationId="_CloseButton"
                                     AutomationProperties.Name="Close"
-                                    Content="M 0 0 L 10 10 M 10 0 L 0 10"
+                                    Content="&#xE8BB;"
                                     Style="{StaticResource WindowCaptionButton}">
                                     <Button.Resources>
                                         <ResourceDictionary>
@@ -219,6 +212,32 @@
                                 </Button>
                             </Grid>
                         </Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Target="TitleBarMinMaxCloseContainer.Background" Value="{ThemeResource WindowCaptionBackground}" />
+                                        <Setter Target="MinimizeButton.Foreground" Value="{ThemeResource WindowCaptionForeground}" />
+                                        <Setter Target="MinimizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                        <Setter Target="MaximizeButton.Foreground" Value="{ThemeResource WindowCaptionForeground}" />
+                                        <Setter Target="MaximizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource WindowCaptionForeground}" />
+                                        <Setter Target="CloseButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="WindowInactive">
+                                    <VisualState.Setters>
+                                        <Setter Target="TitleBarMinMaxCloseContainer.Background" Value="{ThemeResource WindowCaptionBackgroundDisabled}" />
+                                        <Setter Target="MinimizeButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
+                                        <Setter Target="MinimizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                        <Setter Target="MaximizeButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
+                                        <Setter Target="MaximizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                        <Setter Target="CloseButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
+                                        <Setter Target="CloseButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

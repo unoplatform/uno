@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
+using Windows.Graphics;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -49,9 +50,38 @@ internal sealed partial class WindowChrome : ContentControl
 		IsTabStop = false;
 		parent.AppWindow.Changed += OnAppWindowChanged;
 		parent.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
+		parent.AppWindow.TitleBar.Changed += OnTitleBarChanged;
 		parent.Activated += OnActivate;
 		Loaded += OnLoaded;
 		_window = parent;
+	}
+
+	private void OnTitleBarChanged(object? sender, EventArgs e)
+	{
+		ConfigureWindowChrome();
+	}
+
+	private void ResizeCaptionButtons()
+	{
+		var scale = _window.AppWindow.NativeAppWindow.RasterizationScale;
+		var height = _window.AppWindow.TitleBar.Height / scale;
+		if (height > 0)
+		{
+			if (m_tpMaximizeButtonPart is not null)
+			{
+				m_tpMaximizeButtonPart.Height = height;
+			}
+
+			if (m_tpMinimizeButtonPart is not null)
+			{
+				m_tpMinimizeButtonPart.Height = height;
+			}
+
+			if (m_tpCloseButtonPart is not null)
+			{
+				m_tpCloseButtonPart.Height = height;
+			}
+		}
 	}
 
 	private void OnActivate(object sender, WindowActivatedEventArgs e)
@@ -77,6 +107,9 @@ internal sealed partial class WindowChrome : ContentControl
 			m_presenterDisposable.Disposable = null;
 			if (_window.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
 			{
+				UpdateContainerSize();
+				ConfigureWindowChrome();
+
 				void OnBorderAndTitleBarChanged(object? s, object? e)
 				{
 					ConfigureWindowChrome();
@@ -186,16 +219,66 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private void SetTooltip(DependencyObject element, string resourceStringID)
 	{
-		var toolTipText = DXamlCore.Current.GetLocalizedResourceString(resourceStringID);
-		var toolTip = new ToolTip()
+		// Windows automatically provides the tooltips when the caption button
+		// regions are reported to it.
+		if (!OperatingSystem.IsWindows())
 		{
-			Content = toolTipText
-		};
+			var toolTipText = DXamlCore.Current.GetLocalizedResourceString(resourceStringID);
+			var toolTip = new ToolTip()
+			{
+				Content = toolTipText
+			};
 
-		ToolTipService.SetToolTip(element, toolTip);
+			ToolTipService.SetToolTip(element, toolTip);
+		}
 	}
 
-	private void OnTitleBarMinMaxCloseContainerSizePositionChanged() { }
+	private void OnTitleBarMinMaxCloseContainerSizePositionChanged()
+	{
+		if (_window?.AppWindow is null)
+		{
+			return;
+		}
+
+		var input = InputNonClientPointerSource.GetForWindowId(_window.AppWindow.Id);
+		if (Visibility != Visibility.Visible)
+		{
+			return;
+		}
+
+		if (m_tpMaximizeButtonPart is not null)
+		{
+			var rect = GetScreenRect(m_tpMaximizeButtonPart);
+			input.SetRegionRects(NonClientRegionKind.Maximize, [rect]);
+		}
+
+		if (m_tpMinimizeButtonPart is not null)
+		{
+			var rect = GetScreenRect(m_tpMinimizeButtonPart);
+			input.SetRegionRects(NonClientRegionKind.Minimize, [rect]);
+		}
+
+		if (m_tpCloseButtonPart is not null)
+		{
+			var rect = GetScreenRect(m_tpCloseButtonPart);
+			input.SetRegionRects(NonClientRegionKind.Close, [rect]);
+		}
+	}
+
+	private RectInt32 GetScreenRect(UIElement uiElement)
+	{
+		var scale = _window.AppWindow.NativeAppWindow.RasterizationScale;
+		var transform = uiElement.TransformToVisual(null);
+		var point = transform.TransformPoint(new Windows.Foundation.Point(0, 0));
+		var size = new Windows.Foundation.Size(uiElement.RenderSize.Width, uiElement.RenderSize.Height);
+		return new RectInt32
+		{
+			X = (int)(point.X * scale),
+			Y = (int)(point.Y * scale),
+			Width = (int)(size.Width * scale),
+			Height = (int)(size.Height * scale)
+		};
+	}
 
 	public Visibility CaptionVisibility
 	{
@@ -300,9 +383,22 @@ internal sealed partial class WindowChrome : ContentControl
 			hasTitleBar = overlappedPresenter.HasTitleBar;
 		}
 
-		CaptionVisibility = hasTitleBar && extendIntoTitleBar ?
+		var shouldBeVisible = hasTitleBar &&
+			extendIntoTitleBar &&
+			_window.AppWindow.TitleBar.PreferredHeightOption != TitleBarHeightOption.Collapsed;
+		CaptionVisibility = shouldBeVisible ?
 			Visibility.Visible :
 			Visibility.Collapsed;
+
+		// On Windows, maximized window stretches out of the bounds of the screen slightly.
+		// https://www.reddit.com/r/csharp/comments/921k9l/fixing_8_pixel_overhang_on_maximized_window_state/
+		var shouldHavePadding =
+			OperatingSystem.IsWindows() &&
+			(extendIntoTitleBar || !hasTitleBar) &&
+			IsWindowMaximized();
+		Padding = new(shouldHavePadding ? 4 : 0);
+
+		ResizeCaptionButtons();
 	}
 
 	private void OnExtendsContentIntoTitleBarChanged(bool extends) => ConfigureWindowChrome();

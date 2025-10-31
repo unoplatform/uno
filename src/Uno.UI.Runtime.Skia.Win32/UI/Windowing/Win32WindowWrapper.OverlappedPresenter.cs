@@ -16,10 +16,10 @@ namespace Uno.UI.Runtime.Skia.Win32;
 internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 {
 	private OverlappedPresenterState? _pendingState;
+	private nuint _lastWindowSizeChange = 0;
 
 	private bool _hasBorder;
 	private bool _hasTitleBar;
-
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
 		// The WasShown guards are so that if a call to ApplyFullScreenPresenter is made before
@@ -54,6 +54,16 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 	public void SetIsMinimizable(bool isMinimizable) => SetWindowStyle(WINDOW_STYLE.WS_MINIMIZEBOX, isMinimizable);
 
 	public void SetIsMaximizable(bool isMaximizable) => SetWindowStyle(WINDOW_STYLE.WS_MAXIMIZEBOX, isMaximizable);
+
+	private void UpdateWindowState(WPARAM wParam)
+	{
+		if (wParam.Value != _lastWindowSizeChange)
+		{
+			// The window state changed, notify the AppWindow.
+			_window?.AppWindow.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
+			_lastWindowSizeChange = wParam.Value;
+		}
+	}
 
 	public unsafe void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
 	{
@@ -150,7 +160,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			borderCaptionThickness.top = 1;
 		}
 
-		var defaultMargin = 0;
+		var defaultMargin = 1;
 
 		MARGINS margins = new MARGINS();
 		margins.cxLeftWidth = defaultMargin;
