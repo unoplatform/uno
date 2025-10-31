@@ -88,7 +88,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				EglHelper.EGL_ALPHA_SIZE, 8,
 				EglHelper.EGL_DEPTH_SIZE, 8,
 				EglHelper.EGL_STENCIL_SIZE, 1,
-				EglHelper.EGL_RENDERABLE_TYPE, EglHelper.EGL_OPENGL_ES3_BIT,
+				EglHelper.EGL_RENDERABLE_TYPE, EglHelper.EGL_OPENGL_ES2_BIT,
 				EglHelper.EGL_NONE
 			};
 
@@ -101,7 +101,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 
 			// ANGLE implements GLES 3
-			_glContext = EglHelper.EglCreateContext(_eglDisplay, configs[0], EglHelper.EGL_NO_CONTEXT, [EglHelper.EGL_CONTEXT_CLIENT_VERSION, 3, EglHelper.EGL_NONE]);
+			_glContext = EglHelper.EglCreateContext(_eglDisplay, configs[0], EglHelper.EGL_NO_CONTEXT, [EglHelper.EGL_CONTEXT_CLIENT_VERSION, 2, EglHelper.EGL_NONE]);
 			if (_glContext == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"EGL context creation failed: {Enum.GetName(EglHelper.EglGetError())}");
