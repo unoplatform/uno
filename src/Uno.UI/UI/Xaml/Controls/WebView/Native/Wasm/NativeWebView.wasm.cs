@@ -97,6 +97,41 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	public void ProcessNavigation(Uri uri)
 	{
 		var uriString = uri.OriginalString;
+
+		if (!string.IsNullOrEmpty(uri.Host) && _coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		{
+			var packageBase = NativeMethods.GetPackageBase();
+			var relativePath = uri.AbsolutePath.TrimStart('/');
+			var mappedUrl = packageBase.TrimEnd('/') + "/" + folderName.TrimStart('/').TrimEnd('/');
+
+			if (!string.IsNullOrEmpty(relativePath))
+			{
+				if (!relativePath.StartsWith(folderName.Trim('/'), StringComparison.OrdinalIgnoreCase))
+				{
+					mappedUrl += "/" + relativePath;
+				}
+				else
+				{
+					var afterFolder = relativePath[folderName.Trim('/').Length..].TrimStart('/');
+					if (!string.IsNullOrEmpty(afterFolder))
+					{
+						mappedUrl += "/" + afterFolder;
+					}
+				}
+			}
+
+			if (!string.IsNullOrEmpty(uri.Query))
+			{
+				mappedUrl += uri.Query;
+			}
+			if (!string.IsNullOrEmpty(uri.Fragment))
+			{
+				mappedUrl += uri.Fragment;
+			}
+
+			uriString = mappedUrl;
+		}
+
 		ScheduleNavigationStarting(uriString, () => NativeMethods.SetAttribute(_elementId, "src", uriString));
 		OnNavigationCompleted(this, EventArgs.Empty);
 	}
