@@ -15,13 +15,11 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	private bool _isMinimizable;
 	private bool _isMaximizable;
 	private bool _isAlwaysOnTop;
-	private OverlappedPresenterState? _pendingState;
-	private bool _hasBorder;
-	private bool _hasTitleBar;
 	private int? _preferredMinimumHeight;
 	private int? _preferredMinimumWidth;
 	private int? _preferredMaximumWidth;
 	private int? _preferredMaximumHeight;
+	private OverlappedPresenterState? _pendingState;
 
 	internal OverlappedPresenter() : base(AppWindowPresenterKind.Overlapped)
 	{
@@ -100,7 +98,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMinimumWidth != value)
 			{
 				_preferredMinimumWidth = value;
-				SetNativeWindowConstraints();
+				NotifyNativeWindowConstrains();
 			}
 		}
 	}
@@ -116,7 +114,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMinimumHeight != value)
 			{
 				_preferredMinimumHeight = value;
-				SetNativeWindowConstraints();
+				NotifyNativeWindowConstrains();
 			}
 		}
 	}
@@ -132,7 +130,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMaximumWidth != value)
 			{
 				_preferredMaximumWidth = value;
-				SetNativeWindowConstraints();
+				NotifyNativeWindowConstrains();
 			}
 		}
 	}
@@ -148,13 +146,36 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMaximumHeight != value)
 			{
 				_preferredMaximumHeight = value;
-				SetNativeWindowConstraints();
+				NotifyNativeWindowConstrains();
 			}
 		}
 	}
 
+	/// <summary>
+	/// Restores the window to the size and position it had before it was minimized or maximized.
+	/// </summary>
 	public void Restore() => Restore(false);
 
+	/// <summary>
+	/// Restores the window that the presenter is applied to and optionally makes it active.
+	/// </summary>
+	/// <param name="activateWindow">true if the window should be made active; otherwise, false.</param>
+	public void Restore(bool activateWindow)
+	{
+		if (Native is not null)
+		{
+			Native.Restore(activateWindow);
+			NotifyAppWindow();
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Restored;
+		}
+	}
+
+	/// <summary>
+	/// Maximizes the window that the presenter is applied to.
+	/// </summary>
 	public void Maximize()
 	{
 		if (Native is not null)
@@ -174,9 +195,9 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	public void Minimize() => Minimize(false);
 
 	/// <summary>
-	/// 
+	/// Minimizes the window that the presenter is applied to and optionally makes it active.
 	/// </summary>
-	/// <param name="activateWindow"></param>
+	/// <param name="activateWindow">true if the window should be made active; otherwise, false.</param>
 	public void Minimize(bool activateWindow)
 	{
 		if (Native is not null)
@@ -201,19 +222,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		HasTitleBar = hasTitleBar;
 		BorderAndTitleBarChanged?.Invoke(this, EventArgs.Empty);
 		Native?.SetBorderAndTitleBar(hasBorder, hasTitleBar);
-	}
-
-	public void Restore(bool activateWindow)
-	{
-		if (Native is not null)
-		{
-			Native.Restore(activateWindow);
-			NotifyAppWindow();
-		}
-		else
-		{
-			_pendingState = OverlappedPresenterState.Restored;
-		}
+		NotifyAppWindow();
 	}
 
 	/// <summary>
@@ -320,7 +329,9 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		}
 	}
 
-	private void SetNativeWindowConstraints()
+	internal void NotifyAppWindow() => Owner?.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
+
+	private void NotifyNativeWindowConstrains()
 	{
 		Native?.SetPreferredMaximumSize(GetEffectiveMaxWidth(), GetEffectiveMaxHeight());
 		Native?.SetPreferredMinimumSize(PreferredMinimumWidth, PreferredMinimumHeight);
@@ -344,6 +355,4 @@ public partial class OverlappedPresenter : AppWindowPresenter
 		}
 		return PreferredMaximumHeight;
 	}
-
-	internal void NotifyAppWindow() => Owner?.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
 }
