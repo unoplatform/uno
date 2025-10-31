@@ -26,7 +26,11 @@ public partial class Package
 
 	private string GetInstalledPath()
 	{
+#pragma warning disable IL3000
+		// "Assembly.Location.get' always returns an empty string for assemblies embedded in a single-file app."
+		// We check the return value; it should be safe to ignore this.
 		if (_entryAssembly?.Location is { Length: > 0 } location)
+#pragma warning restore IL3000
 		{
 			return global::System.IO.Path.GetDirectoryName(location) ?? "";
 		}
