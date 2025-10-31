@@ -129,7 +129,8 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMinimumWidth != value)
 			{
 				_preferredMinimumWidth = value;
-				NotifyNativeWindowConstrains();
+				NotifyNativeSizeConstraints();
+				NotifyAppWindow();
 			}
 		}
 	}
@@ -145,7 +146,8 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMinimumHeight != value)
 			{
 				_preferredMinimumHeight = value;
-				NotifyNativeWindowConstrains();
+				NotifyNativeSizeConstraints();
+				NotifyAppWindow();
 			}
 		}
 	}
@@ -161,7 +163,8 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMaximumWidth != value)
 			{
 				_preferredMaximumWidth = value;
-				NotifyNativeWindowConstrains();
+				NotifyNativeSizeConstraints();
+				NotifyAppWindow();
 			}
 		}
 	}
@@ -177,7 +180,8 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			if (_preferredMaximumHeight != value)
 			{
 				_preferredMaximumHeight = value;
-				NotifyNativeWindowConstrains();
+				NotifyNativeSizeConstraints();
+				NotifyAppWindow();
 			}
 		}
 	}
@@ -352,6 +356,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			Native.SetIsMaximizable(IsMaximizable);
 			Native.SetIsAlwaysOnTop(IsAlwaysOnTop);
 			Native.SetBorderAndTitleBar(HasBorder, HasTitleBar);
+			NotifyNativeSizeConstraints();
 
 			if (_pendingState is OverlappedPresenterState.Maximized)
 			{
@@ -374,11 +379,13 @@ public partial class OverlappedPresenter : AppWindowPresenter
 
 	private void NotifyAppWindow() => Owner?.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
 
-	private void NotifyNativeWindowConstrains()
+	private void NotifyNativeSizeConstraints()
 	{
-		Native?.SetPreferredMaximumSize(GetEffectiveMaxWidth(), GetEffectiveMaxHeight());
-		Native?.SetPreferredMinimumSize(PreferredMinimumWidth, PreferredMinimumHeight);
-		NotifyAppWindow();
+		Native?.SetSizeConstraints(
+			PreferredMinimumWidth,
+			PreferredMinimumHeight,
+			GetEffectiveMaxWidth(),
+			GetEffectiveMaxHeight());
 	}
 
 	private int? GetEffectiveMaxWidth()

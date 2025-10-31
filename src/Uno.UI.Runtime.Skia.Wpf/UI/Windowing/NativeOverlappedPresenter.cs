@@ -97,28 +97,7 @@ internal class NativeOverlappedPresenter : INativeOverlappedPresenter
 		}
 	}
 
-	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMinimumHeight)
-	{
-		if (preferredMaximumWidth is null)
-		{
-			_wpfWindow.MaxWidth = double.PositiveInfinity;
-		}
-		else
-		{
-			_wpfWindow.MaxWidth = preferredMaximumWidth.Value / _windowWrapper.RasterizationScale;
-		}
-
-		if (preferredMinimumHeight is null)
-		{
-			_wpfWindow.MaxHeight = double.PositiveInfinity;
-		}
-		else
-		{
-			_wpfWindow.MaxHeight = preferredMinimumHeight.Value / _windowWrapper.RasterizationScale;
-		}
-	}
-
-	public void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight)
+	public void SetSizeConstraints(int? preferredMinimumWidth, int? preferredMinimumHeight, int? preferredMaximumWidth, int? preferredMaximumHeight)
 	{
 		if (preferredMinimumWidth is null)
 		{
@@ -136,6 +115,24 @@ internal class NativeOverlappedPresenter : INativeOverlappedPresenter
 		else
 		{
 			_wpfWindow.MinHeight = preferredMinimumHeight.Value / _windowWrapper.RasterizationScale;
+		}
+
+		if (preferredMaximumWidth is null)
+		{
+			_wpfWindow.MaxWidth = double.PositiveInfinity;
+		}
+		else
+		{
+			_wpfWindow.MaxWidth = preferredMaximumWidth.Value / _windowWrapper.RasterizationScale;
+		}
+
+		if (preferredMaximumHeight is null)
+		{
+			_wpfWindow.MaxHeight = double.PositiveInfinity;
+		}
+		else
+		{
+			_wpfWindow.MaxHeight = preferredMinimumHeight.Value / _windowWrapper.RasterizationScale;
 		}
 	}
 }

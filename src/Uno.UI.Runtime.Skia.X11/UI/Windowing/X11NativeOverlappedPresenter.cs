@@ -154,27 +154,18 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 		return span.ToArray();
 	}
 
-	public unsafe void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight)
+	public unsafe void SetSizeConstraints(int? preferredMinimumWidth, int? preferredMinimumHeight, int? preferredMaximumWidth, int? preferredMaximumHeight)
 	{
 		var minWidth = preferredMinimumWidth ?? 0;
 		var minHeight = preferredMinimumHeight ?? 0;
-		XSizeHints hints;
-		XLib.XGetWMNormalHints(x11Window.Display, x11Window.Window, &hints, out _);
-		hints.min_width = minWidth;
-		hints.min_height = minHeight;
-		hints.flags |= (int)XSizeHintsFlags.PMinSize;
-		XLib.XSetWMNormalHints(x11Window.Display, x11Window.Window, ref hints);
-	}
-
-	public unsafe void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMaximumHeight)
-	{
 		var maxWidth = preferredMaximumWidth ?? int.MaxValue;
 		var maxHeight = preferredMaximumHeight ?? int.MaxValue;
-		XSizeHints hints;
-		XLib.XGetWMNormalHints(x11Window.Display, x11Window.Window, &hints, out _);
+		XSizeHints hints = new();
+		hints.min_width = minWidth;
+		hints.min_height = minHeight;
 		hints.max_width = maxWidth;
 		hints.max_height = maxHeight;
-		hints.flags |= (int)XSizeHintsFlags.PMaxSize;
+		hints.flags |= (int)XSizeHintsFlags.PMinSize;
 		XLib.XSetWMNormalHints(x11Window.Display, x11Window.Window, ref hints);
 	}
 }

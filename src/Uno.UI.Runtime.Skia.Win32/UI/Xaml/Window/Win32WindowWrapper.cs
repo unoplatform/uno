@@ -48,7 +48,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
-	private readonly ApplicationView _applicationView;
 	private readonly IRenderer _renderer;
 
 	private bool _rendererDisposed;
@@ -81,10 +80,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		var success = PInvoke.SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) != 0;
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetThreadDpiAwarenessContext)} failed: {Win32Helper.GetErrorMessage()}"); }
-
-		// this must come before CreateWindow(), which sends a WM_GETMINMAXINFO message that reads from _applicationView
-		_applicationView = ApplicationView.GetForWindowId(window.AppWindow.Id);
-		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 
 		_hwnd = CreateWindow();
 
@@ -145,14 +140,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		if (hResult.Failed)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.DwmSetWindowAttribute)} failed: {Win32Helper.GetErrorMessage(hResult)}");
-		}
-	}
-
-	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName == nameof(_applicationView.PreferredMinSize))
-		{
-			NotifyMinMaxSizeChange();
 		}
 	}
 
@@ -382,7 +369,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private void OnWmDestroy()
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
-		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
 		if (_window is not null)
 		{

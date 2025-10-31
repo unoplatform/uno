@@ -244,11 +244,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		}
 	}
 
-	public void SetPreferredMinimumSize(int? preferredMinimumWidth, int? preferredMinimumHeight) =>
-		NotifyMinMaxSizeChange();
-
-	public void SetPreferredMaximumSize(int? preferredMaximumWidth, int? preferredMaximumHeight) =>
-		NotifyMinMaxSizeChange();
+	public void SetSizeConstraints(int? preferredMinimumWidth, int? preferredMinimumHeight, int? preferredMaximumWidth, int? preferredMaximumHeight) => NotifyMinMaxSizeChange();
 
 	public OverlappedPresenterState State
 	{
