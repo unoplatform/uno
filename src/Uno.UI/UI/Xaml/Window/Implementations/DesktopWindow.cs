@@ -51,6 +51,8 @@ internal class DesktopWindow : BaseWindowImplementation
 
 	public override XamlRoot? XamlRoot => _desktopWindowXamlSource?.XamlIsland.XamlRoot;
 
+	internal DesktopWindowXamlSource? DesktopWindowXamlSource => _desktopWindowXamlSource;
+
 	protected override void OnSizeChanged(Size newSize)
 	{
 		if (_desktopWindowXamlSource is null)
