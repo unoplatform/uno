@@ -10,6 +10,7 @@ internal class EglHelper
 
 	public const int EGL_DEFAULT_DISPLAY = 0;
 	public const int EGL_NO_CONTEXT = 0;
+	public const int EGL_NO_SURFACE = 0;
 	public const int EGL_ALPHA_SIZE = 0x3021;
 	public const int EGL_BLUE_SIZE = 0x3022;
 	public const int EGL_GREEN_SIZE = 0x3023;

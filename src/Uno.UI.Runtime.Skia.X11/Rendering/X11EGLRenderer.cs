@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -23,6 +24,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private IntPtr _eglDisplay;
 		private IntPtr _glContext;
 		private IntPtr _eglSurface;
+		private IDisposable? _contextCurrentDisposable;
 
 		public X11EGLRenderer(IXamlRootHost host, X11Window x11window) : base(host, x11window)
 		{
@@ -50,6 +52,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		protected override void MakeCurrent()
 		{
+			var glContext = EglHelper.EglGetCurrentContext();
+			var readSurface = EglHelper.EglGetCurrentSurface(EglHelper.EGL_READ);
+			var drawSurface = EglHelper.EglGetCurrentSurface(EglHelper.EGL_DRAW);
 			if (!EglHelper.EglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _glContext))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
@@ -57,6 +62,16 @@ namespace Uno.WinUI.Runtime.Skia.X11
 					this.Log().Error($"{nameof(EglHelper.EglMakeCurrent)} failed.");
 				}
 			}
+			_contextCurrentDisposable = Disposable.Create(() =>
+			{
+				if (!EglHelper.EglMakeCurrent(_eglDisplay, drawSurface, readSurface, glContext))
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"{nameof(EglHelper.EglMakeCurrent)} failed.");
+					}
+				}
+			});
 		}
 
 		protected override void Flush()
@@ -68,6 +83,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 					this.Log().Error($"{nameof(EglHelper.EglSwapBuffers)} failed.");
 				}
 			}
+			Debug.Assert(_contextCurrentDisposable is not null);
+			_contextCurrentDisposable?.Dispose();
+			_contextCurrentDisposable = null;
 		}
 
 		private unsafe GRContext CreateGRGLContext()
@@ -125,6 +143,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			{
 				throw new NotSupportedException($"OpenGL is not supported in this system (failed to create context)");
 			}
+
+			_contextCurrentDisposable?.Dispose();
 
 			return context;
 		}

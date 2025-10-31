@@ -14,7 +14,7 @@ internal partial class X11XamlRootHost
 	private Timer CreateRenderTimer()
 	{
 		var timer = new Timer { AutoReset = false, Interval = TimeSpan.FromSeconds(1.0 / FeatureConfiguration.CompositionTarget.FrameRate).TotalMilliseconds };
-		timer.Elapsed += (_, _) => NativeDispatcher.Main.Enqueue(() => _renderer?.Render());
+		timer.Elapsed += (_, _) => _renderer?.Render();
 		return timer;
 	}
 
