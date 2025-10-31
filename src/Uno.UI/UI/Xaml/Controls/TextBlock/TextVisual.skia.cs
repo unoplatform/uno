@@ -31,10 +31,7 @@ namespace Microsoft.UI.Composition
 		{
 			if (_owner.TryGetTarget(out var owner))
 			{
-				session.Canvas.Save();
-				session.Canvas.Translate((float)owner.Padding.Left, (float)owner.Padding.Top);
-				owner.Inlines.Draw(in session);
-				session.Canvas.Restore();
+				owner.Draw(in session);
 			}
 		}
 

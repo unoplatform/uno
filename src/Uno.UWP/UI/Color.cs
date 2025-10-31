@@ -84,6 +84,21 @@ namespace Windows.UI
 
 		internal uint AsUInt32() => _color;
 
+		/// <remarks>
+		/// Both this color and the color on top are assumed to be alpha-premultiplied.
+		/// </remarks>>
+		internal Color AlphaBlend(Color colorOnTop)
+		{
+			// https://en.wikipedia.org/wiki/Alpha_compositing
+			var thisAlpha = A / 255.0f;
+			var thatAlpha = colorOnTop.A / 255.0f;
+			var outputAlpha = thatAlpha + thisAlpha * (1 - thatAlpha);
+			return new Color((byte)Math.Round(outputAlpha * 255f),
+				(byte)(Math.Round(colorOnTop.R * thatAlpha + R * thisAlpha * (1 - thatAlpha)) / outputAlpha),
+				(byte)(Math.Round(colorOnTop.G * thatAlpha + G * thisAlpha * (1 - thatAlpha)) / outputAlpha),
+				(byte)(Math.Round(colorOnTop.B * thatAlpha + B * thisAlpha * (1 - thatAlpha)) / outputAlpha));
+		}
+
 		internal HslColor ToHsl()
 		{
 			double r = R / 255.0;

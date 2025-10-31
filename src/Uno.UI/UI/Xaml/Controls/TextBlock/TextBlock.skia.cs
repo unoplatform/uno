@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Windows.Foundation;
-using SkiaSharp;
 using Microsoft.UI.Composition;
 using System.Numerics;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
+using Uno.UI.Dispatching;
 using Uno.UI.Helpers.WinUI;
-using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
 
@@ -24,6 +23,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
 	{
+		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
+		internal const float CaretThickness = 1;
+
 		private Action? _selectionHighlightColorChanged;
 		private MenuFlyout? _contextMenu;
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
@@ -32,6 +34,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private Size _lastInlinesArrangeWithPadding;
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
+
+		private bool _renderSelection;
+		private (int index, CompositionBrush brush)? _caretPaint;
+
+		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+
+		internal event Action? DrawingFinished;
 
 		public TextBlock()
 		{
@@ -62,8 +71,17 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
-			var defaultLineHeight = GetComputedLineHeight();
-			var desiredSize = Inlines.Measure(availableSizeWithoutPadding, defaultLineHeight);
+			ParsedText = new UnicodeText(
+				availableSizeWithoutPadding,
+				Inlines.TraversedTree.leafTree,
+				GetDefaultFontDetails(),
+				MaxLines,
+				(float)LineHeight,
+				LineStackingStrategy,
+				FlowDirection,
+				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
+				TextWrapping,
+				out var desiredSize);
 
 			desiredSize = desiredSize.Add(padding);
 
@@ -101,20 +119,24 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateSelectionRendering();
 		}
 
-		private void UpdateSelectionRendering()
-		{
-			if (_inlines is { })
-			{
-				_inlines.RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
-			}
-		}
+		private void UpdateSelectionRendering() => RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			Visual.Compositor.InvalidateRender(Visual);
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
-			var arrangedSize = Inlines.Arrange(availableSizeWithoutPadding);
-			Visual.Compositor.InvalidateRender(Visual);
+			ParsedText = new UnicodeText(
+				availableSizeWithoutPadding,
+				Inlines.TraversedTree.leafTree,
+				GetDefaultFontDetails(),
+				MaxLines,
+				(float)LineHeight,
+				LineStackingStrategy,
+				FlowDirection,
+				IsTextBoxDisplay && (this as IDependencyObjectStoreProvider).Store.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue ? null : TextAlignment,
+				TextWrapping,
+				out var arrangedSize);
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 
 			var result = base.ArrangeOverride(finalSize);
@@ -123,38 +145,71 @@ namespace Microsoft.UI.Xaml.Controls
 			return result;
 		}
 
+		internal bool RenderSelection
+		{
+			set
+			{
+				if (_renderSelection != value)
+				{
+					_renderSelection = value;
+					InvalidateInlineAndRequireRepaint();
+				}
+			}
+		}
+
+		internal (int index, CompositionBrush brush)? RenderCaret
+		{
+			set
+			{
+				if (_caretPaint != value)
+				{
+					_caretPaint = value;
+					InvalidateInlineAndRequireRepaint();
+				}
+			}
+		}
+
+		internal void Draw(in Visual.PaintingSession session)
+		{
+			session.Canvas.Save();
+			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
+			ParsedText.Draw(
+				session,
+				(_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null),
+				(Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end), SelectionHighlightColor.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), DefaultBrushes.SelectedTextForegroundColor));
+			session.Canvas.Restore();
+			DrawingFinished?.Invoke();
+		}
+
 		/// <summary>
 		/// Gets the line height of the TextBlock either
 		/// based on the LineHeight property or the default
 		/// font line height.
 		/// </summary>
 		/// <returns>Computed line height</returns>
-		internal float GetComputedLineHeight()
+		private FontDetails GetDefaultFontDetails()
 		{
-			var lineHeight = LineHeight;
-			if (!lineHeight.IsNaN() && lineHeight > 0)
+			var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+			if (task.IsCompletedSuccessfully)
 			{
-				return (float)lineHeight;
+				return task.Result;
 			}
 			else
 			{
-				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle).details;
-				if (font.CanChange)
+				task.ContinueWith(_ =>
 				{
-					font.RegisterElementForFontLoaded(this);
-				}
-
-				return font.LineHeight;
+					NativeDispatcher.Main.Enqueue(OnFontLoaded);
+				});
+				return details;
 			}
 		}
 
-		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => Inlines.GetIndexAt(point, false, extended);
+		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => ParsedText.GetIndexAt(point, false, extended);
 
 		// Invalidate Inlines measure and repaint text when any IBlock properties used during measuring change:
 
 		private void InvalidateInlineAndRequireRepaint()
 		{
-			Inlines.InvalidateMeasure();
 			Visual.Compositor.InvalidateRender(Visual);
 		}
 
@@ -172,34 +227,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnSelectionChanged()
 		{
-			Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
+			InvalidateInlineAndRequireRepaint();
 
 			var start = Math.Min(Selection.start, Selection.end);
 			var end = Math.Max(Selection.start, Selection.end);
 			SelectedText = Text[start..end];
 		}
 
-		private static SKPaint _spareSelectionFoundPaint = new SKPaint();
-
-		partial void SetupInlines()
-		{
-			_inlines.SelectionFound += t =>
-			{
-				var canvas = t.canvas;
-				var rect = t.rect;
-
-				var paint = _spareSelectionFoundPaint;
-
-				paint.Reset();
-
-				paint.Color = SelectionHighlightColor.Color.ToSKColor();
-				paint.Style = SKPaintStyle.Fill;
-
-				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
-			};
-
-			_inlines.RenderSelection = IsTextSelectionEnabled;
-		}
+		partial void SetupInlines() => RenderSelection = IsTextSelectionEnabled;
 
 		private void OnKeyDown(KeyRoutedEventArgs args)
 		{
@@ -230,75 +265,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (GetCharacterIndexAtPoint(e.GetPosition(this), true) is var index and > 1)
 				{
-					var chunk = GetChunkAt(Text, index);
+					var chunk = ParsedText.GetWordAt(index, true);
 
 					Selection = new Range(chunk.start, chunk.start + chunk.length);
 				}
 			}
-		}
-
-		// Note: this is a very close copy of TextBox.GenerateChunks. Note how, unlike TextBox, we don't need
-		// to add any caching here, since chunked-selection in TextBlocks only occurs on double-tapping,
-		// which is a lot less frequent than the TextBox scenarios (e.g. holding ctrl+shift+<right|left>).
-		private (int start, int length) GetChunkAt(string text, int index)
-		{
-			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
-			// \r and \t are always their own chunks
-			var length = text.Length;
-			for (var i = 0; i < length;)
-			{
-				var start = i;
-				var c = text[i];
-				if (c is '\r')
-				{
-					i++;
-					if (text[i] is '\n')
-					{
-						i++;
-					}
-				}
-				else if (c is '\n' or '\t')
-				{
-					i++;
-				}
-				else if (c == ' ')
-				{
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else if (char.IsLetterOrDigit(text[i]))
-				{
-					while (i < length && char.IsLetterOrDigit(text[i]))
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-				else
-				{
-					while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
-					{
-						i++;
-					}
-					while (i < length && text[i] == ' ')
-					{
-						i++;
-					}
-				}
-
-				// the second condition handles the case of index == length, which happens when you e.g. click at the very end of a chunk
-				if (start <= index && index < i || i == length)
-				{
-					return (start, i - start);
-				}
-			}
-
-			throw new UnreachableException("No chunk was selected after chunking the entire input");
 		}
 
 		// TODO: remove this context menu when TextCommandBarFlyout is implemented
