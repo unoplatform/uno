@@ -358,14 +358,14 @@ namespace Windows.Media.Playback
 			}
 			else
 			{
-				var volume = (float)Volume / 100;
+				var volume = (float)Volume;
 				_player?.SetVolume(volume, volume);
 			}
 		}
 
 		private void OnVolumeChanged()
 		{
-			var volume = (float)Volume / 100;
+			var volume = (float)Volume;
 			_player?.SetVolume(volume, volume);
 		}
 
