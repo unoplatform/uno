@@ -18,6 +18,7 @@ dotnet tool update --global dotnet-serve
 
 if (-not $NoFetch) {
     $external_docs = @{
+        # use either commit, or branch name to use its latest commit
         "uno.wasm.bootstrap" = "main"
         "uno.themes"         = "master"
         "uno.toolkit.ui"     = "main"
@@ -30,12 +31,20 @@ if (-not $NoFetch) {
         "workshops"          = "master"
         "uno.samples"        = "master"
         "uno.chefs"          = "main"
-        "hd-docs"            = "main"
     }
 
+
+    # In case an external contributor wants to import his forked repository, specify the custom Git Url below and uncomment the following lines and the additional parameters for the script execution:
+    # $contributor_git_url = "https://github.com/ContributorUserName/"
+
+    # $forks_to_import = @(
+    #     "Uno"
+    # )
+
     Write-Host 'Importing external repositories...' -ForegroundColor Black -BackgroundColor Green
-    ./import_external_docs $external_docs
-} else {
+    ./import_external_docs $external_docs # $contributor_git_url $forks_to_import
+}
+else {
     Write-Host '-nofetch option specified. Skipping the import of external repositories.' -ForegroundColor Black -BackgroundColor DarkRed
 }
 
