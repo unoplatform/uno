@@ -1,4 +1,8 @@
+using System;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
@@ -45,7 +49,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			await client.SendMessage(new KeepAliveMessage());
 
 			// Locate the test processor DLL path using ExternalDllDiscoveryHelper
-			const string testProcessorName = "Uno.UI.RemoteControl.TestProcessor.dll";
+			const string testProcessorName = "Uno.Test.Processor.dll";
 
 			var testProcessorPath = ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
 				Logger,
@@ -165,7 +169,8 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			const string hotReloadProcessorAssembly = "Uno.UI.RemoteControl.Server.Processors.dll";
 
 			var hotReloadProcessorPath = Directory.EnumerateFiles(
-					path: Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "Uno.UI.RemoteControl.Server.Processors", "bin"),
+					path: Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..",
+						"Uno.UI.RemoteControl.Server.Processors", "bin"),
 					searchPattern: hotReloadProcessorAssembly,
 					searchOption: SearchOption.AllDirectories)
 				.FirstOrDefault();
@@ -222,11 +227,12 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			// Look for any HotReload-related processor instantiation events
 			// The fact that discovery completed successfully means ServerHotReloadProcessor was instantiated without DI issues
 			var discoveryCompleteEvents = events.Where(e =>
-				e.Json.RootElement.TryGetProperty("EventName", out var name) &&
-				name.GetString() == "uno/dev-server/processor-discovery-complete")
+					e.Json.RootElement.TryGetProperty("EventName", out var name) &&
+					name.GetString() == "uno/dev-server/processor-discovery-complete")
 				.ToList();
 
-			discoveryCompleteEvents.Should().NotBeEmpty("Discovery should complete successfully, indicating DI resolution worked");
+			discoveryCompleteEvents.Should()
+				.NotBeEmpty("Discovery should complete successfully, indicating DI resolution worked");
 
 			// Verify connection context is properly maintained
 			// Connection-scoped telemetry should be present, showing the processor has access to connection context
@@ -247,6 +253,169 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			// Cleanup - Stop the server and remove test files
 			await helper.StopAsync(CT);
 			await CleanupTelemetryTestAsync(helper, telemetryFilePath);
+		}
+	}
+
+	[TestMethod]
+	public async Task Telemetry_ProcessorDiscovery_Should_Load_Dependencies()
+	{
+		// This is a repro for the issue https://github.com/unoplatform/uno-private/issues/1552
+		var solution = SolutionHelper;
+		var appInstanceId = Guid.NewGuid().ToString("N");
+
+		await solution.CreateSolutionFileAsync();
+
+		await using var helper = CreateTelemetryHelperWithExactPath(
+			GetTestTelemetryFileName("processor_dependency_resolution"),
+			solutionPath: solution.SolutionFile);
+
+		try
+		{
+			var started = await helper.StartAsync(CT);
+			helper.EnsureStarted();
+			started.Should().BeTrue();
+
+			var client = RemoteControlClient.Initialize(
+				typeof(object),
+				new[] { new ServerEndpointAttribute("localhost", helper.Port) }
+			);
+			await client.SendMessage(new KeepAliveMessage());
+
+			const string testProcessorName = "Uno.Test.Processor.dll";
+			var testProcessorPath = ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
+				Logger,
+				typeof(DevServerTestHelper).Assembly,
+				projectName: "Uno.UI.RemoteControl.TestProcessor",
+				dllFileName: testProcessorName);
+
+			if (string.IsNullOrWhiteSpace(testProcessorPath) || !File.Exists(testProcessorPath))
+			{
+				Assert.Fail($"Could not find test processor assembly. Make sure {testProcessorName} is built before running this test.");
+			}
+
+			// Also locate the dependency so we can temporarily hide it from the default load context
+			const string testDependencyName = "Uno.UI.RemoteControl.TestProcessor.Dependency.dll";
+			var testDependencyPath = ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
+				Logger,
+				typeof(DevServerTestHelper).Assembly,
+				projectName: "Uno.UI.RemoteControl.TestProcessor.Dependency",
+				dllFileName: testDependencyName);
+
+			string? stashedDependencyPath = null;
+			if (!string.IsNullOrWhiteSpace(testDependencyPath) && File.Exists(testDependencyPath))
+			{
+				// Move the dependency out of the way to avoid it being resolved from the default load context
+				// This ensures the only possible resolution location is alongside the processor in our isolated folder
+				stashedDependencyPath = Path.Combine(Path.GetTempPath(), $"{Path.GetFileNameWithoutExtension(testDependencyName)}-{Guid.NewGuid():N}.stash");
+				try
+				{
+					File.Move(testDependencyPath, stashedDependencyPath);
+					Logger.LogInformation("DEBUG_LOG: Stashed dependency from {Original} to {Stash}", testDependencyPath, stashedDependencyPath);
+				}
+				catch (Exception moveEx)
+				{
+					Logger.LogWarning(moveEx, "DEBUG_LOG: Failed to stash dependency at {Path}", testDependencyPath);
+					stashedDependencyPath = null; // don’t try to restore later if move failed
+				}
+			}
+
+			// Create an isolated directory structure to reproduce the issue
+			// The processor will be in tempDir/net10.0/ but the dependency won't be copied
+			// This reproduces the conditions where the dependency is not resolved
+			var tempDir = Path.Combine(Path.GetTempPath(), $"uno-processor-test-{Guid.NewGuid():N}");
+			var processorsDir = Path.Combine(tempDir, "net10.0");
+			Directory.CreateDirectory(processorsDir);
+
+			try
+			{
+				// Copy only the processor DLL to the isolated directory (without dependencies)
+				var isolatedProcessorPath = Path.Combine(processorsDir, testProcessorName);
+				File.Copy(testProcessorPath, isolatedProcessorPath, overwrite: true);
+
+				Logger.LogInformation("DEBUG_LOG: Created isolated test directory at: {TempDir}", tempDir);
+				Logger.LogInformation("DEBUG_LOG: Processor copied to: {IsolatedPath}", isolatedProcessorPath);
+				Logger.LogInformation("DEBUG_LOG: File exists check: {Exists}", File.Exists(isolatedProcessorPath));
+
+				var discoveryTcs = new TaskCompletionSource<ProcessorsDiscoveryResponse>(TaskCreationOptions.RunContinuationsAsynchronously);
+				void Handler(object? sender, ReceivedFrameEventArgs args)
+				{
+					if (args.Frame.Scope == WellKnownScopes.DevServerChannel &&
+						args.Frame.Name == ProcessorsDiscoveryResponse.Name &&
+						args.Frame.TryGetContent(out ProcessorsDiscoveryResponse? response))
+					{
+						discoveryTcs.TrySetResult(response);
+					}
+				}
+
+				client.FrameReceived += Handler;
+
+				try
+				{
+					// Send the parent directory as BasePath - server will discover processor in net10.0 subfolder
+					await client.SendMessage(new ProcessorsDiscovery(tempDir, appInstanceId));
+					using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(CT);
+					timeoutCts.CancelAfter(TimeSpan.FromSeconds(10));
+					var response = await discoveryTcs.Task.WaitAsync(timeoutCts.Token);
+
+					Logger.LogInformation("DEBUG_LOG: Received {ProcessorCount} processors in response", response.Processors.Count);
+					foreach (var proc in response.Processors)
+					{
+						Logger.LogInformation("DEBUG_LOG: Processor type={Type}, isLoaded={IsLoaded}, error={Error}",
+							proc.Type, proc.IsLoaded, proc.LoadError ?? "(none)");
+					}
+
+					const string telemetryProcessorTypeName = "TelemetryTestProcessor";
+					var telemetryProcessor = response.Processors.Single(p => p.Type.Contains(telemetryProcessorTypeName, StringComparison.Ordinal));
+
+					// Expect success to force a RED test when the dependency resolution bug is present
+					// This reproduces uno-private#1552 where the processor fails to load despite the dependency being present on disk
+					telemetryProcessor.IsLoaded.Should().BeTrue($"Processor discovery should load dependencies located alongside the processor assembly, but got IsLoaded=false with LoadError: {telemetryProcessor.LoadError}");
+					telemetryProcessor.LoadError.Should().BeNull($"Processor discovery should not report load errors, but got: {telemetryProcessor.LoadError}");
+				}
+				finally
+				{
+					client.FrameReceived -= Handler;
+				}
+			}
+			finally
+			{
+				// Cleanup isolated directory
+				try
+				{
+					if (Directory.Exists(tempDir))
+					{
+						Directory.Delete(tempDir, recursive: true);
+					}
+				}
+				catch (Exception ex)
+				{
+					Logger.LogWarning(ex, "Failed to cleanup temp directory: {TempDir}", tempDir);
+				}
+
+				// Restore stashed dependency if we hid it
+				try
+				{
+					if (!string.IsNullOrWhiteSpace(stashedDependencyPath) && File.Exists(stashedDependencyPath) && !string.IsNullOrWhiteSpace(testDependencyPath))
+					{
+						File.Move(stashedDependencyPath, testDependencyPath);
+						Logger.LogInformation("DEBUG_LOG: Restored dependency to {Original}", testDependencyPath);
+					}
+				}
+				catch (Exception restoreEx)
+				{
+					Logger.LogWarning(restoreEx, "DEBUG_LOG: Failed to restore dependency to {Original}", testDependencyPath);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			Logger.LogError(ex, "Dependency resolution test failed with exception");
+			await Console.Error.WriteLineAsync(helper.ConsoleOutput);
+			throw;
+		}
+		finally
+		{
+			await helper.StopAsync(CT);
 		}
 	}
 }
