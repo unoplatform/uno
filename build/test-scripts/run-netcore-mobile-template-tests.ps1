@@ -221,6 +221,12 @@ $projects =
 
     # 5.6 net-current runtime folder validation
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @("macOS", "NetCore")),
+    
+    # 5.6 net-current with XAML trimming validation - desktop
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-desktop", "-p:UnoXamlResourcesTrimming=true"), @("macOS", "NetCore")),
+    
+    # 5.6 net-current with XAML trimming validation - wasm
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-browserwasm", "-p:UnoXamlResourcesTrimming=true"), @("macOS", "NetCore")),
 
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0"), @("macOS", "NetCore")),

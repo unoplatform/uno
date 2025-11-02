@@ -1,6 +1,6 @@
 <Project Sdk="Uno.Sdk.Private">
     <PropertyGroup>
-        <TargetFrameworks>net10.0-desktop;net10.0-webassembly</TargetFrameworks>
+        <TargetFrameworks>net10.0-desktop</TargetFrameworks>
 
         <OutputType>Exe</OutputType>
         <UnoSingleProject>true</UnoSingleProject>
@@ -24,9 +24,6 @@
         <UnoFeatures>
             SkiaRenderer;
         </UnoFeatures>
-        
-        <!-- Enable XAML Resources Trimming for testing -->
-        <UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
     </PropertyGroup>
 
     <Target Name="_UnoValidateRuntimeTargets" AfterTargets="Build">

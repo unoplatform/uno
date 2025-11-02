@@ -35,6 +35,12 @@ $projects =
 
     # 5.6 net-current runtime folder validation
     @(1, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @()),
+    
+    # 5.6 net-current with XAML trimming validation - desktop
+    @(1, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-desktop", "-p:UnoXamlResourcesTrimming=true"), @()),
+    
+    # 5.6 net-current with XAML trimming validation - wasm
+    @(1, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-browserwasm", "-p:UnoXamlResourcesTrimming=true"), @()),
 
     # 5.3 Uno App with Library reference
     @(2, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @(), @()),
