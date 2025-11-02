@@ -341,7 +341,15 @@
 					or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'"
 				>%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
 
-			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
+			<!-- Try new illink.dll path structure first (.NET 10 RC2+: tools/net/illink.dll) -->
+			<_UnoLinkerHintGeneratorILLinkerPath_New Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net</_UnoLinkerHintGeneratorILLinkerPath_New>
+			<!-- Fall back to old path structure (pre-.NET 10 RC2: tools/net10.0/illink.dll) -->
+			<_UnoLinkerHintGeneratorILLinkerPath_Old Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath_Old>
+			
+			<!-- Use new path if illink.dll exists there, otherwise use old path -->
+			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!='' and Exists('$(_UnoLinkerHintGeneratorILLinkerPath_New)\illink.dll')">$(_UnoLinkerHintGeneratorILLinkerPath_New)</_UnoLinkerHintGeneratorILLinkerPath>
+			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!='' and '$(_UnoLinkerHintGeneratorILLinkerPath)'==''">$(_UnoLinkerHintGeneratorILLinkerPath_Old)</_UnoLinkerHintGeneratorILLinkerPath>
+			
 			<_UnoLinkerHintsOutputPath>$([System.IO.Path]::Combine($([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)')),'linkerhints'))</_UnoLinkerHintsOutputPath>
 		</PropertyGroup>
 
