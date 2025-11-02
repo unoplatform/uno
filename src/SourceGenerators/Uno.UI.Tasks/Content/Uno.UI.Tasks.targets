@@ -342,12 +342,12 @@
 				>%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
 
 			<!-- .NET 10 RC2+ path structure: tools/net/illink.dll -->
-			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net</_UnoLinkerHintGeneratorILLinkerPath>
+			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::Combine($([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly))), '..', 'net'))</_UnoLinkerHintGeneratorILLinkerPath>
 			<!-- Pre-.NET 10 path structure: tools/net10.0/illink.dll -->
-			<_UnoLinkerHintGeneratorILLinkerPath_PreNet10 Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath_PreNet10>
+			<_UnoLinkerHintGeneratorILLinkerPath_PreNet10 Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::Combine($([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly))), '..', 'net$(TargetFrameworkVersion.Substring(1))'))</_UnoLinkerHintGeneratorILLinkerPath_PreNet10>
 			
 			<!-- Fall back to pre-.NET 10 path if .NET 10 RC2+ path doesn't exist -->
-			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!='' and !Exists('$(_UnoLinkerHintGeneratorILLinkerPath)\illink.dll')">$(_UnoLinkerHintGeneratorILLinkerPath_PreNet10)</_UnoLinkerHintGeneratorILLinkerPath>
+			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!='' and !Exists($([System.IO.Path]::Combine($(_UnoLinkerHintGeneratorILLinkerPath), 'illink.dll')))">$(_UnoLinkerHintGeneratorILLinkerPath_PreNet10)</_UnoLinkerHintGeneratorILLinkerPath>
 			
 			<_UnoLinkerHintsOutputPath>$([System.IO.Path]::Combine($([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)')),'linkerhints'))</_UnoLinkerHintsOutputPath>
 		</PropertyGroup>
