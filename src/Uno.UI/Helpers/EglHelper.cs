@@ -17,6 +17,7 @@ internal class EglHelper
 	public const int EGL_RED_SIZE = 0x3024;
 	public const int EGL_DEPTH_SIZE = 0x3025;
 	public const int EGL_STENCIL_SIZE = 0x3026;
+	public const int EGL_SAMPLES = 0x3031;
 	public const int EGL_NONE = 0x3038;
 	public const int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 	public const int EGL_DRAW = 0x3059;
@@ -86,6 +87,9 @@ internal class EglHelper
 
 	[DllImport(libEGL, EntryPoint = "eglSwapBuffers")]
 	public static extern bool EglSwapBuffers(IntPtr display, IntPtr surface);
+
+	[DllImport(libEGL, EntryPoint = "eglGetConfigAttrib")]
+	public static extern bool EglGetConfigAttrib(IntPtr display, IntPtr config, int attribute, out int value);
 
 	public enum ErrorCode
 	{

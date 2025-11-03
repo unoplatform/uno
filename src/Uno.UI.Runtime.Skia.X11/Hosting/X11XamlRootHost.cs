@@ -372,9 +372,62 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
-		_x11TopWindow = FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display)
-			? CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window)
-			: CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true)
+		{
+			try
+			{
+				if (FeatureConfiguration.Rendering.PreferGLESOverGLOnX11)
+				{
+					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_renderer = new X11EGLRenderer(this, TopX11Window);
+				}
+				else
+				{
+					_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_ = XLib.XSync(display, false);
+					_renderer = new X11OpenGLRenderer(this, TopX11Window);
+				}
+			}
+			catch (Exception e)
+			{
+				if (_x11TopWindow is not null)
+				{
+					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
+					_x11TopWindow = null;
+				}
+				try
+				{
+					if (FeatureConfiguration.Rendering.PreferGLESOverGLOnX11)
+					{
+						_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+						_ = XLib.XSync(display, false);
+						_renderer = new X11OpenGLRenderer(this, TopX11Window);
+					}
+					else
+					{
+						this.Log().Info($"Attempted to create a GLX OpenGL context but failed with '{e.Message}'. Falling back to an EGL OpenGL ES context.");
+						_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+						_ = XLib.XSync(display, false);
+						_renderer = new X11EGLRenderer(this, TopX11Window);
+					}
+				}
+				catch (Exception e2)
+				{
+					this.Log().Info($"Second attempt at creating and OpenGL / OpenGL ES context failed with '{e2.Message}'. Falling back to software rendering.");
+					if (_x11TopWindow is null)
+					{
+						_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					}
+					_renderer = new X11SoftwareRenderer(this, TopX11Window);
+				}
+			}
+		}
+		else
+		{
+			this.Log().Info($"Forcing software rendering.");
+			_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+			_renderer = new X11SoftwareRenderer(this, TopX11Window);
+		}
 
 		// Only XI2.2 has touch events, and that's pretty much the only reason we're using XI2,
 		// so to make our assumptions simpler, we assume XI >= 2.2 or no XI at all.
@@ -406,21 +459,17 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		_ = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
-
-		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(TopX11Window.Display))
-		{
-			_renderer = new X11EGLRenderer(this, TopX11Window);
-		}
-		else
-		{
-			_renderer = new X11SoftwareRenderer(this, TopX11Window);
-		}
 	}
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
 	// https://learnopengl.com/Advanced-OpenGL/Framebuffers
 	private unsafe static X11Window CreateGLXWindow(IntPtr display, int screen, Size size, IntPtr parent)
 	{
+		if (!GlxInterface.glXQueryExtension(display, out _, out _))
+		{
+			throw new InvalidOperationException($"{nameof(GlxInterface.glXQueryExtension)} returned false");
+		}
+
 		IntPtr bestFbc = IntPtr.Zero;
 		XVisualInfo* visual = null;
 		var ptr = GlxInterface.glXChooseFBConfig(display, screen, _glxAttribs, out var count);
@@ -445,6 +494,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		IntPtr context = GlxInterface.glXCreateNewContext(display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
+		if (context == IntPtr.Zero)
+		{
+			throw new InvalidOperationException($"{nameof(GlxInterface.glXCreateNewContext)} failed and returned a null context.\n");
+		}
 		_ = XLib.XSync(display, false);
 
 		XSetWindowAttributes attribs = default;
@@ -507,19 +560,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var window = XLib.XCreateWindow(display, parent, 0, 0, (int)size.Width,
 			(int)size.Height, 0, (int)depth, /* InputOutput */ 1, visual,
 			(UIntPtr)(valueMask), ref xSetWindowAttributes);
+		_ = XLib.XSync(display, false);
 		return new X11Window(display, window);
-	}
-
-	private bool IsOpenGLSupported(IntPtr display)
-	{
-		try
-		{
-			return GlxInterface.glXQueryExtension(display, out _, out _);
-		}
-		catch (Exception) // most likely DllNotFoundException, but can be other types
-		{
-			return false;
-		}
 	}
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
