@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -57,7 +58,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 		}
 
-		private GRContext CreateGRGLContext()
+		private unsafe GRContext CreateGRGLContext()
 		{
 			if (_x11Window.glXInfo is not { } glXInfo)
 			{
@@ -88,6 +89,16 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			if (context == null)
 			{
 				throw new NotSupportedException($"OpenGL is not supported in this system (failed to create context)");
+			}
+
+			var glGetString = (delegate* unmanaged[Cdecl]<int, byte*>)GlxInterface.glXGetProcAddress("glGetString");
+
+			var glVersionBytePtr = glGetString(/* GL_VERSION */ 0x1F02);
+			var glVersionString = Marshal.PtrToStringUTF8((IntPtr)glVersionBytePtr);
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"Using OpenGL {glVersionString} for rendering.");
 			}
 
 			return context;
