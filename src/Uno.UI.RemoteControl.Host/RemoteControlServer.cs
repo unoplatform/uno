@@ -467,7 +467,16 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 					try
 					{
-						assemblies.Add((file, assemblyLoadContext.LoadFromAssemblyPath(file)));
+						// Ensure the Resolving handler knows where to look for dependent assemblies (same directory as the processor)
+						var processorPath = Path.GetFullPath(file);
+						_resolveAssemblyLocations[msg.AppInstanceId] = processorPath;
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().LogTrace("Resolve base set for {AppId} to {Dir}", msg.AppInstanceId, Path.GetDirectoryName(processorPath));
+						}
+
+						// Load with retry helper to avoid transient file locking, and keep the normalized path
+						assemblies.Add((processorPath, TryLoadAssemblyFromPath(assemblyLoadContext, processorPath)));
 					}
 					catch (Exception exc)
 					{
