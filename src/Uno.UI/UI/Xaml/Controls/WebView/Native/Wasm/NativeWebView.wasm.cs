@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
+using Windows.Storage;
+using Windows.Storage.Helpers;
 using static __Microsoft.UI.Xaml.Controls.NativeWebView;
 
 #if WASM_SKIA
@@ -41,24 +43,24 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	}
 
 	[JSExport]
-	internal static void DispatchLoadEvent(ElementId elementId)
+	internal static void DispatchLoadEvent(ElementId elementId, string? absoluteUrl)
 	{
 		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
 		{
-			nativeWebView.OnNavigationCompleted(nativeWebView._coreWebView, EventArgs.Empty);
+			nativeWebView.OnNavigationCompleted(nativeWebView._coreWebView, absoluteUrl);
 		}
 	}
 
 	public string DocumentTitle => NativeMethods.GetDocumentTitle(_elementId) ?? "";
 
-	private void OnNavigationCompleted(object sender, EventArgs e)
+	private void OnNavigationCompleted(object sender, string? absoluteUrl)
 	{
 		if (_coreWebView is null)
 		{
 			return;
 		}
 
-		var uriString = NativeMethods.GetAttribute(_elementId, "src");
+		var uriString = string.IsNullOrEmpty(absoluteUrl) ? NativeMethods.GetAttribute(_elementId, "src") : absoluteUrl;
 		Uri uri = CoreWebView2.BlankUri;
 		if (!string.IsNullOrEmpty(uriString))
 		{
@@ -98,48 +100,37 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	{
 		var uriString = uri.OriginalString;
 
-		if (!string.IsNullOrEmpty(uri.Host) && _coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		// Handle virtual host mapping for local assets
+		if (!string.IsNullOrEmpty(uri.Host) &&
+			_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
 		{
-			var packageBase = NativeMethods.GetPackageBase();
 			var relativePath = uri.AbsolutePath.TrimStart('/');
-			var mappedUrl = packageBase.TrimEnd('/') + "/" + folderName.TrimStart('/').TrimEnd('/');
+			var mappedPath = $"{folderName.TrimEnd('/')}/{relativePath}";
 
 			if (!string.IsNullOrEmpty(relativePath))
 			{
-				if (!relativePath.StartsWith(folderName.Trim('/'), StringComparison.OrdinalIgnoreCase))
-				{
-					mappedUrl += "/" + relativePath;
-				}
-				else
-				{
-					var afterFolder = relativePath[folderName.Trim('/').Length..].TrimStart('/');
-					if (!string.IsNullOrEmpty(afterFolder))
-					{
-						mappedUrl += "/" + afterFolder;
-					}
-				}
-			}
+				var packageBase = NativeMethods.GetPackageBase();
+				uriString = $"{packageBase.TrimEnd('/')}/{mappedPath.TrimStart('/')}";
 
-			if (!string.IsNullOrEmpty(uri.Query))
-			{
-				mappedUrl += uri.Query;
+				if (!string.IsNullOrEmpty(uri.Query))
+				{
+					uriString += uri.Query;
+				}
+				if (!string.IsNullOrEmpty(uri.Fragment))
+				{
+					uriString += uri.Fragment;
+				}
 			}
-			if (!string.IsNullOrEmpty(uri.Fragment))
-			{
-				mappedUrl += uri.Fragment;
-			}
-
-			uriString = mappedUrl;
 		}
 
 		ScheduleNavigationStarting(uriString, () => NativeMethods.SetAttribute(_elementId, "src", uriString));
-		OnNavigationCompleted(this, EventArgs.Empty);
+		OnNavigationCompleted(this, null);
 	}
 
 	public void ProcessNavigation(string html)
 	{
 		ScheduleNavigationStarting(null, () => NativeMethods.SetAttribute(_elementId, "srcdoc", html));
-		OnNavigationCompleted(this, EventArgs.Empty);
+		OnNavigationCompleted(this, null);
 	}
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
@@ -166,7 +157,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	{
 		_elementIdToNativeWebView.TryAdd(_elementId, this);
 		NativeMethods.SetupEvents(_elementId);
-		DispatchLoadEvent(_elementId);
+		DispatchLoadEvent(_elementId, null);
 	}
 
 	public void OnUnloaded()

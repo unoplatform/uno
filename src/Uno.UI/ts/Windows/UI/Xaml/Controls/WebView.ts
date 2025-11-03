@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls {
                 }
             }
 
-			WebView.cachedPackageBase = ".";
+            WebView.cachedPackageBase = ".";
             return ".";
         }
 
@@ -85,7 +85,8 @@ namespace Microsoft.UI.Xaml.Controls {
 
         private static onLoad(event: Event) {
             const iframe = event.currentTarget as HTMLIFrameElement;
-            WebView.unoExports.DispatchLoadEvent(iframe.id);
+            const absoluteUrl = iframe.contentWindow.location.href;
+            WebView.unoExports.DispatchLoadEvent(iframe.id, absoluteUrl);
         }
     }
 }
