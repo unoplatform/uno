@@ -116,6 +116,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
+
+		OnExtendsContentIntoTitleBarChanged(window.AppWindow.TitleBar.ExtendsContentIntoTitleBar);
 	}
 
 	private void OnExtendsContentIntoTitleBarChanged(bool extends)
