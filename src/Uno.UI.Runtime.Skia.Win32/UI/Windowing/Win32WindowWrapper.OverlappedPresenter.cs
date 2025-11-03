@@ -110,10 +110,6 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 		if (extendContentIntoTitleBar)
 		{
-			PInvoke.SetWindowText(_hwnd, string.Empty);
-			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, IntPtr.Zero);
-			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, IntPtr.Zero);
-
 			int transparent = 0x00000000; // ARGB (A=0 -> transparent)
 			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_CAPTION_COLOR, &transparent, sizeof(int));
 			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_TEXT_COLOR, &transparent, sizeof(int));
