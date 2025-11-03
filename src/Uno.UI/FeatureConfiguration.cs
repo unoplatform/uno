@@ -890,7 +890,7 @@ namespace Uno.UI
 			/// used if <see cref="UseOpenGLOnX11"/> is true or null. This property only affects the order of attempting
 			/// to create a GL/GlES context but even when true, if the preferred API fails, the other will be attempted.
 			/// </summary>
-			public static bool PreferGLESOverGLOnX11 { get; set; } = true;
+			public static bool PreferGLESOverGLOnX11 { get; set; }
 
 			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Win32 target. If null, defaults to
