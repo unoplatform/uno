@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using Windows.Graphics.Display;
+using Uno.Foundation.Logging;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -9,10 +11,7 @@ namespace Uno.UI.Runtime.Skia
 		private const string EnvironmentUnoDisplayScaleOverride = "UNO_DISPLAY_SCALE_OVERRIDE";
 		private const double MillimetersToInches = 0.0393700787;
 
-		private readonly DisplayInformation _displayInformation;
-		private readonly float? _scaleOverride;
 		private DisplayInformationDetails _details = new DisplayInformationDetails(0, 0, DisplayInformation.BaseDpi, 1, ResolutionScale.Scale100Percent, null);
-		private Renderer? _renderer;
 
 		private record DisplayInformationDetails(
 			uint ScreenWidthInRawPixels,
@@ -22,67 +21,39 @@ namespace Uno.UI.Runtime.Skia
 			ResolutionScale ResolutionScale,
 			double? DiagonalSizeInInches);
 
-		public Renderer? Renderer
-		{
-			get => _renderer;
-			set
-			{
-				_renderer = value;
-				UpdateDetails();
-			}
-		}
-
 		public DisplayInformationExtension(object owner, float? scaleOverride)
 		{
-			_displayInformation = (DisplayInformation)owner;
-			_scaleOverride = scaleOverride;
-
 			if (float.TryParse(
 				Environment.GetEnvironmentVariable(EnvironmentUnoDisplayScaleOverride),
 				NumberStyles.Any,
 				CultureInfo.InvariantCulture,
 				out var environmentScaleOverride))
 			{
-				_scaleOverride = environmentScaleOverride;
+				scaleOverride = environmentScaleOverride;
 			}
-		}
 
-		private void UpdateDetails()
-		{
-			if (_details.ScreenWidthInRawPixels == 0
-				&& Renderer != null)
+			var rawScale = scaleOverride ?? 1;
+
+			var flooredScale = FloorScale(rawScale);
+
+			var screenSize = FrameBufferWindowWrapper.Instance.Size;
+			_details = new(
+				(uint)screenSize.Width,
+				(uint)screenSize.Height,
+				flooredScale * DisplayInformation.BaseDpi,
+				flooredScale,
+				(ResolutionScale)(int)(flooredScale * 100.0),
+				Math.Sqrt(screenSize.Width * screenSize.Width + screenSize.Height * screenSize.Height) * MillimetersToInches
+			);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				var frameBufferDevice = Renderer.FrameBufferDevice;
-
-				var screenWidthInInches = frameBufferDevice.ScreenPhysicalDimensions.Width * MillimetersToInches;
-				var screenHeightInInches = frameBufferDevice.ScreenPhysicalDimensions.Height * MillimetersToInches;
-
-				var dpi = frameBufferDevice.ScreenPhysicalDimensions.Width switch
-				{
-					-1.0 => DisplayInformation.BaseDpi,
-					_ => (float)(frameBufferDevice.ScreenSize.Width / screenWidthInInches)
-				};
-
-				var diagonalSizeInInches = frameBufferDevice.ScreenPhysicalDimensions.Width switch
-				{
-					-1 => (double?)null,
-					_ => Math.Sqrt(screenWidthInInches * screenWidthInInches + screenHeightInInches * screenHeightInInches)
-				};
-
-				var rawScale = _scaleOverride is not null
-					? (float)_scaleOverride
-					: dpi / DisplayInformation.BaseDpi;
-
-				var flooredScale = FloorScale(rawScale);
-
-				_details = new(
-					(uint)frameBufferDevice.ScreenSize.Width,
-					(uint)frameBufferDevice.ScreenSize.Height,
-					flooredScale * DisplayInformation.BaseDpi,
-					flooredScale,
-					(ResolutionScale)(int)(flooredScale * 100.0),
-					diagonalSizeInInches
-				);
+				this.Log().Debug($"Display Information: " +
+				                 $"ResolutionScale: {ResolutionScale}, " +
+				                 $"LogicalDpi: {LogicalDpi}, " +
+				                 $"RawPixelsPerViewPixel: {RawPixelsPerViewPixel}, " +
+				                 $"DiagonalSizeInInches: {DiagonalSizeInInches}, " +
+				                 $"ScreenInRawPixels: {ScreenWidthInRawPixels}x{ScreenHeightInRawPixels}");
 			}
 		}
 

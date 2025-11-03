@@ -29,8 +29,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		private readonly CoreApplicationExtension? _coreApplicationExtension;
 
 		private Func<Application> _appBuilder;
-		private Renderer? _renderer;
-		private DisplayInformationExtension? _displayInformationExtension;
+		private IFBRenderer? _renderer;
 		private Thread? _consoleInterceptionThread;
 		private ManualResetEvent _terminationGate = new(false);
 
@@ -76,6 +75,9 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 		private void StartConsoleInterception()
 		{
+			// ANSI escape sequence to hide the cursor
+			Console.WriteLine("\u001b[?25l");
+
 			// Only use the keyboard interception if the input is not redirected, to support
 			// starting the app without a pty.
 			if (!Console.IsInputRedirected && Console.KeyAvailable)
@@ -117,7 +119,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => { FrameBufferPointerInputSource.Instance.SetHost(o); return FrameBufferPointerInputSource.Instance; });
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => { FrameBufferKeyboardInputSource.Instance.SetHost(o); return FrameBufferKeyboardInputSource.Instance; });
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
-			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
+			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new DisplayInformationExtension(o, DisplayScale));
 
 			void Dispatch(System.Action d, NativeDispatcherPriority p)
 				=> _eventLoop.Schedule(d);
@@ -127,31 +129,8 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				var app = _appBuilder();
 				app.Host = this;
 
-				// Force intialization of the DisplayInformation
-				var displayInformation = DisplayInformation.GetForCurrentViewSafe();
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Display Information: " +
-						$"{_renderer?.FrameBufferDevice.ScreenSize.Width}x{_renderer?.FrameBufferDevice.ScreenSize.Height} " +
-						$"({_renderer?.FrameBufferDevice.ScreenPhysicalDimensions} mm), " +
-						$"PixelFormat: {_renderer?.FrameBufferDevice.PixelFormat}, " +
-						$"ResolutionScale: {displayInformation.ResolutionScale}, " +
-						$"LogicalDpi: {displayInformation.LogicalDpi}, " +
-						$"RawPixelsPerViewPixel: {displayInformation.RawPixelsPerViewPixel}, " +
-						$"DiagonalSizeInInches: {displayInformation.DiagonalSizeInInches}, " +
-						$"ScreenInRawPixels: {displayInformation.ScreenWidthInRawPixels}x{displayInformation.ScreenHeightInRawPixels}");
-				}
-
-				if (_displayInformationExtension is null)
-				{
-					throw new InvalidOperationException("DisplayInformation is not yet initialized");
-				}
-
-				_displayInformationExtension.Renderer = _renderer;
-
 				// Force the first render once the app has been setup
-				Dispatch(() => _renderer?.InvalidateRender(), NativeDispatcherPriority.High);
+				Dispatch(() => _renderer.InvalidateRender(), NativeDispatcherPriority.High);
 			}
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
@@ -159,7 +138,26 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			FrameBufferInputProvider.Instance.Initialize();
 
-			_renderer = new Renderer(this);
+			if (FeatureConfiguration.LinuxFramebuffer.UseGBMOnLinuxFramebuffer ?? false)
+			{
+				_renderer = new DRMRenderer(this);
+			}
+			else if (FeatureConfiguration.LinuxFramebuffer.UseGBMOnLinuxFramebuffer is null)
+			{
+				try
+				{
+					_renderer = new DRMRenderer(this);
+				}
+				catch (Exception e)
+				{
+					this.LogError()?.Error($"Failed to create an OpenGLES context with error '{e.Message}', falling back to software rendering");
+					_renderer = new SoftwareRenderer(this);
+				}
+			}
+			else
+			{
+				_renderer = new SoftwareRenderer(this);
+			}
 
 			WUX.Application.Start(CreateApp);
 		}

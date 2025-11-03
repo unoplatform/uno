@@ -890,7 +890,7 @@ namespace Uno.UI
 			/// used if <see cref="UseOpenGLOnX11"/> is true or null. This property only affects the order of attempting
 			/// to create a GL/GlES context but even when true, if the preferred API fails, the other will be attempted.
 			/// </summary>
-			public static bool PreferGLESOverGLOnX11 { get; set; } = true;
+			public static bool PreferGLESOverGLOnX11 { get; set; }
 
 			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Win32 target. If null, defaults to
@@ -955,6 +955,33 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
+		}
+
+		public static class LinuxFramebuffer
+		{
+			/// <summary>
+			/// Determines if OpenGLES+EGL initialized with DRM+GBM should be used for hardware-accelerated rendering on the
+			/// Linux Framebuffer target instead of software rendering. If null, we try to create an OpenGLES context if possible.
+			/// Otherwise, software rendering will be used.
+			/// </summary>
+			public static bool? UseGBMOnLinuxFramebuffer { get; set; }
+
+			/// <summary>
+			/// The path to the DRM device file. If null, it will use the first device found
+			/// of the form /dev/dri/cardX
+			/// </summary>
+			public static string DRMCardPath { get; set; }
+
+			/// <summary>
+			/// A delegate that picks which of the available connectors to use. If not supplied, the first one
+			/// found will be used.
+			/// </summary>
+			public static DRMConnectorChooserDelegate DRMConnectorChooser { get; set; }
+
+			public readonly record struct DRMConnector(uint connectorType, uint connectorTypeId, uint connectorId, string connectorStringRepresentation);
+
+			/// <returns>The index of the chosen connector or -1.</returns>
+			public delegate int DRMConnectorChooserDelegate(IReadOnlyList<DRMConnector> connector);
 		}
 
 		public static class DependencyProperty

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -80,6 +81,12 @@ internal class EglHelper
 
 	[DllImport(libEGL, EntryPoint = "eglGetProcAddress")]
 	public static extern IntPtr EglGetProcAddress(string procname);
+
+	[DllImport(libEGL, EntryPoint = "eglGetPlatformDisplay")]
+	public static extern IntPtr EglGetPlatformDisplay(int platform, IntPtr nativeDisplay, int[]? attrs);
+
+	[DllImport(libEGL, EntryPoint = "eglGetPlatformDisplayEXT")]
+	public static extern IntPtr EglGetPlatformDisplayEXT(int platform, IntPtr nativeDisplay, int[]? attrs);
 
 	[DllImport(libEGL, EntryPoint = "eglMakeCurrent")]
 	[return: MarshalAs(UnmanagedType.I1)]
