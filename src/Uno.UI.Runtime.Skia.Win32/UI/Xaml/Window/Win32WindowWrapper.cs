@@ -443,6 +443,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Size = new SizeInt32(windowRect.Width, windowRect.Height);
 		Position = new PointInt32(windowRect.left, windowRect.top);
+
+		// This Render call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
+		// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
+		// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
+		// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
+		// and our render timer.
+		Render();
 	}
 
 	public override object NativeWindow => new Win32NativeWindow(_hwnd);
