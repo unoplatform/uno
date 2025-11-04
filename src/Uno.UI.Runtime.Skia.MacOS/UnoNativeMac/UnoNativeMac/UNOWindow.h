@@ -25,6 +25,12 @@ window_move_or_resize_fn_ptr uno_get_window_resize_callback(void);
 - (void) applicationDidChangeScreenParametersNotification:(NSNotification*) note;
 @end
 
+typedef NS_ENUM(sint32, OverlappedPresenterState) {
+    OverlappedPresenterStateMaximized,
+    OverlappedPresenterStateMinimized,
+    OverlappedPresenterStateRestored,
+};
+
 @interface UNOWindow : NSWindow <NSWindowDelegate>
 
 + (void)initialize;
@@ -33,7 +39,13 @@ window_move_or_resize_fn_ptr uno_get_window_resize_callback(void);
 
 @property (strong) UNOMetalViewDelegate* metalViewDelegate;
 
+@property OverlappedPresenterState overlappedPresenterState;
+
 - (void)sendEvent:(NSEvent *)event;
+
+- (void)windowWillMiniaturize:(NSNotification *)notification;
+- (void)windowDidMiniaturize:(NSNotification *)notification;
+- (void)windowDidDeminiaturize:(NSNotification *)notification;
 
 - (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame;
 - (void)windowDidMove:(NSNotification *)notification;
@@ -59,16 +71,12 @@ bool uno_window_is_full_screen(NSWindow *window);
 bool uno_window_enter_full_screen(NSWindow *window);
 void uno_window_exit_full_screen(NSWindow *window);
 
+void uno_window_maximize(NSWindow *window);
 void uno_window_minimize(NSWindow *window, bool activateWindow);
 void uno_window_restore(NSWindow *window, bool activateWindow);
 
 bool uno_window_clip_svg(UNOWindow* window, const char* svg);
 
-typedef NS_ENUM(sint32, OverlappedPresenterState) {
-    OverlappedPresenterStateMaximized,
-    OverlappedPresenterStateMinimized,
-    OverlappedPresenterStateRestored,
-};
 OverlappedPresenterState uno_window_get_overlapped_presenter_state(NSWindow *window);
 
 void uno_window_set_always_on_top(NSWindow* window, bool isAlwaysOnTop);
