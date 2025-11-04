@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Threading;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing.Native;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.ViewManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
-using Windows.ApplicationModel.Core;
-using Microsoft.UI.Dispatching;
 
 namespace Microsoft.UI.Windowing;
 
@@ -143,7 +145,16 @@ partial class AppWindow
 	/// <summary>
 	/// Sets the icon for the window.
 	/// </summary>
-	public void SetIcon(string iconPath) => _nativeAppWindow.SetIcon(iconPath);
+	public void SetIcon(string iconPath)
+	{
+		// If the path is relative, construct the absolute path based on the current directory
+		if (!Path.IsPathRooted(iconPath))
+		{
+			iconPath = Path.Combine(Package.Current.InstalledPath, iconPath);
+		}
+
+		_nativeAppWindow.SetIcon(iconPath);
+	}
 
 	/// <summary>
 	/// Shows the window and activates it.
