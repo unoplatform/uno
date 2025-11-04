@@ -61,7 +61,7 @@ public partial class IconElement : FrameworkElement
 	public static implicit operator IconElement(string symbol) =>
 		new SymbolIcon()
 		{
-			Symbol = (Symbol)Enum.Parse(typeof(Symbol), symbol, true)
+			Symbol = Enum.Parse<Symbol>(symbol, true)
 		};
 
 

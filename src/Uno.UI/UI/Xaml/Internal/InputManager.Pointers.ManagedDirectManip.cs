@@ -362,7 +362,7 @@ partial class InputManager
 		private class PointerTypePseudoDictionary<TValue> : IEnumerable<KeyValuePair<PointerDeviceType, TValue>>
 			where TValue : notnull
 		{
-			private static readonly int _length = Enum.GetValues(typeof(PointerDeviceType)).Length;
+			private static readonly int _length = Enum.GetValues<PointerDeviceType>().Length;
 
 			private readonly bool[] _hasValues = new bool[_length];
 			private readonly TValue[] _values = new TValue[_length];
