@@ -160,7 +160,9 @@ GetCapture
 GetClientRect
 GetClipboardData
 GetDC
+GetDeviceCaps
 GetDpiForWindow
+GetDpiForMonitor
 GetKeyState
 GetMessage
 GetMessageTime
@@ -191,6 +193,7 @@ LoadRegTypeLib
 LocalFree
 MapWindowPoints
 MonitorFromWindow
+MonitorFromPoint
 OleInitialize
 OpenClipboard
 PeekMessage
