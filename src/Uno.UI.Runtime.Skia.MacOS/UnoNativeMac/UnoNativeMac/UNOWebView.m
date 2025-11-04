@@ -84,8 +84,13 @@ void uno_set_webview_unsupported_scheme_identified_callback(uno_webview_unsuppor
 NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
 {
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
-    config.preferences.javaScriptEnabled = true;
-    config.preferences.javaScriptCanOpenWindowsAutomatically = true;
+    if (@available(macOS 11, *)) {
+        config.defaultWebpagePreferences.allowsContentJavaScript = YES;
+    } else {
+        // dotnet 9 still supports macOS 10.15
+        config.preferences.javaScriptEnabled = YES;
+    }
+    config.preferences.javaScriptCanOpenWindowsAutomatically = YES;
     config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeVideo | WKAudiovisualMediaTypeAudio;
     
     UNOWebView* webview = [[UNOWebView alloc] initWithFrame:NSMakeRect(0,0,0,0) configuration:config];
