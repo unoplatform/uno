@@ -27,4 +27,6 @@ internal interface INativeOverlappedPresenter
 	void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar);
 
 	void Restore(bool activateWindow);
+
+	void SetSizeConstraints(int? minWidth, int? minHeight, int? maxWidth, int? maxHeight);
 }

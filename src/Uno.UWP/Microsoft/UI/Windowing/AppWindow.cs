@@ -118,18 +118,11 @@ partial class AppWindow
 	/// </summary>
 	/// <param name="windowId">The identifier for the AppWindow.</param>
 	/// <returns>The AppWindow with the specified WindowId, if available; null if the WindowId cannot be matched to a valid window.</returns>
-	public static AppWindow GetFromWindowId(MUXWindowId windowId)
-	{
-		if (!_windowIdMap.TryGetValue(windowId, out var appWindow))
-		{
-			return null;
-		}
+	public static AppWindow GetFromWindowId(MUXWindowId windowId) =>
+		_windowIdMap.TryGetValue(windowId, out var appWindow) ? appWindow : null;
 
-		return appWindow;
-	}
-
-	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow)
-		=> _windowIdMap.TryGetValue(windowId, out appWindow);
+	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow) =>
+		_windowIdMap.TryGetValue(windowId, out appWindow);
 
 	internal static void SkipMainWindowId()
 	{

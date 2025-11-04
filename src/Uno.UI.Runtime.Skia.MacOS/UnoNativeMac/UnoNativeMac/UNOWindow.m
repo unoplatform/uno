@@ -209,6 +209,14 @@ void uno_window_set_min_size(NSWindow *window, double width, double height)
     window.minSize = CGSizeMake(width, height);
 }
 
+void uno_window_set_max_size(NSWindow *window, double width, double height)
+{
+#if DEBUG
+    NSLog (@"uno_window_set_max_size %@ %f %f", window, width, height);
+#endif
+    window.maxSize = CGSizeMake(width, height);
+}
+
 void uno_window_get_position(NSWindow *window, double *x, double *y)
 {
     CGPoint origin = window.frame.origin;
