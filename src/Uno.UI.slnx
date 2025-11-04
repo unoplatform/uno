@@ -107,6 +107,9 @@
     <Project Path="Uno.UI.RemoteControl.TestProcessor/Uno.UI.RemoteControl.TestProcessor.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
+      <Project Path="Uno.UI.RemoteControl.TestProcessor.Dependency/Uno.UI.RemoteControl.TestProcessor.Dependency.csproj">
+          <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+      </Project>
     <Project Path="Uno.UI.RemoteControl.VS/Uno.UI.RemoteControl.VS.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
