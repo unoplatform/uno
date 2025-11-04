@@ -71,13 +71,13 @@ bool uno_window_is_full_screen(NSWindow *window);
 bool uno_window_enter_full_screen(NSWindow *window);
 void uno_window_exit_full_screen(NSWindow *window);
 
-void uno_window_maximize(NSWindow *window);
+void uno_window_maximize(UNOWindow *window);
 void uno_window_minimize(NSWindow *window, bool activateWindow);
 void uno_window_restore(NSWindow *window, bool activateWindow);
 
 bool uno_window_clip_svg(UNOWindow* window, const char* svg);
 
-OverlappedPresenterState uno_window_get_overlapped_presenter_state(NSWindow *window);
+OverlappedPresenterState uno_window_get_overlapped_presenter_state(UNOWindow *window);
 
 void uno_window_set_always_on_top(NSWindow* window, bool isAlwaysOnTop);
 void uno_window_set_border_and_title_bar(NSWindow *window, bool hasBorder, bool hasTitleBar);
