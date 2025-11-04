@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Windowing.Native;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
@@ -18,8 +19,13 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 	private OverlappedPresenterState? _pendingState;
 	private nuint _lastWindowSizeChange = 0;
 
+	private Thickness _offScreenMargins;
+	private Thickness _extendedMargins;
+
 	private bool _hasBorder;
 	private bool _hasTitleBar;
+	private WINDOW_STYLE _savedStyle;
+
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
 		// The WasShown guards are so that if a call to ApplyFullScreenPresenter is made before
@@ -87,13 +93,13 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			return;
 		}
 
-		PInvoke.GetWindowRect(_hwnd, out var rcWindow);
+		PInvoke.GetWindowRect(_hwnd, out var windowRectangle);
 
 		var extendContentIntoTitleBar = !hasTitleBar;
 
 		if (extendContentIntoTitleBar && _window.AppWindow.Presenter is not FullScreenPresenter)
 		{
-			var margins = GetMargins();
+			var margins = UpdateClientAreaExtensionMargins();
 			PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
 
 			int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
@@ -104,39 +110,44 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			var margins = new MARGINS();
 			PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in margins);
 
+			_offScreenMargins = default;
+			_extendedMargins = default;
+
 			int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DEFAULT;
 			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
-		}
-
-		if (extendContentIntoTitleBar)
-		{
-			int transparent = 0x00000000; // ARGB (A=0 -> transparent)
-			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_CAPTION_COLOR, &transparent, sizeof(int));
-			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_TEXT_COLOR, &transparent, sizeof(int));
-
-			int backdropNone = 1; // 1 == Mica, 2 == Acrylic, 3 == Tabbed
-			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, &backdropNone, sizeof(int));
 		}
 
 		// Inform the application of the frame change.
 		PInvoke.SetWindowPos(_hwnd,
 			HWND.Null,
-			rcWindow.left, rcWindow.top,
+			windowRectangle.left, windowRectangle.top,
 			0, 0,
 			SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
 		_renderer.OnWindowExtendedIntoTitleBar();
 	}
 
-	private MARGINS GetMargins()
+	private MARGINS UpdateClientAreaExtensionMargins()
 	{
 		RECT borderThickness = new RECT();
 		RECT borderCaptionThickness = new RECT();
 
 		var scaling = (uint)(RasterizationScale * PInvoke.USER_DEFAULT_SCREEN_DPI);
+		var relativeScaling = RasterizationScale / GetPrimaryMonitorScale();
+
 		if (Environment.OSVersion.Version < new Version(10, 0, 14393))
 		{
 			PInvoke.AdjustWindowRectEx(ref borderCaptionThickness, GetStyle(), false, 0);
 			PInvoke.AdjustWindowRectEx(ref borderThickness, GetStyle() & ~WINDOW_STYLE.WS_CAPTION, false, 0);
+
+			borderCaptionThickness.top = (int)(borderCaptionThickness.top * relativeScaling);
+			borderCaptionThickness.right = (int)(borderCaptionThickness.right * relativeScaling);
+			borderCaptionThickness.left = (int)(borderCaptionThickness.left * relativeScaling);
+			borderCaptionThickness.bottom = (int)(borderCaptionThickness.bottom * relativeScaling);
+
+			borderThickness.top = (int)(borderThickness.top * relativeScaling);
+			borderThickness.right = (int)(borderThickness.right * relativeScaling);
+			borderThickness.left = (int)(borderThickness.left * relativeScaling);
+			borderThickness.bottom = (int)(borderThickness.bottom * relativeScaling);
 		}
 		else
 		{
@@ -149,9 +160,9 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		borderCaptionThickness.left *= -1;
 		borderCaptionThickness.top *= -1;
 
-		bool wantsTitleBar = (!_window?.AppWindow.TitleBar.ExtendsContentIntoTitleBar) ?? true;
+		bool hasSystemTitleBar = _hasTitleBar;
 
-		if (!wantsTitleBar)
+		if (!hasSystemTitleBar)
 		{
 			borderCaptionThickness.top = 1;
 		}
@@ -162,21 +173,46 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		margins.cxLeftWidth = defaultMargin;
 		margins.cxRightWidth = defaultMargin;
 		margins.cyBottomHeight = defaultMargin;
-		margins.cyTopHeight = defaultMargin;
+
+		if (!hasSystemTitleBar && _window!.AppWindow.TitleBar.Height > 0)
+		{
+			borderCaptionThickness.top = (int)(_window.AppWindow.TitleBar.Height);
+		}
+
+		margins.cyTopHeight = _window!.AppWindow.TitleBar.ExtendsContentIntoTitleBar ? borderCaptionThickness.top : defaultMargin;
+
+		if (State == OverlappedPresenterState.Maximized)
+		{
+			_extendedMargins = new Thickness(
+				0,
+				(borderCaptionThickness.top - borderThickness.top) / RasterizationScale,
+				0,
+				0);
+			_offScreenMargins = new Thickness(
+				borderThickness.left / RasterizationScale,
+				borderThickness.top / RasterizationScale,
+				borderThickness.right / RasterizationScale,
+				borderThickness.bottom / RasterizationScale);
+		}
+		else
+		{
+			_extendedMargins = new(0, borderCaptionThickness.top / RasterizationScale, 0, 0);
+			_offScreenMargins = default;
+		}
 
 		return margins;
 	}
 
 	private WINDOW_STYLE GetStyle()
 	{
-		//if (_isFullScreenActive)
-		//{
-		//	return _savedWindowInfo.Style;
-		//}
-		//else
-		//{
-		return (WINDOW_STYLE)PInvoke.GetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
-		//}
+		if (_window?.AppWindow.Presenter is FullScreenPresenter)
+		{
+			return _savedStyle;
+		}
+		else
+		{
+			return (WINDOW_STYLE)PInvoke.GetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
+		}
 	}
 
 	private void SetWindowStyle(WINDOW_STYLE style, bool on)
@@ -188,7 +224,10 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			return;
 		}
 
-		var res = PInvoke.SetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, on ? oldStyle | (int)style : oldStyle & ~(int)style);
+		var actualStyle = on ? oldStyle | (int)style : oldStyle & ~(int)style;
+		_savedStyle = (WINDOW_STYLE)actualStyle;
+
+		var res = PInvoke.SetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, actualStyle);
 		if (res is 0 && Marshal.GetLastWin32Error() != (int)WIN32_ERROR.ERROR_SUCCESS && this.Log().IsEnabled(LogLevel.Error))
 		{
 			this.Log().Error($"{nameof(PInvoke.SetWindowLong)} failed: {Win32Helper.GetErrorMessage()}");
