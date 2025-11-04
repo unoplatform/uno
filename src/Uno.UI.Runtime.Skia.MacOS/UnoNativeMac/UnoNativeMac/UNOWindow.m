@@ -281,7 +281,7 @@ void uno_window_exit_full_screen(NSWindow *window)
 }
 
 // on macOS double-clicking on the titlebar maximize the window (not the green icon)
-void uno_window_maximize(UNOWindow *window)
+void uno_window_maximize(NSWindow *window)
 {
 #if DEBUG
     NSLog(@"uno_window_maximize %@", window);
@@ -300,7 +300,7 @@ void uno_window_minimize(NSWindow *window, bool activateWindow)
     }
 }
 
-void uno_window_restore(NSWindow *window, bool activateWindow)
+void uno_window_restore(UNOWindow *window, bool activateWindow)
 {
 #if DEBUG
     NSLog(@"uno_window_restore %@ %s", window, activateWindow ? "true" : "false");
@@ -1046,6 +1046,7 @@ NSOperatingSystemVersion _osVersion;
 
 - (void) performMiniaturize:(id) sender {
     self.overlappedPresenterState = OverlappedPresenterStateMinimized;
+    [super performMiniaturize:sender];
 }
 
 - (void)windowWillMiniaturize:(NSNotification *)notification {

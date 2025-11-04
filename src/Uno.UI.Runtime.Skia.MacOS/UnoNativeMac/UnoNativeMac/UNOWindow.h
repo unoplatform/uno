@@ -71,9 +71,9 @@ bool uno_window_is_full_screen(NSWindow *window);
 bool uno_window_enter_full_screen(NSWindow *window);
 void uno_window_exit_full_screen(NSWindow *window);
 
-void uno_window_maximize(UNOWindow *window);
+void uno_window_maximize(NSWindow *window);
 void uno_window_minimize(NSWindow *window, bool activateWindow);
-void uno_window_restore(NSWindow *window, bool activateWindow);
+void uno_window_restore(UNOWindow *window, bool activateWindow);
 
 bool uno_window_clip_svg(UNOWindow* window, const char* svg);
 
