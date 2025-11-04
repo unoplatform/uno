@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
@@ -17,6 +18,8 @@ internal static class SkiaRenderHelper
 {
 	private static readonly SKPictureRecorder _recorder = new();
 
+	private static readonly List<Visual> _emptyList = new();
+
 	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
 	private static readonly SKPath _emptyClipPath = new();
 
@@ -28,7 +31,7 @@ internal static class SkiaRenderHelper
 	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
-	internal static (IntPtr, SKPath) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
+	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
 		var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
 		using var _ = new SKAutoCanvasRestore(canvas, true);
@@ -36,15 +39,13 @@ internal static class SkiaRenderHelper
 
 		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
 
-		var path = !ContentPresenter.HasNativeElements() ?
-			!invertPath ?
-				_emptyClipPath :
-				GetOrUpdateInvertedClippingPath(width, height) :
+		var (path, nativeVisualsInZOrder) = !ContentPresenter.HasNativeElements() ?
+			(!invertPath ? _emptyClipPath : GetOrUpdateInvertedClippingPath(width, height), _emptyList) :
 			CalculateClippingPath(width, height, rootVisual, invertPath);
 
 		var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 
-		return (picture, path);
+		return (picture, path, nativeVisualsInZOrder);
 	}
 
 	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, FpsHelper fpsHelper)
@@ -74,7 +75,7 @@ internal static class SkiaRenderHelper
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
 	/// </summary>
-	private static SKPath CalculateClippingPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
+	private static (SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) CalculateClippingPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
 		var clipPath = new SKPath();
 
@@ -84,11 +85,12 @@ internal static class SkiaRenderHelper
 		parentClipPath.Rewind();
 		parentClipPath.AddRect(rect);
 
-		rootVisual.GetNativeViewPath(parentClipPath, clipPath);
+		var nativeVisualsInZOrder = new List<Visual>();
+		rootVisual.GetNativeViewPathAndZOrder(parentClipPath, clipPath, nativeVisualsInZOrder);
 
 		if (!invertPath)
 		{
-			return clipPath;
+			return (clipPath, nativeVisualsInZOrder);
 		}
 		else
 		{
@@ -98,7 +100,7 @@ internal static class SkiaRenderHelper
 
 			clipPath.Dispose();
 
-			return invertedPath;
+			return (invertedPath, nativeVisualsInZOrder);
 		}
 	}
 
