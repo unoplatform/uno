@@ -151,10 +151,14 @@ void uno_window_activate(UNOWindow *window)
     NSLog(@"uno_window_activate %@ state %d", window, window.overlappedPresenterState);
 #endif
     switch (window.overlappedPresenterState) {
-        case OverlappedPresenterStateRestored:
+        case OverlappedPresenterStateRestored: {
+            // ordering to front can move the window (but not resize it) from what was set before activating it, so we move it back
+            CGPoint current = window.frame.origin;
             // don't call `uno_window_restore` since we want the pre-activation state (not the current one) to be used
             [window orderFrontRegardless];
+            [window setFrameOrigin:current];
             break;
+        }
         case OverlappedPresenterStateMinimized:
             uno_window_minimize(window, false);
             break;
