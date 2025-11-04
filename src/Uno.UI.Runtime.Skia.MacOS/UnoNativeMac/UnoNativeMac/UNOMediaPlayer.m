@@ -295,7 +295,6 @@ void uno_mediaplayer_set_view(UNOMediaPlayer *media, UNOMediaPlayerView *view, N
     media.videoLayer.videoGravity = kCAGravityResizeAspect;
     [view.layer addSublayer:media.videoLayer];
     view.originalSuperView = window.contentViewController.view;
-    [view.originalSuperView addSubview:view positioned:NSWindowAbove relativeTo:nil];
 }
 
 static NSMutableSet<UNOMediaPlayer*> *players;

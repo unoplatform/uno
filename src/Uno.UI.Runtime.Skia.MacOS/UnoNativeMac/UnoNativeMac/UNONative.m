@@ -5,6 +5,7 @@
 #import "UNONative.h"
 
 static NSMutableSet<NSView*> *elements;
+static NSMutableSet<NSView*> *transients;
 
 @implementation UNORedView : NSView
 
@@ -68,6 +69,9 @@ void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, d
 
 void uno_native_attach(NSView<UNONativeElement>* element)
 {
+#if DEBUG
+    NSLog(@"!!uno_native_attach %p", element);
+#endif
     bool already_attached = NO;
     if (!elements) {
         elements = [[NSMutableSet alloc] initWithCapacity:10];
@@ -90,6 +94,12 @@ void uno_native_detach(NSView<UNONativeElement>* element)
     NSLog(@"uno_native_detach %p", element);
 #endif
     element.layer.mask = nil;
+
+    if (!transients) {
+        transients = [[NSMutableSet alloc] initWithCapacity:10];
+    }
+    // once removed from superview the instance can be freed by the runtime unless we keep another reference to it
+    [transients addObject:element];
     [elements removeObject:element];
     [element removeFromSuperview];
 }
@@ -127,4 +137,5 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
     NSLog(@"uno_native_dispose #%p", element);
 #endif
     [element dispose];
+    [transients removeObject:element];
 }
