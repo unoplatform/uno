@@ -73,6 +73,29 @@ dotnet publish -f net9.0-desktop -r {{RID}} -p:PackageFormat=app -p:CodesignKey=
 
 are functionally identical and will produce a signed app bundle.
 
+## Create a fat app bundle (.app)
+
+To create a fat app bundle that can run on both Intel and Apple Silicon Macs you simply need to use this command:
+
+```bash
+dotnet build project.csproj -t:UnoPublishFatBundle -p:_IsPublishing=true -f:net9.0-desktop
+```
+
+The `UnoPublishFatBundle` task will
+
+- create a `x64` app bundle;
+- create a `arm64` app bundle; and
+- merge both app bundles into a single fat app bundle.
+
+The resulting (fat) app bundle will be located at `bin/Release/fat/{{APPNAME}}.app`.
+
+> [!NOTE]
+> You can optionally sign the fat app bundle by adding `-p:CodesignKey={{identity}}` to the command above.
+
+The downside of this approach is that you cannot provide additional custom properties to the inner `dotnet publish` commands.
+For example, you cannot specify `-p:PublishTrimmed=true` for the inner builds.
+Look at the [advanced topics](https://platform.uno/docs/articles/uno-publishing-desktop-macos-advanced.html) if you need more control over the inner `dotnet publish` commands.
+
 ## Distributing the app bundle
 
 An app bundle is a directory and, as such, is not easy to distribute. Most macOS applications are distributed using one of the following methods.
@@ -129,7 +152,7 @@ To use them, specify `--keychain-profile "notarytool-credentials"`
 Once this (one-time) setup is done, you can notarize the disk image while building the app. From the CLI run:
 
 ```bash
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:PackageSigningKey={{installer_identity}} -p:UnoMacOSNotarizeKeychainProfile={{notarytool-credentials}} -bl
+dotnet publish -f net9.0-desktop -r {{RID}} -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:PackageSigningKey={{installer_identity}} -p:UnoMacOSNotarizeKeychainProfile={{notarytool-credentials}} -bl
 ```
 
 where
@@ -149,7 +172,7 @@ Another common way to distribute your macOS software is to create a disk image (
 To create a disk image from the CLI run:
 
 ```bash
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}}
+dotnet publish -f net9.0-desktop -r {{RID}} -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}}
 ```
 
 Where the following changes to the original command are
@@ -191,7 +214,7 @@ To use them, specify `--keychain-profile "notarytool-credentials"`
 Once this (one-time) setup is done, you can notarize the disk image while building the app. From the CLI run:
 
 ```bash
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}} -p:UnoMacOSNotarizeKeychainProfile={{notarytool-credentials}} -bl
+dotnet publish -f net9.0-desktop -r {{RID}} -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}} -p:UnoMacOSNotarizeKeychainProfile={{notarytool-credentials}} -bl
 ```
 
 where
@@ -228,3 +251,13 @@ Uno.Sdk.Extras.Publish.MacOS.targets(75,3): error : Failed to submit tmpcZQgA4.z
 
 Try logging into your [Apple Developer Account](https://developer.apple.com/account) to see if any action is required to activate your account.
 Once re-enabled, it might take a few minutes (for the update to propagate) before you can sign or notarize your app bundle.
+
+### warning : File CodeResources differs between the two bundles
+
+When merging two arch-specific app bundles into a fat app bundle, you might see a warning such as:
+
+```text
+Uno.Sdk.Extras.Publish.MacOS.targets(116,3): warning : File CodeResources differs between the two bundles ./bin/Release/net9.0-desktop/osx-x64/publish/UnoAppBlank.app/Contents/_CodeSignature/CodeResources vs ./bin/Release/net9.0-desktop/osx-arm64/publish/UnoAppBlank.app/Contents/_CodeSignature/CodeResources). Copying the first one to the fat bundle.
+```
+
+This is because both arch-specific app bundles were signed separately and, as such, have different signatures. [Re-signing](https://platform.uno/docs/articles/uno-publishing-desktop-macos-advanced.html#(re)signing-an-app-bundle) the fat app bundle will fix this issue.
