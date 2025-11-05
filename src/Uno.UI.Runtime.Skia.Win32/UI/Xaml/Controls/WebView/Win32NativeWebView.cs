@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -135,7 +136,8 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		// ReSharper disable once AsyncVoidLambda
 		NativeDispatcher.Main.EnqueueAsync(async () =>
 		{
-			var env = await NativeWebView.CoreWebView2Environment.CreateAsync();
+			var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
+			var env = await NativeWebView.CoreWebView2Environment.CreateAsync(userDataFolder: userDataFolder);
 			tcs.SetResult(await env.CreateCoreWebView2ControllerAsync(_hwnd));
 		});
 
