@@ -261,6 +261,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					_beforeFirstEraseBkgnd = false;
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
+					OnWindowSizeOrLocationChanged();
+					var rootElement = XamlRoot!.VisualTree.RootElement;
+					rootElement.UpdateLayout();
+					Win32EventLoop.RunOnce();
+					Win32EventLoop.RunOnce();
+					Win32EventLoop.RunOnce();
+					Win32EventLoop.RunOnce();
+					Win32EventLoop.RunOnce();
+					Win32EventLoop.RunOnce();
+					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
 					Render();
 					return new LRESULT(1);
 				}
