@@ -241,7 +241,7 @@ internal sealed partial class WindowChrome : ContentControl
 		}
 
 		var input = InputNonClientPointerSource.GetForWindowId(_window.AppWindow.Id);
-		if (Visibility != Visibility.Visible)
+		if (CaptionVisibility != Visibility.Visible)
 		{
 			return;
 		}
