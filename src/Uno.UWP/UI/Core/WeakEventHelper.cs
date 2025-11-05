@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using Uno.Buffers;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -150,24 +151,34 @@ namespace Windows.UI.Core
 
 					if (_handlers.Count == 1)
 					{
-						_provider.RegisterTrimCallback(_ => Trim(), this);
+						_provider.RegisterTrimCallback(static that => ((WeakEventCollection)that).Trim(), this);
 					}
 
-					return Disposable.Create(RemoveRegistration);
+					return new RegistrationSubscription(this, key, actualTarget);
+				}
+			}
 
-					void RemoveRegistration()
+			private class RegistrationSubscription(WeakEventCollection owner, WeakHandler handler, Delegate actualTargetRef) : IDisposable
+			{
+				private int _isDisposed;
+
+				public void Dispose()
+				{
+					if (Interlocked.CompareExchange(ref _isDisposed, 1, 0) is not 0)
 					{
-						// Force a capture of the delegate by setting it to null.
-						// This will ensure that keeping the IDisposable alive will
-						// keep the registered original delegate alive. This does ensure
-						// that if the original delegate was provided as a lambda, the
-						// instance will stay active as long as the disposable instance.
-						actualTarget = null!;
+						return;
+					}
 
-						lock (_lock)
-						{
-							_handlers.Remove(key);
-						}
+					// Force a capture of the delegate by setting it to null.
+					// This will ensure that keeping the IDisposable alive will
+					// keep the registered original delegate alive. This does ensure
+					// that if the original delegate was provided as a lambda, the
+					// instance will stay active as long as the disposable instance.
+					actualTargetRef = null!;
+
+					lock (owner._lock)
+					{
+						owner._handlers.Remove(handler);
 					}
 				}
 			}
