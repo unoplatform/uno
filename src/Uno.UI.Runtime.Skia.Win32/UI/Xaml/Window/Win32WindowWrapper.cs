@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -29,6 +30,7 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Uno.UI.Dispatching;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -261,17 +263,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					_beforeFirstEraseBkgnd = false;
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
-					OnWindowSizeOrLocationChanged();
-					var rootElement = XamlRoot!.VisualTree.RootElement;
-					rootElement.UpdateLayout();
-					Win32EventLoop.RunOnce();
-					Win32EventLoop.RunOnce();
-					Win32EventLoop.RunOnce();
-					Win32EventLoop.RunOnce();
-					Win32EventLoop.RunOnce();
-					Win32EventLoop.RunOnce();
-					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-					Render();
+					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+					XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
+					Render(); // fire OnNativePlatformFrameRequested which will EnqueueRender a render job
+					NativeDispatcher.Main.DispatchRenderActionIfPresent(); // dispatch the enqueued render job
+					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // give an additional chance for CompositionTarget.Render to run in case the DispatchRenderActionIfPresent call found an "ahead of time render" and skipped rendering
+					Render(); // show pixels on screen
 					return new LRESULT(1);
 				}
 				else
