@@ -267,27 +267,19 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
-
-				// see the comment in the WM_ERASEBKGND handler
-				if (WasShown && _beforeFirstEraseBkgnd && _pendingState is not OverlappedPresenterState.Maximized && Window?.AppWindow?.Presenter is not FullScreenPresenter)
-				{
-					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-					XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
-					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
-				}
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
 				if (_beforeFirstEraseBkgnd)
 				{
 					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
-					// Note that we don't call OnRenderFrameOpportunity here, but in WM_GETMINMAXINFO which is the
-					// first window message received after showing the window on ShowCore or WM_NCPAINT which is
-					// the first message received after showing the window in ShowCore and after
-					// a possible window size change because the window was shown in a maximized/fullscreen state.
+					// Note that we don't call OnRenderFrameOpportunity here, but in ShowCore right before
+					// showing the window or in WM_NCPAINT which is the first message received after showing
+					// the window in ShowCore and after a possible window size change because the window was
+					// shown in a maximized/fullscreen state.
 					// The problem is that any minor delay will cause a split-second white flash, so we're keeping
 					// the "time to blit" to a minimum by "rendering" asap and only "drawing" when
-					// receiving the first WM_ERASEBKGND. Even then, there is still a race between our generating a frame
+					// receiving the first WM_ERASEBKGND. Even then, there is still a race between our drawing a frame
 					// and the next screen refresh and while in most cases we are able to win the race and not get this
 					// split second of "whiteness", it's not a guarantee, especially on a slower device.
 					_beforeFirstEraseBkgnd = false;
@@ -489,7 +481,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			SetWindowStyle(WINDOW_STYLE.WS_DLGFRAME, false);
 			_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
 		}
-		else if (Window?.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
+		else if (Window?.AppWindow.Presenter is OverlappedPresenter)
 		{
 			switch (_pendingState)
 			{
@@ -499,17 +491,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				case OverlappedPresenterState.Minimized:
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
 					break;
-				case OverlappedPresenterState.Restored:
-					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_RESTORE);
-					break;
 				default:
-					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+					// see the comment in the WM_ERASEBKGND handler
+					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+					XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
+					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
+					PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 					break;
 			}
 		}
 		else
 		{
-			PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+			throw new InvalidOperationException("Unsupported Window Presenter.");
 		}
 	}
 
