@@ -210,6 +210,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		switch (msg)
 		{
+			case PInvoke.WM_NCPAINT:
+				// see the comment in the WM_ERASEBKGND handler
+				if (_beforeFirstEraseBkgnd)
+				{
+					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+					XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
+					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
+				}
+				break;
 			case PInvoke.WM_ACTIVATE:
 				OnWmActivate(wParam);
 				return new LRESULT(0);
@@ -255,20 +264,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				if (_beforeFirstEraseBkgnd)
 				{
 					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
-					// Note that we don't call OnRenderFrameOpportunity here, but before showing
-					// the window in ShowCore. The problem is that any minor delay will cause
-					// a split-second white flash, so we're keeping the "time to blit" to a
-					// minimum by "rendering" before the window is shown and only drawing when
-					// receiving the first WM_ERASEBKGND
+					// Note that we don't call OnRenderFrameOpportunity here, but in WM_NCPAINT which is
+					// the first window message receive after showing the window in ShowCore and after
+					// a possible window size change because the window was shown in a maximized/fullscreen state.
+					// The problem is that any minor delay will cause a split-second white flash, so we're keeping
+					// the "time to blit" to a minimum by "rendering" before the window is shown and only "drawing" when
+					// receiving the first WM_ERASEBKGND. Even then, there is still a race between our generating a frame
+					// and the next screen refresh and while in most cases we are able to win the race and not get this
+					// split second of "whiteness", it's not a guarantee, especially on a slower device.
 					_beforeFirstEraseBkgnd = false;
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
-					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-					XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
-					Render(); // fire OnNativePlatformFrameRequested which will EnqueueRender a render job
-					NativeDispatcher.Main.DispatchRenderActionIfPresent(); // dispatch the enqueued render job
-					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // give an additional chance for CompositionTarget.Render to run in case the DispatchRenderActionIfPresent call found an "ahead of time render" and skipped rendering
-					Render(); // show pixels on screen
+					Render();
 					return new LRESULT(1);
 				}
 				else
@@ -473,12 +480,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	protected override void ShowCore()
 	{
-		// see the comment in WndProc's WM_ERASEBKGND handling
-		if (_beforeFirstEraseBkgnd)
-		{
-			(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-		}
-
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but

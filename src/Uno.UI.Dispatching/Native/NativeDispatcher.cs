@@ -74,38 +74,6 @@ namespace Uno.UI.Dispatching
 		}
 
 #if __ANDROID__ || __WASM__ || __SKIA__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
-		public void DispatchRenderActionIfPresent()
-		{
-			lock (_gate)
-			{
-				foreach (var (compositionTarget, details) in _compositionTargets)
-				{
-					if (details.renderAction is not null)
-					{
-						// Skipping details.normalItemsToProcessBeforeNextRenderAction check here
-						{
-							_compositionTargets[compositionTarget] = (renderAction: null, normalItemsToProcessBeforeNextRenderAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
-
-							_currentPriority = NativeDispatcherPriority.High;
-
-							if (Interlocked.Decrement(ref _globalCount) > 0)
-							{
-								EnqueueNative(_currentPriority);
-							}
-
-							this.LogTrace()?.Trace($"Running render job from the dispatcher (Forced through {nameof(DispatchRenderActionIfPresent)}): queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
-
-							RunAction(this, details.renderAction);
-
-							// Restore the priority to the default for native events
-							// (i.e. not dispatched by this running loop)
-							_currentPriority = NativeDispatcherPriority.Normal;
-						}
-					}
-				}
-			}
-		}
-
 		private static void DispatchItems()
 		{
 			// Currently, we have a singleton NativeDispatcher.
