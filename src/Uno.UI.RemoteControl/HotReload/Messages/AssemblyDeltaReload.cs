@@ -35,8 +35,8 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		[MemberNotNullWhen(true, nameof(UpdatedTypes), nameof(MetadataDelta), nameof(ILDelta), nameof(PdbDelta), nameof(ModuleId))]
 		public bool IsValid()
 		{
-			return FilePaths is { IsEmpty: false }
-				&& UpdatedTypes is not null
+			// FilePaths is { IsEmpty: false } ==> Used only for logging / diagnostics purposes
+			return UpdatedTypes is not null
 				&& MetadataDelta is not null
 				&& ILDelta is not null
 				&& PdbDelta is not null

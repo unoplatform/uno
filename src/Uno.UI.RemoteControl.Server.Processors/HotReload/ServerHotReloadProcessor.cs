@@ -473,7 +473,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			try
 			{
-				if (InitializeMetadataUpdater(configureServer, properties))
+				if(InitializeUnoWatch(configureServer, properties))
+				//if (InitializeMetadataUpdater(configureServer, properties))
 				{
 					this.Log().LogDebug($"Metadata updater initialized");
 				}

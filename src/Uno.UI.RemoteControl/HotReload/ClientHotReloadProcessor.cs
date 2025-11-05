@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
@@ -19,6 +20,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 	public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 	{
+		Debugger.Launch();
 		_rcClient = rcClient;
 		_status = new(this);
 	}

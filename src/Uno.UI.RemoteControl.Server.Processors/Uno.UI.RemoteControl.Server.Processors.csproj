@@ -7,6 +7,7 @@
 		
 		<!-- We need all the intermediate assemblies to be located in the processors -->
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
+		<NoWarn>$(NoWarn);VSTHRD200;VSTHRD101;VSTHRD003;VSTHRD110;VSTHRD103</NoWarn>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />
@@ -20,6 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />

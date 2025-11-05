@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Uno.UI.RemoteControl.VS.Helpers;
 using _Command = Uno.UI.RemoteControl.Messaging.IdeChannel.Command;
 
-#pragma warning disable CS1031 // Disable "Do not catch general exception types" for this file as it's our expected behavior here.
+#pragma warning disable CA1031 // Disable "Do not catch general exception types" for this file as it's our expected behavior here.
 
 namespace Uno.IDE;
 
@@ -82,7 +82,7 @@ internal sealed class CompositeCommandHandler(ILogger log, params ImmutableList<
 			}
 			catch (Exception error)
 			{
-				log.Debug($"Command handler {reg.GetType().Name}.CanExecute failed for command '{command.Name}' ({error.Message}).");
+				log.Debug($"Command handler {reg.Handler.GetType().Name}.CanExecute failed for command '{command.Name}' ({error.Message}).");
 			}
 		}
 

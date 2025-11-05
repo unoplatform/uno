@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -73,7 +74,7 @@ namespace Uno.UI.Dispatching
 			}
 		}
 
-#if __ANDROID__ || __WASM__ || __SKIA__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
+#if __ANDROID__ || __WASM__ || __SKIA__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || true
 		private static void DispatchItems()
 		{
 			// Currently, we have a singleton NativeDispatcher.
@@ -112,6 +113,7 @@ namespace Uno.UI.Dispatching
 									}
 								}
 							}
+
 							break;
 						}
 					}
@@ -198,10 +200,8 @@ namespace Uno.UI.Dispatching
 				{
 					shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
 				}
-				_compositionTargets[compositionTarget] = details with
-				{
-					renderAction = handler,
-				};
+
+				_compositionTargets[compositionTarget] = details with { renderAction = handler, };
 			}
 
 			this.LogTrace()?.Trace($"{nameof(EnqueueRender)} : {nameof(shouldEnqueue)}={shouldEnqueue}");
@@ -222,20 +222,21 @@ namespace Uno.UI.Dispatching
 				var activity = LogScheduleEvent(handler, priority);
 
 				EnqueueCore(() =>
-				{
-					try
 					{
-						using var runActivity = LogRunEvent(activity, handler, _currentPriority);
+						try
+						{
+							using var runActivity = LogRunEvent(activity, handler, _currentPriority);
 
-						handler();
-					}
-					catch (Exception exception)
-					{
-						LogExceptionEvent(exception, handler);
+							handler();
+						}
+						catch (Exception exception)
+						{
+							LogExceptionEvent(exception, handler);
 
-						throw;
-					}
-				}, priority);
+							throw;
+						}
+					},
+					priority);
 			}
 		}
 
@@ -246,44 +247,46 @@ namespace Uno.UI.Dispatching
 			if (!_trace.IsEnabled)
 			{
 				EnqueueCore(() =>
-				{
-					try
 					{
-						handler();
+						try
+						{
+							handler();
 
-						tcs.SetResult();
-					}
-					catch (Exception exception)
-					{
-						tcs.SetException(exception);
+							tcs.SetResult();
+						}
+						catch (Exception exception)
+						{
+							tcs.SetException(exception);
 
-						throw;
-					}
-				}, priority);
+							throw;
+						}
+					},
+					priority);
 			}
 			else
 			{
 				var activity = LogScheduleEvent(handler, priority);
 
 				EnqueueCore(() =>
-				{
-					try
 					{
-						using var runActivity = LogRunEvent(activity, handler, _currentPriority);
+						try
+						{
+							using var runActivity = LogRunEvent(activity, handler, _currentPriority);
 
-						handler();
+							handler();
 
-						tcs.SetResult();
-					}
-					catch (Exception exception)
-					{
-						LogExceptionEvent(exception, handler);
+							tcs.SetResult();
+						}
+						catch (Exception exception)
+						{
+							LogExceptionEvent(exception, handler);
 
-						tcs.SetException(exception);
+							tcs.SetException(exception);
 
-						throw;
-					}
-				}, priority);
+							throw;
+						}
+					},
+					priority);
 			}
 
 			return tcs.Task;
@@ -296,23 +299,24 @@ namespace Uno.UI.Dispatching
 				var operation = new UIAsyncOperation(handler);
 
 				EnqueueCore(() =>
-				{
-					if (!operation.IsCancelled)
 					{
-						try
+						if (!operation.IsCancelled)
 						{
-							operation.Action();
+							try
+							{
+								operation.Action();
 
-							operation.Complete();
-						}
-						catch (Exception exception)
-						{
-							operation.SetError(exception);
+								operation.Complete();
+							}
+							catch (Exception exception)
+							{
+								operation.SetError(exception);
 
-							throw;
+								throw;
+							}
 						}
-					}
-				}, priority);
+					},
+					priority);
 
 				return operation;
 			}
@@ -323,31 +327,32 @@ namespace Uno.UI.Dispatching
 				var operation = new UIAsyncOperation(handler, activity);
 
 				EnqueueCore(() =>
-				{
-					if (!operation.IsCancelled)
 					{
-						try
+						if (!operation.IsCancelled)
 						{
-							using var runActivity = LogRunEvent(operation.ScheduleEventActivity, operation.Action, _currentPriority);
+							try
+							{
+								using var runActivity = LogRunEvent(operation.ScheduleEventActivity, operation.Action, _currentPriority);
 
-							operation.Action();
+								operation.Action();
 
-							operation.Complete();
+								operation.Complete();
+							}
+							catch (Exception exception)
+							{
+								LogExceptionEvent(exception, operation.Action);
+
+								operation.SetError(exception);
+
+								throw;
+							}
 						}
-						catch (Exception exception)
+						else
 						{
-							LogExceptionEvent(exception, operation.Action);
-
-							operation.SetError(exception);
-
-							throw;
+							_trace.WriteEvent(TraceProvider.NativeDispatcher_Cancelled, EventOpcode.Send, new[] { operation.Action });
 						}
-					}
-					else
-					{
-						_trace.WriteEvent(TraceProvider.NativeDispatcher_Cancelled, EventOpcode.Send, new[] { operation.Action });
-					}
-				}, priority);
+					},
+					priority);
 
 				return operation;
 			}
@@ -362,23 +367,24 @@ namespace Uno.UI.Dispatching
 				operation = new UIAsyncOperation(() => handler(operation!.Token));
 
 				EnqueueCore(() =>
-				{
-					if (!operation.IsCancelled)
 					{
-						try
+						if (!operation.IsCancelled)
 						{
-							operation.Action();
+							try
+							{
+								operation.Action();
 
-							operation.Complete();
-						}
-						catch (Exception exception)
-						{
-							operation.SetError(exception);
+								operation.Complete();
+							}
+							catch (Exception exception)
+							{
+								operation.SetError(exception);
 
-							throw;
+								throw;
+							}
 						}
-					}
-				}, priority);
+					},
+					priority);
 
 				return operation;
 			}
@@ -391,31 +397,32 @@ namespace Uno.UI.Dispatching
 				operation = new UIAsyncOperation(delegatingHandler, activity);
 
 				EnqueueCore(() =>
-				{
-					if (!operation.IsCancelled)
 					{
-						try
+						if (!operation.IsCancelled)
 						{
-							using var runActivity = LogRunEvent(operation.ScheduleEventActivity, operation.Action, _currentPriority);
+							try
+							{
+								using var runActivity = LogRunEvent(operation.ScheduleEventActivity, operation.Action, _currentPriority);
 
-							operation.Action();
+								operation.Action();
 
-							operation.Complete();
+								operation.Complete();
+							}
+							catch (Exception exception)
+							{
+								LogExceptionEvent(exception, operation.Action);
+
+								operation.SetError(exception);
+
+								throw;
+							}
 						}
-						catch (Exception exception)
+						else
 						{
-							LogExceptionEvent(exception, operation.Action);
-
-							operation.SetError(exception);
-
-							throw;
+							_trace.WriteEvent(TraceProvider.NativeDispatcher_Cancelled, EventOpcode.Send, new[] { operation.Action });
 						}
-					}
-					else
-					{
-						_trace.WriteEvent(TraceProvider.NativeDispatcher_Cancelled, EventOpcode.Send, new[] { operation.Action });
-					}
-				}, priority);
+					},
+					priority);
 
 				return operation;
 			}
@@ -453,26 +460,20 @@ namespace Uno.UI.Dispatching
 			_trace.WriteEvent(
 				TraceProvider.NativeDispatcher_Exception,
 				EventOpcode.Send,
-				new[] {
-					exception.GetType().ToString(),
-					handler.Method.DeclaringType?.FullName + "." + handler.Method.Name });
+				new[] { exception.GetType().ToString(), handler.Method.DeclaringType?.FullName + "." + handler.Method.Name });
 
 		private static EventProviderExtensions.DisposableEventActivity LogRunEvent(EventActivity activity, Action handler, NativeDispatcherPriority priority) =>
 			_trace.WriteEventActivity(
 				TraceProvider.NativeDispatcher_InvokeStart,
 				TraceProvider.NativeDispatcher_InvokeStop,
 				relatedActivity: activity,
-				payload: new[] {
-					((int)priority).ToString(CultureInfo.InvariantCulture),
-					handler.Method.DeclaringType?.FullName + "." + handler.Method.Name });
+				payload: new[] { ((int)priority).ToString(CultureInfo.InvariantCulture), handler.Method.DeclaringType?.FullName + "." + handler.Method.Name });
 
 		private static EventActivity LogScheduleEvent(Action handler, NativeDispatcherPriority priority) =>
 			_trace.WriteEventActivity(
 				TraceProvider.NativeDispatcher_Schedule,
 				EventOpcode.Send,
-				new[] {
-					((int)priority).ToString(CultureInfo.InvariantCulture),
-					handler.Method.DeclaringType?.FullName + "." + handler.Method.Name });
+				new[] { ((int)priority).ToString(CultureInfo.InvariantCulture), handler.Method.DeclaringType?.FullName + "." + handler.Method.Name });
 
 		/// <summary>
 		/// Gets the priority of the current task.
@@ -485,8 +486,8 @@ namespace Uno.UI.Dispatching
 		internal bool HasThreadAccess => _hasThreadAccess ??= GetHasThreadAccess();
 
 		internal bool IsIdle => _queues[(int)NativeDispatcherPriority.High].Count +
-								_queues[(int)NativeDispatcherPriority.Normal].Count +
-								_queues[(int)NativeDispatcherPriority.Low].Count == 0;
+			_queues[(int)NativeDispatcherPriority.Normal].Count +
+			_queues[(int)NativeDispatcherPriority.Low].Count == 0;
 
 		/// <summary>
 		/// Gets the dispatcher for the main thread.
@@ -504,4 +505,29 @@ namespace Uno.UI.Dispatching
 			public const int NativeDispatcher_Cancelled = 5;
 		}
 	}
+
+//#if XAMARIN && !__SKIA__ && !__WASM__ && !__NETSTD_REFERENCE__
+//	internal sealed partial class NativeDispatcher
+//	{
+//		[EditorBrowsable(EditorBrowsableState.Never)]
+//		internal static Action<Action, NativeDispatcherPriority>? DispatchOverride;
+
+//		[EditorBrowsable(EditorBrowsableState.Never)]
+//		internal static Func<bool>? HasThreadAccessOverride;
+
+//		private bool GetHasThreadAccess()
+//		{
+//			Debug.Assert(HasThreadAccessOverride != null, "HasThreadAccessOverride must be set.");
+
+//			return HasThreadAccessOverride();
+//		}
+
+//		partial void EnqueueNative(NativeDispatcherPriority priority)
+//		{
+//			Debug.Assert(DispatchOverride != null, "DispatchOverride must be set.");
+
+//			DispatchOverride(NativeDispatcher.DispatchItems, priority);
+//		}
+//	}
+//#endif
 }

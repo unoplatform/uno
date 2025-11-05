@@ -22,7 +22,9 @@ internal class IdeChannelCommandHandler(IdeChannelClient ideChannel) : ICommandH
 	/// <inheritdoc />
 	public async Task ExecuteAsync(Command command, CancellationToken ct)
 	{
-		ct = CancellationTokenSource.CreateLinkedTokenSource(ct, _ct.Token).Token;
+		using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct, _ct.Token);
+		ct = cts.Token;
+
 		if (ct.IsCancellationRequested)
 		{
 			return;
