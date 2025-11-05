@@ -118,13 +118,13 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 			formatEtcList
 			.Where(static formatetc =>
 			{
-				if (!Enum.IsDefined(typeof(CLIPBOARD_FORMAT), formatetc.cfFormat))
+				if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
 				{
 					return false;
 				}
 				if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
 				{
-					typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName(typeof(CLIPBOARD_FORMAT), formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
+					typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
 					return false;
 				}
 

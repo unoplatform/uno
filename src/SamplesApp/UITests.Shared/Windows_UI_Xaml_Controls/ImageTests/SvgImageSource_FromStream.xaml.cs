@@ -43,7 +43,7 @@ public sealed partial class SvgImageSource_FromStream : Page
 		new("Home", new Uri("ms-appx:///Assets/Formats/home.svg"))
 	};
 
-	public string[] Stretches { get; } = Enum.GetNames(typeof(Stretch)).ToArray();
+	public string[] Stretches { get; } = Enum.GetNames<Stretch>();
 
 	public SampleSvgSource SelectedSource
 	{

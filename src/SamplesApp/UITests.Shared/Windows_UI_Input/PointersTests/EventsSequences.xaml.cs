@@ -51,7 +51,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			SetupEvents(TestHyperlinkInner, _hyperlinkResult, EventsKind.Click);
 			SetupEvents(TestListViewTarget, _listViewResult, EventsKind.Pointers | EventsKind.Gestures | EventsKind.Click);
 
-			_pointerType.ItemsSource = Enum.GetNames(typeof(PointerDeviceType));
+			_pointerType.ItemsSource = Enum.GetNames<PointerDeviceType>();
 
 			// Values for automated tests
 #if __ANDROID__ || __APPLE_UIKIT__
@@ -67,7 +67,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		private bool PenSupportsHover = true;
 #endif
 
-		private PointerDeviceType PointerType => (PointerDeviceType)Enum.Parse(typeof(PointerDeviceType), _pointerType.SelectedValue.ToString());
+		private PointerDeviceType PointerType => Enum.Parse<PointerDeviceType>(_pointerType.SelectedValue.ToString());
 
 		private void ResetTapTest(object sender, RoutedEventArgs e) => Clear(_tapResult, TestTapResult);
 		private void ValidateTapTest(object sender, RoutedEventArgs e)

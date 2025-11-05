@@ -11,7 +11,7 @@ internal static class InputReturnTypeExtensions
 	public static string ToEnterKeyHintValue(this InputReturnType inputReturnType) =>
 		inputReturnType switch
 		{
-			_ when Enum.IsDefined(typeof(InputReturnType), inputReturnType) => inputReturnType.ToString().ToLowerInvariant(),
+			_ when Enum.IsDefined(inputReturnType) => inputReturnType.ToString().ToLowerInvariant(),
 			_ => "",
 		};
 }
