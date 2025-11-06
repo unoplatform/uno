@@ -50,7 +50,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
-	private IRenderer _renderer;
+	private readonly IRenderer _renderer;
 
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
@@ -298,9 +298,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// see the comment in the WM_ERASEBKGND handler
 		XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
 		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
-		_renderer.Dispose();
-		_renderer = GlRenderer.TryCreateGlRenderer(_hwnd)!;
-		_renderer.UpdateSize(Size.Width, Size.Height);
+		_renderer.OnWindowExtendedIntoTitleBar(Size.Width, Size.Height);
 		((IXamlRootHost)this).InvalidateRender();
 		Render();
 	}
