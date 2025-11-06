@@ -205,13 +205,14 @@ namespace Uno.UI.Runtime.Skia.Wpf
 							return dragUI;
 						}
 					}
-					catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException or InvalidOperationException)
+					catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException)
 					{
 						// If we can't load the image (file not found, no access, unsupported format, or invalid path),
 						// continue without visual feedback
-						if (typeof(WpfDragDropExtension).Log().IsEnabled(LogLevel.Debug))
+						var logger = typeof(WpfDragDropExtension).Log();
+						if (logger.IsEnabled(LogLevel.Debug))
 						{
-							typeof(WpfDragDropExtension).Log().LogDebug($"Failed to load image thumbnail for drag operation: {ex.Message}");
+							logger.LogDebug($"Failed to load image thumbnail for drag operation: {ex.Message}");
 						}
 					}
 				}
