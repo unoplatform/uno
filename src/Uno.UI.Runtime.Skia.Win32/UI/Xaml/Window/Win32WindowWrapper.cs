@@ -495,6 +495,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// see the comment in WndProc's WM_ERASEBKGND handling
 		if (_beforeFirstEraseBkgnd)
 		{
@@ -514,6 +515,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		SynchronousRenderAndDraw();
 
 >>>>>>> a3f8836b64 (chore: remove unnecessary calls)
+=======
+>>>>>>> 9a5f6538a8 (chore: unregress initial frame when showing maximized window)
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but
@@ -536,8 +539,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					break;
 				default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 =======
+=======
+					// We call SynchronousRenderAndDraw here and not when handling WM_ERASEBKGND. The problem is that any minor delay
+					// will cause a split-second white flash, so we're keeping the "time to blit" to a minimum by rendering
+					// before the window is shown.
+					// For other pending states, SynchronousRenderAndDraw will still be called but slightly later after
+					// the window has been resized (due to e.g. maximizing)
+					SynchronousRenderAndDraw();
+>>>>>>> 9a5f6538a8 (chore: unregress initial frame when showing maximized window)
 					PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 >>>>>>> a3f8836b64 (chore: remove unnecessary calls)
 					break;
