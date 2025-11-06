@@ -170,7 +170,7 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			if (canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale)
+			// if (canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale)
 			{
 				canvas = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;

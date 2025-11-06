@@ -48,12 +48,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
-	private readonly IRenderer _renderer;
+	private IRenderer _renderer;
 
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
-	private bool _beforeFirstEraseBkgnd = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -208,6 +207,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		switch (msg)
 		{
+<<<<<<< HEAD
+=======
+			case PInvoke.WM_NCPAINT:
+				OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+				Ramez();
+				break;
+>>>>>>> 07acec6131 (chore: fix flickering when extending window into title bar)
 			case PInvoke.WM_ACTIVATE:
 				OnWmActivate(wParam);
 				return new LRESULT(0);
@@ -249,6 +255,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
+<<<<<<< HEAD
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
 				if (_beforeFirstEraseBkgnd)
 				{
@@ -270,6 +277,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					// only do it the first time when we really need to
 					return new LRESULT(0);
 				}
+=======
+				OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+				Ramez();
+				return new LRESULT(1);
+>>>>>>> 07acec6131 (chore: fix flickering when extending window into title bar)
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
@@ -304,6 +316,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
+	private void Ramez()
+	{
+		// see the comment in the WM_ERASEBKGND handler
+		XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
+		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
+		_renderer.Dispose();
+		_renderer = GlRenderer.TryCreateGlRenderer(_hwnd)!;
+		_renderer.UpdateSize(Size.Width, Size.Height);
+		((IXamlRootHost)this).InvalidateRender();
+		Render();
 	}
 
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
@@ -427,13 +451,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Size = new SizeInt32(windowRect.Width, windowRect.Height);
 		Position = new PointInt32(windowRect.left, windowRect.top);
-
-		// This Render call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
-		// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
-		// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
-		// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
-		// and our render timer.
-		Render();
 	}
 
 	public override object NativeWindow => new Win32NativeWindow(_hwnd);
