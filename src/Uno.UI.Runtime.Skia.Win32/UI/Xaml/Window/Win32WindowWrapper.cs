@@ -247,7 +247,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
-<<<<<<< HEAD
 				if (Window?.AppWindow?.Presenter is OverlappedPresenter overlappedPresenter)
 				{
 					int minWidth = overlappedPresenter.PreferredMinimumWidth ?? 0;
@@ -258,21 +257,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 					info->ptMinTrackSize = new Point(minWidth, minHeight);
 					info->ptMaxTrackSize = new Point(maxWidth, maxHeight);
-=======
-				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
-				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
-<<<<<<< HEAD
-
-				// see the comment in the WM_ERASEBKGND handler
-				if (WasShown && _beforeFirstEraseBkgnd && _pendingState is not OverlappedPresenterState.Maximized && Window?.AppWindow?.Presenter is not FullScreenPresenter)
-				{
-					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-					XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
-					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
->>>>>>> ad491b59ea (chore: improve timing for the common case)
 				}
-=======
->>>>>>> 48aec2ebac (chore: adjust timing further)
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
