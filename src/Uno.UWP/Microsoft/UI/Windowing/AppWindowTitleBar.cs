@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Uno.Foundation.Logging;
 using Windows.Graphics;
 
 namespace Microsoft.UI.Windowing;
@@ -26,11 +27,22 @@ public partial class AppWindowTitleBar
 	/// <summary>
 	/// Gets or sets a value that specifies whether app content extends into the title bar area.
 	/// </summary>
+	/// <remarks>
+	/// Currently only has effect on Desktop Windows and WinAppSDK targets.
+	/// </remarks>
 	public bool ExtendsContentIntoTitleBar
 	{
 		get => _extendsContentIntoTitleBar;
 		set
 		{
+			if (!IsCustomizationSupported())
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning("AppWindowTitleBar customization is not supported on this platform.");
+				}
+			}
+
 			if (_extendsContentIntoTitleBar != value)
 			{
 				_extendsContentIntoTitleBar = value;
@@ -49,9 +61,9 @@ public partial class AppWindowTitleBar
 			var rasterizationScale = _appWindow.NativeAppWindow.RasterizationScale;
 			var scaleIndependentHeight = PreferredHeightOption switch
 			{
-				TitleBarHeightOption.Tall => 48,
 				TitleBarHeightOption.Collapsed => 0,
 				TitleBarHeightOption.Standard => 32,
+				TitleBarHeightOption.Tall => 48,
 				_ => throw new NotSupportedException("The specified TitleBarHeightOption is not supported."),
 			};
 			return (int)(scaleIndependentHeight * rasterizationScale);
@@ -75,6 +87,8 @@ public partial class AppWindowTitleBar
 		}
 	}
 
+	internal RectInt32[] DragRectangles { get; private set; } = [];
+
 	/// <summary>
 	/// Gets a value that indicates whether the title bar can be customized.
 	/// </summary>
@@ -83,14 +97,23 @@ public partial class AppWindowTitleBar
 	public static bool IsCustomizationSupported() => OperatingSystem.IsWindows();
 
 	/// <summary>
+	/// Resets the title bar to its default state.
+	/// </summary>
+
+	public void ResetToDefault()
+	{
+		SetDragRectangles([]);
+		PreferredHeightOption = TitleBarHeightOption.Standard;
+		ExtendsContentIntoTitleBar = false;
+	}
+
+	/// <summary>
 	/// Sets the drag regions for the window.
 	/// </summary>
 	/// <param name="value">An array of RectInt32, where each rectangle must be within the client area of the window to which the title bar belongs.</param>
 	public void SetDragRectangles(RectInt32[] value)
 	{
-		ArgumentNullException.ThrowIfNull(value);
-		DragRectanglesChanged?.Invoke(this, value);
+		DragRectangles = value ?? [];
+		Changed?.Invoke(this, EventArgs.Empty);
 	}
-
-	internal event EventHandler<RectInt32[]>? DragRectanglesChanged;
 }
