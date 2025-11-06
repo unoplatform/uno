@@ -50,12 +50,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
-	private readonly IRenderer _renderer;
+	private IRenderer _renderer;
 
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
-	private bool _beforeFirstEraseBkgnd = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -211,13 +210,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		switch (msg)
 		{
 			case PInvoke.WM_NCPAINT:
-				// see the comment in the WM_ERASEBKGND handler
-				if (WasShown && _beforeFirstEraseBkgnd && (_pendingState is OverlappedPresenterState.Maximized || Window?.AppWindow.Presenter is FullScreenPresenter))
-				{
-					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-					XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
-					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
-				}
+				OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+				Ramez();
 				break;
 			case PInvoke.WM_ACTIVATE:
 				OnWmActivate(wParam);
@@ -260,31 +254,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
-				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
-				if (_beforeFirstEraseBkgnd)
-				{
-					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
-					// Note that we don't call OnRenderFrameOpportunity here, but in ShowCore right before
-					// showing the window or in WM_NCPAINT which is the first message received after showing
-					// the window in ShowCore and after a possible window size change because the window was
-					// shown in a maximized/fullscreen state.
-					// The problem is that any minor delay will cause a split-second white flash, so we're keeping
-					// the "time to blit" to a minimum by "rendering" asap and only "drawing" when
-					// receiving the first WM_ERASEBKGND. Even then, there is still a race between our drawing a frame
-					// and the next screen refresh and while in most cases we are able to win the race and not get this
-					// split second of "whiteness", it's not a guarantee, especially on a slower device.
-					_beforeFirstEraseBkgnd = false;
-					// The render timer might already be running. This is fine. The CompositionTarget
-					// contract allows calling OnNativePlatformFrameRequested multiple times.
-					Render();
-					return new LRESULT(1);
-				}
-				else
-				{
-					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
-					// only do it the first time when we really need to
-					return new LRESULT(0);
-				}
+				OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+				Ramez();
+				return new LRESULT(1);
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
@@ -319,6 +291,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
+	private void Ramez()
+	{
+		// see the comment in the WM_ERASEBKGND handler
+		XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
+		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
+		_renderer.Dispose();
+		_renderer = GlRenderer.TryCreateGlRenderer(_hwnd)!;
+		_renderer.UpdateSize(Size.Width, Size.Height);
+		((IXamlRootHost)this).InvalidateRender();
+		Render();
 	}
 
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
@@ -442,13 +426,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Size = new SizeInt32(windowRect.Width, windowRect.Height);
 		Position = new PointInt32(windowRect.left, windowRect.top);
-
-		// This Render call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
-		// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
-		// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
-		// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
-		// and our render timer.
-		Render();
 	}
 
 	public override object NativeWindow => new Win32NativeWindow(_hwnd);
