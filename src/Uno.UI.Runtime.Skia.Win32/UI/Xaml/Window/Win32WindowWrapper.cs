@@ -53,6 +53,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
+	private bool _beforeFirstEraseBkgnd = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -256,6 +257,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
 				if (_beforeFirstEraseBkgnd)
 				{
@@ -268,7 +272,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					_beforeFirstEraseBkgnd = false;
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
+<<<<<<< HEAD
 					Render();
+=======
+					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+					Ramez();
+>>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
 					return new LRESULT(1);
 				}
 				else
@@ -277,11 +286,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					// only do it the first time when we really need to
 					return new LRESULT(0);
 				}
+<<<<<<< HEAD
 =======
 				OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 				Ramez();
 				return new LRESULT(1);
 >>>>>>> 07acec6131 (chore: fix flickering when extending window into title bar)
+=======
+>>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
