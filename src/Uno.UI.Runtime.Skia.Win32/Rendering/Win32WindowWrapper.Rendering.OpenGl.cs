@@ -183,7 +183,7 @@ internal partial class Win32WindowWrapper
 			ReleaseGlContext(_hwnd, _hdc, _glContext, _grGlInterface, _grContext, _renderTarget);
 		}
 
-		void IRenderer.OnWindowExtendedIntoTitleBar(int width, int height)
+		void IRenderer.Reinitialize(int width, int height)
 		{
 			ReleaseGlContext(_hwnd, new HDC(IntPtr.Zero), _glContext, null, _grContext, _renderTarget);
 			_glContext = PInvoke.wglCreateContext(_hdc);

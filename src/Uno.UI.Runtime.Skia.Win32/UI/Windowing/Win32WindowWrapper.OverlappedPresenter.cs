@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.InteropServices;
-using Windows.Graphics;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Windowing.Native;
 using Microsoft.UI.Xaml;
@@ -131,7 +130,9 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 				windowRectangle.left, windowRectangle.top,
 				0, 0,
 				SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
-			_renderer.OnWindowExtendedIntoTitleBar(Size.Width, Size.Height);
+			_renderer.Reinitialize(Size.Width, Size.Height);
+			_surface?.Dispose();
+			_surface = null;
 		}
 	}
 
