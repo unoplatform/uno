@@ -52,7 +52,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			}
 		}
 
-		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaX11;
+		RuntimePlatformHelper.SkiaPlatform = UnoRuntimePlatform.SkiaX11;
 
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => new X11CoreApplicationExtension());
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new X11ApplicationViewExtension(o));
@@ -130,7 +130,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
-		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaX11;
+		RuntimePlatformHelper.SkiaPlatform = UnoRuntimePlatform.SkiaX11;
 	}
 
 	internal static int RenderFrameRate { get; private set; }

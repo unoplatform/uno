@@ -1,13 +1,22 @@
+using Uno.Helpers;
+
 namespace Uno.UI.Helpers;
 
 internal static class UnoRuntimePlatformExtensions
 {
 	internal static bool IsSkia(this UnoRuntimePlatform platform) =>
-#if __SKIA__
-		true;
-#else
-	false;
-#endif
+		platform == UnoRuntimePlatform.SkiaWpf ||
+		platform == UnoRuntimePlatform.SkiaWin32 ||
+		platform == UnoRuntimePlatform.SkiaX11 ||
+		platform == UnoRuntimePlatform.SkiaMacOS ||
+		platform == UnoRuntimePlatform.SkiaIslands ||
+		platform == UnoRuntimePlatform.SkiaWasm ||
+		platform == UnoRuntimePlatform.SkiaAndroid ||
+		platform == UnoRuntimePlatform.SkiaIOS ||
+		platform == UnoRuntimePlatform.SkiaMacCatalyst ||
+		platform == UnoRuntimePlatform.SkiaTvOS ||
+		platform == UnoRuntimePlatform.SkiaFrameBuffer ||
+		platform == UnoRuntimePlatform.SkiaAppleUIKit;
 
 	internal static bool IsIOS(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.NativeIOS || platform == UnoRuntimePlatform.SkiaIOS;
 
