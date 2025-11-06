@@ -124,6 +124,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 		if (WasShown)
 		{
+			_beforeFirstEraseBkgnd = true;
 			// Inform the application of the frame change.
 			PInvoke.SetWindowPos(_hwnd,
 				HWND.Null,

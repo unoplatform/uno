@@ -55,6 +55,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
+	private bool _beforeFirstEraseBkgnd = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -254,9 +255,28 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
-				OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-				Ramez();
-				return new LRESULT(1);
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
+				if (_beforeFirstEraseBkgnd)
+				{
+					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
+					// Note that we don't call OnRenderFrameOpportunity here, but before showing
+					// the window in ShowCore. The problem is that any minor delay will cause
+					// a split-second white flash, so we're keeping the "time to blit" to a
+					// minimum by "rendering" before the window is shown and only drawing when
+					// receiving the first WM_ERASEBKGND
+					_beforeFirstEraseBkgnd = false;
+					// The render timer might already be running. This is fine. The CompositionTarget
+					// contract allows calling OnNativePlatformFrameRequested multiple times.
+					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+					Ramez();
+					return new LRESULT(1);
+				}
+				else
+				{
+					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
+					// only do it the first time when we really need to
+					return new LRESULT(0);
+				}
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
