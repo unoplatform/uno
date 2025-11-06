@@ -532,5 +532,182 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			Assert.IsTrue(Math.Abs(finalValue) < 10,
 				$"Final value should be close to 0 after repeating with AutoReverse, got {finalValue}");
 		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+		public async Task When_AutoReverse_OnStoryboard()
+		{
+			var target = new TextBlock() { Text = "Test AutoReverse on Storyboard" };
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(target);
+
+			var transform = new TranslateTransform();
+			target.RenderTransform = transform;
+
+			var animation = new DoubleAnimation()
+			{
+				From = 0,
+				To = 100,
+				Duration = TimeSpan.FromMilliseconds(500),
+				FillBehavior = FillBehavior.HoldEnd,
+			};
+			Storyboard.SetTarget(animation, transform);
+			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.X));
+
+			var storyboard = new Storyboard()
+			{
+				AutoReverse = true // AutoReverse on Storyboard level
+			};
+			storyboard.Children.Add(animation);
+
+			bool completed = false;
+			storyboard.Completed += (s, e) => completed = true;
+
+			storyboard.Begin();
+
+			// Wait for completion (500ms forward + 500ms reverse = 1000ms)
+			await WindowHelper.WaitFor(() => completed, timeoutMS: 2500);
+
+			// Final value should be back at start (0) when Storyboard has AutoReverse
+			var finalValue = transform.X;
+			Assert.IsTrue(Math.Abs(finalValue) < 10,
+				$"Final value should be close to 0 after Storyboard AutoReverse, got {finalValue}");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+		public async Task When_AutoReverse_OnBothStoryboardAndAnimation()
+		{
+			var target = new TextBlock() { Text = "Test AutoReverse on both levels" };
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(target);
+
+			var transform = new TranslateTransform();
+			target.RenderTransform = transform;
+
+			var animation = new DoubleAnimation()
+			{
+				From = 0,
+				To = 100,
+				Duration = TimeSpan.FromMilliseconds(250),
+				AutoReverse = true, // AutoReverse on animation
+				FillBehavior = FillBehavior.HoldEnd,
+			};
+			Storyboard.SetTarget(animation, transform);
+			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.X));
+
+			var storyboard = new Storyboard()
+			{
+				AutoReverse = true // AutoReverse on Storyboard too
+			};
+			storyboard.Children.Add(animation);
+
+			bool completed = false;
+			storyboard.Completed += (s, e) => completed = true;
+
+			storyboard.Begin();
+
+			// With AutoReverse on both:
+			// Animation: 250ms forward + 250ms reverse = 500ms
+			// Storyboard AutoReverse: repeats that 500ms sequence in reverse
+			// Total: 500ms + 500ms = 1000ms
+			await WindowHelper.WaitFor(() => completed, timeoutMS: 2500);
+
+			// Final value should be back at start (0)
+			var finalValue = transform.X;
+			Assert.IsTrue(Math.Abs(finalValue) < 10,
+				$"Final value should be close to 0 with nested AutoReverse, got {finalValue}");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+		public async Task When_RepeatBehavior_OnStoryboardWithAutoReverse()
+		{
+			var target = new TextBlock() { Text = "Test RepeatBehavior on Storyboard with AutoReverse" };
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(target);
+
+			var transform = new TranslateTransform();
+			target.RenderTransform = transform;
+
+			var animation = new DoubleAnimation()
+			{
+				From = 0,
+				To = 50,
+				Duration = TimeSpan.FromMilliseconds(200),
+				FillBehavior = FillBehavior.HoldEnd,
+			};
+			Storyboard.SetTarget(animation, transform);
+			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.X));
+
+			var storyboard = new Storyboard()
+			{
+				AutoReverse = true,
+				RepeatBehavior = new RepeatBehavior(2) // Repeat the (forward+reverse) cycle twice
+			};
+			storyboard.Children.Add(animation);
+
+			bool completed = false;
+			storyboard.Completed += (s, e) => completed = true;
+
+			storyboard.Begin();
+
+			// 2 repeats * (200ms forward + 200ms reverse) = 2 * 400ms = 800ms
+			await WindowHelper.WaitFor(() => completed, timeoutMS: 2500);
+
+			// Final value should be back at start (0)
+			var finalValue = transform.X;
+			Assert.IsTrue(Math.Abs(finalValue) < 10,
+				$"Final value should be close to 0 after Storyboard repeat with AutoReverse, got {finalValue}");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+		public async Task When_RepeatBehavior_OnBothLevelsWithAutoReverse()
+		{
+			var target = new TextBlock() { Text = "Test RepeatBehavior on both levels with AutoReverse" };
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(target);
+
+			var transform = new TranslateTransform();
+			target.RenderTransform = transform;
+
+			var animation = new DoubleAnimation()
+			{
+				From = 0,
+				To = 50,
+				Duration = TimeSpan.FromMilliseconds(100),
+				AutoReverse = true,
+				RepeatBehavior = new RepeatBehavior(2), // Animation repeats twice (200ms total)
+				FillBehavior = FillBehavior.HoldEnd,
+			};
+			Storyboard.SetTarget(animation, transform);
+			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.X));
+
+			var storyboard = new Storyboard()
+			{
+				AutoReverse = true,
+				RepeatBehavior = new RepeatBehavior(2) // Storyboard repeats its children twice
+			};
+			storyboard.Children.Add(animation);
+
+			bool completed = false;
+			storyboard.Completed += (s, e) => completed = true;
+
+			storyboard.Begin();
+
+			// Animation: 2 repeats * (100ms forward + 100ms reverse) = 400ms
+			// Storyboard: 2 repeats * (400ms forward + 400ms reverse) = 1600ms total
+			await WindowHelper.WaitFor(() => completed, timeoutMS: 3000);
+
+			// Final value should be back at start (0)
+			var finalValue = transform.X;
+			Assert.IsTrue(Math.Abs(finalValue) < 10,
+				$"Final value should be close to 0 after nested repeat with AutoReverse, got {finalValue}");
+		}
 	}
 }
