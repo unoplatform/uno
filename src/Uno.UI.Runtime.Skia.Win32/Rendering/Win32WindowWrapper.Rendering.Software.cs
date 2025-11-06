@@ -86,10 +86,7 @@ internal partial class Win32WindowWrapper
 
 		bool IRenderer.IsSoftware() => true;
 
-		void IRenderer.Reinitialize(int width, int height)
-		{
-			((IRenderer)this).UpdateSize(width, height);
-		}
+		void IRenderer.Reinitialize() { }
 
 		void IDisposable.Dispose()
 		{

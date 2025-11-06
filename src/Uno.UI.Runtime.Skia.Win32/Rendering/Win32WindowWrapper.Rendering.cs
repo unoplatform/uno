@@ -35,6 +35,13 @@ internal partial class Win32WindowWrapper
 		_renderTimer.Enabled = true;
 	}
 
+	private void ReinitializeRenderer()
+	{
+		_renderer.Reinitialize();
+		_surface?.Dispose();
+		_surface = null;
+	}
+
 	private void Render()
 	{
 		if (_rendererDisposed || _rendering)
