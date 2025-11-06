@@ -53,7 +53,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
-	private bool _repaintOnNextEraseBkgnd = true;
+	// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
+	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -211,7 +212,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 <<<<<<< HEAD
 =======
 			case PInvoke.WM_NCPAINT:
-				Ramez();
+				if (_forcePaintOnNextEraseBkgndOrNcPaint)
+				{
+					SynchronousRenderAndDraw();
+				}
 				break;
 >>>>>>> 07acec6131 (chore: fix flickering when extending window into title bar)
 			case PInvoke.WM_ACTIVATE:
@@ -260,17 +264,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 =======
 >>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
-				if (_repaintOnNextEraseBkgnd)
+				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
-					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
-					// Note that we don't call OnRenderFrameOpportunity here, but before showing
-					// the window in ShowCore. The problem is that any minor delay will cause
-					// a split-second white flash, so we're keeping the "time to blit" to a
-					// minimum by "rendering" before the window is shown and only drawing when
-					// receiving the first WM_ERASEBKGND
-					_repaintOnNextEraseBkgnd = false;
+					_forcePaintOnNextEraseBkgndOrNcPaint = false;
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 					Render();
@@ -280,6 +279,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 >>>>>>> 4a57cc4513 (chore: more refactoring)
 					Ramez();
 >>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
+=======
+					Render();
+>>>>>>> a3f8836b64 (chore: remove unnecessary calls)
 					return new LRESULT(1);
 				}
 				else
@@ -332,7 +334,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
-	private void Ramez()
+	private void SynchronousRenderAndDraw()
 	{
 		OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 		XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
@@ -492,6 +494,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// see the comment in WndProc's WM_ERASEBKGND handling
 		if (_beforeFirstEraseBkgnd)
 		{
@@ -504,6 +507,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 >>>>>>> 4a57cc4513 (chore: more refactoring)
 		Ramez();
 >>>>>>> be54758bb9 (fix: first frame white flash)
+=======
+		// We call SynchronousRenderAndDraw here and not when handling WM_ERASEBKGND. The problem is that any minor delay
+		// will cause a split-second white flash, so we're keeping the "time to blit" to a minimum by rendering
+		// before the window is shown.
+		SynchronousRenderAndDraw();
+
+>>>>>>> a3f8836b64 (chore: remove unnecessary calls)
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but
@@ -525,7 +535,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_RESTORE);
 					break;
 				default:
+<<<<<<< HEAD
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+=======
+					PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+>>>>>>> a3f8836b64 (chore: remove unnecessary calls)
 					break;
 			}
 		}

@@ -123,14 +123,13 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 		if (WasShown)
 		{
-			_repaintOnNextEraseBkgnd = true;
+			_forcePaintOnNextEraseBkgndOrNcPaint = true;
 			// Inform the application of the frame change.
 			PInvoke.SetWindowPos(_hwnd,
 				HWND.Null,
 				windowRectangle.left, windowRectangle.top,
 				0, 0,
 				SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
-			ReinitializeRenderer();
 		}
 	}
 
