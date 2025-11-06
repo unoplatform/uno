@@ -71,21 +71,25 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		}
 	}
 
-	public unsafe void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
+	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar) => UpdateClientAreaExtension();
+
+	internal unsafe void UpdateClientAreaExtension()
 	{
 		if (_window is null)
 		{
 			throw new InvalidOperationException("Window was not set.");
 		}
 
-		var extendsIntoTitleBar = _window.ExtendsContentIntoTitleBar;
-		if (extendsIntoTitleBar)
+		if (_window.AppWindow.Presenter is OverlappedPresenter presenter)
 		{
-			hasTitleBar = false;
+			_hasBorder = presenter.HasBorder;
+			_hasTitleBar = presenter.HasTitleBar;
 		}
 
-		_hasBorder = hasBorder;
-		_hasTitleBar = hasTitleBar;
+		if (_window.ExtendsContentIntoTitleBar)
+		{
+			_hasTitleBar = false;
+		}
 
 		if (PInvoke.DwmIsCompositionEnabled(out var compositionEnabled) < 0 || !compositionEnabled)
 		{
@@ -95,7 +99,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 		PInvoke.GetWindowRect(_hwnd, out var windowRectangle);
 
-		var extendContentIntoTitleBar = !hasTitleBar;
+		var extendContentIntoTitleBar = !_hasTitleBar;
 
 		if (extendContentIntoTitleBar && _window.AppWindow.Presenter is not FullScreenPresenter)
 		{
@@ -117,13 +121,17 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
 		}
 
-		// Inform the application of the frame change.
-		PInvoke.SetWindowPos(_hwnd,
-			HWND.Null,
-			windowRectangle.left, windowRectangle.top,
-			0, 0,
-			SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
-		_renderer.OnWindowExtendedIntoTitleBar();
+		if (WasShown)
+		{
+			// Inform the application of the frame change.
+			PInvoke.SetWindowPos(_hwnd,
+				HWND.Null,
+				windowRectangle.left, windowRectangle.top,
+				0, 0,
+				SET_WINDOW_POS_FLAGS.SWP_FRAMECHANGED | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
+
+			_renderer.OnWindowExtendedIntoTitleBar();
+		}
 	}
 
 	private MARGINS UpdateClientAreaExtensionMargins()
