@@ -211,7 +211,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 <<<<<<< HEAD
 =======
 			case PInvoke.WM_NCPAINT:
-				OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 				Ramez();
 				break;
 >>>>>>> 07acec6131 (chore: fix flickering when extending window into title bar)
@@ -273,9 +272,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
 <<<<<<< HEAD
+<<<<<<< HEAD
 					Render();
 =======
 					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+=======
+>>>>>>> 4a57cc4513 (chore: more refactoring)
 					Ramez();
 >>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
 					return new LRESULT(1);
@@ -332,7 +334,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private void Ramez()
 	{
-		// see the comment in the WM_ERASEBKGND handler
+		OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 		XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
 		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
 		ReinitializeRenderer();
@@ -489,6 +491,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	protected override void ShowCore()
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// see the comment in WndProc's WM_ERASEBKGND handling
 		if (_beforeFirstEraseBkgnd)
 		{
@@ -497,6 +500,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 =======
 		OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+=======
+>>>>>>> 4a57cc4513 (chore: more refactoring)
 		Ramez();
 >>>>>>> be54758bb9 (fix: first frame white flash)
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
