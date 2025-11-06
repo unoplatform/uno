@@ -53,7 +53,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
-	private bool _beforeFirstEraseBkgnd = true;
+	private bool _repaintOnNextEraseBkgnd = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -261,7 +261,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 =======
 >>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
-				if (_beforeFirstEraseBkgnd)
+				if (_repaintOnNextEraseBkgnd)
 				{
 					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
 					// Note that we don't call OnRenderFrameOpportunity here, but before showing
@@ -269,7 +269,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					// a split-second white flash, so we're keeping the "time to blit" to a
 					// minimum by "rendering" before the window is shown and only drawing when
 					// receiving the first WM_ERASEBKGND
-					_beforeFirstEraseBkgnd = false;
+					_repaintOnNextEraseBkgnd = false;
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
 <<<<<<< HEAD
@@ -489,12 +489,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	protected override void ShowCore()
 	{
+<<<<<<< HEAD
 		// see the comment in WndProc's WM_ERASEBKGND handling
 		if (_beforeFirstEraseBkgnd)
 		{
 			(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
 		}
 
+=======
+		OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+		Ramez();
+>>>>>>> be54758bb9 (fix: first frame white flash)
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but
