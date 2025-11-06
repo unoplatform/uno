@@ -205,9 +205,14 @@ namespace Uno.UI.Runtime.Skia.Wpf
 							return dragUI;
 						}
 					}
-					catch
+					catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException)
 					{
-						// If we can't load the image, continue without visual feedback
+						// If we can't load the image (file not found, no access, or unsupported format),
+						// continue without visual feedback
+						if (typeof(WpfDragDropExtension).Log().IsEnabled(LogLevel.Debug))
+						{
+							typeof(WpfDragDropExtension).Log().LogDebug($"Failed to load image thumbnail for drag operation: {ex.Message}");
+						}
 					}
 				}
 			}
@@ -238,8 +243,9 @@ namespace Uno.UI.Runtime.Skia.Wpf
 				// Convert to Uno BitmapImage
 				return ConvertBitmapSourceToUnoBitmapImage(wpfBitmap);
 			}
-			catch
+			catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException)
 			{
+				// Failed to load image - file might not exist, no access, unsupported format, or invalid path
 				return null;
 			}
 		}
@@ -261,8 +267,9 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 				return unoBitmap;
 			}
-			catch
+			catch (Exception ex) when (ex is IOException or NotSupportedException or InvalidOperationException)
 			{
+				// Failed to convert bitmap - encoding or stream operations failed
 				return null;
 			}
 		}
