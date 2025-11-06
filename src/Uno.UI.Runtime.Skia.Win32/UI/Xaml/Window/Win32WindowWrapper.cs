@@ -55,7 +55,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
-	// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
 	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
 
 	static unsafe Win32WindowWrapper()
@@ -268,6 +267,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
 					_forcePaintOnNextEraseBkgndOrNcPaint = false;
+					// This call is necessary to avoid an initial blank frame during window startup.
+					// This follows from the SynchronousRenderAndDraw call in ShowCore
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
 					Render();
@@ -320,7 +321,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 		XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
 		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
-		ReinitializeRenderer();
+		ReinitializeRenderer(); // this is really only necessary when extending into title bar but this is not called very frequently so it's fine
 		Render();
 	}
 
@@ -491,9 +492,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
 					break;
 				default:
-					// We call SynchronousRenderAndDraw here and not when handling WM_ERASEBKGND. The problem is that any minor delay
+					// This SynchronousRenderAndDraw call avoids showing the window with a blank first frame.
+					// We call it here and not when handling WM_ERASEBKGND. The problem is that any minor delay
 					// will cause a split-second white flash, so we're keeping the "time to blit" to a minimum by rendering
-					// before the window is shown.
+					// before the window is shown and then making a Render call on WM_ERASEBKGND.
 					// For other pending states, SynchronousRenderAndDraw will still be called but slightly later after
 					// the window has been resized (due to e.g. maximizing)
 					SynchronousRenderAndDraw();
