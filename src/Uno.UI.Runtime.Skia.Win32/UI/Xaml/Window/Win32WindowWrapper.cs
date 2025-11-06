@@ -242,6 +242,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
+				// This call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
+				// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
+				// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
+				// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
+				// and our render timer.
+				SynchronousRenderAndDraw();
 				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
