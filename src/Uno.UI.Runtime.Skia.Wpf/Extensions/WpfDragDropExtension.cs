@@ -53,7 +53,8 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			var src = new DragEventSource(_fakePointerId, e);
 			var data = ToDataPackage(e.Data);
 			var allowedOperations = ToDataPackageOperation(e.AllowedEffects);
-			var info = new CoreDragInfo(src, data.GetView(), allowedOperations);
+			var dragUI = CreateDragUIForExternalDrag(e.Data);
+			var info = new CoreDragInfo(src, data.GetView(), allowedOperations, dragUI);
 
 			_coreDragDropManager.DragStarted(info);
 
@@ -171,6 +172,99 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			}
 
 			return dst;
+		}
+
+		private static DragUI? CreateDragUIForExternalDrag(IDataObject src)
+		{
+			var dragUI = new DragUI(UI.Input.PointerDeviceType.Mouse);
+
+			// Check if we're dragging an image file that can be shown as a thumbnail
+			if (src.GetData(DataFormats.Bitmap) is BitmapSource bitmap)
+			{
+				// Convert WPF BitmapSource to Uno BitmapImage for DragUI
+				var unoImage = ConvertBitmapSourceToUnoBitmapImage(bitmap);
+				if (unoImage is not null)
+				{
+					dragUI.SetContentFromBitmapImage(unoImage);
+					return dragUI;
+				}
+			}
+
+			// If we have file paths, try to load the first image file as a thumbnail
+			if (src.GetData(DataFormats.FileDrop) is string[] files && files.Length > 0)
+			{
+				var imageFile = files.FirstOrDefault(f => IsImageFile(f));
+				if (imageFile is not null)
+				{
+					try
+					{
+						var unoImage = LoadImageFromFile(imageFile);
+						if (unoImage is not null)
+						{
+							dragUI.SetContentFromBitmapImage(unoImage);
+							return dragUI;
+						}
+					}
+					catch
+					{
+						// If we can't load the image, continue without visual feedback
+					}
+				}
+			}
+
+			return dragUI;
+		}
+
+		private static bool IsImageFile(string filePath)
+		{
+			var extension = Path.GetExtension(filePath).ToLowerInvariant();
+			return extension is ".png" or ".jpg" or ".jpeg" or ".gif" or ".bmp" or ".tiff" or ".ico";
+		}
+
+		private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? LoadImageFromFile(string filePath)
+		{
+			try
+			{
+				// Load the WPF bitmap
+				var wpfBitmap = new System.Windows.Media.Imaging.BitmapImage();
+				wpfBitmap.BeginInit();
+				wpfBitmap.CacheOption = BitmapCacheOption.OnLoad;
+				wpfBitmap.CreateOptions = BitmapCreateOptions.None;
+				wpfBitmap.UriSource = new Uri(filePath, UriKind.Absolute);
+				wpfBitmap.DecodePixelWidth = 96; // Limit thumbnail size
+				wpfBitmap.EndInit();
+				wpfBitmap.Freeze();
+
+				// Convert to Uno BitmapImage
+				return ConvertBitmapSourceToUnoBitmapImage(wpfBitmap);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? ConvertBitmapSourceToUnoBitmapImage(BitmapSource wpfBitmap)
+		{
+			try
+			{
+				// Encode the WPF bitmap to a stream
+				using var memoryStream = new MemoryStream();
+				var encoder = new PngBitmapEncoder();
+				encoder.Frames.Add(BitmapFrame.Create(wpfBitmap));
+				encoder.Save(memoryStream);
+				memoryStream.Position = 0;
+
+				// Create Uno BitmapImage from the stream
+				var unoBitmap = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
+				unoBitmap.SetSource(memoryStream.AsRandomAccessStream());
+
+				return unoBitmap;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		private static async Task<DataObject> ToDataObject(DataPackageView src, CancellationToken ct)
