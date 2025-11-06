@@ -1285,11 +1285,12 @@ public partial class TabView : Control
 				// Note: can be infinite
 				var availableWidth = m_previousAvailableSize.Width - widthTaken;
 
-				// UNO WORKAROUND: Handles layout timing difference to WinUI
+				// TODO: UNO workaround: Handles layout timing difference to WinUI
 				// After ListView drag&drop, MeasureOverride can call this before ActualWidth of LeftContentColumn is calculated.
 				// Reading ActualWidth might return Infinity, causing availableWidth=-Infinity.
 				// This check prevents applying NaN to TabViewItem widths when layout is in this intermediate async state.
 				// The layout corrects itself in a subsequent pass (e.g., via SizeChanged/PointerExited).
+				// Part of: https://github.com/unoplatform/uno/issues/21762
 				if (availableWidth <= 0)
 				{
 					return;
