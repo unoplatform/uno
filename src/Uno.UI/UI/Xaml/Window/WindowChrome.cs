@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using DirectUI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
@@ -20,7 +22,6 @@ internal sealed partial class WindowChrome : ContentControl
 	private const string ToolTipMinimize = "TEXT_TOOLTIP_MINIMIZE";
 	private const string ToolTipClose = "TEXT_TOOLTIP_CLOSE";
 
-
 	private readonly SerialDisposable m_titleBarMinMaxCloseContainerLayoutUpdatedEventHandler = new();
 	private readonly SerialDisposable m_closeButtonClickedEventHandler = new();
 	private readonly SerialDisposable m_minimizeButtonClickedEventHandler = new();
@@ -35,6 +36,7 @@ internal sealed partial class WindowChrome : ContentControl
 	private Button? m_tpMinimizeButtonPart;
 	private Button? m_tpMaximizeButtonPart;
 
+	private Dictionary<NonClientRegionKind, RectInt32[]> _nonClientRegions = new Dictionary<NonClientRegionKind, RectInt32[]>();
 
 	private InputNonClientPointerSource? m_inputNonClientPtrSrc;
 
@@ -121,6 +123,8 @@ internal sealed partial class WindowChrome : ContentControl
 				});
 			}
 		}
+
+		UpdateAllNonClientRegions();
 	}
 
 	private void OnStateChanged(object? sender, EventArgs e) => UpdateContainerSize();
@@ -153,7 +157,7 @@ internal sealed partial class WindowChrome : ContentControl
 
 			void OnTitleBarMinMaxCloseLayoutUpdated(object? sender, object? args)
 			{
-				OnTitleBarMinMaxCloseContainerSizePositionChanged();
+				UpdateAllNonClientRegions();
 			}
 
 			titleBarMinMaxCloseContainer.LayoutUpdated += OnTitleBarMinMaxCloseLayoutUpdated;
@@ -233,7 +237,101 @@ internal sealed partial class WindowChrome : ContentControl
 		}
 	}
 
-	private void OnTitleBarMinMaxCloseContainerSizePositionChanged()
+	private void UpdateAllNonClientRegions()
+	{
+		if (_window?.AppWindow is null)
+		{
+			return;
+		}
+
+		if (!InputNonClientPointerSource.TryGetForWindowId(_window.AppWindow.Id, out var input))
+		{
+			return;
+		}
+
+		if (CaptionVisibility == Visibility.Visible)
+		{
+			if (m_tpMaximizeButtonPart is not null)
+			{
+				var rect = GetScreenRect(m_tpMaximizeButtonPart);
+				UpdateNonClientRegions(NonClientRegionKind.Maximize, [rect]);
+			}
+
+			if (m_tpMinimizeButtonPart is not null)
+			{
+				var rect = GetScreenRect(m_tpMinimizeButtonPart);
+				UpdateNonClientRegions(NonClientRegionKind.Minimize, [rect]);
+			}
+
+			if (m_tpCloseButtonPart is not null)
+			{
+				var rect = GetScreenRect(m_tpCloseButtonPart);
+				UpdateNonClientRegions(NonClientRegionKind.Close, [rect]);
+			}
+		}
+		else
+		{
+			UpdateNonClientRegions(NonClientRegionKind.Minimize, []);
+			UpdateNonClientRegions(NonClientRegionKind.Maximize, []);
+			UpdateNonClientRegions(NonClientRegionKind.Close, []);
+		}
+
+		UpdateCaptionRegion();
+	}
+
+	private void UpdateCaptionRegion()
+	{
+		// Caption area rect has the following precedence
+		// 1. DragRectangles from AppWindowTitleBar
+		// 2. Default caption area (area to the left of caption buttons or nothing if collapsed)
+		// + User defined titlebar UIElement (that is always added in addition to either of the above)
+
+		var captionElementRect = m_userTitleBar is not null ? GetScreenRect(m_userTitleBar) : default;
+
+		RectInt32[] precedenceRects;
+		if (_window.AppWindow.TitleBar.DragRectangles.Length > 0)
+		{
+			precedenceRects = _window.AppWindow.TitleBar.DragRectangles;
+		}
+		else if (CaptionVisibility == Visibility.Visible)
+		{
+			precedenceRects = [GetDefaultCaptionRegionRect()];
+		}
+		else
+		{
+			precedenceRects = [];
+		}
+
+		if (captionElementRect != default)
+		{
+			precedenceRects = [.. precedenceRects, captionElementRect];
+		}
+
+		UpdateNonClientRegions(NonClientRegionKind.Caption, precedenceRects);
+	}
+
+	private RectInt32 GetDefaultCaptionRegionRect()
+	{
+		// Caption area should be everything to the left of the buttons (except for the container)
+		var titleBarContainer = m_tpTitleBarMinMaxCloseContainerPart;
+		if (titleBarContainer is not null)
+		{
+			var scale = _window.AppWindow.NativeAppWindow.RasterizationScale;
+			var transform = titleBarContainer.TransformToVisual(null);
+			var point = transform.TransformPoint(new Windows.Foundation.Point(0, 0));
+			return new RectInt32
+			{
+				X = 0,
+				Y = 0,
+				Width = (int)(point.X * scale),
+				Height = (int)(titleBarContainer.ActualHeight * scale)
+			};
+		}
+
+		return default;
+	}
+
+	private void UpdateNonClientRegions(NonClientRegionKind kind, params RectInt32[] replacementRegions)
 	{
 		if (_window?.AppWindow is null)
 		{
@@ -241,28 +339,25 @@ internal sealed partial class WindowChrome : ContentControl
 		}
 
 		var input = InputNonClientPointerSource.GetForWindowId(_window.AppWindow.Id);
-		if (CaptionVisibility != Visibility.Visible)
+		var allRegions = input.GetRegionRects(kind);
+		var newRegions = allRegions.AsEnumerable();
+		if (_nonClientRegions.TryGetValue(kind, out var existingRegions))
 		{
-			return;
+			foreach (var region in existingRegions)
+			{
+				newRegions = newRegions.Where(r =>
+					r.X != region.X ||
+					r.Y != region.Y ||
+					r.Width != region.Width ||
+					r.Height != region.Height);
+			}
 		}
 
-		if (m_tpMaximizeButtonPart is not null)
-		{
-			var rect = GetScreenRect(m_tpMaximizeButtonPart);
-			input.SetRegionRects(NonClientRegionKind.Maximize, [rect]);
-		}
+		newRegions = newRegions.Union(replacementRegions);
 
-		if (m_tpMinimizeButtonPart is not null)
-		{
-			var rect = GetScreenRect(m_tpMinimizeButtonPart);
-			input.SetRegionRects(NonClientRegionKind.Minimize, [rect]);
-		}
+		_nonClientRegions[kind] = replacementRegions;
 
-		if (m_tpCloseButtonPart is not null)
-		{
-			var rect = GetScreenRect(m_tpCloseButtonPart);
-			input.SetRegionRects(NonClientRegionKind.Close, [rect]);
-		}
+		input.SetRegionRects(kind, newRegions.ToArray());
 	}
 
 	private RectInt32 GetScreenRect(UIElement uiElement)
@@ -376,26 +471,34 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private void ConfigureWindowChrome()
 	{
-		var extendIntoTitleBar = _window.AppWindow.TitleBar.ExtendsContentIntoTitleBar;
-		var hasTitleBar = true;
-		if (_window.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
+		if (!AppWindowTitleBar.IsCustomizationSupported())
 		{
-			hasTitleBar = overlappedPresenter.HasTitleBar;
+			return;
 		}
 
-		var shouldBeVisible = hasTitleBar &&
-			extendIntoTitleBar &&
-			_window.AppWindow.TitleBar.PreferredHeightOption != TitleBarHeightOption.Collapsed;
-		CaptionVisibility = shouldBeVisible ?
+		var appWindowTitleBar = _window.AppWindow.TitleBar;
+		var windowChromeCaptionButtonsRequested = appWindowTitleBar.ExtendsContentIntoTitleBar && appWindowTitleBar.PreferredHeightOption != TitleBarHeightOption.Collapsed;
+
+		var hasPresenterTitleBar = true;
+		if (_window.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
+		{
+			hasPresenterTitleBar = overlappedPresenter.HasTitleBar;
+		}
+
+		// If the presenter has no title bar, we shouldn't show caption buttons.
+		windowChromeCaptionButtonsRequested = windowChromeCaptionButtonsRequested && hasPresenterTitleBar;
+
+		CaptionVisibility = windowChromeCaptionButtonsRequested ?
 			Visibility.Visible :
 			Visibility.Collapsed;
 
 		// On Windows, maximized window stretches out of the bounds of the screen slightly.
 		// https://www.reddit.com/r/csharp/comments/921k9l/fixing_8_pixel_overhang_on_maximized_window_state/
+		var isClientAreaExtended = appWindowTitleBar.ExtendsContentIntoTitleBar || !hasPresenterTitleBar;
 		var shouldHavePadding =
 			OperatingSystem.IsWindows() &&
-			(extendIntoTitleBar || !hasTitleBar) &&
-			IsWindowMaximized();
+			IsWindowMaximized() &&
+			isClientAreaExtended;
 		Padding = new(shouldHavePadding ? 4 : 0);
 
 		ResizeCaptionButtons();

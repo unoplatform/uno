@@ -47,6 +47,7 @@ public partial class AppWindowTitleBar
 			{
 				_extendsContentIntoTitleBar = value;
 				ExtendsContentIntoTitleBarChanged?.Invoke(value);
+				Changed?.Invoke(this, EventArgs.Empty);
 			}
 		}
 	}

@@ -83,6 +83,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		_hwnd = CreateWindow();
 
+		window.AppWindow.SetNativeWindow(this);
+
 		XamlRootMap.Register(xamlRoot, this);
 
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
@@ -110,12 +112,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			Resize(new SizeInt32((int)(Size.Width * RasterizationScale), (int)(Size.Height * RasterizationScale)));
 		}
 
-		window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
-
-		OnExtendsContentIntoTitleBarChanged(window.AppWindow.TitleBar.ExtendsContentIntoTitleBar);
+		window.AppWindow.TitleBar.Changed += OnAppWindowTitleBarChanged;
+		UpdateClientAreaExtension();
 	}
 
-	private void OnExtendsContentIntoTitleBarChanged(bool extends)
+	private void OnAppWindowTitleBarChanged(object? sender, EventArgs e)
 	{
 		if (_window is null)
 		{
@@ -127,10 +128,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			return;
 		}
 
-		if (_window.AppWindow.Presenter is OverlappedPresenter overlapped)
-		{
-			SetBorderAndTitleBar(overlapped.HasBorder, overlapped.HasTitleBar);
-		}
+		UpdateClientAreaExtension();
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
@@ -360,10 +358,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
-		if (_window is not null)
-		{
-			_window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= OnExtendsContentIntoTitleBarChanged;
-		}
 		Win32Host.UnregisterWindow(_hwnd);
 		_renderer.Dispose();
 		_rendererDisposed = true;

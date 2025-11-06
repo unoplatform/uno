@@ -107,6 +107,8 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 			}
 		}
 
+		var shouldFallbackToDefaultCaptionHitTest = hasCustomDragRects || _hasTitleBar;
+
 		// Determine if the hit test is for resizing. Default middle (1,1).
 		ushort uRow = 1;
 		ushort uCol = 1;
@@ -140,7 +142,7 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 			uRow = 2;
 		}
 
-		var captionAreaHitTest = _window?.AppWindow.Presenter is FullScreenPresenter || hasCustomDragRects ? Win32NonClientHitTestKind.HTNOWHERE : Win32NonClientHitTestKind.HTCAPTION;
+		var captionAreaHitTest = _window?.AppWindow.Presenter is FullScreenPresenter || shouldFallbackToDefaultCaptionHitTest ? Win32NonClientHitTestKind.HTNOWHERE : Win32NonClientHitTestKind.HTCAPTION;
 		ReadOnlySpan<Win32NonClientHitTestKind> hitZones =
 		[
 			Win32NonClientHitTestKind.HTTOPLEFT, onResizeBorder ? Win32NonClientHitTestKind.HTTOP : captionAreaHitTest, Win32NonClientHitTestKind.HTTOPRIGHT,

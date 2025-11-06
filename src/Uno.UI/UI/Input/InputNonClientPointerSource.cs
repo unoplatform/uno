@@ -29,15 +29,15 @@ public partial class InputNonClientPointerSource
 		_appWindow = appWindow;
 
 		ApiExtensibility.CreateInstance(appWindow, out _nativeInputNonClientPointerSource);
-
-		appWindow.TitleBar.DragRectanglesChanged += OnAppWindowTitleBarDragRectanglesChanged;
 	}
 
-	private void OnAppWindowTitleBarDragRectanglesChanged(object? sender, RectInt32[] dragRectangles) =>
-		SetRegionRects(NonClientRegionKind.Caption, dragRectangles);
-
-	internal static void CreateForWindow(AppWindow appWindow)
+	internal static void EnsureForAppWindow(AppWindow appWindow)
 	{
+		if (_inputSources.ContainsKey(appWindow.Id))
+		{
+			return;
+		}
+
 		var inputSource = new InputNonClientPointerSource(appWindow);
 		_inputSources[appWindow.Id] = inputSource;
 	}
@@ -96,6 +96,9 @@ public partial class InputNonClientPointerSource
 
 		return inputSource;
 	}
+
+	internal static bool TryGetForWindowId(WindowId windowId, out InputNonClientPointerSource? inputSource) =>
+		_inputSources.TryGetValue(windowId, out inputSource);
 
 	/// <summary>
 	/// Occurs when the user taps the window caption (for example, double-tap to maximize).
