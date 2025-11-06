@@ -222,6 +222,8 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 		private static bool IsImageFile(string filePath)
 		{
+			// Common image formats supported by WPF BitmapImage
+			// Note: Additional formats can be added here as needed
 			var extension = Path.GetExtension(filePath).ToLowerInvariant();
 			return extension is ".png" or ".jpg" or ".jpeg" or ".gif" or ".bmp" or ".tiff" or ".ico";
 		}
@@ -230,6 +232,12 @@ namespace Uno.UI.Runtime.Skia.Wpf
 		{
 			try
 			{
+				// Validate file path to prevent potential security issues
+				if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+				{
+					return null;
+				}
+
 				// Load the WPF bitmap
 				var wpfBitmap = new System.Windows.Media.Imaging.BitmapImage();
 				wpfBitmap.BeginInit();
@@ -255,6 +263,8 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			try
 			{
 				// Encode the WPF bitmap to a stream
+				// Note: The using statement disposes the MemoryStream after SetSource() completes.
+				// This is safe because SetSource() reads and copies the stream data synchronously.
 				using var memoryStream = new MemoryStream();
 				var encoder = new PngBitmapEncoder();
 				encoder.Frames.Add(BitmapFrame.Create(wpfBitmap));
