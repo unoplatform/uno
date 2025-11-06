@@ -62,6 +62,7 @@ internal static class RuntimeTestsPlatformHelper
 			RuntimeTestPlatforms.SkiaX11 => IsSkia() && IsSkiaX11(),
 			RuntimeTestPlatforms.SkiaMacOS => IsSkia() && IsSkiaMacOS(),
 			RuntimeTestPlatforms.SkiaIslands => IsSkia() && IsSkiaIslands(),
+			RuntimeTestPlatforms.SkiaFrameBuffer => IsSkia() && IsSkiaFrameBuffer()
 			RuntimeTestPlatforms.SkiaWasm => IsSkia() && OperatingSystem.IsBrowser(),
 			RuntimeTestPlatforms.SkiaAndroid => IsSkia() && OperatingSystem.IsAndroid(),
 			RuntimeTestPlatforms.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
@@ -109,6 +110,9 @@ internal static class RuntimeTestsPlatformHelper
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.MacOS");
 
 	private static bool IsSkiaBrowser()
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.WebAssembly.Browser");
+
+	private static bool IsSkiaFrameBuffer()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 
 	private static bool IsSkiaIslands()

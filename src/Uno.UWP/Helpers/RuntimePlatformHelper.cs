@@ -1,6 +1,6 @@
-﻿namespace Uno.UI.Helpers;
+﻿namespace Uno.Helpers;
 
-internal static class PlatformRuntimeHelper
+internal static class RuntimePlatformHelper
 {
 	internal static UnoRuntimePlatform SkiaPlatform { get; set; } = UnoRuntimePlatform.Unknown;
 

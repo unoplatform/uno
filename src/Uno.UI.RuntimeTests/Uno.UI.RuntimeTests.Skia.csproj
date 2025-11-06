@@ -44,6 +44,7 @@
 		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.ExpectedPixels.cs" Link="Helpers\ImageAssert.ExpectedPixels.cs" />
 		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.Validations.cs" Link="Helpers\ImageAssert.Validations.cs" />
 		<Compile Include="..\Uno.Foundation\_Compat\IsExternalInit.cs" Link="_Compat\IsExternalInit.cs" />
+		<Compile Include="..\Uno.UWP\Helpers\UnoRuntimePlatform.cs" Link="Helpers\UnoRuntimePlatform.cs" />
 		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
 			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
