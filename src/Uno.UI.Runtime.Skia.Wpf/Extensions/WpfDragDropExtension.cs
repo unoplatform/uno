@@ -205,9 +205,9 @@ namespace Uno.UI.Runtime.Skia.Wpf
 							return dragUI;
 						}
 					}
-					catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException)
+					catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException or InvalidOperationException)
 					{
-						// If we can't load the image (file not found, no access, or unsupported format),
+						// If we can't load the image (file not found, no access, unsupported format, or invalid path),
 						// continue without visual feedback
 						if (typeof(WpfDragDropExtension).Log().IsEnabled(LogLevel.Debug))
 						{
@@ -265,7 +265,8 @@ namespace Uno.UI.Runtime.Skia.Wpf
 				// Encode the WPF bitmap to a stream
 				// Note: The using statement disposes the MemoryStream after SetSource() completes.
 				// This is safe because SetSource() reads and copies the stream data synchronously.
-				using var memoryStream = new MemoryStream();
+				// Pre-allocate buffer for typical thumbnail size to avoid reallocations
+				using var memoryStream = new MemoryStream(capacity: 8192);
 				var encoder = new PngBitmapEncoder();
 				encoder.Frames.Add(BitmapFrame.Create(wpfBitmap));
 				encoder.Save(memoryStream);
