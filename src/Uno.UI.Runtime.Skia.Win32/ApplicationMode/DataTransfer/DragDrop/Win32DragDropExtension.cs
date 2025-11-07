@@ -154,7 +154,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		});
 
 		// Create DragUI for visual feedback during drag operation
-		var dragUI = CreateDragUIForExternalDrag(package, formatEtcList, mediumsToDispose);
+		var dragUI = CreateDragUIForExternalDrag(dataObject, formatEtcList);
 
 		// DROPEFFECT and DataPackageOperation have the same binary representation
 		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*pdwEffect), dragUI);
@@ -206,55 +206,71 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new System.NotImplementedException();
 
-	private static unsafe DragUI? CreateDragUIForExternalDrag(DataPackage package, FORMATETC[] formatEtcList, List<STGMEDIUM> mediumsToDispose)
+	private static unsafe DragUI? CreateDragUIForExternalDrag(IDataObject* dataObject, FORMATETC[] formatEtcList)
 	{
 		var dragUI = new DragUI(UI.Input.PointerDeviceType.Mouse);
 
 		// Check if we have a DIB (Device Independent Bitmap) format
-		var dibFormatIndex = Array.FindIndex(formatEtcList, f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_DIB);
-		if (dibFormatIndex >= 0 && dibFormatIndex < mediumsToDispose.Count)
+		var dibFormat = formatEtcList.FirstOrDefault(f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_DIB);
+		if (dibFormat.cfFormat != 0)
 		{
-			var dibMedium = mediumsToDispose[dibFormatIndex];
-			if (dibMedium.u.hGlobal != IntPtr.Zero)
+			// Try to get the DIB data directly
+			var hResult = dataObject->GetData(dibFormat, out STGMEDIUM dibMedium);
+			if (hResult.Succeeded && dibMedium.u.hGlobal != IntPtr.Zero)
 			{
-				var unoImage = ConvertDibToUnoBitmapImage(dibMedium.u.hGlobal);
-				if (unoImage is not null)
+				try
 				{
-					dragUI.SetContentFromBitmapImage(unoImage);
-					return dragUI;
+					var unoImage = ConvertDibToUnoBitmapImage(dibMedium.u.hGlobal);
+					if (unoImage is not null)
+					{
+						dragUI.SetContentFromBitmapImage(unoImage);
+						return dragUI;
+					}
+				}
+				finally
+				{
+					PInvoke.ReleaseStgMedium(&dibMedium);
 				}
 			}
 		}
 
 		// Check if we have file drop format
-		var hdropFormatIndex = Array.FindIndex(formatEtcList, f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_HDROP);
-		if (hdropFormatIndex >= 0 && hdropFormatIndex < mediumsToDispose.Count)
+		var hdropFormat = formatEtcList.FirstOrDefault(f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_HDROP);
+		if (hdropFormat.cfFormat != 0)
 		{
-			var hdropMedium = mediumsToDispose[hdropFormatIndex];
-			if (hdropMedium.u.hGlobal != IntPtr.Zero)
+			// Try to get the HDROP data directly
+			var hResult = dataObject->GetData(hdropFormat, out STGMEDIUM hdropMedium);
+			if (hResult.Succeeded && hdropMedium.u.hGlobal != IntPtr.Zero)
 			{
-				var filePaths = ExtractFilePathsFromHDrop(hdropMedium.u.hGlobal);
-				var imageFile = filePaths.FirstOrDefault(f => IsImageFile(f));
-				if (imageFile is not null)
+				try
 				{
-					try
+					var filePaths = ExtractFilePathsFromHDrop(hdropMedium.u.hGlobal);
+					var imageFile = filePaths.FirstOrDefault(f => IsImageFile(f));
+					if (imageFile is not null)
 					{
-						var unoImage = LoadImageFromFile(imageFile);
-						if (unoImage is not null)
+						try
 						{
-							dragUI.SetContentFromBitmapImage(unoImage);
-							return dragUI;
+							var unoImage = LoadImageFromFile(imageFile);
+							if (unoImage is not null)
+							{
+								dragUI.SetContentFromBitmapImage(unoImage);
+								return dragUI;
+							}
+						}
+						catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException)
+						{
+							// If we can't load the image, continue without visual feedback
+							var logger = typeof(Win32DragDropExtension).Log();
+							if (logger.IsEnabled(LogLevel.Debug))
+							{
+								logger.LogDebug($"Failed to load image thumbnail for drag operation: {ex.Message}");
+							}
 						}
 					}
-					catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException)
-					{
-						// If we can't load the image, continue without visual feedback
-						var logger = typeof(Win32DragDropExtension).Log();
-						if (logger.IsEnabled(LogLevel.Debug))
-						{
-							logger.LogDebug($"Failed to load image thumbnail for drag operation: {ex.Message}");
-						}
-					}
+				}
+				finally
+				{
+					PInvoke.ReleaseStgMedium(&hdropMedium);
 				}
 			}
 		}
