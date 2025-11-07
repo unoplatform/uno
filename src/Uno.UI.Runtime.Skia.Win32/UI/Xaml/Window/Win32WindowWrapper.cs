@@ -354,7 +354,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
 	{
-		return new System.Drawing.Point((int)(lParam.Value) & 0xffff, (int)(lParam.Value) >> 16);
+		int x = (short)(lParam.Value & 0xFFFF);
+		int y = (short)((lParam.Value >> 16) & 0xFFFF);
+		return new System.Drawing.Point(x, y);
 	}
 
 	private bool TryHandleCustomCaptionMessage(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam, out LRESULT result)
