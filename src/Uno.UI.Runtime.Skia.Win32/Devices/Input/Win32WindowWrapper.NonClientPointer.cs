@@ -107,7 +107,8 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 			}
 		}
 
-		var shouldFallbackToDefaultCaptionHitTest = hasCustomDragRects || _hasTitleBar;
+		// Fall back to default caption if we have a title bar and no custom drag rects.
+		var shouldFallbackToDefaultCaptionHitTest = _hasTitleBar && !hasCustomDragRects;
 
 		// Determine if the hit test is for resizing. Default middle (1,1).
 		ushort uRow = 1;
@@ -142,7 +143,7 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 			uRow = 2;
 		}
 
-		var captionAreaHitTest = _window?.AppWindow.Presenter is FullScreenPresenter || shouldFallbackToDefaultCaptionHitTest ? Win32NonClientHitTestKind.HTNOWHERE : Win32NonClientHitTestKind.HTCAPTION;
+		var captionAreaHitTest = _window?.AppWindow.Presenter is FullScreenPresenter || !shouldFallbackToDefaultCaptionHitTest ? Win32NonClientHitTestKind.HTNOWHERE : Win32NonClientHitTestKind.HTCAPTION;
 		ReadOnlySpan<Win32NonClientHitTestKind> hitZones =
 		[
 			Win32NonClientHitTestKind.HTTOPLEFT, onResizeBorder ? Win32NonClientHitTestKind.HTTOP : captionAreaHitTest, Win32NonClientHitTestKind.HTTOPRIGHT,
@@ -181,25 +182,5 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 			or Win32NonClientHitTestKind.HTHELP
 			or Win32NonClientHitTestKind.HTMENU
 			or Win32NonClientHitTestKind.HTSYSMENU;
-	}
-
-	private unsafe float GetPrimaryMonitorScale()
-	{
-		// Get the handle to the primary monitor
-		var primaryMonitor = PInvoke.MonitorFromPoint(new System.Drawing.Point(0, 0), MONITOR_FROM_FLAGS.MONITOR_DEFAULTTOPRIMARY);
-
-		// Try getting the DPI using GetDpiForMonitor (Windows 8.1+)
-		if (PInvoke.GetDpiForMonitor(primaryMonitor, Windows.Win32.UI.HiDpi.MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out uint dpiX, out uint dpiY) == 0)
-		{
-			return dpiX / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
-		}
-		else
-		{
-			// Fallback for older Windows versions
-			var hdc = PInvoke.GetDC(HWND.Null);
-			int dpi = PInvoke.GetDeviceCaps(hdc, GET_DEVICE_CAPS_INDEX.LOGPIXELSX);
-			_ = PInvoke.ReleaseDC(HWND.Null, hdc);
-			return dpi / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
-		}
 	}
 }
