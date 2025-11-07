@@ -24,6 +24,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using IDataObject = Windows.Win32.System.Com.IDataObject;
+using Microsoft.UI.Input;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -208,7 +209,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 	private static unsafe DragUI? CreateDragUIForExternalDrag(IDataObject* dataObject, FORMATETC[] formatEtcList)
 	{
-		var dragUI = new DragUI(UI.Input.PointerDeviceType.Mouse);
+		var dragUI = new DragUI(PointerDeviceType.Mouse);
 
 		// Check if we have a DIB (Device Independent Bitmap) format
 		var dibFormat = formatEtcList.FirstOrDefault(f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_DIB);
@@ -296,7 +297,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 			return filePaths;
 		}
 
-		var hDrop = new HDROP((IntPtr)firstByte);
+		var hDrop = new Windows.Win32.UI.Shell.HDROP((IntPtr)firstByte);
 		var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
 
 		for (uint i = 0; i < filesDropped; i++)
