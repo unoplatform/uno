@@ -101,6 +101,9 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 		var extendContentIntoTitleBar = !_hasTitleBar;
 
+		// Adjust sysmenu - this will completely avoid the "system" caption area, allowing the maximize snap layout popup to work properly.
+		SetWindowStyle(WINDOW_STYLE.WS_SYSMENU, _hasTitleBar);
+
 		if (extendContentIntoTitleBar && _window.AppWindow.Presenter is not FullScreenPresenter)
 		{
 			var margins = UpdateClientAreaExtensionMargins();
