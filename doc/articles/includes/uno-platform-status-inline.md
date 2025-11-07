@@ -1,6 +1,6 @@
 # Uno Platform Status
 
-The Uno Platform Status panel surfaces what Uno Platform is doing behind the scenes when you open a solution in your IDE. It provides clear, real‑time feedback so you know when everything is ready to run, and highlights issues early to avoid blocking your development flow.
+The Uno Platform Status panel surfaces what Uno Platform is doing behind the scenes when you open a solution in your IDE. It provides clear, real-time feedback so you know when everything is ready to run, and highlights issues early to avoid blocking your development flow.
 
 ![Uno Platform Status](../Assets/uno-platform-status.png)
 
@@ -19,7 +19,7 @@ The Uno Platform Status panel appears as soon as you install the Uno extension i
 - Visual Studio Code: https://platform.uno/vscode/
 
 > [!NOTE]
-> The Uno Platform Status panel can also appear for non‑Uno solutions. This helps you troubleshoot when you expected Uno packages to be present but they were not detected.
+> The Uno Platform Status panel can also appear for non-Uno solutions. This helps you troubleshoot when you expected Uno packages to be present but they were not detected.
 
 ## Nuget
 

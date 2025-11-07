@@ -24,14 +24,14 @@ The Dev Server is the local development companion that enables productive inner-
 > The Dev Server starts only when Uno Platform packages are referenced by your project(s).
 >
 > [!NOTE]
-> The Dev Server won’t start until NuGet package restore has completed successfully (a failed or pending restore prevents startup).
+> The Dev Server won't start until NuGet package restore has completed successfully (a failed or pending restore prevents startup).
 
-1. Open the solution: the IDE reserves a free TCP port and writes it to each project’s .csproj.user file under the UnoRemoteControlPort property.
+1. Open the solution: the IDE reserves a free TCP port and writes it to each project's .csproj.user file under the UnoRemoteControlPort property.
 2. Build/run in Debug: the app is built with the Dev Server connection information.
 3. Launch the app (Debug): the app connects back to the Dev Server.
 4. Develop: the IDE and app exchange development-time messages (e.g., Hot Reload updates).
 
-## Command-line (advance usage for specific scenario)
+## Command-line (advanced usage for specific scenario)
 
 You can manage the Dev Server from the command line using the dotnet tool `Uno.DevServer` (command: uno-devserver):
 
@@ -145,6 +145,6 @@ MCP-INDEX: Structured metadata to help the documentation MCP indexer.
 
 Original author bullets (kept for context):
 - Why: Communication between the application and the IDE; Hot-Reload; Hot-Design; App MCP Server
-- How: On solution opened we select an availabale port to start the Dev Server; Write the selected port in the <MyProject>.csproj.user file; When application is compiled in DEBUG, port number is embedded; When application starts, it tries to connect back to the port
+- How: On solution opened we select an available port to start the Dev Server; Write the selected port in the <MyProject>.csproj.user file; When application is compiled in DEBUG, port number is embedded; When application starts, it tries to connect back to the port
 - Security: Random port, hard to guess; Only on LAN, as safe as your local network
 -->
