@@ -82,34 +82,6 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 			borderThickness.top = appWindowTitleBar.Height;
 		}
 
-		var titleBarHeightForDraggingRects = _hasTitleBar ? borderThickness.top : 0;
-
-		bool hasCustomDragRects = false;
-		// Go through all the available rects
-		foreach (var region in _regionRects)
-		{
-			if (region.Key == NonClientRegionKind.Caption && region.Value.Length > 0)
-			{
-				hasCustomDragRects = true;
-			}
-
-			foreach (var rect in region.Value)
-			{
-				var adjustedRect = new RectInt32(
-					rect.X + windowRectangle.left,
-					titleBarHeightForDraggingRects + rect.Y + windowRectangle.top,
-					rect.Width,
-					rect.Height);
-				if (adjustedRect.Contains(new PointInt32(ptMouse.X, ptMouse.Y)))
-				{
-					return RegionKindToHitTest(region.Key);
-				}
-			}
-		}
-
-		// Fall back to default caption if we have a title bar and no custom drag rects.
-		var shouldFallbackToDefaultCaptionHitTest = _hasTitleBar && !hasCustomDragRects;
-
 		// Determine if the hit test is for resizing. Default middle (1,1).
 		ushort uRow = 1;
 		ushort uCol = 1;
@@ -142,6 +114,37 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		{
 			uRow = 2;
 		}
+
+		var titleBarHeightForDraggingRects = _hasTitleBar ? borderThickness.top : 0;
+
+		bool hasCustomDragRects = false;
+		if (!onResizeBorder)
+		{
+			// Go through all the available rects
+			foreach (var region in _regionRects)
+			{
+				if (region.Key == NonClientRegionKind.Caption && region.Value.Length > 0)
+				{
+					hasCustomDragRects = true;
+				}
+
+				foreach (var rect in region.Value)
+				{
+					var adjustedRect = new RectInt32(
+						rect.X + windowRectangle.left,
+						titleBarHeightForDraggingRects + rect.Y + windowRectangle.top,
+						rect.Width,
+						rect.Height);
+					if (adjustedRect.Contains(new PointInt32(ptMouse.X, ptMouse.Y)))
+					{
+						return RegionKindToHitTest(region.Key);
+					}
+				}
+			}
+		}
+
+		// Fall back to default caption if we have a title bar and no custom drag rects.
+		var shouldFallbackToDefaultCaptionHitTest = _hasTitleBar && !hasCustomDragRects;
 
 		var captionAreaHitTest = _window?.AppWindow.Presenter is FullScreenPresenter || !shouldFallbackToDefaultCaptionHitTest ? Win32NonClientHitTestKind.HTNOWHERE : Win32NonClientHitTestKind.HTCAPTION;
 		ReadOnlySpan<Win32NonClientHitTestKind> hitZones =
