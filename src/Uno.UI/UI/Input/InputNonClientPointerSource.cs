@@ -33,13 +33,7 @@ public partial class InputNonClientPointerSource
 
 	internal static void EnsureForAppWindow(AppWindow appWindow)
 	{
-		if (_inputSources.ContainsKey(appWindow.Id))
-		{
-			return;
-		}
-
-		var inputSource = new InputNonClientPointerSource(appWindow);
-		_inputSources[appWindow.Id] = inputSource;
+		_inputSources.GetOrAdd(appWindow.Id, id => new InputNonClientPointerSource(appWindow));
 	}
 
 	/// <summary>
