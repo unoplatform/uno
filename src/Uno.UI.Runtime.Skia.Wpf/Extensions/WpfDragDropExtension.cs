@@ -23,6 +23,7 @@ using WpfControl = System.Windows.Controls.Control;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Microsoft.UI.Input;
 
 namespace Uno.UI.Runtime.Skia.Wpf
 {
@@ -176,7 +177,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 		private static DragUI? CreateDragUIForExternalDrag(IDataObject src)
 		{
-			var dragUI = new DragUI(UI.Input.PointerDeviceType.Mouse);
+			var dragUI = new DragUI(PointerDeviceType.Mouse);
 
 			// Check if we're dragging an image file that can be shown as a thumbnail
 			if (src.GetData(DataFormats.Bitmap) is BitmapSource bitmap)
