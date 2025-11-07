@@ -360,7 +360,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool TryHandleCustomCaptionMessage(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam, out LRESULT result)
 	{
 		var handled = PInvoke.DwmDefWindowProc(hWnd, msg, wParam, lParam, out result);
-
 		switch (msg)
 		{
 			case PInvoke.WM_NCHITTEST:
