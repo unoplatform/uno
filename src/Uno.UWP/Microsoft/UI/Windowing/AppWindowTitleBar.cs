@@ -35,7 +35,7 @@ public partial class AppWindowTitleBar
 		get => _extendsContentIntoTitleBar;
 		set
 		{
-			if (!IsCustomizationSupported())
+			if (!IsCustomizationSupported() && value)
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
