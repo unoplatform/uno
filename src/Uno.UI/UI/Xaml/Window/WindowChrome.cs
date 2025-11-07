@@ -338,7 +338,11 @@ internal sealed partial class WindowChrome : ContentControl
 			return;
 		}
 
-		var input = InputNonClientPointerSource.GetForWindowId(_window.AppWindow.Id);
+		if (!InputNonClientPointerSource.TryGetForWindowId(_window.AppWindow.Id, out var input))
+		{
+			return;
+		}
+
 		var allRegions = input.GetRegionRects(kind);
 		var newRegions = allRegions.AsEnumerable();
 		if (_nonClientRegions.TryGetValue(kind, out var existingRegions))
