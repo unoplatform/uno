@@ -206,6 +206,10 @@ $projects =
     # Publish with no debug symbols validation
     @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:TargetFrameworks=net9.0-desktop", "-r", "win-x64", "-p:DebugSymbols=false", "-p:DebugType=None"), @("NetCore", "Publish")),
 
+    # Publish with NativeAOT and *run*
+    @(2, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-desktop", "-r", "osx-x64", "-p:PublishAot=true"), @("OnlyMacOS", "NetCore", "Publish"),
+        @("5.6/uno56netcurrent/uno56netcurrent/bin/Release/net10.0-desktop/osx-x64/publish/uno56netcurrent"), @("--exit")),
+
     # Workaround for: https://github.com/dotnet/android/issues/10423
     # Must happen before trying `dotnet build -r …`
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android"), @("macOS", "NetCore")),
@@ -257,6 +261,8 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $projectPath=$projects[$i][1];
     $projectOptions=$projects[$i][2];
     $buildOptions=$projects[$i][3];
+    $runCommand=$projects[$i][4];
+    $runOptions=$projects[$i][5];
     $runOnMacOS = $buildOptions -contains "macOS"
     $runOnlyOnMacOS = $buildOptions -contains "OnlyMacOS"
     $buildWithNetCore = $buildOptions -contains "NetCore"
@@ -311,6 +317,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
         Write-Host "Executing: dotnet $dotnetCommand $release ""$projectPath"" $projectOptions $extraArgs -bl"
         dotnet $dotnetCommand $release "$projectPath" $projectOptions $extraArgs -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
+
+        if ($runCommand.Length -gt 0)
+        {
+            Write-Host "Executing: $runCommand $runOptions"
+            & $runCommand $runOptions
+            Assert-ExitCodeIsZero
+        }
  
         if(!$NoBuildClean)
         {
@@ -335,6 +348,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
             Write-Host "Executing: ""$msbuild"" $release /r ""$projectPath"" $projectOptions $extraArgs /bl"
             & $msbuild $release /r "$projectPath" $projectOptions $extraArgs /bl:binlogs/$projectPath/$i/release/msbuild.binlog
             Assert-ExitCodeIsZero
+
+            if ($runCommand.Length -gt 0)
+            {
+                Write-Host "Executing: $runCommand $runOptions"
+                & $runCommand $runOptions
+                Assert-ExitCodeIsZero
+            }
 
             & $msbuild $release /r /t:Clean "$projectPath"
         }

@@ -6,12 +6,15 @@ namespace uno56netcurrent;
 
 public partial class App : Application
 {
+    private readonly bool exitAfterLaunching;
+
     /// <summary>
     /// Initializes the singleton application object. This is the first line of authored code
     /// executed, and as such is the logical equivalent of main() or WinMain().
     /// </summary>
-    public App()
+    public App(bool exitAfterLaunching = false)
     {
+        this.exitAfterLaunching = exitAfterLaunching;
         this.InitializeComponent();
     }
 
@@ -49,6 +52,11 @@ public partial class App : Application
         MainWindow.SetWindowIcon();
         // Ensure the current window is active
         MainWindow.Activate();
+
+        if (exitAfterLaunching)
+        {
+            Exit();
+        }
     }
 
     /// <summary>
