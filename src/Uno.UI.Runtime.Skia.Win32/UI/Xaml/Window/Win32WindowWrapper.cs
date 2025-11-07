@@ -354,6 +354,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
 	{
+		// Cast to short before converting to int to handle sign extension for negative coordinates.
+		// This is necessary when the point is outside the primary monitor bounds.
 		int x = (short)(lParam.Value & 0xFFFF);
 		int y = (short)((lParam.Value >> 16) & 0xFFFF);
 		return new System.Drawing.Point(x, y);
