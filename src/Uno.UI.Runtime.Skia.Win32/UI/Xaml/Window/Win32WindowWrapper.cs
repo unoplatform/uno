@@ -213,7 +213,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_NCPAINT:
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
-					SynchronousRenderAndDraw();
+					SynchronousRenderAndDraw(true);
 				}
 				break;
 			case PInvoke.WM_ACTIVATE:
@@ -246,7 +246,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
 				// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
 				// and our render timer.
-				SynchronousRenderAndDraw();
+				SynchronousRenderAndDraw(false);
 				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
@@ -316,12 +316,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
-	private void SynchronousRenderAndDraw()
+	private void SynchronousRenderAndDraw(bool sizeChanged)
 	{
-		OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-		XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
+		if (sizeChanged)
+		{
+			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+			XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
+		}
 		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
-		ReinitializeRenderer(); // this is really only necessary when extending into title bar but this is not called very frequently so it's fine
 		Render();
 	}
 
@@ -498,7 +500,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					// before the window is shown and then making a Render call on WM_ERASEBKGND.
 					// For other pending states, SynchronousRenderAndDraw will still be called but slightly later after
 					// the window has been resized (due to e.g. maximizing)
-					SynchronousRenderAndDraw();
+					SynchronousRenderAndDraw(true);
 					PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 					break;
 			}
