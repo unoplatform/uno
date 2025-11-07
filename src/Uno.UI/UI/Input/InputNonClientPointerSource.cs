@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Uno.Foundation.Extensibility;
@@ -91,7 +92,7 @@ public partial class InputNonClientPointerSource
 		return inputSource;
 	}
 
-	internal static bool TryGetForWindowId(WindowId windowId, out InputNonClientPointerSource? inputSource) =>
+	internal static bool TryGetForWindowId(WindowId windowId, [NotNullWhen(true)] out InputNonClientPointerSource? inputSource) =>
 		_inputSources.TryGetValue(windowId, out inputSource);
 
 	/// <summary>
