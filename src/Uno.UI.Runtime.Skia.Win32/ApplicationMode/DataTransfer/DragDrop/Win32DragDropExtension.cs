@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
+using Windows.Storage.Streams;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.System.Com;
 using Windows.Win32.System.Ole;
 using Windows.Win32.System.SystemServices;
@@ -149,8 +153,11 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 			return medium.u.hGlobal;
 		});
 
+		// Create DragUI for visual feedback during drag operation
+		var dragUI = CreateDragUIForExternalDrag(package, formatEtcList, mediumsToDispose);
+
 		// DROPEFFECT and DataPackageOperation have the same binary representation
-		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*pdwEffect));
+		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*pdwEffect), dragUI);
 		_coreDragDropManager.DragStarted(info);
 
 		*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
@@ -198,6 +205,183 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 	}
 
 	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new System.NotImplementedException();
+
+	private static unsafe DragUI? CreateDragUIForExternalDrag(DataPackage package, FORMATETC[] formatEtcList, List<STGMEDIUM> mediumsToDispose)
+	{
+		var dragUI = new DragUI(UI.Input.PointerDeviceType.Mouse);
+
+		// Check if we have a DIB (Device Independent Bitmap) format
+		var dibFormatIndex = Array.FindIndex(formatEtcList, f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_DIB);
+		if (dibFormatIndex >= 0 && dibFormatIndex < mediumsToDispose.Count)
+		{
+			var dibMedium = mediumsToDispose[dibFormatIndex];
+			if (dibMedium.u.hGlobal != IntPtr.Zero)
+			{
+				var unoImage = ConvertDibToUnoBitmapImage(dibMedium.u.hGlobal);
+				if (unoImage is not null)
+				{
+					dragUI.SetContentFromBitmapImage(unoImage);
+					return dragUI;
+				}
+			}
+		}
+
+		// Check if we have file drop format
+		var hdropFormatIndex = Array.FindIndex(formatEtcList, f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_HDROP);
+		if (hdropFormatIndex >= 0 && hdropFormatIndex < mediumsToDispose.Count)
+		{
+			var hdropMedium = mediumsToDispose[hdropFormatIndex];
+			if (hdropMedium.u.hGlobal != IntPtr.Zero)
+			{
+				var filePaths = ExtractFilePathsFromHDrop(hdropMedium.u.hGlobal);
+				var imageFile = filePaths.FirstOrDefault(f => IsImageFile(f));
+				if (imageFile is not null)
+				{
+					try
+					{
+						var unoImage = LoadImageFromFile(imageFile);
+						if (unoImage is not null)
+						{
+							dragUI.SetContentFromBitmapImage(unoImage);
+							return dragUI;
+						}
+					}
+					catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException)
+					{
+						// If we can't load the image, continue without visual feedback
+						var logger = typeof(Win32DragDropExtension).Log();
+						if (logger.IsEnabled(LogLevel.Debug))
+						{
+							logger.LogDebug($"Failed to load image thumbnail for drag operation: {ex.Message}");
+						}
+					}
+				}
+			}
+		}
+
+		return dragUI;
+	}
+
+	private static bool IsImageFile(string filePath)
+	{
+		// Common image formats
+		// Note: Additional formats can be added here as needed
+		var extension = Path.GetExtension(filePath).ToLowerInvariant();
+		return extension is ".png" or ".jpg" or ".jpeg" or ".gif" or ".bmp" or ".tiff" or ".ico";
+	}
+
+	private static unsafe List<string> ExtractFilePathsFromHDrop(HGLOBAL handle)
+	{
+		var filePaths = new List<string>();
+
+		using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
+		if (lockDisposable is null)
+		{
+			return filePaths;
+		}
+
+		var hDrop = new HDROP((IntPtr)firstByte);
+		var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
+
+		for (uint i = 0; i < filesDropped; i++)
+		{
+			var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
+			if (charLength == 0)
+			{
+				continue;
+			}
+			charLength++; // + 1 for \0
+
+			var buffer = Marshal.AllocHGlobal((IntPtr)(charLength * sizeof(char)));
+			try
+			{
+				var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), charLength);
+				if (charsWritten > 0)
+				{
+					var path = Marshal.PtrToStringUni(buffer);
+					if (!string.IsNullOrEmpty(path))
+					{
+						filePaths.Add(path);
+					}
+				}
+			}
+			finally
+			{
+				Marshal.FreeHGlobal(buffer);
+			}
+		}
+
+		return filePaths;
+	}
+
+	private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? LoadImageFromFile(string filePath)
+	{
+		try
+		{
+			// Validate file path to prevent potential security issues
+			if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+			{
+				return null;
+			}
+
+			// Load image from file
+			using var fileStream = File.OpenRead(filePath);
+			using var memoryStream = new MemoryStream();
+
+			// Copy to memory stream for manipulation
+			fileStream.CopyTo(memoryStream);
+			memoryStream.Position = 0;
+
+			// Create Uno BitmapImage from the stream
+			var unoBitmap = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
+			unoBitmap.SetSource(memoryStream.AsRandomAccessStream());
+
+			return unoBitmap;
+		}
+		catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException)
+		{
+			// Failed to load image - file might not exist, no access, unsupported format, or invalid path
+			return null;
+		}
+	}
+
+	private static unsafe Microsoft.UI.Xaml.Media.Imaging.BitmapImage? ConvertDibToUnoBitmapImage(HGLOBAL handle)
+	{
+		try
+		{
+			using var lockDisposable = Win32Helper.GlobalLock(handle, out var dib);
+			if (lockDisposable is null)
+			{
+				return null;
+			}
+
+			var memSize = (uint)PInvoke.GlobalSize(handle);
+			if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
+			{
+				return null;
+			}
+
+			// Convert DIB to a stream that can be used by BitmapImage
+			// Pre-allocate buffer for typical thumbnail size to avoid reallocations
+			using var memoryStream = new MemoryStream(capacity: 8192);
+
+			// Copy the DIB data to the memory stream
+			var dibBytes = new Span<byte>(dib, (int)memSize);
+			memoryStream.Write(dibBytes);
+			memoryStream.Position = 0;
+
+			// Create Uno BitmapImage from the stream
+			var unoBitmap = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
+			unoBitmap.SetSource(memoryStream.AsRandomAccessStream());
+
+			return unoBitmap;
+		}
+		catch (Exception ex) when (ex is IOException or NotSupportedException or InvalidOperationException)
+		{
+			// Failed to convert bitmap - encoding or stream operations failed
+			return null;
+		}
+	}
 
 	private readonly struct DragEventSource(Point point, MODIFIERKEYS_FLAGS modifierFlags) : IDragEventSource
 	{
