@@ -343,14 +343,7 @@ internal sealed partial class WindowChrome : ContentControl
 		var newRegions = allRegions.AsEnumerable();
 		if (_nonClientRegions.TryGetValue(kind, out var existingRegions))
 		{
-			foreach (var region in existingRegions)
-			{
-				newRegions = newRegions.Where(r =>
-					r.X != region.X ||
-					r.Y != region.Y ||
-					r.Width != region.Width ||
-					r.Height != region.Height);
-			}
+			newRegions = newRegions.Except(existingRegions);
 		}
 
 		newRegions = newRegions.Union(replacementRegions);

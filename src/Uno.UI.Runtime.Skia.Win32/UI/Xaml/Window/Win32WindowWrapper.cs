@@ -724,4 +724,24 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			this.LogDebug()?.Debug($"{nameof(UpdateRendererBackground)} is called before {nameof(_window)} is set.");
 		}
 	}
+
+	private unsafe float GetPrimaryMonitorScale()
+	{
+		// Get the handle to the primary monitor
+		var primaryMonitor = PInvoke.MonitorFromPoint(new System.Drawing.Point(0, 0), MONITOR_FROM_FLAGS.MONITOR_DEFAULTTOPRIMARY);
+
+		// Try getting the DPI using GetDpiForMonitor (Windows 8.1+)
+		if (PInvoke.GetDpiForMonitor(primaryMonitor, Windows.Win32.UI.HiDpi.MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out uint dpiX, out uint dpiY) == 0)
+		{
+			return dpiX / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
+		}
+		else
+		{
+			// Fallback for older Windows versions
+			var hdc = PInvoke.GetDC(HWND.Null);
+			int dpi = PInvoke.GetDeviceCaps(hdc, GET_DEVICE_CAPS_INDEX.LOGPIXELSX);
+			_ = PInvoke.ReleaseDC(HWND.Null, hdc);
+			return dpi / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
+		}
+	}
 }
