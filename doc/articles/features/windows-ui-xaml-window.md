@@ -111,6 +111,20 @@ The `nativeWindow` is an `object`, so you need to cast it to the specific type o
 
 ## Customizing window border and title bar
 
+### Checking if title bar customization is supported
+
+Before customizing the title bar, you should always check if title bar customization is available on the current platform:
+
+```csharp
+if (AppWindowTitleBar.IsCustomizationSupported())
+{
+    // Customize the title bar
+    myWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+}
+```
+
+Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+
 ### Setting border and title bar visibility
 
 The `OverlappedPresenter.SetBorderAndTitleBar` method allows you to control whether the window displays a border and title bar:
@@ -163,28 +177,68 @@ myWindow.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
 myWindow.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Collapsed;
 ```
 
-The actual height in pixels is calculated based on the DPI scaling of the window and can be retrieved from the `Height` property:
+The actual height in pixels (not scaled points) is calculated based on the DPI scaling of the window and can be retrieved from the `Height` property:
 
 ```csharp
-int titleBarHeight = myWindow.AppWindow.TitleBar.Height;
+int titleBarHeight = myWindow.AppWindow.TitleBar.Height; // Height in actual pixels
 ```
 
 > [!NOTE]
-> `PreferredHeightOption` is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets when the title bar is extended into the content area.
+> `PreferredHeightOption` is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets when the title bar is extended into the content area. The `Height` property returns the value in actual pixels, not scaled points.
 
-### Checking if title bar customization is supported
+### Setting drag rectangles
 
-You can check if title bar customization is available on the current platform using:
+The `AppWindowTitleBar.SetDragRectangles` method allows you to define specific rectangular regions in the title bar area that the user can drag to move the window:
 
 ```csharp
-if (AppWindowTitleBar.IsCustomizationSupported())
+var dragRectangles = new[]
 {
-    // Customize the title bar
-    myWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-}
+    new RectInt32(10, 0, 200, 32),  // Draggable region from x=10 to x=210
+    new RectInt32(250, 0, 300, 32)  // Another draggable region from x=250 to x=550
+};
+
+myWindow.AppWindow.TitleBar.SetDragRectangles(dragRectangles);
 ```
 
-Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+> [!IMPORTANT]
+> - The rectangles are specified in actual pixels, not scaled points.
+> - Drag rectangles must be updated when the window size or DPI scaling changes, otherwise they will be incorrectly positioned.
+> - This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+
+Example of updating drag rectangles on window size changes:
+
+```csharp
+myWindow.SizeChanged += (sender, args) =>
+{
+    // Recalculate and update drag rectangles based on new window size
+    UpdateDragRectangles();
+};
+```
+
+### Advanced: Setting non-client pointer source regions
+
+The `InputNonClientPointerSource.SetRegionRects` method provides advanced control over non-client regions, which is particularly useful when you use `SetBorderAndTitleBar(true, false)` and render your own caption buttons (minimize, maximize, close).
+
+By setting the region rectangles for caption buttons, you enable Windows features like the Snap Layouts popup that appears when hovering over the maximize button:
+
+![Snap Layouts popup](https://github.com/user-attachments/assets/bade7d00-1559-4022-a8c7-820d42e4ed74)
+
+```csharp
+using Microsoft.UI.Input;
+
+var appWindow = myWindow.AppWindow;
+var nonClientInputSrc = InputNonClientPointerSource.GetForWindowId(appWindow.Id);
+
+// Define the maximize button region to enable Snap Layouts
+var maximizeButtonRect = new RectInt32(100, 0, 46, 32); // x, y, width, height in actual pixels
+
+nonClientInputSrc.SetRegionRects(NonClientRegionKind.Caption, new[] { maximizeButtonRect });
+```
+
+> [!IMPORTANT]
+> - Region rectangles are specified in actual pixels, not scaled points.
+> - These rectangles must be updated when the window size or DPI scaling changes.
+> - This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
 
 ## Setting the background color for the Window
 
