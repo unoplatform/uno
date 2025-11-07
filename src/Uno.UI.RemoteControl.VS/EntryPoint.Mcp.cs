@@ -53,14 +53,23 @@ partial class EntryPoint
 		var servers = objRoot["servers"] as JsonObject ?? new JsonObject();
 		objRoot["servers"] = servers;
 
-		// Build the "uno-devserver" MCP server entry
+		// Build the "uno-app" MCP server entry
 		var unoDevServerObj = new JsonObject()
 		{
 			["url"] = $"http://localhost:{_devServer.Value.port}/mcp",
 		};
 
-		// Overwrite/insert "uno-devserver"
-		servers["uno-devserver"] = unoDevServerObj;
+		// Overwrite/insert "uno-app"
+		servers["uno-app"] = unoDevServerObj;
+
+		// Ensure/update documented public MCP URL entry
+		var docsMcpObj = new JsonObject()
+		{
+			["url"] = "https://mcp.platform.uno/v1",
+		};
+
+		// Overwrite/insert "mcp-docs" entry so tools can discover the public MCP documentation endpoint
+		servers["uno"] = docsMcpObj;
 
 		var outputText = root.ToJsonString(nodeOptions);
 

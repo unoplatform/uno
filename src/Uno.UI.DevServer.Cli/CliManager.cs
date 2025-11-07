@@ -26,9 +26,9 @@ internal class CliManager
 	{
 		try
 		{
-			if (originalArgs.Contains("--mcp"))
+			if (originalArgs.Contains("--mcp-app"))
 			{
-				return await RunMcpProxyAsync(originalArgs.Where(a => a != "--mcp").ToArray());
+				return await RunMcpProxyAsync(originalArgs.Where(a => a != "--mcp-app").ToArray());
 			}
 
 			ShowBanner();
