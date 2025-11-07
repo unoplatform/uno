@@ -36,7 +36,7 @@ internal sealed partial class WindowChrome : ContentControl
 	private Button? m_tpMinimizeButtonPart;
 	private Button? m_tpMaximizeButtonPart;
 
-	private Dictionary<NonClientRegionKind, RectInt32[]> _nonClientRegions = new Dictionary<NonClientRegionKind, RectInt32[]>();
+	private Dictionary<NonClientRegionKind, RectInt32[]> _nonClientRegions = new();
 
 	private InputNonClientPointerSource? m_inputNonClientPtrSrc;
 

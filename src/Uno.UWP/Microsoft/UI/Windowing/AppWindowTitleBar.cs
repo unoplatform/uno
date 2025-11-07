@@ -100,7 +100,6 @@ public partial class AppWindowTitleBar
 	/// <summary>
 	/// Resets the title bar to its default state.
 	/// </summary>
-
 	public void ResetToDefault()
 	{
 		SetDragRectangles([]);

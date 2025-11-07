@@ -506,6 +506,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// see the comment in WndProc's WM_ERASEBKGND handling
 		if (_beforeFirstEraseBkgnd)
 		{
@@ -527,6 +528,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 >>>>>>> a3f8836b64 (chore: remove unnecessary calls)
 =======
 >>>>>>> 9a5f6538a8 (chore: unregress initial frame when showing maximized window)
+=======
+		UpdateClientAreaExtension();
+>>>>>>> f9727e6f8b (fix: Apply extension on show)
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but
