@@ -51,6 +51,15 @@ internal partial class NativeWebView : ICleanableNativeWebView
 		}
 	}
 
+	[JSExport]
+	internal static void DispatchWebMessage(ElementId elementId, string message)
+	{
+		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
+		{
+			nativeWebView._coreWebView.RaiseWebMessageReceived(message);
+		}
+	}
+
 	public string DocumentTitle => NativeMethods.GetDocumentTitle(_elementId) ?? "";
 
 	private void OnNavigationCompleted(object sender, string? absoluteUrl)
