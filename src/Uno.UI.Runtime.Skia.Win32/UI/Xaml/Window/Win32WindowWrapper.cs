@@ -55,7 +55,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
-	private bool _beforeFirstEraseBkgnd = true;
+	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -85,6 +85,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		_hwnd = CreateWindow();
 
+		window.AppWindow.SetNativeWindow(this);
+
 		XamlRootMap.Register(xamlRoot, this);
 
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
@@ -112,10 +114,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			Resize(new SizeInt32((int)(Size.Width * RasterizationScale), (int)(Size.Height * RasterizationScale)));
 		}
 
-		window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += OnExtendsContentIntoTitleBarChanged;
+		window.AppWindow.TitleBar.Changed += OnAppWindowTitleBarChanged;
+		UpdateClientAreaExtension();
 	}
 
-	private void OnExtendsContentIntoTitleBarChanged(bool extends)
+	private void OnAppWindowTitleBarChanged(object? sender, EventArgs e)
 	{
 		if (_window is null)
 		{
@@ -127,10 +130,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			return;
 		}
 
-		if (_window.AppWindow.Presenter is OverlappedPresenter overlapped)
-		{
-			SetBorderAndTitleBar(overlapped.HasBorder, overlapped.HasTitleBar);
-		}
+		UpdateClientAreaExtension();
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
@@ -211,12 +211,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		switch (msg)
 		{
 			case PInvoke.WM_NCPAINT:
-				// see the comment in the WM_ERASEBKGND handler
-				if (WasShown && _beforeFirstEraseBkgnd && (_pendingState is OverlappedPresenterState.Maximized || Window?.AppWindow.Presenter is FullScreenPresenter))
+				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
-					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-					XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
-					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
+					SynchronousRenderAndDraw(true);
 				}
 				break;
 			case PInvoke.WM_ACTIVATE:
@@ -244,6 +241,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
+				// This call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
+				// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
+				// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
+				// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
+				// and our render timer.
+				SynchronousRenderAndDraw(false);
 				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
@@ -261,19 +264,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
-				if (_beforeFirstEraseBkgnd)
+				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
-					// Without drawing on the first WM_ERASEBKGND, we get an initial white frame
-					// Note that we don't call OnRenderFrameOpportunity here, but in ShowCore right before
-					// showing the window or in WM_NCPAINT which is the first message received after showing
-					// the window in ShowCore and after a possible window size change because the window was
-					// shown in a maximized/fullscreen state.
-					// The problem is that any minor delay will cause a split-second white flash, so we're keeping
-					// the "time to blit" to a minimum by "rendering" asap and only "drawing" when
-					// receiving the first WM_ERASEBKGND. Even then, there is still a race between our drawing a frame
-					// and the next screen refresh and while in most cases we are able to win the race and not get this
-					// split second of "whiteness", it's not a guarantee, especially on a slower device.
-					_beforeFirstEraseBkgnd = false;
+					_forcePaintOnNextEraseBkgndOrNcPaint = false;
+					// This call is necessary to avoid an initial blank frame during window startup.
+					// This follows from the SynchronousRenderAndDraw call in ShowCore
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
 					Render();
@@ -321,15 +316,29 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
+	private void SynchronousRenderAndDraw(bool sizeChanged)
+	{
+		if (sizeChanged)
+		{
+			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
+			XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
+		}
+		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
+		Render();
+	}
+
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
 	{
-		return new System.Drawing.Point((int)(lParam.Value) & 0xffff, (int)(lParam.Value) >> 16);
+		// Cast to short before converting to int to handle sign extension for negative coordinates.
+		// This is necessary when the point is outside the primary monitor bounds.
+		int x = (short)(lParam.Value & 0xFFFF);
+		int y = (short)((lParam.Value >> 16) & 0xFFFF);
+		return new System.Drawing.Point(x, y);
 	}
 
 	private bool TryHandleCustomCaptionMessage(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam, out LRESULT result)
 	{
 		var handled = PInvoke.DwmDefWindowProc(hWnd, msg, wParam, lParam, out result);
-
 		switch (msg)
 		{
 			case PInvoke.WM_NCHITTEST:
@@ -373,10 +382,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
-		if (_window is not null)
-		{
-			_window.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= OnExtendsContentIntoTitleBarChanged;
-		}
 		Win32Host.UnregisterWindow(_hwnd);
 		_renderer.Dispose();
 		_rendererDisposed = true;
@@ -446,13 +451,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Size = new SizeInt32(windowRect.Width, windowRect.Height);
 		Position = new PointInt32(windowRect.left, windowRect.top);
-
-		// This Render call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
-		// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
-		// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
-		// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
-		// and our render timer.
-		Render();
 	}
 
 	public override object NativeWindow => new Win32NativeWindow(_hwnd);
@@ -481,6 +479,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	protected override void ShowCore()
 	{
+		UpdateClientAreaExtension();
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but
@@ -499,10 +498,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
 					break;
 				default:
-					// see the comment in the WM_ERASEBKGND handler
-					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-					XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
-					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
+					// This SynchronousRenderAndDraw call avoids showing the window with a blank first frame.
+					// We call it here and not when handling WM_ERASEBKGND. The problem is that any minor delay
+					// will cause a split-second white flash, so we're keeping the "time to blit" to a minimum by rendering
+					// before the window is shown and then making a Render call on WM_ERASEBKGND.
+					// For other pending states, SynchronousRenderAndDraw will still be called but slightly later after
+					// the window has been resized (due to e.g. maximizing)
+					SynchronousRenderAndDraw(true);
 					PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 					break;
 			}
@@ -655,6 +657,26 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		else if (_window is null)
 		{
 			this.LogDebug()?.Debug($"{nameof(UpdateRendererBackground)} is called before {nameof(_window)} is set.");
+		}
+	}
+
+	private unsafe float GetPrimaryMonitorScale()
+	{
+		// Get the handle to the primary monitor
+		var primaryMonitor = PInvoke.MonitorFromPoint(new System.Drawing.Point(0, 0), MONITOR_FROM_FLAGS.MONITOR_DEFAULTTOPRIMARY);
+
+		// Try getting the DPI using GetDpiForMonitor (Windows 8.1+)
+		if (PInvoke.GetDpiForMonitor(primaryMonitor, Windows.Win32.UI.HiDpi.MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out uint dpiX, out uint dpiY) == 0)
+		{
+			return dpiX / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
+		}
+		else
+		{
+			// Fallback for older Windows versions
+			var hdc = PInvoke.GetDC(HWND.Null);
+			int dpi = PInvoke.GetDeviceCaps(hdc, GET_DEVICE_CAPS_INDEX.LOGPIXELSX);
+			_ = PInvoke.ReleaseDC(HWND.Null, hdc);
+			return dpi / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
 		}
 	}
 }
