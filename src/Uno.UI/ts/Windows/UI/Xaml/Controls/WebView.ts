@@ -45,6 +45,15 @@ namespace Microsoft.UI.Xaml.Controls {
             return (<HTMLIFrameElement>document.getElementById(htmlId)).getAttribute(name);
         }
 
+        static navigate(htmlId: string, url: string) {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            if (iframe?.contentWindow) {
+                iframe.contentWindow.location.href = url;
+            } else if (iframe) {
+                iframe.setAttribute("src", url);
+            }
+        }
+
         static initializeStyling(htmlId: string) {
             const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
             iframe.style.backgroundColor = "transparent";
@@ -87,6 +96,54 @@ namespace Microsoft.UI.Xaml.Controls {
             const iframe = event.currentTarget as HTMLIFrameElement;
             const absoluteUrl = iframe.contentWindow.location.href;
             WebView.unoExports.DispatchLoadEvent(iframe.id, absoluteUrl);
+
+            try {
+                if (iframe.contentWindow && WebView.unoExports.DispatchNewWindowRequested) {
+                    
+                    const unoExports = WebView.unoExports;
+                    
+                    const originalOpen = iframe.contentWindow.open;
+                    iframe.contentWindow.open = function(url, target, features) {
+                        const referer = iframe.contentWindow.location.href;
+
+                        const handled = unoExports.DispatchNewWindowRequested(
+                            iframe.id,
+                            url,
+                            referer
+                        );
+
+                        if (!handled) {
+                            return originalOpen.apply(this, arguments);
+                        }
+                        
+                        return null;
+                    };
+
+                    const links = iframe.contentDocument.querySelectorAll('a[target="_blank"]');
+                    links.forEach(link => {
+                        link.addEventListener('click', (e: MouseEvent) => {
+                            const targetUrl = (link as HTMLAnchorElement).href;
+                            const referer = iframe.contentWindow.location.href;
+
+                            const handled = unoExports.DispatchNewWindowRequested(
+                                iframe.id,
+                                targetUrl,
+                                referer
+                            );
+
+                            if (handled) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }
+                        });
+                    });
+                }
+            } catch (e) {
+                // This can fail if the iframe content is cross-origin.
+                // We log this as a warning, as it's a known browser security feature.
+                // https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
+                console.warn("Uno.WebView: Could not attach NewWindowRequested handlers. This is expected if the iframe content is cross-origin.");
+            }
         }
     }
 }
