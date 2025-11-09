@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -29,6 +30,7 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Uno.UI.Dispatching;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -208,15 +210,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		switch (msg)
 		{
-<<<<<<< HEAD
-=======
 			case PInvoke.WM_NCPAINT:
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
 					SynchronousRenderAndDraw(true);
 				}
 				break;
->>>>>>> 07acec6131 (chore: fix flickering when extending window into title bar)
 			case PInvoke.WM_ACTIVATE:
 				OnWmActivate(wParam);
 				return new LRESULT(0);
@@ -264,10 +263,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				return new LRESULT(0);
 			case PInvoke.WM_ERASEBKGND:
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ERASEBKGND)} message.");
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
@@ -276,19 +271,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					// This follows from the SynchronousRenderAndDraw call in ShowCore
 					// The render timer might already be running. This is fine. The CompositionTarget
 					// contract allows calling OnNativePlatformFrameRequested multiple times.
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 					Render();
-=======
-					OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-=======
->>>>>>> 4a57cc4513 (chore: more refactoring)
-					Ramez();
->>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
-=======
-					Render();
->>>>>>> a3f8836b64 (chore: remove unnecessary calls)
 					return new LRESULT(1);
 				}
 				else
@@ -297,14 +280,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					// only do it the first time when we really need to
 					return new LRESULT(0);
 				}
-<<<<<<< HEAD
-=======
-				OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-				Ramez();
-				return new LRESULT(1);
->>>>>>> 07acec6131 (chore: fix flickering when extending window into title bar)
-=======
->>>>>>> 181165b9a6 (chore: bring back _beforeFirstEraseBkgnd)
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
@@ -504,35 +479,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	protected override void ShowCore()
 	{
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-		// see the comment in WndProc's WM_ERASEBKGND handling
-		if (_beforeFirstEraseBkgnd)
-		{
-			(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-		}
-
-=======
-		OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-=======
->>>>>>> 4a57cc4513 (chore: more refactoring)
-		Ramez();
->>>>>>> be54758bb9 (fix: first frame white flash)
-=======
-		// We call SynchronousRenderAndDraw here and not when handling WM_ERASEBKGND. The problem is that any minor delay
-		// will cause a split-second white flash, so we're keeping the "time to blit" to a minimum by rendering
-		// before the window is shown.
-		SynchronousRenderAndDraw();
-
->>>>>>> a3f8836b64 (chore: remove unnecessary calls)
-=======
->>>>>>> 9a5f6538a8 (chore: unregress initial frame when showing maximized window)
-=======
 		UpdateClientAreaExtension();
->>>>>>> f9727e6f8b (fix: Apply extension on show)
 		if (Window?.AppWindow.Presenter is FullScreenPresenter)
 		{
 			// The window takes a split second to be rerendered with the fullscreen window size but
@@ -540,7 +487,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			SetWindowStyle(WINDOW_STYLE.WS_DLGFRAME, false);
 			_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MAXIMIZE);
 		}
-		else if (Window?.AppWindow.Presenter is OverlappedPresenter overlappedPresenter)
+		else if (Window?.AppWindow.Presenter is OverlappedPresenter)
 		{
 			switch (_pendingState)
 			{
@@ -550,39 +497,21 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				case OverlappedPresenterState.Minimized:
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
 					break;
-				case OverlappedPresenterState.Restored:
-					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_RESTORE);
-					break;
 				default:
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
-=======
-=======
-					// We call SynchronousRenderAndDraw here and not when handling WM_ERASEBKGND. The problem is that any minor delay
-=======
 					// This SynchronousRenderAndDraw call avoids showing the window with a blank first frame.
 					// We call it here and not when handling WM_ERASEBKGND. The problem is that any minor delay
->>>>>>> 305c1232e9 (chore: comments)
 					// will cause a split-second white flash, so we're keeping the "time to blit" to a minimum by rendering
 					// before the window is shown and then making a Render call on WM_ERASEBKGND.
 					// For other pending states, SynchronousRenderAndDraw will still be called but slightly later after
 					// the window has been resized (due to e.g. maximizing)
-<<<<<<< HEAD
-					SynchronousRenderAndDraw();
->>>>>>> 9a5f6538a8 (chore: unregress initial frame when showing maximized window)
-=======
 					SynchronousRenderAndDraw(true);
->>>>>>> f1e7c4b653 (chore: Adjust rendering)
 					PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
->>>>>>> a3f8836b64 (chore: remove unnecessary calls)
 					break;
 			}
 		}
 		else
 		{
-			PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+			throw new InvalidOperationException("Unsupported Window Presenter.");
 		}
 	}
 
