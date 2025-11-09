@@ -404,6 +404,70 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
     }];
 }
 
+static uno_webview_new_window_requested_fn_ptr new_window_requested;
+
+inline uno_webview_new_window_requested_fn_ptr uno_get_webview_new_window_requested_callback(void)
+{
+    return new_window_requested;
+}
+
+void uno_set_webview_new_window_requested_callback(uno_webview_new_window_requested_fn_ptr fn_ptr)
+{
+    new_window_requested = fn_ptr;
+}
+
+- (WKWebView *)webView:(WKWebView *)webView
+createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration
+           forNavigationAction:(WKNavigationAction *)navigationAction
+                windowFeatures:(WKWindowFeatures *)windowFeatures {
+
+#if DEBUG
+    NSLog(@"NATIVE DEBUG: createWebViewWithConfiguration fired for URL: %@", navigationAction.request.URL);
+#endif
+
+    uno_webview_new_window_requested_fn_ptr callback = uno_get_webview_new_window_requested_callback();
+    
+    if (callback) {
+#if DEBUG
+        NSLog(@"NATIVE DEBUG: Found C# callback. Attempting to call...");
+#endif
+        
+        const char* targetUrl = [navigationAction.request.URL.absoluteString UTF8String];
+        
+        const char* refererUrl = [navigationAction.sourceFrame.request.URL.absoluteString UTF8String];
+        if (refererUrl == NULL) {
+            refererUrl = "about:blank";
+        }
+
+        int handled = callback(webView, targetUrl, refererUrl);
+
+#if DEBUG
+        NSLog(@"NATIVE DEBUG: C# callback returned: %d", handled);
+#endif
+
+        // Check if C# handled it (returned 1)
+        if (handled == 1) {
+#if DEBUG
+            NSLog(@"NATIVE DEBUG: C# handled the request. Cancelling native new window.");
+#endif
+            return nil;
+        }
+    } else {
+#if DEBUG
+        NSLog(@"NATIVE DEBUG: C# callback (new_window_requested) was NULL.");
+#endif
+    }
+
+#if DEBUG
+    NSLog(@"NATIVE DEBUG: C# did not handle. Opening in default browser.");
+#endif
+    if (navigationAction.request.URL) {
+        [[NSWorkspace sharedWorkspace] openURL:navigationAction.request.URL];
+    }
+    
+    return nil;
+}
+
 // WKNavigationDelegate
 
 // note: this is NOT called when navigating to a different anchor of the same URL

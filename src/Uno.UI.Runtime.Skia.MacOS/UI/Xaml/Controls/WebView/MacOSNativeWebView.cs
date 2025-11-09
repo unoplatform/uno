@@ -374,6 +374,44 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static unsafe int NewWindowRequestedCallback(nint handle, sbyte* targetUrl, sbyte* refererUrl)
+	{
+		var webview = GetWebView(handle);
+		if (webview is not null)
+		{
+			var targetString = targetUrl == null ? "about:blank" : new string(targetUrl);
+			var refererString = refererUrl == null ? null : new string(refererUrl);
+
+			var refererUri = refererString == null ? new Uri("about:blank") : new Uri(refererString);
+
+			if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(MacOSNativeWebView).Log().Debug($"MacOSNativeWebView.NewWindowRequestedCallback: Target='{targetString}', Referer='{refererUri}'");
+			}
+
+			webview._owner.RaiseNewWindowRequested(
+				targetString,
+				refererUri,
+				out var handled);
+
+			if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(MacOSNativeWebView).Log().Debug($"MacOSNativeWebView.NewWindowRequestedCallback: Handled={handled}");
+			}
+
+			// Return 1 if handled (which prevents the native code from opening a new window),
+			// or 0 if not handled (allowing the native code to proceed, e.g., opening in an external browser).
+			return handled ? 1 : 0;
+		}
+		else if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(MacOSNativeWebView).Log().Warn($"MacOSNativeWebView.NewWindowRequestedCallback could not map 0x{handle:X} with an WKWebView");
+		}
+
+		return 0;
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static unsafe void DidReceiveScriptMessage(nint handle, sbyte* messageBody)
 	{
 		var webview = GetWebView(handle);

@@ -21,6 +21,8 @@ internal class MacOSNativeWebViewProvider : INativeWebViewProvider
 			&MacOSNativeWebView.DidReceiveScriptMessage,
 			&MacOSNativeWebView.NavigationFailingCallback);
 
+		NativeUno.uno_set_webview_new_window_requested_callback(&MacOSNativeWebView.NewWindowRequestedCallback);
+
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new MacOSNativeWebViewProvider(o));
 	}
 
