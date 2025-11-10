@@ -545,7 +545,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 					}
 				}
-				else if (member.Member.Name == "base")
+				else if (IsBlankBaseMember(member))
 				{
 					// Skip, the information is not needed at runtime
 				}
