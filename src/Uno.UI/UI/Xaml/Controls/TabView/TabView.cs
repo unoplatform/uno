@@ -164,12 +164,18 @@ public partial class TabView : Control
 				{
 					listView.DragItemsCompleted -= OnListViewDragItemsCompleted;
 				});
-				listView.Drop += OnListViewDrop;
+
+				listView.DragOver += OnListViewDragOver;
 				m_listViewDragOverRevoker.Disposable = Disposable.Create(() =>
+				{
+					listView.DragOver -= OnListViewDragOver;
+				});
+
+				listView.Drop += OnListViewDrop;
+				m_listViewDropRevoker.Disposable = Disposable.Create(() =>
 				{
 					listView.Drop -= OnListViewDrop;
 				});
-
 				listView.DragEnter += OnListViewDragEnter;
 				m_listViewDragEnterRevoker.Disposable = Disposable.Create(() =>
 				{
@@ -181,11 +187,6 @@ public partial class TabView : Control
 					listView.DragLeave -= OnListViewDragLeave;
 				});
 
-				listView.Drop += OnListViewDrop;
-				m_listViewDropRevoker.Disposable = Disposable.Create(() =>
-				{
-					listView.Drop -= OnListViewDrop;
-				});
 
 				listView.GettingFocus += OnListViewGettingFocus;
 				m_listViewGettingFocusRevoker.Disposable = Disposable.Create(() =>
@@ -1284,156 +1285,162 @@ public partial class TabView : Control
 				// Note: can be infinite
 				var availableWidth = m_previousAvailableSize.Width - widthTaken;
 
-				// Size can be 0 when window is first created; in that case, skip calculations; we'll get a new size soon
-				if (availableWidth > 0)
+				// TODO: UNO workaround: Handles layout timing difference to WinUI
+				// After ListView drag&drop, MeasureOverride can call this before ActualWidth of LeftContentColumn is calculated.
+				// Reading ActualWidth might return Infinity, causing availableWidth=-Infinity.
+				// This check prevents applying NaN to TabViewItem widths when layout is in this intermediate async state.
+				// The layout corrects itself in a subsequent pass (e.g., via SizeChanged/PointerExited).
+				// Part of: https://github.com/unoplatform/uno/issues/21762
+				if (availableWidth <= 0)
 				{
-					if (TabWidthMode == TabViewWidthMode.Equal)
+					return;
+				}
+
+				if (TabWidthMode == TabViewWidthMode.Equal)
+				{
+					var minTabWidth = (double)SharedHelpers.FindInApplicationResources(c_tabViewItemMinWidthName, c_tabMinimumWidth);
+
+					// If we should fill all of the available space, use scrollviewer dimensions
+					var padding = Padding;
+
+					double headerWidth = 0.0;
+					double footerWidth = 0.0;
+					if (m_itemsPresenter is { } itemsPresenter)
 					{
-
-						var minTabWidth = (double)SharedHelpers.FindInApplicationResources(c_tabViewItemMinWidthName, c_tabMinimumWidth);
-
-						// If we should fill all of the available space, use scrollviewer dimensions
-						var padding = Padding;
-
-						double headerWidth = 0.0;
-						double footerWidth = 0.0;
-						if (m_itemsPresenter is { } itemsPresenter)
+						if (itemsPresenter.Header is FrameworkElement header)
 						{
-							if (itemsPresenter.Header is FrameworkElement header)
+							headerWidth = header.ActualWidth;
+						}
+						if (itemsPresenter.Footer is FrameworkElement footer)
+						{
+							footerWidth = footer.ActualWidth;
+						}
+					}
+
+					if (fillAllAvailableSpace)
+					{
+						// Calculate the proportional width of each tab given the width of the ScrollViewer.
+						var tabWidthForScroller = (availableWidth - (padding.Left + padding.Right + headerWidth + footerWidth)) / tabCount;
+						tabWidth = Math.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
+					}
+					else
+					{
+						double availableTabViewSpace = (tabColumn.ActualWidth - (padding.Left + padding.Right + headerWidth + footerWidth));
+						var increaseButton = m_scrollIncreaseButton;
+						if (increaseButton != null)
+						{
+							if (increaseButton.Visibility == Visibility.Visible)
 							{
-								headerWidth = header.ActualWidth;
-							}
-							if (itemsPresenter.Footer is FrameworkElement footer)
-							{
-								footerWidth = footer.ActualWidth;
+								availableTabViewSpace -= increaseButton.ActualWidth;
 							}
 						}
 
-						if (fillAllAvailableSpace)
+						var decreaseButton = m_scrollDecreaseButton;
+						if (decreaseButton != null)
 						{
-							// Calculate the proportional width of each tab given the width of the ScrollViewer.
-							var tabWidthForScroller = (availableWidth - (padding.Left + padding.Right + headerWidth + footerWidth)) / tabCount;
-							tabWidth = Math.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
-						}
-						else
-						{
-							double availableTabViewSpace = (tabColumn.ActualWidth - (padding.Left + padding.Right + headerWidth + footerWidth));
-							var increaseButton = m_scrollIncreaseButton;
-							if (increaseButton != null)
+							if (decreaseButton.Visibility == Visibility.Visible)
 							{
-								if (increaseButton.Visibility == Visibility.Visible)
-								{
-									availableTabViewSpace -= increaseButton.ActualWidth;
-								}
-							}
-
-							var decreaseButton = m_scrollDecreaseButton;
-							if (decreaseButton != null)
-							{
-								if (decreaseButton.Visibility == Visibility.Visible)
-								{
-									availableTabViewSpace -= decreaseButton.ActualWidth;
-								}
-							}
-
-							// Use current size to update items to fill the currently occupied space
-							var tabWidthUnclamped = availableTabViewSpace / tabCount;
-							tabWidth = Math.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
-						}
-
-
-						// Size tab column to needed size
-						tabColumn.MaxWidth = availableWidth + headerWidth + footerWidth;
-						var requiredWidth = tabWidth * tabCount + headerWidth + footerWidth + padding.Left + padding.Right;
-						if (requiredWidth > availableWidth)
-						{
-							tabColumn.Width = GridLengthHelper.FromPixels(availableWidth);
-							var listview = m_listView;
-							if (listview != null)
-							{
-								ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Visible);
-								UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
+								availableTabViewSpace -= decreaseButton.ActualWidth;
 							}
 						}
-						else
-						{
-							// If we're dragging over the TabView, we need to set the width to a specific value,
-							// since we want it to be larger than the items actually in it in order to accommodate
-							// the item being dragged into the TabView.  Otherwise, we can just set its width to Auto.
-							tabColumn.Width =
-								m_isItemDraggedOver ?
-								GridLengthHelper.FromPixels(requiredWidth) :
-								GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
 
-							var listview = m_listView;
-							var tabListView = m_listView as TabViewListView;
-							if (listview != null)
-							{
-								if (shouldUpdateWidths && fillAllAvailableSpace)
-								{
-									ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Hidden);
-								}
-								else
-								{
-									var decreaseButton = m_scrollDecreaseButton;
-									if (decreaseButton != null)
-									{
-										decreaseButton.IsEnabled = false;
-									}
-									var increaseButton = m_scrollIncreaseButton;
-									if (increaseButton != null)
-									{
-										increaseButton.IsEnabled = false;
-									}
-								}
-							}
+						// Use current size to update items to fill the currently occupied space
+						var tabWidthUnclamped = availableTabViewSpace / tabCount;
+						tabWidth = Math.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
+					}
+
+
+					// Size tab column to needed size
+					tabColumn.MaxWidth = availableWidth + headerWidth + footerWidth;
+					var requiredWidth = tabWidth * tabCount + headerWidth + footerWidth + padding.Left + padding.Right;
+					if (requiredWidth > availableWidth)
+					{
+						tabColumn.Width = GridLengthHelper.FromPixels(availableWidth);
+						var listview = m_listView;
+						if (listview != null)
+						{
+							ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Visible);
+							UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
 						}
 					}
 					else
 					{
-						// Case: TabWidthMode "Compact" or "SizeToContent"
-						tabColumn.MaxWidth = availableWidth;
+						// If we're dragging over the TabView, we need to set the width to a specific value,
+						// since we want it to be larger than the items actually in it in order to accommodate
+						// the item being dragged into the TabView.  Otherwise, we can just set its width to Auto.
+						tabColumn.Width =
+							m_isItemDraggedOver ?
+							GridLengthHelper.FromPixels(requiredWidth) :
+							GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
+
 						var listview = m_listView;
 						var tabListView = m_listView as TabViewListView;
 						if (listview != null)
 						{
-							// When an item is being dragged over, we need to reserve extra space for the potential new tab,
-							// so we can't rely on auto sizing in that case.  However, the ListView expands to the size of the column,
-							// so we need to store the value lest we keep expanding the width of the column every time we call this method.
-							if (m_isItemDraggedOver)
+							if (shouldUpdateWidths && fillAllAvailableSpace)
 							{
-								if (!m_expandedWidthForDragOver.HasValue)
-								{
-									m_expandedWidthForDragOver = listview.ActualWidth + maxTabWidth;
-								}
-
-								tabColumn.Width = GridLengthHelper.FromPixels((double)m_expandedWidthForDragOver);
+								ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Hidden);
 							}
 							else
 							{
-								if (m_expandedWidthForDragOver.HasValue)
+								var decreaseButton = m_scrollDecreaseButton;
+								if (decreaseButton != null)
 								{
-									m_expandedWidthForDragOver = null;
+									decreaseButton.IsEnabled = false;
 								}
-
-								tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
+								var increaseButton = m_scrollIncreaseButton;
+								if (increaseButton != null)
+								{
+									increaseButton.IsEnabled = false;
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					// Case: TabWidthMode "Compact" or "SizeToContent"
+					tabColumn.MaxWidth = availableWidth;
+					var listview = m_listView;
+					var tabListView = m_listView as TabViewListView;
+					if (listview != null)
+					{
+						// When an item is being dragged over, we need to reserve extra space for the potential new tab,
+						// so we can't rely on auto sizing in that case.  However, the ListView expands to the size of the column,
+						// so we need to store the value lest we keep expanding the width of the column every time we call this method.
+						if (m_isItemDraggedOver)
+						{
+							if (!m_expandedWidthForDragOver.HasValue)
+							{
+								m_expandedWidthForDragOver = listview.ActualWidth + maxTabWidth;
 							}
 
-
-							listview.MaxWidth = availableWidth;
-
-							// Calculate if the scroll buttons should be visible.
-							var itemsPresenter = m_itemsPresenter;
-							if (itemsPresenter != null)
+							tabColumn.Width = GridLengthHelper.FromPixels((double)m_expandedWidthForDragOver);
+						}
+						else
+						{
+							if (m_expandedWidthForDragOver.HasValue)
 							{
-								var visible = itemsPresenter.ActualWidth > availableWidth;
-								ScrollViewer.SetHorizontalScrollBarVisibility(listview, visible
-									? ScrollBarVisibility.Visible
-									: ScrollBarVisibility.Hidden);
-								if (visible)
-								{
-									UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
-								}
+								m_expandedWidthForDragOver = null;
+							}
+
+							tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
+						}
+
+
+						listview.MaxWidth = availableWidth;
+
+						// Calculate if the scroll buttons should be visible.
+						var itemsPresenter = m_itemsPresenter;
+						if (itemsPresenter != null)
+						{
+							var visible = itemsPresenter.ActualWidth > availableWidth;
+							ScrollViewer.SetHorizontalScrollBarVisibility(listview, visible
+								? ScrollBarVisibility.Visible
+								: ScrollBarVisibility.Hidden);
+							if (visible)
+							{
+								UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
 							}
 						}
 					}
