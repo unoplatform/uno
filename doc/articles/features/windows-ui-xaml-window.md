@@ -201,9 +201,10 @@ myWindow.AppWindow.TitleBar.SetDragRectangles(dragRectangles);
 ```
 
 > [!IMPORTANT]
-> - The rectangles are specified in actual pixels, not scaled points.
-> - Drag rectangles must be updated when the window size or DPI scaling changes, otherwise they will be incorrectly positioned.
-> - This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+>
+> * The rectangles are specified in actual pixels, not scaled points.
+> * Drag rectangles must be updated when the window size or DPI scaling changes, otherwise they will be incorrectly positioned.
+> * This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
 
 Example of updating drag rectangles on window size changes:
 
@@ -236,9 +237,10 @@ nonClientInputSrc.SetRegionRects(NonClientRegionKind.Caption, new[] { maximizeBu
 ```
 
 > [!IMPORTANT]
-> - Region rectangles are specified in actual pixels, not scaled points.
-> - These rectangles must be updated when the window size or DPI scaling changes.
-> - This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+>
+> * Region rectangles are specified in actual pixels, not scaled points.
+> * These rectangles must be updated when the window size or DPI scaling changes.
+> * This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
 
 ## Setting the background color for the Window
 
