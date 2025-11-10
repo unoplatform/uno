@@ -138,18 +138,34 @@ NSWindow* uno_window_create(double width, double height)
     
     [windows addObject:window];
 
+    // do not show the window until activate has been called
     [window makeKeyWindow];
-    [window orderFrontRegardless];
+    [window orderOut:nil];
 
     return window;
 }
 
-void uno_window_activate(NSWindow *window)
+void uno_window_activate(UNOWindow *window)
 {
 #if DEBUG
-    NSLog(@"uno_window_activate %@", window);
+    NSLog(@"uno_window_activate %@ state %d", window, window.overlappedPresenterState);
 #endif
-    [window orderFront:nil];
+    switch (window.overlappedPresenterState) {
+        case OverlappedPresenterStateRestored: {
+            // ordering to front can move the window (but not resize it) from what was set before activating it, so we move it back
+            CGPoint current = window.frame.origin;
+            // don't call `uno_window_restore` since we want the pre-activation state (not the current one) to be used
+            [window orderFrontRegardless];
+            [window setFrameOrigin:current];
+            break;
+        }
+        case OverlappedPresenterStateMinimized:
+            uno_window_minimize(window, false);
+            break;
+        case OverlappedPresenterStateMaximized:
+            uno_window_maximize(window);
+            break;
+    }
 }
 
 void uno_window_notify_screen_change(NSWindow *window)
@@ -286,13 +302,13 @@ void uno_window_minimize(NSWindow *window, bool activateWindow)
 #if DEBUG
     NSLog(@"uno_window_minimize %@ %s", window, activateWindow ? "true" : "false");
 #endif
-    [window miniaturize:nil];
-    if (activateWindow) {
+    [window performMiniaturize:nil];
+    if (activateWindow && window.canBecomeMainWindow) {
         [window makeMainWindow];
     }
 }
 
-void uno_window_restore(NSWindow *window, bool activateWindow)
+void uno_window_restore(UNOWindow *window, bool activateWindow)
 {
 #if DEBUG
     NSLog(@"uno_window_restore %@ %s", window, activateWindow ? "true" : "false");
@@ -307,20 +323,17 @@ void uno_window_restore(NSWindow *window, bool activateWindow)
         default:
             break;
     }
-    if (activateWindow) {
+    if (activateWindow && window.canBecomeMainWindow) {
         [window makeMainWindow];
     }
 }
 
-OverlappedPresenterState uno_window_get_overlapped_presenter_state(NSWindow *window)
+OverlappedPresenterState uno_window_get_overlapped_presenter_state(UNOWindow *window)
 {
-    if (window.isZoomed) {
-        return OverlappedPresenterStateMaximized;
-    } else if (window.isMiniaturized) {
-        return OverlappedPresenterStateMinimized;
-    } else {
-        return OverlappedPresenterStateRestored;
-    }
+#if DEBUG
+    NSLog(@"uno_window_get_overlapped_presenter_state %@ state %d", window, window.overlappedPresenterState);
+#endif
+    return window.overlappedPresenterState;
 }
 
 void uno_window_set_always_on_top(NSWindow* window, bool isAlwaysOnTop)
@@ -389,7 +402,7 @@ void uno_window_set_minimizable(NSWindow* window, bool isMinimizable)
 
 bool uno_window_set_modal(NSWindow *window, bool isModal)
 {
-    // this is a read-only property so we simply log if we can't change it o the requested value
+    // this is a read-only property so we simply log if we can't change it to the requested value
     return isModal == window.isModalPanel;
 }
 
@@ -818,6 +831,7 @@ NSOperatingSystemVersion _osVersion;
     self = [super initWithContentRect:contentRect styleMask:style backing:backingStoreType defer:flag];
     if (self) {
         self.delegate = self;
+        self.overlappedPresenterState = OverlappedPresenterStateRestored;
     }
     return self;
 }
@@ -825,6 +839,8 @@ NSOperatingSystemVersion _osVersion;
 - (void)dealloc {
     [windows removeObject:self];
 }
+
+@synthesize overlappedPresenterState;
 
 - (BOOL) getPositionFrom:(NSEvent*)event x:(CGFloat*)px y:(CGFloat *)py
 {
@@ -1036,9 +1052,46 @@ NSOperatingSystemVersion _osVersion;
     return handled;
 }
 
+- (void) performMiniaturize:(id) sender {
+    self.overlappedPresenterState = OverlappedPresenterStateMinimized;
+    [super performMiniaturize:sender];
+}
+
+- (void)windowWillMiniaturize:(NSNotification *)notification {
+#if DEBUG
+    NSLog(@"UNOWindow %p windowWillMiniaturize %@", self, notification);
+#endif
+    self.overlappedPresenterState = OverlappedPresenterStateMinimized;
+}
+
+- (void)windowDidMiniaturize:(NSNotification *)notification {
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidMiniaturize %@", self, notification);
+#endif
+    self.overlappedPresenterState = OverlappedPresenterStateMinimized;
+}
+
+- (void)windowDidDeminiaturize:(NSNotification *)notification {
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidDeminiaturize %@", self, notification);
+#endif
+    self.overlappedPresenterState = OverlappedPresenterStateRestored;
+}
+
 - (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame {
     // if we disable the (green) maximize button then we don't allow zooming
     return window.collectionBehavior != (NSWindowCollectionBehaviorFullScreenAuxiliary|NSWindowCollectionBehaviorFullScreenNone|NSWindowCollectionBehaviorFullScreenDisallowsTiling);
+}
+
+- (void) performZoom:(id) sender {
+    [super performZoom:sender];
+    self.overlappedPresenterState = OverlappedPresenterStateMaximized;
+}
+
+- (void) zoom:(id) sender {
+    // this call is a toggle
+    self.overlappedPresenterState = self.isZoomed ? OverlappedPresenterStateRestored : OverlappedPresenterStateMaximized;
+    [super zoom:sender];
 }
 
 - (void)windowDidMove:(NSNotification *)notification {
