@@ -23,7 +23,7 @@ The Uno Platform Status appears as soon as you install the Uno extension in your
 
 ## NuGet
 
-To ensure consistency, Uno tooling aligns itself with the Uno package versions referenced by your solution. Uno's IDE extension waits for NuGet restore to complete before enabling Uno features.
+To ensure consistency, the Uno tooling aligns itself with the package versions referenced by your solution. The IDE extension waits for NuGet restore to complete before enabling Uno features.
 
 - If NuGet restore is still running or fails, Uno features will remain disabled until restore succeeds.
 - Resolve any restore errors first; then the panel updates automatically when ready.
