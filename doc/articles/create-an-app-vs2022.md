@@ -141,12 +141,12 @@ You're all set!
 
 ## Next Steps
 
-Now that you're Created and Debug the App.
+Now that you've created and debugged your app, you can start developing or you can [**use Copilot**](xref:Uno.BuildYourApp.AI.Agents) to help you develop your app.
 
 Learn more about:
 
 - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
-- [Hot Reload feature](xref:Uno.Features.HotReload)
+- [Hot Reload features](xref:Uno.Features.HotReload)
 - [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
 - [Troubleshooting](xref:Uno.UI.CommonIssues)
 - [How-tos and Tutorials](xref:Uno.Tutorials.Intro) See real-world examples with working code.
