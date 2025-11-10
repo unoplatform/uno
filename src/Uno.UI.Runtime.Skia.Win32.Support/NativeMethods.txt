@@ -189,6 +189,7 @@ GlobalSize
 GlobalUnlock
 InternetGetConnectedState
 InvalidateRect
+LoadImage
 LoadCursor
 LoadRegTypeLib
 LocalFree

@@ -589,6 +589,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			return;
 		}
 
+		// Handle .ico files directly using Windows API without SkiaSharp
+		if (Path.GetExtension(iconPath).Equals(".ico", StringComparison.OrdinalIgnoreCase))
+		{
+			SetIconFromIcoFile(iconPath);
+			return;
+		}
+
 		var image = SKImage.FromEncodedData(iconPath);
 		if (image is null)
 		{
@@ -634,6 +641,48 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value);
 		PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value);
+	}
+
+	private unsafe void SetIconFromIcoFile(string iconPath)
+	{
+		// Load the icon from the .ico file
+		using var iconPathNative = new Win32Helper.NativeNulTerminatedUtf16String(iconPath);
+
+		// Load small icon (typically 16x16)
+		var hIconSmall = PInvoke.LoadImage(
+			HINSTANCE.Null,
+			iconPathNative,
+			GDI_IMAGE_TYPE.IMAGE_ICON,
+			16, // Small icon width
+			16, // Small icon height
+			IMAGE_FLAGS.LR_LOADFROMFILE);
+
+		if (hIconSmall.IsNull)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.LoadImage)} failed for small icon: {Win32Helper.GetErrorMessage()}");
+		}
+		else
+		{
+			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIconSmall.Value);
+		}
+
+		// Load large icon (typically 32x32)
+		var hIconLarge = PInvoke.LoadImage(
+			HINSTANCE.Null,
+			iconPathNative,
+			GDI_IMAGE_TYPE.IMAGE_ICON,
+			32, // Large icon width
+			32, // Large icon height
+			IMAGE_FLAGS.LR_LOADFROMFILE);
+
+		if (hIconLarge.IsNull)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.LoadImage)} failed for large icon: {Win32Helper.GetErrorMessage()}");
+		}
+		else
+		{
+			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIconLarge.Value);
+		}
 	}
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
