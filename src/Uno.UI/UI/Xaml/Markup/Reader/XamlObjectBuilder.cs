@@ -1601,7 +1601,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else if (member.Member.Name == "_PositionalParameters")
 						{
-							// Skip, no validation needed, the string is used as-is
+							// Skip, no validation needed. This member represents positional parameters for XAML markup extensions (e.g., Binding).
 						}
 						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
 						{
