@@ -9,7 +9,7 @@ This guide will walk you through the setup process for building apps with Uno Pl
 See these sections for information about using Uno Platform with:
 
 - [Codespaces](features/working-with-codespaces.md)
-- [Gitpod](features/working-with-gitpod.md)
+- [Ona](features/working-with-gitpod.md)
 
 ## Prerequisites
 
@@ -34,7 +34,7 @@ If you are new to VS Code or to developing C# applications with VS Code take the
 
 Starting **Uno Platform extension** version 0.12, running in VS Code automatically uses the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit`.
 
-If you are using GitPod, any [Open VSX environment](https://open-vsx.org) or earlier versions of the Uno Platform extension, you will be automatically using the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` with OmniSharp enabled.
+If you are using Ona, any [Open VSX environment](https://open-vsx.org) or earlier versions of the Uno Platform extension, you will be automatically using the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` with OmniSharp enabled.
 
 To switch between C# Dev Kit and OmniSharp:
 
