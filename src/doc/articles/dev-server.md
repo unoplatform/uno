@@ -10,12 +10,12 @@ The Dev Server is the local development companion that enables productive inner-
 ## Overview
 
 - Provides a transport between the IDE and the running application to exchange development-time messages
-- Powers Hot Reload and hot design experiences by delivering code and XAML updates
+- Powers Hot Reload and Hot Design experiences by delivering code and XAML updates
 - Starts automatically and stays out of the way; you usually do not have to configure it
 
 ## Prerequisites
 
-- Requires a recent .NET SDK (7.0 or later) for the host process
+- Requires .NET SDK, [same version as uno](xref:Uno.Development.NetVersionSupport)
 - Works in Debug builds, where connection information is embedded so the app can reach the Dev Server
 
 ## When and how the Dev Server starts
