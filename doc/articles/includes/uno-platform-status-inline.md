@@ -21,7 +21,7 @@ The Uno Platform Status panel appears as soon as you install the Uno extension i
 > [!NOTE]
 > The Uno Platform Status panel can also appear for non-Uno solutions. This helps you troubleshoot when you expected Uno packages to be present but they were not detected.
 
-## Nuget
+## NuGet
 
 To ensure consistency, Uno tooling aligns itself with the Uno package versions referenced by your solution. Uno's IDE extension waits for NuGet restore to complete before enabling Uno features.
 
