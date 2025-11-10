@@ -16,7 +16,7 @@ The Dev Server is the local development companion that enables productive inner-
 ## Prerequisites
 
 - Requires a recent .NET SDK (7.0 or later) for the host process
-- Works in Debug builds. In Debug, connection information is embedded so the app can reach the Dev Server
+- Works in Debug builds, where connection information is embedded so the app can reach the Dev Server
 
 ## When and how the Dev Server starts
 
@@ -31,7 +31,7 @@ The Dev Server is the local development companion that enables productive inner-
 3. Launch the app (Debug): the app connects back to the Dev Server.
 4. Develop: the IDE and app exchange development-time messages (e.g., Hot Reload updates).
 
-## Command-line (advanced usage for specific scenario)
+## Command-line (advanced usage for specific scenarios)
 
 You can manage the Dev Server from the command line using the dotnet tool `Uno.DevServer` (command: uno-devserver):
 
@@ -106,7 +106,8 @@ The Dev Server enables Hot Reload for a faster inner loop:
 
        ![Level output drop-down](../Assets/features/hotreload/rider-output-level-trace.png)
 
-> IMPORTANT: The Dev Server is a development-time facility. It is not required nor recommended for production deployments.
+> [!IMPORTANT]
+> The Dev Server is a development-time facility. It is not required nor recommended for production deployments.
 
 <!--
 MCP-INDEX: Structured metadata to help the documentation MCP indexer.
