@@ -545,6 +545,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 					}
 				}
+				else if (member.Member.Name == "base")
+				{
+					// Skip, the information is not needed at runtime
+				}
 				else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties)
 				{
 					throw new InvalidOperationException($"The Property {member.Member.Name} does not exist on {member.Member.DeclaringType}");
@@ -1594,6 +1598,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 							&& (member.Member.Name is "Key" or "Name"))
 						{
 							// Skip, no validation needed
+						}
+						else if (member.Member.Name == "_PositionalParameters")
+						{
+							// Skip, no validation needed, the string is used as-is
 						}
 						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
 						{

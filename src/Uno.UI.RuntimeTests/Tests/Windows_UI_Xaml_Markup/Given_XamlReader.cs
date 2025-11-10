@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
+using Uno.Disposables;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 {
@@ -757,6 +758,188 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			{
 				Load();
 			}
+		}
+
+		[TestMethod]
+		public void When_FailOnUnknownProperties_With_Valid_Binding()
+		{
+			using (EnsureFailOnUnknownProperty())
+			{
+				var tb = XamlHelper.LoadXaml<Page>(
+					"""
+					<Page
+					    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					    <TextBlock Text="{Binding Foo}" />
+					</Page>
+					""", autoInjectXmlns: false);
+
+				Assert.IsNotNull(tb);
+			}
+		}
+
+		[TestMethod]
+		public void When_FailOnUnknownProperties_With_Valid_Binding_Inside_DataTemplate()
+		{
+			using (EnsureFailOnUnknownProperty())
+			{
+				var tb = XamlHelper.LoadXaml<Page>(
+					"""
+					<Page
+					    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+						<ContentControl>
+							<ContentControl.ContentTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Foo}" />
+								</DataTemplate>
+							</ContentControl.ContentTemplate>
+						</ContentControl>
+					</Page>
+					""", autoInjectXmlns: false);
+
+				Assert.IsNotNull(tb);
+			}
+		}
+
+		[TestMethod]
+		public void When_FailOnUnknownProperties_With_Valid_Multi_Positional_Binding_Inside_DataTemplate()
+		{
+			using (EnsureFailOnUnknownProperty())
+			{
+				var tb = XamlHelper.LoadXaml<Page>(
+					"""
+					<Page
+					    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+						<ContentControl>
+							<ContentControl.ContentTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Foo, Mode=TwoWay}" />
+								</DataTemplate>
+							</ContentControl.ContentTemplate>
+						</ContentControl>
+					</Page>
+					""", autoInjectXmlns: false);
+
+				Assert.IsNotNull(tb);
+			}
+		}
+
+		[TestMethod]
+		public void When_FailOnUnknownProperties_With_Invalid_Multi_Positional_Binding_Inside_DataTemplate()
+		{
+			using (EnsureFailOnUnknownProperty())
+			{
+				var ex = Assert.ThrowsExactly<XamlParseException>(() =>
+				XamlHelper.LoadXaml<Page>(
+					"""
+					<Page
+					    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+						<ContentControl>
+							<ContentControl.ContentTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Foo, Test=Invalid}" />
+								</DataTemplate>
+							</ContentControl.ContentTemplate>
+						</ContentControl>
+					</Page>
+					""", autoInjectXmlns: false));
+
+				Assert.IsNotNull(ex);
+
+				// The type 'Microsoft.UI.Xaml.Data.Binding' does not contain a property or event named 'Test'. [Line: 7 Position: 6]"
+				Assert.AreEqual("The type 'Microsoft.UI.Xaml.Data.Binding' does not contain a property or event named 'Test'. [Line: 7 Position: 6]", ex.Message);
+				Assert.AreEqual(7, ex.LineNumber);
+				Assert.AreEqual(6, ex.LinePosition);
+			}
+		}
+
+		[TestMethod]
+		public void When_FailOnUnknownProperties_With_Valid_StaticResource()
+		{
+			using (EnsureFailOnUnknownProperty())
+			{
+				var tb = XamlHelper.LoadXaml<Page>(
+					"""
+					<Page
+					    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					    <TextBlock Text="{StaticResource Foo}" />
+					</Page>
+					""", autoInjectXmlns: false);
+
+				Assert.IsNotNull(tb);
+			}
+		}
+
+		[TestMethod]
+		public void When_FailOnUnknownProperties_With_Valid_Positional()
+		{
+			using (EnsureFailOnUnknownProperty())
+			{
+				var tb = XamlHelper.LoadXaml<Page>(
+					"""
+					<Page
+					    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					    <TextBlock Text="{StaticResource ContextActions[0].Command}" />
+					</Page>
+					""", autoInjectXmlns: false);
+
+				Assert.IsNotNull(tb);
+			}
+		}
+
+		[TestMethod]
+		public void When_FailOnUnknownProperties_With_Valid_Nested()
+		{
+			using (EnsureFailOnUnknownProperty())
+			{
+				var tb = XamlHelper.LoadXaml<Page>(
+					"""
+					<Page
+					    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+						<StackPanel Orientation="Vertical" Spacing="2">
+							<TextBlock Text="{Binding Title}" Style="{StaticResource MaterialBodyMedium}" Foreground="{StaticResource OnSurfaceColor}" />
+							<TextBlock Text="{Binding Subtitle}" Style="{StaticResource MaterialBodySmall}" Foreground="{StaticResource OnSurfaceVariantColor}" />
+						</StackPanel>
+					</Page>
+					""", autoInjectXmlns: false);
+
+				Assert.IsNotNull(tb);
+			}
+		}
+
+		[TestMethod]
+		public void When_FailOnUnknownProperties_With_Top_Level_Binding()
+		{
+			using (EnsureFailOnUnknownProperty())
+			{
+				var tb = XamlHelper.LoadXaml<Page>(
+					"""
+					<Page
+					    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						Background="{StaticResource BackgroundColor}">
+						<StackPanel Orientation="Vertical" Spacing="2">
+							<TextBlock Text="{Binding Title}" Style="{StaticResource MaterialBodyMedium}" Foreground="{StaticResource OnSurfaceColor}" />
+							<TextBlock Text="{Binding Subtitle}" Style="{StaticResource MaterialBodySmall}" Foreground="{StaticResource OnSurfaceVariantColor}" />
+						</StackPanel>
+					</Page>
+					""", autoInjectXmlns: false);
+
+				Assert.IsNotNull(tb);
+			}
+		}
+
+		private IDisposable EnsureFailOnUnknownProperty()
+		{
+			var original = FeatureConfiguration.XamlReader.FailOnUnknownProperties;
+			FeatureConfiguration.XamlReader.FailOnUnknownProperties = true;
+			return Disposable.Create(() => FeatureConfiguration.XamlReader.FailOnUnknownProperties = original);
 		}
 
 		[TestMethod]
