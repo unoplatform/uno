@@ -6,7 +6,10 @@ uid: Uno.BuildYourApp.AI.Agents
 
 Once you have a running app, you're setup to have your agent help you develop features.
 
-In the agent chat, ask the following
+In the agent chat, ask the following:
+
+  > [!IMPORTANT]
+  > The MCP tools are best used by agents when using premium models like Claude 4.5, GPT-5-Codex or GPT-5.
 
   ```text
   Add a button and a textblock in my main page. Have a button click
