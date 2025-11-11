@@ -87,7 +87,7 @@ In your agent, there are some phrases that can be used to nudge the agent to use
 - To analyze the DataContext of the app:
 
     ```text
-    Can you tell me if there's a object of type "XYZ" in the app's 
+    Can you tell me if there's an object of type "XYZ" in the app's 
     DataContext, starting from the grid in the middle of the screen?
     ```
 
