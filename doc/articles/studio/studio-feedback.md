@@ -47,6 +47,12 @@ Refer to the image below for guidance:
 
 ![Hot Design Feedback Menu](Hot%20Design/Assets/hot-design-feedback-menu.png)
 
+## 3. Sentiment Feedback
+
+Want to quickly rate or share some feedback on your experience with Uno Platform? Head to the **Feedback** tab in Uno Studio, you can leave just a **rating**, a **comment**, or both!
+
+![Uno Studio Feedback Tab]()
+
 ## Additional Support
 
 For further assistance, visit our [Discord Server](https://platform.uno/uno-discord), where our engineering team and community will be happy to assist you.
