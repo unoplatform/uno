@@ -11,6 +11,7 @@ The Uno Platform Status surfaces what Uno Platform is doing behind the scenes wh
 ### [**Rider**](#tab/riderts)
 ![Uno Platform Status](../Assets/uno-platform-status-rider.png)
 
+---
 ## What it does
 
 - Communicates environment checks and setup steps (e.g. detecting Uno packages, waiting for restore)
