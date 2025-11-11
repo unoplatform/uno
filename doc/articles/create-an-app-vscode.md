@@ -286,7 +286,7 @@ You can also find [additional VS Code topics](xref:Uno.vscode.additional), such 
 
 ## Next Steps
 
-Now that you've created and debugged your app, you can start developing or you can [**use Copilot**](xref:Uno.BuildYourApp.AI.Agents) to help you develop your app.
+Now that you've created and debugged your app, you can continue development or you can [**use Copilot**](xref:Uno.BuildYourApp.AI.Agents) to accelerate your workflow.
 
 You can also learn more about:
 
