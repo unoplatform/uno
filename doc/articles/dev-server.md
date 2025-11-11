@@ -67,7 +67,7 @@ The Dev Server enables Hot Reload for a faster inner loop:
 
 ### [**Visual Studio 2022**](#tab/vswints)
 
-- The Output window in Visual Studio includes an output category named `Uno Platform - Dev Environment`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
+- The Output window in Visual Studio includes an output category named `Uno Platform`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
 
     If you need to share logs when opening an issue on the GitHub [Uno Platform repository](https://github.com/unoplatform/uno), set verbosity to **Diagnostic** to provide the most detailed logs for investigation.
 
@@ -77,7 +77,7 @@ The Dev Server enables Hot Reload for a faster inner loop:
        ![MSBuild output verbosity drop-down](Assets/features/hotreload/vs-msbuild-output-verbosity.png)
     2. Restart Visual Studio, re-open your solution, and wait a few seconds.
     3. Go to **View > Output**.
-    4. In the Output window, select `Uno Platform - Dev Environment` from the drop-down.
+    4. In the Output window, select `Uno Platform` from the drop-down.
 
        ![Uno Platform output drop-down](Assets/features/hotreload/vs-uno-platform-logs.png)
 
