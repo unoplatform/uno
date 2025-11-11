@@ -141,7 +141,7 @@ You're all set!
 
 ## Next Steps
 
-Now that you've created and debugged your app, you can start developing or you can [**use Copilot**](xref:Uno.BuildYourApp.AI.Agents) to help you develop your app.
+Now that you've created and debugged your app, you can continue development or you can [**use Copilot**](xref:Uno.BuildYourApp.AI.Agents) to accelerate your workflow.
 
 Learn more about:
 

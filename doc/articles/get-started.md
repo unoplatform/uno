@@ -53,7 +53,7 @@ uid: Uno.GetStarted
 
 Uno Platform allows you to create single-codebase, cross-platform applications that run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and/or C# in no time.
 
-The following sections will guide you through your development environment or agent setup, a simple Hello World app, and more advanced tutorials.
+The following sections will guide you through your development environment (including AI agents), a simple Hello World app, and more advanced tutorials.
 
 To set up your development environment, first select the operating system you're developing on.
 
@@ -160,7 +160,7 @@ Choosing the right agent for your development depends on your needs and environm
 | VS 2026 Copilot      | 18.0.0 Pre 1 | ✅    | ❌     | ⏳¹        | ✅         | iOS, Android, Desktop, Web ||
 | VS Code Copilot      | 1.105.1      | ✅    | ✅     | ✅         | ✅       | iOS, Android, Desktop, Web ||
 | GitHub Copilot CLI   | 0.0.349      | ✅    | ❌     | ✅         | ❌         | Desktop, Web | |
-| Cursor               | ?            | ✅    | ✅     | ✅         | ✅        | Desktop, Web ||
+| Cursor               | 2.0.34       | ✅    | ✅     | ✅         | ✅        | Desktop, Web ||
 | Rider                | 2025.2       | ❌    | ❌     | ❌         | ❌         | ❌ |[Support coming soon](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support)|
 | Codex CLI            | 0.50.0       | ✅    | ❌     | ✅         | ❌      | Desktop, Web | [mcp.json](https://github.com/openai/codex/issues/2628)|
 | Claude Code          | 2.0.25       | ✅    | ✅     | ✅         | ✅        | Desktop, Web | |
