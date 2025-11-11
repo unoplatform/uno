@@ -12,6 +12,7 @@ The Uno Platform Status surfaces what Uno Platform is doing behind the scenes wh
 ![Uno Platform Status](../Assets/uno-platform-status-rider.png)
 
 ---
+
 ## What it does
 
 - Communicates environment checks and setup steps (e.g. detecting Uno packages, waiting for restore)
@@ -89,6 +90,8 @@ To ensure consistency, the Uno tooling aligns itself with the package versions r
     2. In the Output window, select **LEVEL: Trace** from the drop-down.
 
        ![Level output drop-down](../Assets/features/hotreload/rider-output-level-trace.png)
+
+---
 
 ## Quick checks
 
