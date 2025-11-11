@@ -75,7 +75,7 @@ In your agent, there are some phrases that can be used to nudge the agent to use
 - To ask the agent to click on a specific element on screen:
 
     ```text
-    Can you type the "Hello Uno Platform, the MCP is talking!" in the third textbox on the screen?
+    Can you type "Hello Uno Platform, the MCP is talking!" in the third textbox on the screen?
     ```
 
 - To ask to delete all the text of a textbox

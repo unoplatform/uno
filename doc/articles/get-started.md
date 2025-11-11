@@ -155,7 +155,7 @@ To help you choose the appropriate IDE or Agent, the following table shows the c
 Choosing the right agent for your development depends on your needs and environments. The following table summarizes the features supported by various agents for Uno Platform development:
 
 | Agent                | Version      | Tools | Prompts | Hot Reload | mcp.json      | Platforms | Comments |
-|-------               |---------     |-------|---------|------------|----------    | ---       |-         |
+|----------------------|--------------|-------|---------|------------|----------------|-----------|----------|
 | VS 2022 Copilot      | 17.14.16     | ✅    | ❌     | ⏳¹        | ✅        | iOS, Android, Desktop, Web ||
 | VS 2026 Copilot      | 18.0.0 Pre 1 | ✅    | ❌     | ⏳¹        | ✅         | iOS, Android, Desktop, Web ||
 | VS Code Copilot      | 1.105.1      | ✅    | ✅     | ✅         | ✅       | iOS, Android, Desktop, Web ||
