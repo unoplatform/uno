@@ -49,7 +49,7 @@ In other words: while traditional Uno tests are written and maintained by develo
 In your agent, there are some phrases that can be used to nudge the agent to use the tools.
 
 > [!NOTE]
-> Your agent will execute tools from our MCPs, your will need to approve them at your convenience.
+> Your agent will execute tools from our MCPs, you will need to approve them at your convenience.
 
 - To ask the agent to explain what MVUX is:
 
