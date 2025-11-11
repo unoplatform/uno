@@ -55,6 +55,9 @@ The Dev Server enables Hot Reload for a faster inner loop:
 - Intended for local development only and relies on your local network security
 - Do not expose the Dev Server to untrusted networks
 
+> [!IMPORTANT]
+> The Dev Server is a development-time facility. It is not required nor recommended for production deployments.
+
 ## Troubleshooting
 
 ### [**Common issues**](#tab/common-issues)
@@ -64,45 +67,42 @@ The Dev Server enables Hot Reload for a faster inner loop:
 
 ### [**Visual Studio 2022**](#tab/vswints)
 
-- The Output window in Visual Studio includes an output category named Uno Platform in its drop-down menu. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, you need to set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without requiring a Visual Studio restart. However, if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the official Visual Studio documentation.
+- The Output window in Visual Studio includes an output category named `Uno Platform`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
 
-    If you need to share logs when opening an issue on the GitHub Uno Platform repository, it is recommended to set verbosity to Diagnostic to provide the most detailed logs for investigation.
+    If you need to share logs when opening an issue on the GitHub [Uno Platform repository](https://github.com/unoplatform/uno), set verbosity to **Diagnostic** to provide the most detailed logs for investigation.
 
-    Steps to change MSBuild output verbosity:
-    1. Open Tools > Options > Projects and Solutions > Build and Run, then set MSBuild output verbosity to Diagnostic or the required level.
+    **Steps to change MSBuild output verbosity:**
+    1. Open **Tools > Options > Projects and Solutions > Build and Run**, then set **MSBuild output verbosity** to **Diagnostic** or the required level.
 
-       ![MSBuild output verbosity drop-down](../Assets/features/hotreload/vs-msbuild-output-verbosity.png)
+       ![MSBuild output verbosity drop-down](Assets/features/hotreload/vs-msbuild-output-verbosity.png)
     2. Restart Visual Studio, re-open your solution, and wait a few seconds.
-    3. Go to View > Output.
-    4. In the Output window, select Uno Platform from the drop-down.
+    3. Go to **View > Output**.
+    4. In the Output window, select `Uno Platform` from the drop-down.
 
-       ![Uno Platform output drop-down](../Assets/features/hotreload/vs-uno-platform-logs.png)
+       ![Uno Platform output drop-down](Assets/features/hotreload/vs-uno-platform-logs.png)
 
 ### [**Visual Studio Code**](#tab/vscodets)
 
-- The Output window in Visual Studio Code includes an output category named Uno Platform - Hot Reload in its drop-down menu. Diagnostic messages from the Uno Platform VS Code extension appear there.
+- The Output window in Visual Studio Code includes an output category named `Uno Platform` in its drop-down menu. Diagnostic messages from the Uno Platform VS Code extension appear there.
 
-    Steps to see the Uno Platform - Hot Reload output:
-    1. In the status bar at the bottom left of VS Code, ensure NameOfYourProject.csproj is selected (by default NameOfYourProject.sln is selected).
+    **Steps to see the `Uno Platform` output:**  
+    1. In the status bar at the bottom left of VS Code, ensure `NameOfYourProject.csproj` is selected (by default `NameOfYourProject.sln` is selected).
 
-       ![.csproj selection in Visual Studio Code](../Assets/features/hotreload/vscode-csproj-selection.png)
+       ![.csproj selection in Visual Studio Code](Assets/features/hotreload/vscode-csproj-selection.png)
     2. Wait a few seconds.
-    3. Go to View > Output.
-    4. In the Output window, select Uno Platform - Hot Reload from the drop-down.
+    3. Go to **View > Output**.
+    4. In the Output window, select `Uno Platform` from the drop-down.
 
-       ![Uno Platform output drop-down](../Assets/features/hotreload/vs-code-uno-platform-hr-output.png)
+       ![`Uno Platform` output drop-down](Assets/features/hotreload/vs-code-uno-platform-hr-output.png)
 
 ### [**Rider**](#tab/riderts)
 
-- The Output window in Rider includes an output category named Uno Platform in its sidebar. Diagnostic messages from the Uno Platform Rider plugin appear there.
+- The Output window in Rider includes an output category named `Uno Platform` in its sidebar. Diagnostic messages from the Uno Platform Rider plugin appear there.
 
-    Steps to see the Dev Server output:
+    **Steps to see the `Hot Reload` output:**  
     1. In the sidebar at the bottom left of Rider, click on the Uno Platform logo.
 
-       ![Uno Platform output logo](../Assets/features/hotreload/rider-uno-platform-output.png)
-    2. In the Output window, select LEVEL: Trace from the drop-down.
+       ![Uno Platform output logo](Assets/features/hotreload/rider-uno-platform-output.png)
+    2. In the Output window, select **LEVEL: Trace** from the drop-down.
 
-       ![Level output drop-down](../Assets/features/hotreload/rider-output-level-trace.png)
-
-> [!IMPORTANT]
-> The Dev Server is a development-time facility. It is not required nor recommended for production deployments.
+       ![Level output drop-down](Assets/features/hotreload/rider-output-level-trace.png)
