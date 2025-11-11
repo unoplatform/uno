@@ -100,10 +100,12 @@ The Dev Server enables Hot Reload for a faster inner loop:
 
 - The Output window in Rider includes an output category named `Uno Platform` in its sidebar. Diagnostic messages from the Uno Platform Rider plugin appear there.
 
-    **Steps to see the `Hot Reload` output:**  
+    **Steps to see the Dev Server output:**  
     1. In the sidebar at the bottom left of Rider, click on the Uno Platform logo.
 
        ![Uno Platform output logo](Assets/features/hotreload/rider-uno-platform-output.png)
     2. In the Output window, select **LEVEL: Trace** from the drop-down.
 
        ![Level output drop-down](Assets/features/hotreload/rider-output-level-trace.png)
+
+---
