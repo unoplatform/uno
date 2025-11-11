@@ -16,7 +16,7 @@ uid: Uno.GetStarted
    <a href="https://aka.platform.uno/vs-extension-marketplace" target="_blank">
    <div class="alert alert-info alert-hover">
 
-   #### Visual Studio 2022
+   #### Visual Studio 2022/2026
 
    Get the VSIX from the marketplace
    </div>
@@ -53,7 +53,7 @@ uid: Uno.GetStarted
 
 Uno Platform allows you to create single-codebase, cross-platform applications that run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and/or C# in no time.
 
-The following sections will guide you through your development environment setup, a simple Hello World app, and more advanced tutorials.
+The following sections will guide you through your development environment (including AI agents), a simple Hello World app, and more advanced tutorials.
 
 To set up your development environment, first select the operating system you're developing on.
 
@@ -61,48 +61,61 @@ To set up your development environment, first select the operating system you're
 
 # [**Windows**](#tab/windows)
 
-If you're developing on Windows, we recommend you use [**Visual Studio 2022**](xref:Uno.GetStarted.vs2022), for the richest XAML development experience and broadest platform coverage.
+**Choose the IDE or Agent you want to use:**
 
-If you already use and love **JetBrains Rider** or **Visual Studio Code**, you can also use them to develop Uno Platform applications. Check the support matrix below to see which target platforms they support.
-
-**Choose the IDE you want to use:**
-
-- [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
-- [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Visual Studio 2022/2026 with Copilot](xref:Uno.GetStarted.vs2022)
+- [VS Code with Copilot, Codespaces and Ona](xref:Uno.GetStarted.vscode)
 - [Rider](xref:Uno.GetStarted.Rider)
+- [Claude Code](xref:Uno.GetStarted.AI.Claude)
+- [Codex CLI](xref:Uno.GetStarted.AI.Codex)
+- [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI)
+- [Cursor](xref:Uno.GetStarted.AI.Cursor)
 
-To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
+To help you choose the appropriate IDE or Agent, the following table shows the compatibility of different development environments with various target platforms:
 
-|                                    | [**Visual Studio**](xref:Uno.GetStarted.vs2022) | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
-|------------------------------------|-------------------------------------------------|--------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (WinUI)              | ✔️                                              | ❌                                         | ❌                                                   | ✔️                                              |
-| Android                            | ✔️                                              | ✔️                                         | ❌                                                   | ✔️                                              |
-| iOS                                | ✔️†                                             | ✔️††                                       | ❌                                                   | ❌                                              |
-| Web (WebAssembly)                  | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️†††                                           |
-| Skia Desktop (Windows/Linux/macOS) | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
+|                                    | [**Visual Studio**](xref:Uno.GetStarted.vs2022) | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces**](xref:Uno.GetStarted.vscode) | [**Rider**](xref:Uno.GetStarted.Rider) | [**Claude Code**](xref:Uno.GetStarted.AI.Claude) | [**Codex**](xref:Uno.GetStarted.AI.Codex) | [**GitHub Copilot CLI**](xref:Uno.GetStarted.AI.CopilotCLI) | [**Cursor**](xref:Uno.GetStarted.AI.Cursor) |
+|------------------------------------|-------------------------------------------------|--------------------------------------------|-------------------------------------------------------|--------------------------------------------------|--------------------------------------------------|-------------------------------------------|-------------------------------------------------------------|---------------------------------------------|
+| Desktop (Skia)¹                    | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          |
+| Android                            | ✔️                                              | ✔️⁵                                         | ❌                                                   | ✔️                                              | ⏳⁵                                              | ⏳⁵                                       | ⏳⁵                                                        | ⏳⁵                                         |
+| iOS                                | ✔️²                                             | ✔️³                                        | ❌                                                   | ❌                                              | ❌                                               | ❌                                        | ❌                                                         | ❌                                          |
+| Web (WebAssembly)                  | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️⁴                                             | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          |
+| WinAppSDK                          | ✔️                                              | ⏳⁵                                         | ❌                                                   | ✔️                                              | ⏳⁵                                              | ⏳⁵                                       | ⏳⁵                                                        | ⏳⁵                                         |
 
-- † You will need to be connected to a Mac to run and debug iOS apps from Windows.
-- †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
-- ††† [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
+**Notes:**
+
+1. Desktop binaries do run on Windows, Linux, and macOS
+2. You will need to be connected to a Mac to run and debug iOS apps from Windows
+3. You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
+4. [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
+5. Agent support is coming soon
 
 # [**macOS**](#tab/macos)
 
 You can use **Visual Studio Code** or **JetBrains Rider**, to build Uno Platform applications on macOS. See the support matrix below for supported target platforms.
 
-**Choose the IDE you want to use:**
+**Choose the IDE or Agent you want to use:**
 
-- [Get started with VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
-- [Get started with Rider](xref:Uno.GetStarted.Rider)
+- [VS Code with Copilot, Codespaces and Ona](xref:Uno.GetStarted.vscode)
+- [Rider](xref:Uno.GetStarted.Rider)
+- [Claude Code](xref:Uno.GetStarted.AI.Claude)
+- [Codex CLI](xref:Uno.GetStarted.AI.Codex)
+- [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI)
+- [Cursor](xref:Uno.GetStarted.AI.Cursor)
 
-To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
+To help you choose the appropriate IDE or Agent, the following table shows the compatibility of different development environments with various target platforms:
 
-|                                    | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
-|------------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (WinUI)              | ❌                                       | ❌                                                   | ❌                                               |
-| Android                            | ✔️                                       | ❌                                                   | ✔️                                               |
-| iOS                                | ✔️                                       | ❌                                                   | ✔️                                               |
-| Web (WebAssembly)                  | ✔️                                       | ✔️                                                   | ✔️                                               |
-| Skia Desktop (Windows/Linux/macOS) | ✔️                                       | ✔️                                                   | ✔️                                               |
+|                                    | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces**](xref:Uno.GetStarted.vscode) | [**Rider**](xref:Uno.GetStarted.Rider) | [**Claude Code**](xref:Uno.GetStarted.AI.Claude) | [**Codex**](xref:Uno.GetStarted.AI.Codex) | [**GitHub Copilot CLI**](xref:Uno.GetStarted.AI.CopilotCLI) | [**Cursor**](xref:Uno.GetStarted.AI.Cursor) |
+|------------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|--------------------------------------------------|-------------------------------------------|-------------------------------------------------------------|---------------------------------------------|
+| Desktop (Skia)¹                    | ✔️                                       | ✔️                                                   | ✔️                                               | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          |
+| Android                            | ✔️²                                      | ❌                                                   | ✔️                                               | ⏳²                                              | ⏳²                                       | ⏳²                                                        | ⏳²                                         |
+| iOS                                | ✔️                                       | ❌                                                   | ✔️                                               | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          |
+| Web (WebAssembly)                  | ✔️                                       | ✔️                                                   | ✔️                                               | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          |
+| WinAppSDK                          | ❌                                       | ❌                                                   | ❌                                               | ❌                                               | ❌                                        | ❌                                                         | ❌                                          |
+
+**Notes:**
+
+1. Desktop binaries do run on Windows, Linux, and macOS
+2. Agent support is coming soon
 
 The latest macOS release and Xcode version are required to develop with Uno Platform for iOS targets. If you have older Mac hardware that does not support the latest release of macOS, see the section for [Developing on older Mac hardware](xref:Uno.UI.CommonIssues.Ios#developing-on-older-mac-hardware).
 
@@ -110,26 +123,51 @@ The latest macOS release and Xcode version are required to develop with Uno Plat
 
  You can use either **JetBrains Rider** or **Visual Studio Code** to build Uno Platform applications on Linux. See the support matrix below for supported target platforms.
 
-**Choose the IDE you want to use:**
+**Choose the IDE or Agent you want to use:**
 
-- [Get started with Visual Studio Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
-- [Get started with Rider](xref:Uno.GetStarted.Rider)
+- [Visual Studio Code with Copilot, Codespaces and Ona](xref:Uno.GetStarted.vscode)
+- [Rider](xref:Uno.GetStarted.Rider)
+- [Claude Code](xref:Uno.GetStarted.AI.Claude)
+- [Codex CLI](xref:Uno.GetStarted.AI.Codex)
+- [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI)
+- [Cursor](xref:Uno.GetStarted.AI.Cursor)
 
-To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
+To help you choose the appropriate IDE or Agent, the following table shows the compatibility of different development environments with various target platforms:
 
-|                                    | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
-|------------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (WinUI)              | ❌                                        | ❌                                                     | ❌                                            |
-| Android                            | ✔️                                        | ❌                                                     | ✔️                                            |
-| iOS                                | ❌                                        | ❌                                                     | ❌                                            |
-| Web (WebAssembly)                  | ✔️                                        | ✔️                                                     | ✔️†                                           |
-| Skia Desktop (Windows/Linux/macOS) | ✔️                                        | ✔️                                                     | ✔️                                            |
+|                                    | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces**](xref:Uno.GetStarted.vscode) | [**Rider**](xref:Uno.GetStarted.Rider) | [**Claude Code**](xref:Uno.GetStarted.AI.Claude) | [**Codex**](xref:Uno.GetStarted.AI.Codex) | [**GitHub Copilot CLI**](xref:Uno.GetStarted.AI.CopilotCLI) | [**Cursor**](xref:Uno.GetStarted.AI.Cursor) |
+|------------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|--------------------------------------------------|-------------------------------------------|-------------------------------------------------------------|---------------------------------------------|
+| Desktop (Skia)¹                    | ✔️                                        | ✔️                                                     | ✔️                                            | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          |
+| Web (WebAssembly)                  | ✔️                                        | ✔️                                                     | ✔️²                                           | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          |
+| Android                            | ✔️³                                       | ❌                                                     | ✔️                                            | ⏳³                                              | ⏳³                                       | ⏳³                                                        | ⏳³                                         |
+| iOS                                | ❌                                        | ❌                                                     | ❌                                            | ❌                                               | ❌                                        | ❌                                                         | ❌                                          |
+| WinAppSDK                          | ❌                                        | ❌                                                     | ❌                                            | ❌                                               | ❌                                        | ❌                                                         | ❌                                          |
 
 **Notes:**
 
-- † [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
+1. Desktop binaries do run on Windows, Linux, and macOS
+2. [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
+3. Agent support is coming soon
 
 ---
+
+## Supported Agents Features
+
+Choosing the right agent for your development depends on your needs and environments. The following table summarizes the features supported by various agents for Uno Platform development:
+
+| Agent                | Version      | Tools | Prompts | Hot Reload | mcp.json      | Platforms | Comments |
+|----------------------|--------------|-------|---------|------------|----------------|-----------|----------|
+| VS 2022 Copilot      | 17.14.16     | ✅    | ❌     | ⏳¹        | ✅        | iOS, Android, Desktop, Web ||
+| VS 2026 Copilot      | 18.0.0 Pre 1 | ✅    | ❌     | ⏳¹        | ✅         | iOS, Android, Desktop, Web ||
+| VS Code Copilot      | 1.105.1      | ✅    | ✅     | ✅         | ✅       | iOS, Android, Desktop, Web ||
+| GitHub Copilot CLI   | 0.0.349      | ✅    | ❌     | ✅         | ❌         | Desktop, Web | |
+| Cursor               | 2.0.34       | ✅    | ✅     | ✅         | ✅        | Desktop, Web ||
+| Rider                | 2025.2       | ❌    | ❌     | ❌         | ❌         | ❌ |[Support coming soon](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support)|
+| Codex CLI            | 0.50.0       | ✅    | ❌     | ✅         | ❌      | Desktop, Web | [mcp.json](https://github.com/openai/codex/issues/2628)|
+| Claude Code          | 2.0.25       | ✅    | ✅     | ✅         | ✅        | Desktop, Web | |
+
+**Notes:**
+
+1. VS Hot Reload support in agents is coming soon
 
 ## Questions
 
@@ -137,8 +175,12 @@ For questions about Uno Platform, refer to the [general FAQ](xref:Uno.Developmen
 
 ## Next Steps
 
-Choose the IDE to Learn more about:
+Choose the IDE or Agent to Learn more about:
 
 - [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
-- [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [VS Code, Codespaces and Ona](xref:Uno.GetStarted.vscode)
 - [Rider](xref:Uno.GetStarted.Rider)
+- [Claude Code](xref:Uno.GetStarted.AI.Claude)
+- [Codex](xref:Uno.GetStarted.AI.Codex)
+- [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI)
+- [Cursor](xref:Uno.GetStarted.AI.Cursor)

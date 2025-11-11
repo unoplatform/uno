@@ -1,7 +1,8 @@
 ---
 uid: Uno.DevServer
-title: Dev Server
 ---
+
+# Dev Server
 
 The Dev Server is the local development companion that enables productive inner-loop features in Uno Platform, such as Hot Reload, design-time updates, and IDE integration. It runs as a lightweight HTTP process and maintains a bidirectional channel with the IDE and the running application.
 
