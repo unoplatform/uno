@@ -455,7 +455,7 @@
   items:
     - name: Overview
       href: xref:Uno.Platform.Studio.Overview
-    - name: AI MCPs
+    - name: Uno MCPs
       href: xref:Uno.Features.Uno.MCPs
     - name: Hot Reload
       href: xref:Uno.Platform.Studio.HotReload.Overview
