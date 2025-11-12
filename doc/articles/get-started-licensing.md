@@ -86,13 +86,13 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
    ![Uno Platform Studio window Welcome](Assets/uno-studio-welcome.png)
 
-2. After signing in (or creating your account), return to the Uno Platform Studio window. You’ll now see your account and subscription details displayed. Your subscription type (Community or Pro) determines which products you can access.
+2. After signing in (or creating your account), return to the Uno Platform Studio window. You’ll now see your account and subscription details displayed. Your subscription type (Community or Pro) determines which products you can access. From the overflow menu (...), you can access additional resources, refresh your account information, or sign out.
 
    ![Uno Platform Studio window Menu](Assets/uno-studio-main.png)
 
 ### Uno Platform Studio Pro 30-Day Trial
 
-The Community edition of **Uno Platform Studio** includes a 30-day trial of **Uno Platform Studio Pro**, which includes **Hot Design®**, **Hot Design® Agent**, and **AI MCPs**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Studio Platform window—or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
+The Community edition of **Uno Platform Studio** includes a 30-day trial of **Uno Platform Studio Pro**, which includes **Hot Design®**, **Hot Design® Agent**, and **Uno MCPs**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Studio Platform window—or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
 
 ## Getting a Uno Platform Studio Pro License
 
@@ -101,9 +101,9 @@ The Community edition of **Uno Platform Studio** includes a 30-day trial of **Un
 - **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**
   The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
   
-- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: AI-powered assistant that enables rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, using deep knowledge of Uno Platform and your running app to simplify cross-platform .NET design.
-  
-- **[AI MCPs](xref:Uno.Features.Uno.MCPs)**: Uno MCP connects AI agents and developers directly to Uno Platform’s complete knowledge base - documentation, APIs, and best practices with structured, semantic access. The App MCP is a local runtime service that allows AI agents and automation tools to intelligently interact with a live Uno Platform application. [Get started](xref:Uno.GetStarted)
+- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: AI-powered assistant that enables rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, using deep knowledge of Uno Platform and your running app to simplify cross-platform .NET design. [Learn more](xref:Uno.HotDesign.Agent)
+
+- **[Uno MCPs](xref:Uno.Features.Uno.MCPs)**: Uno MCP connects AI agents and developers directly to Uno Platform’s complete knowledge base - documentation, APIs, and best practices with structured, semantic access. The App MCP is a local runtime service that allows AI agents and automation tools to intelligently interact with a live Uno Platform application. [Get started](xref:Uno.GetStarted)
 
 - **[Hot Reload](xref:Uno.Features.HotReload)**  
   Reliably update any code in your app and get instant confirmation your changes were applied, with a new Hot Reload Indicator to monitor changes while you develop. [Get started](xref:Uno.HotReload.GetStarted.Guide)
@@ -148,7 +148,7 @@ Once you have purchased a Uno Platform Studio Pro subscription, you may need to 
 
 1. In the Uno Platform Studio window, click **Refresh** to update your license status.
 
-1. Your Pro features, including Hot Design®, should now be available.
+1. Your Pro features should now be available.
 
 ### Checking License Status
 
