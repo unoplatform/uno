@@ -80,57 +80,51 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 ---
 
-### Uno Platform Studio window
+### Uno Platform Studio Window
 
-1. In the Uno Platform Studio window, click on **Sign in**. You’ll be redirected to your browser to enter your Uno Platform account credentials.
+1. In the Uno Platform Studio window, click on **Sign in**. You’ll be redirected to your browser to enter your Uno Platform account credentials. 
 
    ![Uno Platform Studio window Welcome](Assets/uno-studio-welcome.png)
 
-1. Once signed in, you’ll see a confirmation of your account along with your license details.
+2. After signing in (or creating your account), return to the Uno Platform Studio window. You’ll now see your account and subscription details displayed. Your subscription type (Community or Pro) determines which products you can access.
 
-   You can then use the **Hot Reload** feature to speed up your workflow and test changes in real-time. For more information, refer to the [Hot Reload documentation](xref:Uno.Features.HotReload).
+   ![Uno Platform Studio window Menu](Assets/uno-studio-main.png)
 
-   ![Uno Platform Studio window signed in](Assets/uno-studio-main.png)
+### Uno Platform Studio Pro 30-Day Trial
 
-   > [!TIP]
-   > You can also access a menu where you can select **My Account** to view your account details, **Refresh** the account changes, and **Sign out**.
-   >
-   > ![Uno Platform Studio window Menu](Assets/uno-studio-menu.png)
+The Community edition of **Uno Platform Studio** includes a 30-day trial of **Uno Platform Studio Pro**, which includes **Hot Design®**, **Hot Design® Agent**, and **AI MCPs**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Studio Platform window—or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
 
-1. If you're using a `Uno Platform Studio Pro` license, your Uno Platform Studio window will display additional tools. You can see the comparison below:
+## Getting a Uno Platform Studio Pro License
 
-   ![Uno Platform Studio window Community vs Pro](Assets/uno-studio-main-com-vs-pro.png)
+**Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications. When you purchase a **Uno Platform Studio Pro** license, you get full access to purpose-built tools that streamline your workflow:
 
-1. After you are done, feel free to close the Uno Platform Studio window. You can always access it again from your IDE menu by following the steps above.
+- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** 
+  The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
+  
+- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: AI-powered assistant that enables rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, using deep knowledge of Uno Platform and your running app to simplify cross-platform .NET design.
+  
+- **[AI MCPs](xref:Uno.Features.Uno.MCPs)**: Uno MCP connects AI agents and developers directly to Uno Platform’s complete knowledge base - documentation, APIs, and best practices with structured, semantic access. The App MCP is a local runtime service that allows AI agents and automation tools to intelligently interact with a live Uno Platform application. [Get started](xref:Uno.GetStarted)
 
-## Getting Uno Platform Studio Pro License
+- **[Hot Reload](xref:Uno.Features.HotReload)**  
+  Reliably update any code in your app and get instant confirmation your changes were applied, with a new Hot Reload Indicator to monitor changes while you develop. [Get started](xref:Uno.HotReload.GetStarted.Guide)
 
-Discover the additional features available with `Uno Platform Studio Pro`, including Hot Design® - our next-generation visual designer for cross-platform .NET applications.
+- **[Design-to-Code](xref:Uno.Figma.GetStarted)**
+  Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff. [Get started](xref:Uno.Figma.GetStarted)
 
-> [!IMPORTANT]
-> Uno Platform itself remains open-source and free under Apache 2.0. The Pro subscription is specifically for Uno Platform Studio features.
+Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.uno/select-subscription/) to see what you gain by upgrading.
 
-### Compare Plans
+> [!IMPORTANT] Uno Platform itself remains open-source and free under Apache 2.0. The Pro subscription is specifically for Uno Platform Studio features.
 
-Uno Platform Studio offers two subscription tiers, Community and Pro. Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.uno/select-subscription/) to see what you gain by upgrading.
+![Uno Platform Studio compare](Assets/uno-studio-plans-compare.png)
 
 ### Purchase a Pro License
 
 1. Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to view subscription options and current pricing.
-1. Choose your preferred billing cycle (monthly or yearly).
+1. Choose your preferred billing cycle (monthly or annually).
 1. Add how many licenses you want above **Buy Now** Button.
 1. Click **Buy Now** on your selected plan.
 1. If you don't have a Uno Platform account yet, you'll be prompted to create one during the checkout process.
 1. Complete the payment process and receive your license confirmation email.
-
-### Hot Design® 30-Day Trial
-
-The Community version includes a 30-day trial of Hot Design®, no credit card required:
-
-1. Create your free Uno Platform account at [platform.uno](https://platform.uno/).
-1. Sign in to your IDE following the [steps above](xref:Uno.GetStarted.Licensing#sign-in-to-your-ide-of-choice).
-1. Your 30-day Hot Design® trial will be automatically available.
-1. After the trial expires, upgrade to Pro to continue using Hot Design®.
 
 ### Special Pricing
 

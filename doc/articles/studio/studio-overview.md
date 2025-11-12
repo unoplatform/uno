@@ -8,32 +8,26 @@ uid: Uno.Platform.Studio.Overview
 
 ![Introducing Uno Platform Studio](Assets/Introducing-Uno-Platform-Studio.png)
 
-## **New in Uno Platform Studio 2.0**
+## New in Uno Platform Studio 2.0:  Hot Design® Agent + Uno MCP + App MCP
 
-**Hot Design® Agent** is an AI-powered assistant that enables rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, using deep knowledge of Uno Platform and your running app to simplify cross-platform .NET design.
+**Hot Design® Agent** is an AI-powered assistant designed for rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time. Built on deep knowledge of Uno Platform and your running app, it simplifies cross-platform .NET design, enabling intuitive and efficient workflows. [Learn more](xref:Uno.HotDesign.Agent)
 
-To get started with **Hot Design® Agent**, jump to the [Hot Design® Agent](xref:Uno.HotDesign.Agent) page.
+**Uno MCP** provides structured, semantic access to Uno Platform’s complete knowledge base—covering documentation, APIs, and best practices—empowering AI agents and developers with the intelligence they need to build better experiences. Meanwhile, **App MCP** brings intelligent automation to life by enabling AI agents to interact directly with live Uno Platform applications, creating a seamless bridge between design, development, and execution. [Learn more](xref:Uno.Features.Uno.MCPs)
 
-## What is Uno Platform Studio?
+**Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications by leveraging purpose-built tools that streamline your workflow:
 
-**Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications.
-
-It includes three key tools, each purpose-built to streamline your workflow:
-
-- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** and **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**  
-  The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease.
-
-  [➜ Learn more about Hot Design<sup>®</sup>](xref:Uno.HotDesign.GetStarted.Guide)
+- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** 
+  The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
+  
+- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: AI-powered assistant that enables rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, using deep knowledge of Uno Platform and your running app to simplify cross-platform .NET design.
+  
+- **[AI MCPs](xref:Uno.Features.Uno.MCPs)**: Uno MCP connects AI agents and developers directly to Uno Platform’s complete knowledge base - documentation, APIs, and best practices with structured, semantic access. The App MCP is a local runtime service that allows AI agents and automation tools to intelligently interact with a live Uno Platform application. [Get started](xref:Uno.GetStarted)
 
 - **[Hot Reload](xref:Uno.Features.HotReload)**  
-  Reliably update any code in your app and get instant confirmation your changes were applied, with a new Hot Reload Indicator to monitor changes while you develop.
-
-  [➜ Learn more about Hot Reload](xref:Uno.HotReload.GetStarted.Guide)
+  Reliably update any code in your app and get instant confirmation your changes were applied, with a new Hot Reload Indicator to monitor changes while you develop. [Get started](xref:Uno.HotReload.GetStarted.Guide)
 
 - **[Design-to-Code](xref:Uno.Figma.GetStarted)**
-  Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff.
-
-  [➜ Learn more about Design-to-Code](xref:Uno.Figma.GetStarted)
+  Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff. [Get started](xref:Uno.Figma.GetStarted)
 
 ## Why Choose Uno Platform Studio?
 
