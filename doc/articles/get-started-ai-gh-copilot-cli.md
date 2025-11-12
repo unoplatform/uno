@@ -24,7 +24,7 @@ To get started with GitHub Copilot CLI:
 1. Type `/mcp` again and register the following (app-specific MCP):
     1. Unique Name: `uno-app`
     1. Server Type: Local
-    1. Command: `dnx -y uno.devserver --mcp-app`
+    1. Command: `dotnet dnx -y uno.devserver --mcp-app`
     1. Skip Environment Variables and leave tools with `*`
 
 ## Next Steps
