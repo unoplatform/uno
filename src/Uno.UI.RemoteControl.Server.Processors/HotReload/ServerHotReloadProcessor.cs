@@ -288,7 +288,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			private readonly Timer _timeout;
 
 			private ImmutableHashSet<string> _consideredFilePaths; // All files that have been considered for this operation.
-			private ImmutableHashSet<string> _ignoredFilePaths = _empty; // The files that has been ignored by the compilator for this operation (basically because they are not part of the solution).
+			private ImmutableHashSet<string> _ignoredFilePaths = _empty; // The files that have been ignored by the compilator for this operation (basically because they are not part of the solution).
 			private int /* HotReloadResult */ _result = -1;
 			private CancellationTokenSource? _deferredCompletion;
 			private ImmutableArray<Diagnostic>? _diagnostics;
@@ -307,7 +307,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			public HotReloadServerOperation? Previous => _previous;
 
 			/// <summary>
-			/// List of all file paths that has been considered for this hot-reload operation.
+			/// List of all file paths that have been considered for this hot-reload operation.
 			/// </summary>
 			/// <remarks>This **includes** the <see cref="IgnoredFilePaths"/>.</remarks>
 			public ImmutableHashSet<string> ConsideredFilePaths => _consideredFilePaths;
@@ -316,7 +316,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			/// Gets the collection of file paths that are excluded from processing.
 			/// </summary>
 			/// <remarks>
-			/// Files are typically ignored when they are not existing yet in the current solution.
+			/// Files are typically ignored when they do not yet exist in the current solution.
 			/// </remarks>
 			public ImmutableHashSet<string> IgnoredFilePaths => _ignoredFilePaths;
 
@@ -392,11 +392,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 
 			/// <summary>
-			/// Notifies a files has been ignored for this hot-reload operation.
+			/// Notifies a file has been ignored for this hot-reload operation.
 			/// </summary>
 			/// <param name="file"></param>
 			public void NotifyIgnored(string file)
-				=> ImmutableInterlocked.Update(ref _ignoredFilePaths, static (files, file) => files.Remove(file), file);
+				=> ImmutableInterlocked.Update(ref _ignoredFilePaths, static (files, file) => files.Add(file), file);
 
 			/// <summary>
 			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.
