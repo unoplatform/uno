@@ -16,7 +16,7 @@ uid: Uno.Platform.Studio.Overview
 
 **Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications by leveraging purpose-built tools that streamline your workflow:
 
-- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** 
+- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**
   The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
   
 - **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: AI-powered assistant that enables rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, using deep knowledge of Uno Platform and your running app to simplify cross-platform .NET design.

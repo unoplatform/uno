@@ -82,7 +82,7 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 ### Uno Platform Studio Window
 
-1. In the Uno Platform Studio window, click on **Sign in**. You’ll be redirected to your browser to enter your Uno Platform account credentials. 
+1. In the Uno Platform Studio window, click on **Sign in**. You’ll be redirected to your browser to enter your Uno Platform account credentials.
 
    ![Uno Platform Studio window Welcome](Assets/uno-studio-welcome.png)
 
@@ -98,7 +98,7 @@ The Community edition of **Uno Platform Studio** includes a 30-day trial of **Un
 
 **Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications. When you purchase a **Uno Platform Studio Pro** license, you get full access to purpose-built tools that streamline your workflow:
 
-- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** 
+- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**
   The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
   
 - **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: AI-powered assistant that enables rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, using deep knowledge of Uno Platform and your running app to simplify cross-platform .NET design.
@@ -120,7 +120,7 @@ Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.u
 ### Purchase a Pro License
 
 1. Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to view subscription options and current pricing.
-1. Choose your preferred billing cycle (monthly or annually).
+1. Choose your preferred billing cycle (monthly or yearly).
 1. Add how many licenses you want above **Buy Now** Button.
 1. Click **Buy Now** on your selected plan.
 1. If you don't have a Uno Platform account yet, you'll be prompted to create one during the checkout process.
