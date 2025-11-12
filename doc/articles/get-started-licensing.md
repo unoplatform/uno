@@ -84,11 +84,11 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 1. In the Uno Platform Studio window, click on **Sign in**. You’ll be redirected to your browser to enter your Uno Platform account credentials.
 
-   ![Uno Platform Studio window Welcome](Assets/uno-studio-welcome.png)
+   ![Uno Platform Studio Window Welcome](Assets/uno-studio-welcome.png)
 
 2. After signing in (or creating your account), return to the Uno Platform Studio window. You’ll now see your account and subscription details displayed. Your subscription type (Community or Pro) determines which products you can access. From the overflow menu (...), you can access additional resources, refresh your account information, or sign out.
 
-   ![Uno Platform Studio window Menu](Assets/uno-studio-main.png)
+   ![Uno Platform Studio Window Main](Assets/uno-studio-main.png)
 
 ### Uno Platform Studio Pro 30-Day Trial
 
