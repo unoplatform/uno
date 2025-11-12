@@ -316,7 +316,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			/// Gets the collection of file paths that are excluded from processing.
 			/// </summary>
 			/// <remarks>
-			/// Files are typically ignored when they are not existing yet in teh current solution.
+			/// Files are typically ignored when they are not existing yet in the current solution.
 			/// </remarks>
 			public ImmutableHashSet<string> IgnoredFilePaths => _ignoredFilePaths;
 
