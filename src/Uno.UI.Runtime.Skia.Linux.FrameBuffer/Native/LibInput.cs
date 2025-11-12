@@ -74,7 +74,7 @@ namespace Uno.UI.Runtime.Skia.Native
 		public extern static int libinput_get_fd(IntPtr ctx);
 
 		[DllImport(LibInputName)]
-		public extern static void libinput_dispatch(IntPtr ctx);
+		public extern static int libinput_dispatch(IntPtr ctx);
 
 		[DllImport(LibInputName)]
 		public extern static IntPtr libinput_get_event(IntPtr ctx);

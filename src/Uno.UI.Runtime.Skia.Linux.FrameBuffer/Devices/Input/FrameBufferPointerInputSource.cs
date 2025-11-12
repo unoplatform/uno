@@ -11,7 +11,7 @@ using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia;
 
-unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSource
+internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSource
 {
 #pragma warning disable CS0067 // Some event are not raised on FrameBuffer ... yet!
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCaptureLost;

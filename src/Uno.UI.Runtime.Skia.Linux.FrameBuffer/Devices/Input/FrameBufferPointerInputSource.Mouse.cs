@@ -20,7 +20,7 @@ using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia;
 
-unsafe internal partial class FrameBufferPointerInputSource
+internal partial class FrameBufferPointerInputSource
 {
 	private Point _mousePosition;
 
