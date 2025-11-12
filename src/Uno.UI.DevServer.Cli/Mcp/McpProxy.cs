@@ -20,6 +20,9 @@ internal class McpProxy
 	private readonly McpClientProxy _mcpClientProxy;
 	private bool _waitForTools;
 
+	// Clients that don't support the list_updated notification
+	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex"];
+
 	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy)
 	{
 		_logger = logger;
@@ -81,8 +84,7 @@ internal class McpProxy
 				// To avoid tool invocation failures, we wait for the tools to be available
 				// after the dev server has started.
 				if (_waitForTools
-					&& (ctx.Server.ClientInfo?.Name == "claude-code"
-						|| ctx.Server.ClientInfo?.Name == "codex"))
+					|| ClientsWithoutListUpdateSupport.Contains(ctx.Server.ClientInfo?.Name))
 				{
 					_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
 
