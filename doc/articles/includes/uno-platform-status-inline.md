@@ -2,7 +2,19 @@
 
 The Uno Platform Status surfaces what Uno Platform is doing behind the scenes when you open a solution in your IDE. It provides clear, real-time feedback so you know when everything is ready to run, and highlights issues early to avoid blocking your development flow.
 
+## [**Visual Studio 2022**](#tab/vswints)
+
 ![Uno Platform Status](../Assets/uno-platform-status.png)
+
+## [**Visual Studio Code**](#tab/vscodets)
+
+![Uno Platform Status](../Assets/uno-platform-status-code.png)
+
+## [**Rider**](#tab/riderts)
+
+![Uno Platform Status](../Assets/uno-platform-status-rider.png)
+
+---
 
 ## What it does
 
@@ -81,6 +93,8 @@ To ensure consistency, the Uno tooling aligns itself with the package versions r
     2. In the Output window, select **LEVEL: Trace** from the drop-down.
 
        ![Level output drop-down](../Assets/features/hotreload/rider-output-level-trace.png)
+
+---
 
 ## Quick checks
 
