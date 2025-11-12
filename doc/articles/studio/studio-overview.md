@@ -17,12 +17,8 @@ uid: Uno.Platform.Studio.Overview
 **Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications by leveraging purpose-built tools that streamline your workflow:
 
 - **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**
-  The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
+  The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
   
-- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: AI-powered assistant that enables rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, using deep knowledge of Uno Platform and your running app to simplify cross-platform .NET design.
-  
-- **[Uno MCPs](xref:Uno.Features.Uno.MCPs)**: Uno MCP connects AI agents and developers directly to Uno Platform’s complete knowledge base - documentation, APIs, and best practices with structured, semantic access. The App MCP is a local runtime service that allows AI agents and automation tools to intelligently interact with a live Uno Platform application. [Get started](xref:Uno.GetStarted)
-
 - **[Hot Reload](xref:Uno.Features.HotReload)**  
   Reliably update any code in your app and get instant confirmation your changes were applied, with a new Hot Reload Indicator to monitor changes while you develop. [Get started](xref:Uno.HotReload.GetStarted.Guide)
 
@@ -39,7 +35,7 @@ uid: Uno.Platform.Studio.Overview
 
 ## What's the difference between Uno.Sdk and Uno Platform Studio?
 
-**Uno.Sdk** is the core SDK that powers the Uno Platform, enabling you to build cross-platform applications using C# and XAML from a single project. **Uno Platform Studio** is a suite of productivity tools that enhance your development experience, including Hot Design<sup>®</sup>, Hot Reload, and Design-to-Code.
+**Uno.Sdk** is the core SDK that powers the Uno Platform, enabling you to build cross-platform applications using C# and XAML from a single project. **Uno Platform Studio** is a suite of productivity tools that enhance your development experience, including Hot Design<sup>®</sup>, Hot Design<sup>®</sup> Agent, Uno MCPs, Hot Reload, and Design-to-Code.
 
 As the **Uno Platform Studio** is built on top of **Uno.Sdk**, it's only available to applications that have been created, or updated, to use the **Uno.Sdk**. If you haven't updated your project to use the **Uno.Sdk**, you can do so by following the [migration guide](xref:Uno.Development.MigratingFromPreviousReleases).
 
