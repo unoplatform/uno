@@ -47,7 +47,11 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	{
 		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
 		{
-			var refererUri = string.IsNullOrEmpty(refererUrl) ? CoreWebView2.BlankUri : new Uri(refererUrl);
+			Uri refererUri;
+			if (string.IsNullOrEmpty(refererUrl) || !Uri.TryCreate(refererUrl, UriKind.Absolute, out refererUri!))
+			{
+				refererUri = CoreWebView2.BlankUri;
+			}
 
 			nativeWebView._coreWebView.RaiseNewWindowRequested(
 				targetUrl,
@@ -150,7 +154,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 			}
 		}
 
-		ScheduleNavigationStarting(uriString, () => ScheduleNavigationStarting(uriString, () => NativeMethods.Navigate(_elementId, uriString)));
+		ScheduleNavigationStarting(uriString, () => NativeMethods.Navigate(_elementId, uriString));
 		OnNavigationCompleted(this, null);
 	}
 

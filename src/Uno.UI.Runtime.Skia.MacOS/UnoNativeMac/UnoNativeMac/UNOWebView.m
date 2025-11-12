@@ -422,44 +422,42 @@ createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration
                 windowFeatures:(WKWindowFeatures *)windowFeatures {
 
 #if DEBUG
-    NSLog(@"NATIVE DEBUG: createWebViewWithConfiguration fired for URL: %@", navigationAction.request.URL);
+    NSLog(@"createWebViewWithConfiguration: fired for URL: %@", navigationAction.request.URL);
 #endif
 
     uno_webview_new_window_requested_fn_ptr callback = uno_get_webview_new_window_requested_callback();
     
-    if (callback) {
+    assert(callback);
 #if DEBUG
-        NSLog(@"NATIVE DEBUG: Found C# callback. Attempting to call...");
+    NSLog(@"createWebViewWithConfiguration: Found C# callback. Attempting to call...");
 #endif
         
-        const char* targetUrl = [navigationAction.request.URL.absoluteString UTF8String];
-        
-        const char* refererUrl = [navigationAction.sourceFrame.request.URL.absoluteString UTF8String];
-        if (refererUrl == NULL) {
-            refererUrl = "about:blank";
-        }
+    const char* targetUrl = [navigationAction.request.URL.absoluteString UTF8String];
+    if (targetUrl == nil) {
+        targetUrl = "about:blank";
+    }
+    
+    const char* refererUrl = [navigationAction.sourceFrame.request.URL.absoluteString UTF8String];
+    if (refererUrl == nil) {
+        refererUrl = "about:blank";
+    }
 
-        int handled = callback(webView, targetUrl, refererUrl);
+    int handled = callback(webView, targetUrl, refererUrl);
 
 #if DEBUG
-        NSLog(@"NATIVE DEBUG: C# callback returned: %d", handled);
+    NSLog(@"createWebViewWithConfiguration: C# callback returned: %d", handled);
 #endif
 
-        // Check if C# handled it (returned 1)
-        if (handled == 1) {
+    // Check if C# handled it (returned 1)
+    if (handled == 1) {
 #if DEBUG
-            NSLog(@"NATIVE DEBUG: C# handled the request. Cancelling native new window.");
+        NSLog(@"createWebViewWithConfiguration: C# handled the request. Cancelling native new window.");
 #endif
-            return nil;
-        }
-    } else {
-#if DEBUG
-        NSLog(@"NATIVE DEBUG: C# callback (new_window_requested) was NULL.");
-#endif
+        return nil;
     }
 
 #if DEBUG
-    NSLog(@"NATIVE DEBUG: C# did not handle. Opening in default browser.");
+    NSLog(@"createWebViewWithConfiguration: C# did not handle. Opening in default browser.");
 #endif
     if (navigationAction.request.URL) {
         [[NSWorkspace sharedWorkspace] openURL:navigationAction.request.URL];

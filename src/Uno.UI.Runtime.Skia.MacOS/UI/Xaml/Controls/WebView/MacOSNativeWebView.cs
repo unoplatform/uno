@@ -382,7 +382,14 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 			var targetString = targetUrl == null ? "about:blank" : new string(targetUrl);
 			var refererString = refererUrl == null ? null : new string(refererUrl);
 
-			var refererUri = refererString == null ? new Uri("about:blank") : new Uri(refererString);
+			if (refererString == null || !Uri.TryCreate(refererString, UriKind.Absolute, out var refererUri))
+			{
+				if (refererString != null && typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(MacOSNativeWebView).Log().Warn($"MacOSNativeWebView.NewWindowRequestedCallback: Invalid referer URI '{refererString}', using about:blank");
+				}
+				refererUri = new Uri("about:blank");
+			}
 
 			if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Debug))
 			{

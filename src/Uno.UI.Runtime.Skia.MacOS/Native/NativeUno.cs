@@ -381,8 +381,8 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, CoreWebView2WebErrorStatus, void> failing
 		);
 
-	[DllImport("libUnoNativeMac.dylib")]
-	public static extern unsafe void uno_set_webview_new_window_requested_callback(
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_new_window_requested_callback(
 		delegate* unmanaged[Cdecl]<nint, sbyte*, sbyte*, int> callback
 	);
 
