@@ -8,7 +8,7 @@ uid: Uno.Platform.Studio.Overview
 
 ![Introducing Uno Platform Studio](Assets/Introducing-Uno-Platform-Studio.png)
 
-## New in Uno Platform Studio 2.0:  Hot Design® Agent + Uno MCP + App MCP
+## New in Uno Platform Studio 2.0:  Hot Design<sup>®</sup> Agent + Uno MCP + App MCP
 
 **Hot Design® Agent** is an AI-powered assistant designed for rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time. Built on deep knowledge of Uno Platform and your running app, it simplifies cross-platform .NET design, enabling intuitive and efficient workflows. [Learn more](xref:Uno.HotDesign.Agent)
 
