@@ -2,7 +2,7 @@
 
 The Uno Platform Status surfaces what Uno Platform is doing behind the scenes when you open a solution in your IDE. It provides clear, real-time feedback so you know when everything is ready to run, and highlights issues early to avoid blocking your development flow.
 
-Its icon is located in the status bar of all supported IDE.
+Its icon is located in the status bar of all supported IDEs.
 
 ## [**Visual Studio 2022**](#tab/vswints)
 
