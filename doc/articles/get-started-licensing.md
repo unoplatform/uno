@@ -92,16 +92,15 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 ### Uno Platform Studio Pro 30-Day Trial
 
-The Community edition of **Uno Platform Studio** includes a 30-day trial of **Uno Platform Studio Pro**, which includes **Hot Design®**, **Hot Design® Agent**, and **Uno MCPs**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Studio Platform window—or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
+The Community edition of **Uno Platform Studio** includes a 30-day trial of **Uno Platform Studio Pro**, which includes **Hot Design<sup>®</sup>**, **Hot Design<sup>®</sup> Agent**, and **Uno MCPs**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Studio Platform window—or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
 
 ## Getting a Uno Platform Studio Pro License
 
 **Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications. When you purchase a **Uno Platform Studio Pro** license, you get full access to purpose-built tools that streamline your workflow:
 
-- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**
-  The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
+- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**: The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
   
-- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: AI-powered assistant that enables rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, using deep knowledge of Uno Platform and your running app to simplify cross-platform .NET design. [Learn more](xref:Uno.HotDesign.Agent)
+- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: An AI-powered assistant designed for rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time. Built on deep knowledge of Uno Platform and your running app, it simplifies cross-platform .NET design, enabling intuitive and efficient workflows.[Learn more](xref:Uno.HotDesign.Agent)
 
 - **[Uno MCPs](xref:Uno.Features.Uno.MCPs)**: Uno MCP connects AI agents and developers directly to Uno Platform’s complete knowledge base - documentation, APIs, and best practices with structured, semantic access. The App MCP is a local runtime service that allows AI agents and automation tools to intelligently interact with a live Uno Platform application. [Get started](xref:Uno.GetStarted)
 
@@ -152,7 +151,7 @@ Once you have purchased a Uno Platform Studio Pro subscription, you may need to 
 
 ### Checking License Status
 
-If you notice a small snowflake icon next to the Hot Design® flame icon when running your Uno app, this indicates that Hot Design® is not active:
+If you notice a small snowflake icon next to the Hot Design<sup>®</sup> flame icon when running your Uno app, this indicates that Hot Design<sup>®</sup> is not active:
 
 ### Troubleshooting License Issues
 
@@ -173,7 +172,7 @@ If you notice a small snowflake icon next to the Hot Design® flame icon when ru
 1. **Verification**:
    - After assignment, return to your IDE settings
    - Click **Refresh** in the Uno Platform Studio window
-   - You should see a blue checkmark on Hot Design®, indicating it's ready to use
+   - You should see a blue checkmark on Hot Design<sup>®</sup>, indicating it's ready to use
 
 ### Troubleshooting Common Issues
 
@@ -191,9 +190,9 @@ If you encounter issues during the subscription or licensing process:
    - Use the **Refresh** button in Uno Platform Studio
    - Sign out and sign in again to your IDE
 
-1. **Hot Design® Trial Expired**:
+1. **Uno Platform Studio Pro Trial Expired**:
    - The 30-day trial is automatically included with Community accounts
-   - After expiration, upgrade to Pro to continue using Hot Design®
+   - After expiration, upgrade to Pro to continue using Uno Platform Studio Pro features
    - Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to upgrade
 
 1. **Support**:
