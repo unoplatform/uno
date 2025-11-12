@@ -20,7 +20,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 	public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 	{
-		Debugger.Launch();
+		//Debugger.Launch();
 		_rcClient = rcClient;
 		_status = new(this);
 	}

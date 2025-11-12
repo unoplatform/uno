@@ -219,6 +219,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			var sw = Stopwatch.StartNew();
 
+			Debugger.Launch();
+
 			// Edit the files in the workspace.
 			var solution = _currentSolution;
 			foreach (var file in files)

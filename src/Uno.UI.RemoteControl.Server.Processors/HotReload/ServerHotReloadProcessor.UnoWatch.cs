@@ -46,15 +46,20 @@ partial class ServerHotReloadProcessor
 				@"C:\Src\GitHub\dotnet\sdk\artifacts\bin\dotnet-watch\Debug\net10.0\dotnet-watch.dll",
 				@"--project:V:\source\UnoWatchTestApp\UnoWatchTestApp\UnoWatchTestApp\UnoWatchTestApp.csproj",
 				
-				//"-f:net10.0-desktop",
-				"-f:net10.0-android",
-				"-r:android-x64",
+				"-f:net10.0-desktop",
+				//"-f:net10.0-android",
+				//"-r:android-x64",
 				
+				"--non-interactive", // Avoids question for restart project
+
+
 				"-c:Debug",
 				"--",
 				"-clp:NoSummary",
+				"-p:UnoForceSingleTFM=true",
+				"-p:GenerateAssemblyInfo=false",
 				"-p:GenerateFullPaths=true",
-				//"-p:UnoForceSingleTFM=true",
+				
 				"-bl:\"V:\\source\\UnoWatchTestApp\\UnoWatchTestApp\\UnoWatchTestApp\\net10.0-desktop-Debug-hot-reload.binlog\""
 			])
 		{
@@ -62,7 +67,12 @@ partial class ServerHotReloadProcessor
 			EnvironmentVariables =
 			{
 				{"DOTNET_WATCH_DEBUG_SDK_DIRECTORY", @"C:\Program Files\dotnet\sdk\10.0.100-rc.2.25502.107"},
-				{"UNO_WATCH_DEVSERVER_CHANNEL", rpcChannelId}
+				{"UNO_WATCH_DEVSERVER_CHANNEL", rpcChannelId},
+				{"UNO_WATCH_NO_BUILD", "true"},
+				{"UNO_WATCH_NO_RUN", "true"},
+				{"Microsoft_CodeAnalysis_EditAndContinue_LogDir", "C:\\Tmp\\HR"},
+				{"MSBUILDDEBUGENGINE", "1"},
+				{"MSBUILDDEBUGPATH", "C:\\Tmp\\Build"}
 			}
 		});
 		ct.Register(process.Kill);

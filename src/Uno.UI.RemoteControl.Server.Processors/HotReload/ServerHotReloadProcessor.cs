@@ -494,6 +494,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			try
 			{
+				//if(InitializeUnoWatch(configureServer, properties))
 				if (InitializeMetadataUpdater(configureServer, properties))
 				{
 					this.Log().LogDebug($"Metadata updater initialized");
@@ -761,6 +762,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 
 			_hotReloadService?.EndSession();
+
+			_unoWatchToken?.Cancel();
+			_unoWatchToken?.Dispose();
 		}
 
 		#region Helpers
