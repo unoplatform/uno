@@ -17,7 +17,7 @@ This guide will walk you through the setup process for getting started with Code
 
     ```bash
     codex mcp add "uno" --url "https://mcp.platform.uno/v1"
-    codex mcp add "uno-app" "dnx -y uno.devserver --mcp-app"
+    codex mcp add "uno-app" -- dotnet dnx -y uno.devserver --mcp-app
     ```
 
 1. Start Codex CLI and type the following:

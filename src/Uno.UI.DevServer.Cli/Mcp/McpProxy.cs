@@ -18,6 +18,7 @@ internal class McpProxy
 	private readonly ILogger<McpProxy> _logger;
 	private readonly DevServerMonitor _devServerMonitor;
 	private readonly McpClientProxy _mcpClientProxy;
+	private bool _waitForTools;
 
 	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy)
 	{
@@ -26,8 +27,9 @@ internal class McpProxy
 		_mcpClientProxy = mcpClientProxy;
 	}
 
-	public async Task<int> RunAsync(string currentDirectory, int port, List<string> forwardedArgs, CancellationToken ct)
+	public async Task<int> RunAsync(string currentDirectory, int port, List<string> forwardedArgs, bool waitForTools, CancellationToken ct)
 	{
+		_waitForTools = waitForTools;
 		_devServerMonitor.StartMonitoring(currentDirectory, port, forwardedArgs);
 
 		try
@@ -44,6 +46,8 @@ internal class McpProxy
 
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
 	{
+		var tcs = new TaskCompletionSource();
+
 		var builder = Host.CreateApplicationBuilder();
 		builder.Services
 			.AddMcpServer()
@@ -73,6 +77,18 @@ internal class McpProxy
 			})
 			.WithListToolsHandler(async (ctx, ct) =>
 			{
+				// Claude Code and Codex do not support the list_updated notification.
+				// To avoid tool invocation failures, we wait for the tools to be available
+				// after the dev server has started.
+				if (_waitForTools
+					&& (ctx.Server.ClientInfo?.Name == "claude-code"
+						|| ctx.Server.ClientInfo?.Name == "codex"))
+				{
+					_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
+
+					await tcs.Task;
+				}
+
 				var upstreamClient = _mcpClientProxy.UpstreamClient;
 
 				if (upstreamClient is null)
@@ -103,6 +119,8 @@ internal class McpProxy
 
 		_mcpClientProxy.RegisterToolListChangedCallback(async () =>
 		{
+			tcs.TrySetResult();
+
 			await host.Services.GetRequiredService<IMcpServer>().SendNotificationAsync(
 				NotificationMethods.ToolListChangedNotification,
 				new ResourceUpdatedNotificationParams()

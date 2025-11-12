@@ -17,15 +17,23 @@ internal class Program
 			Console.WriteLine("Usage: dnx -y uno.devserver [options] [command]");
 			Console.WriteLine();
 			Console.WriteLine("Options:");
+<<<<<<< HEAD
 			Console.WriteLine("  --help, -h               Show this help message and exit");
 			Console.WriteLine("  --log-level, -l <level>  Set the log level (Trace, Debug, Information, Warning, Error, Critical, None). Default is Information.");
 			Console.WriteLine("  --file-log, -fl <path>   Enable file logging to the provided file path (supports {Date} token). Required path argument.");
 			Console.WriteLine("  --mcp-app                Start in App MCP in STDIO mode");
+=======
+			Console.WriteLine("  --help, -h                 Show this help message and exit");
+			Console.WriteLine("  --log-level, -l <level>    Set the log level (Trace, Debug, Information, Warning, Error, Critical, None). Default is Information.");
+			Console.WriteLine("  --file-log, -fl <path>     Enable file logging to the provided file path (supports {Date} token). Required path argument.");
+			Console.WriteLine("  --mcp                      Start in MCP STDIO mode");
+			Console.WriteLine("  --mcp-wait-tools-list      Wait for upstream server tools before responding to list_tools (MCP mode only)");
+>>>>>>> 6480e23a65 (fix(mcp): Adjust for no tools_update notification on claude/codex)
 			Console.WriteLine();
 			Console.WriteLine("Commands:");
-			Console.WriteLine("  start                    Start the DevServer for the current folder");
-			Console.WriteLine("  stop                     Stop the DevServer for the current folder");
-			Console.WriteLine("  list                     List active DevServer instances");
+			Console.WriteLine("  start                      Start the DevServer for the current folder");
+			Console.WriteLine("  stop                       Stop the DevServer for the current folder");
+			Console.WriteLine("  list                       List active DevServer instances");
 			Console.WriteLine();
 			return 0;
 		}
