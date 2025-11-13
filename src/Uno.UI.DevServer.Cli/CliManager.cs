@@ -123,7 +123,9 @@ internal class CliManager
 			_logger.LogInformation("Starting MCP Mode");
 
 			int requestedPort = 0;
+			bool mcpWaitToolsList = false;
 			var forwardedArgs = new List<string>();
+
 			for (int i = 0; i < args.Length; i++)
 			{
 				var a = args[i];
@@ -142,10 +144,16 @@ internal class CliManager
 					i++; // skip value
 					continue; // do not forward port arguments to controller
 				}
+				else if (a == "--mcp-wait-tools-list")
+				{
+					mcpWaitToolsList = true;
+					continue; // do not forward mcp-specific arguments to controller
+				}
 				forwardedArgs.Add(a);
 			}
 
-			return await _services.GetRequiredService<McpProxy>().RunAsync(Environment.CurrentDirectory, requestedPort, forwardedArgs, CancellationToken.None);
+			var waitForTools = mcpWaitToolsList;
+			return await _services.GetRequiredService<McpProxy>().RunAsync(Environment.CurrentDirectory, requestedPort, forwardedArgs, waitForTools, CancellationToken.None);
 		}
 		catch (Exception ex)
 		{
