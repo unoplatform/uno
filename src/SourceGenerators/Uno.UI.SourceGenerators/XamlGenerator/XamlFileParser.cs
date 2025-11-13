@@ -170,7 +170,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (Exception e) when (e is not OperationCanceledException)
 			{
-				// Catastrophic failure, we are enable to parse the file at all (i.e. no XamlFileDefinition).
+				// Catastrophic failure, we are unable to parse the file at all (i.e. no XamlFileDefinition).
 				// This will prevent generation of **ALL** XAML files and should be avoided as much as possible.
 				throw new XamlParsingException("Failed to parse file", e, 1, 1, src.Item.File.Path);
 			}
