@@ -8,6 +8,93 @@ using Verify = XamlSourceGeneratorVerifier;
 [TestClass]
 public class Given_Parser
 {
+	private static readonly string _emptyCodeBehind = """
+		using Microsoft.UI.Xaml.Controls;
+
+		namespace TestRepro
+		{
+			public sealed partial class MainPage : Page
+			{
+				public MainPage()
+				{
+					this.InitializeComponent();
+				}
+			}
+		}
+		""";
+
+	[TestMethod]
+	public async Task When_Empty_Xml()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", ""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange([
+			DiagnosticResult.CompilerError("UXAML0001").WithArguments("Root element is missing."),
+			DiagnosticResult.CompilerError("CS1061").WithSpan(9, 9, 9, 28).WithArguments("TestRepro.MainPage", "InitializeComponent"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 1, 1, 1, 1).WithArguments("Failed to parse file"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Invalid_Xml()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange([
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 3, 7, 3).WithArguments("The 'Grid' start tag on line 6 position 3 does not match the end tag of 'Page'. Line 7, position 3.")
+			// ==> Note, even with invalid XAML, we still generate the class structure, so we should not miss `InitializeComponent`!
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Invalid_Root()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange([
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 4, 75, 4, 75).WithArguments("Unexpected end of file has occurred. The following elements are not closed: Page. Line 4, position 75.")
+			// ==> Note, even with invalid XAML, we still generate the class structure, so we should not miss `InitializeComponent`!
+		]);
+
+		await test.RunAsync();
+	}
+
 	[TestMethod]
 	public async Task When_Invalid_Element_Property()
 	{
@@ -39,39 +126,104 @@ public class Given_Parser
 				"""),
 		};
 
-		var test = new Verify.Test(xamlFiles)
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange([
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 13, 5, 13, 5).WithArguments("Member 'PaneTitle' cannot have properties [Line: 13 Position: 5]")
+			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Invalid_Member_Node()
+	{
+		var xamlFiles = new[]
 		{
-			TestState =
-			{
-				Sources =
-				{
-					"""
-					using Microsoft.UI.Xaml.Controls;
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
 
-					namespace TestRepro
-					{
-						public sealed partial class MainPage : Page
-						{
-							public MainPage()
-							{
-								this.InitializeComponent();
-							}
-						}
-					}
-					"""
-				}
-			}
-		}.AddGeneratedSources();
+					<Grid>
+						<Grid.InvalidMember>
+							<Border />
+						</Grid.InvalidMember>
+					</Grid>
+				</Page>
+				"""),
+		};
 
-		test.ExpectedDiagnostics.AddRange(
-			new[] {
-				// /0/MainPage.xaml(13,5): error UXAML0001: Member 'PaneTitle' cannot have properties at line 13, position 5
-				DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 13, 5, 13, 5).WithArguments("Member 'PaneTitle' cannot have properties [Line: 13 Position: 5]"),
-				// /0/Test0.cs(9,9): error CS1061: 'MainPage' does not contain a definition for 'InitializeComponent' and no accessible extension method 'InitializeComponent' accepting a first argument of type 'MainPage' could be found (are you missing a using directive or an assembly reference?)
-				// DiagnosticResult.CompilerError("CS1061").WithSpan(9, 9, 9, 28).WithArguments("TestRepro.MainPage", "InitializeComponent")
-				// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
-			}
-		);
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange([
+			DiagnosticResult.CompilerError("CS0117").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 56, 5, 56, 18).WithArguments("Microsoft.UI.Xaml.Controls.Grid", "InvalidMember")
+			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Invalid_Object_Node()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Grid>
+						<TypeThatDoesNotExist />
+					</Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange([
+			DiagnosticResult.CompilerError("CS0246").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 59, 10, 59, 30).WithArguments("TypeThatDoesNotExist"),
+			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Invalid_Object_Property()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Grid PropertyThatDoesNotExist="5">
+					</Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange([
+			DiagnosticResult.CompilerError("CS1029").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 57, 12, 57, 239).WithArguments("Property PropertyThatDoesNotExist does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Grid, name is PropertyThatDoesNotExist, preferrednamespace http://schemas.microsoft.com/winfx/2006/xaml/presentation"),
+			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
+		]);
+
 		await test.RunAsync();
 	}
 
