@@ -13,5 +13,5 @@ steps:
 
   - bash: |
       sudo apt-get update
-      sudo apt-get install -y xvfb fluxbox vlc libvlc-dev libgtk-3-dev libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev
+      sudo apt-get install -y xvfb fluxbox vlc libvlc-dev libgtk-3-dev libwebkit2gtk-4.1-dev libwebkit2gtk-4.1-dev
     displayName: Install Linux dependencies

@@ -1276,7 +1276,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Items_Are_Enum_Values()
 		{
 			var comboBox = new ComboBox();
-			comboBox.ItemsSource = Enum.GetValues(typeof(PickerLocationId)).Cast<PickerLocationId>();
+			comboBox.ItemsSource = Enum.GetValues<PickerLocationId>();
 			comboBox.SelectedIndex = 0;
 			TestServices.WindowHelper.WindowContent = comboBox;
 			await TestServices.WindowHelper.WaitForLoaded(comboBox);
@@ -1293,7 +1293,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var child = (FrameworkElement)popup.Child;
 			var comboBoxItems = child.GetAllChildren().OfType<ComboBoxItem>().ToArray();
-			Assert.AreEqual(Enum.GetValues(typeof(PickerLocationId)).Length, comboBoxItems.Length);
+			Assert.AreEqual(Enum.GetValues<PickerLocationId>().Length, comboBoxItems.Length);
 		}
 
 #if HAS_UNO

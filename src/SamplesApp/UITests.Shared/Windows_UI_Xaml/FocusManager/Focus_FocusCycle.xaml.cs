@@ -24,7 +24,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 			var button = (Button)sender;
 			var content = button.Tag.ToString();
 			var nextElement = FocusManager.FindNextElement(
-				(FocusNavigationDirection)Enum.Parse(typeof(FocusNavigationDirection), content, true),
+				Enum.Parse<FocusNavigationDirection>(content, true),
 				new FindNextElementOptions()
 				{
 					SearchRoot = ContainerPrimary.XamlRoot.Content

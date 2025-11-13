@@ -39,7 +39,7 @@ public sealed partial class SvgImageSource_FromMsAppData : Page
 		new("Roaming", new Uri("ms-appx:///Assets/Formats/heliocentric.svg"))
 	};
 
-	public string[] Stretches { get; } = Enum.GetNames(typeof(Stretch)).ToArray();
+	public string[] Stretches { get; } = Enum.GetNames<Stretch>();
 
 	public SampleSvgSource SelectedSource
 	{

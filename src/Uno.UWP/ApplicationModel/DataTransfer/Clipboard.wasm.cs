@@ -27,7 +27,22 @@ namespace Windows.ApplicationModel.DataTransfer
 		internal static async Task SetContentAsync(DataPackage/* ? */ content)
 		{
 			var data = content?.GetView(); // Freezes the DataPackage
-			if (data?.Contains(StandardDataFormats.Text) ?? false)
+
+			// Handle both HTML and text formats - both should be written if present
+			var hasHtml = data?.Contains(StandardDataFormats.Html) ?? false;
+			var hasText = data?.Contains(StandardDataFormats.Text) ?? false;
+
+			if (hasHtml)
+			{
+				var html = await data.GetHtmlFormatAsync();
+				// Get text for fallback - either from explicit text or extract from HTML
+				var text = hasText
+					? await data.GetTextAsync()
+					: "";
+
+				await SetClipboardHtml(html, text);
+			}
+			else if (hasText)
 			{
 				var text = await data.GetTextAsync();
 				SetClipboardText(text);
@@ -39,6 +54,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var dataPackage = new DataPackage();
 
 			dataPackage.SetDataProvider(StandardDataFormats.Text, async ct => await GetClipboardText(ct));
+			dataPackage.SetDataProvider(StandardDataFormats.Html, async ct => await GetClipboardHtml(ct));
 
 			return dataPackage.GetView();
 		}
@@ -48,9 +64,19 @@ namespace Windows.ApplicationModel.DataTransfer
 			return await NativeMethods.GetTextAsync();
 		}
 
+		private static async Task<string> GetClipboardHtml(CancellationToken ct)
+		{
+			return await NativeMethods.GetHtmlAsync();
+		}
+
 		private static void SetClipboardText(string text)
 		{
 			NativeMethods.SetText(text);
+		}
+
+		private static async Task SetClipboardHtml(string html, string text)
+		{
+			await NativeMethods.SetHtmlAsync(html, text);
 		}
 
 		private static void StartContentChanged()

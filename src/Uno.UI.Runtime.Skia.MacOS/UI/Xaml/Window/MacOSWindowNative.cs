@@ -50,7 +50,6 @@ internal class MacOSWindowNative
 		NativeUno.uno_window_resize(Handle, initialWidth, initialHeight);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
-		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 
 		NativeWindowReady?.Invoke(this, this);
 
@@ -65,7 +64,6 @@ internal class MacOSWindowNative
 
 	internal void Destroyed()
 	{
-		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		Handle = nint.Zero;
 	}
 
@@ -115,7 +113,5 @@ internal class MacOSWindowNative
 	private void UpdateWindowPropertiesFromApplicationView()
 	{
 		NativeUno.uno_window_set_title(Handle, _applicationView.Title);
-		var minSize = _applicationView.PreferredMinSize;
-		NativeUno.uno_window_set_min_size(Handle, minSize.Width, minSize.Height);
 	}
 }

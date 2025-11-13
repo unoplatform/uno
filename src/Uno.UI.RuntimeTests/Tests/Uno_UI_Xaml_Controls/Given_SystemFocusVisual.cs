@@ -187,5 +187,149 @@ public class Given_SystemFocusVisual
 		await UITestHelper.Load(button);
 		button.Focus(FocusState.Keyboard);
 	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_Focused_Element_In_Scaled_Viewbox()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			Assert.Inconclusive($"Not supported under XAML islands");
+		}
+
+		var button = new Button()
+		{
+			Content = "Test",
+			FocusVisualPrimaryThickness = ThicknessHelper.FromUniformLength(2),
+			FocusVisualSecondaryThickness = ThicknessHelper.FromUniformLength(2),
+		};
+
+		var innerViewbox = new Viewbox()
+		{
+			Width = 300,
+			Height = 300,
+			Child = button
+		};
+
+		var outerViewbox = new Viewbox()
+		{
+			Width = 100,
+			Height = 100,
+			Child = innerViewbox
+		};
+
+		TestServices.WindowHelper.WindowContent = outerViewbox;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		button.Focus(FocusState.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
+		var focusVisualLayer = visualTree?.FocusVisualRoot;
+
+		Assert.IsNotNull(focusVisualLayer);
+		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+
+		var focusVisual = focusVisualLayer.Children.First();
+
+		// The focus visual should be positioned at the same location as the button
+		var focusTransform = focusVisual.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
+		var focusPoint = focusTransform.TransformPoint(default);
+
+		var buttonTransform = button.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
+		var buttonPoint = buttonTransform.TransformPoint(default);
+
+		// Allow small tolerance for rounding errors
+		Assert.AreEqual(buttonPoint.X, focusPoint.X, 1.0, $"Focus visual X position {focusPoint.X} should match button X position {buttonPoint.X}");
+		Assert.AreEqual(buttonPoint.Y, focusPoint.Y, 1.0, $"Focus visual Y position {focusPoint.Y} should match button Y position {buttonPoint.Y}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_Focused_Element_With_Multiple_Parent_Transforms()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			Assert.Inconclusive($"Not supported under XAML islands");
+		}
+
+		var button = new Button()
+		{
+			Content = "Test",
+			Width = 80,
+			Height = 30,
+			FocusVisualPrimaryThickness = ThicknessHelper.FromUniformLength(2),
+			FocusVisualSecondaryThickness = ThicknessHelper.FromUniformLength(2),
+		};
+
+		// Parent with ScaleTransform
+		var scaleContainer = new Border()
+		{
+			Width = 200,
+			Height = 200,
+			RenderTransform = new ScaleTransform
+			{
+				ScaleX = 1.5,
+				ScaleY = 1.5
+			},
+			Child = button
+		};
+
+		// Parent with RotateTransform
+		var rotateContainer = new Border()
+		{
+			Width = 400,
+			Height = 400,
+			RenderTransform = new RotateTransform
+			{
+				Angle = 15
+			},
+			Child = scaleContainer
+		};
+
+		// Parent with TranslateTransform
+		var translateContainer = new Border()
+		{
+			RenderTransform = new TranslateTransform
+			{
+				X = 50,
+				Y = 30
+			},
+			Child = rotateContainer
+		};
+
+		TestServices.WindowHelper.WindowContent = translateContainer;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		button.Focus(FocusState.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
+		var focusVisualLayer = visualTree?.FocusVisualRoot;
+
+		Assert.IsNotNull(focusVisualLayer);
+		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+
+		var focusVisual = focusVisualLayer.Children.First();
+
+		// The focus visual should be positioned at the same location as the button
+		// despite all the parent transforms (translate, rotate, scale)
+		var focusTransform = focusVisual.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
+		var focusPoint = focusTransform.TransformPoint(default);
+
+		var buttonTransform = button.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
+		var buttonPoint = buttonTransform.TransformPoint(default);
+
+		// Allow tolerance for rounding errors, especially with rotation
+		Assert.AreEqual(buttonPoint.X, focusPoint.X, 2.0, $"Focus visual X position {focusPoint.X} should match button X position {buttonPoint.X}");
+		Assert.AreEqual(buttonPoint.Y, focusPoint.Y, 2.0, $"Focus visual Y position {focusPoint.Y} should match button Y position {buttonPoint.Y}");
+
+		// validate bottom right point
+		var focusBottomRight = focusTransform.TransformPoint(new Windows.Foundation.Point(button.ActualWidth, button.ActualHeight));
+		var buttonBottomRight = buttonTransform.TransformPoint(new Windows.Foundation.Point(button.ActualWidth, button.ActualHeight));
+
+		Assert.AreEqual(buttonBottomRight.X, focusBottomRight.X, 2.0, $"Focus visual bottom-right X position {focusBottomRight.X} should match button bottom-right X position {buttonBottomRight.X}");
+		Assert.AreEqual(buttonBottomRight.Y, focusBottomRight.Y, 2.0, $"Focus visual bottom-right Y position {focusBottomRight.Y} should match button bottom-right Y position {buttonBottomRight.Y}");
+	}
 }
 #endif

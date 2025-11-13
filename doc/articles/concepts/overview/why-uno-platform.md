@@ -34,7 +34,7 @@ Uno Platform apps run as a single codebase for native mobile, web, desktop, and 
 
 ## Keep using your favorite IDE
 
-Need we say more? Use the IDE that works for you – Visual Studio, VS Code, Rider as well as GitHub Codespaces & GitPod. Wherever you are, Uno Platform is with you.
+Need we say more? Use the IDE that works for you – Visual Studio, VS Code, Rider as well as GitHub Codespaces. Wherever you are, Uno Platform is with you.
 
 ## Work from your favorite OS
 

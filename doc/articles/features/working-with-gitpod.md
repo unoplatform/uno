@@ -2,9 +2,9 @@
 uid: Uno.Features.Gitpod
 ---
 
-# Using Gitpod
+# Using Ona
 
-## Developing an Uno App using Gitpod
+## Developing an Uno App using Ona
 
 The easiest way to get started is to visit the [Uno.QuickStart](https://github.com/unoplatform/Uno.QuickStart) repository. It allows you to get started with minimal configuration or project creation steps.
 
@@ -39,7 +39,7 @@ If you want to start from an empty repository, follow these steps:
     ENV PATH=$DOTNET_ROOT:$PATH
     ```
 
-1. Commit these changes and open a GitPod workspace
+1. Commit these changes and open a Ona workspace
 1. Install the `unoplatform.vscode` extension from [OpenVSX](https://open-vsx.org/extension/unoplatform/vscode)
 1. Open the command palette (Ctrl+Shift+P) and run the `Install the dotnet new templates` command to install the dotnet new templates
 1. Create a new project using the following command:
@@ -48,15 +48,15 @@ If you want to start from an empty repository, follow these steps:
     dotnet new unoapp -o MyApp -ios=false -android=false -macos=false -skia-tizen=false -skia-wpf=false -skia-linux-fb=false --vscode
     ```
 
-1. Using the Gitpod top left menu, open the `MyApp` folder
+1. Using the Ona top left menu, open the `MyApp` folder
 
 You're ready to develop for WebAssembly or the Linux desktop (Skia Desktop).
 
-## Contributing to Uno using Gitpod
+## Contributing to Uno using Ona
 
-To contribute to Uno using GitPod:
+To contribute to Uno using Ona:
 
-1. [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno)
+1. [![Open Uno in Ona](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno)
 1. In the opened shell, type the following to build the Uno solution:
 
     ```bash
@@ -76,7 +76,7 @@ To contribute to Uno using GitPod:
     build/gitpod/serve-sampleapp-wasm.sh
     ```
 
-Once the server is started, Gitpod will automatically open a browser window on the side to show the sample application.
+Once the server is started, Ona will automatically open a browser window on the side to show the sample application.
 
 You can make your changes in XAML directly, to view the changes through Hot Reload. If you make changes in the code, you'll need to rerun the `build-wasm.sh` script, then refresh the browser section on the side.
 

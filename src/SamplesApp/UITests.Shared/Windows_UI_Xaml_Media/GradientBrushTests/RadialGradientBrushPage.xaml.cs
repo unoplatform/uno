@@ -26,7 +26,7 @@ namespace MUXControlsTestApp
 			_random = new Random();
 		}
 
-		public string[] GetColorSpaceValueNames() => Enum.GetNames(typeof(CompositionColorSpace));
+		public string[] GetColorSpaceValueNames() => Enum.GetNames<CompositionColorSpace>();
 
 		public string DynamicGradientBrushInterpolationSpace
 		{
@@ -45,14 +45,14 @@ namespace MUXControlsTestApp
 			{
 				if (DynamicGradientBrush != null && value != null)
 				{
-					DynamicGradientBrush.InterpolationSpace = (CompositionColorSpace)Enum.Parse(typeof(CompositionColorSpace), value);
+					DynamicGradientBrush.InterpolationSpace = Enum.Parse<CompositionColorSpace>(value);
 				}
 			}
 		}
 
 		public string[] GetSpreadMethodValueNames()
 		{
-			return Enum.GetNames(typeof(GradientSpreadMethod));
+			return Enum.GetNames<GradientSpreadMethod>();
 		}
 
 		public string DynamicGradientBrushSpreadMethod
@@ -72,7 +72,7 @@ namespace MUXControlsTestApp
 			{
 				if (DynamicGradientBrush != null && value != null)
 				{
-					DynamicGradientBrush.SpreadMethod = (GradientSpreadMethod)Enum.Parse(typeof(GradientSpreadMethod), value);
+					DynamicGradientBrush.SpreadMethod = Enum.Parse<GradientSpreadMethod>(value);
 				}
 			}
 		}

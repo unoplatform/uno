@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "uno56netcurrent",
+  "display": "standalone",
+  "name": "uno56netcurrent",
+  "short_name": "uno56netcurrent",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

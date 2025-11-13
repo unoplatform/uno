@@ -73,10 +73,10 @@ internal static partial class ImageSourceHelpers
 					{
 						try
 						{
-							image = SKImage.FromPixels(new SKPixmap(new SKImageInfo(width, height, SKColorType.Rgba8888), new IntPtr(ptr)), (_, _) =>
+							image = SKImage.FromPixels(new SKPixmap(new SKImageInfo(width, height, SKColorType.Rgba8888), new IntPtr(ptr)), static (_, gcHandle) =>
 							{
-								gcHandle.Free();
-							});
+								((GCHandle)gcHandle).Free();
+							}, gcHandle);
 							if (image == null)
 							{
 								throw new InvalidOperationException($"{nameof(SKImage)}.{nameof(SKImage.FromPixels)} returned null.");

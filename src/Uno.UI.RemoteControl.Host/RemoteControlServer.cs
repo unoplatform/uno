@@ -19,6 +19,7 @@ using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Server.AppLaunch;
 using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
@@ -191,18 +192,19 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		{
 			try
 			{
-				if (frame.Scope == "RemoteControlServer")
+				if (frame.Scope == WellKnownScopes.DevServerChannel)
 				{
-					if (frame.Name == ProcessorsDiscovery.Name)
+					switch (frame.Name)
 					{
-						await ProcessDiscoveryFrame(frame);
-						continue;
-					}
-
-					if (frame.Name == KeepAliveMessage.Name)
-					{
-						await ProcessPingFrame(frame);
-						continue;
+						case ProcessorsDiscovery.Name:
+							await ProcessDiscoveryFrame(frame);
+							continue;
+						case KeepAliveMessage.Name:
+							await ProcessPingFrame(frame);
+							continue;
+						case AppLaunchMessage.Name:
+							await ProcessAppLaunchFrame(frame);
+							continue;
 					}
 				}
 
@@ -230,9 +232,16 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug("Unknown Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+						// Log no processors found to process this frame (give a registered processors list)
+						var processorsList = string.Join(", ", _processors.Keys);
+						this.Log().LogDebug("Unknown Frame [{Scope} / {Name}] - No processors registered. Registered processors: {processorsList}", frame.Scope, frame.Name, processorsList);
 					}
 				}
+			}
+			catch (WebSocketException) when (socket.State == WebSocketState.Closed)
+			{
+				// Ignore "The remote party closed the WebSocket connection without completing the close handshake."
+				// It's making noise in the logs.
 			}
 			catch (Exception error)
 			{
@@ -246,7 +255,26 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 	private void ProcessIdeMessage(object? sender, IdeMessage message)
 	{
-		if (_processors.TryGetValue(message.Scope, out var processor))
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug("Received message from IDE: {MessageType}", message.GetType().Name);
+		}
+		if (message is AppLaunchRegisterIdeMessage appLaunchRegisterIdeMessage)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug("Received app launch register message from IDE: {Msg}", appLaunchRegisterIdeMessage);
+			}
+			var monitor = _serviceProvider.GetRequiredService<ApplicationLaunchMonitor>();
+
+			monitor.RegisterLaunch(
+				appLaunchRegisterIdeMessage.Mvid,
+				appLaunchRegisterIdeMessage.Platform,
+				appLaunchRegisterIdeMessage.IsDebug,
+				appLaunchRegisterIdeMessage.Ide,
+				appLaunchRegisterIdeMessage.Plugin);
+		}
+		else if (_processors.TryGetValue(message.Scope, out var processor))
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -271,6 +299,60 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				this.Log().LogTrace("Unknown Frame [{Scope} / {Name}]", message.Scope, message.GetType().Name);
 			}
 		}
+	}
+
+	private async Task ProcessAppLaunchFrame(Frame frame)
+	{
+		if (frame.TryGetContent(out AppLaunchMessage? appLaunch))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug("App {Step}: {Msg}", appLaunch.Step, appLaunch);
+			}
+
+			var monitor = _serviceProvider.GetRequiredService<ApplicationLaunchMonitor>();
+
+			switch (appLaunch.Step)
+			{
+				case AppLaunchStep.Launched:
+					if (appLaunch.Ide is null)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError("App Launched: MVID={Mvid} Platform={Platform} Debug={Debug} - No IDE provided.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+						}
+						break;
+					}
+
+					if (appLaunch.Plugin is null)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError("App Launched: MVID={Mvid} Platform={Platform} Debug={Debug} - No Plugin provided.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+						}
+						break;
+					}
+					monitor.RegisterLaunch(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug, appLaunch.Ide, appLaunch.Plugin);
+					break;
+
+				case AppLaunchStep.Connected:
+					var success = monitor.ReportConnection(appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+					if (!success && this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("App Connected: MVID={Mvid} Platform={Platform} Debug={Debug} - No immediate match, pending handled by ApplicationLaunchMonitor.", appLaunch.Mvid, appLaunch.Platform, appLaunch.IsDebug);
+					}
+					break;
+			}
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Got an invalid app launch frame ({frame.Content})");
+			}
+		}
+
+		await Task.CompletedTask;
 	}
 
 	private async Task ProcessPingFrame(Frame frame)
@@ -385,7 +467,16 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 					try
 					{
-						assemblies.Add((file, assemblyLoadContext.LoadFromAssemblyPath(file)));
+						// Ensure the Resolving handler knows where to look for dependent assemblies (same directory as the processor)
+						var processorPath = Path.GetFullPath(file);
+						_resolveAssemblyLocations[msg.AppInstanceId] = processorPath;
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().LogTrace("Resolve base set for {AppId} to {Dir}", msg.AppInstanceId, Path.GetDirectoryName(processorPath));
+						}
+
+						// Load with retry helper to avoid transient file locking, and keep the normalized path
+						assemblies.Add((processorPath, TryLoadAssemblyFromPath(assemblyLoadContext, processorPath)));
 					}
 					catch (Exception exc)
 					{
@@ -562,6 +653,8 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	public void Dispose()
 	{
 		_ct.Cancel(false);
+
+		// Nothing to flush explicitly: pending is handled internally by ApplicationLaunchMonitor
 
 		foreach (var processor in _processors)
 		{

@@ -125,7 +125,7 @@
 		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="$(HarfbuzzSharpVersion)" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
-		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.0-rc.1.25451.107" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.0-rc.2.25502.107" />
 
 		<PackageReference Update="Svg.Skia" Version="3.0.6" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
@@ -133,6 +133,7 @@
 		<PackageReference Update="AwesomeAssertions" Version="9.2.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="9.9.0" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />

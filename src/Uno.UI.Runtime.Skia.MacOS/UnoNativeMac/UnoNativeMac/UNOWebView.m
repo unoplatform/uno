@@ -84,8 +84,13 @@ void uno_set_webview_unsupported_scheme_identified_callback(uno_webview_unsuppor
 NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
 {
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
-    config.preferences.javaScriptEnabled = true;
-    config.preferences.javaScriptCanOpenWindowsAutomatically = true;
+    if (@available(macOS 11, *)) {
+        config.defaultWebpagePreferences.allowsContentJavaScript = YES;
+    } else {
+        // dotnet 9 still supports macOS 10.15
+        config.preferences.javaScriptEnabled = YES;
+    }
+    config.preferences.javaScriptCanOpenWindowsAutomatically = YES;
     config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeVideo | WKAudiovisualMediaTypeAudio;
     
     UNOWebView* webview = [[UNOWebView alloc] initWithFrame:NSMakeRect(0,0,0,0) configuration:config];
@@ -95,14 +100,8 @@ NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
     webview.okString = [NSString stringWithUTF8String:ok];
     webview.cancelString = [NSString stringWithUTF8String:cancel];
 
-    [window.contentViewController.view addSubview:webview positioned:NSWindowBelow relativeTo:nil];
+    webview.originalSuperView = window.contentViewController.view;
     return webview;
-}
-
-void uno_webview_dispose(WKWebView *webview)
-{
-    [webview stopLoading];
-    [webview removeFromSuperview];
 }
 
 const char* uno_webview_get_title(WKWebView *webview)
@@ -335,10 +334,14 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
 
 // UNONativeElement
 
-- (void) detach {
+- (void) dispose {
 #if DEBUG
-    NSLog(@"detach webview %p", self);
+    NSLog(@"UNOWebView %p disposing with superview %p", self, self.superview);
 #endif
+    if (self.superview) {
+        [self stopLoading];
+        [self removeFromSuperview];
+    }
     [self.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebView"];
 }
 
@@ -404,6 +407,68 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
         else
             completionHandler(nil);
     }];
+}
+
+static uno_webview_new_window_requested_fn_ptr new_window_requested;
+
+inline uno_webview_new_window_requested_fn_ptr uno_get_webview_new_window_requested_callback(void)
+{
+    return new_window_requested;
+}
+
+void uno_set_webview_new_window_requested_callback(uno_webview_new_window_requested_fn_ptr fn_ptr)
+{
+    new_window_requested = fn_ptr;
+}
+
+- (WKWebView *)webView:(WKWebView *)webView
+createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration
+           forNavigationAction:(WKNavigationAction *)navigationAction
+                windowFeatures:(WKWindowFeatures *)windowFeatures {
+
+#if DEBUG
+    NSLog(@"createWebViewWithConfiguration: fired for URL: %@", navigationAction.request.URL);
+#endif
+
+    uno_webview_new_window_requested_fn_ptr callback = uno_get_webview_new_window_requested_callback();
+    
+    assert(callback);
+#if DEBUG
+    NSLog(@"createWebViewWithConfiguration: Found C# callback. Attempting to call...");
+#endif
+        
+    const char* targetUrl = [navigationAction.request.URL.absoluteString UTF8String];
+    if (targetUrl == nil) {
+        targetUrl = "about:blank";
+    }
+    
+    const char* refererUrl = [navigationAction.sourceFrame.request.URL.absoluteString UTF8String];
+    if (refererUrl == nil) {
+        refererUrl = "about:blank";
+    }
+
+    int handled = callback(webView, targetUrl, refererUrl);
+
+#if DEBUG
+    NSLog(@"createWebViewWithConfiguration: C# callback returned: %d", handled);
+#endif
+
+    // Check if C# handled it (returned 1)
+    if (handled == 1) {
+#if DEBUG
+        NSLog(@"createWebViewWithConfiguration: C# handled the request. Cancelling native new window.");
+#endif
+        return nil;
+    }
+
+#if DEBUG
+    NSLog(@"createWebViewWithConfiguration: C# did not handle. Opening in default browser.");
+#endif
+    if (navigationAction.request.URL) {
+        [[NSWorkspace sharedWorkspace] openURL:navigationAction.request.URL];
+    }
+    
+    return nil;
 }
 
 // WKNavigationDelegate
@@ -573,6 +638,6 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
     }
 }
 
-@synthesize visible;
+@synthesize originalSuperView;
 
 @end

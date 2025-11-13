@@ -17,11 +17,10 @@ internal partial class Win32WindowWrapper
 	{
 		private readonly HWND _hwnd;
 		private readonly HDC _hdc;
-		private readonly HGLRC _glContext;
+		private HGLRC _glContext; // recreated when window is extended into titlebar
 		private readonly GRGlInterface _grGlInterface;
-		private readonly GRContext _grContext;
-
-		private GRBackendRenderTarget? _renderTarget;
+		private GRContext _grContext; // recreated when window is extended into titlebar
+		private GRBackendRenderTarget? _renderTarget; // recreated on size updates
 		private Win32Helper.WglCurrentContextDisposable? _paintDisposable;
 
 		private GlRenderer(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface grGlInterface, GRContext grContext)
@@ -39,7 +38,7 @@ internal partial class Win32WindowWrapper
 			if (hdc == IntPtr.Zero)
 			{
 				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.GetDC)} failed: {Win32Helper.GetErrorMessage()}");
-				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null);
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null, null);
 				return null;
 			}
 
@@ -64,7 +63,7 @@ internal partial class Win32WindowWrapper
 			if (pixelFormat == 0)
 			{
 				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.ChoosePixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
-				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null);
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null, null);
 				return null;
 			}
 
@@ -81,7 +80,7 @@ internal partial class Win32WindowWrapper
 			if (!PInvoke.SetPixelFormat(hdc, pixelFormat, pfd))
 			{
 				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.SetPixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
-				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null);
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null, null);
 				return null;
 			}
 
@@ -91,7 +90,7 @@ internal partial class Win32WindowWrapper
 			if (glContext == HGLRC.Null)
 			{
 				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.wglCreateContext)} failed: {Win32Helper.GetErrorMessage()}");
-				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null);
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null, null);
 				return null;
 			}
 
@@ -111,22 +110,23 @@ internal partial class Win32WindowWrapper
 			if (grGlInterface is null)
 			{
 				typeof(GlRenderer).LogError()?.Error("OpenGL is not supported in this system (Cannot create GRGlInterface)");
-				ReleaseGlContext(hwnd, hdc, glContext, null, null);
+				ReleaseGlContext(hwnd, hdc, glContext, null, null, null);
 				return null;
 			}
 
 			if (GRContext.CreateGl(grGlInterface) is not { } grContext)
 			{
 				typeof(GlRenderer).LogError()?.Error("OpenGL is not supported in this system (failed to create GRContext)");
-				ReleaseGlContext(hwnd, hdc, glContext, grGlInterface, null);
+				ReleaseGlContext(hwnd, hdc, glContext, grGlInterface, null, null);
 				return null;
 			}
 
 			return new GlRenderer(hwnd, hdc, glContext, grGlInterface, grContext);
 		}
 
-		private static void ReleaseGlContext(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface? grGlInterface, GRContext? grContext)
+		private static void ReleaseGlContext(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface? grGlInterface, GRContext? grContext, GRBackendRenderTarget? renderTarget)
 		{
+			renderTarget?.Dispose();
 			grContext?.Dispose();
 			grGlInterface?.Dispose();
 
@@ -165,6 +165,7 @@ internal partial class Win32WindowWrapper
 			PInvoke.glGetIntegerv(/* GL_STENCIL_BITS */ 0x0D57, ref stencil);
 			PInvoke.glGetIntegerv(/* GL_SAMPLES */ 0x80A9, ref samples);
 
+			_renderTarget?.Dispose();
 			_renderTarget = new GRBackendRenderTarget(width, height, samples, stencil, new GRGlFramebufferInfo((uint)framebuffer, SKColorType.Rgba8888.ToGlSizedFormat()));
 			return SKSurface.Create(_grContext, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888); // BottomLeft to match GL's origin
 		}
@@ -175,18 +176,19 @@ internal partial class Win32WindowWrapper
 			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}"); }
 		}
 
-		void IRenderer.Reset()
-		{
-			_renderTarget?.Dispose();
-			_renderTarget = null;
-		}
-
 		bool IRenderer.IsSoftware() => false;
 
 		void IDisposable.Dispose()
 		{
-			((IRenderer)this).Reset();
-			ReleaseGlContext(_hwnd, _hdc, _glContext, _grGlInterface, _grContext);
+			ReleaseGlContext(_hwnd, _hdc, _glContext, _grGlInterface, _grContext, _renderTarget);
+		}
+
+		void IRenderer.Reinitialize()
+		{
+			ReleaseGlContext(_hwnd, new HDC(IntPtr.Zero), _glContext, null, _grContext, _renderTarget);
+			_glContext = PInvoke.wglCreateContext(_hdc);
+			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
+			_grContext = GRContext.CreateGl(_grGlInterface);
 		}
 	}
 }

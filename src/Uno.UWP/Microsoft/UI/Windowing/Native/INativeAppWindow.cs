@@ -6,12 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Windowing;
 using Windows.Graphics;
-
-#if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
-#else
-using Windows.System;
-#endif
 
 namespace Microsoft.UI.Windowing.Native;
 
@@ -20,6 +15,8 @@ internal interface INativeAppWindow
 	string Title { get; set; }
 
 	bool IsVisible { get; }
+
+	float RasterizationScale { get; }
 
 	PointInt32 Position { get; }
 
@@ -40,4 +37,5 @@ internal interface INativeAppWindow
 	void Show(bool activateWindow);
 
 	void SetPresenter(AppWindowPresenter presenter);
+	void SetIcon(string iconPath);
 }

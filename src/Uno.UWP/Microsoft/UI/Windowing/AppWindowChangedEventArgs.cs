@@ -9,6 +9,11 @@ public partial class AppWindowChangedEventArgs
 	{
 	}
 
+	internal static AppWindowChangedEventArgs PresenterChangedEventArgs { get; } = new AppWindowChangedEventArgs
+	{
+		DidPresenterChange = true
+	};
+
 	/// <summary>
 	/// Gets a value that indicates whether the AppWindow.Position property changed.
 	/// </summary>

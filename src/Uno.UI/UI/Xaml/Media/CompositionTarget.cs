@@ -20,17 +20,22 @@ public partial class CompositionTarget : ICompositionTarget
 #if __SKIA__
 		_targets.Add(this, null);
 		var xamlRoot = ContentRoot.GetOrCreateXamlRoot();
-		lock (_xamlRootBoundsGate)
+		xamlRoot.Changed += (_, _) => UpdateXamlRootBounds();
+		void UpdateXamlRootBounds()
 		{
-			_xamlRootBounds = new Size((int)(xamlRoot.Bounds.Width * xamlRoot.RasterizationScale), (int)(xamlRoot.Bounds.Height * xamlRoot.RasterizationScale));
-		}
-		xamlRoot.Changed += (sender, _) =>
-		{
+			// _rasterizationScale is asynchronously updated and this can cause problems
+			// for the very first frame on app startup where _rasterizationScale is still
+			// not set. We read from the DisplayInformation directly instead
+			var rasterizationScale = XamlRoot.GetDisplayInformation(xamlRoot).RawPixelsPerViewPixel;
 			lock (_xamlRootBoundsGate)
 			{
-				_xamlRootBounds = new Size((int)(sender.Bounds.Width * sender.RasterizationScale), (int)(sender.Bounds.Height * sender.RasterizationScale));
+				// Rounding instead of flooring here is specifically necessary on hardware-accelerated Win32, which draws bottom-up,
+				// so if there's a mismatch between the actual window height and _xamlRootBounds.Height, the first row of pixels
+				// may or not be offset correctly depending on floating point errors
+				_xamlRootBounds = xamlRoot.Bounds.Size;
+				_xamlRootRasterizationScale = (float)rasterizationScale;
 			}
-		};
+		}
 #endif
 	}
 

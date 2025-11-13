@@ -23,6 +23,31 @@
 			<Button Click="{x:Bind ViewModel.Restore}">Restore</Button>
 			<Button Click="{x:Bind ViewModel.RestoreAfter2Seconds}">Restore After 2 Seconds</Button>
 
+			<TextBlock Text="Window size constraints" FontWeight="Bold" />
+			<NumberBox Header="MinWidth" Value="{x:Bind ViewModel.MinWidth, Mode=TwoWay}" x:Name="MinWidthNumberBox" />
+			<StackPanel Orientation="Horizontal" Spacing="8">
+				<Button Click="{x:Bind ViewModel.SetMinWidth}">Set MinWidth</Button>
+				<Button Click="{x:Bind ViewModel.ResetMinWidth}">Reset MinWidth</Button>
+			</StackPanel>
+			
+			<NumberBox Header="MinHeight" Value="{x:Bind ViewModel.MinHeight, Mode=TwoWay}" x:Name="MinHeightNumberBox" />
+			<StackPanel Orientation="Horizontal" Spacing="8">
+				<Button Click="{x:Bind ViewModel.SetMinHeight}">Set MinHeight</Button>
+				<Button Click="{x:Bind ViewModel.ResetMinHeight}">Reset MinHeight</Button>
+			</StackPanel>
+			
+			<NumberBox Header="MaxWidth" Value="{x:Bind ViewModel.MaxWidth, Mode=TwoWay}" x:Name="MaxWidthNumberBox" />
+			<StackPanel Orientation="Horizontal" Spacing="8">
+				<Button Click="{x:Bind ViewModel.SetMaxWidth}">Set MaxWidth</Button>
+				<Button Click="{x:Bind ViewModel.ResetMaxWidth}">Reset MaxWidth</Button>
+			</StackPanel>
+			
+			<NumberBox Header="MaxHeight" Value="{x:Bind ViewModel.MaxHeight, Mode=TwoWay}" x:Name="MaxHeightNumberBox" />
+			<StackPanel Orientation="Horizontal" Spacing="8">
+				<Button Click="{x:Bind ViewModel.SetMaxHeight}">Set MaxHeight</Button>
+				<Button Click="{x:Bind ViewModel.ResetMaxHeight}">Reset MaxHeight</Button>
+			</StackPanel>
+			
 			<TextBlock Text="Properties" FontWeight="Bold" />
 			<CheckBox IsChecked="{x:Bind ViewModel.IsAlwaysOnTop, Mode=TwoWay}">Is always on top</CheckBox>
 			<CheckBox IsChecked="{x:Bind ViewModel.IsMinimizable, Mode=TwoWay}">Is minimizable</CheckBox>

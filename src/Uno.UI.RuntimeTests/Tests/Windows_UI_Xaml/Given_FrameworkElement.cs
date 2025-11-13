@@ -826,8 +826,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Name = "decorator",
 				Background = new SolidColorBrush(Colors.Green),
 				Child = childBorder,
-				HorizontalAlignment = (HorizontalAlignment)Enum.Parse(typeof(HorizontalAlignment), horizontal),
-				VerticalAlignment = (VerticalAlignment)Enum.Parse(typeof(VerticalAlignment), vertical),
+				HorizontalAlignment = Enum.Parse<HorizontalAlignment>(horizontal),
+				VerticalAlignment = Enum.Parse<VerticalAlignment>(vertical),
 			};
 
 			void Set(DependencyProperty dp, double? value)

@@ -37,6 +37,7 @@
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\Helpers\**\*.cs" Exclude="..\Uno.UI.RemoteControl\Helpers\ServiceCollectionExtensions.cs" Link="Helpers/%(Filename)" />
 		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
+		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\AssemblyInfoReader.cs" Link="Helpers\AssemblyInfoReader.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

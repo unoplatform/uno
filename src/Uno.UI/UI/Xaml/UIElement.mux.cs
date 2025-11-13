@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetTabNavigation(KeyboardNavigationMode mode)
 		{
-			if (!Enum.IsDefined(typeof(KeyboardNavigationMode), mode))
+			if (!Enum.IsDefined(mode))
 			{
 				throw new ArgumentOutOfRangeException(nameof(mode));
 			}

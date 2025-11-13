@@ -89,7 +89,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			_logRightTapped = new RightTappedEventHandler(CreateHandler(RightTappedEvent, "RightTapped", _gestureRightTappedHandle));
 
 			_logs.ItemsSource = _eventLog;
-			_pointerType.ItemsSource = Enum.GetNames(typeof(PointerDeviceType));
+			_pointerType.ItemsSource = Enum.GetNames<PointerDeviceType>();
 			_pointerType.SelectedValue = PointerDeviceType.Touch.ToString();
 			_manipMode.ItemsSource = _manipulationModes.Keys;
 			_manipMode.SelectedValue = _manipulationModes.First().Key;
@@ -218,7 +218,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			var error = "";
 			if (args is PointerRoutedEventArgs pointer)
 			{
-				var expectedPointerType = (PointerDeviceType)Enum.Parse(typeof(PointerDeviceType), _pointerType.SelectedValue as string);
+				var expectedPointerType = Enum.Parse<PointerDeviceType>(_pointerType.SelectedValue as string);
 				if (expectedPointerType != (PointerDeviceType)pointer.Pointer.PointerDeviceType)
 				{
 					error += "pt_type ";

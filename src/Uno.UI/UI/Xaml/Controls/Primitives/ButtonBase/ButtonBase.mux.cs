@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <param name="newClickMode">New click mode.</param>
 		private void OnClickModeChanged(ClickMode newClickMode)
 		{
-			if (!Enum.IsDefined(typeof(ClickMode), newClickMode))
+			if (!Enum.IsDefined((ClickMode)newClickMode))
 			{
 				throw new ArgumentException("Invalid ClickMode set.", nameof(newClickMode));
 			}

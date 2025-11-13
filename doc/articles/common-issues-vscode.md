@@ -6,7 +6,7 @@ uid: Uno.UI.CommonIssues.vscode
 
 ## Known limitations for VS Code support
 
-- C# Debugging is not supported when running in a remote Linux Container, Code Spaces, or GitPod.
+- C# Debugging is not supported when running in a remote Linux Container, Codespaces.
 - Calls to `InitializeComponent()` may show intellisense errors until the Windows head has been built once.
 
 ## Troubleshooting Uno Platform VS Code issues

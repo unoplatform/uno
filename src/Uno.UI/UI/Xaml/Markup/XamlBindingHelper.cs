@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Markup
 		/// Converts a value from a source type to a target type.
 		/// </summary>
 		public static object ConvertValue(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
+			Type type,
 			object value)
 			=> Uno.UI.DataBinding.BindingPropertyHelper.Convert(type, value);
 
