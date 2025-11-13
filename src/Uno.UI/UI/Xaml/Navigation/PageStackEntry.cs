@@ -29,7 +29,7 @@ public sealed partial class PageStackEntry : DependencyObject
 		InitializeBinder();
 
 		SourcePageType = sourcePageType;
-		SetDescriptor(sourcePageType.FullName);
+		SetDescriptor(sourcePageType.AssemblyQualifiedName);
 
 		Parameter = parameter;
 		NavigationTransitionInfo = navigationTransitionInfo;

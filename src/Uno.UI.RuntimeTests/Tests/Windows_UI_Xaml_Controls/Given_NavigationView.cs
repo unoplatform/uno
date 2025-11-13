@@ -12,6 +12,7 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.ListViewPages;
+using Uno.UI.Toolkit.DevTools.Input;
 #if __APPLE_UIKIT__
 using UIKit;
 #else
@@ -37,7 +38,6 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Uno.UI.Toolkit.Extensions;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

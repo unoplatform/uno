@@ -11,9 +11,11 @@
 
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
+		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
-		<ApplicationId>uno.platform.samplesapp.skia</ApplicationId>
+		<ApplicationId Condition=" '$(ApplicationId)' != '' ">$(ApplicationId)</ApplicationId>
+		<ApplicationId Condition=" '$(ApplicationId)' == '' ">uno.platform.samplesapp.skia</ApplicationId>
 
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
@@ -29,6 +31,9 @@
 		once transitive dependencies have been updated.
 		-->
 		<NoWarn>$(NoWarn);NU1703;SYSLIB1045</NoWarn>
+
+		<!-- Ignore linker warnings for now -->
+		<NoWarn>$(NoWarn);IL2026;IL2057;IL2062;IL2065;IL2067;IL2068;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2122;IL3000;IL3002;IL3050;IL3053</NoWarn>
 
 		<!--
 		aab is the default packaging format in net6 API 31.
@@ -46,8 +51,13 @@
 
 		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
 
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
+
 		<!-- Required when not building inside VS to avoid dependency issues -->
 		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
+
+		<PublishAot Condition=" '$(SkiaPublishAot)' != '' ">$(SkiaPublishAot)</PublishAot>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -217,11 +227,21 @@
 				<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
 			</PropertyGroup>
 
-			<ItemGroup>
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
+				<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
+				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.14" />
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+			</ItemGroup>
+
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+				<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.10" />
+				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
+				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
+			</ItemGroup>
+
+			<ItemGroup>
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
-				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.14" />
 			</ItemGroup>
 
 			<ItemGroup>
@@ -261,11 +281,6 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Resizetizer" />
-		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -281,6 +296,7 @@
 
 	<ItemGroup>
 		<TrimmerRootDescriptor Include="LinkerConfig.xml" />
+		<TrimmerRootAssembly Include="SamplesApp.Skia" RootMode="All" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -323,7 +339,7 @@
 
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios17.0'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios18.0'">
 	  <CodesignKey>Apple Development: Created via API (L89KS38JH3)</CodesignKey>
 	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
 	</PropertyGroup>

@@ -85,8 +85,12 @@ namespace SamplesApp.UITests
 					{
 						throw new Exception($"Cold start timeout after {timeout}");
 					}
-				}
 
+					if (coldStartTask.Exception is not null)
+					{
+						throw coldStartTask.Exception;
+					}
+				}
 			}
 			catch
 			{

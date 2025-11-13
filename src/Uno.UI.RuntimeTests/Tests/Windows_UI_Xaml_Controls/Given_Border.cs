@@ -24,6 +24,7 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Numerics;
 using Combinatorial.MSTest;
+using Uno.UI.Toolkit.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -178,7 +179,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Clip_And_CornerRadius()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -213,7 +214,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Clipped_With_TransformMatrix()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -332,7 +333,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Verify that border is drawn with the same thickness with/without CornerRadius
 			const string white = "#FFFFFFFF";
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -382,7 +383,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			const string lightPink = "#FF7F7F";
 			const string lightBlue = "#7F7FFF";
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -446,7 +447,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			const string red = "#FFFF0000";
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -485,7 +486,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			const string blue = "#FF0000FF";
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -591,7 +592,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 			Assert.Inconclusive(); // iOS not working currently. https://github.com/unoplatform/uno/issues/6749
 #endif
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -743,7 +744,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task Border_CornerRadius_GradientBrush()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -844,7 +845,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		[ConditionalTest(IgnoredPlatforms = (~RuntimeTestPlatforms.SkiaDesktop) | RuntimeTestPlatforms.SkiaMacOS)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, (~RuntimeTestPlatforms.SkiaDesktop) | RuntimeTestPlatforms.SkiaMacOS)]
 		[RequiresScaling(1.0f)]
 		public async Task When_CornerRadius_AntiAliasing()
 		{

@@ -5,8 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.Testing;
@@ -36,6 +35,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 #if IS_RUNTIME_UI_TESTS
 		[Uno.UI.RuntimeTests.RequiresFullWindow]
 #endif
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_PressOnNestedAndReleaseOnContainer_Touch()
 		{
 			await RunAsync(_sample);
@@ -68,6 +70,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[Ignore("Inputs simulated by selenium are directly appreaing at the start location and wrongly inserting an exit.")]
 		//[ActivePlatforms(Platform.Browser)]
 #endif
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 #if IS_RUNTIME_UI_TESTS
 		[Uno.UI.RuntimeTests.RequiresFullWindow]
 #endif
@@ -102,6 +107,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 #if !__SKIA__
 		[Ignore("Does not work due to the 'implicit capture'")]
 #endif
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		[InjectedPointer(PointerDeviceType.Touch)]
 		public async Task When_PressOnContainerAndReleaseOnNested_Touch()
 		{

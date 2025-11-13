@@ -1,10 +1,17 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Windows.Storage
 {
 	partial class ApplicationData
 	{
+		/// <summary>
+		/// On Android, persistence is always enabled and requires no additional setup.
+		/// This method is provided for cross-platform compatibility and returns a completed task.
+		/// </summary>
+		internal Task EnablePersistenceAsync() => Task.CompletedTask;
+
 		private static string GetLocalCacheFolder()
 			=> GetAndroidAppContext().CacheDir.AbsolutePath;
 
@@ -15,7 +22,11 @@ namespace Windows.Storage
 			=> GetAndroidAppContext().FilesDir.AbsolutePath;
 
 		private static string GetRoamingFolder()
-			=> Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		{
+			var p = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			Directory.CreateDirectory(p);
+			return p;
+		}
 
 		private static string GetSharedLocalFolder()
 			=> Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);

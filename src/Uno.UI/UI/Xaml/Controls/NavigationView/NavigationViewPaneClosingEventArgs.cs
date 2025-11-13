@@ -1,30 +1,44 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewPaneClosingEventArgs.cpp, commit d883cf3
 
-//
-// This file is a C# translation of the NavigationViewPaneClosingEventArgs.cpp file from WinUI controls.
-//
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Provides data for the NavigationView.PaneClosing event.
+/// </summary>
+public partial class NavigationViewPaneClosingEventArgs
 {
-	public partial class NavigationViewPaneClosingEventArgs
+	private bool m_cancelled;
+	private SplitViewPaneClosingEventArgs m_splitViewClosingArgs;
+
+	internal NavigationViewPaneClosingEventArgs()
 	{
-		private bool _cancel;
+	}
 
-		public bool Cancel
+	/// <summary>
+	/// Gets or sets a value that indicates whether
+	/// the event should be canceled.
+	/// </summary>
+	public bool Cancel
+	{
+		get => m_cancelled;
+		set
 		{
-			get => _cancel;
-			set
-			{
-				_cancel = value;
+			m_cancelled = value;
 
-				if (SplitViewClosingArgs != null)
-				{
-					SplitViewClosingArgs.Cancel = value;
-				}
+			var args = m_splitViewClosingArgs;
+			if (args != null)
+			{
+				args.Cancel = value;
 			}
 		}
+	}
 
-		internal SplitViewPaneClosingEventArgs SplitViewClosingArgs { get; set; }
+	internal void SplitViewClosingArgs(SplitViewPaneClosingEventArgs value)
+	{
+		m_splitViewClosingArgs = value;
 	}
 }

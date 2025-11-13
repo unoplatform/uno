@@ -31,6 +31,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

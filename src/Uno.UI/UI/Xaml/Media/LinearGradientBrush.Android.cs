@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Media
 				return null;
 			}
 
-			var colors = GradientStops.SelectToList(s => ((Android.Graphics.Color)GetColorWithOpacity(s.Color)).ToArgb());
+			var colors = GradientStops.SelectToList(s => ((AColor)GetColorWithOpacity(s.Color)).ToArgb());
 			var locations = GradientStops.SelectToList(s => (float)s.Offset);
 
 			if (GradientStops.Count == 1)
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Media
 			var width = size.Width;
 			var height = size.Height;
 
-			Android.Graphics.Matrix nativeTransformMatrix = null;
+			AMatrix nativeTransformMatrix = null;
 			if (RelativeTransform != null)
 			{
 				var matrix = RelativeTransform.ToMatrix(Point.Zero, new Size(width, height));

@@ -48,7 +48,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 
 					var greenContainer = _app.GetPhysicalRect("GreenBackground");
 
-					var permutation = $"{expected.Size.Width}-{expected.Size.Height}-{Enum.GetName(typeof(Stretch), expected.Stretch)}-X{Enum.GetName(typeof(AlignmentX), expected.AlignmentX)}-Y{Enum.GetName(typeof(AlignmentY), expected.AlignmentY)}";
+					var permutation = $"{expected.Size.Width}-{expected.Size.Height}-{Enum.GetName<Stretch>(expected.Stretch)}-X{Enum.GetName<AlignmentX>(expected.AlignmentX)}-Y{Enum.GetName<AlignmentY>(expected.AlignmentY)}";
 					using var snapshot = TakeScreenshot($"ImageBrush-{permutation}");
 
 					ImageAssert.HasPixels(

@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "..\\..\\src\\Uno.UI.sln",
+    "path": "..\\..\\src\\Uno.UI.slnx",
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Wasm.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Wasm.csproj",
@@ -24,6 +24,7 @@
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Wasm.csproj",
+      "Uno.UI.DevServer.Cli\\Uno.UI.DevServer.Cli.csproj",
       "Uno.UI.Runtime.WebAssembly\\Uno.UI.Runtime.WebAssembly.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Wasm.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Wasm.csproj",

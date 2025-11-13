@@ -21,7 +21,7 @@ using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class UIElement : BindableView
+	public partial class UIElement : BindableView, Uno.UI.IUIElement
 	{
 		/// <summary>
 		/// Keeps the count of native children (non-UIElements), for clipping purposes.
@@ -211,7 +211,7 @@ namespace Microsoft.UI.Xaml
 		/// This method is called from the OnDraw of elements supporting rounded corners:
 		/// Border, Rectangle, Panel...
 		/// </summary>
-		private protected void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
+		private protected void AdjustCornerRadius(ACanvas canvas, CornerRadius cornerRadius)
 		{
 			if (cornerRadius != CornerRadius.None)
 			{
@@ -345,7 +345,7 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
-			var newNativeVisibility = newValue == Visibility.Visible ? Android.Views.ViewStates.Visible : Android.Views.ViewStates.Gone;
+			var newNativeVisibility = newValue == Visibility.Visible ? ViewStates.Visible : ViewStates.Gone;
 
 			var bindableView = ((object)this) as Uno.UI.Controls.BindableView;
 
@@ -425,9 +425,11 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="dependencyPropertyNameAndvalue">The name and value of the property</param>
 		/// <returns>The currenty set value at the Local precedence</returns>
-		[Java.Interop.Export(nameof(SetDependencyPropertyValue))]
 		public string SetDependencyPropertyValue(string dependencyPropertyNameAndValue)
 			=> SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue);
+
+		string IUIElement.SetDependencyPropertyValue(string dependencyPropertyNameAndValue)
+			=> SetDependencyPropertyValue(dependencyPropertyNameAndValue);
 
 		/// <summary>
 		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type,
@@ -435,7 +437,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="dependencyPropertyName">The name of the target dependency property</param>
 		/// <returns>The content of the target dependency property (its actual value if it is a primitive type ot its <see cref="object.ToString"/> representation otherwise</returns>
-		[Java.Interop.Export(nameof(GetDependencyPropertyValue))]
 		public Java.Lang.Object GetDependencyPropertyValue(string dependencyPropertyName)
 		{
 			var dpValue = GetDependencyPropertyValueInternal(this, dependencyPropertyName);
@@ -496,6 +497,9 @@ namespace Microsoft.UI.Xaml
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // deprecated members
 		}
+
+		Java.Lang.Object IUIElement.GetDependencyPropertyValue(string dependencyPropertyName)
+			=> GetDependencyPropertyValue(dependencyPropertyName);
 
 #if DEBUG
 		public static Predicate<View> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";

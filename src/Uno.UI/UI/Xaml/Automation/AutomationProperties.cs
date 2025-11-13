@@ -145,7 +145,7 @@ namespace Microsoft.UI.Xaml.Automation
 				view.AccessibilityIdentifier = (string)args.NewValue;
 			}
 #elif __ANDROID__
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is Android.Views.View view)
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AView view)
 			{
 				view.ContentDescription = (string)args.NewValue;
 			}

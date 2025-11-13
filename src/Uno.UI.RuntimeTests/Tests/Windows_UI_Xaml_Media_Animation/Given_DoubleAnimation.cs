@@ -120,7 +120,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			storyboard.Stop();
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.Skia)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia)]
 		public async Task When_RepeatForever_ShouldLoop() // Flaky - #9080
 		{
 			async Task Do()

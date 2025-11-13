@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				personPicture.Initials = "MS";
 				Verify.AreEqual(personPicture.Initials, "MS");
 
-				if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Contacts.Contact"))
+				if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Contacts.Contact, Uno"))
 				{
 					Contact contact = new Contact();
 					contact.FirstName = "FirstName";
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task VerifyAutomationName()
 		{
-			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer"))
+			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer, Uno.UI"))
 			{
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 					automationName = AutomationProperties.GetName(personPicture);
 					Verify.AreEqual(automationName, "Jane Smith");
 
-					if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Contacts.Contact"))
+					if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Contacts.Contact, Uno"))
 					{
 						Contact contact = new Contact();
 						contact.FirstName = "John";

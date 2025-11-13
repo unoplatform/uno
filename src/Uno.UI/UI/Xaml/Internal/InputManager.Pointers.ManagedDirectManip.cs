@@ -129,13 +129,16 @@ partial class InputManager
 			var cancelled = false;
 			foreach (var manipulation in _directManipulations)
 			{
-				if (manipulation.Handlers.Any(handler => handler.Owner == requestingElement))
+				if (manipulation.Handlers.Any(IsForParentOfRequestingElement))
 				{
 					cancelled |= manipulation.Cancel();
 				}
 			}
 
 			return cancelled;
+
+			bool IsForParentOfRequestingElement(IDirectManipulationHandler handler)
+				=> handler.Owner is DependencyObject owner && requestingElement.GetAllParents(includeCurrent: true).Contains(owner);
 		}
 
 		private bool IsRedirectedToManipulations(PointerIdentifier pointerId)
@@ -359,7 +362,7 @@ partial class InputManager
 		private class PointerTypePseudoDictionary<TValue> : IEnumerable<KeyValuePair<PointerDeviceType, TValue>>
 			where TValue : notnull
 		{
-			private static readonly int _length = Enum.GetValues(typeof(PointerDeviceType)).Length;
+			private static readonly int _length = Enum.GetValues<PointerDeviceType>().Length;
 
 			private readonly bool[] _hasValues = new bool[_length];
 			private readonly TValue[] _values = new TValue[_length];

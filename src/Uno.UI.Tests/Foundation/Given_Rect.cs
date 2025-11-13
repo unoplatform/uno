@@ -40,25 +40,25 @@ namespace Uno.UI.Tests.Foundation
 		[TestMethod]
 		public void When_Create_WithNegativeWidth()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Rect(0, 0, -42, 0));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Rect(0, 0, -42, 0));
 		}
 
 		[TestMethod]
 		public void When_Create_WithNegativeHeight()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Rect(0, 0, 0, -42));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Rect(0, 0, 0, -42));
 		}
 
 		[TestMethod]
 		public void When_Create_WithNegativeSizeWidth()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Rect(new Point(0, 0), new Size(-42, 0)));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Rect(new Point(0, 0), new Size(-42, 0)));
 		}
 
 		[TestMethod]
 		public void When_Create_WithNegativeSizeHeight()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Rect(new Point(0, 0), new Size(0, -42)));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Rect(new Point(0, 0), new Size(0, -42)));
 		}
 
 		[TestMethod]

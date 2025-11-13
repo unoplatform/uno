@@ -78,7 +78,7 @@ Note that long paths may be required when building Uno, and invalid paths errors
 It's recommended to build using the single-target approach, but it's also possible to build for all targets at once, if you wish.
 
 1. If you've previously followed the single-target steps, comment out the `<UnoTargetFrameworkOverride />` line in your `crosstargeting_override.props` file.
-2. Open the [Uno.UI.sln](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.sln)
+2. Open the [Uno.UI.slnx](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.slnx)
 3. Select the `Uno.UI` project
 4. Build
 

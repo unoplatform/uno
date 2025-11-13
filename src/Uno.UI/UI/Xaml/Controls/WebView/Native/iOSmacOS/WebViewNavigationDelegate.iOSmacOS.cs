@@ -59,53 +59,30 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 			if (isUnsupportedScheme)
 			{
 				bool cancelled = unoWKWebView.OnUnsupportedUriSchemeIdentified(requestUrl!);
-
 				decisionHandler(cancelled ? WKNavigationActionPolicy.Cancel : WKNavigationActionPolicy.Allow);
-
 				return;
 			}
 
-			// The WKWebView doesn't raise navigation event for anchor navigation.
-			// When we detect anchor navigation, we must raise the events (NavigationStarting & NavigationFinished) ourselves.
-			var isAnchorNavigation = GetIsAnchorNavigation();
-			if (isAnchorNavigation)
+			// Check for anchor navigation first, before processing as a regular navigation
+			if (requestUrl != null && GetIsAnchorNavigation(requestUrl))
 			{
-				bool cancelled = unoWKWebView.OnStarted(requestUrl, stopLoadingOnCanceled: false);
-
-				decisionHandler(cancelled ? WKNavigationActionPolicy.Cancel : WKNavigationActionPolicy.Allow);
-
-				if (!cancelled)
-				{
-					unoWKWebView.OnNavigationFinished(requestUrl);
-				}
-
+				unoWKWebView.OnAnchorNavigation(requestUrl);
+				decisionHandler(WKNavigationActionPolicy.Allow);
 				return;
 			}
 
-			// For all other cases, we allow the navigation. This will results in other WKNavigationDelegate methods being called.
+			// For link activations, check navigation start for non-anchor navigations
+			if (navigationAction.NavigationType == WKNavigationType.LinkActivated)
+			{
+				if (unoWKWebView.OnStarted(requestUrl, stopLoadingOnCanceled: true))
+				{
+					decisionHandler(WKNavigationActionPolicy.Cancel);
+					return;
+				}
+			}
+
+			// For all other cases, allow the navigation
 			decisionHandler(WKNavigationActionPolicy.Allow);
-
-			bool GetIsAnchorNavigation()
-			{
-				// If we navigate to the exact same page but with a different location (using anchors), the native control will not notify us of
-				// any navigation. We need to create this notification to indicate that the navigation worked.
-
-				// To detect an anchor navigation, both the previous and new urls need to match on the left part of the anchor indicator ("#")
-				// AND the new url needs to have content on the right of the anchor indicator.
-				if (unoWKWebView._lastNavigationData is Uri urlLastNavigation)
-				{
-					var currentUrlParts = urlLastNavigation?.AbsoluteUri?.ToString().Split('#');
-					var newUrlParts = requestUrl?.AbsoluteUri?.ToString().Split('#');
-
-					return currentUrlParts?.Length > 0
-						&& newUrlParts?.Length > 1
-						&& currentUrlParts[0].Equals(newUrlParts[0]);
-				}
-				else
-				{
-					return false;
-				}
-			}
 		}
 		else
 		{
@@ -114,54 +91,44 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 				this.Log().LogWarning($"WKNavigationDelegate.DecidePolicy: Cancelling navigation because owning WKWebView is null (NavigationType: {navigationAction.NavigationType} Request:{requestUrl} TargetRequest: {navigationAction.TargetFrame?.Request})");
 			}
 
-			// CancellationToken the navigation, we're in a case where the owning WKWebView is not alive anymore
 			decisionHandler(WKNavigationActionPolicy.Cancel);
 		}
 	}
 
-	public override void DecidePolicy(WKWebView webView, WKNavigationResponse navigationResponse, Action<WKNavigationResponsePolicy> decisionHandler)
+	private bool GetIsAnchorNavigation(Uri requestUrl)
 	{
-		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		if (!_unoWKWebView.TryGetTarget(out var unoWKWebView))
 		{
-			this.Log().Debug($"WKNavigationDelegate.DecidePolicy {navigationResponse.Response?.Url?.ToUri()}");
+			return false;
 		}
 
-		decisionHandler(WKNavigationResponsePolicy.Allow);
+		if (unoWKWebView._lastNavigationData is not Uri lastNavigationUri)
+		{
+			return false;
+		}
+
+		return WebViewUtils.IsAnchorNavigation(lastNavigationUri.AbsoluteUri, requestUrl.AbsoluteUri);
 	}
 
-	public override void DidReceiveServerRedirectForProvisionalNavigation(WKWebView webView, WKNavigation navigation)
+	public override void DidStartProvisionalNavigation(WKWebView webView, WKNavigation navigation)
 	{
-		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		{
-			this.Log().Debug($"WKNavigationDelegate.DidReceiveServerRedirectForProvisionalNavigation: Request:{webView.Url?.ToUri()}");
-		}
-
 		if (_unoWKWebView.TryGetTarget(out var unoWKWebView))
 		{
-			unoWKWebView.OnStarted(webView.Url?.ToUri());
+			var uri = webView.Url?.ToUri();
+			// Only raise NavigationStarting if it hasn't been raised yet and it's not an anchor navigation
+			if (uri != null &&
+				(unoWKWebView._lastNavigationData is null || !uri.Equals(unoWKWebView._lastNavigationData)) &&
+				!GetIsAnchorNavigation(uri))
+			{
+				unoWKWebView.OnStarted(uri);
+			}
 		}
 		else
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"WKNavigationDelegate.DidReceiveServerRedirectForProvisionalNavigation: Ignoring because owning WKWebView is null");
+				this.Log().Debug($"WKNavigationDelegate.DidStartProvisionalNavigation: Ignoring because owning WKWebView is null");
 			}
-		}
-	}
-
-	public override void ContentProcessDidTerminate(WKWebView webView)
-	{
-		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		{
-			this.Log().Debug($"WKNavigationDelegate.ContentProcessDidTerminate: Request:{webView.Url?.ToUri()}");
-		}
-	}
-
-	public override void DidCommitNavigation(WKWebView webView, WKNavigation navigation)
-	{
-		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		{
-			this.Log().Debug($"WKNavigationDelegate.DidCommitNavigation: Request:{webView.Url?.ToUri()}");
 		}
 	}
 
@@ -188,11 +155,6 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 
 	public override void DidFailNavigation(WKWebView webView, WKNavigation navigation, NSError error)
 	{
-		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		{
-			this.Log().Debug($"WKNavigationDelegate.DidCommitNavigation: Request:{webView.Url?.ToUri()}");
-		}
-
 		if (_unoWKWebView.TryGetTarget(out var unoWKWebView))
 		{
 			unoWKWebView.OnError(webView, navigation, error);
@@ -202,20 +164,6 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"WKNavigationDelegate.DidFailNavigation: Ignoring because owning WKWebView is null");
-			}
-		}
-	}
-	public override void DidStartProvisionalNavigation(WKWebView webView, WKNavigation navigation)
-	{
-		if (_unoWKWebView.TryGetTarget(out var unoWKWebView))
-		{
-			unoWKWebView.OnStarted(webView.Url?.ToUri());
-		}
-		else
-		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"WKNavigationDelegate.DidStartProvisionalNavigation: Ignoring because owning WKWebView is null");
 			}
 		}
 	}
@@ -233,6 +181,31 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 				this.Log().Debug($"WKNavigationDelegate.DidFailProvisionalNavigation: Ignoring because owning WKWebView is null");
 			}
 		}
+	}
+
+	public override void DidReceiveServerRedirectForProvisionalNavigation(WKWebView webView, WKNavigation navigation)
+	{
+		if (_unoWKWebView.TryGetTarget(out var unoWKWebView))
+		{
+			unoWKWebView.OnStarted(webView.Url?.ToUri());
+		}
+		else
+		{
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"WKNavigationDelegate.DidReceiveServerRedirectForProvisionalNavigation: Ignoring because owning WKWebView is null");
+			}
+		}
+	}
+
+	public override void DecidePolicy(WKWebView webView, WKNavigationResponse navigationResponse, Action<WKNavigationResponsePolicy> decisionHandler)
+	{
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"WKNavigationDelegate.DecidePolicy {navigationResponse.Response?.Url?.ToUri()}");
+		}
+
+		decisionHandler(WKNavigationResponsePolicy.Allow);
 	}
 
 	[Obsolete("https://github.com/unoplatform/uno/pull/1591")]

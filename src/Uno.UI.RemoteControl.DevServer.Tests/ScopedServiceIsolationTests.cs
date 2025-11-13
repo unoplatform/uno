@@ -19,7 +19,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 		{
 			// Act & Assert - Start the dev server to validate that scoped services work correctly
 			// ASP.NET Core automatically provides per-connection scoping via context.RequestServices
-			var started = await RunTelemetryTestCycle(helper);
+			var started = await RunTelemetryTestCycleAsync(helper);
 			started.Should().BeTrue("dev server should start successfully with scoped telemetry services");
 		}
 		finally
@@ -38,7 +38,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 		try
 		{
 			// Act
-			var started = await RunTelemetryTestCycle(helper);
+			var started = await RunTelemetryTestCycleAsync(helper);
 
 			// Assert - Telemetry should be written to file during server startup/shutdown
 			started.Should().BeTrue("dev server should start successfully");
@@ -46,13 +46,13 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 
 			var fileContent = await File.ReadAllTextAsync(tempFile, CT);
 			fileContent.Should().NotBeNullOrEmpty("temp file should not be empty");
-			fileContent.Should().Contain("DevServer", "telemetry should contain DevServer events");
+			fileContent.Should().Contain("dev-server", "telemetry should contain dev-server events");
 
 			Logger.LogInformation($"[DEBUG_LOG] Telemetry file content: {fileContent}");
 		}
 		finally
 		{
-			await CleanupTelemetryTest(helper, tempFile);
+			await CleanupTelemetryTestAsync(helper, tempFile);
 		}
 	}
 
@@ -66,7 +66,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 		try
 		{
 			// Act
-			var started = await RunTelemetryTestCycle(helper);
+			var started = await RunTelemetryTestCycleAsync(helper);
 
 			// Assert - Telemetry should be written to file with connection metadata
 			started.Should().BeTrue("dev server should start successfully");
@@ -74,7 +74,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 
 			var fileContent = await File.ReadAllTextAsync(tempFile, CT);
 			fileContent.Should().NotBeNullOrEmpty("temp file should not be empty");
-			fileContent.Should().Contain("DevServer", "telemetry should contain DevServer events");
+			fileContent.Should().Contain("dev-server", "telemetry should contain dev-server events");
 
 			// The telemetry should contain connection metadata from the enhanced scoped services
 			// This validates that ConnectionContext is properly integrated with TelemetrySession
@@ -82,7 +82,7 @@ public class ScopedServiceIsolationTests : TelemetryTestBase
 		}
 		finally
 		{
-			await CleanupTelemetryTest(helper, tempFile);
+			await CleanupTelemetryTestAsync(helper, tempFile);
 		}
 	}
 }

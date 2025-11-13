@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -134,11 +133,18 @@ public class Given_AcrylicBrush
 
 		await UITestHelper.Load(sp);
 
-		var renderInvalidateCount = 0;
-		sp.XamlRoot.RenderInvalidated += () => renderInvalidateCount++;
-
-		await Task.Delay(TimeSpan.FromSeconds(5));
-		renderInvalidateCount.Should().BeLessThan(100);
+		var frameRenderedCount = 0;
+		Action OnFrameRendered = () => frameRenderedCount++;
+		try
+		{
+			((CompositionTarget)sp.Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
+			await Task.Delay(TimeSpan.FromSeconds(5));
+			frameRenderedCount.Should().BeLessThan(100);
+		}
+		finally
+		{
+			((CompositionTarget)sp.Visual.CompositionTarget)!.FrameRendered -= OnFrameRendered;
+		}
 	}
 }
 #endif

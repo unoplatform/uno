@@ -1,8 +1,9 @@
 {
   "solution": {
-    "path": "..\\..\\src\\Uno.UI.sln",
+    "path": "..\\..\\src\\Uno.UI.slnx",
     "projects": [
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Windows.csproj",
+      "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.Windows.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Windows.csproj"
     ]
   }

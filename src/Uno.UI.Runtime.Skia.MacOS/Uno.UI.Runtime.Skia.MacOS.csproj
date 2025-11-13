@@ -40,14 +40,12 @@
 	</Target>
 
 	<ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)UnoNativeMac/build/$(Configuration)/libUnoNativeMac.*"
-				PackagePath="runtimes/osx/native"
-				Pack="true"
-				Visible="False" />
+		<None Include="$(MSBuildThisFileDirectory)UnoNativeMac/build/$(Configuration)/libUnoNativeMac.*" PackagePath="runtimes/osx/native" Pack="true" Visible="False" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI.Runtime.Skia.Linux.FrameBuffer\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />

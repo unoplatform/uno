@@ -191,6 +191,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// Normally this will have been done by OnReorderCompleted, but sometimes OnReorderCompleted may not be called
 				// (eg if drag was released outside bounds of list)
 				that.CleanupReordering();
+
+				that.m_tpPrimaryDraggedContainer = null;
+
+				that.ChangeSelectorItemsVisualState(true);
 			}
 			sender.DropCompleted -= OnItemContainerDragCompleted;
 		}

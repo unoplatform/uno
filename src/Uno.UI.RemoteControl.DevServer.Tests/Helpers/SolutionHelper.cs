@@ -4,18 +4,22 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
+#pragma warning disable VSTHRD002 // Async methods must run in sync context here
+
 public class SolutionHelper : IDisposable
 {
+	private readonly TestContext _testContext;
 	private readonly string _solutionFileName;
 	private readonly string _tempFolder;
 
 	public string TempFolder => _tempFolder;
 	public string SolutionFile => Path.Combine(_tempFolder, _solutionFileName + ".sln");
 
-	private bool isDisposed;
+	private bool _isDisposed;
 
-	public SolutionHelper(string solutionFileName = "MyApp")
+	public SolutionHelper(TestContext testContext, string solutionFileName = "MyApp")
 	{
+		_testContext = testContext;
 		_solutionFileName = solutionFileName;
 		_tempFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
@@ -25,17 +29,23 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
-	public async Task CreateSolutionFile()
+	public async Task CreateSolutionFileAsync(
+		string platforms = "wasm,desktop",
+		string? targetFramework = null)
 	{
-		if (isDisposed)
+		if (_isDisposed)
 		{
 			throw new ObjectDisposedException(nameof(SolutionHelper));
 		}
 
+		var platformArgs = string.Join(" ", platforms.Split(',').Select(p => $"-platforms \"{p.Trim()}\""));
+		var tfmArg = targetFramework != null ? $"-tfm \"{targetFramework}\"" : "";
+		var arguments = $"new unoapp -n {_solutionFileName} -o {_tempFolder} -preset \"recommended\" {platformArgs} {tfmArg}".Trim();
+
 		var startInfo = new ProcessStartInfo
 		{
 			FileName = "dotnet",
-			Arguments = $"new unoapp -n {_solutionFileName} -o {_tempFolder} -preset \"recommended\" -platforms \"wasm\" -platforms \"desktop\"",
+			Arguments = arguments,
 			RedirectStandardOutput = true,
 			RedirectStandardError = true,
 			UseShellExecute = false,
@@ -46,7 +56,7 @@ public class SolutionHelper : IDisposable
 		var (exitCode, output) = await ProcessUtil.RunProcessAsync(startInfo);
 		if (exitCode != 0)
 		{
-			throw new InvalidOperationException($"dotnet new unoapp failed with exit code {exitCode} / {output}");
+			throw new InvalidOperationException($"dotnet new unoapp failed with exit code {exitCode} / {output}.\n>dotnet {arguments}");
 		}
 	}
 
@@ -69,7 +79,7 @@ public class SolutionHelper : IDisposable
 					CreateNoWindow = true,
 					WorkingDirectory = _tempFolder,
 				};
-				var (checkExit, checkOutput) = ProcessUtil.RunProcessAsync(checkInfo).GetAwaiter().GetResult();
+				var (checkExit, checkOutput) = ProcessUtil.RunProcessAsync(checkInfo).Result;
 
 				if (checkExit != 0)
 				{
@@ -79,14 +89,14 @@ public class SolutionHelper : IDisposable
 					var installInfo = new ProcessStartInfo
 					{
 						FileName = "dotnet",
-						Arguments = "new install Uno.Templates::*-*",
+						Arguments = "new install Uno.Templates@*-*",
 						RedirectStandardOutput = true,
 						RedirectStandardError = true,
 						UseShellExecute = false,
 						CreateNoWindow = true,
 						WorkingDirectory = _tempFolder,
 					};
-					var (installExit, installOutput) = ProcessUtil.RunProcessAsync(installInfo).GetAwaiter().GetResult();
+					var (installExit, installOutput) = ProcessUtil.RunProcessAsync(installInfo).Result;
 
 					if (installExit != 0)
 					{
@@ -127,9 +137,26 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
+	public async Task ShowDotnetVersionAsync()
+	{
+		var startInfo = new ProcessStartInfo
+		{
+			FileName = "dotnet",
+			Arguments = "--info",
+			RedirectStandardOutput = true,
+			RedirectStandardError = true,
+			UseShellExecute = false,
+			CreateNoWindow = true,
+			WorkingDirectory = _tempFolder,
+		};
+
+		var (exitCode, output) = await ProcessUtil.RunProcessAsync(startInfo);
+		_testContext.WriteLine($"dotnet --info output:\n{output}");
+	}
+
 	public void Dispose()
 	{
-		isDisposed = true;
+		_isDisposed = true;
 
 		// Force delete temp folder
 		Directory.Delete(_tempFolder, true);

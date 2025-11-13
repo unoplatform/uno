@@ -11,8 +11,7 @@ using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Uno.UI.Helpers;
 using Uno.UI.Extensions;
 

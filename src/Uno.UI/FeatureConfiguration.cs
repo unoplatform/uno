@@ -93,24 +93,18 @@ namespace Uno.UI
 
 		public static class CompositionTarget
 		{
-			private static float _frameRate = 60;
-
 			/// <summary>
 			/// Suggested frame rate for <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event.
 			/// This property is used by desktop skia renderers.
 			/// </summary>
-			public static float FrameRate
-			{
-				get => _frameRate;
-				set
-				{
-					_frameRate = value;
+			public static float FrameRate { get; set; } = 60;
 
-					// Use this because we do not depend on the wasm dispatching binaries
-					// at this layer (we use the reference binaries).
-					DispatchingFeatureConfiguration.DispatcherQueue.WebAssemblyFrameRate = _frameRate;
-				}
-			}
+			/// <summary>
+			/// When possible, read the screen refresh rate and use it as the target frame rate instead of
+			/// <see cref="FeatureConfiguration.CompositionTarget.FrameRate"/>.
+			/// This property is used by desktop skia renderers.
+			/// </summary>
+			public static bool SetFrameRateAsScreenRefreshRate { get; set; } = true;
 		}
 
 		public static class ContentPresenter
@@ -361,12 +355,20 @@ namespace Uno.UI
 			/// This is mainly useful for debugging purposes, we do not recommend using this in production code.
 			/// </summary>
 			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
+
+			/// <summary>
+			/// By default, popups are constrained by the visible bounds on native renderer, but unconstrained on Skia renderer.
+			/// </summary>
+			public static bool ConstrainByVisibleBounds { get; set; }
+#if !__SKIA__
+				= true;
+#endif
 		}
 
 		public static class ProgressRing
 		{
-			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
-			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
+			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
+			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
 		}
 
 		public static class ListViewBase
@@ -451,6 +453,16 @@ namespace Uno.UI
 			/// </summary>
 			public static bool AllowRelativeTimeStamp { get; set; } = true;
 #endif
+		}
+
+		public static class ManipulationRoutedEventArgs
+		{
+			/// <summary>
+			/// In previous versions of uno, the Position property of the Manipulation&gt;Started|Delta|Complete&lt;**Routed**EventArgs
+			/// was in absolute coordinate space instead of being relative to the Container.
+			/// Enabling this flag does restore the previous behavior.
+			/// </summary>
+			public static bool IsAbsolutePositionEnabled { get; set; }
 		}
 
 		public static class SelectorItem
@@ -759,6 +771,15 @@ namespace Uno.UI
 			public static bool ForceHotReloadDisabled { get; set; }
 		}
 
+		public static class XamlReader
+		{
+			/// <summary>
+			/// When set to true, the XamlReader will throw an exception if it encounters properties in
+			/// the XAML that do not map to a property on the target object.
+			/// </summary>
+			public static bool FailOnUnknownProperties { get; set; }
+		}
+
 		public static class DatePicker
 		{
 #if __APPLE_UIKIT__
@@ -921,6 +942,12 @@ namespace Uno.UI
 				set { }
 #endif
 			}
+
+			/// <summary>
+			/// Force the use of Metal (true) or Software (false) rendering on macOS.
+			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
+			/// </summary>
+			public static bool? UseMetalOnMacOS { get; set; }
 		}
 
 		public static class DependencyProperty
@@ -1030,5 +1057,6 @@ namespace Uno.UI
 			public static bool EnableUno19516Workaround { get; set; } = true;
 #endif
 		}
+
 	}
 }

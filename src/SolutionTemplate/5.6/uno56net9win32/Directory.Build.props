@@ -12,4 +12,7 @@
     -->
     <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257</NoWarn>
   </PropertyGroup>
+  <PropertyGroup>
+      <UnoResizetizerVersion>1.11.0-dev.17</UnoResizetizerVersion>
+  </PropertyGroup>
 </Project>

@@ -105,6 +105,8 @@ namespace Microsoft.UI.Xaml
 
 		private readonly DragUI? _ui;
 		private readonly TranslateTransform _transform;
+		private FrameworkElement? _toolTipPanel = null;
+
 
 		private Point _location;
 		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
@@ -116,6 +118,41 @@ namespace Microsoft.UI.Xaml
 			RenderTransform = _transform = new TranslateTransform();
 
 			Content = ui?.Content;
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			if (_toolTipPanel is not null)
+			{
+				_toolTipPanel.SizeChanged -= OnToolTipPanelSizeChanged;
+			}
+
+			_toolTipPanel = GetTemplateChild("ToolTipPanel") as FrameworkElement;
+
+			if (_toolTipPanel is not null)
+			{
+				_toolTipPanel.SizeChanged += OnToolTipPanelSizeChanged;
+
+				// Apply initial centering if the panel is already visible and sized
+				UpdateToolTipTranslation();
+			}
+		}
+
+		private void OnToolTipPanelSizeChanged(object sender, SizeChangedEventArgs args) =>
+			UpdateToolTipTranslation();
+
+		private void UpdateToolTipTranslation()
+		{
+			if (_toolTipPanel is { Visibility: Visibility.Visible, ActualWidth: > 0, RenderTransform: TranslateTransform translate })
+			{
+				translate.X = -_toolTipPanel.ActualWidth / 2;
+
+				var toolTipVerticalOffset = (_ui?.PointerDeviceType == UI.Input.PointerDeviceType.Touch ?
+					ToolTip.DEFAULT_TOUCH_OFFSET : ToolTip.DEFAULT_MOUSE_OFFSET) / 2;
+				translate.Y = -_toolTipPanel.ActualHeight - toolTipVerticalOffset;
+			}
 		}
 
 		public void SetLocation(Point location)

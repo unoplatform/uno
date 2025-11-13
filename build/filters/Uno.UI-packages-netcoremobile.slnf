@@ -1,10 +1,11 @@
 {
   "solution": {
-    "path": "..\\..\\src\\Uno.UI.sln",
+    "path": "..\\..\\src\\Uno.UI.slnx",
     "projects": [
       "AddIns\\Uno.UI.GooglePlay\\Uno.UI.GooglePlay.netcoremobile.csproj",
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.netcoremobile.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.netcoremobile.csproj",
+      "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.netcoremobile.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.netcoremobile.csproj",
       "AddIns\\Uno.UI.Foldable\\Uno.UI.Foldable.netcoremobile.csproj",
       "AddIns\\Uno.UI.Maps\\Uno.UI.Maps.netcoremobile.csproj",
@@ -26,12 +27,13 @@
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.netcoremobile.csproj",
+      "Uno.UI.DevServer.Cli\\Uno.UI.DevServer.Cli.csproj",
       "Uno.UI.Runtime.Skia.Android\\Uno.UI.Runtime.Skia.Android.csproj",
       "Uno.UI.Runtime.Skia.AppleUIKit\\Uno.UI.Runtime.Skia.AppleUIKit.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.netcoremobile.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.netcoremobile.csproj",
       "Uno.UI\\Uno.UI.netcoremobile.csproj",
-      "Uno.UWP\\Uno.netcoremobile.csproj",
+      "Uno.UWP\\Uno.netcoremobile.csproj"
     ]
   }
 }

@@ -103,6 +103,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			const double scrollBy = 300;
 			ScrollTo(SUT, scrollBy);
+			await Task.Delay(200); // Allow the scroll to complete
 			var item = 10;
 			await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(item) as ListViewItem) != null);
 			Assert.AreEqual(minWidth, lvi.ActualWidth);
@@ -384,6 +385,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(2000);
 			var sv = SUT.FindFirstChild<ScrollViewer>();
 			ScrollTo(SUT, 40);
+			await Task.Delay(200); // Allow the scroll to complete
 			double InitialScroll()
 			{
 #if WINAPPSDK

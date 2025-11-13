@@ -12,7 +12,7 @@ namespace Windows.Storage.Pickers
 		// Skipping already declared property SuggestedSaveFile
 		// Skipping already declared property SuggestedFileName
 		// Skipping already declared property SettingsIdentifier
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DefaultFileExtension
 		{

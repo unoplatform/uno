@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "Uno.UI.sln",
+    "path": "Uno.UI.slnx",
     "projects": [
       "SourceGenerators\\SourceGeneratorHelpers\\SourceGeneratorHelpers.shproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",

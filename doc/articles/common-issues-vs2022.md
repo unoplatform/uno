@@ -45,6 +45,10 @@ Your application may fail to run under WSL for multiple reasons:
 - [WSLg](xref:Uno.GetStarted.vs2022#additional-setup-for-windows-subsystem-for-linux-wsl) has not been installed
 - [X11 dependencies](xref:Uno.GetStarted.vs2022#additional-setup-for-skia-desktop-projects) have not been installed
 
+### New Projects in Existing Solutions
+
+Creating a new Uno Platform project inside an existing solution that wasn’t originally created with “Place solution and project in the same directory” is not supported by the `unoapp` templates. You can work around this by following the guide: [Adding Platforms to an Existing Project](xref:Uno.Guides.AddAdditionalPlatforms).
+
 ## Legacy issues
 
 ### The XAML editor shows `The type 'page' does not support direct content` message

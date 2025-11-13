@@ -229,7 +229,7 @@ namespace Uno.UI.Tests.ComboBoxTests
 		{
 			var comboBox = new ComboBox();
 			comboBox.Items.Add(new ComboBoxItem());
-			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = 2);
+			Assert.ThrowsExactly<ArgumentException>(() => comboBox.SelectedIndex = 2);
 		}
 
 		[TestMethod]
@@ -237,7 +237,7 @@ namespace Uno.UI.Tests.ComboBoxTests
 		{
 			var comboBox = new ComboBox();
 			comboBox.Items.Add(new ComboBoxItem());
-			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = -2);
+			Assert.ThrowsExactly<ArgumentException>(() => comboBox.SelectedIndex = -2);
 		}
 
 		[TestMethod]

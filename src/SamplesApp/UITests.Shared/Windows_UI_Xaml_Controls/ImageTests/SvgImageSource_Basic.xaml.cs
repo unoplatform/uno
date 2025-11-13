@@ -50,7 +50,7 @@ public sealed partial class SvgImageSource_Basic : Page
 		new("Road crossing (web)", new Uri("https://raw.githubusercontent.com/unoplatform/uno/56069e83325786e0a652fdedfda7bbd9f0cee224/src/SamplesApp/UITests.Shared/Assets/Formats/roadcrossing.svg"))
 	};
 
-	public string[] Stretches { get; } = Enum.GetNames(typeof(Stretch)).ToArray();
+	public string[] Stretches { get; } = Enum.GetNames<Stretch>();
 
 	public SampleSvgSource SelectedSource
 	{

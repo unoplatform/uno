@@ -7,16 +7,14 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+#if __SKIA__
+using Uno.Foundation;
+#endif
 
 namespace Uno.UI.Samples.UITests.Helpers
 {
 	public static partial class SkiaSamplesAppHelper
 	{
-#if __SKIA__
-		[JSImport("globalThis.eval")]
-		private static partial string Eval(string js);
-#endif
-
 		/// <summary>
 		/// This method is for saving files on Skia-WASM where we don't have disk access.
 		/// </summary>
@@ -34,9 +32,9 @@ namespace Uno.UI.Samples.UITests.Helpers
 				var json = JsonSerializer.Serialize(new { FilePath = filePath, Content = content });
 				using (var client = new HttpClient())
 				{
-					var protocol = Eval("window.location.protocol");
-					var hostname = Eval("window.location.hostname");
-					if (!int.TryParse(Eval("window.location.port"), out var port))
+					var protocol = WebAssemblyImports.EvalString("window.location.protocol");
+					var hostname = WebAssemblyImports.EvalString("window.location.hostname");
+					if (!int.TryParse(WebAssemblyImports.EvalString("window.location.port"), out var port))
 					{
 						port = protocol == "http:" ? 80 : 443;
 					}

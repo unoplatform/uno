@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -16,10 +14,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
-using System.Runtime.InteropServices.JavaScript;
 using System.Diagnostics.CodeAnalysis;
-
-
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -38,8 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Items))]
 	public partial class ItemsControl : Control, IItemsControl
 	{
-		protected IVectorChangedEventArgs _inProgressVectorChange;
-
 		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
 		private readonly SerialDisposable _notifyCollectionGroupsChanged = new SerialDisposable();
 		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
@@ -96,17 +89,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs e)
 		{
-			try
-			{
-				_inProgressVectorChange = e;
-				OnItemsChanged(e);
-			}
-			finally
-			{
-				_inProgressVectorChange = null;
-			}
-
 			OnItemsSourceSingleCollectionChanged(this, e.ToNotifyCollectionChangedEventArgs(), 0);
+			OnItemsChanged(e);
 		}
 
 		partial void InitializePartial();
@@ -202,8 +186,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
 		{
-			Refresh();
-			UpdateItems(null);
+			void OnCurrentItemTemplateUpdated()
+			{
+				// Recreate item containers and refresh items
+				Refresh();
+				UpdateItems(null);
+			}
+
+			if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+			{
+				Uno.UI.TemplateUpdateSubscription.Attach(this, newItemTemplate, OnCurrentItemTemplateUpdated);
+			}
+
+			OnCurrentItemTemplateUpdated();
 		}
 
 		#endregion
@@ -952,6 +947,19 @@ namespace Microsoft.UI.Xaml.Controls
 			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
 
 			_isTemplateApplied = true;
+
+			// Uno-specific: ensure subscription is active when template is applied
+			if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+			{
+				void OnCurrentItemTemplateUpdated()
+				{
+					// Recreate item containers and refresh items
+					Refresh();
+					UpdateItems(null);
+				}
+
+				Uno.UI.TemplateUpdateSubscription.Attach(this, ItemTemplate, OnCurrentItemTemplateUpdated);
+			}
 		}
 
 		private protected override void OnUnloaded()
@@ -1425,7 +1433,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (index > -1)
 			{
 				var item = ItemFromIndex(index);
-				return item;
+				if (!IsItemItsOwnContainer(item) ||
+					Equals(item, container))
+				{
+					return item;
+				}
 			}
 			else
 			{
@@ -1469,45 +1481,17 @@ namespace Microsoft.UI.Xaml.Controls
 				// If the container is actually an item, we can return its index
 				return Items.IndexOf(container);
 			}
-
-			if (_inProgressVectorChange != null)
+			else
 			{
-				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
+				var item = ItemFromIndex(index);
+				if (!IsItemItsOwnContainer(item) ||
+					Equals(container, item))
 				{
-					if (index == _inProgressVectorChange.Index)
-					{
-						// Removed item no longer exists.
-						return -1;
-					}
-					else if (index > _inProgressVectorChange.Index)
-					{
-						// All items after the removed item have a lower new index.
-						return index - 1;
-					}
-				}
-				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
-				{
-					if (index >= _inProgressVectorChange.Index)
-					{
-						// All items after the added item have a higher new index.
-						return index + 1;
-					}
-				}
-				else if (
-					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
-					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
-				{
-					// In these cases, we return the index only if the item is its own container
-					// and the container is in fact the new item, not the old one
-					var item = ItemFromIndex(index);
-					if (IsItemItsOwnContainer(item) && Equals(item, container))
-					{
-						return index;
-					}
-					return -1;
+					return index;
 				}
 			}
-			return index;
+
+			return -1;
 		}
 
 		internal virtual int IndexFromContainerInner(DependencyObject container)
@@ -1525,14 +1509,12 @@ namespace Microsoft.UI.Xaml.Controls
 				return itemContainer;
 			}
 
-			int adjustedIndex = GetInProgressAdjustedIndex(index);
-
-			if (adjustedIndex < 0)
+			if (index < 0)
 			{
 				return null;
 			}
 
-			var containerFromIndex = ContainerFromIndexInner(adjustedIndex);
+			var containerFromIndex = ContainerFromIndexInner(index);
 			EnsureContainerItemsControlProperty(containerFromIndex);
 			return containerFromIndex;
 		}
@@ -1552,45 +1534,6 @@ namespace Microsoft.UI.Xaml.Controls
 		internal virtual DependencyObject ContainerFromIndexInner(int index)
 		{
 			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), index));
-		}
-
-		protected int GetInProgressAdjustedIndex(int index)
-		{
-			int adjustedIndex = index;
-
-			if (_inProgressVectorChange != null)
-			{
-				if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemRemoved)
-				{
-					if (index >= _inProgressVectorChange.Index)
-					{
-						// All items after the removed item have still a higher index.
-						adjustedIndex = index + 1;
-					}
-				}
-				else if (_inProgressVectorChange.CollectionChange == CollectionChange.ItemInserted)
-				{
-					if (index == _inProgressVectorChange.Index)
-					{
-						return -1;
-					}
-					else if (index > _inProgressVectorChange.Index)
-					{
-						// All items after the added item have still a lower index.
-						adjustedIndex = index - 1;
-					}
-				}
-				else if (
-					(_inProgressVectorChange.CollectionChange == CollectionChange.ItemChanged && _inProgressVectorChange.Index == index) ||
-					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
-				{
-					// In case the item is not its own container, the new one is not assigned
-					// yet and we return null.
-					adjustedIndex = -1;
-				}
-			}
-
-			return adjustedIndex;
 		}
 
 		/// <summary>

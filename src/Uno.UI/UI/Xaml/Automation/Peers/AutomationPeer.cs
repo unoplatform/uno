@@ -108,6 +108,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		public AutomationPeer GetLabeledBy() => GetLabeledByCore();
 
+		protected internal IRawElementProviderSimple ProviderFromPeer(AutomationPeer peer) => new IRawElementProviderSimple(peer);
+
 		#endregion
 
 		#region Overrides
@@ -224,7 +226,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		private static string LocalizeControlType(AutomationControlType controlType) =>
 			// TODO: Humanize ("AppBarButton" -> "app bar button")
 			// TODO: Localize
-			Enum.GetName(typeof(AutomationControlType), controlType).ToLowerInvariant();
+			Enum.GetName<AutomationControlType>(controlType).ToLowerInvariant();
 
 		internal bool InvokeAutomationPeer()
 		{
@@ -266,18 +268,16 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 		}
 
-		// This is here to make the method internal!
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected internal global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer(global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer peer)
-		{
-			// Uno TODO: Properly implement this.
-			return new();
-		}
-
 		[global::Uno.NotImplemented]
 		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
 		{
 			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
+		}
+
+		[global::Uno.NotImplemented]
+		public void RaiseNotificationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationKind notificationKind, global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+		{
+			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
 		}
 
 #if !__SKIA__

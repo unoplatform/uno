@@ -16,15 +16,16 @@ jobs:
         with:
           # docs: https://github.com/actions/stale?tab=readme-ov-file
 
-          stale-issue-message: 'This issue has become stale with over 1 year of inactivity and will be closed in 10 days unless a comment is provided or the stale label is removed.'
-          close-issue-message: 'This issue was closed as it has been flagged as stale and has had no activity in the last 10 days.'
+          stale-issue-message: 'Hey there — just a heads-up that this issue has been quiet for over a year. If there’s no update or comment in the next 10 days, it’ll be closed automatically. Feel free to remove the stale label or drop a note to keep it open.'
+          close-issue-message: 'Hey there — just a quick note that this issue hasn’t had any updates in the last 10 days, so it’s now closed. If you think it still needs attention, feel free to reopen or leave a comment.'
+
           stale-issue-label: 'Stale'
           remove-issue-stale-when-updated: true
 
           days-before-issue-stale: 365
           days-before-issue-close: 10
 
-          operations-per-run: 10
+          operations-per-run: 100
 
           # Flag older Issues first
           ascending: true

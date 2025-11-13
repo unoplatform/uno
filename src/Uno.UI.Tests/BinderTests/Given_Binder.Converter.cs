@@ -45,6 +45,59 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("fallback value", SUT.MyProperty);
 		}
 
+		[TestMethod]
+		public void When_TwoWay_With_Enum()
+		{
+			var SUT = new MyControl();
+			var myTestConverter = new EnumStringConverter();
+			var enumSource = new EnumSource();
+
+			SUT.SetBinding(
+				MyControl.MyPropertyProperty,
+				new Microsoft.UI.Xaml.Data.Binding()
+				{
+					Path = new PropertyPath("Value"),
+					Converter = myTestConverter,
+					Mode = BindingMode.TwoWay
+				}
+			);
+			SUT.DataContext = enumSource;
+			Assert.AreEqual("Hello", SUT.MyProperty);
+			SUT.MyProperty = "World";
+			Assert.AreEqual(TestEnum.World, enumSource.Value);
+		}
+
+		public class EnumSource
+		{
+			public TestEnum Value { get; set; }
+		}
+
+		public enum TestEnum
+		{
+			Hello,
+			World
+		}
+
+		internal class EnumStringConverter : IValueConverter
+		{
+			public object? Convert(object value, Type targetType, object parameter, string language)
+			{
+				if (value is Enum e)
+				{
+					return e.ToString();
+				}
+				return null;
+			}
+			public object ConvertBack(object value, Type targetType, object parameter, string language)
+			{
+				if (value is string s && targetType.IsEnum)
+				{
+					return Enum.Parse(targetType, s);
+				}
+				throw new NotImplementedException();
+			}
+		}
+
 		internal class MyTestConverter : IValueConverter
 		{
 			public Func<object, object?> OutputValue { get; set; } = o => null;

@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetReferencePreviousAndCurrent)</TargetFrameworks>
+		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
+	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
+	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.WinUI.Graphics2DSK</AssemblyName>
+		<RootNamespace>Uno.WinUI.Graphics2DSK</RootNamespace>
+
+		<Nullable>enable</Nullable>
+		
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);CROSSRUNTIME</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" PrivateAssets="all" />
+	</ItemGroup>
+	
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+</Project>

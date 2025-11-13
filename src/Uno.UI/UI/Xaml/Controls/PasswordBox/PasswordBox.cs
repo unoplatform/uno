@@ -1,17 +1,22 @@
-﻿using Uno.Extensions;
-using System;
-using System.Collections.Generic;
-using Uno.Disposables;
-using System.Text;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+﻿using System;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PasswordBox : TextBox
 	{
+		// On Windows, \u25CF is used as password character.
+		// However, this character can't be retrieved on Android (doesn't exist in any system font) and on some browser/OS combinations.
+		// We use \u2022 instead, which is already the one normally used by Android and all the major browsers.
+		// See https://github.com/mozilla/gecko-dev/blob/1d4c27f9f166ce6e967fb0e8c8d6e0795dbbd12e/widget/android/nsLookAndFeel.cpp#L441
+		internal static readonly string DefaultPasswordChar = OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() ? "\u2022" : "\u25CF";
+
 		public event RoutedEventHandler PasswordChanged;
 
 		public const string RevealButtonPartName = "RevealButton";
@@ -120,6 +125,30 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnPasswordChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		#endregion
+
+		[NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__")]
+		public string PasswordChar
+		{
+			get => (string)this.GetValue(PasswordCharProperty);
+			set => this.SetValue(PasswordCharProperty, value);
+		}
+
+		[NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__")]
+		public static DependencyProperty PasswordCharProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PasswordChar),
+				typeof(string),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(
+					DefaultPasswordChar,
+					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnPasswordCharChanged(e)));
+
+		private void OnPasswordCharChanged(DependencyPropertyChangedEventArgs e)
+		{
+			OnPasswordCharChangedPartial(e);
+		}
+
+		partial void OnPasswordCharChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		public new object Description
 		{

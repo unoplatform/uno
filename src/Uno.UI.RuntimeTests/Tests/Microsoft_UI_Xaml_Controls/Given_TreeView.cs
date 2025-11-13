@@ -6,8 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -24,6 +23,7 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -453,7 +453,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_ItemTemplateSelector_DataTemplate_Root_IsNot_TreeViewItem()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 			}

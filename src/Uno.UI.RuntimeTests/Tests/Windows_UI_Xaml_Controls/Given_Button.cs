@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Color = Windows.UI.Color;
 using Microsoft.UI.Xaml.Data;
 using Combinatorial.MSTest;
+using Uno.UI.Toolkit.DevTools.Input;
 
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI

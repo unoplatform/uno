@@ -53,7 +53,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	internal bool AssociatedWithManagedWindow => _window != null && _xamlRoot != null;
 
-	public bool WasShown { get; private set; }
+	public bool WasShown { get; set; }
 
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{
@@ -88,6 +88,26 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 				_visibleBounds = value;
 				VisibleBoundsChanged?.Invoke(this, value);
 			}
+		}
+	}
+
+	/// <summary>
+	/// The same as setting <see cref="VisibleBounds"/>, <see cref="Bounds"/> and <see cref="Size"/> but makes sure the
+	/// fired events are fired only after both properties are updated "atomically"
+	/// </summary>
+	public void SetBoundsAndVisibleBounds(Rect bounds, Rect visibleBounds)
+	{
+		if (_visibleBounds != visibleBounds)
+		{
+			_visibleBounds = visibleBounds;
+			VisibleBoundsChanged?.Invoke(this, visibleBounds);
+		}
+
+		if (_bounds != bounds)
+		{
+			_bounds = bounds;
+			SizeChanged?.Invoke(this, bounds.Size);
+			RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
 		}
 	}
 
@@ -189,6 +209,9 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	{
 	}
 
+	/// <summary>
+	/// Request the close of the native window
+	/// </summary>
 	protected virtual void CloseCore()
 	{
 	}
@@ -198,12 +221,6 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		CloseCore();
 
 		IsVisible = false;
-
-		// Allow the window to be re-shown on single-window targets.
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			WasShown = false;
-		}
 	}
 
 	public virtual void ExtendContentIntoTitleBar(bool extend) { }
@@ -274,7 +291,11 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public void Destroy() { }
 
-	public void Hide() { }
+	public void Hide() => IsVisible = false;
+
+	public virtual void SetIcon(string iconPath)
+	{
+	}
 
 #if __APPLE_UIKIT__
 	public abstract Size GetWindowSize();

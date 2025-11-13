@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		public static IEnumerable<View> GetChildren(this Layouter layouter)
 		{
-			return (layouter.Panel as Android.Views.ViewGroup).GetChildren();
+			return (layouter.Panel as AViewGroup).GetChildren();
 		}
 	}
 }

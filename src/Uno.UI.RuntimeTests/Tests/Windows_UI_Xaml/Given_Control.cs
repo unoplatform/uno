@@ -1,21 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Uno.UI.Extensions;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.UI;
-using Windows.Foundation;
-using Uno.UI.RuntimeTests.Helpers;
+using Uno.Extensions.Specialized;
+using Uno.UI.Extensions;
 using Uno.UI.Helpers;
-
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
+using Windows.UI;
 using Expander = Microsoft.UI.Xaml.Controls.Expander;
+using MUXControlsTestApp.Utilities;
+
+
+#if HAS_UNO
+using Uno.UI.Controls.Legacy;
+using Uno.UI.Xaml;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -447,5 +456,192 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
 		}
+
+#if HAS_UNO
+		/// <remarks>
+		/// If this test starts failing, it may be because you have added a new UI control that's coming from
+		/// WinUI. Ensure it uses this.SetDefaultStyleKey() in its constructor (the WinUI sources should have
+		/// an equivalent present as well for all styled controls). Exception are unstyled controls such as
+		/// TreeViewList - for those cases add the control to the builtInControls list below.
+		/// We only execute this test on Skia, as native targets also have some built-in controls that are not
+		/// in fact WinUI-based, so it is expected they don't have the DefaultStyleResourceUri set.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_Non_BuiltIn_Control()
+		{
+			var allControlTypes = typeof(Control).Assembly.GetTypes().OfType<Type>().Where(c => typeof(Control).IsAssignableFrom(c) && !c.IsAbstract && c.IsPublic && c.GetConstructor(Array.Empty<Type>()) is not null);
+			allControlTypes = allControlTypes.Where(t => !t.GetCustomAttributes(false).Any(a => a.GetType() == typeof(NotImplementedAttribute)));
+
+			var builtInControls = new[]
+			{
+				typeof(AppBar),
+				typeof(AppBarButton),
+				typeof(AppBarElementContainer),
+				typeof(AppBarSeparator),
+				typeof(AppBarToggleButton),
+				typeof(AutoSuggestBox),
+				typeof(Button),
+				typeof(CalendarDatePicker),
+				typeof(CalendarView),
+				typeof(CalendarViewDayItem),
+				typeof(CheckBox),
+				typeof(ComboBox),
+				typeof(ComboBoxItem),
+				typeof(CommandBar),
+				typeof(CommandBarOverflowPresenter),
+				typeof(ContentControl),
+				typeof(ContentDialog),
+				typeof(Control),
+				typeof(DatePicker),
+				typeof(DatePickerFlyoutPresenter),
+				typeof(FlipView),
+				typeof(FlipViewItem),
+				typeof(FlyoutPresenter),
+				typeof(Frame),
+				typeof(Microsoft.UI.Xaml.Controls.GridView),
+				typeof(GridViewHeaderItem),
+				typeof(GridViewItem),
+				typeof(HyperlinkButton),
+				typeof(ItemsControl),
+				typeof(Microsoft.UI.Xaml.Controls.ListView),
+				typeof(ListViewBaseHeaderItem),
+				typeof(Microsoft.UI.Xaml.Controls.ListViewHeaderItem),
+				typeof(ListViewItem),
+				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
+				typeof(MenuFlyoutItem),
+				typeof(MenuFlyoutPresenter),
+				typeof(MenuFlyoutSeparator),
+				typeof(MenuFlyoutSubItem),
+				typeof(NavigationViewItemBase),
+				typeof(Page),
+				typeof(PasswordBox),
+				typeof(Pivot),
+				typeof(PivotItem),
+				typeof(RadioButton),
+				typeof(RichEditBox),
+				typeof(ScrollViewer),
+				typeof(Slider),
+				typeof(SplitView),
+				typeof(TextBox),
+				typeof(TimePicker),
+				typeof(ToggleMenuFlyoutItem),
+				typeof(ToggleSwitch),
+				typeof(ToolTip),
+				typeof(TreeViewList),
+				typeof(UserControl),
+				typeof(DatePickerSelector),
+				typeof(NativePivotPresenter),
+				typeof(TimePickerSelector),
+				typeof(ButtonBase),
+				typeof(ColorPickerSlider),
+				typeof(PivotHeaderItem),
+				typeof(RepeatButton),
+				typeof(ScrollBar),
+				typeof(Selector),
+				typeof(SelectorItem),
+				typeof(Thumb),
+				typeof(ToggleButton),
+				typeof(Uno.UI.Controls.Legacy.ProgressRing),
+			};
+
+			allControlTypes = allControlTypes.Except(builtInControls);
+
+			var url = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl(2));
+
+			StringBuilder nonWinUI = new StringBuilder();
+			foreach (var controlInstance in allControlTypes.Select(t => Activator.CreateInstance(t) as Control))
+			{
+				Assert.AreEqual(url, controlInstance.DefaultStyleResourceUri);
+				Assert.IsNotNull(Style.GetDefaultStyleForInstance(controlInstance, controlInstance.GetType()));
+			}
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
+		public async Task When_DefaultStyleResourceUri_And_Style_Without_BasedOn()
+		{
+			var SUT = XamlHelper.LoadXaml<Grid>("""
+				<Grid xmlns:controls="using:Microsoft.UI.Xaml.Controls">
+				<Grid.Resources>
+					<Style TargetType="controls:TabView">
+						<Setter Property="Background" Value="Pink" />
+					</Style>
+				</Grid.Resources>
+				<controls:TabView HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+					<controls:TabViewItem Header="Home" IsClosable="False">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Home" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 1">
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 2">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Document" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 3">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Document" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+				</controls:TabView>
+			</Grid>
+			
+			""");
+			await UITestHelper.Load(SUT);
+
+			var tabView = SUT.Children.OfType<TabView>().First();
+			Assert.AreEqual(Colors.Pink, ((SolidColorBrush)tabView.Background).Color);
+			Assert.IsNotNull(VisualTreeUtils.FindVisualChildByName(tabView, "TabContainerGrid"));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
+		public async Task When_DefaultStyleResourceUri_And_Derived_Control()
+		{
+			var SUT = XamlHelper.LoadXaml<Grid>("""
+				<Grid xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml">
+				<Grid.Resources>
+					<Style TargetType="local:DerivedTabView">
+						<Setter Property="Background" Value="Pink" />
+					</Style>
+				</Grid.Resources>
+				<local:DerivedTabView HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+					<controls:TabViewItem Header="Home" IsClosable="False">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Home" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 1">
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 2">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Document" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+					<controls:TabViewItem Header="Document 3">
+						<controls:TabViewItem.IconSource>
+							<controls:SymbolIconSource Symbol="Document" />
+						</controls:TabViewItem.IconSource>
+					</controls:TabViewItem>
+				</local:DerivedTabView>
+			</Grid>
+			
+			""");
+			await UITestHelper.Load(SUT);
+			var tabView = SUT.Children.OfType<DerivedTabView>().First();
+			Assert.AreEqual(Colors.Pink, ((SolidColorBrush)tabView.Background).Color);
+			Assert.IsNotNull(VisualTreeUtils.FindVisualChildByName(tabView, "TabContainerGrid"));
+		}
 	}
+
+	public partial class DerivedTabView : TabView { }
 }

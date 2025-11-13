@@ -17,10 +17,8 @@ using Uno.Foundation.Logging;
 using Uno.Collections;
 
 #if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
 using Android.Graphics;
+using Android.Views;
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
 using nfloat = System.Double;
@@ -164,7 +162,7 @@ namespace Microsoft.UI.Xaml
 				// and calls the overridden InitializeAccessibilityNodeInfo method.
 				// This could become a performance problem (due to interop) in complex UIs (only if TalkBack is enabled).
 				// A possible optimization could be to set it to ImportantForAccessibility.No if FrameworkElement.CreateAutomationPeer returns null.
-				view.ImportantForAccessibility = Android.Views.ImportantForAccessibility.Yes;
+				view.ImportantForAccessibility = ImportantForAccessibility.Yes;
 			}
 #endif
 

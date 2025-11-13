@@ -12,10 +12,10 @@
   <PropertyGroup>
     <!-- See documentation for each property below -->
 
-    <!--<UnoTargetFrameworkOverride>net9.0</UnoTargetFrameworkOverride>-->
+    <!--<UnoTargetFrameworkOverride>net10.0</UnoTargetFrameworkOverride>-->
     <!--<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>-->
     <!--<OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>-->
-    <!--<UnoNugetOverrideVersion>5.7.0-dev.814</UnoNugetOverrideVersion>-->
+    <!--<UnoNugetOverrideVersion>6.4.0-dev.354</UnoNugetOverrideVersion>-->
 
     <!-- 
         
@@ -25,25 +25,25 @@
 
         Available build targets and corresponding solution filters:
 
-        ┌──────────────────────────────────────────────────────────┬──────────────────────────────┬───────────────────────────────────────────────┐
-        │ UnoTargetFrameworkOverride                               │ Platform                     │ Solution filter file                          │
-        ├──────────────────────────────────────────────────────────┼──────────────────────────────┼───────────────────────────────────────────────┤
-        │ net8.0-windows10.0.19041.0 or net9.0-windows10.0.19041.0 │ Windows                      │ Uno.UI-Windows-only.slnf                      │
-        │ net8.0 or net9.0                                         │ WebAssembly, Skia            │ Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf  │
-        │ net8.0-ios or net9.0-ios                                 │ .NET 8/9 iOS                 │ Uno.UI-netcore-mobile-only.slnf               │
-        │ net8.0-ios or net9.0-ios                                 │ .NET 8/9 iOS  Skia           │ Uno.UI-Skia-only.slnf                         │
-        │ net8.0-tvos or net9.0-tvos                               │ .NET 8/9 tvOS                │ Uno.UI-netcore-mobile-only.slnf               │
-        │ net8.0-tvos or net9.0-tvos                               │ .NET 8/9 tvOS Skia           │ Uno.UI-Skia-only.slnf                         │
-        │ net8.0-android or net9.0-android                         │ .NET 8/9 Android             │ Uno.UI-netcore-mobile-only.slnf               │
-        │ net8.0-android or net9.0-android                         │ .NET 8/9 Android Skia        │ Uno.UI-Skia-only.slnf                         │
-        │ net8.0-maccatalyst or net9.0-maccatalyst                 │ .NET 8/9 macOS Catalyst      │ Uno.UI-netcore-mobile-only.slnf               │
-        │ net8.0-maccatalyst or net9.0-maccatalyst                 │ .NET 8/9 macOS Catalyst Skia │ Uno.UI-Skia-only.slnf                         │
-        │ net8.0 or net9.0                                         │ Wasm+Skia Reference API      │ Uno.UI-Reference-only.slnf                    │
-        │ net8.0 or net9.0                                         │ Uno.UI.Tests                 │ Uno.UI-UnitTests-only.slnf                    │
-        └──────────────────────────────────────────────────────────┴──────────────────────────────┴───────────────────────────────────────────────┘
+        ┌───────────────────────────────────────────────────────────┬───────────────────────────────┬───────────────────────────────────────────────┐
+        │ UnoTargetFrameworkOverride                                │ Platform                      │ Solution filter file                          │
+        ├───────────────────────────────────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+        │ net9.0-windows10.0.19041.0 or net10.0-windows10.0.19041.0 │ Windows                       │ Uno.UI-Windows-only.slnf                      │
+        │ net9.0 or net10.0                                         │ WebAssembly, Skia             │ Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf  │
+        │ net9.0-ios or net10.0-ios                                 │ .NET 9/10 iOS                 │ Uno.UI-netcore-mobile-only.slnf               │
+        │ net9.0-ios or net10.0-ios                                 │ .NET 9/10 iOS Skia            │ Uno.UI-Skia-only.slnf                         │
+        │ net9.0-tvos or net10.0-tvos                               │ .NET 9/10 tvOS                │ Uno.UI-netcore-mobile-only.slnf               │
+        │ net9.0-tvos or net10.0-tvos                               │ .NET 9/10 tvOS Skia           │ Uno.UI-Skia-only.slnf                         │
+        │ net9.0-android or net10.0-android                         │ .NET 9/10 Android             │ Uno.UI-netcore-mobile-only.slnf               │
+        │ net9.0-android or net10.0-android                         │ .NET 9/10 Android Skia        │ Uno.UI-Skia-only.slnf                         │
+        │ net9.0-maccatalyst or net10.0-maccatalyst                 │ .NET 9/10 macOS Catalyst      │ Uno.UI-netcore-mobile-only.slnf               │
+        │ net9.0-maccatalyst or net10.0-maccatalyst                 │ .NET 9/10 macOS Catalyst Skia │ Uno.UI-Skia-only.slnf                         │
+        │ net9.0 or net10.0                                         │ Wasm+Skia Reference API       │ Uno.UI-Reference-only.slnf                    │
+        │ net9.0 or net10.0                                         │ Uno.UI.Tests                  │ Uno.UI-UnitTests-only.slnf                    │
+        └───────────────────────────────────────────────────────────┴───────────────────────────────┴───────────────────────────────────────────────┘
 
         Only one target can be built, and the corresponding solution filter file must
-        be loaded in Visual Studio (see next to Uno.UI.sln).
+        be loaded in Visual Studio (see next to Uno.UI.slnx).
 
         *** WARNING ***
         Note that changing that property while the solution is opened leads to

@@ -1,7 +1,7 @@
 steps:
   - task: NuGetCommand@2
     displayName: 'Publish to Uno Dev Feed'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), not(eq(variables['build.reason'], 'PullRequest')))
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/')), not(eq(variables['build.reason'], 'PullRequest')))
     inputs:
       command: 'push'
       packagesToPush: '$(Pipeline.Workspace)/Nuget_Packages/**/*.nupkg'

@@ -1,47 +1,127 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
+using Uno.UI.Xaml.Core;
+using static Uno.UI.Helpers.SkiaRenderHelper;
 
 namespace Uno.UI.Helpers;
 
 internal static class SkiaRenderHelper
 {
-	/// <summary>
-	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
-	/// Takes the current TotalMatrix of the surface's canvas into account
-	/// </summary>
-	public static SKPath RenderRootVisualAndReturnNegativePath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
+	private static readonly SKPictureRecorder _recorder = new();
+
+	private static readonly List<Visual> _emptyList = new();
+
+	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
+	private static readonly SKPath _emptyClipPath = new();
+
+	// This is used on X11, when no native elements are present - DO NOT MODIFY
+	private static float _invertedClipPathWidth;
+	private static float _invertedClipPathHeight;
+	private static SKPath? _invertedClipPath;
+
+	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
+		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
+
+	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
+		var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+		using var _ = new SKAutoCanvasRestore(canvas, true);
+		canvas.Clear(SKColors.Transparent);
+
 		rootVisual.Compositor.RenderRootVisual(canvas, rootVisual);
-		if (!ContentPresenter.HasNativeElements())
-		{
-			return new SKPath();
-		}
-		var parentClipPath = new SKPath();
-		parentClipPath.AddRect(new SKRect(0, 0, width, height));
-		var outPath = new SKPath();
-		rootVisual.GetNativeViewPath(parentClipPath, outPath);
-		outPath.Transform(canvas.TotalMatrix, outPath); // canvas.TotalMatrix should be the same before and after RenderRootVisual because of the Save and Restore calls inside
-		return outPath;
+
+		var (path, nativeVisualsInZOrder) = !ContentPresenter.HasNativeElements() ?
+			(!invertPath ? _emptyClipPath : GetOrUpdateInvertedClippingPath(width, height), _emptyList) :
+			CalculateClippingPath(width, height, rootVisual, invertPath);
+
+		var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
+
+		return (picture, path, nativeVisualsInZOrder);
 	}
 
-	/// <summary>
-	/// Does a rendering cycle and returns a path that represents the total area that was drawn
-	/// minus the native view areas.
-	/// </summary>
-	public static SKPath RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
+	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, FpsHelper fpsHelper)
 	{
-		var outPath = new SKPath();
-		outPath.AddRect(new SKRect(0, 0, width, height));
-		outPath.Transform(canvas.TotalMatrix, outPath);
-		outPath.Op(RenderRootVisualAndReturnNegativePath(width, height, rootVisual, canvas), SKPathOp.Difference, outPath);
-		return outPath;
+		using var fpsHelperDisposable = fpsHelper.BeginFrame();
+		using (new SKAutoCanvasRestore(canvas, true))
+		{
+			canvas.Clear(background);
+			if (picture != IntPtr.Zero)
+			{
+				// This might happen if we get render request before the first frame is painted
+				unsafe
+				{
+					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, picture, null, IntPtr.Zero);
+				}
+			}
+
+			fpsHelper.DrawFps(canvas);
+		}
+
+		// update the control
+		canvas.Flush();
+	}
+
+	private static readonly SKPath _spareParentClipPath = new();
+
+	/// <summary>
+	/// Does a rendering cycle and returns a path that represents the visible area of the native views.
+	/// </summary>
+	private static (SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) CalculateClippingPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
+	{
+		var clipPath = new SKPath();
+
+		var rect = new SKRect(0f, 0f, width, height);
+
+		var parentClipPath = _spareParentClipPath;
+		parentClipPath.Rewind();
+		parentClipPath.AddRect(rect);
+
+		var nativeVisualsInZOrder = new List<Visual>();
+		rootVisual.GetNativeViewPathAndZOrder(parentClipPath, clipPath, nativeVisualsInZOrder);
+
+		if (!invertPath)
+		{
+			return (clipPath, nativeVisualsInZOrder);
+		}
+		else
+		{
+			var invertedPath = new SKPath();
+			invertedPath.AddRect(rect);
+			invertedPath.Op(clipPath, SKPathOp.Difference, invertedPath);
+
+			clipPath.Dispose();
+
+			return (invertedPath, nativeVisualsInZOrder);
+		}
+	}
+
+	private static SKPath GetOrUpdateInvertedClippingPath(float width, float height)
+	{
+		if (_invertedClipPath != null && _invertedClipPathWidth == width && _invertedClipPathHeight == height)
+		{
+			return _invertedClipPath;
+		}
+		else
+		{
+			var result = new SKPath();
+			result.AddRect(new SKRect(0f, 0f, width, height));
+			result.Op(_emptyClipPath, SKPathOp.Difference, result);
+
+			_invertedClipPathWidth = width;
+			_invertedClipPathHeight = height;
+			_invertedClipPath = result;
+
+			return result;
+		}
 	}
 
 	public class FpsHelper

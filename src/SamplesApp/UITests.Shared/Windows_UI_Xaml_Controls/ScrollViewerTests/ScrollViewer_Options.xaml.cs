@@ -60,11 +60,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 				content.Height = 1200;
 			}
 
-			scroll.HorizontalScrollMode = (ScrollMode)Enum.Parse(typeof(ScrollMode), "" + horizontalMode.SelectedItem);
-			scroll.VerticalScrollMode = (ScrollMode)Enum.Parse(typeof(ScrollMode), "" + verticalMode.SelectedItem);
+			scroll.HorizontalScrollMode = Enum.Parse<ScrollMode>("" + horizontalMode.SelectedItem);
+			scroll.VerticalScrollMode = Enum.Parse<ScrollMode>("" + verticalMode.SelectedItem);
 
-			scroll.HorizontalScrollBarVisibility = (ScrollBarVisibility)Enum.Parse(typeof(ScrollBarVisibility), "" + horizontalVisibility.SelectedItem);
-			scroll.VerticalScrollBarVisibility = (ScrollBarVisibility)Enum.Parse(typeof(ScrollBarVisibility), "" + verticalVisibility.SelectedItem);
+			scroll.HorizontalScrollBarVisibility = Enum.Parse<ScrollBarVisibility>("" + horizontalVisibility.SelectedItem);
+			scroll.VerticalScrollBarVisibility = Enum.Parse<ScrollBarVisibility>("" + verticalVisibility.SelectedItem);
 		}
 	}
 }

@@ -33,7 +33,7 @@ namespace SamplesApp.Droid
 			Android.Content.Intent.CategoryBrowsable,
 		},
 		DataScheme = "uno-samples-test")]
-	public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
+	public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity, Uno.UI.ISamplesAppMainActivity
 	{
 		private HandlerThread _pixelCopyHandlerThread;
 
@@ -44,19 +44,15 @@ namespace SamplesApp.Droid
 			base.OnCreate(bundle);
 		}
 
-		[Export("RunTest")]
 		public string RunTest(string metadataName) => App.RunTest(metadataName);
 
-		[Export("IsTestDone")]
 		public bool IsTestDone(string testId) => App.IsTestDone(testId);
 
-		[Export("GetDisplayScreenScaling")]
 		public string GetDisplayScreenScaling(string displayId) => App.GetDisplayScreenScaling(displayId);
 
 		/// <summary>
 		/// Returns a base64 encoded PNG file
 		/// </summary>
-		[Export("GetScreenshot")]
 		public string GetScreenshot(string displayId)
 		{
 			var rootView = ((ICompositionRoot)this).Content;
@@ -96,7 +92,6 @@ namespace SamplesApp.Droid
 		}
 
 
-		[Export("SetFullScreenMode")]
 		public void SetFullScreenMode(bool fullscreen)
 		{
 			// workaround for #2747: force the app into fullscreen

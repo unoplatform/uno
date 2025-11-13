@@ -1,21 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#if __SKIA__
 using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI;
-using Private.Infrastructure;
-using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using SamplesApp.UITests;
+using SkiaSharp;
+using Uno.Disposables;
+using Uno.Extensions.Specialized;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.WinUI.Graphics2DSK;
+using Uno.UI.Toolkit.DevTools.Input;
+using CollectionExtensions = Uno.Extensions.CollectionExtensions;
+using RectExtensions = Uno.Extensions.RectExtensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
-#if __SKIA__
 [TestClass]
+[RunsOnUIThread]
 public class Given_ContainerVisual
 {
 	[TestMethod]
@@ -47,7 +55,6 @@ public class Given_ContainerVisual
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_Child_Removed_TotalMatrix_Updated()
 	{
 		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
@@ -62,6 +69,71 @@ public class Given_ContainerVisual
 
 		parent2.Children.InsertAtTop(child);
 		Assert.IsFalse(child.TotalMatrix.IsIdentity);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid)] // passed locally, times out in CI waiting for UITestHelper.WaitFor
+	public async Task When_SKPicture_Collapsing_Optimization()
+	{
+		var oldValues =
+			(FeatureConfiguration.Rendering.EnableVisualSubtreeSkippingOptimization,
+				FeatureConfiguration.Rendering.VisualSubtreeSkippingOptimizationCleanFramesThreshold,
+				FeatureConfiguration.Rendering.VisualSubtreeSkippingOptimizationVisualCountThreshold);
+		using var _ = Disposable.Create(() =>
+		{
+			(FeatureConfiguration.Rendering.EnableVisualSubtreeSkippingOptimization,
+				FeatureConfiguration.Rendering.VisualSubtreeSkippingOptimizationCleanFramesThreshold,
+				FeatureConfiguration.Rendering.VisualSubtreeSkippingOptimizationVisualCountThreshold) = oldValues;
+		});
+		(FeatureConfiguration.Rendering.EnableVisualSubtreeSkippingOptimization,
+			FeatureConfiguration.Rendering.VisualSubtreeSkippingOptimizationCleanFramesThreshold,
+			FeatureConfiguration.Rendering.VisualSubtreeSkippingOptimizationVisualCountThreshold) = (true, 50, 100);
+		var popup = new Popup()
+		{
+			Child = new StackPanel().Apply(sp => Enumerable.Range(0, 100).ForEach(i =>
+				sp.Children.Add(new Rectangle
+				{
+					Fill = new SolidColorBrush(Colors.Red),
+					Width = 100,
+					Height = 100
+				})))
+		};
+
+		var skce = new FrameCounterSKCanvasElement() { Width = 100, Height = 100 };
+		popup.PlacementTarget = skce;
+		popup.DesiredPlacement = PopupPlacementMode.Bottom;
+		await UITestHelper.Load(new StackPanel { Children = { skce, popup } });
+
+		for (int i = 0; i < 200; i++)
+		{
+			popup.IsOpen = !popup.IsOpen;
+			await UITestHelper.WaitForIdle();
+			var count = skce.FrameCounter;
+			await UITestHelper.WaitFor(() => skce.FrameCounter > count);
+		}
+
+		popup.IsOpen = true;
+		await UITestHelper.WaitForIdle();
+		var p = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect().GetLocation().Offset(50, 50);
+
+		var screenShot1 = await UITestHelper.ScreenShot(((FrameworkElement)TestServices.WindowHelper.XamlRoot.VisualTree.RootElement)!);
+		ImageAssert.HasColorAt(screenShot1, p, Colors.Red);
+
+		popup.IsOpen = false;
+		await UITestHelper.WaitForIdle();
+
+		var screenShot2 = await UITestHelper.ScreenShot(((FrameworkElement)TestServices.WindowHelper.XamlRoot.VisualTree.RootElement)!);
+		ImageAssert.DoesNotHaveColorAt(screenShot2, p, Colors.Red);
+	}
+
+	private class FrameCounterSKCanvasElement : SKCanvasElement
+	{
+		public int FrameCounter { get; private set; }
+		protected override void RenderOverride(SKCanvas canvas, Size area)
+		{
+			FrameCounter++;
+			Invalidate();
+		}
 	}
 }
 #endif

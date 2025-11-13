@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using DirectUI;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -909,16 +910,19 @@ partial class ComboBox
 		IsSelectionBoxHighlighted = value;
 	}
 
-	private void OnOpen()
-	{
-
 #if HAS_UNO
-		// Force a refresh of the popup's ItemPresenter
+	private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
+	{
+		// With virtualization, the base.UpdateItems won't handle the updates
+		// (because ShouldItemsControlManageChildren is false), so we make an
+		// explicit call to Refresh here instead.
+		base.UpdateItems(args);
 		Refresh();
-
-		RestoreSelectedItem();
+	}
 #endif
 
+	private void OnOpen()
+	{
 		// TODO Uno: BackButton support
 		//if (DXamlCore.Current.BackButtonSupported)
 		//{
@@ -942,7 +946,7 @@ partial class ComboBox
 #if HAS_UNO // Force load children
 			// This method will load the itempresenter children
 #if __ANDROID__
-			SetItemsPresenter((m_tpPopupPart.Child as Android.Views.ViewGroup).FindFirstChild<ItemsPresenter>()!);
+			SetItemsPresenter((m_tpPopupPart.Child as AViewGroup).FindFirstChild<ItemsPresenter>()!);
 #elif __APPLE_UIKIT__
 			SetItemsPresenter(m_tpPopupPart.Child.FindFirstChild<ItemsPresenter>()!);
 #endif
@@ -1624,7 +1628,8 @@ partial class ComboBox
 		if (!pArgs.Handled && pArgs.UnicodeKey is not null)
 		{
 			// Temporary as Uno doesn't yet implement CharacterReceived event.
-			OnCharacterReceived(this, new CharacterReceivedRoutedEventArgs(pArgs.UnicodeKey ?? default, default));
+			// The queuing is necessary because the Text of the TextBox is not updated until after KeyDown is processed.
+			DispatcherQueue.TryEnqueue(() => OnCharacterReceived(this, new CharacterReceivedRoutedEventArgs(pArgs.UnicodeKey.Value, default)));
 		}
 #endif
 	}

@@ -18,7 +18,6 @@
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">

@@ -66,6 +66,12 @@ namespace Windows.UI.Core
 			private List<WeakHandler> _handlers = [];
 			private readonly ITrimProvider _provider;
 
+			// Explicit parameterless constructor to allow Activator.CreateInstance to
+			// dynamically create an instance of WeakEventCollection via reflection.
+			public WeakEventCollection() : this(null)
+			{
+			}
+
 			public WeakEventCollection(ITrimProvider? provider = null)
 			{
 				_provider = provider ?? new DefaultTrimProvider();

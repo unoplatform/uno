@@ -1,0 +1,9 @@
+{
+  // To update the version of Uno please update the version of the Uno.Sdk here. See https://aka.platform.uno/upgrade-uno-packages for more information.
+  "msbuild-sdks": {
+    "Uno.Sdk.Private": "5.6.22"
+  },
+  "sdk": {
+    "allowPrerelease": true
+  }
+}

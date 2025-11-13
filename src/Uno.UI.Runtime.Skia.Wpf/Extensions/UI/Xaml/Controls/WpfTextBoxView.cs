@@ -93,7 +93,7 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	public virtual void SetPasswordRevealState(Microsoft.UI.Xaml.Controls.PasswordRevealState passwordRevealState) { }
 
 	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
-		WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+		(XamlRootMap.GetHostForRoot(xamlRoot) as IWpfXamlRootHost)?.NativeOverlayLayer;
 
 	protected void SetFont(WpfControl wpfControl, Microsoft.UI.Xaml.Controls.TextBox source)
 	{

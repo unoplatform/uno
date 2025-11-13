@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
@@ -149,7 +150,7 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		{
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
 				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
-				Win32WindowWrapper.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!.OnPointer(msg, wParam, _hwnd);
+				((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).OnPointer(msg, wParam, _hwnd);
 				return new LRESULT(0);
 		}
 

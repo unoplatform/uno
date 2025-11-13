@@ -33,7 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 		public async Task When_Invalidated()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -84,7 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		[RunsOnUIThread]
 		public async Task When_WriteableBitmap_Assigned_With_Data_Present()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -142,7 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 		public async Task When_WriteableBitmap_SetSource_Should_Update_PixelWidth_And_PixelHeight()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}

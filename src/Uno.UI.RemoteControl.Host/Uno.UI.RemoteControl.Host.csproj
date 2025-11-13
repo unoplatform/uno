@@ -13,16 +13,18 @@
 	<Import Project="../targetframework-override-noplatform.props" />
 
 	<ItemGroup>
+		<PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.4" />
+		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.3.0-preview.4" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
 		<PackageReference Include="Unity" Version="5.11.10" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
-		<PackageReference Include="MessagePack" Version="2.5.187" />
+		<PackageReference Include="MessagePack" Version="3.1.4" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1" />
+		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
 
 		<!-- StreamJsonRpc 2.14.24 brings in Microsoft.VisualStudio.Threading (and in turn -->
 		<!-- Microsoft.VisualStudio.Threading.Analyzers) version 17.1.46 -->
@@ -35,6 +37,7 @@
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\Helpers\**\*.cs" Exclude="..\Uno.UI.RemoteControl\Helpers\ServiceCollectionExtensions.cs" Link="Helpers/%(Filename)" />
 		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
+		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\AssemblyInfoReader.cs" Link="Helpers\AssemblyInfoReader.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -60,11 +63,11 @@
 		<Content Update="Config\*.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
-		<Content Update="Config\global-net9.0.json" Condition="'$(TargetFramework)' == 'net9.0'">
+		<Content Update="Config\global-net10.0.json" Condition="'$(TargetFramework)' == 'net10.0'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>global.json</TargetPath>
 		</Content>
-		<Content Update="Config\global-net8.0.json" Condition="'$(TargetFramework)' == 'net8.0'">
+		<Content Update="Config\global-net9.0.json" Condition="'$(TargetFramework)' == 'net9.0'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>global.json</TargetPath>
 		</Content>

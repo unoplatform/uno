@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
   <Target Name="ValidateIsPackable"
           AfterTargets="CoreCompile;Build">
     <Error Text="Expected IsPackable='false', however it actually equals '$(IsPackable)'."

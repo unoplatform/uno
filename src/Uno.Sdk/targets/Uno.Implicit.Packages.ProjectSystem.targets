@@ -16,6 +16,11 @@
 		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" ('$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe') AND '$(UnoDisableMCPSupport)' != 'true' ">
+		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
+		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
+	</ItemGroup>
+
 	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
@@ -84,6 +89,10 @@
 
 	<ItemGroup Condition="'$(UnoDefaultFont)'=='OpenSans' AND $(_IsExecutable)">
 		<_UnoProjectSystemPackageReference Include="Uno.Fonts.OpenSans" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';skiarenderer;')) OR $(IsDesktop) == 'true'">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Extensions.Implicit.Packages.ProjectSystem.targets" />

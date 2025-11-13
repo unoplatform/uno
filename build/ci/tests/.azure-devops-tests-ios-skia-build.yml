@@ -34,7 +34,7 @@ jobs:
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
-      UnoCheckParameters: '--tfm net9.0-ios'
+      UnoCheckParameters: '--tfm net10.0-ios'
 
   - template: ../templates/nuget-cache.yml
     parameters:
@@ -54,7 +54,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net8.0-ios/iossimulator-x64/SamplesApp.app
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net9.0-ios18.0/iossimulator-x64/SamplesApp.app
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/bin/SamplesApp.app
       CleanTargetFolder: false

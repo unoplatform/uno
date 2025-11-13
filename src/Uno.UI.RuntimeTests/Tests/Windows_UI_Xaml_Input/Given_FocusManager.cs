@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
 using Microsoft.UI.Xaml;
@@ -10,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI.Input.Preview.Injection;
 using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
@@ -269,6 +269,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			};
 
 			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+#if !__SKIA__
+		[Ignore("This test is not supported on this platform.")]
+#endif
+		public async Task When_Tapped_Empty_Space()
+		{
+			Button button = new Button() { Content = "Button" };
+			var border = new Border()
+			{
+				Padding = new Thickness(100),
+				Child = button
+			};
+
+			TestServices.WindowHelper.WindowContent = border;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+
+			button.Focus(FocusState.Programmatic);
+
+			await TestServices.WindowHelper.WaitFor(
+				() => object.ReferenceEquals(FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot), button));
+
+			bool losingFocus = false;
+			button.LosingFocus += (s, e) => losingFocus = true;
+
+			// Tap outside of the button
+			TestServices.InputHelper.Tap(new(10, 10));
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(losingFocus, "Button should lose focus");
+
+			await TestServices.WindowHelper.WaitFor(
+				() => !object.ReferenceEquals(FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot), button));
 		}
 
 		[TestMethod]

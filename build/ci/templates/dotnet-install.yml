@@ -1,8 +1,13 @@
+parameters:
+  defaultDotNetSdkVersion: "10.0.100"
+  haveCheckout: true
+
 steps:
   - bash: |
       rm global.json
-      cp build/ci/net9/global.json global.json
-    displayName: "Using .NET 9 global.json"
+      cp build/ci/net10/global.json global.json
+    displayName: "Using .NET 10 global.json"
+    condition: ${{ eq(parameters.haveCheckout, true) }}
 
   - pwsh: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)/.dotnet"
@@ -15,10 +20,32 @@ steps:
     condition: eq(variables['Agent.OS'], 'Windows_NT')
 
   - task: UseDotNet@2
-    displayName: 'Use .NET SDK'
+    displayName: 'Install .NET 9 Runtime'
     retryCountOnTaskFailure: 3
+    inputs:
+      packageType: sdk
+      useGlobalJson: false
+      includePreviewVersions: false
+      version: 9.0.300
+      installationPath: $(DOTNET_INSTALL_DIR)
+
+  - task: UseDotNet@2
+    displayName: 'Use .NET SDK from global.json'
+    retryCountOnTaskFailure: 3
+    condition: ${{ eq(parameters.haveCheckout, true) }}
     inputs:
       packageType: sdk
       useGlobalJson: true
       includePreviewVersions: true
+      installationPath: $(DOTNET_INSTALL_DIR)
+
+  - task: UseDotNet@2
+    displayName: 'Use .NET SDK ${{ parameters.defaultDotNetSdkVersion }}'
+    retryCountOnTaskFailure: 3
+    condition: ${{ ne(parameters.haveCheckout, true) }}
+    inputs:
+      packageType: sdk
+      useGlobalJson: false
+      includePreviewVersions: true
+      version: ${{ parameters.defaultDotNetSdkVersion }}
       installationPath: $(DOTNET_INSTALL_DIR)

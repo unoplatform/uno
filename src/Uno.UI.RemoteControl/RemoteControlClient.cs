@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,10 +29,15 @@ using static Uno.UI.RemoteControl.RemoteControlStatus;
 
 namespace Uno.UI.RemoteControl;
 
-public partial class RemoteControlClient : IRemoteControlClient
+public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposable
 {
+	private readonly string? _additionalServerProcessorsDiscoveryPath;
+	private readonly bool _autoRegisterAppIdentity;
+
 	public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
+
 	public delegate void RemoteControlClientEventEventHandler(object sender, ClientEventEventArgs args);
+
 	public delegate void SendMessageFailedEventHandler(object sender, SendMessageFailedEventArgs args);
 
 	public static RemoteControlClient? Instance
@@ -91,11 +98,53 @@ public partial class RemoteControlClient : IRemoteControlClient
 		}
 	}
 
+	/// <summary>
+	/// Initializes the remote control client for the current application.
+	/// </summary>
+	/// <param name="appType">The type of the application entry point (usually your App type).</param>
+	/// <returns>The initialized RemoteControlClient singleton instance.</returns>
+	/// <remarks>
+	/// This is the primary initialization entry point used by applications. It is invoked by generated code
+	/// in debug builds (see Uno XAML source generator) and relies on discovery of the dev-server endpoint via
+	/// environment variables or assembly attributes emitted at build time by the IDE integration.
+	/// </remarks>
 	public static RemoteControlClient Initialize(Type appType)
 		=> Instance = new RemoteControlClient(appType);
 
+	/// <summary>
+	/// Initializes the remote control client with explicit server endpoints.
+	/// </summary>
+	/// <param name="appType">The type of the application entry point.</param>
+	/// <param name="endpoints">Optional list of fallback endpoints to try when connecting to the dev-server.</param>
+	/// <returns>The initialized RemoteControlClient singleton instance.</returns>
+	/// <remarks>
+	/// This overload is internal and mainly intended for tests and advanced scenarios. It allows providing explicit
+	/// endpoints that will be used as a fallback in addition to values coming from environment variables or
+	/// assembly-level attributes. Typical application code should call <see cref="Initialize(Type)"/>.
+	/// </remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	internal static RemoteControlClient Initialize(Type appType, ServerEndpointAttribute[]? endpoints)
 		=> Instance = new RemoteControlClient(appType, endpoints);
+
+	/// <summary>
+	/// Initializes the remote control client with explicit server endpoints and an additional processors discovery path.
+	/// </summary>
+	/// <param name="appType">The type of the application entry point.</param>
+	/// <param name="endpoints">Optional list of fallback endpoints to try when connecting to the dev-server.</param>
+	/// <param name="additionalServerProcessorsDiscoveryPath">An optional absolute or relative path used to discover additional server processors.</param>
+	/// <param name="autoRegisterAppIdentity">Whether to automatically register the app identity (mvid - platform...) with the dev-server.</param>
+	/// <returns>The initialized RemoteControlClient singleton instance.</returns>
+	/// <remarks>
+	/// This overload is internal and primarily used by tests to inject additional server processors or assemblies
+	/// during discovery, and to control the endpoints to connect to. Application code should use <see cref="Initialize(Type)"/>.
+	/// </remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	internal static RemoteControlClient Initialize(
+		Type appType,
+		ServerEndpointAttribute[]? endpoints,
+		string? additionalServerProcessorsDiscoveryPath,
+		bool autoRegisterAppIdentity = true)
+		=> Instance = new RemoteControlClient(appType, endpoints, additionalServerProcessorsDiscoveryPath, autoRegisterAppIdentity);
 
 	public event RemoteControlFrameReceivedEventHandler? FrameReceived;
 	public event RemoteControlClientEventEventHandler? ClientEvent;
@@ -111,6 +160,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	/// </summary>
 	/// <remarks>This applies only if a connection has been established once and has been lost by then.</remarks>
 	public TimeSpan ConnectionRetryInterval { get; } = TimeSpan.FromMilliseconds(_connectionRetryInterval);
+
 	private const int _connectionRetryInterval = 5_000;
 
 	private readonly StatusSink _status;
@@ -119,12 +169,13 @@ public partial class RemoteControlClient : IRemoteControlClient
 	private readonly (string endpoint, int port)[]? _serverAddresses;
 	private readonly Dictionary<string, IClientProcessor> _processors = new();
 	private readonly List<IRemoteControlPreProcessor> _preprocessors = new();
-	private readonly object _connectionGate = new();
+	private readonly Lock _connectionGate = new();
 	private Task<Connection?> _connection; // null if no server, socket only null if connection was established once but lost since then
 	private Timer? _keepAliveTimer;
 	private KeepAliveMessage _ping = new();
 
-	private record Connection(RemoteControlClient Owner, Uri EndPoint, Stopwatch Since, WebSocket? Socket) : IAsyncDisposable
+	private record Connection(RemoteControlClient Owner, Uri EndPoint, Stopwatch Since, WebSocket? Socket)
+		: IAsyncDisposable
 	{
 		private static class States
 		{
@@ -150,12 +201,30 @@ public partial class RemoteControlClient : IRemoteControlClient
 		{
 			_state = States.Disposed;
 			await _ct.CancelAsync();
+			_ct.Dispose();
+
+			if (Socket is not null)
+			{
+				try
+				{
+					await Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client disconnected", CancellationToken.None);
+				}
+				catch { }
+
+				Socket.Dispose();
+			}
 		}
 	}
 
-	private RemoteControlClient(Type appType, ServerEndpointAttribute[]? endpoints = null)
+	private RemoteControlClient(Type appType,
+		ServerEndpointAttribute[]? endpoints = null,
+		string? additionalServerProcessorsDiscoveryPath = null,
+		bool autoRegisterAppIdentity = true)
 	{
 		AppType = appType;
+		_additionalServerProcessorsDiscoveryPath = additionalServerProcessorsDiscoveryPath;
+		_autoRegisterAppIdentity = autoRegisterAppIdentity;
+
 		_status = new StatusSink(this);
 		var error = default(ConnectionError?);
 
@@ -287,11 +356,11 @@ public partial class RemoteControlClient : IRemoteControlClient
 				return default;
 			}
 
-#if __WASM__
-			var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").Equals("true", StringComparison.OrdinalIgnoreCase);
-#else
-			const bool isHttps = false;
-#endif
+			var isHttps = false;
+			if (OperatingSystem.IsBrowser())
+			{
+				isHttps = string.Equals(WebAssemblyImports.EvalString("window.location.protocol"), "https:", StringComparison.OrdinalIgnoreCase);
+			}
 
 			_status.Report(ConnectionState.Connecting);
 
@@ -336,7 +405,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			Connection? connection = default;
 			while (connection is null && pending is { Count: > 0 })
 			{
-				var task = await Task.WhenAny(pending.Keys.Concat(timeout));
+				var task = await Task.WhenAny([.. pending.Keys, timeout]);
 				if (task == timeout)
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
@@ -393,6 +462,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					this.Log().LogDebug($"Connected to {connection!.EndPoint}");
 				}
 
+				// Ensure we're processing incoming messages for the connection
 				connection.EnsureActive();
 
 				return connection;
@@ -445,17 +515,18 @@ public partial class RemoteControlClient : IRemoteControlClient
 			}
 			else if (port == 443)
 			{
-#if __WASM__
-				if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
+				if (OperatingSystem.IsBrowser())
 				{
-					var originParts = endpoint.Split('-');
+					if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
+					{
+						var originParts = endpoint.Split('-');
 
-					var currentHost = Foundation.WebAssemblyRuntime.InvokeJS("window.location.hostname");
-					var targetParts = currentHost.Split('-');
+						var currentHost = WebAssemblyImports.EvalString("window.location.hostname");
+						var targetParts = currentHost.Split('-');
 
-					endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
+						endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
+					}
 				}
-#endif
 
 				serverUri = new Uri($"wss://{endpoint}/rc");
 			}
@@ -549,10 +620,21 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		StartKeepAliveTimer();
 
-		while (await WebSocketHelper.ReadFrame(socket, ct) is HotReload.Messages.Frame frame)
+		while (await WebSocketHelper.ReadFrame(socket, ct) is { } frame)
 		{
 			try
 			{
+				// Central handling for some cross-cutting frames
+				if (frame is { Scope: WellKnownScopes.HotReload, Name: HotReloadStatusMessage.Name })
+				{
+					if (frame.TryGetContent(out HotReloadStatusMessage? hrStatus))
+					{
+						// Report any server initialization error to the global client status sink.
+						// If ServerError is empty/null, this will clear any previously reported fatal server error
+						// and allow the UI to transition back to a normal state when the server recovers.
+						_status.ReportHotReloadServerError(string.IsNullOrEmpty(hrStatus.ServerError) ? null : hrStatus.ServerError);
+					}
+				}
 				if (frame.Scope == WellKnownScopes.DevServerChannel)
 				{
 					if (frame.Name == KeepAliveMessage.Name)
@@ -561,7 +643,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					}
 					else if (frame.Name == ProcessorsDiscoveryResponse.Name)
 					{
-						ProcessServerProcessorsDiscovered(frame);
+						await ProcessServerProcessorsDiscovered(frame);
 					}
 				}
 				else
@@ -639,6 +721,40 @@ public partial class RemoteControlClient : IRemoteControlClient
 		}
 	}
 
+	private bool _appIdentitySent;
+
+	public async Task SendAppIdentityAsync()
+	{
+		if (_appIdentitySent)
+		{
+			return;
+		}
+
+		try
+		{
+			var asm = AppType.Assembly;
+			var mvid = ApplicationInfoHelper.GetMvid(asm);
+			var platform = ApplicationInfoHelper.GetTargetPlatform(asm);
+			var isDebug = Debugger.IsAttached;
+
+			await SendMessage(new AppLaunchMessage { Mvid = mvid, Platform = platform, IsDebug = isDebug, Step = AppLaunchStep.Connected });
+
+			_appIdentitySent = true;
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"AppIdentity sent to server (MVID={mvid}, Platform={platform}, Debug={isDebug}).");
+			}
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Failed to send AppIdentityMessage: {e.Message}");
+			}
+		}
+	}
+
 	private void ProcessPong(Frame frame)
 	{
 		if (frame.TryGetContent(out KeepAliveMessage? pong))
@@ -671,7 +787,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 		}
 	}
 
-	private void ProcessServerProcessorsDiscovered(Frame frame)
+	private async Task ProcessServerProcessorsDiscovered(Frame frame)
 	{
 		if (frame.TryGetContent(out ProcessorsDiscoveryResponse? response))
 		{
@@ -680,6 +796,11 @@ public partial class RemoteControlClient : IRemoteControlClient
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"Server loaded processors: \r\n{response.Processors.Select(p => $"\t- {p.Type} v {p.Version} (from {p.AssemblyPath})").JoinBy("\r\n")}.");
+			}
+
+			if (_autoRegisterAppIdentity)
+			{
+				await SendAppIdentityAsync();
 			}
 		}
 	}
@@ -726,23 +847,37 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 	private async Task InitializeServerProcessors()
 	{
+		var anyDiscoveryRequested = false;
+		if (_additionalServerProcessorsDiscoveryPath is not null)
+		{
+			anyDiscoveryRequested = true;
+			await SendMessage(new ProcessorsDiscovery(_additionalServerProcessorsDiscoveryPath));
+		}
+
 		if (AppType.Assembly.GetCustomAttributes(typeof(ServerProcessorsConfigurationAttribute), false) is ServerProcessorsConfigurationAttribute[] { Length: > 0 } configs)
 		{
 			var config = configs.First();
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"ServerProcessorsConfigurationAttribute ProcessorsPath={config.ProcessorsPath}");
+				this.Log().LogDebug($"{nameof(ServerProcessorsConfigurationAttribute)} ProcessorsPath={config.ProcessorsPath}");
 			}
 
+			anyDiscoveryRequested = true;
 			await SendMessage(new ProcessorsDiscovery(config.ProcessorsPath));
 		}
 		else
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogError("Unable to find ProjectConfigurationAttribute");
+				this.Log().LogDebug($"Unable to find any [{nameof(ServerProcessorsConfigurationAttribute)}]");
 			}
+		}
+
+		// If there is nothing to discover, send the AppIdentity message now.
+		if (!anyDiscoveryRequested && _autoRegisterAppIdentity)
+		{
+			await SendAppIdentityAsync();
 		}
 	}
 
@@ -781,5 +916,49 @@ public partial class RemoteControlClient : IRemoteControlClient
 	internal void NotifyOfEvent(string eventName, string eventDetails)
 	{
 		ClientEvent?.Invoke(this, new ClientEventEventArgs(eventName, eventDetails));
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		var connectionTask = _connection;
+		_connection = Task.FromResult<Connection?>(null); // Prevent any re-connection
+
+		if (await connectionTask is { } connection)
+		{
+			await connection.DisposeAsync();
+		}
+
+		foreach (var processor in _processors.Values)
+		{
+			try
+			{
+				if (processor is IDisposable disposable)
+				{
+					disposable.Dispose();
+				}
+				else if (processor is IAsyncDisposable asyncDisposable)
+				{
+					await asyncDisposable.DisposeAsync();
+				}
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Failed to dispose processor '{processor}'.", error);
+				}
+			}
+		}
+
+		_processors.Clear();
+
+		// Stop the keep alive timer
+		Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
+
+		// Remove the instance if it's the current one (should not happen in regular usage)
+		if (ReferenceEquals(Instance, this))
+		{
+			Instance = null;
+		}
 	}
 }

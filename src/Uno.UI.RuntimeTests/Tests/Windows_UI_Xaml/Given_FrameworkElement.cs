@@ -13,8 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Automation;
@@ -390,7 +389,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("+Infinity")]
 		[DataRow("	Infinity")]
 		[DataRow("-Infinity ")]
-		[DataRow("	Infinity")]
+		[DataRow("+	Infinity")]
 #if !WINAPPSDK
 		[Ignore]
 #endif
@@ -435,7 +434,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Alignment_Changes_During_Measure()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -827,8 +826,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Name = "decorator",
 				Background = new SolidColorBrush(Colors.Green),
 				Child = childBorder,
-				HorizontalAlignment = (HorizontalAlignment)Enum.Parse(typeof(HorizontalAlignment), horizontal),
-				VerticalAlignment = (VerticalAlignment)Enum.Parse(typeof(VerticalAlignment), vertical),
+				HorizontalAlignment = Enum.Parse<HorizontalAlignment>(horizontal),
+				VerticalAlignment = Enum.Parse<VerticalAlignment>(vertical),
 			};
 
 			void Set(DependencyProperty dp, double? value)

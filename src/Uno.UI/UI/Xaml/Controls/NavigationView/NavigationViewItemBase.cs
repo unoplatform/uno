@@ -1,102 +1,106 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewItemBase.cpp, commit 574e5ed 
 
-//
-// This file is a C# translation of the NavigationViewItemBase.cpp file from WinUI controls.
-//
-
-using System;
 using Uno.UI.Helpers.WinUI;
-using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
+namespace Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+public partial class NavigationViewItemBase : ContentControl
 {
-	public partial class NavigationViewItemBase : ListViewItem
+	protected override void OnApplyTemplate()
 	{
-		public NavigationViewItemBase()
+		base.OnApplyTemplate();
+
+		// TODO Uno specific - unsubscribe Loaded event handler to avoid multiple subscriptions
+		// as OnApplyTemplate will be called repeatedly.
+		Loaded -= OnLoaded;
+		Loaded += OnLoaded;
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs args)
+	{
+		// If the NavViewItem is not prepared in an ItemPresenter it will be missing a reference to NavigationView, so adding that here.
+		if (m_navigationView == null)
 		{
-			Loaded += NavigationViewItemBase_Loaded;
+			SetNavigationViewParent(SharedHelpers.GetAncestorOfType<NavigationView>(this));
 		}
+	}
 
-		private void NavigationViewItemBase_Loaded(object sender, RoutedEventArgs e)
-		{
-			// Workaround for https://github.com/unoplatform/uno/issues/2477
-			// In case this container is hosted in another container (if
-			// materialized through a DataTemplate), forward some of the properties
-			// to the original container.
-
-			if (GetValue(ItemsControl.ItemsControlForItemContainerProperty) == DependencyProperty.UnsetValue)
-			{
-				var parentItemsControl = this.FindFirstParent<ItemsControl>();
-
-				if (parentItemsControl != null)
-				{
-					SetValue(ItemsControl.ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(parentItemsControl));
-
-					var parentSelector = this.FindFirstParent<SelectorItem>();
-
-					SetBinding(IsSelectedProperty, new Binding { Path = "IsSelected", Source = parentSelector, Mode = BindingMode.TwoWay });
-				}
-			}
-		}
-
-		NavigationViewListPosition m_position = NavigationViewListPosition.LeftNav;
-
-		protected virtual void OnNavigationViewListPositionChanged() { }
-
-		internal NavigationViewListPosition Position()
-		{
-			return m_position;
-		}
-
-		internal void Position(NavigationViewListPosition value)
+	internal NavigationViewRepeaterPosition Position
+	{
+		get => m_position;
+		set
 		{
 			if (m_position != value)
 			{
 				m_position = value;
-				OnNavigationViewListPositionChanged();
+				OnNavigationViewItemBasePositionChanged();
 			}
-		}
-
-		internal NavigationView GetNavigationView()
-		{
-			//Because of Overflow popup, we can't get NavigationView by SharedHelpers::GetAncestorOfType
-			NavigationView navigationView = null;
-			var navigationViewList = GetNavigationViewList();
-			if (navigationViewList != null)
-			{
-				navigationView = navigationViewList.GetNavigationViewParent();
-			}
-			else
-			{
-				// Like Settings, it's NavigationViewItem, but it's not in NavigationViewList. Give it a second chance
-				navigationView = SharedHelpers.GetAncestorOfType<NavigationView>(VisualTreeHelper.GetParent(this));
-			}
-			return navigationView;
-		}
-
-		internal SplitView GetSplitView()
-		{
-			SplitView splitView = null;
-			var navigationView = GetNavigationView();
-			if (navigationView != null)
-			{
-				splitView = navigationView.GetSplitView();
-			}
-			return splitView;
-		}
-
-		internal NavigationViewList GetNavigationViewList()
-		{
-			// Find parent NavigationViewList
-			return SharedHelpers.GetAncestorOfType<NavigationViewList>(VisualTreeHelper.GetParent(this));
 		}
 	}
+
+	internal NavigationView GetNavigationView()
+	{
+		return m_navigationView;
+	}
+
+	// TODO: MZ Uno specific: existing Depth property inherited from base class
+	internal
+#if __NETSTD_REFERENCE__ || __SKIA__ || __WASM__
+		new
+#endif
+		int Depth
+	{
+		get => m_depth;
+		set
+		{
+			if (m_depth != value)
+			{
+				m_depth = value;
+				OnNavigationViewItemBaseDepthChanged();
+			}
+		}
+	}
+
+	protected SplitView GetSplitView()
+	{
+		SplitView splitView = null;
+		var navigationView = GetNavigationView();
+		if (navigationView != null)
+		{
+			splitView = navigationView.GetSplitView();
+		}
+		return splitView;
+	}
+
+	internal void SetNavigationViewParent(NavigationView navigationView)
+	{
+		m_navigationView = navigationView;
+	}
+
+	private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+	{
+		if (args.Property == IsSelectedProperty)
+		{
+			OnNavigationViewItemBaseIsSelectedChanged();
+		}
+	}
+
+#if IS_UNO
+	// TODO: Uno specific: Remove when #4689 is fixed
+
+	protected bool _fullyInitialized = false;
+
+	internal void Reinitialize()
+	{
+		if (!_fullyInitialized)
+		{
+			OnApplyTemplate();
+		}
+		UpdateVisualState(false);
+	}
+#endif
 }

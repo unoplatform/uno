@@ -25,8 +25,12 @@
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
 	</PropertyGroup>
 
+	<ItemGroup Label="GlobalUsings">
+		<Using Include="AwesomeAssertions" />
+	</ItemGroup>
+
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="Combinatorial.MSTest" />

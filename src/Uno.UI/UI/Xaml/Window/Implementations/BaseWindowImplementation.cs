@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+using Microsoft.UI.Input;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
@@ -125,6 +126,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 		NativeWindowWrapper = nativeWindow;
 		Window.AppWindow.SetNativeWindow(nativeWindow);
+		InputNonClientPointerSource.EnsureForAppWindow(Window.AppWindow);
 		OnNativeSizeChanged(null, new Size(nativeWindow.Bounds.Width, nativeWindow.Bounds.Height));
 		SetVisibleBoundsFromNative();
 	}
@@ -198,8 +200,10 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void SetVisibleBoundsFromNative()
 	{
-		ApplicationView.GetForWindowId(Window.AppWindow.Id).SetVisibleBounds(NativeWindowWrapper?.VisibleBounds ?? default);
-		XamlRoot?.VisualTree?.OnVisibleBoundChanged();
+		if (XamlRoot?.VisualTree is { } visualTree && NativeWindowWrapper is { } wrapper)
+		{
+			visualTree.VisibleBounds = wrapper.VisibleBounds;
+		}
 	}
 
 	protected virtual void OnSizeChanged(Size newSize) { }
@@ -268,13 +272,15 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 			bool cancelGuard = false;
 			using var guard = Disposable.Create(() =>
 			{
+				_isClosing = false;
+
 				if (cancelGuard)
 				{
 					return;
 				}
+
 				// in case of any failure, closing and closed states
 				// will reset so that closing operation can be attempted again
-				_isClosing = false;
 				_isClosed = false;
 			});
 
@@ -312,12 +318,13 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 				// because they check if window is closed already
 				Window.SetTitleBar(null);
 				Window.Content = null;
+
+				// _windowChrome.SetDesktopWindow(null);
+
+				// Mark Desktop Window instance as 'closed'
+				_isClosed = true;
 			}
 
-			// _windowChrome.SetDesktopWindow(null);
-
-			// Mark Desktop Window instance as 'closed'
-			_isClosed = true;
 			cancelGuard = true; // success, no need to reset closing and closed states
 
 			// if (!_minimizedOrHidden)
@@ -327,11 +334,9 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 				RaiseWindowVisibilityChangedEvent(false);
 			}
 
-			if (NativeWindowFactory.SupportsMultipleWindows)
-			{
-				// Close native window, cleanup, and unregister from hwnd mapping from DXamlCore
-				Shutdown();
-			}
+
+			// Close native window, cleanup, and unregister from hwnd mapping from DXamlCore
+			Shutdown();
 
 			return true;
 		}
@@ -341,14 +346,26 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void Shutdown()
 	{
-		ApplicationHelper.RemoveWindow(Window);
+		if (NativeWindowFactory.SupportsMultipleWindows)
+		{
+			ApplicationHelper.RemoveWindow(Window);
+		}
 
 		if (NativeWindowWrapper is null)
 		{
 			throw new InvalidOperationException("Native window is not initialized.");
 		}
 
-		// If AppWindow closing is in progress, we don't need to do anything here.
+		NativeWindowWrapper.Hide();
+
+		// Allow the window to be re-shown on single-window targets.
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			NativeWindowWrapper.WasShown = false;
+		}
+
+		// If AppWindow closing is in progress, it means the native window
+		// itself triggered the closure and is already being closed.
 		if (_appWindowClosingEventArgs is null)
 		{
 			NativeWindowWrapper.Close();
@@ -390,4 +407,6 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 	}
 
 	partial void DismissSplashScreenPlatform();
+
+	public virtual void SetTitleBar(UIElement? titleBar) { }
 }

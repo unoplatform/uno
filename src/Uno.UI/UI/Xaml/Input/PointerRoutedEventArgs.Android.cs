@@ -163,7 +163,7 @@ namespace Microsoft.UI.Xaml.Input
 				// We cannot cache the "bootTime" as the "uptimeMillis" is frozen while in deep sleep
 				// (cf. https://developer.android.com/reference/android/os/SystemClock)
 
-				var sleepTime = Android.OS.SystemClock.ElapsedRealtime() - Android.OS.SystemClock.UptimeMillis();
+				var sleepTime = SystemClock.ElapsedRealtime() - SystemClock.UptimeMillis();
 				var realUptime = (ulong)(uptimeMillis + sleepTime);
 				return realUptime * 1000;
 			}

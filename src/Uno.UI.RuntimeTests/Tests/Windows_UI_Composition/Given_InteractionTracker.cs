@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if HAS_UNO_WINUI || WINAPPSDK
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
@@ -188,7 +189,8 @@ public partial class Given_InteractionTracker
 #elif !HAS_UNO
 	[Ignore("Test fails on Windows. For some reason, Drag isn't doing what we expect it to for an unknown reason.")]
 #endif
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
 	public async Task When_UserInteraction()
 	{
 		var border = new Border()

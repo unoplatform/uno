@@ -1,6 +1,10 @@
-﻿#!/bin/bash
+#!/bin/bash
 set -euo pipefail
 IFS=$'\n\t'
+
+# Ensure this script has no BOM even if it ever gets committed with one again
+# (the BOM only breaks the shebang at exec time, but this is a safety net).
+sed -i '' $'1s/^\xEF\xBB\xBF//' "$0"
 
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
@@ -109,7 +113,7 @@ export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/R
 export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-17-5"
 export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
 
-export UnoTargetFrameworkOverride="net8.0-ios17.0"
+export UnoTargetFrameworkOverride="net9.0-ios18.0"
 
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 
@@ -141,19 +145,37 @@ export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
 xcrun simctl list devices --json > $DEVICELIST_FILEPATH
 
-# check for the presence of idb, and install it if it's not present
+# Check for the presence of idb, and install it if it's not present
+# NOTE: fb-idb currently breaks under Python 3.14 (asyncio get_event_loop change),
+# so we pin fb-idb to Python 3.12 to avoid "There is no current event loop in thread 'MainThread'".
+# Historical context: prior installs referenced an App Center issue/workaround.
+# https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
 export PATH=$PATH:~/.local/bin
 
-if ! command -v idb &> /dev/null
+if ! command -v idb >/dev/null 2>&1
 then
-	echo "Installing idb"
-	brew install pipx
-	# # https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
-	brew tap facebook/fb
-	brew install idb-companion
-	pipx install fb-idb
+	echo "Installing idb (fb-idb + idb-companion) pinned to Python 3.12"
+
+	# 1) Make sure we have a usable python3.12, but don't fail if Homebrew linking conflicts
+	if ! command -v python3.12 >/dev/null 2>&1; then
+		# Install, but ignore link-step failure; we'll use the keg path explicitly
+		brew list --versions python@3.12 >/dev/null 2>&1 || brew install python@3.12 || true
+	fi
+	# Prefer an existing python3.12 on PATH; otherwise use the keg path
+	PY312_BIN="$(command -v python3.12 || echo "$(brew --prefix)/opt/python@3.12/bin/python3.12")"
+	export PIPX_DEFAULT_PYTHON="$PY312_BIN"
+	echo "Using Python for pipx: $PIPX_DEFAULT_PYTHON"
+
+	# 2) Install helpers
+	brew list --versions pipx >/dev/null 2>&1 || brew install pipx
+	brew tap facebook/fb >/dev/null 2>&1 || true
+	brew list --versions idb-companion >/dev/null 2>&1 || brew install idb-companion
+
+	# 3) Install fb-idb under Python 3.12
+	pipx uninstall fb-idb >/dev/null 2>&1 || true
+	pipx install --force fb-idb
 else
-	echo "Using idb from:" `command -v idb`
+	echo "Using idb from: $(command -v idb)"
 fi
 
 ##

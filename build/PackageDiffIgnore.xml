@@ -2113,6 +2113,28 @@
 			<!-- END AppBarButton-->
 		</Methods>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="6.1">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+			<!-- BEGIN ListViewBase selection changes -->
+			<Member fullName="Windows.Foundation.Collections.IVectorChangedEventArgs Microsoft.UI.Xaml.Controls.ItemsControl::_inProgressVectorChange" reason="Not public in WinUI" />
+			<!-- END ListViewBase selection changes -->
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<!-- BEGIN ListViewBase selection changes -->
+			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ItemsControl.GetInProgressAdjustedIndex(System.Int32 index)" reason="Not public in WinUI" />
+			<!-- END ListViewBase selection changes -->
+		</Methods>
+	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.

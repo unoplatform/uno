@@ -5,7 +5,7 @@ set -euo pipefail
 set -x
 
 export UITEST_IS_LOCAL=${UITEST_IS_LOCAL=false}
-export UNO_UITEST_APP_ID="uno.platform.samplesapp.skia"
+export UNO_UITEST_APP_ID="${UNO_UITEST_APP_ID=uno.platform.samplesapp.skia}"
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/$UNO_UITEST_APP_ID-Signed.apk
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
@@ -131,7 +131,7 @@ $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permi
 
 # start the android app using environment variables using adb
 $ANDROID_HOME/platform-tools/adb shell am start \
-  -n uno.platform.samplesapp.skia/crc6448f3b0362cbf4bc9.MainActivity \
+  -n $UNO_UITEST_APP_ID/crc6448f3b0362cbf4bc9.MainActivity \
   -e UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP" \
   -e UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT" \
   -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" \
@@ -157,19 +157,21 @@ while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUT
     fi
 done
 
-$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME
+$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME || echo "ERROR: could not adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH"
+
+## Dump the emulator's system log
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
+
+# create $BUILD_SOURCESDIRECTORY/build/uitests-failure-results before exiting, so that `PublishBuildArtifacts@1` doesn't error out just because the tests crashed.
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME" ]; then
 	echo "ERROR: The test results file $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME does not exist (did nunit crash ?)"
 	exit 1
 fi
 
-## Dump the emulator's system log
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
-
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 echo "Running NUnitTransformTool"
 

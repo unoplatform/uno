@@ -1,0 +1,40 @@
+﻿<UserControl
+    x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.VisualStateUserControlWithoutTrigger"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <Button>
+        <StackPanel>
+
+            <TextBlock x:Name="MessageText" Text="Message" />
+
+            <TextBlock
+                x:Name="TaskText"
+                Text="Task"
+                Visibility="Collapsed" />
+
+        </StackPanel>
+
+        <VisualStateManager.VisualStateGroups>
+
+            <VisualStateGroup x:Name="ModeStates">
+                <VisualStateGroup.States>
+                    <VisualState x:Name="MessageMode" />
+
+                    <VisualState x:Name="TaskMode">
+                        <VisualState.Setters>
+                            <Setter Target="MessageText.Visibility" Value="Collapsed" />
+                            <Setter Target="TaskText.Visibility" Value="Visible" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup.States>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Button>
+
+</UserControl>

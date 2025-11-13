@@ -198,7 +198,7 @@ public static class LoopingSelectorHelper
 			{
 				await TestServices.WindowHelper.WaitForIdle();
 				await TestServices.KeyboardHelper.PressKeySequence(keySequenceToUse);
-				await TestServices.WindowHelper.WaitFor(() => selectionChangedEvent);
+				await TestServices.WindowHelper.WaitFor(() => selectionChangedEvent, timeoutMS: 3000);
 				selectionChangedEvent = false;
 			}
 		}

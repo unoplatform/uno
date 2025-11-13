@@ -2,18 +2,23 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Input;
-using Windows.Foundation;
+using System.Threading;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
-using static Uno.UI.Xaml.Core.InputManager.PointerManager;
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using Windows.Foundation;
+
+//using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+
 using static System.Net.Mime.MediaTypeNames;
+using static Uno.UI.Xaml.Core.InputManager.PointerManager;
 
 #if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
@@ -33,7 +38,6 @@ namespace Microsoft.UI.Xaml.Controls
 			? typeof(ScrollContentPresenter).Log().Trace
 			: null;
 
-		private /*readonly - partial*/ IScrollStrategy _strategy;
 		private GestureRecognizer.Manipulation? _touchInertia;
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
 #nullable restore
@@ -108,10 +112,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void InitializePartial()
 		{
 #if __SKIA__
-			_strategy = CompositorScrollStrategy.Instance;
+			Visual.Clip = Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
 #endif
-
-			_strategy.Initialize(this);
 		}
 
 		private protected override void OnLoaded()
@@ -176,14 +178,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (oldValue is UIElement oldElt)
 			{
-				_strategy.Update(oldElt, 0, 0, 1, new(DisableAnimation: true));
+				Update(oldElt, 0, 0, 1, new(DisableAnimation: true));
 			}
 
 			base.OnContentChanged(oldValue, newValue);
 
 			if (newValue is UIElement newElt)
 			{
-				_strategy.Update(newElt, HorizontalOffset, VerticalOffset, 1, new(DisableAnimation: true));
+				Update(newElt, HorizontalOffset, VerticalOffset, 1, new(DisableAnimation: true));
 			}
 		}
 
@@ -199,14 +201,13 @@ namespace Microsoft.UI.Xaml.Controls
 			bool isIntermediate = false,
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
-			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation), isIntermediate, callerName, callerLine);
+			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation, IsIntermediate: isIntermediate), callerName, callerLine);
 
 		private bool Set(
 			double? horizontalOffset = null,
 			double? verticalOffset = null,
 			float? zoomFactor = null,
 			ScrollOptions options = default,
-			bool isIntermediate = false,
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
 		{
@@ -240,9 +241,9 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | inter: {isIntermediate} | opts: {options})");
+			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | opts: {options})");
 
-			if (!options.IsInertial)
+			if (!options.IsTouch)
 			{
 				// If we get a request to scroll to a specific offset **that is not flagged as IsInertial** (i.e. not coming from the inertia processing),
 				// we stop the pending inertia processor.
@@ -251,31 +252,102 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
-			if (updated)
+			if (updated || options.IsTouch)
 			{
 				if (Content is UIElement contentElt)
 				{
-					_strategy.Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, 1, options);
+					Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, 1, options);
 				}
 			}
 
-			// For the OnPresenterScrolled, we cannot rely only on the `updated` flag, we must also check for the isIntermediate flag!
-			if (updated || _lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
+			return success;
+		}
+
+		private long _stategyUpdateRequestId;
+		private void Updated(double horizontalOffset, double verticalOffset, bool isIntermediate = false)
+		{
+			var request = Interlocked.Increment(ref _stategyUpdateRequestId);
+
+			if (Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess)
 			{
-				_lastScrolledEvent = (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
-				Scroller?.OnPresenterScrolled(updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
+				UpdateOffsets(horizontalOffset, verticalOffset, isIntermediate);
+			}
+			else
+			{
+				DispatcherQueue.TryEnqueue(() =>
+				{
+					if (request == _stategyUpdateRequestId)
+					{
+						UpdateOffsets(horizontalOffset, verticalOffset, isIntermediate);
+					}
+				});
 			}
 
-			if (updated)
+			void UpdateOffsets(double updatedHorizontalOffset, double updatedVerticalOffset, bool isIntermediate = false)
 			{
+				// For the OnPresenterScrolled, we cannot rely only on the `updated` flag, we must also check for the isIntermediate flag!
+				if (_lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
+				{
+					_lastScrolledEvent = (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
+
+					Scroller?.OnPresenterScrolled(updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
+
+				}
+
 				// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
 				//		 we will apply only the final ScrollOffsets and only once.
 				ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
 				InvalidateViewport();
 			}
-
-			return success;
 		}
+
+		private void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)
+		{
+			var target = new Vector2((float)-horizontalOffset, (float)-verticalOffset);
+			var visual = view.Visual;
+
+			// No matter the `options.DisableAnimation`, if we have an animation running
+			if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
+				// ... that is animating to (almost) the same target value
+				&& Vector2.DistanceSquared(visual.AnchorPoint, target) < 4
+				// ... and which is about to complete
+				&& controller.Remaining < TimeSpan.FromMilliseconds(50))
+			{
+				// We keep the animation running, making sure that we are not abruptly stopping scrolling animation
+				// due to completion of the inertia processor a bit earlier than the animation itself.
+				return;
+			}
+
+
+			if (options is { DisableAnimation: true } or { IsTouch: true })
+			{
+				visual.StopAnimation(nameof(Visual.AnchorPoint));
+				visual.AnchorPoint = target;
+				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
+			}
+			else
+			{
+				var compositor = visual.Compositor;
+				var easing = CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10);
+				var animation = compositor.CreateVector2KeyFrameAnimation();
+				animation.InsertKeyFrame(1.0f, target, easing);
+				animation.Duration = TimeSpan.FromSeconds(1);
+				void OnFrame(CompositionAnimation? _) => Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), true);
+				void OnStopped(object? _, EventArgs __)
+				{
+					animation.AnimationFrame -= OnFrame;
+					animation.Stopped -= OnStopped;
+
+					Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), false);
+				}
+
+				animation.AnimationFrame += OnFrame;
+				animation.Stopped += OnStopped;
+
+				visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
+			}
+		}
+
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
 		{
@@ -361,8 +433,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: true, IsInertial: true),
-					isIntermediate: true);
+					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
 			}
 			else
 			{
@@ -372,8 +443,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: true, IsInertial: true),
-					isIntermediate: true);
+					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
 
 				if (!sv.IsHorizontalScrollChainingEnabled)
 				{
@@ -416,12 +486,21 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var v0 = (scrollable.Horizontally, scrollable.Vertically) switch
 				{
-					(true, false) => args.Velocities.Linear.X,
-					(false, true) => args.Velocities.Linear.Y,
+					(true, false) => Math.Abs(args.Velocities.Linear.X),
+					(false, true) => Math.Abs(args.Velocities.Linear.Y),
 					(true, true) => (Math.Abs(args.Velocities.Linear.X) + Math.Abs(args.Velocities.Linear.Y)) / 2,
 					_ => 0
 				};
-				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, 2750);
+
+				// calculate the duration based on PKScrollView.prototype.stepThroughDecelerationAnimation from https://github.com/jimeh/PastryKit
+				// momentum should decay by 5% each frame, at 60fps, until the minimum threshold is reached.
+				const double PKScrollViewDecelerationFrictionFactor = 0.95;
+				const double PKScrollViewDesiredAnimationFrameRate = 1000 / 60.0;
+				const double PKScrollViewMinimumVelocity = 0.01;
+				var frames = Math.Log(PKScrollViewMinimumVelocity / v0, PKScrollViewDecelerationFrictionFactor);
+				var duration = frames * PKScrollViewDesiredAnimationFrameRate;
+
+				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, duration);
 			}
 			else if (OperatingSystem.IsAndroid())
 			{
@@ -467,6 +546,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				sv.AdjustOffsetsForSnapPoints(ref h, ref v, null);
+
+				// note: IsTouch = true as we are not in the touch scrolling anymore here, we are just snapping.
 				Set(horizontalOffset: h, verticalOffset: v, disableAnimation: false, isIntermediate: false);
 			}
 			else
@@ -481,8 +562,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: false, IsInertial: true),
-					isIntermediate: true);
+					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
 			}
 
 			return true;
@@ -499,7 +579,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_touchInertia = null;
 
-			Set(disableAnimation: true, isIntermediate: false);
+			//Set(disableAnimation: true, isIntermediate: false);
+			Set(options: new ScrollOptions(DisableAnimation: true, IsTouch: true, IsIntermediate: false));
 		}
 
 		private ScrollDirection GetDirection(ManipulationVelocities velocities)
@@ -569,5 +650,20 @@ namespace Microsoft.UI.Xaml.Controls
 			Right = 1 << 4
 		}
 	}
+
+	/// <summary>
+	/// Options for the ScrollContentPrensenter.Update
+	/// </summary>
+	/// <param name="DisableAnimation">Request to disable the animation.</param>
+	/// <param name="LinearAnimationDuration">
+	/// Requests to use a linear animation with a specific duration instead of the default animation strategy.
+	/// This is for the for inertia processor with touch scrolling where the total duration is calculated based on the velocity.
+	/// </param>
+	/// <param name="IsTouch">Indicates that the scroll is coming from an inertia processor.</param>
+	/// <param name="IsIntermediate">
+	/// Indicates that the scroll is an intermediate value, not the final one
+	/// (i.e. active touch scrolling, touch scroll inertia or scroll animation).
+	/// </param>
+	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false);
 }
 #endif

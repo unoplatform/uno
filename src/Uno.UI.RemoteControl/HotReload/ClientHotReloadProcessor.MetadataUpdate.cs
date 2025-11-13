@@ -38,7 +38,6 @@ partial class ClientHotReloadProcessor
 	private static ElementUpdateAgent? _elementAgent;
 
 	private static readonly Logger _log = typeof(ClientHotReloadProcessor).Log();
-	private static Window? _currentWindow;
 
 	private static ElementUpdateAgent ElementAgent
 	{
@@ -54,6 +53,8 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
+	internal static Window? CurrentWindow { get; private set; }
+
 	private static (bool value, string reason) ShouldReload()
 	{
 		var isPaused = TypeMappings.IsPaused;
@@ -65,18 +66,18 @@ partial class ClientHotReloadProcessor
 	internal static void SetWindow(Window window, bool disableIndicator)
 	{
 #if HAS_UNO_WINUI
-		if (_currentWindow is not null)
+		if (CurrentWindow is not null)
 		{
-			_currentWindow.Activated -= ShowDiagnosticsOnFirstActivation;
+			CurrentWindow.Activated -= ShowDiagnosticsOnFirstActivation;
 		}
 #endif
 
-		_currentWindow = window;
+		CurrentWindow = window;
 
 #if HAS_UNO_WINUI
-		if (_currentWindow is not null && !disableIndicator)
+		if (CurrentWindow is not null && !disableIndicator)
 		{
-			_currentWindow.Activated += ShowDiagnosticsOnFirstActivation;
+			CurrentWindow.Activated += ShowDiagnosticsOnFirstActivation;
 		}
 #endif
 	}
@@ -553,12 +554,12 @@ partial class ClientHotReloadProcessor
 		}
 
 #if WINUI
-		if (_currentWindow is { DispatcherQueue: { } dispatcherQueue } window)
+		if (CurrentWindow is { DispatcherQueue: { } dispatcherQueue } window)
 		{
 			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}
 #else
-		if (_currentWindow is { Dispatcher: { } dispatcher } window)
+		if (CurrentWindow is { Dispatcher: { } dispatcher } window)
 		{
 			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}

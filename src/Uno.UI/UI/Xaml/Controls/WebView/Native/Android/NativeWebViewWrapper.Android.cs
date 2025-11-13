@@ -16,7 +16,7 @@ using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeWebViewWrapper : INativeWebView
+internal partial class NativeWebViewWrapper : INativeWebView
 {
 	private readonly Uri AndroidAssetBaseUri = new Uri("file:///android_asset/");
 
@@ -43,8 +43,9 @@ internal class NativeWebViewWrapper : INativeWebView
 		_webView.Settings.SetSupportZoom(true);
 		_webView.Settings.LoadWithOverviewMode = true;
 		_webView.Settings.UseWideViewPort = true;
+		_webView.Settings.SetSupportMultipleWindows(true);
 		_webView.SetWebViewClient(new InternalClient(_coreWebView, this));
-		_webView.SetWebChromeClient(new InternalWebChromeClient());
+		_webView.SetWebChromeClient(new InternalWebChromeClient(_coreWebView));
 
 		_webView.AddJavascriptInterface(new UnoWebViewHandler(this), "unoWebView");
 
@@ -173,9 +174,10 @@ internal class NativeWebViewWrapper : INativeWebView
 			uri = assetUri;
 		}
 
-		//The replace is present because the URI cuts off any slashes that are more than two when it creates the URI.
-		//Therefore we add the final forward slash manually in Android because the file:/// requires 3 slashes.
-		var actualUri = uri.AbsoluteUri.Replace("file://", "file:///");
+		// The replace is present because the URI cuts off any slashes that are more than two when it creates the URI.
+		// Therefore we add the final forward slash manually in Android because the file:/// requires 3 slashes.
+		// However, we want to be smart and only replace if we find file:// not followed by a third slash at the start
+		var actualUri = MalformedFileUri().Replace(uri.AbsoluteUri, "file:///");
 		ScheduleNavigationStarting(actualUri, () => _webView.LoadUrl(actualUri));
 	}
 
@@ -207,11 +209,18 @@ internal class NativeWebViewWrapper : INativeWebView
 		// the WinUI behavior.
 		_ = _coreWebView.Owner.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
 		{
-			_coreWebView.RaiseNavigationStarting(url, out var cancel);
+			// Ensure we pass the correct navigation data - use Uri for file URLs, string for data URLs
+			object navigationData = url;
+			if (!string.IsNullOrEmpty(url) && !url.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+			{
+				navigationData = new Uri(url);
+			}
+
+			_coreWebView.RaiseNavigationStarting(navigationData, out var cancel);
 
 			if (!cancel)
 			{
-				loadAction?.Invoke();
+				loadAction.Invoke();
 			}
 		});
 	}
@@ -283,5 +292,8 @@ internal class NativeWebViewWrapper : INativeWebView
 			_coreWebView.RaiseWebMessageReceived(message);
 		}
 	}
+
+	[System.Text.RegularExpressions.GeneratedRegex(@"^file://(?!/)")]
+	private static partial System.Text.RegularExpressions.Regex MalformedFileUri();
 }
 

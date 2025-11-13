@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.RuntimeTests.Helpers
@@ -60,7 +59,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 
 	public static class AssertionExtensions
 	{
-		public static AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<float>> BeEquivalentToWithTolerance<T>(this FluentAssertions.Collections.GenericCollectionAssertions<float> assertions, IEnumerable<float> expected, float tolerance)
+		public static AndConstraint<AwesomeAssertions.Collections.GenericCollectionAssertions<float>> BeEquivalentToWithTolerance<T>(this AwesomeAssertions.Collections.GenericCollectionAssertions<float> assertions, IEnumerable<float> expected, float tolerance)
 		{
 			assertions.Subject.Should().HaveCount(expected.Count());
 
@@ -75,7 +74,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 				actual.Should().BeApproximately(expectedValue, tolerance);
 			}
 
-			return new AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<float>>(assertions);
+			return new AndConstraint<AwesomeAssertions.Collections.GenericCollectionAssertions<float>>(assertions);
 		}
 	}
 }

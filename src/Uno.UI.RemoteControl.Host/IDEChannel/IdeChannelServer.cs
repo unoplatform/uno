@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using StreamJsonRpc;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
@@ -17,21 +18,33 @@ namespace Uno.UI.RemoteControl.Host.IdeChannel;
 internal class IdeChannelServer : IIdeChannel, IDisposable
 {
 	private readonly ILogger _logger;
-	private readonly IConfiguration _configuration;
+	private readonly IDisposable? _configSubscription;
 
-	private readonly Task<bool> _initializeTask;
+	private Task<bool> _initializeTask;
 	private NamedPipeServerStream? _pipeServer;
 	private JsonRpc? _rpcServer;
 	private Proxy? _proxy;
+	private readonly Timer _keepAliveTimer;
 
-	public IdeChannelServer(ILogger<IdeChannelServer> logger, IConfiguration configuration)
+	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
 	{
 		_logger = logger;
-		_configuration = configuration;
 
-		_initializeTask = Task.Run(InitializeServer);
+		_keepAliveTimer = new Timer(_ =>
+		{
+			if (_pipeServer?.IsConnected ?? false)
+			{
+				SendKeepAlive();
+			}
+			else
+			{
+				_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
+			}
+		});
+
+		_initializeTask = Task.Run(() => InitializeServer(config.CurrentValue.ChannelId));
+		_configSubscription = config.OnChange(opts => _initializeTask = InitializeServer(opts.ChannelId));
 	}
-
 
 	#region IIdeChannel
 
@@ -45,15 +58,19 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 		if (_proxy is null)
 		{
-			this.Log().Log(LogLevel.Information, "Received an message to send to the IDE, but there is no connection available for that.");
+			this.Log().LogInformation(
+				"Received a message {MessageType} to send to the IDE, but there is no connection available for that.",
+				message.Scope);
 		}
 		else
 		{
 			_proxy.SendToIde(message);
+			ScheduleKeepAlive();
 		}
 
 		await Task.Yield();
 	}
+
 	#endregion
 
 	/// <inheritdoc />
@@ -65,48 +82,78 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	/// <summary>
 	/// Initialize as dev-server (cf. IdeChannelClient for init as IDE)
 	/// </summary>
-	private async Task<bool> InitializeServer()
+	private async Task<bool> InitializeServer(string? channelId)
 	{
-		if (!Guid.TryParse(_configuration["ideChannel"], out var ideChannel))
+		try
 		{
-			_logger.LogDebug("No IDE Channel ID specified, skipping.");
+			// First, we remove the proxy to prevent messages being sent while we are re-initializing
+			_proxy = null;
+
+			// Disposing any previous server
+			_rpcServer?.Dispose();
+			if (_pipeServer is { } server)
+			{
+				server.Disconnect();
+				await server.DisposeAsync();
+			}
+		}
+		catch (Exception error)
+		{
+			_logger.LogWarning(error, "An error occurred while disposing the existing IDE channel server. Continuing initialization.");
+		}
+
+		try
+		{
+			if (string.IsNullOrWhiteSpace(channelId))
+			{
+				return false;
+			}
+
+			_pipeServer = new NamedPipeServerStream(
+				pipeName: channelId,
+				direction: PipeDirection.InOut,
+				maxNumberOfServerInstances: 1,
+				transmissionMode: PipeTransmissionMode.Byte,
+				options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+
+			await _pipeServer.WaitForConnectionAsync();
+
+			_proxy = new(this);
+			_rpcServer = JsonRpc.Attach(_pipeServer, _proxy);
+
+			if (_logger.IsEnabled(LogLevel.Debug))
+			{
+				_logger.LogDebug("IDE channel successfully initialized.");
+			}
+
+			ScheduleKeepAlive();
+
+			SendKeepAlive(); // Send a keep-alive message immediately after connection
+
+			return true;
+		}
+		catch (Exception error)
+		{
+			if (_logger.IsEnabled(LogLevel.Error))
+			{
+				_logger.LogError(error, "Failed to init the IDE channel.");
+			}
+
 			return false;
 		}
-
-		_pipeServer = new NamedPipeServerStream(
-			pipeName: ideChannel.ToString(),
-			direction: PipeDirection.InOut,
-			maxNumberOfServerInstances: 1,
-			transmissionMode: PipeTransmissionMode.Byte,
-			options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
-
-		await _pipeServer.WaitForConnectionAsync();
-
-		if (_logger.IsEnabled(LogLevel.Debug))
-		{
-			_logger.LogDebug("IDE Connected");
-		}
-
-		_proxy = new(this);
-		_rpcServer = JsonRpc.Attach(_pipeServer, _proxy);
-
-		_ = StartKeepAliveAsync();
-		return true;
 	}
 
-	private async Task StartKeepAliveAsync()
-	{
-		while (_pipeServer?.IsConnected ?? false)
-		{
-			_proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
+	private const int KeepAliveDelay = 10000; // 10 seconds in milliseconds
 
-			await Task.Delay(5000);
-		}
-	}
+	private void ScheduleKeepAlive() => _keepAliveTimer.Change(KeepAliveDelay, KeepAliveDelay);
+
+	private void SendKeepAlive() => _proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
 
 	/// <inheritdoc />
 	public void Dispose()
 	{
+		_keepAliveTimer.Dispose();
+		_configSubscription?.Dispose();
 		_rpcServer?.Dispose();
 		_pipeServer?.Dispose();
 	}

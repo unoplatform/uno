@@ -45,7 +45,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					// which do not build using the RuntimeIdentifier being set. For instance, a head
 					// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
 					// dependent projects, causing the HR engine to search for pdb/dlls in
-					// the bin/Debug/net8.0/iossimulator/*.dll path instead of its original path.
+					// the bin/Debug/net9.0/iossimulator/*.dll path instead of its original path.
 
 					return false;
 				}
@@ -108,15 +108,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			MSBuildBasePath = BuildMSBuildPath(workDir);
 
-			var version = GetDotnetVersion(workDir);
-			if (version.Major != typeof(object).Assembly.GetName().Version?.Major)
+			var expectedVersion = GetDotnetVersion(workDir);
+			var currentVersion = typeof(object).Assembly.GetName().Version;
+			if (expectedVersion.Major != currentVersion?.Major)
 			{
 				if (typeof(CompilationWorkspaceProvider).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(CompilationWorkspaceProvider).Log().LogError($"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Change the TargetFramework version to match net{version.Major}.0 in your project file.");
+					typeof(CompilationWorkspaceProvider).Log().LogError($"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Expected: net{expectedVersion.Major}, Current: net{currentVersion?.Major}. Change the TargetFramework version in your project file to match the expected version.");
 				}
 
-				throw new InvalidOperationException("Project TargetFramework version mismatch");
+				throw new InvalidOperationException($"Project TargetFramework version mismatch. Expected: net{expectedVersion.Major}, Current: net{currentVersion?.Major}");
 			}
 
 			Environment.SetEnvironmentVariable("MSBuildSDKsPath", Path.Combine(MSBuildBasePath, "Sdks"));

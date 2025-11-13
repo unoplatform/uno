@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.MarkupExtensionTests.Controls;
+
 public sealed partial class When_AttachedDP_Markup_Setup : UserControl
 {
 	public When_AttachedDP_Markup_Setup()

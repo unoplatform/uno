@@ -20,7 +20,7 @@ Get an [in-depth introduction to how Uno works](uno-internals-overview.md), or j
 
 For the prerequisites you'll need, as well as useful tips like using [solution filters](https://learn.microsoft.com/visualstudio/ide/filtered-solutions) and cross-targeting overrides to quickly load and build Uno for a single platform, start with the guide to [Building Uno.UI](building-uno-ui.md). The guide to [Debugging Uno.UI](debugging-uno-ui.md) will show you how to debug Uno.UI code either in the included UI samples or in an application outside the Uno.UI solution.
 
-You can contribute to Uno directly from your browser using GitPod, [find out how](xref:Uno.Features.Gitpod).
+You can contribute to Uno directly from your browser using Ona, [find out how](xref:Uno.Features.Gitpod).
 
 Whether you're fixing a bug or working on a new feature, [inspecting the visual tree of a running app](xref:Uno.Contributing.InspectVisualTree) is often a key step.
 

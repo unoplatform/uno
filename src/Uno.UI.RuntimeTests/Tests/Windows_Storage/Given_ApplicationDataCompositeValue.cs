@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Windows.Storage;
-using FluentAssertions;
 
 namespace Uno.UI.Tests.Windows_Storage;
 
@@ -231,6 +230,9 @@ public class Given_ApplicationDataCompositeValue
 	}
 
 	[TestMethod]
+#if RUNTIME_NATIVE_AOT
+	[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 	public void When_Values()
 	{
 		// Arrange
@@ -252,6 +254,9 @@ public class Given_ApplicationDataCompositeValue
 	}
 
 	[TestMethod]
+#if RUNTIME_NATIVE_AOT
+	[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 	public void When_Keys()
 	{
 		// Arrange

@@ -23,8 +23,8 @@ using Microsoft.UI.Xaml.Tests.Common;
 
 namespace Uno.UI.RuntimeTests.MUX.Input.KeyboardAccelerators;
 
-
-[ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaMobile)]
+[TestClass]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMobile)]
 public partial class KeyboardAcceleratorTests : MUXApiTestBase
 {
 	#region BasicKeyboardAcceleratorToolTipVerification
@@ -943,7 +943,8 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		}
 	}
 
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	[TestProperty("Description", "Validates the order and priority of accelerator operations.")]
 	public async Task ValidateOrderOfAcceleratorOperations()
 	{
@@ -3334,11 +3335,12 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
+	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators and Text Input behavior. Key input in currently focused TextBox should only be used to generate text input.")]
 #if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task ValidateTextInputAndKeyboardAccelerator()
 	{
 		const string rootPanelXaml =
@@ -3521,7 +3523,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 	[TestProperty("Description", "Validates that all values of global::Windows.System.VirtualKey are accounted for when converting to a keyboard accelerator string representation.")]
 	public async Task VerifyAllVirtualKeysAccountedForInKeyboardAcceleratorStringRepresentations()
 	{
-		foreach (VirtualKey vk in Enum.GetValues(typeof(VirtualKey)))
+		foreach (VirtualKey vk in Enum.GetValues<VirtualKey>())
 		{
 			await TestServices.RunOnUIThread(() =>
 			{

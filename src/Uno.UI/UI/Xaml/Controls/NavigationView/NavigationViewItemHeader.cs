@@ -1,77 +1,111 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewItemHeader.cpp, commit f2df41d
 
-//
-// This file is a C# translation of the NavigationViewHeader.cpp file from WinUI controls.
-//
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Uno.UI.Helpers.WinUI;
 
-using Windows.UI.Xaml.Hosting;
+namespace Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+public partial class NavigationViewItemHeader : NavigationViewItemBase
 {
-	public partial class NavigationViewItemHeader : NavigationViewItemBase
+	private Grid m_rootGrid = null;
+	private bool m_isClosedCompact = false;
+	private const string c_rootGrid = "NavigationViewItemHeaderRootGrid";
+
+	public NavigationViewItemHeader()
 	{
-		private long m_splitViewIsPaneOpenChangedRevoker;
-		private long m_splitViewDisplayModeChangedRevoker;
-		private bool m_isClosedCompact;
+		this.SetDefaultStyleKey();
+	}
 
-		public NavigationViewItemHeader()
+	protected override void OnApplyTemplate()
+	{
+		// TODO: Uno specific: NavigationView may not be set yet, wait for later #4689
+		if (GetNavigationView() is null)
 		{
-			DefaultStyleKey = typeof(NavigationViewItemHeader);
-
-			Loaded += NavigationViewItemHeader_Loaded;
+			// Postpone template application for later
+			return;
 		}
 
-		private void NavigationViewItemHeader_Loaded(object sender, RoutedEventArgs e)
+		var splitView = GetSplitView();
+		if (splitView != null)
 		{
-			var splitView = GetSplitView();
-			if (splitView != null)
-			{
-				m_splitViewIsPaneOpenChangedRevoker = splitView.RegisterPropertyChangedCallback(
-					SplitView.IsPaneOpenProperty,
-					OnSplitViewPropertyChanged
-				);
-				m_splitViewDisplayModeChangedRevoker = splitView.RegisterPropertyChangedCallback(
-					SplitView.DisplayModeProperty,
-					OnSplitViewPropertyChanged
-				);
+			//TODO: MZ: Probably should be unsubscribed
+			splitView.RegisterPropertyChangedCallback(
+				SplitView.IsPaneOpenProperty,
+				OnSplitViewPropertyChanged);
+			splitView.RegisterPropertyChangedCallback(
+				SplitView.DisplayModeProperty,
+				OnSplitViewPropertyChanged);
 
-				UpdateIsClosedCompact();
-			}
-
-			UpdateLocalVisualState(false /*useTransitions*/);
+			UpdateIsClosedCompact();
 		}
 
-		protected override void OnApplyTemplate()
+		var rootGrid = GetTemplateChild(c_rootGrid) as Grid;
+		if (rootGrid != null)
 		{
-
-			var visual = ElementCompositionPreview.GetElementVisual(this);
-			NavigationView.CreateAndAttachHeaderAnimation(visual);
+			m_rootGrid = rootGrid;
 		}
 
-		void OnSplitViewPropertyChanged(DependencyObject sender, DependencyProperty args)
-		{
-			if (args == SplitView.IsPaneOpenProperty ||
-				args == SplitView.DisplayModeProperty)
-			{
-				UpdateIsClosedCompact();
-			}
-		}
+		UpdateVisualState(false /*useTransitions*/);
+		UpdateItemIndentation();
 
-		void UpdateIsClosedCompact()
-		{
-			var splitView = GetSplitView();
-			if (splitView != null)
-			{
-				// Check if the pane is closed and if the splitview is in either compact mode.
-				m_isClosedCompact = !splitView.IsPaneOpen && (splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay || splitView.DisplayMode == SplitViewDisplayMode.CompactInline);
-				UpdateLocalVisualState(true /*useTransitions*/);
-			}
-		}
+		var visual = ElementCompositionPreview.GetElementVisual(this);
+		NavigationView.CreateAndAttachHeaderAnimation(visual);
 
-		void UpdateLocalVisualState(bool useTransitions)
+		_fullyInitialized = true;
+	}
+
+	private void OnSplitViewPropertyChanged(DependencyObject sender, DependencyProperty args)
+	{
+		if (args == SplitView.IsPaneOpenProperty ||
+			args == SplitView.DisplayModeProperty)
 		{
-			VisualStateManager.GoToState(this, m_isClosedCompact ? "HeaderTextCollapsed" : "HeaderTextVisible", useTransitions);
+			UpdateIsClosedCompact();
+		}
+	}
+
+	private void UpdateIsClosedCompact()
+	{
+		var splitView = GetSplitView();
+		if (splitView != null)
+		{
+			// Check if the pane is closed and if the splitview is in either compact mode.
+			m_isClosedCompact = !splitView.IsPaneOpen && (splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay || splitView.DisplayMode == SplitViewDisplayMode.CompactInline);
+			UpdateVisualState(true /*useTransitions*/);
+		}
+	}
+
+	private new void UpdateVisualState(bool useTransitions)
+	{
+		VisualStateManager.GoToState(this, m_isClosedCompact && IsTopLevelItem ? "HeaderTextCollapsed" : "HeaderTextVisible", useTransitions);
+
+		if (GetNavigationView() is { } navigationView)
+		{
+			VisualStateManager.GoToState(this, navigationView.PaneDisplayMode == NavigationViewPaneDisplayMode.Top ? "TopMode" : "LeftMode", useTransitions);
+		}
+	}
+
+	protected override void OnNavigationViewItemBaseDepthChanged()
+	{
+		UpdateItemIndentation();
+	}
+
+	private void UpdateItemIndentation()
+	{
+		// Update item indentation based on its depth
+		var rootGrid = m_rootGrid;
+		if (rootGrid != null)
+		{
+			var oldMargin = rootGrid.Margin;
+			var newLeftMargin = Depth * c_itemIndentation;
+			rootGrid.Margin = new Thickness(
+				(double)(newLeftMargin),
+				oldMargin.Top,
+				oldMargin.Right,
+				oldMargin.Bottom);
 		}
 	}
 }

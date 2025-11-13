@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -42,6 +41,9 @@ namespace Uno.UI.RuntimeTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_Animate()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -70,11 +72,14 @@ namespace Uno.UI.RuntimeTests
 
 			// v3 is repeated because the target property is not a DependencyProperty
 			// and no deduplication happens in the binding engine.
-			target.History.Should().BeEquivalentTo(v1, v2, v3, v3);
+			target.History.Should().BeEquivalentTo([v1, v2, v3, v3]);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_Stop()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -103,11 +108,14 @@ namespace Uno.UI.RuntimeTests
 			((ITimeline)sut).Stop();
 			await Task.Delay(150, ct);
 
-			target.History.Should().BeEquivalentTo(v1, v2);
+			target.History.Should().BeEquivalentTo([v1, v2]);
 			sut.State.Should().Be(Timeline.TimelineState.Stopped);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_PauseResume()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -136,7 +144,7 @@ namespace Uno.UI.RuntimeTests
 			((ITimeline)sut).Pause();
 
 			await Task.Delay(100, ct);
-			target.History.Should().BeEquivalentTo(v1, v2);
+			target.History.Should().BeEquivalentTo([v1, v2]);
 			sut.State.Should().Be(Timeline.TimelineState.Paused);
 
 			((ITimeline)sut).Resume();
@@ -145,11 +153,14 @@ namespace Uno.UI.RuntimeTests
 
 			// v3 is repeated because the target property is not a DependencyProperty
 			// and no deduplication happens in the binding engine.
-			target.History.Should().BeEquivalentTo(v1, v2, v3, v3);
+			target.History.Should().BeEquivalentTo([v1, v2, v3, v3]);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_RepeatCount()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -178,14 +189,16 @@ namespace Uno.UI.RuntimeTests
 
 			// v3 is repeated because the target property is not a DependencyProperty
 			// and no deduplication happens in the binding engine.
-			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3, v3);
+			target.History.Should().BeEquivalentTo([v1, v2, v3, v1, v2, v3, v1, v2, v3, v3]);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
 		[TestMethod]
 #if __SKIA__
 		[Ignore("Flaky on Skia targets, see https://github.com/unoplatform/uno/issues/9080")]
-#endif
+#elif RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_RepeatDuration()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -212,11 +225,14 @@ namespace Uno.UI.RuntimeTests
 			await target.GetValue(ct, 9);
 			await Task.Delay(100, ct); // Give opportunity to (wrongly) repeat again some frames
 
-			target.History.Take(9)/* Helps laggish CI! */.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+			target.History.Take(9)/* Helps laggish CI! */.Should().BeEquivalentTo([v1, v2, v3, v1, v2, v3, v1, v2, v3]);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_RepeatForever()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -246,7 +262,7 @@ namespace Uno.UI.RuntimeTests
 			try
 			{
 				target.History.Count.Should().BeGreaterThan(9);
-				target.History.Take(9).Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+				target.History.Take(9).Should().BeEquivalentTo([v1, v2, v3, v1, v2, v3, v1, v2, v3]);
 				sut.State.Should().Be(Timeline.TimelineState.Active);
 			}
 			finally
@@ -256,6 +272,9 @@ namespace Uno.UI.RuntimeTests
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_BeginTime()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
@@ -282,7 +301,7 @@ namespace Uno.UI.RuntimeTests
 			await Task.Delay(5, ct);
 			((ITimeline)sut).Stop();
 
-			target.History.Should().BeEquivalentTo(/* empty */);
+			target.History.Should().BeEquivalentTo<object>(new object[0]);
 			sut.State.Should().Be(Timeline.TimelineState.Stopped);
 		}
 

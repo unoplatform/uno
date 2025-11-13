@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Input;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
 using Point = Windows.Foundation.Point;
@@ -31,6 +30,9 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			| GestureSettings.ManipulationMultipleFingerPanning; // Not supported by ManipulationMode
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void Tapped()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap };
@@ -42,10 +44,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
 			sut.ProcessUpEvent(27, 27);
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			taps.Should().BeEquivalentTo([Tap(25, 25)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void Tapped_Duration()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap };
@@ -57,7 +62,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
 			sut.ProcessUpEvent(27, 27, ts: long.MaxValue); // No matter the duration
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			taps.Should().BeEquivalentTo([Tap(25, 25)]);
 		}
 
 		[TestMethod]
@@ -115,6 +120,9 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void DoubleTapped()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap };
@@ -126,13 +134,16 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			taps.Should().BeEmpty();
 
 			sut.ProcessUpEvent(27, 27);
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			taps.Should().BeEquivalentTo([Tap(25, 25)]);
 
 			sut.ProcessDownEvent(28, 28);
-			taps.Should().BeEquivalentTo(Tap(25, 25), Tap(28, 28, 2));
+			taps.Should().BeEquivalentTo([Tap(25, 25), Tap(28, 28, 2)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void DoubleTapped_Without_Tapped()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap };
@@ -147,10 +158,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
 			sut.ProcessUpEvent(GetPoint(27, 27, ts: long.MaxValue)); // No matter the duration
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			taps.Should().BeEquivalentTo([Tap(25, 25)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void DoubleTapped_Duration()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap };
@@ -161,17 +175,20 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, 25, ts: 0);
 			sut.ProcessUpEvent(26, 26, ts: 1);
 
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			taps.Should().BeEquivalentTo([Tap(25, 25)]);
 
 			// Double tapped
 			var tooSlow = GetPoint(25, 25, ts: 1 + GestureRecognizer.MultiTapMaxDelayMicroseconds + 1);
 			sut.CanBeDoubleTap(tooSlow).Should().BeFalse();
 			sut.ProcessDownEvent(tooSlow);
 
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			taps.Should().BeEquivalentTo([Tap(25, 25)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void DoubleTapped_Delta_X()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap };
@@ -182,10 +199,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessUpEvent(25, 25);
 			sut.ProcessDownEvent(25 + GestureRecognizer.TapMaxXDelta + 1, 25); // Second tap too far
 
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			taps.Should().BeEquivalentTo([Tap(25, 25)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void DoubleTapped_Delta_Y()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap };
@@ -196,10 +216,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessUpEvent(25, 25);
 			sut.ProcessDownEvent(25, 25 + GestureRecognizer.TapMaxYDelta + 1); // Second tap too far
 
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			taps.Should().BeEquivalentTo([Tap(25, 25)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void RightTapped()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.RightTap };
@@ -213,11 +236,14 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 				sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
 				sut.ProcessUpEvent(27, 27);
-				taps.Should().BeEquivalentTo(RightTap(25, 25));
+				taps.Should().BeEquivalentTo([RightTap(25, 25)]);
 			}
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void RightTapped_Duration()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.RightTap };
@@ -231,7 +257,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 				sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
 				sut.ProcessUpEvent(27, 27, ts: long.MaxValue); // No matter the duration for mouse
-				taps.Should().BeEquivalentTo(RightTap(25, 25));
+				taps.Should().BeEquivalentTo([RightTap(25, 25)]);
 			}
 		}
 
@@ -1425,6 +1451,9 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void Drag_Started_Mouse_Immediate()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
@@ -1437,10 +1466,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, 25, ts: 0);
 			var start = sut.ProcessMoveEvent(50, 50, ts: 1);
 
-			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+			drags.Should().BeEquivalentTo([Drag(start, DraggingState.Started)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void Drag_Started_Mouse_Hold()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
@@ -1454,10 +1486,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
 			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
 
-			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+			drags.Should().BeEquivalentTo([Drag(start, DraggingState.Started)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void Drag_Started_Pen_Immediate()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
@@ -1469,10 +1504,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, 25, ts: 0);
 			var start = sut.ProcessMoveEvent(50, 50, ts: 1);
 
-			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+			drags.Should().BeEquivalentTo([Drag(start, DraggingState.Started)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void Drag_Started_Pen_Hold()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
@@ -1485,7 +1523,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
 			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
 
-			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+			drags.Should().BeEquivalentTo([Drag(start, DraggingState.Started)]);
 		}
 
 		[TestMethod]
@@ -1504,6 +1542,9 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void Drag_Started_Touch_Hold()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
@@ -1516,7 +1557,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
 			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
 
-			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
+			drags.Should().BeEquivalentTo([Drag(start, DraggingState.Started)]);
 		}
 
 		[TestMethod]
@@ -1538,6 +1579,9 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void Drag_CompleteGesture()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
@@ -1552,13 +1596,16 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			var move = sut.ProcessMoveEvent(51, 51, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
 			var end = sut.ProcessUpEvent(52, 52, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
 
-			drags.Should().BeEquivalentTo(
+			drags.Should().BeEquivalentTo([
 				Drag(start, DraggingState.Started),
 				Drag(move, DraggingState.Continuing),
-				Drag(end, DraggingState.Completed));
+				Drag(end, DraggingState.Completed)]);
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void Drag_And_Holding_Touch()
 		{
 			var delay = (ulong)Math.Max(GestureRecognizer.DragWithTouchMinDelayMicroseconds, GestureRecognizer.HoldMinDelayMicroseconds);
@@ -1573,13 +1620,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, 25, ts: 0);
 			sut.ProcessMoveEvent(26, 26, ts: delay + 1);
 
-			holds.Should().BeEquivalentTo(Hold(25, 25, HoldingState.Started));
+			holds.Should().BeEquivalentTo([Hold(25, 25, HoldingState.Started)]);
 
 			var start = sut.ProcessMoveEvent(50, 50, ts: delay + 2);
 
-			holds.Should().BeEquivalentTo(
+			holds.Should().BeEquivalentTo([
 				Hold(25, 25, HoldingState.Started),
-				Hold(25, 25, HoldingState.Canceled));
+				Hold(25, 25, HoldingState.Canceled)]);
 			drags.Should().AllBeEquivalentTo(Drag(start, DraggingState.Started));
 		}
 	}

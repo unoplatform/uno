@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Uno;
 using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml
@@ -73,13 +74,21 @@ namespace Microsoft.UI.Xaml
 			return finalSize;
 		}
 
+		[NotImplemented]
 		public int? RenderPhase
 		{
-			get => throw new NotImplementedException();
-			set => throw new NotImplementedException();
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "RenderPhase");
+				return null;
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "RenderPhase");
+			}
 		}
 
-		public void ApplyBindingPhase(int phase) => throw new NotImplementedException();
+		public void ApplyBindingPhase(int phase) { }
 
 		#region Background DependencyProperty
 

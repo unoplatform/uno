@@ -1,26 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Input.Preview.Injection;
-using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using static Private.Infrastructure.TestServices;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
-#else
-using Uno.UI;
-#endif
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
+using Windows.UI.Input.Preview.Injection;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -139,6 +130,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_Reloaded_With_Value_Binding()
+		{
+			var slider = new Slider
+			{
+				Minimum = 0,
+				Maximum = 20,
+				Orientation = Orientation.Horizontal,
+			};
+			var container = new Border
+			{
+				Width = 100,
+				Height = 50,
+				Child = slider
+			};
+
+			// cant repro with explicit value. we need to use binding,
+			// with the dc flowing from the container, so it can "attach/detach" on load/unload
+			slider.SetBinding(Slider.ValueProperty, new Binding());
+			container.DataContext = 10;
+
+			await UITestHelper.Load(container);
+			var thumb = slider.FindFirstDescendantOrThrow<Thumb>("HorizontalThumb");
+
+			// record thumb position
+			await UITestHelper.WaitForIdle();
+			var dx0 = thumb.TransformToVisual(slider).TransformPoint(default).X;
+
+			// reload the slider
+			container.Child = null;
+			await UITestHelper.WaitForIdle();
+			container.Child = slider;
+			await UITestHelper.WaitForIdle();
+
+			// check that thumb position is still the same
+			var dx1 = thumb.TransformToVisual(slider).TransformPoint(default).X;
+			Assert.AreEqual(dx0, dx1, delta: 1, message: "Thumb#HorizontalThumb position is no longer the same after reloading the slider");
+		}
 	}
 
 	public partial class MySlider : Slider

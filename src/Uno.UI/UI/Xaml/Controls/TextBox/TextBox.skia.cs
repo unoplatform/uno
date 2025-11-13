@@ -24,6 +24,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
+using Uno.Foundation;
+using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -92,13 +95,10 @@ public partial class TextBox
 	static TextBox()
 	{
 		_platformCtrlKey =
-			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && Eval("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
+			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && WebAssemblyImports.EvalBool("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
 			? VirtualKeyModifiers.Windows
 			: VirtualKeyModifiers.Control;
 	}
-
-	[JSImport("globalThis.eval")]
-	private static partial bool Eval(string js);
 
 	internal CaretDisplayMode CaretMode
 	{
@@ -490,6 +490,52 @@ public partial class TextBox
 		var text = Text;
 		var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
 		var ctrl = args.KeyboardModifiers.HasFlag(_platformCtrlKey);
+		// Text commands: always return from this switch, never break
+		switch (args.Key)
+		{
+			case VirtualKey.Z when ctrl:
+				if (!HasPointerCapture)
+				{
+					args.Handled = true;
+					Undo();
+				}
+				return;
+			case VirtualKey.Y when ctrl:
+				if (!HasPointerCapture)
+				{
+					args.Handled = true;
+					Redo();
+				}
+				return;
+			case VirtualKey.X when ctrl:
+				CutSelectionToClipboard();
+				return;
+			case VirtualKey.V when ctrl:
+			case VirtualKey.Insert when shift:
+				PasteFromClipboard(); // async so doesn't actually do anything right now
+				return;
+			case VirtualKey.C when ctrl:
+			case VirtualKey.Insert when ctrl:
+				CopySelectionToClipboard();
+				return;
+			case VirtualKey.Escape:
+				if (HasPointerCapture)
+				{
+					args.Handled = true;
+					ReleasePointerCaptures();
+				}
+				return;
+			case VirtualKey.LeftShift:
+			case VirtualKey.RightShift:
+			case VirtualKey.Shift:
+			case VirtualKey.Control:
+			case VirtualKey.LeftControl:
+			case VirtualKey.RightControl:
+				// No-op when pressing these key specifically.
+				return;
+		}
+
+		// text input/movement
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
@@ -542,48 +588,6 @@ public partial class TextBox
 					selectionLength = text.Length;
 				}
 				break;
-			case VirtualKey.Z when ctrl:
-				if (!HasPointerCapture)
-				{
-					args.Handled = true;
-					Undo();
-				}
-				return;
-			case VirtualKey.Y when ctrl:
-				if (!HasPointerCapture)
-				{
-					args.Handled = true;
-					Redo();
-				}
-				return;
-			case VirtualKey.X when ctrl:
-				CutSelectionToClipboard();
-				selectionLength = 0;
-				text = Text;
-				break;
-			case VirtualKey.V when ctrl:
-			case VirtualKey.Insert when shift:
-				PasteFromClipboard(); // async so doesn't actually do anything right now
-				break;
-			case VirtualKey.C when ctrl:
-			case VirtualKey.Insert when ctrl:
-				CopySelectionToClipboard();
-				break;
-			case VirtualKey.Escape:
-				if (HasPointerCapture)
-				{
-					args.Handled = true;
-					ReleasePointerCaptures();
-				}
-				break;
-			case VirtualKey.LeftShift:
-			case VirtualKey.RightShift:
-			case VirtualKey.Shift:
-			case VirtualKey.Control:
-			case VirtualKey.LeftControl:
-			case VirtualKey.RightControl:
-				// No-op when pressing these key specifically.
-				break;
 			default:
 				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
 				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
@@ -601,32 +605,42 @@ public partial class TextBox
 					text = text[..start] + key + text[end..];
 					selectionStart = start + 1;
 					selectionLength = 0;
+					break;
 				}
-				break;
+				else
+				{
+					return;
+				}
 		}
 
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 
-		var caretXOffset = _caretXOffset;
-
-		_suppressCurrentlyTyping = true;
-		_clearHistoryOnTextChanged = false;
-		if (!HasPointerCapture)
+		// This is queued in order to run after public KeyDown callbacks are fired and is enqueued on High to run
+		// before the next TextChanged+KeyUp sequence.
+		DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, () =>
 		{
-			_pendingSelection = (selectionStart, selectionLength);
-		}
-		ProcessTextInput(text);
-		_clearHistoryOnTextChanged = true;
-		_suppressCurrentlyTyping = false;
+			var caretXOffset = _caretXOffset;
 
-		// don't change the caret offset when moving up and down
-		if (args.Key is VirtualKey.Up or VirtualKey.Down)
-		{
-			// this condition is accurate in the case of hitting Down on the last line
-			// or up on the first line. On WinUI, the caret offset won't change.
-			_caretXOffset = caretXOffset;
-		}
+			_suppressCurrentlyTyping = true;
+			_clearHistoryOnTextChanged = false;
+			if (!HasPointerCapture)
+			{
+				_pendingSelection = (selectionStart, selectionLength);
+			}
+
+			ProcessTextInput(text);
+			_clearHistoryOnTextChanged = true;
+			_suppressCurrentlyTyping = false;
+
+			// don't change the caret offset when moving up and down
+			if (args.Key is VirtualKey.Up or VirtualKey.Down)
+			{
+				// this condition is accurate in the case of hitting Down on the last line
+				// or up on the first line. On WinUI, the caret offset won't change.
+				_caretXOffset = caretXOffset;
+			}
+		});
 	}
 
 	internal void SetPendingSelection(int selectionStart, int selectionLength)
@@ -1519,14 +1533,11 @@ public partial class TextBox
 			if (!_popup.IsOpen)
 			{
 				_popup.IsOpen = true;
-				// We don't have an event that fires when we actually render,
-				// so we have to settle for this somewhat-inaccurate approximation
-				// of dispatching an update call whenever InvalidateRender fires.
-				xamlRoot.RenderInvalidated += OnInvalidateRender;
+				((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
 			}
 		}
 
-		private void OnInvalidateRender()
+		private void OnFrameRendered()
 		{
 			NativeDispatcher.Main.Enqueue(() =>
 			{
@@ -1539,9 +1550,9 @@ public partial class TextBox
 
 		public void Hide()
 		{
-			if (XamlRoot is { })
+			if (Visual.CompositionTarget is CompositionTarget target)
 			{
-				XamlRoot.RenderInvalidated -= OnInvalidateRender;
+				target.FrameRendered -= OnFrameRendered;
 			}
 			if (_popup is not null)
 			{

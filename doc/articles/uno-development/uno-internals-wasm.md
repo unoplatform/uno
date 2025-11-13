@@ -12,7 +12,7 @@ This article explores WebAssembly-specific details of Uno's internals, with a fo
 
 WebAssembly (Wasm) allows .NET code, and hence Uno, to run in the browser. It's supported by all major browsers, including mobile browser versions.
 
-Wasm in the browser runs in the same security sandbox as JavaScript does, and has exactly the same capabilities and constraints. Note that for now there's no means of accessing browser APIs, including the DOM, directly from Wasm (though this is [expected to become available in the future](https://github.com/WebAssembly/interface-types/blob/master/proposals/interface-types/Explainer.md)). All communication to and from the DOM must be done by interop with JavaScript.
+Wasm in the browser runs in the same security sandbox as JavaScript does, and has exactly the same capabilities and constraints. Note that for now there's no means of accessing browser APIs, including the DOM, directly from Wasm. All communication to and from the DOM must be done by interop with JavaScript.
 
 ## UIElements map to DOM elements
 

@@ -76,7 +76,7 @@ namespace Microsoft.UI.Windowing
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Id.get
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.Resize(Windows.Graphics.SizeInt32)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetIcon(string iconPath)
 		{

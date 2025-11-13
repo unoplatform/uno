@@ -7,6 +7,7 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Android.Views;
+using Android.Widget;
 using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -14,11 +15,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 [ContentProperty(Name = "Child")]
 public partial class NativePopup : NativePopupBase
 {
-	private Android.Widget.PopupWindow _popupWindow;
+	private PopupWindow _popupWindow;
 
 	public NativePopup()
 	{
-		_popupWindow = new Android.Widget.PopupWindow();
+		_popupWindow = new PopupWindow();
 		_popupWindow.Focusable = true;
 		_popupWindow.Touchable = true;
 	}

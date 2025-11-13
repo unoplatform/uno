@@ -4,6 +4,88 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
+To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
+
+## Uno Platform 6.4
+
+Uno Platform 6.4 contains an Uno.Extensions breaking changes that require attention when upgrading:
+
+- Uno.Extensions contains an OidcClient change in namespaces. See [the migration guide](xref:Uno.Extensions.Migration) for details.
+
+### Visual Studio, Visual Studio Code, and Rider
+
+When upgrading to Uno Platform 6.4, make sure to update your IDE extension or plugin to the latest stable version to ensure the Uno Platform development tooling connects properly.
+
+- [Visual Studio extension](https://aka.platform.uno/vs-extension-marketplace)
+- [Visual Studio Code extension](https://aka.platform.uno/vscode-extension-marketplace)
+- [Rider plugin](https://aka.platform.uno/rider-extension-marketplace)
+
+## Uno Platform 6.3
+
+**Uno Platform 6.3** introduces support for **.NET 10 RC1** and removes **.NET 8** targets.
+
+### Visual Studio, Visual Studio Code, and Rider
+
+When upgrading to Uno Platform 6.3, make sure to update your IDE extension or plugin to the latest stable version to ensure the Uno Platform development tooling connects properly.
+
+- [Visual Studio extension](https://aka.platform.uno/vs-extension-marketplace)
+- [Visual Studio Code extension](https://aka.platform.uno/vscode-extension-marketplace)
+- [Rider plugin](https://aka.platform.uno/rider-extension-marketplace)
+
+### .NET 8 Support Removed
+
+.NET 8 targets for apps are no longer supported by Uno Platform 6.3. However, NuGet library packages that are built with `net8.0 (and earlier) and Uno 6.0 (and later) continue to be compatible with Uno Platform apps built with .NET 9 and later.
+While .NET 8 itself remains a Long-Term Support (LTS) release supported until [November 2026](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core), the **.NET MAUI 8** mobile workload reached end of support in [May 2025](https://dotnet.microsoft.com/en-us/platform/support/policy/maui).
+
+You can [upgrade your project to .NET 9](xref:Uno.Development.MigratingFromNet8ToNet9) using our migration guide.
+
+If you need to stay on .NET 8, you can continue to use **Uno Platform 6.2 or earlier** and plan your migration to .NET 9 or .NET 10 at a later time.
+
+### .NET 10 RC1
+
+**Uno Platform 6.3** is now built with **.NET 10** support, allowing you to upgrade existing projects or create new ones using the project wizard or CLI.
+
+A few considerations to keep in mind:
+
+- Moving to .NET 10 or upgrading existing projects requires using **.NET 10 RC1** along with:
+  - **Visual Studio** — the latest version of [Visual Studio 2026 Insiders](https://visualstudio.microsoft.com/insiders/), as recommended by Microsoft in their [announcement](https://devblogs.microsoft.com/dotnet/dotnet-10-rc-1/#🚀-get-started).
+    Use version **18.0.0 [11104.47]** or later to ensure compatibility with the [latest stable Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace).
+  - **Visual Studio Code** — the latest version of [Visual Studio Code](https://code.visualstudio.com/Download) and the [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) extension, as also recommended by Microsoft in the same [announcement](https://devblogs.microsoft.com/dotnet/dotnet-10-rc-1/#🚀-get-started).
+  - **Rider** — the latest stable version, as .NET 10 support has been available since [Rider 2025.1](https://www.jetbrains.com/rider/whatsnew/2025-1/).
+
+- Uno Platform provides an updated [Visual Studio extension](https://aka.platform.uno/vs-extension-marketplace) that supports **Visual Studio 2026** and the new `.slnx` solution format.
+- To migrate your project to .NET 10, see our [migration guide](xref:Uno.Development.MigratingFromNet9ToNet10).
+
+For an up-to-date list of **known issues** when using **.NET 10** with Uno Platform, please refer to our [Health Status page](https://aka.platform.uno/health-status).
+
+### API Changes for Android
+
+Starting with Uno Platform **6.3**, the following methods now throw `NotSupportedException` under **.NET 10** or later:
+
+- `Microsoft.UI.Xaml.ApplicationActivity.GetTypeAssemblyFullName(string)` (Android + Native renderer)
+- `Microsoft.UI.Xaml.ApplicationActivity.GetTypeAssemblyFullName(string)` (Android + Skia renderer)
+- `Microsoft.UI.Xaml.NativeApplication.GetTypeAssemblyFullName(string)`
+
+This change was introduced in [PR #21199](https://github.com/unoplatform/uno/pull/21199) ([commit 4d84ee3](https://github.com/unoplatform/uno/commit/4d84ee31adb3e7ecd3fcbdc248b79fee78211d3e)).
+Methods with the [`[Java.Interop.ExportAttribute]` custom attribute](https://learn.microsoft.com/dotnet/api/java.interop.exportattribute?view=net-android-34.0) are not supported within certain runtime environments.
+
+If your application calls any of the affected methods:
+
+- Remove any direct usage of `GetTypeAssemblyFullName`.
+- Consider removing methods with the `[Export]` custom attribute, as they may not work in certain runtime environments. Consider using managed interop or dependency injection alternatives instead.
+- If you relied on these APIs for reflection or interop, migrate that logic to managed code executed at runtime.
+- Rebuild and test your Android and Android+Skia apps with .NET 10 or later to ensure compatibility.
+
+These changes prevent runtime exceptions and improve compatibility for builds on Android.
+
+## Uno Platform 6.2
+
+Uno Platform 6.2 does not contain breaking changes that require attention when upgrading.
+
+## Uno Platform 6.1
+
+Uno Platform 6.1 does not contain breaking changes that require attention when upgrading.
+
 ## Uno Platform 6.0
 
 Uno Platform 6.0 contains breaking changes required to provide a consistent experience when using the Skia rendering feature, as well as the removal of the UWP API set support and the GTK desktop runtime support.

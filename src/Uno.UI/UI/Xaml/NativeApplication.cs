@@ -1,4 +1,5 @@
 ﻿#nullable disable
+#pragma warning disable DNAA0001 // Application class 'NativeApplication' does not have an Activation Constructor (NativeApplication is used by apps, not by itself)
 
 #if __ANDROID__
 using System;
@@ -9,6 +10,8 @@ using Java.Interop;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.StartScreen;
 using Android.Content;
+using Android.OS;
+using Android.Runtime;
 using Uno.Extensions;
 using Windows.Foundation.Metadata;
 using System.ComponentModel;
@@ -19,7 +22,7 @@ using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
 
 namespace Microsoft.UI.Xaml
 {
-	public class NativeApplication : Android.App.Application
+	public class NativeApplication : AApplication
 	{
 		private Application _app;
 
@@ -37,7 +40,7 @@ namespace Microsoft.UI.Xaml
 		/// Creates an android Application instance
 		/// </summary>
 		/// <param name="appBuilder">A <see cref="AppBuilder"/> delegate that provides an <see cref="Application"/> instance.</param>
-		public NativeApplication(AppBuilder appBuilder, IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)
+		public NativeApplication(AppBuilder appBuilder, IntPtr javaReference, JniHandleOwnership transfer)
 			: base(javaReference, transfer)
 		{
 			// Register assemblies earlier than Application itself, otherwise
@@ -152,9 +155,15 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
+#if NET10_0_OR_GREATER
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		public static string GetTypeAssemblyFullName(string type) =>
+			throw new NotSupportedException("`static` methods with [Export] are not supported on NativeAOT.");
+#else   // !NET10_0_OR_GREATER
 		[Export(nameof(GetTypeAssemblyFullName))]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
+#endif  // !NET10_0_OR_GREATER
 
 		private class ActivityCallbacks : Java.Lang.Object, IActivityLifecycleCallbacks
 		{
@@ -165,36 +174,36 @@ namespace Microsoft.UI.Xaml
 				_app = app;
 			}
 
-			public void OnActivityCreated(Android.App.Activity activity, Android.OS.Bundle savedInstanceState)
+			public void OnActivityCreated(Activity activity, Bundle savedInstanceState)
 			{
 
 			}
 
-			public void OnActivityDestroyed(Android.App.Activity activity)
+			public void OnActivityDestroyed(Activity activity)
 			{
 
 			}
 
-			public void OnActivityPaused(Android.App.Activity activity)
+			public void OnActivityPaused(Activity activity)
 			{
 
 			}
 
-			public void OnActivityResumed(Android.App.Activity activity)
+			public void OnActivityResumed(Activity activity)
 			{
 			}
 
-			public void OnActivitySaveInstanceState(Android.App.Activity activity, Android.OS.Bundle outState)
+			public void OnActivitySaveInstanceState(Activity activity, Bundle outState)
 			{
 
 			}
 
-			public void OnActivityStarted(Android.App.Activity activity)
+			public void OnActivityStarted(Activity activity)
 			{
 				_app.OnActivityStarted(activity);
 			}
 
-			public void OnActivityStopped(Android.App.Activity activity)
+			public void OnActivityStopped(Activity activity)
 			{
 
 			}

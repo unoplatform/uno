@@ -65,10 +65,25 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void EndEntry() => NativeMethods.Blur();
 
-	public void UpdateSize() => NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
+	public void UpdateSize()
+	{
+		if (!_view.TextBox?.IsFocused ?? true)
+		{
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
+			return;
+		}
+		NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
+	}
 
 	public void UpdatePosition()
 	{
+		if (!_view.TextBox?.IsFocused ?? true)
+		{
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
+			return;
+		}
 		var p = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
 		NativeMethods.UpdatePosition(p.X, p.Y);
 	}
@@ -79,10 +94,25 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		UpdatePosition();
 	}
 
-	public void SetText(string text) => NativeMethods.SetText(text);
+	public void SetText(string text)
+	{
+		if (!_view.TextBox?.IsFocused ?? true)
+		{
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
+			return;
+		}
+		NativeMethods.SetText(text);
+	}
 
 	public void Select(int start, int length)
 	{
+		if (!_view.TextBox?.IsFocused ?? true)
+		{
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
+			return;
+		}
 		NativeMethods.UpdateSelection(start, length, SelectionDirection);
 	}
 
@@ -91,6 +121,12 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	public void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
 	public void UpdateProperties()
 	{
+		if (!_view.TextBox?.IsFocused ?? true)
+		{
+			// The invisible <input /> instance is shared between all TextBoxes, so only propagate state from managed to native
+			// when this TextBox is the one in focus
+			return;
+		}
 		if (GetEnterKeyHintValue() is { } enterKeyHintValue)
 		{
 			NativeMethods.SetEnterKeyHint(enterKeyHintValue);

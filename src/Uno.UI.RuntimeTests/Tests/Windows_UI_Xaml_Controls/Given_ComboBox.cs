@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -27,6 +26,7 @@ using static Private.Infrastructure.TestServices;
 using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
 using Uno.UI.Extensions;
 using Combinatorial.MSTest;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if __APPLE_UIKIT__
 using _UIViewController = UIKit.UIViewController;
@@ -118,7 +118,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_IsEditable_False_Changes_To_True()
 		{
-			if (!ApiInformation.IsPropertyPresent("ComboBox", "IsEditable"))
+			if (!ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.ComboBox, Uno.UI", "IsEditable"))
 			{
 				Assert.Inconclusive();
 			}
@@ -1223,6 +1223,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(PopupPlacementMode.Bottom, 20)]
 		[DataRow(PopupPlacementMode.Top, -20)]
 		[GitHubWorkItem("https://github.com/unoplatform/nventive-private/issues/509")]
+#if RUNTIME_NATIVE_AOT
+		[Ignore("DataRowAttribute.GetData() wraps data in an extra array under NativeAOT; not yet understood why.")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_Customized_Popup_Placement(PopupPlacementMode mode, double verticalOffset)
 		{
 			var grid = new Grid();
@@ -1273,7 +1276,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Items_Are_Enum_Values()
 		{
 			var comboBox = new ComboBox();
-			comboBox.ItemsSource = Enum.GetValues(typeof(PickerLocationId)).Cast<PickerLocationId>();
+			comboBox.ItemsSource = Enum.GetValues<PickerLocationId>();
 			comboBox.SelectedIndex = 0;
 			TestServices.WindowHelper.WindowContent = comboBox;
 			await TestServices.WindowHelper.WaitForLoaded(comboBox);
@@ -1290,7 +1293,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var child = (FrameworkElement)popup.Child;
 			var comboBoxItems = child.GetAllChildren().OfType<ComboBoxItem>().ToArray();
-			Assert.AreEqual(Enum.GetValues(typeof(PickerLocationId)).Length, comboBoxItems.Length);
+			Assert.AreEqual(Enum.GetValues<PickerLocationId>().Length, comboBoxItems.Length);
 		}
 
 #if HAS_UNO
@@ -1409,10 +1412,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(dropDownClosedFired, "DropDownClosed event was not fired");
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
 		public Task When_ComboBox_ScrollIntoView_SelectedItem() => When_ComboBox_ScrollIntoView_Selection(viaIndex: false);
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
 		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
 
 		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)

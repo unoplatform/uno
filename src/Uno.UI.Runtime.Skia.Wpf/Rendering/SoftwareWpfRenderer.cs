@@ -7,17 +7,16 @@ using System.Windows.Media.Imaging;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Visibility = System.Windows.Visibility;
-using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
 internal class SoftwareWpfRenderer : IWpfRenderer
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly WpfControl _hostControl;
 	private readonly IWpfXamlRootHost _host;
 	private WriteableBitmap? _bitmap;
@@ -48,85 +47,38 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			return;
 		}
 
-		using var _ = _fpsHelper.BeginFrame();
+		_xamlRoot ??= XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 
-		if (_host.RootElement is { } rootElement && (rootElement.IsArrangeDirtyOrArrangeDirtyPath || rootElement.IsMeasureDirtyOrMeasureDirtyPath))
+		_bitmap?.Lock();
+		var surface = _bitmap is not null ? SKSurface.Create(new SKImageInfo(_bitmap.PixelWidth, _bitmap.PixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul), _bitmap.BackBuffer, _bitmap.BackBufferStride) : null;
+		var nativeElementClipPath = ((Microsoft.UI.Xaml.Media.CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas, size =>
 		{
-			_host.InvalidateRender();
-			return;
-		}
+			_bitmap?.Unlock();
+			_bitmap = new WriteableBitmap((int)size.Width, (int)size.Height, 96, 96, PixelFormats.Pbgra32, null);
+			_bitmap.Lock();
+			surface = SKSurface.Create(new SKImageInfo(_bitmap.PixelWidth, _bitmap.PixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul), _bitmap.BackBuffer, _bitmap.BackBufferStride);
+			return surface.Canvas;
+		});
 
-		int width, height;
-
-		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
-		var dpi = _xamlRoot.RasterizationScale;
-		double dpiScaleX = dpi;
-		double dpiScaleY = dpi;
-		if (_host.IgnorePixelScaling)
+		if (_host.NativeOverlayLayer is { } nativeLayer)
 		{
-			width = (int)_hostControl.ActualWidth;
-			height = (int)_hostControl.ActualHeight;
+			nativeLayer.Clip ??= new PathGeometry();
+			((PathGeometry)nativeLayer.Clip).Figures = PathFigureCollection.Parse(nativeElementClipPath.ToSvgPathData());
 		}
 		else
 		{
-			var matrix = PresentationSource.FromVisual(_hostControl).CompositionTarget.TransformToDevice;
-			dpiScaleX = matrix.M11;
-			dpiScaleY = matrix.M22;
-			width = (int)(_hostControl.ActualWidth * dpiScaleX);
-			height = (int)(_hostControl.ActualHeight * dpiScaleY);
-		}
-
-		var info = new SKImageInfo(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-
-		// reset the bitmap if the size has changed
-		if (_bitmap == null || info.Width != _bitmap.PixelWidth || info.Height != _bitmap.PixelHeight)
-		{
-			_bitmap = new WriteableBitmap(width, height, 96 * dpiScaleX, 96 * dpiScaleY, PixelFormats.Pbgra32, null);
-		}
-
-		// draw on the bitmap
-		_bitmap.Lock();
-		using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
-		{
-			var canvas = surface.Canvas;
-			canvas.Clear(BackgroundColor);
-			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
-			if (_host.RootElement?.Visual is { } rootVisual)
+			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
-				try
-				{
-					rootVisual.Compositor.IsSoftwareRenderer = true;
-
-					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
-					_fpsHelper.DrawFps(canvas);
-
-					if (_host.NativeOverlayLayer is { } nativeLayer)
-					{
-						nativeLayer.Clip ??= new PathGeometry();
-						((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
-					}
-					else
-					{
-						if (this.Log().IsEnabled(LogLevel.Error))
-						{
-							this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
-						}
-					}
-
-					_host.RootElement?.XamlRoot?.InvokeFramePainted();
-				}
-				finally
-				{
-					rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
-				}
+				this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
 			}
 		}
 
 		// draw the bitmap to the screen
-		_bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
-		_bitmap.Unlock();
-		drawingContext.DrawImage(_bitmap, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
-		_host.RootElement?.XamlRoot?.InvokeFrameRendered();
+		if (_bitmap is not null)
+		{
+			_bitmap.AddDirtyRect(new Int32Rect(0, 0, _bitmap.PixelWidth, _bitmap.PixelHeight));
+			_bitmap.Unlock();
+			drawingContext.DrawImage(_bitmap, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
+		}
 	}
 }

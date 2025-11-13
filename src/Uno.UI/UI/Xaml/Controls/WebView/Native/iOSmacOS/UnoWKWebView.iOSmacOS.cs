@@ -41,6 +41,8 @@ public
 	private string? _previousTitle;
 	private CoreWebView2? _coreWebView;
 	private bool _isCancelling;
+	private bool _shouldQueueHistoryChange;
+	private string? _lastNavigationUrl;
 
 	private const string WebMessageHandlerName = "unoWebView";
 	private const string OkResourceKey = "WebView_Ok";
@@ -50,15 +52,17 @@ public
 	private readonly string CancelString;
 
 	private bool _isHistoryChangeQueued;
+	private bool _isNavigationCompleted;
 
 	/// <summary>
-	/// Url of the last navigation ; is null if the last web page was displayed by other means,
-	/// such as raw HTML
+	/// Object of the last navigation. Can be a Uri or HTML string.
 	/// </summary>
 	internal object? _lastNavigationData;
 
 	public UnoWKWebView() : base(CGRect.Empty, new WebKit.WKWebViewConfiguration())
 	{
+		_shouldQueueHistoryChange = false;
+
 		var resourceLoader = ResourceLoader.GetForCurrentView();
 		var ok = resourceLoader.GetString("OkResourceKey");
 		var cancel = resourceLoader.GetString("CancelResourceKey");
@@ -205,14 +209,44 @@ public
 			this.Log().DebugFormat("OnNavigationFinished: {0}", destinationUrl);
 		}
 
-		if (_coreWebView is null)
+		if (_coreWebView is null || _isNavigationCompleted)
 		{
 			return;
 		}
 
+		_isNavigationCompleted = true;
 		CheckForTitleChange();
+
+		if (destinationUrl != null)
+		{
+			// Only update source and history for non-anchor navigations
+			if (!IsAnchorNavigation(destinationUrl.AbsoluteUri))
+			{
+				_lastNavigationUrl = destinationUrl.AbsoluteUri;
+				_coreWebView.Source = destinationUrl.AbsoluteUri;
+			}
+		}
+
 		RaiseNavigationCompleted(destinationUrl, true, 200, CoreWebView2WebErrorStatus.Unknown);
 		_lastNavigationData = destinationUrl;
+		_isNavigationCompleted = false;
+	}
+
+	private bool IsAnchorNavigation(string url) => WebViewUtils.IsAnchorNavigation(_lastNavigationUrl, url);
+
+	internal void OnAnchorNavigation(Uri uri)
+	{
+		// For anchor navigation, update source, raise history changed, and navigation completed
+		// This matches Windows WebView2 behavior
+		_lastNavigationData = uri;
+		_lastNavigationUrl = uri.AbsoluteUri;
+		_coreWebView!.Source = uri.AbsoluteUri;
+
+		// Raise NavigationCompleted for anchor navigation to ensure proper event handling
+		RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
+
+		_shouldQueueHistoryChange = true;
+		QueueHistoryChange();
 	}
 
 	private WKWebView? OnCreateWebView(WKWebView owner, WKWebViewConfiguration configuration, WKNavigationAction? action, WKWindowFeatures windowFeatures)
@@ -227,13 +261,15 @@ public
 		{
 			target = action?.Request.Url.ToUri();
 		}
-		var targetString = target?.ToString();
 
-		bool handled = false;
+		var targetString = target?.ToString() ?? CoreWebView2.BlankUrl;
+		var refererUri = action?.SourceFrame?.Request?.Url?.ToUri() ?? CoreWebView2.BlankUri;
+
+		var handled = false;
 
 		_coreWebView?.RaiseNewWindowRequested(
-			targetString!,
-			action?.SourceFrame?.Request?.Url?.ToUri()!,
+			targetString,
+			refererUri,
 			out handled);
 
 		if (handled)
@@ -247,7 +283,7 @@ public
 			if (!cancel)
 			{
 #if __APPLE_UIKIT__
-				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
+				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target!))
 #else
 				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
 #endif
@@ -427,6 +463,7 @@ public
 	private void RaiseNavigationStarting(object navigationData, out bool cancel)
 	{
 		cancel = false;
+
 		if (navigationData is null)
 		{
 			// This ase should not happen when navigating normally using http requests.
@@ -435,15 +472,31 @@ public
 			return;
 		}
 
-		if (navigationData is Uri uri && uri.Scheme.Equals(Uri.UriSchemeMailto, StringComparison.OrdinalIgnoreCase))
+		if (navigationData is Uri uri)
 		{
+			// Handle email links (mailto:)
+			if (uri != null && uri.Scheme.Equals(Uri.UriSchemeMailto, StringComparison.OrdinalIgnoreCase))
+			{
 #if __APPLE_UIKIT__
-			ParseUriAndLauchMailto(uri);
+				ParseUriAndLauchMailto(uri);
 #else
-			NSWorkspace.SharedWorkspace.OpenUrl(new NSUrl(uri.ToString()));
+				NSWorkspace.SharedWorkspace.OpenUrl(new NSUrl(uri.ToString()));
 #endif
-			cancel = true;
-			return;
+				cancel = true;
+				return;
+			}
+			else
+			{
+				// Anchor navigation shouldn't trigger NavigationStarting event, but should still allow queuing history changes
+				if (uri != null && IsAnchorNavigation(uri.AbsoluteUri))
+				{
+					_shouldQueueHistoryChange = true;
+					QueueHistoryChange();
+
+					cancel = true;
+					return;
+				}
+			}
 		}
 
 		_coreWebView?.SetHistoryProperties(CanGoBack, CanGoForward);
@@ -452,18 +505,25 @@ public
 
 	private void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
 	{
-		_coreWebView?.SetHistoryProperties(CanGoBack, CanGoForward);
-		QueueHistoryChange();
-		_coreWebView?.RaiseNavigationCompleted(uri, isSuccess, httpStatusCode, errorStatus);
+		if (_coreWebView == null)
+		{
+			return;
+		}
+
+		_coreWebView.RaiseNavigationCompleted(uri, isSuccess, httpStatusCode, errorStatus, shouldSetSource: false);
+		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
 	}
 
 	private void QueueHistoryChange()
 	{
-		if (!_isHistoryChangeQueued)
+		if (!_isHistoryChangeQueued && _shouldQueueHistoryChange)
 		{
 			_isHistoryChangeQueued = true;
 			_ = _coreWebView?.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseQueuedHistoryChange);
 		}
+
+		// Reset the flag to control the queuing of history changes
+		_shouldQueueHistoryChange = false;
 	}
 
 	private void RaiseQueuedHistoryChange()
@@ -633,12 +693,24 @@ public
 			CheckForTitleChange();
 		}
 		else if (
-			forKey.Equals(nameof(Url), StringComparison.OrdinalIgnoreCase) ||
 			forKey.Equals(nameof(CanGoBack), StringComparison.OrdinalIgnoreCase) ||
 			forKey.Equals(nameof(CanGoForward), StringComparison.OrdinalIgnoreCase))
 		{
 			_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
-			QueueHistoryChange();
+		}
+		else if (forKey.Equals(nameof(Url), StringComparison.OrdinalIgnoreCase))
+		{
+			var currentUri = Url?.ToUri();
+			if (currentUri != null)
+			{
+				if (!IsAnchorNavigation(currentUri.AbsoluteUri))
+				{
+					_lastNavigationUrl = currentUri.AbsoluteUri;
+					QueueHistoryChange();
+				}
+
+				_coreWebView.Source = currentUri.ToString();
+			}
 		}
 	}
 
@@ -737,7 +809,7 @@ public
 				}
 				else
 				{
-					tcs.TrySetResult(result as NSString);
+					tcs.TrySetResult((result as NSString) ?? "");
 				}
 			});
 
@@ -791,8 +863,45 @@ public
 
 		if (Uri.TryCreate("file://" + readAccessFolderPath, UriKind.Absolute, out readAccessUri))
 		{
-			// LoadFileUrl will always fail on physical devices if readAccessUri changes for the same WebView instance.
-			LoadFileUrl(uri!, readAccessUri!);
+			try
+			{
+				// LoadFileUrl will always fail on physical devices if readAccessUri changes for the same WebView instance.
+				LoadFileUrl(uri!, readAccessUri!);
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+				{
+					this.Log().Error($"Failed to load file URL [{uri}]: {ex.Message}");
+				}
+
+				// If LoadFileUrl fails, try alternative approaches
+				try
+				{
+					// Try to read the file content and load as HTML string
+					var filePath = uri.LocalPath;
+					if (File.Exists(filePath))
+					{
+						var content = File.ReadAllText(filePath);
+						if (uri != null)
+						{
+							LoadHtmlString(content, uri!);
+						}
+
+						_lastNavigationData = uri;
+						return;
+					}
+				}
+				catch (Exception readEx)
+				{
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+					{
+						this.Log().Error($"Failed to read file content [{uri}]: {readEx.Message}");
+					}
+				}
+
+				RaiseNavigationCompleted(uri, false, 404, CoreWebView2WebErrorStatus.UnexpectedError);
+			}
 		}
 		else
 		{
@@ -833,6 +942,12 @@ public
 		// To do that, we try to target the first folder after the app sandbox.
 
 		var directFileParentPath = Path.GetDirectoryName(fileUri.LocalPath)!;
+		if (string.IsNullOrEmpty(directFileParentPath))
+		{
+			// If the path is not valid, return the original path
+			return directFileParentPath;
+		}
+
 		var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 		var appRootPath = directFileParentPath.Substring(0, documentsPath.LastIndexOf('/'));
 

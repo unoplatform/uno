@@ -199,7 +199,7 @@ namespace Windows.Media.Capture
 
 			var asset = AVAsset.FromUrl(NSUrl.FromFilename(originalFilename));
 
-			AVAssetExportSession export = new(asset, AVAssetExportSession.PresetPassthrough);
+			AVAssetExportSession export = new(asset, AVAssetExportSessionPreset.Passthrough.GetConstant());
 
 			export.OutputUrl = NSUrl.FromFilename(outputFilePath);
 			export.OutputFileType = AVFileTypesExtensions.GetConstant(AVFileTypes.Mpeg4);

@@ -7,8 +7,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Execution;
 using NUnit.Framework;
 using Uno.UITest;
 using static System.Math;

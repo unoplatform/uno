@@ -3,48 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented]
-#endif
-	public partial class TabViewTabTearOutRequestedEventArgs
+#if false || false || false || false || false || false || false
+	public enum TabViewTearOutRequestedEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal TabViewTabTearOutRequestedEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object[] Items
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object[] TabViewTabTearOutRequestedEventArgs.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%5B%5D%20TabViewTabTearOutRequestedEventArgs.Items");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.WindowId NewWindowId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WindowId TabViewTabTearOutRequestedEventArgs.NewWindowId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowId%20TabViewTabTearOutRequestedEventArgs.NewWindowId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement[] Tabs
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UIElement[] TabViewTabTearOutRequestedEventArgs.Tabs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%5B%5D%20TabViewTabTearOutRequestedEventArgs.Tabs");
-			}
-		}
-#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.Tabs.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.NewWindowId.get
 	}
+#endif
 }

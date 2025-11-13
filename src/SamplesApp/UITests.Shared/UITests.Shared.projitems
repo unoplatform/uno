@@ -34,6 +34,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowFeatures.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowPresenters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -42,6 +46,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowTitleBarProperties.xaml" />
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\SingleWindowClose.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -50,6 +55,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorder.xaml" />
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBar_SetDragRectangles.xaml" />
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\AnimatedIconTests\AnimatedIconPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -550,6 +557,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Uno_Templates\DataTemplate_Update_Sample.xaml" />
     <Page Include="$(MSBuildThisFileDirectory)Uno_Web\Http\CookieManagerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1818,6 +1826,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_NativeEmbedding_ZIndex.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_NativeEmbedding_Android_FillType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Template.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2610,6 +2626,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_Modes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SymbolIconTests\SymbolIcon_Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2631,6 +2651,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_BrushColorChanging.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_ClipboardMethods.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -3115,6 +3139,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\ComboBox_Simple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\ComboBox_ReopenDropdown.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4070,6 +4098,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\PasswordBox_PasswordChar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\PasswordBox_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4298,6 +4330,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+        
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_TargetBlank.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_InfiniteBounds.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4311,6 +4348,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Basic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_ManagedOverlay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5633,6 +5674,19 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UWPViewHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\WaitableSampleImageHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowFeatures.xaml.cs">
+      <DependentUpon>AppWindowFeatures.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowTitleBarProperties.xaml.cs">
+      <DependentUpon>AppWindowTitleBarProperties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorder.xaml.cs">
+      <DependentUpon>TitleBarAndBorder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorderViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBar_SetDragRectangles.xaml.cs">
+      <DependentUpon>TitleBar_SetDragRectangles.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ExpanderTests\Expander_Bindings_TemplatedControl.xaml.cs">
       <DependentUpon>Expander_Bindings_TemplatedControl.xaml</DependentUpon>
     </Compile>
@@ -6043,6 +6097,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal_Test.xaml.cs">
       <DependentUpon>VisibleBoundsPadding_Modal_Test.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Uno_Templates\DataTemplate_Update_Sample.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Uno_Web\Http\CookieManagerTests.xaml.cs">
       <DependentUpon>CookieManagerTests.xaml</DependentUpon>
     </Compile>
@@ -6237,7 +6292,6 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\RotatingCubeGlCanvasElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SimpleTriangleGlCanvasElement.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElementImpl.skia.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\CompositionPathTests.xaml.cs">
       <DependentUpon>CompositionPathTests.xaml</DependentUpon>
     </Compile>
@@ -6455,6 +6509,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyoutSubItem_Placement.xaml.cs">
       <DependentUpon>MenuFlyoutSubItem_Placement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControlModesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_ImplicitParentTextBlockStyle.xaml.cs">
       <DependentUpon>TextBox_ImplicitParentTextBlockStyle.xaml</DependentUpon>
     </Compile>
@@ -7472,6 +7527,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_ListView.xaml.cs">
       <DependentUpon>SwipeControl_ListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_Modes.xaml.cs">
+      <DependentUpon>SwipeControl_Modes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_ScrollViewer.xaml.cs">
       <DependentUpon>SwipeControl_ScrollViewer.xaml</DependentUpon>
     </Compile>
@@ -7496,6 +7554,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_BrushColorChanging.xaml.cs">
       <DependentUpon>TextBlock_BrushColorChanging.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_ClipboardMethods.xaml.cs">
+      <DependentUpon>TextBlock_ClipboardMethods.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Decorations.xaml.cs">
       <DependentUpon>TextBlock_Decorations.xaml</DependentUpon>
@@ -8168,6 +8229,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\PasswordBox_InputScope_NumericPin.xaml.cs">
       <DependentUpon>PasswordBox_InputScope_NumericPin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\PasswordBox_PasswordChar.xaml.cs">
+      <DependentUpon>PasswordBox_PasswordChar.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\PasswordBox_Simple.xaml.cs">
       <DependentUpon>PasswordBox_Simple.xaml</DependentUpon>
@@ -9276,6 +9340,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\ComboBox_Simple.xaml.cs">
       <DependentUpon>ComboBox_Simple.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\ComboBox_ReopenDropdown.xaml.cs">
+      <DependentUpon>ComboBox_ReopenDropdown.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Custom_Button_With_ContentTemplate.xaml.cs">
       <DependentUpon>Custom_Button_With_ContentTemplate.xaml</DependentUpon>
     </Compile>
@@ -9654,11 +9721,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Alert.xaml.cs">
       <DependentUpon>WebView2_Alert.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_TargetBlank.xaml.cs">
+      <DependentUpon>WebView2_TargetBlank.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_InfiniteBounds.xaml.cs">
       <DependentUpon>WebView2_InfiniteBounds.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Basic.xaml.cs">
       <DependentUpon>WebView2_Basic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_ManagedOverlay.xaml.cs">
+      <DependentUpon>WebView2_ManagedOverlay.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Folder.xaml.cs">
       <DependentUpon>WebView2_Folder.xaml</DependentUpon>
@@ -9770,6 +9843,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_NativeEmbedding.xaml.cs">
       <DependentUpon>ContentPresenter_NativeEmbedding.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_NativeEmbedding_ZIndex.xaml.cs">
+      <DependentUpon>ContentPresenter_NativeEmbedding_ZIndex.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_NativeEmbedding_Android_FillType.xaml.cs">
+      <DependentUpon>ContentPresenter_NativeEmbedding_Android_FillType.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Template.xaml.cs">
       <DependentUpon>ContentPresenter_Template.xaml</DependentUpon>
@@ -9906,6 +9985,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Asset_GetFileFromApplicationUriAsync_Nested.xml" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AutoSave.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AutoSuggestBox.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\bluecrystal.ico" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\BlueSquare.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Button.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\CalendarDatePicker.png" />
@@ -10018,6 +10098,11 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset_hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rect.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Reveal.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\scale-test.scale-400.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ScrollViewer.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\search.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Slices.png" />

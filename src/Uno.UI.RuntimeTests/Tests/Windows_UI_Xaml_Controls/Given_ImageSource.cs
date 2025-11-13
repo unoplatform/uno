@@ -53,6 +53,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var actual = ((BitmapImage)imageSource).UriSource.ToString();
 			Assert.AreEqual("mysceheme:///Assets/File.png", actual);
 		}
+
+		[TestMethod]
+		public void When_ImageSource_From_Relative_Uri()
+		{
+			ImageSource imageSource = null;
+			Action act = () => imageSource = new Uri("/Assets/File.png", UriKind.Relative);
+
+			act.Should().NotThrow();
+			imageSource.Should().NotBeNull();
+
+			var actual = ((BitmapImage)imageSource).UriSource.ToString();
+			Assert.AreEqual("ms-appx:///Assets/File.png", actual);
+		}
 	}
 }
 #endif

@@ -15,7 +15,6 @@ using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
-using FluentAssertions;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Helpers;
@@ -110,7 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			await TestServices.WindowHelper.WaitForIdle();
 
 #if !__APPLE_UIKIT__
-			sut.Children.Count.Should().BeLessOrEqualTo(1);
+			sut.Children.Count.Should().BeLessThanOrEqualTo(1);
 #endif
 
 			sv.ChangeView(null, sv.ExtentHeight, null, disableAnimation: true);
@@ -494,6 +493,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			// Item 0 should be at offset 0
 			LayoutInformation.GetLayoutSlot(sut.MaterializedElements.OrderBy(e => e.DataContext).First()).Y.Should().Be(0, "Item #0 should be at the origin of the IR (negative offset means we are in trouble!)");
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Fails due to async native scrolling.")]
+#endif
+		public async Task When_Repeater_ChangedView()
+		{
+			var sut = SUT.Create(300, new Size(100, 500));
+
+			await sut.Load();
+
+			var items = sut.MaterializedItems.ToArray();
+
+			var lastItem = sut.Source.Last();
+			sut.MaterializedItems.Should().NotContain(lastItem);
+
+			sut.Scroller.ChangeView(null, 1000000, null, disableAnimation: false);
+
+			// required for the animation
+			await Task.Delay(200);
+
+			sut.MaterializedItems.Should().NotBeEquivalentTo(items);
+			sut.MaterializedItems.Count().Should().BeGreaterThanOrEqualTo(3);
+
+			// required for the animation to complete
+			await Task.Delay(1000);
+			sut.MaterializedItems.Should().Contain(lastItem);
+		}
+
 
 		[TestMethod]
 		[RunsOnUIThread]

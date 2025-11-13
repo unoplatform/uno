@@ -1,9 +1,9 @@
 ---
 uid: Uno.GetStarted.vs2022
 ---
-## Get Started on Visual Studio 2022
+## Get Started on Visual Studio 2022/2026
 
-This getting started will guide you through setting up your environment to create Uno Platform applications using C# and .NET with Visual Studio 2022.
+This getting started will guide you through setting up your environment to create Uno Platform applications using C#, .NET and Copilot with Visual Studio 2022/2026.
 
 > [!TIP]
 > If you want to use another environment or IDE, see our [general getting started](get-started.md).
@@ -41,7 +41,14 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.9 or 
 
 2. In the Extension Manager expand the **Online** node and search for `Uno`, install the `Uno Platform` extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.  
 
-    ![Extension Manager - Uno Platform extension](Assets/tutorial01/uno-extensions.PNG)  
+    ![Extension Manager - Uno Platform extension](Assets/tutorial01/uno-extensions.PNG)
+
+> [!NOTE]
+> The Uno Platform extension provides all the Copilot tooling needed to develop your apps.
+
+## Additional Setup for Android & iOS
+
+For assistance configuring Android or iOS emulators, see the [Android & iOS emulator troubleshooting guide](xref:Uno.UI.CommonIssues.MobileDebugging).
 
 ## Additional Setup for Windows Subsystem for Linux (WSL)
 

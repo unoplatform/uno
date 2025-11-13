@@ -294,7 +294,7 @@ void uno_mediaplayer_set_view(UNOMediaPlayer *media, UNOMediaPlayerView *view, N
     media.videoLayer.frame = view.frame;
     media.videoLayer.videoGravity = kCAGravityResizeAspect;
     [view.layer addSublayer:media.videoLayer];
-    [window.contentViewController.view addSubview:view positioned:NSWindowAbove relativeTo:nil];
+    view.originalSuperView = window.contentViewController.view;
 }
 
 static NSMutableSet<UNOMediaPlayer*> *players;
@@ -511,15 +511,15 @@ id timeObserver;
     return true;
 }
 
-@synthesize visible;
-
 // UNONativeElement
 
-- (void)detach {
+- (void)dispose {
 #if DEBUG
-    NSLog(@"detach mediaplayer %p", self);
+    NSLog(@"UNOMediaPlayer %p disposing with superview %p", self, self.superview);
 #endif
-//    [self removeFromSuperview];
+    if (self.superview) {
+        [self removeFromSuperview];
+    }
 }
 
 - (void)layout {
@@ -535,5 +535,7 @@ id timeObserver;
         }
     }
 }
+
+@synthesize originalSuperView;
 
 @end

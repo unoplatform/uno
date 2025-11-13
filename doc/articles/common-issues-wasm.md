@@ -17,6 +17,18 @@ Here are a few ways to fix this:
 - Make sure that you've run [`uno-check`](xref:UnoCheck.UsingUnoCheck) and that the `dotnet workload list` shows the `wasm-tools` workload. If you're using Visual Studio, make sure to restart it if you've installed workloads.
 - If you've run `dotnet publish`, make sure to use the `bin\Release\netX.0-browserwasm\publish\wwwroot` folder to serve your app. Make sure to visit [our publishing docs](xref:uno.publishing.overview) for more information.
 
+## Mixed Content, this request has been blocked
+
+When running a webassembly app under WebAssembly with HTTPS the following error may happen:
+
+```text
+Mixed Content: The page at 'https://localhost:5002' was loaded over HTTPS, but attempted to 
+connect to the insecure WebSocket endpoint 'ws://XXXX:59867/rc'. This request has been blocked;
+this endpoint must be available over WSS.
+```
+
+In order to fix this issue, you may need to apply the [HTTPS fixes](xref:Uno.Guides.UsingTheServerProject#adjusting-for-https) mentioned in the server project documentation.
+
 ## WebAssembly: Access to fetch at 'https://XXXX' from origin 'http://XXXX' has been blocked by CORS policy
 
 This is a security restriction from the JavaScript `fetch` API, where the endpoint you're calling needs to provide [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) to work properly.

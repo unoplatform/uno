@@ -15,8 +15,6 @@ public static partial class CoreApplication
 {
 	private static CoreApplicationView _currentView;
 	private static List<CoreApplicationView> _views;
-	private static Action<object> _invalidateRender;
-	private static Action<object, bool> _setContinuousRender;
 
 	static CoreApplication()
 	{
@@ -110,31 +108,4 @@ public static partial class CoreApplication
 	/// Gets a value indicating whether the the app is running as a full fledged app or as Uno islands only.
 	/// </summary>
 	internal static bool IsFullFledgedApp { get; set; } = true;
-
-	/// <summary>
-	/// Sets the invalidateRender and setContinuousRender callbacks for this layer.
-	/// </summary>
-	/// <param name="invalidateRender"></param>
-	/// <param name="setContinuousRender"></param>
-	internal static void SetInvalidateRender(Action<object> invalidateRender, Action<object, bool> setContinuousRender)
-	{
-		Debug.Assert(_invalidateRender is null);
-		Debug.Assert(_setContinuousRender is null);
-
-		_invalidateRender ??= invalidateRender;
-		_setContinuousRender ??= setContinuousRender;
-	}
-
-	/// <summary>
-	/// Enables or disables the continuous render mode for the specified visual
-	/// </summary>
-	internal static void SetContinuousRender(object visual, bool enabled)
-		=> _setContinuousRender?.Invoke(visual, enabled);
-
-	/// <summary>
-	/// Queues a render surface invalidation
-	/// </summary>
-	internal static void QueueInvalidateRender(object visual)
-		=> _invalidateRender?.Invoke(visual);
-
 }

@@ -5,6 +5,7 @@ using System.Globalization;
 using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.DependencyObject;
+
 public partial class DependencyObjectGenerator
 {
 	private static readonly DiagnosticDescriptor _descriptor = new(

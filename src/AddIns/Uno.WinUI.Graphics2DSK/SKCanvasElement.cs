@@ -1,8 +1,13 @@
-using System.Numerics;
+using System;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
+
+#if CROSSRUNTIME
+using Uno.Foundation.Extensibility;
+using Uno.UI.Graphics;
+#endif
 
 namespace Uno.WinUI.Graphics2DSK;
 
@@ -10,14 +15,50 @@ namespace Uno.WinUI.Graphics2DSK;
 /// A <see cref="FrameworkElement"/> that exposes the ability to draw directly on the window using SkiaSharp.
 /// </summary>
 /// <remarks>This is only available on skia-based targets.</remarks>
-public abstract class SKCanvasElement : FrameworkElement
+public abstract partial class SKCanvasElement : FrameworkElement
 {
-	private protected override ContainerVisual CreateElementVisual() => new SKCanvasVisual(this, Compositor.GetSharedCompositor());
+#if CROSSRUNTIME
+	private SKCanvasVisualBase? _skCanvasVisual;
+
+	private protected override ContainerVisual CreateElementVisual()
+	{
+		if (ApiExtensibility.CreateInstance<SKCanvasVisualBaseFactory>(this, out var factory))
+		{
+			return _skCanvasVisual = factory.CreateInstance((o, size) => RenderOverride((SKCanvas)o, size), Compositor.GetSharedCompositor());
+		}
+		else
+		{
+			throw new InvalidOperationException($"Failed to create an instance of {nameof(SKCanvasVisualBase)}");
+		}
+	}
+
+	internal override bool IsViewHit() => true;
+#endif
+
+	protected SKCanvasElement()
+	{
+		if (!IsSupportedOnCurrentPlatform())
+		{
+			throw new PlatformNotSupportedException($"This platform does not support {nameof(SKCanvasElement)}. For more information: https://aka.platform.uno/skcanvaselement");
+		}
+	}
+
+#if CROSSRUNTIME
+	public static bool IsSupportedOnCurrentPlatform() => ApiExtensibility.IsRegistered<SKCanvasVisualBaseFactory>();
+#else
+	public static bool IsSupportedOnCurrentPlatform() => false;
+#endif
 
 	/// <summary>
 	/// Invalidates the element and triggers a redraw.
 	/// </summary>
-	public void Invalidate() => _visual.Compositor.InvalidateRender(_visual);
+#if CROSSRUNTIME
+	public void Invalidate() => _skCanvasVisual?.Invalidate();
+#else
+#pragma warning disable CS0109 // Member does not hide an inherited member; new keyword is not required
+	public new void Invalidate() { }
+#pragma warning restore CS0109 // Member does not hide an inherited member; new keyword is not required
+#endif
 
 	/// <summary>
 	/// The SkiaSharp drawing logic goes here.
@@ -29,19 +70,4 @@ public abstract class SKCanvasElement : FrameworkElement
 	/// Drawing outside this area (i.e. outside the (0, 0, area.Width, area.Height) rectangle) will be clipped out.
 	/// </remarks>
 	protected abstract void RenderOverride(SKCanvas canvas, Size area);
-
-	private class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : ContainerVisual(compositor)
-	{
-		internal override void Paint(in PaintingSession session)
-		{
-			// We save and restore the canvas state ourselves so that the inheritor doesn't accidentally forget to.
-			session.Canvas.Save();
-			// clipping here guarantees that drawing doesn't get outside the intended area
-			session.Canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y), antialias: true);
-			owner.RenderOverride(session.Canvas, Size.ToSize());
-			session.Canvas.Restore();
-		}
-
-		internal override bool CanPaint() => true;
-	}
 }

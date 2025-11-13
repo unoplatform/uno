@@ -4,8 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -15,14 +14,17 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Toolkit.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
@@ -581,7 +583,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive();
 			}
@@ -673,6 +675,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIslands)] // Flaky on Skia WPF Islands #9080
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
@@ -724,16 +727,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.MoveTo(inner.GetAbsoluteBounds().GetCenter());
 			mouse.Wheel(-50, steps: 5);
-			await WindowHelper.WaitForIdle();
+
+			// waiting for wheel animation
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			Assert.AreEqual(0, outer.VerticalOffset);
-			Assert.IsTrue(inner.VerticalOffset > 0);
+			Assert.IsTrue(inner.VerticalOffset > 0, "Inner Vertical Offset is not greater than 0");
+
+			mouse.Wheel(-500, steps: 5);
+
+			// waiting for wheel animation
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			var expectedOffset = outer.ScrollableHeight / 2;
+			Assert.IsTrue(outer.VerticalOffset > expectedOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
+			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
+		}
+
+
+		[TestMethod]
+		[Ignore("This test is flaky on CI")]
+		public async Task When_Nested_WebView_WheelChanged()
+		{
+			var webview = new WebView2
+			{
+				Height = 200,
+				Background = new SolidColorBrush(Colors.Yellow),
+				Source = new Uri("https://www.platform.uno"),
+			};
+
+			var outer = new ScrollViewer
+			{
+				Height = 300,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Red),
+							Height = 400,
+							Width = 200
+						},
+						webview,
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Blue),
+							Height = 400,
+							Width = 200
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = outer;
+
+			await WindowHelper.WaitForLoaded(outer);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(outer.GetAbsoluteBounds().GetCenter());
+			mouse.Wheel(-600, steps: 5);
+			await WindowHelper.WaitForIdle();
+
+			// waiting for wheel animation
+			await Task.Delay(500);
+
+			Assert.IsTrue(outer.VerticalOffset > 200, "Outer Vertical Offset is not greater than 200");
 
 			mouse.Wheel(-500, steps: 5);
 			await WindowHelper.WaitForIdle();
 
+			// waiting for wheel animation
+			await Task.Delay(500);
+
 			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
-			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
 		}
 
 		[TestMethod]
@@ -745,7 +815,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
 			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
-			// we don't end up to invoke IScrollStrategy.Set again and again (preventing the CompositorScrollStrategy to properly process its animation)
+			// we don't end up to invoke ScrollContentPresenter.Set again and again (preventing the ScrollContentPresenter.Update methohd to properly process its animation)
 
 			FrameworkElement content;
 			var sut = new ScrollViewer
@@ -761,16 +831,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var bounds = await UITestHelper.Load(sut);
 
-			// First make sure that this test can effectively test something!
-			var strategy = sut.Presenter?.GetType().GetField("_strategy", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(sut.Presenter);
-#if __SKIA__
-			Assert.AreEqual(CompositorScrollStrategy.Instance, strategy);
-#else
-			if (strategy is null || strategy.GetType().Name != "CompositorScrollStrategy")
-			{
-				Assert.Inconclusive("This test is valid only on platforms that uses the CompositorScrollStrategy.");
-			}
-#endif
 			var visual = ElementCompositionPreview.GetElementVisual(content);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
@@ -782,7 +842,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(bounds.GetCenter());
 			mouse.Wheel(-400, steps: 1);
 
-			// Here we assume that CompositorScrollStrategy is using KeyFrameAnimation. If no longer the case, the test can be updated!
+			// Here we assume that ScrollContentPresenter is using KeyFrameAnimation. If no longer the case, the test can be updated!
 			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
 			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
 
@@ -1340,6 +1400,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_TouchScroll_Then_NestedElementReceivePointerEvents()
 		{
 			var nested = new Border
@@ -1384,6 +1447,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public async Task When_TouchTap_Then_NestedElementReceivePointerEvents()
 		{
 			var nested = new Border
@@ -1423,6 +1489,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
@@ -1462,11 +1529,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.WheelUp();
 
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
 			sut.VerticalOffset.Should().BeGreaterThan(0);
 
 			mouse.WheelDown();
 
-			sut.VerticalOffset.Should().Be(0);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			sut.VerticalOffset.Should().BeApproximately(0, 0.5);
 #endif
 		}
 
@@ -1734,8 +1805,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				from: center,
 				to: new(center.X, center.Y - 1000));
 
-			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1);
-			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1);
+			await Task.Delay(500); // Wait for the inertia to run
+
+			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1, $"parentEndOffset {parentEndOffset} minus parent.VerticalOffset {parent.VerticalOffset} is not lower than 1");
+			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1, $"childEndOffset {childEndOffset} minus parent.VerticalOffset {child.VerticalOffset} is not lower than 1");
 		}
 
 		[TestMethod]
@@ -1786,10 +1859,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				steps: 1,
 				stepOffsetInMilliseconds: 1);
 
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await UITestHelper.WaitForRender();
 
 			Assert.AreEqual(0, parent.VerticalOffset);
-			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1);
+			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1,
+				$"abs(childEndOffset - child.VerticalOffset)={Math.Abs(childEndOffset - child.VerticalOffset)}, expected to be < 1");
 		}
 
 		[TestMethod]
@@ -1852,7 +1926,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 
 			// Wait for the inertia to run
-			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await UITestHelper.WaitForRender();
 			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1);
 		}
 #endif
@@ -1888,5 +1962,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(sv.ViewportHeight, sv.ExtentHeight, delta: 1.0, "In a free expanding SV, the Viewport should the same as the Extend.");
 			Assert.AreEqual(0, sv.ScrollableHeight, delta: 1.0, "In a free expanding SV, it should never be scrollable.");
 		}
+
+#if HAS_UNO // ScrollViewer.UpdatesMode is Uno-specific
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ViewChanged_From_MouseWheel()
+		{
+			// setup is a 100x100 ScrollViewer with a 2000px tall Border
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.Red)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 100,
+				Width = 100,
+				Content = content,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+			var visual = ElementCompositionPreview.GetElementVisual(sut);
+
+			var records = new List<bool?>(); // using <bool?>, so LastOrDefault doesnt return false if empty
+			sut.ViewChanged += (s, e) =>
+			{
+				records.Add(e.IsIntermediate);
+			};
+
+			const int LongWaitForMouseEvent = 5000;
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// move to center
+			mouse.MoveTo(bounds.GetCenter());
+
+			// scroll
+			mouse.Wheel(-400, steps: 1);
+			var a = records.ToArray();
+			await WindowHelper.WaitFor(() => records.LastOrDefault() is false, timeoutMS: LongWaitForMouseEvent);
+			var count0 = records.Count;
+
+			// scroll again
+			mouse.Wheel(-200, steps: 1);
+			var b = records.ToArray();
+			await WindowHelper.WaitFor(() => records.Skip(count0).LastOrDefault() is false, timeoutMS: LongWaitForMouseEvent);
+
+			// with each scrolling, we should expect ViewChanged\e.IsIntermediate to be a sequence of [true, true..., false]
+			var sequence = records.OfType<bool>().DistinctUntilChanged().ToArray();
+			CollectionAssert.AreEqual(new bool[] { true, false, true, false }, sequence);
+		}
+#endif
 	}
 }

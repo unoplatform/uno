@@ -85,7 +85,7 @@ namespace Uno.UI
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static object ResolveResourceStatic(
 			object key,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
+			Type type,
 			object context = null)
 		{
 			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value))
@@ -602,6 +602,24 @@ namespace Uno.UI
 			}
 
 			throw new InvalidOperationException($"Cannot locate resource from '{source}'");
+		}
+
+		internal static bool TryRetrieveDictionaryForSource(Uri source, out ResourceDictionary resourceDictionary)
+		{
+			if (source?.AbsoluteUri is not { } absoluteUriString)
+			{
+				resourceDictionary = null;
+				return false;
+			}
+
+			if (_registeredDictionariesByUri.TryGetValue(absoluteUriString, out var factory))
+			{
+				resourceDictionary = factory();
+				return true;
+			}
+
+			resourceDictionary = null;
+			return false;
 		}
 
 		internal static ResourceDictionary RetrieveDictionaryForFilePath(string filePath)

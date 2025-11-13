@@ -81,6 +81,7 @@ namespace Windows.Devices.Sensors
 		/// <param name="y">Accelerometer Y</param>
 		/// <param name="z">Accelerometer Z</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
+		[JSExport]
 		internal static int DispatchReading(float x, float y, float z)
 		{
 			if (_instance.Value == null)
@@ -101,16 +102,5 @@ namespace Windows.Devices.Sensors
 			_instance.Value._shakeDetector?.OnSensorChanged(x, y, z, DateTimeOffset.UtcNow);
 			return 0;
 		}
-	}
-}
-
-namespace Uno.Devices.Sensors
-{
-	public partial class Accelerometer
-	{
-		// Workaround for https://github.com/dotnet/runtime/pull/84725
-		[JSExport]
-		public static int DispatchReading(float x, float y, float z)
-			=> global::Windows.Devices.Sensors.Accelerometer.DispatchReading(x, y, z);
 	}
 }

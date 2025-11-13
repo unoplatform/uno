@@ -16,11 +16,12 @@ public class TelemetryContextualTests : TelemetryTestBase
 		try
 		{
 			// Act
-			var started = await RunTelemetryTestCycle(helper, 3000);
+			var started = await RunTelemetryTestCycleAsync(helper, 3000);
 			var filePath = Path.Combine(tempDir, fileName);
 			var fileExists = File.Exists(filePath);
 			var fileContent = fileExists ? await File.ReadAllTextAsync(filePath, CT) : string.Empty;
 			var events = fileContent.Length > 0 ? ParseTelemetryEvents(fileContent) : new();
+			WriteEventsList(events);
 
 			// Assert
 			started.Should().BeTrue();
@@ -31,7 +32,7 @@ public class TelemetryContextualTests : TelemetryTestBase
 		}
 		finally
 		{
-			await CleanupTelemetryTest(helper, tempDir, fileName);
+			await CleanupTelemetryTestAsync(helper, tempDir, fileName);
 		}
 	}
 }

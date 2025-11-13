@@ -6,6 +6,8 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<Import Project="../targetframework-override-noplatform.props" />
+
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\Helpers\VersionHelper.cs" Link="Helpers/%(Filename)" />
 		<Compile Include="..\Uno.UI.RemoteControl\Messages\**\*.cs" Link="Messages/%(Filename)" />

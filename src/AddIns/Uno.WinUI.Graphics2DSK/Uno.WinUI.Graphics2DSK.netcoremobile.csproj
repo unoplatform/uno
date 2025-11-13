@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
+    <!-- Required to ensure that we're including an explicit reference to Mono.Android in order to have Java Stubs being generated properly -->
+	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.WinUI.Graphics2DSK</AssemblyName>
+		<RootNamespace>Uno.WinUI.Graphics2DSK</RootNamespace>
+
+		<Nullable>enable</Nullable>
+		
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" />
+	</ItemGroup>
+	
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+</Project>

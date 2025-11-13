@@ -1,0 +1,68 @@
+<Page
+    x:Class="UITests.Microsoft_UI_Windowing.AppWindowTitleBarProperties"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Windowing"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:DefaultBindMode="TwoWay"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="8" Spacing="8">
+        <TextBlock FontWeight="Bold" Text="AppWindowTitleBar Color Properties" />
+        <StackPanel Visibility="{Binding IsBackgroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="BackgroundColor" />
+            <controls:ColorPicker Color="{Binding BackgroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsInactiveBackgroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="InactiveBackgroundColor" />
+            <controls:ColorPicker Color="{Binding InactiveBackgroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsForegroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="ForegroundColor" />
+            <controls:ColorPicker Color="{Binding ForegroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsInactiveForegroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="InactiveForegroundColor" />
+            <controls:ColorPicker Color="{Binding InactiveForegroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsButtonBackgroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="ButtonBackgroundColor" />
+            <controls:ColorPicker Color="{Binding ButtonBackgroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsButtonInactiveBackgroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="ButtonInactiveBackgroundColor" />
+            <controls:ColorPicker Color="{Binding ButtonInactiveBackgroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsButtonForegroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="ButtonForegroundColor" />
+            <controls:ColorPicker Color="{Binding ButtonForegroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsButtonInactiveForegroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="ButtonInactiveForegroundColor" />
+            <controls:ColorPicker Color="{Binding ButtonInactiveForegroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsButtonHoverBackgroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="ButtonHoverBackgroundColor" />
+            <controls:ColorPicker Color="{Binding ButtonHoverBackgroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsButtonHoverForegroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="ButtonHoverForegroundColor" />
+            <controls:ColorPicker Color="{Binding ButtonHoverForegroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsButtonPressedBackgroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="ButtonPressedBackgroundColor" />
+            <controls:ColorPicker Color="{Binding ButtonPressedBackgroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <StackPanel Visibility="{Binding IsButtonPressedForegroundColorAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="ButtonPressedForegroundColor" />
+            <controls:ColorPicker Color="{Binding ButtonPressedForegroundColor, Mode=TwoWay}" />
+        </StackPanel>
+        <ComboBox
+            Header="PreferredHeightOption"
+            ItemsSource="{Binding TitleBarHeightOptions}"
+            SelectedItem="{Binding PreferredHeightOption, Mode=TwoWay}" />
+    </StackPanel>
+</Page>

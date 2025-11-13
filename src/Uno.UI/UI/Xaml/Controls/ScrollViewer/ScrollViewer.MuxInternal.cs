@@ -22,6 +22,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool m_templatedParentHandlesMouseButton;
 
+		// Allow to set focus on ScrollViewer itself. For example, Flyout inner ScrollViewer.
+		internal bool m_isFocusableOnFlyoutScrollViewer;
+
 		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
 		internal bool ArePointerWheelEventsIgnored { get; set; }
 		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
@@ -135,11 +138,13 @@ namespace Microsoft.UI.Xaml.Controls
 				//}
 				//else
 				{
+					bool isFocusedOnLightDismissPopupOfFlyout = false;
+
 					// Set focus on the Flyout inner ScrollViewer to dismiss IHM.
-					//if (m_isFocusableOnFlyoutScrollViewer)
-					//{
-					var isFocusedOnLightDismissPopupOfFlyout = ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(this);
-					//}
+					if (m_isFocusableOnFlyoutScrollViewer)
+					{
+						isFocusedOnLightDismissPopupOfFlyout = ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(this);
+					}
 					if (isFocusedOnLightDismissPopupOfFlyout)
 					{
 						args.Handled = true;

@@ -58,8 +58,8 @@ namespace Uno.UI.Tests.TextBoxTests
 		public void Calling_Select_With_NegativeValues()
 		{
 			var textBox = new TextBox();
-			Assert.ThrowsException<ArgumentException>(() => textBox.Select(0, -1));
-			Assert.ThrowsException<ArgumentException>(() => textBox.Select(-1, 0));
+			Assert.ThrowsExactly<ArgumentException>(() => textBox.Select(0, -1));
+			Assert.ThrowsExactly<ArgumentException>(() => textBox.Select(-1, 0));
 		}
 
 		[TestMethod]

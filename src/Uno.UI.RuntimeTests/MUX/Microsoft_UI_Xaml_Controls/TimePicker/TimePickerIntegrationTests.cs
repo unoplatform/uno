@@ -509,17 +509,17 @@ public class TimePickerIntegrationTests
 			var minuteTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "MinuteTextBlock"));
 			var periodTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "PeriodTextBlock"));
 
-			void validatePlaceholder(TextBlock textBlock, string placeholder)
+			void validatePlaceholder(TextBlock textBlock, string placeholder, string message)
 			{
 				LOG_OUTPUT("Expected placeholder: \"%s\"", placeholder);
 				LOG_OUTPUT("Actual text: \"%s\"", textBlock.Text);
 
-				VERIFY_IS_TRUE(string.CompareOrdinal(placeholder, textBlock.Text) == 0);
+				VERIFY_IS_TRUE(string.CompareOrdinal(placeholder, textBlock.Text) == 0, message);
 			}
 
-			validatePlaceholder(hourTextBlock, "hour");
-			validatePlaceholder(minuteTextBlock, "minute");
-			validatePlaceholder(periodTextBlock, "AM");
+			validatePlaceholder(hourTextBlock, "hour", "Default text is not [hour]");
+			validatePlaceholder(minuteTextBlock, "minute", "Default text is not [minute]");
+			validatePlaceholder(periodTextBlock, "AM", "Default text is not [AM]");
 		});
 	}
 

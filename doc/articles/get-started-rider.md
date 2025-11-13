@@ -32,15 +32,19 @@ uid: Uno.GetStarted.Rider
 
 ## Install the Uno Platform plugin
 
-In Rider, in the **Configure**, **Plugins** menu, open the **Marketplace** tab, then search for **Uno Platform**:
+In Rider, in the **Settings**, **Plugins** menu, open the **Marketplace** tab, then search for **Uno Platform**:
 
 ![Visual Studio Installer - .NET desktop development workload](Assets/ide-rider-plugin-search.png)
 
 Then click the install button.
 
-## Platform specific setup
+## Platform-specific setup
 
 You may need to follow additional directions, depending on your development environment.
+
+### Android & iOS
+
+For assistance configuring Android or iOS emulators, see the [Android & iOS emulator troubleshooting guide](xref:Uno.UI.CommonIssues.MobileDebugging).
 
 ### Linux
 

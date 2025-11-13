@@ -32,7 +32,7 @@ namespace Uno.UI
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public object ResolveResourceStatic(
 			object key,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
+			Type type,
 			object context)
 			=> ResourceResolver.ResolveResourceStatic(key, type, context);
 

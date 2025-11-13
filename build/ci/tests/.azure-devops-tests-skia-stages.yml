@@ -58,6 +58,40 @@ stages:
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
+- stage: runtime_tests_skia_android_coreclr
+  displayName: Tests - Android+CoreCLR Skia
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-tests-android-coreclr-skia-build.yml
+    parameters:
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+  - template: .azure-devops-tests-android-coreclr-skia.yml
+    parameters:
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: runtime_tests_skia_android_nativeaot
+  displayName: Tests - Android+NativeAOT Skia
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-tests-android-nativeaot-skia-build.yml
+    parameters:
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+  - template: .azure-devops-tests-android-nativeaot-skia.yml
+    parameters:
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
 - stage: runtime_tests_skia_ios
   displayName: Tests - iOS Skia
   dependsOn:

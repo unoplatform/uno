@@ -2,14 +2,44 @@
 uid: Uno.GetStarted.Wizard
 ---
 
-<!-- markdownlint-disable MD026 -->
-# Done! Important next steps:
+<!-- TITLE SECTION -->
+<div style="display: flex; justify-content: center; align-items: center; text-align: center;">
+  <h1>Welcome to Uno Platform! Important Next Steps</h1>
+</div>
 
-Create a simple cross-platform Counter application.
-
-Choose one of the 4 variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX). Also, you can build the Counter tutorial using our visual designer, Hot Design.
+<!-- COUNTER - HOT DESIGN TUTORIAL - SECTION -->
+<p style="text-align: center;">
+  Create a simple cross-platform Counter application (Time to complete &lt; 5 min):
+</p>
 
 <!-- markdownlint-disable MD001 -->
+
+<!-- Centered first item -->
+<div style="display: flex; justify-content: center; align-items: center;">
+<div class="col-md-6 col-xs-12">
+<a href="studio/Hot Design/hot-design-getstarted-counter-tutorial.md">
+<div class="alert alert-info alert-hover">
+
+#### Hot Design®
+
+Use Hot Design®, Uno Platform's visual designer, to design and develop the app.
+
+</div>
+</a>
+</div>
+</div>
+
+<p align="center">
+  <img src="Assets/getting-started-hot-design.png" alt="Welcome-Hot Design-Counter" style="width:auto; max-width:90%; height:auto;" />
+</p>
+
+<br/>
+
+<!-- COUNTER - OTHER VARIANTS TUTORIALS - SECTION -->
+
+<p style="text-align: center;">
+    Prefer to start from code? Choose one of the 4 variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX).
+</p>
 
 <br/>
 
@@ -65,21 +95,8 @@ Use C# Markup for layout and MVVM for state management
 
 </div>
 
-<!-- Centered last item -->
-<div class="row" style="display: flex; justify-content: center; align-items: center;">
-<div class="col-md-6 col-xs-12">
-<a href="studio/Hot Design/hot-design-getstarted-counter-tutorial.md">
-<div class="alert alert-info alert-hover">
-
-#### Hot Design
-
-Use a visual designer to design and develop the app
-
-</div>
-</a>
-</div>
-</div>
-
 <br/>
+
+<!-- GETTING HELP SECTION -->
 
 [!include[getting-help](includes/getting-help.md)]

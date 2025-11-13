@@ -1,16 +1,19 @@
-<Project Sdk="MSTest.Sdk/3.8.3">
+<Project Sdk="MSTest.Sdk/3.10.0">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="AwesomeAssertions" />
+		<PackageReference Include="MessagePack" Version="3.1.4" /> <!-- pin transient dependency -->
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+		<PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
+		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,12 +21,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- Reference those projects to ensure to have binaries available, but don't reference them -->
+		<!-- Link sources directly so unit tests can compile without directly referencing the project output -->
+		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\ApplicationLaunchMonitor.cs" Link="AppLaunch\ApplicationLaunchMonitor.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.VS\AppLaunch\VsAppLaunchStateService.cs" Link="AppLaunch\VsAppLaunchStateService.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
+
+		<!-- Reuse the AssemblyInfoReader implementation from the VS project to avoid duplication -->
+		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\AssemblyInfoReader.cs" Link="Helpers\AssemblyInfoReader.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Reference those projects to ensure to have binaries available at runtime, but don't reference them for compilation -->
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server.Processors\Uno.UI.RemoteControl.Server.Processors.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.TestProcessor\Uno.UI.RemoteControl.TestProcessor.csproj" ReferenceOutputAssembly="false" />
-		
+	</ItemGroup>
+
+	<ItemGroup>
 		<!-- Normal project references - use Skia implementation of the Remote Control client -->
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />

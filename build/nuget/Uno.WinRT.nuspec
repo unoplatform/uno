@@ -22,30 +22,6 @@
 		<!-- Icon File -->
 		<file src="..\..\src\Common\uno.png" target="/" />
 
-		<!-- net8.0-ios17.0 -->
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-ios17.0\Uno.dll" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-ios17.0\Uno.pdb" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Dispatching.dll" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Dispatching.pdb" target="lib\net8.0-ios17.0" />
-
-		<!-- net8.0-tvos17.0 -->
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-tvos17.0\Uno.dll" target="lib\net8.0-tvos17.0" />
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-tvos17.0\Uno.pdb" target="lib\net8.0-tvos17.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-tvos17.0\Uno.UI.Dispatching.dll" target="lib\net8.0-tvos17.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-tvos17.0\Uno.UI.Dispatching.pdb" target="lib\net8.0-tvos17.0" />
-
-		<!-- net8.0-maccatalyst17.0 -->
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.dll" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.pdb" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Dispatching.dll" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Dispatching.pdb" target="lib\net8.0-maccatalyst17.0" />
-
-		<!-- net8.0-android30.0 -->
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-android\Uno.dll" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-android\Uno.pdb" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-android\Uno.UI.Dispatching.dll" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-android\Uno.UI.Dispatching.pdb" target="lib\net8.0-android30.0" />
-
 		<!-- net9.0-ios18.0 -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-ios18.0\Uno.dll" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-ios18.0\Uno.pdb" target="lib\net9.0-ios18.0" />
@@ -70,13 +46,49 @@
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-android\Uno.UI.Dispatching.dll" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-android\Uno.UI.Dispatching.pdb" target="lib\net9.0-android30.0" />
 
+		<!-- net10.0-ios26.0 -->
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-ios26.0\Uno.dll" target="lib\net10.0-ios26.0" />
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-ios26.0\Uno.pdb" target="lib\net10.0-ios26.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-ios26.0\Uno.UI.Dispatching.dll" target="lib\net10.0-ios26.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-ios26.0\Uno.UI.Dispatching.pdb" target="lib\net10.0-ios26.0" />
+
+		<!-- net10.0-tvos26.0 -->
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-tvos26.0\Uno.dll" target="lib\net10.0-tvos26.0" />
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-tvos26.0\Uno.pdb" target="lib\net10.0-tvos26.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.Dispatching.dll" target="lib\net10.0-tvos26.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.Dispatching.pdb" target="lib\net10.0-tvos26.0" />
+
+		<!-- net10.0-maccatalyst26.0 -->
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.dll" target="lib\net10.0-maccatalyst26.0" />
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.pdb" target="lib\net10.0-maccatalyst26.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.UI.Dispatching.dll" target="lib\net10.0-maccatalyst26.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.UI.Dispatching.pdb" target="lib\net10.0-maccatalyst26.0" />
+
+		<!-- net10.0-android36.0 -->
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-android\Uno.dll" target="lib\net10.0-android36.0" />
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-android\Uno.pdb" target="lib\net10.0-android36.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-android\Uno.UI.Dispatching.dll" target="lib\net10.0-android36.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-android\Uno.UI.Dispatching.pdb" target="lib\net10.0-android36.0" />
+
+		<!-- net10.0 reference -->
+		<file src="..\..\src\Uno.UWP\Bin\Uno.Reference\Release\net10.0\Uno.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Reference\Release\net10.0\Uno.UI.Dispatching.dll" target="lib\net10.0" />
+
 		<!-- net9.0 reference -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.Reference\Release\net9.0\Uno.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Reference\Release\net9.0\Uno.UI.Dispatching.dll" target="lib\net9.0" />
 
-		<!-- net8.0 reference -->
-		<file src="..\..\src\Uno.UWP\Bin\Uno.Reference\Release\net8.0\Uno.dll" target="lib\net8.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Reference\Release\net8.0\Uno.UI.Dispatching.dll" target="lib\net8.0" />
+		<!-- net10.0 WebAssembly -->
+		<file src="..\..\src\Uno.UWP\bin\Uno.Wasm\Release\net10.0\Uno.dll" target="uno-runtime\net10.0\webassembly" />
+		<file src="..\..\src\Uno.UWP\bin\Uno.Wasm\Release\net10.0\Uno.pdb" target="uno-runtime\net10.0\webassembly" />
+		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Wasm\Release\net10.0\Uno.UI.Dispatching.dll" target="uno-runtime\net10.0\webassembly" />
+		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Wasm\Release\net10.0\Uno.UI.Dispatching.pdb" target="uno-runtime\net10.0\webassembly" />
+
+		<!-- net10.0 Skia -->
+		<file src="..\..\src\Uno.UWP\bin\Uno.Skia\Release\net10.0\Uno.dll" target="uno-runtime\net10.0\skia" />
+		<file src="..\..\src\Uno.UWP\bin\Uno.Skia\Release\net10.0\Uno.pdb" target="uno-runtime\net10.0\skia" />
+		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\Release\net10.0\Uno.UI.Dispatching.dll" target="uno-runtime\net10.0\skia" />
+		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\Release\net10.0\Uno.UI.Dispatching.pdb" target="uno-runtime\net10.0\skia" />
 
 		<!-- net9.0 WebAssembly -->
 		<file src="..\..\src\Uno.UWP\bin\Uno.Wasm\Release\net9.0\Uno.dll" target="uno-runtime\net9.0\webassembly" />
@@ -89,18 +101,6 @@
 		<file src="..\..\src\Uno.UWP\bin\Uno.Skia\Release\net9.0\Uno.pdb" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\Release\net9.0\Uno.UI.Dispatching.dll" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\Release\net9.0\Uno.UI.Dispatching.pdb" target="uno-runtime\net9.0\skia" />
-
-		<!-- net8.0 WebAssembly -->
-		<file src="..\..\src\Uno.UWP\bin\Uno.Wasm\Release\net8.0\Uno.dll" target="uno-runtime\net8.0\webassembly" />
-		<file src="..\..\src\Uno.UWP\bin\Uno.Wasm\Release\net8.0\Uno.pdb" target="uno-runtime\net8.0\webassembly" />
-		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Wasm\Release\net8.0\Uno.UI.Dispatching.dll" target="uno-runtime\net8.0\webassembly" />
-		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Wasm\Release\net8.0\Uno.UI.Dispatching.pdb" target="uno-runtime\net8.0\webassembly" />
-		
-		<!-- net8.0 Skia -->
-		<file src="..\..\src\Uno.UWP\bin\Uno.Skia\Release\net8.0\Uno.dll" target="uno-runtime\net8.0\skia" />
-		<file src="..\..\src\Uno.UWP\bin\Uno.Skia\Release\net8.0\Uno.pdb" target="uno-runtime\net8.0\skia" />
-		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\Release\net8.0\Uno.UI.Dispatching.dll" target="uno-runtime\net8.0\skia" />
-		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\Release\net8.0\Uno.UI.Dispatching.pdb" target="uno-runtime\net8.0\skia" />
 
 		<file src="Uno.WinRT.props" target="buildTransitive" />
 

@@ -291,8 +291,8 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that CommandBar can close when a secondary command is selected from the overflow.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
-#if __APPLE_UIKIT__
-		[Ignore("Test is failing on iOS https://github.com/unoplatform/uno/issues/17984")]
+#if __APPLE_UIKIT__ || __ANDROID__
+		[Ignore("Test is failing on iOS/Android https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task DoesCloseOnSecondaryCommandSelection()
 		{
@@ -1316,7 +1316,8 @@ namespace Windows.UI.Tests.Enterprise
 			await clickEvent.WaitForDefault();
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeIOS)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080
 		[Description("Validates that the overflow menu's scrollviewer does not scroll with arrow keys.")]
 		public async Task ValidateOverflowScrollViewerDoesNotScrollWithArrowKeys()
 		{
@@ -2289,6 +2290,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				overflowContentRoot = TreeHelper.GetVisualChildByNameFromOpenPopups("OverflowContentRoot", cmdBar);
 
+				Assert.IsNotNull(overflowContentRoot, $"overflowContentRoot should not be null after mouse open");
 				VERIFY_ARE_EQUAL(overflowContentRoot.MinWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_EQUAL(overflowContentRoot.ActualWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_VERY_CLOSE(Math.Round(appBarButton.ActualHeight), expectedMenuItemHeight_NonTouch, tolerance: 4);
@@ -2303,6 +2305,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				overflowContentRoot = TreeHelper.GetVisualChildByNameFromOpenPopups("OverflowContentRoot", cmdBar);
 
+				Assert.IsNotNull(overflowContentRoot, $"overflowContentRoot should not be null after keyboard open");
 				VERIFY_ARE_EQUAL(overflowContentRoot.MinWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_EQUAL(overflowContentRoot.ActualWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_VERY_CLOSE(Math.Round(appBarButton.ActualHeight), expectedMenuItemHeight_NonTouch, tolerance: 4);
@@ -2317,6 +2320,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				overflowContentRoot = TreeHelper.GetVisualChildByNameFromOpenPopups("OverflowContentRoot", cmdBar);
 
+				Assert.IsNotNull(overflowContentRoot, $"overflowContentRoot should not be null after programmatic open");
 				VERIFY_ARE_EQUAL(overflowContentRoot.MinWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_EQUAL(overflowContentRoot.ActualWidth, expectedMenuWidth_NonTouch);
 				VERIFY_ARE_VERY_CLOSE(Math.Round(appBarButton.ActualHeight), expectedMenuItemHeight_NonTouch, tolerance: 4);

@@ -2,6 +2,7 @@ using Uno.UI.RemoteControl.Host;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.Telemetry;
+using Uno.UI.RemoteControl.TestProcessor.Dependency;
 
 // Mark this assembly with the ServerProcessor attribute to make it discoverable
 [assembly: ServerProcessor(typeof(Uno.UI.RemoteControl.TestProcessor.TelemetryTestProcessor))]
@@ -17,6 +18,7 @@ public class TelemetryTestProcessor : IServerProcessor, IDisposable
 {
 	private readonly IRemoteControlServer _server;
 	private readonly ITelemetry<TelemetryTestProcessor> _telemetry;
+	private readonly string _dependencyResult;
 
 	/// <summary>
 	/// Constructor called by the server's ActivatorUtilities.CreateInstance
@@ -26,13 +28,14 @@ public class TelemetryTestProcessor : IServerProcessor, IDisposable
 	{
 		_server = server;
 		_telemetry = telemetry;
+		_dependencyResult = DummyDependency.Touch();
 
 		Console.WriteLine("TelemetryTestProcessor initialized");
 
 		// Log a test event immediately to verify telemetry resolution works
 		_telemetry.TrackEvent(
-			"TelemetryTest.Initialized",
-			new Dictionary<string, string> { ["ProcessorType"] = GetType().Name, ["ServerScope"] = Scope },
+			"telemetry-test-initialized",
+			new Dictionary<string, string> { ["ProcessorType"] = GetType().Name, ["ServerScope"] = Scope, ["DependencyResult"] = _dependencyResult },
 			new Dictionary<string, double> { ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() });
 	}
 
@@ -49,7 +52,7 @@ public class TelemetryTestProcessor : IServerProcessor, IDisposable
 		Console.WriteLine("TelemetryTestProcessor processing frame...");
 
 		_telemetry.TrackEvent(
-			"TelemetryTest.ProcessFrame",
+			"telemetry-test-process-frame",
 			new Dictionary<string, string> { ["FrameName"] = frame.Name },
 			null);
 
@@ -62,7 +65,7 @@ public class TelemetryTestProcessor : IServerProcessor, IDisposable
 	public Task ProcessIdeMessage(IdeMessage message, CancellationToken ct)
 	{
 		_telemetry.TrackEvent(
-			"TelemetryTest.ProcessIdeMessage",
+			"telemetry-test-process-ide-message",
 			new Dictionary<string, string> { ["MessageType"] = message.GetType().Name },
 			null);
 

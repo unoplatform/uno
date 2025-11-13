@@ -2,6 +2,8 @@
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using Combinatorial.MSTest;
+using AwesomeAssertions;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Private.Infrastructure;
@@ -142,6 +144,38 @@ public class Given_AppWindow
 			await TestServices.WindowHelper.WaitFor(() => activated);
 
 			Assert.AreEqual(appWindow.Position, adjustedPosition);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
+	[CombinatorialData]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21435")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Skia/X11: Fail in CI (#21194)
+	public async Task When_Change_Window_State_Before_Activate(OverlappedPresenterState state)
+	{
+		AssertPositioningAndSizingSupport();
+		var newWindow = new Window();
+		var appWindow = newWindow.AppWindow;
+		var activated = false;
+		try
+		{
+			var overlappedPresenter = (OverlappedPresenter)appWindow.Presenter;
+			Action act = state switch
+			{
+				OverlappedPresenterState.Maximized => () => overlappedPresenter.Maximize(),
+				OverlappedPresenterState.Minimized => () => overlappedPresenter.Minimize(),
+				_ => () => overlappedPresenter.Restore()
+			};
+			act.Should().NotThrow();
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+			Assert.AreEqual(state, overlappedPresenter.State);
 		}
 		finally
 		{
