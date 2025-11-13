@@ -34,7 +34,7 @@ if (-not $NoFetch) {
     }
 
 
-    # In case an external contributor wants to import his forked repository, specify the custom Git Url below and uncomment the following lines and the additional parameters for the script execution:
+    # In case an external contributor wants to import their forked repository, specify the custom Git Url below and uncomment the following lines and the additional parameters for the script execution:
     # $contributor_git_url = "https://github.com/ContributorUserName/"
 
     # $forks_to_import = @(
