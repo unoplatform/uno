@@ -68,7 +68,8 @@ public class Given_Parser
 				// /0/MainPage.xaml(13,5): error UXAML0001: Member 'PaneTitle' cannot have properties at line 13, position 5
 				DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 13, 5, 13, 5).WithArguments("Member 'PaneTitle' cannot have properties [Line: 13 Position: 5]"),
 				// /0/Test0.cs(9,9): error CS1061: 'MainPage' does not contain a definition for 'InitializeComponent' and no accessible extension method 'InitializeComponent' accepting a first argument of type 'MainPage' could be found (are you missing a using directive or an assembly reference?)
-				DiagnosticResult.CompilerError("CS1061").WithSpan(9, 9, 9, 28).WithArguments("TestRepro.MainPage", "InitializeComponent")
+				// DiagnosticResult.CompilerError("CS1061").WithSpan(9, 9, 9, 28).WithArguments("TestRepro.MainPage", "InitializeComponent")
+				// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 			}
 		);
 		await test.RunAsync();

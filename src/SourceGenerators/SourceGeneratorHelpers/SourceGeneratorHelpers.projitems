@@ -12,12 +12,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DesignTimeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GeneratorExecutionContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\IsExternalInit.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Nullable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)_Compat\IsExternalInit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)_Compat\Nullable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PlatformHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SymbolExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UnoNamedTypeSymbolDisplayVisitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)_Compat\RequiredAttribute.cs" />
   </ItemGroup>
   <Import Project="..\..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.props" />
 </Project>
