@@ -159,6 +159,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		// This dance with weak refs is necessary because there seems like _nativeWebView when it has a ref back
 		// to this.
 		_nativeWebView.NavigationCompleted += EventHandlerBuilder<NativeWebView.CoreWebView2NavigationCompletedEventArgs>(static (@this, o, a) => @this.NativeWebView_NavigationCompleted(o, a));
+		_nativeWebView.NewWindowRequested += EventHandlerBuilder<NativeWebView.CoreWebView2NewWindowRequestedEventArgs>(static (@this, o, a) => @this.NativeWebView_NewWindowRequested(o, a));
 		_nativeWebView.SourceChanged += EventHandlerBuilder<NativeWebView.CoreWebView2SourceChangedEventArgs>(static (@this, o, a) => @this.NativeWebView_SourceChanged(o, a));
 		_nativeWebView.WebMessageReceived += EventHandlerBuilder<NativeWebView.CoreWebView2WebMessageReceivedEventArgs>(static (@this, o, a) => @this.NativeWebView_WebMessageReceived(o, a));
 		_nativeWebView.NavigationStarting += EventHandlerBuilder<NativeWebView.CoreWebView2NavigationStartingEventArgs>(static (@this, o, a) => @this.NativeWebView_NavigationStarting(o, a));
@@ -305,6 +306,16 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		{
 			_coreWebView.RaiseNavigationCompleted(null, e.IsSuccess, e.HttpStatusCode, (CoreWebView2WebErrorStatus)e.WebErrorStatus, shouldSetSource: false);
 		}
+	}
+
+	private void NativeWebView_NewWindowRequested(object? sender, NativeWebView.CoreWebView2NewWindowRequestedEventArgs e)
+	{
+		_coreWebView.RaiseNewWindowRequested(
+			e.Uri,
+			CoreWebView2.BlankUri,
+			out var handled);
+
+		e.Handled = handled;
 	}
 
 	private void OnNativeTitleChanged(object? sender, object e) => UpdateDocumentTitle();

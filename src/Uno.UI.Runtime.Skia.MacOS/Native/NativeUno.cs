@@ -382,6 +382,11 @@ internal static partial class NativeUno
 		);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_new_window_requested_callback(
+		delegate* unmanaged[Cdecl]<nint, sbyte*, sbyte*, int> callback
+	);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_webview_unsupported_scheme_identified_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, int> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]

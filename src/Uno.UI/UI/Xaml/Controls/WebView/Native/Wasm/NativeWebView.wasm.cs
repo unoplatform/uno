@@ -43,11 +43,42 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	}
 
 	[JSExport]
+	internal static bool DispatchNewWindowRequested(ElementId elementId, string targetUrl, string refererUrl)
+	{
+		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
+		{
+			Uri refererUri;
+			if (string.IsNullOrEmpty(refererUrl) || !Uri.TryCreate(refererUrl, UriKind.Absolute, out refererUri!))
+			{
+				refererUri = CoreWebView2.BlankUri;
+			}
+
+			nativeWebView._coreWebView.RaiseNewWindowRequested(
+				targetUrl,
+				refererUri,
+				out bool handled);
+
+			return handled;
+		}
+
+		return false;
+	}
+
+	[JSExport]
 	internal static void DispatchLoadEvent(ElementId elementId, string? absoluteUrl)
 	{
 		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
 		{
 			nativeWebView.OnNavigationCompleted(nativeWebView._coreWebView, absoluteUrl);
+		}
+	}
+
+	[JSExport]
+	internal static void DispatchWebMessage(ElementId elementId, string message)
+	{
+		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
+		{
+			nativeWebView._coreWebView.RaiseWebMessageReceived(message);
 		}
 	}
 
@@ -123,7 +154,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 			}
 		}
 
-		ScheduleNavigationStarting(uriString, () => NativeMethods.SetAttribute(_elementId, "src", uriString));
+		ScheduleNavigationStarting(uriString, () => NativeMethods.Navigate(_elementId, uriString));
 		OnNavigationCompleted(this, null);
 	}
 

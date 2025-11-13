@@ -45,6 +45,20 @@ namespace Microsoft.UI.Xaml.Controls {
             return (<HTMLIFrameElement>document.getElementById(htmlId)).getAttribute(name);
         }
 
+        static navigate(htmlId: string, url: string) {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            if (iframe) {
+                try {
+                    if (iframe.contentWindow) {
+                        iframe.contentWindow.location.href = url;
+                    }
+                } catch (e) {
+                    // Fall back to setAttribute if contentWindow access fails (cross-origin)
+                    iframe.setAttribute("src", url);
+                }
+            }
+        }
+
         static initializeStyling(htmlId: string) {
             const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
             iframe.style.backgroundColor = "transparent";
@@ -87,6 +101,60 @@ namespace Microsoft.UI.Xaml.Controls {
             const iframe = event.currentTarget as HTMLIFrameElement;
             const absoluteUrl = iframe.contentWindow.location.href;
             WebView.unoExports.DispatchLoadEvent(iframe.id, absoluteUrl);
+
+            try {
+                if (iframe.contentWindow && WebView.unoExports.DispatchNewWindowRequested) {
+                    
+                    const unoExports = WebView.unoExports;
+                    
+                    if (!(iframe.contentWindow as any).__unoOpenOverridden) {
+                        if (!(iframe.contentWindow as any).__unoOriginalOpen) {
+                            (iframe.contentWindow as any).__unoOriginalOpen = iframe.contentWindow.open;
+                        }
+                        iframe.contentWindow.open = function(url?: string, target?: string, features?: string) {
+                            const referer = iframe.contentWindow.location.href;
+
+                            const handled = unoExports.DispatchNewWindowRequested(
+                                iframe.id,
+                                url || '',
+                                referer
+                            );
+
+                            if (!handled) {
+                                return (iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
+                            }
+                            
+                            return null;
+                        };
+                        (iframe.contentWindow as any).__unoOpenOverridden = true;
+                    }
+
+                    iframe.contentDocument.addEventListener('click', (e: MouseEvent) => {
+                        const target = e.target as HTMLElement;
+                        const link = target.closest('a[target="_blank"]') as HTMLAnchorElement;
+                        if (link) {
+                            const targetUrl = link.href;
+                            const referer = iframe.contentWindow.location.href;
+                            
+                            const handled = unoExports.DispatchNewWindowRequested(
+                                iframe.id,
+                                targetUrl,
+                                referer
+                            );
+                            
+                            if (handled) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }
+                        }
+                    });
+                }
+            } catch (e) {
+                // This can fail if the iframe content is cross-origin.
+                // We log this as a warning, as it's a known browser security feature.
+                // https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
+                console.warn("Uno.WebView: Could not attach NewWindowRequested handlers. This is expected if the iframe content is cross-origin.", e);
+            }
         }
     }
 }
