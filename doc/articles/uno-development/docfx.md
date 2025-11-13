@@ -147,7 +147,7 @@ This script imports various external repositories (e.g., uno.wasm.bootstrap, uno
 ./import_external_docs.ps1
 
 # Import specific repositories from a fork and branch
-./import_external_docs.ps1 -branches @{ "uno.wasm.bootstrap" = "main" } -contributor_git_url "https://github.com/ContributorUserName/" -forks_to_import @("uno.wasm.bootstrap")
+./import_external_docs.ps1 -branches @{ "uno.wasm.bootstrap" = "main" } -contributor_git_url "https://github.com/ContributorUserName/" -forks_to_import @( "uno.wasm.bootstrap" )
 ```
 
 #### `import_external_docs_test.ps1`

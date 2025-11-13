@@ -1,7 +1,7 @@
 param(
-    [Parameter(ValueFromPipeLineByPropertyName = $true)]$branches = $null,
-    [Parameter(ValueFromPipeLineByPropertyName = $true)][string]$contributor_git_url = $null,
-    [Parameter(ValueFromPipeLineByPropertyName = $true)][string[]]$forks_to_import = $null
+    [Parameter(ValueFromPipelineByPropertyName = $true)]$branches = $null,
+    [Parameter(ValueFromPipelineByPropertyName = $true)][string]$contributor_git_url = $null,
+    [Parameter(ValueFromPipelineByPropertyName = $true)][string[]]$forks_to_import = $null
 )
 
 Set-PSDebug -Trace 1

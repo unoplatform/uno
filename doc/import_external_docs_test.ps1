@@ -38,7 +38,7 @@ if (-not $NoFetch) {
     # $contributor_git_url = "https://github.com/ContributorUserName/"
 
     # $forks_to_import = @(
-    #     "Uno"
+    #     "uno.extensions"
     # )
 
     Write-Host 'Importing external repositories...' -ForegroundColor Black -BackgroundColor Green
