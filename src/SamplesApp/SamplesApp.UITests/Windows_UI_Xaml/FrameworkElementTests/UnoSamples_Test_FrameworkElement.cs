@@ -1,7 +1,6 @@
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;

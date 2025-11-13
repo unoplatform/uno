@@ -1,8 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Disposables;
+using Uno.Extensions.Storage.Pickers;
+using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
+using Uno.UI.Helpers.WinUI;
+using Uno.UI.Runtime.Skia.Win32.Storage.Pickers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Win32;
@@ -10,10 +18,6 @@ using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.Shell.Common;
-using Uno.Disposables;
-using Uno.Extensions.Storage.Pickers;
-using Uno.Foundation.Logging;
-using Uno.UI.Helpers.WinUI;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -71,6 +75,17 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 					}
 				}, fileTypeList);
 
+		if (!string.IsNullOrWhiteSpace(picker.SuggestedFileName))
+		{
+			iFileSaveDialog.Value->SetFileName(picker.SuggestedFileName);
+		}
+
+		using var defaultFolder = SuggestedStartLocationHandler.GetStartLocationShellItem(picker.SuggestedStartLocation);
+		if (defaultFolder != default)
+		{
+			iFileSaveDialog.Value->SetDefaultFolder(defaultFolder);
+		}
+
 		if (fileTypeList.Count > 0)
 		{
 			hResult = iFileSaveDialog.Value->SetFileTypes(fileTypeList
@@ -81,6 +96,18 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			{
 				this.LogError()?.Error($"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 				return Task.FromResult<StorageFile?>(null);
+			}
+
+			// Set default extension (e.g., "txt" from "*.txt")
+			var firstPattern = !string.IsNullOrEmpty(picker.DefaultFileExtension) ? picker.DefaultFileExtension : picker.FileTypeChoices.First().Value.FirstOrDefault();
+			if (!string.IsNullOrEmpty(firstPattern) && firstPattern.StartsWith('.'))
+			{
+				hResult = iFileSaveDialog.Value->SetDefaultExtension(firstPattern.TrimStart('.'));
+				if (hResult.Failed)
+				{
+					this.LogError()?.Error($"{nameof(IFileDialog.SetDefaultExtension)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+					return Task.FromResult<StorageFile?>(null);
+				}
 			}
 		}
 
@@ -125,7 +152,22 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			return Task.FromResult<StorageFile?>(null);
 		}
 
-		return Task.FromResult<StorageFile?>(StorageFile.GetFileFromPath(new string(resultName)));
+		var path = new string(resultName);
+		try
+		{
+			// FileSavePicker creates the file if it does not exist yet.
+			if (!File.Exists(path))
+			{
+				File.WriteAllBytes(path, Array.Empty<byte>());
+			}
+		}
+		catch (Exception ex)
+		{
+			this.LogError()?.Error($"Could not create file at '{path}'", ex);
+		}
+
+		var file = StorageFile.GetFileFromPath(path);
+		return Task.FromResult<StorageFile?>(file);
 	}
 
 	private List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName, Win32Helper.NativeNulTerminatedUtf16String pattern)> GetFilterString()
@@ -133,17 +175,21 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		var ret = new List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName, Win32Helper.NativeNulTerminatedUtf16String pattern)>();
 		foreach (var entry in picker.FileTypeChoices)
 		{
+			List<string> patternList = new();
+
 			foreach (var pattern in entry.Value)
 			{
 				if (pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
 				{
-					ret.Add((new Win32Helper.NativeNulTerminatedUtf16String(entry.Key), new Win32Helper.NativeNulTerminatedUtf16String($"*{pattern}")));
+					patternList.Add($"*{pattern}");
 				}
 				else
 				{
 					this.LogError()?.Error($"Skipping invalid file extension pattern '{pattern}' for key {entry.Key}");
 				}
 			}
+
+			ret.Add((new Win32Helper.NativeNulTerminatedUtf16String(entry.Key), new Win32Helper.NativeNulTerminatedUtf16String(string.Join(";", patternList))));
 		}
 
 		return ret;

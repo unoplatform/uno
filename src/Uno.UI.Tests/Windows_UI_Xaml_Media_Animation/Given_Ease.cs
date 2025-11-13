@@ -1,5 +1,4 @@
 ﻿using Microsoft.UI.Xaml.Media.Animation;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Media_Animation

@@ -13,7 +13,6 @@
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" />
 		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
-		<PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -20,8 +20,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private const double TOOLTIP_TOLERANCE = 2.0;    // Used in PlacementMode.Mouse positioning to avoid screen edges.
 		private const double DEFAULT_KEYBOARD_OFFSET = 12;  // Default offset for automatic tooltips opened by keyboard.
-		private const double DEFAULT_MOUSE_OFFSET = 20;   // Default offset for automatic tooltips opened by mouse.
-		private const double DEFAULT_TOUCH_OFFSET = 44;  // Default offset for automatic tooltips opened by touch.
+		internal const double DEFAULT_MOUSE_OFFSET = 20;   // Default offset for automatic tooltips opened by mouse.
+		internal const double DEFAULT_TOUCH_OFFSET = 44;  // Default offset for automatic tooltips opened by touch.
 
 		//private const double CONTEXT_MENU_HINT_VERTICAL_OFFSET = -5;    // The hint is slightly above center in the vertical axis.
 

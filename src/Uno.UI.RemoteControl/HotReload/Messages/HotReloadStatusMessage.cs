@@ -16,7 +16,8 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 {
 	internal record HotReloadStatusMessage(
 		[property: JsonProperty] HotReloadState State,
-		[property: JsonProperty] IImmutableList<HotReloadServerOperationData> Operations)
+		[property: JsonProperty] IImmutableList<HotReloadServerOperationData> Operations,
+		[property: JsonProperty] string? ServerError = null)
 		: IMessage
 	{
 		public const string Name = nameof(HotReloadStatusMessage);
@@ -35,5 +36,6 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		DateTimeOffset StartTime,
 		ImmutableHashSet<string> FilePaths,
 		DateTimeOffset? EndTime,
-		HotReloadServerResult? Result);
+		HotReloadServerResult? Result,
+		IImmutableList<string>? Diagnostics);
 }

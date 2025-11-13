@@ -69,7 +69,7 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 			var choosePixelFormatError = Win32Helper.GetErrorMessage();
 			var success = PInvoke.ReleaseDC(_hwnd, _hdc) == 0;
 			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
-			throw new InvalidOperationException($"{nameof(PInvoke.ChoosePixelFormat)} failed: {choosePixelFormatError}");
+			throw new InvalidOperationException($"{nameof(PInvoke.ChoosePixelFormat)} failed: {choosePixelFormatError}. Falling back to software rendering.");
 		}
 
 		// To inspect the chosen pixel format:
@@ -84,7 +84,7 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 			var setPixelFormatError = Win32Helper.GetErrorMessage();
 			var success = PInvoke.ReleaseDC(_hwnd, _hdc) == 0;
 			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
-			throw new InvalidOperationException($"{nameof(PInvoke.SetPixelFormat)} failed: {setPixelFormatError}");
+			throw new InvalidOperationException($"{nameof(PInvoke.SetPixelFormat)} failed: {setPixelFormatError}. Falling back to software rendering.");
 		}
 
 		_glContext = PInvoke.wglCreateContext(_hdc);
@@ -93,7 +93,7 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 			var createContextError = Win32Helper.GetErrorMessage();
 			var success = PInvoke.ReleaseDC(_hwnd, _hdc) == 0;
 			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
-			throw new InvalidOperationException($"{nameof(PInvoke.wglCreateContext)} failed: {createContextError}");
+			throw new InvalidOperationException($"{nameof(PInvoke.wglCreateContext)} failed: {createContextError}. Falling back to software rendering.");
 		}
 	}
 

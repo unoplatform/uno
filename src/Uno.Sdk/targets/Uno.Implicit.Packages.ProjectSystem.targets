@@ -16,6 +16,11 @@
 		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" ('$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe') AND '$(UnoDisableMCPSupport)' != 'true' ">
+		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
+		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
+	</ItemGroup>
+
 	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />

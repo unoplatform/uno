@@ -15,7 +15,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
-using FluentAssertions;
 using System.Collections.Generic;
 using System.Drawing;
 using SamplesApp.UITests;
@@ -25,6 +24,7 @@ using Uno.UI.Extensions;
 using Combinatorial.MSTest;
 using Uno.UI.Helpers;
 using Microsoft.UI.Xaml.Markup;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if __SKIA__
 using Microsoft.UI.Xaml.Data;
@@ -56,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow((ushort)600, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-SemiBold.ttf#Open Sans")]
 		public async Task When_Font_Has_Manifest(ushort weight, FontStyle style, FontStretch stretch, string ttfFile)
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -228,7 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("\r", segments[1].Text.ToString());
 #endif
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -618,7 +618,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Inlines_Transitively_Change()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -1007,7 +1007,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Padding()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
 			}
@@ -1022,6 +1022,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshot = await UITestHelper.ScreenShot(SUT);
 			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 50, 50), Colors.Red);
 		}
+
+#if HAS_RENDER_TARGET_BITMAP
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21322")]
+		public async Task When_Text_Set_By_Style_Setter()
+		{
+			var style = new Style(typeof(TextBlock));
+			const string text = "Hello from style";
+			style.Setters.Add(new Setter(TextBlock.TextProperty, text));
+			var container = new StackPanel() { Spacing = 8, Padding = new Thickness(4) };
+			var SUT = new TextBlock
+			{
+				Foreground = new SolidColorBrush(Colors.Red),
+				Style = style
+			};
+			var duplicate = new TextBlock
+			{
+				Foreground = new SolidColorBrush(Colors.Red),
+				Text = text
+			};
+			container.Children.Add(SUT);
+			container.Children.Add(duplicate);
+
+			await UITestHelper.Load(container);
+			Assert.AreEqual("Hello from style", SUT.Text);
+
+			// Verify the text is actually rendered
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), Colors.Red);
+
+			// Verify both TextBlocks render the same
+			var screenshot2 = await UITestHelper.ScreenShot(duplicate);
+			await ImageAssert.AreSimilarAsync(screenshot, screenshot2);
+		}
+#endif
+
 
 #if __SKIA__
 		[TestMethod]

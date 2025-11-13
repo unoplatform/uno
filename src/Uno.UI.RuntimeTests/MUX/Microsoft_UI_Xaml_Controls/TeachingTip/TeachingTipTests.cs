@@ -259,7 +259,7 @@ public class TeachingTipTests
 	{
 		RunOnUIThread.Execute(() =>
 		{
-			foreach (var iPlacementMode in Enum.GetValues(typeof(TeachingTipHeroContentPlacementMode)))
+			foreach (var iPlacementMode in Enum.GetValues<TeachingTipHeroContentPlacementMode>())
 			{
 				var placementMode = (TeachingTipHeroContentPlacementMode)iPlacementMode;
 

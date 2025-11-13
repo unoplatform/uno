@@ -11,9 +11,11 @@
 
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
+		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
-		<ApplicationId>uno.platform.samplesapp.skia</ApplicationId>
+		<ApplicationId Condition=" '$(ApplicationId)' != '' ">$(ApplicationId)</ApplicationId>
+		<ApplicationId Condition=" '$(ApplicationId)' == '' ">uno.platform.samplesapp.skia</ApplicationId>
 
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
@@ -29,6 +31,9 @@
 		once transitive dependencies have been updated.
 		-->
 		<NoWarn>$(NoWarn);NU1703;SYSLIB1045</NoWarn>
+
+		<!-- Ignore linker warnings for now -->
+		<NoWarn>$(NoWarn);IL2026;IL2057;IL2062;IL2065;IL2067;IL2068;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2122;IL3000;IL3002;IL3050;IL3053</NoWarn>
 
 		<!--
 		aab is the default packaging format in net6 API 31.
@@ -46,8 +51,13 @@
 
 		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
 
+		<!-- Keep full exception strings in release -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
+
 		<!-- Required when not building inside VS to avoid dependency issues -->
 		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
+
+		<PublishAot Condition=" '$(SkiaPublishAot)' != '' ">$(SkiaPublishAot)</PublishAot>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -286,6 +296,7 @@
 
 	<ItemGroup>
 		<TrimmerRootDescriptor Include="LinkerConfig.xml" />
+		<TrimmerRootAssembly Include="SamplesApp.Skia" RootMode="All" />
 	</ItemGroup>
 
 	<ItemGroup>

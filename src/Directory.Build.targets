@@ -61,8 +61,8 @@
 	</Target>
 
 	<PropertyGroup>
-		<MSTestVersion>3.10.0</MSTestVersion>
-		<MicrosoftTestingPlatformVersion>1.8.0</MicrosoftTestingPlatformVersion>
+		<MSTestVersion>3.11.0</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>1.9.0</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
 	</PropertyGroup>
@@ -88,10 +88,9 @@
 		<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 		<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
 		<PackageReference Update="NUnit" Version="3.14.0" />
-		<PackageReference Update="NUnit3TestAdapter" Version="5.0.0" />
+		<PackageReference Update="NUnit3TestAdapter" Version="5.2.0" />
 		<PackageReference Update="NunitXml.TestLogger" Version="3.1.15" />
 		<PackageReference Update="Microsoft.Testing.Extensions.TrxReport" Version="$(MicrosoftTestingPlatformVersion)" />
-		<PackageReference Update="Microsoft.Testing.Extensions.VSTestBridge" Version="$(MicrosoftTestingPlatformVersion)" />
 		<PackageReference Update="Uno.UITest" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
@@ -126,14 +125,15 @@
 		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="$(HarfbuzzSharpVersion)" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
-		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.0-preview.7.25380.108" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="10.0.0-rc.2.25502.107" />
 
 		<PackageReference Update="Svg.Skia" Version="3.0.6" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
-		<PackageReference Update="FluentAssertions" Version="5.10.3" />
+		<PackageReference Update="AwesomeAssertions" Version="9.2.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<PackageReference Update="Microsoft.Extensions.TimeProvider.Testing" Version="9.9.0" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />

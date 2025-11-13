@@ -65,6 +65,7 @@
 				UnoSdkExtrasVersion="$(UnoSdkExtrasVersion)"
 				UnoSettingsVersion="$(UnoSettingsVersion)"
 				UnoHotDesignVersion="$(UnoHotDesignVersion)"
+				UnoAppMcpVersion="$(UnoAppMcpVersion)"
 				MicrosoftLoggingVersion="$(MicrosoftLoggingVersion)"
 				WinAppSdkVersion="$(WinAppSdkVersion)"
 				WinAppSdkBuildToolsVersion="$(WinAppSdkBuildToolsVersion)"

@@ -145,7 +145,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 
 			var (response, results) = await responseTcs.Task;
 
-			if (!Enum.IsDefined(typeof(Response), response))
+			if (!Enum.IsDefined((Response)response))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{

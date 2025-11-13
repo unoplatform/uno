@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
 using Uno.Disposables;
@@ -103,9 +104,13 @@ namespace UITests.Windows_ApplicationModel
 
 		public ICommand CopyCommand => GetOrCreateCommand(Copy);
 
+		public ICommand CopyHtmlCommand => GetOrCreateCommand(CopyHtml);
+
 		public ICommand CopyImageCommand => GetOrCreateCommand(CopyImage);
 
 		public ICommand PasteTextCommand => GetOrCreateCommand(PasteText);
+
+		public ICommand PasteHtmlCommand => GetOrCreateCommand(PasteHtml);
 
 		public ICommand PasteImageCommand => GetOrCreateCommand(PasteImage);
 
@@ -124,10 +129,38 @@ namespace UITests.Windows_ApplicationModel
 			Clipboard.SetContent(dataPackage);
 		}
 
+		private void CopyHtml()
+		{
+			DataPackage dataPackage = new DataPackage();
+			// Create HTML from the text, making it bold as a demo
+			// Use HTML encoding to prevent XSS
+			var encodedText = WebUtility.HtmlEncode(Text);
+			var html = $"<p><strong>{encodedText}</strong></p>";
+			dataPackage.SetHtmlFormat(html);
+			dataPackage.SetText(Text); // Also set plain text as fallback
+			Clipboard.SetContent(dataPackage);
+		}
+
 		private async void PasteText()
 		{
 			var content = Clipboard.GetContent();
 			Text = await content.GetTextAsync();
+		}
+
+		private async void PasteHtml()
+		{
+			var content = Clipboard.GetContent();
+			if (content.Contains(StandardDataFormats.Html))
+			{
+				var html = await content.GetHtmlFormatAsync();
+				// Truncate long HTML for better display
+				var displayHtml = html.Length > 200 ? html[..200] + "..." : html;
+				Text = $"HTML: {displayHtml}";
+			}
+			else
+			{
+				Text = "No HTML content in clipboard";
+			}
 		}
 
 		private void Flush() => Clipboard.Flush();

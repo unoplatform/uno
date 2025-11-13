@@ -165,7 +165,7 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 
 			var (response, results) = await responseTcs.Task;
 
-			if (!Enum.IsDefined(typeof(Response), response))
+			if (!Enum.IsDefined((Response)response))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
@@ -227,7 +227,7 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 
 			if (pattern == "*")
 			{
-				list.Add(Struct.Create("All Files", new Array<Struct<uint, string>>(new[] { Struct.Create((uint)0, "*.*") })));
+				list.Add(Struct.Create("All Files", new Array<Struct<uint, string>>(new[] { Struct.Create((uint)0, "*") })));
 			}
 			else if (pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
 			{

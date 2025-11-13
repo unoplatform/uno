@@ -21,7 +21,7 @@ namespace Uno.Buffers
 		static DefaultArrayPoolPlatformProvider()
 		{
 			_canUseMemoryManager =
-				Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Windows.System.MemoryManager", "AppMemoryUsage")
+				Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Windows.System.MemoryManager, Uno", "AppMemoryUsage")
 				&& Windows.System.MemoryManager.IsAvailable;
 		}
 

@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public void RaisePropertyChangedEvent(Color oldColor, Color newColor, Vector4 oldHsvColor, Vector4 newHsvColor)
 		{
-			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers", nameof(ValuePatternIdentifiers.ValueProperty)))
+			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers, Uno.UI", nameof(ValuePatternIdentifiers.ValueProperty)))
 			{
 				string oldValueString = GetValueString(oldColor, oldHsvColor);
 				string newValueString = GetValueString(newColor, newHsvColor);

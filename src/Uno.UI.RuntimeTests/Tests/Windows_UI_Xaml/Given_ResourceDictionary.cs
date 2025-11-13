@@ -8,8 +8,6 @@ using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 
-
-
 #if HAS_UNO
 using Uno.UI.Xaml;
 #endif

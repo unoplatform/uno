@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Hosting;
@@ -16,12 +18,12 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private Rect? _lastArrangeRect;
-	private Rect? _lastClipRect;
 	private bool _layoutDirty = true;
 	private readonly ContentPresenter _presenter;
 
 	private readonly Lazy<IntPtr> _display;
 	private IntPtr Display => _display.Value;
+	private IDisposable? _frameRenderedDisposable;
 
 	public X11NativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
@@ -53,8 +55,16 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			HideWindowFromTaskBar(nativeWindow);
 
-			xamlRoot.RenderInvalidated += UpdateLayout;
-			xamlRoot.QueueInvalidateRender(); // to force initial layout and clipping
+			var compositionTarget = (CompositionTarget)_presenter.Visual.CompositionTarget!;
+			compositionTarget.FrameRendered += UpdateLayout;
+
+			Debug.Assert(_frameRenderedDisposable is null);
+			_frameRenderedDisposable = Disposable.Create(() =>
+			{
+				compositionTarget.FrameRendered -= UpdateLayout;
+			});
+
+			_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual); // to force initial layout and clipping
 		}
 		else
 		{
@@ -131,10 +141,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_ = XLib.XUnmapWindow(Display, nativeWindow.WindowId);
 			_ = XLib.XSync(Display, false);
 
-			_lastClipRect = null;
 			_lastArrangeRect = null;
 
-			xamlRoot.RenderInvalidated -= UpdateLayout;
+			Debug.Assert(_frameRenderedDisposable is not null);
+			_frameRenderedDisposable?.Dispose();
+			_frameRenderedDisposable = null;
 		}
 		else
 		{
@@ -142,12 +153,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
 		_lastArrangeRect = arrangeRect;
-		_lastClipRect = clipRect;
 		_layoutDirty = true;
-		XamlRoot?.QueueInvalidateRender();
+		_presenter.Visual.Compositor.InvalidateRender(_presenter.Visual);
 		// we don't update the layout right now. We wait for the next render to happen, as
 		// xlib calls are expensive and it's better to update the layout once at the end when multiple arrange
 		// calls are fired sequentially.
@@ -162,7 +172,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		_layoutDirty = false;
 		if (_presenter.Content is X11NativeWindow nativeWindow &&
 			_lastArrangeRect is { } arrangeRect &&
-			_lastClipRect is { } clipRect &&
 			XamlRoot is { } xamlRoot &&
 			XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
@@ -184,11 +193,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize) => availableSize;
-
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		// no need to do anything here, airspace clipping logic will take care of it automatically
-	}
 
 	// This doesn't seem to work as most (all?) WMs won't change the opacity for subwindows, only top-level windows
 	public void ChangeNativeElementOpacity(object content, double opacity)

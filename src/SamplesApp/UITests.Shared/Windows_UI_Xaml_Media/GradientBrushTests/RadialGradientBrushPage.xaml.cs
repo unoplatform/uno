@@ -26,7 +26,7 @@ namespace MUXControlsTestApp
 			_random = new Random();
 		}
 
-		public string[] GetColorSpaceValueNames() => Enum.GetNames(typeof(CompositionColorSpace));
+		public string[] GetColorSpaceValueNames() => Enum.GetNames<CompositionColorSpace>();
 
 		public string DynamicGradientBrushInterpolationSpace
 		{
@@ -45,14 +45,14 @@ namespace MUXControlsTestApp
 			{
 				if (DynamicGradientBrush != null && value != null)
 				{
-					DynamicGradientBrush.InterpolationSpace = (CompositionColorSpace)Enum.Parse(typeof(CompositionColorSpace), value);
+					DynamicGradientBrush.InterpolationSpace = Enum.Parse<CompositionColorSpace>(value);
 				}
 			}
 		}
 
 		public string[] GetSpreadMethodValueNames()
 		{
-			return Enum.GetNames(typeof(GradientSpreadMethod));
+			return Enum.GetNames<GradientSpreadMethod>();
 		}
 
 		public string DynamicGradientBrushSpreadMethod
@@ -72,7 +72,7 @@ namespace MUXControlsTestApp
 			{
 				if (DynamicGradientBrush != null && value != null)
 				{
-					DynamicGradientBrush.SpreadMethod = (GradientSpreadMethod)Enum.Parse(typeof(GradientSpreadMethod), value);
+					DynamicGradientBrush.SpreadMethod = Enum.Parse<GradientSpreadMethod>(value);
 				}
 			}
 		}
@@ -141,7 +141,7 @@ namespace MUXControlsTestApp
 			var centerColor = GetPixelAtPoint(new Point(rtb.PixelWidth / 2, rtb.PixelHeight / 2), rtb, pixelArray);
 			var outerColor = GetPixelAtPoint(new Point(0, 0), rtb, pixelArray);
 
-			if (ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionRadialGradientBrush"))
+			if (ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionRadialGradientBrush, Uno.UI.Composition"))
 			{
 				// If CompositionRadialGradientBrush is available then should be rendering a gradient.
 				if (centerColor == Microsoft.UI.Colors.Orange && outerColor == Microsoft.UI.Colors.Green)

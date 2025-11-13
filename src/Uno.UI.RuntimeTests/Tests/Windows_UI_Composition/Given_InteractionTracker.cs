@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if HAS_UNO_WINUI || WINAPPSDK
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;

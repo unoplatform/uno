@@ -1,5 +1,4 @@
 ﻿using Microsoft.UI.Xaml.Media.Animation;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using Windows.UI.Core;

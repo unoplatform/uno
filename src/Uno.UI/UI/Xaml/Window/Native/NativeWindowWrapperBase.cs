@@ -9,7 +9,6 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
@@ -54,7 +53,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	internal bool AssociatedWithManagedWindow => _window != null && _xamlRoot != null;
 
-	public bool WasShown { get; private set; }
+	public bool WasShown { get; set; }
 
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{
@@ -210,6 +209,9 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	{
 	}
 
+	/// <summary>
+	/// Request the close of the native window
+	/// </summary>
 	protected virtual void CloseCore()
 	{
 	}
@@ -219,12 +221,6 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		CloseCore();
 
 		IsVisible = false;
-
-		// Allow the window to be re-shown on single-window targets.
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			WasShown = false;
-		}
 	}
 
 	public virtual void ExtendContentIntoTitleBar(bool extend) { }
@@ -295,7 +291,11 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public void Destroy() { }
 
-	public void Hide() { }
+	public void Hide() => IsVisible = false;
+
+	public virtual void SetIcon(string iconPath)
+	{
+	}
 
 #if __APPLE_UIKIT__
 	public abstract Size GetWindowSize();

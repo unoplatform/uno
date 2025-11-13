@@ -16,8 +16,7 @@ namespace UITests.Windows_UI_Xaml_Controls.SymbolIconTests
 		}
 
 		public List<SymbolListItem> Symbols { get; } =
-			Enum.GetValues(typeof(Symbol))
-				.Cast<Symbol>()
+			Enum.GetValues<Symbol>()
 				.Select(symbol => new SymbolListItem(symbol))
 				.ToList();
 	}
@@ -27,7 +26,7 @@ namespace UITests.Windows_UI_Xaml_Controls.SymbolIconTests
 		public SymbolListItem(Symbol symbol)
 		{
 			Symbol = symbol;
-			Name = Enum.GetName(typeof(Symbol), symbol);
+			Name = Enum.GetName<Symbol>(symbol);
 		}
 
 		public Symbol Symbol { get; }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -29,7 +30,7 @@ public partial class TreeView : Control
 	/// </summary>
 	public TreeView()
 	{
-		DefaultStyleKey = typeof(TreeView);
+		this.SetDefaultStyleKey();
 
 		m_rootNode = new TreeViewNode();
 		m_pendingSelectedNodes = new List<TreeViewNode>();

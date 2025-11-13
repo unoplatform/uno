@@ -1,3 +1,8 @@
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
+using Uno.Foundation.Logging;
+
 namespace Microsoft.Web.WebView2.Core;
 
 /// <summary>
@@ -18,9 +23,41 @@ public partial class CoreWebView2WebMessageReceivedEventArgs
 	/// <summary>
 	/// Gets the message posted from the WebView content to the host as a string.
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>The message posted from the WebView content to the host.</returns>
+	/// <exception cref="T:System.ArgumentException">
+	/// The message posted is some other kind of JavaScript type.
+	/// </exception>
 	public string TryGetWebMessageAsString()
 	{
-		throw new global::System.NotImplementedException("The member string CoreWebView2WebMessageReceivedEventArgs.TryGetWebMessageAsString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CoreWebView2WebMessageReceivedEventArgs.TryGetWebMessageAsString%28%29");
+		if (string.IsNullOrWhiteSpace(WebMessageAsJson))
+		{
+			return WebMessageAsJson;
+		}
+
+		try
+		{
+			return JsonSerializer.Deserialize<string>(WebMessageAsJson, s_stringJsonTypeInfo);
+		}
+		catch (Exception)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("The message could not be deserialized to a string.");
+			}
+
+			throw new ArgumentException("The message posted is some other kind of JavaScript type.");
+		}
 	}
+
+	private static readonly JsonSerializerOptions s_serializerOptions = new JsonSerializerOptions
+	{
+		TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+		Converters =
+		{
+			JsonMetadataServices.StringConverter,
+		},
+	};
+
+	private static readonly JsonTypeInfo<string> s_stringJsonTypeInfo = JsonTypeInfo.CreateJsonTypeInfo<string>(s_serializerOptions);
+
 }

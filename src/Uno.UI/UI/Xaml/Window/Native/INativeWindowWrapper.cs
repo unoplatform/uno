@@ -22,9 +22,7 @@ internal interface INativeWindowWrapper : INativeAppWindow
 
 	CoreWindowActivationState ActivationState { get; }
 
-	float RasterizationScale { get; }
-
-	bool WasShown { get; }
+	bool WasShown { get; set; }
 
 	event EventHandler<Size>? SizeChanged;
 

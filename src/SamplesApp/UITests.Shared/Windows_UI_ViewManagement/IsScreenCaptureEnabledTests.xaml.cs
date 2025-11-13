@@ -24,7 +24,7 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 		public IsScreenCaptureEnabledTests()
 		{
 			this.InitializeComponent();
-			if (ApiInformation.IsPropertyPresent("Windows.UI.ViewManagement.ApplicationView", "IsScreenCaptureEnabled"))
+			if (ApiInformation.IsPropertyPresent("Windows.UI.ViewManagement.ApplicationView, Uno", "IsScreenCaptureEnabled"))
 			{
 				CaptureCheckBox.IsChecked = ApplicationView.GetForCurrentView().IsScreenCaptureEnabled;
 			}

@@ -94,6 +94,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 				}
 			}
 		}
+
+		CompositionTarget.FrameRenderingOptions = (true, true);
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60) : this(appBuilder, renderFrameRate, false)
@@ -124,10 +126,6 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		});
 		CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
-
-		// We do not have a display timer on this target, we can use
-		// a constant timer.
-		CompositionTargetTimer.Start();
 	}
 
 	internal static int RenderFrameRate { get; private set; }

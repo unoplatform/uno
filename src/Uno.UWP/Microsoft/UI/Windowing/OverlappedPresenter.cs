@@ -1,5 +1,4 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System;
 using Microsoft.UI.Windowing.Native;
 
 namespace Microsoft.UI.Windowing;
@@ -9,81 +8,233 @@ namespace Microsoft.UI.Windowing;
 /// </summary>
 public partial class OverlappedPresenter : AppWindowPresenter
 {
-	private bool _isResizable;
+	private bool _isResizable = true;
 	private bool _isModal;
 	private bool _isMinimizable;
 	private bool _isMaximizable;
 	private bool _isAlwaysOnTop;
-	private bool _hasBorder;
-	private bool _hasTitleBar;
+	private int? _preferredMinimumHeight;
+	private int? _preferredMinimumWidth;
+	private int? _preferredMaximumWidth;
+	private int? _preferredMaximumHeight;
+	private OverlappedPresenterState? _pendingState;
 
 	internal OverlappedPresenter() : base(AppWindowPresenterKind.Overlapped)
 	{
 	}
 
-	internal INativeOverlappedPresenter Native { get; private set; }
+	internal event EventHandler BorderAndTitleBarChanged;
 
-	public bool IsResizable
-	{
-		get => _isResizable;
-		set
-		{
-			_isResizable = value;
-			Native?.SetIsResizable(value);
-		}
-	}
+	/// <summary>
+	/// Gets a value that indicates whether this window has a border.
+	/// </summary>
+	public bool HasBorder { get; private set; } = true;
 
-	public bool IsModal
-	{
-		get => _isModal;
-		set
-		{
-			_isModal = value;
-			Native?.SetIsModal(value);
-		}
-	}
+	/// <summary>
+	/// Gets a value that indicates whether this window has a title bar.
+	/// </summary>
+	public bool HasTitleBar { get; private set; } = true;
 
-	public bool IsMinimizable
-	{
-		get => _isMinimizable;
-		set
-		{
-			_isMinimizable = value;
-			Native?.SetIsMinimizable(value);
-		}
-	}
-
-	public bool IsMaximizable
-	{
-		get => _isMaximizable;
-		set
-		{
-			_isMaximizable = value;
-			Native?.SetIsMaximizable(value);
-		}
-	}
-
+	/// <summary>
+	/// Gets or sets a value that indicates whether this window will be kept on top of other windows.
+	/// </summary>
 	public bool IsAlwaysOnTop
 	{
 		get => _isAlwaysOnTop;
 		set
 		{
-			_isAlwaysOnTop = value;
-			Native?.SetIsAlwaysOnTop(value);
+			if (_isAlwaysOnTop != value)
+			{
+				_isAlwaysOnTop = value;
+				Native?.SetIsAlwaysOnTop(value);
+			}
 		}
 	}
 
-	public bool HasBorder => _hasBorder;
+	/// <summary>
+	/// Gets or sets a value that indicates whether this window can be maximized.
+	/// </summary>
+	public bool IsMaximizable
+	{
+		get => _isMaximizable;
+		set
+		{
+			if (_isMaximizable != value)
+			{
+				_isMaximizable = value;
+				Native?.SetIsMaximizable(value);
+			}
+		}
+	}
 
-	public bool HasTitleBar => _hasTitleBar;
+	/// <summary>
+	/// Gets or sets a value that indicates whether this window can be minimized.
+	/// </summary>
+	public bool IsMinimizable
+	{
+		get => _isMinimizable;
+		set
+		{
+			if (_isMinimizable != value)
+			{
+				_isMinimizable = value;
+				Native?.SetIsMinimizable(value);
+				NotifyAppWindow();
+			}
+		}
+	}
 
-	public OverlappedPresenterState State => Native?.State ?? OverlappedPresenterState.Restored;
+	/// <summary>
+	/// Gets or sets a value that indicates whether this window is modal.
+	/// </summary>
+	public bool IsModal
+	{
+		get => _isModal;
+		set
+		{
+			if (_isModal != value)
+			{
+				_isModal = value;
+				Native?.SetIsModal(value);
+				NotifyAppWindow();
+			}
+		}
+	}
 
+	/// <summary>
+	/// Gets or sets a value that indicates whether this window can be resized.
+	/// </summary>
+	public bool IsResizable
+	{
+		get => _isResizable;
+		set
+		{
+			if (_isResizable != value)
+			{
+				_isResizable = value;
+				Native?.SetIsResizable(value);
+				NotifyAppWindow();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred minimum width for the window.
+	/// </summary>
+	public int? PreferredMinimumWidth
+	{
+		get => _preferredMinimumWidth;
+		set
+		{
+			if (_preferredMinimumWidth != value)
+			{
+				_preferredMinimumWidth = value;
+				NotifyNativeSizeConstraints();
+				NotifyAppWindow();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred minimum height for the window.
+	/// </summary>
+	public int? PreferredMinimumHeight
+	{
+		get => _preferredMinimumHeight;
+		set
+		{
+			if (_preferredMinimumHeight != value)
+			{
+				_preferredMinimumHeight = value;
+				NotifyNativeSizeConstraints();
+				NotifyAppWindow();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred maximum width for the window.
+	/// </summary>
+	public int? PreferredMaximumWidth
+	{
+		get => _preferredMaximumWidth;
+		set
+		{
+			if (_preferredMaximumWidth != value)
+			{
+				_preferredMaximumWidth = value;
+				NotifyNativeSizeConstraints();
+				NotifyAppWindow();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets the preferred maximum height for the window.
+	/// </summary>
+	public int? PreferredMaximumHeight
+	{
+		get => _preferredMaximumHeight;
+		set
+		{
+			if (_preferredMaximumHeight != value)
+			{
+				_preferredMaximumHeight = value;
+				NotifyNativeSizeConstraints();
+				NotifyAppWindow();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets a value that specifies the OverlappedPresenterState that the window will assume when AppWindow.ShowOnceWithRequestedStartupState is called.
+	/// </summary>
 	public static OverlappedPresenterState RequestedStartupState { get; } = OverlappedPresenterState.Restored;
 
+	/// <summary>
+	/// Gets the state of the presenter.
+	/// </summary>
+	public OverlappedPresenterState State => Native?.State ?? _pendingState ?? OverlappedPresenterState.Restored;
+
+	internal INativeOverlappedPresenter Native { get; private set; }
+
+	/// <summary>
+	/// Restores the window to the size and position it had before it was minimized or maximized.
+	/// </summary>
 	public void Restore() => Restore(false);
 
-	public void Maximize() => Native.Maximize();
+	/// <summary>
+	/// Restores the window that the presenter is applied to and optionally makes it active.
+	/// </summary>
+	/// <param name="activateWindow">true if the window should be made active; otherwise, false.</param>
+	public void Restore(bool activateWindow)
+	{
+		if (Native is not null)
+		{
+			Native.Restore(activateWindow);
+			NotifyAppWindow();
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Restored;
+		}
+	}
+
+	/// <summary>
+	/// Maximizes the window that the presenter is applied to.
+	/// </summary>
+	public void Maximize()
+	{
+		if (Native is not null)
+		{
+			Native.Maximize();
+			NotifyAppWindow();
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Maximized;
+		}
+	}
 
 	/// <summary>
 	/// Minimizes the window that the presenter is applied to.
@@ -91,10 +242,21 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	public void Minimize() => Minimize(false);
 
 	/// <summary>
-	/// 
+	/// Minimizes the window that the presenter is applied to and optionally makes it active.
 	/// </summary>
-	/// <param name="activateWindow"></param>
-	public void Minimize(bool activateWindow) => Native.Minimize(activateWindow);
+	/// <param name="activateWindow">true if the window should be made active; otherwise, false.</param>
+	public void Minimize(bool activateWindow)
+	{
+		if (Native is not null)
+		{
+			Native.Minimize(activateWindow);
+			NotifyAppWindow();
+		}
+		else
+		{
+			_pendingState = OverlappedPresenterState.Minimized;
+		}
+	}
 
 	/// <summary>
 	/// Sets the border and title bar properties of the window.
@@ -103,12 +265,12 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	/// <param name="hasTitleBar">True if this window has a title bar; otherwise, false.</param>
 	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
 	{
-		_hasBorder = hasBorder;
-		_hasTitleBar = hasTitleBar;
+		HasBorder = hasBorder;
+		HasTitleBar = hasTitleBar;
+		BorderAndTitleBarChanged?.Invoke(this, EventArgs.Empty);
 		Native?.SetBorderAndTitleBar(hasBorder, hasTitleBar);
+		NotifyAppWindow();
 	}
-
-	public void Restore(bool activateWindow) => Native.Restore(activateWindow);
 
 	/// <summary>
 	/// Creates a new instance of OverlappedPresenter.
@@ -194,6 +356,54 @@ public partial class OverlappedPresenter : AppWindowPresenter
 			Native.SetIsMaximizable(IsMaximizable);
 			Native.SetIsAlwaysOnTop(IsAlwaysOnTop);
 			Native.SetBorderAndTitleBar(HasBorder, HasTitleBar);
+			NotifyNativeSizeConstraints();
+
+			if (_pendingState is OverlappedPresenterState.Maximized)
+			{
+				Native.Maximize();
+			}
+			else if (_pendingState is OverlappedPresenterState.Minimized)
+			{
+				Native.Minimize(false);
+			}
+			else
+			{
+				Native.Restore(false);
+			}
+
+			NotifyAppWindow();
+
+			_pendingState = null;
 		}
+	}
+
+	private void NotifyAppWindow() => Owner?.OnAppWindowChanged(AppWindowChangedEventArgs.PresenterChangedEventArgs);
+
+	private void NotifyNativeSizeConstraints()
+	{
+		Native?.SetSizeConstraints(
+			PreferredMinimumWidth,
+			PreferredMinimumHeight,
+			GetEffectiveMaxWidth(),
+			GetEffectiveMaxHeight());
+	}
+
+	private int? GetEffectiveMaxWidth()
+	{
+		if (PreferredMaximumWidth is not null && PreferredMinimumWidth is not null)
+		{
+			return Math.Max(PreferredMaximumWidth.Value, PreferredMinimumWidth.Value);
+		}
+
+		return PreferredMaximumWidth;
+	}
+
+	private int? GetEffectiveMaxHeight()
+	{
+		if (PreferredMaximumHeight is not null && PreferredMinimumHeight is not null)
+		{
+			return Math.Max(PreferredMaximumHeight.Value, PreferredMinimumHeight.Value);
+		}
+		return PreferredMaximumHeight;
 	}
 }

@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "Uno.UI.sln",
+    "path": "Uno.UI.slnx",
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Tests.csproj",
       "SourceGenerators\\SourceGeneratorHelpers\\SourceGeneratorHelpers.shproj",
@@ -20,13 +20,13 @@
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Tests.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Tests.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Tests.csproj",
+      "Uno.UI.RemoteControl.DevServer.Tests\\Uno.UI.RemoteControl.DevServer.Tests.csproj",
       "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
       "Uno.UI.Tests\\Uno.UI.Unit.Tests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Tests.csproj",
       "Uno.UI\\Uno.UI.Tests.csproj",
-      "Uno.UWP\\Uno.Tests.csproj",
-      "Uno.UI.RemoteControl.DevServer.Tests\\Uno.UI.RemoteControl.DevServer.Tests.csproj"
+      "Uno.UWP\\Uno.Tests.csproj"
     ]
   }
 }

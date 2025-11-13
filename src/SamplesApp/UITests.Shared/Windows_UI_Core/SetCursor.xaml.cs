@@ -42,7 +42,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 		private void InitList()
 		{
 #if !__ANDROID__ && !__APPLE_UIKIT__
-			var _enumval = Enum.GetValues(typeof(global::Windows.UI.Core.CoreCursorType));
+			var _enumval = Enum.GetValues<global::Windows.UI.Core.CoreCursorType>();
 			Box.ItemsSource = _enumval;
 			Box.SelectedIndex = 0;
 

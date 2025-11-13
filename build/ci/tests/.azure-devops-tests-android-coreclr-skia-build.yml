@@ -1,0 +1,61 @@
+parameters:
+  vmLinuxPool: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+jobs:
+- job: Skia_Android_CoreCLR_Tests_Build
+  displayName: 'Build Skia Android+CoreCLR Samples App'
+  timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
+
+  pool: ${{ parameters.vmLinuxPool }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../templates/gitversion.yml
+  - template: ../templates/dotnet-mobile-install-linux.yml
+    parameters:
+      UnoCheckParameters: '--tfm net10.0-android'
+
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -r android-x64 -f net10.0-android -p:UnoTargetFrameworkOverride=net10.0-android -p:ApplicationId=uno.platform.samplesapp.skia.coreclr -p:UseMonoRuntime=false -p:SkiaSharpVersion=3.119.2-preview.1 /bl:$(build.artifactstagingdirectory)/logs/build-skia-android-coreclr.binlog
+    displayName: Build Android+CoreCLR Skia Head
+
+  - script: >
+      rm -Rf src/SamplesApp/SamplesApp.Skia.netcoremobile/obj
+    workingDirectory: $(Build.SourcesDirectory)
+    displayName: Build Android+CoreCLR Skia Head
+
+  - task: CopyFiles@2
+    displayName: 'Copy Generated Android APK'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net10.0-android/android-x64/publish/
+      Contents: 'uno.platform.samplesapp.skia.coreclr-Signed.apk'
+      TargetFolder: $(build.artifactstagingdirectory)/android-coreclr
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Android+CoreCLR Binaries'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/android-coreclr
+      ArtifactName: uitests-android-coreclr-skia-build
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)/logs
+      ArtifactName: skia-samples-app-binlog
+      ArtifactType: Container

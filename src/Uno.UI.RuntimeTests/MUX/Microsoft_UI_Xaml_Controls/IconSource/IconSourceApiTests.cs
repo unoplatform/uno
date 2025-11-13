@@ -262,7 +262,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Verify.AreEqual(icon.UriSource, iconSource.UriSource);
 				Verify.AreEqual(bitmapIcon.UriSource, iconSource.UriSource);
 
-				if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
+				if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.BitmapIcon, Uno.UI", "ShowAsMonochrome"))
 				{
 					Verify.AreEqual(icon.ShowAsMonochrome, iconSource.ShowAsMonochrome);
 					Verify.AreEqual(bitmapIcon.ShowAsMonochrome, iconSource.ShowAsMonochrome);

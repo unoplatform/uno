@@ -6,9 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls;
 using Microsoft.UI.Xaml.Controls;
-using FluentAssertions;
 using Microsoft.UI.Xaml.Data;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 {

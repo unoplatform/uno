@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
 using MUXControlsTestApp.Utilities;
 using static Private.Infrastructure.TestServices;
 using Microsoft.UI.Xaml;

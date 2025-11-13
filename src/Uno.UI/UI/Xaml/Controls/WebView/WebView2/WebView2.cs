@@ -74,10 +74,14 @@ public partial class WebView2 : Control, IWebView
 	/// </summary>
 	/// <returns>An asynchronous action that represents the initialization operation.</returns>
 	public IAsyncAction EnsureCoreWebView2Async() =>
-		AsyncAction.FromTask(ct =>
+		AsyncAction.FromTask(async ct =>
 		{
-			EnsureCoreWebView2();
-			return Task.CompletedTask;
+			if (!_coreWebView2Initialized)
+			{
+				EnsureCoreWebView2();
+			}
+
+			await CoreWebView2.EnsureNativeWebViewAsync();
 		});
 
 	/// <summary>

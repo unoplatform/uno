@@ -226,7 +226,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		private static string LocalizeControlType(AutomationControlType controlType) =>
 			// TODO: Humanize ("AppBarButton" -> "app bar button")
 			// TODO: Localize
-			Enum.GetName(typeof(AutomationControlType), controlType).ToLowerInvariant();
+			Enum.GetName<AutomationControlType>(controlType).ToLowerInvariant();
 
 		internal bool InvokeAutomationPeer()
 		{
@@ -272,6 +272,12 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
 		{
 			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
+		}
+
+		[global::Uno.NotImplemented]
+		public void RaiseNotificationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationKind notificationKind, global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+		{
+			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
 		}
 
 #if !__SKIA__

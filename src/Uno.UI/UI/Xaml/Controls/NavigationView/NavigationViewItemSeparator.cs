@@ -19,7 +19,7 @@ public partial class NavigationViewItemSeparator : NavigationViewItemBase
 
 	public NavigationViewItemSeparator()
 	{
-		DefaultStyleKey = typeof(NavigationViewItemSeparator);
+		this.SetDefaultStyleKey();
 	}
 
 	private new void UpdateVisualState(bool useTransitions)

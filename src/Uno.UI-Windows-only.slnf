@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "Uno.UI.sln",
+    "path": "Uno.UI.slnx",
     "projects": [
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Windows.csproj",
       "AddIns\\Uno.WinUI.Graphics3DGL\\Uno.WinUI.Graphics3DGL.csproj",

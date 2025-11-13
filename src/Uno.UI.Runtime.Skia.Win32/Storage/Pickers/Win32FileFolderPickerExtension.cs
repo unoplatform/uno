@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Disposables;
+using Uno.Extensions.Storage.Pickers;
+using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
+using Uno.UI.Helpers.WinUI;
+using Uno.UI.Runtime.Skia.Win32.Storage.Pickers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Win32;
@@ -10,10 +16,6 @@ using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.Shell.Common;
-using Uno.Disposables;
-using Uno.Extensions.Storage.Pickers;
-using Uno.Foundation.Logging;
-using Uno.UI.Helpers.WinUI;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -94,6 +96,12 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 				this.LogError()?.Error($"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 				return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 			}
+		}
+
+		using var defaultFolder = SuggestedStartLocationHandler.GetStartLocationShellItem(picker.SuggestedStartLocationInternal);
+		if (defaultFolder != default)
+		{
+			iFileOpenDialog.Value->SetDefaultFolder(defaultFolder);
 		}
 
 		hResult = iFileOpenDialog.Value->SetOkButtonLabel(string.IsNullOrEmpty(picker.CommitButtonTextInternal) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonTextInternal);
@@ -178,6 +186,9 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 	private List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName, Win32Helper.NativeNulTerminatedUtf16String pattern)> GetFilterString()
 	{
 		var list = new List<(Win32Helper.NativeNulTerminatedUtf16String, Win32Helper.NativeNulTerminatedUtf16String)>();
+
+		var hasAnyFilePattern = false;
+		var wildcardPatterns = new List<string>(picker.FileTypeFilterInternal.Count);
 		foreach (var pattern in picker.FileTypeFilterInternal.Distinct())
 		{
 			if (pattern is null)
@@ -187,11 +198,12 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 
 			if (pattern == "*")
 			{
-				list.Add((new Win32Helper.NativeNulTerminatedUtf16String("All Files"), new Win32Helper.NativeNulTerminatedUtf16String("*.*")));
+				hasAnyFilePattern = true;
 			}
 			else if (pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
 			{
-				list.Add((new Win32Helper.NativeNulTerminatedUtf16String($"{ext.ToUpperInvariant()} Files"), new Win32Helper.NativeNulTerminatedUtf16String($"*.{ext}")));
+				list.Add((new Win32Helper.NativeNulTerminatedUtf16String($"{ext.ToUpperInvariant()} files"), new Win32Helper.NativeNulTerminatedUtf16String($"*.{ext}")));
+				wildcardPatterns.Add($"*.{ext}");
 			}
 			else
 			{
@@ -199,10 +211,17 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 			}
 		}
 
-		if (list.Count == 0)
+		if (hasAnyFilePattern || list.Count == 0)
 		{
-			list.Add((new Win32Helper.NativeNulTerminatedUtf16String("All Files"), new Win32Helper.NativeNulTerminatedUtf16String("*.*")));
+			list.Insert(0, (new Win32Helper.NativeNulTerminatedUtf16String("All files"), new Win32Helper.NativeNulTerminatedUtf16String("*")));
 		}
+		else if (wildcardPatterns.Count > 1)
+		{
+			// If there are multiple patterns, add an "All Files" entry with all patterns merged.
+			var allPatterns = string.Join(';', wildcardPatterns);
+			list.Insert(0, (new Win32Helper.NativeNulTerminatedUtf16String("All files"), new Win32Helper.NativeNulTerminatedUtf16String(allPatterns)));
+		}
+
 		return list;
 	}
 }

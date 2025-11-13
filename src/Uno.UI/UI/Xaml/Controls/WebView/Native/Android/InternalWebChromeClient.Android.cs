@@ -3,7 +3,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Android.OS;
 using Android.Webkit;
+using Microsoft.Web.WebView2.Core;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 
@@ -11,6 +13,13 @@ namespace Uno.UI.Xaml.Controls;
 
 internal class InternalWebChromeClient : WebChromeClient
 {
+	private readonly CoreWebView2 _coreWebView;
+
+	public InternalWebChromeClient(CoreWebView2 coreWebView)
+	{
+		_coreWebView = coreWebView;
+	}
+
 	private IValueCallback _filePathCallback;
 
 	readonly SerialDisposable _fileChooserTaskDisposable = new SerialDisposable();
@@ -41,6 +50,41 @@ internal class InternalWebChromeClient : WebChromeClient
 	}
 
 	public override void OnPermissionRequest(PermissionRequest request) => request.Grant(request.GetResources());
+
+	public override bool OnCreateWindow(WebView view, bool isDialog, bool isUserGesture, Message resultMsg)
+	{
+		if (view is null)
+		{
+			return false;
+		}
+
+		var hitTest = view.GetHitTestResult();
+		string targetUrl = null;
+
+		if (hitTest != null &&
+			(hitTest.Type == Android.Webkit.HitTestResult.SrcAnchorType ||
+			hitTest.Type == Android.Webkit.HitTestResult.SrcImageAnchorType))
+		{
+			targetUrl = hitTest.Extra;
+		}
+
+		if (!string.IsNullOrEmpty(targetUrl))
+		{
+			Uri.TryCreate(view.Url, UriKind.Absolute, out var refererUri);
+
+			_coreWebView.RaiseNewWindowRequested(
+				targetUrl,
+				refererUri ?? CoreWebView2.BlankUri,
+				out bool handled);
+
+			if (handled)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	/// <summary>
 	/// Uses the Activity Tracker to start, then return an Activity

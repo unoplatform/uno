@@ -1,5 +1,9 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.IO.Pipes;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using StreamJsonRpc;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
@@ -52,9 +56,31 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	public bool IsRunning => _devServerProcess != null && !_devServerProcess.HasExited;
 
 	/// <summary>
+	/// Gets the IDE channel ID if available from environment variables.
+	/// </summary>
+	public Guid? IdeChannelId
+	{
+		get
+		{
+			if (_environmentVariables?.TryGetValue("UNO_DEVSERVER_ideChannel", out var v) is true)
+			{
+				return Guid.TryParse(v, out var g) ? g : null;
+			}
+
+			return null;
+		}
+	}
+
+	/// <summary>
 	/// Gets the HTTP port that the dev server is using.
 	/// </summary>
 	public int Port => _httpPort;
+
+	/// <summary>
+	/// Creates a simple test IDE channel client that can send IDE messages to the running dev-server.
+	/// This is a lightweight helper used by integration tests.
+	/// </summary>
+	public TestIdeClient CreateIdeChannelClient() => new(this);
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DevServerTestHelper"/> class.
@@ -119,7 +145,6 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 				WorkingDirectory = Path.GetDirectoryName(hostDllPath) // Set working directory to ensure all dependencies are found
 			};
 
-			// Merge environment variables more safely
 			if (_environmentVariables != null)
 			{
 				foreach (var variable in _environmentVariables)
@@ -239,7 +264,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 		_logger.LogInformation("Stopping dev server gracefully");
 
 		// Attempt graceful shutdown first - this method handles semaphore and cleanup internally
-		var gracefulShutdownSucceeded = await AttemptGracefulShutdown(ct);
+		var gracefulShutdownSucceeded = await AttemptGracefulShutdownAsync(ct);
 
 		if (!gracefulShutdownSucceeded)
 		{
@@ -287,61 +312,28 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// Discovers the path to the Host DLL using multiple strategies.
 	/// </summary>
 	/// <returns>The path to the Host DLL if found, null otherwise.</returns>
-	private string? DiscoverHostDllPath()
+	private string? GetCurrentBuildConfiguration()
 	{
-		// Strategy 1: Check environment variable for custom path
-		var customPath = Environment.GetEnvironmentVariable("UNO_DEVSERVER_HOST_DLL_PATH");
-		if (!string.IsNullOrEmpty(customPath) && File.Exists(customPath))
+		try
 		{
-			_logger.LogInformation("Using custom Host DLL path from environment variable: {Path}", customPath);
-			return customPath;
+			return (typeof(DevServerTestHelper)
+				.Assembly.GetCustomAttribute(typeof(AssemblyConfigurationAttribute)) as AssemblyConfigurationAttribute)
+				?.Configuration;
 		}
-
-		// Strategy 2: Try different build configurations and frameworks
-		var assemblyLocation = Path.GetDirectoryName(typeof(DevServerTestHelper).Assembly.Location)!;
-		var configurations = new[] { "Debug", "Release" };
-		var frameworks = new[] { "net10.0", "net9.0", };
-
-		foreach (var config in configurations)
+		catch (Exception ex)
 		{
-			foreach (var framework in frameworks)
-			{
-				var hostDllPath = Path.GetFullPath(Path.Combine(
-					assemblyLocation,
-					"..", "..", "..", "..",
-					"Uno.UI.RemoteControl.Host", "bin", config, framework,
-					"Uno.UI.RemoteControl.Host.dll"));
-
-				if (File.Exists(hostDllPath))
-				{
-					_logger.LogInformation("Found Host DLL using discovery: {Path}", hostDllPath);
-					return hostDllPath;
-				}
-			}
+			_logger.LogWarning(ex, "Failed to get current build configuration");
+			return null;
 		}
-
-		// Strategy 3: Try MSBuild output directory patterns
-		var possiblePaths = new[]
-		{
-			Path.Combine(assemblyLocation, "Uno.UI.RemoteControl.Host.dll"),
-			Path.Combine(assemblyLocation, "..", "Uno.UI.RemoteControl.Host", "Uno.UI.RemoteControl.Host.dll"),
-		};
-
-		foreach (var path in possiblePaths)
-		{
-			var fullPath = Path.GetFullPath(path);
-			if (File.Exists(fullPath))
-			{
-				_logger.LogInformation("Found Host DLL in output directory: {Path}", fullPath);
-				return fullPath;
-			}
-		}
-
-		_logger.LogError(
-			"Could not discover Host DLL path. Tried configurations: {Configurations}, frameworks: {Frameworks}",
-			string.Join(", ", configurations), string.Join(", ", frameworks));
-		return null;
 	}
+
+	private string? DiscoverHostDllPath() =>
+		ExternalDllDiscoveryHelper.DiscoverExternalDllPath(
+			_logger,
+			typeof(DevServerTestHelper).Assembly,
+			projectName: "Uno.UI.RemoteControl.Host",
+			dllFileName: "Uno.UI.RemoteControl.Host.dll",
+			environmentVariableName: "UNO_DEVSERVER_HOST_DLL_PATH");
 
 	/// <summary>
 	/// Determines if the server has started based on console output.
@@ -369,7 +361,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// </summary>
 	/// <param name="ct">Cancellation token for the operation.</param>
 	/// <returns>True if graceful shutdown succeeded, false otherwise.</returns>
-	public async Task<bool> AttemptGracefulShutdown(CancellationToken ct)
+	public async Task<bool> AttemptGracefulShutdownAsync(CancellationToken ct)
 	{
 		// Use semaphore to prevent race conditions with concurrent start/stop calls
 		await _startStopSemaphore.WaitAsync(ct);
@@ -383,7 +375,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 			try
 			{
 				// Attempt platform-specific graceful shutdown
-				var signalSent = await SendGracefulShutdownSignal(_devServerProcess);
+				var signalSent = await SendGracefulShutdownSignalAsync(_devServerProcess);
 				_logger.LogDebug("Graceful shutdown signal sent: {SignalSent}", signalSent);
 
 				// Wait for the process to exit gracefully (up to 5 seconds)
@@ -428,7 +420,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// </summary>
 	/// <param name="process">The process to send the signal to.</param>
 	/// <returns>True if the signal was sent successfully, false otherwise.</returns>
-	private async Task<bool> SendGracefulShutdownSignal(Process process)
+	private async Task<bool> SendGracefulShutdownSignalAsync(Process process)
 	{
 		try
 		{
@@ -497,7 +489,7 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// That's lazy approach that should work often enough for CI.
 	/// </remarks>
 	/// <returns>A random port number.</returns>
-	private static int GetRandomPort() => new Random().Next(10000, 65536);
+	private static int GetRandomPort() => new Random().Next(10_000, 65_500);
 
 	public async ValueTask DisposeAsync()
 	{
@@ -525,4 +517,85 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	}
 
 	public int? GetProcessId() => _devServerProcess?.Id;
+}
+
+/// <summary>
+/// Lightweight IDE channel client for tests.
+/// Uses HTTP endpoint of the dev-server to post IDE messages over the IDE channel if available.
+/// For the purposes of these integration tests we only implement SendToDevServerAsync used by tests.
+/// </summary>
+public sealed class TestIdeClient : IDisposable
+{
+	private readonly DevServerTestHelper _helper;
+
+	private NamedPipeClientStream? _pipeClient;
+	private JsonRpc? _rpcClient;
+
+	internal TestIdeClient(DevServerTestHelper helper)
+	{
+		_helper = helper;
+	}
+
+	public void Dispose()
+	{
+		try
+		{
+			_rpcClient?.Dispose();
+		}
+		catch { }
+		try
+		{
+			_pipeClient?.Dispose();
+		}
+		catch { }
+	}
+
+
+	public async Task EnsureConnectedAsync(CancellationToken ct)
+	{
+		if (_rpcClient != null)
+		{
+			return;
+		}
+
+		var ideChannel = _helper.IdeChannelId?.ToString();
+
+		if (string.IsNullOrWhiteSpace(ideChannel))
+		{
+			return;
+		}
+
+		_pipeClient = new NamedPipeClientStream(
+			serverName: ".",
+			pipeName: ideChannel,
+			direction: PipeDirection.InOut,
+			options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+
+		await _pipeClient.ConnectAsync(ct);
+
+		// Attach a lightweight proxy to invoke SendToDevServerAsync on the server
+		_rpcClient = JsonRpc.Attach(_pipeClient);
+	}
+
+	public async Task SendToDevServerAsync(Uno.UI.RemoteControl.Messaging.IdeChannel.IdeMessage envelope, CancellationToken ct)
+	{
+		try
+		{
+			await EnsureConnectedAsync(ct);
+			if (_rpcClient is null)
+			{
+				// not connected
+				return;
+			}
+
+			// IIdeChannelServer.SendToDevServerAsync accepts an IdeMessageEnvelope and a CancellationToken
+			// Call the method by name using JsonRpc
+			await _rpcClient.InvokeWithParameterObjectAsync("SendToDevServerAsync", new object[] { envelope, ct });
+		}
+		catch (Exception ex)
+		{
+			// Best-effort logging into helper output
+			try { _helper?.ConsoleOutput.Contains(ex.Message); } catch { }
+		}
+	}
 }

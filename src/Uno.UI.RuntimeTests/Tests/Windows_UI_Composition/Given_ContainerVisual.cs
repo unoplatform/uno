@@ -16,6 +16,7 @@ using Uno.Disposables;
 using Uno.Extensions.Specialized;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.WinUI.Graphics2DSK;
+using Uno.UI.Toolkit.DevTools.Input;
 using CollectionExtensions = Uno.Extensions.CollectionExtensions;
 using RectExtensions = Uno.Extensions.RectExtensions;
 
@@ -71,6 +72,7 @@ public class Given_ContainerVisual
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid)] // passed locally, times out in CI waiting for UITestHelper.WaitFor
 	public async Task When_SKPicture_Collapsing_Optimization()
 	{
 		var oldValues =

@@ -10,10 +10,12 @@ using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Threading;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if HAS_UNO
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
+
 #endif
 
 #if HAS_UNO_WINUI
@@ -85,7 +87,7 @@ namespace Private.Infrastructure
 					// fall back to a tap event on platforms where InputInjector isn't implemented. Ideally tap should be triggered
 					// by GestureRecognizer when a pointer is pressed and released, but here we do a hacky workaround
 					var args = new TappedEventArgs(1, PointerDeviceType.Touch, default, 1);
-					element.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs(element, args));
+					element.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs(element, args, element));
 				});
 #endif
 			}

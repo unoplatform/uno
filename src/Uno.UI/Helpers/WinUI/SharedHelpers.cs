@@ -163,7 +163,7 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			if (s_IsXamlCompositionBrushBaseAvailable_isAvailable == null)
 			{
-				s_IsXamlCompositionBrushBaseAvailable_isAvailable = IsRS3OrHigher() || ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.XamlCompositionBrushBase");
+				s_IsXamlCompositionBrushBaseAvailable_isAvailable = IsRS3OrHigher() || ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.XamlCompositionBrushBase, Uno.UI");
 			}
 
 			// On RS3 we know XamlCompositionBrushBase was always present, so short circuit the check there.
@@ -216,7 +216,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_isFlyoutShowOptionsAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Primitives.FlyoutShowOptions");
+					ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Primitives.FlyoutShowOptions, Uno.UI");
 			}
 			return s_isFlyoutShowOptionsAvailable.Value;
 		}
@@ -245,7 +245,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_isScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.ScrollViewer", "ReduceViewportForCoreInputViewOcclusions");
+					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.ScrollViewer, Uno.UI", "ReduceViewportForCoreInputViewOcclusions");
 			}
 			return s_isScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable.Value;
 		}
@@ -258,7 +258,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_isScrollContentPresenterSizesContentToTemplatedParentAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "SizesContentToTemplatedParent");
+					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.ScrollContentPresenter, Uno.UI", "SizesContentToTemplatedParent");
 			}
 			return s_isScrollContentPresenterSizesContentToTemplatedParentAvailable.Value;
 		}
@@ -270,7 +270,7 @@ namespace Uno.UI.Helpers.WinUI
 			{
 				s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable =
 					IsRS4OrHigher() ||
-					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.BringIntoViewOptions", "VerticalAlignmentRatio");
+					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.BringIntoViewOptions, Uno.UI", "VerticalAlignmentRatio");
 			}
 			return s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable.Value;
 		}
@@ -293,7 +293,7 @@ namespace Uno.UI.Helpers.WinUI
 			{
 				s_isDisplayRegionGetForCurrentViewAvailable =
 					Is19H1OrHigher() ||
-					ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.DisplayRegion", "GetForCurrentView");
+					ApiInformation.IsMethodPresent("Windows.ApplicationModel.Core.DisplayRegion, Uno", "GetForCurrentView");
 			}
 			return s_isDisplayRegionGetForCurrentViewAvailable.Value;
 		}
@@ -314,7 +314,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_IsIconSourceElementAvailable_isAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Controls.IconSourceElement");
+					ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Controls.IconSourceElement, Uno.UI");
 			}
 			return s_IsIconSourceElementAvailable_isAvailable.Value;
 		}
@@ -327,8 +327,8 @@ namespace Uno.UI.Helpers.WinUI
 				s_IsStandardUICommandAvailable_isAvailable =
 					IsSystemDll() ||
 					Is19H1OrHigher() ||
-					(ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand") &&
-						ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.StandardUICommand"));
+					(ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand, Uno.UI") &&
+						ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.StandardUICommand, Uno.UI"));
 			}
 			return s_IsStandardUICommandAvailable_isAvailable.Value;
 		}
@@ -341,7 +341,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_IsXamlRootAvailable =
 				   IsSystemDll() ||
 				   IsVanadiumOrHigher() ||
-				   ApiInformation.IsTypePresent("Microsoft.UI.Xaml.XamlRoot");
+				   ApiInformation.IsTypePresent("Microsoft.UI.Xaml.XamlRoot, Uno.UI");
 
 			}
 			return s_IsXamlRootAvailable.Value;
@@ -356,7 +356,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_isThemeShadowAvailable =
 					(IsSystemDll() ||
 					IsVanadiumOrHigher()) &&
-					ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.ThemeShadow");
+					ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.ThemeShadow, Uno.UI");
 			}
 			return s_isThemeShadowAvailable.Value;
 		}
@@ -369,7 +369,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_IsIsLoadedAvailable =
 					IsSystemDll() ||
 					IsRS5OrHigher() ||
-					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.FrameworkElement", "IsLoaded");
+					ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.FrameworkElement, Uno.UI", "IsLoaded");
 			}
 			return s_IsIsLoadedAvailable.Value;
 		}
@@ -721,7 +721,7 @@ namespace Uno.UI.Helpers.WinUI
 					bitmapIcon.Foreground = bitmapIconSource.Foreground;
 				}
 
-				if (IsSystemDll() || ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
+				if (IsSystemDll() || ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.BitmapIcon, Uno.UI", "ShowAsMonochrome"))
 				{
 					bitmapIcon.ShowAsMonochrome = bitmapIconSource.ShowAsMonochrome;
 				}

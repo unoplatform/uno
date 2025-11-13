@@ -301,7 +301,7 @@ namespace SamplesApp
 					$"PreviousState - {e.PreviousExecutionState}, " +
 					$"Uri - {protocolActivatedEventArgs.Uri}",
 					"Application activated via protocol");
-				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
+				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
 				{
 					await dlg.ShowAsync();
 				}
@@ -368,6 +368,9 @@ namespace SamplesApp
 				{
 					rootFrame.Navigate(startingPageType);
 				}
+
+				var mainPage = (MainPage)rootFrame!.Content!;
+				mainPage.ViewModel.SetWindow(_mainWindow);
 			}
 		}
 
@@ -558,12 +561,6 @@ namespace SamplesApp
 #endif
 #if __ANDROID__
 			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
-#endif
-
-#if IS_CI_OR_DEBUG && __SKIA__
-			// Lower the framerate so that CI agents don't slow down too much
-			// as they're running with software rendering.
-			FeatureConfiguration.CompositionTarget.FrameRate = 15;
 #endif
 		}
 

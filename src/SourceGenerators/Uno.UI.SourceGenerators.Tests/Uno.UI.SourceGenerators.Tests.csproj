@@ -24,8 +24,8 @@
 
 	<ItemGroup Label="GlobalUsings">
 		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
-		<Using Include="FluentAssertions" />
-		<Using Include="FluentAssertions.Execution" />
+		<Using Include="AwesomeAssertions" />
+		<Using Include="AwesomeAssertions.Execution" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,7 +48,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)'=='false'" />
-		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="NuGet.Packaging" Version="6.3.4" />
 		<Reference Include="$(NuGetPackageRoot)\communitytoolkit.mvvm\$(CommunityToolkitMvvmVersion)\analyzers\dotnet\roslyn4.3\cs\CommunityToolkit.Mvvm.SourceGenerators.dll" Condition="'$(UNO_UWP_BUILD)'=='false'" />

@@ -240,6 +240,12 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 		var (evt, msgName) = msg switch
 		{
+			PInvoke.WM_NCPOINTERDOWN => (PointerPressed, nameof(PInvoke.WM_NCPOINTERDOWN)),
+			PInvoke.WM_NCPOINTERUP => (PointerReleased, nameof(PInvoke.WM_NCPOINTERUP)),
+			PInvoke.WM_NCPOINTERUPDATE => (PointerMoved, nameof(PInvoke.WM_NCPOINTERUPDATE)),
+			PInvoke.WM_NCLBUTTONDOWN => (PointerPressed, nameof(PInvoke.WM_NCLBUTTONDOWN)),
+			PInvoke.WM_NCLBUTTONUP => (PointerReleased, nameof(PInvoke.WM_NCLBUTTONUP)),
+			PInvoke.WM_NCMOUSEMOVE => (PointerMoved, nameof(PInvoke.WM_NCMOUSEMOVE)),
 			PInvoke.WM_POINTERDOWN => (PointerPressed, nameof(PInvoke.WM_POINTERDOWN)),
 			PInvoke.WM_POINTERUP => (PointerReleased, nameof(PInvoke.WM_POINTERUP)),
 			PInvoke.WM_POINTERWHEEL => (PointerWheelChanged, nameof(PInvoke.WM_POINTERWHEEL)),

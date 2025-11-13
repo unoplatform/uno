@@ -173,17 +173,7 @@ else
 $debug = $default + '-p:Configuration=Debug'
 $release = $default + '-p:Configuration=Release'
 
-# replace the uno.sdk field value in global.json, recursively in all folders
-Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
-    
-    $globalJsonfilePath = $_.FullName;
-
-    Write-Host "Updated $globalJsonfilePath with $env:NBGV_SemVer2"
-
-    $globalJson = (Get-Content $globalJsonfilePath) -replace '^\s*//.*' | ConvertFrom-Json
-    $globalJson.'msbuild-sdks'.'Uno.Sdk.Private' = $env:NBGV_SemVer2
-    $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
-}
+& $env:BUILD_SOURCESDIRECTORY/build/test-scripts/update-uno-sdk-globaljson.ps1
 
 $sdkFeatures = $(If ($IsWindows) {"-p:UnoFeatures=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeatures=Material%3BToolkit" });
 
@@ -216,6 +206,10 @@ $projects =
     # Publish with no debug symbols validation
     @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:TargetFrameworks=net9.0-desktop", "-r", "win-x64", "-p:DebugSymbols=false", "-p:DebugType=None"), @("NetCore", "Publish")),
 
+    # Publish with NativeAOT and *run*
+    @(2, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-desktop", "-r", "osx-x64", "-p:PublishAot=true"), @("OnlyMacOS", "NetCore", "Publish"),
+        @("5.6/uno56netcurrent/uno56netcurrent/bin/Release/net10.0-desktop/osx-x64/publish/uno56netcurrent"), @("--exit")),
+
     # Workaround for: https://github.com/dotnet/android/issues/10423
     # Must happen before trying `dotnet build -r …`
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android"), @("macOS", "NetCore")),
@@ -228,6 +222,15 @@ $projects =
 
     # 5.6 Android/ios/Wasm+Skia
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @("macOS", "NetCore")),
+
+    # 5.6 net-current runtime folder validation
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @("macOS", "NetCore")),
+    
+    # 5.6 net-current with XAML trimming validation - desktop
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-desktop", "-p:UnoXamlResourcesTrimming=true", "-p:PublishTrimmed=true", "-r", "win-x64"), @("NetCore", "Publish")),
+    
+    # 5.6 net-current with XAML trimming validation - wasm
+    @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-browserwasm", "-p:UnoXamlResourcesTrimming=true", "-p:WasmShellILLinkerEnabled=true"), @("macOS", "NetCore", "Publish")),
 
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0"), @("macOS", "NetCore")),
@@ -258,6 +261,8 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $projectPath=$projects[$i][1];
     $projectOptions=$projects[$i][2];
     $buildOptions=$projects[$i][3];
+    $runCommand=$projects[$i][4];
+    $runOptions=$projects[$i][5];
     $runOnMacOS = $buildOptions -contains "macOS"
     $runOnlyOnMacOS = $buildOptions -contains "OnlyMacOS"
     $buildWithNetCore = $buildOptions -contains "NetCore"
@@ -312,6 +317,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
         Write-Host "Executing: dotnet $dotnetCommand $release ""$projectPath"" $projectOptions $extraArgs -bl"
         dotnet $dotnetCommand $release "$projectPath" $projectOptions $extraArgs -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
+
+        if ($runCommand.Length -gt 0)
+        {
+            Write-Host "Executing: $runCommand $runOptions"
+            & $runCommand $runOptions
+            Assert-ExitCodeIsZero
+        }
  
         if(!$NoBuildClean)
         {
@@ -336,6 +348,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
             Write-Host "Executing: ""$msbuild"" $release /r ""$projectPath"" $projectOptions $extraArgs /bl"
             & $msbuild $release /r "$projectPath" $projectOptions $extraArgs /bl:binlogs/$projectPath/$i/release/msbuild.binlog
             Assert-ExitCodeIsZero
+
+            if ($runCommand.Length -gt 0)
+            {
+                Write-Host "Executing: $runCommand $runOptions"
+                & $runCommand $runOptions
+                Assert-ExitCodeIsZero
+            }
 
             & $msbuild $release /r /t:Clean "$projectPath"
         }

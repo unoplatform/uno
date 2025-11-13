@@ -11,8 +11,7 @@ using Uno.UI.Runtime.Skia.AppleUIKit;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
-[Register("NativeOverlayLayer")]
-internal class NativeOverlayLayer : UIView
+internal partial class NativeOverlayLayer : UIView
 {
 	public NativeOverlayLayer()
 	{

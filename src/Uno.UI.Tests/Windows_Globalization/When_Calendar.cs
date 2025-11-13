@@ -1,8 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Globalization;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Web.Syndication;
@@ -44,7 +43,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 05,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Thursday,
+				dayOfWeek: WG.DayOfWeek.Thursday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -87,7 +86,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 05,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Sunday,
+				dayOfWeek: WG.DayOfWeek.Sunday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -134,7 +133,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 05,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Thursday,
+				dayOfWeek: WG.DayOfWeek.Thursday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -177,7 +176,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 05,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Sunday,
+				dayOfWeek: WG.DayOfWeek.Sunday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -224,7 +223,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 06,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Thursday,
+				dayOfWeek: WG.DayOfWeek.Thursday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -273,7 +272,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 05,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Thursday,
+				dayOfWeek: WG.DayOfWeek.Thursday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -322,7 +321,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 05,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Friday,
+				dayOfWeek: WG.DayOfWeek.Friday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -371,7 +370,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 05,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Friday,
+				dayOfWeek: WG.DayOfWeek.Friday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -420,7 +419,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 05,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Sunday,
+				dayOfWeek: WG.DayOfWeek.Sunday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -469,7 +468,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				seconds: 05,
 				milliseconds: 0,
 				offsetInSeconds: 0,
-				dayOfWeek: DayOfWeek.Saturday,
+				dayOfWeek: WG.DayOfWeek.Saturday,
 				era: 1,
 				firstDayInThisMonth: 1,
 				firstEra: 1,
@@ -573,7 +572,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			int seconds,
 			int milliseconds,
 			int offsetInSeconds,
-			DayOfWeek dayOfWeek,
+			WG.DayOfWeek dayOfWeek,
 			int era,
 			int firstDayInThisMonth,
 			int firstEra,
@@ -736,7 +735,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 				sut.Era.Should().BePositive(context);
 				sut.FirstMonthInThisYear.Should().BePositive(context);
 				sut.NumberOfDaysInThisMonth.Should().BePositive(context);
-				sut.DayOfWeek.Should().NotBeNull(context);
 				sut.NumberOfEras.Should().BePositive(context);
 				sut.FirstEra.Should().BePositive(context);
 				sut.LastEra.Should().BePositive(context);

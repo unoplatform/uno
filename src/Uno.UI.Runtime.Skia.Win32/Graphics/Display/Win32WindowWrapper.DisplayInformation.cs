@@ -11,6 +11,7 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : IDisplayInformationExtension
 {
+	private float _refreshRate = FeatureConfiguration.CompositionTarget.FrameRate;
 	private DisplayInfo _displayInfo = DisplayInfo.Default;
 	private DisplayInformation? _displayInformation;
 
@@ -40,15 +41,24 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 	{
 		var newInfo = GetDisplayInfo();
 		var oldInfo = _displayInfo;
-		_displayInfo = newInfo;
-		if (oldInfo.LogicalDpi != newInfo.LogicalDpi)
+		var oldRefreshRate = _refreshRate;
+		(_displayInfo, _refreshRate) = newInfo;
+		if (oldInfo.LogicalDpi != _displayInfo.LogicalDpi)
 		{
-			RasterizationScale = (float)newInfo.LogicalDpi / PInvoke.USER_DEFAULT_SCREEN_DPI;
+			RasterizationScale = (float)_displayInfo.LogicalDpi / PInvoke.USER_DEFAULT_SCREEN_DPI;
 			_displayInformation?.NotifyDpiChanged();
+		}
+
+		if (_refreshRate != oldRefreshRate)
+		{
+			if (FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
+			{
+				_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / _refreshRate).TotalMilliseconds;
+			}
 		}
 	}
 
-	private unsafe DisplayInfo GetDisplayInfo()
+	private unsafe (DisplayInfo, float) GetDisplayInfo()
 	{
 		var hMonitor = PInvoke.MonitorFromWindow(_hwnd, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTONEAREST);
 
@@ -63,7 +73,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		if (!PInvoke.GetMonitorInfo(hMonitor, (MONITORINFO*)(&monitorInfo)))
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.GetMonitorInfo)} failed: {Win32Helper.GetErrorMessage()}");
-			return DisplayInfo.Default;
+			return (_displayInfo, _refreshRate);
 		}
 
 		var devMode = new DEVMODEW
@@ -72,12 +82,13 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 			dmFields =
 				DEVMODE_FIELD_FLAGS.DM_DISPLAYORIENTATION |
 				DEVMODE_FIELD_FLAGS.DM_PELSWIDTH |
-				DEVMODE_FIELD_FLAGS.DM_PELSHEIGHT
+				DEVMODE_FIELD_FLAGS.DM_PELSHEIGHT |
+				DEVMODE_FIELD_FLAGS.DM_DISPLAYFREQUENCY
 		};
 		if (!PInvoke.EnumDisplaySettingsEx(monitorInfo.szDevice.ToString(), ENUM_DISPLAY_SETTINGS_MODE.ENUM_CURRENT_SETTINGS, ref devMode, ENUM_DISPLAY_SETTINGS_FLAGS.EDS_RAWMODE))
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.EnumDisplaySettingsEx)} failed: {Win32Helper.GetErrorMessage()}");
-			return DisplayInfo.Default;
+			return (_displayInfo, _refreshRate);
 		}
 
 		var width = devMode.dmPelsWidth;
@@ -103,7 +114,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 			dpi = 96;
 		}
 
-		return new DisplayInfo(orientation, height, width, dpi);
+		return (new DisplayInfo(orientation, height, width, dpi), devMode.dmDisplayFrequency);
 	}
 
 	public DisplayOrientations CurrentOrientation => _displayInfo.CurrentOrientation;

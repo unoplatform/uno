@@ -14,6 +14,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
@@ -26,8 +28,10 @@ using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
 using Uno.UI.RemoteControl.VS.Notifications;
+using Uno.UI.RemoteControl.VS.AppLaunch;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
+using _udeiMsg = Uno.UI.RemoteControl.Messaging.IdeChannel.DevelopmentEnvironmentStatusIdeMessage;
 
 #pragma warning disable VSTHRD010
 #pragma warning disable VSTHRD109
@@ -51,7 +55,7 @@ public partial class EntryPoint : IDisposable
 	private Action<string>? _warningAction;
 	private Action<string>? _errorAction;
 	private int _msBuildLogLevel;
-	private (System.Diagnostics.Process process, int port)? _devServer;
+	private (System.Diagnostics.Process process, int port, CancellationTokenSource attachedServices)? _devServer;
 	private SemaphoreSlim _devServerGate = new(1);
 	private IServiceProvider? _visualStudioServiceProvider;
 	private bool _closing;
@@ -65,6 +69,10 @@ public partial class EntryPoint : IDisposable
 	private _dispBuildEvents_OnBuildDoneEventHandler? _onBuildDoneHandler;
 	private _dispBuildEvents_OnBuildProjConfigBeginEventHandler? _onBuildProjConfigBeginHandler;
 	private UnoMenuCommand? _unoMenuCommand;
+	private IUnoDevelopmentEnvironmentIndicator? _udei;
+	private VsAppLaunchIdeBridge? _appLaunchIdeBridge;
+	private VsAppLaunchStateConsumer? _appLaunchStateConsumer;
+	private readonly CompositeCommandHandler _commands;
 
 	// Legacy API v2
 	public EntryPoint(
@@ -78,6 +86,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -99,6 +108,7 @@ public partial class EntryPoint : IDisposable
 		_dte2 = dte2;
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
+		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -108,7 +118,8 @@ public partial class EntryPoint : IDisposable
 					typeof(Uno.IDE.IUnoDevelopmentEnvironmentIndicator)
 				],
 				localServices: [
-					(typeof(Uno.IDE.IGlobalPropertiesProvider), new GlobalPropertiesProvider(OnProvideGlobalPropertiesAsync))
+					(typeof(Uno.IDE.IGlobalPropertiesProvider), new GlobalPropertiesProvider(OnProvideGlobalPropertiesAsync)),
+					(typeof(Uno.IDE.ICommandHandler), _commands)
 				],
 				_ct.Token);
 
@@ -151,6 +162,7 @@ public partial class EntryPoint : IDisposable
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
 		SetupOutputWindow();
+		_udei = services.GetService<IUnoDevelopmentEnvironmentIndicator>();
 
 		_closeHandler = () => SolutionEvents_BeforeClosing();
 		_dte.Events.SolutionEvents.BeforeClosing += _closeHandler;
@@ -163,6 +175,8 @@ public partial class EntryPoint : IDisposable
 
 		_onBuildProjConfigBeginHandler = (string project, string projectConfig, string platform, string solutionConfig) => _ = UpdateProjectsAsync();
 		_dte.Events.BuildEvents.OnBuildProjConfigBegin += _onBuildProjConfigBeginHandler;
+
+		await InitializeAppLaunchTrackingAsync(asyncPackage);
 
 		// Start the RC server early, as iOS and Android projects capture the globals early
 		// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
@@ -189,6 +203,23 @@ public partial class EntryPoint : IDisposable
 		_ = _debuggerObserver.ObserveProfilesAsync();
 
 		TelemetryHelper.DataModelTelemetrySession.AddSessionChannel(new TelemetryEventListener(this));
+	}
+
+	private async Task InitializeAppLaunchTrackingAsync(AsyncPackage asyncPackage)
+	{
+		// Initialize App Launch tracking (Play/Build events → state machine)
+		var stateService = new VsAppLaunchStateService<AppLaunchDetails>();
+		stateService.StateChanged += (s, e) =>
+		{
+			var key = e.StateDetails is var d ? d.StartupProjectPath : null;
+			_debugAction?.Invoke($"[AppLaunch] {e.Previous} -> {e.Current} key={key}");
+		};
+
+		var packageVersion = GetAssemblyVersion();
+		var ideVersion = GetIdeVersion();
+
+		_appLaunchIdeBridge = await VsAppLaunchIdeBridge.CreateAsync(asyncPackage, _dte2, stateService);
+		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient, packageVersion, ideVersion);
 	}
 
 	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -265,15 +296,15 @@ public partial class EntryPoint : IDisposable
 		_infoAction($"Uno Remote Control initialized ({GetAssemblyVersion()})");
 	}
 
-	private object GetAssemblyVersion()
+	private string GetAssemblyVersion()
 	{
 		var assembly = GetType().GetTypeInfo().Assembly;
 
-		if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
+		if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is { } aiva)
 		{
 			return aiva.InformationalVersion;
 		}
-		else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is AssemblyVersionAttribute ava)
+		else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is { } ava)
 		{
 			return ava.Version;
 		}
@@ -281,6 +312,25 @@ public partial class EntryPoint : IDisposable
 		{
 			return "Unknown";
 		}
+	}
+
+	private string GetIdeVersion()
+	{
+		try
+		{
+			// DTE2.Version gives the Visual Studio version (e.g., "17.0" for VS 2022)
+			var vsVersion = _dte2?.Version;
+			if (!string.IsNullOrEmpty(vsVersion))
+			{
+				return $"vswin-{vsVersion}";
+			}
+		}
+		catch
+		{
+			// Swallow any exceptions when retrieving VS version
+		}
+
+		return "vswin";
 	}
 
 	private async Task UpdateProjectsAsync()
@@ -301,29 +351,7 @@ public partial class EntryPoint : IDisposable
 		_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
 
 		_closing = true;
-		if (_devServer is { process: var devServer })
-		{
-			try
-			{
-				_debugAction?.Invoke($"Terminating Remote Control server (pid: {devServer.Id})");
-				devServer.Kill();
-				_debugAction?.Invoke($"Terminated Remote Control server (pid: {devServer.Id})");
-
-				_ideChannelClient?.Dispose();
-				_ideChannelClient = null;
-			}
-			catch (Exception e)
-			{
-				_debugAction?.Invoke($"Failed to terminate Remote Control server (pid: {devServer.Id}): {e}");
-			}
-			finally
-			{
-				_devServer = null;
-
-				// Invoke Dispose to make sure other event handlers are detached
-				Dispose();
-			}
-		}
+		StopDevServer();
 	}
 
 	private int GetDotnetMajorVersion()
@@ -383,6 +411,7 @@ public partial class EntryPoint : IDisposable
 
 	private async Task EnsureServerAsync()
 	{
+		var devServerCt = default(CancellationTokenSource);
 		if (_isDisposed || _closing)
 		{
 			return;
@@ -429,6 +458,15 @@ public partial class EntryPoint : IDisposable
 				return;
 			}
 
+			// Safety: Cancel previous services! (Should have already been cancelled by the exit handler);
+			_devServer?.attachedServices.Cancel();
+
+			devServerCt = CancellationTokenSource.CreateLinkedTokenSource(_ct.Token);
+			if (_udei is not null)
+			{
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Starting, devServerCt.Token);
+			}
+
 			if (EnsureTcpPort(ref port) || portMisConfigured)
 			{
 				// The port has changed, or all application projects does not have the same port number (or is not configured), we update port in *all* user files
@@ -460,14 +498,14 @@ public partial class EntryPoint : IDisposable
 			};
 
 			var devServer = new System.Diagnostics.Process { EnableRaisingEvents = true };
-			_devServer = (devServer, port);
+			_devServer = (devServer, port, devServerCt);
 
 			// hookup the event handlers to capture the data that is received
 			devServer.OutputDataReceived += (sender, args) => _debugAction?.Invoke(args.Data);
 			devServer.ErrorDataReceived += (sender, args) => _errorAction?.Invoke(args.Data);
 
 			devServer.StartInfo = pi;
-			devServer.Exited += (sender, args) => _ = RestartAsync();
+			devServer.Exited += (sender, args) => _ = OnExitAsync();
 
 			if (devServer.Start())
 			{
@@ -476,29 +514,66 @@ public partial class EntryPoint : IDisposable
 				devServer.BeginErrorReadLine();
 
 				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
+				_ = TrackConnectionTimeoutAsync(_ideChannelClient);
 				_ideChannelClient.OnMessageReceived += OnMessageReceivedAsync;
+				_ideChannelClient.Connected += OnIdeChannelConnected;
 				_ideChannelClient.ConnectToHost();
+
+				// Use scoped DI instead of this!
+				var remoteCommands = new IdeChannelCommandHandler(_ideChannelClient);
+				_commands.Register("Send to Dev Server", remoteCommands);
+				devServerCt.Token.Register(() =>
+				{
+					_commands.Unregister(remoteCommands);
+					remoteCommands.Dispose();
+				});
 			}
 			else
 			{
 				_devServer = null;
+				devServerCt.Cancel();
+				throw new InvalidOperationException("Failed to start dev-server process");
 			}
 		}
 		catch (Exception e)
 		{
 			_errorAction?.Invoke($"Failed to start server: {e}");
+			if (_udei is not null)
+			{
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Failed(e), _ct.Token);
+			}
+			devServerCt?.Cancel();
 		}
 		finally
 		{
 			_devServerGate.Release();
 		}
 
-		async Task RestartAsync()
+		async Task TrackConnectionTimeoutAsync(IdeChannelClient ideChannel)
 		{
+			// The dev-server is expected to connect back to the IDE as soon as possible, 10sec should be more than enough.
+			await Task.Delay(10_000, devServerCt.Token);
+			if (ideChannel.MessagesReceivedCount is 0 && _udei is not null && !devServerCt.IsCancellationRequested)
+			{
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Timeout, devServerCt.Token);
+			}
+		}
+
+		async Task OnExitAsync()
+		{
+			// Abort attached services
+			devServerCt.Cancel();
+
 			if (_closing || _ct.IsCancellationRequested)
 			{
 				_debugAction?.Invoke($"Remote Control server exited ({_devServer?.process.ExitCode}) and won't be restarted as solution is closing.");
 				return;
+			}
+
+			// If not closing, restart!
+			if (_udei is not null)
+			{
+				await _udei.NotifyAsync(_udeiMsg.DevServer.Restarting, _ct.Token);
 			}
 
 			_debugAction?.Invoke($"Remote Control server exited ({_devServer?.process.ExitCode}). It will restart in 5sec.");
@@ -514,6 +589,46 @@ public partial class EntryPoint : IDisposable
 			await EnsureServerAsync();
 		}
 	}
+
+	private void StopDevServer()
+	{
+		if (_devServer is { process: var devServer, attachedServices: var ct })
+		{
+			try
+			{
+				_debugAction?.Invoke($"Terminating Remote Control server (pid: {devServer.Id})");
+				ct.Cancel();
+				devServer.Kill();
+				_debugAction?.Invoke($"Terminated Remote Control server (pid: {devServer.Id})");
+
+				_ideChannelClient?.Dispose();
+				_ideChannelClient = null;
+			}
+			catch (Exception e)
+			{
+				_debugAction?.Invoke($"Failed to terminate Remote Control server (pid: {devServer.Id}): {e}");
+			}
+			finally
+			{
+				_devServer = null;
+
+				// Invoke Dispose to make sure other event handlers are detached
+				Dispose();
+			}
+		}
+	}
+
+	public async Task RestartDevServerAsync(CancellationToken ct)
+	{
+		StopDevServer();
+
+		await EnsureServerAsync();
+	}
+
+	private void OnIdeChannelConnected(object sender, EventArgs e) =>
+		// As we're here, we know that the devserver has started properly
+		_ = SetupMcpAsync(_ct.Token);
+
 
 	private async Task OnMessageReceivedAsync(object? sender, IdeMessage devServerMessage)
 	{
@@ -532,6 +647,12 @@ public partial class EntryPoint : IDisposable
 					break;
 				case NotificationRequestIdeMessage nr:
 					await OnNotificationRequestedAsync(sender, nr);
+					break;
+				case DevelopmentEnvironmentStatusIdeMessage when _udei is null:
+					_warningAction?.Invoke("Got an UDEI message, but there is no VSIX channel available. Please update Uno's extension in Visual Studio!");
+					break;
+				case DevelopmentEnvironmentStatusIdeMessage desm:
+					await _udei.NotifyAsync(desm, CancellationToken.None);
 					break;
 				default:
 					_debugAction?.Invoke($"Unknown message type {devServerMessage?.GetType()} from DevServer");
@@ -758,6 +879,8 @@ public partial class EntryPoint : IDisposable
 			_debuggerObserver?.Dispose();
 			_infoBarFactory?.Dispose();
 			_unoMenuCommand?.Dispose();
+			_appLaunchIdeBridge?.Dispose();
+			_appLaunchStateConsumer?.Dispose();
 		}
 		catch (Exception e)
 		{

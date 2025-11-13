@@ -556,6 +556,22 @@ namespace SampleControl.Presentation
 		}
 #endif
 
+		public bool ExtendContentIntoTitleBar
+		{
+			get => _window?.ExtendsContentIntoTitleBar ?? false;
+			set
+			{
+				if (_window is not null)
+				{
+					_window.ExtendsContentIntoTitleBar = value;
+				}
+				RaisePropertyChanged();
+				RaisePropertyChanged(nameof(TitleBarVisualHeight));
+			}
+		}
+
+		public double TitleBarVisualHeight => _window?.ExtendsContentIntoTitleBar == true ? (_window.AppWindow?.TitleBar.Height / Owner.XamlRoot.RasterizationScale) ?? 0 : 0;
+
 		public bool IsAppThemeDark
 		{
 			get => GetRootTheme() == ElementTheme.Dark;

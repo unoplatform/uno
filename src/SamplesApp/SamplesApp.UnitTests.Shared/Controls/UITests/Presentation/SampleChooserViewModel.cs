@@ -66,6 +66,7 @@ namespace SampleControl.Presentation
 		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
 #endif
 
+		private Window _window;
 
 		private List<SampleChooserCategory> _categories;
 		private List<SampleChooserCategory> _unfilteredCategories;
@@ -446,10 +447,14 @@ namespace SampleControl.Presentation
 		{
 #if HAS_UNO || WINAPPSDK //TODO: Enable UWP-style new window #8978
 			var newWindow = new Window();
-			newWindow.Content = new MainPage();
+			var page = new MainPage();
+			page.ViewModel.SetWindow(newWindow);
+			newWindow.Content = page;
 			newWindow.Activate();
 #endif
 		}
+
+		internal void SetWindow(Window window) => _window = window;
 
 		internal void OpenPlayground()
 		{

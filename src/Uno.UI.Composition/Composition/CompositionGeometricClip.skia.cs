@@ -28,6 +28,8 @@ partial class CompositionGeometricClip
 		return null;
 	}
 
+	private static readonly SKPath _spareTransformedPath = new();
+
 	internal override SKPath? GetClipPath(Visual visual)
 	{
 		if (Geometry is not null)
@@ -39,7 +41,8 @@ partial class CompositionGeometricClip
 				var path = geometrySource.Geometry;
 				if (!TransformMatrix.IsIdentity)
 				{
-					var transformedPath = new SKPath();
+					var transformedPath = _spareTransformedPath;
+					transformedPath.Rewind();
 					path.Transform(TransformMatrix.ToSKMatrix(), transformedPath);
 					path = transformedPath;
 				}

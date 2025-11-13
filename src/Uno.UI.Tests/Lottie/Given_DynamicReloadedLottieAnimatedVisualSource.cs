@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Windows.UI;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Threading;
 

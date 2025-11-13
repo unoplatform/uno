@@ -23,6 +23,8 @@ public partial class RemoteControlClient
 		private ConnectionState _state = ConnectionState.Idle;
 		private ConnectionError? _error;
 
+		private string? _hotReloadServerError;
+
 		public StatusSink(RemoteControlClient owner)
 		{
 			_owner = owner;
@@ -32,7 +34,13 @@ public partial class RemoteControlClient
 		}
 
 		public RemoteControlStatus BuildStatus()
-			=> new(_state, _error, _isVersionValid, (_keepAliveState, _roundTrip), _missingRequiredProcessors, (_invalidFrames, _invalidFrameTypes));
+			=> new(_state, _error, _isVersionValid, (_keepAliveState, _roundTrip), _missingRequiredProcessors, (_invalidFrames, _invalidFrameTypes), _hotReloadServerError);
+
+		internal void ReportHotReloadServerError(string? error)
+		{
+			_hotReloadServerError = error;
+			NotifyStatusChanged();
+		}
 
 		private void NotifyStatusChanged()
 			=> _owner.StatusChanged?.Invoke(_owner, BuildStatus());

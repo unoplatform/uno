@@ -12,7 +12,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
-internal class AppleUIKitWindow : UIWindow
+internal partial class AppleUIKitWindow : UIWindow
 {
 	internal event Action? FrameChanged;
 

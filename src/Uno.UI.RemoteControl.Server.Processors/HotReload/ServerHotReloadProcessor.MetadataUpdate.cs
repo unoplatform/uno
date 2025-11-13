@@ -281,7 +281,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 				else
 				{
-					await hotReload.Complete(HotReloadServerResult.Failed);
+					await hotReload.Complete(HotReloadServerResult.Failed, diagnostics: hotReloadDiagnostics);
 				}
 
 				return;
@@ -296,7 +296,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
 				}
 
-				await hotReload.Complete(HotReloadServerResult.RudeEdit);
+				await hotReload.Complete(HotReloadServerResult.RudeEdit, diagnostics: hotReloadDiagnostics);
 				return;
 			}
 

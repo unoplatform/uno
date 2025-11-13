@@ -42,11 +42,14 @@
 		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
 		<!-- End of Microsoft.VisualStudio.Extensibility.Sdk direct refs -->
 
+		<!-- Polyfill for System.TimeProvider on net48 -->
+		<PackageReference Include="Microsoft.Bcl.TimeProvider" Version="9.0.9" />
+
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="17.0.1313-pre" />
-		<PackageReference Include="MessagePack" Version="2.5.187" />
+		<PackageReference Include="MessagePack" Version="3.1.4" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 		<PackageReference Include="PolySharp" Version="1.14.1">
 			<PrivateAssets>all</PrivateAssets>
@@ -81,5 +84,4 @@
 	<!-- VS2022 build issue -->
 	<Target Name="GetTargetPath" />
 	<Target Name="GetCopyToPublishDirectoryItems" />
-
 </Project>

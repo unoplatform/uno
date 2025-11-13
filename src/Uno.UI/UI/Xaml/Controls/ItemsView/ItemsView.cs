@@ -54,7 +54,7 @@ partial class ItemsView : Control
 		//}();
 
 		//EnsureProperties();
-		SetDefaultStyleKey(this);
+		this.SetDefaultStyleKey();
 
 		// Uno docs: We use OnLoaded and OnUnloaded overrides instead of event subscriptions.
 		//m_loadedRevoker = Loaded(auto_revoke, { this, &OnLoaded });

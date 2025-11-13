@@ -24,12 +24,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
 
-		// On Windows, \u25CF is used as password character.
-		// However, this character can't be retrieved on Android (doesn't exist in any system font) and on some browser/OS combinations.
-		// We use \u2022 instead, which is already the one normally used by Android and all the major browsers.
-		// See https://github.com/mozilla/gecko-dev/blob/1d4c27f9f166ce6e967fb0e8c8d6e0795dbbd12e/widget/android/nsLookAndFeel.cpp#L441
-		internal static readonly char PasswordChar = OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() ? '\u2022' : '\u25CF';
-
 		public TextBoxView(TextBox textBox)
 		{
 			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
@@ -219,14 +213,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void UpdateMaxLength() => _overlayTextBoxViewExtension?.UpdateNativeView();
 
-		private void UpdateDisplayBlockText(string text)
+		internal void UpdateDisplayBlockText(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.
 			if (IsPasswordBox && !_isPasswordRevealed)
 			{
-				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string(PasswordChar, text.Length);
+				var passwordChar = GetPasswordChar();
+				DisplayBlock.Text = new string(passwordChar, text.Length);
 			}
 			else
 			{
@@ -240,6 +234,27 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		internal char GetPasswordChar()
+		{
+			if (TextBox is PasswordBox passwordBox && !string.IsNullOrEmpty(passwordBox.PasswordChar))
+			{
+				// Use the first character of the PasswordChar property
+				return passwordBox.PasswordChar[0];
+			}
+
+			// Fallback to the platform-specific default
+			return PasswordBox.DefaultPasswordChar[0];
+		}
+
 		internal void UpdateProperties() => _overlayTextBoxViewExtension?.UpdateProperties();
+
+		internal void UpdatePasswordMasking()
+		{
+			// For Skia, we can update the display block text directly
+			if (TextBox is { } textBox)
+			{
+				UpdateDisplayBlockText(textBox.Text);
+			}
+		}
 	}
 }

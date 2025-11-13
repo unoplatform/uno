@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
+using Uno.UI.Toolkit.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents;
 

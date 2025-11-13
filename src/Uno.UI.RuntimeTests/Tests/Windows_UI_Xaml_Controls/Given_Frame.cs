@@ -34,7 +34,7 @@ public class Given_Frame
 			Assert.IsFalse(navigating);
 			Assert.IsFalse(navigated);
 			navigating = true;
-			Assert.AreEqual(e.SourcePageType, typeof(FrameNavigateFirstPage));
+			Assert.AreEqual(typeof(FrameNavigateFirstPage), e.SourcePageType);
 		};
 		frame.Navigated += (snd, e) =>
 		{

@@ -9,7 +9,6 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
-using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 
 namespace Uno.UI.RemoteControl.Host.Extensibility;
@@ -18,7 +17,7 @@ public class AddIns
 {
 	private static readonly ILogger _log = typeof(AddIns).Log();
 
-	public static IImmutableList<string> Discover(string solutionFile, ITelemetry? telemetry = null)
+	public static AddInsDiscoveryResult Discover(string solutionFile, ITelemetry? telemetry = null)
 	{
 		var startTime = Stopwatch.GetTimestamp();
 
@@ -31,11 +30,8 @@ public class AddIns
 
 			var tmp = Path.GetTempFileName();
 			var wd = Path.GetDirectoryName(solutionFile);
-
-			string DumpTFM(string v) =>
-				$"build \"{solutionFile}\" -t:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" \"-p:CustomBeforeMicrosoftCSharpTargets={targetsFile}\" --verbosity {v}";
-
-			var command = DumpTFM("quiet");
+			string DumpTFM(string log) => $"build \"{solutionFile}\" -t:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" \"-p:CustomBeforeMicrosoftCSharpTargets={targetsFile}\" {log}";
+			var command = DumpTFM("--verbosity quiet");
 			var result = ProcessHelper.RunProcess("dotnet", command, wd);
 			var targetFrameworks = Read(tmp);
 
@@ -46,37 +42,36 @@ public class AddIns
 					var msg = $"Failed to get target frameworks of solution '{solutionFile}'. "
 						+ "This usually indicates that the solution is in an invalid state (e.g. a referenced project is missing on disk). "
 						+ $"Please fix and restart your IDE (command used: `dotnet {command}`).";
+
 					if (result.error is { Length: > 0 })
 					{
-						_log.Log(LogLevel.Warning, new Exception(result.error),
-							msg + " (cf. inner exception for more details.)");
+						_log.Log(LogLevel.Warning, new Exception(result.error), msg + " (cf. inner exception for more details.)");
 					}
 					else
 					{
-						result = ProcessHelper.RunProcess("dotnet", DumpTFM("diagnostic"), wd);
+						var binlog = Path.GetTempFileName();
+						// Important: the output file extension must be .binlog, otherwise the build will fail.
+						result = ProcessHelper.RunProcess("dotnet", DumpTFM($"\"-bl:{binlog}.binlog\""), wd);
 
 						_log.Log(LogLevel.Warning, msg);
-						_log.Log(LogLevel.Debug, result.output);
+						_log.Log(LogLevel.Debug, $"Error details: {result.output}");
 					}
 				}
 
-				var emptyResult = ImmutableArray<string>.Empty;
-				TrackDiscoveryCompletion(telemetry, startTime, emptyResult, "NoTargetFrameworks");
-				return emptyResult;
+				TrackDiscoveryCompletion(telemetry, startTime, ImmutableArray<string>.Empty, "NoTargetFrameworks");
+				return AddInsDiscoveryResult.Failed("Failed to determine target frameworks");
 			}
 
 			if (_log.IsEnabled(LogLevel.Debug))
 			{
-				_log.Log(LogLevel.Debug,
-					$"Found target frameworks for solution '{solutionFile}': {string.Join(", ", targetFrameworks)}.");
+				_log.Log(LogLevel.Debug, $"Found target frameworks for solution '{solutionFile}': {string.Join(", ", targetFrameworks)}.");
 			}
 
 
 			foreach (var targetFramework in targetFrameworks)
 			{
 				tmp = Path.GetTempFileName();
-				command =
-					$"build \"{solutionFile}\" -t:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" \"-p:CustomBeforeMicrosoftCSharpTargets={targetsFile}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
+				command = $"build \"{solutionFile}\" -t:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" \"-p:CustomBeforeMicrosoftCSharpTargets={targetsFile}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
 				result = ProcessHelper.RunProcess("dotnet", command, wd);
 				if (!string.IsNullOrWhiteSpace(result.error))
 				{
@@ -102,7 +97,7 @@ public class AddIns
 				if (!addIns.IsEmpty)
 				{
 					TrackDiscoveryCompletion(telemetry, startTime, addIns, "Success");
-					return addIns;
+					return AddInsDiscoveryResult.Success(addIns);
 				}
 			}
 
@@ -111,9 +106,8 @@ public class AddIns
 				_log.Log(LogLevel.Information, $"Didn't find any add-ins for solution '{solutionFile}'.");
 			}
 
-			var noAddInsResult = ImmutableArray<string>.Empty;
-			TrackDiscoveryCompletion(telemetry, startTime, noAddInsResult, "NoAddInsFound");
-			return noAddInsResult;
+			TrackDiscoveryCompletion(telemetry, startTime, ImmutableArray<string>.Empty, "NoAddInsFound");
+			return AddInsDiscoveryResult.Empty();
 		}
 		catch (Exception ex)
 		{

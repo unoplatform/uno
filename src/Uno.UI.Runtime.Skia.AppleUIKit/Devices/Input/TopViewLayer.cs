@@ -13,8 +13,7 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 /// Input handling must be in a layer (compared to override RootViewController.TouchesXXX methods)
 /// in order to be able to properly get the multitouch events.
 /// </summary>
-[Register("TopViewLayer")]
-internal class TopViewLayer : UIView
+internal partial class TopViewLayer : UIView
 {
 #if __IOS__
 	public TopViewLayer()

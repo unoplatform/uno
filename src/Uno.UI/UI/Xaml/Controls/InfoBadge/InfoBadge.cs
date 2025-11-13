@@ -6,6 +6,7 @@ using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -21,7 +22,7 @@ public partial class InfoBadge : Control
 	/// </summary>
 	public InfoBadge()
 	{
-		DefaultStyleKey = typeof(InfoBadge);
+		this.SetDefaultStyleKey();
 
 		SetValue(TemplateSettingsProperty, new InfoBadgeTemplateSettings());
 		SizeChanged += OnSizeChanged;

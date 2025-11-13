@@ -40,13 +40,13 @@ dotnet publish -f net9.0-desktop
 If you wish to do a self-contained publish, run the following instead:
 
 ```shell
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true
+dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFrameworks=net9.0-desktop
 ```
 
 Where `{{RID}}` specifies [the chosen OS and Architecture](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog) (e.g. win-x64). When targeting Windows, cross-publishing to architectures other than the currently running one is not supported.
 
-> [!NOTE]
-> When building under Linux or macOS, you may need to add the following parameter `-p:TargetFrameworks=net9.0-desktop` for the publish command to succeed.
+> [!IMPORTANT]
+> Due to changes in the .NET SDK, when providing an `{{RID}}` you will also need to add the following parameter `-p:TargetFrameworks=net9.0-desktop` for the publish command to succeed.
 
 ### Single-file publish
 
