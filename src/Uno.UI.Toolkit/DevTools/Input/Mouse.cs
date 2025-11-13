@@ -118,6 +118,12 @@ internal class Mouse : IInjectedPointer, IDisposable
 	public void Wheel(double delta, bool isHorizontal = false, uint steps = 1)
 		=> Inject(GetWheel(delta, isHorizontal, steps));
 
+	public void RightTap(Point location)
+	{
+		PressRight();
+		ReleaseRight();
+	}
+
 	private IEnumerable<InjectedInputMouseInfo> GetMoveTo(double x, double y, uint? steps, uint? stepOffsetInMilliseconds = null)
 	{
 		var x0 = Current.X;

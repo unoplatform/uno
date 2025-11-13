@@ -88,10 +88,7 @@ public partial class TextBox
 		e.Handled = true;
 
 		var displayBlock = TextBoxView.DisplayBlock;
-		// There is a bug with gesture events where the position stored in the RightTappedRoutedEventArgs is relative to
-		// this textbox but GetPosition assumes that it is relative to the displayBlock, so we compensate.
-		// var position = e.GetPosition(displayBlock);
-		var position = displayBlock.TransformToVisual(this).Inverse.TransformPoint(e.GetPosition(displayBlock));
+		var position = e.GetPosition(displayBlock);
 
 		var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(position, true, true));
 		if (index < SelectionStart || index >= SelectionStart + SelectionLength)

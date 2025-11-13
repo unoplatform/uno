@@ -226,7 +226,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		private static string LocalizeControlType(AutomationControlType controlType) =>
 			// TODO: Humanize ("AppBarButton" -> "app bar button")
 			// TODO: Localize
-			Enum.GetName(typeof(AutomationControlType), controlType).ToLowerInvariant();
+			Enum.GetName<AutomationControlType>(controlType).ToLowerInvariant();
 
 		internal bool InvokeAutomationPeer()
 		{

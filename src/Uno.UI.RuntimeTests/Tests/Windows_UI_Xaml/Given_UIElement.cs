@@ -1658,6 +1658,117 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Tapped_Recognizer_Owner_Not_Pointer_Event_OriginalSource()
+		{
+			var inner = new Border
+			{
+				Width = 100,
+				Height = 100,
+				HorizontalAlignment = HorizontalAlignment.Right,
+				VerticalAlignment = VerticalAlignment.Bottom,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+			var outer = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+				Width = 300,
+				Height = 300,
+				Child = inner
+			};
+
+			var tappedCount = 0;
+			var doubleTappedCount = 0;
+			var rightTappedCount = 0;
+			var holdingCount = 0;
+			var tappedPos = new Windows.Foundation.Point(0, 0);
+			var doubleTappedPos = new Windows.Foundation.Point(0, 0);
+			var rightTappedPos = new Windows.Foundation.Point(0, 0);
+			var holdingPos = new Windows.Foundation.Point(0, 0);
+			UIElement tappedOriginalSource = null;
+			UIElement doubleTappedOriginalSource = null;
+			UIElement rightTappedOriginalSource = null;
+			UIElement holdingOriginalSource = null;
+			outer.Tapped += (_, e) =>
+			{
+				tappedCount++;
+				tappedPos = e.GetPosition(null);
+				tappedOriginalSource = e.OriginalSource as UIElement;
+			};
+			outer.DoubleTapped += (_, e) =>
+			{
+				doubleTappedCount++;
+				doubleTappedPos = e.GetPosition(null);
+				doubleTappedOriginalSource = e.OriginalSource as UIElement;
+			};
+			outer.RightTapped += (_, e) =>
+			{
+				rightTappedCount++;
+				rightTappedPos = e.GetPosition(null);
+				rightTappedOriginalSource = e.OriginalSource as UIElement;
+			};
+			outer.Holding += (_, e) =>
+			{
+				holdingCount++;
+				holdingPos = e.GetPosition(null);
+				holdingOriginalSource = e.OriginalSource as UIElement;
+			};
+
+			await UITestHelper.Load(outer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+			using var finger = injector.GetFinger(); // for Holding
+
+			mouse.Tap(inner.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, tappedCount);
+			Assert.AreEqual(0, doubleTappedCount);
+			Assert.AreEqual(inner, tappedOriginalSource);
+			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(tappedPos), $"tappedPos: {tappedPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
+
+			// to prevent double tap on next tap
+			await Task.Delay(TimeSpan.FromMicroseconds(GestureRecognizer.MultiTapMaxDelayMicroseconds));
+
+			mouse.Tap(inner.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+			mouse.Tap(inner.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, tappedCount);
+			Assert.AreEqual(1, doubleTappedCount);
+			Assert.AreEqual(inner, tappedOriginalSource);
+			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(tappedPos), $"tappedPos: {tappedPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
+			Assert.AreEqual(inner, doubleTappedOriginalSource);
+			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(doubleTappedPos), $"doubleTappedPos: {doubleTappedPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
+
+			mouse.RightTap(inner.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, tappedCount);
+			Assert.AreEqual(1, rightTappedCount);
+			Assert.AreEqual(inner, rightTappedOriginalSource);
+			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(rightTappedPos), $"rightTappedPos: {rightTappedPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
+
+			finger.Press(inner.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(TimeSpan.FromSeconds(2));
+			finger.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// These numbers are incorrect. They should be 2 and 1, but there's a bug or 2 in GestureRecognizer.
+			Assert.AreEqual(3, tappedCount);
+			Assert.AreEqual(2, holdingCount);
+			Assert.AreEqual(inner, holdingOriginalSource);
+			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(holdingPos), $"holdingPos: {holdingPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
 		[RequiresFullWindow]
 #if !__SKIA__
 		[Ignore("Hittesting is only accurate in this case on skia.")]

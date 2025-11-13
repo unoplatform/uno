@@ -9,7 +9,6 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
@@ -293,6 +292,10 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public void Destroy() { }
 
 	public void Hide() => IsVisible = false;
+
+	public virtual void SetIcon(string iconPath)
+	{
+	}
 
 #if __APPLE_UIKIT__
 	public abstract Size GetWindowSize();

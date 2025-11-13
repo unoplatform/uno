@@ -60,14 +60,6 @@ internal partial class WpfNativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		if (content is System.Windows.UIElement contentAsUIElement)
-		{
-			contentAsUIElement.Visibility = visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
-		}
-	}
-
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
@@ -76,7 +68,7 @@ internal partial class WpfNativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
-	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
+	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{

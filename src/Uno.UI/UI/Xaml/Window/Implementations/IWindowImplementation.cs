@@ -43,4 +43,6 @@ internal interface IWindowImplementation
 	bool Close();
 
 	void NotifyContentLoaded();
+
+	void SetTitleBar(UIElement? titleBar);
 }

@@ -23,10 +23,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 #if WINAPPSDK
 		}
 #else
-			_modes.ItemsSource = Enum.GetNames(typeof(_UpdatesMode));
+			_modes.ItemsSource = Enum.GetNames<_UpdatesMode>();
 			_modes.SelectedIndex = 0;
 			_modes.SelectionChanged += OnModesOnSelectionChanged;
-			SetMode((_UpdatesMode)Enum.GetValues(typeof(_UpdatesMode)).GetValue(0));
+			SetMode(Enum.GetValues<_UpdatesMode>()[0]);
 
 			_scroll.ViewChanged += (snd, e) =>
 			{
@@ -45,7 +45,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 		private void OnModesOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			var modeStr = (string)e.AddedItems[0];
-			var mode = (_UpdatesMode)Enum.Parse(typeof(_UpdatesMode), modeStr);
+			var mode = Enum.Parse<_UpdatesMode>(modeStr);
 
 			SetMode(mode);
 		}

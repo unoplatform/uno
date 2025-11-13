@@ -43,8 +43,9 @@ internal partial class NativeWebViewWrapper : INativeWebView
 		_webView.Settings.SetSupportZoom(true);
 		_webView.Settings.LoadWithOverviewMode = true;
 		_webView.Settings.UseWideViewPort = true;
+		_webView.Settings.SetSupportMultipleWindows(true);
 		_webView.SetWebViewClient(new InternalClient(_coreWebView, this));
-		_webView.SetWebChromeClient(new InternalWebChromeClient());
+		_webView.SetWebChromeClient(new InternalWebChromeClient(_coreWebView));
 
 		_webView.AddJavascriptInterface(new UnoWebViewHandler(this), "unoWebView");
 

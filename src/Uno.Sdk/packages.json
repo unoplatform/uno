@@ -17,7 +17,6 @@
 			"Uno.WinUI.Runtime.Skia.Win32",
 			"Uno.WinUI.Runtime.Skia.Wpf",
 			"Uno.WinUI.Runtime.Skia.X11",
-			"Uno.WinUI.Svg",
 			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.Runtime.Skia.Android",
 			"Uno.WinUI.Runtime.Skia.AppleUIKit",
@@ -40,7 +39,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.0-dev.24"
+			"net10.0": "10.0.0-dev.36"
 		}
 	},
 	{
@@ -74,7 +73,7 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.10.3",
+		"version": "1.11.1",
 		"packages": [
 			"Uno.Resizetizer"
 		]
@@ -88,21 +87,21 @@
 	},
 	{
 		"group": "settings",
-		"version": "1.5.16",
+		"version": "1.6.3",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.15.66",
+		"version": "1.16.109",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
 	},
 	{
 		"group": "SkiaSharp",
-		"version": "3.119.0",
+		"version": "3.119.1",
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.Uno.WinUI",
@@ -122,21 +121,21 @@
 	},
 	{
 		"group": "WinAppSdk",
-		"version": "1.7.250606001",
+		"version": "1.7.250909003",
 		"packages": [
 			"Microsoft.WindowsAppSDK"
 		]
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.26100.4948",
+		"version": "10.0.26100.6584",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "9.0.8",
+		"version": "9.0.9",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
@@ -146,7 +145,7 @@
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "9.0.8",
+		"version": "9.0.9",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
@@ -302,7 +301,7 @@
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.2.10",
+		"version": "6.3.19",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -340,7 +339,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "8.1.4",
+		"version": "8.2.4",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -369,7 +368,7 @@
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.3405.78",
+		"version": "1.0.3485.44",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]

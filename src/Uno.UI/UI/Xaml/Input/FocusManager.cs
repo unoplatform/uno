@@ -83,7 +83,7 @@ namespace Microsoft.UI.Xaml.Input
 		[Obsolete("Use FindNextElement overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static DependencyObject? FindNextElement(FocusNavigationDirection focusNavigationDirection)
 		{
-			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
+			if (!Enum.IsDefined(focusNavigationDirection))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(focusNavigationDirection),
@@ -109,7 +109,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// </remarks>
 		public static DependencyObject? FindNextElement(FocusNavigationDirection focusNavigationDirection, FindNextElementOptions focusNavigationOptions)
 		{
-			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
+			if (!Enum.IsDefined(focusNavigationDirection))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(focusNavigationDirection),
@@ -133,7 +133,7 @@ namespace Microsoft.UI.Xaml.Input
 		[Obsolete("Use FindNextElement overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static UIElement? FindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
 		{
-			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
+			if (!Enum.IsDefined(focusNavigationDirection))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(focusNavigationDirection),
@@ -153,7 +153,7 @@ namespace Microsoft.UI.Xaml.Input
 		[Obsolete("Use FindNextElement overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static UIElement? FindNextFocusableElement(FocusNavigationDirection focusNavigationDirection, Rect hintRect)
 		{
-			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
+			if (!Enum.IsDefined(focusNavigationDirection))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(focusNavigationDirection),
@@ -199,7 +199,7 @@ namespace Microsoft.UI.Xaml.Input
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			if (!Enum.IsDefined(typeof(FocusState), value))
+			if (!Enum.IsDefined(value))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(value),
@@ -224,7 +224,7 @@ namespace Microsoft.UI.Xaml.Input
 		[Obsolete("Use TryMoveFocus overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static bool TryMoveFocus(FocusNavigationDirection focusNavigationDirection)
 		{
-			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
+			if (!Enum.IsDefined(focusNavigationDirection))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(focusNavigationDirection),
@@ -256,7 +256,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// </remarks>
 		public static bool TryMoveFocus(FocusNavigationDirection focusNavigationDirection, FindNextElementOptions focusNavigationOptions)
 		{
-			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
+			if (!Enum.IsDefined(focusNavigationDirection))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(focusNavigationDirection),
@@ -288,7 +288,7 @@ namespace Microsoft.UI.Xaml.Input
 		[Obsolete("Use TryMoveFocusAsync overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static IAsyncOperation<FocusMovementResult> TryMoveFocusAsync(FocusNavigationDirection focusNavigationDirection)
 		{
-			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
+			if (!Enum.IsDefined(focusNavigationDirection))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(focusNavigationDirection),
@@ -314,7 +314,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// <returns>The <see cref="FocusMovementResult" /> that indicates whether focus was successfully set.</returns>
 		public static IAsyncOperation<FocusMovementResult> TryMoveFocusAsync(FocusNavigationDirection focusNavigationDirection, FindNextElementOptions focusNavigationOptions)
 		{
-			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
+			if (!Enum.IsDefined(focusNavigationDirection))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(focusNavigationDirection),

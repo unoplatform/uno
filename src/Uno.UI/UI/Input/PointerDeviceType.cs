@@ -20,5 +20,10 @@ public enum PointerDeviceType
 	/// Mouse
 	/// </summary>
 	Mouse = 2,
+
+	/// <summary>
+	/// Touchpad
+	/// </summary>
+	Touchpad = 3,
 }
 #endif

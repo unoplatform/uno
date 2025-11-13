@@ -6,6 +6,8 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using System.Numerics;
+
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
@@ -138,32 +140,14 @@ internal partial class SystemFocusVisual : Control
 			return;
 		}
 
-		RenderTransform = FocusedElement.RenderTransform;
-		RenderTransformOrigin = FocusedElement.RenderTransformOrigin;
 		Visibility = Visibility.Visible;
 
-		var parentTransform = parentElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
-		var parentPoint = parentTransform.TransformPoint(new Windows.Foundation.Point(0, 0));
+		// Use TransformToVisual to get the correct position accounting for all transforms including element's own.
+		var transform = FocusedElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
+		RenderTransform = (MatrixTransform)transform;
 
-		var point = new Windows.Foundation.Point
-		{
-			X = parentPoint.X + FocusedElement.ActualOffset.X,
-			Y = parentPoint.Y + FocusedElement.ActualOffset.Y
-		};
-
-		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
-
-		if (newRect != _lastRect)
-		{
-			Width = FocusedElement.ActualSize.X;
-			Height = FocusedElement.ActualSize.Y;
-
-			// FocusVisual and Element has same position and width
-			Canvas.SetLeft(this, point.X);
-			Canvas.SetTop(this, point.Y);
-
-			_lastRect = newRect;
-		}
+		Width = FocusedElement.ActualSize.X;
+		Height = FocusedElement.ActualSize.Y;
 
 		SetLayoutPropertiesPartial();
 	}

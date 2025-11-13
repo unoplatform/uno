@@ -38,9 +38,19 @@ declare namespace Windows.ApplicationModel.Core {
         static initializeExports(): Promise<void>;
     }
 }
+interface ClipboardItem {
+    readonly types: ReadonlyArray<string>;
+    getType(type: string): Promise<Blob>;
+}
+interface ClipboardItemConstructor {
+    new (items: Record<string, Blob | string | Promise<Blob | string>>): ClipboardItem;
+}
+declare var ClipboardItem: ClipboardItemConstructor;
 interface Clipboard {
     writeText(newClipText: string): Promise<void>;
     readText(): Promise<string>;
+    read?(): Promise<ClipboardItem[]>;
+    write?(items: ClipboardItem[]): Promise<void>;
 }
 interface NavigatorClipboard {
     readonly clipboard?: Clipboard;
@@ -55,6 +65,8 @@ declare namespace Uno.Utils {
         static stopContentChanged(): void;
         static setText(text: string): string;
         static getText(): Promise<string>;
+        static getHtml(): Promise<string>;
+        static setHtml(html: string, text: string): Promise<void>;
         private static onClipboardChanged;
     }
 }
@@ -132,12 +144,23 @@ declare namespace Uno.Devices.Midi.Internal {
         static getMidi(): WebMidi.MIDIAccess;
     }
 }
+declare class Accelerometer {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+    removeEventListener(type: "reading", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+    start(): void;
+    stop(): void;
+    x: number;
+    y: number;
+    z: number;
+}
 interface Window {
-    DeviceMotionEvent(): void;
+    Accelerometer: typeof Accelerometer;
 }
 declare namespace Windows.Devices.Sensors {
     class Accelerometer {
         private static dispatchReading;
+        private static accelerometer;
         static initialize(): boolean;
         static startReading(): void;
         static stopReading(): void;

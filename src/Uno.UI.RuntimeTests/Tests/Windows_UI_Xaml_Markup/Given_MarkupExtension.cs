@@ -113,6 +113,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.AreEqual(nameof(FullNameFirstMarkupExtension), (page.FullName as TextBlock).Tag);
 			Assert.AreEqual(nameof(ShortNameMarkup), (page.ShortName as TextBlock).Tag);
 		}
+
+		[TestMethod]
+		public void When_MarkupExtension_MultiLevelNesting()
+		{
+			var page = new MarkupExtension_MultiLevelNesting();
+
+			Assert.AreEqual(nameof(TargetValueExtension), (page.Nested as TextBlock).Tag);
+		}
 #endif
 	}
 }

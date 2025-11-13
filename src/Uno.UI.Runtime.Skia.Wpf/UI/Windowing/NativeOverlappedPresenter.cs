@@ -12,13 +12,15 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class NativeOverlappedPresenter : INativeOverlappedPresenter
 {
 	private readonly UnoWpfWindow _wpfWindow;
+	private readonly WpfWindowWrapper _windowWrapper;
 	private bool _isMinimizable = true;
 	private bool _isMaximizable = true;
 	private bool _isResizable = true;
 
-	public NativeOverlappedPresenter(UnoWpfWindow wpfWindow)
+	public NativeOverlappedPresenter(UnoWpfWindow wpfWindow, WpfWindowWrapper windowWrapper)
 	{
 		_wpfWindow = wpfWindow;
+		_windowWrapper = windowWrapper;
 	}
 
 	public OverlappedPresenterState State => _wpfWindow.WindowState switch
@@ -92,6 +94,45 @@ internal class NativeOverlappedPresenter : INativeOverlappedPresenter
 		else
 		{
 			_wpfWindow.ResizeMode = System.Windows.ResizeMode.CanResize;
+		}
+	}
+
+	public void SetSizeConstraints(int? preferredMinimumWidth, int? preferredMinimumHeight, int? preferredMaximumWidth, int? preferredMaximumHeight)
+	{
+		if (preferredMinimumWidth is null)
+		{
+			_wpfWindow.MinWidth = 0;
+		}
+		else
+		{
+			_wpfWindow.MinWidth = preferredMinimumWidth.Value / _windowWrapper.RasterizationScale;
+		}
+
+		if (preferredMinimumHeight is null)
+		{
+			_wpfWindow.MinHeight = 0;
+		}
+		else
+		{
+			_wpfWindow.MinHeight = preferredMinimumHeight.Value / _windowWrapper.RasterizationScale;
+		}
+
+		if (preferredMaximumWidth is null)
+		{
+			_wpfWindow.MaxWidth = double.PositiveInfinity;
+		}
+		else
+		{
+			_wpfWindow.MaxWidth = preferredMaximumWidth.Value / _windowWrapper.RasterizationScale;
+		}
+
+		if (preferredMaximumHeight is null)
+		{
+			_wpfWindow.MaxHeight = double.PositiveInfinity;
+		}
+		else
+		{
+			_wpfWindow.MaxHeight = preferredMaximumHeight.Value / _windowWrapper.RasterizationScale;
 		}
 	}
 }

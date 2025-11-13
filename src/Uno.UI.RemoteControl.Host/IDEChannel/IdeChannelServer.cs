@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,10 +24,23 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	private NamedPipeServerStream? _pipeServer;
 	private JsonRpc? _rpcServer;
 	private Proxy? _proxy;
+	private readonly Timer _keepAliveTimer;
 
 	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
 	{
 		_logger = logger;
+
+		_keepAliveTimer = new Timer(_ =>
+		{
+			if (_pipeServer?.IsConnected ?? false)
+			{
+				SendKeepAlive();
+			}
+			else
+			{
+				_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
+			}
+		});
 
 		_initializeTask = Task.Run(() => InitializeServer(config.CurrentValue.ChannelId));
 		_configSubscription = config.OnChange(opts => _initializeTask = InitializeServer(opts.ChannelId));
@@ -44,15 +58,19 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 		if (_proxy is null)
 		{
-			this.Log().Log(LogLevel.Information, "Received an message to send to the IDE, but there is no connection available for that.");
+			this.Log().LogInformation(
+				"Received a message {MessageType} to send to the IDE, but there is no connection available for that.",
+				message.Scope);
 		}
 		else
 		{
 			_proxy.SendToIde(message);
+			ScheduleKeepAlive();
 		}
 
 		await Task.Yield();
 	}
+
 	#endregion
 
 	/// <inheritdoc />
@@ -64,14 +82,14 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	/// <summary>
 	/// Initialize as dev-server (cf. IdeChannelClient for init as IDE)
 	/// </summary>
-	private async Task<bool> InitializeServer(Guid channelId)
+	private async Task<bool> InitializeServer(string? channelId)
 	{
 		try
 		{
-			// First we remove the proxy to prevent messages being sent while we are re-initializing
+			// First, we remove the proxy to prevent messages being sent while we are re-initializing
 			_proxy = null;
 
-			// Dispose any existing server
+			// Disposing any previous server
 			_rpcServer?.Dispose();
 			if (_pipeServer is { } server)
 			{
@@ -86,13 +104,13 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 		try
 		{
-			if (channelId == Guid.Empty)
+			if (string.IsNullOrWhiteSpace(channelId))
 			{
 				return false;
 			}
 
 			_pipeServer = new NamedPipeServerStream(
-				pipeName: channelId.ToString(),
+				pipeName: channelId,
 				direction: PipeDirection.InOut,
 				maxNumberOfServerInstances: 1,
 				transmissionMode: PipeTransmissionMode.Byte,
@@ -108,7 +126,9 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 				_logger.LogDebug("IDE channel successfully initialized.");
 			}
 
-			_ = StartKeepAliveAsync();
+			ScheduleKeepAlive();
+
+			SendKeepAlive(); // Send a keep-alive message immediately after connection
 
 			return true;
 		}
@@ -123,20 +143,16 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 		}
 	}
 
-	private async Task StartKeepAliveAsync()
-	{
-		// Note: The dev-server is expected to send message regularly ... and AS SOON AS POSSIBLE (the Task.Delay is after the first SendToIde()!).
-		while (_pipeServer?.IsConnected ?? false)
-		{
-			_proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
+	private const int KeepAliveDelay = 10000; // 10 seconds in milliseconds
 
-			await Task.Delay(5000);
-		}
-	}
+	private void ScheduleKeepAlive() => _keepAliveTimer.Change(KeepAliveDelay, KeepAliveDelay);
+
+	private void SendKeepAlive() => _proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
 
 	/// <inheritdoc />
 	public void Dispose()
 	{
+		_keepAliveTimer.Dispose();
 		_configSubscription?.Dispose();
 		_rpcServer?.Dispose();
 		_pipeServer?.Dispose();

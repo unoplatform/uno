@@ -42,4 +42,8 @@ public partial struct RectInt32
 	public static bool operator ==(RectInt32 left, RectInt32 right) => left.Equals(right);
 
 	public static bool operator !=(RectInt32 left, RectInt32 right) => !(left == right);
+
+	internal bool Contains(int x, int y) => x >= X && x < X + Width && y >= Y && y < Y + Height;
+
+	internal bool Contains(PointInt32 point) => Contains(point.X, point.Y);
 }

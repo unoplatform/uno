@@ -44,4 +44,16 @@ internal class MacOSNativeOverlappedPresenter : INativeOverlappedPresenter
 	}
 
 	public void SetIsResizable(bool isResizable) => NativeUno.uno_window_set_resizable(_handle, isResizable);
+
+	public void SetSizeConstraints(int? preferredMinimumWidth, int? preferredMinimumHeight, int? preferredMaximumWidth, int? preferredMaximumHeight)
+	{
+		double minWidth = preferredMinimumWidth ?? 0.0;
+		double minHeight = preferredMinimumHeight ?? 0.0;
+
+		// For unset, macOS uses FLT_MAX.
+		double maxWidth = preferredMaximumWidth ?? float.MaxValue;
+		double maxHeight = preferredMaximumHeight ?? float.MaxValue;
+		NativeUno.uno_window_set_min_size(_handle, minWidth, minHeight);
+		NativeUno.uno_window_set_max_size(_handle, maxWidth, maxHeight);
+	}
 }

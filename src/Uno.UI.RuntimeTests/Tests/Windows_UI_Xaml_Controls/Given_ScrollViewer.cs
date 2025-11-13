@@ -14,13 +14,14 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Toolkit.DevTools.Input;
@@ -1961,5 +1962,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(sv.ViewportHeight, sv.ExtentHeight, delta: 1.0, "In a free expanding SV, the Viewport should the same as the Extend.");
 			Assert.AreEqual(0, sv.ScrollableHeight, delta: 1.0, "In a free expanding SV, it should never be scrollable.");
 		}
+
+#if HAS_UNO // ScrollViewer.UpdatesMode is Uno-specific
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ViewChanged_From_MouseWheel()
+		{
+			// setup is a 100x100 ScrollViewer with a 2000px tall Border
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.Red)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 100,
+				Width = 100,
+				Content = content,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+			var visual = ElementCompositionPreview.GetElementVisual(sut);
+
+			var records = new List<bool?>(); // using <bool?>, so LastOrDefault doesnt return false if empty
+			sut.ViewChanged += (s, e) =>
+			{
+				records.Add(e.IsIntermediate);
+			};
+
+			const int LongWaitForMouseEvent = 5000;
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// move to center
+			mouse.MoveTo(bounds.GetCenter());
+
+			// scroll
+			mouse.Wheel(-400, steps: 1);
+			var a = records.ToArray();
+			await WindowHelper.WaitFor(() => records.LastOrDefault() is false, timeoutMS: LongWaitForMouseEvent);
+			var count0 = records.Count;
+
+			// scroll again
+			mouse.Wheel(-200, steps: 1);
+			var b = records.ToArray();
+			await WindowHelper.WaitFor(() => records.Skip(count0).LastOrDefault() is false, timeoutMS: LongWaitForMouseEvent);
+
+			// with each scrolling, we should expect ViewChanged\e.IsIntermediate to be a sequence of [true, true..., false]
+			var sequence = records.OfType<bool>().DistinctUntilChanged().ToArray();
+			CollectionAssert.AreEqual(new bool[] { true, false, true, false }, sequence);
+		}
+#endif
 	}
 }
