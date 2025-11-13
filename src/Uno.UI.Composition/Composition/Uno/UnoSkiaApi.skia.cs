@@ -18,7 +18,7 @@ internal static class UnoSkiaApi
 	{
 		if (libraryName == SKIA && (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS()))
 		{
-			return NativeLibrary.Load(SKIA_Apple, assembly, searchPath);
+			return NativeLibrary.Load(SKIA_Apple, assembly, null);
 		}
 
 		// Fallback to the default DllImportResolver
