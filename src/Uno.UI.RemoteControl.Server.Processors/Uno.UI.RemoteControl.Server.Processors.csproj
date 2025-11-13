@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
+		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\_Compat\**\*.cs" Link="_Compat\%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
 	<ItemGroup>
