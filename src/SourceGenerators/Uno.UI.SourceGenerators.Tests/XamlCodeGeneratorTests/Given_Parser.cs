@@ -8,20 +8,23 @@ using Verify = XamlSourceGeneratorVerifier;
 [TestClass]
 public class Given_Parser
 {
-	private static readonly string _emptyCodeBehind = """
+	private static string EmptyCodeBehind(string className) =>
+		$$"""
 		using Microsoft.UI.Xaml.Controls;
 
 		namespace TestRepro
 		{
-			public sealed partial class MainPage : Page
+			public sealed partial class {{className}} : Page
 			{
-				public MainPage()
+				public {{className}}()
 				{
 					this.InitializeComponent();
 				}
 			}
 		}
 		""";
+
+	private static readonly string _emptyCodeBehind = EmptyCodeBehind("MainPage");
 
 	[TestMethod]
 	public async Task When_Empty_Xml()
@@ -221,6 +224,58 @@ public class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange([
 			DiagnosticResult.CompilerError("CS1029").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 57, 12, 57, 239).WithArguments("Property PropertyThatDoesNotExist does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Grid, name is PropertyThatDoesNotExist, preferrednamespace http://schemas.microsoft.com/winfx/2006/xaml/presentation"),
+			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Multiple_With_Invalid()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Grid />
+				</Page>
+				"""),
+			new XamlFile(
+				"SecondPage.xaml",
+				"""
+				<Page x:Class="TestRepro.SecondPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Grid PropertyThatDoesNotExist="5">
+					</Grid>
+				</Page>
+				"""),
+			new XamlFile(
+				"ThirdPage.xaml",
+				"""
+				<Page x:Class="TestRepro.ThirdPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { EmptyCodeBehind("MainPage"), EmptyCodeBehind("SecondPage"), EmptyCodeBehind("ThirdPage") } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange([
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/ThirdPage.xaml", 7, 3, 7, 3).WithArguments("The 'Grid' start tag on line 6 position 3 does not match the end tag of 'Page'. Line 7, position 3."),
+			DiagnosticResult.CompilerError("CS1029").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\SecondPage_0109051836b2d11a4ba3400a576defb2.cs", 57, 12, 57, 239).WithArguments("Property PropertyThatDoesNotExist does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Grid, name is PropertyThatDoesNotExist, preferrednamespace http://schemas.microsoft.com/winfx/2006/xaml/presentation"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
