@@ -11,7 +11,7 @@ uid: Uno.GetStarted.Rider
 
 ## Check your environment
 
-[!include[use-uno-check](includes/use-uno-check-inline-noheader.md)]
+[!include[use-uno-check](../includes/use-uno-check-inline-noheader.md)]
 
 ## Supported Platforms
 
@@ -48,7 +48,7 @@ For assistance configuring Android or iOS emulators, see the [Android & iOS emul
 
 ### Linux
 
-[!include[linux-setup](includes/additional-linux-setup-inline.md)]
+[!include[linux-setup](../includes/additional-linux-setup-inline.md)]
 
 ---
 

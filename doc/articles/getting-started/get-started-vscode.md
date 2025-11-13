@@ -8,8 +8,8 @@ This guide will walk you through the setup process for building apps with Uno Pl
 
 See these sections for information about using Uno Platform with:
 
-- [Codespaces](features/working-with-codespaces.md)
-- [Ona](features/working-with-gitpod.md)
+- [Codespaces](xref:Uno.Features.Codespaces)
+- [Ona](xref:Uno.Features.Gitpod)
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ See these sections for information about using Uno Platform with:
 
 ## Check your environment
 
-[!include[getting-help](includes/use-uno-check-inline-noheader.md)]
+[!include[getting-help](../includes/use-uno-check-inline-noheader.md)]
 
 ## Configure VS Code
 
@@ -51,7 +51,7 @@ For assistance configuring Android or iOS emulators, see the [Android & iOS emul
 
 ### Linux
 
-[!include[linux-setup](includes/additional-linux-setup-inline.md)]
+[!include[linux-setup](../includes/additional-linux-setup-inline.md)]
 
 ---
 
