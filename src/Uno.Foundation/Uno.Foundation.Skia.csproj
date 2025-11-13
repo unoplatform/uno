@@ -27,10 +27,6 @@
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\_Compat\**\*.cs" Link="_Compat\%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
 	<Import Project="Uno.Core.Extensions\Uno.Core.Extensions.props" />
 
 </Project>

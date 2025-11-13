@@ -16,10 +16,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\_Compat\**\*.cs" Link="_Compat\%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
