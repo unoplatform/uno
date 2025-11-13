@@ -380,6 +380,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var stopwatch = Stopwatch.StartNew();
 			var ct = _generatorContext.CancellationToken;
+			var outputFiles = new List<KeyValuePair<string, SourceText>>();
 
 			try
 			{
@@ -473,11 +474,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					})
 					.ToArray();
 
-				var outputFiles = new List<KeyValuePair<string, SourceText>>();
 				foreach (var csharpFile in csharpFiles)
 				{
 					// Note: We process parsing exception here in order to have it grouped with any other exception thrown during generation for this file.
-					if (csharpFile.definition.ParsingError is {} parseError)
+					if (csharpFile.definition.ParsingError is { } parseError)
 					{
 						ProcessParsingException(parseError);
 					}
@@ -513,8 +513,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				TrackGenerationDone(stopwatch.Elapsed);
-
-				return outputFiles.ToList();
 			}
 			catch (OperationCanceledException)
 			{
@@ -524,14 +522,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				TrackGenerationFailed(e, stopwatch.Elapsed);
 				ProcessParsingException(e);
-
-				return [];
 			}
 			finally
 			{
 				_telemetry.Flush();
 				_telemetry.Dispose();
 			}
+
+			return outputFiles;
 		}
 
 		private void TryGenerateUnoResourcesKeyAttribute(ResourceDetailsCollection resourceDetailsCollection)
