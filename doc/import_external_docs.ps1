@@ -38,6 +38,26 @@ if ($forks_to_import -ne $null -and -not ($forks_to_import -is [string[]])) {
     throw "The parameter 'forks_to_import' must be a array of string or null."
 }
 
+# --- ADDITIONAL VALIDATION (review comments) ---------------------------------
+# If a contributor git URL is provided but no forks are specified, warn the user.
+if ($contributor_git_url -and (-not $forks_to_import -or $forks_to_import.Count -eq 0)) {
+    Write-Warning "Parameter 'contributor_git_url' was provided but 'forks_to_import' is null or empty. The contributor URL will not be used."
+}
+
+# Validate that all entries in forks_to_import exist in the external_docs map.
+if ($forks_to_import) {
+    $invalidForks = @()
+    foreach ($fork in $forks_to_import) {
+        # Use case-insensitive comparison against configured repo keys.
+        if (-not ($external_docs.Keys -contains $fork)) {
+            $invalidForks += $fork
+        }
+    }
+    if ($invalidForks.Count -gt 0) {
+        throw "The following repository names in forks_to_import are not configured in external_docs: $($invalidForks -join ', ')"
+    }
+}
+
 # If branches are passed, use them to override the default ones (ref, but not dest)
 if ($branches -ne $null) {
     foreach ($repo in $branches.Keys) {
@@ -85,7 +105,8 @@ foreach ($repoPath in $external_docs.Keys) {
     $targetRoot = Get-TargetRoot $repoPath
     $fullPath = $targetRoot
 
-    if ($forks_to_import -ne $null -and $forks_to_import.Contains("$repoPath")) {
+    if ($forks_to_import -ne $null -and ($forks_to_import -contains $repoPath)) {
+        # Fork override: use contributor-provided git URL base
         $repoUrl = "$contributor_git_url$repoPath"
     }
     else {
