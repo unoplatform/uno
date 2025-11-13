@@ -11,43 +11,39 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 #if DEBUG
-	[DebuggerDisplay("Type: {_xamlMember.Name} = {Value}")]
+	[DebuggerDisplay("Type: {Member.Name} = {Value}")]
 #endif
-	internal class XamlMemberDefinition : IXamlLocation
+	internal sealed class XamlMemberDefinition : IXamlLocation
 	{
-		private XamlMember _xamlMember;
-
-		public XamlMemberDefinition(XamlMember xamlMember, int lineNumber, int linePosition, XamlObjectDefinition? owner = null)
+		public XamlMemberDefinition(XamlMember xamlMember, int lineNumber, int linePosition, XamlObjectDefinition owner)
 		{
 			// TODO: Complete member initialization
 
 			// If the DeclaringType is not properly resolved, we assume it should be the owner (xamlObject)
 			if (xamlMember.DeclaringType == null
-				&& owner != null
 				&& xamlMember.PreferredXamlNamespace != XamlConstants.XamlXmlNamespace) // e.g., x:Class, x:Name
 			{
 				xamlMember = XamlMember.WithDeclaringType(xamlMember, owner.Type)
 					?? throw new Exception($"Unable to find {xamlMember} on {owner.Type}");
 			}
 
-			_xamlMember = xamlMember;
+			Member = xamlMember;
 			LineNumber = lineNumber;
 			LinePosition = linePosition;
-			Objects = new List<XamlObjectDefinition>();
 			Owner = owner;
 		}
 
-		public XamlMember Member => _xamlMember;
+		public XamlMember Member { get; }
 
 		public object? Value { get; set; }
 
-		public List<XamlObjectDefinition> Objects { get; private set; }
+		public List<XamlObjectDefinition> Objects { get; } = [];
 
-		public int LineNumber { get; private set; }
+		public int LineNumber { get; }
 
-		public int LinePosition { get; set; }
+		public int LinePosition { get; }
 
-		public XamlObjectDefinition? Owner { get; }
+		public XamlObjectDefinition Owner { get; }
 
 		public string Key => Member.Name switch
 		{
