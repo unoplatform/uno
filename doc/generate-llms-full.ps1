@@ -446,9 +446,8 @@ Write-Host "Generating llms-full.txt..." -ForegroundColor Cyan
 
 $parts = [System.Collections.Generic.List[string]]::new()
 
-# Start with llms.txt content
-$parts.Add($llmsTxtContent)
-$parts.Add("`n`n")
+# Start with base content (without the Llms TOC)
+$parts.Add($baseContent.TrimEnd() + "`n`n")
 
 # Add TOC with xref anchors for navigation within the full document
 $tocForFull = Generate-TableOfContents -TocYmlPath $TocYmlPath -BaseDir $baseDir -GenerateType 'Full'
