@@ -355,7 +355,7 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			using var _ = MakeCurrent();
-			((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
+			((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 			{
 				_surface = UpdateSize((int)size.Width, (int)size.Height);
 				return _surface.Canvas;
