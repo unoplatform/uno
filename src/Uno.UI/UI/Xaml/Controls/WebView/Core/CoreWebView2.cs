@@ -96,14 +96,17 @@ public partial class CoreWebView2
 			throw new ArgumentException($"The specified folder path '{Path.GetFullPath(folderPath)}' does not exist.");
 		}
 
-		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
-		{
-			supportsVirtualHostMapping.SetVirtualHostNameToFolderMapping(hostName, folderPath, accessKind);
-		}
-		else
-		{
-			_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
-		}
+		throw new ArgumentException($"{hostName}, {folderPath}, {accessKind}");
+
+
+		// if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		// {
+		// 	supportsVirtualHostMapping.SetVirtualHostNameToFolderMapping(hostName, folderPath, accessKind);
+		// }
+		// else
+		// {
+		// 	_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
+		// }
 	}
 
 	public void ClearVirtualHostNameToFolderMapping(string hostName)
