@@ -366,21 +366,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								BuildInitializeComponent(writer, topLevelControl, controlBaseType);
 
-								SafeBuild(TryBuildElementStubHolders, writer);
+								Safely(TryBuildElementStubHolders, writer);
 
-								SafeBuild(BuildPartials, writer);
+								Safely(BuildPartials, writer);
 
-								SafeBuild(BuildMethods, writer);
+								Safely(BuildMethods, writer);
 
-								SafeBuild(BuildBackingFields, writer);
+								Safely(BuildBackingFields, writer);
 
-								SafeBuild(w => BuildChildSubclasses(w), writer, "BuildChildSubclasses");
+								Safely(() => BuildChildSubclasses(writer));
 
-								SafeBuild(BuildComponentFields, writer);
+								Safely(BuildComponentFields, writer);
 
-								SafeBuild(BuildCompiledBindings, writer);
+								Safely(BuildCompiledBindings, writer);
 
-								SafeBuild(BuildXBindTryGetDeclarations, writer);
+								Safely(BuildXBindTryGetDeclarations, writer);
 							}
 						}
 
@@ -406,7 +406,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				SafeBuild(BuildXamlApplyBlocks, writer);
+				Safely(BuildXamlApplyBlocks, writer);
 
 				// var formattedCode = ReformatCode(writer.ToString());
 				return (new StringBuilderBasedSourceText(writer.Builder), _errors.ToList());
@@ -440,16 +440,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (IsApplication(controlBaseType))
 				{
-					SafeBuild(BuildApplicationInitializerBody, writer, topLevelControl);
+					Safely(() => BuildApplicationInitializerBody(writer, topLevelControl));
 				}
 				else
 				{
-					SafeBuild(BuildGenericControlInitializerBody, writer, topLevelControl);
-					SafeBuild(BuildNamedResources, writer, _namedResources);
+					Safely(() => BuildGenericControlInitializerBody(writer, topLevelControl));
+					Safely(() => BuildNamedResources(writer, _namedResources));
 				}
 
 				EnsureXClassName();
-				SafeBuild(BuildCompiledBindingsInitializer, writer, controlBaseType);
+				Safely(() => BuildCompiledBindingsInitializer(writer, controlBaseType));
 			}
 		}
 
@@ -514,7 +514,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
-			BuildProperties(writer, topLevelControl, isInline: false);
+			Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
 
 			ApplyFontsOverride(writer);
 
@@ -748,7 +748,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			using (TrySetDefaultBindMode(topLevelControl))
 			{
 				RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
-				BuildProperties(writer, topLevelControl, isInline: false, useBase: true);
+				Safely(() => BuildProperties(writer, topLevelControl, isInline: false, useBase: true));
 
 				writer.AppendLineIndented(";");
 				writer.AppendLineIndented("");
@@ -2172,221 +2172,207 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private bool BuildProperties(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInline = true, string? closureName = null, bool useBase = false)
+		private void BuildProperties(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInline = true, string? closureName = null, bool useBase = false)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			try
+			BuildSourceLineInfo(writer, topLevelControl);
+
+			if (topLevelControl.Members.Count > 0)
 			{
-				BuildSourceLineInfo(writer, topLevelControl);
+				var setterPrefix = string.IsNullOrWhiteSpace(closureName) ? string.Empty : closureName + ".";
 
-				if (topLevelControl.Members.Count > 0)
+				var implicitContentChild = FindImplicitContentMember(topLevelControl);
+
+				if (implicitContentChild != null)
 				{
-					var setterPrefix = string.IsNullOrWhiteSpace(closureName) ? string.Empty : closureName + ".";
-
-					var implicitContentChild = FindImplicitContentMember(topLevelControl);
-
-					if (implicitContentChild != null)
+					var topLevelControlSymbol = FindType(topLevelControl.Type);
+					if (IsTextBlock(topLevelControlSymbol))
 					{
-						var topLevelControlSymbol = FindType(topLevelControl.Type);
-						if (IsTextBlock(topLevelControlSymbol))
+						if (IsPropertyLocalized(topLevelControl, "Text"))
 						{
-							if (IsPropertyLocalized(topLevelControl, "Text"))
-							{
-								// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
-								return true;
-							}
-
-							if (implicitContentChild.Objects.Count != 0)
-							{
-								using (writer.BlockInvariant("{0}Inlines = ", setterPrefix))
-								{
-									foreach (var child in implicitContentChild.Objects)
-									{
-										BuildChild(writer, implicitContentChild, child);
-										writer.AppendLineIndented(",");
-									}
-								}
-							}
-							else if (implicitContentChild.Value != null)
-							{
-								var escapedString = DoubleEscape(implicitContentChild.Value.ToString());
-								writer.AppendIndented($"{setterPrefix}Text = \"{escapedString}\"");
-							}
+							// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
+							return;
 						}
-						else if (IsRun(topLevelControlSymbol))
-						{
-							if (IsPropertyLocalized(topLevelControl, "Text"))
-							{
-								// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
-								return true;
-							}
 
-							if (implicitContentChild.Value != null)
-							{
-								var escapedString = DoubleEscape(implicitContentChild.Value.ToString());
-								writer.AppendIndented($"{setterPrefix}Text = \"{escapedString}\"");
-							}
-						}
-						else if (IsSpan(topLevelControlSymbol))
+						if (implicitContentChild.Objects.Count != 0)
 						{
-							if (IsPropertyLocalized(topLevelControl, "Text"))
-							{
-								// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
-								return true;
-							}
-
-							if (implicitContentChild.Objects.Count != 0)
-							{
-								using (writer.BlockInvariant("{0}Inlines = ", setterPrefix))
-								{
-									foreach (var child in implicitContentChild.Objects)
-									{
-										BuildChild(writer, implicitContentChild, child);
-										writer.AppendLineIndented(",");
-									}
-								}
-							}
-							else if (implicitContentChild.Value != null)
-							{
-								using (writer.BlockInvariant("{0}Inlines = ", setterPrefix))
-								{
-									var escapedString = DoubleEscape(implicitContentChild.Value.ToString());
-									writer.AppendIndented("new Run { Text = \"" + escapedString + "\" }");
-								}
-							}
-						}
-						else if (IsPage(topLevelControlSymbol))
-						{
-							if (implicitContentChild.Objects.Count > 0)
-							{
-								writer.AppendLineInvariantIndented("{0}Content = ", setterPrefix);
-
-								BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
-							}
-						}
-						else if (IsBorder(topLevelControlSymbol))
-						{
-							if (implicitContentChild.Objects.Count > 0)
-							{
-								if (implicitContentChild.Objects.Count > 1)
-								{
-									throw new XamlGenerationException($"The type '{topLevelControl.Type.Name}' does not support multiple children", implicitContentChild.Objects[1]);
-								}
-
-								writer.AppendLineInvariantIndented("{0}Child = ", setterPrefix);
-
-								var implicitContent = implicitContentChild.Objects.First();
-								using (TryAdaptNative(writer, implicitContent, Generation.UIElementSymbol.Value))
-								{
-									BuildChild(writer, implicitContentChild, implicitContent);
-								}
-							}
-						}
-						else if (IsType(topLevelControlSymbol, Generation.SolidColorBrushSymbol.Value))
-						{
-							if (implicitContentChild.Value is string content && !content.IsNullOrWhiteSpace())
-							{
-								writer.AppendLineIndented($"{setterPrefix}Color = {BuildColor(content)}");
-							}
-						}
-						// WinUI assigned ContentProperty syntax
-						else if (
-							(IsType(topLevelControlSymbol, Generation.RowDefinitionSymbol.Value) ||
-							IsType(topLevelControlSymbol, Generation.ColumnDefinitionSymbol.Value)) &&
-							implicitContentChild.Value is string content &&
-							!content.IsNullOrWhiteSpace())
-						{
-							var propertyName = topLevelControl.Type.Name == "ColumnDefinition"
-								? "Width"
-								: "Height";
-
-							writer.AppendLineInvariantIndented("{0} = {1}", propertyName, BuildGridLength(content));
-						}
-						else if (topLevelControlSymbol is not null && IsInitializableCollection(topLevelControl, topLevelControlSymbol))
-						{
-							if (IsDictionary(topLevelControlSymbol))
-							{
-								foreach (var child in implicitContentChild.Objects)
-								{
-									var keyDefinition = GetMember(child, "Key"); // Note: Key this out of writer.BlockInvariant to generate valid content in case of error
-									using (writer.BlockInvariant(""))
-									{
-										writer.AppendLineIndented($"\"{keyDefinition.Value}\"");
-										writer.AppendLineIndented(",");
-										BuildChild(writer, implicitContentChild, child);
-									}
-
-									writer.AppendLineIndented(",");
-								}
-							}
-							else
+							using (writer.BlockInvariant("{0}Inlines = ", setterPrefix))
 							{
 								foreach (var child in implicitContentChild.Objects)
 								{
 									BuildChild(writer, implicitContentChild, child);
-									writer.AppendLineIndented($", /* IsInitializableCollection {topLevelControlSymbol.GetFullyQualifiedTypeExcludingGlobal()} */");
+									writer.AppendLineIndented(",");
 								}
 							}
 						}
-						else // General case for implicit content
+						else if (implicitContentChild.Value != null)
 						{
-							if (topLevelControlSymbol != null)
+							var escapedString = DoubleEscape(implicitContentChild.Value.ToString());
+							writer.AppendIndented($"{setterPrefix}Text = \"{escapedString}\"");
+						}
+					}
+					else if (IsRun(topLevelControlSymbol))
+					{
+						if (IsPropertyLocalized(topLevelControl, "Text"))
+						{
+							// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
+							return;
+						}
+
+						if (implicitContentChild.Value != null)
+						{
+							var escapedString = DoubleEscape(implicitContentChild.Value.ToString());
+							writer.AppendIndented($"{setterPrefix}Text = \"{escapedString}\"");
+						}
+					}
+					else if (IsSpan(topLevelControlSymbol))
+					{
+						if (IsPropertyLocalized(topLevelControl, "Text"))
+						{
+							// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
+							return;
+						}
+
+						if (implicitContentChild.Objects.Count != 0)
+						{
+							using (writer.BlockInvariant("{0}Inlines = ", setterPrefix))
 							{
-								var contentProperty = FindContentProperty(topLevelControlSymbol);
-
-								if (contentProperty != null)
+								foreach (var child in implicitContentChild.Objects)
 								{
-									if (IsCollectionOrListType(contentProperty.Type as INamedTypeSymbol))
+									BuildChild(writer, implicitContentChild, child);
+									writer.AppendLineIndented(",");
+								}
+							}
+						}
+						else if (implicitContentChild.Value != null)
+						{
+							using (writer.BlockInvariant("{0}Inlines = ", setterPrefix))
+							{
+								var escapedString = DoubleEscape(implicitContentChild.Value.ToString());
+								writer.AppendIndented("new Run { Text = \"" + escapedString + "\" }");
+							}
+						}
+					}
+					else if (IsPage(topLevelControlSymbol))
+					{
+						if (implicitContentChild.Objects.Count > 0)
+						{
+							writer.AppendLineInvariantIndented("{0}Content = ", setterPrefix);
+
+							BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
+						}
+					}
+					else if (IsBorder(topLevelControlSymbol))
+					{
+						if (implicitContentChild.Objects.Count > 0)
+						{
+							if (implicitContentChild.Objects.Count > 1)
+							{
+								throw new XamlGenerationException($"The type '{topLevelControl.Type.Name}' does not support multiple children", implicitContentChild.Objects[1]);
+							}
+
+							writer.AppendLineInvariantIndented("{0}Child = ", setterPrefix);
+
+							var implicitContent = implicitContentChild.Objects.First();
+							using (TryAdaptNative(writer, implicitContent, Generation.UIElementSymbol.Value))
+							{
+								BuildChild(writer, implicitContentChild, implicitContent);
+							}
+						}
+					}
+					else if (IsType(topLevelControlSymbol, Generation.SolidColorBrushSymbol.Value))
+					{
+						if (implicitContentChild.Value is string content && !content.IsNullOrWhiteSpace())
+						{
+							writer.AppendLineIndented($"{setterPrefix}Color = {BuildColor(content)}");
+						}
+					}
+					// WinUI assigned ContentProperty syntax
+					else if (
+						(IsType(topLevelControlSymbol, Generation.RowDefinitionSymbol.Value) ||
+							IsType(topLevelControlSymbol, Generation.ColumnDefinitionSymbol.Value)) &&
+						implicitContentChild.Value is string content &&
+						!content.IsNullOrWhiteSpace())
+					{
+						var propertyName = topLevelControl.Type.Name == "ColumnDefinition"
+							? "Width"
+							: "Height";
+
+						writer.AppendLineInvariantIndented("{0} = {1}", propertyName, BuildGridLength(content));
+					}
+					else if (topLevelControlSymbol is not null && IsInitializableCollection(topLevelControl, topLevelControlSymbol))
+					{
+						if (IsDictionary(topLevelControlSymbol))
+						{
+							foreach (var child in implicitContentChild.Objects)
+							{
+								var keyDefinition = GetMember(child, "Key"); // Note: Key this out of writer.BlockInvariant to generate valid content in case of error
+								using (writer.BlockInvariant(""))
+								{
+									writer.AppendLineIndented($"\"{keyDefinition.Value}\"");
+									writer.AppendLineIndented(",");
+									BuildChild(writer, implicitContentChild, child);
+								}
+
+								writer.AppendLineIndented(",");
+							}
+						}
+						else
+						{
+							foreach (var child in implicitContentChild.Objects)
+							{
+								BuildChild(writer, implicitContentChild, child);
+								writer.AppendLineIndented($", /* IsInitializableCollection {topLevelControlSymbol.GetFullyQualifiedTypeExcludingGlobal()} */");
+							}
+						}
+					}
+					else // General case for implicit content
+					{
+						if (topLevelControlSymbol != null)
+						{
+							var contentProperty = FindContentProperty(topLevelControlSymbol);
+
+							if (contentProperty != null)
+							{
+								if (IsCollectionOrListType(contentProperty.Type as INamedTypeSymbol))
+								{
+									if (IsInitializableProperty(contentProperty))
 									{
-										if (IsInitializableProperty(contentProperty))
+										string contentPropertyName = useBase ? $"base.{contentProperty.Name}" : contentProperty.Name;
+										if (isInline)
 										{
-											string contentPropertyName = useBase ? $"base.{contentProperty.Name}" : contentProperty.Name;
-											if (isInline)
+											using (writer.BlockInvariant($"{contentPropertyName} = "))
 											{
-												using (writer.BlockInvariant($"{contentPropertyName} = "))
+												foreach (var child in implicitContentChild.Objects)
 												{
-													foreach (var child in implicitContentChild.Objects)
-													{
-														BuildChild(writer, implicitContentChild, child);
-														writer.AppendLineIndented(",");
-													}
-												}
-											}
-											else
-											{
-												foreach (var inner in implicitContentChild.Objects)
-												{
-													writer.AppendIndented($"{contentPropertyName}.Add(");
-
-													BuildChild(writer, implicitContentChild, inner);
-
-													writer.AppendLineIndented(");");
+													BuildChild(writer, implicitContentChild, child);
+													writer.AppendLineIndented(",");
 												}
 											}
 										}
-										else if (IsNewableProperty(contentProperty, out var newableTypeName))
+										else
 										{
-											// Explicitly instantiate the collection and set it using the content property
-											if (implicitContentChild.Objects.Count == 1
-												&& SymbolEqualityComparer.Default.Equals(contentProperty.Type, FindType(implicitContentChild.Objects[0].Type)))
+											foreach (var inner in implicitContentChild.Objects)
 											{
-												writer.AppendIndented(contentProperty.Name + " = ");
-												BuildChild(writer, implicitContentChild, implicitContentChild.Objects[0]);
-												writer.AppendLineIndented(",");
-											}
-											else
-											{
-												using (writer.BlockInvariant("{0}{1} = new {2} ", setterPrefix, contentProperty.Name, newableTypeName))
-												{
-													foreach (var child in implicitContentChild.Objects)
-													{
-														BuildChild(writer, implicitContentChild, child);
-														writer.AppendLineIndented(",");
-													}
-												}
+												writer.AppendIndented($"{contentPropertyName}.Add(");
+
+												BuildChild(writer, implicitContentChild, inner);
+
+												writer.AppendLineIndented(");");
 											}
 										}
-										else if (GetKnownNewableListOrCollectionInterface(contentProperty.Type as INamedTypeSymbol, out newableTypeName))
+									}
+									else if (IsNewableProperty(contentProperty, out var newableTypeName))
+									{
+										// Explicitly instantiate the collection and set it using the content property
+										if (implicitContentChild.Objects.Count == 1
+											&& SymbolEqualityComparer.Default.Equals(contentProperty.Type, FindType(implicitContentChild.Objects[0].Type)))
+										{
+											writer.AppendIndented(contentProperty.Name + " = ");
+											BuildChild(writer, implicitContentChild, implicitContentChild.Objects[0]);
+											writer.AppendLineIndented(",");
+										}
+										else
 										{
 											using (writer.BlockInvariant("{0}{1} = new {2} ", setterPrefix, contentProperty.Name, newableTypeName))
 											{
@@ -2396,75 +2382,79 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 													writer.AppendLineIndented(",");
 												}
 											}
+										}
+									}
+									else if (GetKnownNewableListOrCollectionInterface(contentProperty.Type as INamedTypeSymbol, out newableTypeName))
+									{
+										using (writer.BlockInvariant("{0}{1} = new {2} ", setterPrefix, contentProperty.Name, newableTypeName))
+										{
+											foreach (var child in implicitContentChild.Objects)
+											{
+												BuildChild(writer, implicitContentChild, child);
+												writer.AppendLineIndented(",");
+											}
+										}
+
+										writer.AppendLineIndented(",");
+									}
+									else
+									{
+										throw new XamlGenerationException($"Unable to implicitly initialize collection for '{contentProperty.Name}'", topLevelControl);
+									}
+								}
+								else if (IsLazyVisualStateManagerProperty(contentProperty) && !HasDescendantsWithXName(implicitContentChild))
+								{
+									writer.AppendLineIndented($"/* Lazy VisualStateManager property {contentProperty}*/");
+								}
+								else // Content is not a collection
+								{
+									var objectUid = GetObjectUid(topLevelControl);
+									var isLocalized = objectUid != null &&
+										IsLocalizablePropertyType(contentProperty.Type as INamedTypeSymbol) &&
+										BuildLocalizedResourceValue(null, contentProperty.Name, objectUid) != null;
+
+									if (implicitContentChild.Objects.Count > 0 &&
+										// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
+										!isLocalized)
+									{
+										// At the time of writing, if useBase is true, setterPrefix will be empty.
+										// This assertion serves as reminder to re-evaluate the logic if setterPrefix becomes a non-null.
+										Debug.Assert(!useBase || setterPrefix.Length == 0);
+										writer.AppendLineIndented((useBase ? "base." : string.Empty) + setterPrefix + contentProperty.Name + " = ");
+
+										if (implicitContentChild.Objects.Count > 1)
+										{
+											throw new XamlGenerationException($"The type '{topLevelControl.Type.Name}' does not support multiple children", topLevelControl);
+										}
+
+										var xamlObjectDefinition = implicitContentChild.Objects.First();
+										using (TryAdaptNative(writer, xamlObjectDefinition, contentProperty.Type as INamedTypeSymbol))
+										{
+											BuildChild(writer, implicitContentChild, xamlObjectDefinition);
+										}
+
+										if (isInline)
+										{
 											writer.AppendLineIndented(",");
 										}
-										else
-										{
-											throw new XamlGenerationException($"Unable to implicitly initialize collection for '{contentProperty.Name}'", topLevelControl);
-										}
 									}
-									else if (IsLazyVisualStateManagerProperty(contentProperty) && !HasDescendantsWithXName(implicitContentChild))
+									else if (
+										implicitContentChild.Value is string implicitValue
+										&& !implicitValue.IsNullOrWhiteSpace()
+									)
 									{
-										writer.AppendLineIndented($"/* Lazy VisualStateManager property {contentProperty}*/");
-									}
-									else // Content is not a collection
-									{
-										var objectUid = GetObjectUid(topLevelControl);
-										var isLocalized = objectUid != null &&
-											IsLocalizablePropertyType(contentProperty.Type as INamedTypeSymbol) &&
-											BuildLocalizedResourceValue(null, contentProperty.Name, objectUid) != null;
+										writer.AppendLineIndented(setterPrefix + contentProperty.Name + " = " + SyntaxFactory.Literal(implicitValue).ToString());
 
-										if (implicitContentChild.Objects.Count > 0 &&
-											// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
-											!isLocalized)
+										if (isInline)
 										{
-											// At the time of writing, if useBase is true, setterPrefix will be empty.
-											// This assertion serves as reminder to re-evaluate the logic if setterPrefix becomes a non-null.
-											Debug.Assert(!useBase || setterPrefix.Length == 0);
-											writer.AppendLineIndented((useBase ? "base." : string.Empty) + setterPrefix + contentProperty.Name + " = ");
-
-											if (implicitContentChild.Objects.Count > 1)
-											{
-												throw new XamlGenerationException($"The type '{topLevelControl.Type.Name}' does not support multiple children", topLevelControl);
-											}
-
-											var xamlObjectDefinition = implicitContentChild.Objects.First();
-											using (TryAdaptNative(writer, xamlObjectDefinition, contentProperty.Type as INamedTypeSymbol))
-											{
-												BuildChild(writer, implicitContentChild, xamlObjectDefinition);
-											}
-
-											if (isInline)
-											{
-												writer.AppendLineIndented(",");
-											}
-										}
-										else if (
-											implicitContentChild.Value is string implicitValue
-											&& !implicitValue.IsNullOrWhiteSpace()
-										)
-										{
-											writer.AppendLineIndented(setterPrefix + contentProperty.Name + " = " + SyntaxFactory.Literal(implicitValue).ToString());
-
-											if (isInline)
-											{
-												writer.AppendLineIndented(",");
-											}
+											writer.AppendLineIndented(",");
 										}
 									}
 								}
 							}
 						}
-
-						return true;
 					}
 				}
-
-				return false;
-			}
-			catch (Exception e) when (e is not OperationCanceledException and not XamlGenerationException)
-			{
-				throw new XamlGenerationException($"An error was found in '{topLevelControl.Type.Name}'", e, topLevelControl);
 			}
 		}
 
@@ -6089,7 +6079,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									TrySetParsing(writer, knownType, isInitializer: true);
 									RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
 									BuildLiteralProperties(writer, xamlObjectDefinition);
-									BuildProperties(writer, xamlObjectDefinition);
+									Safely(() => BuildProperties(writer, xamlObjectDefinition));
 									BuildInlineLocalizedProperties(writer, xamlObjectDefinition, knownType);
 								}
 
