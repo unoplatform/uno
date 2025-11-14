@@ -49,19 +49,19 @@ if ([string]::IsNullOrWhiteSpace($contributor_git_url)) {
     $contributor_git_url = $null
 }
 
-# If a contributor git URL is provided but no forks are specified, warn the user.
+# If a contributor git URL is provided, validate only when forks are specified; never fail CI when unused.
 if ($contributor_git_url -ne $null) {
-
-    if ($contributor_git_url -notmatch '^https?://') {  
-        throw "The parameter 'contributor_git_url' must be a valid HTTP or HTTPS URL."  
-    }
-
-    if (-not $contributor_git_url.EndsWith('/')) {
-        $contributor_git_url += '/'
-    }
-
     if ($forks_to_import -eq $null -or $forks_to_import.Count -eq 0) {
         Write-Warning "Parameter 'contributor_git_url' was provided but 'forks_to_import' is null or empty. The contributor URL will not be used."
+    }
+    else {
+        if ($contributor_git_url -notmatch '^https?://') {
+            Write-Warning "Parameter 'contributor_git_url' is not a valid HTTP/HTTPS URL. Ignoring contributor URL and falling back to Uno repos."
+            $contributor_git_url = $null
+        }
+        elseif (-not $contributor_git_url.EndsWith('/')) {
+            $contributor_git_url += '/'
+        }
     }
 }
 
@@ -112,7 +112,7 @@ foreach ($repoPath in $external_docs.Keys) {
     $targetRoot = Get-TargetRoot $repoPath
     $fullPath = $targetRoot
 
-    if ($forks_to_import -ne $null -and ($forks_to_import -contains $repoPath)) {
+    if ($contributor_git_url -ne $null -and $forks_to_import -ne $null -and ($forks_to_import -contains $repoPath)) {
         # Fork override: use contributor-provided git URL base
         $repoUrl = "$contributor_git_url$repoPath"
     }
