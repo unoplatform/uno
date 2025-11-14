@@ -4851,7 +4851,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (string.IsNullOrWhiteSpace(memberValue))
 				{
-					throw new InvalidOperationException($"The property value is invalid");
+					throw new InvalidOperationException($"The property value is invalid for {memberName} of type {propertyType?.Name}");
 				}
 
 				return memberValue!;
