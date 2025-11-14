@@ -22,7 +22,7 @@ $external_docs = @{
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" } #latest master commit
     "uno.samples"        = @{ ref="8098a452951c9f73cbcf8d0ac1348f029820e53a" } #latest master commit
     "uno.chefs"          = @{ ref="af0a0c928337688c5ed3e87c3389a1cfdad46933" } #latest main commit
-    "hd-docs"            = @{ ref="ded00dc100ae7dcba4a78fd32d393a58c1d1f23e"; dest="studio/Hot Design" } #latest main commit
+    "hd-docs"            = @{ ref="aa81f09e08fe0357e2aed15a7eab59d6c27728d9"; dest="studio/Hot Design" } #latest main commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
@@ -31,34 +31,44 @@ $uno_git_url = "https://github.com/unoplatform/"
 
 # If branches are passed, use them to override the default ones (ref, but not dest)
 
-if ($contributor_git_url -ne $null -and -not ($contributor_git_url -is [string])) {
-    throw "The parameter 'contributor_git_url' must be a string or null."
-}
-if ($contributor_git_url -and -not $contributor_git_url.EndsWith('/')) {
-    throw "The parameter 'contributor_git_url' must end with a trailing slash '/'."
-}
-if ($forks_to_import -ne $null -and -not ($forks_to_import -is [string[]])) {
-    throw "The parameter 'forks_to_import' must be a array of string or null."
+if ($forks_to_import -ne $null) {
+
+  if($forks_to_import -is -not [string[]]) {
+    throw "The parameter 'forks_to_import' must be an array of string or null."
+  }
+
+  # Validate that all entries in forks_to_import exist in the external_docs map.
+  $invalidForks = @()
+  foreach ($fork in $forks_to_import) {
+    # Use case-insensitive comparison against configured repo keys.
+    if ($external_docs.Keys -not -icontains $fork) {
+      $invalidForks += $fork
+    }
+  }
+
+  if ($invalidForks.Count -gt 0) {
+    throw "The following repository names in forks_to_import are not configured in external_docs: $($invalidForks -join ', ')"
+  }
 }
 
-# --- ADDITIONAL VALIDATION (review comments) ---------------------------------
 # If a contributor git URL is provided but no forks are specified, warn the user.
-if ($contributor_git_url -and (-not $forks_to_import -or $forks_to_import.Count -eq 0)) {
-    Write-Warning "Parameter 'contributor_git_url' was provided but 'forks_to_import' is null or empty. The contributor URL will not be used."
-}
+if ($contributor_git_url -ne $null) {
 
-# Validate that all entries in forks_to_import exist in the external_docs map.
-if ($forks_to_import) {
-    $invalidForks = @()
-    foreach ($fork in $forks_to_import) {
-        # Use case-insensitive comparison against configured repo keys.
-        if (-not ($external_docs.Keys -icontains $fork)) {
-            $invalidForks += $fork
-        }
-    }
-    if ($invalidForks.Count -gt 0) {
-        throw "The following repository names in forks_to_import are not configured in external_docs: $($invalidForks -join ', ')"
-    }
+   if(-not $contributor_git_url.EndsWith('/')) {
+    throw "The parameter 'contributor_git_url' must end with a trailing slash '/'."
+  }
+
+  if($contributor_git_url -is -not [string]) {
+    throw "The parameter 'contributor_git_url' must be a string or null."
+  }
+
+  if ($contributor_git_url -notmatch '^https?://') {  
+    throw "The parameter 'contributor_git_url' must be a valid HTTP or HTTPS URL."  
+  }
+
+  if (-not $forks_to_import -or $forks_to_import.Count -eq 0)) {
+    Write-Warning "Parameter 'contributor_git_url' was provided but 'forks_to_import' is null or empty. The contributor URL will not be used."
+  }
 }
 
 # If branches are passed, use them to override the default ones (ref, but not dest)
