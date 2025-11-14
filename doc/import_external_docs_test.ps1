@@ -42,7 +42,7 @@ if (-not $NoFetch) {
     # )
 
     Write-Host 'Importing external repositories...' -ForegroundColor Black -BackgroundColor Green
-    ./import_external_docs $external_docs # $contributor_git_url $forks_to_import
+    ./import_external_docs $external_docs # -contributor_git_url $contributor_git_url -forks_to_import $forks_to_import
 }
 else {
     Write-Host '-nofetch option specified. Skipping the import of external repositories.' -ForegroundColor Black -BackgroundColor DarkRed
