@@ -142,7 +142,10 @@ function Parse-TocYml {
         param($item, $depth)
         
         $lines = @()
+        # Use bullet points for all levels
         $indent = '  ' * $depth
+        $bullet = if ($depth -eq 0) { '-' } else { '-' }
+        $prefix = "${indent}${bullet} "
         
         # Determine which href to use
         $href = if ($item.TopicHref) { $item.TopicHref } else { $item.Href }
@@ -175,7 +178,9 @@ function Parse-TocYml {
                 if ($GenerateType -eq 'Llms') {
                     # Convert to raw GitHub URL
                     if (Test-Path $filePath) {
-                        $relativePath = [System.IO.Path]::GetRelativePath($BaseDir, $filePath) -replace '\\', '/'
+                        # Get the path relative to the doc/ folder (parent of articles)
+                        $docRoot = Split-Path $BaseDir -Parent
+                        $relativePath = [System.IO.Path]::GetRelativePath($docRoot, $filePath) -replace '\\', '/'
                         $url = "https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/$relativePath"
                     }
                 }
@@ -197,17 +202,17 @@ function Parse-TocYml {
             }
             
             if ($url) {
-                $lines += "${indent}[$($item.Name)]($url)"
+                $lines += "${prefix}[$($item.Name)]($url)"
             }
             elseif ($item.Items.Count -gt 0) {
                 # Has children but no valid URL - use as section header
-                $lines += "${indent}**$($item.Name)**"
+                $lines += "${prefix}**$($item.Name)**"
             }
         }
         else {
             # No href - use as section header if has children
             if ($item.Items.Count -gt 0) {
-                $lines += "${indent}**$($item.Name)**"
+                $lines += "${prefix}**$($item.Name)**"
             }
         }
         
