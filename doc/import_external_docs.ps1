@@ -44,24 +44,25 @@ if ($forks_to_import -ne $null) {
   }
 }
 
+# Normalize blank contributor URL to null (CI may pass empty string)
+if ([string]::IsNullOrWhiteSpace($contributor_git_url)) {
+    $contributor_git_url = $null
+}
+
 # If a contributor git URL is provided but no forks are specified, warn the user.
 if ($contributor_git_url -ne $null) {
 
-  if ([string]::IsNullOrEmpty($contributor_git_url)) {
-    throw "The parameter 'contributor_git_url' cannot be an empty string."
-  }
+    if ($contributor_git_url -notmatch '^https?://') {  
+        throw "The parameter 'contributor_git_url' must be a valid HTTP or HTTPS URL."  
+    }
 
-  if ($contributor_git_url -notmatch '^https?://') {  
-    throw "The parameter 'contributor_git_url' must be a valid HTTP or HTTPS URL."  
-  }
+    if (-not $contributor_git_url.EndsWith('/')) {
+        throw "The parameter 'contributor_git_url' must end with a trailing slash '/'."
+    }
 
-  if (-not $contributor_git_url.EndsWith('/')) {
-    throw "The parameter 'contributor_git_url' must end with a trailing slash '/'."
-  }
-
-  if ($forks_to_import -eq $null -or $forks_to_import.Count -eq 0) {
-    Write-Warning "Parameter 'contributor_git_url' was provided but 'forks_to_import' is null or empty. The contributor URL will not be used."
-  }
+    if ($forks_to_import -eq $null -or $forks_to_import.Count -eq 0) {
+        Write-Warning "Parameter 'contributor_git_url' was provided but 'forks_to_import' is null or empty. The contributor URL will not be used."
+    }
 }
 
 # If branches are passed, use them to override the default ones (ref, but not dest)
