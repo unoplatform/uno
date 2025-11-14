@@ -5693,14 +5693,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										GenerateError(
 											writer,
-											$"Property '{fullValueSetter}' does not exist on '{member?.Member?.DeclaringType}', name is '{member?.Member?.Name}', preferrednamespace '{member?.Member?.PreferredXamlNamespace}'",
+											$"Property '{member?.Member?.Name}' does not exist on '{member?.Member?.DeclaringType?.Name}'",
 											member);
 									}
 									else
 									{
 										GenerateSilentWarning(
 											writer,
-											$"Property '{fullValueSetter}' does not exist on '{member?.Member?.DeclaringType}', the namespace is '{member?.Member?.PreferredXamlNamespace}'. This error was considered irrelevant by the XamlFileGenerator.",
+											$"Property '{member?.Member?.Name}' does not exist on '{member?.Member?.DeclaringType?.Name}', this error was however considered irrelevant by the XamlFileGenerator",
 											member);
 									}
 								}

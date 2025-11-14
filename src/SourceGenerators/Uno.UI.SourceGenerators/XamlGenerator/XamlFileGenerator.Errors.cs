@@ -78,8 +78,10 @@ internal partial class XamlFileGenerator
 		}
 
 		writer.AppendLineIndented(string.Empty); // Make sure to have comment on a dedicated line
-		writer.AppendIndented($"// [ERROR] {location.FilePath} (line {location.LineNumber} | pos {location.LinePosition}): ");
-		writer.AppendLineIndented(message);
+		writer.AppendIndented($"// [ERROR] {location.FilePath}({location.LineNumber},{location.LinePosition}): ");
+		writer.Append(message);
+		writer.Append("."); // Error message are expected to **NOT** end with a dot.
+		writer.AppendLine();
 	}
 
 	/// <summary>
@@ -92,7 +94,9 @@ internal partial class XamlFileGenerator
 	private void GenerateSilentWarning(IIndentedStringBuilder writer, string message, IXamlLocation location)
 	{
 		writer.AppendLineIndented(string.Empty); // Make sure to have comment on a dedicated line
-		writer.AppendIndented($"// [WARNING] {location.FilePath} (line {location.LineNumber} | pos {location.LinePosition}): ");
-		writer.AppendLineIndented(message);
+		writer.AppendIndented($"// [WARNING] {location.FilePath}({location.LineNumber},{location.LinePosition}): ");
+		writer.Append(message);
+		writer.Append("."); // Error message are expected to **NOT** end with a dot.
+		writer.AppendLine();
 	}
 }

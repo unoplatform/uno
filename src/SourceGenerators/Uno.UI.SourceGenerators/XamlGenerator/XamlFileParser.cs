@@ -431,19 +431,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private static bool IsLiteralInlineText(object value, XamlMemberDefinition member)
-		{
-			return value is string
-				&& (
-					member.Owner.Type.Name is "TextBlock"
-						or "Bold"
-						or "Hyperlink"
-						or "Italic"
-						or "Underline"
-						or "Span"
-						or "Paragraph"
-				)
-				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
-		}
+			=> value is string
+				&& member.Owner.Type.Name is "TextBlock"
+					or "Bold"
+					or "Hyperlink"
+					or "Italic"
+					or "Underline"
+					or "Span"
+					or "Paragraph"
+				&& member.Member.Name is "_UnknownContent"
+					or "Inlines";
 
 		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, XamlMemberDefinition member, bool trimStart)
 		{

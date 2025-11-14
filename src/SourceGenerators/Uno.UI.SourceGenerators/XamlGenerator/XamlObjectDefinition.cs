@@ -34,6 +34,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			LineNumber = reader.LineNumber;
 			LinePosition = reader.LinePosition;
 			Type = reader.Type;
+			Owner = owner;
 			Namespaces = namespaces;
 		}
 
