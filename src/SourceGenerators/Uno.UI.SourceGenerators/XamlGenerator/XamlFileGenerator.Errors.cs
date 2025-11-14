@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using Uno.Extensions;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator;
@@ -23,21 +25,7 @@ internal partial class XamlFileGenerator
 	/// <summary>
 	/// Invokes a build block safely, capturing any exceptions as generation errors.
 	/// </summary>
-	private void SafeBuild<TArg>(Action<IIndentedStringBuilder, TArg> buildAction, IIndentedStringBuilder writer, TArg arg, [CallerArgumentExpression(nameof(buildAction))] string name = "")
-		=> SafeBuild(w => buildAction(w, arg), writer, name);
-
-#pragma warning disable IDE0051 // private member not used ... yet!
-	/// <summary>
-	/// Invokes a build block safely, capturing any exceptions as generation errors.
-	/// </summary>
-	private void SafeBuild<TArg1, TArg2>(Action<IIndentedStringBuilder, TArg1, TArg2> buildAction, IIndentedStringBuilder writer, TArg1 arg1, TArg2 arg2, [CallerArgumentExpression(nameof(buildAction))] string name = "")
-		=> SafeBuild(w => buildAction(w, arg1, arg2), writer, name);
-#pragma warning restore IDE0051
-
-	/// <summary>
-	/// Invokes a build block safely, capturing any exceptions as generation errors.
-	/// </summary>
-	private void SafeBuild(Action<IIndentedStringBuilder> buildAction, IIndentedStringBuilder writer, [CallerArgumentExpression(nameof(buildAction))] string name = "")
+	private void Safely(Action<IIndentedStringBuilder> buildAction, IIndentedStringBuilder writer, [CallerArgumentExpression(nameof(buildAction))] string name = "", [CallerLineNumber] int line = -1)
 	{
 		try
 		{
@@ -49,7 +37,33 @@ internal partial class XamlFileGenerator
 		}
 		catch (Exception error) when (error is not OperationCanceledException)
 		{
-			_errors.Add(new XamlGenerationException($"Processing failed for an unknown reason ({name})", error, _fileDefinition));
+			_errors.Add(new XamlGenerationException($"Processing failed for an unknown reason ({name}@{line})", error, _fileDefinition));
+		}
+	}
+
+	private static readonly Regex _safeMethodNameRegex = new(@"\(\) =\> (?<method>\w+)");
+
+	/// <summary>
+	/// Invokes a build block safely, capturing any exceptions as generation errors.
+	/// </summary>
+	private void Safely(Action action, [CallerArgumentExpression(nameof(action))] string name = "", [CallerLineNumber] int line = -1)
+	{
+		Debug.Assert(_safeMethodNameRegex.IsMatch(name));
+		var method = _safeMethodNameRegex.Match(name) is { Success: true } match
+			? match.Groups["method"].Value
+			: nameof(XamlFileGenerator);
+
+		try
+		{
+			action();
+		}
+		catch (XamlGenerationException xamlGenError)
+		{
+			_errors.Add(xamlGenError);
+		}
+		catch (Exception error) when (error is not OperationCanceledException)
+		{
+			_errors.Add(new XamlGenerationException($"Processing failed for an unknown reason ({method}@{line})", error, _fileDefinition));
 		}
 	}
 
