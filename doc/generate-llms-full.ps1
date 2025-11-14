@@ -17,28 +17,36 @@ param(
 )
 
 function Get-RelativePath ($Parent, $Child) {
+    # Normalize paths
+    $parentPath = $Parent
+    $childPath = $Child
+    
+    # Resolve to full paths if they exist
+    if (Test-Path $Parent) {
+        $parentPath = (Resolve-Path $Parent).Path
+    }
+    if (Test-Path $Child) {
+        $childPath = (Resolve-Path $Child).Path
+    }
+    
+    # Ensure parent path ends with separator
+    if (-not $parentPath.EndsWith([IO.Path]::DirectorySeparatorChar)) {
+        $parentPath += [IO.Path]::DirectorySeparatorChar
+    }
+    
+    # Use URI-based relative path calculation
     try {
-        $parentPath = (Resolve-Path $Parent -ErrorAction SilentlyContinue).Path
-        $childPath = (Resolve-Path $Child -ErrorAction SilentlyContinue).Path
-        
-        if (-not $parentPath -or -not $childPath) {
-            # Fallback to basic path manipulation
-            return $Child -replace [regex]::Escape($Parent), ''
-        }
-        
-        $parentUri = [Uri]($parentPath + [IO.Path]::DirectorySeparatorChar)
-        $childUri  = [Uri]$childPath
-        return $parentUri.MakeRelativeUri($childUri).OriginalString -replace '/', [IO.Path]::DirectorySeparatorChar
+        $parentUri = [Uri]$parentPath
+        $childUri = [Uri]$childPath
+        $relativeUri = $parentUri.MakeRelativeUri($childUri)
+        return [Uri]::UnescapeDataString($relativeUri.ToString()) -replace '/', [IO.Path]::DirectorySeparatorChar
     }
     catch {
-        # Fallback: use .NET's GetRelativePath if available
-        try {
-            return [System.IO.Path]::GetRelativePath($Parent, $Child)
+        # Fallback: simple string replacement
+        if ($childPath.StartsWith($parentPath, [StringComparison]::OrdinalIgnoreCase)) {
+            return $childPath.Substring($parentPath.Length)
         }
-        catch {
-            # Last resort: return child path as-is
-            return $Child
-        }
+        return $childPath
     }
 }
 
@@ -213,7 +221,8 @@ function Parse-TocYml {
                         $filePath = $XrefCache[$xrefId]
                         if (Test-Path $filePath) {
                             $docRoot = Split-Path $BaseDir -Parent
-                            $relativePath = [System.IO.Path]::GetRelativePath($docRoot, $filePath) -replace '\\', '/'
+                            $relativePath = Get-RelativePath -Parent $docRoot -Child $filePath
+                            $relativePath = $relativePath -replace '\\', '/'
                             $url = "https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/$relativePath"
                         }
                     }
@@ -237,7 +246,8 @@ function Parse-TocYml {
                     if (Test-Path $filePath) {
                         # Get the path relative to the doc/ folder (parent of articles)
                         $docRoot = Split-Path $BaseDir -Parent
-                        $relativePath = [System.IO.Path]::GetRelativePath($docRoot, $filePath) -replace '\\', '/'
+                        $relativePath = Get-RelativePath -Parent $docRoot -Child $filePath
+                        $relativePath = $relativePath -replace '\\', '/'
                         $url = "https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/$relativePath"
                     }
                 }
