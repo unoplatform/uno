@@ -190,7 +190,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out _shouldWriteErrorOnInvalidXaml))
 			{
-				_shouldWriteErrorOnInvalidXaml = true;
+				_shouldWriteErrorOnInvalidXaml = XamlFileGenerator.DefaultShouldWriteErrorOnInvalidXaml;
 			}
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("IsUiAutomationMappingEnabled") ?? "", out _isUiAutomationMappingEnabled))

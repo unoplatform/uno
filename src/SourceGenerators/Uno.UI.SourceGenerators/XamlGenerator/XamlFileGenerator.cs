@@ -259,12 +259,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isUnoFluentAssembly = isUnoFluentAssembly;
 		}
 
-		/// <summary>
-		/// Indicates if the code generation should write #error in the generated code (and break at compile time) or write a // Warning, which would be silent.
-		/// </summary>
-		/// <remarks>Initial behavior is to write // Warning, hence the default value to false, but we suggest setting this to true.</remarks>
-		public bool ShouldWriteErrorOnInvalidXaml { get; }
-
 		private void TryGenerateWarningForInconsistentBaseType(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			EnsureXClassName();
@@ -2314,18 +2308,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								foreach (var child in implicitContentChild.Objects)
 								{
-									if (GetMember(child, "Key") is var keyDefinition)
+									var keyDefinition = GetMember(child, "Key"); // Note: Key this out of writer.BlockInvariant to generate valid content in case of error
+									using (writer.BlockInvariant(""))
 									{
-										using (writer.BlockInvariant(""))
-										{
-											writer.AppendLineIndented($"\"{keyDefinition.Value}\"");
-											writer.AppendLineIndented(",");
-											BuildChild(writer, implicitContentChild, child);
-										}
-									}
-									else
-									{
-										GenerateError(writer, "Unable to find the x:Key property");
+										writer.AppendLineIndented($"\"{keyDefinition.Value}\"");
+										writer.AppendLineIndented(",");
+										BuildChild(writer, implicitContentChild, child);
 									}
 
 									writer.AppendLineIndented(",");
@@ -2965,7 +2953,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var themeDictionaries = dictObject.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
 				if (themeDictionaries is not null)
 				{
-					writer.AppendLineIndented("#error Nested ThemeDictionaries are not yet supported.");
+					GenerateError(writer, "Nested ThemeDictionaries are not yet supported.", themeDictionaries);
 				}
 			}
 		}
@@ -3428,7 +3416,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										GenerateError(
 											writer,
-											$"Property {member.Member.PreferredXamlNamespace}:{member.Member} is not available on {member.Member.DeclaringType?.Name}, value is {member.Value}"
+											$"Property '{member.Member.PreferredXamlNamespace}:{member.Member}' is not available on '{member.Member.DeclaringType?.Name}', value is '{member.Value}'",
+											member
 										);
 									}
 								}
@@ -3568,7 +3557,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (eventSymbol.Type is not INamedTypeSymbol delegateSymbol)
 			{
-				GenerateError(writer, $"'{eventSymbol.Type}' is not a supported event");
+				GenerateError(writer, $"'{eventSymbol.Type}' is not a supported event", member);
 				return;
 			}
 
@@ -3583,7 +3572,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			};
 			if (targetInstance is null)
 			{
-				GenerateError(writer, $"Unable to use event '{member.Member.Name}' without a backing class (use x:Class)");
+				GenerateError(writer, $"Unable to use event '{member.Member.Name}' without a backing class (use x:Class)", member);
 				return;
 			}
 			EnsureXClassName();
@@ -5449,14 +5438,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else
 				{
 					// If type specified in the binding was not found, log and return an error message
-					if (!string.IsNullOrEmpty(bindingType.Type.Name))
-					{
-						var message = $"null\r\n#error Invalid binding: {bindingType.Type.Name} could not be found.\r\n";
+					AddError(
+						string.IsNullOrEmpty(bindingType.Type.Name)
+							? "Invalid binding"
+							: $"Binding type '{bindingType.Type.Name}' could not be found",
+						m);
 
-						return message;
-					}
-
-					return $"null\r\n#error Invalid binding. Location: ({m.LineNumber}, {m.LinePosition})\r\n";
+					return "null!";
 				}
 			}
 
@@ -5705,20 +5693,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										GenerateError(
 											writer,
-											"Property {0} does not exist on {1}, name is {2}, preferrednamespace {3}",
-											fullValueSetter,
-											member?.Member?.DeclaringType,
-											member?.Member?.Name,
-											member?.Member?.PreferredXamlNamespace);
+											$"Property '{fullValueSetter}' does not exist on '{member?.Member?.DeclaringType}', name is '{member?.Member?.Name}', preferrednamespace '{member?.Member?.PreferredXamlNamespace}'",
+											member);
 									}
 									else
 									{
 										GenerateSilentWarning(
 											writer,
-											"Property {0} does not exist on {1}, the namespace is {2}. This error was considered irrelevant by the XamlFileGenerator",
-											fullValueSetter,
-											member?.Member?.DeclaringType,
-											member?.Member?.PreferredXamlNamespace);
+											$"Property '{fullValueSetter}' does not exist on '{member?.Member?.DeclaringType}', the namespace is '{member?.Member?.PreferredXamlNamespace}'. This error was considered irrelevant by the XamlFileGenerator.",
+											member);
 									}
 								}
 							}
