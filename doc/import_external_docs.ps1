@@ -33,18 +33,14 @@ $uno_git_url = "https://github.com/unoplatform/"
 
 if ($forks_to_import -ne $null) {
 
-  if($forks_to_import -is -not [string[]]) {
+  if($forks_to_import -isnot [string[]]) {
     throw "The parameter 'forks_to_import' must be an array of string or null."
   }
 
   # Validate that all entries in forks_to_import exist in the external_docs map.
-  $invalidForks = @()
-  foreach ($fork in $forks_to_import) {
-    # Use case-insensitive comparison against configured repo keys.
-    if ($external_docs.Keys -not -icontains $fork) {
-      $invalidForks += $fork
-    }
-  }
+  $invalidForks = $forks_to_import | 
+    Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+    Where-Object { $external_docs.Keys -notcontains $_ }
 
   if ($invalidForks.Count -gt 0) {
     throw "The following repository names in forks_to_import are not configured in external_docs: $($invalidForks -join ', ')"
@@ -54,19 +50,19 @@ if ($forks_to_import -ne $null) {
 # If a contributor git URL is provided but no forks are specified, warn the user.
 if ($contributor_git_url -ne $null) {
 
-   if(-not $contributor_git_url.EndsWith('/')) {
-    throw "The parameter 'contributor_git_url' must end with a trailing slash '/'."
-  }
-
-  if($contributor_git_url -is -not [string]) {
-    throw "The parameter 'contributor_git_url' must be a string or null."
+  if ([string]::IsNullOrEmpty($contributor_git_url)) {
+    throw "The parameter 'contributor_git_url' cannot be an empty string."
   }
 
   if ($contributor_git_url -notmatch '^https?://') {  
     throw "The parameter 'contributor_git_url' must be a valid HTTP or HTTPS URL."  
   }
 
-  if (-not $forks_to_import -or $forks_to_import.Count -eq 0)) {
+  if(-not $contributor_git_url.EndsWith('/')) {
+    throw "The parameter 'contributor_git_url' must end with a trailing slash '/'."
+  }
+
+  if ($forks_to_import -eq $null -or $forks_to_import.Count -eq 0) {
     Write-Warning "Parameter 'contributor_git_url' was provided but 'forks_to_import' is null or empty. The contributor URL will not be used."
   }
 }
@@ -118,7 +114,7 @@ foreach ($repoPath in $external_docs.Keys) {
     $targetRoot = Get-TargetRoot $repoPath
     $fullPath = $targetRoot
 
-    if ($forks_to_import -and ($forks_to_import -contains $repoPath)) {
+    if ($forks_to_import -ne $null -and ($forks_to_import -contains $repoPath)) {
         # Fork override: use contributor-provided git URL base
         $repoUrl = "$contributor_git_url$repoPath"
     }
@@ -128,7 +124,8 @@ foreach ($repoPath in $external_docs.Keys) {
 
     Write-Output "Importing $repoPath from $repoUrl..."
 
-    if (-Not (Test-Path $fullPath)) {        
+    if (-Not (Test-Path $fullPath)) {
+
         Write-Host "Cloning $repoPath ($repoUrl@$repoRef) into $targetRoot..." -ForegroundColor Black -BackgroundColor Blue
         New-Item -ItemType Directory -Force -Path (Split-Path -Parent $fullPath) | Out-Null
         git clone --filter=blob:none --no-tags $repoUrl $fullPath
@@ -138,7 +135,6 @@ foreach ($repoPath in $external_docs.Keys) {
         Write-Host "Skipping clone of $repoPath ($repoUrl@$repoRef) into $targetRoot (already exists)."-ForegroundColor Black -BackgroundColor DarkYellow
     }
     pushd $fullPath
-
 
     try {
         Write-Host "Checking out $repoUrl@$repoRef..." -ForegroundColor Black -BackgroundColor Blue
