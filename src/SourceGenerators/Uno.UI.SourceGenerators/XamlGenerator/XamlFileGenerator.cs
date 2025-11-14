@@ -69,7 +69,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Stack<NameScope> _scopeStack = new Stack<NameScope>();
 		private readonly Stack<LogicalScope> _logicalScopeStack = new Stack<LogicalScope>();
 		private readonly Stack<XLoadScope> _xLoadScopeStack = new Stack<XLoadScope>();
-		private readonly List<XamlGenerationException> _errors = new List<XamlGenerationException>();
 		private int _resourceOwner;
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly string _defaultNamespace;
@@ -421,28 +420,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			catch (Exception globalError) when (globalError is not OperationCanceledException)
 			{
 				return (null, [new XamlGenerationException($"Processing failed for file {_fileDefinition.FilePath}", globalError, _fileDefinition)]);
-			}
-		}
-
-		private void SafeBuild<TArg>(Action<IIndentedStringBuilder, TArg> buildAction, IIndentedStringBuilder writer, TArg arg, [CallerArgumentExpression(nameof(buildAction))] string name = "")
-			=> SafeBuild(w => buildAction(w, arg), writer, name);
-
-		private void SafeBuild<TArg1, TArg2>(Action<IIndentedStringBuilder, TArg1, TArg2> buildAction, IIndentedStringBuilder writer, TArg1 arg1, TArg2 arg2, [CallerArgumentExpression(nameof(buildAction))] string name = "")
-			=> SafeBuild(w => buildAction(w, arg1, arg2), writer, name);
-
-		private void SafeBuild(Action<IIndentedStringBuilder> buildAction, IIndentedStringBuilder writer, [CallerArgumentExpression(nameof(buildAction))] string name = "")
-		{
-			try
-			{
-				buildAction(writer);
-			}
-			catch (XamlGenerationException xamlGenError)
-			{
-				_errors.Add(xamlGenError);
-			}
-			catch (Exception error) when (error is not OperationCanceledException)
-			{
-				_errors.Add(new XamlGenerationException($"Processing failed for an unknown reason ({name})", error, _fileDefinition));
 			}
 		}
 
@@ -1923,35 +1900,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				});
 			}
-		}
-
-		private void GenerateError(IIndentedStringBuilder writer, string message)
-		{
-			GenerateError(writer, message.Replace("{", "{{").Replace("}", "}}"), Array.Empty<object>());
-		}
-
-		private void GenerateError(IIndentedStringBuilder writer, string message, params object?[] options)
-		{
-			TryAnnotateWithGeneratorSource(writer);
-			if (ShouldWriteErrorOnInvalidXaml)
-			{
-				// it's important to add a new line to make sure #error is on its own line.
-				writer.AppendLineIndented(string.Empty);
-				writer.AppendLineInvariantIndented("#error " + message, options);
-			}
-			else
-			{
-				GenerateSilentWarning(writer, message, options);
-			}
-
-		}
-
-		private void GenerateSilentWarning(IIndentedStringBuilder writer, string message, params object?[] options)
-		{
-			TryAnnotateWithGeneratorSource(writer);
-			// it's important to add a new line to make sure #error is on its own line.
-			writer.AppendLineIndented(string.Empty);
-			writer.AppendLineInvariantIndented("// WARNING " + message, options);
 		}
 
 		/// <summary>
@@ -6203,7 +6151,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				catch (XamlGenerationException xamlGenError)
 				{
 					_errors.Add(xamlGenError);
-					writer.AppendLineIndented("default!");
+					writer.AppendLineIndented($"default! /* {xamlGenError.Message} (line: {xamlGenError.LineNumber} | pos: {xamlGenError.LinePosition}) */");
 				}
 			}
 		}
