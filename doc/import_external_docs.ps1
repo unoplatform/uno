@@ -105,7 +105,7 @@ foreach ($repoPath in $external_docs.Keys) {
     $targetRoot = Get-TargetRoot $repoPath
     $fullPath = $targetRoot
 
-    if ($forks_to_import -ne $null -and ($forks_to_import -contains $repoPath)) {
+    if ($forks_to_import -and ($forks_to_import -contains $repoPath)) {
         # Fork override: use contributor-provided git URL base
         $repoUrl = "$contributor_git_url$repoPath"
     }
