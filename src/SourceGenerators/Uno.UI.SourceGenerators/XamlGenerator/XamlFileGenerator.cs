@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -1539,7 +1539,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var propertyName = GetInitializerNameForResourceKey(index);
 				if (_topLevelQualifiedKeys.ContainsKey((theme, key)))
 				{
-					throw new XamlGenerationException($"Dictionary item '{resource.Type?.Name}' has duplicate key '{key}' {(theme != null ? $" in theme {theme}" : "")}.", resource);
+					throw new XamlGenerationException($"Dictionary item '{resource.Type?.Name}' has duplicate key '{key}' {(theme != null ? $"in theme '{theme}'" : "")}", resource);
 				}
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
 				if (!isStaticResourceAlias)
@@ -1574,7 +1574,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var initializerName = GetInitializerNameForResourceKey(_dictionaryPropertyIndex);
 					if (_topLevelQualifiedKeys[(theme, key)] != initializerName)
 					{
-						throw new XamlGenerationException($"Method name was not created correctly for '{key}' (theme={theme}).", resource);
+						throw new XamlGenerationException($"Method name was not created correctly for '{key}' (theme='{theme}')", resource);
 					}
 					writer.AppendLineInvariantIndented("// Method for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
 					var singleTimeInitializer = BuildSingleTimeInitializer(writer, initializerName, () => BuildChild(writer, resourcesRoot, resource));
@@ -2328,7 +2328,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								if (implicitContentChild.Objects.Count > 1)
 								{
-									throw new XamlGenerationException($"The type '{topLevelControl.Type.Name}' does not support multiple children.", implicitContentChild.Objects[1]);
+									throw new XamlGenerationException($"The type '{topLevelControl.Type.Name}' does not support multiple children", implicitContentChild.Objects[1]);
 								}
 
 								writer.AppendLineInvariantIndented("{0}Child = ", setterPrefix);
@@ -2528,7 +2528,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (Exception e) when (e is not OperationCanceledException and not XamlGenerationException)
 			{
-				throw new XamlGenerationException($"An error was found in {topLevelControl.Type.Name}", e, topLevelControl);
+				throw new XamlGenerationException($"An error was found in '{topLevelControl.Type.Name}'", e, topLevelControl);
 			}
 		}
 
@@ -2736,7 +2736,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (_namedResources.ContainsKey(name))
 					{
-						throw new XamlGenerationException($"There is already a resource with name {name}", resource);
+						throw new XamlGenerationException($"There is already a resource with name '{name}'", resource);
 					}
 					_namedResources.Add(name, resource);
 				}
@@ -2905,7 +2905,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var key = GetDictionaryResourceKey(dictObject);
 				if (isDict && key == null)
 				{
-					throw new XamlGenerationException("Each dictionary entry must have an associated key.", dictObject);
+					throw new XamlGenerationException("Each dictionary entry must have a 'Key'", dictObject);
 				}
 
 				var former = _themeDictionaryCurrentlyBuilding; //Will 99% of the time be null.
@@ -3107,7 +3107,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (!useGenericApply && objectDefinitionType is null)
 				{
-					throw new XamlGenerationException($"The type {objectDefinition.Type} could not be found", objectDefinition);
+					throw new XamlGenerationException($"The type '{objectDefinition.Type}' could not be found", objectDefinition);
 				}
 
 				using (var writer = CreateApplyBlock(outerwriter, objectDefinition))
@@ -3310,11 +3310,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								else if (member.Objects.Count == 1)
 								{
 									var childType = GetType(member.Objects[0].Type).GetFullyQualifiedTypeExcludingGlobal();
-									throw new XamlGenerationException($"Cannot assign child of type '{childType}' to property of type '{propertyType.GetFullyQualifiedTypeExcludingGlobal()}'.'", member.Objects[0]);
+									throw new XamlGenerationException($"Cannot assign child of type '{childType}' to property of type '{propertyType.GetFullyQualifiedTypeExcludingGlobal()}'", member.Objects[0]);
 								}
 								else
 								{
-									throw new XamlGenerationException($"The property {member.Member.Name} of type {propertyType} does not support adding multiple objects.", member);
+									throw new XamlGenerationException($"The property '{member.Member.Name}' of type '{propertyType}' does not support adding multiple objects", member);
 								}
 							}
 							else
@@ -3350,7 +3350,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								if (type == null)
 								{
-									throw new XamlGenerationException($"Unable to find type {objectDefinition.Type}", objectDefinition);
+									throw new XamlGenerationException($"Unable to find type '{objectDefinition.Type}'", objectDefinition);
 								}
 
 								writer.AppendLineInvariantIndented("__that.{0} = {1};", value, writer.AppliedParameterName);
@@ -3588,12 +3588,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Nullable suppressions are due to https://github.com/dotnet/roslyn/issues/55507
 			if (!SyntaxFacts.IsValidIdentifier(value!))
 			{
-				throw new XamlGenerationException($"The value '{value}' is an invalid value for 'Name' property.", location);
+				throw new XamlGenerationException($"The value '{value}' is an invalid value for 'Name' property", location);
 			}
 
 			if (!CurrentScope.DeclaredNames.Add(value!))
 			{
-				throw new XamlGenerationException($"The name '{value}' is already defined in this scope.", location);
+				throw new XamlGenerationException($"The name '{value}' is already defined in this scope", location);
 			}
 		}
 
@@ -3620,7 +3620,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (eventSymbol.Type is not INamedTypeSymbol delegateSymbol)
 			{
-				GenerateError(writer, $"{eventSymbol.Type} is not a supported event");
+				GenerateError(writer, $"'{eventSymbol.Type}' is not a supported event");
 				return;
 			}
 
@@ -3635,12 +3635,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			};
 			if (targetInstance is null)
 			{
-				GenerateError(writer, $"Unable to use event {member.Member.Name} without a backing class (use x:Class)");
+				GenerateError(writer, $"Unable to use event '{member.Member.Name}' without a backing class (use x:Class)");
 				return;
 			}
 			EnsureXClassName();
 
-			var parentApply = (writer as XamlLazyApplyBlockIIndentedStringBuilder)?.MethodName;
 			var parametersWithType = delegateSymbol
 				.DelegateInvokeMethod
 				?.Parameters
@@ -3656,7 +3655,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (componentDefinition is null)
 				{
-					throw new XamlGenerationException("The component definition cannot be null.", bind);
+					// 500 - Internal XAML Code gen error
+					throw new XamlGenerationException("The component definition cannot be null", bind);
 				}
 
 				CurrentScope.XBindExpressions.Add(bind);
@@ -3664,7 +3664,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var path = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
 				if (path is null)
 				{
-					throw new XamlGenerationException("x:Bind event path cannot by empty", bind);
+					throw new XamlGenerationException("x:Bind event path cannot be empty", bind);
 				}
 
 				INamedTypeSymbol GetTargetType()
@@ -3685,7 +3685,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						throw new XamlGenerationException($"Unable to find the type {_xClassName?.Namespace}.{_xClassName?.ClassName}", bind);
+						throw new XamlGenerationException($"Unable to find the type '{_xClassName?.Namespace}.{_xClassName?.ClassName}'", bind);
 					}
 				}
 
@@ -4325,7 +4325,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								throw new XamlGenerationException($"Expected BindBack for {rawFunction}", bindNode);
+								throw new XamlGenerationException($"Expected BindBack for '{rawFunction}'", bindNode);
 							}
 						}
 						else
@@ -4383,7 +4383,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								throw new XamlGenerationException($"Expected BindBack for x:Bind function [{rawFunction}]", bindNode);
+								throw new XamlGenerationException($"Expected BindBack for x:Bind function '{rawFunction}'", bindNode);
 							}
 						}
 						else
@@ -4475,7 +4475,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (currentType == null)
 					{
-						throw new XamlGenerationException($"Unable to find member [{part}] on type [{elementByName.Type}]", location);
+						throw new XamlGenerationException($"Unable to find member '{part}' on type '{elementByName.Type}'", location);
 					}
 				}
 				else
@@ -4485,7 +4485,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// However, we do a best effort to handle the common scenario, which is code generated by CommunityToolkit.Mvvm.
 					if (!TryFindThirdPartyType(currentType, part, out var thirdPartyType))
 					{
-						throw new XamlGenerationException($"Unable to find member [{part}] on type [{currentType}]", location);
+						throw new XamlGenerationException($"Unable to find member '{part}' on type '{currentType}'", location);
 					}
 					else
 					{
@@ -4646,7 +4646,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.FirstOrDefault(x => x.Symbol != null);
 			if (markup == null)
 			{
-				throw new XamlGenerationException($"Unable to find markup extension type: '{member.Objects.FirstOrDefault()?.Type}' on '{member.Member}'", member);
+				throw new XamlGenerationException($"Unable to find markup extension type '{member.Objects.FirstOrDefault()?.Type}'", member);
 			}
 
 			var property = FindProperty(member);
@@ -5008,7 +5008,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						SpecialType.System_Int64 => true,
 						SpecialType.System_UInt64 => false,
 
-						_ => throw new XamlGenerationException($"The enum underlying type '{propertyType.EnumUnderlyingType}' is not expected.", owner),
+						_ => throw new XamlGenerationException($"The enum underlying type '{propertyType.EnumUnderlyingType}' is not expected", owner),
 					};
 
 					var definedFlags = propertyType.GetFields().Select(field => field.Name).ToArray();
@@ -5027,7 +5027,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// Given the logic is not well understood, we are ignoring this behavior here.
 					if (flags.Any(x => x.DefinedName == null && !x.IsValidNumeric))
 					{
-						throw new XamlGenerationException($"Failed to create a '{propertyTypeWithoutGlobal}' from the text '{value}'.", owner);
+						throw new XamlGenerationException($"Failed to create a '{propertyTypeWithoutGlobal}' from the text '{value}'", owner);
 					}
 
 					var values = flags.Select(x => x.DefinedName is { }
@@ -5064,7 +5064,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "null";
 				}
 
-				throw new XamlGenerationException($"Unable to convert '{memberValue}' for {memberName} with type {propertyType}", owner);
+				throw new XamlGenerationException($"Unable to convert '{memberValue}' to '{propertyType}'", owner);
 
 				static string? SplitAndJoin(string? value)
 					=> value == null ? null : splitRegex.Replace(value, ", ");
@@ -5179,7 +5179,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return "new global::Microsoft.UI.Xaml.Media.BitmapCache()";
 			}
 
-			throw new XamlGenerationException($"The [{memberValue}] cache mode is not supported", location);
+			throw new XamlGenerationException($"The '{memberValue}' cache mode is not supported", location);
 		}
 
 		private string BuildTargetPropertyPath(string target, XamlMemberDefinition owner)
@@ -5215,7 +5215,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			throw new XamlGenerationException("GetControlOwner returned null.", owner);
+			// 500 - Internal XAML Code gen error
+			throw new XamlGenerationException("GetControlOwner returned null", owner);
 		}
 
 		private static string? DoubleEscape(string? thisString)
@@ -5267,7 +5268,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						throw new XamlGenerationException($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown.", member);
+						throw new XamlGenerationException($"The property '{member.Owner?.Type?.Name}.{member.Member?.Name}' is unknown", member);
 					}
 				}
 				else
@@ -5284,7 +5285,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						throw new XamlGenerationException($"MarkupExtension '{expression.Type.Name}' is not supported.", member);
+						throw new XamlGenerationException($"MarkupExtension '{expression.Type.Name}' is not supported", member);
 					}
 				}
 			}
@@ -5353,7 +5354,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return $"{currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal()}.{property}Property";
 			}
 
-			throw new XamlGenerationException($"{property} is not a DependencyProperty in type {currentStyleTargetType.GetFullyQualifiedTypeExcludingGlobal()}", location);
+			throw new XamlGenerationException($"'{property}' is not a DependencyProperty in type '{currentStyleTargetType.GetFullyQualifiedTypeExcludingGlobal()}'", location);
 		}
 
 		private string BuildBrush(string memberValue)
@@ -5574,7 +5575,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							SpecialType.System_Int64 => "(long)",
 							SpecialType.System_UInt64 => "(ulong)",
 
-							_ => throw new XamlGenerationException($"The enum underlying type '{actualValueType.EnumUnderlyingType}' is not expected.", m),
+							_ => throw new XamlGenerationException($"The enum underlying type '{actualValueType.EnumUnderlyingType}' is not expected", m),
 						};
 					}
 				}
@@ -6092,7 +6093,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						if (owner == null)
 						{
-							throw new XamlGenerationException($"An owner is required for {typeName}", xamlObjectDefinition);
+							// 500 - Internal XAML Code gen error
+							throw new XamlGenerationException($"An owner is required for '{typeName}'", xamlObjectDefinition);
 						}
 
 						BuildComplexPropertyValue(writer, owner, null, closureName: outerClosure, generateAssignation: outerClosure != null);
@@ -6129,7 +6131,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var implicitContent = FindImplicitContentMember(xamlObjectDefinition);
 							if (implicitContent == null)
 							{
-								throw new XamlGenerationException($"Unable to find content value on {xamlObjectDefinition}", xamlObjectDefinition);
+								throw new XamlGenerationException($"Unable to find content value on '{xamlObjectDefinition}'", xamlObjectDefinition);
 							}
 
 							writer.AppendIndented(BuildLiteralValue(implicitContent, knownType, owner));
@@ -6621,7 +6623,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else if (!IsValid(definedMode))
 			{
-				throw new XamlGenerationException("Invalid value specified for attribute 'DefaultBindMode'.  Accepted values are 'OneWay', 'OneTime', or 'TwoWay'.", xamlObjectDefinition);
+				throw new XamlGenerationException("Invalid value specified for attribute 'DefaultBindMode', accepted values are 'OneWay', 'OneTime', or 'TwoWay'", xamlObjectDefinition);
 			}
 			else
 			{
@@ -6729,7 +6731,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (initializer.Value == null)
 					{
-						throw new XamlGenerationException($"Initializer value for {xamlObjectDefinition.Type.Name} cannot be empty", xamlObjectDefinition);
+						throw new XamlGenerationException($"Initializer value for '{xamlObjectDefinition.Type.Name}' cannot be empty", xamlObjectDefinition);
 					}
 
 					writer.AppendLineInvariantIndented("{0}", GetFloatingPointLiteral(initializer.Value.ToString() ?? "", GetType(xamlObjectDefinition.Type), owner));
@@ -6738,7 +6740,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (initializer.Value == null)
 					{
-						throw new XamlGenerationException($"Initializer value for {xamlObjectDefinition.Type.Name} cannot be empty", xamlObjectDefinition);
+						throw new XamlGenerationException($"Initializer value for '{xamlObjectDefinition.Type.Name}' cannot be empty", xamlObjectDefinition);
 					}
 
 					writer.AppendLineInvariantIndented("{1}", xamlObjectDefinition.Type.Name, initializer.Value.ToString()?.ToLowerInvariant());
