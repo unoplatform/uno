@@ -13,6 +13,13 @@ internal partial class XamlFileGenerator
 	/// <remarks>This is cleared at the beginning of the generation.</remarks>
 	private readonly List<XamlGenerationException> _errors = new();
 
+	public const bool DefaultShouldWriteErrorOnInvalidXaml = true;
+	/// <summary>
+	/// **For recoverable errors**, indicates if the code generation should report them (and break at compile time) or write a // Warning, which would be silent.
+	/// </summary>
+	/// <remarks>Initial behavior was to write // Warning, this is now defaulting to true.</remarks>
+	public bool ShouldWriteErrorOnInvalidXaml { get; }
+
 	/// <summary>
 	/// Invokes a build block safely, capturing any exceptions as generation errors.
 	/// </summary>
@@ -46,32 +53,46 @@ internal partial class XamlFileGenerator
 		}
 	}
 
-	// LEGACY - to be removed when all error generation sites have been migrated to use XamlGenerationException
-	private void GenerateError(IIndentedStringBuilder writer, string message)
+	/// <summary>
+	/// Add an error to the generation error list.
+	/// </summary>
+	/// <remarks>
+	/// Use this instead of throwing <see cref="XamlGenerationException"/> when you can safely continue code generation.
+	/// </remarks>
+	private void AddError(string message, IXamlLocation location)
 	{
-		GenerateError(writer, message.Replace("{", "{{").Replace("}", "}}"), Array.Empty<object>());
+		_errors.Add(new XamlGenerationException(message, location));
 	}
 
-	private void GenerateError(IIndentedStringBuilder writer, string message, params object?[] options)
+	/// <summary>
+	/// Add an error to the generation error list and dump error message in place in the generated code for debug purposes.
+	/// </summary>
+	/// <remarks>
+	/// Use this instead of throwing <see cref="XamlGenerationException"/> when you can safely continue code generation.
+	/// </remarks>
+	private void GenerateError(IIndentedStringBuilder writer, string message, IXamlLocation location)
 	{
-		TryAnnotateWithGeneratorSource(writer);
 		if (ShouldWriteErrorOnInvalidXaml)
 		{
-			// it's important to add a new line to make sure #error is on its own line.
-			writer.AppendLineIndented(string.Empty);
-			writer.AppendLineInvariantIndented("#error " + message, options);
+			_errors.Add(new XamlGenerationException(message, location));
 		}
-		else
-		{
-			GenerateSilentWarning(writer, message, options);
-		}
+
+		writer.AppendLineIndented(string.Empty); // Make sure to have comment on a dedicated line
+		writer.AppendIndented($"// [ERROR] {location.FilePath} (line {location.LineNumber} | pos {location.LinePosition}): ");
+		writer.AppendLineIndented(message);
 	}
 
-	private void GenerateSilentWarning(IIndentedStringBuilder writer, string message, params object?[] options)
+	/// <summary>
+	/// Dump error message in place in the generated code.
+	/// Note: This DOES NOT add any error in the generation error list.
+	/// </summary>
+	/// <remarks>
+	/// Use this instead of <see cref="GenerateError"/> when error can be ignored without causing trouble in final application.
+	/// </remarks>
+	private void GenerateSilentWarning(IIndentedStringBuilder writer, string message, IXamlLocation location)
 	{
-		TryAnnotateWithGeneratorSource(writer);
-		// it's important to add a new line to make sure #error is on its own line.
-		writer.AppendLineIndented(string.Empty);
-		writer.AppendLineInvariantIndented("// WARNING " + message, options);
+		writer.AppendLineIndented(string.Empty); // Make sure to have comment on a dedicated line
+		writer.AppendIndented($"// [WARNING] {location.FilePath} (line {location.LineNumber} | pos {location.LinePosition}): ");
+		writer.AppendLineIndented(message);
 	}
 }
