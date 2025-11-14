@@ -10,6 +10,7 @@ using Uno.Foundation.Logging;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Windows.Graphics.Display;
+using Windows.Graphics.Interop.Direct2D;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Helpers;
@@ -362,6 +363,7 @@ namespace Uno.UI.Runtime.Skia
 			});
 			if (_surface is not null)
 			{
+				_surface.Canvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), 5, new SKPaint() { Color = SKColors.Red });
 				_surface.Flush();
 			}
 		}

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -8,6 +7,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -77,7 +77,12 @@ internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSourc
 		{
 			_ = rootElement.Dispatcher.RunAsync(
 				CoreDispatcherPriority.High,
-				() => raisePointerEvent(args));
+				() =>
+				{
+					raisePointerEvent(args);
+					// To update the cursor position
+					FrameBufferWindowWrapper.Instance.XamlRoot?.VisualTree.RootElement.Visual.CompositionTarget?.RequestNewFrame();
+				});
 		}
 	}
 
