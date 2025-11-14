@@ -39,6 +39,10 @@ if ($forks_to_import -ne $null) {
     Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
     Where-Object { $configuredRepos -notcontains $_.ToLower() }
 
+  if ($forks_to_import -ne $null -and $forks_to_import.Count -gt 0 -and $contributor_git_url -eq $null) {  
+      throw "Parameter 'forks_to_import' requires 'contributor_git_url' to be specified."  
+  }
+
   if ($invalidForks.Count -gt 0) {
     throw "The following repository names in forks_to_import are not configured in external_docs: $($invalidForks -join ', ')"
   }
@@ -52,7 +56,7 @@ if ([string]::IsNullOrWhiteSpace($contributor_git_url)) {
 # If a contributor git URL is provided, validate only when forks are specified; never fail CI when unused.
 if ($contributor_git_url -ne $null) {
     if ($forks_to_import -eq $null -or $forks_to_import.Count -eq 0) {
-        Write-Warning "Parameter 'contributor_git_url' was provided but 'forks_to_import' is null or empty. The contributor URL will not be used."
+        Write-Warning 'Parameter ''contributor_git_url'' was provided but ''forks_to_import'' is null or empty. The contributor URL will not be used.'
     }
     else {
         if ($contributor_git_url -notmatch '^https?://') {

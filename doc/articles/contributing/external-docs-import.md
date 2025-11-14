@@ -23,7 +23,7 @@ Inside `import_external_docs.ps1`, each external repository is declared in the `
 ```
 
 - `ref` (required): Either a full commit SHA or a branch name (latest commit of that branch will be fetched).
-- `dest` (optional): A relative sub-folder under `articles/` where the repository's docs will be placed.
+- `dest` (optional): A relative subfolder under `articles/` where the repository's docs will be placed.
   - If `dest` is omitted, content is placed in `articles/external/<repo.name>`.
   - You can use nested paths and spaces (e.g., `studio/Hot Design`).
 
@@ -137,8 +137,8 @@ Override branch for multiple repositories while fetching from Uno Platform:
 
 > [!NOTE]
 > If a contributor fork is specified, the script will attempt to import the specified repositories from that fork instead of the main Uno Platform repository.
-> You need to make sure the forked repository name matches the expected names (e.g., `uno.wasm.bootstrap`).
-> The repository name comparison is case-insensitive.
+> [!IMPORTANT]
+> Your forked repository must have the exact same name as the upstream repository (e.g., `uno.wasm.bootstrap`). GitHub allows you to rename your fork if needed.
 > [!TIP]
 > The `-branches` parameter is independent of `-forks_to_import`:
 >
