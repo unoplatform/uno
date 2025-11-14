@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
@@ -13,29 +12,52 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 	[DebuggerDisplay("Type: {Type.Name}")]
 #endif
-	internal sealed class XamlObjectDefinition : IXamlLocation
+	internal sealed record XamlObjectDefinition : IXamlLocation
 	{
-		public XamlObjectDefinition(XamlXmlReader reader, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces = null)
-			: this(reader.Type, reader.LineNumber, reader.LinePosition, owner, namespaces)
+		/// <summary>
+		/// Creates a root object
+		/// </summary>
+		public XamlObjectDefinition(XamlXmlReader reader, XamlFileDefinition file)
 		{
+			FilePath = file.FilePath;
+			LineNumber = reader.LineNumber;
+			LinePosition = reader.LinePosition;
+			Type = reader.Type;
 		}
 
-		public XamlObjectDefinition(XamlType type, int lineNumber, int linePosition, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces)
+		/// <summary>
+		/// Creates a child object
+		/// </summary>
+		public XamlObjectDefinition(XamlXmlReader reader, XamlObjectDefinition owner, List<NamespaceDeclaration>? namespaces = null)
 		{
-			LineNumber = lineNumber;
-			LinePosition = linePosition;
-			Type = type;
-			Owner = owner;
+			FilePath = owner.FilePath;
+			LineNumber = reader.LineNumber;
+			LinePosition = reader.LinePosition;
+			Type = reader.Type;
 			Namespaces = namespaces;
 		}
 
-		public XamlType Type { get; }
+		/// <summary>
+		/// Creates a virtual object definition (i.e. not from XamlXmlReader)
+		/// </summary>
+		public XamlObjectDefinition(XamlType type, XamlObjectDefinition owner)
+		{
+			FilePath = owner.FilePath;
+			LineNumber = owner.LineNumber;
+			LinePosition = owner.LinePosition;
+			Type = type;
+			Owner = owner;
+		}
+
+		public XamlType Type { get; init; }
 
 		public List<XamlMemberDefinition> Members { get; } = [];
 
 		public List<XamlObjectDefinition> Objects { get; } = [];
 
 		public object? Value { get; set; }
+
+		public string FilePath { get; }
 
 		public int LineNumber { get; }
 
@@ -44,7 +66,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public XamlObjectDefinition? Owner { get; }
 
 		public List<NamespaceDeclaration>? Namespaces { get; }
-
 
 		private string? _key;
 		public string Key => _key ??= BuildKey();
