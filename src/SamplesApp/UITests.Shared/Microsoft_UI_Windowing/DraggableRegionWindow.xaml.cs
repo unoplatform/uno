@@ -60,7 +60,7 @@ public sealed partial class DraggableRegionWindow : Window
 			var position = transform.TransformPoint(new Windows.Foundation.Point(0, 0));
 
 			// Calculate scale factor between logical and physical pixels
-			var scale = (float)_appWindow.ClientSize.Width / (float)Content!.ActualSize.X;
+			var scale = (float)_appWindow.Size.Width / (float)Content!.ActualSize.X;
 
 			// Create a rect for the draggable region
 			var rect = new RectInt32()

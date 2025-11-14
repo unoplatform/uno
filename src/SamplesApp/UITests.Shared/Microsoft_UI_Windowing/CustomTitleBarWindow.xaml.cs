@@ -33,7 +33,7 @@ public sealed partial class CustomTitleBarWindow : Window
 			presenter?.SetBorderAndTitleBar(hasBorder: true, hasTitleBar: false);
 
 			// Set the drag region for the custom title bar
-			SetTitleBar(CustomTitleBar);
+			SetTitleBar(DraggableBar);
 
 			// Configure InputNonClientPointerSource for Maximize button to support Snap Layouts
 			ConfigureMaximizeButtonSnapLayouts();
