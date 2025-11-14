@@ -62,7 +62,7 @@ Specifies the GitHub URL of a contributor's fork to import repositories from ins
 
 **Example:**
 
-`https://github.com/ContributorUserName`
+`https://github.com/ContributorUserName/`
 
 #### [`-forks_to_import <string[]>`](#tab/forks-to-import)
 
