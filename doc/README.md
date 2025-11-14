@@ -79,10 +79,12 @@ pwsh ./generate-llms-full.ps1 `
 ### Output Files
 
 **llms.txt** contains:
+
 - Base content (introduction and important notes from `articles/llms/llms.txt`)
 - Generated table of contents from `toc.yml` with links to raw GitHub files on master branch
 
 **llms-full.txt** contains:
+
 - Complete llms.txt content at the top
 - Additional table of contents with xref anchor links (e.g., `#Uno.GetStarted`)
 - Full content of all markdown files with resolved xrefs and includes
@@ -161,8 +163,8 @@ Spell-checking for the docs is done as part of a GitHub Action.
 
 If you'd like to perform the same check locally, you can run:
 
-* `npm install -g cspell@8.3.2` to install the cSpell CLI
-* `cspell --config ./cSpell.json "doc/**/*.md" --no-progress` to check all the markdown files in the `doc` folder.
+- `npm install -g cspell@8.3.2` to install the cSpell CLI
+- `cspell --config ./cSpell.json "doc/**/*.md" --no-progress` to check all the markdown files in the `doc` folder.
 
 ### Markdown linting the docs
 
@@ -170,8 +172,8 @@ Markdown linting for the docs is done as part of a GitHub Action.
 
 If you'd like to perform the same check locally, you can run:
 
-* `npm install -g markdownlint-cli@0.38.0` to install the markdownlint CLI
-* `markdownlint "doc/**/*.md"` to lint all the markdown files in the `doc` folder.
+- `npm install -g markdownlint-cli@0.38.0` to install the markdownlint CLI
+- `markdownlint "doc/**/*.md"` to lint all the markdown files in the `doc` folder.
 
 You can also install the [markdownlint Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) to easily check markdown linting and style while writing documentation.
 
