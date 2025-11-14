@@ -13,7 +13,8 @@ param(
     [Parameter(Mandatory)] [string] $LlmsTxtOutput,      # Output path for llms.txt
     [Parameter(Mandatory)] [string] $LlmsFullTxtOutput,  # Output path for llms-full.txt
     [Parameter(Mandatory)] [string] $BaseContentFile,    # Base content file (trimmed llms.txt from repo)
-    [Parameter(Mandatory)] [string] $TocYmlPath          # Path to root toc.yml file
+    [Parameter(Mandatory)] [string] $TocYmlPath,         # Path to root toc.yml file
+    [string] $GitHubBranch = "master"                    # GitHub branch for raw URLs (default: master)
 )
 
 function Get-RelativePath ($Parent, $Child) {
@@ -42,8 +43,8 @@ function Get-RelativePath ($Parent, $Child) {
         return [Uri]::UnescapeDataString($relativeUri.ToString()) -replace '/', [IO.Path]::DirectorySeparatorChar
     }
     catch {
-        # Fallback: simple string replacement
-        if ($childPath.StartsWith($parentPath, [StringComparison]::OrdinalIgnoreCase)) {
+        # Fallback: simple string replacement (use Ordinal for case-sensitive file systems)
+        if ($childPath.StartsWith($parentPath, [StringComparison]::Ordinal)) {
             return $childPath.Substring($parentPath.Length)
         }
         return $childPath
@@ -75,7 +76,7 @@ function Build-XrefCache {
             }
         }
         catch {
-            # Skip files that can't be read
+            Write-Warning "Could not process file '$($_.FullName)': $_"
         }
     }
     
@@ -83,19 +84,33 @@ function Build-XrefCache {
 }
 
 # Parse YAML toc file and extract items
+# Note: Uses a simple hand-rolled YAML parser. Known limitations:
+# - Does not handle quoted strings with special characters
+# - Does not handle multiline values or escape sequences
+# - Assumes well-formed YAML structure from docfx toc.yml files
 function Parse-TocYml {
     param(
         [string] $TocPath,
         [int] $IndentLevel = 0,
         [string] $BaseDir,
         [string] $GenerateType = 'Full',
-        [hashtable] $XrefCache = @{}
+        [hashtable] $XrefCache = @{},
+        [System.Collections.Generic.HashSet[string]] $VisitedTocs = (New-Object 'System.Collections.Generic.HashSet[string]')
     )
 
-    if (-not (Test-Path $TocPath)) {
+    # Resolve to absolute path and check for circular references
+    $absoluteTocPath = (Resolve-Path $TocPath -ErrorAction SilentlyContinue).Path
+    if (-not $absoluteTocPath) {
         Write-Warning "TOC file not found: $TocPath"
         return @()
     }
+    
+    if ($VisitedTocs.Contains($absoluteTocPath)) {
+        Write-Warning "Circular reference detected: $absoluteTocPath already visited. Skipping to avoid infinite recursion."
+        return @()
+    }
+    
+    $null = $VisitedTocs.Add($absoluteTocPath)
 
     $tocContent = Get-Content $TocPath -Raw
     
@@ -172,9 +187,9 @@ function Parse-TocYml {
                     
                     # Check if it's a nested toc.yml reference
                     if ($href -match '\.yml$') {
-                        $nestedTocPath = Join-Path (Split-Path $TocPath -Parent) $href
+                        $nestedTocPath = Join-Path (Split-Path $absoluteTocPath -Parent) $href
                         if (Test-Path $nestedTocPath) {
-                            $nestedItems = Parse-TocYml -TocPath $nestedTocPath -BaseDir $BaseDir -GenerateType $GenerateType -IndentLevel 0 -XrefCache $XrefCache
+                            $nestedItems = Parse-TocYml -TocPath $nestedTocPath -BaseDir $BaseDir -GenerateType $GenerateType -IndentLevel 0 -XrefCache $XrefCache -VisitedTocs $VisitedTocs
                             foreach ($nestedItem in $nestedItems) {
                                 if (-not ($nestedItem -is [string])) {
                                     $item.Items += $nestedItem
@@ -201,9 +216,9 @@ function Parse-TocYml {
         param($item, $depth)
         
         $lines = @()
-        # Use bullet points for all levels
+        # Use dash bullet points for all nesting levels
         $indent = '  ' * $depth
-        $bullet = if ($depth -eq 0) { '-' } else { '-' }
+        $bullet = '-'
         $prefix = "${indent}${bullet} "
         
         # Determine which href to use
@@ -212,8 +227,9 @@ function Parse-TocYml {
         if ($href) {
             $url = $null
             
-            if ($href -match '^xref:(.+?)(?:#.*)?$') {
+            if ($href -match '^xref:(.+?)(#.*)?$') {
                 $xrefId = $Matches[1]
+                $anchor = if ($Matches[2]) { $Matches[2] } else { '' }
                 
                 if ($GenerateType -eq 'Llms') {
                     # For llms.txt, try to resolve xref to actual file using cache
@@ -223,13 +239,16 @@ function Parse-TocYml {
                             $docRoot = Split-Path $BaseDir -Parent
                             $relativePath = Get-RelativePath -Parent $docRoot -Child $filePath
                             $relativePath = $relativePath -replace '\\', '/'
-                            $url = "https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/$relativePath"
+                            $url = "https://raw.githubusercontent.com/unoplatform/uno/refs/heads/$GitHubBranch/doc/$relativePath"
                         }
+                    }
+                    if (-not $url) {
+                        Write-Warning "Could not resolve xref: $xrefId"
                     }
                 }
                 else {
-                    # For llms-full.txt, use anchor format
-                    $url = "#${xrefId}"
+                    # For llms-full.txt, use anchor format with preserved anchor
+                    $url = "#${xrefId}${anchor}"
                 }
             }
             elseif ($href -match '^https?://') {
@@ -248,7 +267,7 @@ function Parse-TocYml {
                         $docRoot = Split-Path $BaseDir -Parent
                         $relativePath = Get-RelativePath -Parent $docRoot -Child $filePath
                         $relativePath = $relativePath -replace '\\', '/'
-                        $url = "https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/$relativePath"
+                        $url = "https://raw.githubusercontent.com/unoplatform/uno/refs/heads/$GitHubBranch/doc/$relativePath"
                     }
                 }
                 else {
@@ -260,9 +279,16 @@ function Parse-TocYml {
                             $url = "#${uid}"
                         }
                         else {
-                            # Use filename as fallback
-                            $uid = [System.IO.Path]::GetFileNameWithoutExtension($filePath)
-                            $url = "#${uid}"
+                            # Use sanitized relative path as fallback anchor
+                            $docRoot = Split-Path $BaseDir -Parent
+                            $relativePath = Get-RelativePath -Parent $docRoot -Child $filePath
+                            # Remove extension and replace directory separators with dashes
+                            $anchorBase = $relativePath -replace '\.md$', ''
+                            $anchorBase = $anchorBase -replace '[\\/]', '-'
+                            # Sanitize: keep only alphanumeric, dash, underscore
+                            $sanitizedAnchor = $anchorBase -replace '[^a-zA-Z0-9\-_]', ''
+                            Write-Warning "No UID found in file '$filePath'. Using fallback anchor: '$sanitizedAnchor'"
+                            $url = "#${sanitizedAnchor}"
                         }
                     }
                 }
@@ -272,13 +298,15 @@ function Parse-TocYml {
                 $lines += "${prefix}[$($item.Name)]($url)"
             }
             else {
-                # No valid URL generated
+                # No valid URL generated (unresolved xref or missing file)
                 if ($item.Items.Count -gt 0) {
-                    # Has children - use as section header
+                    # Has children - render as bold to visually distinguish as section header without link
+                    # This indicates a parent node that groups related items
                     $lines += "${prefix}**$($item.Name)**"
                 }
                 else {
-                    # No children - output as plain text to show structure
+                    # No children - render as plain text to show terminal node without link
+                    # This indicates a leaf node that couldn't be resolved
                     $lines += "${prefix}$($item.Name)"
                 }
             }

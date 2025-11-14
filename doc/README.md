@@ -91,9 +91,10 @@ pwsh ./generate-llms-full.ps1 `
 
 ### Notes
 
-- The `articles/llms/llms.txt` file in the repository contains only the base content (introduction)
-- During build, the script generates the complete llms.txt by appending the table of contents
-- The generated llms.txt file should not be committed to the repository
+- The `articles/llms/llms.txt` file in the repository contains only the base content (introduction and important notes)
+- During the build process, this file is read as the base content, and the script generates a new llms.txt by appending the auto-generated table of contents
+- The build outputs the generated llms.txt to a different location (typically outside the source tree)
+- **Important**: Only commit the base content version of `articles/llms/llms.txt`. Do not commit the generated version with the full table of contents
 
 ## Commands
 
