@@ -50,6 +50,10 @@ if ($forks_to_import -ne $null) {
 # If a contributor git URL is provided but no forks are specified, warn the user.
 if ($contributor_git_url -ne $null) {
 
+  if ($contributor_git_url -isnot [string]) {
+    throw "The parameter 'contributor_git_url' must be a string or null."
+  }
+
   if ([string]::IsNullOrEmpty($contributor_git_url)) {
     throw "The parameter 'contributor_git_url' cannot be an empty string."
   }
