@@ -11,7 +11,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal sealed record class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>
+	internal sealed record class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>, IXamlLocation
 	{
 		public XamlFileDefinition(string file, string targetFilePath, string content, ImmutableArray<byte> checksum)
 		{
@@ -33,6 +33,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<XamlObjectDefinition> Objects { get; } = [];
 
 		public string FilePath { get; }
+
+		public int LineNumber => 1;
+
+		public int LinePosition => 1;
 
 		public string Checksum { get; }
 
