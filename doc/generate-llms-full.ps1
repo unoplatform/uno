@@ -1,23 +1,256 @@
 ﻿<#
 .SYNOPSIS
     Concatenate all .md files under a folder (recursively), rewrite DocFX xrefs,
-    and optionally prepend a header file.
+    and optionally prepend a header file. Generates a table of contents from toc.yml files.
 
 .EXAMPLE
-    .\generate-llms-full.ps1 -InputFolder .\docs -OutputFile combined.md `
-                   -Llmstxt .\header.md
+    .\generate-llms-full.ps1 -InputFolder .\articles -OutputFile llms-full.txt -GenerateType Full
+    .\generate-llms-full.ps1 -InputFolder .\articles -OutputFile llms.txt -GenerateType Llms -TocYmlPath .\articles\toc.yml
 #>
 
 param(
     [Parameter(Mandatory)] [string] $InputFolder,
     [string] $OutputFile = 'combined.md',
-    [string] $Llmstxt                # optional header file to place first
+    [string] $Llmstxt,                # optional header file to place first
+    [string] $GenerateType = 'Full',  # 'Full' for llms-full.txt (xref format), 'Llms' for llms.txt (raw GitHub URLs)
+    [string] $TocYmlPath = ''         # Path to root toc.yml file
 )
 
 function Get-RelativePath ($Parent, $Child) {
-    $parentUri = [Uri]((Resolve-Path $Parent).Path + [IO.Path]::DirectorySeparatorChar)
-    $childUri  = [Uri](Resolve-Path $Child).Path
-    $parentUri.MakeRelativeUri($childUri).OriginalString -replace '/', [IO.Path]::DirectorySeparatorChar
+    try {
+        $parentPath = (Resolve-Path $Parent -ErrorAction SilentlyContinue).Path
+        $childPath = (Resolve-Path $Child -ErrorAction SilentlyContinue).Path
+        
+        if (-not $parentPath -or -not $childPath) {
+            # Fallback to basic path manipulation
+            return $Child -replace [regex]::Escape($Parent), ''
+        }
+        
+        $parentUri = [Uri]($parentPath + [IO.Path]::DirectorySeparatorChar)
+        $childUri  = [Uri]$childPath
+        return $parentUri.MakeRelativeUri($childUri).OriginalString -replace '/', [IO.Path]::DirectorySeparatorChar
+    }
+    catch {
+        # Fallback: use .NET's GetRelativePath if available
+        try {
+            return [System.IO.Path]::GetRelativePath($Parent, $Child)
+        }
+        catch {
+            # Last resort: return child path as-is
+            return $Child
+        }
+    }
+}
+
+# Parse YAML toc file and extract items
+function Parse-TocYml {
+    param(
+        [string] $TocPath,
+        [int] $IndentLevel = 0,
+        [string] $BaseDir,
+        [string] $GenerateType = 'Full'
+    )
+
+    if (-not (Test-Path $TocPath)) {
+        Write-Warning "TOC file not found: $TocPath"
+        return @()
+    }
+
+    $tocContent = Get-Content $TocPath -Raw
+    
+    # Parse YAML into a structured format
+    $yamlLines = $tocContent -split "`r?`n"
+    $items = @()
+    $stack = New-Object 'System.Collections.Generic.Stack[object]'
+    
+    for ($i = 0; $i -lt $yamlLines.Count; $i++) {
+        $line = $yamlLines[$i]
+        
+        # Skip empty lines and comments
+        if ($line -match '^\s*$' -or $line -match '^\s*#') {
+            continue
+        }
+        
+        # Match list items with "- name:"
+        if ($line -match '^(\s*)- name:\s*(.+)$') {
+            $indent = $Matches[1].Length
+            $name = $Matches[2].Trim()
+            
+            $item = @{
+                Name = $name
+                Href = $null
+                TopicHref = $null
+                Items = @()
+                Indent = $indent
+                Parent = $null
+            }
+            
+            # Find the parent based on indentation
+            while ($stack.Count -gt 0 -and $stack.Peek().Indent -ge $indent) {
+                [void]$stack.Pop()
+            }
+            
+            if ($stack.Count -gt 0) {
+                $parent = $stack.Peek()
+                $item.Parent = $parent
+                $parent.Items += $item
+            }
+            else {
+                # Root level item
+                $items += $item
+            }
+            
+            $stack.Push($item)
+        }
+        # Match href property
+        elseif ($line -match '^\s+href:\s*(.+)$') {
+            $href = $Matches[1].Trim()
+            if ($stack.Count -gt 0) {
+                $currentItem = $stack.Peek()
+                
+                # Check if it's a nested toc.yml reference
+                if ($href -match '\.yml$') {
+                    $nestedTocPath = Join-Path (Split-Path $TocPath -Parent) $href
+                    if (Test-Path $nestedTocPath) {
+                        $nestedItems = Parse-TocYml -TocPath $nestedTocPath -BaseDir $BaseDir -GenerateType $GenerateType -IndentLevel 0
+                        # Add nested items as children
+                        foreach ($nestedItem in $nestedItems) {
+                            if ($nestedItem -is [string]) {
+                                # String result from nested parse - skip for now
+                            }
+                            else {
+                                $currentItem.Items += $nestedItem
+                            }
+                        }
+                    }
+                }
+                else {
+                    $currentItem.Href = $href
+                }
+            }
+        }
+        # Match topicHref property
+        elseif ($line -match '^\s+topicHref:\s*(.+)$') {
+            if ($stack.Count -gt 0) {
+                $stack.Peek().TopicHref = $Matches[1].Trim()
+            }
+        }
+    }
+    
+    # Convert parsed items to output lines
+    function Convert-ItemToLines {
+        param($item, $depth)
+        
+        $lines = @()
+        $indent = '  ' * $depth
+        
+        # Determine which href to use
+        $href = if ($item.TopicHref) { $item.TopicHref } else { $item.Href }
+        
+        if ($href) {
+            $url = $null
+            
+            if ($href -match '^xref:(.+?)(?:#.*)?$') {
+                $xrefId = $Matches[1]
+                
+                if ($GenerateType -eq 'Llms') {
+                    # For llms.txt, try to resolve xref to actual file
+                    # Skip for now as xrefs need a complex resolution mechanism
+                    # We'll handle this in the main docs section
+                }
+                else {
+                    # For llms-full.txt, use anchor format
+                    $url = "#${xrefId}"
+                }
+            }
+            elseif ($href -match '^https?://') {
+                # External URL
+                $url = $href
+            }
+            elseif ($href -match '\.md$') {
+                # Relative markdown file
+                $filePath = Join-Path (Split-Path $TocPath -Parent) $href
+                $filePath = [System.IO.Path]::GetFullPath($filePath)
+                
+                if ($GenerateType -eq 'Llms') {
+                    # Convert to raw GitHub URL
+                    if (Test-Path $filePath) {
+                        $relativePath = [System.IO.Path]::GetRelativePath($BaseDir, $filePath) -replace '\\', '/'
+                        $url = "https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/$relativePath"
+                    }
+                }
+                else {
+                    # For llms-full.txt, extract uid
+                    if (Test-Path $filePath) {
+                        $content = Get-Content $filePath -Raw -ErrorAction SilentlyContinue
+                        if ($content -and $content -match '(?m)^\s*uid:\s*(.+)$') {
+                            $uid = $Matches[1].Trim()
+                            $url = "#${uid}"
+                        }
+                        else {
+                            # Use filename as fallback
+                            $uid = [System.IO.Path]::GetFileNameWithoutExtension($filePath)
+                            $url = "#${uid}"
+                        }
+                    }
+                }
+            }
+            
+            if ($url) {
+                $lines += "${indent}[$($item.Name)]($url)"
+            }
+            elseif ($item.Items.Count -gt 0) {
+                # Has children but no valid URL - use as section header
+                $lines += "${indent}**$($item.Name)**"
+            }
+        }
+        else {
+            # No href - use as section header if has children
+            if ($item.Items.Count -gt 0) {
+                $lines += "${indent}**$($item.Name)**"
+            }
+        }
+        
+        # Process child items
+        foreach ($childItem in $item.Items) {
+            $lines += Convert-ItemToLines -item $childItem -depth ($depth + 1)
+        }
+        
+        return $lines
+    }
+    
+    $outputLines = @()
+    foreach ($item in $items) {
+        $outputLines += Convert-ItemToLines -item $item -depth $IndentLevel
+    }
+    
+    return $outputLines
+}
+
+# Generate table of contents from toc.yml files
+function Generate-TableOfContents {
+    param(
+        [string] $TocYmlPath,
+        [string] $BaseDir,
+        [string] $GenerateType = 'Full'
+    )
+    
+    if (-not $TocYmlPath -or -not (Test-Path $TocYmlPath)) {
+        Write-Warning "TOC file not specified or not found: $TocYmlPath"
+        return ""
+    }
+    
+    $tocLines = Parse-TocYml -TocPath $TocYmlPath -BaseDir $BaseDir -GenerateType $GenerateType
+    
+    if ($tocLines.Count -eq 0) {
+        return ""
+    }
+    
+    $result = "## Table of Contents`n`n"
+    $result += ($tocLines -join "`n")
+    $result += "`n`n"
+    
+    return $result
 }
 
 # ── Regexes ─────────────────────────────────────────────────────────────────────
@@ -98,13 +331,39 @@ function Expand-Includes {
     })
 }
 
-# ── 1) Optional header file ─────────────────────────────────────────────────────
+# ── 1) Optional header file and TOC generation ──────────────────────────────────
 $headerResolved = $null
 if ($Llmstxt) {
     if (-not (Test-Path $Llmstxt)) { throw "Header file '$Llmstxt' not found." }
     $headerResolved = (Resolve-Path $Llmstxt).Path
     $headerText = Get-Content $headerResolved -Raw
-    $parts.Add($headerText.TrimEnd() + "`n`n")
+    
+    # For llms.txt generation, replace the "## Docs" section with generated TOC
+    if ($GenerateType -eq 'Llms' -and $TocYmlPath) {
+        # Remove the existing "## Docs" section
+        $headerText = $headerText -replace '(?ms)^## Docs\s*\n.*?(?=\n## |\z)', ''
+        $parts.Add($headerText.TrimEnd() + "`n`n")
+        
+        # Generate and add the new Table of Contents
+        $baseDir = (Resolve-Path $InputFolder).Path
+        $toc = Generate-TableOfContents -TocYmlPath $TocYmlPath -BaseDir $baseDir -GenerateType $GenerateType
+        
+        if ($toc) {
+            $parts.Add($toc)
+        }
+    }
+    else {
+        $parts.Add($headerText.TrimEnd() + "`n`n")
+    }
+}
+
+# Add TOC for Full mode (llms-full.txt) - should be added after any header
+if ($GenerateType -eq 'Full' -and $TocYmlPath) {
+    $baseDir = (Resolve-Path $InputFolder).Path
+    $toc = Generate-TableOfContents -TocYmlPath $TocYmlPath -BaseDir $baseDir -GenerateType $GenerateType
+    if ($toc) {
+        $parts.Add($toc)
+    }
 }
 
 # ── 2) Process all markdown files ───────────────────────────────────────────────
