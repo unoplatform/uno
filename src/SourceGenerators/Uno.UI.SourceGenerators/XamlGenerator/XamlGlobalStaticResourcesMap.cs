@@ -8,9 +8,9 @@ using static Uno.UI.Xaml.XamlFilePathHelper;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal class XamlGlobalStaticResourcesMap
+	internal sealed class XamlGlobalStaticResourcesMap(XamlFileDefinition[] xamlFiles)
 	{
-		private readonly Dictionary<string, XamlFileDefinition> _rdMap = new Dictionary<string, XamlFileDefinition>(StringComparer.CurrentCultureIgnoreCase);
+		private readonly Dictionary<string, XamlFileDefinition> _rdMap = BuildResourceDictionaryMap(xamlFiles);
 
 		/// <summary>
 		/// Gets the names of all GlobalStaticResources properties associated with a top-level ResourceDictionary.
@@ -53,14 +53,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Build a map of source links to corresponding XAML files, used for ResourceDictionary.Source resolution.
 		/// </summary>
-		internal void BuildResourceDictionaryMap(XamlFileDefinition[] files, string[] links)
+		private static Dictionary<string, XamlFileDefinition> BuildResourceDictionaryMap(XamlFileDefinition[] files)
 		{
-			for (int i = 0; i < files.Length; i++)
+			var map = new Dictionary<string, XamlFileDefinition>(StringComparer.CurrentCultureIgnoreCase);
+			for (var i = 0; i < files.Length; i++)
 			{
-				var sourceLink = links[i].Replace('\\', '/');
-				_rdMap[sourceLink] = files[i];
-				files[i].SourceLink = sourceLink;
+				var file = files[i];
+				map[file.SourceLink] = file;
 			}
+			return map;
 		}
 	}
 }

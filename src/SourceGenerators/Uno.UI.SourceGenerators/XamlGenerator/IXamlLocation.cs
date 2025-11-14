@@ -9,7 +9,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		public int LineNumber { get; }
 
-		public int LinePosition { get; set; }
+		public int LinePosition { get; }
 	}
 
 }
