@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,6 +89,11 @@ public partial class CoreWebView2
 		if (folderPath is null)
 		{
 			throw new ArgumentNullException(nameof(folderPath));
+		}
+
+		if (!Directory.Exists(folderPath))
+		{
+			throw new ArgumentException($"The specified folder path '{Path.GetFullPath(folderPath)}' does not exist.");
 		}
 
 		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)

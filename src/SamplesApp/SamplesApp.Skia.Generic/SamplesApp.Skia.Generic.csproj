@@ -54,13 +54,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="..\LinkedFiles\WebContent\index.html">
+		<Content Include="..\LinkedFiles\WebContent\index.html" CopyToOutputDirectory="PreserveNewest">
 			<Link>WebContent\index.html</Link>
 		</Content>
-		<Content Include="..\LinkedFiles\WebContent\css\site.css">
+		<Content Include="..\LinkedFiles\WebContent\css\site.css" CopyToOutputDirectory="PreserveNewest">
 			<Link>WebContent\css\site.css</Link>
 		</Content>
-		<Content Include="..\LinkedFiles\WebContent\js\site.js">
+		<Content Include="..\LinkedFiles\WebContent\js\site.js" CopyToOutputDirectory="PreserveNewest">
 			<Link>WebContent\js\site.js</Link>
 		</Content>
 	</ItemGroup>
