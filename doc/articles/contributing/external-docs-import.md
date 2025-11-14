@@ -58,7 +58,7 @@ Specifies the GitHub URL of a contributor's fork to import repositories from ins
 **Rules:**
 
 - Must be a valid HTTP/HTTPS URL
-- Should end with a trailing slash (`/`) to safely append repository names, otherwhise the script will add it automatically
+- Should end with a trailing slash (`/`) to safely append repository names, otherwise the script will add it automatically
 
 **Example:**
 
