@@ -42,13 +42,46 @@ function Get-RelativePath ($Parent, $Child) {
     }
 }
 
+# Build a cache of xref uid to markdown file path mappings
+function Build-XrefCache {
+    param([string] $BaseDir)
+    
+    $cache = @{}
+    $docRoot = Split-Path $BaseDir -Parent
+    
+    Get-ChildItem -Path $docRoot -Filter "*.md" -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
+        try {
+            $content = Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue
+            if ($content -and $content -match '(?m)^---\s*\n.*?uid:\s*(.+?)\s*\n.*?^---') {
+                $uid = $Matches[1].Trim()
+                if ($uid) {
+                    $cache[$uid] = $_.FullName
+                }
+            }
+            # Also check for uid outside YAML frontmatter (some files have it)
+            elseif ($content -and $content -match '(?m)^\s*uid:\s*(.+)$') {
+                $uid = $Matches[1].Trim()
+                if ($uid) {
+                    $cache[$uid] = $_.FullName
+                }
+            }
+        }
+        catch {
+            # Skip files that can't be read
+        }
+    }
+    
+    return $cache
+}
+
 # Parse YAML toc file and extract items
 function Parse-TocYml {
     param(
         [string] $TocPath,
         [int] $IndentLevel = 0,
         [string] $BaseDir,
-        [string] $GenerateType = 'Full'
+        [string] $GenerateType = 'Full',
+        [hashtable] $XrefCache = @{}
     )
 
     if (-not (Test-Path $TocPath)) {
@@ -133,7 +166,7 @@ function Parse-TocYml {
                     if ($href -match '\.yml$') {
                         $nestedTocPath = Join-Path (Split-Path $TocPath -Parent) $href
                         if (Test-Path $nestedTocPath) {
-                            $nestedItems = Parse-TocYml -TocPath $nestedTocPath -BaseDir $BaseDir -GenerateType $GenerateType -IndentLevel 0
+                            $nestedItems = Parse-TocYml -TocPath $nestedTocPath -BaseDir $BaseDir -GenerateType $GenerateType -IndentLevel 0 -XrefCache $XrefCache
                             foreach ($nestedItem in $nestedItems) {
                                 if (-not ($nestedItem -is [string])) {
                                     $item.Items += $nestedItem
@@ -175,9 +208,15 @@ function Parse-TocYml {
                 $xrefId = $Matches[1]
                 
                 if ($GenerateType -eq 'Llms') {
-                    # For llms.txt, try to resolve xref to actual file
-                    # Skip for now as xrefs need a complex resolution mechanism
-                    # We'll handle this in the main docs section
+                    # For llms.txt, try to resolve xref to actual file using cache
+                    if ($XrefCache.ContainsKey($xrefId)) {
+                        $filePath = $XrefCache[$xrefId]
+                        if (Test-Path $filePath) {
+                            $docRoot = Split-Path $BaseDir -Parent
+                            $relativePath = [System.IO.Path]::GetRelativePath($docRoot, $filePath) -replace '\\', '/'
+                            $url = "https://raw.githubusercontent.com/unoplatform/uno/refs/heads/master/doc/$relativePath"
+                        }
+                    }
                 }
                 else {
                     # For llms-full.txt, use anchor format
@@ -270,7 +309,15 @@ function Generate-TableOfContents {
         return ""
     }
     
-    $tocLines = Parse-TocYml -TocPath $TocYmlPath -BaseDir $BaseDir -GenerateType $GenerateType
+    # Build xref cache if generating for Llms mode
+    $xrefCache = @{}
+    if ($GenerateType -eq 'Llms') {
+        Write-Host "Building xref cache..." -ForegroundColor Cyan
+        $xrefCache = Build-XrefCache -BaseDir $BaseDir
+        Write-Host "  Found $($xrefCache.Count) xref mappings" -ForegroundColor Gray
+    }
+    
+    $tocLines = Parse-TocYml -TocPath $TocYmlPath -BaseDir $BaseDir -GenerateType $GenerateType -XrefCache $xrefCache
     
     if ($tocLines.Count -eq 0) {
         return ""
