@@ -69,7 +69,7 @@ namespace TestRepro
 			{
 			// Source 0\MainWindow.xaml (Line 1:2)
 			
-			// WARNING Property __p1.base does not exist on {using:TestRepro}BaseWindow, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// [WARNING] C:/Project/0/MainWindow.xaml(1,2): Property 'base' does not exist on 'BaseWindow', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
 			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
