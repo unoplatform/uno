@@ -58,10 +58,10 @@ function Parse-TocYml {
 
     $tocContent = Get-Content $TocPath -Raw
     
-    # Parse YAML into a structured format
+    # Parse YAML into a structured format - using a simple state machine
     $yamlLines = $tocContent -split "`r?`n"
     $items = @()
-    $stack = New-Object 'System.Collections.Generic.Stack[object]'
+    $itemStack = New-Object 'System.Collections.Generic.Stack[object]'
     
     for ($i = 0; $i -lt $yamlLines.Count; $i++) {
         $line = $yamlLines[$i]
@@ -82,17 +82,17 @@ function Parse-TocYml {
                 TopicHref = $null
                 Items = @()
                 Indent = $indent
-                Parent = $null
             }
             
-            # Find the parent based on indentation
-            while ($stack.Count -gt 0 -and $stack.Peek().Indent -ge $indent) {
-                [void]$stack.Pop()
+            # Determine parent by finding the item with the highest indent that's less than current
+            # Pop items that have equal or greater indentation
+            while ($itemStack.Count -gt 0 -and $itemStack.Peek().Indent -ge $indent) {
+                [void]$itemStack.Pop()
             }
             
-            if ($stack.Count -gt 0) {
-                $parent = $stack.Peek()
-                $item.Parent = $parent
+            # The top of stack (if any) is the parent
+            if ($itemStack.Count -gt 0) {
+                $parent = $itemStack.Peek()
                 $parent.Items += $item
             }
             else {
@@ -100,39 +100,57 @@ function Parse-TocYml {
                 $items += $item
             }
             
-            $stack.Push($item)
-        }
-        # Match href property
-        elseif ($line -match '^\s+href:\s*(.+)$') {
-            $href = $Matches[1].Trim()
-            if ($stack.Count -gt 0) {
-                $currentItem = $stack.Peek()
+            # Push the new item onto the stack
+            $itemStack.Push($item)
+            
+            # Now parse immediate properties of this item (href, topicHref)
+            # Look ahead for properties until we hit "items:" or another "- name:"
+            $j = $i + 1
+            while ($j -lt $yamlLines.Count) {
+                $propLine = $yamlLines[$j]
                 
-                # Check if it's a nested toc.yml reference
-                if ($href -match '\.yml$') {
-                    $nestedTocPath = Join-Path (Split-Path $TocPath -Parent) $href
-                    if (Test-Path $nestedTocPath) {
-                        $nestedItems = Parse-TocYml -TocPath $nestedTocPath -BaseDir $BaseDir -GenerateType $GenerateType -IndentLevel 0
-                        # Add nested items as children
-                        foreach ($nestedItem in $nestedItems) {
-                            if ($nestedItem -is [string]) {
-                                # String result from nested parse - skip for now
-                            }
-                            else {
-                                $currentItem.Items += $nestedItem
+                # Skip empty lines
+                if ($propLine -match '^\s*$' -or $propLine -match '^\s*#') {
+                    $j++
+                    continue
+                }
+                
+                # Check if this is the items: keyword - stop here, children will be parsed in main loop
+                if ($propLine -match '^\s+items:\s*$') {
+                    break
+                }
+                
+                # Check if this is another list item - stop processing properties
+                if ($propLine -match '^(\s*)- name:') {
+                    break
+                }
+                
+                # Check for href property
+                if ($propLine -match '^\s+href:\s*(.+)$') {
+                    $href = $Matches[1].Trim()
+                    
+                    # Check if it's a nested toc.yml reference
+                    if ($href -match '\.yml$') {
+                        $nestedTocPath = Join-Path (Split-Path $TocPath -Parent) $href
+                        if (Test-Path $nestedTocPath) {
+                            $nestedItems = Parse-TocYml -TocPath $nestedTocPath -BaseDir $BaseDir -GenerateType $GenerateType -IndentLevel 0
+                            foreach ($nestedItem in $nestedItems) {
+                                if (-not ($nestedItem -is [string])) {
+                                    $item.Items += $nestedItem
+                                }
                             }
                         }
                     }
+                    else {
+                        $item.Href = $href
+                    }
                 }
-                else {
-                    $currentItem.Href = $href
+                # Check for topicHref property
+                elseif ($propLine -match '^\s+topicHref:\s*(.+)$') {
+                    $item.TopicHref = $Matches[1].Trim()
                 }
-            }
-        }
-        # Match topicHref property
-        elseif ($line -match '^\s+topicHref:\s*(.+)$') {
-            if ($stack.Count -gt 0) {
-                $stack.Peek().TopicHref = $Matches[1].Trim()
+                
+                $j++
             }
         }
     }
@@ -204,9 +222,16 @@ function Parse-TocYml {
             if ($url) {
                 $lines += "${prefix}[$($item.Name)]($url)"
             }
-            elseif ($item.Items.Count -gt 0) {
-                # Has children but no valid URL - use as section header
-                $lines += "${prefix}**$($item.Name)**"
+            else {
+                # No valid URL generated
+                if ($item.Items.Count -gt 0) {
+                    # Has children - use as section header
+                    $lines += "${prefix}**$($item.Name)**"
+                }
+                else {
+                    # No children - output as plain text to show structure
+                    $lines += "${prefix}$($item.Name)"
+                }
             }
         }
         else {
