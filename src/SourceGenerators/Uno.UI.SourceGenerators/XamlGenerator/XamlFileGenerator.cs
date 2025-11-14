@@ -1539,7 +1539,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var propertyName = GetInitializerNameForResourceKey(index);
 				if (_topLevelQualifiedKeys.ContainsKey((theme, key)))
 				{
-					throw new XamlGenerationException($"Dictionary Item {resource.Type?.Name} has duplicate key `{key}` {(theme != null ? $" in theme {theme}" : "")}.", resource);
+					throw new XamlGenerationException($"Dictionary item '{resource.Type?.Name}' has duplicate key '{key}' {(theme != null ? $" in theme {theme}" : "")}.", resource);
 				}
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
 				if (!isStaticResourceAlias)
@@ -1574,7 +1574,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var initializerName = GetInitializerNameForResourceKey(_dictionaryPropertyIndex);
 					if (_topLevelQualifiedKeys[(theme, key)] != initializerName)
 					{
-						throw new XamlGenerationException($"Method name was not created correctly for {key} (theme={theme}).", resource);
+						throw new XamlGenerationException($"Method name was not created correctly for '{key}' (theme={theme}).", resource);
 					}
 					writer.AppendLineInvariantIndented("// Method for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
 					var singleTimeInitializer = BuildSingleTimeInitializer(writer, initializerName, () => BuildChild(writer, resourcesRoot, resource));
@@ -2111,7 +2111,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (targetMethod == null)
 			{
-				throw new XamlGenerationException($"Unable to find MethodName property on {symbol}", location);
+				throw new XamlGenerationException($"Unable to find 'MethodName' property on '{symbol}'", location);
 			}
 
 			// Since the MethodName value can simply be the name of the method
@@ -2170,7 +2170,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (member == null)
 			{
-				throw new XamlGenerationException($"{memberName} is not defined on {xamlObjectDefinition.Type.Name}", xamlObjectDefinition);
+				throw new XamlGenerationException($"'{memberName}' is not defined on '{xamlObjectDefinition.Type.Name}'", xamlObjectDefinition);
 			}
 
 			return member;
@@ -2328,7 +2328,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								if (implicitContentChild.Objects.Count > 1)
 								{
-									throw new XamlGenerationException("The type {0} does not support multiple children.".InvariantCultureFormat(topLevelControl.Type.Name), implicitContentChild.Objects[1]);
+									throw new XamlGenerationException($"The type '{topLevelControl.Type.Name}' does not support multiple children.", implicitContentChild.Objects[1]);
 								}
 
 								writer.AppendLineInvariantIndented("{0}Child = ", setterPrefix);
@@ -2430,11 +2430,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										}
 										else if (IsNewableProperty(contentProperty, out var newableTypeName))
 										{
-											if (string.IsNullOrWhiteSpace(newableTypeName))
-											{
-												throw new XamlGenerationException($"Unable to initialize newable collection type. Type name for property {contentProperty.Name} is empty.", topLevelControl);
-											}
-
 											// Explicitly instantiate the collection and set it using the content property
 											if (implicitContentChild.Objects.Count == 1
 												&& SymbolEqualityComparer.Default.Equals(contentProperty.Type, FindType(implicitContentChild.Objects[0].Type)))
@@ -2457,11 +2452,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										}
 										else if (GetKnownNewableListOrCollectionInterface(contentProperty.Type as INamedTypeSymbol, out newableTypeName))
 										{
-											if (string.IsNullOrWhiteSpace(newableTypeName))
-											{
-												throw new XamlGenerationException($"Unable to initialize known newable collection or list interface. Type name for property {contentProperty.Name} is empty.", topLevelControl);
-											}
-
 											using (writer.BlockInvariant("{0}{1} = new {2} ", setterPrefix, contentProperty.Name, newableTypeName))
 											{
 												foreach (var child in implicitContentChild.Objects)
@@ -2474,7 +2464,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										}
 										else
 										{
-											throw new XamlGenerationException($"There is no known way to initialize collection property {contentProperty.Name}.", topLevelControl);
+											throw new XamlGenerationException($"Unable to implicitly initialize collection for '{contentProperty.Name}'", topLevelControl);
 										}
 									}
 									else if (IsLazyVisualStateManagerProperty(contentProperty) && !HasDescendantsWithXName(implicitContentChild))
@@ -2499,7 +2489,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 											if (implicitContentChild.Objects.Count > 1)
 											{
-												throw new XamlGenerationException($"The type {topLevelControl.Type.Name} does not support multiple children.", topLevelControl);
+												throw new XamlGenerationException($"The type '{topLevelControl.Type.Name}' does not support multiple children", topLevelControl);
 											}
 
 											var xamlObjectDefinition = implicitContentChild.Objects.First();
@@ -5923,7 +5913,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Gets a basic class that implements a know collection or list interface
 		/// </summary>
-		private bool GetKnownNewableListOrCollectionInterface(INamedTypeSymbol? type, out string? newableTypeName)
+		private bool GetKnownNewableListOrCollectionInterface(INamedTypeSymbol? type, [NotNullWhen(true)] out string? newableTypeName)
 		{
 			switch (type?.Name)
 			{
