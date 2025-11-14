@@ -21,6 +21,7 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 	private string _previousTitle;
 	private bool _isHistoryChangeQueued;
 	private bool _isCancelling;
+	private string? _lastHtmlContent;
 
 	private const string OkResourceKey = "WebView_Ok";
 	private const string CancelResourceKey = "WebView_Cancel";
@@ -164,6 +165,7 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 
 	public void ProcessNavigation(Uri uri)
 	{
+		_lastHtmlContent = null;
 		string? url = null;
 
 		if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
@@ -193,11 +195,13 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 			this.Log().Debug($"LoadHtmlString: {html}");
 		}
 
+		_lastHtmlContent = html;
 		NativeUno.uno_webview_load_html(_webview, html);
 	}
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
 	{
+		_lastHtmlContent = null;
 		if (httpRequestMessage == null)
 		{
 			this.Log().Warn("HttpRequestMessage is null. Please make sure the http request is complete.");
@@ -212,7 +216,21 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 		}
 	}
 
-	public void Reload() => NativeUno.uno_webview_reload(_webview);
+	public void Reload()
+	{
+		if (_lastHtmlContent != null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Reloading cached HTML content");
+			}
+			NativeUno.uno_webview_load_html(_webview, _lastHtmlContent);
+		}
+		else
+		{
+			NativeUno.uno_webview_reload(_webview);
+		}
+	}
 
 	public void SetScrollingEnabled(bool isScrollingEnabled)
 	{
