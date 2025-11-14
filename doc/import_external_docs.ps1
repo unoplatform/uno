@@ -52,7 +52,7 @@ if ($forks_to_import) {
     $invalidForks = @()
     foreach ($fork in $forks_to_import) {
         # Use case-insensitive comparison against configured repo keys.
-        if (-not ($external_docs.Keys -contains $fork)) {
+        if (-not ($external_docs.Keys -icontains $fork)) {
             $invalidForks += $fork
         }
     }
