@@ -130,7 +130,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			{
 			// Source 0\Grid_Uses_New_Succinct_Syntax.xaml (Line 1:2)
 			
-			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// [WARNING] C:/Project/0/Grid_Uses_New_Succinct_Syntax.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
 			.Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply((Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
