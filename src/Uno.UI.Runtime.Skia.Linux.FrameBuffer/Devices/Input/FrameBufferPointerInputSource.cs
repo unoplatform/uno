@@ -5,6 +5,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
@@ -38,6 +39,7 @@ internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSourc
 	internal void SetHost(IXamlRootHost host)
 	{
 		_host = host;
+		MousePosition = FrameBufferWindowWrapper.Instance.Bounds.GetCenter();
 	}
 
 	public void Configure(Func<VirtualKeyModifiers> keyboardInputSource)

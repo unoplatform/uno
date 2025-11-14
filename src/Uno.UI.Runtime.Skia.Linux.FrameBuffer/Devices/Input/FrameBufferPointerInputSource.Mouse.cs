@@ -22,7 +22,7 @@ namespace Uno.UI.Runtime.Skia;
 
 internal partial class FrameBufferPointerInputSource
 {
-	private Point _mousePosition;
+	public Point MousePosition { get; private set; }
 
 	public void ProcessMouseEvent(IntPtr rawEvent, libinput_event_type type)
 	{
@@ -32,9 +32,17 @@ internal partial class FrameBufferPointerInputSource
 		var properties = new PointerPointProperties();
 		Action<PointerEventArgs>? raisePointerEvent = null;
 
-		if (type == LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE)
+		if (type == LIBINPUT_EVENT_POINTER_MOTION)
 		{
-			_mousePosition = new Point(
+			MousePosition += new Point(
+				x: libinput_event_pointer_get_dx(rawPointerEvent),
+				y: libinput_event_pointer_get_dy(rawPointerEvent));
+
+			raisePointerEvent = RaisePointerMoved;
+		}
+		else if (type == LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE)
+		{
+			MousePosition = new Point(
 				x: libinput_event_pointer_get_absolute_x_transformed(rawPointerEvent, (int)_displayInformation.ScreenWidthInRawPixels),
 				y: libinput_event_pointer_get_absolute_y_transformed(rawPointerEvent, (int)_displayInformation.ScreenHeightInRawPixels));
 
@@ -108,8 +116,8 @@ internal partial class FrameBufferPointerInputSource
 			timestamp: timestampInMicroseconds,
 			device: PointerDevice.For(PointerDeviceType.Mouse),
 			pointerId: 0,
-			rawPosition: _mousePosition,
-			position: _mousePosition,
+			rawPosition: MousePosition,
+			position: MousePosition,
 			isInContact: properties.HasPressedButton,
 			properties: properties
 		);

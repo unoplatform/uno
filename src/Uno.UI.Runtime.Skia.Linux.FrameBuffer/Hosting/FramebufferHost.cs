@@ -75,7 +75,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 		private void StartConsoleInterception()
 		{
-			// ANSI escape sequence to hide the cursor
+			// ANSI escape sequence to hide the blinking caret
 			Console.WriteLine("\u001b[?25l");
 
 			// Only use the keyboard interception if the input is not redirected, to support

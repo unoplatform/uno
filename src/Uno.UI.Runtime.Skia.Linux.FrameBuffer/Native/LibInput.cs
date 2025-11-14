@@ -113,6 +113,12 @@ namespace Uno.UI.Runtime.Skia.Native
 		public extern static double libinput_event_pointer_get_absolute_y_transformed(IntPtr ev, int height);
 
 		[DllImport(LibInputName)]
+		public extern static double libinput_event_pointer_get_dx(IntPtr ev);
+
+		[DllImport(LibInputName)]
+		public extern static double libinput_event_pointer_get_dy(IntPtr ev);
+
+		[DllImport(LibInputName)]
 		public extern static libinput_event_code libinput_event_pointer_get_button(IntPtr ev);
 
 		[DllImport(LibInputName)]
