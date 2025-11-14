@@ -1,6 +1,7 @@
 ﻿// https://github.com/dotnet/runtime/blob/527f9ae88a0ee216b44d556f9bdc84037fe0ebda/src/libraries/System.Private.CoreLib/src/System/Diagnostics/CodeAnalysis/NullableAttributes.cs
 
 #pragma warning disable
+#if !NET5_0_OR_GREATER
 #define INTERNAL_NULLABLE_ATTRIBUTES
 
 // Licensed to the .NET Foundation under one or more agreements.
@@ -206,3 +207,4 @@ namespace System.Diagnostics.CodeAnalysis
 	}
 #endif
 }
+#endif

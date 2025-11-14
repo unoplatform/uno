@@ -11,32 +11,33 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 #if DEBUG
-	[DebuggerDisplay("Type: {_type.Name}")]
+	[DebuggerDisplay("Type: {Type.Name}")]
 #endif
-	internal class XamlObjectDefinition : IXamlLocation
+	internal sealed class XamlObjectDefinition : IXamlLocation
 	{
-		private XamlType _type;
+		public XamlObjectDefinition(XamlXmlReader reader, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces = null)
+			: this(reader.Type, reader.LineNumber, reader.LinePosition, owner, namespaces)
+		{
+		}
 
 		public XamlObjectDefinition(XamlType type, int lineNumber, int linePosition, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces)
 		{
 			LineNumber = lineNumber;
 			LinePosition = linePosition;
-			_type = type;
+			Type = type;
 			Owner = owner;
-			Members = new List<XamlMemberDefinition>();
-			Objects = new List<XamlObjectDefinition>();
 			Namespaces = namespaces;
 		}
 
-		public XamlType Type { get { return _type; } }
+		public XamlType Type { get; }
 
-		public List<XamlMemberDefinition> Members { get; private set; }
+		public List<XamlMemberDefinition> Members { get; } = [];
 
-		public List<XamlObjectDefinition> Objects { get; private set; }
+		public List<XamlObjectDefinition> Objects { get; } = [];
 
 		public object? Value { get; set; }
 
-		public int LineNumber { get; private set; }
+		public int LineNumber { get; }
 
 		public int LinePosition { get; set; }
 
