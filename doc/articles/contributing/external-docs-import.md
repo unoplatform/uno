@@ -142,8 +142,8 @@ Override branch for multiple repositories while fetching from Uno Platform:
 > [!TIP]
 > The `-branches` parameter is independent of `-forks_to_import`:
 >
-> - Use `-forks_to_import` alone to import from a fork using the default configured branch/commit
-> - Combine both parameters to import from a fork with a custom branch/commit override
+> - Use `-contributor_git_url` together with `-forks_to_import` to import from a fork using the default configured branch/commit
+> - Combine both parameters with `-branches` to import from a fork with a custom branch/commit override
 
 ## `import_external_docs_contrib.ps1`
 
