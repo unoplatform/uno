@@ -426,6 +426,8 @@
         href: uno-development/doc-on-docs.md
       - name: DocFX
         href: uno-development/docfx.md
+      - name: External Docs Import (Repos & Forks)
+        href: xref:Uno.Contributing.ExternalDocsImport
       - name: Uno.UI release procedure
         href: uno-development/release-procedure.md
       - name: Build Artifacts

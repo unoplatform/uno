@@ -126,48 +126,8 @@ To run the script on Windows:
 3. Go to the uno\build folder (not the uno\src\build folder)
 4. Run the `run-doc-generation.cmd` script; make sure to follow the instructions
 
-### Importing external documentation sources
+## External Docs Import (Uno Repos & Forks)
 
-The Uno documentation repository provides two PowerShell scripts to import and test external documentation sources:
-
-#### `import_external_docs.ps1`
-
-This script imports various external repositories (e.g., uno.wasm.bootstrap, uno.themes, etc.) into the local `articles/external` directory. By default, fixed commits are used, but you can override them using parameters.
-
-**Parameters:**
-
-- `-branches <Hashtable>`: Overrides the default commit/branch for individual repositories. Example: `@{ "uno.wasm.bootstrap" = "main" }`
-- `-contributor_git_url <string>`: Optional. Git URL of a contributor fork, e.g., `https://github.com/ContributorUserName/`.
-- `-forks_to_import <string[]>`: Optional. List of repository names to import from the contributor fork.
-
-**Example usage:**
-
-```powershell
-# Import all default repositories
-./import_external_docs.ps1
-
-# Import specific repositories from a fork and branch
-./import_external_docs.ps1 -branches @{ "uno.wasm.bootstrap" = "main" } -contributor_git_url "https://github.com/ContributorUserName/" -forks_to_import @( "uno.wasm.bootstrap" )
-```
-
-#### `import_external_docs_test.ps1`
-
-This script updates the tools (`docfx`, `dotnet-serve`), imports the external documentation sources (unless `-NoFetch` is specified), generates the documentation, and starts a local server.
-
-**Parameters:**
-
-- `-NoFetch` (Alias: `-NF`): Skips cloning/updating the external repositories. Useful for local testing if the sources are already present.
-
-**Example usage:**
-
-```powershell
-# With import of external sources
-./import_external_docs_test.ps1
-
-# Without re-import (only generation & server)
-./import_external_docs_test.ps1 -NoFetch
-```
-
-The generated documentation will be available locally at `http://localhost:5000/articles/intro.html`.
+The Uno documentation can import content from external repositories (official repos or contributor forks) for local testing. See the full guide: [External Docs Import (Uno Repos & Forks)](xref:Uno.Contributing.ExternalDocsImport).
 
 ---
