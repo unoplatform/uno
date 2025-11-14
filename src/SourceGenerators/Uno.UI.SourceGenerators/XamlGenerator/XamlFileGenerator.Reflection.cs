@@ -364,16 +364,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Returns true if the property has an accessible public setter and has a parameterless constructor
 		/// </summary>
-		private bool IsNewableProperty(IPropertySymbol property, out string? newableTypeName)
+		private bool IsNewableProperty(IPropertySymbol property, [NotNullWhen(true)] out string? newableTypeName)
 		{
-			var namedType = property.Type as INamedTypeSymbol;
-
-			var isNewable = property.SetMethod.SelectOrDefault(m => m!.DeclaredAccessibility == Accessibility.Public, false) &&
-				namedType.SelectOrDefault(nts => nts?.Constructors.Any(ms => ms.Parameters.Length == 0) ?? false, false);
-
-			newableTypeName = isNewable && namedType != null ? GetFullGenericTypeName(namedType) : null;
-
-			return isNewable;
+			if (property is
+				{
+					SetMethod.DeclaredAccessibility: Accessibility.Public,
+					Type: INamedTypeSymbol propertyType
+				}
+				&& propertyType.Constructors.Any(ms => ms.Parameters.Length == 0))
+			{
+				newableTypeName = GetFullGenericTypeName(propertyType);
+				return true;
+			}
+			else
+			{
+				newableTypeName = null;
+				return false;
+			}
 		}
 
 		/// <summary>
