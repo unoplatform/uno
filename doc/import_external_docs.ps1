@@ -57,7 +57,7 @@ if ($contributor_git_url -ne $null) {
     }
 
     if (-not $contributor_git_url.EndsWith('/')) {
-        throw "The parameter 'contributor_git_url' must end with a trailing slash '/'."
+        $contributor_git_url += '/'
     }
 
     if ($forks_to_import -eq $null -or $forks_to_import.Count -eq 0) {

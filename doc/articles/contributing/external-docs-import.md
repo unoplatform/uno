@@ -55,10 +55,10 @@ Accepts repository name as key and branch/commit as value
 
 Specifies the GitHub URL of a contributor's fork to import repositories from instead of the main Uno Platform repository.
 
-**Rules for the URL:**
+**Rules:**
 
 - Must be a valid HTTP/HTTPS URL
-- Must end with a trailing slash (`/`) so that repository names can be concatenated (e.g., `https://github.com/YourUserName/` + `uno.wasm.bootstrap`).
+- Should end with a trailing slash (`/`) to safely append repository names, otherwhise the script will add it automatically
 
 **Example:**
 
@@ -74,7 +74,7 @@ Array of repository names to import from the contributor fork.
 - Repository names must match the configured names in `$external_docs`
 - Comparison is case-insensitive
 
-Example:
+Example array:
 
 ```powershell
 @(
@@ -99,7 +99,7 @@ Import specific repository from a contributor fork using the default branch/comm
 
 ```powershell
 ./import_external_docs.ps1
-  -contributor_git_url "https://github.com/ContributorUserName"
+  -contributor_git_url "https://github.com/ContributorUserName/"
   -forks_to_import @("uno.wasm.bootstrap")
 ```
 
@@ -109,7 +109,7 @@ Import specific repository from a contributor fork with a custom branch override
 
 ```powershell
 ./import_external_docs.ps1
-  -contributor_git_url "https://github.com/ContributorUserName"
+  -contributor_git_url "https://github.com/ContributorUserName/"
   -branches @{
     "uno.wasm.bootstrap" = "main",
     "uno.extensions" = "feature-branch"
@@ -181,7 +181,7 @@ When working on documentation changes in a forked repository:
 3. **Import your fork** using the import script:
 
    ```powershell
-   ./import_external_docs.ps1 -branches @{ "uno.wasm.bootstrap" = "your-branch-name" } -contributor_git_url "https://github.com/YourUserName" -forks_to_import @("uno.wasm.bootstrap")
+   ./import_external_docs.ps1 -branches @{ "uno.wasm.bootstrap" = "your-branch-name" } -contributor_git_url "https://github.com/YourUserName/" -forks_to_import @("uno.wasm.bootstrap")
    ```
 
 4. **Test locally** using the test script:
@@ -201,13 +201,6 @@ If you receive an error about repository names not being configured in `external
 
 - ✅ Correct: `uno.wasm.bootstrap`
 - ❌ Incorrect: `uno-wasm-bootstrap` or `Uno.Wasm.Bootstrap-fork`
-
-### Contributor URL Must End with Slash
-
-The `-contributor_git_url` parameter must end with a trailing slash so the script can safely append the repository name:
-
-- ✅ Correct: `https://github.com/YourUserName/`
-- ❌ Incorrect: `https://github.com/YourUserName`
 
 ### Branch Not Found
 
