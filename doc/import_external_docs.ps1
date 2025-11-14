@@ -33,14 +33,11 @@ $uno_git_url = "https://github.com/unoplatform/"
 
 if ($forks_to_import -ne $null) {
 
-  if($forks_to_import -isnot [string[]]) {
-    throw "The parameter 'forks_to_import' must be an array of string or null."
-  }
-
   # Validate that all entries in forks_to_import exist in the external_docs map.
+  $configuredRepos = $external_docs.Keys | ForEach-Object { $_.ToLower() }
   $invalidForks = $forks_to_import | 
     Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
-    Where-Object { $external_docs.Keys -notcontains $_ }
+    Where-Object { $configuredRepos -notcontains $_.ToLower() }
 
   if ($invalidForks.Count -gt 0) {
     throw "The following repository names in forks_to_import are not configured in external_docs: $($invalidForks -join ', ')"
@@ -50,10 +47,6 @@ if ($forks_to_import -ne $null) {
 # If a contributor git URL is provided but no forks are specified, warn the user.
 if ($contributor_git_url -ne $null) {
 
-  if ($contributor_git_url -isnot [string]) {
-    throw "The parameter 'contributor_git_url' must be a string or null."
-  }
-
   if ([string]::IsNullOrEmpty($contributor_git_url)) {
     throw "The parameter 'contributor_git_url' cannot be an empty string."
   }
@@ -62,7 +55,7 @@ if ($contributor_git_url -ne $null) {
     throw "The parameter 'contributor_git_url' must be a valid HTTP or HTTPS URL."  
   }
 
-  if(-not $contributor_git_url.EndsWith('/')) {
+  if (-not $contributor_git_url.EndsWith('/')) {
     throw "The parameter 'contributor_git_url' must end with a trailing slash '/'."
   }
 

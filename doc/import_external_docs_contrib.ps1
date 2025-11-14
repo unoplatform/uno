@@ -1,5 +1,5 @@
 <#
-    import_external_docs_test.ps1 [-NoFetch]
+    import_external_docs_contrib.ps1 [-NoFetch]
 
     -NoFetch   : Skip the import of external repositories. Useful for testing or authoring.
                  The default is to import the external repositories from the main branch.
@@ -18,7 +18,7 @@ dotnet tool update --global dotnet-serve
 
 if (-not $NoFetch) {
     $external_docs = @{
-        # use either commit, or branch name to use its latest commit
+        # use either a commit SHA or a branch name (which will use that branch's latest commit)
         "uno.wasm.bootstrap" = "main"
         "uno.themes"         = "master"
         "uno.toolkit.ui"     = "main"
@@ -31,6 +31,7 @@ if (-not $NoFetch) {
         "workshops"          = "master"
         "uno.samples"        = "master"
         "uno.chefs"          = "main"
+        "hd-docs"            = "main"
     }
 
 
