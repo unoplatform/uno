@@ -58,6 +58,44 @@ build command is ran just before committing your work; this will minify the code
 folders and build the DocFx according to the `docfx.json`. The CI only runs the DocFx command, it will not regenerate
 the `styles` folder.
 
+## Generating LLM Files
+
+The documentation can be exported into LLM-friendly formats using the `generate-llms-full.ps1` PowerShell script.
+
+### llms.txt
+
+Generate a lightweight index file with a table of contents pointing to raw GitHub documentation files:
+
+```bash
+pwsh ./generate-llms-full.ps1 `
+  -InputFolder ./articles `
+  -OutputFile ./articles/llms/llms.txt `
+  -Llmstxt ./articles/llms/llms.txt `
+  -GenerateType Llms `
+  -TocYmlPath ./articles/toc.yml
+```
+
+This creates a file with:
+- Introduction and important notes
+- Generated table of contents from `toc.yml` with links to raw GitHub files on master branch
+- Links to external documentation
+
+### llms-full.txt
+
+Generate a complete documentation file with all markdown content concatenated and a table of contents with xref-style anchors:
+
+```bash
+pwsh ./generate-llms-full.ps1 `
+  -InputFolder ./articles `
+  -OutputFile ./llms-full.txt `
+  -GenerateType Full `
+  -TocYmlPath ./articles/toc.yml
+```
+
+This creates a file with:
+- Generated table of contents with anchor links (e.g., `#Uno.GetStarted`)
+- Full content of all markdown files with resolved xrefs and includes
+
 ## Commands
 
 ### Start
