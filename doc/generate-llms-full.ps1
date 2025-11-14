@@ -1,19 +1,19 @@
 ﻿<#
 .SYNOPSIS
-    Concatenate all .md files under a folder (recursively), rewrite DocFX xrefs,
-    and optionally prepend a header file. Generates a table of contents from toc.yml files.
+    Generates llms.txt and llms-full.txt files from documentation.
+    - llms.txt: Base content + table of contents with raw GitHub URLs
+    - llms-full.txt: llms.txt content + all markdown documentation concatenated
 
 .EXAMPLE
-    .\generate-llms-full.ps1 -InputFolder .\articles -OutputFile llms-full.txt -GenerateType Full
-    .\generate-llms-full.ps1 -InputFolder .\articles -OutputFile llms.txt -GenerateType Llms -TocYmlPath .\articles\toc.yml
+    .\generate-llms-full.ps1 -InputFolder .\articles -LlmsTxtOutput .\llms.txt -LlmsFullTxtOutput .\llms-full.txt -BaseContentFile .\articles\llms\llms.txt -TocYmlPath .\articles\toc.yml
 #>
 
 param(
     [Parameter(Mandatory)] [string] $InputFolder,
-    [string] $OutputFile = 'combined.md',
-    [string] $Llmstxt,                # optional header file to place first
-    [string] $GenerateType = 'Full',  # 'Full' for llms-full.txt (xref format), 'Llms' for llms.txt (raw GitHub URLs)
-    [string] $TocYmlPath = ''         # Path to root toc.yml file
+    [Parameter(Mandatory)] [string] $LlmsTxtOutput,      # Output path for llms.txt
+    [Parameter(Mandatory)] [string] $LlmsFullTxtOutput,  # Output path for llms-full.txt
+    [Parameter(Mandatory)] [string] $BaseContentFile,    # Base content file (trimmed llms.txt from repo)
+    [Parameter(Mandatory)] [string] $TocYmlPath          # Path to root toc.yml file
 )
 
 function Get-RelativePath ($Parent, $Child) {
@@ -331,46 +331,51 @@ function Expand-Includes {
     })
 }
 
-# ── 1) Optional header file and TOC generation ──────────────────────────────────
-$headerResolved = $null
-if ($Llmstxt) {
-    if (-not (Test-Path $Llmstxt)) { throw "Header file '$Llmstxt' not found." }
-    $headerResolved = (Resolve-Path $Llmstxt).Path
-    $headerText = Get-Content $headerResolved -Raw
-    
-    # For llms.txt generation, replace the "## Docs" section with generated TOC
-    if ($GenerateType -eq 'Llms' -and $TocYmlPath) {
-        # Remove the existing "## Docs" section
-        $headerText = $headerText -replace '(?ms)^## Docs\s*\n.*?(?=\n## |\z)', ''
-        $parts.Add($headerText.TrimEnd() + "`n`n")
-        
-        # Generate and add the new Table of Contents
-        $baseDir = (Resolve-Path $InputFolder).Path
-        $toc = Generate-TableOfContents -TocYmlPath $TocYmlPath -BaseDir $baseDir -GenerateType $GenerateType
-        
-        if ($toc) {
-            $parts.Add($toc)
-        }
-    }
-    else {
-        $parts.Add($headerText.TrimEnd() + "`n`n")
-    }
+# ── 1) Generate llms.txt (base content + TOC) ───────────────────────────────────
+Write-Host "Generating llms.txt..." -ForegroundColor Cyan
+
+if (-not (Test-Path $BaseContentFile)) { 
+    throw "Base content file '$BaseContentFile' not found." 
 }
 
-# Add TOC for Full mode (llms-full.txt) - should be added after any header
-if ($GenerateType -eq 'Full' -and $TocYmlPath) {
-    $baseDir = (Resolve-Path $InputFolder).Path
-    $toc = Generate-TableOfContents -TocYmlPath $TocYmlPath -BaseDir $baseDir -GenerateType $GenerateType
-    if ($toc) {
-        $parts.Add($toc)
-    }
+$baseContent = Get-Content $BaseContentFile -Raw
+$llmsTxtParts = [System.Collections.Generic.List[string]]::new()
+$llmsTxtParts.Add($baseContent.TrimEnd() + "`n`n")
+
+# Generate TOC with raw GitHub URLs
+$baseDir = (Resolve-Path $InputFolder).Path
+$tocForLlms = Generate-TableOfContents -TocYmlPath $TocYmlPath -BaseDir $baseDir -GenerateType 'Llms'
+if ($tocForLlms) {
+    $llmsTxtParts.Add($tocForLlms)
 }
 
-# ── 2) Process all markdown files ───────────────────────────────────────────────
+# Write llms.txt
+$llmsTxtContent = $llmsTxtParts -join ''
+$llmsTxtContent | Set-Content -NoNewline $LlmsTxtOutput
+Write-Host "✓ llms.txt written → $LlmsTxtOutput" -ForegroundColor Green
+
+# ── 2) Generate llms-full.txt (llms.txt + all docs) ─────────────────────────────
+Write-Host "Generating llms-full.txt..." -ForegroundColor Cyan
+
+$parts = [System.Collections.Generic.List[string]]::new()
+
+# Start with llms.txt content
+$parts.Add($llmsTxtContent)
+$parts.Add("`n`n")
+
+# Add TOC with xref anchors for navigation within the full document
+$tocForFull = Generate-TableOfContents -TocYmlPath $TocYmlPath -BaseDir $baseDir -GenerateType 'Full'
+if ($tocForFull) {
+    $parts.Add($tocForFull)
+}
+
+$baseContentResolved = (Resolve-Path $BaseContentFile).Path
+
+# ── 3) Process all markdown files for llms-full.txt ─────────────────────────────
 Get-ChildItem $InputFolder -Recurse -Filter '*.md' |
     Where-Object {
-        # Skip header file and .github folder
-        if ($_.FullName -eq $headerResolved) { return $false }
+        # Skip base content file and .github folder
+        if ($_.FullName -eq $baseContentResolved) { return $false }
         if ($_.FullName -match '[\\/]\.github[\\/]') { return $false }
         
         # Skip output files (combined.md, out_*.md, etc.)
@@ -461,6 +466,8 @@ Get-ChildItem $InputFolder -Recurse -Filter '*.md' |
         $parts.Add($text.TrimEnd() + "`n`n")
     }
 
-# ── 3) Write final document ─────────────────────────────────────────────────────
-$parts | Set-Content -NoNewline $OutputFile
-Write-Host "Done → $OutputFile"
+# ── 4) Write llms-full.txt ──────────────────────────────────────────────────────
+$parts | Set-Content -NoNewline $LlmsFullTxtOutput
+Write-Host "✓ llms-full.txt written → $LlmsFullTxtOutput" -ForegroundColor Green
+
+Write-Host "`nGeneration complete!" -ForegroundColor Green

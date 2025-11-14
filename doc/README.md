@@ -60,41 +60,38 @@ the `styles` folder.
 
 ## Generating LLM Files
 
-The documentation can be exported into LLM-friendly formats using the `generate-llms-full.ps1` PowerShell script.
+The documentation can be exported into LLM-friendly formats using the `generate-llms-full.ps1` PowerShell script. The script generates two files:
 
-### llms.txt
+1. **llms.txt** - Lightweight index with base content and table of contents pointing to raw GitHub files
+2. **llms-full.txt** - Complete documentation with llms.txt content at the top, followed by all markdown documentation
 
-Generate a lightweight index file with a table of contents pointing to raw GitHub documentation files:
+### Usage
 
 ```bash
 pwsh ./generate-llms-full.ps1 `
   -InputFolder ./articles `
-  -OutputFile ./articles/llms/llms.txt `
-  -Llmstxt ./articles/llms/llms.txt `
-  -GenerateType Llms `
+  -LlmsTxtOutput ./llms.txt `
+  -LlmsFullTxtOutput ./llms-full.txt `
+  -BaseContentFile ./articles/llms/llms.txt `
   -TocYmlPath ./articles/toc.yml
 ```
 
-This creates a file with:
-- Introduction and important notes
+### Output Files
+
+**llms.txt** contains:
+- Base content (introduction and important notes from `articles/llms/llms.txt`)
 - Generated table of contents from `toc.yml` with links to raw GitHub files on master branch
-- Links to external documentation
 
-### llms-full.txt
-
-Generate a complete documentation file with all markdown content concatenated and a table of contents with xref-style anchors:
-
-```bash
-pwsh ./generate-llms-full.ps1 `
-  -InputFolder ./articles `
-  -OutputFile ./llms-full.txt `
-  -GenerateType Full `
-  -TocYmlPath ./articles/toc.yml
-```
-
-This creates a file with:
-- Generated table of contents with anchor links (e.g., `#Uno.GetStarted`)
+**llms-full.txt** contains:
+- Complete llms.txt content at the top
+- Additional table of contents with xref anchor links (e.g., `#Uno.GetStarted`)
 - Full content of all markdown files with resolved xrefs and includes
+
+### Notes
+
+- The `articles/llms/llms.txt` file in the repository contains only the base content (introduction)
+- During build, the script generates the complete llms.txt by appending the table of contents
+- The generated llms.txt file should not be committed to the repository
 
 ## Commands
 
