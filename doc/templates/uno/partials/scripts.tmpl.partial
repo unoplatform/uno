@@ -21,136 +21,187 @@ mermaid.init(undefined, ".lang-mermaid");
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
 <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
 <script>
-    /**
-     * Initialize Algolia DocSearch
-     * This function initializes DocSearch for the element with id 'docsearch'.
-     */
-    function initializeDocSearch() {
-        console.log("initializeDocSearch called");
-        try {
-            const searchBox = document.getElementById("docsearch");
+    (function() {
+        'use strict';
+        
+        // State management to prevent multiple initializations
+        let isInitialized = false;
+        let observer = null;
+        let timeoutId = null;
+        const TIMEOUT_MS = 10000; // 10 seconds timeout
 
-            if (searchBox) {
-                console.log("Found 'docsearch' element");
-                // Check if the search box is already initialized
-                if (searchBox.children.length > 0) {
-                    console.log("Search box already initialized.");
-                    // Disconnect the observer if search box is already initialized
-                    if (observer) {
-                        observer.disconnect();
-                        console.log("MutationObserver disconnected.");
-                    }
-                } else {
-                    // Initialize DocSearch if not already initialized
-                    console.log("Initializing DocSearch...");
-                    docsearch({
-                        container: '#docsearch',
-                        appId: 'PHB9D8WS99',
-                        indexName: 'platform',
-                        apiKey: '7877394996f96cde1a9b795dce3f7787',
-                        placeholder: 'Search Docs...'
-                    });
-                    console.log("DocSearch initialized.");
-                    // Disconnect the observer after initialization
-                    if (observer) {
-                        observer.disconnect();
-                        console.log("MutationObserver disconnected.");
-                    }
-                }
-            } else {
-                console.warn("'docsearch' element not found.");
+        /**
+         * Initialize Algolia DocSearch with enhanced configuration
+         */
+        function initializeDocSearch() {
+            if (isInitialized) {
+                return;
             }
-        } catch (error) {
-            console.error("Error initializing DocSearch:", error);
-        }
-    }
 
-    /**
-     * Set up MutationObserver to watch for additions to the DOM
-     * This function sets up a MutationObserver to monitor the entire document for added nodes.
-     * If the 'docsearch' element is added, it will call initializeDocSearch().
-     */
-    let observer;
-    function observeDocSearch() {
-        observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.addedNodes.length) {
-                    mutation.addedNodes.forEach((node) => {
-                        // Check if the added node is the 'docsearch' element
-                        if (node.id === 'docsearch') {
-                            console.log("'docsearch' element added to DOM");
-                            initializeDocSearch();
+            try {
+                const searchBox = document.getElementById('docsearch');
+                if (!searchBox) {
+                    return;
+                }
+
+                // Mark as initialized before calling docsearch to prevent race conditions
+                isInitialized = true;
+                cleanup();
+
+                // Initialize DocSearch with enhanced configuration
+                docsearch({
+                    container: '#docsearch',
+                    appId: 'PHB9D8WS99',
+                    indexName: 'platform',
+                    apiKey: '7877394996f96cde1a9b795dce3f7787',
+                    placeholder: 'Search Uno Platform docs...',
+                    insights: true,
+                    searchParameters: {
+                        hitsPerPage: 12,
+                        attributesToSnippet: ['content:25'],
+                        highlightPreTag: '<mark>',
+                        highlightPostTag: '</mark>',
+                    },
+                    transformItems(items) {
+                        return items.map(item => ({
+                            ...item,
+                            hierarchy: item.hierarchy || {}
+                        }));
+                    },
+                    getMissingResultsUrl({ query }) {
+                        return `https://github.com/unoplatform/uno/issues/new?title=Documentation+request:+${encodeURIComponent(query)}&labels=documentation`;
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing DocSearch:', error);
+                isInitialized = false; // Reset on error to allow retry
+            }
+        }
+
+        /**
+         * Clean up observers and timeouts
+         */
+        function cleanup() {
+            if (observer) {
+                observer.disconnect();
+                observer = null;
+            }
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+        }
+
+        /**
+         * Set up MutationObserver with timeout to watch for the docsearch element
+         */
+        function setupObserver() {
+            if (isInitialized) {
+                return;
+            }
+
+            // Set timeout to stop observing after TIMEOUT_MS
+            timeoutId = setTimeout(() => {
+                cleanup();
+            }, TIMEOUT_MS);
+
+            observer = new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                    for (const node of mutation.addedNodes) {
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            // Check if added node is or contains the docsearch element
+                            if (node.id === 'docsearch' || (node.querySelector && node.querySelector('#docsearch'))) {
+                                initializeDocSearch();
+                                return;
+                            }
                         }
-                    });
+                    }
                 }
             });
-        });
 
-        // Observe the entire document for child additions
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-
-        console.log("MutationObserver set up to observe 'docsearch' element");
-    }
-
-    /**
-     * Retry initialization using requestAnimationFrame
-     * This function tries to initialize DocSearch using requestAnimationFrame for better timing handling for some browsers like Firefox.
-     */
-    function retryInitialization() {
-        if (!document.getElementById('docsearch')) {
-            console.log("Retrying DocSearch initialization using requestAnimationFrame");
-            requestAnimationFrame(retryInitialization);
-        } else {
-            initializeDocSearch();
+            observer.observe(document.documentElement, {
+                childList: true,
+                subtree: true
+            });
         }
-    }
 
-    /**
-     * Load event handler
-     * This function handles the load event to ensure the entire page is fully loaded.
-     * It then checks if the 'docsearch' element is present and initializes DocSearch.
-     * If the element is not present, it sets up the MutationObserver and starts the retry mechanism.
-     */
-    window.addEventListener('load', () => {
-        console.log("Load event fired");
-
-        // Check if the 'docsearch' element already exists in the DOM
-        if (document.getElementById('docsearch')) {
-            console.log("'docsearch' element already present in DOM");
-            initializeDocSearch();
-        } else {
-            console.log("'docsearch' element not present in DOM, setting up MutationObserver");
-            observeDocSearch();
-            // Start retrying using requestAnimationFrame
-            retryInitialization();
+        /**
+         * Initialize on DOM ready
+         */
+        function init() {
+            // Try immediate initialization if element exists
+            if (document.getElementById('docsearch')) {
+                initializeDocSearch();
+            } else {
+                // Set up observer for dynamic content
+                setupObserver();
+            }
         }
-    });
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Add keyboard shortcut (Ctrl/Cmd + K) to focus search
+        document.addEventListener('keydown', (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+                event.preventDefault();
+                const searchButton = document.querySelector('.DocSearch-Button');
+                if (searchButton) {
+                    searchButton.click();
+                }
+            }
+        });
+    })();
 </script>
 
 <!-- Easy-copy-code -->
 <script>
 $(function() {
-    var copyToClipboard = function(text) {
-        // Create a textblock and assign the text and add to document
-        var el = document.createElement('textarea');
-        el.value = text;
-        document.body.appendChild(el);
-        el.style.display = "block";
-    
-        // select the entire textblock
-        if (window.document.documentMode)
-            el.setSelectionRange(0, el.value.length);
-        else
-            el.select();
-        
-        // copy to clipboard
-        document.execCommand('copy');
-        
-        // clean up element
-        document.body.removeChild(el);
+    /**
+     * Copy text to clipboard using modern Clipboard API with fallback
+     * @param {string} text - The text to copy
+     * @returns {Promise<boolean>} - Promise that resolves to true if successful
+     */
+    var copyToClipboard = async function(text) {
+        // Try modern Clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (error) {
+                console.error('Clipboard API failed:', error);
+                // Fall through to legacy method
+            }
+        }
+
+        // Fallback to legacy method for older browsers
+        try {
+            var el = document.createElement('textarea');
+            el.value = text;
+            el.style.position = 'absolute';
+            el.style.left = '-9999px';
+            el.setAttribute('readonly', '');
+            document.body.appendChild(el);
+
+            // Select the text
+            if (window.document.documentMode) {
+                el.setSelectionRange(0, el.value.length);
+            } else {
+                el.select();
+            }
+
+            // Copy to clipboard
+            var success = document.execCommand('copy');
+            document.body.removeChild(el);
+            return success;
+        } catch (error) {
+            console.error('Fallback copy failed:', error);
+            return false;
+        }
     }
 
     $("code.hljs, code[class^='lang-']").each(function() {
@@ -196,11 +247,16 @@ $(function() {
             '</div>'
         );
         $this.closest("pre").before($codeHeader);
-        $codeHeader.find("button").click(function() {
-            copyToClipboard($this.closest("pre").text());
+        $codeHeader.find("button").click(async function() {
             var successAlert = $(this).find(".successful-copy-alert");
-            successAlert.removeClass("is-transparent");
-            setTimeout(function() {successAlert.addClass("is-transparent");}, 2000);
+            var success = await copyToClipboard($this.closest("pre").text());
+            
+            if (success) {
+                successAlert.removeClass("is-transparent");
+                setTimeout(function() {successAlert.addClass("is-transparent");}, 2000);
+            } else {
+                console.error('Failed to copy code to clipboard');
+            }
         });
     });
 });
