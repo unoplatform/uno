@@ -29,28 +29,25 @@ $uno_git_url = "https://github.com/unoplatform/"
 
 # --- END OF CONFIGURATION --------------------------------------------------
 
-# If branches are passed, use them to override the default ones (ref, but not dest)
+# Validation ordering note: contributor URL normalization must occur BEFORE requiring it when forks are provided.
 
+# Normalize blank contributor URL to null (CI may pass empty string)
+if ([string]::IsNullOrWhiteSpace($contributor_git_url)) { $contributor_git_url = $null }
+
+# If forks are specified and non-empty, contributor_git_url must be present (non-null after normalization)
+if ($forks_to_import -ne $null -and $forks_to_import.Count -gt 0 -and $contributor_git_url -eq $null) {
+    throw "Parameter 'forks_to_import' requires 'contributor_git_url' to be specified."
+}
+
+# Validate fork names against configured repositories (only if array provided)
 if ($forks_to_import -ne $null) {
-
-    # Validate that all entries in forks_to_import exist in the external_docs map.
     $configuredRepos = $external_docs.Keys | ForEach-Object { $_.ToLower() }
-    $invalidForks = $forks_to_import | 
+    $invalidForks = $forks_to_import |
         Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
         Where-Object { $configuredRepos -notcontains $_.ToLower() }
-
-    if ($forks_to_import -ne $null -and $forks_to_import.Count -gt 0 -and $contributor_git_url -eq $null) {
-        throw "Parameter 'forks_to_import' requires 'contributor_git_url' to be specified."
-    }
-
     if ($invalidForks.Count -gt 0) {
         throw "The following repository names in forks_to_import are not configured in external_docs: $($invalidForks -join ', ')"
     }
-}
-
-# Normalize blank contributor URL to null (CI may pass empty string)
-if ([string]::IsNullOrWhiteSpace($contributor_git_url)) {
-    $contributor_git_url = $null
 }
 
 # If a contributor git URL is provided, validate only when forks are specified; never fail CI when unused.
