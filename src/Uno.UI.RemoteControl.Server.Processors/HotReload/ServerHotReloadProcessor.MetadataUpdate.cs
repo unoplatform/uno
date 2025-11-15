@@ -246,6 +246,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				else
 				{
 					_reporter.Verbose($"Could not find document with path {file} in the workspace.");
+					hotReload.NotifyIgnored(file);
 				}
 			}
 
@@ -269,7 +270,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			_reporter.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 			sw.Stop();
-
 
 			if (rudeEdits.IsEmpty && updates.IsEmpty)
 			{
