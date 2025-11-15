@@ -113,7 +113,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			{
 			// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 1:2)
 			
-			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// [WARNING] C:/Project/0/Binding_Xaml_Object_With_Common_Properties.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
 			.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler2)(__p1 => 

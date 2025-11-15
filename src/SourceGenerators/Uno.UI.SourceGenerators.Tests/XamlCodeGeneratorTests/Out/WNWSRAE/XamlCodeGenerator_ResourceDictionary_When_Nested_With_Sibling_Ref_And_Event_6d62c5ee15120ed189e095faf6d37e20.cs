@@ -65,7 +65,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			{
 			// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 1:2)
 			
-			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// [WARNING] C:/Project/0/ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
 			.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler0)(__p1 => 

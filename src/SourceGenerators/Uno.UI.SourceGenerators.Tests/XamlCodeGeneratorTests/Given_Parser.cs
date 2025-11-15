@@ -223,7 +223,7 @@ public class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS1029").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 57, 12, 57, 239).WithArguments("Property PropertyThatDoesNotExist does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Grid, name is PropertyThatDoesNotExist, preferrednamespace http://schemas.microsoft.com/winfx/2006/xaml/presentation"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Property 'PropertyThatDoesNotExist' does not exist on 'Grid'"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -275,7 +275,7 @@ public class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange([
 			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/ThirdPage.xaml", 7, 3, 7, 3).WithArguments("The 'Grid' start tag on line 6 position 3 does not match the end tag of 'Page'. Line 7, position 3."),
-			DiagnosticResult.CompilerError("CS1029").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\SecondPage_0109051836b2d11a4ba3400a576defb2.cs", 57, 12, 57, 239).WithArguments("Property PropertyThatDoesNotExist does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Grid, name is PropertyThatDoesNotExist, preferrednamespace http://schemas.microsoft.com/winfx/2006/xaml/presentation"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/SecondPage.xaml", 6, 3, 6, 3).WithArguments("Property 'PropertyThatDoesNotExist' does not exist on 'Grid'"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 

@@ -287,7 +287,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					case XamlNodeType.StartObject:
 						_depth++;
-						var root = new XamlObjectDefinition(reader, null);
+						var root = new XamlObjectDefinition(reader, xamlFile);
 						xamlFile.Objects.Add(root); // In order to keep alive parsed content if an exception occurs, we make sure to add the child before continuing parsing.
 						VisitObject(reader, ref root, ct);
 						break;
@@ -369,9 +369,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return;
 
 					case XamlNodeType.Value:
-						if (IsLiteralInlineText(reader.Value, member, member.Owner))
+						if (IsLiteralInlineText(reader.Value, member))
 						{
-							var run = ConvertLiteralInlineTextToRun(reader, trimStart: !reader.PreserveWhitespace && lastWasTrimSurroundingWhiteSpace);
+							var run = ConvertLiteralInlineTextToRun(reader, member, trimStart: !reader.PreserveWhitespace && lastWasTrimSurroundingWhiteSpace);
 							member.Objects.Add(run);
 							lastWasLiteralInline = true;
 							lastWasTrimSurroundingWhiteSpace = false;
@@ -430,24 +430,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
-		{
-			return value is string
-				&& (
-					xamlObject.Type.Name is "TextBlock"
-						or "Bold"
-						or "Hyperlink"
-						or "Italic"
-						or "Underline"
-						or "Span"
-						or "Paragraph"
-				)
-				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
-		}
+		private static bool IsLiteralInlineText(object value, XamlMemberDefinition member)
+			=> value is string
+				&& member.Owner.Type.Name is "TextBlock"
+					or "Bold"
+					or "Hyperlink"
+					or "Italic"
+					or "Underline"
+					or "Span"
+					or "Paragraph"
+				&& member.Member.Name is "_UnknownContent"
+					or "Inlines";
 
-		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, bool trimStart)
+		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, XamlMemberDefinition member, bool trimStart)
 		{
-			var run = new XamlObjectDefinition(_runXamlType, reader.LineNumber, reader.LinePosition, owner: null, namespaces: null);
+			var run = new XamlObjectDefinition(reader, member.Owner) { Type = _runXamlType };
 			var runText = new XamlMemberDefinition(new XamlMember("Text", _runXamlType, false), reader.LineNumber, reader.LinePosition, run)
 			{
 				Value = trimStart ? ((string)reader.Value).TrimStart() : reader.Value
