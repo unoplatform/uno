@@ -90,7 +90,7 @@ $ErrorActionPreference = 'Stop'
 function Get-TargetRoot([string]$repo) {
     $cfg = $external_docs[$repo]
     $dest = if ($cfg.ContainsKey('dest') -and $cfg.dest) { $cfg.dest } else {
-        Join-Path 'external' $repo 
+        Join-Path 'external' $repo
     }
     return Join-Path 'articles' $dest
 }
