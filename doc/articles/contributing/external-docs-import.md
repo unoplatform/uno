@@ -80,7 +80,7 @@ Example array:
 @(
   "uno.wasm.bootstrap",
   "uno.themes"
-  )
+)
 ```
 
 ### Usage Examples
