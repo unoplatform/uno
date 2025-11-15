@@ -54,7 +54,7 @@ namespace TestRepro
 			{
 				IsParsing = true,
 				
-				#error Property PropertyThatDoesNotExist does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Grid, name is PropertyThatDoesNotExist, preferrednamespace http://schemas.microsoft.com/winfx/2006/xaml/presentation
+				// [ERROR] C:/Project/0/SecondPage.xaml(6,3): Property 'PropertyThatDoesNotExist' does not exist on 'Grid'.
 				// Source 0\SecondPage.xaml (Line 6:3)
 			}
 			.SecondPage_0109051836b2d11a4ba3400a576defb2_XamlApply((SecondPage_0109051836b2d11a4ba3400a576defb2XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
@@ -70,7 +70,7 @@ namespace TestRepro
 			{
 			// Source 0\SecondPage.xaml (Line 1:2)
 			
-			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// [WARNING] C:/Project/0/SecondPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
 			.SecondPage_0109051836b2d11a4ba3400a576defb2_XamlApply((SecondPage_0109051836b2d11a4ba3400a576defb2XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
