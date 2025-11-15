@@ -257,7 +257,7 @@ function Parse-TocYml {
             }
             elseif ($href -match '\.md$') {
                 # Relative markdown file
-                $filePath = Join-Path (Split-Path $TocPath -Parent) $href
+                $filePath = Join-Path (Split-Path $absoluteTocPath -Parent) $href
                 $filePath = [System.IO.Path]::GetFullPath($filePath)
                 
                 if ($GenerateType -eq 'Llms') {
