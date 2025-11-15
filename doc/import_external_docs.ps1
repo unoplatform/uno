@@ -22,7 +22,7 @@ $external_docs = @{
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" } #latest master commit
     "uno.samples"        = @{ ref="8098a452951c9f73cbcf8d0ac1348f029820e53a" } #latest master commit
     "uno.chefs"          = @{ ref="af0a0c928337688c5ed3e87c3389a1cfdad46933" } #latest main commit
-    "hd-docs"            = @{ ref="aa81f09e08fe0357e2aed15a7eab59d6c27728d9"; dest="studio/Hot Design" } #latest main commit
+    "hd-docs"            = @{ ref="ded00dc100ae7dcba4a78fd32d393a58c1d1f23e"; dest="studio/Hot Design" } #latest main commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
@@ -39,8 +39,8 @@ if ($forks_to_import -ne $null) {
         Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
         Where-Object { $configuredRepos -notcontains $_.ToLower() }
 
-    if ($forks_to_import -ne $null -and $forks_to_import.Count -gt 0 -and $contributor_git_url -eq $null) {  
-        throw "Parameter 'forks_to_import' requires 'contributor_git_url' to be specified."  
+    if ($forks_to_import -ne $null -and $forks_to_import.Count -gt 0 -and $contributor_git_url -eq $null) {
+        throw "Parameter 'forks_to_import' requires 'contributor_git_url' to be specified."
     }
 
     if ($invalidForks.Count -gt 0) {
