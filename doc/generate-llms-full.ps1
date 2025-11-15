@@ -61,7 +61,7 @@ function Build-XrefCache {
     Get-ChildItem -Path $docRoot -Filter "*.md" -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
         try {
             $content = Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue
-            if ($content -and $content -match '(?m)^---\s*\n.*?uid:\s*(.+?)\s*\n.*?^---') {
+            if ($content -and $content -match '(?s)^---\s*\n.*?uid:\s*(.+?)\s*\n.*?^---') {
                 $uid = $Matches[1].Trim()
                 if ($uid) {
                     $cache[$uid] = $_.FullName
