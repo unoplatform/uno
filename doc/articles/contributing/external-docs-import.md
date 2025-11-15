@@ -64,23 +64,33 @@ Specifies the GitHub URL of a contributor's fork to import repositories from ins
 
 `https://github.com/ContributorUserName/`
 
+> [!NOTE]
+> Ignored unless `-forks_to_import` is also provided. Provide both parameters to import from a contributor fork; otherwise Uno Platform upstream repositories are used.
+
 #### [`-forks_to_import <string[]>`](#tab/forks-to-import)
 
-Optional.
-Array of repository names to import from the contributor fork.
+Optional. Only required when using `-contributor_git_url`.
+Array of repository names to import from the contributor fork. If you provide `-contributor_git_url` without `-forks_to_import`, the contributor URL is ignored and Uno repos are used. If you provide `-forks_to_import` without `-contributor_git_url`, the script throws an error.
 
 **Rules:**
 
 - Repository names must match the configured names in `$external_docs`
 - Comparison is case-insensitive
 
-Example array:
+**Example array:**
 
 ```powershell
 @(
   "uno.wasm.bootstrap",
   "uno.themes"
 )
+```
+
+**Example for wrong usage:**
+
+```powershell
+./import_external_docs.ps1 -forks_to_import @('uno.wasm.bootstrap')
+# ERROR: Parameter 'forks_to_import' requires 'contributor_git_url' to be specified.
 ```
 
 ### Usage Examples
