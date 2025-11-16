@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NavigationButtonClosedName" xml:space="preserve">
-    <value>Maak navigasie oop</value>
+    <value>ਨੇਵੀਗੇਸ਼ਨ ਖੋਲ੍ਹੋ</value>
     <comment>Automation name for the hamburger button when it is in a closed state</comment>
   </data>
   <data name="NavigationButtonOpenName" xml:space="preserve">
-    <value>Sluit navigasie</value>
+    <value>ਨੈਵੀਗੇਸ਼ਨ ਨੂੰ ਬੰਦ ਕਰੋ</value>
     <comment>Automation name and tooltip caption for the hamburger button when it is in an open state, and tooltip caption for the close button</comment>
   </data>
   <data name="NavigationViewItemDefaultControlName" xml:space="preserve">
@@ -130,35 +130,35 @@
     <comment>Default automation id if no name or id is provided</comment>
   </data>
   <data name="SettingsButtonName" xml:space="preserve">
-    <value>Instellings</value>
+    <value>ਸੈਟਿੰਗਾਂ</value>
     <comment>Automation name for the settings button</comment>
   </data>
   <data name="NavigationViewSearchButtonName" xml:space="preserve">
-    <value>Klik om te soek</value>
+    <value>ਖੋਜਣ ਲਈ ਕਲਿਕ ਕਰੋ</value>
     <comment>Name for the compact view search button</comment>
   </data>
   <data name="NavigationBackButtonName" xml:space="preserve">
-    <value>Terug</value>
+    <value>ਪਿੱਛੇ ਜਾਓ</value>
     <comment>Automation name for the nav view provided back button</comment>
   </data>
   <data name="NavigationBackButtonToolTip" xml:space="preserve">
-    <value>Terug</value>
+    <value>ਪਿੱਛੇ ਜਾਓ</value>
     <comment>ToolTip caption for the back button</comment>
   </data>
   <data name="NavigationCloseButtonName" xml:space="preserve">
-    <value>Sluit</value>
+    <value>ਬੰਦ ਕਰੋ</value>
     <comment>Automation name for the nav view provided close button</comment>
   </data>
   <data name="NavigationOverflowButtonName" xml:space="preserve">
-    <value>Meer</value>
+    <value>ਹੋਰ</value>
     <comment>Automation name for the nav view more button when panel is on top</comment>
   </data>
   <data name="NavigationOverflowButtonText" xml:space="preserve">
-    <value>Meer</value>
+    <value>ਹੋਰ</value>
     <comment>Text for the nav view more button when panel is on top</comment>
   </data>
   <data name="NavigationOverflowButtonToolTip" xml:space="preserve">
-    <value>Meer</value>
+    <value>ਹੋਰ</value>
     <comment>ToolTip caption for the nav view more button when panel is on top</comment>
   </data>
 </root>
