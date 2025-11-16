@@ -29,6 +29,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private bool _visible;
 	private PointInt32 _position;
 	private SizeInt32 _size;
+	private SizeInt32 _clientSize;
 	private string _title = "";
 	private CoreWindowActivationState _activationState;
 	private XamlRoot? _xamlRoot;
@@ -194,7 +195,18 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		}
 	}
 
-	public SizeInt32 ClientSize => throw new NotImplementedException();
+	public SizeInt32 ClientSize
+	{
+		get => _clientSize;
+		set
+		{
+			if (!_clientSize.Equals(value))
+			{
+				_clientSize = value;
+				_window?.AppWindow.OnAppWindowChanged(new AppWindowChangedEventArgs() { DidSizeChange = true });
+			}
+		}
+	}
 
 	public DispatcherQueue DispatcherQueue => throw new NotImplementedException();
 
