@@ -219,6 +219,9 @@ internal sealed partial class WindowChrome : ContentControl
 
 			SetTooltip(m_tpMaximizeButtonPart, IsWindowMaximized() ? ToolTipRestore : ToolTipMaximize);
 		}
+
+		ConfigureWindowChrome();
+		ResizeCaptionButtons();
 	}
 
 	private void SetTooltip(DependencyObject element, string resourceStringID)
