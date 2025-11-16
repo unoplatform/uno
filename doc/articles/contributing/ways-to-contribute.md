@@ -21,7 +21,7 @@ Here are questions you can consider before you file a bug to make sure you're no
 
 Pre-Submission check:
 
-1. Did you read the [documentation](https://platform.uno/docs/articles/intro.html)?
+1. Did you read the [documentation](xref:Uno.Documentation.Intro)?
 2. Did you check the latest [pre-release](https://www.nuget.org/packages/Uno.UI/absoluteLatest) of Uno Platform to see if the issue has been fixed?
 3. Does the issue exist on the WinUI project (in which case it is not an Uno Platform issue)
 
@@ -48,7 +48,7 @@ Wherever we can, we prefer to implement WinUI APIs for maximum cross-platform co
 
 ### Ask (and answer) questions
 
-If you have a question, be sure first to check out our [documentation](https://platform.uno/docs/articles/intro.html). But if you are still stuck, please visit [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our engineering team and community will be able to help you.
+If you have a question, be sure first to check out our [documentation](xref:Uno.Documentation.Intro). But if you are still stuck, please visit [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our engineering team and community will be able to help you.
 
 If you've already done some Uno development, maybe there's a GitHub discussion question you can answer, giving another user the benefit of your experience.
 
@@ -72,7 +72,7 @@ The WinUI framework is pretty big, but many hands make light work. We welcome co
 
 ### Diving into the code
 
-The [contributor's guide](contributing-intro.md) has plenty of resources to help you get up and running with Uno's code, including a [guide to building and debugging Uno.UI](debugging-uno-ui.md), and a [guide to Uno's internals](uno-internals-overview.md).
+The [contributor's guide](xref:Uno.Contributing.Intro) has plenty of resources to help you get up and running with Uno's code, including a [guide to building and debugging Uno.UI](xref:Uno.Contributing.DebuggingUno), and a [guide to Uno's internals](xref:Uno.Contributing.Overview).
 
 ### Finding an issue to work on
 
@@ -84,15 +84,15 @@ In either case, once you're ready, leave a comment on the issue indicating that 
 
 ### Getting down to work
 
-The [contributor's guide](contributing-intro.md) has the information you need. The most important points are:
+The [contributor's guide](xref:Uno.Contributing.Intro) has the information you need. The most important points are:
 
 - Work in [your own fork of Uno](https://help.github.com/en/github/getting-started-with-github/fork-a-repo)
-- Be sure to use the [Conventional Commits format](git-conventional-commits.md)
-- Once you're done, you'll probably need to [add a test](../contributing/guidelines/creating-tests.md)
+- Be sure to use the [Conventional Commits format](xref:Uno.Contributing.ConventionalCommits)
+- Once you're done, you'll probably need to [add a test](xref:Uno.Contributing.Tests.CreatingTests)
 
 ### Creating a PR
 
-Once you're ready to create a PR, check out the [Guidelines for pull requests](../contributing/guidelines/pull-requests.md) in Uno.
+Once you're ready to create a PR, check out the [Guidelines for pull requests](xref:Uno.Contributing.PullRequests) in Uno.
 
 ### Need help?
 

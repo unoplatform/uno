@@ -25,7 +25,7 @@ The Native Style for ToggleSwitch on Android is based on `SwitchCompat`, a Mater
 It does not make any attempt to use the platform provided widget on those devices which it is available normally.
 This ensures the same behavior on all system versions.
 
-#### Platform support
+#### Platform support on Android
 
 | Property             | `BindableSwitchCompat` |
 |----------------------|:----------------------:|
@@ -91,7 +91,7 @@ If you need the native style but you want to change the Text, ThumbTint and Trac
 
 Based on the UISwitch.
 
-#### Platform support
+#### Platform support on iOS
 
 | Property                                   | BindableUISwitch |
 | ------------------------------------------ |:----------------:|

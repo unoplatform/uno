@@ -7,13 +7,13 @@ uid: Uno.Contributing.SamplesApp
 The SamplesApp in Uno.UI is an Uno application containing a large number of UI and non-UI samples. It serves a few purposes:
 
 * Allow for manually testing new features and investigating bugs,
-* Provide UI for [automated UI tests](creating-ui-tests.md),
+* Provide UI for [automated UI tests](xref:Uno.Contributing.Tests.CreateUITests),
 * Allow automated comparison of static snapshots between Uno versions,
 * Document the functionality supported by Uno.
 
 This article details how to run SamplesApp and how to add a new sample.
 
-For instructions on working with automated UI tests, [go here](creating-ui-tests.md).
+For instructions on working with automated UI tests, [go here](xref:Uno.Contributing.Tests.CreateUITests).
 
 ## Running SamplesApp
 
@@ -22,7 +22,7 @@ The SamplesApp from latest master branch for WebAssembly is available online: ht
 To run the SamplesApp locally:
 
 1. Ensure [your environment is configured](xref:Uno.GetStarted.vs2022) for the platform you want to run on.
-2. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
+2. Open Uno.UI with the [correct target override and solution filter](xref:Uno.Contributing.BuildingUno) for the platform you want to run on.
 3. Select `SamplesApp.[Platform]` as the startup app. (Eg, `SamplesApp.iOS` if you're running on iOS.)
 4. If you're testing on a mobile platform, use a tablet if possible, as the app is optimized for a tablet layout.
 5. Run SamplesApp.
@@ -37,7 +37,7 @@ By default, SamplesApp starts in debugging mode on localhost, making it inaccess
 
 ## Sample organization
 
-Samples are located in the [`UITests.Shared` project](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared). UI-related samples are generally grouped by control, or by functional area for samples that aren't specific to a particular control (eg `VisualStateTests`). Non-UI samples are generally grouped by namespace of the tested feature.
+Samples are located in the [`UITests.Shared` project](../../../src/SamplesApp/UITests.Shared). UI-related samples are generally grouped by control, or by functional area for samples that aren't specific to a particular control (eg `VisualStateTests`). Non-UI samples are generally grouped by namespace of the tested feature.
 
 Note that there's no 'master list' of samples. Instead, individual samples are tagged with `SampleAttribute` (or `SampleControlInfoAttribute`, for older samples), and the SamplesApp automatically picks up all samples using the attribute.
 
@@ -107,7 +107,7 @@ have changed.
 
 ### Troubleshooting the tests
 
-It is possible to enable the chromium head using the configuration parameters in the [app.ts](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
+It is possible to enable the chromium head using the configuration parameters in the [app.ts](../../../src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
 
 ## Creating performance benchmarks with BenchmarkDotNet
 

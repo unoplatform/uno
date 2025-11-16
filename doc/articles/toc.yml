@@ -90,6 +90,8 @@
           href: xref:Uno.Development.Troubleshooting
         - name: Build error codes
           href: xref:Build.Solution.error-codes
+        - name: Troubleshooting source generation
+          href: xref:Uno.Development.Troubleshooting.SourceGeneration
 
 - name: Samples & Tutorials
   topicHref: xref:Uno.SamplesTutorials.Overview
@@ -177,21 +179,26 @@
     - name: Architecture
       items:
         - name: Supported Platforms
-          href: getting-started/requirements.md
-        - name: .NET Version Support
-          href: net-version-support.md
+          href: xref:Uno.GettingStarted.Requirements
+          items:
+          - name: .NET Versions
+            href: net-version-support.md
+          - name: Working with Skia Desktop
+            href: xref:Uno.Skia.Desktop
+          - name: Working with the Linux Framebuffer
+            href: features/using-linux-framebuffer.md
         - name: Philosophy
-          href: concepts/overview/philosophy-of-uno.md
+          href: xref:Uno.Overview.Philosophy
         - name: How Uno Works
-          href: how-uno-works.md
+          href: xref:Uno.Development.HowItWorks
+        - name: Best practices
+          href: xref:Uno.Development.BestPractices
         - name: UI Renderers
           items: 
           - name: Skia Renderer
             href: xref:uno.features.renderer.skia
           - name: Native Renderer
             href: xref:uno.features.renderer.native
-        - name: Best Practices
-          href: best-practices-uno.md
 
     - name: Authoring
       items:
@@ -233,7 +240,7 @@
         - name: How to create a repro sample
           href: uno-howto-create-a-repro.md
         - name: 'Debugging C# on WASM'
-          href: debugging-wasm.md
+          href: xref:Uno.Development.DebuggingWasm
         - name: VS Code Advanced Mobile Debugging
           href: xref:uno.vscode.mobile.advanced.debugging
         - name: Generic Unhandled Exceptions handler
@@ -244,9 +251,9 @@
     - name: Embedding
       items:
       - name: Uno Platform in WPF
-        href: guides/uno-islands.md
-      - name: Native Views
-        href: native-views.md
+        href: xref:Uno.Tutorials.UnoIslands
+      - name: Native Views with Mobile
+        href: xref:Uno.Development.NativeViews
       - name: Native Views with Skia
         href: xref:Uno.Skia.Embedding.Native
 
@@ -353,87 +360,88 @@
     - name: Contributing
       items:
       - name: Overview
-        href: uno-development/contributing-intro.md
+        href: xref:Uno.Contributing.Intro
       - name: Code of Conduct
         href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
       - name: Ways to contribute
-        href: uno-development/ways-to-contribute.md
+        href: xref:Uno.Contributing.WaysToContribute
       - name: How Uno works
         items:
           - name: Overview
-            href: uno-development/uno-internals-overview.md
+            href: xref:Uno.Contributing.Overview
           - name: Android
-            href: uno-development/uno-internals-android.md
+            href: xref:Uno.Contributing.Android
           - name: Layouting in Android
-            href: uno-development/Uno-UI-Layouting-Android.md
+            href: Uno.Contributing.Layouting.Android
           - name: iOS
-            href: uno-development/uno-internals-ios.md
+            href: Uno.Contributing.iOS
           - name: Layouting in iOS
-            href: uno-development/Uno-UI-Layouting-iOS.md
+            href: xref:Uno.Contributing.Layouting.iOS
           - name: WASM
-            href: uno-development/uno-internals-wasm.md
+            href: xref:Uno.Contributing.Wasm
           - name: macOS
-            href: uno-development/uno-internals-macos.md
+            href: xref:Uno.Contributing.macOS
           - name: DependencyProperty backing generator
-            href: uno-development/Internal-DependencyProperty-Generator.md
+            href: xref:Uno.Contributing.DependencyPropertyGenerator
           - name: x:Bind in Uno Platform
-            href: uno-development/Uno-UI-xBind-architecture.md
+            href: xref:Uno.Contributing.xBind
           - name: ListViewBase
-            href: uno-development/listviewbase-internals.md
+            href: xref:Uno.Contributing.ListViewBase
           - name: ThemeResource
-            href: uno-development/themeresource-internals.md
+            href: xref:Uno.Contributing.ThemeResource
           - name: InteractionTracker internals
-            href: uno-development/interaction-tracker-internals.md
-      - name: Building Uno.UI
-        href: uno-development/building-uno-ui.md
-      - name: Debugging Uno.UI
-        href: uno-development/debugging-uno-ui.md
-      - name: Using Codespaces
-        href: features/working-with-codespaces.md
-      - name: Using Ona
-        href: features/working-with-gitpod.md
-      - name: Inspecting the visual tree
-        href: uno-development/debugging-inspect-visual-tree.md
-      - name: Guidelines for code style
-        href: contributing/guidelines/code-style.md
-      - name: Using the SamplesApp
-        href: uno-development/working-with-the-samples-apps.md
+            href: xref:Uno.Contributing.InteractionTracker
+      - name: Guidelines for Contributing Documentation
+        items:
+        - name: Contributing documentation
+          href: Uno.Contributing.Docs
+        - name: docfx in the Uno Platform documentation
+          href: xref:Uno.Contributing.docfx
+        - name: Using the TOC Checker script
+          href: xref:Uno.Contributing.check-toc
+        - name: Anchor Links in Documentation
+          href: xref:Uno.Contributing.Documentation.Anchor-links
+      - name: Contributing to Uno.UI
+        topicHref: xref:Uno.Contributing.BuildingUno
+        items:
+          - name: Building Uno.UI
+            href: xref:Uno.Contributing.BuildingUno
+          - name: Debugging Uno.UI
+            href: xref:Uno.Contributing.DebuggingUno
+          - name: Guidelines for code style
+            href: xref:Uno.Contributing.CodeStyle
+      - name: Git
+        href: xref:Uno.Contributing.Source-Control
+        items:
+          - name: Source Control Overview
+            href: xref:Uno.Contributing.Source-Control
+          - name: Using Codespaces
+            href: xref:Uno.Features.Codespaces
+          - name: Using Ona
+            href: xref:Uno.Features.Gitpod
       - name: Guidelines for creating tests
+        href: xref:Uno.Contributing.Tests.CreatingTests
         items:
           - name: Overview
-            href: contributing/guidelines/creating-tests.md
+            href: xref:Uno.Contributing.Tests.CreatingTests
           - name: Mocked unit tests (Uno.UI.Tests)
-            href: uno-development/creating-mocked-tests.md
+            href: xref:Uno.Contributing.Tests.Creating-mocked-tests
           - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
-            href: uno-development/creating-runtime-tests.md
+            href: xref:Uno.Contributing.Tests.CreateRuntimeTests
           - name: UI tests with Uno.UITest
-            href: uno-development/creating-ui-tests.md
-      - name: Debugging Solution Templates
-        href: uno-development/debugging-templates.md
-      - name: Conventional Commits format
-        href: uno-development/git-conventional-commits.md
-      - name: Guidelines for pull-requests
-        href: contributing/guidelines/pull-requests.md
-      - name: Guidelines for breaking changes
-        href: contributing/guidelines/breaking-changes.md
-      - name: Guidelines for updating dependencies
-        href: contributing/guidelines/updating-dependencies.md
-      - name: Guidelines for issue triage
-        href: contributing/guidelines/issue-triage.md
+            href: xref:Uno.Contributing.Tests.CreateUITests
+          - name: Testing PowerShell Scripts with Pester
+            href: Uno.Contributing.Tests.PowerShell-Pester-Tests
+          - name: Using the SamplesApp
+            href: xref:Uno.Contributing.SamplesApp
+      - name: Inspecting the visual tree
+        href: xref:Uno.Contributing.InspectVisualTree
       - name: Guidelines for implementing a new WinUI/WinRT feature
-        href: contributing/guidelines/implementing-a-new-winui-winrt-feature.md
-      - name: Adding documentation
-        href: uno-development/doc-on-docs.md
-      - name: DocFX
-        href: uno-development/docfx.md
-      - name: Uno.UI release procedure
-        href: uno-development/release-procedure.md
-      - name: Build Artifacts
-        href: contributing/build-artifacts.md
+        href: xref:Uno.Contributing.ImplementWinUIWinRT-API
       - name: Advanced topics
         items:
           - name: Adding functionality with API extensions
-            href: uno-development/api-extensions.md
+            href: xref:Uno.Contributing.ApiExtensions
           - name: The WeakEventHelper class
             href: uno-development/Internal-WeakEventHelper.md
           - name: Debugging Uno.UI Java code with Android studio
@@ -446,6 +454,18 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
           - name: Hot Reload internals
             href: xref:Uno.Contributing.Internals.HotReload
+          - name: Guidelines for updating dependencies
+            href: xref:Uno.Contributing.UpdatingDependencies
+          - name: Breaking changes
+            href: xref:Uno.Contributing.BreakingChanges
+          - name: Release Procedure
+            href: xref:Uno.Contributing.ReleaseProcedure
+          - name: Build Artifacts
+            href: xref:Uno.Contributing.BuildArtifacts
+          - name: Guidelines for issue triage
+            href: xref:Uno.Contributing.IssueTriage
+          - name: Debugging Solution Templates
+            href: xref:Uno.Contributing.DebuggingTemplates
     - name: Why use Uno Platform?
       href: xref:Uno.Overview.WhyUno
     - name: FAQ
@@ -765,8 +785,8 @@
     - name: Templates
       items:
       - name: Visual Studio Wizard
-        href: getting-started/wizard/using-wizard.md
+        href: Uno.GettingStarted.UsingWizard
       - name: dotnet new Templates
-        href: get-started-dotnet-new.md
+        href: xref:Uno.GetStarted.dotnet-new
       - name: Get started wizard
         href: xref:Uno.GetStarted.Wizard

@@ -7,7 +7,7 @@ uid: Uno.Contributing.DebuggingUno
 > [!NOTE]
 > [Find instructions for building the Uno.UI solution here.](xref:Uno.Contributing.BuildingUno)
 
-## Debugging Uno.UI samples
+## Debugging Uno.UI samples <!-- TODO: This Topic should better be handled in Uno.Contributing.SamplesApp instead and just linked from here to there. -->
 
 To debug the **SamplesApp** in the Uno.UI solution, which includes an extensive set of samples and test cases for the controls supported by Uno.UI, as well as non-UI features:
 
@@ -18,7 +18,7 @@ To debug the **SamplesApp** in the Uno.UI solution, which includes an extensive 
 3. Set `SamplesApp.[TargetPlatform]` as the selected Startup Project.
 4. Launch the samples app from Visual Studio.
 
-See [this article](working-with-the-samples-apps.md) for more information on working with the SamplesApp and authoring new samples.
+See [this article](xref:Uno.Contributing.SamplesApp) for more information on working with the SamplesApp and authoring new samples.
 
 ## Debugging Uno in another application
 
@@ -75,7 +75,7 @@ Then, here are the steps to use a local build of Uno.UI in another application:
 
 To debug Uno.UI code in the application, follow these steps (using `FrameworkElement.MeasureOverride()` as an example):
 
-1. Open [`FrameworkElement.cs`](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/FrameworkElement.cs) in the Uno.UI solution.
+1. Open [`FrameworkElement.cs`](../../../../src/Uno.UI/UI/Xaml/FrameworkElement.cs) in the Uno.UI solution.
 2. Right-click on the `FrameworkElement.cs` tab header in Visual Studio and choose 'Copy Full Path'.
 3. Switch to the Visual Studio instance where your application is open.
 4. In your application solution, choose File->Open->File... or simply `Ctrl+O`, paste the path to `FrameworkElement.cs` into the file open dialog, and open `FrameworkElement.cs` in the application solution.

@@ -1,3 +1,6 @@
+---
+uid: Uno.Contributing.InteractionTracker
+---
 # InteractionTracker internals
 
 This document tries to detail and clarify the implementation of InteractionTracker.

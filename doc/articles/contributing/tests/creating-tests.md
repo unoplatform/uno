@@ -1,5 +1,5 @@
 ---
-uid: Uno.Contributing.CreatingTests
+uid: Uno.Contributing.Tests.CreatingTests
 ---
 
 # Guidelines for creating tests
@@ -12,9 +12,9 @@ This guide offers an overview of the various types of tests used within Uno, and
 
 The 'TLDR' rule of thumb for adding tests is:
 
-- if you're testing platform-independent functionality, like the dependency property system, [use Uno.UI.Tests](../../uno-development/creating-mocked-tests.md);
-- if you're testing platform-dependent functionality that can be verified programmatically in-process, like checking that a control is measured and arranged properly, [use Uno.UI.RuntimeTests](../../uno-development/creating-runtime-tests.md);
-- if your test needs to simulate user interaction or check that the final screen output is correct, [use SamplesApp.UITests](../../uno-development/creating-ui-tests.md).
+- if you're testing platform-independent functionality, like the dependency property system, [use Uno.UI.Tests](xref:Uno.Contributing.Tests.CreateMockedTests);
+- if you're testing platform-dependent functionality that can be verified programmatically in-process, like checking that a control is measured and arranged properly, [use Uno.UI.RuntimeTests](xref:Uno.Contributing.Tests.CreateRuntimeTests);
+- if your test needs to simulate user interaction or check that the final screen output is correct, [use SamplesApp.UITests](xref:Uno.Contributing.Tests.CreateUITests).
 
 ## Types of tests
 
@@ -47,7 +47,7 @@ They can verify assertions about the state of the app:
 - onscreen bounds of a view element
 - comparing screenshots at different stages of the app, and asserting equality or inequality
 
-A complete set of instructions for authoring UI tests is available in [Using the SamplesApp documentation](../../uno-development/working-with-the-samples-apps.md).
+A complete set of instructions for authoring UI tests is available in [Using the SamplesApp documentation](xref:Uno.Contributing.SamplesApp).
 
 Although only a subset of the samples in the SamplesApp are covered by automated UI tests, _all_ samples are screen-shotted on every build, and a reporting tool (runs on Skia, Wasm, Android, and iOS) reports any screenshots that differ from the previous build. Currently, the build isn't gated on these checks, but this may be adjusted in the future.
 
@@ -70,23 +70,23 @@ The platform runtime tests also have access to internal Uno.UI members if need b
 
 ### XAML code generation tests (`XamlGenerationTests`)
 
-These specifically target [the parser](https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator) which generates C# code from XAML files. They are 'tests' in a simple sense that if the parser throws an error, or if it generates invalid C# code, they will fail the CI build.
+These specifically target [the parser](../../../../src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator) which generates C# code from XAML files. They are 'tests' in a simple sense that if the parser throws an error, or if it generates invalid C# code, they will fail the CI build.
 
 If you want to actually test that generated XAML produces correct behavior, which will be the case most of the time, you should use one of the other test types.
 
 ### Source generator tests
 
-These can be used to assert that a given input to a given source generator produces specific expected diagnostics. The infrastructure for the tests easily allows to test the generator output exactly, but you should avoid that kind of assertion if you can. These tests exist in [`Uno.UI.SourceGenerators.Tests`](https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/Uno.UI.SourceGenerators.Tests).
+These can be used to assert that a given input to a given source generator produces specific expected diagnostics. The infrastructure for the tests easily allows to test the generator output exactly, but you should avoid that kind of assertion if you can. These tests exist in [`Uno.UI.SourceGenerators.Tests`](../../../../src/SourceGenerators/Uno.UI.SourceGenerators.Tests).
 
 ### UI snapshot tests
 
-These are 'semi-automated' tests that takes a screenshot of each sample in the [SamplesApp](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared).
+These are 'semi-automated' tests that takes a screenshot of each sample in the [SamplesApp](../../../../src/SamplesApp/UITests.Shared).
 
-On Android, iOS, and Wasm, a minimal UI test is [generated](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.UITests.Generator/SnapShotTestGenerator.cs) which simply runs the sample (which automatically takes a screenshot of the loaded sample).
+On Android, iOS, and Wasm, a minimal UI test is [generated](../../../../src/SamplesApp/SamplesApp.UITests.Generator/SnapShotTestGenerator.cs) which simply runs the sample (which automatically takes a screenshot of the loaded sample).
 
 On Skia and macOS, we [loop over the samples and load them](https://github.com/unoplatform/uno/blob/b1a6eddcad3bcca6d9756b0a57ff6cf458321048/src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UITests/Presentation/SampleChooserViewModel.cs#L364-L427), then [save a screenshot](https://github.com/unoplatform/uno/blob/b1a6eddcad3bcca6d9756b0a57ff6cf458321048/src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UITests/Presentation/SampleChooserViewModel.cs#L1221-L1244) of each sample using `RenderTargetBitmap` and `BitmapEncoder`. This is generally faster than relying on UI tests.
 
-The screenshots from each sample, as well as all screenshots generated by the main UI tests (using the `TakeScreenshot()` method), are [compared](https://github.com/unoplatform/uno/tree/master/src/Uno.UI.TestComparer) with the same sample from the most recent merged CI build.
+The screenshots from each sample, as well as all screenshots generated by the main UI tests (using the `TakeScreenshot()` method), are [compared](../../../../src/Uno.UI.TestComparer) with the same sample from the most recent merged CI build.
 
 **Failed** comparisons will not fail the build (for one thing, it's possible the differences are expected or even desired). Instead, a report is generated, with a summary added to the PR as a comment listing all samples that changed. The onus is on the PR author to manually review these changes to ensure that no regressions have been introduced.
 
@@ -132,6 +132,7 @@ As a rule of thumb, if the behavior you're testing can be verified by a unit tes
 If you're fixing a bug that can be verified by a static sample, create a SamplesApp sample that can be monitored by the snapshot comparer.
 
 If you're fixing a bug that involves user interaction or multiple asynchronous UI operations, or you want a hard verification of the onscreen visual state, then create a UI test.
+<!-- TODO: Add case of when PowerShell Tests e.g. with Pester should be provided -->
 
 ## What can't be tested?
 
@@ -139,4 +140,4 @@ Some UI behaviors are difficult to test in an automated fashion, such as transie
 
 Some non-UI APIs may not be testable in the emulated environment on the CI build.
 
-If you're working on something that falls under one of these descriptions, you should add a [sample](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared) that covers the bug or feature you're working on, and verify that the existing samples in the same feature category aren't negatively affected by your changes. Also, you should mark such sample as a manual test. For more information about manual tests, see [Adding a manual test sample section in Using the SamplesApp documentation](../../uno-development/working-with-the-samples-apps.md#adding-a-manual-test-sample).
+If you're working on something that falls under one of these descriptions, you should add a [sample](../../../../src/SamplesApp/UITests.Shared) that covers the bug or feature you're working on, and verify that the existing samples in the same feature category aren't negatively affected by your changes. Also, you should mark such sample as a manual test. For more information about manual tests, see [Adding a manual test sample section in Using the SamplesApp documentation](xref:Uno.Contributing.SamplesApp#adding-a-manual-test-sample).

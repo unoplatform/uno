@@ -13,7 +13,7 @@ There are two ways to debug a WebAssembly application:
 
 Here’s what you need to do to debug an Uno Platform application in Visual Studio (2022 17.1 or later):
 
-- Install the latest [Uno Platform Visual Studio templates](./get-started-vs-2022.md#install-the-solution-templates)
+- Install the latest [Uno Platform Visual Studio Extension](getting-started/get-started-vs-2022.md#install-the-uno-platform-extension)
 - Have Chrome or Edge (Chromium based)
 - In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` 8.0.0 or later
 - Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj. It is automatically set [when using the Uno.SDK](xref:Uno.Features.Uno.Sdk).
@@ -48,16 +48,16 @@ To debug your application:
   - Select **MyApp (WebAssembly IIS Express)** as the debugging target
   - Select **Chrome** or **Microsoft Edge** as the Web Browser
   - Make sure script debugging is disabled<br/>
-   ![IIS express settings](Assets/quick-start/wasm-debugging-iis-express.png)
+   ![IIS express settings](getting-started/Assets/quick-start/wasm-debugging-iis-express.png)
 
 - Start the debugging session using <kbd>Ctrl</kbd><kbd>F5</kbd> or _Debug_ > _Start Without Debugging_ from the menu, (<kbd>F5</kbd> will work, but the debugging experience won't be in Visual Studio)
 - Once your application has started, press <kbd>Alt</kbd><kbd>Shift</kbd><kbd>D</kbd> (in Chrome, on your application's tab)
 - A new tab will open with the debugger or instructions to activate it
-![Debugger - New tab with instructions to activate it](Assets/quick-start/wasm-debugger-step-01.png)
+![Debugger - New tab with instructions to activate it](getting-started/Assets/quick-start/wasm-debugger-step-01.png)
 - You will now get the Chrome DevTools to open listing all the .NET loaded assemblies on the Sources tab:<br/>
-![Debugger - Chrome DevTools listing all the .NET loaded assemblies on the Sources tab](Assets/quick-start/wasm-debugger-step-02.png)
+![Debugger - Chrome DevTools listing all the .NET loaded assemblies on the Sources tab](getting-started/Assets/quick-start/wasm-debugger-step-02.png)
 - You may need to refresh the original tab if you want to debug the entry point (Main) of your application.<br/>
-![Debugger - The smaller refresh button location in the preview section of the Chrome DevTools](Assets/quick-start/wasm-debugger-step-03.png)
+![Debugger - The smaller refresh button location in the preview section of the Chrome DevTools](getting-started/Assets/quick-start/wasm-debugger-step-03.png)
 
 > ### Tips for debugging in Chrome
 >

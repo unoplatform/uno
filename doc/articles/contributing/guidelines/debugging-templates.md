@@ -17,7 +17,7 @@ Some of the templates are reusing the same sources. For example the full solutio
 
 To make modifications to those templates and test the result:
 
-- In Visual Studio, open the solution using the [Uno.UI-SolutionTemplates.slnf](building-uno-ui.md) filter
+- In Visual Studio, open the solution using the [Uno.UI-SolutionTemplates.slnf](xref:Uno.Contributing.BuildingUno) filter
 - Right click on the `Uno.ProjectTemplates.Dotnet` project, select `Pack`
 - This will create a `Uno.ProjectTemplates.Dotnet.255.255.255.255.nupkg` file
 - Install this file using `dotnet new -i C:\[your_path]\bin\Debug\Uno.ProjectTemplates.Dotnet.255.255.255.255.nupkg`

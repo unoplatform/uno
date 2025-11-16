@@ -41,7 +41,7 @@ The resource update machinery can be broadly split into two parts: registering r
 
 ### Registering assignations for updates
 
-ThemeResource assignments can only be created in XAML - WinUI provides no way to create them in code. Thus, in Uno, all assignations come ultimately from either [XamlFileGenerator](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) or XamlReader/[XamlObjectBuilder](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/Markup/Reader/XamlObjectBuilder.cs).
+ThemeResource assignments can only be created in XAML - WinUI provides no way to create them in code. Thus, in Uno, all assignations come ultimately from either [XamlFileGenerator](../../../src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) or XamlReader/[XamlObjectBuilder](../../../src/Uno.UI/UI/Xaml/Markup/Reader/XamlObjectBuilder.cs).
 
 There are 3 cases for ThemeResource assignations that are handled differently:
 

@@ -45,17 +45,17 @@ npm install
 
 ## Generated Implemented views
 
-The process of generating implemented views is documented on this page. [Building docs website locally with DocFX](https://platform.uno/docs/articles/uno-development/docfx.html?tabs=tabid-1#building-docs-website-locally-with-docfx).
-As stated in the documentation, it will probably fail, but it will create stub files and let DocFx build without errors.
-By default, the build swallows DocFx errors (it prints them in the console), that is for simplicity since you don't need
-the implemented views. To test DocFx and break on error run the `npm run strict` command.
+The process of generating implemented views is documented on this page. [Building docs website locally with docfx](xref:Uno.Contributing.docfx#building-docs-website-locally-with-docfx).
+As stated in the documentation, it will probably fail, but it will create stub files and let docfx build without errors.
+By default, the build swallows docfx errors (it prints them in the console), that is for simplicity since you don't need
+the implemented views. To test docfx and break on error run the `npm run strict` command.
 
 ## Deploy
 
-DocFx will use the content of the `styles` folder when building. When working locally, source-maps are generated to help
+docfx will use the content of the `styles` folder when building. When working locally, source-maps are generated to help
 debugging the site; the javascript and css are not minified for the same reason. It's very important that the
 build command is ran just before committing your work; this will minify the code, clean up the `styles` and `_site`
-folders and build the DocFx according to the `docfx.json`. The CI only runs the DocFx command, it will not regenerate
+folders and build the docfx according to the `docfx.json`. The CI only runs the docfx command, it will not regenerate
 the `styles` folder.
 
 ## Commands
@@ -124,18 +124,18 @@ Every file in the `styles` folder is automatically generated and should not be m
 
 Spell-checking for the docs is done as part of a GitHub Action.
 
-If you'd like to perform the same check locally, you can run:
+If you'd like to perform the same check locally, you can use the vs code extension `Code Spell Checker` and configure it to use the [cSpell.json](../build/cSpell.json) file in the directory `build` of the Uno Repository, or use the npm provided version and run:
 
-* `npm install -g cspell@8.3.2` to install the cSpell CLI
+* `npm install -g cspell@latest` to install the cSpell CLI
 * `cspell --config ./cSpell.json "doc/**/*.md" --no-progress` to check all the markdown files in the `doc` folder.
 
 ### Markdown linting the docs
 
 Markdown linting for the docs is done as part of a GitHub Action.
 
-If you'd like to perform the same check locally, you can run:
+If you'd like to perform the same check locally, you can use the vs code extension `markdownlint` or use npm with running:
 
-* `npm install -g markdownlint-cli@0.38.0` to install the markdownlint CLI
+* `npm install -g markdownlint-cli@latest` to install the markdownlint CLI
 * `markdownlint "doc/**/*.md"` to lint all the markdown files in the `doc` folder.
 
 You can also install the [markdownlint Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) to easily check markdown linting and style while writing documentation.
@@ -146,4 +146,4 @@ The local environment is usually located on port `3000` unless another process i
 
 You have to remove the `docs` fragment from the WordPress menu to reach your local documentation server.
 
-For detailed instructions on how to run DocFx locally, please refer to the [DocFx Local Setup Guide](https://platform.uno/docs/articles/uno-development/docfx.html?tabs=tabid-1).
+For detailed instructions on how to run docfx locally, please refer to the [docfx Local Setup Guide](xref:Uno.Contributing.docfx).

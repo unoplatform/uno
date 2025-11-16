@@ -59,9 +59,10 @@ Notice the platform conditionals, since a member may be implemented for some pla
 
 For more details on how Uno Platform runs on each platform, see platform-specific information for:
 
-* [Android](uno-internals-android.md)
-* [iOS](uno-internals-ios.md)
-* [WebAssembly](uno-internals-wasm.md)
+* [Android](xref:Uno.Contributing.Android)
+* [iOS](xref:Uno.Contributing.iOS)
+* [WebAssembly](xref:Uno.Contributing.Wasm)
+* [macOS](xref:Uno.Contributing.macOS)
 
 ## Uno.WinUI build-time tooling
 
@@ -69,18 +70,18 @@ For more details on how Uno Platform runs on each platform, see platform-specifi
 
 This is the most substantial compile-time task that Uno Platform carries out. Whenever an app or class library is built, all contained XAML files are parsed and converted to C# files, which are then compiled in the usual way. (Note that this differs from WinUI, which parses XAML to XAML Binary Format (.xbf) files which are processed by the WinUI runtime.)
 
-Uno Platform uses existing libraries to parse a given XAML file into a XAML object tree, then Uno-specific code is responsible for interpreting the XAML object tree as a tree of visual elements and their properties. Most of this takes place within the [`XamlFileGenerator`](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class.
+Uno Platform uses existing libraries to parse a given XAML file into a XAML object tree, then Uno-specific code is responsible for interpreting the XAML object tree as a tree of visual elements and their properties. Most of this takes place within the [`XamlFileGenerator`](../../../src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class.
 
 ### DependencyObject implementation generator
 
-On [Android](uno-internals-android.md), [iOS](uno-internals-ios.md), and [macOS](uno-internals-macos.md), `UIElement` (the base view type in WinUI) inherits from the native view class on the respective platform. This poses a challenge because `UIElement` inherits from the `DependencyObject` class in UWP/WinUI, which is a key part of the dependency property system. Uno makes this work by breaking from WinUI and having `DependencyObject` be an interface rather than a type.
+On [Android](uno-internals-android.md), [iOS](uno-internals-ios.md), and [macOS](uno-internals-macos.md), `UIElement` (the base view type in UWP/WinUI) inherits from the native view class on the respective platform. This poses a challenge because `UIElement` inherits from the `DependencyObject` class in UWP/WinUI, which is a key part of the dependency property system. Uno makes this work by breaking from UWP/WinUI and having `DependencyObject` be an interface rather than a type.
 
-Class library authors and app authors sometimes inherit directly from `DependencyObject` rather than a more derived type. To support this scenario seamlessly, the [`DependencyObjectGenerator` task](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) looks for such classes and [generates](https://github.com/unoplatform/Uno.SourceGeneration) a partial implementation for the `DependencyObject` interface, ie, the methods that on UWP would be inherited from the base class.
+Class library authors and app authors sometimes inherit directly from `DependencyObject` rather than a more derived type. To support this scenario seamlessly, the [`DependencyObjectGenerator` task](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) looks for such classes and [generates](https://github.com/unoplatform/Uno.SourceGeneration) a partial implementation for the `DependencyObject` interface, ie the methods that on UWP would be inherited from the base class.
 
 ### Formatting image assets
 
-Different platforms have different requirements for where bundled image files are located and how multiple versions of the same asset are handled (eg, to target different resolutions). The [asset retargeting task](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.Tasks/Assets/RetargetAssets.cs) copies the image assets located in the shared project to the appropriate location and format for the target platform.
+Different platforms have different requirements for where bundled image files are located and how multiple versions of the same asset are handled (eg, to target different resolutions). The [asset retargeting task](../../../src/SourceGenerators/Uno.UI.Tasks/Assets/RetargetAssets.cs) copies the image assets located in the shared project to the appropriate location and format for the target platform.
 
 ### Formatting string resources
 
-As with images, different platforms have different requirements for the location and formatting of localized string resources. The [ResourcesGenerationTask](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.Tasks/ResourcesGenerator/ResourcesGenerationTask.cs) reads the strings defined in WinUI's `*.resw` files in the shared project, and generates the appropriate platform-specific file.
+As with images, different platforms have different requirements for location and formatting of localized string resources. The [ResourcesGenerationTask](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.Tasks/ResourcesGenerator/ResourcesGenerationTask.cs) reads the strings defined in UWP's `*.resw` files in the shared project, and generates the appropriate platform-specific file.

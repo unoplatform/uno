@@ -2,25 +2,25 @@
 uid: Uno.Contributing.Docs
 ---
 
-# Contributing docs to Uno Platform
+# Contributing Documentation to Uno Platform
 
 Good documentation is essential, and writing docs is a valued contribution that makes Uno more useful for everybody. This article covers *when* to write docs and *what* you should write, with a focus on two of the most common forms of documentation: step-by-step guides (ie howtos or tutorials), and feature documentation.
 
 We have a few different fill-in-the-blanks style templates, linked below.
 
-For the DocFX tool used to build the docs website, see [more info here](docfx.md).
+For the DocFX tool used to build the docs website, see [more info here](xref:Uno.Contributing.docfx).
 
 ## Key links
 
-* how-to template: https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md
-* WinUI feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md
-* Uno-only feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md
+* [How-to template](xref:Uno.Doc-Templates.How-To)
+* [WinUI feature template](xref:Uno.Doc-Templates.Feature.Uno-Specifics)
+* [Uno-only feature template](xref:Uno.Doc-Templates.Feature.Uno-only)
 
 ## Resources
 
 Some useful resources on writing good technical documentation:
 
-* [ReactiveUI docs style guide](https://www.reactiveui.net/contribute/content-style-guide/)
+* [ReactiveUI docs style guide](https://www.reactiveui.net/contribute/content-style-guide/grammar-and-mechanics.html)
 * [Divio's Documentation System](https://documentation.divio.com/)
 
 ## Writing step-by-step guides
@@ -29,7 +29,7 @@ Step-by-step guides that address a particular problem or use case that multiple 
 
 * For longer tutorials, it's fine to split the content over multiple pages.
 * Guides should always be accompanied by working code. Standalone applications should be added to the [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples) and linked to from the associated tutorial.
-* Use the [how-to template](https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md) as a starting point.
+* Use the [how-to template](xref:Uno.Doc-Templates.How-To) as a starting point.
 * Structure guides as a series of clear, actionable steps. After carrying out every step as described, the user should end up with working code that demonstrates the objective of the guide (either a standalone sample, or a new feature in their existing app).
 
 ## Documenting features
@@ -44,7 +44,7 @@ There's two different cases:
 
 Uno's API matches WinUI's API, and most of the time, a new Uno feature will map to an existing WinUI feature.
 
-In this case, to the extent that the behavior you're adding is the same as the WinUI behavior, you **don't** need to add documentation. The existing WinUI documentation is fine. It's already linked to from [Uno's reference documentation](../implemented-views.md).
+In this case, to the extent that the behavior you're adding is the same as the WinUI behavior, you **don't** need to add documentation. The existing WinUI documentation is fine. It's already linked to from [Uno's reference documentation](../../implemented-views.md). <!-- xref usage here not possible because UWPSyncGenerator adds none on this file (at least at local doc execution not) -->
 
 What if the Uno behavior deviates from WinUI behavior?
 
@@ -58,7 +58,7 @@ In those cases, it's important to add documentation. Copy the [WinUI feature tem
 
 Rarely, features are added to Uno Platform that aren't part of WinUI (`VisibleBoundsPadding` and `ElevatedView` are two examples). Somewhat more commonly, platform-specific functionality or options are added to an existing feature.
 
-It's important to document these novel features when you add them, since they aren't covered anywhere else. Again, copy the [Uno-only feature template here](https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md) to the [features directory](https://github.com/unoplatform/uno/tree/master/doc/articles/features) and fill in the sections.
+It's important to document these novel features when you add them, since they aren't covered anywhere else. Again, copy the [Uno-only feature template here](xref:Uno.Doc-Templates.Feature.Uno-Only) to the [features directory](../../features/) and fill in the sections.
 
 ## Updating the documentation from linked repositories
 
