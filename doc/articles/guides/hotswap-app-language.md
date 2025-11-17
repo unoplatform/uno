@@ -109,9 +109,9 @@ Make sure to setup your environment first by [following our instructions](xref:U
         private void GotoLanguageSettings(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(LanguageSettings));
         ```
 
-1. Add a new folder fr under the Strings folder by: Right-click on String > Add > New Folder
+1. Add a new folder `fr` under the Strings folder by: Right-click on String > Add > New Folder
 
-1. Add a new resource file `Resources.resw` under the fr folder by: Right-click on fr > Add > New Item ... > Visual C# > Xaml > Resources File
+1. Add a new resource file `Resources.resw` under the `fr` folder by: Right-click on `fr` > Add > New Item ... > Visual C# > Xaml > Resources File
 
 1. Add the localization strings for the new elements:
     Open both `Strings\en\Resources.resw` and `Strings\fr\Resources.resw`, and add these:
