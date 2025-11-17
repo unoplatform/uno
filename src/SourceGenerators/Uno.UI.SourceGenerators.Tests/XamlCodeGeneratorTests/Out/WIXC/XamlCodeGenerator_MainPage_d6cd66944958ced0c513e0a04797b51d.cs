@@ -572,7 +572,7 @@ namespace TestRepro
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_PagΞ0_GriΞ1_GriΞ0_LisVie_IteTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_PagΞ0_GriΞ1_GriΞ0_LisVie_IteTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_GriΞ1_GriΞ0_LisVie_IteTemΞ0_DatTem().Build(__owner, __settings);

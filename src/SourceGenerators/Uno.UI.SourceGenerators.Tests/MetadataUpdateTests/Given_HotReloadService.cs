@@ -17,7 +17,7 @@ public class Given_HotReloadService
 
 		if (scenario != null)
 		{
-#if DEBUG //&& false
+#if DEBUG && false
 			if (!name.Contains("IRL_Case_001"))
 			{
 				Assert.Inconclusive("Ignored case.");
