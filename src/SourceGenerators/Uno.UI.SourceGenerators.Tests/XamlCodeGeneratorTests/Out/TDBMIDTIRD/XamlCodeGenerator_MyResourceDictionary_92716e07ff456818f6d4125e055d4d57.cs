@@ -53,7 +53,7 @@ namespace TestRepro
 			;
 		}
 
-		private static _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);
@@ -223,7 +223,7 @@ namespace MyProject
 			}
 
 			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
-			private static _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+			private _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 			{
 				
 				return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);

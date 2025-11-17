@@ -33,9 +33,9 @@
 								<StackPanel Margin="12,0,12,0" Grid.Column="1">
 									<StackPanel Orientation="Horizontal">
 										<TextBlock Style="{StaticResource BodyStrongTextBlockStyle}">
-        <Run Text="{Binding RepoName}" />
-            <Run Text=" · " />
-            <Run Text="{Binding Type}" />
+											<Run Text="{Binding RepoName}" />
+											<Run Text=" · " />
+											<Run Text="{Binding Type}" />
 										</TextBlock>
 									</StackPanel>
 									<TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Text="{Binding Title}" Style="{StaticResource BodyTextBlockStyle}" />

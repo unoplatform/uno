@@ -149,7 +149,7 @@ namespace TestRepro
 		}
 
 
-		private static _View Build_Pag_ResΞ2_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_Pag_ResΞ2_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			"346ee2c4a3294fdba50b4b5daaa042583c405e7a".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__Pag_ResΞ2_DatTem().Build(__owner, __settings);
@@ -162,7 +162,7 @@ namespace TestRepro
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L13:6");
 		}
 
-		private static _View Build_PagΞ0_LisVie_HeaTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_PagΞ0_LisVie_HeaTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			"346ee2c4a3294fdba50b4b5daaa042583c405e7a".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_LisVie_HeaTemΞ0_DatTem().Build(__owner, __settings);
