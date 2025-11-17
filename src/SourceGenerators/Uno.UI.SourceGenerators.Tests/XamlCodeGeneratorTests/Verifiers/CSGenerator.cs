@@ -88,7 +88,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			//	=> GetShortNameRegex().Replace(name, "${slug}"); // We use only upper-cased char to reduce length of filename push to git
 
 			private static string ShortName(string name)
-				=> new string(name.Where(char.IsUpper).ToArray()); // We use only upper-cased char to reduce length of filename push to git
+				=> new string(name.Where(c => char.IsUpper(c) || char.IsNumber(c)).ToArray()); // We use only upper-cased char to reduce length of filename push to git
 		}
 
 		public abstract class TestBase : CSharpSourceGeneratorVerifier<XamlCodeGenerator>.Test

@@ -80,7 +80,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 
 		}
 		partial void OnInitializeCompleted();
-		private _View Build_Pag_ResΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_Pag_ResΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20.__Pag_ResΞ0_DatTem().Build(__owner, __settings);

@@ -246,7 +246,7 @@ namespace TestRepro
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
-		private _View Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem().Build(__owner, __settings);
