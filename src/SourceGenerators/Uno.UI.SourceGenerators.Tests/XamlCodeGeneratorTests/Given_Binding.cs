@@ -692,6 +692,40 @@ public class Given_Binding
 	}
 
 	[TestMethod]
+	public async Task TestRelativeSourceFullXmlSyntax()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<TextBlock>
+						<TextBlock.Text>
+							<Binding>
+								<Binding.RelativeSource>
+									<RelativeSource>
+										<RelativeSource.Mode>TemplatedParent</RelativeSource.Mode>
+									</RelativeSource>
+								</Binding.RelativeSource>
+							</Binding>>
+						</TextBlock.Text>
+					</TextBlock>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task TestRelativeSourceExpendedSyntax()
 	{
 		var xamlFiles = new[]
