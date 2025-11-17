@@ -5364,7 +5364,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string BuildBindingOption(XamlMemberDefinition m, INamedTypeSymbol? propertyType, bool isTemplateBindingAttachedProperty)
 		{
 			// The default member is Path
-			var isPositionalParameter = m.Member.Name == "_PositionalParameters";
+			var isPositionalParameter = m.Member.Name == XamlConstants.PositionalParameters;
 			var memberName = isPositionalParameter ? "Path" : m.Member.Name;
 
 			if (m.Objects.Count > 0)
@@ -5382,11 +5382,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (bindingType.Type.Name == "RelativeSource")
 				{
-					var firstMember = bindingType.Members.First();
-					var resourceName = firstMember.Value?.ToString();
-					if (resourceName == null)
+					var firstMember = bindingType.Members.FirstOrDefault();
+					if (firstMember is null)
 					{
-						resourceName = firstMember.Objects.SingleOrDefault()?.Members?.SingleOrDefault()?.Value?.ToString();
+						AddError("'Mode' is not defined on 'RelativeSource'", m);
+						return "new RelativeSource(default)";
+					}
+					if (firstMember is not { Member.Name: XamlConstants.PositionalParameters or "Mode" })
+					{
+						AddError($"Property '{firstMember.Member.Name}' is not supported on 'RelativeSource'", firstMember);
+						return "new RelativeSource(default)";
+					}
+
+					var resourceName = firstMember.Value?.ToString() ?? firstMember.Objects.SingleOrDefault()?.Members?.SingleOrDefault()?.Value?.ToString();
+					if (resourceName is not ("None" or "TemplatedParent" or "Self"))
+					{
+						AddError($"'{resourceName}' is not a valid 'RelativeSourceMode'", firstMember);
+						return "new RelativeSource(default)";
 					}
 
 					return $"new RelativeSource(RelativeSourceMode.{resourceName})";
