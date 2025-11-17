@@ -1,0 +1,24 @@
+{
+	"Scenarios": [
+		{
+			"IsDebug": true,
+			"IsMono": false,
+			"PassResults": [
+				{
+					"MetadataUpdates": 0,
+					"Diagnostics": [ ]
+				}
+			]
+		},
+		{
+			"IsDebug": true,
+			"IsMono": true,
+			"PassResults": [
+				{
+					"MetadataUpdates": 0,
+					"Diagnostics": [ ]
+				}
+			]
+		}
+	]
+}
