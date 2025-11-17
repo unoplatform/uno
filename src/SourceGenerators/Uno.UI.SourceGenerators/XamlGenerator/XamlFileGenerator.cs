@@ -5992,10 +5992,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var subclassName = RegisterChildSubclass(contentDefinition.Key, contentDefinition, contentType);
 							// Note: Even if possible, do not create a `static` method that could be confused with instance methods when using HR.
 							//		 This would drive to 'ENC0004: Updating the modifiers of method requires restarting the application.'
+							var modifier = _isHotReloadEnabled ? string.Empty : "static ";
 							var buildMethod = CurrentScope.RegisterMethod(
 								$"Build_{subclassName.TrimStart('_')}",
 								(name, sb) => TryAnnotateWithGeneratorSource(sb).AppendMultiLineIndented($$"""
-								private {{contentType}} {{name}}(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+								private {{modifier}}{{contentType}} {{name}}(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 								{
 									{{GetCacheBrokerForHotReload()}}
 									return new {{namespacePrefix}}{{CurrentScope.SubClassesRoot}}.{{subclassName}}().Build(__owner, __settings);
