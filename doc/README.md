@@ -58,6 +58,44 @@ build command is ran just before committing your work; this will minify the code
 folders and build the DocFx according to the `docfx.json`. The CI only runs the DocFx command, it will not regenerate
 the `styles` folder.
 
+## Generating LLM Files
+
+The documentation can be exported into LLM-friendly formats using the `generate-llms-full.ps1` PowerShell script. The script generates two files:
+
+1. **llms.txt** - Lightweight index with base content and table of contents pointing to raw GitHub files
+2. **llms-full.txt** - Complete documentation with llms.txt content at the top, followed by all markdown documentation
+
+### Usage
+
+```bash
+pwsh ./generate-llms-full.ps1 `
+  -InputFolder ./articles `
+  -LlmsTxtOutput ./llms.txt `
+  -LlmsFullTxtOutput ./llms-full.txt `
+  -BaseContentFile ./articles/llms/llms.txt `
+  -TocYmlPath ./articles/toc.yml
+```
+
+### Output Files
+
+**llms.txt** contains:
+
+- Base content (introduction and important notes from `articles/llms/llms.txt`)
+- Generated table of contents from `toc.yml` with links to raw GitHub files on master branch
+
+**llms-full.txt** contains:
+
+- Complete llms.txt content at the top
+- Additional table of contents with xref anchor links (e.g., `#Uno.GetStarted`)
+- Full content of all markdown files with resolved xrefs and includes
+
+### Notes
+
+- The `articles/llms/llms.txt` file in the repository contains only the base content (introduction and important notes)
+- During the build process, the script first reads this file as the base content, then generates new llms.txt and llms-full.txt files with the auto-generated table of contents appended
+- The generated files are written to `articles/llms/llms.txt` and `articles/llms/llms-full.txt`
+- **Important**: Only commit the base content version of `articles/llms/llms.txt`. The script safely reads the base content before overwriting the file during builds
+
 ## Commands
 
 ### Start
@@ -126,8 +164,8 @@ Spell-checking for the docs is done as part of a GitHub Action.
 
 If you'd like to perform the same check locally, you can run:
 
-* `npm install -g cspell@8.3.2` to install the cSpell CLI
-* `cspell --config ./cSpell.json "doc/**/*.md" --no-progress` to check all the markdown files in the `doc` folder.
+- `npm install -g cspell@8.3.2` to install the cSpell CLI
+- `cspell --config ./cSpell.json "doc/**/*.md" --no-progress` to check all the markdown files in the `doc` folder.
 
 ### Markdown linting the docs
 
@@ -135,8 +173,8 @@ Markdown linting for the docs is done as part of a GitHub Action.
 
 If you'd like to perform the same check locally, you can run:
 
-* `npm install -g markdownlint-cli@0.38.0` to install the markdownlint CLI
-* `markdownlint "doc/**/*.md"` to lint all the markdown files in the `doc` folder.
+- `npm install -g markdownlint-cli@0.38.0` to install the markdownlint CLI
+- `markdownlint "doc/**/*.md"` to lint all the markdown files in the `doc` folder.
 
 You can also install the [markdownlint Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) to easily check markdown linting and style while writing documentation.
 
