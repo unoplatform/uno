@@ -361,4 +361,124 @@ public partial class Given_Parser
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_InvalidXaml_Case003()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage" Background="{StaticResource BackgroundColor}" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="using:System">
+				
+				 
+				  <Grid Padding="16,16,16,16" RowSpacing="0">
+				    <Grid.RowDefinitions>
+				      <RowDefinition Height="56" />
+				      <RowDefinition Height="*" />
+				    </Grid.RowDefinitions>
+				
+				    <Border Grid.Row="0" VerticalAlignment="Center" Background="{StaticResource SurfaceColor}" CornerRadius="4,4,4,4" Padding="12,12,12,12">
+				      <Grid>
+				        <TextBlock x:Uid="MainPage.Header.Title" Text="Découvrir" Style="{StaticResource TitleLargeTextBlockStyle}" />
+				      </Grid>
+				    </Border>
+				
+				    <Grid Grid.Row="1" ColumnSpacing="16">
+				      <Grid.ColumnDefinitions>
+				        <ColumnDefinition Width="2*" MinWidth="320" />
+				        <ColumnDefinition Width="*" MinWidth="280" />
+				      </Grid.ColumnDefinitions>
+				
+				      <Border Grid.Column="0" Background="{StaticResource SurfaceColor}" CornerRadius="8,8,8,8" Padding="12,12,12,12" BorderBrush="{StaticResource OutlineColor}" BorderThickness="1,1,1,1" Margin="0,0,0,0">
+				        <Grid>
+				          <Grid.RowDefinitions>
+				            <RowDefinition Height="Auto" />
+				            <RowDefinition Height="*" />
+				          </Grid.RowDefinitions>
+				
+				          <StackPanel Orientation="Horizontal" Margin="0,0,0,12" VerticalAlignment="Center">
+				            <TextBlock x:Uid="MainPage.Ideas.Header" Text="Idées de voyage" Style="{StaticResource TitleTextBlockStyle}" />
+				          </StackPanel>
+				
+				          <ListView Grid.Row="1" ItemsSource="{Binding TravelIdeas}" ItemContainerStyle="{StaticResource DefaultListViewItemStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				            <ListView.ItemTemplate>
+				              <DataTemplate>
+				                <Border Background="{StaticResource SurfaceVariantColor}" CornerRadius="8,8,8,8" Padding="12,12,12,12" Margin="0,0,0,12" BorderBrush="{StaticResource OutlineVariantColor}" BorderThickness="1,1,1,1">
+				                  <Border.Shadow>
+				                    <ThemeShadow />
+				                  </Border.Shadow>
+				                  <Grid>
+				                    <Grid.ColumnDefinitions>
+				                      <ColumnDefinition Width="Auto" />
+				                      <ColumnDefinition Width="*" />
+				                    </Grid.ColumnDefinitions>
+				
+				                    <Image Grid.Column="0" Width="72" Height="72" Source="{Binding imageUri}" Stretch="UniformToFill" Margin="0,0,12,0" />
+				
+				                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+				                      <TextBlock Text="{Binding title}" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" />
+				                      <TextBlock Text="{Binding description}" Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap" Margin="0,6,0,0" />
+				                      <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+				                        <Button x:Uid="MainPage.Ideas.Item.Explore" Content="Explorer" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Left" AutomationProperties.Name="Explore idea" />
+				                      </StackPanel>
+				                    </StackPanel>
+				                  </Grid>
+				                </Border>
+				              </DataTemplate>
+				            </ListView.ItemTemplate>
+				          </ListView>
+				        </Grid>
+				      </Border>
+				
+				      <Border Grid.Column="1" Background="{StaticResource SurfaceColor}" CornerRadius="8,8,8,8" Padding="12,12,12,12" BorderBrush="{StaticResource OutlineColor}" BorderThickness="1,1,1,1">
+				        <Grid>
+				          <Grid.RowDefinitions>
+				            <RowDefinition Height="Auto" />
+				            <RowDefinition Height="*" />
+				          </Grid.RowDefinitions>
+				
+				          <TextBlock x:Uid="MainPage.Saved.Header" Text="Lieux sauvegardés" Style="{StaticResource TitleTextBlockStyle}" Margin="0,0,0,12" />
+				
+				          <ListView Grid.Row="1" ItemsSource="{Binding SavedPlaces}" ItemContainerStyle="{StaticResource DefaultListViewItemStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				            <ListView.ItemTemplate>
+				              <DataTemplate>
+				                <Border Background="{StaticResource SurfaceVariantColor}" CornerRadius="6,6,6,6" Padding="8,8,8,8" Margin="0,0,0,12" BorderBrush="{StaticResource OutlineVariantColor}" BorderThickness="1,1,1,1">
+				                  <Grid>
+				                    <Grid.ColumnDefinitions>
+				                      <ColumnDefinition Width="56" />
+				                      <ColumnDefinition Width="*" />
+				                      <ColumnDefinition Width="Auto" />
+				                    </Grid.ColumnDefinitions>
+				
+				                    <Image Grid.Column="0" Width="48" Height="48" Source="{Binding imageUri}" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
+				
+				                    <StackPanel Grid.Column="1" Margin="12,0,12,0" VerticalAlignment="Center">
+				                      <TextBlock Text="{Binding name}" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+				                      <TextBlock Text="{Binding location}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="Wrap" Margin="0,4,0,0" />
+				                    </StackPanel>
+				
+				                    <Button x:Uid="MainPage.Saved.Item.Remove" Grid.Column="2" Content="Supprimer" Margin="0,0,0,0" Padding="8,4,8,4" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.Name="Remove saved place" Background="{StaticResource ErrorContainerColor}" Foreground="{StaticResource OnErrorContainerColor}" />
+				                  </Grid>
+				                </Border>
+				              </DataTemplate>
+				            </ListView.ItemTemplate>
+				          </ListView>
+				        </Grid>
+				      </Border>
+				    </Grid>
+				  </Grid>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+		]);
+
+		await test.RunAsync();
+	}
 }
