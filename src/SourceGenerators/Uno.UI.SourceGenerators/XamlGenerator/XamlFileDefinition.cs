@@ -13,7 +13,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal sealed record class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>, IXamlLocation
 	{
-		public XamlFileDefinition(string file,string link, string targetFilePath, string content, ImmutableArray<byte> checksum)
+		public XamlFileDefinition(string file, string link, string targetFilePath, string content, ImmutableArray<byte> checksum)
 		{
 			FilePath = file;
 			SourceLink = link;
