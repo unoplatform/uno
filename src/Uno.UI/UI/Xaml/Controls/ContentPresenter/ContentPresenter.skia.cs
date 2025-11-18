@@ -85,9 +85,6 @@ partial class ContentPresenter
 		_nativeElementAttached = true;
 		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
 		_nativeHosts.Add(this);
-
-		EffectiveViewportChanged += OnEffectiveViewportChanged;
-		LayoutUpdated += OnLayoutUpdated;
 	}
 
 	partial void DetachNativeElement(object content)
@@ -97,10 +94,6 @@ partial class ContentPresenter
 #endif
 		_lastNativeArrangeArgs = null;
 		_nativeHosts.Remove(this);
-
-		EffectiveViewportChanged -= OnEffectiveViewportChanged;
-		LayoutUpdated -= OnLayoutUpdated;
-
 		if (_nativeElementAttached)
 		{
 			_nativeElementAttached = false;
@@ -170,51 +163,21 @@ partial class ContentPresenter
 			{
 				host.DetachNativeElement(host.Content);
 				host.AttachNativeElement();
-				host.ArrangeNativeElement(index);
+				ArrangeNativeElement(host, index);
 			}
 		}
-	}
 
-	private void ArrangeNativeElement()
-	{
-		if (!IsNativeHost)
+		static void ArrangeNativeElement(ContentPresenter host, int zOrder)
 		{
-			// the ArrangeNativeElement call is queued on the dispatcher, so by the time we get here, the ContentPresenter
-			// might no longer be a NativeHost
-			return;
+			var arrangeRect = host.GetAbsoluteBoundsRect();
+
+			var nativeArrangeArgs = (arrangeRect, zOrder);
+			if (host._lastNativeArrangeArgs != nativeArrangeArgs)
+			{
+				host._lastNativeArrangeArgs = nativeArrangeArgs;
+				host._nativeElementHostingExtension.Value!.ArrangeNativeElement(host.Content, arrangeRect);
+			}
 		}
-
-		if (_nativeElementAttached && _lastNativeArrangeArgs?.zOrder is { } zOrder)
-		{
-			ArrangeNativeElement(zOrder);
-		}
-	}
-
-	private void ArrangeNativeElement(int zOrder)
-	{
-		var arrangeRect = this.GetAbsoluteBoundsRect();
-
-		var nativeArrangeArgs = (arrangeRect, zOrder);
-		if (_lastNativeArrangeArgs != nativeArrangeArgs)
-		{
-			_lastNativeArrangeArgs = nativeArrangeArgs;
-			_nativeElementHostingExtension.Value!.ArrangeNativeElement(Content, arrangeRect);
-		}
-	}
-
-	private void OnLayoutUpdated(object sender, object e)
-	{
-		// Not quite sure why we need to queue the arrange call, but the native element either explodes or doesn't
-		// respect alignments correctly otherwise. This is particularly relevant for the initial load.
-		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
-	}
-
-	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
-	{
-		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		// The arrange call here is queued because EVPChanged is fired before the layout of the ContentPresenter is updated,
-		// so calling ArrangeNativeElement synchronously would get outdated coordinates.
-		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
 	}
 
 	internal object CreateSampleComponent(string text)
