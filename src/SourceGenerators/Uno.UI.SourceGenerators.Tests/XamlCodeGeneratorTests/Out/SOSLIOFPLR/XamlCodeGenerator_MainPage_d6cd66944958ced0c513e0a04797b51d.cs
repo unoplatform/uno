@@ -145,7 +145,7 @@ namespace TestRepro
 		}
 
 
-		private static _View Build_Pag_ResΞ2_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_Pag_ResΞ2_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			"d65e560961295873ce5fb238ed21e219474df252".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__Pag_ResΞ2_DatTem().Build(__owner, __settings);
