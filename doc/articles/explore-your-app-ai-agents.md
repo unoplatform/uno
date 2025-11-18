@@ -101,7 +101,7 @@ In your agent, there are some phrases that can be used to nudge the agent to use
     ```
 
     > [!NOTE]
-    > Depending on the agent that you age using `/uno.init` might be named differently such as `/mcp.uno.init`.
+    > Depending on the agent that you are using `/uno.init` might be named differently such as `/mcp.uno.init`.
 
     Which primes the agent with Uno Platform's best practices.
 
