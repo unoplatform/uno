@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -959,6 +960,10 @@ namespace Uno.UI
 
 		public static class LinuxFramebuffer
 		{
+			private static bool? _showMouseCursor;
+			private static Color _mouseCursorColor = Color.FromArgb(255, 0, 0, 0);
+			private static float _mouseCursorRadius = 5;
+
 			/// <summary>
 			/// Determines if OpenGLES+EGL initialized with DRM+GBM should be used for hardware-accelerated rendering on the
 			/// Linux Framebuffer target instead of software rendering. If null, we try to create an OpenGLES context if possible.
@@ -971,6 +976,52 @@ namespace Uno.UI
 			/// of the form /dev/dri/cardX
 			/// </summary>
 			public static string DRMCardPath { get; set; }
+
+			/// <summary>
+			/// Shows the mouse cursor as a small circle. If null, the cursor will
+			/// be shown only after the first mouse event received from libinput and
+			/// will not be shown if only touch events are received. This behavior is
+			/// useful if you're using a touch screen and don't need to see a cursor.
+			/// </summary>
+			public static bool? ShowMouseCursor
+			{
+				get => _showMouseCursor;
+				set
+				{
+					_showMouseCursor = value;
+#if __SKIA__
+					MouseCursorParamsUpdated?.Invoke();
+#endif
+				}
+			}
+
+			public static Color MouseCursorColor
+			{
+				get => _mouseCursorColor;
+				set
+				{
+					_mouseCursorColor = value;
+#if __SKIA__
+					MouseCursorParamsUpdated?.Invoke();
+#endif
+				}
+			}
+
+			public static float MouseCursorRadius
+			{
+				get => _mouseCursorRadius;
+				set
+				{
+					_mouseCursorRadius = value;
+#if __SKIA__
+					MouseCursorParamsUpdated?.Invoke();
+#endif
+				}
+			}
+
+#if __SKIA__
+			public static event Action MouseCursorParamsUpdated;
+#endif
 
 			/// <summary>
 			/// A delegate that picks which of the available connectors to use. If not supplied, the first one

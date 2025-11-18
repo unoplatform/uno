@@ -1,5 +1,8 @@
 using System;
+using System.Drawing;
 using Windows.Graphics.Interop.Direct2D;
+using HarfBuzzSharp;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -12,11 +15,33 @@ internal abstract class FrameBufferRenderer
 	protected readonly IXamlRootHost _host;
 	protected SKSurface? _surface;
 	private int _renderCount;
-	private readonly SKPaint _cursorPaint = new() { Color = SKColors.Red };
+	private SKPaint _cursorPaint = new() { Color = FeatureConfiguration.LinuxFramebuffer.MouseCursorColor.ToSKColor() };
+	private float _cursorRadius = FeatureConfiguration.LinuxFramebuffer.MouseCursorRadius;
+	private bool _cursorVisible;
 
 	protected FrameBufferRenderer(IXamlRootHost host)
 	{
 		_host = host;
+		MouseCursorParamsUpdated();
+		FeatureConfiguration.LinuxFramebuffer.MouseCursorParamsUpdated += MouseCursorParamsUpdated;
+		FrameBufferPointerInputSource.Instance.MouseEventReceived += OnMouseEventReceived;
+	}
+
+	private void OnMouseEventReceived()
+	{
+		FrameBufferPointerInputSource.Instance.MouseEventReceived -= OnMouseEventReceived;
+		MouseCursorParamsUpdated();
+	}
+
+	private void MouseCursorParamsUpdated()
+	{
+		_cursorPaint = new() { Color = FeatureConfiguration.LinuxFramebuffer.MouseCursorColor.ToSKColor() };
+		_cursorRadius = FeatureConfiguration.LinuxFramebuffer.MouseCursorRadius;
+		if (_cursorRadius < 0)
+		{
+			throw new ArgumentOutOfRangeException($"{nameof(FeatureConfiguration.LinuxFramebuffer.MouseCursorRadius)} should not be negative.");
+		}
+		_cursorVisible = FeatureConfiguration.LinuxFramebuffer.ShowMouseCursor ?? FrameBufferPointerInputSource.Instance.ReceivedMouseEvent;
 	}
 
 	protected void Render()
@@ -35,7 +60,10 @@ internal abstract class FrameBufferRenderer
 			_surface.Canvas.Clear(SKColors.Transparent);
 			return _surface.Canvas;
 		});
-		_surface?.Canvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), 5, _cursorPaint);
+		if (_cursorVisible)
+		{
+			_surface?.Canvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), _cursorRadius, _cursorPaint);
+		}
 		_surface?.Flush();
 	}
 

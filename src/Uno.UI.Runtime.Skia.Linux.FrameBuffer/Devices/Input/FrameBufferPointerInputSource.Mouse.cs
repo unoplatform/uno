@@ -24,6 +24,8 @@ namespace Uno.UI.Runtime.Skia;
 internal partial class FrameBufferPointerInputSource
 {
 	private Point _mousePosition;
+	private bool _receivedMouseEvent;
+
 	public Point MousePosition {
 		get => _mousePosition;
 		set
@@ -35,8 +37,19 @@ internal partial class FrameBufferPointerInputSource
 		}
 	}
 
+	public bool ReceivedMouseEvent
+	{
+		get => _receivedMouseEvent;
+		private set => _receivedMouseEvent = value;
+	}
+
+	public event Action? MouseEventReceived;
+
 	public void ProcessMouseEvent(IntPtr rawEvent, libinput_event_type type)
 	{
+		ReceivedMouseEvent = true;
+		MouseEventReceived?.Invoke();
+
 		var rawPointerEvent = libinput_event_get_pointer_event(rawEvent);
 
 		var timestamp = libinput_event_pointer_get_time_usec(rawPointerEvent);
