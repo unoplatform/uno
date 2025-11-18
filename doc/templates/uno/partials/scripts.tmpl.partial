@@ -241,7 +241,13 @@ $(function() {
         $this.closest("pre").before($codeHeader);
         $codeHeader.find("button").click(async function() {
             var successAlert = $(this).find(".successful-copy-alert");
-            var success = await copyToClipboard($this.closest("pre").text());
+            var success = false;
+            try {
+                success = await copyToClipboard($this.closest("pre").text());
+            } catch (err) {
+                console.error('Error copying code to clipboard:', err);
+                success = false;
+            }
             
             if (success) {
                 successAlert.removeClass("is-transparent");
