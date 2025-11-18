@@ -241,6 +241,7 @@ public class Given_HotReloadEnabledInBuild
 		{
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			GlobalConfigOverride = configOverride,
+			TestState = { Sources = { "" }}
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
