@@ -146,15 +146,7 @@ mermaid.init(undefined, ".lang-mermaid");
         }
 
         // Add keyboard shortcut (Ctrl/Cmd + K) to focus search
-        document.addEventListener('keydown', (event) => {
-            if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-                event.preventDefault();
-                const searchButton = document.querySelector('.DocSearch-Button');
-                if (searchButton) {
-                    searchButton.click();
-                }
-            }
-        });
+        // Moved inside initializeDocSearch to only register after DocSearch is initialized
     })();
 </script>
 
