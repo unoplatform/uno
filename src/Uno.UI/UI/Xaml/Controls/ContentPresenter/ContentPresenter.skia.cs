@@ -18,7 +18,6 @@ partial class ContentPresenter
 	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
-	private (Rect layoutRect, int zOrder)? _lastNativeArrangeArgs;
 	private bool _nativeElementAttached;
 
 	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
@@ -92,7 +91,6 @@ partial class ContentPresenter
 #if DEBUG
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
 #endif
-		_lastNativeArrangeArgs = null;
 		_nativeHosts.Remove(this);
 		if (_nativeElementAttached)
 		{
@@ -156,7 +154,6 @@ partial class ContentPresenter
 				// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
 				Debug.Assert(host.IsNativeHost);
 				host._nativeElementAttached = false;
-				host._lastNativeArrangeArgs = null;
 				host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
 			}
 			else if (host._nativeElementAttached)
@@ -170,13 +167,7 @@ partial class ContentPresenter
 		static void ArrangeNativeElement(ContentPresenter host, int zOrder)
 		{
 			var arrangeRect = host.GetAbsoluteBoundsRect();
-
-			var nativeArrangeArgs = (arrangeRect, zOrder);
-			if (host._lastNativeArrangeArgs != nativeArrangeArgs)
-			{
-				host._lastNativeArrangeArgs = nativeArrangeArgs;
-				host._nativeElementHostingExtension.Value!.ArrangeNativeElement(host.Content, arrangeRect);
-			}
+			host._nativeElementHostingExtension.Value!.ArrangeNativeElement(host.Content, arrangeRect);
 		}
 	}
 
