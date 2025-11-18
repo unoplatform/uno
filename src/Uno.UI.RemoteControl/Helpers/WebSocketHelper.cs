@@ -88,6 +88,24 @@ public static class WebSocketHelper
 #endif
 			return null; // Connection reset by peer, no need to report this.
 		}
+		catch (WebSocketException ex)
+		{
+#if IS_DEVSERVER
+			var log = Uno.Extensions.LogExtensionPoint.Log(typeof(Frame));
+			if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				ex.ToString();
+				Microsoft.Extensions.Logging.LoggerExtensions.LogDebug(log, "WebSocket connection closed.");
+			}
+#else // Client
+			var log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Frame));
+			if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				log.LogDebug("WebSocket connection closed.", ex);
+			}
+#endif
+			return null; // WebSocket closed, no need to report this as an error.
+		}
 		finally
 		{
 			pool.Return(buff);
