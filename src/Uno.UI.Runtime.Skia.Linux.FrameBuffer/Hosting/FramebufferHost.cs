@@ -138,11 +138,11 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			FrameBufferInputProvider.Instance.Initialize();
 
-			if (FeatureConfiguration.LinuxFramebuffer.UseGBMOnLinuxFramebuffer ?? false)
+			if (FeatureConfiguration.LinuxFramebuffer.UseKMSDRMOnLinuxFramebuffer ?? false)
 			{
 				_renderer = new DRMRenderer(this);
 			}
-			else if (FeatureConfiguration.LinuxFramebuffer.UseGBMOnLinuxFramebuffer is null)
+			else if (FeatureConfiguration.LinuxFramebuffer.UseKMSDRMOnLinuxFramebuffer is null)
 			{
 				try
 				{

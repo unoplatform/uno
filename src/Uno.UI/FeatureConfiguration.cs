@@ -965,19 +965,6 @@ namespace Uno.UI
 			private static float _mouseCursorRadius = 5;
 
 			/// <summary>
-			/// Determines if OpenGLES+EGL initialized with DRM+GBM should be used for hardware-accelerated rendering on the
-			/// Linux Framebuffer target instead of software rendering. If null, we try to create an OpenGLES context if possible.
-			/// Otherwise, software rendering will be used.
-			/// </summary>
-			public static bool? UseGBMOnLinuxFramebuffer { get; set; }
-
-			/// <summary>
-			/// The path to the DRM device file. If null, it will use the first device found
-			/// of the form /dev/dri/cardX
-			/// </summary>
-			public static string DRMCardPath { get; set; }
-
-			/// <summary>
 			/// Shows the mouse cursor as a small circle. If null, the cursor will
 			/// be shown only after the first mouse event received from libinput and
 			/// will not be shown if only touch events are received. This behavior is
@@ -1022,6 +1009,19 @@ namespace Uno.UI
 #if __SKIA__
 			public static event Action MouseCursorParamsUpdated;
 #endif
+
+			/// <summary>
+			/// Determines if OpenGLES+EGL initialized with DRM+GBM should be used for hardware-accelerated rendering on the
+			/// Linux Framebuffer target instead of software rendering. If null, we try to create an OpenGLES context if possible.
+			/// Otherwise, software rendering will be used.
+			/// </summary>
+			public static bool? UseKMSDRMOnLinuxFramebuffer { get; set; }
+
+			/// <summary>
+			/// The path to the DRM device file. If null, it will use the first device found
+			/// of the form /dev/dri/cardX
+			/// </summary>
+			public static string DRMCardPath { get; set; }
 
 			/// <summary>
 			/// A delegate that picks which of the available connectors to use. If not supplied, the first one
