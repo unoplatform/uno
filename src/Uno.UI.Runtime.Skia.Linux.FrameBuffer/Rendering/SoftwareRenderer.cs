@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Threading;
 using Windows.Foundation;
 using SkiaSharp;
 using Windows.Graphics.Display;
-using System.Timers;
 using Uno.Disposables;
 using Uno.UI.Hosting;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
@@ -11,8 +11,8 @@ namespace Uno.UI.Runtime.Skia
 {
 	internal class SoftwareRenderer : FrameBufferRenderer
 	{
-		private readonly Timer _renderTimer;
 		private FrameBufferDevice _fbDev;
+		private readonly AutoResetEvent _renderInvalidationEvent = new(false);
 
 		public SoftwareRenderer(IXamlRootHost host) : base(host)
 		{
@@ -20,32 +20,29 @@ namespace Uno.UI.Runtime.Skia
 			_fbDev.Init();
 			FrameBufferWindowWrapper.Instance.SetSize(new Size(_fbDev.ScreenSize.Width, _fbDev.ScreenSize.Height),
 				(float)DisplayInformation.GetForCurrentViewSafe().RawPixelsPerViewPixel);
-			_renderTimer = CreateRenderTimer();
+
+			new Thread(_ =>
+			{
+				while (true)
+				{
+					_renderInvalidationEvent.WaitOne();
+					Render();
+					_fbDev.VSync();
+					_surface?.ReadPixels(
+						new SKImageInfo((int)_fbDev.ScreenSize.Width, (int)_fbDev.ScreenSize.Width, _fbDev.PixelFormat, SKAlphaType.Premul),
+						_fbDev.BufferAddress,
+						_fbDev.RowBytes,
+						0,
+						0);
+				}
+			})
+			{
+				IsBackground = true,
+				Name = "FrameBuffer software rendering thread"
+			}.Start();
 		}
 
-		private Timer CreateRenderTimer()
-		{
-			var timer = new Timer
-			{
-				AutoReset = false,
-				Interval = TimeSpan.FromSeconds(1.0 / FeatureConfiguration.CompositionTarget.FrameRate)
-					.TotalMilliseconds
-			};
-			timer.Elapsed += (_, _) =>
-			{
-				_fbDev.VSync();
-				Render();
-				_surface?.ReadPixels(
-					new SKImageInfo((int)_fbDev.ScreenSize.Width, (int)_fbDev.ScreenSize.Width, _fbDev.PixelFormat, SKAlphaType.Premul),
-					_fbDev.BufferAddress,
-					_fbDev.RowBytes,
-					0,
-					0);
-			};
-			return timer;
-		}
-
-		public override void InvalidateRender() => _renderTimer.Enabled = true;
+		public override void InvalidateRender() => _renderInvalidationEvent.Set();
 
 		protected override IDisposable MakeCurrent() => Disposable.Empty;
 
