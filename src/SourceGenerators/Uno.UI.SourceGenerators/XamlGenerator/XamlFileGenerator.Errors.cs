@@ -13,7 +13,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator;
  *  *** We should raise/generate only XamlGenerationException from code generation logic. ***
  *
  * This allows to properly capture location information and context about the error and proper reporting to the user.
- * Other kind of exception should strictly reserve to internal logic errors that should never happen during normal operation (including with invalid XAML file).
+ * Other kind of exception should strictly be reserved to internal logic errors that should never happen during normal operation (including with invalid XAML file).
  *
  * Messages:
  * ** Error messages are reported to the end-user. **
@@ -24,11 +24,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator;
  * - They must not end with a dot ('.'), as the dot is added when generating the error comment in the generated code (_follows MS logic_).
  *
  * When it's possible to continue to generate valid C# code, prefer to use AddError(), GenerateError() instead of throwing.
- * This allows user to get all errors of a XAML file in a single build instead of fixing them one by one.
+ * This allows the user to get all errors of a XAML file in a single build instead of fixing them one by one.
  *
- * The Safely methods allows to properly handle errors in code generation blocks.
+ * The Safely methods allow to properly handle errors in code generation blocks.
  * They should be used to wrap any code generation block that can raise exceptions.
- * Like for the AddError and GenerateError, they give ability to the user to get all errors in a single build by continuing generation of the end of the XAML file.
+ * Like for the AddError and GenerateError, they give the ability to the user to get all errors in a single build by continuing generation of the end of the XAML file.
  *
  */
 
