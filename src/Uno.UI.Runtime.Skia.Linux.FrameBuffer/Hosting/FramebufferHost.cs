@@ -29,7 +29,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		private readonly CoreApplicationExtension? _coreApplicationExtension;
 
 		private Func<Application> _appBuilder;
-		private IFBRenderer? _renderer;
+		private FrameBufferRenderer? _renderer;
 		private Thread? _consoleInterceptionThread;
 		private ManualResetEvent _terminationGate = new(false);
 

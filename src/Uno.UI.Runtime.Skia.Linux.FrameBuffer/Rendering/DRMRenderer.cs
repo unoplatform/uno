@@ -19,12 +19,8 @@ using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia
 {
-	partial class DRMRenderer : IFBRenderer
+	partial class DRMRenderer : FrameBufferRenderer
 	{
-		private readonly IXamlRootHost _host;
-		private SKSurface? _surface;
-		private int renderCount;
-
 		private const uint DefaultFramebuffer = 0;
 
 		private readonly GRContext _grContext;
@@ -43,10 +39,8 @@ namespace Uno.UI.Runtime.Skia
 		private bool _waitingForPageFlip;
 		private bool _invalidateRenderCalledWhileWaitingForPageFlip;
 
-		public unsafe DRMRenderer(IXamlRootHost host)
+		public unsafe DRMRenderer(IXamlRootHost host) : base(host)
 		{
-			_host = host;
-
 			var cardPath = FeatureConfiguration.LinuxFramebuffer.DRMCardPath;
 			if (cardPath is not null)
 			{
@@ -313,7 +307,7 @@ namespace Uno.UI.Runtime.Skia
 			return res / 1000;
 		}
 
-		public unsafe void InvalidateRender()
+		public override unsafe void InvalidateRender()
 		{
 			Volatile.Write(ref _invalidateRenderCalledWhileWaitingForPageFlip, true);
 			if (Interlocked.Exchange(ref _waitingForPageFlip, true))
@@ -348,27 +342,7 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		void Render()
-		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"Render {renderCount++}");
-			}
-
-			using var _ = MakeCurrent();
-			((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
-			{
-				_surface = UpdateSize((int)size.Width, (int)size.Height);
-				return _surface.Canvas;
-			});
-			if (_surface is not null)
-			{
-				_surface.Canvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), 5, new SKPaint() { Color = SKColors.Red });
-				_surface.Flush();
-			}
-		}
-
-		private IDisposable MakeCurrent()
+		protected override IDisposable MakeCurrent()
 		{
 			var glContext = EglHelper.EglGetCurrentContext();
 			var readSurface = EglHelper.EglGetCurrentSurface(EglHelper.EGL_READ);
@@ -430,7 +404,7 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private SKSurface UpdateSize(int width, int height)
+		protected override SKSurface UpdateSize(int width, int height)
 		{
 			_renderTarget?.Dispose();
 
