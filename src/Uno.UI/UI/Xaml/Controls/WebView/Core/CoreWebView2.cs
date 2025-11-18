@@ -26,6 +26,10 @@ public partial class CoreWebView2
 
 	private bool _scrollEnabled = true;
 	private INativeWebView? _nativeWebView;
+#if __SKIA__
+	private ISupportsWebResourceRequested? _webResourceRequestedSupport;
+	private readonly List<WebResourceRequestedFilter> _webResourceRequestedFilters = new();
+#endif
 	internal long _navigationId;
 	private object? _processedSource;
 
@@ -159,7 +163,11 @@ public partial class CoreWebView2
 
 	internal void OnOwnerApplyTemplate()
 	{
+		DetachWebResourceRequestedSupport();
 		_nativeWebView = GetNativeWebViewFromTemplate();
+#if __SKIA__
+		AttachWebResourceRequestedSupport();
+#endif
 
 		// Signal that native WebView is now initialized
 		_nativeWebViewInitializedTcs.TrySetResult(true);
@@ -252,6 +260,49 @@ public partial class CoreWebView2
 		handled = args.Handled;
 	}
 
+#if __SKIA__
+	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+	{
+		if (uri is null)
+		{
+			throw new ArgumentNullException(nameof(uri));
+		}
+
+		UpsertFilter(uri, resourceContext, requestSourceKinds);
+
+		if (_webResourceRequestedSupport is { })
+		{
+			_webResourceRequestedSupport.AddWebResourceRequestedFilter(uri, resourceContext, requestSourceKinds);
+		}
+	}
+
+	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext)
+		=> AddWebResourceRequestedFilter(uri, resourceContext, CoreWebView2WebResourceRequestSourceKinds.All);
+
+	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+	{
+		if (uri is null)
+		{
+			throw new ArgumentNullException(nameof(uri));
+		}
+
+		RemoveFilter(uri, resourceContext, requestSourceKinds);
+
+		if (_webResourceRequestedSupport is { })
+		{
+			_webResourceRequestedSupport.RemoveWebResourceRequestedFilter(uri, resourceContext, requestSourceKinds);
+		}
+	}
+
+	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext)
+		=> RemoveWebResourceRequestedFilter(uri, resourceContext, CoreWebView2WebResourceRequestSourceKinds.All);
+
+	internal void RaiseWebResourceRequested(CoreWebView2WebResourceRequestedEventArgs eventArgs)
+	{
+		WebResourceRequested?.Invoke(this, eventArgs);
+	}
+#endif
+
 	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new TaskCompletionSource<bool>();
 	internal Task EnsureNativeWebViewAsync() => _nativeWebViewInitializedTcs.Task;
 	internal static bool GetIsHistoryEntryValid(string url) =>
@@ -305,5 +356,69 @@ public partial class CoreWebView2
 		}
 
 		_processedSource = null;
+	}
+
+#if __SKIA__
+	private void AttachWebResourceRequestedSupport()
+	{
+		if (_nativeWebView is not ISupportsWebResourceRequested supports)
+		{
+			return;
+		}
+
+		_webResourceRequestedSupport = supports;
+		supports.WebResourceRequested += OnNativeWebResourceRequested;
+
+		foreach (var filter in _webResourceRequestedFilters)
+		{
+			supports.AddWebResourceRequestedFilter(filter.Uri, filter.ResourceContext, filter.RequestSourceKinds);
+		}
+	}
+
+	private void OnNativeWebResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
+	{
+		RaiseWebResourceRequested(e);
+	}
+
+	private void UpsertFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+	{
+		_webResourceRequestedFilters.RemoveAll(filter => filter.Equals(uri, resourceContext, requestSourceKinds));
+		_webResourceRequestedFilters.Add(new WebResourceRequestedFilter(uri, resourceContext, requestSourceKinds));
+	}
+
+	private void RemoveFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+	{
+		_webResourceRequestedFilters.RemoveAll(filter => filter.Equals(uri, resourceContext, requestSourceKinds));
+	}
+
+	private readonly struct WebResourceRequestedFilter
+	{
+		internal WebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+		{
+			Uri = uri;
+			ResourceContext = resourceContext;
+			RequestSourceKinds = requestSourceKinds;
+		}
+
+		internal string Uri { get; }
+		internal CoreWebView2WebResourceContext ResourceContext { get; }
+		internal CoreWebView2WebResourceRequestSourceKinds RequestSourceKinds { get; }
+
+		internal bool Equals(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+			=> string.Equals(Uri, uri, StringComparison.OrdinalIgnoreCase)
+			&& ResourceContext == resourceContext
+			&& RequestSourceKinds == requestSourceKinds;
+	}
+#endif
+
+	private void DetachWebResourceRequestedSupport()
+	{
+#if __SKIA__
+		if (_webResourceRequestedSupport is { })
+		{
+			_webResourceRequestedSupport.WebResourceRequested -= OnNativeWebResourceRequested;
+			_webResourceRequestedSupport = null;
+		}
+#endif
 	}
 }
