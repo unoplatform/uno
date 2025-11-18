@@ -62,12 +62,6 @@ mermaid.init(undefined, ".lang-mermaid");
                         highlightPreTag: '<mark>',
                         highlightPostTag: '</mark>',
                     },
-                    transformItems(items) {
-                        return items.map(item => ({
-                            ...item,
-                            hierarchy: item.hierarchy || {}
-                        }));
-                    },
                     getMissingResultsUrl({ query }) {
                         return `https://github.com/unoplatform/uno/issues/new?title=Documentation+request:+${encodeURIComponent(query)}&labels=documentation`;
                     }
