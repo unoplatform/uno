@@ -17,12 +17,23 @@ using static Uno.UI.Runtime.Skia.Native.LibInput;
 using static Windows.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
 using Uno.Foundation.Logging;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia;
 
 internal partial class FrameBufferPointerInputSource
 {
-	public Point MousePosition { get; private set; }
+	private Point _mousePosition;
+	public Point MousePosition {
+		get => _mousePosition;
+		set
+		{
+			var bounds = FrameBufferWindowWrapper.Instance.Bounds;
+			var x = Math.Max(0, Math.Min(value.X, bounds.Width));
+			var y = Math.Max(0, Math.Min(value.Y, bounds.Height));
+			_mousePosition = new Point(x, y);
+		}
+	}
 
 	public void ProcessMouseEvent(IntPtr rawEvent, libinput_event_type type)
 	{

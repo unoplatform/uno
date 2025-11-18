@@ -4,7 +4,9 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Windows.Graphics.Display;
+using Uno.Extensions;
 using Uno.UI.Dispatching;
+using Uno.UI.Runtime.Skia;
 
 namespace Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
@@ -25,6 +27,7 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 			var bounds = new Rect(0, 0,  newWindowSize.Width / scale, newWindowSize.Height /  scale);
 			SetBoundsAndVisibleBounds(bounds, bounds);
 			Size = new((int)newWindowSize.Width, (int)newWindowSize.Height);
+			FrameBufferPointerInputSource.Instance.MousePosition = bounds.GetCenter();
 		}
 		else
 		{
