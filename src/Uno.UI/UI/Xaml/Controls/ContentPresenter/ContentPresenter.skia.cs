@@ -19,6 +19,7 @@ partial class ContentPresenter
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
 	private bool _nativeElementAttached;
+	private IDisposable _frameRenderedDisposable;
 
 	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
 
@@ -84,6 +85,9 @@ partial class ContentPresenter
 		_nativeElementAttached = true;
 		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
 		_nativeHosts.Add(this);
+		var ct = ((CompositionTarget)Visual.CompositionTarget)!;
+		ct.FrameRendered += ArrangeNativeElement;
+		_frameRenderedDisposable = Disposable.Create(() => ct.FrameRendered -= ArrangeNativeElement);
 	}
 
 	partial void DetachNativeElement(object content)
@@ -94,6 +98,8 @@ partial class ContentPresenter
 		_nativeHosts.Remove(this);
 		if (_nativeElementAttached)
 		{
+			_frameRenderedDisposable.Dispose();
+			_frameRenderedDisposable = null;
 			_nativeElementAttached = false;
 			_nativeElementHostingExtension.Value!.DetachNativeElement(content);
 		}
@@ -160,15 +166,15 @@ partial class ContentPresenter
 			{
 				host.DetachNativeElement(host.Content);
 				host.AttachNativeElement();
-				ArrangeNativeElement(host, index);
+				host.ArrangeNativeElement();
 			}
 		}
+	}
 
-		static void ArrangeNativeElement(ContentPresenter host, int zOrder)
-		{
-			var arrangeRect = host.GetAbsoluteBoundsRect();
-			host._nativeElementHostingExtension.Value!.ArrangeNativeElement(host.Content, arrangeRect);
-		}
+	private void ArrangeNativeElement()
+	{
+		var arrangeRect = this.GetAbsoluteBoundsRect();
+		_nativeElementHostingExtension.Value!.ArrangeNativeElement(Content, arrangeRect);
 	}
 
 	internal object CreateSampleComponent(string text)
