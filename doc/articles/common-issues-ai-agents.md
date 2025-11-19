@@ -16,6 +16,6 @@ In Visual Studio, the devserver might turn red in some occasions. To fix this is
 
 ### The uno-app MCP failed to start
 
-The Uno Platform App MCP may fail to start in Claude/Codex/Copilot CLI when itis started in a folder that does not contain an Uno Platform project.
+The Uno Platform App MCP may fail to start in Claude/Codex/Copilot CLI when it is started in a folder that does not contain an Uno Platform project.
 
 To fix this issue, change directories to a folder that contains the `.sln` or `.slnx` file of your project.
