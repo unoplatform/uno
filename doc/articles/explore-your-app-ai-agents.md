@@ -99,8 +99,11 @@ In your agent, there are some phrases that can be used to nudge the agent to use
 - To create a more specialized Uno Platform agent:
 
     ```text
-    /init
+    /mcp.uno.init
     ```
+
+    > [!NOTE]
+    > The default command is `/mcp.uno.init`, but depending on the agent you are using, it might be named differently (such as `/uno.init`).
 
     Which primes the agent with Uno Platform's best practices.
 
