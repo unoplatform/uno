@@ -1358,7 +1358,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 			else
 			{
-				return TypeResolver.GetPropertyByName(control.Type, member.Member.Name);
+				return TypeResolver.GetPropertyByName(control.Type, member.Member.Name)
+					?? TypeResolver.GetPropertyByName(TypeResolver.FindType(control.Type.PreferredXamlNamespace, control.Type.Name + "Extension"), member.Member.Name);
 			}
 		}
 
