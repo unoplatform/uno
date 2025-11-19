@@ -2,7 +2,7 @@
 uid: Uno.UI.CommonIssues.vs2022
 ---
 
-# Issues related to Visual Studio 2022/2026 for Windows
+# Issues related to Visual Studio 2022/2026
 
 ## Unable to select the `MyApp (Unpackaged WinAppSDK)` profile
 

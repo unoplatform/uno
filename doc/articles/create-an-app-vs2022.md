@@ -1,7 +1,7 @@
 ---
 uid: Uno.GettingStarted.CreateAnApp.VS2022
 ---
-# Creating an app with Visual Studio 2022/2026 for Windows
+# Creating an app with Visual Studio 2022/2026
 
 > [!NOTE]
 > Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vs2022).
