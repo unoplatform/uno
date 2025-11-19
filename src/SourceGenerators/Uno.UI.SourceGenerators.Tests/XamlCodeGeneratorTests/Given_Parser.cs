@@ -6,7 +6,7 @@ namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Controls.ParserTests;
 using Verify = XamlSourceGeneratorVerifier;
 
 [TestClass]
-public class Given_Parser
+public partial class Given_Parser
 {
 	private static string EmptyCodeBehind(string className) =>
 		$$"""
@@ -25,6 +25,83 @@ public class Given_Parser
 		""";
 
 	private static readonly string _emptyCodeBehind = EmptyCodeBehind("MainPage");
+
+	[TestMethod]
+	public async Task When_Event_Handler()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<UserControl
+				    x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.XamlEvent_Leak_UserControl"
+				    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				    xmlns:local="using:UITests.Shared.Windows_UI_Xaml.FrameworkElementTests"
+				    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				    mc:Ignorable="d"
+				    d:DesignHeight="300"
+				    d:DesignWidth="400">
+				
+				    <Grid>
+						<!-- A named button with an event must not leak -->
+						<Button x:Name="namedButton"
+								Content="Button With Handler"
+								Click="Button_Click" />
+					</Grid>
+				</UserControl>
+				
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using System.Collections.Generic;
+					using System.IO;
+					using System.Linq;
+					using System.Runtime.InteropServices.WindowsRuntime;
+					using Windows.Foundation;
+					using Windows.Foundation.Collections;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Controls.Primitives;
+					using Microsoft.UI.Xaml.Data;
+					using Microsoft.UI.Xaml.Input;
+					using Microsoft.UI.Xaml.Media;
+					using Microsoft.UI.Xaml.Navigation;
+
+					// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+
+					namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
+					{
+						public sealed partial class XamlEvent_Leak_UserControl : UserControl
+						{
+							public XamlEvent_Leak_UserControl()
+							{
+								this.InitializeComponent();
+							}
+
+							private void Button_Click(object sender, RoutedEventArgs e)
+							{
+								Console.WriteLine("Button_Click");
+							}
+						}
+					}
+
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 
 	[TestMethod]
 	public async Task When_Empty_Xml()

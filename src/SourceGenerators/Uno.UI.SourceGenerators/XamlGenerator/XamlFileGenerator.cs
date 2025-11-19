@@ -5364,7 +5364,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string BuildBindingOption(XamlMemberDefinition m, INamedTypeSymbol? propertyType, bool isTemplateBindingAttachedProperty)
 		{
 			// The default member is Path
-			var isPositionalParameter = m.Member.Name == "_PositionalParameters";
+			var isPositionalParameter = m.Member.Name == XamlConstants.PositionalParameters;
 			var memberName = isPositionalParameter ? "Path" : m.Member.Name;
 
 			if (m.Objects.Count > 0)
@@ -5382,11 +5382,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (bindingType.Type.Name == "RelativeSource")
 				{
-					var firstMember = bindingType.Members.First();
-					var resourceName = firstMember.Value?.ToString();
-					if (resourceName == null)
+					var firstMember = bindingType.Members.FirstOrDefault();
+					if (firstMember is null)
 					{
-						resourceName = firstMember.Objects.SingleOrDefault()?.Members?.SingleOrDefault()?.Value?.ToString();
+						AddError("'Mode' is not defined on 'RelativeSource'", m);
+						return "new RelativeSource(default)";
+					}
+					if (firstMember is not { Member.Name: XamlConstants.PositionalParameters or "Mode" })
+					{
+						AddError($"Property '{firstMember.Member.Name}' is not supported on 'RelativeSource'", firstMember);
+						return "new RelativeSource(default)";
+					}
+
+					var resourceName = firstMember.Value?.ToString() ?? firstMember.Objects.SingleOrDefault()?.Members?.SingleOrDefault()?.Value?.ToString();
+					if (resourceName is not ("None" or "TemplatedParent" or "Self"))
+					{
+						AddError($"'{resourceName}' is not a valid 'RelativeSourceMode'", firstMember);
+						return "new RelativeSource(default)";
 					}
 
 					return $"new RelativeSource(RelativeSourceMode.{resourceName})";
@@ -5978,10 +5990,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var isTopLevel = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal);
 							var namespacePrefix = isTopLevel ? "__Resources." : "";
 							var subclassName = RegisterChildSubclass(contentDefinition.Key, contentDefinition, contentType);
+							// Note: Even if possible, do not create a `static` method that could be confused with instance methods when using HR.
+							//		 This would drive to 'ENC0004: Updating the modifiers of method requires restarting the application.'
+							var modifier = _isHotReloadEnabled ? string.Empty : "static ";
 							var buildMethod = CurrentScope.RegisterMethod(
 								$"Build_{subclassName.TrimStart('_')}",
 								(name, sb) => TryAnnotateWithGeneratorSource(sb).AppendMultiLineIndented($$"""
-								private static {{contentType}} {{name}}(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+								private {{modifier}}{{contentType}} {{name}}(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 								{
 									{{GetCacheBrokerForHotReload()}}
 									return new {{namespacePrefix}}{{CurrentScope.SubClassesRoot}}.{{subclassName}}().Build(__owner, __settings);

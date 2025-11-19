@@ -469,12 +469,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				foreach (var csharpFile in csharpFiles)
 				{
-					// Note: We process parsing exception here in order to have it grouped with any other exception thrown during generation for this file.
-					if (csharpFile.definition.ParsingError is { } parseError)
+					// Note: We process parsing exceptions here in order to have them grouped with any other exception thrown during generation for this file.
+					foreach (var parseError in csharpFile.definition.ParsingErrors)
 					{
 						ProcessException(parseError);
 					}
-
 					foreach (var genError in csharpFile.errors)
 					{
 						ProcessException(genError);
