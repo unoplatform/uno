@@ -34,11 +34,6 @@ namespace Uno.UI.Samples.Controls
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
-			Loaded += (_, __) =>
-			{
-				var c = (DataContext as SampleChooserViewModel).Categories.SelectMany(c => c.SamplesContent).First(s => s.ControlName.Contains("DependentAnimation"));
-				_ = ((SampleChooserViewModel)DataContext).OpenSample(CancellationToken.None, c);
-			};
 		}
 
 		protected override Size MeasureOverride(Size availableSize)

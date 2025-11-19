@@ -34,6 +34,8 @@ internal partial class FrameBufferPointerInputSource
 			var x = Math.Max(0, Math.Min(value.X, bounds.Width));
 			var y = Math.Max(0, Math.Min(value.Y, bounds.Height));
 			_mousePosition = new Point(x, y);
+			// To update the cursor position
+			FrameBufferWindowWrapper.Instance.XamlRoot?.VisualTree.RootElement.Visual.CompositionTarget?.RequestNewFrame();
 		}
 	}
 

@@ -73,12 +73,7 @@ internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSourc
 		{
 			_ = rootElement.Dispatcher.RunAsync(
 				CoreDispatcherPriority.High,
-				() =>
-				{
-					raisePointerEvent(args);
-					// To update the cursor position
-					FrameBufferWindowWrapper.Instance.XamlRoot?.VisualTree.RootElement.Visual.CompositionTarget?.RequestNewFrame();
-				});
+				() => raisePointerEvent(args));
 		}
 	}
 
