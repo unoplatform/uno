@@ -7,8 +7,36 @@ using Uno.Extensions;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator;
 
+/*
+ * About error handling in XamlFileGenerator:
+ *
+ *  *** We should raise/generate only XamlGenerationException from code generation logic. ***
+ *
+ * This allows to properly capture location information and context about the error and proper reporting to the user.
+ * Other kind of exception should strictly be reserved to internal logic errors that should never happen during normal operation (including with invalid XAML file).
+ *
+ * Messages:
+ * ** Error messages are reported to the end-user. **
+ * - They must not explain internal implementation details (e.g. Value of member is null),
+ *   but rather focus on what the user did wrong and how to fix it (e.g. The 'TargetType' is not set on 'Style').
+ *   (Reminder: errors are reported with location in the XAML file, prefer simple error message avoiding fullname/namespace of types for instance).
+ * - Variables are expected to be surrounded by simple quotes (e.g. 'MyElement') to improve readability (_follows MS logic_).
+ * - They must not end with a dot ('.'), as the dot is added when generating the error comment in the generated code (_follows MS logic_).
+ *
+ * When it's possible to continue to generate valid C# code, prefer to use AddError(), GenerateError() instead of throwing.
+ * This allows the user to get all errors of a XAML file in a single build instead of fixing them one by one.
+ *
+ * The Safely methods allow to properly handle errors in code generation blocks.
+ * They should be used to wrap any code generation block that can raise exceptions.
+ * Like for the AddError and GenerateError, they give the ability to the user to get all errors in a single build by continuing generation of the end of the XAML file.
+ *
+ */
+
+
 internal partial class XamlFileGenerator
 {
+	private static readonly Regex _safeMethodNameRegex = new(@"\(\) =\> (?<method>\w+)");
+
 	/// <summary>
 	/// List of all errors encountered during generation.
 	/// </summary>
@@ -41,17 +69,13 @@ internal partial class XamlFileGenerator
 		}
 	}
 
-	private static readonly Regex _safeMethodNameRegex = new(@"\(\) =\> (?<method>\w+)");
-
 	/// <summary>
 	/// Invokes a build block safely, capturing any exceptions as generation errors.
 	/// </summary>
+	/// <remarks>The <paramref name="action"/> is expected to be a single method call. Avoid bodied delegates!</remarks>
 	private void Safely(Action action, [CallerArgumentExpression(nameof(action))] string name = "", [CallerLineNumber] int line = -1)
 	{
 		Debug.Assert(_safeMethodNameRegex.IsMatch(name));
-		var method = _safeMethodNameRegex.Match(name) is { Success: true } match
-			? match.Groups["method"].Value
-			: nameof(XamlFileGenerator);
 
 		try
 		{
@@ -63,6 +87,10 @@ internal partial class XamlFileGenerator
 		}
 		catch (Exception error) when (error is not OperationCanceledException)
 		{
+			var method = _safeMethodNameRegex.Match(name) is { Success: true } match
+				? match.Groups["method"].Value
+				: nameof(XamlFileGenerator);
+
 			_errors.Add(new XamlGenerationException($"Processing failed for an unknown reason ({method}@{line})", error, _fileDefinition));
 		}
 	}
