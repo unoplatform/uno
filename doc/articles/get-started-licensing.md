@@ -20,11 +20,11 @@ After creating your Uno Platform account, follow the steps below to sign in to y
 
 **I am developing on...**
 
-### [**Visual Studio 2022**](#tab/vs2022)
+### [**Visual Studio 2022/2026**](#tab/vs2022)
 
 If you’ve already set up **Visual Studio 2022** by following the [Get Started on Visual Studio 2022](xref:Uno.GetStarted.vs2022) documentation, sign in as follows:
 
-1. Create a new Uno Platform project by following the [Creating an app with Visual Studio 2022](xref:Uno.GettingStarted.CreateAnApp.VS2022) documentation or open an existing one with Uno.Sdk version 5.5 or higher.
+1. Create a new Uno Platform project by following the [Creating an app with Visual Studio 2022/2026](xref:Uno.GettingStarted.CreateAnApp.VS2022) documentation or open an existing one with Uno.Sdk version 5.5 or higher.
 
    For existing applications, you should take this opportunity to update to the [latest `Uno.Sdk` version](https://www.nuget.org/packages/Uno.Sdk). See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
 

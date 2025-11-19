@@ -27,6 +27,9 @@ To get started with GitHub Copilot CLI:
     1. Command: `dotnet dnx -y uno.devserver --mcp-app`
     1. Skip Environment Variables and leave tools with `*`
 
+> [!IMPORTANT]
+> The uno-app MCP may fail to load unless Copilot is opened in a folder containing an Uno Platform app.
+
 ## Next Steps
 
 Now that you are set up, let's [create your first app](xref:Uno.GettingStarted.CreateAnApp.AI.CopilotCli).
