@@ -1,7 +1,7 @@
 ---
 uid: Uno.GettingStarted.CreateAnApp.VS2022
 ---
-# Creating an app with Visual Studio 2022 for Windows
+# Creating an app with Visual Studio 2022/2026
 
 > [!NOTE]
 > Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vs2022).
@@ -80,7 +80,7 @@ To run the **WebAssembly** (Wasm) head:
     ![Visual Studio - Select the Wasm profile](getting-started/wizard/assets/wasm-debugger-dropdown.png)
 
 - Press the `MyApp (WebAssembly)` button to deploy the app
-- To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022 (see [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels) to get started)
+- To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022/2026 (see [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels) to get started)
 
 ### [**ASP.NET Hosted WebAssembly**](#tab/wasm-hosted)
 

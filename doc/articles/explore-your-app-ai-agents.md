@@ -21,7 +21,7 @@ Your AI agent will act and use the tools provided by Uno Platform.
 
 ## Using the MCP tools
 
-Uno Platform provides two **[MCPs](https://modelcontextprotocol.io/docs/getting-started/intro)(Model Context Protocol)**, the **Remote Uno MCP** and the **Local App MCP**.
+Uno Platform provides two **[MCP](https://modelcontextprotocol.io/docs/getting-started/intro) (Model Context Protocol) servers**, the **Remote Uno MCP** and the **Local App MCP**.
 
 For more detailed information, you can read further on [the tools offered by Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
@@ -53,6 +53,8 @@ In your agent, there are some phrases that can be used to nudge the agent to use
 
 > [!NOTE]
 > Your agent will execute tools from our MCPs, you will need to approve them at your convenience.
+> [!NOTE]
+> In Visual Studio 2022/2026 MCPs might not be enabled automatically. Make sure to [click the "tools" icon](https://learn.microsoft.com/en-us/visualstudio/ide/mcp-servers?view=vs-2022#configuration-example-with-a-github-mcp-server) in the chat window to check both Uno Platform MCPs.
 
 - To ask the agent to explain what MVUX is:
 
@@ -109,3 +111,7 @@ In your agent, there are some phrases that can be used to nudge the agent to use
     ```
 
 All those phrases will hint the model to use one or more of the tools to answer your request.
+
+## Troubleshooting MCP Servers
+
+You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.

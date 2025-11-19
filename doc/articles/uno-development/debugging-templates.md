@@ -7,7 +7,7 @@ uid: Uno.Contributing.DebuggingTemplates
 The uno platform project contains multiple types of templates:
 
 - `dotnet new` templates
-- Visual Studio (2022) Extensions templates (vsix)
+- Visual Studio (2022/2026) Extensions templates (vsix)
 
 Some of the templates are reusing the same sources. For example the full solution template is defined in the vsix project, and building the `dotnet new` template creates a transformed version of the vsix template.
 

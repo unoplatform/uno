@@ -35,7 +35,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.9 or 
 
 ## Install the Uno Platform Extension
 
-1. Launch Visual Studio 2022, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.  
+1. Launch Visual Studio 2022/2026, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.  
 
     ![Visual Studio - "Extensions" drop-down selecting "Manage Extensions"](Assets/tutorial01/manage-extensions.png)  
 
