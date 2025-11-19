@@ -28,6 +28,9 @@ This guide will walk you through the setup process for getting started with Clau
 
     This will show the Uno Platform MCPs available to the agent.
 
+    > [!IMPORTANT]
+    > The uno-app MCP [may fail to load](https://github.com/anthropics/claude-code/issues/4384) unless Claude is opened in a folder containing an uno app.
+
 ## Next Steps
 
 Now that you are set up, let's [create your first app](xref:Uno.GettingStarted.CreateAnApp.AI.Claude).

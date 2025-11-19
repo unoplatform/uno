@@ -4,7 +4,7 @@
     - name: Setup
       topicHref: xref:Uno.GetStarted.vs2022
       items:
-      - name: Visual Studio 2022 for Windows
+      - name: Visual Studio 2022/2026
         href: xref:Uno.GetStarted.vs2022
       - name: VS Code
         href: xref:Uno.GetStarted.vscode
@@ -25,7 +25,7 @@
     - name: Create an App
       topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
       items:
-      - name: Visual Studio 2022 for Windows
+      - name: Visual Studio 2022/2026
         href: xref:Uno.GettingStarted.CreateAnApp.VS2022
       - name: VS Code
         href: xref:Uno.GettingStarted.CreateAnApp.VSCode
@@ -64,7 +64,7 @@
         items:
         - name: All Development Environments
           href: xref:Uno.UI.CommonIssues.AllIDEs
-        - name: Visual Studio 2022 for Windows
+        - name: Visual Studio 2022/2026
           href: xref:Uno.UI.CommonIssues.vs2022
         - name: VS Code
           href: xref:Uno.UI.CommonIssues.vscode

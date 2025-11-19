@@ -4,7 +4,7 @@ The Uno Platform Status surfaces what Uno Platform is doing behind the scenes wh
 
 Its icon is located in the status bar of all supported IDEs.
 
-## [Visual Studio 2022](#tab/vswints)
+## [Visual Studio 2022/2026](#tab/vswints)
 
 ![Uno Platform Status](../Assets/uno-platform-status.png)
 

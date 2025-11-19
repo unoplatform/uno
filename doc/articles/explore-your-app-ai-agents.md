@@ -21,7 +21,7 @@ Your AI agent will act and use the tools provided by Uno Platform.
 
 ## Using the MCP tools
 
-Uno Platform provides two **[MCPs](https://modelcontextprotocol.io/docs/getting-started/intro)(Model Context Protocol)**, the **Remote Uno MCP** and the **Local App MCP**.
+Uno Platform provides two **[MCP](https://modelcontextprotocol.io/docs/getting-started/intro) (Model Context Protocol) servers**, the **Remote Uno MCP** and the **Local App MCP**.
 
 For more detailed information, you can read further on [the tools offered by Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 

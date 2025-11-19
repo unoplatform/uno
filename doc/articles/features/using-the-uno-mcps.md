@@ -64,3 +64,21 @@ The Pro license App MCP app tools are:
 
 - `uno_app_element_peer_action`, used to invoke a specific element automation peer action
 - `uno_app_get_element_datacontext`, used to get a textual representation of the DataContext on a FrameworkElement
+
+## Troubleshooting MCP Servers
+
+### dnx is not a valid command
+
+The getting started for Claude, Codex and Copilot CLI use the `dnx` command line, which is only available on .NET 10.
+
+If you want to use the App MCP with .NET 9 projects, you'll need to change `dnx` to `uno-devserver` and install it using `dotnet tool install -g uno.devserver`.
+
+### The App MCP turns red in Visual Studio 2022/2026
+
+In Visual Studio, the devserver might turn red in some occasions. To fix this issue, click on the tree dots on the right and select `Reload`.
+
+### The uno-app MCP failed to start
+
+The Uno Platform App MCP may fail to start in Claude/Codex/Copilot CLI when itis started in a folder that does not contain an Uno Platform project.
+
+To fix this issue, change directories to a folder that contains the `.sln` or `.slnx` file of your project.

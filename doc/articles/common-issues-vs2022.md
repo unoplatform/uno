@@ -2,7 +2,7 @@
 uid: Uno.UI.CommonIssues.vs2022
 ---
 
-# Issues related to Visual Studio 2022 for Windows
+# Issues related to Visual Studio 2022/2026
 
 ## Unable to select the `MyApp (Unpackaged WinAppSDK)` profile
 
@@ -10,11 +10,11 @@ A [Visual Studio issue](https://developercommunity.visualstudio.com/t/WinAppSDK-
 
 ## An iOS fails to run with `No class inheriting from a valid Application Delegate found`
 
-When using iOS Hot Restart on Visual Studio 2022, a [limitation of the environment](https://developercommunity.visualstudio.com/t/iOS-Hot-Restart-does-not-work-for-non-MA/10714660) prevents an Uno Platform app from starting properly when MAUI Embedding is referenced.
+When using iOS Hot Restart on Visual Studio /2026, a [limitation of the environment](https://developercommunity.visualstudio.com/t/iOS-Hot-Restart-does-not-work-for-non-MA/10714660) prevents an Uno Platform app from starting properly when MAUI Embedding is referenced.
 
 A workaround is to disable MAUI Embedding in the [`UnoFeatures` of your project](xref:Uno.Features.Uno.Sdk#uno-platform-features).
 
-## App builds in Visual Studio 2022 are taking a long time
+## App builds in Visual Studio 2022/2026 are taking a long time
 
 Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
 
@@ -24,7 +24,7 @@ There could be many reasons for being in this situation, but we've built a list 
 
 ## C# Hot Reload troubleshooting
 
-C# Hot Reload is provided by Visual Studio 2022, and there may be occasions where updates are not applied, or the modified code is incorrectly reported as not compiling.
+C# Hot Reload is provided by Visual Studio 2022/2026, and there may be occasions where updates are not applied, or the modified code is incorrectly reported as not compiling.
 
 If that is the case:
 
