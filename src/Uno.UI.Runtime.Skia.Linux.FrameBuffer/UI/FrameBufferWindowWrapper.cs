@@ -20,24 +20,23 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 
 	public DisplayOrientations Orientation { get; } = FeatureConfiguration.LinuxFramebuffer.Orientation;
 
-	internal void SetSize(Size newWindowSize, float rasterizationScale)
+	internal void SetSize(Size rawScreenSize)
 	{
-		if (XamlRoot is { } xamlRoot)
+		if (XamlRoot is { })
 		{
-			RasterizationScale = rasterizationScale;
-			var scale = xamlRoot.RasterizationScale;
-			var bounds = new Rect(0, 0,  newWindowSize.Width / scale, newWindowSize.Height /  scale);
+			var scale = RasterizationScale = (float)DisplayInformation.GetForCurrentViewSafe().RawPixelsPerViewPixel;
 			if (Orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)
 			{
-				(bounds.Height, bounds.Width) = (bounds.Width, bounds.Height);
+				(rawScreenSize.Height, rawScreenSize.Width) = (rawScreenSize.Width, rawScreenSize.Height);
 			}
+			var bounds = new Rect(0, 0,  rawScreenSize.Width / scale, rawScreenSize.Height /  scale);
 			SetBoundsAndVisibleBounds(bounds, bounds);
-			Size = new((int)newWindowSize.Width, (int)newWindowSize.Height);
-			FrameBufferPointerInputSource.Instance.MousePosition = bounds.GetCenter();
+			Size = new((int)rawScreenSize.Width, (int)rawScreenSize.Height);
+			FrameBufferPointerInputSource.Instance.MousePosition = new Point(rawScreenSize.Width / 2, rawScreenSize.Height / 2);
 		}
 		else
 		{
-			NativeDispatcher.Main.Enqueue(() => SetSize(newWindowSize, rasterizationScale));
+			NativeDispatcher.Main.Enqueue(() => SetSize(rawScreenSize));
 		}
 	}
 

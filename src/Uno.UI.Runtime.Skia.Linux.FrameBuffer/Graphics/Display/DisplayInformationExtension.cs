@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Windows.Graphics.Display;
+using Microsoft.UI.Windowing;
 using Uno.Foundation.Logging;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
@@ -37,24 +38,37 @@ namespace Uno.UI.Runtime.Skia
 			var flooredScale = FloorScale(rawScale);
 
 			var screenSize = FrameBufferWindowWrapper.Instance.Size;
+			FrameBufferWindowWrapper.Instance.Window!.AppWindow.Changed += OnSizeChanged;
 			_details = new(
 				(uint)screenSize.Width,
 				(uint)screenSize.Height,
 				flooredScale * DisplayInformation.BaseDpi,
 				flooredScale,
 				(ResolutionScale)(int)(flooredScale * 100.0),
-				Math.Sqrt(screenSize.Width * screenSize.Width + screenSize.Height * screenSize.Height) * MillimetersToInches
+				0
 			);
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			this.LogDebug()?.Debug($"Display Information init: " +
+			                       $"ResolutionScale: {ResolutionScale}, " +
+			                       $"LogicalDpi: {LogicalDpi}, " +
+			                       $"RawPixelsPerViewPixel: {RawPixelsPerViewPixel}, " +
+			                       $"DiagonalSizeInInches: {DiagonalSizeInInches}, " +
+			                       $"ScreenInRawPixels: {ScreenWidthInRawPixels}x{ScreenHeightInRawPixels}");
+		}
+
+		private void OnSizeChanged(AppWindow appWindow, AppWindowChangedEventArgs args)
+		{
+			_details = _details with
 			{
-				this.Log().Debug($"Display Information: " +
-				                 $"ResolutionScale: {ResolutionScale}, " +
-				                 $"LogicalDpi: {LogicalDpi}, " +
-				                 $"RawPixelsPerViewPixel: {RawPixelsPerViewPixel}, " +
-				                 $"DiagonalSizeInInches: {DiagonalSizeInInches}, " +
-				                 $"ScreenInRawPixels: {ScreenWidthInRawPixels}x{ScreenHeightInRawPixels}");
-			}
+				ScreenWidthInRawPixels = (uint)FrameBufferWindowWrapper.Instance.Size.Width,
+				ScreenHeightInRawPixels = (uint)FrameBufferWindowWrapper.Instance.Size.Height,
+			};
+			this.LogDebug()?.Debug($"Display Information updated: " +
+			                       $"ResolutionScale: {ResolutionScale}, " +
+			                       $"LogicalDpi: {LogicalDpi}, " +
+			                       $"RawPixelsPerViewPixel: {RawPixelsPerViewPixel}, " +
+			                       $"DiagonalSizeInInches: {DiagonalSizeInInches}, " +
+			                       $"ScreenInRawPixels: {ScreenWidthInRawPixels}x{ScreenHeightInRawPixels}");
 		}
 
 		public DisplayOrientations CurrentOrientation
@@ -87,22 +101,21 @@ namespace Uno.UI.Runtime.Skia
 		private static float FloorScale(float rawDpi)
 			=> rawDpi switch
 			{
-				> 5.00f => 5.00f,
-				> 4.50f => 4.50f,
-				> 4.00f => 4.00f,
-				> 3.50f => 3.50f,
-				> 3.00f => 3.00f,
-				> 2.50f => 2.50f,
-				> 2.25f => 2.25f,
-				> 2.00f => 2.00f,
-				> 1.80f => 1.80f,
-				> 1.75f => 1.75f,
-				> 1.60f => 1.60f,
-				> 1.50f => 1.50f,
-				> 1.40f => 1.40f,
-				> 1.25f => 1.25f,
-				> 1.20f => 1.20f,
-				> 1.00f => 1.00f,
+				>= 5.00f => 5.00f,
+				>= 4.50f => 4.50f,
+				>= 4.00f => 4.00f,
+				>= 3.50f => 3.50f,
+				>= 3.00f => 3.00f,
+				>= 2.50f => 2.50f,
+				>= 2.25f => 2.25f,
+				>= 2.00f => 2.00f,
+				>= 1.80f => 1.80f,
+				>= 1.75f => 1.75f,
+				>= 1.60f => 1.60f,
+				>= 1.50f => 1.50f,
+				>= 1.40f => 1.40f,
+				>= 1.25f => 1.25f,
+				>= 1.20f => 1.20f,
 				_ => 1.00f,
 			};
 	}

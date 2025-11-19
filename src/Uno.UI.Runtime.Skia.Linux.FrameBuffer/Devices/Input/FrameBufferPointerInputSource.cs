@@ -25,22 +25,16 @@ internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSourc
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
-	private readonly DisplayInformation _displayInformation;
 	private Func<VirtualKeyModifiers>? _keyboardInputSource;
 	private IXamlRootHost? _host;
 
 	private FrameBufferPointerInputSource()
 	{
-		_displayInformation = DisplayInformation.GetForCurrentViewSafe();
 	}
 
 	internal static FrameBufferPointerInputSource Instance { get; } = new FrameBufferPointerInputSource();
 
-	internal void SetHost(IXamlRootHost host)
-	{
-		_host = host;
-		MousePosition = FrameBufferWindowWrapper.Instance.Bounds.GetCenter();
-	}
+	internal void SetHost(IXamlRootHost host) => _host = host;
 
 	public void Configure(Func<VirtualKeyModifiers> keyboardInputSource)
 	{
@@ -97,24 +91,5 @@ internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSourc
 		{
 			this.Log().Debug($"{member} not supported on Skia for FrameBuffer.");
 		}
-	}
-
-	private (double x, double y) AdjustCoordForOrientation(double x, double y)
-	{
-		var size = FrameBufferWindowWrapper.Instance.Bounds.Size;
-		switch (FrameBufferWindowWrapper.Instance.Orientation)
-		{
-			case DisplayOrientations.Portrait:
-				(x, y) = (y, size.Height - x);
-				break;
-			case DisplayOrientations.LandscapeFlipped:
-				(x, y) = (size.Width - x, size.Height - y);
-				break;
-			case DisplayOrientations.PortraitFlipped:
-				(x, y) = (size.Height - y, x);
-				break;
-		}
-
-		return (x, y);
 	}
 }

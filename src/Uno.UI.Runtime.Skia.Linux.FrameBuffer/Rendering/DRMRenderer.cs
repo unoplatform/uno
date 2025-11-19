@@ -280,7 +280,7 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Info($"Using {glVersionString} for rendering.");
 			}
 
-			FrameBufferWindowWrapper.Instance.SetSize(new Size(modeInfo.Resolution.Width, modeInfo.Resolution.Height), (float)DisplayInformation.GetForCurrentViewSafe().RawPixelsPerViewPixel);
+			FrameBufferWindowWrapper.Instance.SetSize(new Size(modeInfo.Resolution.Width, modeInfo.Resolution.Height));
 
 			new Thread(PageFlipLoop) { IsBackground = true, Name = "DRM pageflip loop" }.Start();
 		}

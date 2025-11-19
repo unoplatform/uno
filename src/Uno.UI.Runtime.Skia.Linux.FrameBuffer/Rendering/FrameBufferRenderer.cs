@@ -53,7 +53,7 @@ internal abstract class FrameBufferRenderer
 		}
 
 		using var _ = MakeCurrent();
-		var bounds = FrameBufferWindowWrapper.Instance.Bounds;
+		var bounds = FrameBufferWindowWrapper.Instance.Size;
 		var orientation = FrameBufferWindowWrapper.Instance.Orientation;
 		var (degrees, transX, transY) = orientation switch
 		{
@@ -65,7 +65,7 @@ internal abstract class FrameBufferRenderer
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		_surface?.Canvas.Save();
-		_surface?.Canvas.Translate((float)transX, (float)transY);
+		_surface?.Canvas.Translate(transX, transY);
 		_surface?.Canvas.RotateDegrees(degrees);
 		_surface?.Canvas.Clear(SKColors.Transparent);
 		((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>

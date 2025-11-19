@@ -18,8 +18,7 @@ namespace Uno.UI.Runtime.Skia
 		{
 			_fbDev = new FrameBufferDevice();
 			_fbDev.Init();
-			FrameBufferWindowWrapper.Instance.SetSize(new Size(_fbDev.ScreenSize.Width, _fbDev.ScreenSize.Height),
-				(float)DisplayInformation.GetForCurrentViewSafe().RawPixelsPerViewPixel);
+			FrameBufferWindowWrapper.Instance.SetSize(new Size(_fbDev.ScreenSize.Width, _fbDev.ScreenSize.Height));
 
 			new Thread(_ =>
 			{
