@@ -291,14 +291,6 @@ namespace Uno.UI.Runtime.Skia
         
         [DllImport(libgbm, SetLastError = true)]
         public static extern GbmBoHandle gbm_bo_get_handle(IntPtr bo);
-
-        public static  class GbmColorFormats
-        {
-            public static uint FourCC(char a, char b, char c, char d) =>
-                (uint)a | ((uint)b) << 8 | ((uint)c) << 16 | ((uint)d) << 24;
-
-            public static uint GBM_FORMAT_XRGB8888 { get; } = FourCC('X', 'R', '2', '4');
-        }
     }
     
 }

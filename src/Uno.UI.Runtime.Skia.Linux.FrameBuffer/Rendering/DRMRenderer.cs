@@ -162,7 +162,7 @@ namespace Uno.UI.Runtime.Skia
 				throw new InvalidOperationException($"{nameof(LibDrm.gbm_create_device)} failed");
 			}
 			_gbmTargetSurface = LibDrm.gbm_surface_create(device, modeInfo.Resolution.Width, modeInfo.Resolution.Height,
-				LibDrm.GbmColorFormats.GBM_FORMAT_XRGB8888, LibDrm.GbmBoFlags.GBM_BO_USE_SCANOUT | LibDrm.GbmBoFlags.GBM_BO_USE_RENDERING);
+				FeatureConfiguration.LinuxFramebuffer.GBMSurfaceColorFormat.ToInt(), LibDrm.GbmBoFlags.GBM_BO_USE_SCANOUT | LibDrm.GbmBoFlags.GBM_BO_USE_RENDERING);
 			if (_gbmTargetSurface == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(LibDrm.gbm_surface_create)} failed");

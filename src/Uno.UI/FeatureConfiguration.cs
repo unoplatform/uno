@@ -1044,6 +1044,18 @@ namespace Uno.UI
 			/// </summary>
 			public static string DRMCardPath { get; set; }
 
+			// The FourCC color format used for the GBM surface created for rendering
+			// (this is passes to gbm_surface_create). For more details on the FourCC
+			// format and valid values, see https://github.com/torvalds/linux/blob/master/include/uapi/drm/drm_fourcc.h
+			public static DRMFourCCColorFormat GBMSurfaceColorFormat { get; set; } = DRMFourCCColorFormat.Argb8888;
+
+			public readonly record struct DRMFourCCColorFormat(char C1, char C2, char C3, char C4)
+			{
+				public uint ToInt() => (uint)C1 | (uint)C2 << 8 | (uint)C3 << 16 | (uint)C4 << 24;
+
+				public static DRMFourCCColorFormat Argb8888 { get; } = new('A', 'R', '2', '4');
+			}
+
 			/// <summary>
 			/// A delegate that picks which of the available connectors to use. If not supplied, the first one
 			/// found will be used.
