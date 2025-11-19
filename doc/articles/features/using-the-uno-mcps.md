@@ -20,7 +20,7 @@ This is a remotely hosted publicly and provides:
 
 ### Predefined Prompts
 
-The prompts provided by the MCP are automatically registered in your environment when supported.
+The prompts provided by the MCP are automatically registered in your environment when supported by your AI agent (e.g., Claude, Codex, Copilot, etc.).
 
 Here are the currently supported prompts:
 
