@@ -92,16 +92,16 @@ public static class WebSocketHelper
 		{
 #if IS_DEVSERVER
 			var log = Uno.Extensions.LogExtensionPoint.Log(typeof(Frame));
-			if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
 			{
 				ex.ToString();
-				Microsoft.Extensions.Logging.LoggerExtensions.LogDebug(log, "WebSocket connection closed.");
+				Microsoft.Extensions.Logging.LoggerExtensions.LogInformation(log, "WebSocket connection closed.");
 			}
 #else // Client
 			var log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Frame));
-			if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 			{
-				log.LogDebug("WebSocket connection closed.", ex);
+				log.LogInfo("WebSocket connection closed.", ex);
 			}
 #endif
 			return null; // WebSocket closed, no need to report this as an error.
