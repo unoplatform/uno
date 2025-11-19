@@ -24,7 +24,7 @@ The prompts provided by the MCP are automatically registered in your environment
 
 Here are the currently supported prompts:
 
-- `/new`, used to create a new uno app with the best practices in mind.
+- `/new`, used to create a new Uno Platform app with the best practices in mind.
 - `/init`, used to "prime" your current chat with Uno's best practices. It's generally used in an existing app when adding new features.
 
 ### Sample Prompts for Uno MCP Servers

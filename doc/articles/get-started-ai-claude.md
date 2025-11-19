@@ -29,7 +29,7 @@ This guide will walk you through the setup process for getting started with Clau
     This will show the Uno Platform MCPs available to the agent.
 
     > [!IMPORTANT]
-    > The `uno-app` MCP [may fail to load](https://github.com/anthropics/claude-code/issues/4384) unless Claude is opened in a folder containing an Uno app.
+    > The `uno-app` MCP [may fail to load](https://github.com/anthropics/claude-code/issues/4384) unless Claude is opened in a folder containing an Uno Platform app.
 
 ## Next Steps
 
