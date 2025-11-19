@@ -5,5 +5,6 @@
 	<type fullname="Uno.UI.Toolkit.UIElementExtensions"/>
 	<type fullname="Uno.UI.Toolkit.MenuFlyoutExtensions"/>
 	<type fullname="Uno.UI.Toolkit.SplitViewExtensions"/>
+	<type fullname="Uno.UI.Markup.FromJsonExtension"/>
   </assembly>
 </linker>
