@@ -56,7 +56,7 @@ To ensure consistency, the Uno tooling aligns itself with the package versions r
 
 ### [Visual Studio 2022/2026](#tab/vswints)
 
-- The Output window in Visual Studio includes an output category named `Uno Platform - Dev Environment`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
+- The Output window in Visual Studio includes an output category named `Uno Platform - Dev Environment`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files#to-change-the-amount-of-information-included-in-the-build-log).  
 
     If you need to share logs when opening an issue on the GitHub [Uno Platform repository](https://github.com/unoplatform/uno), set verbosity to **Diagnostic** to provide the most detailed logs for investigation.
 

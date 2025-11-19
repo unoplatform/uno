@@ -1,5 +1,5 @@
 ---
-uid: Uno.GetStarted.If you've already set up **Visual Studio 2022/2026** by following the [Get Started on Visual Studio 2022](xref:Uno.GetStarted.vs2022) documentation, sign in as follows:icensing
+uid: Uno.GetStarted.Licensing
 ---
 
 # Sign in with Uno Platform

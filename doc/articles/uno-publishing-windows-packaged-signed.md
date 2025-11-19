@@ -52,7 +52,7 @@ To bundle the individual msix packages, move them all to a common folder, for ex
 ```
 
 > [!TIP]
-> The `makeappx.exe` tool is also available from the environment when opening a [**Developer Command Prompt for VS 2022/2026**](https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022)
+> The `makeappx.exe` tool is also available from the environment when opening a [**Developer Command Prompt for VS 2022/2026**](https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell)
 
 ## Considerations for solutions with class library projects
 
