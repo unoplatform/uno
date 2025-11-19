@@ -1,10 +1,10 @@
 ﻿using System;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml;
 using Windows.Graphics.Display;
+using Windows.UI.Core;
 using Uno.Extensions;
+using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Runtime.Skia;
 
@@ -18,6 +18,8 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 
 	public override object? NativeWindow => null;
 
+	public DisplayOrientations Orientation { get; } = FeatureConfiguration.LinuxFramebuffer.Orientation;
+
 	internal void SetSize(Size newWindowSize, float rasterizationScale)
 	{
 		if (XamlRoot is { } xamlRoot)
@@ -25,6 +27,10 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 			RasterizationScale = rasterizationScale;
 			var scale = xamlRoot.RasterizationScale;
 			var bounds = new Rect(0, 0,  newWindowSize.Width / scale, newWindowSize.Height /  scale);
+			if (Orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)
+			{
+				(bounds.Height, bounds.Width) = (bounds.Width, bounds.Height);
+			}
 			SetBoundsAndVisibleBounds(bounds, bounds);
 			Size = new((int)newWindowSize.Width, (int)newWindowSize.Height);
 			FrameBufferPointerInputSource.Instance.MousePosition = bounds.GetCenter();

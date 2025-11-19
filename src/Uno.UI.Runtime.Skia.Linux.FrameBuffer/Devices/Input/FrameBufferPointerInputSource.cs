@@ -98,4 +98,23 @@ internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSourc
 			this.Log().Debug($"{member} not supported on Skia for FrameBuffer.");
 		}
 	}
+
+	private (double x, double y) AdjustCoordForOrientation(double x, double y)
+	{
+		var size = FrameBufferWindowWrapper.Instance.Bounds.Size;
+		switch (FrameBufferWindowWrapper.Instance.Orientation)
+		{
+			case DisplayOrientations.Portrait:
+				(x, y) = (y, size.Height - x);
+				break;
+			case DisplayOrientations.LandscapeFlipped:
+				(x, y) = (size.Width - x, size.Height - y);
+				break;
+			case DisplayOrientations.PortraitFlipped:
+				(x, y) = (size.Height - y, x);
+				break;
+		}
+
+		return (x, y);
+	}
 }

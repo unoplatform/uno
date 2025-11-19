@@ -58,17 +58,18 @@ internal partial class FrameBufferPointerInputSource
 
 		if (type == LIBINPUT_EVENT_POINTER_MOTION)
 		{
-			MousePosition += new Point(
-				x: libinput_event_pointer_get_dx(rawPointerEvent),
-				y: libinput_event_pointer_get_dy(rawPointerEvent));
+			var dx = libinput_event_pointer_get_dx(rawPointerEvent);
+			var dy = libinput_event_pointer_get_dy(rawPointerEvent);
+			MousePosition += new Point(dx, dy);
 
 			raisePointerEvent = RaisePointerMoved;
 		}
 		else if (type == LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE)
 		{
-			MousePosition = new Point(
-				x: libinput_event_pointer_get_absolute_x_transformed(rawPointerEvent, (int)_displayInformation.ScreenWidthInRawPixels),
-				y: libinput_event_pointer_get_absolute_y_transformed(rawPointerEvent, (int)_displayInformation.ScreenHeightInRawPixels));
+			var x = libinput_event_pointer_get_absolute_x_transformed(rawPointerEvent, (int)_displayInformation.ScreenWidthInRawPixels);
+			var y = libinput_event_pointer_get_absolute_y_transformed(rawPointerEvent, (int)_displayInformation.ScreenHeightInRawPixels);
+			(x, y) = AdjustCoordForOrientation(x, y);
+			MousePosition = new Point(x, y);
 
 			raisePointerEvent = RaisePointerMoved;
 		}

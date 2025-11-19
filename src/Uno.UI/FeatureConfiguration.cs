@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using System.Runtime.InteropServices;
+using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 
 namespace Uno.UI
@@ -963,6 +964,8 @@ namespace Uno.UI
 			private static bool? _showMouseCursor;
 			private static Color _mouseCursorColor = Color.FromArgb(255, 0, 0, 0);
 			private static float _mouseCursorRadius = 5;
+			private static DisplayOrientations _orientation = DisplayOrientations.Landscape;
+			private static bool _orientationSet;
 
 			/// <summary>
 			/// Shows the mouse cursor as a small circle. If null, the cursor will
@@ -1009,6 +1012,24 @@ namespace Uno.UI
 #if __SKIA__
 			public static event Action MouseCursorParamsUpdated;
 #endif
+
+			/// <summary>
+			/// This property is read while initializing and must be set early.
+			/// </summary>
+			public static DisplayOrientations Orientation
+			{
+				get => _orientation;
+				set
+				{
+					if (_orientationSet)
+					{
+						throw new InvalidOperationException($"Orientation should be set only once.");
+					}
+
+					_orientationSet = true;
+					_orientation = value;
+				}
+			}
 
 			/// <summary>
 			/// Determines if OpenGLES+EGL initialized with DRM+GBM should be used for hardware-accelerated rendering on the
