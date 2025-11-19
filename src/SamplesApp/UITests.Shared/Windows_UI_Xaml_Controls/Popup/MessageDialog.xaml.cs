@@ -21,7 +21,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 			WithoutTitle.Tapped += (snd, evt) =>
 			{
 				var messageDialog = new Windows.UI.Popups.MessageDialog("No internet connection has been found.");
+#if HAS_UNO
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
+#endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
@@ -30,7 +32,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 			{
 				var messageDialog = new Windows.UI.Popups.MessageDialog("No internet connection has been found.");
 				messageDialog.Title = "Internet Connectivity";
+#if HAS_UNO
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
+#endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
@@ -41,7 +45,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 
 				messageDialog.Commands.Add(new UICommand("Acknowledge", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.Title = "Internet Connectivity";
+#if HAS_UNO
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
+#endif
 
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
@@ -57,7 +63,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 
 				messageDialog.Commands.Add(new UICommand("Cancel", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.DefaultCommandIndex = 1;
+#if HAS_UNO
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
+#endif
 
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
@@ -75,7 +83,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 
 				messageDialog.Commands.Add(new UICommand("Cancel", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.CancelCommandIndex = 2;
+#if HAS_UNO
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
+#endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
@@ -83,7 +93,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 			WithEscapedCharacters.Tapped += (snd, evt) =>
 			{
 				var messageDialog = new Windows.UI.Popups.MessageDialog("\"Sample \\\"force escape test\\\" \\n \\t \\r continued sample.\"");
+#if HAS_UNO
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
+#endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
@@ -91,7 +103,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 			WithProgrammaticDismissal.Tapped += (snd, evt) =>
 			{
 				var messageDialog = new Windows.UI.Popups.MessageDialog("It will dismiss in 2000 ms", "Programatically Dismiss");
+#if HAS_UNO
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
+#endif
 
 				var cts = new CancellationTokenSource(2000);
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync().AsTask(cts.Token));
