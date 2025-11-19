@@ -93,13 +93,13 @@ unsafe internal class FrameBufferInputProvider : IDisposable
 				this.LogTrace()?.Trace($"Got event type (0x{rawEvent:X16}) {type}");
 
 				if (type is >= LIBINPUT_EVENT_TOUCH_DOWN and <= LIBINPUT_EVENT_TOUCH_CANCEL
-				    && TryGetPointers(out var pointers))
+					&& TryGetPointers(out var pointers))
 				{
 					pointers!.ProcessTouchEvent(rawEvent, type);
 				}
 
 				if (type is >= LIBINPUT_EVENT_POINTER_MOTION and <= LIBINPUT_EVENT_POINTER_AXIS
-				    && TryGetPointers(out pointers))
+					&& TryGetPointers(out pointers))
 				{
 					pointers!.ProcessMouseEvent(rawEvent, type);
 				}
@@ -132,7 +132,7 @@ unsafe internal class FrameBufferInputProvider : IDisposable
 	public void Dispose()
 	{
 		if (_libDevFd != 0)
-		{ 
+		{
 			var ret = Libc.close(_libDevFd);
 			if (ret < 0 && this.Log().IsEnabled(LogLevel.Error))
 			{

@@ -26,7 +26,8 @@ internal partial class FrameBufferPointerInputSource
 	private Point _mousePosition;
 	private bool _receivedMouseEvent;
 
-	public Point MousePosition {
+	public Point MousePosition
+	{
 		get => _mousePosition;
 		set
 		{

@@ -247,7 +247,7 @@ namespace Uno.UI.Runtime.Skia
 			var fbId = CreateFbForBo(bo);
 			var connectorId = connector.Id;
 			var mode = modeInfo.Mode;
-			
+
 			var res = LibDrm.drmModeSetCrtc(_card, _crtc, fbId, 0, 0, &connectorId, 1, &mode);
 			if (res != 0)
 			{
@@ -285,16 +285,16 @@ namespace Uno.UI.Runtime.Skia
 			new Thread(PageFlipLoop) { IsBackground = true, Name = "DRM pageflip loop" }.Start();
 		}
 
-		private unsafe int CalculateRefreshRate(LibDrm.drmModeModeInfo *mode)
+		private unsafe int CalculateRefreshRate(LibDrm.drmModeModeInfo* mode)
 		{
 			var res = (int)(mode->clock * 1000000L / mode->htotal + mode->vtotal / 2) / mode->vtotal;
 
-			if ((mode->flags & /* DRM_MODE_FLAG_INTERLACE */ (1<<4)) != 0)
+			if ((mode->flags & /* DRM_MODE_FLAG_INTERLACE */ (1 << 4)) != 0)
 			{
 				res *= 2;
 			}
 
-			if ((mode->flags & /* DRM_MODE_FLAG_DBLSCAN */ (1<<5)) != 0)
+			if ((mode->flags & /* DRM_MODE_FLAG_DBLSCAN */ (1 << 5)) != 0)
 			{
 				res /= 2;
 			}
@@ -375,7 +375,7 @@ namespace Uno.UI.Runtime.Skia
 			};
 			while (true)
 			{
-				var pfd = new pollfd {events = 1, fd = _card};
+				var pfd = new pollfd { events = 1, fd = _card };
 				var res = Libc.poll(&pfd, new IntPtr(1), -1);
 				if (res < 0)
 				{

@@ -10,7 +10,6 @@ namespace Uno.UI.Runtime.Skia
 	internal class DisplayInformationExtension : IDisplayInformationExtension
 	{
 		private const string EnvironmentUnoDisplayScaleOverride = "UNO_DISPLAY_SCALE_OVERRIDE";
-		private const double MillimetersToInches = 0.0393700787;
 
 		private DisplayInformationDetails _details = new DisplayInformationDetails(0, 0, DisplayInformation.BaseDpi, 1, ResolutionScale.Scale100Percent, null);
 
@@ -49,11 +48,11 @@ namespace Uno.UI.Runtime.Skia
 			);
 
 			this.LogDebug()?.Debug($"Display Information init: " +
-			                       $"ResolutionScale: {ResolutionScale}, " +
-			                       $"LogicalDpi: {LogicalDpi}, " +
-			                       $"RawPixelsPerViewPixel: {RawPixelsPerViewPixel}, " +
-			                       $"DiagonalSizeInInches: {DiagonalSizeInInches}, " +
-			                       $"ScreenInRawPixels: {ScreenWidthInRawPixels}x{ScreenHeightInRawPixels}");
+								   $"ResolutionScale: {ResolutionScale}, " +
+								   $"LogicalDpi: {LogicalDpi}, " +
+								   $"RawPixelsPerViewPixel: {RawPixelsPerViewPixel}, " +
+								   $"DiagonalSizeInInches: {DiagonalSizeInInches}, " +
+								   $"ScreenInRawPixels: {ScreenWidthInRawPixels}x{ScreenHeightInRawPixels}");
 		}
 
 		private void OnSizeChanged(AppWindow appWindow, AppWindowChangedEventArgs args)
@@ -64,11 +63,11 @@ namespace Uno.UI.Runtime.Skia
 				ScreenHeightInRawPixels = (uint)FrameBufferWindowWrapper.Instance.Size.Height,
 			};
 			this.LogDebug()?.Debug($"Display Information updated: " +
-			                       $"ResolutionScale: {ResolutionScale}, " +
-			                       $"LogicalDpi: {LogicalDpi}, " +
-			                       $"RawPixelsPerViewPixel: {RawPixelsPerViewPixel}, " +
-			                       $"DiagonalSizeInInches: {DiagonalSizeInInches}, " +
-			                       $"ScreenInRawPixels: {ScreenWidthInRawPixels}x{ScreenHeightInRawPixels}");
+								   $"ResolutionScale: {ResolutionScale}, " +
+								   $"LogicalDpi: {LogicalDpi}, " +
+								   $"RawPixelsPerViewPixel: {RawPixelsPerViewPixel}, " +
+								   $"DiagonalSizeInInches: {DiagonalSizeInInches}, " +
+								   $"ScreenInRawPixels: {ScreenWidthInRawPixels}x{ScreenHeightInRawPixels}");
 		}
 
 		public DisplayOrientations CurrentOrientation
