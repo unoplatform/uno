@@ -54,6 +54,9 @@ In your agent, there are some phrases that can be used to nudge the agent to use
 > [!NOTE]
 > Your agent will execute tools from our MCPs, you will need to approve them at your convenience.
 
+> [!NOTE]
+> In Visual Studio 2022/2026 MCPs might not be enabled automatically. Make sure to [click the "tools" icon](https://learn.microsoft.com/en-us/visualstudio/ide/mcp-servers?view=vs-2022#configuration-example-with-a-github-mcp-server) in the chat window to check both uno platform MCPs.
+
 - To ask the agent to explain what MVUX is:
 
   ```text
@@ -112,3 +115,7 @@ In your agent, there are some phrases that can be used to nudge the agent to use
     ```
 
 All those phrases will hint the model to use one or more of the tools to answer your request.
+
+## Troubleshooting MCP Servers
+
+You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.
