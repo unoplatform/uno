@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Windows.Graphics.Display;
+using Windows.Graphics;
 
 namespace Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
@@ -25,7 +26,8 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 	{
 		var bounds = new Rect(default, newWindowSize);
 		SetBoundsAndVisibleBounds(bounds, bounds);
-		Size = new((int)newWindowSize.Width, (int)newWindowSize.Height);
+		var fullSize = new SizeInt32((int)newWindowSize.Width, (int)newWindowSize.Height);
+		SetSizes(fullSize, fullSize);
 	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
