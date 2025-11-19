@@ -32,7 +32,7 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 			var bounds = new Rect(0, 0,  rawScreenSize.Width / scale, rawScreenSize.Height /  scale);
 			SetBoundsAndVisibleBounds(bounds, bounds);
 			Size = new((int)rawScreenSize.Width, (int)rawScreenSize.Height);
-			FrameBufferPointerInputSource.Instance.MousePosition = new Point(rawScreenSize.Width / 2, rawScreenSize.Height / 2);
+			FrameBufferPointerInputSource.Instance.MousePosition = bounds.GetCenter();
 		}
 		else
 		{

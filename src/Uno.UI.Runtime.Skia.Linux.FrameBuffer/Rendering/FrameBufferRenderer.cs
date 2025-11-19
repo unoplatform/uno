@@ -84,6 +84,7 @@ internal abstract class FrameBufferRenderer
 		});
 		if (_cursorVisible)
 		{
+			_surface?.Canvas.Scale(FrameBufferWindowWrapper.Instance.RasterizationScale);
 			_surface?.Canvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), _cursorRadius, _cursorPaint);
 		}
 		_surface?.Canvas.Restore();

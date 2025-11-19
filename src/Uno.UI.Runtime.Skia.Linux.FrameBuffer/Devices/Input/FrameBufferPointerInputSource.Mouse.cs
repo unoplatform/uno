@@ -30,7 +30,7 @@ internal partial class FrameBufferPointerInputSource
 		get => _mousePosition;
 		set
 		{
-			var bounds = FrameBufferWindowWrapper.Instance.Size;
+			var bounds = FrameBufferWindowWrapper.Instance.Bounds;
 			var x = Math.Max(0, Math.Min(value.X, bounds.Width));
 			var y = Math.Max(0, Math.Min(value.Y, bounds.Height));
 			_mousePosition = new Point(x, y);
@@ -66,8 +66,8 @@ internal partial class FrameBufferPointerInputSource
 		}
 		else if (type == LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE)
 		{
-			var x = libinput_event_pointer_get_absolute_x_transformed(rawPointerEvent, FrameBufferWindowWrapper.Instance.Size.Width);
-			var y = libinput_event_pointer_get_absolute_y_transformed(rawPointerEvent, FrameBufferWindowWrapper.Instance.Size.Height);
+			var x = libinput_event_pointer_get_absolute_x_transformed(rawPointerEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+			var y = libinput_event_pointer_get_absolute_y_transformed(rawPointerEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
 			MousePosition = new Point(x, y);
 
 			raisePointerEvent = RaisePointerMoved;

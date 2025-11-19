@@ -43,8 +43,8 @@ unsafe internal partial class FrameBufferPointerInputSource
 			if (rawEventType == LIBINPUT_EVENT_TOUCH_DOWN
 				|| rawEventType == LIBINPUT_EVENT_TOUCH_MOTION)
 			{
-				var x = libinput_event_touch_get_x_transformed(rawTouchEvent, FrameBufferWindowWrapper.Instance.Size.Width);
-				var y = libinput_event_touch_get_y_transformed(rawTouchEvent, FrameBufferWindowWrapper.Instance.Size.Height);
+				var x = libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				var y = libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
 				currentPosition = new Point(x, y);
 				_activePointers[pointerId] = currentPosition;
 			}
