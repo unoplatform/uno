@@ -28,7 +28,7 @@ To get started with GitHub Copilot CLI:
     1. Skip Environment Variables and leave tools with `*`
 
 > [!IMPORTANT]
-> The uno-app MCP may fail to load unless Copilot is opened in a folder containing an uno app.
+> The uno-app MCP may fail to load unless Copilot is opened in a folder containing an Uno app.
 
 ## Next Steps
 
