@@ -29,7 +29,7 @@ This guide will walk you through the setup process for getting started with Code
     This will show the Uno Platform tools available to the agent.
 
     > [!IMPORTANT]
-    > The uno-app MCP may fail to load unless Codex is opened in a folder containing an Uno app.
+    > The uno-app MCP may fail to load unless Codex is opened in a folder containing an Uno Platform app.
 
 ## Next Steps
 
