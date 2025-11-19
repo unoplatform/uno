@@ -18,7 +18,7 @@ This is a remotely hosted publicly and provides:
 - A set of tools to search and fetch Uno Platform documentation
 - A set of prompts to create and develop Uno Platform applications.
 
-### Prompts
+### Predefined Prompts
 
 The prompts provided by the MCP are automatically registered in your environment when supported.
 
@@ -26,6 +26,10 @@ Here are the currently supported prompts:
 
 - `/new`, used to create a new uno app with the best practices in mind.
 - `/init`, used to "prime" your current chat with uno's best practices. It's generally used in an existing app when adding new features.
+
+### Sample Prompts for Uno MCP Servers
+
+You can find common prompts to use with agents in our [getting started](xref:Uno.BuildYourApp.AI.Agents) section.
 
 ### Uno MCP Tools
 
@@ -67,18 +71,4 @@ The Pro license App MCP app tools are:
 
 ## Troubleshooting MCP Servers
 
-### dnx is not a valid command
-
-The getting started for Claude, Codex and Copilot CLI use the `dnx` command line, which is only available on .NET 10.
-
-If you want to use the App MCP with .NET 9 projects, you'll need to change `dnx` to `uno-devserver` and install it using `dotnet tool install -g uno.devserver`.
-
-### The App MCP turns red in Visual Studio 2022/2026
-
-In Visual Studio, the devserver might turn red in some occasions. To fix this issue, click on the tree dots on the right and select `Reload`.
-
-### The uno-app MCP failed to start
-
-The Uno Platform App MCP may fail to start in Claude/Codex/Copilot CLI when itis started in a folder that does not contain an Uno Platform project.
-
-To fix this issue, change directories to a folder that contains the `.sln` or `.slnx` file of your project.
+You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.

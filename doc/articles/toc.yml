@@ -72,6 +72,8 @@
           href: xref:Uno.UI.CommonIssues.rider
         - name: Android & iOS Emulators
           href: xref:Uno.UI.CommonIssues.MobileDebugging
+        - name: AI Agents
+          href: xref:Uno.UI.CommonIssues.AIAgents
       - name: Platforms
         topicHref: xref:Uno.UI.CommonIssues.Wasm
         items:
