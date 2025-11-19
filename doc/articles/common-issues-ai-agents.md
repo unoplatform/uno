@@ -12,7 +12,7 @@ If you want to use the App MCP with .NET 9 projects, you'll need to change `dnx`
 
 ### The App MCP turns red in Visual Studio 2022/2026
 
-In Visual Studio, the devserver might turn red in some occasions. To fix this issue, click on the tree dots on the right and select `Reload`.
+In Visual Studio, the devserver might turn red in some occasions. To fix this issue, click on the three dots on the right and select `Reload`.
 
 ### The uno-app MCP failed to start
 
