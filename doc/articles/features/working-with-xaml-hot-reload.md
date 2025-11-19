@@ -461,12 +461,12 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
     **Steps to change MSBuild output verbosity:**  
     1. Open **Tools > Options > Projects and Solutions > Build and Run**, then set **MSBuild output verbosity** to **Diagnostic** or the required level.
 
-       ![MSBuild output verbosity drop-down](../Assets/features/hotreload/vs-msbuild-output-verbosity.png)
+       ![MSBuild output verbosity drop-down](../Assets/features/hotreload/vs-msbuild-output-verbosity-2026.png)
     2. Restart Visual Studio, re-open your solution, and wait a few seconds.
     3. Go to **View > Output**.
     4. In the Output window, select `Uno Platform` from the drop-down.
 
-       ![`Uno Platform` output drop-down](../Assets/features/hotreload/vs-uno-platform-logs.png)
+       ![`Uno Platform` output drop-down](../Assets/features/hotreload/vs-uno-platform-logs-2026.png)
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on the device or in the browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - For `net9.0-windows10.xx`:

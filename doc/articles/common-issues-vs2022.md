@@ -87,4 +87,4 @@ This issue is caused by visual studio enforcing https connections for local cont
 
 ### Error MSB3030: Could not copy the file "MyProject.Shared\MainPage.xbf" because it was not found
 
-This issue is present in Visual Studio 17.2 and 17.3, and can be addressed by [taking a look at this issue](https://github.com/unoplatform/uno/discussions/5007#discussioncomment-2583741).
+This issue is present in Visual Studio 2022 17.2 and 17.3, and can be addressed by [taking a look at this issue](https://github.com/unoplatform/uno/discussions/5007#discussioncomment-2583741).
