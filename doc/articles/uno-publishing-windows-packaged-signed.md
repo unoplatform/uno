@@ -16,7 +16,7 @@ This guide uses a self-signed certificate.
 To package your app:
 
 - Create a self-signed certificate:
-  - Open the solution in Visual Studio 2022
+  - Open the solution in Visual Studio 2022/2026
   - Ensure that the active debugging target framework is `net9.0-windows10.0.xxxxx` (Please upvote [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Double-clicking-on-a-PackageAppxmanifes/10658683))
   - Double-click on the `Package.appxmanifest` file
   - Navigate to the `Packaging` tab
@@ -52,7 +52,7 @@ To bundle the individual msix packages, move them all to a common folder, for ex
 ```
 
 > [!TIP]
-> The `makeappx.exe` tool is also available from the environment when opening a [**Developer Command Prompt for VS 2022**](https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022)
+> The `makeappx.exe` tool is also available from the environment when opening a [**Developer Command Prompt for VS 2022/2026**](https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022)
 
 ## Considerations for solutions with class library projects
 

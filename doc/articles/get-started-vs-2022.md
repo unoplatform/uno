@@ -10,7 +10,7 @@ This getting started will guide you through setting up your environment to creat
 
 ## Install Visual Studio with Workloads
 
-To create Uno Platform applications you will need [**Visual Studio 2022 17.9 or later**](https://visualstudio.microsoft.com/vs/):
+To create Uno Platform applications you will need [**Visual Studio 2022/2026 17.9 or later**](https://visualstudio.microsoft.com/vs/):
 
 1. **ASP.NET and web development** workload installed (for WebAssembly development)
 
@@ -27,7 +27,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.9 or 
 > [!NOTE]
 > If you intend to do Linux development with WSL, make sure to select **.NET Debugging with WSL** in the **Individual components** section.
 > [!IMPORTANT]
-> Uno Platform 5.0 and later [does not support Xamarin projects anymore](xref:Uno.Development.MigratingToUno5). To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
+> Uno Platform 5.0 and later [does not support Xamarin projects anymore](xref:Uno.Development.MigratingToUno5). To build Xamarin-based projects in Visual Studio 2022/2026, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
 
 ## Check your environment
 
@@ -35,7 +35,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.9 or 
 
 ## Install the Uno Platform Extension
 
-1. Launch Visual Studio 2022, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.  
+1. Launch Visual Studio 2022/2026, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.  
 
     ![Visual Studio - "Extensions" drop-down selecting "Manage Extensions"](Assets/tutorial01/manage-extensions.png)  
 

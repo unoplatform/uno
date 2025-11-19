@@ -160,7 +160,7 @@ Make sure to [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to get all the late
 
 ### Visual Studio
 
-Update your [Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace) in VS 2022 to 5.3.x or later. Earlier versions may automatically update to an incorrect version of the Uno.SDK.
+Update your [Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace) in VS 2022/2026 to 5.3.x or later. Earlier versions may automatically update to an incorrect version of the Uno.SDK.
 
 ### Single Project updates
 

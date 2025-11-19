@@ -36,7 +36,7 @@ To use MSBuild binary logs:
 - Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
 - Set **MSBuild project build log verbosity** to **Detailed** or **Diagnostics**
 - Install the [MSBuild log viewer](http://msbuildlog.com/)
-- Install the [Project System Tools for VS 2022](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools2022) or [VS 2019](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools) add-in
+- Install the [Project System Tools for VS 2022/2026](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools2022) or [VS 2019](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools) add-in
 - Open **View** > **Other Windows** > **Build Logging**, then click the green play button
 - Build your project again and right click the **Failed** build entry in the **Build Logging** tool window.
 - The binlog viewer tool will expand to the detailed build error

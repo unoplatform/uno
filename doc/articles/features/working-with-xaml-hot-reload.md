@@ -12,7 +12,7 @@ The Uno Platform **Hot Reload** feature provides a way to modify the XAML and C#
 
 ## Features
 
-- Supported in **Visual Studio 2022** (Windows), **VS Code** (Linux, macOS, Windows, and CodeSpaces), and **Rider** (Linux, macOS, Windows).
+- Supported in **Visual Studio 2022/2026** (Windows), **VS Code** (Linux, macOS, Windows, and CodeSpaces), and **Rider** (Linux, macOS, Windows).
 - XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Android, WebAssembly, and Skia (X11, Windows, macOS and FrameBuffer)**.
 - All **[C# of Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload)** in both Visual Studio, VS Code and Rider. See [supported code changes](https://learn.microsoft.com/visualstudio/debugger/supported-code-changes-csharp).
 - **Simulator and physical devices** support.
@@ -37,7 +37,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 
 ## How to use Hot Reload
 
-### [**Visual Studio 2022**](#tab/vswin)
+### [**Visual Studio 2022/2026**](#tab/vswin)
 
 - Setup your environment by following our [getting started guides](xref:Uno.GetStarted.vs2022).
 - Start your application (with or without the debugger, depending on the supported features below).
@@ -281,8 +281,8 @@ Legend:
 
 Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. There are some restrictions that are listed below:
 
-- The Visual Studio 2022 for Windows support is fully available, with and without running under the debugger
-- As of VS 2022 17.9 XAML or C# Hot Reload under WSL is not supported
+- The Visual Studio 2022/2026 for Windows support is fully available, with and without running under the debugger
+- As of VS 2022/2026 17.9 XAML or C# Hot Reload under WSL is not supported
 - VS Code
   - With the debugger: The C# Dev Kit is handling hot reload [when enabled](https://code.visualstudio.com/docs/csharp/debugging#_hot-reload). As of December 20th, 2023, C# Dev Kit hot reload does not handle class libraries. To experience the best hot reload, do not use the debugger.
   - Without the debugger: The VS Code Uno Platform extension is handling Hot Reload (C# and XAML).
@@ -448,7 +448,7 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
     #endif
     ```
 
-### [**Visual Studio 2022**](#tab/vswints)
+### [**Visual Studio 2022/2026**](#tab/vswints)
 
 - Ensure that **C# Hot Reload** is enabled in Visual Studio by going to **Tools > Options**, searching for **.NET / C++ Hot Reload**, and making sure the following checkboxes are checked:
   - ✅ **Enable Hot Reload when debugging**

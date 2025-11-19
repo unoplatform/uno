@@ -11,7 +11,7 @@ uid: uno.publishing.desktop
 - [Profile your app with Visual Studio](https://learn.microsoft.com/en-us/visualstudio/profiling)
 - [Profile using dotnet-trace and SpeedScope](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace)
 
-## Publish Using Visual Studio 2022
+## Publish Using Visual Studio 2022/2026
 
 - In the debugger toolbar drop-down, select the `net9.0-desktop` target framework
 - Once the project has reloaded, right-click on the project and select **Publish**

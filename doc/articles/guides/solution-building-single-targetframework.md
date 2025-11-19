@@ -1,7 +1,7 @@
 ---
 uid: Build.Solution.TargetFramework-override
 ---
-# Improve Build Times with Visual Studio 2022
+# Improve Build Times with Visual Studio 2022/2026
 
 The Uno Platform template **prior to Uno Platform 5.2** provides a cross-targeted Class library that includes multiple target frameworks, and your application may contain your own cross-targeted projects as well. This document explains how to make your builds faster.
 
@@ -66,7 +66,7 @@ To do so:
     <TargetFrameworks Condition=" '$(OverrideTargetFramework)' != '' ">$(OverrideTargetFramework)</TargetFrameworks>
     ```
 
-- Once done, if you're in Visual Studio 2022, you may need to close and re-open your solution or otherwise click the reload button. For other IDEs, the projects will reload automatically.
+- Once done, if you're in Visual Studio 2022/2026, you may need to close and re-open your solution or otherwise click the reload button. For other IDEs, the projects will reload automatically.
 
 At this point, you'll notice that the list of target frameworks available in the debugger will have been reduced to the list you added in `OverrideTargetFramework`.
 
@@ -176,7 +176,7 @@ At this point, your solution is ready for single-TargetFramework use.
 For example, to work on `net7.0-ios`:
 
 1. Before opening the solution, open the `solution-config.props` file and uncomment `MyAppTargetFrameworkOverride` to contain `net7.0-ios`
-1. Open the `MyApp-Mobile-Only.slnf` solution filter in Visual Studio 2022
+1. Open the `MyApp-Mobile-Only.slnf` solution filter in Visual Studio 2022/2026
 1. You should only see the **.Mobile** and **Class Library** projects in your solution
 1. When building and debugging the app, you'll only now build for the target specified in `solution-config.props`.
 

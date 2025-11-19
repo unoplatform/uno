@@ -4,7 +4,7 @@ The Uno Platform Status surfaces what Uno Platform is doing behind the scenes wh
 
 Its icon is located in the status bar of all supported IDEs.
 
-## [Visual Studio 2022](#tab/vswints)
+## [Visual Studio 2022/2026](#tab/vswints)
 
 ![Uno Platform Status](../Assets/uno-platform-status.png)
 
@@ -54,7 +54,7 @@ To ensure consistency, the Uno tooling aligns itself with the package versions r
 
 ## Troubleshooting
 
-### [Visual Studio 2022](#tab/vswints)
+### [Visual Studio 2022/2026](#tab/vswints)
 
 - The Output window in Visual Studio includes an output category named `Uno Platform - Dev Environment`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
 

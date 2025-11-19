@@ -6,7 +6,7 @@ uid: Uno.Development.DebuggingWasm
 
 There are two ways to debug a WebAssembly application:
 
-- Using Visual Studio 2022 integrated debugger (preferred)
+- Using Visual Studio 2022/2026 integrated debugger (preferred)
 - Using the browser's debugger
 
 ## Using Visual Studio
