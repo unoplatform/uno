@@ -6,7 +6,7 @@ uid: Uno.UI.CommonIssues.AIAgents
 
 ## dnx is not a valid command
 
-The getting started for Claude, Codex and Copilot CLI use the `dnx` command line, which is only available on .NET 10.
+The getting started for Claude, Codex and Copilot CLI use the `dnx` command, which is only available on .NET 10.
 
 If you want to use the App MCP with .NET 9 projects, you'll need to change `dnx` to `uno-devserver` and install it using `dotnet tool install -g uno.devserver`.
 
