@@ -370,7 +370,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			else
 			{
 				var recorder = new SKPictureRecorder();
-				var recordingCanvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+				var recordingCanvas = recorder.BeginRecording(new SKRect(int.MinValue, int.MinValue, int.MaxValue, int.MaxValue));
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
