@@ -9,6 +9,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Windowing;
 using Uno.UI;
 using Uno.UI.Toolkit.Extensions;
 
@@ -46,6 +47,7 @@ public sealed partial class DiagnosticsOverlay
 	private Point _location; // The location, relative to the _origin
 #if HAS_UNO_WINUI
 	private StatusBar? _statusBar;
+	private AppWindowTitleBar? _titleBar;
 #endif
 	private bool _isPlacementInit;
 
@@ -65,6 +67,13 @@ public sealed partial class DiagnosticsOverlay
 		}
 
 		_root.VisualTree.VisibleBoundsChanged += OnVisibleBoundsChanged;
+
+		// Subscribe to title bar changes to properly position the overlay when title bar is updated
+		if (_root.HostWindow?.AppWindow.TitleBar is { } titleBar)
+		{
+			_titleBar = titleBar;
+			titleBar.Changed += OnTitleBarChanged;
+		}
 #endif
 
 		_isPlacementInit = true;
@@ -81,6 +90,11 @@ public sealed partial class DiagnosticsOverlay
 			statusBar.Showing -= OnStatusBarChanged;
 		}
 
+		if (_titleBar is { } titleBar)
+		{
+			titleBar.Changed -= OnTitleBarChanged;
+		}
+
 		_root.VisualTree.VisibleBoundsChanged -= OnVisibleBoundsChanged;
 #endif
 	}
@@ -89,13 +103,22 @@ public sealed partial class DiagnosticsOverlay
 	/// Gets the area where the top-left corner of the overlay can be placed (i.e. already excludes the overlay size).
 	/// </summary>
 	/// <returns></returns>
-	public Rect GetSafeArea()
+	private Rect GetSafeArea()
 	{
 #if HAS_UNO_WINUI
 		var bounds = _root.VisualTree.VisibleBounds;
 #else
 		var bounds = new Rect(default, _root.Size);
 #endif
+
+		// Adjust for title bar height if ExtendsContentIntoTitleBar is enabled
+		// This ensures the overlay doesn't get positioned in the title bar drag area
+		if (_root.HostWindow?.AppWindow.TitleBar is { ExtendsContentIntoTitleBar: true } titleBar)
+		{
+			var titleBarHeight = titleBar.Height;
+			bounds.Y += titleBarHeight;
+			bounds.Height -= titleBarHeight;
+		}
 
 		bounds.Width -= _toolbar?.ActualWidth ?? ActualWidth;
 		bounds.Height -= ActualHeight;
@@ -105,7 +128,7 @@ public sealed partial class DiagnosticsOverlay
 		return bounds;
 	}
 
-	public Point GetAbsoluteLocation()
+	private Point GetAbsoluteLocation()
 	{
 		var area = GetSafeArea();
 
@@ -148,6 +171,9 @@ public sealed partial class DiagnosticsOverlay
 		=> UpdatePlacement();
 
 	private void OnVisibleBoundsChanged(object? sender, EventArgs e)
+		=> UpdatePlacement();
+
+	private void OnTitleBarChanged(object? sender, EventArgs e)
 		=> UpdatePlacement();
 #endif
 
