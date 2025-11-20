@@ -39,6 +39,8 @@ internal partial class PopupPanel : Panel
 	public Popup Popup { get; }
 #endif
 
+	private FrameworkElement _trackedPlacementTarget;
+
 	public PopupPanel(Popup popup)
 	{
 		Popup = popup ?? throw new ArgumentNullException(nameof(popup));
@@ -91,6 +93,9 @@ internal partial class PopupPanel : Panel
 	protected override Size ArrangeOverride(Size finalSize)
 	{
 		// Note: Here finalSize is expected to be the be the size of the window
+
+		// Ensure we're tracking the current placement target for viewport changes
+		UpdatePlacementTargetTracking();
 
 		var size = _lastMeasuredSize;
 
@@ -233,6 +238,7 @@ internal partial class PopupPanel : Panel
 		base.OnLoaded();
 
 		this.XamlRoot.Changed += XamlRootChanged;
+		UpdatePlacementTargetTracking();
 	}
 
 	private protected override void OnUnloaded()
@@ -243,6 +249,41 @@ internal partial class PopupPanel : Panel
 		{
 			xamlRoot.Changed -= XamlRootChanged;
 		}
+
+		UnsubscribeFromPlacementTargetViewportChanges();
+	}
+
+	private void UpdatePlacementTargetTracking()
+	{
+		var newTarget = Popup?.PlacementTarget;
+
+		if (_trackedPlacementTarget != newTarget)
+		{
+			UnsubscribeFromPlacementTargetViewportChanges();
+
+			_trackedPlacementTarget = newTarget;
+
+			if (_trackedPlacementTarget != null && IsLoaded)
+			{
+				_trackedPlacementTarget.EffectiveViewportChanged += OnPlacementTargetEffectiveViewportChanged;
+			}
+		}
+	}
+
+	private void UnsubscribeFromPlacementTargetViewportChanges()
+	{
+		if (_trackedPlacementTarget != null)
+		{
+			_trackedPlacementTarget.EffectiveViewportChanged -= OnPlacementTargetEffectiveViewportChanged;
+			_trackedPlacementTarget = null;
+		}
+	}
+
+	private void OnPlacementTargetEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+	{
+		// When the placement target's viewport changes (e.g., due to scrolling),
+		// we need to re-arrange the popup to follow its anchor
+		InvalidateArrange();
 	}
 
 	// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we
