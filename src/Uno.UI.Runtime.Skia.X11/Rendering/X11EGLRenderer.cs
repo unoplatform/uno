@@ -25,8 +25,15 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public unsafe X11EGLRenderer(IXamlRootHost host, X11Window x11window) : base(host, x11window)
 		{
-			(_eglDisplay, _eglSurface, _glContext, var major, var minor, _samples, _stencil)
-				= EglHelper.InitializeGles2Context(x11window.Display, x11window.Window);
+			_eglDisplay = EglHelper.EglGetDisplay(x11window.Display);
+			if (_eglDisplay == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(EglHelper.EglGetDisplay)} failed: {Enum.GetName(EglHelper.EglGetError())}");
+			}
+
+			var w = x11window.Window;
+			(_eglSurface, _glContext, var major, var minor, _samples, _stencil)
+				= EglHelper.InitializeGles2Context(_eglDisplay, new IntPtr(&w));
 
 			this.Log().Info($"Found EGL version {major}.{minor}.");
 

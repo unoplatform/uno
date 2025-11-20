@@ -41,10 +41,17 @@ internal class EglHelper
 		}
 	}
 
-	public static unsafe (IntPtr eglDisplay, IntPtr surfaceOrPbuffer, IntPtr glContext, int major, int minor, int samples, int stencil) InitializeGles2Context(IntPtr eglDisplayId = 0, IntPtr? window = null)
+	public static unsafe (IntPtr surfaceOrPbuffer, IntPtr glContext, int major, int minor, int samples, int stencil) InitializeGles2Context(IntPtr eglDisplay, IntPtr? window = null)
 	{
-		var eglDisplay = EglGetDisplay(eglDisplayId);
-		EglInitialize(eglDisplay, out var major, out var minor);
+		if (eglDisplay == IntPtr.Zero)
+		{
+			throw new ArgumentException($"{nameof(eglDisplay)} is null");
+		}
+
+		if (!EglInitialize(eglDisplay, out var major, out var minor))
+		{
+			throw new InvalidOperationException($"{nameof(EglInitialize)} failed: {Enum.GetName(EglHelper.EglGetError())}");
+		}
 
 		int[] attribList =
 		{
@@ -75,7 +82,7 @@ internal class EglHelper
 			throw new InvalidOperationException($"{nameof(EglGetConfigAttrib)} failed to get {nameof(EGL_STENCIL_SIZE)}: {Enum.GetName(EglGetError())}");
 		}
 
-		var glContext = EglHelper.EglCreateContext(eglDisplay, configs[0], EGL_NO_CONTEXT, [EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE]);
+		var glContext = EglCreateContext(eglDisplay, configs[0], EGL_NO_CONTEXT, [EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE]);
 		if (glContext == IntPtr.Zero)
 		{
 			throw new InvalidOperationException($"EGL context creation failed: {Enum.GetName(EglHelper.EglGetError())}");
@@ -88,10 +95,9 @@ internal class EglHelper
 		}
 		else
 		{
-			IntPtr w = window.Value;
-			surfaceOrPbuffer = EglCreatePlatformWindowSurface(eglDisplay, configs[0], new IntPtr(&w), [EGL_NONE]);
+			surfaceOrPbuffer = EglCreatePlatformWindowSurface(eglDisplay, configs[0], window.Value, [EGL_NONE]);
 		}
-		return (eglDisplay, surfaceOrPbuffer, glContext, major, minor, samples, stencil);
+		return (surfaceOrPbuffer, glContext, major, minor, samples, stencil);
 	}
 
 	public static unsafe string GetGlVersionString()

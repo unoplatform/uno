@@ -186,50 +186,16 @@ namespace Uno.UI.Runtime.Skia
 				}
 			}
 
-			EglHelper.EglInitialize(_eglDisplay, out var major, out var minor);
+			(_eglSurface, _glContext, var major, var minor, _samples, _stencil)
+				= EglHelper.InitializeGles2Context(_eglDisplay, _gbmTargetSurface);
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
 				this.Log().Info($"Found EGL version {major}.{minor}.");
 			}
 
-			int[] attribList =
-			{
-				EglHelper.EGL_RED_SIZE, 8,
-				EglHelper.EGL_GREEN_SIZE, 8,
-				EglHelper.EGL_BLUE_SIZE, 8,
-				EglHelper.EGL_ALPHA_SIZE, 8,
-				EglHelper.EGL_DEPTH_SIZE, 8,
-				EglHelper.EGL_STENCIL_SIZE, 1,
-				EglHelper.EGL_RENDERABLE_TYPE, EglHelper.EGL_OPENGL_ES2_BIT,
-				EglHelper.EGL_NONE
-			};
-
-			var configs = new IntPtr[1];
-			var success = EglHelper.EglChooseConfig(_eglDisplay, attribList, configs, configs.Length, out var numConfig);
-
-			if (!success || numConfig < 1)
-			{
-				throw new InvalidOperationException($"{nameof(EglHelper.EglChooseConfig)} failed: {Enum.GetName(EglHelper.EglGetError())}");
-			}
-
-			if (!EglHelper.EglGetConfigAttrib(_eglDisplay, configs[0], EglHelper.EGL_SAMPLES, out _samples))
-			{
-				throw new InvalidOperationException($"{nameof(EglHelper.EglGetConfigAttrib)} failed to get {nameof(EglHelper.EGL_SAMPLES)}: {Enum.GetName(EglHelper.EglGetError())}");
-			}
-			if (!EglHelper.EglGetConfigAttrib(_eglDisplay, configs[0], EglHelper.EGL_STENCIL_SIZE, out _stencil))
-			{
-				throw new InvalidOperationException($"{nameof(EglHelper.EglGetConfigAttrib)} failed to get {nameof(EglHelper.EGL_STENCIL_SIZE)}: {Enum.GetName(EglHelper.EglGetError())}");
-			}
-
-			_glContext = EglHelper.EglCreateContext(_eglDisplay, configs[0], EglHelper.EGL_NO_CONTEXT, [EglHelper.EGL_CONTEXT_CLIENT_VERSION, 2, EglHelper.EGL_NONE]);
-			if (_glContext == IntPtr.Zero)
-			{
-				throw new InvalidOperationException($"EGL context creation failed: {Enum.GetName(EglHelper.EglGetError())}");
-			}
-
-			_eglSurface = EglHelper.EglCreatePlatformWindowSurface(_eglDisplay, configs[0], _gbmTargetSurface, [EglHelper.EGL_NONE]);
-
 			using var _ = MakeCurrent();
+
+			this.Log().Info($"Using {EglHelper.GetGlVersionString()} for rendering.");
 
 			if (!EglHelper.EglSwapBuffers(_eglDisplay, _eglSurface))
 			{
@@ -269,16 +235,6 @@ namespace Uno.UI.Runtime.Skia
 				throw new NotSupportedException($"{nameof(GRContext)}.{nameof(GRContext.CreateGl)} failed");
 			}
 			_grContext = context;
-
-			var glGetString = (delegate* unmanaged[Cdecl]<int, byte*>)EglHelper.EglGetProcAddress("glGetString");
-
-			var glVersionBytePtr = glGetString(/* GL_VERSION */ 0x1F02);
-			var glVersionString = Marshal.PtrToStringUTF8((IntPtr)glVersionBytePtr);
-
-			if (this.Log().IsEnabled(LogLevel.Information))
-			{
-				this.Log().Info($"Using {glVersionString} for rendering.");
-			}
 
 			FrameBufferWindowWrapper.Instance.SetSize(new Size(modeInfo.Resolution.Width, modeInfo.Resolution.Height));
 
