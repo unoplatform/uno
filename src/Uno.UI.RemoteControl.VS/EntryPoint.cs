@@ -763,8 +763,6 @@ public partial class EntryPoint : IDisposable
 
 	private async Task OnUpdateFileRequestedAsync(UpdateFileIdeMessage request)
 	{
-		System.Diagnostics.Debugger.Launch();
-
 		try
 		{
 			if (request.FileContent is { Length: > 0 } fileContent)
@@ -780,6 +778,8 @@ public partial class EntryPoint : IDisposable
 					.Documents
 					.OfType<Document>()
 					.FirstOrDefault(d => d.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase));
+
+				var shouldReopenDocument = false;
 
 				// If document is open but encoding needs to be changed, we close it
 				if (document is not null && currentEncoding != targetEncoding)
@@ -797,13 +797,13 @@ public partial class EntryPoint : IDisposable
 					}
 
 					document.Close(vsSaveChanges.vsSaveChangesNo);
-					document = null;
+					shouldReopenDocument = true;
 					await Task.Delay(250); // Small delay to ensure file system is ready
 				}
 
 				// If the file is open and encoding compatible, we update its content in-memory
 				// TODO: We should NOT assume the `fileContent` to contains the full document content!
-				if (document?.Object("TextDocument") as TextDocument is { } textDocument && currentEncoding == targetEncoding)
+				if (!shouldReopenDocument && document?.Object("TextDocument") as TextDocument is { } textDocument && currentEncoding == targetEncoding)
 				{
 					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (in memory).");
 
