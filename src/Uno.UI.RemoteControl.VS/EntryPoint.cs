@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE;
@@ -760,56 +761,177 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
+	private System.Text.Encoding DetectFileEncoding(string filePath)
+	{
+		if (!File.Exists(filePath))
+		{
+			return new UTF8Encoding(encoderShouldEmitUTF8Identifier: true);
+		}
+
+		Encoding encoding;
+		using (var reader = new StreamReader(filePath, detectEncodingFromByteOrderMarks: true))
+		{
+			reader.Peek(); // Need to read at least one char to detect encoding
+			encoding = reader.CurrentEncoding;
+		}
+
+		// Confirm BOM presence for UTF encodings
+		switch (encoding)
+		{
+			case UTF8Encoding:
+			{
+				using var file = File.OpenRead(filePath);
+				encoding = (file.Length < 3 ? (0x00, 0x00, 0x00) : (file.ReadByte(), file.ReadByte(), file.ReadByte())) switch
+				{
+					(0xEF, 0xBB, 0xBF) => new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+					_ => new UTF8Encoding(encoderShouldEmitUTF8Identifier: false),
+				};
+				break;
+			}
+			case UnicodeEncoding: // UTF16
+			{
+				using var file = File.OpenRead(filePath);
+				encoding = (file.Length < 2 ? (0x00, 0x00) : (file.ReadByte(), file.ReadByte())) switch
+				{
+					(0xFE, 0xFF) => new UnicodeEncoding(bigEndian: true, byteOrderMark: true),
+					(0xFF, 0xFE) => new UnicodeEncoding(bigEndian: false, byteOrderMark: true),
+					_ => new UnicodeEncoding(bigEndian: encoding.CodePage is 1201, byteOrderMark: false),
+				};
+				break;
+			}
+			case UTF32Encoding:
+			{
+				using var file = File.OpenRead(filePath);
+				encoding = (file.Length < 2 ? (0x00, 0x00) : (file.ReadByte(), file.ReadByte())) switch
+				{
+					(0xFE, 0xFF) => new UTF32Encoding(bigEndian: true, byteOrderMark: true),
+					(0xFF, 0xFE) => new UTF32Encoding(bigEndian: false, byteOrderMark: true),
+					_ => new UTF32Encoding(bigEndian: encoding.CodePage is 12001, byteOrderMark: false),
+				};
+				break;
+			}
+		}
+
+		return encoding;
+	}
+
+	private bool SupportsUnicode(System.Text.Encoding encoding)
+	{
+		// Check if the encoding supports Unicode characters (including emojis)
+		// UTF-8, UTF-16, and UTF-32 all support the full Unicode range
+		var isSupported = encoding is UTF8Encoding
+			|| encoding is UnicodeEncoding
+			|| encoding is UTF32Encoding
+			|| encoding.CodePage == 65001  // UTF-8
+			|| encoding.CodePage == 1200   // UTF-16 LE
+			|| encoding.CodePage == 1201   // UTF-16 BE
+			|| encoding.CodePage == 12000  // UTF-32 LE
+			|| encoding.CodePage == 12001; // UTF-32 BE
+
+		// Even if supported, we validate if the BOM has been enabled
+		if (!isSupported || encoding.GetPreamble() == Array.Empty<byte>())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	private bool ContainsSpecialCharacters(string content)
+	{
+		// Check if content contains characters outside the Basic Multilingual Plane (BMP)
+		// This includes emojis and other special Unicode characters
+		foreach (var c in content)
+		{
+			if (char.IsSurrogate(c))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Encoding GetCompatibleEncoding(Encoding currentEncoding, string newContent)
+		// If content has special characters and encoding doesn't support Unicode, upgrade to UTF-8 with BOM
+		=> ContainsSpecialCharacters(newContent) && !SupportsUnicode(currentEncoding)
+			? new UTF8Encoding(encoderShouldEmitUTF8Identifier: true)
+			: currentEncoding;
+
 	private async Task OnUpdateFileRequestedAsync(UpdateFileIdeMessage request)
 	{
 		try
 		{
 			if (request.FileContent is { Length: > 0 } fileContent)
 			{
-				var filePath = request.FileFullName;
+				var filePath = Path.GetFullPath(request.FileFullName);
 
-				// Update the file content in the IDE using the DTE API.
-				var document = _dte2.Documents
+				// Determine the appropriate encoding for the file
+				var currentEncoding = DetectFileEncoding(filePath);
+				var targetEncoding = GetCompatibleEncoding(currentEncoding, fileContent);
+
+				// Check if document is already open in IDE
+				var document = _dte2
+					.Documents
 					.OfType<Document>()
-					.FirstOrDefault(d => AbsolutePathComparer.ComparerIgnoreCase.Equals(d.FullName, filePath));
+					.FirstOrDefault(d => d.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase));
 
-				var textDocument = document?.Object("TextDocument") as TextDocument;
-
-				if (textDocument is null) // The document is not open in the IDE, so we need to open it.
+				// If document is open but encoding needs to be changed, we close it
+				if (document is not null && currentEncoding != targetEncoding)
 				{
-					// Resolve the path to the document (in case it's not open in the IDE).
-					// The path may contain a mix of forward and backward slashes, so we normalize it by using Path.GetFullPath.
-					var adjustedPathForOpening = Path.GetFullPath(filePath);
+					// Document is open but does not have the current encoding, save it, then close it to change encoding
+					_debugAction?.Invoke($"Document {Path.GetFileName(filePath)} is open, saving and closing to change encoding from {currentEncoding.EncodingName} to {targetEncoding.EncodingName} with BOM");
 
-					document = _dte2.Documents.Open(adjustedPathForOpening);
-					textDocument = document?.Object("TextDocument") as TextDocument;
+					try
+					{
+						document.Save();
+					}
+					catch
+					{
+						// Ignore save errors
+					}
+
+					document.Close(vsSaveChanges.vsSaveChangesNo);
+					await Task.Delay(250); // Small delay to ensure file system is ready
 				}
 
-				if (document is null || textDocument is null)
+				// If the file is open and encoding compatible, we update its content in-memory
+				// TODO: We should NOT assume the `fileContent` to contains the full document content!
+				if (document?.Object("TextDocument") as TextDocument is { } textDocument && currentEncoding != targetEncoding)
 				{
-					throw new InvalidOperationException($"Failed to open document {filePath}");
+					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (in memory).");
+
+					// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
+					// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
+					const int flags = 0b0000_0011;
+					textDocument
+						.StartPoint
+						.CreateEditPoint()
+						.ReplaceText(textDocument.EndPoint, fileContent, flags);
+
+					if (request.ForceSaveOnDisk)
+					{
+						// Save the document.
+						document.Save();
+					}
 				}
-
-				// Replace the content of the document with the new content.
-
-				// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
-				// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
-				const int flags = 0b0000_0011;
-
-				textDocument.StartPoint.CreateEditPoint()
-					.ReplaceText(textDocument.EndPoint, fileContent, flags);
-
-				if (request.ForceSaveOnDisk)
+				else
 				{
-					// Save the document.
-					document.Save();
+					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (on disk).");
+
+					File.WriteAllText(filePath, fileContent, targetEncoding);
+
+					if (document is not null)
+					{
+						// Re-open the document to reflect changes in IDE
+						await Task.Delay(250); // Small delay to ensure file system is ready
+						_dte2.Documents.Open(filePath);
+					}
 				}
 
 				// Send a message back to indicate that the request has been received and acted upon.
 				if (_ideChannelClient is not null)
 				{
-					await _ideChannelClient.SendToDevServerAsync(
-						new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
+					await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
 				}
 			}
 		}
