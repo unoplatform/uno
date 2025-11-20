@@ -28,6 +28,9 @@ If you’ve already set up **Visual Studio 2022** by following the [Get Started 
 
    For existing applications, you should take this opportunity to update to the [latest `Uno.Sdk` version](https://www.nuget.org/packages/Uno.Sdk). See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
 
+   > [!TIP]
+   > Uno Platform supports both .NET 9 and .NET 10. For new projects, consider using .NET 10 for long-term support (3 years).
+
 1. After your project has finished loading, a notification should appear. Click on the **Sign in / Register** button.
 
    ![Visual Studio 2022 notification](Assets/uno-settings-notification.png)

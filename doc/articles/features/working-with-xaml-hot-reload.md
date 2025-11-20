@@ -62,7 +62,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 ---
 
 > [!IMPORTANT]
-> Using [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0) or later (`net9.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required.
+> Using [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0) or later (`net9.0` or `net10.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required. For .NET 10, use [Visual Studio 2026](https://visualstudio.microsoft.com/vs/preview/) or later.
 
 ## Supported features per OS
 

@@ -11,6 +11,10 @@ This article covers some basic best practices when developing cross-platform app
 1. Which [platforms](xref:Uno.GettingStarted.Requirements) do I plan to target?
 2. What framework features do I plan to use? Are they supported on all of my planned target platforms?
 3. Which major third-party dependencies will I use? Are they supported on all of my planned target platforms?
+4. Which .NET version should I use? (.NET 9 for 24-month support, .NET 10 for 3-year LTS)
+
+> [!TIP]
+> Uno Platform supports both .NET 9 and .NET 10. Check the [.NET version support](xref:Uno.Development.NetVersionSupport) page for details.
 
 ## Leverage Uno Platform Studio for Faster Development
 

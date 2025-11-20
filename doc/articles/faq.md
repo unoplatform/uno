@@ -85,6 +85,15 @@ Consult [the list of supported WinUI controls](implemented-views.md).
 
 You can develop Uno Platform applications on Windows, macOS, or Linux. Supported IDEs include Visual Studio, Visual Studio Code, and Rider. Consult the [setup guide](get-started.md) for more details. If you need help with issues specific to your developer environment or hardware, check out [Common Issues](xref:Uno.UI.CommonIssues).
 
+### Which .NET version should I use?
+
+Uno Platform supports both **.NET 9** (Standard Term Support, 24 months) and **.NET 10** (Long Term Support, 3 years). For new projects:
+
+* **Choose .NET 10** if you want long-term stability and 3-year support (ideal for enterprise applications)
+* **Choose .NET 9** if you want the latest features with 24-month support
+
+Both versions provide excellent performance and cross-platform capabilities. See the [.NET version support guide](xref:Uno.Development.NetVersionSupport) for details, or the [migration guide](xref:Uno.Development.MigratingFromNet9ToNet10) to upgrade from .NET 9 to .NET 10.
+
 ### Can I use VB.NET for Uno Platform applications?
 
 Much like the new UI technologies from Microsoft, Uno Platform doesn’t support creation of new applications using VB.NET.

@@ -195,7 +195,7 @@ Based on SkiaSharp support, Uno Platform provides AnimatedVisualPlayer to give t
 
 ## Performance and app size with AOT/Jiterpreter
 
-Uno Platform allows to use .NET 9+ features such as Profiled AOT (Ahead Of Time compilation) and the Jiterpreter, to get better performance for your apps and balanced size. Profiled AOT is a powerful feature that allows to continue using the interpreter for code that is not often used, thus keeping your app's size down.
+Uno Platform allows to use .NET 9 and .NET 10 features such as Profiled AOT (Ahead Of Time compilation) and the Jiterpreter, to get better performance for your apps and balanced size. Profiled AOT is a powerful feature that allows to continue using the interpreter for code that is not often used, thus keeping your app's size down.
 
 ## Comprehensive App Packaging for All Platforms
 
