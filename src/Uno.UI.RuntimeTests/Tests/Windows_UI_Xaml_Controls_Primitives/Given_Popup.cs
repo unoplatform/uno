@@ -366,6 +366,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PlacementTarget_In_ScrollViewer_And_Scrolled()
+		{
+			var scrollViewer = new ScrollViewer
+			{
+				Height = 200,
+				Width = 300
+			};
+
+			var stackPanel = new StackPanel();
+			
+			// Add some spacer elements
+			for (int i = 0; i < 10; i++)
+			{
+				stackPanel.Children.Add(new Border { Height = 50 });
+			}
+
+			// Add the placement target
+			var placementTarget = new Border
+			{
+				Width = 100,
+				Height = 50,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Blue)
+			};
+			stackPanel.Children.Add(placementTarget);
+
+			// Add more spacer elements
+			for (int i = 0; i < 10; i++)
+			{
+				stackPanel.Children.Add(new Border { Height = 50 });
+			}
+
+			scrollViewer.Content = stackPanel;
+
+			var popupChild = new Border
+			{
+				Width = 80,
+				Height = 40,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+
+			var popup = new Popup
+			{
+				PlacementTarget = placementTarget,
+				Child = popupChild
+			};
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = scrollViewer;
+				await WindowHelper.WaitForLoaded(scrollViewer);
+
+				// Open the popup
+				popup.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				// Get the initial position of the popup child relative to the window
+				var initialPosition = popupChild.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
+
+				// Scroll down
+				scrollViewer.ChangeView(null, 200, null, disableAnimation: true);
+				await WindowHelper.WaitForIdle();
+
+				// Get the new position of the popup child
+				var newPosition = popupChild.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
+
+				// The popup should have moved with the scroll (Y position should have decreased)
+				Assert.AreNotEqual(initialPosition.Y, newPosition.Y, "Popup should have moved when scrolling");
+				Assert.IsTrue(newPosition.Y < initialPosition.Y, "Popup should have moved up when scrolling down");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
 		{
 			var currentElement = startingElement;
