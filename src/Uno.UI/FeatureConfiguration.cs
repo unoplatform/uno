@@ -1010,7 +1010,7 @@ namespace Uno.UI
 			}
 
 #if __SKIA__
-			public static event Action MouseCursorParamsUpdated;
+			internal static event Action MouseCursorParamsUpdated;
 #endif
 
 			/// <summary>
