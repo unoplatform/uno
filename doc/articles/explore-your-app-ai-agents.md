@@ -6,6 +6,9 @@ uid: Uno.BuildYourApp.AI.Agents
 
 Once you have a running app, you're setup to have your agent help you develop features.
 
+> [!TIP]
+> For AI-assisted UI development integrated directly into your running app, try **[Hot Design® Agent](xref:Uno.HotDesign.Agent)** which provides specialized assistance for visual design and development tasks.
+
 In the agent chat, ask the following:
 
   > [!IMPORTANT]

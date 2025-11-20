@@ -6,7 +6,7 @@ uid: Uno.Documentation.Intro
 
 <!-- markdownlint-disable MD001 -->
 
-Uno Platform is an open-source .NET platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
+Uno Platform is an open-source .NET platform for building single codebase native mobile, web, desktop, and embedded apps quickly. Build with .NET 9 or .NET 10 using C# and XAML.
 
 <br/>
 
@@ -123,7 +123,7 @@ Design your app in Figma and easily import to XAML or C#
 
 #### Uno Themes
 
-Use Material theme in your app
+Use Material, Fluent, or Cupertino themes in your app
 
 </div>
 </a>
@@ -161,9 +161,9 @@ Browse the set of available controls and their properties.
 
 ## High level architecture
 
-Uno Platform's application API is compatible with Microsoft's [WinUI 3 API](https://learn.microsoft.com/windows/apps/winui/winui3/). In fact, when your application runs on Windows, it's just an ordinary WinUI 3/WinAppSDK application.
+Uno Platform implements Microsoft's [WinUI 3 API](https://learn.microsoft.com/windows/apps/winui/winui3/) across all platforms. When your application runs on Windows, it uses the native WinUI 3/WinAppSDK implementation directly.
 
-This means that existing WinUI code is compatible with Uno Platform. Existing WinUI libraries can be recompiled for use in Uno Platform applications. A number of [3rd-party libraries](xref:Uno.Development.SupportedLibraries) have been ported to Uno Platform.
+This means that existing WinUI code works seamlessly with Uno Platform. Existing WinUI libraries can be recompiled for use in Uno Platform applications. A number of [3rd-party libraries](xref:Uno.Development.SupportedLibraries) have been ported to Uno Platform.
 
 ![High-level architecture diagram - WinUI on Windows, Uno.UI on other platforms](Assets/high-level-architecture-diagram.png)
 
