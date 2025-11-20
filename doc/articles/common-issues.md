@@ -20,9 +20,9 @@ When using Hot Reload, ensure you first review the [supported features](xref:Uno
 
 If issues persist, additional troubleshooting information is available in [this section](xref:Uno.Features.HotReload#troubleshooting).
 
-### Hot Design®
+### Hot Design<sup>®</sup>
 
-For Hot Design® issues:
+For Hot Design<sup>®</sup> issues:
 
 - Review [current known issues](xref:Uno.HotDesign.Troubleshooting)
 - Ensure you are [signed in with your Uno Platform account](xref:Uno.GetStarted.Licensing)
@@ -43,7 +43,7 @@ If you're having trouble with Uno Platform Studio licensing or sign-in:
 To report issues or provide feedback on Uno Platform Studio tools:
 
 - Visit the [Uno Platform Studio GitHub repository](https://github.com/unoplatform/studio)
-- Use the Feedback menu in Hot Design® (Help > Feedback)
+- Use the Feedback menu in Hot Design<sup>®</sup> (Help > Feedback)
 - See [Providing Feedback for Uno Platform Studio](xref:Uno.Platform.Studio.Feedback)
 
 ## Development Environments

@@ -9,7 +9,7 @@ Uno Platform's API is derived from the WinUI application framework. Microsoft pr
 These resources can serve as a starting point when designing your Uno Platform application.
 
 > [!TIP]
-> Use **[Hot Design®](xref:Uno.HotDesign.Overview)** to visually design your application while it runs, and leverage **[Hot Design® Agent](xref:Uno.HotDesign.Agent)** for AI-assisted UI creation and refinement based on these design principles.
+> Use **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** to visually design your application while it runs, and leverage **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** for AI-assisted UI creation and refinement based on these design principles.
 
 Some of the points of guidance may be specific to Windows 10's [Fluent design language](https://www.microsoft.com/design/fluent/). When designing your cross-platform application, feel free to choose the principles that best apply to your users and the app experience you're aiming for.
 

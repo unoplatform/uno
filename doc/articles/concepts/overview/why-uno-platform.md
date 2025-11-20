@@ -18,7 +18,7 @@ However, built on top of this foundation is also a rich platform which includes 
 
 **[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)** is a comprehensive suite of productivity tools that revolutionizes cross-platform development:
 
-### Hot Design® - The only Visual Designer for cross-platform .NET Applications
+### Hot Design<sup>®</sup> - The only Visual Designer for cross-platform .NET Applications
 
 Uno Platform offers **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**, industry's first and only runtime Visual Designer for cross-platform .NET Applications. It transforms your running app into a Designer from any IDE on any OS. This offers unprecedented productivity gains:
 
@@ -27,9 +27,9 @@ Uno Platform offers **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**, 
 - See changes applied instantly via Hot Reload
 - Works across all platforms (iOS, Android, WebAssembly, Skia desktop targets)
 
-### Hot Design® Agent - AI-Powered UI Assistant
+### Hot Design<sup>®</sup> Agent - AI-Powered UI Assistant
 
-**[Hot Design® Agent](xref:Uno.HotDesign.Agent)** (new in Studio 2.0) is an AI-powered assistant designed for rapid UX/UI creation and enhancement within your running application. Built on deep knowledge of Uno Platform and your app's context, it simplifies cross-platform .NET design with intuitive workflows.
+**[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** (new in Studio 2.0) is an AI-powered assistant designed for rapid UX/UI creation and enhancement within your running application. Built on deep knowledge of Uno Platform and your app's context, it simplifies cross-platform .NET design with intuitive workflows.
 
 ### Uno MCPs - Intelligent Platform Integration
 

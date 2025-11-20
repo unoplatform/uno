@@ -181,7 +181,7 @@ dotnet restore --verbosity detailed
 2. Verify all xmlns declarations are correct
 3. Ensure x:DataType is specified in DataTemplates using x:Bind
 4. Check for typos in property names
-5. Use Hot Design® to visually inspect and fix XAML
+5. Use Hot Design<sup>®</sup> to visually inspect and fix XAML
 
 ### Error: "DependencyObject not found" or Similar Type Errors
 
@@ -351,4 +351,4 @@ uno-check --verbose
 - [Common Issues](xref:Uno.UI.CommonIssues) - Platform-specific problems
 - [Quick Reference](xref:Uno.QuickReference) - Common commands
 - [Performance Guide](xref:Uno.UI.Performance) - Optimize your app
-- [Hot Design® Agent](xref:Uno.HotDesign.Agent) - AI assistant for troubleshooting
+- [Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent) - AI assistant for troubleshooting

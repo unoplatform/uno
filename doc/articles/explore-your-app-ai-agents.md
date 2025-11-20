@@ -7,7 +7,7 @@ uid: Uno.BuildYourApp.AI.Agents
 Once your Uno Platform app is running, AI agents can help you develop features, test functionality, and debug issues—all through natural conversation.
 
 > [!TIP]
-> For AI-assisted UI development integrated directly into your running app, try **[Hot Design® Agent](xref:Uno.HotDesign.Agent)** which provides specialized assistance for visual design and development tasks.
+> For AI-assisted UI development integrated directly into your running app, try **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** which provides specialized assistance for visual design and development tasks.
 
 ## Getting Started
 
@@ -237,5 +237,5 @@ For detailed troubleshooting, see [AI Agents Troubleshooting Guide](xref:Uno.UI.
 ## Next Steps
 
 - **[Learn more about Uno Platform MCPs](xref:Uno.Features.Uno.MCPs)** - Complete reference of all tools
-- **[Try Hot Design® Agent](xref:Uno.HotDesign.Agent)** - AI-assisted visual design
+- **[Try Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** - AI-assisted visual design
 - **[Join our Discord](https://aka.platform.uno/discord)** - Share your experiences and get help

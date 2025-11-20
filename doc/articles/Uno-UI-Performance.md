@@ -8,14 +8,14 @@ This article lists various performance tips to optimize your Uno Platform applic
 
 ## Use Hot Reload and Hot Design for Performance Optimization
 
-**[Hot Reload](xref:Uno.Features.HotReload)** and **[Hot Design®](xref:Uno.HotDesign.Overview)**, part of [Uno Platform Studio](xref:Uno.Platform.Studio.Overview), are invaluable for performance optimization:
+**[Hot Reload](xref:Uno.Features.HotReload)** and **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**, part of [Uno Platform Studio](xref:Uno.Platform.Studio.Overview), are invaluable for performance optimization:
 
 - Test performance changes instantly without rebuilding
 - Quickly iterate on different optimization strategies
 - Compare performance of different implementations in real-time
-- Adjust visual complexity and test impact immediately with Hot Design®
+- Adjust visual complexity and test impact immediately with Hot Design<sup>®</sup>
 - Optimize bindings and see results without app restart
-- Use **[Hot Design® Agent](xref:Uno.HotDesign.Agent)** to get AI-powered suggestions for performance improvements
+- Use **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** to get AI-powered suggestions for performance improvements
 
 This significantly reduces the time needed to find and implement performance improvements. [Sign in to get started with Studio](xref:Uno.GetStarted.Licensing).
 

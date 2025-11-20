@@ -323,7 +323,7 @@ protected override void OnLaunched(LaunchActivatedEventArgs args)
 2. **Virtualize long lists** - Use `ListView` or `GridView` for collections
 3. **Lazy-load images** - Set `IsLazyLoadingEnabled="True"` on images
 4. **Profile with Uno.UI.RemoteControl** - Monitor performance metrics
-5. **Use Hot Design® Agent** - AI-powered UI optimization suggestions
+5. **Use Hot Design<sup>®</sup> Agent** - AI-powered UI optimization suggestions
 
 ## Common Issues
 
@@ -364,7 +364,7 @@ uno-check
 
 ### Tools
 
-- [Uno Platform Studio](xref:Uno.Platform.Studio.Overview) - Hot Design®, Hot Reload, Design-to-Code, Hot Design® Agent
+- [Uno Platform Studio](xref:Uno.Platform.Studio.Overview) - Hot Design<sup>®</sup>, Hot Reload, Design-to-Code, Hot Design<sup>®</sup> Agent
 - [Uno MCPs](xref:Uno.Features.Uno.MCPs) - AI agent integration for documentation and live app queries
 
 ### Community
@@ -377,5 +377,5 @@ uno-check
 
 - [Explore samples and tutorials](xref:Uno.Tutorials.Intro)
 - [Learn about Uno Extensions](xref:Uno.Extensions.Overview.ExtensionsOverview)
-- [Use Hot Design® Agent for UI development](xref:Uno.HotDesign.Agent)
+- [Use Hot Design<sup>®</sup> Agent for UI development](xref:Uno.HotDesign.Agent)
 - [Integrate with AI agents using MCPs](xref:Uno.Features.Uno.MCPs)

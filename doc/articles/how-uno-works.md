@@ -84,16 +84,16 @@ Uno Platform applications use [.NET 9 or later](https://learn.microsoft.com/dotn
 - All target platforms
 - XAML, C# Markup, and C# code changes
 
-### Hot Design®
+### Hot Design<sup>®</sup>
 
-**[Hot Design®](xref:Uno.HotDesign.Overview)** transforms your running application into a visual designer, allowing you to:
+**[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** transforms your running application into a visual designer, allowing you to:
 
 - Select and modify UI elements directly in your running app
 - Adjust properties, styles, and layouts visually
 - See changes applied instantly via Hot Reload
 - Works from any IDE on any OS, across all Uno Platform targets (except WinAppSDK)
 
-**[Hot Design® Agent](xref:Uno.HotDesign.Agent)** adds AI-powered assistance for rapid UI creation and enhancement within your running application.
+**[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** adds AI-powered assistance for rapid UI creation and enhancement within your running application.
 
 ### Design-to-Code
 

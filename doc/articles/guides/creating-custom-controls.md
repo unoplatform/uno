@@ -7,7 +7,7 @@ uid: Uno.Tutorials.CreatingCustomControls
 Custom controls in the Uno Platform enable developers to create reusable UI components that work seamlessly across iOS, Android, WebAssembly, Linux, macOS, and Windows. Uno Platform supports the same approach as WinUI/WinAppSDK, with a few specific considerations for cross-platform compatibility.
 
 > [!TIP]
-> Use **[Hot Design®](xref:Uno.HotDesign.Overview)** to visually prototype your custom controls and **[Hot Design® Agent](xref:Uno.HotDesign.Agent)** for AI-assisted development of control templates and visual states.
+> Use **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** to visually prototype your custom controls and **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** for AI-assisted development of control templates and visual states.
 
 > [!NOTE]  
 > For a more detailed explanation of creating custom controls, including dependency properties and control templates, refer to the official WinUI documentation: [Build XAML controls with C# | Microsoft Learn](https://learn.microsoft.com/windows/apps/winui/winui3/xaml-templated-controls-csharp-winui-3).

@@ -360,7 +360,7 @@ dotnet add package Uno.Extensions.Navigation --version 5.5.x
 - Test on Windows, Web (WASM), and at least one mobile platform
 - Use solution filters to build for each platform
 - Run automated tests for each target
-- Use Hot Design® Agent to check UI on all platforms
+- Use Hot Design<sup>®</sup> Agent to check UI on all platforms
 
 ## Performance Mistakes
 
@@ -500,4 +500,4 @@ public async Task When_Button_Clicked_Text_Changes()
 - [Troubleshooting Guide](xref:Uno.UI.CommonIssues) - Solutions to common problems
 - [Performance Optimization](xref:Uno.UI.Performance) - Make your app faster
 - [Testing Guide](xref:Uno.Contributing.Guidelines.CreatingTests) - Write effective tests
-- [Hot Design® Agent](xref:Uno.HotDesign.Agent) - AI assistant to avoid UI mistakes
+- [Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent) - AI assistant to avoid UI mistakes

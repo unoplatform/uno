@@ -97,7 +97,7 @@ Include new advanced UI controls
 
 #### Uno Platform Studio
 
-Boost productivity with Hot Design®, Hot Reload, and Design-to-Code
+Boost productivity with Hot Design<sup>®</sup>, Hot Reload, and Design-to-Code
 
 </div>
 </a>

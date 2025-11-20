@@ -223,5 +223,5 @@ For detailed troubleshooting steps, see our [AI Agents Troubleshooting Guide](xr
 ## Next Steps
 
 - **[Try the sample prompts](xref:Uno.BuildYourApp.AI.Agents)** to see MCPs in action
-- **[Learn about Hot Design® Agent](xref:Uno.HotDesign.Agent)** for AI-assisted visual design
+- **[Learn about Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** for AI-assisted visual design
 - **[Join our Discord](https://aka.platform.uno/discord)** to share your MCP experiences
