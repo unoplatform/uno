@@ -50,10 +50,10 @@ internal class EncodingHelpers
 			case UTF32Encoding:
 				{
 					using var file = File.OpenRead(filePath);
-					encoding = (file.Length < 2 ? (0x00, 0x00) : (file.ReadByte(), file.ReadByte())) switch
+					encoding = (file.Length < 4 ? (0x00, 0x00, 0x00, 0x00) : (file.ReadByte(), file.ReadByte(), file.ReadByte(), file.ReadByte())) switch
 					{
-						(0xFE, 0xFF) => new UTF32Encoding(bigEndian: true, byteOrderMark: true),
-						(0xFF, 0xFE) => new UTF32Encoding(bigEndian: false, byteOrderMark: true),
+						(0x00, 0x00, 0xFE, 0xFF) => new UTF32Encoding(bigEndian: true, byteOrderMark: true),
+						(0xFF, 0xFE, 0x00, 0x00) => new UTF32Encoding(bigEndian: false, byteOrderMark: true),
 						_ => new UTF32Encoding(bigEndian: encoding.CodePage is 12001, byteOrderMark: false),
 					};
 					break;
