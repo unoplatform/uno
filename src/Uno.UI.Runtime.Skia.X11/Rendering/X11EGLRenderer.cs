@@ -25,54 +25,14 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public unsafe X11EGLRenderer(IXamlRootHost host, X11Window x11window) : base(host, x11window)
 		{
-			_eglDisplay = EglHelper.EglGetDisplay(x11window.Display);
-			EglHelper.EglInitialize(_eglDisplay, out var major, out var minor);
-			if (this.Log().IsEnabled(LogLevel.Information))
-			{
-				this.Log().Info($"Found EGL version {major}.{minor}.");
-			}
+			(_eglDisplay, _eglSurface, _glContext, var major, var minor, _samples, _stencil)
+				= EglHelper.InitializeGles2Context(x11window.Display, x11window.Window);
 
-			int[] attribList =
-			{
-				EglHelper.EGL_RED_SIZE, 8,
-				EglHelper.EGL_GREEN_SIZE, 8,
-				EglHelper.EGL_BLUE_SIZE, 8,
-				EglHelper.EGL_ALPHA_SIZE, 8,
-				EglHelper.EGL_DEPTH_SIZE, 8,
-				EglHelper.EGL_STENCIL_SIZE, 1,
-				EglHelper.EGL_RENDERABLE_TYPE, EglHelper.EGL_OPENGL_ES2_BIT,
-				EglHelper.EGL_NONE
-			};
-
-			var configs = new IntPtr[1];
-			var success = EglHelper.EglChooseConfig(_eglDisplay, attribList, configs, configs.Length, out var numConfig);
-
-			if (!success || numConfig < 1)
-			{
-				throw new InvalidOperationException($"{nameof(EglHelper.EglChooseConfig)} failed: {Enum.GetName(EglHelper.EglGetError())}");
-			}
-
-			if (!EglHelper.EglGetConfigAttrib(_eglDisplay, configs[0], EglHelper.EGL_SAMPLES, out _samples))
-			{
-				throw new InvalidOperationException($"{nameof(EglHelper.EglGetConfigAttrib)} failed to get {nameof(EglHelper.EGL_SAMPLES)}: {Enum.GetName(EglHelper.EglGetError())}");
-			}
-			if (!EglHelper.EglGetConfigAttrib(_eglDisplay, configs[0], EglHelper.EGL_STENCIL_SIZE, out _stencil))
-			{
-				throw new InvalidOperationException($"{nameof(EglHelper.EglGetConfigAttrib)} failed to get {nameof(EglHelper.EGL_STENCIL_SIZE)}: {Enum.GetName(EglHelper.EglGetError())}");
-			}
-
-			// ANGLE implements GLES 3
-			_glContext = EglHelper.EglCreateContext(_eglDisplay, configs[0], EglHelper.EGL_NO_CONTEXT, [EglHelper.EGL_CONTEXT_CLIENT_VERSION, 2, EglHelper.EGL_NONE]);
-			if (_glContext == IntPtr.Zero)
-			{
-				throw new InvalidOperationException($"EGL context creation failed: {Enum.GetName(EglHelper.EglGetError())}");
-			}
-
-			var window = x11window.Window;
-			var windowPtr = new IntPtr(&window);
-			_eglSurface = EglHelper.EglCreatePlatformWindowSurface(_eglDisplay, configs[0], windowPtr, [EglHelper.EGL_NONE]);
+			this.Log().Info($"Found EGL version {major}.{minor}.");
 
 			MakeCurrent();
+
+			this.LogInfo()?.Info($"Using {EglHelper.GetGlVersionString()} for rendering.");
 
 			var glInterface = GRGlInterface.CreateGles(EglHelper.EglGetProcAddress);
 
@@ -81,26 +41,14 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				throw new NotSupportedException($"OpenGL is not supported in this system");
 			}
 
-			var context = GRContext.CreateGl(glInterface);
+			_grContext = GRContext.CreateGl(glInterface);
 
-			if (context == null)
+			if (_grContext == null)
 			{
 				throw new NotSupportedException($"OpenGL is not supported in this system (failed to create context)");
 			}
 
-			var glGetString = (delegate* unmanaged[Cdecl]<int, byte*>)EglHelper.EglGetProcAddress("glGetString");
-
-			var glVersionBytePtr = glGetString(/* GL_VERSION */ 0x1F02);
-			var glVersionString = Marshal.PtrToStringUTF8((IntPtr)glVersionBytePtr);
-
-			if (this.Log().IsEnabled(LogLevel.Information))
-			{
-				this.Log().Info($"Using {glVersionString} for rendering.");
-			}
-
 			_contextCurrentDisposable!.Dispose();
-
-			_grContext = context;
 		}
 
 		public void Dispose() => _grContext.Dispose();

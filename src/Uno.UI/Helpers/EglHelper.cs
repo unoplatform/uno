@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Helpers;
 
@@ -38,6 +39,68 @@ internal class EglHelper
 		{
 			return false;
 		}
+	}
+
+	public static unsafe (IntPtr eglDisplay, IntPtr surfaceOrPbuffer, IntPtr glContext, int major, int minor, int samples, int stencil) InitializeGles2Context(IntPtr eglDisplayId = 0, IntPtr? window = null)
+	{
+		var eglDisplay = EglGetDisplay(eglDisplayId);
+		EglInitialize(eglDisplay, out var major, out var minor);
+
+		int[] attribList =
+		{
+			EGL_RED_SIZE, 8,
+			EGL_GREEN_SIZE, 8,
+			EGL_BLUE_SIZE, 8,
+			EGL_ALPHA_SIZE, 8,
+			EGL_DEPTH_SIZE, 8,
+			EGL_STENCIL_SIZE, 1,
+			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+			EGL_NONE
+		};
+
+		var configs = new IntPtr[1];
+		var success = EglChooseConfig(eglDisplay, attribList, configs, configs.Length, out var numConfig);
+
+		if (!success || numConfig < 1)
+		{
+			throw new InvalidOperationException($"{nameof(EglChooseConfig)} failed: {Enum.GetName(EglHelper.EglGetError())}");
+		}
+
+		if (!EglGetConfigAttrib(eglDisplay, configs[0], EGL_SAMPLES, out var samples))
+		{
+			throw new InvalidOperationException($"{nameof(EglGetConfigAttrib)} failed to get {nameof(EGL_SAMPLES)}: {Enum.GetName(EglGetError())}");
+		}
+		if (!EglGetConfigAttrib(eglDisplay, configs[0], EGL_STENCIL_SIZE, out var stencil))
+		{
+			throw new InvalidOperationException($"{nameof(EglGetConfigAttrib)} failed to get {nameof(EGL_STENCIL_SIZE)}: {Enum.GetName(EglGetError())}");
+		}
+
+		var glContext = EglHelper.EglCreateContext(eglDisplay, configs[0], EGL_NO_CONTEXT, [EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE]);
+		if (glContext == IntPtr.Zero)
+		{
+			throw new InvalidOperationException($"EGL context creation failed: {Enum.GetName(EglHelper.EglGetError())}");
+		}
+
+		IntPtr surfaceOrPbuffer;
+		if (window is null)
+		{
+			surfaceOrPbuffer = EglCreatePbufferSurface(eglDisplay, configs[0], [EGL_NONE]);
+		}
+		else
+		{
+			IntPtr w = window.Value;
+			surfaceOrPbuffer = EglCreatePlatformWindowSurface(eglDisplay, configs[0], new IntPtr(&w), [EGL_NONE]);
+		}
+		return (eglDisplay, surfaceOrPbuffer, glContext, major, minor, samples, stencil);
+	}
+
+	public static unsafe string GetGlVersionString()
+	{
+		var glGetString = (delegate* unmanaged[Cdecl]<int, byte*>)EglGetProcAddress("glGetString");
+
+		var glVersionBytePtr = glGetString(/* GL_VERSION */ 0x1F02);
+		var glVersionString = Marshal.PtrToStringUTF8((IntPtr)glVersionBytePtr)!;
+		return glVersionString;
 	}
 
 	[DllImport(libEGL, EntryPoint = "eglGetDisplay")]
