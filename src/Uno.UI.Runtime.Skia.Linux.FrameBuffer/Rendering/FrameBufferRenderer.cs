@@ -14,35 +14,27 @@ namespace Uno.UI.Runtime.Skia;
 internal abstract class FrameBufferRenderer
 {
 	protected readonly IXamlRootHost _host;
+	private readonly SKPaint _cursorPaint;
+	private readonly float _cursorRadius;
+	private readonly bool? _cursorVisible;
 	protected SKSurface? _surface;
 	private int _renderCount;
-	private SKPaint _cursorPaint = new() { Color = FeatureConfiguration.LinuxFramebuffer.MouseCursorColor.ToSKColor() };
-	private float _cursorRadius = FeatureConfiguration.LinuxFramebuffer.MouseCursorRadius;
-	private bool _cursorVisible;
+	private bool _receivedMouseEvent;
 
-	protected FrameBufferRenderer(IXamlRootHost host)
+	protected FrameBufferRenderer(IXamlRootHost host, bool? showMouseCursor, float mouseCursorRadius, System.Drawing.Color mouseCursorColor)
 	{
 		_host = host;
-		MouseCursorParamsUpdated();
-		FeatureConfiguration.LinuxFramebuffer.MouseCursorParamsUpdated += MouseCursorParamsUpdated;
+		_cursorPaint = new SKPaint { Color = mouseCursorColor.ToSKColor() };
+		_cursorRadius = mouseCursorRadius;
+		_cursorVisible = showMouseCursor;
+		_receivedMouseEvent = FrameBufferPointerInputSource.Instance.ReceivedMouseEvent;
 		FrameBufferPointerInputSource.Instance.MouseEventReceived += OnMouseEventReceived;
 	}
 
 	private void OnMouseEventReceived()
 	{
 		FrameBufferPointerInputSource.Instance.MouseEventReceived -= OnMouseEventReceived;
-		MouseCursorParamsUpdated();
-	}
-
-	private void MouseCursorParamsUpdated()
-	{
-		_cursorPaint = new() { Color = FeatureConfiguration.LinuxFramebuffer.MouseCursorColor.ToSKColor() };
-		_cursorRadius = FeatureConfiguration.LinuxFramebuffer.MouseCursorRadius;
-		if (_cursorRadius < 0)
-		{
-			throw new ArgumentOutOfRangeException($"{nameof(FeatureConfiguration.LinuxFramebuffer.MouseCursorRadius)} should not be negative.");
-		}
-		_cursorVisible = FeatureConfiguration.LinuxFramebuffer.ShowMouseCursor ?? FrameBufferPointerInputSource.Instance.ReceivedMouseEvent;
+		_receivedMouseEvent = true;
 	}
 
 	protected void Render()
@@ -82,7 +74,7 @@ internal abstract class FrameBufferRenderer
 			_surface.Canvas.Clear(SKColors.Transparent);
 			return _surface.Canvas;
 		});
-		if (_cursorVisible)
+		if (_cursorVisible ?? _receivedMouseEvent)
 		{
 			_surface?.Canvas.Scale(FrameBufferWindowWrapper.Instance.RasterizationScale);
 			_surface?.Canvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), _cursorRadius, _cursorPaint);

@@ -14,7 +14,7 @@ namespace Uno.UI.Runtime.Skia
 		private FrameBufferDevice _fbDev;
 		private readonly AutoResetEvent _renderInvalidationEvent = new(false);
 
-		public SoftwareRenderer(IXamlRootHost host) : base(host)
+		public SoftwareRenderer(IXamlRootHost host, bool? showMouseCursor, float mouseCursorRadius, System.Drawing.Color mouseCursorColor) : base(host, showMouseCursor, mouseCursorRadius, mouseCursorColor)
 		{
 			_fbDev = new FrameBufferDevice();
 			_fbDev.Init();

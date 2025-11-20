@@ -4,7 +4,6 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Runtime.Skia;
 
@@ -12,13 +11,25 @@ namespace Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 {
-	private static readonly Lazy<FrameBufferWindowWrapper> _instance = new(() => new());
+	private static FrameBufferWindowWrapper? _instance;
+	internal static FrameBufferWindowWrapper Instance => _instance!;
 
-	internal static FrameBufferWindowWrapper Instance => _instance.Value;
+	public static void Init(DisplayOrientations orientation) => _instance = new(orientation);
 
 	public override object? NativeWindow => null;
 
-	public DisplayOrientations Orientation { get; } = FeatureConfiguration.LinuxFramebuffer.Orientation;
+	private FrameBufferWindowWrapper(DisplayOrientations orientation)
+	{
+		if (_instance != null)
+		{
+			throw new InvalidOperationException($"{nameof(FrameBufferWindowWrapper)} should be created once.");
+		}
+		_instance = this;
+
+		Orientation = orientation;
+	}
+
+	public DisplayOrientations Orientation { get; }
 
 	internal void SetSize(Size rawScreenSize)
 	{
