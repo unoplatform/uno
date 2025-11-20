@@ -109,6 +109,139 @@ The `nativeWindow` is an `object`, so you need to cast it to the specific type o
 
 `Window` type has a static `Current` property which previously served as a way to access the main, singleton window instance. This is no longer relevant in multi-window scenarios. For legacy reasons and to maintain compatibility with existing Uno Platform apps, we opted to keep this property and it returns the first window that was created. You should not rely on this behavior going forward as it will be deprecated.
 
+## Customizing window border and title bar
+
+### Checking if title bar customization is supported
+
+Before customizing the title bar, you should always check if title bar customization is available on the current platform:
+
+```csharp
+if (AppWindowTitleBar.IsCustomizationSupported())
+{
+    // Customize the title bar
+    myWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+}
+```
+
+Currently, `IsCustomizationSupported()` returns `true` on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+
+### Setting border and title bar visibility
+
+The `OverlappedPresenter.SetBorderAndTitleBar` method allows you to control whether the window displays a border and title bar:
+
+```csharp
+var overlappedPresenter = (OverlappedPresenter)myWindow.AppWindow.Presenter;
+// Remove both border and title bar
+overlappedPresenter.SetBorderAndTitleBar(hasBorder: false, hasTitleBar: false);
+
+// Show border but hide title bar
+overlappedPresenter.SetBorderAndTitleBar(hasBorder: true, hasTitleBar: false);
+
+// Show both border and title bar
+overlappedPresenter.SetBorderAndTitleBar(hasBorder: true, hasTitleBar: true);
+```
+
+> [!NOTE]
+> This API is currently supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets. On other platforms, the method exists but may have limited or no effect.
+
+### Extending content into title bar
+
+The `AppWindowTitleBar.ExtendsContentIntoTitleBar` property allows you to extend your app content into the title bar area, giving you full control over the title bar region:
+
+```csharp
+myWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+```
+
+When you extend content into the title bar, you typically want to provide a custom title bar element using `Window.SetTitleBar`:
+
+```csharp
+myWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+myWindow.SetTitleBar(myCustomTitleBarElement);
+```
+
+> [!NOTE]
+> This API is currently supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets. On other platforms, the property exists but may have limited or no effect.
+
+### Configuring title bar height
+
+When extending content into the title bar, you can control the height of the title bar using the `PreferredHeightOption` property:
+
+```csharp
+// Standard height (32px at default DPI)
+myWindow.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
+
+// Tall height (48px at default DPI)
+myWindow.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+
+// Collapsed (0px)
+myWindow.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Collapsed;
+```
+
+The actual height in pixels (not scaled points) is calculated based on the DPI scaling of the window and can be retrieved from the `Height` property:
+
+```csharp
+int titleBarHeight = myWindow.AppWindow.TitleBar.Height; // Height in actual pixels
+```
+
+> [!NOTE]
+> `PreferredHeightOption` is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets when the title bar is extended into the content area. The `Height` property returns the value in actual pixels, not scaled points.
+
+### Setting drag rectangles
+
+The `AppWindowTitleBar.SetDragRectangles` method allows you to define specific rectangular regions in the title bar area that the user can drag to move the window:
+
+```csharp
+var dragRectangles = new[]
+{
+    new RectInt32(10, 0, 200, 32),  // Draggable region from x=10 to x=210
+    new RectInt32(250, 0, 300, 32)  // Another draggable region from x=250 to x=550
+};
+
+myWindow.AppWindow.TitleBar.SetDragRectangles(dragRectangles);
+```
+
+> [!IMPORTANT]
+>
+> * The rectangles are specified in actual pixels, not scaled points.
+> * Drag rectangles must be updated when the window size or DPI scaling changes, otherwise they will be incorrectly positioned.
+> * This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+
+Example of updating drag rectangles on window size changes:
+
+```csharp
+myWindow.SizeChanged += (sender, args) =>
+{
+    // Recalculate and update drag rectangles based on new window size
+    UpdateDragRectangles();
+};
+```
+
+### Advanced: Setting non-client pointer source regions
+
+The `InputNonClientPointerSource.SetRegionRects` method provides advanced control over non-client regions, which is particularly useful when you use `SetBorderAndTitleBar(true, false)` and render your own caption buttons (minimize, maximize, close).
+
+By setting the region rectangles for caption buttons, you enable Windows features like the Snap Layouts popup that appears when hovering over the maximize button:
+
+![Snap Layouts popup](https://github.com/user-attachments/assets/bade7d00-1559-4022-a8c7-820d42e4ed74)
+
+```csharp
+using Microsoft.UI.Input;
+
+var appWindow = myWindow.AppWindow;
+var nonClientInputSrc = InputNonClientPointerSource.GetForWindowId(appWindow.Id);
+
+// Define the maximize button region to enable Snap Layouts
+var maximizeButtonRect = new RectInt32(100, 0, 46, 32); // x, y, width, height in actual pixels
+
+nonClientInputSrc.SetRegionRects(NonClientRegionKind.Caption, new[] { maximizeButtonRect });
+```
+
+> [!IMPORTANT]
+>
+> * Region rectangles are specified in actual pixels, not scaled points.
+> * These rectangles must be updated when the window size or DPI scaling changes.
+> * This API is supported on Desktop Windows (net9.0-desktop, net10.0-desktop) and WinAppSDK (net9.0-windows10.0.x, net10.0-windows10.0.x) targets.
+
 ## Setting the background color for the Window
 
 WinUI and UWP does not support the ability to provide a background color for `Window`, but Uno provides such an API through:
