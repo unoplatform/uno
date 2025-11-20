@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE;
@@ -766,50 +767,78 @@ public partial class EntryPoint : IDisposable
 		{
 			if (request.FileContent is { Length: > 0 } fileContent)
 			{
-				var filePath = request.FileFullName;
+				var filePath = Path.GetFullPath(request.FileFullName);
 
-				// Update the file content in the IDE using the DTE API.
-				var document = _dte2.Documents
+				// Determine the appropriate encoding for the file
+				var currentEncoding = EncodingHelpers.DetectFileEncoding(filePath);
+				var targetEncoding = EncodingHelpers.GetCompatibleEncoding(currentEncoding, fileContent);
+
+				// Check if document is already open in IDE
+				var document = _dte2
+					.Documents
 					.OfType<Document>()
-					.FirstOrDefault(d => AbsolutePathComparer.ComparerIgnoreCase.Equals(d.FullName, filePath));
+					.FirstOrDefault(d => d.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase));
 
-				var textDocument = document?.Object("TextDocument") as TextDocument;
+				var shouldReopenDocument = false;
 
-				if (textDocument is null) // The document is not open in the IDE, so we need to open it.
+				// If document is open but encoding needs to be changed, we close it
+				if (document is not null && currentEncoding != targetEncoding)
 				{
-					// Resolve the path to the document (in case it's not open in the IDE).
-					// The path may contain a mix of forward and backward slashes, so we normalize it by using Path.GetFullPath.
-					var adjustedPathForOpening = Path.GetFullPath(filePath);
+					// Document is open but does not have the current encoding, save it, then close it to change encoding
+					_debugAction?.Invoke($"Document {Path.GetFileName(filePath)} is open, saving and closing to change encoding from {currentEncoding.EncodingName} to {targetEncoding.EncodingName} with BOM");
 
-					document = _dte2.Documents.Open(adjustedPathForOpening);
-					textDocument = document?.Object("TextDocument") as TextDocument;
+					try
+					{
+						document.Save();
+					}
+					catch
+					{
+						// Ignore save errors
+					}
+
+					document.Close(vsSaveChanges.vsSaveChangesNo);
+					shouldReopenDocument = true;
+					await Task.Delay(250); // Small delay to ensure file system is ready
 				}
 
-				if (document is null || textDocument is null)
+				// If the file is open and encoding compatible, we update its content in-memory
+				// TODO: We should NOT assume the `fileContent` to contains the full document content!
+				if (!shouldReopenDocument && document?.Object("TextDocument") as TextDocument is { } textDocument && currentEncoding == targetEncoding)
 				{
-					throw new InvalidOperationException($"Failed to open document {filePath}");
+					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (in memory).");
+
+					// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
+					// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
+					const int flags = 0b0000_0011;
+					textDocument
+						.StartPoint
+						.CreateEditPoint()
+						.ReplaceText(textDocument.EndPoint, fileContent, flags);
+
+					if (request.ForceSaveOnDisk)
+					{
+						// Save the document.
+						document.Save();
+					}
 				}
-
-				// Replace the content of the document with the new content.
-
-				// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
-				// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
-				const int flags = 0b0000_0011;
-
-				textDocument.StartPoint.CreateEditPoint()
-					.ReplaceText(textDocument.EndPoint, fileContent, flags);
-
-				if (request.ForceSaveOnDisk)
+				else
 				{
-					// Save the document.
-					document.Save();
+					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (on disk).");
+
+					File.WriteAllText(filePath, fileContent, targetEncoding);
+
+					if (document is not null)
+					{
+						// Re-open the document to reflect changes in IDE
+						await Task.Delay(250); // Small delay to ensure file system is ready
+						_dte2.Documents.Open(filePath);
+					}
 				}
 
 				// Send a message back to indicate that the request has been received and acted upon.
 				if (_ideChannelClient is not null)
 				{
-					await _ideChannelClient.SendToDevServerAsync(
-						new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
+					await _ideChannelClient.SendToDevServerAsync(new IdeResultMessage(request.CorrelationId, Result.Success()), _ct.Token);
 				}
 			}
 		}
