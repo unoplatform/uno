@@ -22,7 +22,7 @@ uid: Uno.GetStarted.Wizard
 
 #### Hot Design<sup>®</sup>
 
-Use Hot Design<sup>®</sup>, Uno Platform's visual designer, to design and develop the app visually, or leverage Hot Design<sup>®</sup> Agent for AI-assisted UI creation.
+Use Hot Design<sup>®</sup>, Uno Platform's visual designer, to design and develop the app visually. You can also enable the Hot Design<sup>®</sup> Agent feature for AI-assisted UI creation within the same experience.
 
 </div>
 </a>
