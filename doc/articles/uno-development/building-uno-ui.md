@@ -8,7 +8,7 @@ This article explains how to build Uno.UI locally, for instance, if you wish to 
 
 ## Prerequisites
 
-- Visual Studio 2022 (17.8.1 or later)
+- Visual Studio 2022 (17.8.1 or later) or Visual Studio 2026
   - Select the **ASP.NET and Web Development** workload
   - Select the **.NET Multi-Platform App UI development** workload
   - Select the **.NET desktop development** workload
@@ -19,7 +19,7 @@ This article explains how to build Uno.UI locally, for instance, if you wish to 
 
 ## Recommended Windows hardware
 
-Loading and building the Uno.UI solution is a resource-intensive task. As a result, opening it in Visual Studio 2022 requires a minimum hardware configuration to avoid spending time waiting for builds.
+Loading and building the Uno.UI solution is a resource-intensive task. As a result, opening it in Visual Studio 2022/2026 requires a minimum hardware configuration to avoid spending time waiting for builds.
 
 **Minimum configuration:**
 
@@ -89,7 +89,7 @@ Inside Visual Studio, the number of platforms is restricted to limit the compila
 Here are some tips when building the Uno solution and failures happen:
 
 - Make sure to be on the latest master commit
-- Try to close VS 2022, delete the `src/.vs` folder, then try rebuilding the solution
+- Try to close Visual Studio, delete the `src/.vs` folder, then try rebuilding the solution
 - If the `.vs` deletion did not help, run `git clean -fdx` (after having closed Visual Studio) before building again
 - Make sure to have a valid `UnoTargetFrameworkOverride` which matches your solution filter
 - Make sure to have the Windows SDK `19041` installed

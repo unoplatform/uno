@@ -8,7 +8,7 @@ As of Uno 6.0, the Uno Platform solution templates [do not support being include
 
 In order to add an Uno Platform project to an existing solution:
 
-1. In a separate temporary folder, create a new project using the **Visual Studio 2022** or `dotnet new` templates, using `MyProject` for its name.
+1. In a separate temporary folder, create a new project using the **Visual Studio 2022/2026** or `dotnet new` templates, using `MyProject` for its name.
 1. Copy the generated individual project folders to your solution folder (`MyProject`, `MyProject.Server`, etc...)
 1. For the `global.json` file:
 
