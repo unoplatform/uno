@@ -2,122 +2,240 @@
 uid: Uno.BuildYourApp.AI.Agents
 ---
 
-# Prompting in your App
+# Using AI Agents with Your Uno Platform App
 
-Once you have a running app, you're setup to have your agent help you develop features.
+Once your Uno Platform app is running, AI agents can help you develop features, test functionality, and debug issues—all through natural conversation.
 
 > [!TIP]
 > For AI-assisted UI development integrated directly into your running app, try **[Hot Design® Agent](xref:Uno.HotDesign.Agent)** which provides specialized assistance for visual design and development tasks.
 
-In the agent chat, ask the following:
+## Getting Started
 
-  > [!IMPORTANT]
-  > The MCP tools are best used by agents when using premium models like Claude 4.5, GPT-5-Codex or GPT-5.
+### Prerequisites
 
-  ```text
-  Add a button and a textblock in my main page. Have a button click
-  display the current date in the new TextBlock. Make sure to validate
-  the app's runtime behavior using your tools.
-  ```
-
-Your AI agent will act and use the tools provided by Uno Platform.
-
-## Using the MCP tools
-
-Uno Platform provides two **[MCP](https://modelcontextprotocol.io/docs/getting-started/intro) (Model Context Protocol) servers**, the **Remote Uno MCP** and the **Local App MCP**.
-
-For more detailed information, you can read further on [the tools offered by Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
-
-### MCP (Remote)
-
-This is hosted publicly and provides:
-
-- A set of tools to search and fetch Uno Platform documentation
-- A set of prompts to create and develop Uno Platform applications.
-
-### App MCP (Local)
-
-The Uno App MCP is a runtime service for the Uno Platform that allows large language models (LLMs) or other agent-based tools to intelligently interact with live Uno applications across platforms such as Windows, WebAssembly, macOS, iOS, Android, and Linux, in a real runtime context.
-
-Rather than relying on static UI captures or screenshots, Uno App MCP exposes structured application state (like the Visual Tree, data context, and control properties), enabling rich, meaningful automation and inspection.
-
-It allows tools and agents to:
-
-- Attach to or stop a running Uno application session
-- Inspect the application state, such as the visual tree, data context, taking screenshots, not just visual output
-- Perform actions like clicking on controls, typing text, navigating pages, or invoking automation peers
-- Leverage those interactions for higher-level automation: UI testing, adaptive exploration, telemetry, and intelligent workflow orchestration
-
-In other words: while traditional Uno tests are written and maintained by developers, Uno App MCP opens the door for AI agents or other automation systems to drive and reason about the app autonomously, with deeper context and less manual scripting, across all Uno-supported platforms.
-
-## Sample prompts for MCP tools
-
-In your agent, there are some phrases that can be used to nudge the agent to use the tools.
+1. **A running Uno Platform app** (any platform: Windows, WebAssembly, iOS, Android, etc.)
+2. **An AI agent with MCP support** (Claude Desktop, VS Code with Copilot, etc.)
+3. **Premium AI model recommended** - Claude Sonnet 4.5, GPT-4, or similar for best results
+4. **MCPs enabled** - Verify Uno Platform MCPs are connected in your AI tool
 
 > [!NOTE]
-> Your agent will execute tools from our MCPs, you will need to approve them at your convenience.
+> In Visual Studio 2022/2026, MCPs might not be enabled automatically. [Click the "tools" icon](https://learn.microsoft.com/en-us/visualstudio/ide/mcp-servers?view=vs-2022#configuration-example-with-a-github-mcp-server) in the chat window to check both Uno Platform MCPs.
+
+### Your First Prompt
+
+Try this example to see AI agents in action:
+
+```text
+Add a button and a TextBlock to my main page. When the button is clicked,
+display the current date in the TextBlock. Use your tools to validate 
+that the feature works correctly in the running app.
+```
+
+The AI agent will:
+1. Write the XAML and code-behind
+2. Apply the changes to your project
+3. Use MCP tools to interact with your running app
+4. Click the button and verify the date appears
+
+This demonstrates how AI agents can develop AND test features automatically!
+
+## Understanding Uno Platform MCPs
+
+Uno Platform provides two **[MCP](https://modelcontextprotocol.io/docs/getting-started/intro) (Model Context Protocol) servers** that enhance your AI agent's capabilities:
+
+### 1. Remote Uno MCP - Knowledge & Documentation
+
+**What it provides:**
+- 📚 Search and fetch Uno Platform documentation
+- 💡 Best practice prompts and guidance  
+- 🎯 Pre-configured commands like `/new` and `/init`
+
+**When to use:**
+- Learning Uno Platform features
+- Getting code examples
+- Understanding best practices
+
+### 2. Local App MCP - Live App Interaction
+
+**What it provides:**
+- 👁️ Visual inspection (screenshots, visual tree)
+- 🖱️ User interactions (click, type, navigate)
+- 🔍 Deep analysis (data context, control properties)
+- ✅ Automated testing and validation
+
+**Why it matters:**
+
+Traditional testing requires you to write test code manually. The App MCP gives AI agents direct access to your running app, enabling:
+
+- **Autonomous testing** - AI can verify features work correctly
+- **Interactive debugging** - AI can explore your app to find issues  
+- **Visual validation** - AI can check layouts and styling
+- **Data inspection** - AI can analyze bindings and data context
+
+**Works everywhere:** Windows, WebAssembly, macOS, iOS, Android, and Linux
+
+For complete details on all available tools, see [Uno Platform MCPs Reference](xref:Uno.Features.Uno.MCPs).
+
+## Effective Prompts for Development
+
+Here are proven prompts that work well with Uno Platform MCPs. Copy and adapt them to your needs!
+
+> [!IMPORTANT]
+> Your AI agent will ask for permission before executing MCP tools. Approve them to enable full functionality.
+
+### Documentation & Learning
+
+**Search Uno Platform Documentation:**
+
+```text
+Can you search the Uno Platform documentation and explain what MVUX is?
+```
+
+```text
+Show me examples from the Uno Platform docs on how to use ListView with data binding
+```
+
+```text
+What are the Uno Platform best practices for navigation between pages?
+```
+
+### Visual Testing & Screenshots
+
+**Capture and Analyze:**
+
+```text
+Take a screenshot of the app and tell me if the login button is visible
+```
+
+```text
+Capture the current state and describe the layout of the main page
+```
+
 > [!NOTE]
-> In Visual Studio 2022/2026 MCPs might not be enabled automatically. Make sure to [click the "tools" icon](https://learn.microsoft.com/en-us/visualstudio/ide/mcp-servers?view=vs-2022#configuration-example-with-a-github-mcp-server) in the chat window to check both Uno Platform MCPs.
+> Some AI models may not support image analysis in certain environments (like Visual Studio). Screenshots can always be saved to disk for manual review.
 
-- To ask the agent to explain what MVUX is:
+### User Interactions
 
-  ```text
-  Can you use the uno platform documentation to explain what MVUX is?
-  ```
+**Clicking Elements:**
 
-- To ask the agent to take a screenshot and analyze it:
+```text
+Click the "Submit" button at the bottom of the form
+```
 
-    ```text
-    Can you take a screenshot of the running app and describe what you see?
-    ```
+```text
+Can you click the second button on the left side of the screen?
+```
 
-    > [!NOTE]
-    > Some models don't yet support analyzing images, particularly in Visual Studio. Saving a screenshot on disk is always available.
+**Typing Text:**
 
-- To ask the agent to click on a specific element on screen:
+```text
+Type "Hello Uno Platform!" in the username text box
+```
 
-    ```text
-    Can you click the second button on the left, close to the middle of the screen?
-    ```
+```text
+Clear all text from the search box and type "MVUX tutorial"
+```
 
-- To ask the agent to click on a specific element on screen:
+**Keyboard Actions:**
 
-    ```text
-    Can you type "Hello Uno Platform, the MCP is talking!" in the third textbox on the screen?
-    ```
+```text
+Press Enter in the active text field
+```
 
-- To ask to delete all the text of a textbox
+```text
+Select all text in the second textbox and delete it
+```
 
-    ```text
-    Can you select all the text of the second textbox and delete all of it?
-    ```
+### Data & Structure Analysis
 
-- To analyze the DataContext of the app:
+**Inspect DataContext:**
 
-    ```text
-    Can you tell me if there's an object of type "XYZ" in the app's 
-    DataContext, starting from the grid in the middle of the screen?
-    ```
+```text
+What's the DataContext of the ListView in the center of the screen?
+```
 
-- To create a more specialized Uno Platform agent:
+```text
+Check if there's a User object in the DataContext of the main grid
+```
 
-    ```text
-    /mcp.uno.init
-    ```
+**Examine Visual Tree:**
 
-    > [!NOTE]
-    > The default command is `/mcp.uno.init`, but depending on the agent you are using, it might be named differently (such as `/uno.init`).
+```text
+Show me the visual tree structure of the current page
+```
 
-    Which primes the agent with Uno Platform's best practices.
+```text
+List all the buttons in the visual tree and their names
+```
 
-    Then ask the agent to build a new feature:
+### Feature Development
 
-    ```text
-    Let's add a new page in my app that shows the "About" information.
-    ```
+**Prime Agent with Best Practices:**
 
-All those phrases will hint the model to use one or more of the tools to answer your request.
+Start your session by loading Uno Platform knowledge:
 
-## Troubleshooting MCP Servers
+```text
+/mcp.uno.init
+```
 
-You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.
+or depending on your AI tool:
+
+```text
+/uno.init
+```
+
+This loads Uno Platform best practices, patterns, and conventions into the agent's context.
+
+**Then Build Features:**
+
+```text
+Add a new Settings page with a dark mode toggle switch
+```
+
+```text
+Create a user profile page that displays name, email, and avatar
+```
+
+```text
+Implement a search feature that filters items as I type
+```
+
+**With Testing:**
+
+```text
+Add a login form and then test it by entering test credentials and 
+verifying that the home page loads after clicking login
+```
+
+## Tips for Better Results
+
+1. **Be Specific** - Describe what you want clearly and completely
+2. **Mention Tools** - Say "use your tools" or "verify in the running app" to trigger MCP usage
+3. **Test Iteratively** - Ask AI to test each change to catch issues early
+4. **Use Layouts** - Reference screen positions ("top right", "center", "bottom") when clicking
+5. **Check Results** - Always ask AI to verify changes worked correctly
+
+## Troubleshooting
+
+**AI isn't using MCP tools:**
+- Explicitly say "use your tools" or "search the Uno Platform docs"
+- Verify MCPs are enabled in your AI tool settings
+- Try a premium AI model (Claude Sonnet 4.5, GPT-4, etc.)
+
+**App MCP can't connect:**
+- Ensure your Uno Platform app is running
+- Check you're signed into [Uno Platform Studio](xref:Uno.GetStarted.Licensing)
+- Restart your AI tool and app if needed
+
+**Interactions failing:**
+- Use descriptive positions ("top right button" vs exact coordinates)
+- Take a screenshot first to let AI see the current state
+- Try simpler interactions and build up complexity
+
+For detailed troubleshooting, see [AI Agents Troubleshooting Guide](xref:Uno.UI.CommonIssues.AIAgents).
+
+## Next Steps
+
+- **[Learn more about Uno Platform MCPs](xref:Uno.Features.Uno.MCPs)** - Complete reference of all tools
+- **[Try Hot Design® Agent](xref:Uno.HotDesign.Agent)** - AI-assisted visual design
+- **[Join our Discord](https://aka.platform.uno/discord)** - Share your experiences and get help
