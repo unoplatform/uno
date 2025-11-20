@@ -30,7 +30,7 @@ For more detailed guidance on network connectivity, watch our video tutorial:
 
 #### Android
 
-Android recognizes all values of the `NetworkConnectivityLevel` [enum](https://learn.microsoft.com/uwp/api/windows.networking.connectivity.networkconnectivitylevel). In contrast, iOS, macOS, and WASM only return either None or InternetAccess.
+Android recognizes all values of the `NetworkConnectivityLevel` [enum](https://learn.microsoft.com/uwp/api/windows.networking.connectivity.networkconnectivitylevel). In contrast, iOS, macOS, and WASM only return either `None` or `InternetAccess`.
 
 The `android.permission.ACCESS_NETWORK_STATE` permission is necessary and must be included in the application manifest or specified using the following attribute in the Android platform head:
 
