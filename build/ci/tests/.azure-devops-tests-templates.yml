@@ -35,6 +35,7 @@ jobs:
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/dotnet-install-previous-wasmtools.yml
   - template: ../templates/uno-dev-feed.yml
 
   - task: CopyFiles@2
@@ -104,6 +105,7 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRoot }}
 
   - template: ../templates/dotnet-mobile-install-mac.yml
+  - template: ../templates/dotnet-install-previous-wasmtools.yml
   - template: ../templates/uno-dev-feed.yml
 
   - task: CopyFiles@2
@@ -158,6 +160,7 @@ jobs:
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-linux.yml
+  - template: ../templates/dotnet-install-previous-wasmtools.yml
   - template: ../templates/gitversion.yml
   - template: ../templates/uno-dev-feed.yml
   - template: ../templates/host-cleanup-linux.yml
