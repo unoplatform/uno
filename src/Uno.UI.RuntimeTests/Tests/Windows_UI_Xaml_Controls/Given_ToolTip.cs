@@ -349,5 +349,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(tooltip.IsOpen);
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ToolTip_In_ScrollViewer_And_Scrolled()
+		{
+			var scrollViewer = new ScrollViewer
+			{
+				Height = 200,
+				Width = 300
+			};
+
+			var stackPanel = new StackPanel();
+			
+			// Add some spacer elements
+			for (int i = 0; i < 10; i++)
+			{
+				stackPanel.Children.Add(new Border { Height = 50 });
+			}
+
+			// Add the element with tooltip
+			var targetElement = new Border
+			{
+				Width = 100,
+				Height = 50,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Blue)
+			};
+			
+			var tooltipContent = new Border
+			{
+				Width = 80,
+				Height = 40,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+
+			var tooltip = new ToolTip
+			{
+				Content = tooltipContent
+			};
+			ToolTipService.SetToolTip(targetElement, tooltip);
+			
+			stackPanel.Children.Add(targetElement);
+
+			// Add more spacer elements
+			for (int i = 0; i < 10; i++)
+			{
+				stackPanel.Children.Add(new Border { Height = 50 });
+			}
+
+			scrollViewer.Content = stackPanel;
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = scrollViewer;
+				await WindowHelper.WaitForLoaded(scrollViewer);
+
+				// Open the tooltip
+				tooltip.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				// Get the initial position of the tooltip content relative to the window
+				var initialPosition = tooltipContent.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
+
+				// Scroll down
+				scrollViewer.ChangeView(null, 200, null, disableAnimation: true);
+				await WindowHelper.WaitForIdle();
+
+				// Get the new position of the tooltip content
+				var newPosition = tooltipContent.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
+
+				// The tooltip should have moved with the scroll (Y position should have decreased)
+				Assert.AreNotEqual(initialPosition.Y, newPosition.Y, "ToolTip should have moved when scrolling");
+				Assert.IsTrue(newPosition.Y < initialPosition.Y, "ToolTip should have moved up when scrolling down");
+			}
+			finally
+			{
+				tooltip.IsOpen = false;
+#if HAS_UNO
+				Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+			}
+		}
 	}
 }
