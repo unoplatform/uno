@@ -20,7 +20,7 @@ However, built on top of this foundation is also a rich platform which includes 
 
 ### Hot Design® - The only Visual Designer for cross-platform .NET Applications
 
-Uno Platform offers **[Hot Design®](xref:Uno.HotDesign.Overview)**, industry's first and only runtime Visual Designer for cross-platform .NET Applications. It transforms your running app into a Designer from any IDE on any OS. This offers unprecedented productivity gains:
+Uno Platform offers **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**, industry's first and only runtime Visual Designer for cross-platform .NET Applications. It transforms your running app into a Designer from any IDE on any OS. This offers unprecedented productivity gains:
 
 - Design directly in your running application
 - Select, modify, and style controls visually
