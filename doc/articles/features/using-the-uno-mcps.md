@@ -151,19 +151,19 @@ Show me the visual tree of the main page so I can see the layout structure
 |------|--------------|----------------|
 | `uno_app_get_runtime_info` | Shows app details (OS, platform, PID) | "What platform is the app running on?" |
 | `uno_app_get_screenshot` | Captures current app state | "Take a screenshot of the app" |
-| `uno_app_get_pointer_click` | Clicks at coordinates | "Click the button in the center" |
-| `uno_app_key-press` | Sends keyboard input | "Press Enter key" |
+| `uno_app_pointer_click` | Clicks at coordinates | "Click the button in the center" |
+| `uno_app_key_press` | Sends keyboard input | "Press Enter key" |
 | `uno_app_type_text` | Types longer text | "Type 'Hello World' in the text box" |
 | `uno_app_visualtree_snapshot` | Shows UI element hierarchy | "Show me the visual tree" |
-| `uno_app_element_peer_action` | Triggers default automation action | "Click the submit button" |
+| `uno_app_element_peer_default_action` | Triggers default automation action | "Click the submit button" |
 | `uno_app_close` | Closes the application | "Close the app" |
 
 #### Pro Edition
 
 | Tool | What It Does | Example Prompt |
 |------|--------------|----------------|
-| Advanced Element Actions | Invokes specific automation peer actions | "Expand the tree view item" |
-| Get DataContext | Retrieves element's data binding context | "What's the DataContext of this grid?" |
+| `uno_app_element_peer_action` | Invokes specific automation peer actions | "Expand the tree view item" |
+| `uno_app_get_element_datacontext` | Retrieves element's data binding context | "What's the DataContext of this grid?" |
 
 > [!NOTE]
 > Pro features require a **[Uno Platform Studio Pro subscription](https://platform.uno/select-subscription/)**.
