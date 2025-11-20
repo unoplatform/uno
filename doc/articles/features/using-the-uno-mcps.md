@@ -8,8 +8,8 @@ uid: Uno.Features.Uno.MCPs
 
 Uno Platform provides two [MCPs](https://modelcontextprotocol.io/docs/getting-started/intro):
 
-- **Remote Uno MCP** - Provides up-to-date Uno Platform documentation and best practice prompts
-- **Local App MCP** - Gives your AI assistant "eyes" and "hands" to interact with your running application
+- **Uno Platform MCP** - Provides up-to-date Uno Platform documentation and best practice prompts
+- **Uno Platform App MCP** - Gives your AI assistant "eyes" and "hands" to interact with your running application
 
 ## Why Use Uno Platform MCPs?
 
@@ -20,9 +20,9 @@ Uno Platform provides two [MCPs](https://modelcontextprotocol.io/docs/getting-st
 
 This guide shows you how to use both MCPs effectively in your development workflow.
 
-## Remote Uno MCP
+## Uno Platform MCP
 
-The Remote Uno MCP is a cloud-hosted service that provides your AI assistant with:
+The Uno Platform MCP is a cloud-hosted service that provides your AI assistant with:
 
 - **Documentation Search**: Find relevant Uno Platform documentation instantly
 - **Documentation Retrieval**: Fetch complete documentation pages on demand
@@ -30,7 +30,7 @@ The Remote Uno MCP is a cloud-hosted service that provides your AI assistant wit
 
 ### Quick Start Prompts
 
-These prompts are automatically available when your AI agent supports MCP (Claude Desktop, VS Code with extensions, etc.):
+These prompts are automatically available when your AI agent supports MCP (e.g., Claude Desktop, VS Code with extensions):
 
 #### `/new` - Create a New Uno Platform App
 
@@ -62,7 +62,7 @@ Add a settings page with dark mode toggle
 
 ### Effective Prompting Tips
 
-To get the best results from the Remote MCP:
+To get the best results from the Uno Platform App MCP:
 
 1. **Mention "Uno Platform documentation"** when you want specific information:
    ```text
@@ -81,9 +81,9 @@ To get the best results from the Remote MCP:
 
 For more sample prompts and scenarios, see our [AI Agents Getting Started Guide](xref:Uno.BuildYourApp.AI.Agents).
 
-### Understanding Remote MCP Tools
+### Understanding Uno Platform MCP Tools
 
-The Remote MCP provides these tools to AI agents (you don't call them directly):
+The Uno Platform MCP provides these tools to AI agents (you don't call them directly):
 
 | Tool | Purpose | When Used |
 |------|---------|----------|
@@ -102,9 +102,9 @@ Simply mention what you need in natural language:
 > [!TIP]
 > You can disable automatic rule priming in your AI agent settings if you prefer manual control. Use the `/init` prompt when you want to explicitly load Uno Platform best practices.
 
-## Local App MCP
+## Uno Platform App MCP
 
-The **Local App MCP** runs on your machine and connects to your Uno Platform application while it's running. This gives AI assistants the ability to:
+The **Uno Platform App MCP** runs on your machine and connects to your Uno Platform application while it's running. This gives AI assistants the ability to:
 
 - 👁️ **See** your app through screenshots and visual tree inspection
 - 🖱️ **Interact** by clicking buttons and typing text
@@ -114,7 +114,7 @@ The **Local App MCP** runs on your machine and connects to your Uno Platform app
 ### How It Works
 
 1. **Run your Uno Platform app** (any platform: Windows, WebAssembly, iOS, Android, etc.)
-2. **The App MCP automatically connects** to your running application
+2. **The Uno Platform App MCP automatically connects** to your running application
 3. **Your AI assistant can now interact** with the app to help you develop and test
 
 ### What You Can Do
@@ -168,10 +168,10 @@ Show me the visual tree of the main page so I can see the layout structure
 > [!NOTE]
 > Pro features require a **[Uno Platform Studio Pro subscription](https://platform.uno/select-subscription/)**.
 
-### Getting Started with App MCP
+### Getting Started with Uno Platform App MCP
 
 1. **Start your Uno Platform app** in debug or release mode
-2. **Open your AI assistant** (Claude Desktop, VS Code, etc.)
+2. **Open your AI assistant** (e.g., Claude Desktop, VS Code)
 3. **Verify MCP connection** - Look for the Uno App MCP in your AI tool's MCP list
 4. **Start asking questions** - The AI can now interact with your running app
 
@@ -202,18 +202,18 @@ and tell me if the items are rendering correctly?
 
 ### Common Issues
 
-**App MCP not connecting:**
+**Uno Platform App MCP not connecting:**
 - Ensure your Uno Platform app is running
 - Check that you're signed into [Uno Platform Studio](xref:Uno.GetStarted.Licensing)
 - Verify MCPs are enabled in your AI tool settings
 
-**Remote MCP not responding:**
+**Uno Platform MCP not responding:**
 - Check your internet connection
 - Verify the MCP server is listed in your AI tool's configuration
 
 **AI not using the tools:**
 - Try explicitly mentioning "use your tools" or "search the Uno Platform docs"
-- Use premium AI models (Claude Sonnet 4.5, GPT-4, etc.) for best results
+- Use premium AI models (e.g,. Claude Sonnet 4.5, GPT-4) for best results
 - In Visual Studio 2022/2026, [enable MCPs via the tools icon](https://learn.microsoft.com/en-us/visualstudio/ide/mcp-servers?view=vs-2022#configuration-example-with-a-github-mcp-server)
 
 ### Need More Help?
