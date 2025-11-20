@@ -103,7 +103,7 @@ The Community edition of **Uno Platform Studio** includes a 30-day trial of **Un
 
 - **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**: The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
   
-- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: An AI-powered assistant designed for rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time. Built on deep knowledge of Uno Platform and your running app, it simplifies cross-platform .NET design, enabling intuitive and efficient workflows. [Learn more](xref:Uno.HotDesign.Agent)
+- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: An AI-powered assistant designed for rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real-time. Built on deep knowledge of Uno Platform and your running app, it simplifies cross-platform .NET design, enabling intuitive and efficient workflows. [Learn more](xref:Uno.HotDesign.Agent)
 
 - **[Uno MCPs](xref:Uno.Features.Uno.MCPs)**: Uno MCP connects AI agents and developers directly to Uno Platform’s complete knowledge base - documentation, APIs, and best practices with structured, semantic access. The App MCP is a local runtime service that allows AI agents and automation tools to intelligently interact with a live Uno Platform application. [Get started](xref:Uno.GetStarted)
 
