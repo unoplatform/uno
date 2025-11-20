@@ -61,10 +61,6 @@ if (level is NetworkConnectivityLevel.InternetAccess)
 {
     // Connected to the internet
 }
-else
-{
-    // No connection
-}
 ```
 
 #### Observing changes in connectivity
