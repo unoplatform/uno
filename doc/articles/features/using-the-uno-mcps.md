@@ -149,7 +149,7 @@ Show me the visual tree of the main page so I can see the layout structure
 
 | Tool | What It Does | Example Prompt |
 |------|--------------|----------------|
-| Get Runtime Info | Shows app details (OS, platform, PID) | "What platform is the app running on?" |
+| uno_app_get_runtime_info | Shows app details (OS, platform, PID) | "What platform is the app running on?" |
 | Take Screenshot | Captures current app state | "Take a screenshot of the app" |
 | Click | Clicks at coordinates | "Click the button in the center" |
 | Press Key | Sends keyboard input | "Press Enter key" |
