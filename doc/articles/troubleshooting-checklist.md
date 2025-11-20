@@ -181,7 +181,8 @@ dotnet restore --verbosity detailed
 2. Verify all xmlns declarations are correct
 3. Ensure x:DataType is specified in DataTemplates using x:Bind
 4. Check for typos in property names
-5. Use Hot Design<sup>®</sup> to visually inspect and fix XAML
+5. Use Hot Design<sup>®</sup> to visually inspect and fix XAML  
+   <br><sub>Note: Hot Design<sup>®</sup> is available to Pro users, or Community users during the trial period. If you are on the Community tier, sign in to start a free trial.</sub>
 
 ### Error: "DependencyObject not found" or Similar Type Errors
 
