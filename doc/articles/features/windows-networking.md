@@ -43,14 +43,14 @@ The `android.permission.ACCESS_NETWORK_STATE` permission is necessary and must b
 iOS and macOS use a 'ping' request to check internet connectivity. The default domain is `www.example.com`; however, you can change it to any other domain by setting the `WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname` property.
 
 ```csharp
-WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname = "http://platform.uno";
+WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname = "platform.uno";
 ```
 
 ### Example
 
 #### Checking for internet connectivity
 
-You can use the following snippet to check for internet connectivity level in a cross-platform manner:
+Use the snippet below to check internet connectivity levels in a cross-platform manner.
 
 ```csharp
 using Windows.Networking.Connectivity;
