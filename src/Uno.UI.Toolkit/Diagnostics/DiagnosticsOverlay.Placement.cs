@@ -107,9 +107,6 @@ public sealed partial class DiagnosticsOverlay
 	{
 #if HAS_UNO_WINUI
 		var bounds = _root.VisualTree.VisibleBounds;
-#else
-		var bounds = new Rect(default, _root.Size);
-#endif
 
 		// Adjust for title bar height if ExtendsContentIntoTitleBar is enabled
 		// This ensures the overlay doesn't get positioned in the title bar drag area
@@ -119,6 +116,9 @@ public sealed partial class DiagnosticsOverlay
 			bounds.Y += titleBarHeight;
 			bounds.Height -= titleBarHeight;
 		}
+#else
+		var bounds = new Rect(default, _root.Size);
+#endif
 
 		bounds.Width -= _toolbar?.ActualWidth ?? ActualWidth;
 		bounds.Height -= ActualHeight;
