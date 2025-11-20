@@ -213,7 +213,7 @@ and tell me if the items are rendering correctly?
 
 **AI not using the tools:**
 - Try explicitly mentioning "use your tools" or "search the Uno Platform docs"
-- Use premium AI models (e.g,. Claude Sonnet 4.5, GPT-4) for best results
+- Use premium AI models (e.g., Claude Sonnet 4.5, GPT-4) for best results
 - In Visual Studio 2022/2026, [enable MCPs via the tools icon](https://learn.microsoft.com/en-us/visualstudio/ide/mcp-servers?view=vs-2022#configuration-example-with-a-github-mcp-server)
 
 ### Need More Help?
