@@ -19,7 +19,7 @@
             x:Name="CustomTitleBar"
             Grid.Row="0"
             Height="48"
-            Background="Beige">
+            Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
