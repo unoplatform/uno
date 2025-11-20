@@ -149,14 +149,14 @@ Show me the visual tree of the main page so I can see the layout structure
 
 | Tool | What It Does | Example Prompt |
 |------|--------------|----------------|
-| uno_app_get_runtime_info | Shows app details (OS, platform, PID) | "What platform is the app running on?" |
-| Take Screenshot | Captures current app state | "Take a screenshot of the app" |
-| Click | Clicks at coordinates | "Click the button in the center" |
-| Press Key | Sends keyboard input | "Press Enter key" |
-| Type Text | Types longer text | "Type 'Hello World' in the text box" |
-| Get Visual Tree | Shows UI element hierarchy | "Show me the visual tree" |
-| Invoke Element Action | Triggers default automation action | "Click the submit button" |
-| Close App | Closes the application | "Close the app" |
+| `uno_app_get_runtime_info` | Shows app details (OS, platform, PID) | "What platform is the app running on?" |
+| `uno_app_get_screenshot` | Captures current app state | "Take a screenshot of the app" |
+| `uno_app_get_pointer_click` | Clicks at coordinates | "Click the button in the center" |
+| `uno_app_key-press` | Sends keyboard input | "Press Enter key" |
+| `uno_app_type_text` | Types longer text | "Type 'Hello World' in the text box" |
+| `uno_app_visualtree_snapshot` | Shows UI element hierarchy | "Show me the visual tree" |
+| `uno_app_element_peer_action` | Triggers default automation action | "Click the submit button" |
+| `uno_app_close` | Closes the application | "Close the app" |
 
 #### Pro Edition
 
