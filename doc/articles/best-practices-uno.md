@@ -12,15 +12,47 @@ This article covers some basic best practices when developing cross-platform app
 2. What framework features do I plan to use? Are they supported on all of my planned target platforms?
 3. Which major third-party dependencies will I use? Are they supported on all of my planned target platforms?
 
+## Leverage Uno Platform Studio for Faster Development
+
+**[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)** provides productivity tools that dramatically accelerate your development workflow:
+
+### Hot Reload for Rapid Iteration
+
+Use **[Hot Reload](xref:Uno.Features.HotReload)** to see your code changes instantly:
+
+* Make XAML, C# Markup, or C# code changes and see them applied immediately
+* Maintain your app state during updates - no need to rebuild or restart
+* Works across all platforms, IDEs (Visual Studio, VS Code, Rider), and on simulators/physical devices
+* Significantly reduces your inner development loop time
+
+### Hot Design for Visual UI Development
+
+Use **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** to design visually:
+
+* Transform your running app into a visual designer from any IDE on any OS
+* Select, modify, and style controls directly in your running application
+* See changes instantly without switching between designer and code
+* Use **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** for AI-assisted UI creation and enhancement
+
+### Design-to-Code for Efficient Design Handoff
+
+Use **[Design-to-Code](xref:Uno.Figma.GetStarted)** to eliminate manual design translation:
+
+* Generate production-ready XAML or C# Markup directly from Figma designs
+* Maintain design consistency across your team
+* Reduce time spent manually implementing designs
+
+[Sign in to get started with Uno Platform Studio](xref:Uno.GetStarted.Licensing)
+
 ## Development workflow
 
 Testing and debugging your application is easier and more rapid on some platforms and trickier and more time-consuming on others. Depending on where you're at in your development cycle, it may make sense to test all platforms, or it may make sense to focus on the 'easiest' platform.
 
 1. **At the beginning of the development cycle,** you should identify key features from the Uno Platform framework and 3rd-party dependencies that you plan to use. Check that the framework controls you plan to use [are implemented](implemented-views.md). Consider creating a simple proof-of-concept (POC) app covering the 'riskiest' features and testing it on all platforms you're targeting.
 
-2. **In the middle of the development cycle,** once the major pieces are in place, when you're iterating on the UI and business logic of your application, most of your day-to-day development should focus on the easiest platform to develop on. Most of the time, this will be Windows, where you can take advantage of Microsoft's excellent tooling (Live Visual Tree, XAML Hot Reload, etc) and where build times are often shortest. For this reason, it's recommended to keep the Windows (WinUI 3) head project in your solution, even if you don't plan to publish your application to Windows.
+2. **In the middle of the development cycle,** once the major pieces are in place, when you're iterating on the UI and business logic of your application, most of your day-to-day development should focus on the easiest platform to develop on. Take advantage of **[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)** tools like **Hot Reload** and **Hot Design<sup>®</sup>** to rapidly iterate on your UI and logic. Most of the time, this will be Windows, where you can also leverage Microsoft's excellent tooling (Live Visual Tree, etc), though Studio's cross-platform support means you can be productive on any OS.
 
-3. **At the end of the development cycle,** as your attention shifts to testing and fixing bugs, you'll again distribute your time more equally across all of the platforms you plan to target, ensuring that the application looks and behaves consistently everywhere.
+3. **At the end of the development cycle,** as your attention shifts to testing and fixing bugs, you'll again distribute your time more equally across all of the platforms you plan to target, ensuring that the application looks and behaves consistently everywhere. Continue using Hot Reload for quick bug fixes across all platforms.
 
 ## Platform-specific code
 

@@ -14,9 +14,31 @@ At the core is a cross-platform .NET UI framework, that allows apps to run every
 
 However, built on top of this foundation is also a rich platform which includes libraries, extensions, and tools that accelerate the design, development, and testing of cross-platform applications.
 
-## Hot Design - The only Visual Designer for cross-platform .NET Applications
+## Uno Platform Studio - Supercharge Your Productivity
 
-Uno Platform offers Hot Design, industry's first and only runtime Visual Designer for cross-platform .NET Applications. It transforms your running app into a Designer from any IDE on any OS. This offers unprecedented productivity gains. Learn more about [Hot Design](https://platform.uno/hot-design/)
+**[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)** is a comprehensive suite of productivity tools that revolutionizes cross-platform development:
+
+### Hot Design® - The only Visual Designer for cross-platform .NET Applications
+
+Uno Platform offers **[Hot Design®](xref:Uno.HotDesign.Overview)**, industry's first and only runtime Visual Designer for cross-platform .NET Applications. It transforms your running app into a Designer from any IDE on any OS. This offers unprecedented productivity gains:
+
+- Design directly in your running application
+- Select, modify, and style controls visually
+- See changes applied instantly via Hot Reload
+- Works across all platforms (iOS, Android, WebAssembly, Skia desktop targets)
+
+### Hot Design® Agent - AI-Powered UI Assistant
+
+**[Hot Design® Agent](xref:Uno.HotDesign.Agent)** (new in Studio 2.0) is an AI-powered assistant designed for rapid UX/UI creation and enhancement within your running application. Built on deep knowledge of Uno Platform and your app's context, it simplifies cross-platform .NET design with intuitive workflows.
+
+### Uno MCPs - Intelligent Platform Integration
+
+**[Uno MCPs](xref:Uno.Features.Uno.MCPs)** (new in Studio 2.0) provide:
+
+- **Uno MCP**: Structured, semantic access to Uno Platform's complete knowledge base—documentation, APIs, and best practices—empowering AI agents and developers
+- **App MCP**: Intelligent automation that enables AI agents to interact directly with live Uno Platform applications, bridging design, development, and execution
+
+[Learn more about Uno Platform Studio](xref:Uno.Platform.Studio.Overview)
 
 ## True Single Project across Mobile, Web, Desktop, and Embedded
 
@@ -46,24 +68,23 @@ With Uno Platform, you have a choice of building polished cross-platform UI with
 
 ## Hot Reload that just works
 
-Our Hot Reload offers the most comprehensive solution for fast development loop – make a change and see it live everywhere is running in real-time without recompiling. Uno Platform Hot Reload works on:
+**[Hot Reload](xref:Uno.Features.HotReload)**, part of Uno Platform Studio, offers the most comprehensive solution for fast development loop – make a change and see it live everywhere is running in real-time without recompiling. Uno Platform Hot Reload works on:
 
-- Visual Studio and Visual Studio Code
+- Visual Studio, Visual Studio Code, and Rider
 - All target platforms
 - XAML, C# Markup, and C#
 - Bindings & x:Bind, Resources, Data Templates, and Styles
 - 1st party or 3rd party controls
 - Devices and Emulators
+- Includes a Hot Reload Indicator for visual feedback on changes
 
 For more information, see [Hot Reload](xref:Uno.Features.HotReload).
 
-## Stop typing markup and use Figma code generation
+## Design-to-Code with Figma
 
-Design handoff is one of the biggest time traps, as design envisioned by the designer needs to be manually translated to markup. With our plugin\*, this process is automatic, and the result is well structured, performant XAML or C#.
+**[Design-to-Code](xref:Uno.Figma.GetStarted)**, part of Uno Platform Studio, eliminates the design handoff bottleneck. Design envisioned by designers is automatically translated to well-structured, performant XAML or C# Markup with one click.
 
 For more information, see [Design and Build Uno Platform Applications with Figma](xref:Uno.Figma.Overview.GetStarted).
-
-\*_Note this plugin is optional_
 
 ## Quickly create a project using the Templates Wizard
 

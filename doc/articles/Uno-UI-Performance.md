@@ -6,6 +6,20 @@ uid: Uno.Development.Performance
 
 This article lists various performance tips to optimize your Uno Platform application.
 
+## Use Hot Reload for Performance Optimization
+
+**[Hot Reload](xref:Uno.Features.HotReload)**, part of [Uno Platform Studio](xref:Uno.Platform.Studio.Overview), is invaluable for performance optimization:
+
+- Test performance changes instantly without rebuilding
+- Quickly iterate on different optimization strategies
+- Compare performance of different implementations in real-time
+- Adjust visual complexity and test impact immediately
+- Optimize bindings and see results without app restart
+
+This significantly reduces the time needed to find and implement performance improvements. [Sign in to get started with Studio](xref:Uno.GetStarted.Licensing).
+
+## Performance Best Practices
+
 Here's what to look for:
 
 - Make sure to choose the right renderer ([Skia](xref:uno.features.renderer.skia) or [Native](xref:uno.features.renderer.native)) for your application, depending on the feature set you'll be using.
