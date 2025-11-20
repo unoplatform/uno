@@ -77,7 +77,7 @@ internal class EncodingHelpers
 			|| encoding.CodePage == 12001; // UTF-32 BE
 
 		// Even if supported, we validate if the BOM has been enabled
-		if (!isSupported || encoding.GetPreamble() == Array.Empty<byte>())
+		if (!isSupported || encoding.GetPreamble().Length == 0)
 		{
 			return false;
 		}
