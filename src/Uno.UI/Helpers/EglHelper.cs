@@ -8,7 +8,7 @@ namespace Uno.UI.Helpers;
 
 internal class EglHelper
 {
-	private const string libEGL = "libEGL.so.1";
+	private const string libEGL = "libEGL";
 
 	public const int EGL_DEFAULT_DISPLAY = 0;
 	public const int EGL_NO_CONTEXT = 0;
@@ -41,7 +41,7 @@ internal class EglHelper
 		}
 	}
 
-	public static unsafe (IntPtr surfaceOrPbuffer, IntPtr glContext, int major, int minor, int samples, int stencil) InitializeGles2Context(IntPtr eglDisplay, IntPtr? window = null)
+	public static (IntPtr surface, IntPtr glContext, int major, int minor, int samples, int stencil) InitializeGles2Context(IntPtr eglDisplay, IntPtr? window = null)
 	{
 		if (eglDisplay == IntPtr.Zero)
 		{
@@ -88,16 +88,24 @@ internal class EglHelper
 			throw new InvalidOperationException($"EGL context creation failed: {Enum.GetName(EglHelper.EglGetError())}");
 		}
 
-		IntPtr surfaceOrPbuffer;
+		IntPtr surface;
 		if (window is null)
 		{
-			surfaceOrPbuffer = EglCreatePbufferSurface(eglDisplay, configs[0], [EGL_NONE]);
+			surface = EglCreatePbufferSurface(eglDisplay, configs[0], [EGL_NONE]);
+			if (surface == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(EglCreatePbufferSurface)} failed to get {nameof(EGL_SAMPLES)}: {Enum.GetName(EglGetError())}");
+			}
 		}
 		else
 		{
-			surfaceOrPbuffer = EglCreatePlatformWindowSurface(eglDisplay, configs[0], window.Value, [EGL_NONE]);
+			surface = EglCreatePlatformWindowSurface(eglDisplay, configs[0], window.Value, [EGL_NONE]);
+			if (surface == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(EglCreatePlatformWindowSurface)} failed to get {nameof(EGL_SAMPLES)}: {Enum.GetName(EglGetError())}");
+			}
 		}
-		return (surfaceOrPbuffer, glContext, major, minor, samples, stencil);
+		return (surface, glContext, major, minor, samples, stencil);
 	}
 
 	public static unsafe string GetGlVersionString()
