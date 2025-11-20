@@ -87,7 +87,7 @@ To help you choose the appropriate IDE or Agent, the following table shows the c
 2. You will need to be connected to a Mac to run and debug iOS apps from Windows
 3. You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
 4. [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
-5. Agent support is coming soon
+5. Agent support for Android and WinAppSDK is in progress
 
 # [**macOS**](#tab/macos)
 
@@ -115,7 +115,7 @@ To help you choose the appropriate IDE or Agent, the following table shows the c
 **Notes:**
 
 1. Desktop binaries do run on Windows, Linux, and macOS
-2. Agent support is coming soon
+2. Agent support for Android is in progress
 
 The latest macOS release and Xcode version are required to develop with Uno Platform for iOS targets. If you have older Mac hardware that does not support the latest release of macOS, see the section for [Developing on older Mac hardware](xref:Uno.UI.CommonIssues.Ios#developing-on-older-mac-hardware).
 
@@ -146,7 +146,7 @@ To help you choose the appropriate IDE or Agent, the following table shows the c
 
 1. Desktop binaries do run on Windows, Linux, and macOS
 2. [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
-3. Agent support is coming soon
+3. Agent support for Android is in progress
 
 ---
 
@@ -175,7 +175,7 @@ For questions about Uno Platform, refer to the [general FAQ](xref:Uno.Developmen
 
 ## Next Steps
 
-Choose the IDE or Agent to Learn more about:
+Choose the IDE or Agent to learn more about:
 
 - [Visual Studio 2022/2026](xref:Uno.GetStarted.vs2022)
 - [VS Code, Codespaces and Ona](xref:Uno.GetStarted.vscode)

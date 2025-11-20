@@ -78,6 +78,14 @@ Any WinUI/XAML material is a great starting point, as all we do is take that ove
 - WinUI Documentation - Advanced (2 posts) [Tutorial: Create a simple photo viewer with WinUI 3](https://learn.microsoft.com/windows/apps/get-started/simple-photo-viewer-winui3?tabs=cs) leads you through creation of a  WinUI-based Photo Viewing Application. The second blog post [Tutorial: Build a simple photo viewer that targets multiple platforms](https://learn.microsoft.com/windows/apps/get-started/uno-simple-photo-viewer) walks you through taking the Photo Viewing application cross-platform using Uno PLatform.
 - WinUI Team Blog [Building cross-platform apps with WinUI and Uno]( https://blogs.windows.com/windowsdeveloper/2021/03/11/build-cross-platform-applications-with-winui-and-uno-platform/). This tutorial walks you through building a simple same-codebase app which uses WinUI InfoBar control and runs on Windows 10, WebAssembly and Android.
 - Here are two articles that will help developers [Getting started with the Surface Duo]( https://devblogs.microsoft.com/surface-duo/tag/uno-platform/).
+
+## Related Topics
+
+- [Quick Reference Guide](xref:Uno.QuickReference) - Common commands and patterns
+- [Uno Platform Studio](xref:Uno.Platform.Studio.Overview) - Boost productivity with Hot Design®
+- [Hot Design® Agent](xref:Uno.HotDesign.Agent) - AI-powered UI assistant
+- [Explore with AI Agents](xref:Uno.Features.Prompting.AI.Agents.Explore) - Use AI to understand your app
+- [Samples and Tutorials](xref:Uno.Tutorials.Intro) - More learning resources
 - The Uno Platform brings Microsoft's WinUI framework to Android, iOS, macOS, Linux, WebAssembly and Embedded Devices. The wealth of [official Microsoft documentation on the WinUI framework](https://learn.microsoft.com/windows/apps/winui/winui3/) is a great place to learn, particularly if you've never used WinUI or XAML before.
 
 ## Learn by collaborating with others
