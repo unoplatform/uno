@@ -296,7 +296,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			var rootFolder = await GetRootFolderAsync();
 			var fileName = GetRandomTextFileName();
 			var filePath = Path.Combine(rootFolder.Path, fileName);
-			
+
 			try
 			{
 				// Ensure the file does not exist
