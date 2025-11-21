@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Uno.Foundation.Logging;
 
@@ -36,7 +37,7 @@ public partial class CoreWebView2WebMessageReceivedEventArgs
 
 		try
 		{
-			return JsonSerializer.Deserialize<string>(WebMessageAsJson, s_stringJsonTypeInfo);
+			return JsonSerializer.Deserialize<string>(WebMessageAsJson, CoreWebView2WebMessageReceivedEventArgsJsonSerializerContext.Default.String);
 		}
 		catch (Exception)
 		{
@@ -48,16 +49,10 @@ public partial class CoreWebView2WebMessageReceivedEventArgs
 			throw new ArgumentException("The message posted is some other kind of JavaScript type.");
 		}
 	}
+}
 
-	private static readonly JsonSerializerOptions s_serializerOptions = new JsonSerializerOptions
-	{
-		TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
-		Converters =
-		{
-			JsonMetadataServices.StringConverter,
-		},
-	};
-
-	private static readonly JsonTypeInfo<string> s_stringJsonTypeInfo = JsonTypeInfo.CreateJsonTypeInfo<string>(s_serializerOptions);
-
+[JsonSourceGenerationOptions]
+[JsonSerializable(typeof(string))]
+internal sealed partial class CoreWebView2WebMessageReceivedEventArgsJsonSerializerContext : JsonSerializerContext
+{
 }
