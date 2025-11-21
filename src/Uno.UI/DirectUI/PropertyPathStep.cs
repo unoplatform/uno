@@ -454,7 +454,7 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 			}
 			else
 			{
-				spResult = DependencyObjectPropertyAccess.CreateInstance(this, spSourceForDP, pSourceType, fListenToChanges);
+				spResult = CreateFallbackPropertyAccess(this, spSourceForDP, pSourceType, fListenToChanges);
 			}
 		}
 
@@ -499,7 +499,7 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 			// uno: fallback to reflection
 			if (spResult is null)
 			{
-				spResult = ReflectionPropertyAccess.CreateInstance(this, spInsp, pSourceType, fListenToChanges);
+				spResult = CreateFallbackPropertyAccess(this, spInsp, pSourceType, fListenToChanges);
 			}
 #endif
 		}
@@ -518,6 +518,11 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 
 		return pbConnected;
 	}
+
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "`type` may come from `object.GetType()`, which is dynamic.")]
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "`type` may come from `object.GetType()`, which is dynamic.")]
+	private static PropertyAccess CreateFallbackPropertyAccess(IPropertyAccessHost owner, object source, Type type, bool fListenToChanges)
+		=> ReflectionPropertyAccess.CreateInstance(owner, source, type, fListenToChanges);
 
 	private void TraceConnectionError(object pSource)
 	{
