@@ -1,5 +1,4 @@
-﻿#if HAS_UNO
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -11,10 +10,6 @@ using static Private.Infrastructure.TestServices;
 using Uno.UI.Extensions;
 #elif __APPLE_UIKIT__
 using UIKit;
-#endif
-
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
@@ -142,4 +137,3 @@ internal class CustomNumberFormatter : INumberFormatter2, INumberParser
 	public long? ParseInt(string text) => throw new NotImplementedException();
 	public ulong? ParseUInt(string text) => throw new NotImplementedException();
 }
-#endif
