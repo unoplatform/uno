@@ -2133,6 +2133,11 @@
 			<!-- BEGIN ListViewBase selection changes -->
 			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ItemsControl.GetInProgressAdjustedIndex(System.Int32 index)" reason="Not public in WinUI" />
 			<!-- END ListViewBase selection changes -->
+			
+			<!-- BEGIN DiagnosticsOverlay -->
+			<Member fullName="Windows.Foundation.Rect Uno.Diagnostics.UI.DiagnosticsOverlay.GetSafeArea()" reason="Should not have been public" />
+			<Member fullName="Windows.Foundation.Point Uno.Diagnostics.UI.DiagnosticsOverlay.GetAbsoluteLocation()" reason="Should not have been public" />
+			<!-- END DiagnosticsOverlay -->
 		</Methods>
 	</IgnoreSet>
 	<![CDATA[
