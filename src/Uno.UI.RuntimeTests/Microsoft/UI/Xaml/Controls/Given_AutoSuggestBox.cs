@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
@@ -11,13 +10,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
-using Uno.Disposables;
 using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.System;
-using static Microsoft.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason;
 using static Private.Infrastructure.TestServices;
 
 #if __SKIA__
@@ -1360,14 +1353,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			// Type text to trigger suggestions
-			var textBox = autoSuggestBox.FindFirstChild<TextBox>(tb => tb.Name == "TextBox");
+
+			var textBox = VisualTreeUtils.FindVisualChildByName(autoSuggestBox, "TextBox") as TextBox;
 			Assert.IsNotNull(textBox, "AutoSuggestBox should have a TextBox");
 
-			textBox.ProcessTextInput("a");
+			textBox.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+
+			textBox.Text = "a";
 			await WindowHelper.WaitForIdle();
 
 			// Get the suggestion popup
-			var popup = autoSuggestBox.FindFirstChild<Microsoft.UI.Xaml.Controls.Primitives.Popup>(p => p.Name == "SuggestionsPopup");
+			var popup = VisualTreeUtils.FindVisualChildByName(autoSuggestBox, "SuggestionsPopup") as Popup;
 			Assert.IsNotNull(popup, "AutoSuggestBox should have a SuggestionsPopup");
 
 			// Wait for popup to open
