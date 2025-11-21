@@ -78,6 +78,22 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 		return this;
 	}
 
+	/// <summary>
+	/// Sets the RMLVO parameters to be passed to libxkbcommon's xkb_rule_names for keyboard keymap creation. If unset,
+	/// the system default is used.
+	/// For more details on RMLVO, see https://xkbcommon.org/doc/current/xkb-intro.html#RMLVO-intro
+	/// and https://github.com/xkbcommon/libxkbcommon/blob/99e9b0fc558fb838a04c568bea033c52ffbe704b/include/xkbcommon/xkbcommon.h#L468
+	/// </summary>
+	/// <param name="keymapParams"></param>
+	/// <returns></returns>
+	public FramebufferHostBuilder XkbKeymap(XKBKeymapParams keymapParams)
+	{
+		KeymapParams = keymapParams;
+		return this;
+	}
+
+	internal XKBKeymapParams KeymapParams { get; private set; }
+
 	internal bool? ShowMouseCursor { get; private set; }
 
 	internal Color MouseCursorColor
@@ -117,4 +133,6 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 
 	/// <returns>The index of the chosen connector or -1.</returns>
 	public delegate int DRMConnectorChooserDelegate(IReadOnlyList<DRMConnector> connector);
+
+	public readonly record struct XKBKeymapParams(string? model = null, string? rules = null, string? layout = null, string? variant = null, string? options = null);
 }

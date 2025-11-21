@@ -2,20 +2,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices.JavaScript;
-using System.Threading;
-using Uno.Extensions;
+using System.Runtime.InteropServices;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Native;
-using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
+using Uno.UI.Runtime.Skia;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.Devices.Input;
 using static Uno.UI.Runtime.Skia.Native.LibInput;
 using static Uno.UI.Runtime.Skia.Native.libinput_key;
 
@@ -23,22 +18,52 @@ namespace Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 
 internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 {
+	private static FrameBufferKeyboardInputSource? _instance;
+
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 
+	private readonly IntPtr _xkbState;
 	private HashSet<libinput_key> _pressedKeys = new HashSet<libinput_key>();
-	private IXamlRootHost? _host;
+	private readonly IXamlRootHost? _host;
 
-	private FrameBufferKeyboardInputSource()
+	public unsafe FrameBufferKeyboardInputSource(IXamlRootHost host, FramebufferHostBuilder.XKBKeymapParams keymapParams)
 	{
-	}
-
-	internal static FrameBufferKeyboardInputSource Instance { get; } = new FrameBufferKeyboardInputSource();
-
-	internal void SetHost(IXamlRootHost host)
-	{
+		if (_instance is not null)
+		{
+			throw new InvalidOperationException($"{nameof(FrameBufferKeyboardInputSource)} is already created");
+		}
+		_instance = this;
 		_host = host;
+
+		try
+		{
+			var context = LibXKBCommon.xkb_context_new(LibXKBCommon.xkb_context_flags.XKB_CONTEXT_NO_FLAGS);
+			if (context == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(LibXKBCommon.xkb_context_new)} failed and returned null.");
+			}
+
+			using var ruleNames = new LibXKBCommon.xkb_rule_names(keymapParams);
+			var keymap = LibXKBCommon.xkb_keymap_new_from_names(context, &ruleNames, LibXKBCommon.xkb_keymap_compile_flags.XKB_KEYMAP_COMPILE_NO_FLAGS);
+			if (keymap == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(LibXKBCommon.xkb_keymap_new_from_names)} failed and returned null.");
+			}
+
+			_xkbState = LibXKBCommon.xkb_state_new(keymap);
+			if (keymap == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"{nameof(LibXKBCommon.xkb_state_new)} failed and returned null.");
+			}
+		}
+		catch (Exception e)
+		{
+			this.LogError()?.Error($"libxkbcommon initialization failed with error '{e.Message}'. Keycode to keysym translations will be limited.");
+		}
 	}
+
+	internal static FrameBufferKeyboardInputSource Instance => _instance!;
 
 	internal void ProcessKeyboardEvent(IntPtr rawEvent, libinput_event_type rawEventType)
 	{
@@ -67,8 +92,47 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 		}
 	}
 
-	private void OnKeyPressEvent(libinput_key key)
+	private unsafe void OnKeyPressEvent(libinput_key key)
 	{
+		char? unicodeKey = default;
+		if (_xkbState != IntPtr.Zero)
+		{
+			// https://github.com/xkbcommon/libxkbcommon/blob/master/test/state.c#L34
+			var keycode = (uint)key + /* EVDEV_OFFSET */ 8;
+			var keysym = LibXKBCommon.xkb_state_key_get_one_sym(_xkbState, keycode);
+			if (keysym == /* XKB_KEY_NoSymbol */ 0)
+			{
+				this.LogError()?.Error($"{nameof(LibXKBCommon.xkb_state_key_get_one_sym)} failed to translate keycode {keycode} to a keysym");
+			}
+			if (this.Log().IsTraceEnabled())
+			{
+				var keysymName = stackalloc byte[64];
+				var size = LibXKBCommon.xkb_keysym_get_name(keysym, keysymName, 64);
+				if (size == -1)
+				{
+					this.LogError()?.Error($"{nameof(LibXKBCommon.xkb_keysym_get_name)} failed to translate keysym {keysym} to a string representation.");
+				}
+				else
+				{
+					var name = Marshal.PtrToStringAnsi((IntPtr)keysymName);
+					this.LogTrace()?.Trace($"{nameof(LibXKBCommon.xkb_keysym_get_name)} translated keycode {keycode} to '{name}'");
+				}
+			}
+			var utf8Buffersize = LibXKBCommon.xkb_state_key_get_utf8(_xkbState, keycode, null, 0) + 1;
+			if (utf8Buffersize <= 1)
+			{
+				this.LogError()?.Error($"{nameof(LibXKBCommon.xkb_state_key_get_utf8)} failed to translate keycode {keycode} to a utf8 char.");
+			}
+			else
+			{
+				var utf8Buffer = stackalloc byte[utf8Buffersize];
+				_ = LibXKBCommon.xkb_state_key_get_utf8(_xkbState, keycode, utf8Buffer, utf8Buffersize);
+				var utf8String = Marshal.PtrToStringAnsi((IntPtr)utf8Buffer)!;
+				unicodeKey = utf8String[0];
+			}
+
+			_ = LibXKBCommon.xkb_state_update_key(_xkbState, keycode, LibXKBCommon.xkb_key_direction.XKB_KEY_DOWN);
+		}
 		var virtualKey = ConvertToVirtualKey(key);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -86,13 +150,20 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 			{
 				ScanCode = (uint)key,
 				RepeatCount = 1,
-			});
+			},
+			unicodeKey);
 
 		RaiseKeyEvent(KeyDown, args);
 	}
 
 	private void OnKeyReleaseEvent(libinput_key key)
 	{
+		if (_xkbState != IntPtr.Zero)
+		{
+			var keycode = (uint)key + /* EVDEV_OFFSET */ 8;
+			_ = LibXKBCommon.xkb_state_update_key(_xkbState, keycode, LibXKBCommon.xkb_key_direction.XKB_KEY_UP);
+		}
+
 		var virtualKey = ConvertToVirtualKey(key);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))

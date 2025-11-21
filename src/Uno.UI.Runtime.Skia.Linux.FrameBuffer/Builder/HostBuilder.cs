@@ -11,7 +11,7 @@ public static class HostBuilder
 		return builder;
 	}
 
-	public static IUnoPlatformHostBuilder UseX11(this IUnoPlatformHostBuilder builder, Action<FramebufferHostBuilder> action)
+	public static IUnoPlatformHostBuilder UseLinuxFrameBuffer(this IUnoPlatformHostBuilder builder, Action<FramebufferHostBuilder> action)
 	{
 		builder.AddHostBuilder(() =>
 		{
