@@ -22,7 +22,7 @@
                     Margin="2"
                     VerticalAlignment="Center"
                     Text="TitleBar OutputDebugString Levels:" />
-                <ComboBox
+                <!--<ComboBox
                     x:Name="cmbTitleBarOutputDebugStringLevel"
                     Grid.Column="1"
                     Width="120"
@@ -33,7 +33,7 @@
                     <ComboBoxItem>None</ComboBoxItem>
                     <ComboBoxItem>Info</ComboBoxItem>
                     <ComboBoxItem>Verbose</ComboBoxItem>
-                </ComboBox>
+                </ComboBox>-->
             </Grid>
 
             <TitleBar x:Name="WindowingTitleBar" Title="Windowing TitleBar">
