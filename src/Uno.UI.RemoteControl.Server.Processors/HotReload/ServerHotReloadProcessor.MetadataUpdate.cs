@@ -111,8 +111,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					}
 
 					// Pass the TargetFramework as a temporary property so that we do not force the tfm for all projects, but only the head project
-					// (that references the Dev Server assembly which includes the target file to promotes back the UnoHotReloadTargetFramework as TargetFramework).
-					// This is required to make sure that an application that referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
+					// (that references the Dev Server assembly which includes the target file to promote back the UnoHotReloadTargetFramework as TargetFramework).
+					// This is required to make sure that an application referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
 					// can still be hot-reloaded.
 					if (properties.Remove("TargetFramework", out var targetFramework))
 					{
