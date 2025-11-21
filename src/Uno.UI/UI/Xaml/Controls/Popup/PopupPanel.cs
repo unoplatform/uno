@@ -255,15 +255,15 @@ internal partial class PopupPanel : Panel
 
 	private void UpdatePlacementTargetTracking()
 	{
-		var newTarget = Popup?.PlacementTarget;
+		var newTarget = Popup?.PlacementTarget ?? (Popup?.GetTemplatedParent() as FrameworkElement);
 
-		if (_trackedPlacementTarget != newTarget)
+		if (_trackedPlacementTarget != newTarget && IsLoaded)
 		{
 			UnsubscribeFromPlacementTargetViewportChanges();
 
 			_trackedPlacementTarget = newTarget;
 
-			if (_trackedPlacementTarget != null && IsLoaded)
+			if (_trackedPlacementTarget != null)
 			{
 				_trackedPlacementTarget.EffectiveViewportChanged += OnPlacementTargetEffectiveViewportChanged;
 			}
