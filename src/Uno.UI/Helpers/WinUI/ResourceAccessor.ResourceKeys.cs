@@ -11,6 +11,7 @@ internal partial class ResourceAccessor
 	public const string SR_NavigationButtonOpenName = "NavigationButtonOpenName";
 	public const string SR_NavigationViewItemDefaultControlName = "NavigationViewItemDefaultControlName";
 	public const string SR_NavigationBackButtonName = "NavigationBackButtonName";
+	public const string SR_NavigationButtonToggleName = "NavigationButtonToggleName";
 	public const string SR_NavigationBackButtonToolTip = "NavigationBackButtonToolTip";
 	public const string SR_NavigationCloseButtonName = "NavigationCloseButtonName";
 	public const string SR_NavigationOverflowButtonName = "NavigationOverflowButtonName";
