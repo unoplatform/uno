@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
+using Windows.Foundation;
 using Windows.System;
 using static Private.Infrastructure.TestServices;
 
@@ -377,7 +378,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			};
 
 			var stackPanel = new StackPanel();
-			
+
 			// Add some spacer elements
 			for (int i = 0; i < 10; i++)
 			{
@@ -408,11 +409,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
 			};
 
-			var popup = new Popup
+			var flyout = new Flyout
 			{
-				PlacementTarget = placementTarget,
-				Child = popupChild
+				XamlRoot = WindowHelper.XamlRoot,
+				Content = popupChild
 			};
+
+			FlyoutBase.SetAttachedFlyout(placementTarget, flyout);
 
 			try
 			{
@@ -420,7 +423,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				await WindowHelper.WaitForLoaded(scrollViewer);
 
 				// Open the popup
-				popup.IsOpen = true;
+				FlyoutBase.ShowAttachedFlyout(placementTarget);
+				await TestServices.WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count > 0);
 				await WindowHelper.WaitForIdle();
 
 				// Get the initial position of the popup child relative to the window
@@ -433,13 +437,89 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				// Get the new position of the popup child
 				var newPosition = popupChild.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
 
-				// The popup should have moved with the scroll (Y position should have decreased)
-				Assert.AreNotEqual(initialPosition.Y, newPosition.Y, "Popup should have moved when scrolling");
-				Assert.IsTrue(newPosition.Y < initialPosition.Y, "Popup should have moved up when scrolling down");
+				// The popup should not move with the scroll (Y position should have decreased)
+				Assert.AreEqual(initialPosition.Y, newPosition.Y, "Popup should not move when scrolling");
+				Assert.IsFalse(newPosition.Y < initialPosition.Y, "Popup should not move when scrolling down");
 			}
 			finally
 			{
-				popup.IsOpen = false;
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Popup_In_Visual_Tree_And_Scroll()
+		{
+			var scrollViewer = new ScrollViewer
+			{
+				Height = 200,
+				Width = 300
+			};
+
+			var stackPanel = new StackPanel();
+
+			// Add some spacer elements
+			for (int i = 0; i < 10; i++)
+			{
+				stackPanel.Children.Add(new Border { Height = 50 });
+			}
+
+			// Add the placement target
+			var placementTarget = new Popup
+			{
+				Width = 100,
+				Height = 50,
+			};
+			stackPanel.Children.Add(placementTarget);
+
+			// Add more spacer elements
+			for (int i = 0; i < 10; i++)
+			{
+				stackPanel.Children.Add(new Border { Height = 50 });
+			}
+
+			scrollViewer.Content = stackPanel;
+
+			var popupChild = new Border
+			{
+				Width = 80,
+				Height = 40,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+
+			placementTarget.Child = popupChild;
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = scrollViewer;
+				await WindowHelper.WaitForLoaded(scrollViewer);
+
+				// Open the popup
+				placementTarget.IsOpen = true;
+				await TestServices.WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count > 0);
+
+				// Get the initial position of the popup child relative to the window
+				var initialPosition = popupChild.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
+				await WindowHelper.WaitForIdle();
+
+				// Scroll down
+				scrollViewer.ChangeView(null, 200, null, disableAnimation: true);
+				Point newPosition = default;
+				await WindowHelper.WaitFor(() =>
+				{
+					// Get the new position of the popup child
+					newPosition = popupChild.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
+					return initialPosition != newPosition;
+				});
+
+				// The popup should not move with the scroll (Y position should have decreased)
+				Assert.AreNotEqual(initialPosition.Y, newPosition.Y, "Popup should move when scrolling");
+				Assert.IsTrue(newPosition.Y < initialPosition.Y, "Popup should move when scrolling down");
+			}
+			finally
+			{
+				placementTarget.IsOpen = false;
 			}
 		}
 
