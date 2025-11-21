@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MUXControlsTestApp.Utilities;
+using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using MUXControlsTestApp.Utilities;
 using Uno.Disposables;
 using Uno.Extensions;
-
-using static Private.Infrastructure.TestServices;
-using static Microsoft.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason;
-using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Combinatorial.MSTest;
+using Windows.System;
+using static Microsoft.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason;
+using static Private.Infrastructure.TestServices;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -1202,5 +1199,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_AutoSuggestBox_In_ScrollViewer_And_Scrolled()
+		{
+			var scrollViewer = new ScrollViewer
+			{
+				Height = 200,
+				Width = 300
+			};
+
+			var stackPanel = new StackPanel();
+
+			// Add spacer at top
+			stackPanel.Children.Add(new Border { Height = 300 });
+
+			// Add the AutoSuggestBox with suggestions
+			var autoSuggestBox = new AutoSuggestBox
+			{
+				Width = 150,
+				ItemsSource = new List<string> { "apple", "apricot", "banana", "berry", "cherry" }
+			};
+			stackPanel.Children.Add(autoSuggestBox);
+
+			// Add spacer at bottom
+			stackPanel.Children.Add(new Border { Height = 3000 });
+
+			scrollViewer.Content = stackPanel;
+
+			WindowHelper.WindowContent = scrollViewer;
+			await WindowHelper.WaitForLoaded(scrollViewer);
+
+			// Focus the AutoSuggestBox to prepare it
+			autoSuggestBox.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Type text to trigger suggestions
+			var textBox = autoSuggestBox.FindFirstChild<TextBox>(tb => tb.Name == "TextBox");
+			Assert.IsNotNull(textBox, "AutoSuggestBox should have a TextBox");
+
+			textBox.ProcessTextInput("a");
+			await WindowHelper.WaitForIdle();
+
+			// Get the suggestion popup
+			var popup = autoSuggestBox.FindFirstChild<Microsoft.UI.Xaml.Controls.Primitives.Popup>(p => p.Name == "SuggestionsPopup");
+			Assert.IsNotNull(popup, "AutoSuggestBox should have a SuggestionsPopup");
+
+			// Wait for popup to open
+			await WindowHelper.WaitFor(() => popup.IsOpen);
+			Assert.IsTrue(popup.IsOpen, "Popup should be open when suggestions are available");
+
+			// Get the popup content root to track its position
+			var popupChild = popup.Child;
+			Assert.IsNotNull(popupChild, "Popup should have a child");
+
+			// Get the initial position of the popup child relative to the window
+			var initialPosition = popupChild.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
+
+			// Scroll down
+			scrollViewer.ChangeView(null, 200, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			// Get the new position of the popup child
+			var newPosition = popupChild.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(0, 0));
+
+			// The popup should have moved with the scroll (Y position should have decreased)
+			Assert.AreNotEqual(initialPosition.Y, newPosition.Y, "Popup should have moved when scrolling");
+			Assert.IsTrue(newPosition.Y < initialPosition.Y, "Popup should have moved up when scrolling down");
+		}
 	}
 }
