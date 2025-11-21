@@ -9,9 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Core;
 using _Debug = System.Diagnostics.Debug;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -158,6 +156,27 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				Closed?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Closed", useTransitions: true);
+			}
+		}
+
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+		{
+			var isOpen = IsOpen;
+			if (isOpen)
+			{
+				var popup = _popup;
+
+				var isEnabled = IsEnabled;
+				if (isEnabled)
+				{
+					PerformPlacementInternal();
+				}
+
+				// Make the ToolTip visible if IsEnabled=True, or hidden otherwise.
+				if (popup is not null)
+				{
+					popup.Opacity = isEnabled ? 1 : 0;
+				}
 			}
 		}
 
