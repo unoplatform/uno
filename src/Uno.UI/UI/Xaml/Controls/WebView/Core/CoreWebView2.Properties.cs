@@ -39,11 +39,6 @@ public partial class CoreWebView2
 	}
 
 	/// <summary>
-	/// Gets the cookie manager object that manages cookies for this CoreWebView2.
-	/// </summary>
-	public CoreWebView2CookieManager? CookieManager { get; internal set; }
-
-	/// <summary>
 	/// NavigationStarting is raised when the WebView main frame is requesting permission to navigate to a different URI.
 	/// </summary>
 	public event TypedEventHandler<CoreWebView2, CoreWebView2NavigationStartingEventArgs> NavigationStarting;
