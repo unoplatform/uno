@@ -65,7 +65,14 @@ public partial class Frame : ContentControl
 			// This is to support hot reload scenarios - the PageStackEntry 
 			// is used when navigating back to this page as it's maintained in the BackStack
 			CurrentEntry.Instance = newValue as Page;
-			CurrentEntry.SourcePageType = newValue.GetType();
+			SetSourcePageType(CurrentEntry, newValue.GetType());
+		}
+
+		[UnconditionalSuppressMessage("Trimming", "IL2067")]
+		// 'value' argument does not satisfy 'DynamicallyAccessedMemberTypes.PublicConstructors' in call to 'PageStackEntry.SourcePageType.set'.
+		static void SetSourcePageType(PageStackEntry entry, Type type)
+		{
+			entry.SourcePageType = type;
 		}
 	}
 
