@@ -161,6 +161,12 @@ public partial class CoreWebView2
 	{
 		_nativeWebView = GetNativeWebViewFromTemplate();
 
+		// Initialize CookieManager if native WebView was created
+		if (_nativeWebView != null)
+		{
+			CookieManager = new CoreWebView2CookieManager(_nativeWebView);
+		}
+
 		// Signal that native WebView is now initialized
 		_nativeWebViewInitializedTcs.TrySetResult(true);
 

@@ -58,5 +58,11 @@ internal static partial class NativeWebView
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.cleanupEvents")]
 		internal static partial void CleanupEvents(ElementId htmlId);
+
+		[JSImport("globalThis.document.cookie", "get")]
+		internal static partial string GetDocumentCookie();
+
+		[JSImport("globalThis.document.cookie", "set")]
+		internal static partial void SetDocumentCookie(string value);
 	}
 }
