@@ -363,6 +363,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 				Assert.AreEqual(expectedName, actualTarget.Name);
 			}
 		}
+#if __SKIA__ // This needs the netstd layouter + non-legacy shapes layout
+		[TestMethod]
+		public async Task When_Ellipse_Stretch_UniformToFill_VerticalAlignment_Should_Work()
+		{
+			// This test validates the fix for issue where vertical alignment doesn't work
+			// with UniformToFill stretch. The fix requires returning Size(width, width)
+			// instead of Size(width, height) in the UniformToFill case.
+
+			var grid = new Grid() { Width = 150, Height = 150 };
+			var ellipse = new Ellipse()
+			{
+				Width = 300,
+				Stretch = Stretch.UniformToFill,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Bottom,
+				Fill = new SolidColorBrush(Colors.Red)
+			};
+
+			grid.Children.Add(ellipse);
+
+			TestServices.WindowHelper.WindowContent = grid;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// With the fix, the ellipse should respect vertical alignment.
+			// The ellipse should be aligned to the bottom of the container.
+			// Without the fix, the VerticalAlignment.Bottom wouldn't work properly.
+
+			// The ellipse should have the right size based on UniformToFill stretch
+			// and should be positioned correctly with VerticalAlignment.Bottom
+			var layoutSlot = ellipse.LayoutSlotWithMarginsAndAlignments;
+
+			// The ellipse should be positioned at the bottom (Y should be > 0)
+			// This test will fail before the fix and pass after the fix
+			Assert.IsTrue(layoutSlot.Y > 0, $"Expected Y > 0 for bottom alignment, but got Y = {layoutSlot.Y}");
+
+			// The ellipse should maintain its aspect ratio with UniformToFill
+			Assert.IsTrue(MathEx.ApproxEqual(layoutSlot.Width, layoutSlot.Height, 1E-3),
+				$"Expected width and height to be equal for UniformToFill, but got {layoutSlot.Width}x{layoutSlot.Height}");
+		}
+#endif
 #endif
 	}
 }
