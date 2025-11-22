@@ -145,6 +145,10 @@
     <value>പിന്നിലേക്ക്</value>
     <comment>ToolTip caption for the back button</comment>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>അടയ്ക്കുക</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
   <data name="NavigationOverflowButtonName" xml:space="preserve">
     <value>കൂടുതല്‍</value>
     <comment>Automation name for the nav view more button when panel is on top</comment>

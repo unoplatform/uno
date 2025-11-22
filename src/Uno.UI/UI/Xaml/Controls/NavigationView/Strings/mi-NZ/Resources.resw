@@ -145,6 +145,10 @@
     <value>Hoki</value>
     <comment>ToolTip caption for the back button</comment>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Kati</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
   <data name="NavigationOverflowButtonName" xml:space="preserve">
     <value>Ētahi atu mea</value>
     <comment>Automation name for the nav view more button when panel is on top</comment>
