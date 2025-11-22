@@ -313,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Flyout nested:
 			BindFlyout(m_tpVolumeFlyout, OnFlyoutOpened, OnFlyoutClosed);
 			BindButtonClick(m_tpMuteButton, ToggleMute);
-			Bind(m_tpTHVolumeSlider, x => x.ValueChanged += OnVolumeChanged, x => x.ValueChanged -= OnVolumeChanged);
+			Bind(m_tpTHVolumeSlider, x => x.ValueChanged += OnVolumeSliderVolumeChanged, x => x.ValueChanged -= OnVolumeSliderVolumeChanged);
 			BindFlyout(_playbackRateFlyout, OnFlyoutOpened, OnFlyoutClosed);
 			Bind(_playbackRateListView, x => x.SelectionChanged += PlaybackRateListView_SelectionChanged, x => x.SelectionChanged -= PlaybackRateListView_SelectionChanged);
 

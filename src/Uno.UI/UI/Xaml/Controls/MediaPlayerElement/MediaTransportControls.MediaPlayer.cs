@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//Bind(_mediaPlayer, x => x.MediaOpened += OnMediaOpened, x => x.MediaOpened -= OnMediaOpened);
 			//Bind(_mediaPlayer, x => x.MediaFailed += OnMediaFailed, x => x.MediaFailed -= OnMediaFailed);
-			//Bind(_mediaPlayer, x => x.VolumeChanged += OnVolumeChanged, x => x.VolumeChanged -= OnVolumeChanged);
+			Bind(_mediaPlayer, x => x.VolumeChanged += OnPlayerVolumeChanged, x => x.VolumeChanged -= OnPlayerVolumeChanged);
 			//IFC_RETURN(spMediaPlayerExt->add_SourceChanged(
 			//IFC_RETURN(spMediaPlayerExt->add_IsMutedChanged(
 			Bind(_mediaPlayer.PlaybackSession, x => x.PositionChanged += OnPositionChanged, x => x.PositionChanged -= OnPositionChanged);
@@ -443,7 +443,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isRewindForewardRequested = true;
 			if (_isVolumeRewindRequestedAndAudioIsPlaying == null && _mediaPlayer.Volume != 0)
 			{
-				_isVolumeRewindRequestedAndAudioIsPlaying = _mediaPlayer.Volume == 1d ? 100 : _mediaPlayer.Volume;
+				_isVolumeRewindRequestedAndAudioIsPlaying = _mediaPlayer.Volume;
 				_mediaPlayer.Volume = 0;
 			}
 #if __SKIA__ || __WASM__
@@ -458,15 +458,28 @@ namespace Microsoft.UI.Xaml.Controls
 				_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2;
 		}
 
-		private void OnVolumeChanged(object sender, RangeBaseValueChangedEventArgs e)
+		private void OnVolumeSliderVolumeChanged(object sender, RangeBaseValueChangedEventArgs e)
 		{
 			if (_mediaPlayer is not null)
 			{
-				_mediaPlayer.Volume = e.NewValue;
+				var volume = e.NewValue / 100.0;
+				if (Math.Abs(_mediaPlayer.Volume - volume) > 0.001)
+				{
+					_mediaPlayer.Volume = volume;
+				}
 			}
 
 			UpdateVolumeMuteStates();
 			ResetControlsVisibilityTimer();
+		}
+
+		private void OnPlayerVolumeChanged(_MediaPlayer sender, object e)
+		{
+			var percent = Math.Round(sender.Volume * 100);
+			if (m_tpTHVolumeSlider != null && Math.Abs(m_tpTHVolumeSlider.Value - percent) > 0.1)
+			{
+				m_tpTHVolumeSlider.Value = percent;
+			}
 		}
 
 		private void ToggleMute(object sender, RoutedEventArgs e)
