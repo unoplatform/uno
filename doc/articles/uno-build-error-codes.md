@@ -232,3 +232,15 @@ With version 0.14 (and later) you can override the location of `msbuild.exe` by:
 1. Setting the location where your `msbuild.exe` is located
 
 ![settings](Assets/quick-start/vs-code-settings-msbuild.png)
+
+### UVSC0003
+
+The Uno Platform extension requires VS Code version 1.75.0 or later. If you're using the C# extension with OmniSharp, you need VS Code 1.93.0 or later. For C# Dev Kit support, VS Code 1.95.0 or later is required.
+
+To update your VS Code version:
+
+1. Press `F1` and type `Code: Check for Updates...` and select it
+1. Alternatively, download the latest version from [https://code.visualstudio.com/](https://code.visualstudio.com/)
+1. Restart VS Code after updating
+
+**macOS users**: If VS Code is installed in the Downloads folder instead of Applications, it may run in read-only mode and prevent updates. Move VS Code to the Applications folder to resolve this issue.
