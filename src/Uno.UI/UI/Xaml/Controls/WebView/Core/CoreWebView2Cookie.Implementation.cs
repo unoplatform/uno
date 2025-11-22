@@ -5,7 +5,7 @@ using System;
 namespace Microsoft.Web.WebView2.Core;
 
 /// <summary>
-/// CoreWebView2Cookie implementation
+/// CoreWebView2Cookie implementation - provides backing fields and implementation for cookie properties
 /// </summary>
 public partial class CoreWebView2Cookie
 {
@@ -19,6 +19,7 @@ public partial class CoreWebView2Cookie
 	private bool _isSecure;
 	private bool _isSession = true;
 
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	/// <summary>
 	/// Internal constructor for creating CoreWebView2Cookie instances.
 	/// </summary>
@@ -31,4 +32,74 @@ public partial class CoreWebView2Cookie
 		_isSession = true;
 		_sameSite = CoreWebView2CookieSameSiteKind.None;
 	}
+
+	/// <summary>
+	/// Gets the name of the cookie.
+	/// </summary>
+	public string Name => _name ?? string.Empty;
+
+	/// <summary>
+	/// Gets or sets the value of the cookie.
+	/// </summary>
+	public string Value
+	{
+		get => _value ?? string.Empty;
+		set => _value = value ?? throw new ArgumentNullException(nameof(value));
+	}
+
+	/// <summary>
+	/// Gets the domain for the cookie.
+	/// </summary>
+	public string Domain => _domain ?? string.Empty;
+
+	/// <summary>
+	/// Gets the path for the cookie.
+	/// </summary>
+	public string Path => _path ?? string.Empty;
+
+	/// <summary>
+	/// Gets or sets the expiration date and time for the cookie as the number of seconds since the UNIX epoch.
+	/// </summary>
+	public double Expires
+	{
+		get => _expires;
+		set
+		{
+			_expires = value;
+			_isSession = false; // Setting an expiration makes it a persistent cookie
+		}
+	}
+
+	/// <summary>
+	/// Gets or sets a value that indicates whether the cookie is HttpOnly.
+	/// </summary>
+	public bool IsHttpOnly
+	{
+		get => _isHttpOnly;
+		set => _isHttpOnly = value;
+	}
+
+	/// <summary>
+	/// Gets or sets the SameSite attribute of the cookie.
+	/// </summary>
+	public CoreWebView2CookieSameSiteKind SameSite
+	{
+		get => _sameSite;
+		set => _sameSite = value;
+	}
+
+	/// <summary>
+	/// Gets or sets a value that indicates whether the cookie is secure.
+	/// </summary>
+	public bool IsSecure
+	{
+		get => _isSecure;
+		set => _isSecure = value;
+	}
+
+	/// <summary>
+	/// Gets a value that indicates whether the cookie is a session cookie.
+	/// </summary>
+	public bool IsSession => _isSession;
+#endif
 }
