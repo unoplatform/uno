@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia;
 
-unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSource
+internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSource
 {
 #pragma warning disable CS0067 // Some event are not raised on FrameBuffer ... yet!
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCaptureLost;
@@ -24,21 +25,16 @@ unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInp
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
-	private readonly DisplayInformation _displayInformation;
 	private Func<VirtualKeyModifiers>? _keyboardInputSource;
 	private IXamlRootHost? _host;
 
 	private FrameBufferPointerInputSource()
 	{
-		_displayInformation = DisplayInformation.GetForCurrentViewSafe();
 	}
 
 	internal static FrameBufferPointerInputSource Instance { get; } = new FrameBufferPointerInputSource();
 
-	internal void SetHost(IXamlRootHost host)
-	{
-		_host = host;
-	}
+	internal void SetHost(IXamlRootHost host) => _host = host;
 
 	public void Configure(Func<VirtualKeyModifiers> keyboardInputSource)
 	{

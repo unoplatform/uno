@@ -18,6 +18,7 @@ using static Windows.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
 using Uno.Foundation.Logging;
 using System.Collections.Generic;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -42,10 +43,9 @@ unsafe internal partial class FrameBufferPointerInputSource
 			if (rawEventType == LIBINPUT_EVENT_TOUCH_DOWN
 				|| rawEventType == LIBINPUT_EVENT_TOUCH_MOTION)
 			{
-				currentPosition = new Point(
-					x: libinput_event_touch_get_x_transformed(rawTouchEvent, (int)(_displayInformation.ScreenWidthInRawPixels / _displayInformation.RawPixelsPerViewPixel)),
-					y: libinput_event_touch_get_y_transformed(rawTouchEvent, (int)(_displayInformation.ScreenHeightInRawPixels / _displayInformation.RawPixelsPerViewPixel)));
-
+				var x = libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				var y = libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				currentPosition = new Point(x, y);
 				_activePointers[pointerId] = currentPosition;
 			}
 			else

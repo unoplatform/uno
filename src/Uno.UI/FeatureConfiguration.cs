@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -8,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using System.Runtime.InteropServices;
+using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 
 namespace Uno.UI
@@ -886,6 +888,13 @@ namespace Uno.UI
 			public static bool? UseOpenGLOnX11 { get; set; }
 
 			/// <summary>
+			/// Determines if OpenGL ES + EGL should be used instead of OpenGL + GLX if both are available. This value is only
+			/// used if <see cref="UseOpenGLOnX11"/> is true or null. This property only affects the order of attempting
+			/// to create a GL/GlES context but even when true, if the preferred API fails, the other will be attempted.
+			/// </summary>
+			public static bool PreferGLESOverGLOnX11 { get; set; }
+
+			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Win32 target. If null, defaults to
 			/// OpenGL if available. Otherwise, software rendering will be used.
 			/// </summary>
@@ -948,6 +957,115 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
+		}
+
+		public static class LinuxFramebuffer
+		{
+			private static bool? _showMouseCursor;
+			private static Color _mouseCursorColor = Color.FromArgb(255, 0, 0, 0);
+			private static float _mouseCursorRadius = 5;
+			private static DisplayOrientations _orientation = DisplayOrientations.Landscape;
+			private static bool _orientationSet;
+
+			/// <summary>
+			/// Shows the mouse cursor as a small circle. If null, the cursor will
+			/// be shown only after the first mouse event received from libinput and
+			/// will not be shown if only touch events are received. This behavior is
+			/// useful if you're using a touch screen and don't need to see a cursor.
+			/// </summary>
+			public static bool? ShowMouseCursor
+			{
+				get => _showMouseCursor;
+				set
+				{
+					_showMouseCursor = value;
+#if __SKIA__
+					MouseCursorParamsUpdated?.Invoke();
+#endif
+				}
+			}
+
+			public static Color MouseCursorColor
+			{
+				get => _mouseCursorColor;
+				set
+				{
+					_mouseCursorColor = value;
+#if __SKIA__
+					MouseCursorParamsUpdated?.Invoke();
+#endif
+				}
+			}
+
+			public static float MouseCursorRadius
+			{
+				get => _mouseCursorRadius;
+				set
+				{
+					_mouseCursorRadius = value;
+#if __SKIA__
+					MouseCursorParamsUpdated?.Invoke();
+#endif
+				}
+			}
+
+#if __SKIA__
+			internal static event Action MouseCursorParamsUpdated;
+#endif
+
+			/// <summary>
+			/// This property is read while initializing and must be set early.
+			/// </summary>
+			public static DisplayOrientations Orientation
+			{
+				get => _orientation;
+				set
+				{
+					if (_orientationSet)
+					{
+						throw new InvalidOperationException($"Orientation should be set only once.");
+					}
+
+					_orientationSet = true;
+					_orientation = value;
+				}
+			}
+
+			/// <summary>
+			/// Determines if OpenGLES+EGL initialized with DRM+GBM should be used for hardware-accelerated rendering on the
+			/// Linux Framebuffer target instead of software rendering. If null, we try to create an OpenGLES context if possible.
+			/// Otherwise, software rendering will be used.
+			/// </summary>
+			public static bool? UseKMSDRMOnLinuxFramebuffer { get; set; }
+
+			/// <summary>
+			/// The path to the DRM device file. If null, it will use the first device found
+			/// of the form /dev/dri/cardX
+			/// </summary>
+			public static string DRMCardPath { get; set; }
+
+			// The FourCC color format used for the GBM surface created for rendering
+			// (this is passes to gbm_surface_create). For more details on the FourCC
+			// format and valid values, see https://github.com/torvalds/linux/blob/master/include/uapi/drm/drm_fourcc.h
+			public static DRMFourCCColorFormat GBMSurfaceColorFormat { get; set; } = DRMFourCCColorFormat.Argb8888;
+
+			public readonly record struct DRMFourCCColorFormat(char C1, char C2, char C3, char C4)
+			{
+				public uint ToInt() => (uint)C1 | (uint)C2 << 8 | (uint)C3 << 16 | (uint)C4 << 24;
+
+				public static DRMFourCCColorFormat Argb8888 { get; } = new('A', 'R', '2', '4');
+			}
+
+			/// <summary>
+			/// A delegate that picks which of the available connectors to use. If not supplied, the first one
+			/// found will be used.
+			/// </summary>
+			public static DRMConnectorChooserDelegate DRMConnectorChooser { get; set; }
+
+			public readonly record struct DRMConnector(uint connectorType, uint connectorTypeId, uint connectorId, string connectorStringRepresentation);
+
+			/// <returns>The index of the chosen connector or -1.</returns>
+			public delegate int DRMConnectorChooserDelegate(IReadOnlyList<DRMConnector> connector);
 		}
 
 		public static class DependencyProperty
