@@ -449,7 +449,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		var bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
 		SetBoundsAndVisibleBounds(bounds, bounds);
 
-		Size = new SizeInt32(windowRect.Width, windowRect.Height);
+		SetSizes(new SizeInt32(windowRect.Width, windowRect.Height), new SizeInt32(clientRect.Width, clientRect.Height));
 		Position = new PointInt32(windowRect.left, windowRect.top);
 	}
 

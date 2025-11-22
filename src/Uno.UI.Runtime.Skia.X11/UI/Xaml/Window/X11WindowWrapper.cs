@@ -188,7 +188,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		_ = XLib.XTranslateCoordinates(display, windowToRead, root, 0, 0, out var rootx, out var rooty, out _);
 
 		Position = new PointInt32 { X = rootx, Y = rooty };
-		Size = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
+		var fullSize = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
+		SetSizes(fullSize, fullSize);
 
 		XWindowAttributes windowAttrs2 = default;
 		_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs2);

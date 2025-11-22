@@ -9,13 +9,54 @@
     x:DefaultBindMode="TwoWay"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-    <StackPanel Padding="8" Spacing="8">
-        <controls:NumberBox Header="X" Value="{x:Bind ViewModel.X}" />
-        <controls:NumberBox Header="Y" Value="{x:Bind ViewModel.Y}" />
-        <Button Click="{x:Bind ViewModel.Move}">Move</Button>
-        <controls:NumberBox Header="Width" Value="{x:Bind ViewModel.Width}" />
-        <controls:NumberBox Header="Height" Value="{x:Bind ViewModel.Height}" />
-        <Button Click="{x:Bind ViewModel.Resize}">Resize</Button>
-    </StackPanel>
+        <StackPanel Padding="8" Spacing="8">
+            <controls:NumberBox Header="X" Value="{x:Bind ViewModel.X}" />
+            <controls:NumberBox Header="Y" Value="{x:Bind ViewModel.Y}" />
+            <Button Click="{x:Bind ViewModel.Move}">Move</Button>
+            <controls:NumberBox Header="Width" Value="{x:Bind ViewModel.Width}" />
+            <controls:NumberBox Header="Height" Value="{x:Bind ViewModel.Height}" />
+            <Button Click="{x:Bind ViewModel.Resize}">Resize</Button>
+        </StackPanel>
+        <StackPanel
+            Grid.Column="1"
+            Padding="8"
+            Spacing="8">
+            <Button Click="{x:Bind ViewModel.ToggleTitleBar}">Toggle title bar</Button>
+            <Button Click="{x:Bind ViewModel.ToggleExtendIntoTitleBar}">Toggle extend into titlebar</Button>
+            <TextBlock>
+                <Run FontWeight="Bold">ClientWidth:</Run>
+                <Run Text="{x:Bind ViewModel.ClientWidth, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock>
+                <Run FontWeight="Bold">ClientHeight:</Run>
+                <Run Text="{x:Bind ViewModel.ClientHeight, Mode=OneWay}" />
+            </TextBlock>
+
+            <TextBlock Margin="0,8,0,0" Text="XAML Window sizing" />
+            <TextBlock>
+                <Run FontWeight="Bold">Width:</Run>
+                <Run Text="{x:Bind ViewModel.XamlWindowWidth, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock>
+                <Run FontWeight="Bold">Height:</Run>
+                <Run Text="{x:Bind ViewModel.XamlWindowHeight, Mode=OneWay}" />
+            </TextBlock>
+
+            <TextBlock Margin="0,8,0,0" Text="XamlRoot content sizing" />
+            <TextBlock>
+                <Run FontWeight="Bold">Width:</Run>
+                <Run Text="{x:Bind ViewModel.XamlRootWidth, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock>
+                <Run FontWeight="Bold">Height:</Run>
+                <Run Text="{x:Bind ViewModel.XamlRootHeight, Mode=OneWay}" />
+            </TextBlock>
+        </StackPanel>
+    </Grid>
 </Page>
