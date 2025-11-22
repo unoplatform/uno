@@ -8,10 +8,10 @@ uid: Uno.UI.CommonIssues.AllIDEs
 
 This error may happen for multiple reasons:
 
-- Make sure to update your [Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace) in VS 2022 to 5.3.x or later. Earlier versions may automatically update to an incorrect version of the Uno.SDK.
+- Make sure to update your [Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace) in VS 2022/2026 to 5.3.x or later. Earlier versions may automatically update to an incorrect version of the Uno.SDK.
 - Make sure to [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to get all the latest dependencies.
 - Ensure that all [NuGet feeds are authenticated properly](https://learn.microsoft.com/nuget/consume-packages/consuming-packages-authenticated-feeds). When building on the command line, some enterprise NuGet feeds may not be authenticated properly.
-- Ensure that no global package mappings are interfering with nuget restore. To validate that no package mappings are set, on Windows for Visual Studio 2022:
+- Ensure that no global package mappings are interfering with nuget restore. To validate that no package mappings are set, on Windows for Visual Studio 2022/2026:
   - Make a backup copy of `%AppData%\NuGet\NuGet.Config`
   - Open a visual studio instance that does not have any solution opened
   - Go to **Tools**, **Options**, **NuGet Package Manager**, then **Package Source Mappings**
