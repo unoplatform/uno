@@ -36,7 +36,7 @@
         "dest": "_site",
         "globalMetadataFiles": [],
         "fileMetadataFiles": [],
-        "template": ["default", "templates/uno"],
+        "template": ["default", "modern", "templates/uno"],
         "postProcessors": ["ExtractSearchIndex"],
         "markdownEngineName": "markdig",
         "markdownEngineProperties": {
