@@ -68,6 +68,15 @@ Next, open the project using Visual Studio Code.
   >
   > ![Uno Platform Sign in / Register notification](Assets/uno-settings-vsc-notification.png)
 
+  > [!NOTE]
+  > **For VS Code users:** To enable Hot Reload when running a WebAssembly app, use:
+  >
+  > ```bash
+  > dotnet watch run -f wasm --output wwwroot
+  > ```
+  >
+  > Then open http://localhost:5000 in your browser.
+
 # [**Copilot AI Prompt**](#tab/copilot-prompt)
 
 ## Using the `/mcp.uno.new` agent prompt
