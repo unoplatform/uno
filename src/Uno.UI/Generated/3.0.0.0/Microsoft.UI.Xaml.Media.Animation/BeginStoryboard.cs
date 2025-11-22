@@ -4,40 +4,14 @@
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Storyboard")]
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class BeginStoryboard : global::Microsoft.UI.Xaml.TriggerAction
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Animation.Storyboard Storyboard
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Animation.Storyboard)this.GetValue(StoryboardProperty);
-			}
-			set
-			{
-				this.SetValue(StoryboardProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty StoryboardProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Storyboard), typeof(global::Microsoft.UI.Xaml.Media.Animation.Storyboard),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.BeginStoryboard),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.Storyboard)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public BeginStoryboard()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.BeginStoryboard", "BeginStoryboard.BeginStoryboard()");
-		}
-#endif
+		// Skipping already declared property Storyboard
+		// Skipping already declared property StoryboardProperty
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.BeginStoryboard.BeginStoryboard()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BeginStoryboard.BeginStoryboard()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BeginStoryboard.Storyboard.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BeginStoryboard.Storyboard.set
