@@ -3,6 +3,7 @@
 
 	<PropertyGroup Condition="'$(UnoIsHotReloadHost)'=='true'">
 		<RuntimeIdentifier Condition="'$(UnoHotReloadRuntimeIdentifier)' != ''">$(UnoHotReloadRuntimeIdentifier)</RuntimeIdentifier>
+		<TargetFramework Condition="'$(UnoHotReloadTargetFramework)' != ''">$(UnoHotReloadTargetFramework)</TargetFramework>
 	</PropertyGroup>
 
 </Project>
