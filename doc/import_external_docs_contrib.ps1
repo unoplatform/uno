@@ -1,5 +1,5 @@
 <#
-    import_external_docs_test.ps1 [-NoFetch]
+    import_external_docs_contrib.ps1 [-NoFetch]
 
     -NoFetch   : Skip the import of external repositories. Useful for testing or authoring.
                  The default is to import the external repositories from the main branch.
@@ -18,6 +18,7 @@ dotnet tool update --global dotnet-serve
 
 if (-not $NoFetch) {
     $external_docs = @{
+        # use either a commit SHA or a branch name (which will use that branch's latest commit)
         "uno.wasm.bootstrap" = "main"
         "uno.themes"         = "master"
         "uno.toolkit.ui"     = "main"
@@ -33,9 +34,18 @@ if (-not $NoFetch) {
         "hd-docs"            = "main"
     }
 
+
+    # In case an external contributor wants to import their forked repository, specify the custom Git Url below and uncomment the following lines and the additional parameters for the script execution:
+    # $contributor_git_url = "https://github.com/ContributorUserName/"
+
+    # $forks_to_import = @(
+    #     "uno.extensions"
+    # )
+
     Write-Host 'Importing external repositories...' -ForegroundColor Black -BackgroundColor Green
-    ./import_external_docs $external_docs
-} else {
+    ./import_external_docs $external_docs # -contributor_git_url $contributor_git_url -forks_to_import $forks_to_import
+}
+else {
     Write-Host '-nofetch option specified. Skipping the import of external repositories.' -ForegroundColor Black -BackgroundColor DarkRed
 }
 
