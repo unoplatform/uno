@@ -12,7 +12,9 @@
 [![Open Uno in Gitpod](https://img.shields.io/badge/gitpod-setup%20automated-159bff?logo=gitpod&style=flat&label=Gitpod)](https://gitpod.io/#https://github.com/unoplatform/uno)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
-Uno Platform is an open-source developer platform for building single-codebase .NET applications that run natively on Web, Desktop, Mobile, and Embedded systems. It uses the WinUI 3 API surface, allowing you to reuse your existing C# and XAML skills to reach all platforms.
+Uno Platform is an open-source developer platform for building cross-platform applications with a single codebase.  
+It allows you to write once and run on **Windows, Web, iOS, Android, and macOS**.
+
 
 > Uno Platform is trusted by over 300 contributors and used by enterprise clients such as Toyota, Microsoft, and Kahua for mission-critical applications. With ~10,000 GitHub stars and 130+ million NuGet downloads, it is a proven foundation for professional-grade development.
 
