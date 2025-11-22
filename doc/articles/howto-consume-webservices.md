@@ -98,6 +98,7 @@ In order to use this service, you need to sign up for a free API key.
 1. To test the API and your API key, open the following URL in a browser (replace the `{YOUR-API-KEY}` value with your key):
 
     ```http
+    # Expected response: JSON array with cat breed information
     https://api.thecatapi.com/v1/breeds/search?q=sib&api_key={YOUR-API-KEY}
     ```
 
