@@ -1,0 +1,19 @@
+<Project Sdk="MSTest.Sdk/3.10.0">
+
+	<PropertyGroup>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.43" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Sdk\Uno.Sdk.csproj" />
+	</ItemGroup>
+
+</Project>
