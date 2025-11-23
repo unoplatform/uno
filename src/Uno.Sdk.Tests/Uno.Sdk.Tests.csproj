@@ -8,6 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.43" />
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" />
 	</ItemGroup>

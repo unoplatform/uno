@@ -47,13 +47,10 @@ public class UnoNotifyAppLaunchToDevServerTests
 		var result = task.Execute();
 
 		// Assert
-		Assert.IsFalse(result, "Task should return false for invalid port");
-		Assert.IsFalse(task.Success, "Success property should be false");
-		Assert.AreEqual(1, buildEngine.Errors.Count, "Should log exactly one error");
-		var errorMessage = buildEngine.Errors.Count > 0 ? buildEngine.Errors[0]!.Message : string.Empty;
-		Assert.IsTrue(
-			errorMessage.Contains("UnoRemoteControlPort"),
-			"Error message should mention UnoRemoteControlPort");
+		result.Should().BeFalse("Task should return false for invalid port");
+		task.Success.Should().BeFalse("Success property should be false");
+		buildEngine.Errors.Should().HaveCount(1, "Should log exactly one error");
+		buildEngine.Errors[0].Message.Should().Contain("UnoRemoteControlPort", "Error message should mention UnoRemoteControlPort");
 	}
 
 	[TestMethod]
@@ -72,9 +69,9 @@ public class UnoNotifyAppLaunchToDevServerTests
 		var result = task.Execute();
 
 		// Assert
-		Assert.IsFalse(result, "Task should return false for port 0");
-		Assert.IsFalse(task.Success, "Success property should be false");
-		Assert.AreEqual(1, buildEngine.Errors.Count, "Should log exactly one error");
+		result.Should().BeFalse("Task should return false for port 0");
+		task.Success.Should().BeFalse("Success property should be false");
+		buildEngine.Errors.Should().HaveCount(1, "Should log exactly one error");
 	}
 
 	[TestMethod]
@@ -93,13 +90,10 @@ public class UnoNotifyAppLaunchToDevServerTests
 		var result = task.Execute();
 
 		// Assert
-		Assert.IsFalse(result, "Task should return false for empty TargetPath");
-		Assert.IsFalse(task.Success, "Success property should be false");
-		Assert.AreEqual(1, buildEngine.Errors.Count, "Should log exactly one error");
-		var errorMessage = buildEngine.Errors.Count > 0 ? buildEngine.Errors[0]!.Message : string.Empty;
-		Assert.IsTrue(
-			errorMessage.Contains("TargetPath"),
-			"Error message should mention TargetPath");
+		result.Should().BeFalse("Task should return false for empty TargetPath");
+		task.Success.Should().BeFalse("Success property should be false");
+		buildEngine.Errors.Should().HaveCount(1, "Should log exactly one error");
+		buildEngine.Errors[0].Message.Should().Contain("TargetPath", "Error message should mention TargetPath");
 	}
 
 	[TestMethod]
@@ -118,16 +112,11 @@ public class UnoNotifyAppLaunchToDevServerTests
 		var result = task.Execute();
 
 		// Assert
-		Assert.IsFalse(result, "Task should return false when server is not available");
-		Assert.IsFalse(task.Success, "Success property should be false");
-		Assert.AreEqual(1, buildEngine.Errors.Count, "Should log exactly one error");
-		var errorMessage = buildEngine.Errors.Count > 0 ? buildEngine.Errors[0]!.Message : string.Empty;
-		Assert.IsTrue(
-			errorMessage.Contains("NotifyDevServer"),
-			"Error message should contain NotifyDevServer prefix");
-		Assert.IsTrue(
-			errorMessage.Contains("Failed to notify dev server"),
-			"Error message should indicate failure to notify");
+		result.Should().BeFalse("Task should return false when server is not available");
+		task.Success.Should().BeFalse("Success property should be false");
+		buildEngine.Errors.Should().HaveCount(1, "Should log exactly one error");
+		buildEngine.Errors[0].Message.Should().Contain("NotifyDevServer", "Error message should contain NotifyDevServer prefix");
+		buildEngine.Errors[0].Message.Should().Contain("Failed to notify dev server", "Error message should indicate failure to notify");
 	}
 
 	[TestMethod]
@@ -149,13 +138,9 @@ public class UnoNotifyAppLaunchToDevServerTests
 		var result = task.Execute();
 
 		// Assert
-		Assert.IsFalse(result, "Task should return false");
-		Assert.AreEqual(1, buildEngine.Errors.Count, "Should log exactly one error");
-
-		var errorMessage = buildEngine.Errors.Count > 0 ? buildEngine.Errors[0]!.Message : string.Empty;
-		Assert.IsTrue(
-			errorMessage.Contains("localhost:59999"),
-			"Error message should contain the server URL");
+		result.Should().BeFalse("Task should return false");
+		buildEngine.Errors.Should().HaveCount(1, "Should log exactly one error");
+		buildEngine.Errors[0].Message.Should().Contain("localhost:59999", "Error message should contain the server URL");
 	}
 
 	[TestMethod]
@@ -174,10 +159,10 @@ public class UnoNotifyAppLaunchToDevServerTests
 		var result = task.Execute();
 
 		// Assert
-		Assert.IsFalse(result, "Task should return false");
+		result.Should().BeFalse("Task should return false");
 
 		// Should log an error, not a warning
-		Assert.AreEqual(1, buildEngine.Errors.Count, "Should log exactly one error");
-		Assert.AreEqual(0, buildEngine.Warnings.Count, "Should not log any warnings");
+		buildEngine.Errors.Should().HaveCount(1, "Should log exactly one error");
+		buildEngine.Warnings.Should().BeEmpty("Should not log any warnings");
 	}
 }
