@@ -30,7 +30,7 @@ Set up with your OS and IDE of choice.
 <a href="samples-tutorials-overview.md">
 <div class="alert alert-info alert-hover">
 
-#### How-tos and Tutorials
+#### How-Tos and Tutorials
 
 Four complete tutorials and hundreds of real-world samples.
 
@@ -58,7 +58,7 @@ Learn the principles of cross-platform development with Uno.
 
 #### Uno Platform Studio
 
-**Uno Platform Studio** is a set of productivity tools designed to enhance developer productivity, be it for design handoff, to radically improving developer inner dev loop with Hot Reload and the industry-first, cross-platform runtime visual designer for .NET, Hot Design<sup>®</sup>. **Uno Platform Studio** empowers developers to stay in their flow, enabling seamless cross-platform app development for every platform .NET runs on.
+**Uno Platform Studio** is a set of productivity tools designed to enhance developer productivity.
 
 </div>
 </a>
