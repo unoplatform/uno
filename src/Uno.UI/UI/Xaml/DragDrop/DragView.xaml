@@ -34,21 +34,23 @@
             <Setter.Value>
                 <ControlTemplate TargetType="DragView">
                     <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <Image
-                            Opacity=".8"
-                            Source="{TemplateBinding Content}"
-                            Stretch="None"
-                            Visibility="{TemplateBinding ContentVisibility}">
-                            <Image.RenderTransform>
+                        <Border x:Name="ContentContainer">
+                            <Image
+                                x:Name="ImageElement"
+                                Opacity=".8"
+                                Source="{TemplateBinding Content}"
+                                Stretch="None"
+                                Visibility="{TemplateBinding ContentVisibility}" />
+                            <Border.RenderTransform>
                                 <TranslateTransform X="{TemplateBinding ContentAnchor.X}" Y="{TemplateBinding ContentAnchor.Y}" />
-                            </Image.RenderTransform>
-                        </Image>
+                            </Border.RenderTransform>
+                        </Border>
                         <StackPanel
                             x:Name="ToolTipPanel"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
                             MaxWidth="{TemplateBinding MaxWidth}"
                             Padding="{TemplateBinding Padding}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
                             Background="{TemplateBinding Background}"
                             BackgroundSizing="{TemplateBinding BackgroundSizing}"
                             BorderBrush="{TemplateBinding BorderBrush}"

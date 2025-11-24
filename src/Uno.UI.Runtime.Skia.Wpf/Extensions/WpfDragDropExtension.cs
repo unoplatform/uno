@@ -186,7 +186,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 				var unoImage = ConvertBitmapSourceToUnoBitmapImage(bitmap);
 				if (unoImage is not null)
 				{
-					dragUI.SetContentFromBitmapImage(unoImage);
+					dragUI.SetContentFromExternalBitmapImage(unoImage);
 					return dragUI;
 				}
 			}
@@ -202,7 +202,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 						var unoImage = LoadImageFromFile(imageFile);
 						if (unoImage is not null)
 						{
-							dragUI.SetContentFromBitmapImage(unoImage);
+							dragUI.SetContentFromExternalBitmapImage(unoImage);
 							return dragUI;
 						}
 					}

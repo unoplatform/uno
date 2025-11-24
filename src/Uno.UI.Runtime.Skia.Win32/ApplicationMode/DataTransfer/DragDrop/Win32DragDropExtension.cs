@@ -224,7 +224,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 					var unoImage = ConvertDibToUnoBitmapImage(dibMedium.u.hGlobal);
 					if (unoImage is not null)
 					{
-						dragUI.SetContentFromBitmapImage(unoImage);
+						dragUI.SetContentFromExternalBitmapImage(unoImage);
 						return dragUI;
 					}
 				}
@@ -254,7 +254,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 							var unoImage = LoadImageFromFile(imageFile);
 							if (unoImage is not null)
 							{
-								dragUI.SetContentFromBitmapImage(unoImage);
+								dragUI.SetContentFromExternalBitmapImage(unoImage);
 								return dragUI;
 							}
 						}
