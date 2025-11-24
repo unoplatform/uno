@@ -54,7 +54,7 @@ On Windows (the `net9.0-windows10.0.xxxxx` or `net10.0-windows10.0.xxxxx` target
 
 ### Binaries
 
-Uno Platform applications use [.NET 9/10+](https://learn.microsoft.com/dotnet/core/introduction) and run on all major platforms:
+Uno Platform applications use [.NET 9 or later](https://learn.microsoft.com/dotnet/core/introduction) and run on all major platforms:
 
 - **Mobile/Desktop**: via .NET for Mobile
 - **Web**: via .NET for WebAssembly
