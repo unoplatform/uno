@@ -44,10 +44,6 @@ dotnet publish -f net10.0-desktop
 If you wish to do a self-contained publish, run the following instead:
 
 ```shell
-# For .NET 9:
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFrameworks=net9.0-desktop
-
-# For .NET 10:
 dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFrameworks=net10.0-desktop
 ```
 
