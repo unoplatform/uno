@@ -4,7 +4,7 @@
     - name: Setup
       topicHref: xref:Uno.GetStarted.vs2022
       items:
-      - name: Visual Studio 2022/2026
+      - name: Visual Studio
         href: xref:Uno.GetStarted.vs2022
       - name: VS Code
         href: xref:Uno.GetStarted.vscode
