@@ -14,18 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Sdk\Uno.Sdk.csproj">
-			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-			<OutputItemType>Analyzer</OutputItemType>
-			<SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
-		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Reference Include="Uno.Sdk_v0">
-			<HintPath>..\Uno.Sdk\bin\$(Configuration)\netstandard2.0\Uno.Sdk_v0.dll</HintPath>
-			<Private>true</Private>
-		</Reference>
+		<ProjectReference Include="..\Uno.Sdk\Uno.Sdk.csproj" />
 	</ItemGroup>
 
 </Project>

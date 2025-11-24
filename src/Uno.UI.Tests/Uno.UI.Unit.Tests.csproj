@@ -32,7 +32,9 @@
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" PrivateAssets="all" />
+	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
 		<!-- https://github.com/NuGet/Home/issues/7344 -->
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<!-- https://github.com/NuGet/Home/issues/7344 -->
