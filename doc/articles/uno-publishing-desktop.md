@@ -34,10 +34,6 @@ uid: uno.publishing.desktop
 On Windows/macOS/Linux, open a terminal in your `csproj` folder and run:
 
 ```shell
-# For .NET 9:
-dotnet publish -f net9.0-desktop
-
-# For .NET 10:
 dotnet publish -f net10.0-desktop
 ```
 
