@@ -6,7 +6,7 @@ uid: Uno.Documentation.Intro
 
 <!-- markdownlint-disable MD001 -->
 
-Uno Platform is an open-source .NET platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
+**Uno Platform** is an open-source .NET framework that enables developers to quickly build native mobile, web, desktop, and embedded applications—all from a single codebase.
 
 <br/>
 
@@ -46,6 +46,19 @@ Four complete tutorials and hundreds of real-world samples.
 #### Developing with Uno Platform
 
 Learn the principles of cross-platform development with Uno.
+
+</div>
+</a>
+</div>
+
+<!-- Uno Platform Studio -->
+<div class="col-md-6 col-xs-12 ">
+<a href="xref:Uno.Platform.Studio.Overview">
+<div class="alert alert-info alert-hover">
+
+#### Uno Platform Studio
+
+**Uno Platform Studio** is a set of productivity tools designed to enhance developer productivity, be it for design handoff, to radically improving developer inner dev loop with Hot Reload and the industry-first, cross-platform runtime visual designer for .NET, Hot Design<sup>®</sup>. **Uno Platform Studio** empowers developers to stay in their flow, enabling seamless cross-platform app development for every platform .NET runs on.
 
 </div>
 </a>
