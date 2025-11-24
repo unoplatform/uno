@@ -17,7 +17,7 @@ To package your app:
 
 - Create a self-signed certificate:
   - Open the solution in Visual Studio
-  - Ensure that the active debugging target framework is `net9.0-windows10.0.xxxxx` or `net10.0-windows10.0.xxxxx`
+  - Ensure that the active debugging target framework is `net10.0-windows10.0.xxxxx`
   - Double-click on the `Package.appxmanifest` file
   - Navigate to the `Packaging` tab
   - Click the **Choose certificate** button
