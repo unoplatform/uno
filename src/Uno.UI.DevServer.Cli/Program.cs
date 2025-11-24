@@ -93,11 +93,7 @@ internal class Program
 			}
 		}
 
-#if DEBUG
 		return LogLevel.Information;
-#else
-		return LogLevel.Warning;
-#endif
 	}
 
 	private static string? GetFileLogPathFromArgs(string[] args, out string? error)
