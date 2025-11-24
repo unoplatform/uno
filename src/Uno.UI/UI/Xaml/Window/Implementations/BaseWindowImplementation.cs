@@ -370,6 +370,30 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		{
 			NativeWindowWrapper.Close();
 		}
+
+		// Check if the application should exit based on DispatcherShutdownMode
+		CheckApplicationExit();
+	}
+
+	private void CheckApplicationExit()
+	{
+		// Only check on platforms that support multiple windows (primarily Skia desktop)
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			return;
+		}
+
+		var application = Microsoft.UI.Xaml.Application.Current;
+		if (application?.DispatcherShutdownMode == DispatcherShutdownMode.OnLastWindowClose)
+		{
+			// Check if this is the last window
+			if (Uno.UI.ApplicationHelper.WindowsInternal.Count == 0)
+			{
+				// Exit the application when the last window is closed
+				application.Exit();
+			}
+		}
+		// If DispatcherShutdownMode is OnExplicitShutdown, do nothing - the app will continue running
 	}
 
 	private void RaiseWindowVisibilityChangedEvent(bool isVisible)

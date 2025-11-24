@@ -61,6 +61,7 @@ namespace Microsoft.UI.Xaml
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 		private ResourceDictionary _resources = new ResourceDictionary();
+		private DispatcherShutdownMode _dispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 
 		static Application()
 		{
@@ -137,6 +138,15 @@ namespace Microsoft.UI.Xaml
 		/// with focus when navigating with a keyboard or gamepad.
 		/// </summary>
 		public FocusVisualKind FocusVisualKind { get; set; } = FocusVisualKind.HighVisibility;
+
+		/// <summary>
+		/// Gets or sets a value that specifies when the dispatcher begins shutdown for the application.
+		/// </summary>
+		public DispatcherShutdownMode DispatcherShutdownMode
+		{
+			get => _dispatcherShutdownMode;
+			set => _dispatcherShutdownMode = value;
+		}
 
 		public ApplicationTheme RequestedTheme
 		{
