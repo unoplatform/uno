@@ -348,11 +348,11 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 	{
 		// Check if the application should exit based on DispatcherShutdownMode
 		// This must be done BEFORE removing the window to get an accurate count
+		// Use ApplicationHelper's internal synchronization for thread safety
 		var shouldExitApplication = false;
 		if (NativeWindowFactory.SupportsMultipleWindows)
 		{
-			shouldExitApplication = ShouldExitApplication();
-			ApplicationHelper.RemoveWindow(Window);
+			shouldExitApplication = ShouldExitApplicationAndRemoveWindow();
 		}
 
 		if (NativeWindowWrapper is null)
@@ -382,9 +382,9 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		}
 	}
 
-	private bool ShouldExitApplication()
+	private bool ShouldExitApplicationAndRemoveWindow()
 	{
-		// Only check on platforms that support multiple windows (primarily Skia desktop)
+		// Only check on platforms that support multiple windows
 		if (!NativeWindowFactory.SupportsMultipleWindows)
 		{
 			return false;
@@ -396,14 +396,22 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 			return false;
 		}
 
-		if (application.DispatcherShutdownMode == DispatcherShutdownMode.OnLastWindowClose)
+		// Lock on the windows collection to ensure thread-safe check and removal
+		lock (Uno.UI.ApplicationHelper.WindowsInternal)
 		{
-			// Check if this is the last window (count includes the current window being closed)
-			return Uno.UI.ApplicationHelper.WindowsInternal.Count == 1;
-		}
+			var shouldExit = false;
 
-		// If DispatcherShutdownMode is OnExplicitShutdown, do nothing - the app will continue running
-		return false;
+			if (application.DispatcherShutdownMode == DispatcherShutdownMode.OnLastWindowClose)
+			{
+				// Check if this is the last window (count includes the current window being closed)
+				shouldExit = Uno.UI.ApplicationHelper.WindowsInternal.Count == 1;
+			}
+
+			// Remove the window from the collection while still holding the lock
+			Uno.UI.ApplicationHelper.WindowsInternal.Remove(Window);
+
+			return shouldExit;
+		}
 	}
 
 	private void RaiseWindowVisibilityChangedEvent(bool isVisible)
