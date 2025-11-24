@@ -52,7 +52,7 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 			}
 
 			_xkbState = LibXKBCommon.xkb_state_new(keymap);
-			if (keymap == IntPtr.Zero)
+			if (_xkbState == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(LibXKBCommon.xkb_state_new)} failed and returned null.");
 			}

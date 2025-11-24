@@ -36,7 +36,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			(_eglSurface, _glContext, var major, var minor, _samples, _stencil)
 				= EglHelper.InitializeGles2Context(_eglDisplay, new IntPtr(&w));
 
-			this.Log().Info($"Found EGL version {major}.{minor}.");
+			this.LogInfo()?.Info($"Found EGL version {major}.{minor}.");
 
 			MakeCurrent();
 

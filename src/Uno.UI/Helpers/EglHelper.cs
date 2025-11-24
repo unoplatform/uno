@@ -93,7 +93,7 @@ internal class EglHelper
 			surface = EglCreatePbufferSurface(eglDisplay, configs[0], [EGL_NONE]);
 			if (surface == IntPtr.Zero)
 			{
-				throw new InvalidOperationException($"{nameof(EglCreatePbufferSurface)} failed to get {nameof(EGL_SAMPLES)}: {Enum.GetName(EglGetError())}");
+				throw new InvalidOperationException($"{nameof(EglCreatePbufferSurface)} failed: {Enum.GetName(EglGetError())}");
 			}
 		}
 		else
@@ -101,7 +101,7 @@ internal class EglHelper
 			surface = EglCreatePlatformWindowSurface(eglDisplay, configs[0], window.Value, [EGL_NONE]);
 			if (surface == IntPtr.Zero)
 			{
-				throw new InvalidOperationException($"{nameof(EglCreatePlatformWindowSurface)} failed to get {nameof(EGL_SAMPLES)}: {Enum.GetName(EglGetError())}");
+				throw new InvalidOperationException($"{nameof(EglCreatePlatformWindowSurface)} failed: {Enum.GetName(EglGetError())}");
 			}
 		}
 		return (surface, glContext, major, minor, samples, stencil);
