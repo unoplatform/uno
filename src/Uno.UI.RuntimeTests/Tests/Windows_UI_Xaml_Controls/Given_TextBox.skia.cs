@@ -20,6 +20,8 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
+using Uno.ApplicationModel.DataTransfer;
+using Uno.Foundation.Extensibility;
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
@@ -1725,6 +1727,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -1890,6 +1896,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -1986,6 +1996,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -2039,6 +2053,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste_History_Remains_Intact()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -2088,6 +2107,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste_The_Same_Text()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -2880,6 +2904,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Clipboard can't be read for security reasons.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -3536,6 +3564,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -4065,6 +4097,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// TODO: Investigate what goes wrong here on Wasm Skia.
 				Assert.Inconclusive("Not working on Wasm Skia, unknown issue.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -4527,6 +4563,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // needs paste permission
 		public async Task When_MaxLine_Paste()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
