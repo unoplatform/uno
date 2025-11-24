@@ -12,7 +12,7 @@ The Uno Platform **Hot Reload** feature provides a way to modify the XAML and C#
 
 ## Features
 
-- Supported in **Visual Studio (Windows), **VS Code** (Linux, macOS, Windows, and CodeSpaces), and **Rider** (Linux, macOS, Windows).
+- Supported in **Visual Studio** (Windows), **VS Code** (Linux, macOS, Windows, and CodeSpaces), and **Rider** (Linux, macOS, Windows).
 - XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Android, WebAssembly, and Skia (X11, Windows, macOS and FrameBuffer)**.
 - All **[C# of Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload)** in both Visual Studio, VS Code and Rider. See [supported code changes](https://learn.microsoft.com/visualstudio/debugger/supported-code-changes-csharp).
 - **Simulator and physical devices** support.
