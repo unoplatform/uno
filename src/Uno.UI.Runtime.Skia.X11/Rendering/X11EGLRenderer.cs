@@ -13,6 +13,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	{
 		private const uint DefaultFramebuffer = 0; // this is the glX buffer that was created in X11XamlRootHost, which will directly render on screen
 
+		private readonly GRGlInterface _glInterface;
 		private readonly GRContext _grContext;
 		private readonly IntPtr _eglDisplay;
 		private readonly IntPtr _glContext;
@@ -41,14 +42,14 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			this.LogInfo()?.Info($"Using {EglHelper.GetGlVersionString()} for rendering.");
 
-			var glInterface = GRGlInterface.CreateGles(EglHelper.EglGetProcAddress);
+			_glInterface = GRGlInterface.CreateGles(EglHelper.EglGetProcAddress);
 
-			if (glInterface == null)
+			if (_glInterface == null)
 			{
 				throw new NotSupportedException($"OpenGL is not supported in this system");
 			}
 
-			_grContext = GRContext.CreateGl(glInterface);
+			_grContext = GRContext.CreateGl(_glInterface);
 
 			if (_grContext == null)
 			{
@@ -58,9 +59,20 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			_contextCurrentDisposable!.Dispose();
 		}
 
-		public void Dispose() => _grContext.Dispose();
+		public override void Dispose()
+		{
+			using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+			MakeCurrent();
+			_grContext.Dispose();
+			_glInterface.Dispose();
+			if (!EglHelper.EglTerminate(_eglDisplay))
+			{
+				this.LogError()?.Error($"{nameof(EglHelper.EglTerminate)} failed.");
+			}
+			_contextCurrentDisposable!.Dispose();
+		}
 
-		protected override SKSurface UpdateSize(int width, int height, int depth)
+		protected override SKSurface UpdateSize(int width, int height)
 		{
 			_renderTarget?.Dispose();
 

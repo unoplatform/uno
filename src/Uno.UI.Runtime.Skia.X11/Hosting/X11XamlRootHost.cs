@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -145,6 +146,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
 				_renderTimer.Dispose();
+				_renderer?.Dispose();
 			}
 		});
 	}
@@ -289,17 +291,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public static void CloseAllWindows()
 	{
-		lock (_x11WindowToXamlRootHostMutex)
+		foreach (var window in _x11WindowToXamlRootHost.Keys.ToList())
 		{
-			foreach (var host in _x11WindowToXamlRootHost.Values)
-			{
-				using (X11Helper.XLock(host.RootX11Window.Display))
-				{
-					host._closed.SetResult();
-				}
-			}
-
-			_x11WindowToXamlRootHost.Clear();
+			Close(window);
 		}
 	}
 

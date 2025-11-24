@@ -174,6 +174,9 @@ internal class EglHelper
 	[DllImport(libEGL, EntryPoint = "eglGetConfigAttrib")]
 	public static extern bool EglGetConfigAttrib(IntPtr display, IntPtr config, int attribute, out int value);
 
+	[DllImport(libEGL, EntryPoint = "eglTerminate")]
+	public static extern bool EglTerminate(IntPtr display);
+
 	public enum ErrorCode
 	{
 		SUCCESS = 0x3000,

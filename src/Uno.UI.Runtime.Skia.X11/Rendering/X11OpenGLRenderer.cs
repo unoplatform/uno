@@ -15,19 +15,32 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private const uint DefaultFramebuffer = 0; // this is the glX buffer that was created in X11XamlRootHost, which will directly render on screen
 
 		private readonly GRContext _grContext;
-		private readonly X11Window _x11Window;
+		private readonly GRGlInterface _glInterface;
 
 		private GRBackendRenderTarget? _renderTarget;
 
 		public X11OpenGLRenderer(IXamlRootHost host, X11Window x11window) : base(host, x11window)
 		{
-			_x11Window = x11window;
-			_grContext = CreateGRGLContext();
+			(_glInterface, _grContext) = CreateGRGLContext();
 		}
 
-		public void Dispose() => _grContext.Dispose();
+		public override void Dispose()
+		{
+			using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+			MakeCurrent();
+			using var makeCurrentDisposable = new DisposableStruct<X11Window>(static x11Window =>
+			{
+				if (!GlxInterface.glXMakeCurrent(x11Window.Display, X11Helper.None, IntPtr.Zero))
+				{
+					throw new NotSupportedException($"glXMakeCurrent failed for Window {x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
+				}
+			}, _x11Window);
 
-		protected override SKSurface UpdateSize(int width, int height, int depth)
+			_grContext.Dispose();
+			_glInterface.Dispose();
+		}
+
+		protected override SKSurface UpdateSize(int width, int height)
 		{
 			_renderTarget?.Dispose();
 
@@ -58,17 +71,14 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 		}
 
-		private unsafe GRContext CreateGRGLContext()
+		private unsafe (GRGlInterface, GRContext) CreateGRGLContext()
 		{
 			if (_x11Window.glXInfo is not { } glXInfo)
 			{
 				throw new NotSupportedException($"No glX information associated with this OpenGL renderer, so it cannot be used.");
 			}
 
-			if (!GlxInterface.glXMakeCurrent(_x11Window.Display, _x11Window.Window, glXInfo.context))
-			{
-				throw new NotSupportedException($"glXMakeCurrent failed for Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
-			}
+			MakeCurrent();
 			using var makeCurrentDisposable = new DisposableStruct<X11Window>(static x11Window =>
 			{
 				if (!GlxInterface.glXMakeCurrent(x11Window.Display, X11Helper.None, IntPtr.Zero))
@@ -101,7 +111,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				this.Log().Info($"Using OpenGL {glVersionString} for rendering.");
 			}
 
-			return context;
+			return (glInterface, context);
 		}
 	}
 }
