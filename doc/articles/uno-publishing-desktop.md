@@ -53,10 +53,6 @@ Where `{{RID}}` specifies [the chosen OS and Architecture](https://learn.microso
 [Single file](https://learn.microsoft.com/en-us/dotnet/core/deploying/single-file/overview?tabs=cli) publishing is supported with the following parameters:
 
 ```shell
-# For .NET 9:
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true
-
-# For .NET 10:
 dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true
 ```
 
