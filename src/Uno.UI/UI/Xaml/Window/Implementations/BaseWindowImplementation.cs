@@ -346,8 +346,12 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void Shutdown()
 	{
+		// Check if the application should exit based on DispatcherShutdownMode
+		// This must be done BEFORE removing the window to get an accurate count
+		var shouldExitApplication = false;
 		if (NativeWindowFactory.SupportsMultipleWindows)
 		{
+			shouldExitApplication = ShouldExitApplication();
 			ApplicationHelper.RemoveWindow(Window);
 		}
 
@@ -371,29 +375,35 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 			NativeWindowWrapper.Close();
 		}
 
-		// Check if the application should exit based on DispatcherShutdownMode
-		CheckApplicationExit();
+		// Exit the application if needed (after all cleanup is done)
+		if (shouldExitApplication)
+		{
+			Microsoft.UI.Xaml.Application.Current?.Exit();
+		}
 	}
 
-	private void CheckApplicationExit()
+	private bool ShouldExitApplication()
 	{
 		// Only check on platforms that support multiple windows (primarily Skia desktop)
 		if (!NativeWindowFactory.SupportsMultipleWindows)
 		{
-			return;
+			return false;
 		}
 
 		var application = Microsoft.UI.Xaml.Application.Current;
-		if (application?.DispatcherShutdownMode == DispatcherShutdownMode.OnLastWindowClose)
+		if (application is null)
 		{
-			// Check if this is the last window
-			if (Uno.UI.ApplicationHelper.WindowsInternal.Count == 0)
-			{
-				// Exit the application when the last window is closed
-				application.Exit();
-			}
+			return false;
 		}
+
+		if (application.DispatcherShutdownMode == DispatcherShutdownMode.OnLastWindowClose)
+		{
+			// Check if this is the last window (count includes the current window being closed)
+			return Uno.UI.ApplicationHelper.WindowsInternal.Count == 1;
+		}
+
 		// If DispatcherShutdownMode is OnExplicitShutdown, do nothing - the app will continue running
+		return false;
 	}
 
 	private void RaiseWindowVisibilityChangedEvent(bool isVisible)
