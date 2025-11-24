@@ -8,7 +8,7 @@ If you have an existing Uno Platform project, and you have not selected all the 
 
 Considering that your project is called `MyProject`, and you want to add the `desktop` target support:
 
-1. In a separate temporary folder, create a new project using the **Visual Studio 2022** or `dotnet new` templates, using `MyProject` for its name.
+1. In a separate temporary folder, create a new project using the **Visual Studio** or `dotnet new` templates, using `MyProject` for its name.
 1. Unselect all platforms except `Desktop` in the platforms selection dialog.
 1. Make sure to select the template preset and features.
 1. Once the project has been created, navigate to the new folder `MyProject`.

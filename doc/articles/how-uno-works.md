@@ -48,13 +48,13 @@ For more information, see our documentation on the [Native renderer](xref:uno.fe
 
 ## Windows using WinAppSDK
 
-On Windows (the `net9.0-windows10.0.xxxxx` target framework) using [Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/), the application isn't using Uno Platform at all. It's compiled just like a single-platform WinUI application, using Microsoft's own tooling.
+On Windows (the `net9.0-windows10.0.xxxxx` or `net10.0-windows10.0.xxxxx` target framework) using [Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/), the application isn't using Uno Platform at all. It's compiled just like a single-platform WinUI application, using Microsoft's own tooling.
 
 ## Uno Platform at Build Time
 
 ### Binaries
 
-Uno Platform applications use [.NET 9+](https://learn.microsoft.com/dotnet/core/introduction) and run on all major platforms:
+Uno Platform applications use [.NET 9/10+](https://learn.microsoft.com/dotnet/core/introduction) and run on all major platforms:
 
 - **Mobile/Desktop**: via .NET for Mobile
 - **Web**: via .NET for WebAssembly
