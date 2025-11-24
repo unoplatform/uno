@@ -9,10 +9,6 @@ namespace Uno.UI.Runtime.Skia;
 
 public class FramebufferHostBuilder : IPlatformHostBuilder
 {
-	private Color _mouseCursorColor = Color.FromArgb(255, 0, 0, 0);
-	private float _mouseCursorRadius = 5;
-	private DisplayOrientations _orientation = DisplayOrientations.Landscape;
-
 	internal FramebufferHostBuilder()
 	{
 	}
@@ -66,7 +62,7 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 	/// <param name="connectorChooser">A delegate that picks which of the available connectors to use. If not supplied, the first one found will be used.</param>
 	/// <param name="gbmSurfaceColorFormat">
 	/// The FourCC color format used for the GBM surface created for rendering
-	/// (this is passes to gbm_surface_create). For more details on the FourCC
+	/// (this is passed to gbm_surface_create). For more details on the FourCC
 	/// format and valid values, see https://github.com/torvalds/linux/blob/master/include/uapi/drm/drm_fourcc.h
 	/// </param>
 	public FramebufferHostBuilder UseKMSDRM(string? cardPath = null, DRMFourCCColorFormat? gbmSurfaceColorFormat = null, DRMConnectorChooserDelegate? connectorChooser = null)
@@ -96,23 +92,11 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 
 	internal bool? ShowMouseCursor { get; private set; }
 
-	internal Color MouseCursorColor
-	{
-		get => _mouseCursorColor;
-		private set => _mouseCursorColor = value;
-	}
+	internal Color MouseCursorColor { get; private set; } = Color.FromArgb(255, 0, 0, 0);
 
-	internal float MouseCursorRadius
-	{
-		get => _mouseCursorRadius;
-		private set => _mouseCursorRadius = value;
-	}
+	internal float MouseCursorRadius { get; private set; } = 5;
 
-	internal DisplayOrientations DisplayOrientation
-	{
-		get => _orientation;
-		private set => _orientation = value;
-	}
+	internal DisplayOrientations DisplayOrientation { get; private set; } = DisplayOrientations.Landscape;
 
 	internal bool? UseDRM { get; private set; }
 

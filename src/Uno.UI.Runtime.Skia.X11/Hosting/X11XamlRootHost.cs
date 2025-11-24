@@ -413,7 +413,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 				catch (Exception e2)
 				{
-					this.Log().Info($"Second attempt at creating and OpenGL / OpenGL ES context failed with '{e2.Message}'. Falling back to software rendering.");
+					this.Log().Info($"Second attempt at creating an OpenGL / OpenGL ES context failed with '{e2.Message}'. Falling back to software rendering.");
 					if (_x11TopWindow is null)
 					{
 						_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);

@@ -28,7 +28,7 @@ namespace Uno.UI.Runtime.Skia
 					Render();
 					_fbDev.VSync();
 					_surface?.ReadPixels(
-						new SKImageInfo((int)_fbDev.ScreenSize.Width, (int)_fbDev.ScreenSize.Width, _fbDev.PixelFormat, SKAlphaType.Premul),
+						new SKImageInfo((int)_fbDev.ScreenSize.Width, (int)_fbDev.ScreenSize.Height, _fbDev.PixelFormat, SKAlphaType.Premul),
 						_fbDev.BufferAddress,
 						_fbDev.RowBytes,
 						0,

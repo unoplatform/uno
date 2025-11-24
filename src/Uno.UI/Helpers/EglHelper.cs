@@ -2,7 +2,6 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Uno.Foundation.Logging;
 
 namespace Uno.UI.Helpers;
 

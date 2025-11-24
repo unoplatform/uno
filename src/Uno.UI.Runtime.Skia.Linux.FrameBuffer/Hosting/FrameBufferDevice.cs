@@ -122,7 +122,7 @@ namespace Uno.UI.Runtime.Skia
 			}
 			else
 			{
-				this.LogInfo()?.Info($"Succesfully opened a framebuffer device at {fileName}");
+				this.LogInfo()?.Info($"Successfully opened a framebuffer device at {fileName}");
 			}
 		}
 
@@ -259,7 +259,7 @@ namespace Uno.UI.Runtime.Skia
 
 		private void LogFramebufferInformation()
 		{
-			this.LogInfo()?.Info($"Succesfully initialized a framebuffer device with size {_screenInfo.xres}x{_screenInfo.yres}");
+			this.LogInfo()?.Info($"Successfully initialized a framebuffer device with size {_screenInfo.xres}x{_screenInfo.yres}");
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace(

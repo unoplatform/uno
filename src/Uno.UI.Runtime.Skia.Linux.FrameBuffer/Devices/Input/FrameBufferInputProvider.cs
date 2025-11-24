@@ -118,7 +118,7 @@ unsafe internal class FrameBufferInputProvider : IDisposable
 			}
 
 			var pfd = new pollfd { fd = _libDevFd, events = 1 };
-			var ret3 = Libc.poll(&pfd, Libc.PROT_READ, -1);
+			var ret3 = Libc.poll(&pfd, 1, -1);
 			if (ret3 < 0 && this.Log().IsEnabled(LogLevel.Error))
 			{
 				var errno = Marshal.GetLastWin32Error();
