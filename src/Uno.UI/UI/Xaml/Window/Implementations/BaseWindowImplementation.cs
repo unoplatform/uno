@@ -397,6 +397,8 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		}
 
 		// Lock on the windows collection to ensure thread-safe check and removal
+		// We directly access WindowsInternal instead of using ApplicationHelper.RemoveWindow()
+		// because we need to atomically check the count and remove the window to avoid race conditions
 		lock (Uno.UI.ApplicationHelper.WindowsInternal)
 		{
 			var shouldExit = false;
@@ -408,6 +410,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 			}
 
 			// Remove the window from the collection while still holding the lock
+			// This ensures the count check and removal are atomic
 			Uno.UI.ApplicationHelper.WindowsInternal.Remove(Window);
 
 			return shouldExit;
