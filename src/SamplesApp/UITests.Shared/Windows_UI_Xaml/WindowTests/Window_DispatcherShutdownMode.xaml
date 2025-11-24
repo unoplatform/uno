@@ -1,0 +1,49 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.WindowTests.Window_DispatcherShutdownMode"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,8">
+            <Run FontWeight="Bold">DispatcherShutdownMode</Run>
+            <LineBreak />
+            <Run>This sample demonstrates the Application.DispatcherShutdownMode property.</Run>
+            <LineBreak />
+            <LineBreak />
+            <Run>• OnLastWindowClose (default): Application exits when the last window closes</Run>
+            <LineBreak />
+            <Run>• OnExplicitShutdown: Application continues running until explicitly shut down</Run>
+        </TextBlock>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8">
+            <TextBlock Text="Current Mode:" VerticalAlignment="Center" />
+            <TextBlock x:Name="CurrentModeTextBlock" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8">
+            <Button x:Name="OnLastWindowCloseButton" Content="Set OnLastWindowClose" Click="OnSetOnLastWindowClose" />
+            <Button x:Name="OnExplicitShutdownButton" Content="Set OnExplicitShutdown" Click="OnSetOnExplicitShutdown" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
+            <Button x:Name="OpenWindowButton" Content="Open New Window" Click="OnOpenWindow" />
+            <Button x:Name="ExitButton" Content="Exit Application" Click="OnExitApplication" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="4" Margin="0,12,0,0">
+            <TextBlock x:Name="LogTextBlock" TextWrapping="Wrap" FontFamily="Consolas" />
+        </ScrollViewer>
+    </Grid>
+</Page>
