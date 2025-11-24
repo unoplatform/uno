@@ -10,7 +10,7 @@ This getting started will guide you through setting up your environment to creat
 
 ## Install Visual Studio with Workloads
 
-To create Uno Platform applications you will need [**Visual Studio 2022 (17.13+) or 2026**](https://visualstudio.microsoft.com/vs/):
+To create Uno Platform applications you will need [**Visual Studio 2022 (17.13+) or later**](https://visualstudio.microsoft.com/vs/):
 
 1. **ASP.NET and web development** workload installed (for WebAssembly development)
 
