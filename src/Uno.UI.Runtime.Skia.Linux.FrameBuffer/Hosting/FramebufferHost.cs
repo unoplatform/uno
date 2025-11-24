@@ -37,7 +37,11 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		/// <remarks>
 		/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 		/// </remarks>
-		public FrameBufferHost(Func<WUX.Application> appBuilder, FramebufferHostBuilder builder)
+		public FrameBufferHost(Func<WUX.Application> appBuilder) : this(appBuilder, new FramebufferHostBuilder())
+		{
+		}
+
+		internal FrameBufferHost(Func<WUX.Application> appBuilder, FramebufferHostBuilder builder)
 		{
 			_appBuilder = appBuilder;
 			_hostBuilder = builder;
