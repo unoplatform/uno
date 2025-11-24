@@ -29,7 +29,6 @@ Uno Platform is only affected by the API change - the technical changes don't ap
 
 When you create a new Uno Platform application, you can choose to create a WinUI 3-compatible application (using the WinUI 3 API, and building with WinUI 3 on the Windows head project) instead of a UWP XAML-compatible application [using the `dotnet new` templates](get-started-dotnet-new.md#uno-platform-blank-application-for-winappsdk---winui-3).
 
-
 ### Do you plan to publish on Windows?
 
 If Windows is one of your target platforms, then the [technical differences](#technical) discussed above apply. Probably the key question is, can your application run in the sandboxed 'UWP model', or is it better served by the unrestricted 'Win32 model'?
