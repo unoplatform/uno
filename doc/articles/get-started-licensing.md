@@ -22,11 +22,14 @@ After creating your Uno Platform account, follow the steps below to sign in to y
 
 ### [**Visual Studio 2022/2026**](#tab/vs2022)
 
-If you’ve already set up **Visual Studio 2022** by following the [Get Started on Visual Studio 2022](xref:Uno.GetStarted.vs2022) documentation, sign in as follows:
+If you've already set up **Visual Studio 2022/2026** by following the [Get Started on Visual Studio 2022/2026](xref:Uno.GetStarted.vs2022) documentation, sign in as follows:
 
 1. Create a new Uno Platform project by following the [Creating an app with Visual Studio 2022/2026](xref:Uno.GettingStarted.CreateAnApp.VS2022) documentation or open an existing one with Uno.Sdk version 5.5 or higher.
 
    For existing applications, you should take this opportunity to update to the [latest `Uno.Sdk` version](https://www.nuget.org/packages/Uno.Sdk). See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
+
+   > [!TIP]
+   > Uno Platform supports both .NET 9 and .NET 10. For new projects, consider using .NET 10 for long-term support (3 years).
 
 1. After your project has finished loading, a notification should appear. Click on the **Sign in / Register** button.
 
@@ -100,7 +103,7 @@ The Community edition of **Uno Platform Studio** includes a 30-day trial of **Un
 
 - **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**: The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
   
-- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: An AI-powered assistant designed for rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time. Built on deep knowledge of Uno Platform and your running app, it simplifies cross-platform .NET design, enabling intuitive and efficient workflows.[Learn more](xref:Uno.HotDesign.Agent)
+- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: An AI-powered assistant designed for rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real-time. Built on deep knowledge of Uno Platform and your running app, it simplifies cross-platform .NET design, enabling intuitive and efficient workflows. [Learn more](xref:Uno.HotDesign.Agent)
 
 - **[Uno MCPs](xref:Uno.Features.Uno.MCPs)**: Uno MCP connects AI agents and developers directly to Uno Platform’s complete knowledge base - documentation, APIs, and best practices with structured, semantic access. The App MCP is a local runtime service that allows AI agents and automation tools to intelligently interact with a live Uno Platform application. [Get started](xref:Uno.GetStarted)
 

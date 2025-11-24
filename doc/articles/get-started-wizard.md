@@ -20,9 +20,9 @@ uid: Uno.GetStarted.Wizard
 <a href="studio/Hot Design/hot-design-getstarted-counter-tutorial.md">
 <div class="alert alert-info alert-hover">
 
-#### Hot Design®
+#### Hot Design<sup>®</sup>
 
-Use Hot Design®, Uno Platform's visual designer, to design and develop the app.
+Use Hot Design<sup>®</sup>, Uno Platform's visual designer, to design and develop the app visually. You can also enable the Hot Design<sup>®</sup> Agent feature for AI-assisted UI creation within the same experience.
 
 </div>
 </a>

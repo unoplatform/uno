@@ -30,7 +30,9 @@ This page lists supported .NET versions and [C# language versions](https://learn
 
 - [.NET 10.0](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10/overview), the successor to .NET 9, includes improvements in performance, C# 14 support, and long-term platform stability.
   As a Long Term Support (LTS) release, it will be supported for **three years (until November 2028)**.
-  At the moment, it is in preview and the least stable option for new projects.
+  
+  > [!TIP]
+  > Consider using .NET 10 for new projects to benefit from 3-year LTS support, especially for enterprise applications requiring long-term stability. See the [migration guide](xref:Uno.Development.MigratingFromNet9ToNet10) to upgrade from .NET 9.
 
 # [**Uno Platform 5 and later**](#tab/uno5)
 

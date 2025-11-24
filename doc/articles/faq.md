@@ -50,6 +50,14 @@ Uno Platform applications are written in C# and XAML markup, whereas Blazor appl
 
 Uno Platform and Blazor both make use of .NET's WebAssembly support to run natively in the browser.
 
+## Related Topics
+
+- [Introduction to Uno Platform](xref:Uno.Documentation.Intro) - What is Uno Platform
+- [Getting Started](xref:Uno.GetStarted) - Set up your environment
+- [Quick Reference Guide](xref:Uno.QuickReference) - Common commands and patterns
+- [How Uno Works](xref:Uno.Development.HowItWorks) - Architecture and internals
+- [Troubleshooting](xref:Uno.UI.CommonIssues) - Common issues and solutions
+
 ### How is Uno Platform different from Flutter?
 
 Uno Platform and Flutter solve a similar problem - pixel-perfect applications on all target platforms. However, Uno Platform leverages decades of Microsoft's investment made into developer tooling, .NET, and C# programming language for developing applications.
@@ -85,6 +93,15 @@ Consult [the list of supported WinUI controls](implemented-views.md).
 
 You can develop Uno Platform applications on Windows, macOS, or Linux. Supported IDEs include Visual Studio, Visual Studio Code, and Rider. Consult the [setup guide](get-started.md) for more details. If you need help with issues specific to your developer environment or hardware, check out [Common Issues](xref:Uno.UI.CommonIssues).
 
+### Which .NET version should I use?
+
+Uno Platform supports both **.NET 9** (Standard Term Support, 24 months) and **.NET 10** (Long Term Support, 3 years). For new projects:
+
+* **Choose .NET 10** if you want long-term stability and 3-year support (ideal for enterprise applications)
+* **Choose .NET 9** if you want the latest features with 24-month support
+
+Both versions provide excellent performance and cross-platform capabilities. See the [.NET version support guide](xref:Uno.Development.NetVersionSupport) for details, or the [migration guide](xref:Uno.Development.MigratingFromNet9ToNet10) to upgrade from .NET 9 to .NET 10.
+
 ### Can I use VB.NET for Uno Platform applications?
 
 Much like the new UI technologies from Microsoft, Uno Platform doesn’t support creation of new applications using VB.NET.
@@ -96,6 +113,54 @@ You can also use the same Class Library in your original VB project. The same Cl
 Additionally, if you’d like to move any of your VB.NET code to C#, you may be able to use automated tools such as https://converter.telerik.com
 
 The best course of action is to do a POC and our team is happy to assist you in validating Uno Platform’s fit. Please [contact us](https://platform.uno/contact) with any queries.
+
+## Uno Platform Studio
+
+### What is Uno Platform Studio?
+
+**Uno Platform Studio** is a suite of productivity tools designed to accelerate cross-platform .NET development. It includes:
+
+* **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)** - The industry-first runtime visual designer for cross-platform .NET applications
+* **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** - AI-powered assistant for rapid UX/UI creation and enhancement
+* **[Hot Reload](xref:Uno.Features.HotReload)** - See your code changes instantly without rebuilding
+* **[Design-to-Code](xref:Uno.Figma.GetStarted)** - Generate production-ready code directly from Figma designs
+* **[Uno MCPs](xref:Uno.Features.Uno.MCPs)** - Structured access to Uno Platform knowledge and intelligent app interaction
+
+Learn more at [Uno Platform Studio Overview](xref:Uno.Platform.Studio.Overview).
+
+### Is Uno Platform Studio free?
+
+Uno Platform itself remains **free and open-source** under Apache 2.0. Uno Platform Studio offers two tiers:
+
+* **Community Edition** - Free, includes Hot Reload and a 30-day trial of Hot Design<sup>®</sup> Pro features
+* **Pro Edition** - Paid subscription that includes full access to Hot Design<sup>®</sup>, Hot Design<sup>®</sup> Agent, and Uno MCPs
+
+Compare plans at [platform.uno/select-subscription](https://platform.uno/select-subscription/).
+
+### Do I need Uno.Sdk to use Uno Platform Studio?
+
+Yes, **Uno Platform Studio** is built on top of **Uno.Sdk** and is only available for applications using Uno.Sdk. If you have an older project, follow our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
+
+### How do I get started with Uno Platform Studio?
+
+1. Create or update your project to use [Uno.Sdk](https://www.nuget.org/packages/Uno.Sdk)
+2. [Register an Uno Platform account](https://platform.uno/my-account/)
+3. [Sign in to your IDE](xref:Uno.GetStarted.Licensing) (Visual Studio, VS Code, or Rider)
+4. Start using Hot Reload, Hot Design<sup>®</sup>, and other Studio features
+
+### Which IDEs support Uno Platform Studio?
+
+Uno Platform Studio works with:
+
+* **Visual Studio 2022/2026** (Windows)
+* **Visual Studio Code** (Windows, macOS, Linux, Codespaces)
+* **JetBrains Rider** (Windows, macOS, Linux)
+
+All Studio features are available across all supported IDEs and operating systems.
+
+### Does Hot Design work on all platforms?
+
+Hot Design<sup>®</sup> works on iOS, Android, WebAssembly, and Skia desktop targets (Windows, macOS, Linux). It is not currently available for the WinAppSDK target framework. See [Hot Design Overview](xref:Uno.HotDesign.Overview) for complete platform support details.
 
 ## Technologies
 

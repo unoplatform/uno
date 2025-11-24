@@ -11,7 +11,7 @@ uid: uno.publishing.desktop
 - [Profile your app with Visual Studio](https://learn.microsoft.com/en-us/visualstudio/profiling)
 - [Profile using dotnet-trace and SpeedScope](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace)
 
-## Publish Using Visual Studio 2022
+## Publish Using Visual Studio 2022/2026
 
 - In the debugger toolbar drop-down, select the `net9.0-desktop` target framework
 - Once the project has reloaded, right-click on the project and select **Publish**
@@ -37,16 +37,28 @@ On Windows/macOS/Linux, open a terminal in your `csproj` folder and run:
 dotnet publish -f net9.0-desktop
 ```
 
+Or for .NET 10:
+
+```shell
+dotnet publish -f net10.0-desktop
+```
+
 If you wish to do a self-contained publish, run the following instead:
 
 ```shell
 dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFrameworks=net9.0-desktop
 ```
 
+Or for .NET 10:
+
+```shell
+dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFrameworks=net10.0-desktop
+```
+
 Where `{{RID}}` specifies [the chosen OS and Architecture](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog) (e.g. win-x64). When targeting Windows, cross-publishing to architectures other than the currently running one is not supported.
 
 > [!IMPORTANT]
-> Due to changes in the .NET SDK, when providing an `{{RID}}` you will also need to add the following parameter `-p:TargetFrameworks=net9.0-desktop` for the publish command to succeed.
+> Due to changes in the .NET SDK, when providing an `{{RID}}` you will also need to add the following parameter `-p:TargetFrameworks=net9.0-desktop` (or `-p:TargetFrameworks=net10.0-desktop` for .NET 10) for the publish command to succeed.
 
 ### Single-file publish
 
@@ -54,6 +66,12 @@ Where `{{RID}}` specifies [the chosen OS and Architecture](https://learn.microso
 
 ```shell
 dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true
+```
+
+Or for .NET 10:
+
+```shell
+dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true
 ```
 
 Same as above, make sure to replace the `{{RID}}` with [a valid value](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog).
