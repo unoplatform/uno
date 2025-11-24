@@ -9,7 +9,7 @@ To upgrade to .NET 9:
 
 - First, read [What's New in .NET 9](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-9/overview)
 - Install/Update the IDE of your choice:  
-  - [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) - minimal version **17.12** or later  
+  - [Visual Studio 2022/2026](https://visualstudio.microsoft.com/vs/) - minimal version **17.12** or later  
   - [Visual Studio Code](https://code.visualstudio.com/) - minimal version **1.94** or later with the related [**C# Dev Kit**](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) stable version
   - [JetBrains Rider](https://www.jetbrains.com/rider/) - minimal version **2024.3** or later
 - Run [uno.check](xref:UnoCheck.UsingUnoCheck) to install .NET 9.

@@ -53,7 +53,7 @@ However, sometimes that still may not be enough. In such case, you can leverage 
 
 ### [**Windows (Visual Studio)**](#tab/windows-vs)
 
-If you're inside of Visual Studio 2022:
+If you're inside of Visual Studio 2022/2026:
 
 - Open the solution
 - At the bottom of the IDE window, click the **Add to Source Control** button, then **git**
