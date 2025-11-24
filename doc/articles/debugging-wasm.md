@@ -6,12 +6,12 @@ uid: Uno.Development.DebuggingWasm
 
 There are two ways to debug a WebAssembly application:
 
-- Using Visual Studio 2022 integrated debugger (preferred)
+- Using Visual Studio integrated debugger (preferred)
 - Using the browser's debugger
 
 ## Using Visual Studio
 
-Here’s what you need to do to debug an Uno Platform application in Visual Studio (2022 17.1 or later):
+Here's what you need to do to debug an Uno Platform application in Visual Studio (2022 (17.3+)/2026):
 
 - Install the latest [Uno Platform Visual Studio templates](./get-started-vs-2022.md#install-the-solution-templates)
 - Have Chrome or Edge (Chromium based)
