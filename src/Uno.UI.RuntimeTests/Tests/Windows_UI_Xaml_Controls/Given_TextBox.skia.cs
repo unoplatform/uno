@@ -978,6 +978,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Scrolling_Updates_After_Pasting_Long_Text()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox

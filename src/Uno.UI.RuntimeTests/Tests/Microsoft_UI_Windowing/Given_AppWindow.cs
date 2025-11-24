@@ -190,7 +190,8 @@ public class Given_AppWindow
 			!OperatingSystem.IsWindows() &&
 			!OperatingSystem.IsMacOS() ||
 			TestServices.WindowHelper.IsXamlIsland ||
-			IsGtk())
+			IsGtk() ||
+			RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaFrameBuffer)
 		{
 			Assert.Inconclusive("This test only supported on Windows, macOS and Linux apps currently.");
 		}
