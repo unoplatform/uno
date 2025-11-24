@@ -8,7 +8,7 @@ This article explains how to build Uno.UI locally, for instance, if you wish to 
 
 ## Prerequisites
 
-- Visual Studio (2022 (17.13+) or later)
+- Visual Studio 2022 (17.13+) or later
   - Select the **ASP.NET and Web Development** workload
   - Select the **.NET Multi-Platform App UI development** workload
   - Select the **.NET desktop development** workload
