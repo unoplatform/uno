@@ -501,8 +501,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			InitializeProcessor(configureServer);
 
-			InterpretMsbuildProperties(properties);
-
 			try
 			{
 				if (InitializeMetadataUpdater(configureServer))
