@@ -46,6 +46,6 @@ public sealed partial class PackageId
 		}
 
 		// Return default version if nothing is found
-		return new PackageVersion();
+		return default;
 	}
 }
