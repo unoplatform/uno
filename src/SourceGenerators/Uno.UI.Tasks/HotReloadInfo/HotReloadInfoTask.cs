@@ -19,15 +19,17 @@ public class HotReloadInfoTask_v0 : Microsoft.Build.Utilities.Task
 	/// <inheritdoc />
 	public override bool Execute()
 	{
-		var attributePath = Path.Combine(IntermediateOutputPath, "Uno.HotReloadInfo.Attribute.g.cs");
-		var infoPath = Path.Combine(IntermediateOutputPath, "Uno.HotReloadInfo.g.cs");
+		var attributePath = Path.Combine(IntermediateOutputPath, "uno.hot-reload.info", "HotReloadInfo.Attribute.g.cs");
+		var infoPath = Path.Combine(IntermediateOutputPath, "uno.hot-reload.info", "HotReloadInfo.g.cs");
 
 		Log.LogMessage($"Generating hot-reload info to : {infoPath}");
 
 		try
 		{
-			File.WriteAllText(attributePath, HotReloadInfoHelper.GenerateAttribute(infoPath));
-			File.WriteAllText(infoPath, HotReloadInfoHelper.GenerateInfo());
+			Directory.CreateDirectory(Path.Combine(IntermediateOutputPath, "uno.hot-reload.info"));
+
+			Write(attributePath, HotReloadInfoHelper.GenerateAttribute(infoPath));
+			Write(infoPath, HotReloadInfoHelper.GenerateInfo());
 
 			GeneratedFiles =
 			[
@@ -51,5 +53,26 @@ public class HotReloadInfoTask_v0 : Microsoft.Build.Utilities.Task
 		}
 
 		return false;
+	}
+
+	private void Write(string path, string content)
+	{
+		using var stream = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+
+		// First we validate if teh content is the same, if so, we don't even touch the file (to avoid unnecessary rebuilds)
+		using (var reader = new StreamReader(stream, Encoding.UTF8, true, 4096, leaveOpen: true))
+		{
+			if (content.Equals(reader.ReadToEnd()))
+			{
+				return;
+			}
+		}
+
+		// Rewrite the content ... from the beginning!
+		stream.SetLength(0);
+		stream.Position = 0;
+
+		using var writer = new StreamWriter(stream, Encoding.UTF8, 4096, leaveOpen: true);
+		writer.Write(content);
 	}
 }

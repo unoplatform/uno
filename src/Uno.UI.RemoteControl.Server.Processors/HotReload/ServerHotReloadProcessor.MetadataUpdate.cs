@@ -162,26 +162,28 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private void ObserveSolutionPaths(Solution solution, params string?[] excludedDir)
 		{
-			var observedPaths =
-				solution.Projects
-					.SelectMany(project =>
-					{
-						var projectDir = Path.GetDirectoryName(project.FilePath);
-						ImmutableArray<string> excludedProjectDir = [.. from dir in excludedDir where dir is not null select Path.Combine(projectDir!, dir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)];
+			var observedPaths = solution
+				.Projects
+				.SelectMany(project =>
+				{
+					var projectDir = Path.GetDirectoryName(project.FilePath);
+					ImmutableArray<string> excludedProjectDir = [.. from dir in excludedDir where dir is not null select Path.Combine(projectDir!, dir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)];
 
-						var paths = project
-							.Documents
-							.Select(d => d.FilePath)
-							.Concat(project.AdditionalDocuments.Select(d => d.FilePath))
-							.Select(Path.GetDirectoryName)
-							.Where(path => path is not null && !excludedProjectDir.Any(dir => path.StartsWith(dir, _pathsComparison)))
-							.Distinct()
-							.ToArray();
+					var paths = project
+						.Documents
+						.Select(d => d.FilePath)
+						.Concat(project.AdditionalDocuments.Select(d => d.FilePath))
+						.Select(Path.GetDirectoryName)
+						.Where(path => path is not null
+							&& (path.Contains("uno.hot-reload.info") /* temp patch! This will be reviewed for file add detection */
+								|| !excludedProjectDir.Any(dir => path.StartsWith(dir, _pathsComparison))))
+						.Distinct()
+						.ToArray();
 
-						return paths;
-					})
-					.Distinct()
-					.ToArray();
+					return paths;
+				})
+				.Distinct()
+				.ToArray();
 
 #if DEBUG
 			Console.WriteLine($"Observing paths {string.Join(", ", observedPaths)}");
