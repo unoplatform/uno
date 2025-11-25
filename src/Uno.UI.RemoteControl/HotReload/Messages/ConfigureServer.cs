@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages;
 
 /// <summary>
-/// 
+/// Configuration message sent from the client to the server to initialize hot reload functionality.
 /// </summary>
 /// <param name="ProjectPath"></param>
 /// <param name="MetadataUpdateCapabilities"></param>
@@ -36,16 +37,10 @@ public record ConfigureServer(
 	public Dictionary<string, string> MSBuildProperties => _msbuildProperties ??= ParseMSBuildProperties(MSBuildPropertiesRaw);
 
 	public static Dictionary<string, string> ParseMSBuildProperties(string[] rawMSBuildProperties)
-	{
-		var msbuildPropertiesCache = new Dictionary<string, string>();
-
-		foreach (var property in rawMSBuildProperties)
-		{
-			var firstEqual = property.IndexOf('=');
-			var split = new[] { property.Substring(0, firstEqual), property.Substring(firstEqual + 1) };
-			msbuildPropertiesCache.Add(split[0], Encoding.UTF8.GetString(Convert.FromBase64String(split[1])));
-		}
-
-		return msbuildPropertiesCache;
-	}
+		=> rawMSBuildProperties
+			.Select(property => property.Split('=', 2))
+			.Where(tokens => tokens.Length == 2)
+			.ToDictionary(
+				tokens => tokens[0],
+				split => Encoding.UTF8.GetString(Convert.FromBase64String(split[1])));
 }
