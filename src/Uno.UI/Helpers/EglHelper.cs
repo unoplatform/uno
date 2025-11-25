@@ -27,19 +27,6 @@ internal class EglHelper
 	public const int EGL_OPENGL_ES2_BIT = 0x04;
 	public const int EGL_OPENGL_ES3_BIT = 0x40;
 
-	public static bool IsAvailable()
-	{
-		if (NativeLibrary.TryLoad(libEGL, Assembly.GetExecutingAssembly(), DllImportSearchPath.SafeDirectories, out var handle))
-		{
-			NativeLibrary.Free(handle);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
 	public static (IntPtr surface, IntPtr glContext, int major, int minor, int samples, int stencil) InitializeGles2Context(IntPtr eglDisplay, IntPtr? window = null)
 	{
 		if (eglDisplay == IntPtr.Zero)

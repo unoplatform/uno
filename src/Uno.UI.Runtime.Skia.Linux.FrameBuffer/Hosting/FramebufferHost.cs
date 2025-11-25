@@ -142,25 +142,27 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			FrameBufferInputProvider.Instance.Initialize();
 
+			var drmInitOptions = new DRMRenderer.DRMInitOptions(_hostBuilder.DRMCardPath, _hostBuilder.DRMConnectorChooser, _hostBuilder.GBMSurfaceColorFormat);
+			var mouseIndicatorOptions = new FrameBufferRenderer.MouseIndicatorOptions(_hostBuilder.ShowMouseCursor, _hostBuilder.MouseCursorRadius, _hostBuilder.MouseCursorColor);
 			if (_hostBuilder.UseDRM ?? false)
 			{
-				_renderer = new DRMRenderer(this, _hostBuilder.DRMCardPath, _hostBuilder.DRMConnectorChooser, _hostBuilder.GBMSurfaceColorFormat, _hostBuilder.ShowMouseCursor, _hostBuilder.MouseCursorRadius, _hostBuilder.MouseCursorColor);
+				_renderer = new DRMRenderer(this, drmInitOptions, mouseIndicatorOptions);
 			}
 			else if (_hostBuilder.UseDRM is null)
 			{
 				try
 				{
-					_renderer = new DRMRenderer(this, _hostBuilder.DRMCardPath, _hostBuilder.DRMConnectorChooser, _hostBuilder.GBMSurfaceColorFormat, _hostBuilder.ShowMouseCursor, _hostBuilder.MouseCursorRadius, _hostBuilder.MouseCursorColor);
+					_renderer = new DRMRenderer(this, drmInitOptions, mouseIndicatorOptions);
 				}
 				catch (Exception e)
 				{
 					this.LogError()?.Error($"Failed to create an OpenGLES context with error '{e.Message}', falling back to software rendering");
-					_renderer = new SoftwareRenderer(this, _hostBuilder.ShowMouseCursor, _hostBuilder.MouseCursorRadius, _hostBuilder.MouseCursorColor);
+					_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
 				}
 			}
 			else
 			{
-				_renderer = new SoftwareRenderer(this, _hostBuilder.ShowMouseCursor, _hostBuilder.MouseCursorRadius, _hostBuilder.MouseCursorColor);
+				_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
 			}
 
 			WUX.Application.Start(CreateApp);

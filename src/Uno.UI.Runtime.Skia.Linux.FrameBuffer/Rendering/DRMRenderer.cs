@@ -20,7 +20,7 @@ using System.Runtime.CompilerServices;
 
 namespace Uno.UI.Runtime.Skia
 {
-	partial class DRMRenderer : FrameBufferRenderer
+	internal partial class DRMRenderer : FrameBufferRenderer
 	{
 		private const uint DefaultFramebuffer = 0;
 
@@ -41,23 +41,25 @@ namespace Uno.UI.Runtime.Skia
 		private bool _invalidateRenderCalledWhileWaitingForPageFlip;
 		private readonly GCHandle _selfHandle;
 
-		public unsafe DRMRenderer(IXamlRootHost host, string? cardPath, FramebufferHostBuilder.DRMConnectorChooserDelegate? DRMConnectorChooser, FramebufferHostBuilder.DRMFourCCColorFormat GBMSurfaceColorFormat, bool? showMouseCursor, float mouseCursorRadius, System.Drawing.Color mouseCursorColor) : base(host, showMouseCursor, mouseCursorRadius, mouseCursorColor)
+		public readonly record struct DRMInitOptions(string? CardPath, FramebufferHostBuilder.DRMConnectorChooserDelegate? DRMConnectorChooser, FramebufferHostBuilder.DRMFourCCColorFormat GBMSurfaceColorFormat);
+
+		public unsafe DRMRenderer(IXamlRootHost host, DRMInitOptions drmInitOptions, MouseIndicatorOptions mouseIndicatorOptions) : base(host, mouseIndicatorOptions)
 		{
 			_selfHandle = GCHandle.Alloc(this);
 
-			if (cardPath is not null)
+			if (drmInitOptions.CardPath is not null)
 			{
-				_card = Libc.open(cardPath, Libc.O_RDWR, 0);
+				_card = Libc.open(drmInitOptions.CardPath, Libc.O_RDWR, 0);
 				if (_card == -1)
 				{
 					var errno = Marshal.GetLastWin32Error();
 					var errnoStringPtr = Libc.strerror(errno);
 					var errorString = Marshal.PtrToStringAnsi(errnoStringPtr);
-					throw new InvalidOperationException($"Couldn't open {cardPath} ({errno}): {errorString}");
+					throw new InvalidOperationException($"Couldn't open {drmInitOptions.CardPath} ({errno}): {errorString}");
 				}
 				else
 				{
-					this.LogInfo()?.Info($"Found DRM device {cardPath}");
+					this.LogInfo()?.Info($"Found DRM device {drmInitOptions.CardPath}");
 				}
 			}
 			else
@@ -102,7 +104,7 @@ namespace Uno.UI.Runtime.Skia
 				.Where(c => c is { Connection: DrmModeConnection.DRM_MODE_CONNECTED, Modes.Count: > 0 })
 				.ToList();
 			DrmConnector? connector = default;
-			if (DRMConnectorChooser is { } chooser)
+			if (drmInitOptions.DRMConnectorChooser is { } chooser)
 			{
 				var connectorsForChooser =
 					connectors
@@ -164,7 +166,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				throw new InvalidOperationException($"{nameof(LibDrm.gbm_create_device)} failed");
 			}
-			_gbmTargetSurface = LibDrm.gbm_surface_create(device, modeInfo.Resolution.Width, modeInfo.Resolution.Height, GBMSurfaceColorFormat.ToInt(), LibDrm.GbmBoFlags.GBM_BO_USE_SCANOUT | LibDrm.GbmBoFlags.GBM_BO_USE_RENDERING);
+			_gbmTargetSurface = LibDrm.gbm_surface_create(device, modeInfo.Resolution.Width, modeInfo.Resolution.Height, drmInitOptions.GBMSurfaceColorFormat.ToInt(), LibDrm.GbmBoFlags.GBM_BO_USE_SCANOUT | LibDrm.GbmBoFlags.GBM_BO_USE_RENDERING);
 			if (_gbmTargetSurface == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(LibDrm.gbm_surface_create)} failed");

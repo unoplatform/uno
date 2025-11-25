@@ -89,8 +89,6 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 	/// For more details on RMLVO, see https://xkbcommon.org/doc/current/xkb-intro.html#RMLVO-intro
 	/// and https://github.com/xkbcommon/libxkbcommon/blob/99e9b0fc558fb838a04c568bea033c52ffbe704b/include/xkbcommon/xkbcommon.h#L468
 	/// </summary>
-	/// <param name="keymapParams"></param>
-	/// <returns></returns>
 	public FramebufferHostBuilder XkbKeymap(XKBKeymapParams keymapParams)
 	{
 		KeymapParams = keymapParams;

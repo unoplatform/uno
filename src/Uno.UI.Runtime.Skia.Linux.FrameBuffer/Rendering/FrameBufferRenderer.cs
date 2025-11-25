@@ -21,12 +21,14 @@ internal abstract class FrameBufferRenderer
 	private int _renderCount;
 	private bool _receivedMouseEvent;
 
-	protected FrameBufferRenderer(IXamlRootHost host, bool? showMouseCursor, float mouseCursorRadius, System.Drawing.Color mouseCursorColor)
+	public readonly record struct MouseIndicatorOptions(bool? ShowMouseCursor, float MouseCursorRadius, System.Drawing.Color MouseCursorColor);
+
+	protected FrameBufferRenderer(IXamlRootHost host, MouseIndicatorOptions mouseIndicatorOptions)
 	{
 		_host = host;
-		_cursorPaint = new SKPaint { Color = mouseCursorColor.ToSKColor() };
-		_cursorRadius = mouseCursorRadius;
-		_cursorVisible = showMouseCursor;
+		_cursorPaint = new SKPaint { Color = mouseIndicatorOptions.MouseCursorColor.ToSKColor() };
+		_cursorRadius = mouseIndicatorOptions.MouseCursorRadius;
+		_cursorVisible = mouseIndicatorOptions.ShowMouseCursor;
 		_receivedMouseEvent = FrameBufferPointerInputSource.Instance.ReceivedMouseEvent;
 		FrameBufferPointerInputSource.Instance.MouseEventReceived += OnMouseEventReceived;
 	}
@@ -42,6 +44,11 @@ internal abstract class FrameBufferRenderer
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"Render {_renderCount++}");
+		}
+
+		if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
+		{
+			throw new Exception($"CompositionTarget is not set on the {nameof(IXamlRootHost)} at the point of rendering.");
 		}
 
 		using var _ = MakeCurrent();
@@ -60,7 +67,8 @@ internal abstract class FrameBufferRenderer
 		_surface?.Canvas.Translate(transX, transY);
 		_surface?.Canvas.RotateDegrees(degrees);
 		_surface?.Canvas.Clear(SKColors.Transparent);
-		((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+
+		ct.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			_surface?.Dispose();
 			if (orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)

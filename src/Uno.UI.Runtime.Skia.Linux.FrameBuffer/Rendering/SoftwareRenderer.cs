@@ -2,8 +2,8 @@
 using System.Threading;
 using Windows.Foundation;
 using SkiaSharp;
-using Windows.Graphics.Display;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
@@ -14,7 +14,7 @@ namespace Uno.UI.Runtime.Skia
 		private FrameBufferDevice _fbDev;
 		private readonly AutoResetEvent _renderInvalidationEvent = new(false);
 
-		public SoftwareRenderer(IXamlRootHost host, bool? showMouseCursor, float mouseCursorRadius, System.Drawing.Color mouseCursorColor) : base(host, showMouseCursor, mouseCursorRadius, mouseCursorColor)
+		public SoftwareRenderer(IXamlRootHost host, MouseIndicatorOptions mouseIndicatorOptions) : base(host, mouseIndicatorOptions)
 		{
 			_fbDev = new FrameBufferDevice();
 			_fbDev.Init();
@@ -24,15 +24,22 @@ namespace Uno.UI.Runtime.Skia
 			{
 				while (true)
 				{
-					_renderInvalidationEvent.WaitOne();
-					Render();
-					_fbDev.VSync();
-					_surface?.ReadPixels(
-						new SKImageInfo((int)_fbDev.ScreenSize.Width, (int)_fbDev.ScreenSize.Height, _fbDev.PixelFormat, SKAlphaType.Premul),
-						_fbDev.BufferAddress,
-						_fbDev.RowBytes,
-						0,
-						0);
+					try
+					{
+						_renderInvalidationEvent.WaitOne();
+						Render();
+						_fbDev.VSync();
+						_surface?.ReadPixels(
+							new SKImageInfo((int)_fbDev.ScreenSize.Width, (int)_fbDev.ScreenSize.Height, _fbDev.PixelFormat, SKAlphaType.Premul),
+							_fbDev.BufferAddress,
+							_fbDev.RowBytes,
+							0,
+							0);
+					}
+					catch (Exception ex)
+					{
+						this.LogError()?.Error("Error during software rendering", ex);
+					}
 				}
 			})
 			{

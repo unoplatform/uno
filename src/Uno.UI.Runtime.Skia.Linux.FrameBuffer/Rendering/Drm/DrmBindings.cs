@@ -62,16 +62,26 @@ namespace Uno.UI.Runtime.Skia
 			SizeMm = new Size(conn->mmWidth, conn->mmHeight);
 			SubPixel = conn->subpixel;
 			for (var c = 0; c < conn->count_encoders; c++)
+			{
 				EncoderIds.Add(conn->encoders[c]);
+			}
+
 			EncoderId = conn->encoder_id;
 			for (var c = 0; c < conn->count_modes; c++)
+			{
 				Modes.Add(new DrmModeInfo(ref conn->modes[c]));
+			}
+
 			ConnectorType = (DrmConnectorType)conn->connector_type;
 			ConnectorTypeId = conn->connector_type_id;
 			if (conn->connector_type > KnownConnectorTypes.Length - 1)
+			{
 				Name = $"Unknown({conn->connector_type})-{conn->connector_type_id}";
+			}
 			else
+			{
 				Name = KnownConnectorTypes[conn->connector_type] + "-" + conn->connector_type_id;
+			}
 		}
 	}
 
