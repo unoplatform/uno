@@ -7,11 +7,10 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Xaml.Controls;
-
 
 #if HAS_UNO
 using Uno.UI.WinRT.Extensions.UI.Popups;
+using Uno.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -74,9 +73,12 @@ public class Given_Control_Visibility
 					type == typeof(MenuBarItem) || // matches winui
 					type == typeof(ColorPickerSlider) ||
 
+#if HAS_UNO
 					// WindowChrome requires a Window as constructor parameter,
 					// but on Android a native parameterless ctor is generated.
-					type == typeof(WindowChrome))
+					type == typeof(WindowChrome)
+#endif
+					)
 				{
 					continue;
 				}
