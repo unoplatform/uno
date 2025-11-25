@@ -6,6 +6,7 @@ using Windows.UI.Popups;
 using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using Private.Infrastructure;
+using SamplesApp;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 {
@@ -25,6 +26,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
 #endif
 
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
+
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
 
@@ -34,6 +40,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				messageDialog.Title = "Internet Connectivity";
 #if HAS_UNO
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
+#endif
+
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
 #endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
@@ -49,6 +60,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
 #endif
 
+
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
@@ -67,6 +83,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
 #endif
 
+
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
@@ -87,6 +108,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
 #endif
 
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
+
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
 
@@ -97,6 +123,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
 #endif
 
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
+
 				_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () => await messageDialog.ShowAsync());
 			};
 
@@ -105,6 +136,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				var messageDialog = new Windows.UI.Popups.MessageDialog("It will dismiss in 2000 ms", "Programatically Dismiss");
 #if HAS_UNO
 				messageDialog.AssociatedWindow = this.XamlRoot?.HostWindow;
+#endif
+
+#if HAS_UNO_WINUI || WINAPPSDK
+				var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+				global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
 #endif
 
 				var cts = new CancellationTokenSource(2000);
