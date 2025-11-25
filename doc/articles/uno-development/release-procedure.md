@@ -37,11 +37,14 @@ The following table lists the current release stable branches for the main Uno P
 | Repository | Release Stable Branch |
 |------------|----------------------|
 | [uno](https://github.com/unoplatform/uno) | [release/stable/6.4](https://github.com/unoplatform/uno/tree/release/stable/6.4) |
-| [uno.extensions](https://github.com/unoplatform/uno.extensions) | [release/stable/7.0](https://github.com/unoplatform/uno.extensions/tree/release/stable/7.0) |
-| [uno.toolkit.ui](https://github.com/unoplatform/uno.toolkit.ui) | [release/stable/8.3](https://github.com/unoplatform/uno.toolkit.ui/tree/release/stable/8.3) |
-| [uno.themes](https://github.com/unoplatform/uno.themes) | [release/stable/6.0](https://github.com/unoplatform/uno.themes/tree/release/stable/6.0) |
-| [uno.wasm.bootstrap](https://github.com/unoplatform/uno.wasm.bootstrap) | [release/stable/10.0](https://github.com/unoplatform/uno.wasm.bootstrap/tree/release/stable/10.0) |
 | [uno.check](https://github.com/unoplatform/uno.check) | [release/stable/1.33](https://github.com/unoplatform/uno.check/tree/release/stable/1.33) |
+| [uno.extensions](https://github.com/unoplatform/uno.extensions) | [release/stable/7.0](https://github.com/unoplatform/uno.extensions/tree/release/stable/7.0) |
+| [uno.resizetizer](https://github.com/unoplatform/uno.resizetizer) | [release/stable/1.12](https://github.com/unoplatform/uno.resizetizer/tree/release/stable/1.12) |
+| [uno.templates](https://github.com/unoplatform/uno.templates) | [release/stable/6.4](https://github.com/unoplatform/uno.templates/tree/release/stable/6.4) |
+| [uno.themes](https://github.com/unoplatform/uno.themes) | [release/stable/6.0](https://github.com/unoplatform/uno.themes/tree/release/stable/6.0) |
+| [uno.toolkit.ui](https://github.com/unoplatform/uno.toolkit.ui) | [release/stable/8.3](https://github.com/unoplatform/uno.toolkit.ui/tree/release/stable/8.3) |
+| [uno.uitest](https://github.com/unoplatform/uno.uitest) | [release/stable/1.0](https://github.com/unoplatform/uno.uitest/tree/release/stable/1.0) |
+| [uno.wasm.bootstrap](https://github.com/unoplatform/uno.wasm.bootstrap) | [release/stable/10.0](https://github.com/unoplatform/uno.wasm.bootstrap/tree/release/stable/10.0) |
 | [uno.xamlmerge.task](https://github.com/unoplatform/uno.xamlmerge.task) | [release/stable/1.33](https://github.com/unoplatform/uno.xamlmerge.task/tree/release/stable/1.33) |
 
 ## Canaries
