@@ -75,6 +75,15 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 	}
 
 	/// <summary>
+	/// Disables the usage of KMS/DRM for hardware acceleration and forces software rendering. 
+	/// </param>
+	public FramebufferHostBuilder DisableKMSDRM()
+	{
+		UseDRM = false;
+		return this;
+	}
+
+	/// <summary>
 	/// Sets the RMLVO parameters to be passed to libxkbcommon's xkb_rule_names for keyboard keymap creation. If unset,
 	/// the system default is used.
 	/// For more details on RMLVO, see https://xkbcommon.org/doc/current/xkb-intro.html#RMLVO-intro
