@@ -68,11 +68,8 @@ public class HotReloadInfoHelper
 				public static long VersionId => {{version}};
 				
 				/// <summary>
-				/// Gets the current version of the application.
+				/// Gets the Id of the last Uno.UI.RemoteControl.HotReload.Messages.UpdateFile request processed by the Dev Server, if any.
 				/// </summary>
-				/// <remarks>
-				/// When not 0, this matches the "UpdateFileResponse.HotReloadCorrelationId" which is also the "HotReloadServerOperation.Id".
-				/// </remarks>
 				public static string? LastUpdateFileRequestId => {{(updateFileRequestId is null ? "null" : "@\"" + updateFileRequestId + "\"")}};
 			}
 			""";
