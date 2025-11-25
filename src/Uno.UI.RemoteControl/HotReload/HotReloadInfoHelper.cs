@@ -75,5 +75,5 @@ public class HotReloadInfoHelper
 				/// </remarks>
 				public static string? LastUpdateFileRequestId => {{(updateFileRequestId is null ? "null" : "@\"" + updateFileRequestId + "\"")}};
 			}
-			""".ToString(CultureInfo.InvariantCulture);
+			""";
 }

@@ -81,18 +81,19 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				ConfigureHotReloadMode();
 				InitializeMetadataUpdater();
 
-				if (_supportsMetadataUpdates is MetadataUpdatesSupport.None)
+				if (!_supportsMetadataUpdates)
 				{
 					_status.ReportInvalidRuntime();
 				}
 
+				var hrDebug = Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
 				var message = new ConfigureServer(
 					_projectPath,
 					GetMetadataUpdateCapabilities(),
 					config.MSBuildProperties,
 					HotReloadInfoHelper.GetInfoFilePath(assembly),
-					_supportsMetadataUpdates.HasFlag(MetadataUpdatesSupport.DevServer),
-					_supportsMetadataUpdates.HasFlag(MetadataUpdatesSupport.Debugger));
+					_serverMetadataUpdatesEnabled,
+					hrDebug);
 
 				await _rcClient.SendMessage(message);
 
