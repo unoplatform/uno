@@ -66,18 +66,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			try
 			{
-			if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
-			{
-				// If this assembly was loaded from a stream, it will not have a location.
-				// This will indicate that the assembly loader from CompilationWorkspaceProvider
-				// has been registered too late.
-				if (string.IsNullOrEmpty(wsAsm.Location))
+				if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
 				{
-					throw new InvalidOperationException("Microsoft.CodeAnalysis.Workspaces was loaded from a stream and must loaded from a known path");
+					// If this assembly was loaded from a stream, it will not have a location.
+					// This will indicate that the assembly loader from CompilationWorkspaceProvider
+					// has been registered too late.
+					if (string.IsNullOrEmpty(wsAsm.Location))
+					{
+						throw new InvalidOperationException("Microsoft.CodeAnalysis.Workspaces was loaded from a stream and must loaded from a known path");
+					}
 				}
-			}
 
-			CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
+				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
 
 				_initializeTask = InitializeAsync(CancellationToken.None);
 			}
@@ -339,13 +339,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (_useHotReloadThruDebugger)
 					{
-						await _remoteControlServer.SendMessageToIDEAsync(
+						if (!await _remoteControlServer.TrySendMessageToIDEAsync(
 							new Uno.UI.RemoteControl.Messaging.IdeChannel.HotReloadThruDebuggerIdeMessage(
 								updates[i].ModuleId.ToString(),
 								Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
 								Convert.ToBase64String(updates[i].ILDelta.ToArray()),
 								Convert.ToBase64String(updates[i].PdbDelta.ToArray())
-							));
+							),
+							ct))
+						{
+							throw new InvalidOperationException("No active connection with the IDE to send update thru debugger.");
+						}
 					}
 					else
 					{

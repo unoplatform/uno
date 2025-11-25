@@ -571,9 +571,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				await using var ctReg = cts.Token.Register(() => tcs.TrySetCanceled());
 
 				_pendingRequestsToIde.TryAdd(message.CorrelationId, tcs);
-				await _remoteControlServer.SendMessageToIDEAsync(message);
-
-				return await tcs.Task;
+				if (await _remoteControlServer.TrySendMessageToIDEAsync(message, cts.Token))
+				{
+					return await tcs.Task;
+				}
+				else
+				{
+					return new Result("No IDE connection to send the message.");
+				}
 			}
 			catch (Exception ex)
 			{
@@ -776,8 +781,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			var result = await SendAndWaitForResult(new ForceHotReloadIdeMessage(GetNextIdeCorrelationId()));
 
-			// Note: For now the IDE will notify the ProcessingFiles only in case of force hot reload request sent by client!
-			await Notify(HotReloadEvent.ProcessingFiles, HotReloadEventSource.IDE);
+			if (result.IsSuccess)
+			{
+				// Note: For now the IDE will notify the ProcessingFiles only in case of force hot reload request sent by client!
+				await Notify(HotReloadEvent.ProcessingFiles, HotReloadEventSource.IDE);
+			}
 
 			return result.IsSuccess;
 		}

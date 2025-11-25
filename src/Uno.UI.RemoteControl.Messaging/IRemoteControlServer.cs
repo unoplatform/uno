@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.UI.RemoteControl.Host
@@ -9,6 +11,17 @@ namespace Uno.UI.RemoteControl.Host
 
 		Task SendFrame(IMessage message);
 
+		[Obsolete("Prefer the TrySendMessageToIDEAsync which gives feedback about the fact an IDE is effectively listening for the message or not.")]
 		Task SendMessageToIDEAsync(IdeMessage message);
+
+		/// <summary>
+		/// Attempt to send a message to the IDE, if any connection is established.
+		/// </summary>
+		/// <param name="message">The message to sent to the IDE.</param>
+		/// <returns>
+		/// An asynchronous boolean indicating if the message has been sent the IDE or not.
+		/// WARNING: This does NOT indicate that the IDE has processed the message, only that an IDE is listening for messages.
+		/// </returns>
+		Task<bool> TrySendMessageToIDEAsync(IdeMessage message, CancellationToken ct);
 	}
 }

@@ -52,7 +52,7 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	public event EventHandler<IdeMessage>? MessageFromIde;
 
 	/// <inheritdoc />
-	async Task IIdeChannel.SendToIdeAsync(IdeMessage message, CancellationToken ct)
+	async Task<bool> IIdeChannel.SendToIdeAsync(IdeMessage message, CancellationToken ct)
 	{
 		await WaitForReady(ct);
 
@@ -61,16 +61,17 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 			this.Log().LogInformation(
 				"Received a message {MessageType} to send to the IDE, but there is no connection available for that.",
 				message.Scope);
+
+			return false;
 		}
 		else
 		{
 			_proxy.SendToIde(message);
 			ScheduleKeepAlive();
+
+			return true;
 		}
-
-		await Task.Yield();
 	}
-
 	#endregion
 
 	/// <inheritdoc />

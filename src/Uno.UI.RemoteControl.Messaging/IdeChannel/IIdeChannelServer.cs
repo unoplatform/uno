@@ -54,6 +54,6 @@ namespace Uno.UI.RemoteControl.Services
 		/// <param name="message">The message to send to the IDE.</param>
 		/// <param name="ct">CancellationToken to cancel the async operation.</param>
 		/// <returns>An async operation representing the fact that the message has been sent to the IDE (does not include any form of processing by IDE).</returns>
-		Task SendToIdeAsync(IdeMessage message, CancellationToken ct);
+		Task<bool> SendToIdeAsync(IdeMessage message, CancellationToken ct);
 	}
 }
