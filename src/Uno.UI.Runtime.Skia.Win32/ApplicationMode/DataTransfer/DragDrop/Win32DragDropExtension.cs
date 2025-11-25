@@ -354,15 +354,8 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 			// Load image from file
 			using var fileStream = File.OpenRead(filePath);
-			using var memoryStream = new MemoryStream();
-
-			// Copy to memory stream for manipulation
-			fileStream.CopyTo(memoryStream);
-			memoryStream.Position = 0;
-
-			// Create Uno BitmapImage from the stream
 			var unoBitmap = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
-			unoBitmap.SetSource(memoryStream.AsRandomAccessStream());
+			unoBitmap.SetSource(fileStream.AsRandomAccessStream());
 
 			return unoBitmap;
 		}
