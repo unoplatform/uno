@@ -16,8 +16,8 @@ This guide uses a self-signed certificate.
 To package your app:
 
 - Create a self-signed certificate:
-  - Open the solution in Visual Studio 2022
-  - Ensure that the active debugging target framework is `net9.0-windows10.0.xxxxx` (Please upvote [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Double-clicking-on-a-PackageAppxmanifes/10658683))
+  - Open the solution in Visual Studio
+  - Ensure that the active debugging target framework is `net10.0-windows10.0.xxxxx`
   - Double-click on the `Package.appxmanifest` file
   - Navigate to the `Packaging` tab
   - Click the **Choose certificate** button
@@ -28,7 +28,11 @@ To package your app:
 - Build the app on the command line with the following command:
 
   ```shell
+  # For .NET 9:
   msbuild /r /p:TargetFramework=net9.0-windows10.0.26100 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=true
+  
+  # For .NET 10:
+  msbuild /r /p:TargetFramework=net10.0-windows10.0.26100 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=true
   ```
 
 To package your app for the Microsoft App Store, the process is similar to creating a self-signed app package with just a minor difference:
