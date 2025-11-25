@@ -7,6 +7,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Xaml.Controls;
+
 
 #if HAS_UNO
 using Uno.UI.WinRT.Extensions.UI.Popups;
@@ -70,8 +72,11 @@ public class Given_Control_Visibility
 #endif
 					type == typeof(MediaTransportControls) || // matches winui
 					type == typeof(MenuBarItem) || // matches winui
-					type == typeof(ColorPickerSlider)
-					)
+					type == typeof(ColorPickerSlider) ||
+
+					// WindowChrome requires a Window as constructor parameter,
+					// but on Android a native parameterless ctor is generated.
+					type == typeof(WindowChrome))
 				{
 					continue;
 				}
@@ -95,7 +100,6 @@ public class Given_Control_Visibility
 					// No parameterless constructor. Skip this control.
 					continue;
 				}
-
 				control.Template = (ControlTemplate)XamlReader.Load("""
 					<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 										xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
