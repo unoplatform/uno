@@ -218,7 +218,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 			var dibFormat = formatEtcList[dibFormatIndex];
 			// Try to get the DIB data directly
 			var hResult = dataObject->GetData(dibFormat, out STGMEDIUM dibMedium);
-			if (hResult.Succeeded && dibMedium.u.hGlobal != IntPtr.Zero)
+			if (hResult.Succeeded && dibMedium.tymed == TYMED.TYMED_HGLOBAL && dibMedium.u.hGlobal != IntPtr.Zero)
 			{
 				try
 				{
