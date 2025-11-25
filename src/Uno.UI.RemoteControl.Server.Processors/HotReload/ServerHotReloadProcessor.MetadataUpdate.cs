@@ -52,7 +52,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				// of a missing path on assemblies loaded from a memory stream.
 				CompilationWorkspaceProvider.RegisterAssemblyLoader();
 
-				InitializeInner(configureServer, properties);
+				InitializeInner(configureServer);
 
 				return true;
 			}
@@ -62,8 +62,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private void InitializeInner(ConfigureServer configureServer, Dictionary<string, string> properties)
+		private void InitializeInner(ConfigureServer configureServer)
 		{
+			try
+			{
 			if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
 			{
 				// If this assembly was loaded from a stream, it will not have a location.
@@ -77,8 +79,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
 
-			_initializeTask = Task.Run(
-			async () =>
+				_initializeTask = InitializeAsync(CancellationToken.None);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Failed to initialize compilation workspace: {e}");
+
+				_ = _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
+				_ = Notify(HotReloadEvent.Disabled);
+
+				throw;
+			}
+			async Task<(Solution, WatchHotReloadService)> InitializeAsync(CancellationToken ct)
 			{
 				try
 				{
@@ -127,7 +139,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						_reporter,
 						configureServer.MetadataUpdateCapabilities,
 						properties,
-						CancellationToken.None);
+						ct);
 
 					ObserveSolutionPaths(result.Item1, intermediateOutputPath, outputPath);
 
@@ -145,8 +157,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 					throw;
 				}
-			},
-			CancellationToken.None);
+			}
 		}
 
 		private void ObserveSolutionPaths(Solution solution, params string?[] excludedDir)
