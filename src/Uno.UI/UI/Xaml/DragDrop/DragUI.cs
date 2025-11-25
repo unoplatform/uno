@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml
 			PointerDeviceType = pointerDeviceType;
 		}
 
-		internal PointerDeviceType PointerDeviceType { get; }
+		internal PointerDeviceType? PointerDeviceType { get; }
 
 		internal ImageSource? Content { get; set; }
 
