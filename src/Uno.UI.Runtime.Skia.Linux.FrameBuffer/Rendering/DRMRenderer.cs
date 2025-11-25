@@ -16,6 +16,7 @@ using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
+using System.Runtime.CompilerServices;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -38,9 +39,12 @@ namespace Uno.UI.Runtime.Skia
 		private readonly uint _encoder;
 		private bool _waitingForPageFlip;
 		private bool _invalidateRenderCalledWhileWaitingForPageFlip;
+		private readonly GCHandle _selfHandle;
 
 		public unsafe DRMRenderer(IXamlRootHost host, string? cardPath, FramebufferHostBuilder.DRMConnectorChooserDelegate? DRMConnectorChooser, FramebufferHostBuilder.DRMFourCCColorFormat GBMSurfaceColorFormat, bool? showMouseCursor, float mouseCursorRadius, System.Drawing.Color mouseCursorColor) : base(host, showMouseCursor, mouseCursorRadius, mouseCursorColor)
 		{
+			_selfHandle = GCHandle.Alloc(this);
+
 			if (cardPath is not null)
 			{
 				_card = Libc.open(cardPath, Libc.O_RDWR, 0);
@@ -289,7 +293,7 @@ namespace Uno.UI.Runtime.Skia
 			_currentBo = nextBo;
 
 			var fb = CreateFbForBo(nextBo);
-			var res = LibDrm.drmModePageFlip(_card, _crtc, fb, LibDrm.DrmModePageFlip.Event, null);
+			var res = LibDrm.drmModePageFlip(_card, _crtc, fb, LibDrm.DrmModePageFlip.Event, (void*)GCHandle.ToIntPtr(_selfHandle));
 			if (res != 0)
 			{
 				throw new InvalidOperationException($"{nameof(LibDrm.drmModePageFlip)} failed ({res})");
@@ -325,7 +329,7 @@ namespace Uno.UI.Runtime.Skia
 			var ctx = new LibDrm.DrmEventContext
 			{
 				version = 4,
-				page_flip_handler2 = Marshal.GetFunctionPointerForDelegate(OnPageFlip)
+				page_flip_handler2 = &OnPageFlip
 			};
 			while (true)
 			{
@@ -347,14 +351,17 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private unsafe void OnPageFlip(int fd, uint sequence, uint tv_sec, uint tv_usec, void* user_data)
+		[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+		private static unsafe void OnPageFlip(int fd, uint sequence, uint tv_sec, uint tv_usec, uint crtd_id, void* user_data)
 		{
-			Volatile.Write(ref _invalidateRenderCalledWhileWaitingForPageFlip, false);
-			Render();
-			Volatile.Write(ref _waitingForPageFlip, false);
-			if (Volatile.Read(ref _invalidateRenderCalledWhileWaitingForPageFlip))
+			var handle = GCHandle.FromIntPtr((IntPtr)user_data);
+			var @this = (DRMRenderer)handle.Target!;
+			Volatile.Write(ref @this._invalidateRenderCalledWhileWaitingForPageFlip, false);
+			@this.Render();
+			Volatile.Write(ref @this._waitingForPageFlip, false);
+			if (Volatile.Read(ref @this._invalidateRenderCalledWhileWaitingForPageFlip))
 			{
-				InvalidateRender();
+				@this.InvalidateRender();
 			}
 		}
 

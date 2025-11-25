@@ -62,8 +62,8 @@ namespace Uno.UI.Runtime.Skia
 		{
 			public int version; //4
 			public IntPtr vblank_handler;
-			public IntPtr page_flip_handler;
-			public IntPtr page_flip_handler2;
+			public delegate* unmanaged[Cdecl]<int, uint, uint, uint, void*, void> page_flip_handler;
+			public delegate* unmanaged[Cdecl]<int, uint, uint, uint, uint, void*, void> page_flip_handler2;
 			public IntPtr sequence_handler;
 		}
 
