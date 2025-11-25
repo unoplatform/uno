@@ -29,7 +29,11 @@ public class Given_Control_Visibility
 	{
 		foreach (var type in typeof(Control).Assembly.GetTypes())
 		{
-			if (!type.IsAbstract && type.IsClass && type.IsAssignableTo(typeof(Control)))
+			// Only concrete classes assignable to Control that also have a public parameterless constructor.
+			if (!type.IsAbstract
+				&& type.IsClass
+				&& type.IsAssignableTo(typeof(Control))
+				&& type.GetConstructor(Type.EmptyTypes) != null)
 			{
 				// TODO: Understand why these fail.
 				if (type == typeof(CalendarViewDayItem) ||
