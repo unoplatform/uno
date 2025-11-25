@@ -30,6 +30,20 @@ Tagging is the main driver for planning releases.
 - Commits to `release/stable/1.29` will automatically keep the `1.29` version.
 - Publish the release on GitHub using the patch number (e.g. `1.29.0` if there where no changes)
 
+## Uno Platform Ecosystem Release Branches
+
+The following table lists the current release stable branches for the main Uno Platform repositories:
+
+| Repository | Release Stable Branch |
+|------------|----------------------|
+| [uno](https://github.com/unoplatform/uno) | [release/stable/6.4](https://github.com/unoplatform/uno/tree/release/stable/6.4) |
+| [uno.extensions](https://github.com/unoplatform/uno.extensions) | [release/stable/7.0](https://github.com/unoplatform/uno.extensions/tree/release/stable/7.0) |
+| [uno.toolkit.ui](https://github.com/unoplatform/uno.toolkit.ui) | [release/stable/8.3](https://github.com/unoplatform/uno.toolkit.ui/tree/release/stable/8.3) |
+| [uno.themes](https://github.com/unoplatform/uno.themes) | [release/stable/6.0](https://github.com/unoplatform/uno.themes/tree/release/stable/6.0) |
+| [uno.wasm.bootstrap](https://github.com/unoplatform/uno.wasm.bootstrap) | [release/stable/10.0](https://github.com/unoplatform/uno.wasm.bootstrap/tree/release/stable/10.0) |
+| [uno.check](https://github.com/unoplatform/uno.check) | [release/stable/1.33](https://github.com/unoplatform/uno.check/tree/release/stable/1.33) |
+| [uno.xamlmerge.task](https://github.com/unoplatform/uno.xamlmerge.task) | [release/stable/1.33](https://github.com/unoplatform/uno.xamlmerge.task/tree/release/stable/1.33) |
+
 ## Canaries
 
 A 'canary' in Uno parlance is a version of a real-world application (or class library) that is used to test changes to Uno. There are continuous integration (CI) pipelines configured that consume the latest development builds of Uno and produce new nightly canary versions of applications (eg [Calculator](https://github.com/unoplatform/calculator), [UADO](https://github.com/unoplatform/uado) etc). If the builds of these applications fail then then it's an early signal that overnight a breaking compilation change may have been accidentally introduced into Uno. This style of regression (binary breaking change) is rare as there are API approval tests that are run on every pull-request to master. Typically if a regression slips in then it's something that only integration testing would have picked up - ie. package incompatibility between dependencies.
