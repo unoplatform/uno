@@ -159,7 +159,7 @@ Browse the set of available controls and their properties.
 
 <br/>
 
-## High level architecture
+## High Level Architecture
 
 Uno Platform's application API is compatible with Microsoft's [WinUI 3 API](https://learn.microsoft.com/windows/apps/winui/winui3/). In fact, when your application runs on Windows, it's just an ordinary WinUI 3/WinAppSDK application.
 
