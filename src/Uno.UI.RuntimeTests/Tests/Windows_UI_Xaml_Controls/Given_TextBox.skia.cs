@@ -4610,6 +4610,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21961")]
 		public async Task When_Caret_Positioning_With_Complex_Transformations()
 		{
 			var textBox = new TextBox
