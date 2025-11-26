@@ -4618,7 +4618,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Text = "Test"
 			};
 			textBox.RenderTransform = new RotateTransform { Angle = 30 };
-			var grid = new Grid();
 			var viewbox = new Viewbox
 			{
 				HorizontalAlignment = HorizontalAlignment.Center,
@@ -4674,7 +4673,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var boundary = ellipseTransform.TransformPoint(localBoundary);
 
 				// actual radius after rotation/scale/etc.
-				double radius = Math.Sqrt(Math.Pow(boundary.X - center.X, 2) + Math.Pow(boundary.Y - center.Y, 2));
+				double radius = Math.Sqrt(Math.Pow(boundary.X - ellipseCenter.X, 2) + Math.Pow(boundary.Y - ellipseCenter.Y, 2));
 				// Check that the line from bottomLeft to bottomRight intersects the ellipse using DistancePointToSegment
 				var distance = DistancePointToSegment(ellipseCenter, bottomLeft, bottomRight);
 				Assert.IsTrue(distance < radius, "Caret ellipse should intersect the bottom border of the TextBox");
