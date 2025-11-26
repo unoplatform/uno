@@ -4826,7 +4826,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return BuildBrush(GetMemberValue());
 
 					case XamlConstants.Types.Thickness:
-						return BuildThickness(GetMemberValue());
+						return BuildThickness(GetMemberValue(), owner);
 
 					case XamlConstants.Types.CornerRadius:
 						return BuildCornerRadius(GetMemberValue());
@@ -5301,12 +5301,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static string BuildThickness(string memberValue)
+		private static string BuildThickness(string memberValue, XamlMemberDefinition owner)
 		{
 			// This is until we find an appropriate way to convert strings to Thickness.
 			if (!memberValue.Contains(","))
 			{
 				memberValue = ReplaceWhitespaceByCommas(memberValue);
+			}
+
+			// Validate that all components are valid numeric values
+			var components = memberValue.Split(',');
+			foreach (var component in components)
+			{
+				var trimmed = component.Trim();
+				if (!double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+				{
+					throw new XamlGenerationException($"Invalid Thickness value '{memberValue}'. Each component must be a valid number", owner);
+				}
 			}
 
 			if (memberValue.Contains("."))

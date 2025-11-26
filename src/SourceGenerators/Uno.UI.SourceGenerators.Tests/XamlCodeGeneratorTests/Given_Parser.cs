@@ -328,11 +328,8 @@ public partial class Given_Parser
 
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
-		// TODO: Currently this generates a CS0103 error in generated code.
-		// We should instead get a UXAML0001 error at the proper location in the XAML file.
-		// Related issue: [xaml-gen] CS0103 with invalid XAML
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0103").WithArguments("auto"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Invalid Thickness value 'auto,0,0,0'. Each component must be a valid number"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
