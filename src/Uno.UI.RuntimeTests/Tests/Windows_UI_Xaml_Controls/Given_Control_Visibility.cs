@@ -10,6 +10,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
 using Uno.UI.WinRT.Extensions.UI.Popups;
+using Uno.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -29,7 +30,11 @@ public class Given_Control_Visibility
 	{
 		foreach (var type in typeof(Control).Assembly.GetTypes())
 		{
-			if (!type.IsAbstract && type.IsClass && type.IsAssignableTo(typeof(Control)))
+			// Only concrete classes assignable to Control that also have a public parameterless constructor.
+			if (!type.IsAbstract
+				&& type.IsClass
+				&& type.IsAssignableTo(typeof(Control))
+				&& type.GetConstructor(Type.EmptyTypes) != null)
 			{
 				// TODO: Understand why these fail.
 				if (type == typeof(CalendarViewDayItem) ||
@@ -66,7 +71,13 @@ public class Given_Control_Visibility
 #endif
 					type == typeof(MediaTransportControls) || // matches winui
 					type == typeof(MenuBarItem) || // matches winui
-					type == typeof(ColorPickerSlider)
+					type == typeof(ColorPickerSlider) ||
+
+#if HAS_UNO
+					// WindowChrome requires a Window as constructor parameter,
+					// but on Android a native parameterless ctor is generated.
+					type == typeof(WindowChrome)
+#endif
 					)
 				{
 					continue;
@@ -91,7 +102,6 @@ public class Given_Control_Visibility
 					// No parameterless constructor. Skip this control.
 					continue;
 				}
-
 				control.Template = (ControlTemplate)XamlReader.Load("""
 					<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 										xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
