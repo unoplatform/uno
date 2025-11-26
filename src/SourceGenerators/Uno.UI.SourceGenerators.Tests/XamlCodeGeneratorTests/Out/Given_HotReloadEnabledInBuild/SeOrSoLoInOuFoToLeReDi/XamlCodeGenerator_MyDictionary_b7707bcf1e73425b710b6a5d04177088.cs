@@ -65,7 +65,7 @@ namespace MyProject
 		private const string __baseUri_MyDictionary_b7707bcf1e73425b710b6a5d04177088 = "ms-appx:///TestProject/";
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal string __MyDictionary_b7707bcf1e73425b710b6a5d04177088_checksum() => "0006bfa967d7b0e0bdb0aa951326268f007434d5";
+		internal string __MyDictionary_b7707bcf1e73425b710b6a5d04177088_checksum() => "8a20e730b77da8f904f7548b2c39750361332923";
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		internal sealed class ResourceDictionarySingleton__MyDictionary_b7707bcf1e73425b710b6a5d04177088 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
