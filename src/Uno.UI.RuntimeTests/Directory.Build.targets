@@ -23,6 +23,18 @@
 		<None Include="Tests\HotReload\Frame\HRApp\**\*.xaml" Exclude="Tests\HotReload\Frame\HRApp\bin\**;Tests\HotReload\Frame\HRApp\obj\**" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Compile Remove="Tests\AssemblyLoadContext\AlcApp\**\*.cs" />
+		<Page Remove="Tests\AssemblyLoadContext\AlcApp\**\*.xaml" />
+		<Compile Remove="Tests\AssemblyLoadContext\AlcApp\*.cs" />
+		<Page Remove="Tests\AssemblyLoadContext\AlcApp\*.xaml" />
+		<Content Remove="Tests\AssemblyLoadContext\AlcApp\**" />
+		<ApplicationDefinition Remove="Tests\AssemblyLoadContext\AlcApp\*.xaml" />
+
+		<None Include="Tests\AssemblyLoadContext\AlcApp\**\*.cs" Exclude="Tests\AssemblyLoadContext\AlcApp\bin\**;Tests\AssemblyLoadContext\AlcApp\obj\**" />
+		<None Include="Tests\AssemblyLoadContext\AlcApp\**\*.xaml" Exclude="Tests\AssemblyLoadContext\AlcApp\bin\**;Tests\AssemblyLoadContext\AlcApp\obj\**" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(UNO_UWP_BUILD)">
 		<Compile Remove="MUX\Microsoft_UI_Xaml_Controls\ScrollPresenter\**\*.cs" />
 		<Page Remove="MUX\Microsoft_UI_Xaml_Controls\ScrollPresenter\**\*.xaml" />

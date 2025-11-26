@@ -173,8 +173,33 @@ partial class Window
 	public UIElement? Content
 	{
 		get => _windowImplementation.Content;
-		set => _windowImplementation.Content = value;
+		set
+		{
+			// Check if we're running in a secondary ALC by comparing assembly load context
+			// Use the incoming value's assembly, or fall back to existing content when clearing
+			var checkTarget = value ?? _windowImplementation.Content;
+			var isSecondaryAlc = checkTarget is not null && !ReferenceEquals(
+				System.Runtime.Loader.AssemblyLoadContext.Default,
+				System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(checkTarget.GetType().Assembly));
+
+			if (isSecondaryAlc && ContentHostOverride is { } host)
+			{
+				// We're in a secondary ALC, redirect to the host override
+				host.Content = value;
+			}
+			else
+			{
+				// We're in the default ALC, set content normally
+				_windowImplementation.Content = value;
+			}
+		}
 	}
+
+	/// <summary>
+	/// Gets or sets an internal static content host override for scenarios like secondary AssemblyLoadContext hosting.
+	/// When set, Window.Content from secondary ALCs will redirect to this ContentControl.
+	/// </summary>
+	internal static ContentControl? ContentHostOverride { get; set; }
 
 	/// <summary>
 	/// Gets the window of the current thread.
@@ -296,7 +321,22 @@ partial class Window
 
 	internal Canvas? FocusVisualLayer => _windowImplementation.XamlRoot?.VisualTree?.FocusVisualRoot;
 
-	public void Activate() => _windowImplementation.Activate();
+	public void Activate()
+	{
+		// Check if the content is from a secondary ALC with ContentHostOverride
+		var content = ContentHostOverride?.Content;
+		var isSecondaryAlc = content is not null && !ReferenceEquals(
+			System.Runtime.Loader.AssemblyLoadContext.Default,
+			System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(content.GetType().Assembly));
+
+		if (isSecondaryAlc && ContentHostOverride is not null)
+		{
+			// Don't activate - we're hosted in another window
+			return;
+		}
+
+		_windowImplementation.Activate();
+	}
 
 	public void Close() => _windowImplementation.Close();
 
