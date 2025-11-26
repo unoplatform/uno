@@ -1,6 +1,9 @@
 - name: Get Started
   topicHref: xref:Uno.GetStarted
   items:
+    - name: System Requirements
+      href: xref:Uno.GetStarted.SystemRequirements
+
     - name: Setup
       topicHref: xref:Uno.GetStarted.vs2022
       items:

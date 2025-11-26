@@ -8,6 +8,9 @@ This getting started will guide you through setting up your environment to creat
 > [!TIP]
 > If you want to use another environment or IDE, see our [general getting started](get-started.md).
 
+> [!NOTE]
+> For detailed information about development environment requirements, see [System Requirements](xref:Uno.GetStarted.SystemRequirements).
+
 ## Install Visual Studio with Workloads
 
 To create Uno Platform applications you will need [**Visual Studio 2022 (17.9+) or later**](https://visualstudio.microsoft.com/vs/):

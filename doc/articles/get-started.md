@@ -2,6 +2,9 @@
 uid: Uno.GetStarted
 ---
 
+> [!TIP]
+> Before you begin, review the [System Requirements](xref:Uno.GetStarted.SystemRequirements) to ensure your development environment is properly configured.
+
 ## Quick Start
 
 1. Install and run <a href="https://aka.platform.uno/uno-check#install-and-run-uno-check" target="_blank">Uno.Check</a> to set up all the required pre-requisites

@@ -6,6 +6,9 @@ uid: Uno.GetStarted.vscode
 
 This guide will walk you through the setup process for building apps with Uno Platform under Windows, Linux, or macOS.
 
+> [!NOTE]
+> For detailed information about development environment requirements, see [System Requirements](xref:Uno.GetStarted.SystemRequirements).
+
 See these sections for information about using Uno Platform with:
 
 - [Codespaces](features/working-with-codespaces.md)

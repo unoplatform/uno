@@ -4,6 +4,9 @@ uid: Uno.GetStarted.Rider
 
 # Get Started on JetBrains Rider
 
+> [!NOTE]
+> For detailed information about development environment requirements, see [System Requirements](xref:Uno.GetStarted.SystemRequirements).
+
 ## Prerequisites
 
 - [**Rider Version 2024.2+**](https://aka.platform.uno/rider-version-2024-2) or [**Previous Rider Version 2024.1**](https://aka.platform.uno/rider-version-2024-1)
