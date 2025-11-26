@@ -31,7 +31,7 @@ Some steps and questions to answer:
     - `<TextBlock Text="{Binding MyProperty}" />`
     - `<TextBlock Text="{Binding Command, ElementName=MyButton}" />`
   - Add an event handler to `DataContextChanged` in the code behind to see if and when the `DataContext` changed.
-- Analyze device and app logs for clues about the control's behavior.
+- Analyze device and app logs for clues about the control's behavior. For Android-specific logging, see [Android Debugging with Logcat](#android-debugging-with-logcat) below.
   - You may enable [the controls debug logs](https://github.com/unoplatform/uno/blob/master/doc/articles/logging.md), if any.
   - To validate that logs are enabled and in Debug, those starting with `Windows`, `Microsoft`, or `Uno` should be visible in the app's output. If not, make sure to [setup the logging properly](xref:Uno.Development.MigratingFromPreviousReleases).
   - Logs on iOS may need to have the [OSLog logger](https://github.com/unoplatform/uno.extensions.logging) enabled when running on production devices.
@@ -39,6 +39,233 @@ Some steps and questions to answer:
 - If available, try the API on Windows (WinUI) and see if it behaves differently than what Uno Platform is doing
 - When issues occur, try breaking on all exceptions to check if an exception may be hidden and not reported.
 - Update Uno.WinUI or other dependencies to previous or later versions, using a [bisection technique](https://git-scm.com/docs/git-bisect). Knowing which version of a package introduced an issue can help orient the investigations.
+
+## Android Debugging with Logcat
+
+When debugging Android-specific issues, Logcat provides essential device and application logs. Here's how to access Logcat in different development environments:
+
+### [**Visual Studio**](#tab/vs)
+
+Visual Studio provides built-in Logcat support through the **Device Log** window.
+
+**Accessing Logcat:**
+1. Deploy your app to an Android device or emulator
+2. Navigate to **View** → **Other Windows** → **Device Log**
+3. Select your target device from the dropdown menu
+4. The logs will automatically stream from the selected device
+
+**Filtering Logs:**
+- Filter by **Process Name**: Enter your app's package name
+- Filter by **Log Level**: Choose from Verbose, Debug, Info, Warn, Error, or Fatal
+- Use the **Search box** to find specific terms like "Uno", "Exception", or error messages
+- Click the **Filter** dropdown to apply multiple filters simultaneously
+
+**Useful Tips:**
+- Right-click in the Device Log window and select **Clear All** before reproducing an issue for cleaner logs
+- Use the **Pause** button in the toolbar to freeze log output for easier reading
+- Select relevant log entries, right-click, and choose **Copy** to share specific logs
+- Save logs via the toolbar save button for later analysis
+
+### [**JetBrains Rider**](#tab/rider)
+
+Rider provides Logcat access through the **Logcat** tool window with advanced filtering capabilities.
+
+**Accessing Logcat:**
+1. Deploy your app to an Android device or emulator
+2. Navigate to **View** → **Tool Windows** → **Logcat**
+   - Alternatively, press **Alt+6** (Windows/Linux) or **⌘6** (macOS)
+3. Select your device from the device dropdown in the toolbar
+4. Select your app's process from the process filter dropdown
+
+**Filtering and Searching:**
+- Use the **log level filter** buttons in the toolbar (Verbose, Debug, Info, Warn, Error, Assert)
+- Enter search terms in the **filter bar** at the top
+- Use **regex patterns** for advanced filtering (e.g., `Uno.*Exception`)
+- Click the **filter settings** icon to configure column visibility and formatting
+
+**Useful Tips:**
+- Right-click in the Logcat window and select **Clear** to remove previous logs
+- Use **Ctrl+F** (Windows/Linux) or **⌘F** (macOS) to open the find dialog for searching within logs
+- Export logs using **Right-click** → **Export to Text File**
+- Configure log colors in **File** → **Settings** → **Editor** → **Color Scheme** → **Logcat**
+
+**Prerequisites:**
+- Ensure Android SDK is configured: **File** → **Settings** → **Appearance & Behavior** → **System Settings** → **Android SDK**
+- Verify ADB connection by checking if your device appears in the device dropdown
+- If the device doesn't appear, run `adb devices` in the terminal to troubleshoot
+
+### [**VS Code**](#tab/vscode)
+
+VS Code requires manual ADB setup or extensions for Logcat viewing.
+
+**Prerequisites:**
+1. **Install Android SDK** (if not already installed):
+   - Windows: Typically located at `C:\Users\<username>\AppData\Local\Android\Sdk`
+   - macOS: `~/Library/Android/sdk`
+   - Linux: `~/Android/Sdk`
+
+2. **Verify ADB Installation:**
+   - ADB is located in `<Android-SDK>/platform-tools/adb`
+   - Add ADB to your system PATH or note its full path
+   - Test by running: `adb version`
+
+**Option 1: Using Terminal (Manual ADB)**
+
+1. Open VS Code's integrated terminal: **View** → **Terminal** or press **Ctrl+`** (Windows/Linux) or **⌘`** (macOS)
+2. Ensure your device or emulator is running and connected
+3. Verify device connection:
+   ```bash
+   adb devices
+   ```
+4. Start viewing logs:
+   ```bash
+   # View all logs (verbose)
+   adb logcat
+   
+   # Clear previous logs first
+   adb logcat -c
+   
+   # Filter by your app's package name
+   adb logcat | grep "com.yourcompany.yourapp"
+   
+   # Filter by log priority (E=Error, W=Warn, I=Info, D=Debug, V=Verbose)
+   adb logcat *:E
+   
+   # Filter by tag (show only Uno logs)
+   adb logcat Uno:* *:S
+   
+   # Combination: Show Uno debug logs and all errors
+   adb logcat Uno:D *:E
+   
+   # Save logs to file
+   adb logcat > android-logs.txt
+   
+   # Dump existing logs without continuous streaming
+   adb logcat -d
+   ```
+
+**Option 2: Using VS Code Extensions**
+
+1. Open the Extensions view: **View** → **Extensions** or press **Ctrl+Shift+X** (Windows/Linux) or **⌘⇧X** (macOS)
+2. Search for and install one of these extensions:
+   - **"Android"** by adelphes
+   - **"ADB Interface for VSCode"** by vincenthage
+   - **"Android iOS Emulator"** by DiemasMichiels
+3. Follow the extension-specific instructions to:
+   - Configure the Android SDK path in VS Code settings
+   - Open the Logcat view (usually in the sidebar or via command palette)
+   - Connect to your device/emulator
+
+**Useful ADB Commands:**
+
+```bash
+# List connected devices
+adb devices
+
+# Kill and restart ADB server (if device not detected)
+adb kill-server
+adb start-server
+
+# Filter logs by multiple tags
+adb logcat -s Uno:D Microsoft:D AndroidRuntime:E
+
+# View logs with timestamps
+adb logcat -v time
+
+# View logs with thread IDs
+adb logcat -v threadtime
+
+# Follow logs in real-time with color (Linux/macOS)
+adb logcat -v color
+
+# Clear logs and start fresh
+adb logcat -c && adb logcat
+```
+
+**Tips for Effective Filtering:**
+- Use `grep` (Linux/macOS) or `findstr` (Windows) to filter output:
+  ```bash
+  # Linux/macOS
+  adb logcat | grep -i "exception"
+  
+  # Windows PowerShell
+  adb logcat | Select-String "exception"
+  ```
+
+---
+
+### Common Logcat Tips (All IDEs)
+
+**Enable Verbose Uno Logging:**
+
+Add this code to your `App.xaml.cs` constructor to increase Uno-specific logging detail:
+
+```csharp
+#if __ANDROID__
+using Microsoft.Extensions.Logging;
+
+public App()
+{
+    // Enable verbose logging for Uno Platform
+    Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.MinimumLevel = LogLevel.Trace;
+    
+    this.InitializeComponent();
+}
+#endif
+```
+
+**Key Search Terms for Logcat:**
+
+When analyzing logs, search for these keywords to quickly identify issues:
+- `Exception` - Catch any exceptions thrown
+- `Error` - Application errors
+- `Crash` - Fatal crashes
+- `AndroidRuntime` - Native Android runtime errors
+- `FATAL EXCEPTION` - Critical app crashes
+- `Uno` - Uno Platform-specific logs
+- `Microsoft.UI.Xaml` - WinUI/XAML-related logs
+- `mono-rt` - Mono runtime messages
+
+**Uno-Specific Log Tags:**
+
+Filter for these tags to focus on Uno Platform logs:
+- `Uno.*` - All Uno-related logs
+- `Windows.UI.Xaml` - XAML framework logs
+- `Microsoft.UI.Xaml` - WinUI framework logs
+- `UnoViewGroup` - Android view hierarchy logs
+- `Uno.UI.Controls` - Control-specific logs
+
+**Best Practices When Reporting Issues:**
+
+1. **Clear old logs:**
+   ```bash
+   adb logcat -c
+   ```
+
+2. **Reproduce the issue** immediately after clearing logs
+
+3. **Capture logs** during the issue:
+   ```bash
+   adb logcat > issue-reproduction.txt
+   ```
+
+4. **Filter to relevant logs** before sharing:
+   - Focus on the timeframe when the issue occurred
+   - Include 10-20 lines before and after the error
+   - Remove sensitive information (API keys, user data, etc.)
+
+5. **Include essential context:**
+   - Uno Platform version
+   - Android version and device/emulator details
+   - Steps to reproduce
+   - Expected vs actual behavior
+
+**Additional Resources:**
+- [Android Logcat Documentation](https://developer.android.com/studio/command-line/logcat)
+- [Uno Platform Logging Guide](xref:Uno.Development.Logging)
+- [ADB Command Reference](https://developer.android.com/studio/command-line/adb)
+
+---
 
 ## Creating a smaller zip file to upload to github
 
