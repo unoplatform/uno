@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.UI.FeatureConfiguration;
+using Uno;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -31,12 +31,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.HyperlinkButtonTest
 			TestServices.WindowHelper.WindowContent = SUT;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var implicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldBeUnderlined_HyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
+			var implicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldBeUnderlinedHyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
 			Assert.IsInstanceOfType(implicitTextBlock, typeof(ImplicitTextBlock));
 			// With the fix, underline should NOT be present by default
 			Assert.AreEqual(TextDecorations.None, implicitTextBlock.TextDecorations);
 
-			var explicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldNotBeUnderlined_HyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
+			var explicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldNotBeUnderlinedHyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
 			Assert.IsNotInstanceOfType(explicitTextBlock, typeof(ImplicitTextBlock));
 			Assert.AreEqual(TextDecorations.None, explicitTextBlock.TextDecorations);
 		}
@@ -53,12 +53,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.HyperlinkButtonTest
 				TestServices.WindowHelper.WindowContent = SUT;
 				await TestServices.WindowHelper.WaitForIdle();
 
-				var implicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldBeUnderlined_HyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
+				var implicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldBeUnderlinedHyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
 				Assert.IsInstanceOfType(implicitTextBlock, typeof(ImplicitTextBlock));
 				// With HighContrast enabled, underline should be present
 				Assert.AreEqual(TextDecorations.Underline, implicitTextBlock.TextDecorations);
 
-				var explicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldNotBeUnderlined_HyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
+				var explicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldNotBeUnderlinedHyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
 				Assert.IsNotInstanceOfType(explicitTextBlock, typeof(ImplicitTextBlock));
 				// Explicit TextBlock should not be underlined
 				Assert.AreEqual(TextDecorations.None, explicitTextBlock.TextDecorations);
@@ -76,10 +76,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.HyperlinkButtonTest
 		{
 			// Ensure HighContrast is disabled
 			WinRTFeatureConfiguration.Accessibility.HighContrast = false;
-			
+
 			// Set HyperlinkUnderlineVisible to true
-			var originalValue = Application.Current.Resources.ContainsKey("HyperlinkUnderlineVisible") 
-				? Application.Current.Resources["HyperlinkUnderlineVisible"] 
+			var originalValue = Application.Current.Resources.ContainsKey("HyperlinkUnderlineVisible")
+				? Application.Current.Resources["HyperlinkUnderlineVisible"]
 				: null;
 			Application.Current.Resources["HyperlinkUnderlineVisible"] = true;
 
@@ -89,12 +89,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.HyperlinkButtonTest
 				TestServices.WindowHelper.WindowContent = SUT;
 				await TestServices.WindowHelper.WaitForIdle();
 
-				var implicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldBeUnderlined_HyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
+				var implicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldBeUnderlinedHyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
 				Assert.IsInstanceOfType(implicitTextBlock, typeof(ImplicitTextBlock));
 				// With HyperlinkUnderlineVisible=true, underline should be present
 				Assert.AreEqual(TextDecorations.Underline, implicitTextBlock.TextDecorations);
 
-				var explicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldNotBeUnderlined_HyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
+				var explicitTextBlock = VisualTreeHelper.GetChild(SUT.ShouldNotBeUnderlinedHyperlinkButton.GetTemplateChild("ContentPresenter"), 0) as TextBlock;
 				Assert.IsNotInstanceOfType(explicitTextBlock, typeof(ImplicitTextBlock));
 				// Explicit TextBlock should not be underlined
 				Assert.AreEqual(TextDecorations.None, explicitTextBlock.TextDecorations);
