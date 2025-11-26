@@ -8,6 +8,13 @@ public partial class FrameworkElement
 	private TriggerCollection _triggers;
 	private bool _triggersInitialized;
 
+	/// <summary>
+	/// Gets the collection of triggers for animations that are defined for a FrameworkElement.
+	/// </summary>
+	/// <remarks>
+	/// Triggers, EventTrigger, Actions and BeginStoryboard are not commonly used.
+	/// These API mainly exist for compatibility in XAML originally used for Microsoft Silverlight.
+	/// </remarks>
 	public TriggerCollection Triggers
 	{
 		get
