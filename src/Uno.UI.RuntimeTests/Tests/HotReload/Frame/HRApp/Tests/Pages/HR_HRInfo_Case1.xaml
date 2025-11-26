@@ -12,7 +12,7 @@
 			<StackPanel
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center">
-				<ToggleButton /><ToggleButton /><!--place_holder--><!--bla-->
+				<!--place_holder-->
 				<TextBlock
 					AutomationProperties.AutomationId="HelloTextBlock"
 					Text="Hello Uno Platform!"
