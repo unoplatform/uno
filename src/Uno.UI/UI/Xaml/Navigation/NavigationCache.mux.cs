@@ -81,7 +81,7 @@ internal partial class NavigationCache
 	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "The provided type has been marked before getting at that location")]
 	private object LoadContent(string descriptor)
 	{
-		var type = Type.GetType(descriptor);
+		var type = PageStackEntry.ResolveDescriptor(descriptor);
 		return Frame.CreatePageInstance(type);
 	}
 
