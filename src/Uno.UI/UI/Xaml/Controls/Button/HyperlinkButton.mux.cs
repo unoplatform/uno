@@ -8,6 +8,7 @@ using System;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Text;
+using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -17,6 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private const string ContentPresenterName = "ContentPresenter";
 		//private const string ContentPresenterLegacyName = "Text";
+		private const string HyperlinkUnderlineVisibleKey = "HyperlinkUnderlineVisible";
 
 		private protected override void Initialize()
 		{
@@ -147,10 +149,34 @@ namespace Microsoft.UI.Xaml.Controls
 					var contentTemplateRootAsITextBlock = contentTemplateRootAsIUIE as TextBlock;
 					if (contentTemplateRootAsITextBlock != null)
 					{
-						contentTemplateRootAsITextBlock.TextDecorations = TextDecorations.Underline;
+						// Only apply underline if HighContrast is enabled OR HyperlinkUnderlineVisible is true
+						if (ShouldUnderlineHyperlink())
+						{
+							contentTemplateRootAsITextBlock.TextDecorations = TextDecorations.Underline;
+						}
 					}
 				}
 			}
+		}
+
+		private bool ShouldUnderlineHyperlink()
+		{
+			// Check if high contrast is enabled
+			var accessibilitySettings = new AccessibilitySettings();
+			if (accessibilitySettings.HighContrast)
+			{
+				return true;
+			}
+
+			// Check if HyperlinkUnderlineVisible resource is set to true
+			if (Application.Current?.Resources.TryGetValue(HyperlinkUnderlineVisibleKey, out var underlineVisible) == true
+				&& underlineVisible is bool boolValue
+				&& boolValue)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		private void SetHyperlinkForegroundOverrideForBackPlate()
