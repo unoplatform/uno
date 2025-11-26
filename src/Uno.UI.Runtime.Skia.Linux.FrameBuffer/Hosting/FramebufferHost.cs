@@ -132,9 +132,6 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			{
 				var app = _appBuilder();
 				app.Host = this;
-
-				// Force the first render once the app has been setup
-				Dispatch(() => _renderer.InvalidateRender(), NativeDispatcherPriority.High);
 			}
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;

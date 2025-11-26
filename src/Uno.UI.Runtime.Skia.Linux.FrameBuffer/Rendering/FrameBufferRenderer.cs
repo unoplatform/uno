@@ -77,7 +77,7 @@ internal abstract class FrameBufferRenderer
 			}
 			_surface = UpdateSize((int)size.Width, (int)size.Height);
 			_surface.Canvas.Save();
-			_surface.Canvas.Translate((float)transX, (float)transY);
+			_surface.Canvas.Translate(transX, transY);
 			_surface.Canvas.RotateDegrees(degrees);
 			_surface.Canvas.Clear(SKColors.Transparent);
 			return _surface.Canvas;
