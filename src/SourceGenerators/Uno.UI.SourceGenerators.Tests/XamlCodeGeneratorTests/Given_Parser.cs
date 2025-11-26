@@ -782,7 +782,7 @@ public partial class Given_Parser
 
 		// TODO: Currently this generates a CS0103 error in generated code.
 		// We should instead get a UXAML0001 error at the proper location in the XAML file.
-		// See: https://github.com/unoplatform/uno/issues/XXXXX
+		// Related issue: [xaml-gen] CS0103 with invalid XAML
 		test.ExpectedDiagnostics.AddRange([
 			DiagnosticResult.CompilerError("CS0103").WithArguments("auto"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
