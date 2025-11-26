@@ -124,7 +124,7 @@ public partial class Package
 
 				// By default we use the entry assembly version, which is usually set by the <AssemblyDisplayVersion> MSBuild property.
 				// If not set yet, we try to get the version from the manifest instead.
-				if (Id.Version is null)
+				if (Id.Version == default)
 				{
 					var versionString = idNode.Attributes?.GetNamedItem("Version")?.Value ?? "";
 					if (Version.TryParse(versionString, out var version))
