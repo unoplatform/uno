@@ -177,7 +177,7 @@ For questions about Uno Platform, refer to the [general FAQ](xref:Uno.Developmen
 
 Choose the IDE or Agent to Learn more about:
 
-- [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
+- [Visual Studio](xref:Uno.GetStarted.vs2022)
 - [VS Code, Codespaces and Ona](xref:Uno.GetStarted.vscode)
 - [Rider](xref:Uno.GetStarted.Rider)
 - [Claude Code](xref:Uno.GetStarted.AI.Claude)
