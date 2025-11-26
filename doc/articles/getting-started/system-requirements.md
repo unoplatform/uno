@@ -52,7 +52,7 @@ This page provides comprehensive information about the system requirements for d
 
 ## Development Environments (IDEs)
 
-### Visual Studio 2022/2026 (Windows)
+### Visual Studio 2022 (17.9+) or later (Windows)
 
 - **Minimum Version**: Visual Studio 2022 17.9 or later
 - **Recommended**: Latest stable version
