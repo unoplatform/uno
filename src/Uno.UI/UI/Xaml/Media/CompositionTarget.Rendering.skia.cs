@@ -103,10 +103,7 @@ public partial class CompositionTarget
 		}
 
 		FrameRendered?.Invoke();
-		if (rootElement.XamlRoot is not null)
-		{
-			XamlRootMap.GetHostForRoot(rootElement.XamlRoot)?.InvalidateRender();
-		}
+		InvalidateNativeRender();
 
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}

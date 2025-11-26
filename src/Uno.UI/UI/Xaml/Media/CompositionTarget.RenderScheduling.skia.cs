@@ -72,6 +72,7 @@ public partial class CompositionTarget
 	private bool _renderedAheadOfTime; // only set or read under _renderingStateGate
 	private bool _renderRequestedAfterAheadOfTimePaint; // only set or read under _renderingStateGate
 	private bool _shouldEnqueueRenderOnNextNativePlatformFrameRequested = true; // only set from the UI thread, only reset from the rendering/gpu thread
+	private bool _waitingForNativePlatformFrameRequested;
 
 	private bool RenderRequested
 	{
@@ -85,7 +86,7 @@ public partial class CompositionTarget
 
 	void ICompositionTarget.RequestNewFrame()
 	{
-		var shouldEnqueue = false;
+		var shouldInvalidateRender = false;
 		lock (_renderingStateGate)
 		{
 			LogRenderState();
@@ -93,7 +94,7 @@ public partial class CompositionTarget
 			if (!_renderedAheadOfTime && !RenderRequested)
 			{
 				RenderRequested = true;
-				shouldEnqueue = true;
+				shouldInvalidateRender = true;
 			}
 			else if (_renderedAheadOfTime)
 			{
@@ -103,17 +104,29 @@ public partial class CompositionTarget
 			LogRenderState();
 		}
 
-		if (shouldEnqueue)
+		if (shouldInvalidateRender)
 		{
-			if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
-			{
-				host.InvalidateRender();
-			}
+			InvalidateNativeRender();
+
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} invalidated render");
 		}
 		else
 		{
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} found no need to invalidate render.");
+		}
+	}
+
+	private void InvalidateNativeRender()
+	{
+		bool shouldInvalidateRender;
+		lock (_renderingStateGate)
+		{
+			shouldInvalidateRender = !_waitingForNativePlatformFrameRequested;
+			_waitingForNativePlatformFrameRequested = true;
+		}
+		if (shouldInvalidateRender && ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
+		{
+			host.InvalidateRender();
 		}
 	}
 
@@ -148,7 +161,7 @@ public partial class CompositionTarget
 				{
 					RenderRequested = false;
 				}
-				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)} fired from {nameof(EnqueueRenderCallback)}");
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} fired from {nameof(EnqueueRenderCallback)}");
 				Render();
 			}
 			AssertRenderStateMachine();
@@ -170,6 +183,10 @@ public partial class CompositionTarget
 		if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
 		{
 			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
+		}
+		lock (_renderingStateGate)
+		{
+			_waitingForNativePlatformFrameRequested = false;
 		}
 
 		return Draw(canvas, resizeFunc);
@@ -201,7 +218,7 @@ public partial class CompositionTarget
 
 			if (shouldRender)
 			{
-				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnRenderFrameOpportunity)}: Calling {nameof(Draw)} early ");
+				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnRenderFrameOpportunity)}: Calling {nameof(Render)} early ");
 				Render();
 			}
 		}
