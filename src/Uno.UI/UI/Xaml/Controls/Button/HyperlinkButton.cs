@@ -13,6 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class HyperlinkButton : ButtonBase
 	{
 		private const string HyperlinkUnderlineVisibleKey = "HyperlinkUnderlineVisible";
+		private static readonly Lazy<AccessibilitySettings> _accessibilitySettings = new Lazy<AccessibilitySettings>(() => new AccessibilitySettings());
 
 		/// <summary>
 		/// Initializes a new instance of the HyperlinkButton class.
@@ -47,8 +48,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool ShouldUnderlineHyperlink()
 		{
 			// Check if high contrast is enabled
-			var accessibilitySettings = new AccessibilitySettings();
-			if (accessibilitySettings.HighContrast)
+			if (_accessibilitySettings.Value.HighContrast)
 			{
 				return true;
 			}
