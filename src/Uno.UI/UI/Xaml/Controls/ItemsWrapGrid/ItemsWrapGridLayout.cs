@@ -1,4 +1,4 @@
-﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API
+﻿#if !IS_UNIT_TESTS
 using System;
 using System.Collections.Generic;
 using System.Text;
