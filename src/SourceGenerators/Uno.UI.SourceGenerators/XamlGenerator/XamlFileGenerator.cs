@@ -4800,12 +4800,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					case SpecialType.System_Int32:
 						// UWP ignores everything starting from a space. So `5 6 7` is a valid int value and it's "5".
-						return IgnoreStartingFromFirstSpaceIgnoreLeading(GetMemberValue());
+						var int32Value = IgnoreStartingFromFirstSpaceIgnoreLeading(GetMemberValue());
+						if (!int.TryParse(int32Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _))
+						{
+							throw new XamlGenerationException($"Invalid Int32 value '{GetMemberValue()}'", owner);
+						}
+						return int32Value;
 					case SpecialType.System_Int64:
+						var int64Value = GetMemberValue();
+						if (!long.TryParse(int64Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _))
+						{
+							throw new XamlGenerationException($"Invalid Int64 value '{int64Value}'", owner);
+						}
+						return int64Value;
 					case SpecialType.System_Int16:
+						var int16Value = GetMemberValue();
+						if (!short.TryParse(int16Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _))
+						{
+							throw new XamlGenerationException($"Invalid Int16 value '{int16Value}'", owner);
+						}
+						return int16Value;
 					case SpecialType.System_Byte:
 						// UWP doesn't ignore spaces here.
-						return GetMemberValue();
+						var byteValue = GetMemberValue();
+						if (!byte.TryParse(byteValue, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _))
+						{
+							throw new XamlGenerationException($"Invalid Byte value '{byteValue}'", owner);
+						}
+						return byteValue;
 					case SpecialType.System_Single:
 					case SpecialType.System_Double:
 						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner);
@@ -4829,7 +4851,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return BuildThickness(GetMemberValue(), owner);
 
 					case XamlConstants.Types.CornerRadius:
-						return BuildCornerRadius(GetMemberValue());
+						return BuildCornerRadius(GetMemberValue(), owner);
 
 					case XamlConstants.Types.FontFamily:
 						return $@"new global::{propertyTypeWithoutGlobal}(""{memberValue}"")";
@@ -4838,7 +4860,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return BuildFontWeight(GetMemberValue());
 
 					case XamlConstants.Types.GridLength:
-						return BuildGridLength(GetMemberValue());
+						return BuildGridLength(GetMemberValue(), owner);
 
 					case "UIKit.UIColor":
 						return BuildColor(GetMemberValue());
@@ -5164,11 +5186,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return $"global::System.TimeSpan.FromTicks({value.Ticks} /* {memberValue} */)";
 		}
 
-		private static string BuildGridLength(string memberValue)
+		private static string BuildGridLength(string memberValue, XamlMemberDefinition? owner = null)
 		{
-			var gridLength = Microsoft.UI.Xaml.GridLength.ParseGridLength(memberValue).FirstOrDefault();
-
-			return $"new global::{XamlConstants.Types.GridLength}({gridLength.Value.ToStringInvariant()}f, global::{XamlConstants.Types.GridUnitType}.{gridLength.GridUnitType})";
+			try
+			{
+				var gridLength = Microsoft.UI.Xaml.GridLength.ParseGridLength(memberValue).FirstOrDefault();
+				return $"new global::{XamlConstants.Types.GridLength}({gridLength.Value.ToStringInvariant()}f, global::{XamlConstants.Types.GridUnitType}.{gridLength.GridUnitType})";
+			}
+			catch (Exception) when (owner != null)
+			{
+				throw new XamlGenerationException($"Invalid GridLength value '{memberValue}'", owner);
+			}
 		}
 
 		private string BuildLiteralValue(XamlMemberDefinition member, INamedTypeSymbol? propertyType = null, XamlMemberDefinition? owner = null, string objectUid = "", bool isTemplateBindingAttachedProperty = false)
@@ -5329,13 +5357,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return "new global::Microsoft.UI.Xaml.Thickness(" + memberValue + ")";
 		}
 
-		private static string BuildCornerRadius(string memberValue)
+		private static string BuildCornerRadius(string memberValue, XamlMemberDefinition owner)
 		{
 			// values can be separated by commas or whitespace
 			// ensure commas are used for the constructor
 			if (!memberValue.Contains(","))
 			{
 				memberValue = ReplaceWhitespaceByCommas(memberValue);
+			}
+
+			// Validate that all components are valid numeric values
+			var components = memberValue.Split(',');
+			foreach (var component in components)
+			{
+				var trimmed = component.Trim();
+				if (!double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+				{
+					throw new XamlGenerationException($"Invalid CornerRadius value '{memberValue}'. Each component must be a valid number", owner);
+				}
 			}
 
 			return $"new {XamlConstants.Types.CornerRadius}({memberValue})";
@@ -6747,6 +6786,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				// UWP does that for double but not for float.
 				memberValue = IgnoreStartingFromFirstSpaceIgnoreLeading(memberValue);
+			}
+
+			// Validate that the value is a valid number
+			if (!double.TryParse(memberValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+			{
+				if (owner != null)
+				{
+					var typeName = isDouble ? "Double" : "Single";
+					throw new XamlGenerationException($"Invalid {typeName} value '{memberValue}'", owner);
+				}
 			}
 
 			return "{0}{1}".InvariantCultureFormat(memberValue, isDouble ? "d" : "f");
