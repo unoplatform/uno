@@ -1,72 +1,71 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Microsoft.UI.Xaml
+namespace Microsoft.UI.Xaml;
+
+public partial class TriggerCollection : IList<TriggerBase>, IEnumerable<TriggerBase>
 {
-	public partial class TriggerCollection : IList<TriggerBase>, IEnumerable<TriggerBase>
+	private readonly List<TriggerBase> _triggers = new List<TriggerBase>();
+
+	public uint Size => (uint)_triggers.Count;
+
+	public int Count => _triggers.Count;
+
+	public bool IsReadOnly => false;
+
+	public TriggerBase this[int index]
 	{
-		private readonly List<TriggerBase> _triggers = new List<TriggerBase>();
+		get => _triggers[index];
+		set => _triggers[index] = value;
+	}
 
-		public uint Size => (uint)_triggers.Count;
+	public void Add(TriggerBase item)
+	{
+		_triggers.Add(item);
+	}
 
-		public int Count => _triggers.Count;
+	public void Clear()
+	{
+		_triggers.Clear();
+	}
 
-		public bool IsReadOnly => false;
+	public bool Contains(TriggerBase item)
+	{
+		return _triggers.Contains(item);
+	}
 
-		public TriggerBase this[int index]
-		{
-			get => _triggers[index];
-			set => _triggers[index] = value;
-		}
+	public void CopyTo(TriggerBase[] array, int arrayIndex)
+	{
+		_triggers.CopyTo(array, arrayIndex);
+	}
 
-		public void Add(TriggerBase item)
-		{
-			_triggers.Add(item);
-		}
+	public IEnumerator<TriggerBase> GetEnumerator()
+	{
+		return _triggers.GetEnumerator();
+	}
 
-		public void Clear()
-		{
-			_triggers.Clear();
-		}
+	public int IndexOf(TriggerBase item)
+	{
+		return _triggers.IndexOf(item);
+	}
 
-		public bool Contains(TriggerBase item)
-		{
-			return _triggers.Contains(item);
-		}
+	public void Insert(int index, TriggerBase item)
+	{
+		_triggers.Insert(index, item);
+	}
 
-		public void CopyTo(TriggerBase[] array, int arrayIndex)
-		{
-			_triggers.CopyTo(array, arrayIndex);
-		}
+	public bool Remove(TriggerBase item)
+	{
+		return _triggers.Remove(item);
+	}
 
-		public IEnumerator<TriggerBase> GetEnumerator()
-		{
-			return _triggers.GetEnumerator();
-		}
+	public void RemoveAt(int index)
+	{
+		_triggers.RemoveAt(index);
+	}
 
-		public int IndexOf(TriggerBase item)
-		{
-			return _triggers.IndexOf(item);
-		}
-
-		public void Insert(int index, TriggerBase item)
-		{
-			_triggers.Insert(index, item);
-		}
-
-		public bool Remove(TriggerBase item)
-		{
-			return _triggers.Remove(item);
-		}
-
-		public void RemoveAt(int index)
-		{
-			_triggers.RemoveAt(index);
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return _triggers.GetEnumerator();
-		}
+	IEnumerator IEnumerable.GetEnumerator()
+	{
+		return _triggers.GetEnumerator();
 	}
 }
