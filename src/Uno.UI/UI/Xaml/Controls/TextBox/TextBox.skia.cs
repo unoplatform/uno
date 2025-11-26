@@ -28,7 +28,6 @@ using Uno.Foundation;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using Microsoft.UI.Xaml.Media.Media3D;
 using System.Numerics;
-using System.Text.RegularExpressions;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
