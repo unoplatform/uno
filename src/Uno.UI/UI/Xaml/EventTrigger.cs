@@ -2,15 +2,27 @@ using System;
 
 namespace Microsoft.UI.Xaml;
 
+/// <summary>
+/// Represents a trigger that applies a set of actions (animation storyboards) in response to an event.
+/// Currently, only the FrameworkElement.Loaded event is supported.
+/// </summary>
 public partial class EventTrigger : TriggerBase
 {
 	private RoutedEvent _routedEvent;
 
+	/// <summary>
+	/// Initializes a new instance of the EventTrigger class.
+	/// </summary>
 	public EventTrigger()
 	{
 		Actions = new TriggerActionCollection();
 	}
 
+	/// <summary>
+	/// Gets or sets the name of the event that initiates the trigger.
+	/// Currently, only the FrameworkElement.Loaded event is supported.
+	/// </summary>
+	/// <exception cref="NotSupportedException">Thrown when a value other than the Loaded event is set.</exception>
 	public RoutedEvent RoutedEvent
 	{
 		get => _routedEvent;
@@ -26,6 +38,9 @@ public partial class EventTrigger : TriggerBase
 		}
 	}
 
+	/// <summary>
+	/// Gets the collection of BeginStoryboard objects that this EventTrigger maintains.
+	/// </summary>
 	public TriggerActionCollection Actions { get; }
 
 	internal void FireActions()
