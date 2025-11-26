@@ -308,6 +308,7 @@ public partial class TextBox
 	{
 		if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
+			var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
 			foreach (var (rectNullable, caret) in (ReadOnlySpan<(Rect?, CaretWithStemAndThumb)>)[(_lastStartCaretRect, _selectionStartThumbfulCaret), (_lastEndCaretRect, _selectionEndThumbfulCaret)])
 			{
 				if (rectNullable is not { } rect)
@@ -316,7 +317,6 @@ public partial class TextBox
 					continue;
 				}
 				caret.Height = rect.Height + 16;
-				var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
 				if (transform.TransformBounds(rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
 				{
 					var matrixTransform = (MatrixTransform)transform;
