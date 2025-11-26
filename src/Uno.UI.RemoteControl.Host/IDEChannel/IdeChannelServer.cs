@@ -51,8 +51,11 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	/// <inheritdoc />
 	public event EventHandler<IdeMessage>? MessageFromIde;
 
+	async Task IIdeChannel.SendToIdeAsync(IdeMessage message, CancellationToken ct)
+		=> await ((IIdeChannel)this).TrySendToIdeAsync(message, ct);
+
 	/// <inheritdoc />
-	async Task<bool> IIdeChannel.SendToIdeAsync(IdeMessage message, CancellationToken ct)
+	async Task<bool> IIdeChannel.TrySendToIdeAsync(IdeMessage message, CancellationToken ct)
 	{
 		await WaitForReady(ct);
 

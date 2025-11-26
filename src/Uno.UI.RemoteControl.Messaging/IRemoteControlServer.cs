@@ -11,7 +11,9 @@ namespace Uno.UI.RemoteControl.Host
 
 		Task SendFrame(IMessage message);
 
-		[Obsolete("Prefer the TrySendMessageToIDEAsync which gives feedback about the fact an IDE is effectively listening for the message or not.")]
+		/// <summary>
+		/// DO NOT USE, prefer the TrySendMessageToIDEAsync
+		/// </summary>
 		Task SendMessageToIDEAsync(IdeMessage message);
 
 		/// <summary>

@@ -651,7 +651,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		=> await TrySendMessageToIDEAsync(message, CancellationToken.None);
 
 	public Task<bool> TrySendMessageToIDEAsync(IdeMessage message, CancellationToken ct)
-		=> _ideChannel.SendToIdeAsync(message, ct);
+		=> _ideChannel.TrySendToIdeAsync(message, ct);
 
 	public void Dispose()
 	{
