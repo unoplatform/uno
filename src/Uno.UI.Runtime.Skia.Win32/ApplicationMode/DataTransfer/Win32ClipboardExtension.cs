@@ -166,7 +166,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 	{
 		foreach (var format in formats)
 		{
-			if (Enum.IsDefined(typeof(CLIPBOARD_FORMAT), format) && dataGetter(format) is { } handle)
+			if (Enum.IsDefined((CLIPBOARD_FORMAT)format) && dataGetter(format) is { } handle)
 			{
 				switch (format)
 				{

@@ -71,7 +71,7 @@ namespace UITests.Windows_Storage
 		}
 
 		public CreationCollisionOption[] CreationCollisionOptions { get; } =
-			Enum.GetValues(typeof(CreationCollisionOption)).OfType<CreationCollisionOption>().ToArray();
+			Enum.GetValues<CreationCollisionOption>();
 
 		public CreationCollisionOption SelectedCreationCollisionOption
 		{

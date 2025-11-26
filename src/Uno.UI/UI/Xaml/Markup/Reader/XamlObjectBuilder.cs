@@ -545,6 +545,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 					}
 				}
+				else if (IsBlankBaseMember(member))
+				{
+					// Skip, the information is not needed at runtime
+				}
 				else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties)
 				{
 					throw new InvalidOperationException($"The Property {member.Member.Name} does not exist on {member.Member.DeclaringType}");
@@ -1354,7 +1358,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 			else
 			{
-				return TypeResolver.GetPropertyByName(control.Type, member.Member.Name);
+				return TypeResolver.GetPropertyByName(control.Type, member.Member.Name)
+					?? TypeResolver.GetPropertyByName(TypeResolver.FindType(control.Type.PreferredXamlNamespace, control.Type.Name + "Extension"), member.Member.Name);
 			}
 		}
 
@@ -1594,6 +1599,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 							&& (member.Member.Name is "Key" or "Name"))
 						{
 							// Skip, no validation needed
+						}
+						else if (member.Member.Name == "_PositionalParameters")
+						{
+							// Skip, no validation needed. This member represents positional parameters for XAML markup extensions (e.g., Binding).
 						}
 						else if (FeatureConfiguration.XamlReader.FailOnUnknownProperties && propertyInfo == null && eventInfo == null && !IsNestedChildNode(member) && !IsBlankBaseMember(member))
 						{

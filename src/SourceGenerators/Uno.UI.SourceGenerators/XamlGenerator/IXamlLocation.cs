@@ -7,9 +7,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	/// </summary>
 	internal interface IXamlLocation
 	{
+		public string FilePath { get; }
+
 		public int LineNumber { get; }
 
-		public int LinePosition { get; set; }
+		public int LinePosition { get; }
 	}
 
 }

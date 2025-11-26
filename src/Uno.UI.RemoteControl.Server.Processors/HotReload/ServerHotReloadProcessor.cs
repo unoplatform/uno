@@ -20,7 +20,7 @@ using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.Telemetry;
 
-[assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor))]
+[assembly: Uno.UI.RemoteControl.Host.ServerProcessor<Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor>]
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
@@ -149,7 +149,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				measurements = new Dictionary<string, double>
 				{
-					["FileCount"] = _current.FilePaths.Count
+					["FileCount"] = _current.ConsideredFilePaths.Count
 				};
 				if (_current.CompletionTime != null)
 				{
@@ -256,9 +256,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 							?.Where(d => d.Severity >= DiagnosticSeverity.Warning)
 							.Select(d => CSharpDiagnosticFormatter.Instance.Format(d, CultureInfo.InvariantCulture))
 							.ToImmutableList() ?? ImmutableList<string>.Empty;
+						var files = operation.ConsideredFilePaths.Except(operation.IgnoredFilePaths);
 
 						foundCompleting |= operation == completing;
-						infos.Add(new(operation.Id, operation.StartTime, operation.FilePaths, operation.CompletionTime, operation.Result, diagnosticsResult));
+						infos.Add(new(operation.Id, operation.StartTime, files, operation.IgnoredFilePaths, operation.CompletionTime, operation.Result, diagnosticsResult));
 						operation = operation.Previous!;
 					}
 				}
@@ -286,7 +287,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			private readonly HotReloadServerOperation? _previous;
 			private readonly Timer _timeout;
 
-			private ImmutableHashSet<string> _filePaths;
+			private ImmutableHashSet<string> _consideredFilePaths; // All files that have been considered for this operation.
+			private ImmutableHashSet<string> _ignoredFilePaths = _empty; // The files that have been ignored by the compilator for this operation (basically because they are not part of the solution).
 			private int /* HotReloadResult */ _result = -1;
 			private CancellationTokenSource? _deferredCompletion;
 			private ImmutableArray<Diagnostic>? _diagnostics;
@@ -304,7 +306,19 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			public HotReloadServerOperation? Previous => _previous;
 
-			public ImmutableHashSet<string> FilePaths => _filePaths;
+			/// <summary>
+			/// List of all file paths that have been considered for this hot-reload operation.
+			/// </summary>
+			/// <remarks>This **includes** the <see cref="IgnoredFilePaths"/>.</remarks>
+			public ImmutableHashSet<string> ConsideredFilePaths => _consideredFilePaths;
+
+			/// <summary>
+			/// Gets the collection of file paths that are excluded from processing.
+			/// </summary>
+			/// <remarks>
+			/// Files are typically ignored when they do not yet exist in the current solution.
+			/// </remarks>
+			public ImmutableHashSet<string> IgnoredFilePaths => _ignoredFilePaths;
 
 			public ImmutableArray<Diagnostic>? Diagnostics => _diagnostics;
 
@@ -315,7 +329,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				_owner = owner;
 				_previous = previous;
-				_filePaths = filePaths ?? _empty;
+				_consideredFilePaths = filePaths ?? _empty;
 
 				_timeout = new Timer(
 					static that => _ = ((HotReloadServerOperation)that!).Complete(HotReloadServerResult.Aborted),
@@ -325,7 +339,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 
 			/// <summary>
-			/// Attempts to update the <see cref="FilePaths"/> if we determine that the provided paths are corresponding to this operation.
+			/// Attempts to update the <see cref="ConsideredFilePaths"/> if we determine that the provided paths are corresponding to this operation.
 			/// </summary>
 			/// <returns>
 			/// True if this operation should be considered as valid for the given file paths (and has been merged with original paths),
@@ -338,7 +352,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return false;
 				}
 
-				var original = _filePaths;
+				var original = _consideredFilePaths;
 				while (true)
 				{
 					ImmutableHashSet<string> updated;
@@ -355,7 +369,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						return false;
 					}
 
-					var current = Interlocked.CompareExchange(ref _filePaths, updated, original);
+					var current = Interlocked.CompareExchange(ref _consideredFilePaths, updated, original);
 					if (current == original)
 					{
 						_timeout.Change(_timeoutDelay, Timeout.InfiniteTimeSpan);
@@ -376,6 +390,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				_noChangesRetry = attempts ?? DefaultAutoRetryIfNoChangesAttempts;
 				_noChangesRetryDelay = delay ?? DefaultAutoRetryIfNoChangesDelay;
 			}
+
+			/// <summary>
+			/// Notifies a file has been ignored for this hot-reload operation.
+			/// </summary>
+			/// <param name="file"></param>
+			public void NotifyIgnored(string file)
+				=> ImmutableInterlocked.Update(ref _ignoredFilePaths, static (files, file) => files.Add(file), file);
 
 			/// <summary>
 			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.

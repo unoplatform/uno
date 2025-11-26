@@ -34,7 +34,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				comboBox.SelectedItem is ComboBoxItem item)
 			{
 				var scopeName = new InputScopeName();
-				scopeName.NameValue = (InputScopeNameValue)Enum.Parse(typeof(InputScopeNameValue), item.Content?.ToString() ?? string.Empty, true);
+				scopeName.NameValue = Enum.Parse<InputScopeNameValue>(item.Content?.ToString() ?? string.Empty, true);
 
 				var scope = new InputScope();
 				scope.Names.Add(scopeName);

@@ -13,10 +13,12 @@ public class Given_HotReloadService
 	[DynamicData(nameof(GetScenarios))]
 	public async Task HR(string name, Scenario? scenario, Project[]? projects)
 	{
+		// Generated C# files can be found in the bin\Debug\net10.0\work sub dir.
+
 		if (scenario != null)
 		{
 #if DEBUG && false
-			if (!name.Contains("When_DataTemplates_With_Nested_Add_Sibling"))
+			if (!name.Contains("IRL_Case_001"))
 			{
 				Assert.Inconclusive("Ignored case.");
 				return;

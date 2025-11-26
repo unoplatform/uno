@@ -1,0 +1,8 @@
+parameters:
+  UnoCheckParameters: ''
+
+steps:
+  - powershell: |
+      & dotnet workload install wasm-tools-net9
+    displayName: Install Previous .NET Wasm Workloads
+    retryCountOnTaskFailure: 3

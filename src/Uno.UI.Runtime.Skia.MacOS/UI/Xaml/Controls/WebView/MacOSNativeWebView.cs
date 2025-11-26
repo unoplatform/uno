@@ -21,6 +21,7 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 	private string _previousTitle;
 	private bool _isHistoryChangeQueued;
 	private bool _isCancelling;
+	private string? _lastHtmlContent;
 
 	private const string OkResourceKey = "WebView_Ok";
 	private const string CancelResourceKey = "WebView_Cancel";
@@ -59,7 +60,6 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 
 		Unloaded += (s, e) =>
 		{
-			NativeUno.uno_webview_dispose(NativeHandle);
 			_webViews.Remove(NativeHandle);
 		};
 
@@ -165,6 +165,7 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 
 	public void ProcessNavigation(Uri uri)
 	{
+		_lastHtmlContent = null;
 		string? url = null;
 
 		if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
@@ -194,11 +195,13 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 			this.Log().Debug($"LoadHtmlString: {html}");
 		}
 
+		_lastHtmlContent = html;
 		NativeUno.uno_webview_load_html(_webview, html);
 	}
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
 	{
+		_lastHtmlContent = null;
 		if (httpRequestMessage == null)
 		{
 			this.Log().Warn("HttpRequestMessage is null. Please make sure the http request is complete.");
@@ -213,7 +216,21 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 		}
 	}
 
-	public void Reload() => NativeUno.uno_webview_reload(_webview);
+	public void Reload()
+	{
+		if (_lastHtmlContent != null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Reloading cached HTML content");
+			}
+			NativeUno.uno_webview_load_html(_webview, _lastHtmlContent);
+		}
+		else
+		{
+			NativeUno.uno_webview_reload(_webview);
+		}
+	}
 
 	public void SetScrollingEnabled(bool isScrollingEnabled)
 	{
@@ -375,6 +392,51 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static unsafe int NewWindowRequestedCallback(nint handle, sbyte* targetUrl, sbyte* refererUrl)
+	{
+		var webview = GetWebView(handle);
+		if (webview is not null)
+		{
+			var targetString = targetUrl == null ? "about:blank" : new string(targetUrl);
+			var refererString = refererUrl == null ? null : new string(refererUrl);
+
+			if (refererString == null || !Uri.TryCreate(refererString, UriKind.Absolute, out var refererUri))
+			{
+				if (refererString != null && typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(MacOSNativeWebView).Log().Warn($"MacOSNativeWebView.NewWindowRequestedCallback: Invalid referer URI '{refererString}', using about:blank");
+				}
+				refererUri = new Uri("about:blank");
+			}
+
+			if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(MacOSNativeWebView).Log().Debug($"MacOSNativeWebView.NewWindowRequestedCallback: Target='{targetString}', Referer='{refererUri}'");
+			}
+
+			webview._owner.RaiseNewWindowRequested(
+				targetString,
+				refererUri,
+				out var handled);
+
+			if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(MacOSNativeWebView).Log().Debug($"MacOSNativeWebView.NewWindowRequestedCallback: Handled={handled}");
+			}
+
+			// Return 1 if handled (which prevents the native code from opening a new window),
+			// or 0 if not handled (allowing the native code to proceed, e.g., opening in an external browser).
+			return handled ? 1 : 0;
+		}
+		else if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(MacOSNativeWebView).Log().Warn($"MacOSNativeWebView.NewWindowRequestedCallback could not map 0x{handle:X} with an WKWebView");
+		}
+
+		return 0;
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static unsafe void DidReceiveScriptMessage(nint handle, sbyte* messageBody)
 	{
 		var webview = GetWebView(handle);
@@ -382,6 +444,10 @@ internal class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 		{
 			var message = messageBody == null ? "" : new string(messageBody);
 			webview._owner.RaiseWebMessageReceived(message);
+		}
+		else if (typeof(MacOSNativeWebView).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(MacOSNativeWebView).Log().Warn($"MacOSNativeWebView.DidReceiveScriptMessage could not map 0x{handle:X} with an WKWebView");
 		}
 	}
 

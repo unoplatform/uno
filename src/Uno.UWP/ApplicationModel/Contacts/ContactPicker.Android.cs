@@ -305,7 +305,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			if (int.TryParse(type, CultureInfo.InvariantCulture, out var typeInt))
 			{
-				if (Enum.IsDefined(typeof(PhoneDataKind), typeInt))
+				if (Enum.IsDefined((PhoneDataKind)typeInt))
 				{
 					var PhoneType = (PhoneDataKind)typeInt;
 					return PhoneType switch
@@ -333,7 +333,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			if (int.TryParse(type, CultureInfo.InvariantCulture, out var typeInt))
 			{
-				if (Enum.IsDefined(typeof(EmailDataKind), typeInt))
+				if (Enum.IsDefined((EmailDataKind)typeInt))
 				{
 					var EmailType = (EmailDataKind)typeInt;
 					return EmailType switch
@@ -352,7 +352,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			if (int.TryParse(type, CultureInfo.InvariantCulture, out var typeInt))
 			{
-				if (Enum.IsDefined(typeof(AddressDataKind), typeInt))
+				if (Enum.IsDefined((AddressDataKind)typeInt))
 				{
 					var addressType = (AddressDataKind)typeInt;
 					return addressType switch

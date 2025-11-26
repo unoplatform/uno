@@ -4,46 +4,69 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 #if DEBUG
-	[DebuggerDisplay("Type: {_type.Name}")]
+	[DebuggerDisplay("Type: {Type.Name}")]
 #endif
-	internal class XamlObjectDefinition : IXamlLocation
+	internal sealed record XamlObjectDefinition : IXamlLocation
 	{
-		private XamlType _type;
-
-		public XamlObjectDefinition(XamlType type, int lineNumber, int linePosition, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces)
+		/// <summary>
+		/// Creates a root object
+		/// </summary>
+		public XamlObjectDefinition(XamlXmlReader reader, XamlFileDefinition file)
 		{
-			LineNumber = lineNumber;
-			LinePosition = linePosition;
-			_type = type;
+			FilePath = file.FilePath;
+			LineNumber = reader.LineNumber;
+			LinePosition = reader.LinePosition;
+			Type = reader.Type;
+		}
+
+		/// <summary>
+		/// Creates a child object
+		/// </summary>
+		public XamlObjectDefinition(XamlXmlReader reader, XamlObjectDefinition owner, List<NamespaceDeclaration>? namespaces = null)
+		{
+			FilePath = owner.FilePath;
+			LineNumber = reader.LineNumber;
+			LinePosition = reader.LinePosition;
+			Type = reader.Type;
 			Owner = owner;
-			Members = new List<XamlMemberDefinition>();
-			Objects = new List<XamlObjectDefinition>();
 			Namespaces = namespaces;
 		}
 
-		public XamlType Type { get { return _type; } }
+		/// <summary>
+		/// Creates a virtual object definition (i.e. not from XamlXmlReader)
+		/// </summary>
+		public XamlObjectDefinition(XamlType type, XamlObjectDefinition owner)
+		{
+			FilePath = owner.FilePath;
+			LineNumber = owner.LineNumber;
+			LinePosition = owner.LinePosition;
+			Type = type;
+			Owner = owner;
+		}
 
-		public List<XamlMemberDefinition> Members { get; private set; }
+		public XamlType Type { get; init; }
 
-		public List<XamlObjectDefinition> Objects { get; private set; }
+		public List<XamlMemberDefinition> Members { get; } = [];
+
+		public List<XamlObjectDefinition> Objects { get; } = [];
 
 		public object? Value { get; set; }
 
-		public int LineNumber { get; private set; }
+		public string FilePath { get; }
+
+		public int LineNumber { get; }
 
 		public int LinePosition { get; set; }
 
 		public XamlObjectDefinition? Owner { get; }
 
 		public List<NamespaceDeclaration>? Namespaces { get; }
-
 
 		private string? _key;
 		public string Key => _key ??= BuildKey();

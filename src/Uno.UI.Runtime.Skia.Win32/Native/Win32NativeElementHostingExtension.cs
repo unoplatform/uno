@@ -286,7 +286,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
 
-	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
+	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
 		if (content is not Win32NativeWindow window)
 		{
@@ -345,11 +345,6 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 
 		return new Win32NativeWindow(hwnd);
-	}
-
-	public void ChangeNativeElementVisibility(object content, bool visible)
-	{
-		// no need to do anything here, airspace clipping logic will take care of it automatically
 	}
 
 	public void ChangeNativeElementOpacity(object content, double opacity)

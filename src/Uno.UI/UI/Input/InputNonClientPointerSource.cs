@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Uno.Foundation.Extensibility;
@@ -29,17 +30,11 @@ public partial class InputNonClientPointerSource
 		_appWindow = appWindow;
 
 		ApiExtensibility.CreateInstance(appWindow, out _nativeInputNonClientPointerSource);
-
-		appWindow.TitleBar.DragRectanglesChanged += OnAppWindowTitleBarDragRectanglesChanged;
 	}
 
-	private void OnAppWindowTitleBarDragRectanglesChanged(object? sender, RectInt32[] dragRectangles) =>
-		SetRegionRects(NonClientRegionKind.Caption, dragRectangles);
-
-	internal static void CreateForWindow(AppWindow appWindow)
+	internal static void EnsureForAppWindow(AppWindow appWindow)
 	{
-		var inputSource = new InputNonClientPointerSource(appWindow);
-		_inputSources[appWindow.Id] = inputSource;
+		_inputSources.GetOrAdd(appWindow.Id, id => new InputNonClientPointerSource(appWindow));
 	}
 
 	/// <summary>
@@ -96,6 +91,9 @@ public partial class InputNonClientPointerSource
 
 		return inputSource;
 	}
+
+	internal static bool TryGetForWindowId(WindowId windowId, [NotNullWhen(true)] out InputNonClientPointerSource? inputSource) =>
+		_inputSources.TryGetValue(windowId, out inputSource);
 
 	/// <summary>
 	/// Occurs when the user taps the window caption (for example, double-tap to maximize).

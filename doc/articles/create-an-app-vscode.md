@@ -1,12 +1,17 @@
 ---
 uid: Uno.GettingStarted.CreateAnApp.VSCode
 ---
+<!-- markdownlint-disable MD025 -->
 # Creating an app with VS Code
 
 > [!NOTE]
 > Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vscode).
 
 ## Create the App
+
+There are two ways to create your app. You can either use the Live Wizard or the `/mcp.uno.new` Copilot Agent prompt.
+
+# [**Live Wizard**](#tab/live-wizard)
 
 Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the Uno Platform Live Wizard by following these steps:
 
@@ -62,6 +67,72 @@ Next, open the project using Visual Studio Code.
   > Detailed information on registration and sign-in is available <a href="https://aka.platform.uno/account-access" target="_blank">here</a>.
   >
   > ![Uno Platform Sign in / Register notification](Assets/uno-settings-vsc-notification.png)
+
+# [**Copilot AI Prompt**](#tab/copilot-prompt)
+
+## Using the `/mcp.uno.new` agent prompt
+
+1. Open VS Code in an empty new folder
+1. Add the Uno Platform MCP by creating a file named `.vscode/mcp.json`:
+
+   ```json
+   {
+     "servers": {
+       "uno": {
+          "url": "https://mcp.platform.uno/v1"
+       }
+     }
+   }
+   ```
+
+1. On top of the registration for the uno MCP, click the **start** button.
+
+    ![start MCP](Assets/vscode-start-mcp.png)
+
+1. Open Copilot using the center title bar icon:
+
+    ![copilot title bar icon](Assets/vscode-copilot-icon.png)
+
+1. Select "Agent" on the bottom-left side:
+
+    ![Agent mode](Assets/vscode-agent-mode.png)
+
+1. In the Copilot Window, type the `/mcp.uno.new` then **Enter**.
+1. The Agent will ask you for your app's description, write the following:
+
+    ```text
+    I need a desktop app that shows the current date in the middle of the window.
+    ```
+
+1. Copilot will proceed for a few minutes until it asks to reload the VS Code window.
+1. Once it does, in the command palette, select **Reload Window** in order the Uno Platform extension to load
+
+    ![vscode project selection](Assets/vscode-reload-window.png)
+
+    > [!IMPORTANT]
+    > This step is required for the uno extension to be loaded properly.
+
+1. Select a csproj in the VS Code status bar, if there's a red rectangle
+
+    ![vscode project selection](Assets/vscode-project-selection.png)
+
+1. Wait a few seconds for the XAML Hot Reload server to become available
+
+    ![vscode project selection](Assets/vscode-hot-reload-server.png)
+
+---
+
+## Explore the Agent MCP tools
+
+We can now explore the MCP:
+
+1. If you want to use our MCP tools, make sure to be logged in using your account in [Uno Studio](xref:Uno.GetStarted.Licensing) by using the command palette:
+
+    ![vscode project selection](Assets/vscode-uno-studio-open.png)
+
+1. When clicking on the "double wrench" icon on the right side of Copilot, you should be seeing the Uno Platform MCP tools listed:
+
+    ![uno mcp tools](Assets/vscode-tools-config.png)
 
 ## Debug the App
 
@@ -215,12 +286,12 @@ You can also find [additional VS Code topics](xref:Uno.vscode.additional), such 
 
 ## Next Steps
 
-Now that you're Created and Debug the App.
+Now that you've created and debugged your app, you can continue development or you can [**use Copilot**](xref:Uno.BuildYourApp.AI.Agents) to accelerate your workflow.
 
-Learn more about:
+You can also learn more about:
 
 * [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
-* [Hot Reload feature](xref:Uno.Features.HotReload)
+* [Hot Reload features](xref:Uno.Features.HotReload)
 * [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
 * [Troubleshooting](xref:Uno.UI.CommonIssues)
 * [How-tos and Tutorials](xref:Uno.Tutorials.Intro) See real-world examples with working code.

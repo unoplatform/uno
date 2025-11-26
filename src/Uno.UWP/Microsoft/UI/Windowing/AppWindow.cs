@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Threading;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing.Native;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.ViewManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
-using Windows.ApplicationModel.Core;
-using Microsoft.UI.Dispatching;
 
 namespace Microsoft.UI.Windowing;
 
@@ -116,18 +118,11 @@ partial class AppWindow
 	/// </summary>
 	/// <param name="windowId">The identifier for the AppWindow.</param>
 	/// <returns>The AppWindow with the specified WindowId, if available; null if the WindowId cannot be matched to a valid window.</returns>
-	public static AppWindow GetFromWindowId(MUXWindowId windowId)
-	{
-		if (!_windowIdMap.TryGetValue(windowId, out var appWindow))
-		{
-			return null;
-		}
+	public static AppWindow GetFromWindowId(MUXWindowId windowId) =>
+		_windowIdMap.TryGetValue(windowId, out var appWindow) ? appWindow : null;
 
-		return appWindow;
-	}
-
-	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow)
-		=> _windowIdMap.TryGetValue(windowId, out appWindow);
+	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow) =>
+		_windowIdMap.TryGetValue(windowId, out appWindow);
 
 	internal static void SkipMainWindowId()
 	{
@@ -143,7 +138,16 @@ partial class AppWindow
 	/// <summary>
 	/// Sets the icon for the window.
 	/// </summary>
-	public void SetIcon(string iconPath) => _nativeAppWindow.SetIcon(iconPath);
+	public void SetIcon(string iconPath)
+	{
+		// If the path is relative, construct the absolute path based on the current directory
+		if (!Path.IsPathRooted(iconPath))
+		{
+			iconPath = Path.Combine(Package.Current.InstalledPath, iconPath);
+		}
+
+		_nativeAppWindow.SetIcon(iconPath);
+	}
 
 	/// <summary>
 	/// Shows the window and activates it.

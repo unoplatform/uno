@@ -2,6 +2,7 @@
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Windows.Graphics;
 using Windows.UI.Core;
 using Uno.Extensions;
 using Uno.UI.Dispatching;
@@ -42,7 +43,8 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 			}
 			var bounds = new Rect(0, 0, rawScreenSize.Width / scale, rawScreenSize.Height / scale);
 			SetBoundsAndVisibleBounds(bounds, bounds);
-			Size = new((int)rawScreenSize.Width, (int)rawScreenSize.Height);
+			var fullSize = new SizeInt32((int)rawScreenSize.Width, (int)rawScreenSize.Height);
+			SetSizes(fullSize, fullSize);
 			FrameBufferPointerInputSource.Instance.MousePosition = bounds.GetCenter();
 		}
 		else

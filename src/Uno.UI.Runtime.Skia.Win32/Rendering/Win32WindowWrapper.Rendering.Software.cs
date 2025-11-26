@@ -86,7 +86,7 @@ internal partial class Win32WindowWrapper
 
 		bool IRenderer.IsSoftware() => true;
 
-		void IRenderer.OnWindowExtendedIntoTitleBar() { }
+		void IRenderer.Reinitialize() { }
 
 		void IDisposable.Dispose()
 		{

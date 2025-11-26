@@ -126,7 +126,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 		NativeWindowWrapper = nativeWindow;
 		Window.AppWindow.SetNativeWindow(nativeWindow);
-		InputNonClientPointerSource.CreateForWindow(Window.AppWindow);
+		InputNonClientPointerSource.EnsureForAppWindow(Window.AppWindow);
 		OnNativeSizeChanged(null, new Size(nativeWindow.Bounds.Width, nativeWindow.Bounds.Height));
 		SetVisibleBoundsFromNative();
 	}

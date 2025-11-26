@@ -53,7 +53,7 @@ namespace MUXControlsTestApp
 		private void PaneDisplayModeCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			var tag = Convert.ToString(((sender as ComboBox).SelectedItem as ComboBoxItem).Tag);
-			var mode = (NavigationViewPaneDisplayMode)Enum.Parse(typeof(NavigationViewPaneDisplayMode), tag);
+			var mode = Enum.Parse<NavigationViewPaneDisplayMode>(tag);
 			NavView.PaneDisplayMode = mode;
 		}
 

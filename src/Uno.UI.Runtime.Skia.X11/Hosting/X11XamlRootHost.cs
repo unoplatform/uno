@@ -113,7 +113,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		};
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
-		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
 
@@ -126,7 +125,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		XamlRootMap.Register(xamlRoot, this);
 
 		UpdateWindowPropertiesFromPackage();
-		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
@@ -141,7 +139,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			{
 				XamlRootMap.Unregister(xamlRoot);
 				_windowToHost.Remove(winUIWindow, out var _);
-				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
@@ -155,23 +152,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		=> _windowToHost.TryGetValue(window, out var host) ? host : null;
 
 	public Task Closed { get; }
-
-	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		var minSize = _applicationView.PreferredMinSize;
-
-		if (minSize != Size.Empty)
-		{
-			var hints = new XSizeHints
-			{
-				flags = (int)XSizeHintsFlags.PMinSize,
-				min_width = (int)minSize.Width,
-				min_height = (int)minSize.Height
-			};
-
-			XLib.XSetWMNormalHints(RootX11Window.Display, RootX11Window.Window, ref hints);
-		}
-	}
 
 	internal void UpdateWindowPropertiesFromCoreApplication()
 	{

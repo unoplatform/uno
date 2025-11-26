@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using SamplesApp.UITests;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using System.Linq;
-using SamplesApp.UITests;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
@@ -271,6 +274,34 @@ public class Given_CalendarView
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.IsTrue(calendarView.TemplateSettings.HeaderText.EndsWith(now.Year.ToString(), StringComparison.Ordinal));
+	}
+
+	[TestMethod]
+	public async Task When_NextMonth_InQuickSequence()
+	{
+		var sut = new CalendarView() { DisplayMode = CalendarViewDisplayMode.Month };
+		await UITestHelper.Load(sut);
+
+		var sv = sut.FindFirstDescendantOrThrow<ScrollViewer>("MonthViewScrollViewer");
+		var nextButton = sut.FindFirstDescendantOrThrow<Button>("NextButton");
+
+		var sw = Stopwatch.StartNew();
+		var logs = new List<(double timestamp, double Offset, bool IsIntermediate)>();
+		sv.ViewChanged += (s, e) => logs.Add((sw.ElapsedMilliseconds, sv.VerticalOffset, e.IsIntermediate));
+
+		// Simulate user quickly clicking "next" multiple times
+		nextButton.ProgrammaticClick();
+		await Task.Delay(200);
+		nextButton.ProgrammaticClick();
+		await UITestHelper.WaitForIdle();
+		await UITestHelper.WaitFor(() => logs.Any() && logs[^1].IsIntermediate == false, timeoutMS: 2500, message: "timeout on waiting for CalendarView to finish scrolling");
+		await Task.Delay(FeatureConfiguration.ScrollViewer.SnapDelay * 2); // ample wait time
+
+		var offsets = logs.Select(x => x.Offset).ToArray();
+		Assert.IsTrue(
+			offsets.Zip(offsets.Skip(1)).All(x => x.Second >= x.First),
+			$"should never rewind back: (v-offsets: {string.Join(", ", offsets)})"
+		);
 	}
 }
 #endif

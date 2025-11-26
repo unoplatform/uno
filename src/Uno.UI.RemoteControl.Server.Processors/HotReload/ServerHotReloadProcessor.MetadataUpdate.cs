@@ -110,6 +110,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						}
 					}
 
+					// Pass the TargetFramework as a temporary property so that we do not force the tfm for all projects, but only the head project
+					// (that references the Dev Server assembly which includes the target file to promote back the UnoHotReloadTargetFramework as TargetFramework).
+					// This is required to make sure that an application referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
+					// can still be hot-reloaded.
+					if (properties.Remove("TargetFramework", out var targetFramework))
+					{
+						properties["UnoHotReloadTargetFramework"] = targetFramework;
+					}
+
 					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
 						configureServer.ProjectPath,
 						_reporter,
@@ -246,6 +255,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				else
 				{
 					_reporter.Verbose($"Could not find document with path {file} in the workspace.");
+					hotReload.NotifyIgnored(file);
 				}
 			}
 
@@ -269,7 +279,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			_reporter.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 			sw.Stop();
-
 
 			if (rudeEdits.IsEmpty && updates.IsEmpty)
 			{

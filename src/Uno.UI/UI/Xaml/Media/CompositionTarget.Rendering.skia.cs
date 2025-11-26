@@ -1,9 +1,12 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Windows.Foundation;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
@@ -38,6 +41,8 @@ public partial class CompositionTarget
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
 	private float _xamlRootRasterizationScale;
+	// only set and read on the UI thread
+	private List<Visual> _nativeVisualsInZOrder = new();
 
 	internal event Action? FrameRendered;
 
@@ -78,11 +83,12 @@ public partial class CompositionTarget
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 
-		var renderedFrame = SkiaRenderHelper.RecordPictureAndReturnPath(
+		var (picture, path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordPictureAndReturnPath(
 			(float)bounds.Width,
 			(float)bounds.Height,
 			rootElement.Visual,
 			invertPath: FrameRenderingOptions.invertNativeElementClipPath);
+		var renderedFrame = (picture, path);
 		var previousFrame = default((IntPtr frame, SKPath path)?);
 		lock (_frameGate)
 		{
@@ -102,9 +108,28 @@ public partial class CompositionTarget
 			((ICompositionTarget)this).RequestNewFrame();
 		}
 
-		FrameRendered?.Invoke();
 		InvalidateNativeRender();
 
+		var nativeVisualsZOrderChanged = _nativeVisualsInZOrder.Count != nativeVisualsInZOrder.Count;
+		if (!nativeVisualsZOrderChanged)
+		{
+			for (int i = 0; i < nativeVisualsInZOrder.Count; i++)
+			{
+				if (nativeVisualsInZOrder[i] != _nativeVisualsInZOrder[i])
+				{
+					nativeVisualsZOrderChanged = true;
+					break;
+				}
+			}
+		}
+
+		if (nativeVisualsZOrderChanged)
+		{
+			_nativeVisualsInZOrder = nativeVisualsInZOrder;
+			ContentPresenter.OnNativeHostsRenderOrderChanged(nativeVisualsInZOrder);
+		}
+
+		FrameRendered?.Invoke();
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 

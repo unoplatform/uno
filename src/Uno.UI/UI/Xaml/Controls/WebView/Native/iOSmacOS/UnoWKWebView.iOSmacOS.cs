@@ -261,13 +261,15 @@ public
 		{
 			target = action?.Request.Url.ToUri();
 		}
-		var targetString = target?.ToString();
 
-		bool handled = false;
+		var targetString = target?.ToString() ?? CoreWebView2.BlankUrl;
+		var refererUri = action?.SourceFrame?.Request?.Url?.ToUri() ?? CoreWebView2.BlankUri;
+
+		var handled = false;
 
 		_coreWebView?.RaiseNewWindowRequested(
-			targetString!,
-			action?.SourceFrame?.Request?.Url?.ToUri()!,
+			targetString,
+			refererUri,
 			out handled);
 
 		if (handled)

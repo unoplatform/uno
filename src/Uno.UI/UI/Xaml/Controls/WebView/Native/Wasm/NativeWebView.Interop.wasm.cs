@@ -44,8 +44,14 @@ internal static partial class NativeWebView
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.getAttribute")]
 		internal static partial string? GetAttribute(ElementId htmlId, string attribute);
 
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.getPackageBase")]
+		internal static partial string GetPackageBase();
+
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setAttribute")]
 		internal static partial void SetAttribute(ElementId htmlId, string attribute, string value);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.navigate")]
+		internal static partial void Navigate(ElementId htmlId, string url);
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setupEvents")]
 		internal static partial void SetupEvents(ElementId htmlId);
