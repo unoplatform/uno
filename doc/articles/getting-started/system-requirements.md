@@ -233,7 +233,7 @@ An internet connection is required for:
 
 ### Cloud Development
 
-- **GitPod**: Browser-based development environment
+- **Gitpod**: Browser-based development environment
   - Pre-configured Uno Platform workspaces available
   - No local setup required
   - See [Working with Gitpod](xref:Uno.Features.Gitpod) for details
