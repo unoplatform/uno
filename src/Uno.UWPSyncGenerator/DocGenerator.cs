@@ -12,7 +12,7 @@ using static Uno.UWPSyncGenerator.MarkdownStringBuilder;
 namespace Uno.UWPSyncGenerator
 {
 	/// <summary>
-	/// Generates documentation about what parts of the UWP contract are currently implemented by Uno.
+	/// Generates documentation about what parts of the UWP and WinUI 3 (Windows App SDK) contracts are currently implemented by Uno.
 	/// </summary>
 	class DocGenerator : Generator
 	{
@@ -49,11 +49,11 @@ namespace Uno.UWPSyncGenerator
 			_viewsGrouped = GroupByNamespace(_views);
 			_kosherFrameworkViews = new HashSet<(string name, string namespaceString)>(_views.Select(ps => (ps.UAPSymbol.Name, ps.UAPSymbol.ContainingNamespace.ToDisplayString())));
 
-			using (_sb.Section("List of views implemented in Uno"))
+			using (_sb.Section("Implemented Controls - List of Views in Uno Platform"))
 			{
-				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the WinUI API. Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
+				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the WinUI API (including both UWP and Windows App SDK/WinUI 3 controls). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
 
-				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
+				_sb.AppendParagraph("This page provides a comprehensive list of implemented controls currently available in Uno Platform. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 
 				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/unoplatform/uno/issues")}.");
 
