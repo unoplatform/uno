@@ -427,7 +427,7 @@ public partial class Given_Parser
 	}
 
 	[TestMethod]
-	public async Task When_Invalid_Int32_Value()
+	public async Task When_Invalid_Point_Value()
 	{
 		var xamlFiles = new[]
 		{
@@ -440,10 +440,7 @@ public partial class Given_Parser
 					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
 
 					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition />
-						</Grid.RowDefinitions>
-						<TextBlock Grid.Row="invalid" Text="Test" />
+						<Grid.RenderTransformOrigin>auto,0</Grid.RenderTransformOrigin>
 					</Grid>
 				</Page>
 				"""),
@@ -452,7 +449,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 10, 4, 10, 4).WithArguments("Invalid Int32 value 'invalid'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 4, 7, 4).WithArguments("Invalid Point value 'auto,0'. Each component must be a valid number"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 

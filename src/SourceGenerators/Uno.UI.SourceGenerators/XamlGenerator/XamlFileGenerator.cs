@@ -4800,34 +4800,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					case SpecialType.System_Int32:
 						// UWP ignores everything starting from a space. So `5 6 7` is a valid int value and it's "5".
-						var int32Value = IgnoreStartingFromFirstSpaceIgnoreLeading(GetMemberValue());
-						if (!int.TryParse(int32Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _))
-						{
-							throw new XamlGenerationException($"Invalid Int32 value '{GetMemberValue()}'", owner);
-						}
-						return int32Value;
+						return IgnoreStartingFromFirstSpaceIgnoreLeading(GetMemberValue());
 					case SpecialType.System_Int64:
-						var int64Value = GetMemberValue();
-						if (!long.TryParse(int64Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _))
-						{
-							throw new XamlGenerationException($"Invalid Int64 value '{int64Value}'", owner);
-						}
-						return int64Value;
 					case SpecialType.System_Int16:
-						var int16Value = GetMemberValue();
-						if (!short.TryParse(int16Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _))
-						{
-							throw new XamlGenerationException($"Invalid Int16 value '{int16Value}'", owner);
-						}
-						return int16Value;
 					case SpecialType.System_Byte:
 						// UWP doesn't ignore spaces here.
-						var byteValue = GetMemberValue();
-						if (!byte.TryParse(byteValue, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _))
-						{
-							throw new XamlGenerationException($"Invalid Byte value '{byteValue}'", owner);
-						}
-						return byteValue;
+						return GetMemberValue();
 					case SpecialType.System_Single:
 					case SpecialType.System_Double:
 						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner);
@@ -4900,22 +4878,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return "new System.Drawing.PointF(" + AppendFloatSuffix(GetMemberValue()) + ")";
 
 					case "System.Drawing.Size":
-						return "new System.Drawing.Size(" + SplitAndJoin(memberValue) + ")";
+						return "new System.Drawing.Size(" + SplitAndJoin(memberValue, "Size") + ")";
 
 					case "Windows.Foundation.Size":
-						return "new Windows.Foundation.Size(" + SplitAndJoin(memberValue) + ")";
+						return "new Windows.Foundation.Size(" + SplitAndJoin(memberValue, "Size") + ")";
 
 					case "Microsoft.UI.Xaml.Media.Matrix":
-						return "new Microsoft.UI.Xaml.Media.Matrix(" + SplitAndJoin(memberValue) + ")";
+						return "new Microsoft.UI.Xaml.Media.Matrix(" + SplitAndJoin(memberValue, "Matrix") + ")";
 
 					case "Windows.Foundation.Point":
-						return "new Windows.Foundation.Point(" + SplitAndJoin(memberValue) + ")";
+						return "new Windows.Foundation.Point(" + SplitAndJoin(memberValue, "Point") + ")";
 
 					case "System.Numerics.Vector2":
-						return "new global::System.Numerics.Vector2(" + SplitAndJoin(memberValue) + ")";
+						return "new global::System.Numerics.Vector2(" + SplitAndJoin(memberValue, "Vector2") + ")";
 
 					case "System.Numerics.Vector3":
-						return "new global::System.Numerics.Vector3(" + SplitAndJoin(memberValue) + ")";
+						return "new global::System.Numerics.Vector3(" + SplitAndJoin(memberValue, "Vector3") + ")";
 
 					case "Microsoft.UI.Xaml.Input.InputScope":
 						return "new global::Microsoft.UI.Xaml.Input.InputScope { Names = { new global::Microsoft.UI.Xaml.Input.InputScopeName { NameValue = global::Microsoft.UI.Xaml.Input.InputScopeNameValue." + memberValue + "} } }";
@@ -5015,8 +4993,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				throw new XamlGenerationException($"Unable to convert '{memberValue}' to '{propertyType}'", owner);
 
-				static string? SplitAndJoin(string? value)
-					=> value == null ? null : splitRegex.Replace(value, ", ");
+				string? SplitAndJoin(string? value, string typeName)
+				{
+					if (value == null)
+					{
+						return null;
+					}
+
+					// Split the value by commas or whitespace and validate each component is a valid number
+					var components = splitRegex.Split(value);
+					foreach (var component in components)
+					{
+						var trimmed = component.Trim();
+						if (!string.IsNullOrEmpty(trimmed) && !double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+						{
+							throw new XamlGenerationException($"Invalid {typeName} value '{value}'. Each component must be a valid number", owner);
+						}
+					}
+
+					return splitRegex.Replace(value, ", ");
+				}
 
 				string RewriteUri(string? rawValue)
 				{
