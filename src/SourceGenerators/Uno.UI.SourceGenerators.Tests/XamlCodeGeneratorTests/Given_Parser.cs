@@ -308,6 +308,38 @@ public partial class Given_Parser
 	}
 
 	[TestMethod]
+	public async Task When_Invalid_Margin_Value()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Grid Margin="auto,0,0,0">
+					</Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		// TODO: Currently this generates a CS0103 error in generated code.
+		// We should instead get a UXAML0001 error at the proper location in the XAML file.
+		// Related issue: [xaml-gen] CS0103 with invalid XAML
+		test.ExpectedDiagnostics.AddRange([
+			DiagnosticResult.CompilerError("CS0103").WithArguments("auto"),
+			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_Multiple_With_Invalid()
 	{
 		var xamlFiles = new[]
@@ -755,38 +787,6 @@ public partial class Given_Parser
 				}
 			}
 		}.AddGeneratedSources();
-
-		await test.RunAsync();
-	}
-
-	[TestMethod]
-	public async Task When_Invalid_Margin_Value()
-	{
-		var xamlFiles = new[]
-		{
-			new XamlFile(
-				"MainPage.xaml",
-				"""
-				<Page x:Class="TestRepro.MainPage"
-					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
-
-					<Grid Margin="auto,0,0,0">
-					</Grid>
-				</Page>
-				"""),
-		};
-
-		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
-
-		// TODO: Currently this generates a CS0103 error in generated code.
-		// We should instead get a UXAML0001 error at the proper location in the XAML file.
-		// Related issue: [xaml-gen] CS0103 with invalid XAML
-		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0103").WithArguments("auto"),
-			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
-		]);
 
 		await test.RunAsync();
 	}
