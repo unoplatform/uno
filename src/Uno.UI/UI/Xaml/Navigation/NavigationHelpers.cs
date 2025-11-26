@@ -29,7 +29,7 @@ internal static class NavigationHelpers
 			throw new ArgumentNullException(nameof(descriptor));
 		}
 
-		var sourcePageType = Type.GetType(descriptor);
+		var sourcePageType = PageStackEntry.ResolveDescriptor(descriptor);
 
 		// All properties can be null.
 		NavigationEventArgs spNavigationEventArgs = new(
@@ -54,7 +54,7 @@ internal static class NavigationHelpers
 			throw new ArgumentNullException(nameof(descriptor));
 		}
 
-		var sourcePageType = Type.GetType(descriptor);
+		var sourcePageType = PageStackEntry.ResolveDescriptor(descriptor);
 
 		// All properties can be null.
 		NavigatingCancelEventArgs spNavigatingCancelEventArgs = new(

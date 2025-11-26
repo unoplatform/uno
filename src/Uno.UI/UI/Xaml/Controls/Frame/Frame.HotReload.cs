@@ -32,7 +32,7 @@ partial class Frame
 				{
 					// Note: Does not support CNOMUA
 					frame.RemovePageFromCache(type.FullName);
-					frame.RemovePageFromCache(type.AssemblyQualifiedName);
+					frame.RemovePageFromCache(Navigation.PageStackEntry.BuildDescriptor(type));
 				}
 			}
 			else // Uno's legacy implementation

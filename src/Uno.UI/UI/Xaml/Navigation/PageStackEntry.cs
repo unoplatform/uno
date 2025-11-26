@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Loader;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Extensions.Specialized;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers;
+using System.Linq;
+using System.Reflection;
+using Microsoft.UI.Composition.Interactions;
 
 namespace Microsoft.UI.Xaml.Navigation;
 
@@ -33,7 +38,7 @@ public sealed partial class PageStackEntry : DependencyObject
 		InitializeBinder();
 
 		SourcePageType = sourcePageType;
-		SetDescriptor(sourcePageType.AssemblyQualifiedName);
+		SetDescriptor(BuildDescriptor(sourcePageType));
 
 		Parameter = parameter;
 		NavigationTransitionInfo = navigationTransitionInfo;
@@ -58,11 +63,48 @@ public sealed partial class PageStackEntry : DependencyObject
 		spPageStackEntry.NavigationTransitionInfo = transitionInfo;
 
 		spPageStackEntry.SetDescriptor(descriptor);
-		var sourcePageType = Type.GetType(descriptor);
+		var sourcePageType = ResolveDescriptor(descriptor);
 		spPageStackEntry.SourcePageType = sourcePageType;
 
 		return spPageStackEntry;
 	}
+
+	internal static string BuildDescriptor(Type pageType)
+	{
+		if (AssemblyLoadContext.GetLoadContext(pageType.Assembly) != AssemblyLoadContext.Default)
+		{
+			var alc = AssemblyLoadContext.GetLoadContext(pageType.Assembly);
+			return $"{pageType.AssemblyQualifiedName}##{alc.Name}";
+		}
+
+		return pageType.AssemblyQualifiedName;
+	}
+
+	internal static Type ResolveDescriptor(string descriptor)
+	{
+		if (!descriptor.Contains("##"))
+		{
+			return GetType(descriptor);
+		}
+		else
+		{
+			var alcParts = descriptor.Split("##", StringSplitOptions.None);
+
+			if (AssemblyLoadContext.All.Where(alc => alc.Name == alcParts[1]).FirstOrDefault() is { } alc)
+			{
+				using (alc.EnterContextualReflection())
+				{
+					return GetType(alcParts[0]);
+				}
+			}
+
+			return null;
+		}
+	}
+
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
+	static Type GetType(string typeName)
+		=> Type.GetType(typeName);
 
 	//------------------------------------------------------------------------
 	//

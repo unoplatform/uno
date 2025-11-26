@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Loader;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -289,7 +290,7 @@ partial class Frame
 
 			m_isNavigationFromMethod = true;
 
-			var strDescriptor = sourcePageType.AssemblyQualifiedName;
+			var strDescriptor = Navigation.PageStackEntry.BuildDescriptor(sourcePageType);
 
 			m_tpNavigationTransitionInfo = navigationTransitionInfo;
 			m_tpNavigationHistory.NavigateNew(strDescriptor, parameter, navigationTransitionInfo);
@@ -714,7 +715,7 @@ partial class Frame
 			throw new ArgumentNullException(nameof(descriptor));
 		}
 
-		var sourcePageType = Type.GetType(descriptor);
+		var sourcePageType = PageStackEntry.ResolveDescriptor(descriptor);
 		var spNavigationFailedEventArgs = new NavigationFailedEventArgs(sourcePageType, errorResult);
 
 		NavigationFailed?.Invoke(this, spNavigationFailedEventArgs);
