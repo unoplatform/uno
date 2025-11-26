@@ -2,13 +2,20 @@
 
 a.k.a. UDEI Uno Development Environment Indicator
 
-Places to update:
+Well known places to update:
 * VSIX:
   * Components: https://github.com/unoplatform/uno.studio/blob/main/src/Uno.Studio/Studio.Extensions/Tools/_IDEChannel/DevelopmentEnvironmentComponent.WellKnown.cs
   * Messages: https://github.com/unoplatform/uno.studio/blob/main/src/Uno.Studio/Studio.Extensions/Tools/_IDEChannel/DevelopmentEnvironmentStatusIdeMessage.WellKnown.cs
-* VS.RC + Dev-Server: https://github.com/unoplatform/uno/blob/d7fb5e64a2b426d89deab597299f94853621a9b0/src/Uno.UI.RemoteControl.Messaging/IDEChannel/DevelopmentEnvironmentStatusIdeMessage.cs#L39
-* Rider: https://github.com/unoplatform/uno.rider/pull/379/files#diff-41f11eb6df94e2f9a54f0c78a3dc140616b9b45a756d487ce66dc4dc553e729aR116
+* VS.RC + Dev-Server: 
+  * Messages: https://github.com/unoplatform/uno/blob/master/src/Uno.UI.RemoteControl.Messaging/IDEChannel/UDEI/DevelopmentEnvironmentStatusIdeMessage.WellKnown.cs
+* Rider:
+  * Components: __TBD__
+  * Messages: https://github.com/unoplatform/uno.rider/blob/main/src/dotnet/uno.rider/UDEI/UnoDevelopmentEnvironmentStatusMessages.cs  
 * VS Code: __TBD__
+
+> [!IMPORTANT]
+> This only defines the places for the **well-known core components**.
+> The indicator is extensible and any component can report it's own state by resolving the [IUnoDevelopmentEnvironmentIndicator](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.RemoteControl.VS/VSIXChannel/IUnoDevelopmentEnvironmentIndicator.cs) from the IDEChannel.
 
 # Components
 
