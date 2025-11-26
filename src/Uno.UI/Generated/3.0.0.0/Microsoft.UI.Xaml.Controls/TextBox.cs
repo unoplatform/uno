@@ -27,8 +27,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Text
 		// Skipping already declared property SelectionStart
 		// Skipping already declared property SelectionLength
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__")]
 		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColorWhenNotFocused
 		{
 			get
@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__ || IS_UNIT_TESTS
+#if __SKIA__ || IS_UNIT_TESTS || __NETSTD_REFERENCE__
 		// Skipping already declared property SelectionHighlightColorWhenNotFocused
 #endif
 		// Skipping already declared property SelectionHighlightColor
@@ -253,15 +253,15 @@ namespace Microsoft.UI.Xaml.Controls
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)));
 #endif
 		// Skipping already declared property SelectionHighlightColorProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectionHighlightColorWhenNotFocused), typeof(global::Microsoft.UI.Xaml.Media.SolidColorBrush),
 			typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SolidColorBrush)));
 #endif
-#if __SKIA__ || IS_UNIT_TESTS
+#if __SKIA__ || IS_UNIT_TESTS || __NETSTD_REFERENCE__
 		// Skipping already declared property SelectionHighlightColorWhenNotFocusedProperty
 #endif
 		// Skipping already declared property TextAlignmentProperty

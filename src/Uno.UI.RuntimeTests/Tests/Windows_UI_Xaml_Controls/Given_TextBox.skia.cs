@@ -4607,6 +4607,99 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreEqualAsync(screenshot1, screenshot2);
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20401")]
+		public async Task When_SelectionHighlightColorWhenNotFocused_Set()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var button = new Button { Content = "Click me" };
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello World",
+				SelectionHighlightColor = new SolidColorBrush(Colors.Blue),
+				SelectionHighlightColorWhenNotFocused = new SolidColorBrush(Colors.Red)
+			};
+
+			var sp = new StackPanel
+			{
+				Children = { SUT, button }
+			};
+
+			await UITestHelper.Load(sp);
+
+			// Focus the TextBox and select some text
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(0, 5); // Select "Hello"
+			await WindowHelper.WaitForIdle();
+
+			// Take screenshot with focused selection (should show blue)
+			var screenshotFocused = await UITestHelper.ScreenShot(SUT);
+
+			// Move focus to button
+			button.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Take screenshot with unfocused selection (should show red)
+			var screenshotUnfocused = await UITestHelper.ScreenShot(SUT);
+
+			// The screenshots should be different because the selection color changed
+			await ImageAssert.AreNotEqualAsync(screenshotFocused, screenshotUnfocused);
+
+			// Verify that red color is present in unfocused screenshot (the selection highlight)
+			Assert.IsTrue(HasColorInRectangle(screenshotUnfocused, new Rectangle(0, 0, screenshotUnfocused.Width / 2, screenshotUnfocused.Height), Colors.Red),
+				"Red selection highlight should be visible when unfocused");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20401")]
+		public async Task When_SelectionHighlightColorWhenNotFocused_Not_Set()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var button = new Button { Content = "Click me" };
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello World",
+				SelectionHighlightColor = new SolidColorBrush(Colors.Blue)
+				// SelectionHighlightColorWhenNotFocused is NOT set
+			};
+
+			var sp = new StackPanel
+			{
+				Children = { SUT, button }
+			};
+
+			await UITestHelper.Load(sp);
+
+			// Focus the TextBox and select some text
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(0, 5); // Select "Hello"
+			await WindowHelper.WaitForIdle();
+
+			// Take screenshot with focused selection (should show blue)
+			var screenshotFocused = await UITestHelper.ScreenShot(SUT);
+			Assert.IsTrue(HasColorInRectangle(screenshotFocused, new Rectangle(0, 0, screenshotFocused.Width / 2, screenshotFocused.Height), Colors.Blue),
+				"Blue selection highlight should be visible when focused");
+
+			// Move focus to button
+			button.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Take screenshot when unfocused - selection should NOT be visible
+			var screenshotUnfocused = await UITestHelper.ScreenShot(SUT);
+
+			// The blue selection should no longer be visible when unfocused (default behavior)
+			Assert.IsFalse(HasColorInRectangle(screenshotUnfocused, new Rectangle(0, 0, screenshotUnfocused.Width / 2, screenshotUnfocused.Height), Colors.Blue),
+				"Blue selection highlight should NOT be visible when unfocused if SelectionHighlightColorWhenNotFocused is not set");
+		}
+
 		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
 		{
 			for (var x = rect.Left; x < rect.Right; x++)
