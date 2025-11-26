@@ -55,7 +55,10 @@ public partial class Package
 		_entryAssembly = entryAssembly;
 		var assemblyName = entryAssembly.GetName();
 		Current.Id.Name = assemblyName.Name; // Set the package name to the entry assembly name by default.
-		Current.Id.Version = new PackageVersion(assemblyName.Version);
+		if (assemblyName.Version is not null)
+		{
+			Current.Id.Version = new PackageVersion(assemblyName.Version);
+		}
 		Current.ParsePackageManifest();
 		IsManifestInitialized = true;
 	}
@@ -118,6 +121,18 @@ public partial class Package
 			if (idNode is not null)
 			{
 				Id.Name = idNode.Attributes?.GetNamedItem("Name")?.Value ?? "";
+
+				// By default we use the entry assembly version, which is usually set by the <AssemblyDisplayVersion> MSBuild property.
+				// If not set yet, we try to get the version from the manifest instead.
+				if (Id.Version is null)
+				{
+					var versionString = idNode.Attributes?.GetNamedItem("Version")?.Value ?? "";
+					if (Version.TryParse(versionString, out var version))
+					{
+						Id.Version = new PackageVersion(version);
+					}
+				}
+
 				Id.Publisher = idNode.Attributes?.GetNamedItem("Publisher")?.Value ?? "";
 			}
 		}
