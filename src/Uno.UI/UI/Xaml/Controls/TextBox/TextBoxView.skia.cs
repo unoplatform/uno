@@ -119,6 +119,11 @@ namespace Microsoft.UI.Xaml.Controls
 			_overlayTextBoxViewExtension?.UpdateProperties();
 		}
 
+		internal void OnSelectionHighlightColorWhenNotFocusedChanged(SolidColorBrush brush)
+		{
+			DisplayBlock.SelectionHighlightColorWhenNotFocused = brush;
+		}
+
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
 			if (_isSkiaTextBox && _useInvisibleNativeTextView)

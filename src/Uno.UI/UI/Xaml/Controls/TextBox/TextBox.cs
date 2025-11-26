@@ -62,8 +62,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private WeakReference<Button> _deleteButton;
 
 		private Action _selectionHighlightColorChanged;
+		private Action _selectionHighlightColorWhenNotFocusedChanged;
 		private Action _foregroundBrushChanged;
 		private IDisposable _selectionHighlightBrushChangedSubscription;
+		private IDisposable _selectionHighlightColorWhenNotFocusedBrushChangedSubscription;
 		private IDisposable _foregroundBrushChangedSubscription;
 #pragma warning restore CS0067, CS0649
 
@@ -620,6 +622,42 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
+
+		#endregion
+
+		#region SelectionHighlightColorWhenNotFocused DependencyProperty
+
+		/// <summary>
+		/// Gets or sets the brush used to highlight the selected text when the TextBox does not have focus.
+		/// </summary>
+		public SolidColorBrush SelectionHighlightColorWhenNotFocused
+		{
+			get => (SolidColorBrush)GetValue(SelectionHighlightColorWhenNotFocusedProperty);
+			set => SetValue(SelectionHighlightColorWhenNotFocusedProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the SelectionHighlightColorWhenNotFocused dependency property.
+		/// </summary>
+		public static DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionHighlightColorWhenNotFocused),
+				typeof(SolidColorBrush),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+					default(SolidColorBrush),
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorWhenNotFocusedChanged((SolidColorBrush)e.OldValue, (SolidColorBrush)e.NewValue)));
+
+		private void OnSelectionHighlightColorWhenNotFocusedChanged(SolidColorBrush oldBrush, SolidColorBrush newBrush)
+		{
+			_selectionHighlightColorWhenNotFocusedBrushChangedSubscription?.Dispose();
+			if (newBrush != null)
+			{
+				_selectionHighlightColorWhenNotFocusedBrushChangedSubscription = Brush.SetupBrushChanged(newBrush, ref _selectionHighlightColorWhenNotFocusedChanged, () => OnSelectionHighlightColorWhenNotFocusedChangedPartial(newBrush));
+			}
+		}
+
+		partial void OnSelectionHighlightColorWhenNotFocusedChangedPartial(SolidColorBrush brush);
 
 		#endregion
 

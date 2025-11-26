@@ -50,6 +50,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool IsTextBoxDisplay { get; init; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the selection is being rendered in unfocused mode.
+		/// When true and SelectionHighlightColorWhenNotFocused is set, the unfocused color will be used.
+		/// </summary>
+		internal bool IsRenderingUnfocusedSelection { get; set; }
+
 #if DEBUG
 		private protected override void OnLoaded()
 		{
@@ -192,7 +198,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				paint.Reset();
 
-				paint.Color = SelectionHighlightColor.Color.ToSKColor();
+				// When rendering unfocused selection and SelectionHighlightColorWhenNotFocused is set, use that color
+				var highlightColor = IsRenderingUnfocusedSelection && SelectionHighlightColorWhenNotFocused is { } unfocusedColor
+					? unfocusedColor
+					: SelectionHighlightColor;
+
+				paint.Color = highlightColor.Color.ToSKColor();
 				paint.Style = SKPaintStyle.Fill;
 
 				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
@@ -370,6 +381,27 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
+		#endregion
+
+		#region SelectionHighlightColorWhenNotFocused (DP)
+		/// <summary>
+		/// Gets or sets the brush used to highlight the selected text when the TextBlock does not have focus.
+		/// This property is primarily used when the TextBlock is used as a display block for a TextBox.
+		/// </summary>
+		internal SolidColorBrush SelectionHighlightColorWhenNotFocused
+		{
+			get => (SolidColorBrush)GetValue(SelectionHighlightColorWhenNotFocusedProperty);
+			set => SetValue(SelectionHighlightColorWhenNotFocusedProperty, value);
+		}
+
+		internal static DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionHighlightColorWhenNotFocused),
+				typeof(SolidColorBrush),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					default(SolidColorBrush),
+					propertyChangedCallback: (s, e) => ((TextBlock)s)?.InvalidateInlineAndRequireRepaint()));
 		#endregion
 
 		#region SelectedText (DP - readonly)
