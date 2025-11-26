@@ -183,10 +183,13 @@ adb logcat -c && adb logcat
 ```
 
 **Tips for Effective Filtering:**
-- Use `grep` (Linux/macOS) or `findstr` (Windows) to filter output:
+- Use `grep` (Linux/macOS) or `findstr`/`Select-String` (Windows) to filter output:
   ```bash
   # Linux/macOS
   adb logcat | grep -i "exception"
+  
+  # Windows Command Prompt
+  adb logcat | findstr "exception"
   
   # Windows PowerShell
   adb logcat | Select-String "exception"
@@ -201,17 +204,17 @@ adb logcat -c && adb logcat
 Add this code to your `App.xaml.cs` constructor to increase Uno-specific logging detail:
 
 ```csharp
-#if __ANDROID__
 using Microsoft.Extensions.Logging;
 
 public App()
 {
+#if __ANDROID__
     // Enable verbose logging for Uno Platform
     Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.MinimumLevel = LogLevel.Trace;
+#endif
     
     this.InitializeComponent();
 }
-#endif
 ```
 
 **Key Search Terms for Logcat:**
