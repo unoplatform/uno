@@ -31,6 +31,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private IDisposable? _solutionSubscriptions;
 		private readonly FastAsyncLock _solutionUpdateGate = new();
+		private readonly BufferGate _solutionWatchersGate = new();
 
 		private Task<(Solution, WatchHotReloadService)>? _initializeTask;
 		private Solution? _currentSolution;
@@ -205,7 +206,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				})
 				.ToArray();
 			var processing = new CancellationTokenSource(); // Updates are cumulative, we cannot abort updates, so we have a SINGLE token for all operations.
-			var watchersSubscription = To2StepsObservable(watchers, HasInterest).Subscribe(
+			var watchersSubscription = To2StepsObservable(watchers, HasInterest, _solutionWatchersGate).Subscribe(
 				filePaths => _ = ProcessMetadataChanges(filePaths, processing.Token),
 				e => Console.WriteLine($"Error {e}"));
 

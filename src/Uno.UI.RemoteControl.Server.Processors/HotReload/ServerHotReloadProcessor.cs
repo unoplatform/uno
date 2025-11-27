@@ -595,7 +595,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task ProcessUpdateFile(UpdateFile message)
 		{
-			var hotReload = await StartHotReload(ImmutableHashSet<string>.Empty.Add(Path.GetFullPath(message.FilePath)));
+			var hotReload = await StartHotReload([Path.GetFullPath(message.FilePath)]);
+			using var _ = _solutionWatchersGate.Acquire(); // Makes sure to batch all file changes in a single solution update
 
 			try
 			{
@@ -798,7 +799,60 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		#region Helpers
-		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter)
+		private class BufferGate
+		{
+			private int _holders;
+			private ImmutableHashSet<Action> _onRelease = ImmutableHashSet<Action>.Empty;
+
+			public IDisposable Acquire()
+			{
+				Interlocked.Increment(ref _holders);
+				return new Holder(this);
+			}
+
+			public class Holder(BufferGate owner) : IDisposable
+			{
+				private int _disposed;
+				public void Dispose()
+				{
+					if (Interlocked.CompareExchange(ref _disposed, 1, 0) is 0
+						&& Interlocked.Decrement(ref owner._holders) is 0)
+					{
+						owner.ProcessCallbacks();
+					}
+				}
+			}
+
+			public void RunOrPlan(Action action)
+			{
+				if (_holders is 0)
+				{
+					action();
+				}
+				else
+				{
+					ImmutableInterlocked.Update(ref _onRelease, static (set, action) => set.Add(action), action);
+					if (_holders is 0) // The gate has been released while we were adding the callback, process it now
+					{
+						ProcessCallbacks();
+					}
+				}
+			}
+
+			private void ProcessCallbacks()
+			{
+				foreach (var callback in Interlocked.Exchange(ref _onRelease, ImmutableHashSet<Action>.Empty))
+				{
+					try
+					{
+						callback();
+					}
+					catch (Exception) { }
+				}
+			}
+		}
+
+		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter, BufferGate bufferGate)
 			=> Observable.Create<Task<ImmutableHashSet<string>>>(o =>
 			{
 				// Create an observable instead of using the FromEventPattern which
@@ -808,7 +862,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				var gate = new object();
 				var buffer = default((ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task)?);
-				var bufferTimer = new Timer(CloseBuffer);
+				var bufferTimer = new Timer(_ => bufferGate.RunOrPlan(CloseBuffer));
 
 				void changed(object s, FileSystemEventArgs args) => OnNext(args.FullPath);
 				void renamed(object s, RenamedEventArgs args) => OnNext(args.FullPath);
@@ -840,7 +894,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					}
 				}
 
-				void CloseBuffer(object? state)
+				void CloseBuffer()
 				{
 					(ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task) completingBuffer;
 					if (buffer is null)
