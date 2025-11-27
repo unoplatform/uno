@@ -86,3 +86,65 @@ To include documentation (let's take Uno.Themes as an example):
    ```
 
 * Create a PR and validate that the content you added is appearing in the Uno Platform `toc.yml` where `external/uno.themes/` is visible. Ensure href path ends by `toc.yml` for all nodes to be visible.
+
+## Documentation deployment environments
+
+The Uno Platform documentation is deployed to three different environments, each serving a specific purpose in the documentation lifecycle:
+
+### Canary Environment
+
+The **Canary** environment reflects the latest changes from the `master` branch and default branches of all external documentation repositories. It is automatically updated on every commit to the `master` branch.
+
+- **Purpose**: Active iteration testing and previewing upcoming documentation changes
+- **Source**: Default/main branches of all repositories
+- **Import Script**: `doc/import_external_docs_canary.ps1`
+- **Build Target**: `GenerateDocCanary` in `build/Uno.UI.Build.csproj`
+- **Deployment**: Automatic on every commit to `master`
+
+Use the Canary environment when you want to:
+- Preview documentation changes before they are included in a release
+- Test documentation for features that are still in development
+- Validate that external documentation imports work correctly with the latest changes
+
+### Staging Environment
+
+The **Staging** environment mirrors what will go to production, built from stable release branches or default branches depending on the repository's release status.
+
+- **Purpose**: Final verification before production deployment
+- **Source**: Stable release branches (e.g., `release/stable/6.4`) or default branches
+- **Import Script**: `doc/import_external_docs.ps1`
+- **Build Target**: `GenerateDoc` in `build/Uno.UI.Build.csproj`
+- **Deployment**: Automatic on commits to `master` or `release/stable/*` branches
+
+Use the Staging environment when you want to:
+- Verify documentation that will be deployed to production
+- Test critical documentation fixes before they go live
+- Ensure that stable documentation is correctly integrated with the latest release
+
+### Production Environment
+
+The **Production** environment is the live documentation site at https://platform.uno/docs/articles/intro.html.
+
+- **Purpose**: Live documentation for public consumption
+- **Source**: Same as staging (stable release branches)
+- **Deployment**: Manual approval required after staging deployment
+
+Production deployment requires manual approval to ensure:
+- Final quality checks are performed
+- Documentation aligns with the current stable release
+- Critical fixes can be deployed independently of code releases
+
+### Pipeline Architecture
+
+The documentation deployment uses Azure DevOps pipeline stages instead of a separate release pipeline:
+
+1. **Setup Stage**: Validates commits, spelling, and markdown formatting
+2. **Docs Generation Stage**: Builds both canary and staging documentation artifacts
+3. **Deploy Canary Stage**: Automatically deploys canary docs to the canary environment (master branch only)
+4. **Deploy Staging Stage**: Automatically deploys staging docs to the staging environment (master and stable branches)
+5. **Deploy Production Stage**: Deploys staging docs to production after manual approval (master and stable branches)
+
+This architecture ensures:
+- Documentation deployment is automated, repeatable, and traceable
+- The deployment process is integrated with the main build pipeline
+- Different environments can be updated independently based on branch and approval rules
