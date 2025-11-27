@@ -487,8 +487,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildApplicationInitializerBody(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			writer.AppendLineIndented($"var __that = this;");
+			writer.AppendLineIndented($"var __isDefaultAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(global::{_defaultNamespace}.GlobalStaticResources).Assembly) == global::System.Runtime.Loader.AssemblyLoadContext.Default;");
 
-			using (writer.BlockInvariant($"if (global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(global::{_defaultNamespace}.GlobalStaticResources).Assembly) == global::System.Runtime.Loader.AssemblyLoadContext.Default)"))
+			using (writer.BlockInvariant($"if (__isDefaultAlc)"))
 			{
 				TryAnnotateWithGeneratorSource(writer);
 				InitializeRemoteControlClient(writer);
@@ -522,6 +523,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
 				{
+					// In secondary AssemblyLoadContext (ALC), BindableMetadata.Provider is set to null to prevent
+					// sharing bindable type metadata across ALC boundaries. This avoids issues with type resolution
+					// and ensures that data binding metadata is only available in the default ALC. As a result,
+					// reflection-based data binding may not function in secondary ALCs (e.g., plugin or hot-reload scenarios).
 					writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = null;");
 				}
 			}
@@ -529,7 +534,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 			Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
 
-			using (writer.BlockInvariant($"if (global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(global::{_defaultNamespace}.GlobalStaticResources).Assembly) == global::System.Runtime.Loader.AssemblyLoadContext.Default)"))
+			using (writer.BlockInvariant($"if (__isDefaultAlc)"))
 			{
 				ApplyFontsOverride(writer);
 
