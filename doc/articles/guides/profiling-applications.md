@@ -27,7 +27,7 @@ First, create an alias to `mlaunch`:
 
 ```bash
 cd [your-folder-with-the-csproj]
-$alias mlaunch=$(dotnet build -getProperty:MlaunchPath *.csproj -f net9.0-ios)
+alias mlaunch=$(dotnet build -getProperty:MlaunchPath *.csproj -f net9.0-ios)
 ```
 
 ### Profiling on an iOS Simulator
@@ -50,12 +50,12 @@ $alias mlaunch=$(dotnet build -getProperty:MlaunchPath *.csproj -f net9.0-ios)
 1. Launch the app (it will be paused on startup waiting for the .NET tooling to connect):
 
     ```bash
-    mlaunch --device :v2:udid=xxxxxxxx-yyyy-zzzz-aaaa-bbbbbbbbbbbb --wait-for-exit --stdout=$(tty) --stderr=$(tty) --launchsim=testgc01/bin/Debug/net*-ios/*/*.app
+    mlaunch --device :v2:udid=xxxxxxxx-yyyy-zzzz-aaaa-bbbbbbbbbbbb --wait-for-exit --stdout=$(tty) --stderr=$(tty) --launchsim=[your-app-path]/bin/Debug/net*-ios/*/*.app
     ```
 
     Replace the UDID with the one you found above.
 
-1. One the app is waiting ahead and start profiling:
+1. Once the app is waiting, go ahead and start profiling:
 
     ```dotnetcli
     dotnet-trace collect --dsrouter ios-sim --format speedscope
