@@ -72,7 +72,7 @@ public sealed partial class PageStackEntry : DependencyObject
 
 	internal static string BuildDescriptor(Type pageType)
 	{
-		var assemblyQualifiedName = pageType.AssemblyQualifiedName 
+		var assemblyQualifiedName = pageType.AssemblyQualifiedName
 			?? throw new ArgumentException($"Type {pageType.FullName} does not have an assembly-qualified name.", nameof(pageType));
 
 		if (AssemblyLoadContext.GetLoadContext(pageType.Assembly) != AssemblyLoadContext.Default)

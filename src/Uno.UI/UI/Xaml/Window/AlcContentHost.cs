@@ -11,7 +11,7 @@ namespace Uno.UI.Xaml.Controls;
 /// A specialized ContentControl that hosts content from a secondary AssemblyLoadContext,
 /// inheriting resources from the secondary ALC's Application.Current.Resources.
 /// </summary>
-internal sealed class AlcContentHost : ContentControl
+internal sealed partial class AlcContentHost : ContentControl
 {
 	private Application? _sourceApplication;
 
