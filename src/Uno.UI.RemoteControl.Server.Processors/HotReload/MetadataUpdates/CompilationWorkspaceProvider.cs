@@ -1,17 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Composition.Hosting;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using System.Linq;
-using System.Threading;
-using System;
-using System.IO;
-using System.Reflection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
-using System.Collections.Generic;
-using System.Runtime.Loader;
-using Microsoft.Extensions.Logging;
-using System.Composition.Hosting;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -63,11 +64,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			var globalProperties = properties.Where(property => IsValidProperty(property.Key)).ToDictionary();
 
 			MSBuildWorkspace workspace = null!;
+			//Microsoft.DotNet.Watch.IncrementalMSBuildWorkspace workspace = null!;
 			for (var i = 3; i > 0; i--)
 			{
 				try
 				{
 					workspace = MSBuildWorkspace.Create(globalProperties);
+					//workspace = new IncrementalMSBuildWorkspace(NullLogger.Instance);
 
 					workspace.WorkspaceFailed += (_sender, diag) =>
 					{
@@ -78,11 +81,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					};
 
 					await workspace.OpenProjectAsync(projectPath, cancellationToken: ct);
+					//await workspace.UpdateProjectConeAsync(projectPath, ct);
 					break;
 				}
 				catch (InvalidOperationException) when (i > 1)
 				{
-					// When we load the work space right after the app was started, it happens that it "app build" is not yet completed, preventing us to open the project.
+					// When we load the workspace right after the app was started, it happens that it "app build" is not yet completed, preventing us to open the project.
 					// We retry a few times to let the build complete.
 					await Task.Delay(5_000, ct);
 				}

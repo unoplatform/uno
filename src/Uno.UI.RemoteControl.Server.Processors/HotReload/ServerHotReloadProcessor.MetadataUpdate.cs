@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -21,6 +22,7 @@ using Uno.Threading;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
+using Project = Microsoft.CodeAnalysis.Project;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
@@ -40,6 +42,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private bool _useRoslynHotReload;
 		private bool _useHotReloadThruDebugger;
+		private ConfigureServer? _configureServer;
 
 		private bool InitializeMetadataUpdater(ConfigureServer configureServer)
 		{
@@ -50,10 +53,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			if (_useRoslynHotReload)
 			{
+				Debugger.Launch();
+
 				// Assembly registrations must be done before the workspace is initialized
 				// Not doing so will cause the roslyn msbuild workspace to fail to load because
 				// of a missing path on assemblies loaded from a memory stream.
 				CompilationWorkspaceProvider.RegisterAssemblyLoader();
+
+				// Store configuration for later use when adding files
+				_configureServer = configureServer;
 
 				InitializeInner(configureServer);
 
@@ -250,39 +258,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			var sw = Stopwatch.StartNew();
 
-			// Edit the files in the workspace.
-			var solution = _currentSolution;
-			foreach (var file in files)
-			{
-				if (solution.Projects.SelectMany(p => p.Documents).FirstOrDefault(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase)) is Document documentToUpdate)
-				{
-					var sourceText = await GetSourceTextAsync(file);
-					solution = documentToUpdate.WithText(sourceText).Project.Solution;
-				}
-				else if (solution.Projects.SelectMany(p => p.AdditionalDocuments).FirstOrDefault(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase)) is AdditionalDocument additionalDocument)
-				{
-					var sourceText = await GetSourceTextAsync(file);
-					solution = solution.WithAdditionalDocumentText(additionalDocument.Id, sourceText, PreservationMode.PreserveValue);
+			// Detects the changes and try to update the solution
+			var originalSolution = _currentSolution;
+			var changeSet = await DiscoverChangesAsync(originalSolution, files, ct);
+			var solution = await Apply(originalSolution, changeSet, hotReload, ct);
 
-					// Generate an empty document to force the generators to run
-					// in a separate project of the same solution. This is not needed
-					// for the head project, but it's no causing issues either.
-					var docName = Guid.NewGuid().ToString();
-					solution = solution.AddAdditionalDocument(
-						DocumentId.CreateNewId(additionalDocument.Project.Id),
-						docName,
-						SourceText.From("")
-					);
-				}
-				else
-				{
-					_reporter.Verbose($"Could not find document with path {file} in the workspace.");
-					hotReload.NotifyIgnored(file);
-				}
-			}
-
-			// Not mater if the build will succeed or not, we update the _currentSolution.
-			// Files needs to be updated again to fix the compilation errors.
 			if (solution == _currentSolution)
 			{
 				_reporter.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
@@ -291,6 +271,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return;
 			}
 
+			// Not mater if the build will succeed or not, we update the _currentSolution.
+			// Files needs to be updated again to fix the compilation errors.
 			_currentSolution = solution;
 
 			// Compile the solution and get deltas
@@ -393,18 +375,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async ValueTask<SourceText> GetSourceTextAsync(string filePath)
+		private static async ValueTask<SourceText> GetSourceTextAsync(string filePath, CancellationToken ct)
 		{
 			for (var attemptIndex = 0; attemptIndex < 6; attemptIndex++)
 			{
 				try
 				{
-					using var stream = File.OpenRead(filePath);
+					await using var stream = File.OpenRead(filePath);
 					return SourceText.From(stream, Encoding.UTF8);
 				}
 				catch (IOException) when (attemptIndex < 5)
 				{
-					await Task.Delay(20 * (attemptIndex + 1));
+					await Task.Delay(20 * (attemptIndex + 1), ct);
 				}
 			}
 
@@ -473,5 +455,303 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return false;
 			}
 		}
+
+		private async ValueTask<ChangeSet> DiscoverChangesAsync(Solution solution, ImmutableHashSet<string> files, CancellationToken ct)
+		{
+			var editedDocuments = new List<Document>();
+			var editedAdditionalDocuments = new List<TextDocument>();
+			var removedDocuments = new List<DocumentId>();
+			var removedAdditionalDocuments = new List<DocumentId>();
+			var potentiallyAdded = new List<string>();
+			var notFound = new List<string>();
+
+			foreach (var file in files)
+			{
+				var exists = File.Exists(file);
+				var document = solution
+					.Projects
+					.SelectMany(p => p.Documents)
+					.FirstOrDefault(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase));
+
+				if (document is not null)
+				{
+					if (exists)
+					{
+						editedDocuments.Add(document);
+					}
+					else
+					{
+						removedDocuments.Add(document.Id);
+					}
+					continue;
+				}
+
+				var additionalDocument = solution
+					.Projects
+					.SelectMany(p => p.AdditionalDocuments)
+					.FirstOrDefault(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase));
+
+				if (additionalDocument is not null)
+				{
+					if (exists)
+					{
+						editedAdditionalDocuments.Add(additionalDocument);
+					}
+					else
+					{
+						removedAdditionalDocuments.Add(additionalDocument.Id);
+					}
+					continue;
+				}
+
+				// Not found in current solution
+				if (exists)
+				{
+					potentiallyAdded.Add(file);
+				}
+				else
+				{
+					_reporter.Verbose($"Could not find document with path '{file}' in the workspace and file does not exist on disk.");
+					notFound.Add(file);
+				}
+			}
+
+			var added = await DiscoverNewFilesAsync(ImmutableHashSet.CreateRange(potentiallyAdded), ct);
+
+			return new(
+				[..editedDocuments],
+				[..editedAdditionalDocuments],
+				added.documents,
+				added.additionalDocuments,
+				[..removedDocuments],
+				[..removedAdditionalDocuments],
+				[..notFound, ..added.ignored]);
+		}
+
+		private async ValueTask<(ImmutableArray<AddedDocumentInfo> documents, ImmutableArray<AddedDocumentInfo> additionalDocuments, ImmutableHashSet<string> ignored)> DiscoverNewFilesAsync(
+			ImmutableHashSet<string> newFiles,
+			CancellationToken ct)
+		{
+			if (_configureServer is null || _currentSolution is null)
+			{
+				_reporter.Warn("Cannot handle new files: configuration not available.");
+				return ([], [], newFiles);
+			}
+
+			if (newFiles is not { IsEmpty: false })
+			{
+				return ([], [], newFiles);
+			}
+
+			try
+			{
+				_reporter.Output($"Detected {newFiles.Count} potentially new file(s). Creating temporary workspace to discover them...");
+
+				// Create a temporary workspace to discover the new files
+				var (tempSolution, _) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
+					_configureServer.ProjectPath,
+					_reporter,
+					_configureServer.MetadataUpdateCapabilities,
+					_configureServer.MSBuildProperties,
+					ct);
+
+				var discoveredDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
+				var discoveredAdditionalDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
+				var ignoredFiles = ImmutableHashSet.CreateBuilder<string>();
+
+				foreach (var file in newFiles)
+				{
+					// Search for the file in the temp workspace's projects
+					var found = false;
+					foreach (var project in tempSolution.Projects)
+					{
+						var document = project.Documents.FirstOrDefault(d => string.Equals(d.FilePath, file, _pathsComparison));
+						if (document != null)
+						{
+							discoveredDocuments.Add(new(project.GetInfo(), document.GetInfo()));
+							break;
+						}
+
+						var additionalDocument = project.AdditionalDocuments.FirstOrDefault(d => string.Equals(d.FilePath, file, _pathsComparison));
+						if (additionalDocument != null)
+						{
+							found = true;
+							discoveredAdditionalDocuments.Add(new(project.GetInfo(), additionalDocument.GetInfo()));
+							break;
+						}
+					}
+
+					if (!found)
+					{
+						ignoredFiles.Add(file);
+					}
+				}
+
+				return (discoveredDocuments.ToImmutable(), discoveredAdditionalDocuments.ToImmutable(), ignoredFiles.ToImmutable());
+			}
+			catch (Exception ex)
+			{
+				_reporter.Warn($"Error while discovering new files: {ex.Message}");
+				return ([], [], newFiles);
+			}
+		}
+
+		private static async ValueTask<Solution> Apply(Solution solution, ChangeSet changeSet, HotReloadServerOperation hotReload, CancellationToken ct)
+		{
+			// Update existing documents
+			foreach (var document in changeSet.EditedDocuments)
+			{
+				solution = solution.WithDocumentText(document.Id, await GetSourceTextAsync(document.FilePath!, ct));
+				//_reporter.Output($"Updated document {Path.Combine([.. document.Folders, document.Name])}");
+			}
+
+			// Update existing additional documents
+			foreach (var additionalDocument in changeSet.EditedAdditionalDocuments)
+			{
+				solution = solution.WithAdditionalDocumentText(additionalDocument.Id, await GetSourceTextAsync(additionalDocument.FilePath!, ct));
+			}
+
+			foreach (var projectWithEditedAdditionalDocument in changeSet.EditedAdditionalDocuments.Select(ad => ad.Project.Id).Distinct())
+			{
+				// Generate an empty document to force the generators to run in a separate project of the same solution.
+				// This is not needed for the head project, but it's no causing issues either.
+				solution = solution.AddAdditionalDocument(
+					DocumentId.CreateNewId(projectWithEditedAdditionalDocument),
+					Guid.NewGuid().ToString(),
+					SourceText.From("")
+				);
+			}
+
+			// Added documents has been detected using a temporary solution.
+			// We need to make sure to find the right project instance in the current solution, and update the document ID accordingly.
+			foreach (var added in changeSet.AddedDocuments)
+			{
+				var project = solution.Projects.FirstOrDefault(p => p.FilePath == added.Project.FilePath);
+				if (project is null)
+				{
+					hotReload.NotifyIgnored(added.Document.FilePath!);
+				}
+				else
+				{
+					solution = solution.AddDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
+				}
+			}
+
+			foreach (var added in changeSet.AddedAdditionalDocuments)
+			{
+				var project = solution.Projects.FirstOrDefault(p => p.FilePath == added.Project.FilePath);
+				if (project is null)
+				{
+					hotReload.NotifyIgnored(added.Document.FilePath!);
+				}
+				else
+				{
+					solution = solution.AddAdditionalDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
+				}
+			}
+
+			//// Add the new files to the solution
+			//foreach (var documentInfo in changeSet.AddedDocuments)
+			//{
+			//	//var project = solution.GetProject(documentInfo.Project);
+			//	//if (project is not null)
+			//	{
+			//		//var sourceText = await GetSourceTextAsync(documentInfo.Document.FilePath!);
+			//		//var newDocumentId = DocumentId.CreateNewId(project.Id);
+			//		solution = solution.AddDocument(documentInfo);
+			//		_reporter.Output($"Added new document {documentInfo.Name}");
+			//	}
+			//}
+
+			//foreach (var additionalDocumentInfo in changeSet.AddedAdditionalDocuments)
+			//{
+			//	//var project = solution.GetProject(additionalDocumentInfo.Project);
+			//	//if (project is not null)
+			//	{
+			//		//var sourceText = await GetSourceTextAsync(additionalDocumentInfo.Document.FilePath!);
+			//		//var newDocumentId = DocumentId.CreateNewId(project.Id);
+			//		//solution = solution.AddAdditionalDocument(newDocumentId, additionalDocumentInfo.Document.Name, sourceText, additionalDocumentInfo.Document.Folders, additionalDocumentInfo.Document.FilePath);
+			//		solution = solution.AddAdditionalDocument(additionalDocumentInfo);
+			//		_reporter.Output($"Added new additional document {additionalDocumentInfo.Name}");
+			//	}
+			//}
+
+			solution = solution
+				.RemoveDocuments(changeSet.RemovedDocuments)
+				.RemoveAdditionalDocuments(changeSet.RemovedAdditionalDocuments);
+
+			hotReload.NotifyIgnored(changeSet.IgnoredFiles);
+
+			return solution;
+
+			//foreach (var documentInfo in changeSet.AddedDocuments)
+			//{
+			//	//var project = solution.GetProject(documentInfo.Project);
+			//	//if (project is not null)
+			//	{
+			//		//var sourceText = await GetSourceTextAsync(documentInfo.Document.FilePath!);
+			//		//var newDocumentId = DocumentId.CreateNewId(project.Id);
+			//		 .AddDocument(documentInfo);
+			//		_reporter.Output($"Added new document {documentInfo.Name}");
+			//	}
+			//}
+		}
+
+		private record ChangeSet(
+			ImmutableArray<Document> EditedDocuments,
+			ImmutableArray<TextDocument> EditedAdditionalDocuments,
+			ImmutableArray<AddedDocumentInfo> AddedDocuments,
+			ImmutableArray<AddedDocumentInfo> AddedAdditionalDocuments,
+			ImmutableArray<DocumentId> RemovedDocuments,
+			ImmutableArray<DocumentId> RemovedAdditionalDocuments,
+			ImmutableHashSet<string> IgnoredFiles
+		)
+		{
+			public static ChangeSet IgnoreAll(ImmutableHashSet<string> ignoredFiles)
+				=> new([], [], [], [], [], [], ignoredFiles);
+		}
+
+		private record struct AddedDocumentInfo(ProjectInfo Project, DocumentInfo Document);
+		//private record struct AdditionalDocumentInfo(ProjectId Project, TextDocument Document);
 	}
+}
+
+public static class RoslynExtensions
+{
+	public static ProjectInfo GetInfo(this Project project)
+		=> ProjectInfo.Create(
+			ProjectId.CreateNewId(),
+			project.Version,
+			project.Name,
+			project.AssemblyName,
+			project.Language,
+			project.FilePath,
+			project.OutputFilePath,
+			project.CompilationOptions,
+			project.ParseOptions,
+			[..project.Documents.Select(GetInfo)],
+			project.ProjectReferences,
+			project.MetadataReferences,
+			project.AnalyzerReferences,
+			[..project.AdditionalDocuments.Select(GetInfo)],
+			project.IsSubmission,
+			default);
+
+	public static DocumentInfo GetInfo(this Document document)
+		=> DocumentInfo.Create(
+			document.Id,
+			document.Name,
+			document.Folders,
+			document.SourceCodeKind,
+			document.FilePath is null ? null : new FileTextLoader(document.FilePath!, Encoding.UTF8),
+			document.FilePath);
+
+	public static DocumentInfo GetInfo(this TextDocument document)
+		=> DocumentInfo.Create(
+			document.Id,
+			document.Name,
+			document.Folders,
+			default,
+			document.FilePath is null ? null : new FileTextLoader(document.FilePath!, Encoding.UTF8),
+			document.FilePath);
 }

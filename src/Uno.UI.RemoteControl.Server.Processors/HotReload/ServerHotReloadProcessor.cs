@@ -406,6 +406,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				=> ImmutableInterlocked.Update(ref _ignoredFilePaths, static (files, file) => files.Add(file), file);
 
 			/// <summary>
+			/// Notifies a file has been ignored for this hot-reload operation.
+			/// </summary>
+			/// <param name="file"></param>
+			public void NotifyIgnored(IEnumerable<string> files)
+				=> ImmutableInterlocked.Update(ref _ignoredFilePaths, static (files, ignored) => files.Union(ignored), files);
+
+			/// <summary>
 			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.
 			/// </summary>
 			public async ValueTask DeferComplete(HotReloadServerResult result, Exception? exception = null)
