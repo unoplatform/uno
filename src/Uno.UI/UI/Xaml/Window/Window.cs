@@ -379,14 +379,19 @@ partial class Window
 
 	/// <summary>
 	/// Checks if the given content element is from a secondary AssemblyLoadContext.
-	/// Uses the incoming value's assembly, or falls back to existing content when value is null.
+	/// When value is null, returns false to allow clearing content.
 	/// </summary>
 	private bool IsContentFromSecondaryAlc(UIElement? value)
 	{
-		var checkTarget = value ?? _windowImplementation.Content;
-		return checkTarget is not null && !ReferenceEquals(
+		// Explicitly handle null: a null assignment should clear content, not be detected as secondary ALC
+		if (value == null)
+		{
+			return false;
+		}
+
+		return !ReferenceEquals(
 			System.Runtime.Loader.AssemblyLoadContext.Default,
-			System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(checkTarget.GetType().Assembly));
+			System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(value.GetType().Assembly));
 	}
 
 	/// <summary>
