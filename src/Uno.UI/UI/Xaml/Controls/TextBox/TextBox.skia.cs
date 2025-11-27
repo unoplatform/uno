@@ -26,7 +26,8 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.Foundation;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
-
+using Microsoft.UI.Xaml.Media.Media3D;
+using System.Numerics;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -302,6 +303,7 @@ public partial class TextBox
 	{
 		if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
+			var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
 			foreach (var (rectNullable, caret) in (ReadOnlySpan<(Rect?, CaretWithStemAndThumb)>)[(_lastStartCaretRect, _selectionStartThumbfulCaret), (_lastEndCaretRect, _selectionEndThumbfulCaret)])
 			{
 				if (rectNullable is not { } rect)
@@ -309,12 +311,21 @@ public partial class TextBox
 					caret.Hide();
 					continue;
 				}
-				var left = rect.GetMidX() - caret.Width / 2;
 				caret.Height = rect.Height + 16;
-				var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
 				if (transform.TransformBounds(rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
 				{
-					caret.ShowAt(transform.TransformPoint(new Point(left, rect.Top)), XamlRoot);
+					var matrixTransform = (MatrixTransform)transform;
+
+					var textBoxMatrix = matrixTransform.Matrix.ToMatrix3x2();
+
+					// Calculate the center point of the caret in local coordinates
+					var localCenterX = rect.GetMidX() - caret.Width / 2;
+					var localPoint = new Point(localCenterX, rect.Top);
+
+					// Create translation matrix based on the target point
+					var translationMatrix = Matrix3x2.CreateTranslation((float)localPoint.X, (float)localPoint.Y);
+					var totalMatrix = Matrix3x2.Multiply(translationMatrix, textBoxMatrix);
+					caret.ShowAt(XamlRoot, totalMatrix);
 				}
 			}
 		}
@@ -1518,7 +1529,7 @@ public partial class TextBox
 
 		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
-		public void ShowAt(Point p, XamlRoot xamlRoot)
+		public void ShowAt(XamlRoot xamlRoot, Matrix3x2 transform)
 		{
 			_popup ??= new Popup
 			{
@@ -1528,8 +1539,12 @@ public partial class TextBox
 			};
 			_popup.PopupPanel.Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
 
-			_popup.HorizontalOffset = p.X;
-			_popup.VerticalOffset = p.Y;
+			if (this.RenderTransform is not MatrixTransform matrixTransform)
+			{
+				matrixTransform = new MatrixTransform();
+				this.RenderTransform = matrixTransform;
+			}
+			matrixTransform.Matrix = new Matrix(transform);
 			if (!_popup.IsOpen)
 			{
 				_popup.IsOpen = true;
