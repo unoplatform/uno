@@ -74,5 +74,6 @@ public class HotReloadInfoTask_v0 : Microsoft.Build.Utilities.Task
 
 		using var writer = new StreamWriter(stream, Encoding.UTF8, 4096, leaveOpen: true);
 		writer.Write(content);
+		writer.Flush();
 	}
 }
