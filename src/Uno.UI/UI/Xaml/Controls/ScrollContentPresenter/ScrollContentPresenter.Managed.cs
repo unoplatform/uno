@@ -351,7 +351,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
 		{
-			if (args.Pointer.PointerDeviceType is not (_PointerDeviceType.Pen or _PointerDeviceType.Touch))
+			if (args.Pointer.PointerDeviceType is not (_PointerDeviceType.Pen or _PointerDeviceType.Touch) ||
+				args.Handled)
 			{
 				return;
 			}
