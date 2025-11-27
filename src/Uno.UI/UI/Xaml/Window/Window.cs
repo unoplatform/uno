@@ -395,7 +395,7 @@ partial class Window
 	private bool IsContentHostedInSecondaryAlc()
 	{
 		var content = ContentHostOverride?.Content;
-		return content is not null 
+		return content is not null
 			&& ContentHostOverride is not null
 			&& !ReferenceEquals(
 				System.Runtime.Loader.AssemblyLoadContext.Default,
