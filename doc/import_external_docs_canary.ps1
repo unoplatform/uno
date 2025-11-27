@@ -25,7 +25,7 @@ $external_docs = @{
     "hd-docs"            = "main"
 }
 
-Write-Host 'Importing external repositories for CANARY build...' -ForegroundColor Black -BackgroundColor Green
+Write-Host 'Importing external repositories for CANARY build...' -ForegroundColor White -BackgroundColor Green
 ./import_external_docs.ps1 -branches $external_docs
 
 Set-PSDebug -Off

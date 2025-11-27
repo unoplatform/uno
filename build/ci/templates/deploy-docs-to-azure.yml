@@ -34,4 +34,11 @@ steps:
           --overwrite true `
           --auth-mode login
         
+        # Check if the upload was successful
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to upload documentation to Azure Storage"
+          exit $LASTEXITCODE
+        }
+        
         Write-Host "Documentation deployed successfully to ${{ parameters.storageAccountName }}"
+      failOnStandardError: true
