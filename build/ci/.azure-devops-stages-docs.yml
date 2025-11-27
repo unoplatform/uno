@@ -121,6 +121,9 @@ stages:
       runOnce:
         deploy:
           steps:
+          # Note: We intentionally deploy the staging artifacts to production
+          # to ensure that the exact same content that was verified in staging
+          # is promoted to production without any rebuilds or variations.
           - download: current
             artifact: DocumentationArtifacts-Staging
             displayName: 'Download Staging Documentation for Production'
