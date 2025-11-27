@@ -6,7 +6,7 @@
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d">
 	<StackPanel>
-		<TextBlock Text="First page (changed)"
+		<TextBlock Text="First page"
 				   x:Name="FirstPageTextBlock" />
 		<TextBlock Text="{Binding TitleText}" />
 		<local:HR_Frame_Pages_UC1 />
