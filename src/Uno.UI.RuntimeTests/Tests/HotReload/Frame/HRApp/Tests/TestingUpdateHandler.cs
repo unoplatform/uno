@@ -42,11 +42,8 @@ public static class TestingUpdateHandler
 	/// see TypeMappings.Pause()
 	/// </summary>
 	/// <returns></returns>
-	public static async Task WaitForVisualTreeUpdate()
-	{
-		await _visualTreeUpdateCompletion.Task;
-	}
-
+	public static Task WaitForVisualTreeUpdate()
+		=> _visualTreeUpdateCompletion.Task;
 
 	/// <summary>
 	/// Gets a task that allows the called to wait for an UI Update to 
