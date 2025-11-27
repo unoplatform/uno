@@ -175,13 +175,6 @@ public class Given_AlcContentHost
 		}
 
 		// Get the secondary app instance from Application.Current in the ALC
-		//var currentProperty = appType.GetProperty("Current",
-		//	System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-		//_secondaryApp = currentProperty?.GetValue(null) as Application;
-		//Assert.IsNotNull(_secondaryApp, "Secondary app Application.Current should be set after Main starts");
-
-		//// Update the content host with the secondary app's resources
-		//_contentHost.SourceApplication = _secondaryApp;
 
 		// Wait for UI to settle
 		await TestServices.WindowHelper.WaitForIdle();

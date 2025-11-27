@@ -188,11 +188,11 @@ partial class Window
 		}
 	}
 
-	/// Gets or sets an internal <b>static</b> content host override for scenarios like secondary AssemblyLoadContext (ALC) hosting.
+	/// Gets or sets an internal <c>static</c> content host override for scenarios like secondary AssemblyLoadContext (ALC) hosting.
 	/// <para>
-	/// <b>Global effect:</b> This property is static and affects all <see cref="Window"/> instances in the application.
-	/// <b>Thread safety:</b> This property is <b>not thread-safe</b>; it should be set during application startup, before creating any secondary ALC applications.
-	/// <b>Usage:</b> When set, <see cref="Window.Content"/> from secondary ALCs will redirect to this <see cref="ContentControl"/>.
+	/// <strong>Global effect:</strong> This property is <c>static</c> and affects all <see cref="Window"/> instances in the application.
+	/// <strong>Thread safety:</strong> This property is <c>not thread-safe</c>; it should be set during application startup, before creating any secondary ALC applications.
+	/// <strong>Usage:</strong> When set, <see cref="Window.Content"/> from secondary ALCs will redirect to this <see cref="ContentControl"/>.
 	/// </para>
 	internal static ContentControl? ContentHostOverride { get; set; }
 
