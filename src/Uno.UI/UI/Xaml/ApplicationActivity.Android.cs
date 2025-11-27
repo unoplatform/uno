@@ -17,6 +17,7 @@ using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -29,7 +30,6 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-using AndroidXOnBackPressedCallback = AndroidX.Activity.OnBackPressedCallback;
 
 namespace Microsoft.UI.Xaml
 {
@@ -446,40 +446,5 @@ namespace Microsoft.UI.Xaml
 #endif  // !NET10_0_OR_GREATER
 
 		internal void SetRootElement(ViewGroup rootElement) => RootView = rootElement;
-
-		/// <summary>
-		/// Custom OnBackPressedCallback that integrates with SystemNavigationManager.
-		/// This is required for Android 33+ where OnBackPressed is deprecated and
-		/// Android 36+ where OnBackPressed is no longer called at all.
-		/// </summary>
-		private sealed class SystemNavigationManagerBackPressedCallback : AndroidXOnBackPressedCallback
-		{
-			private readonly ApplicationActivity _activity;
-
-			public SystemNavigationManagerBackPressedCallback(ApplicationActivity activity)
-				: base(enabled: true)
-			{
-				_activity = activity;
-			}
-
-			public override void HandleOnBackPressed()
-			{
-				var handled = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
-				if (!handled)
-				{
-					// The back was not handled by the app, so we need to allow the default behavior.
-					// Temporarily disable this callback and re-invoke the dispatcher to trigger the default behavior.
-					Enabled = false;
-					try
-					{
-						_activity.OnBackPressedDispatcher.OnBackPressed();
-					}
-					finally
-					{
-						Enabled = true;
-					}
-				}
-			}
-		}
 	}
 }
