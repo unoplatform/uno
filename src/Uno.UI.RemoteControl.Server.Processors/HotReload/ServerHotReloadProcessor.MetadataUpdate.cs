@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
+using Uno.Disposables;
+using Uno.Threading;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
@@ -27,8 +29,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private static readonly StringComparer _pathsComparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
 		private static readonly StringComparison _pathsComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-		private FileSystemWatcher[]? _solutionWatchers;
-		private IDisposable? _solutionWatcherEventsDisposable;
+		private IDisposable? _solutionSubscriptions;
+		private readonly FastAsyncLock _solutionUpdateGate = new();
 
 		private Task<(Solution, WatchHotReloadService)>? _initializeTask;
 		private Solution? _currentSolution;
@@ -188,8 +190,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 #if DEBUG
 			Console.WriteLine($"Observing paths {string.Join(", ", observedPaths)}");
 #endif
-
-			_solutionWatchers = observedPaths
+			var watchers = observedPaths
 				.Select(p => new FileSystemWatcher
 				{
 					Path = p!,
@@ -203,16 +204,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					IncludeSubdirectories = false
 				})
 				.ToArray();
-
-			_solutionWatcherEventsDisposable = To2StepsObservable(_solutionWatchers, HasInterest).Subscribe(
-				filePaths => _ = ProcessMetadataChanges(filePaths),
+			var processing = new CancellationTokenSource(); // Updates are cumulative, we cannot abort updates, so we have a SINGLE token for all operations.
+			var watchersSubscription = To2StepsObservable(watchers, HasInterest).Subscribe(
+				filePaths => _ = ProcessMetadataChanges(filePaths, processing.Token),
 				e => Console.WriteLine($"Error {e}"));
+
+			_solutionSubscriptions = new CompositeDisposable([watchersSubscription, Disposable.Create(processing.Cancel), processing, .. watchers]);
 
 			static bool HasInterest(string file)
 				=> Path.GetExtension(file).ToLowerInvariant() is not ".csproj" and not ".editorconfig";
 		}
 
-		private async Task ProcessMetadataChanges(Task<ImmutableHashSet<string>> filesAsync)
+		private async Task ProcessMetadataChanges(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
 		{
 			// Notify the start of the hot-reload processing as soon as possible, even before the buffering of file change is completed
 			var hotReload = await StartOrContinueHotReload();
@@ -222,9 +225,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				hotReload = await StartHotReload(files);
 			}
 
+			// Process the batch of files (sequentially!)
 			try
 			{
-				await ProcessSolutionChanged(hotReload, files, CancellationToken.None);
+				using var _ = await _solutionUpdateGate.LockAsync(ct);
+				await ProcessSolutionChanged(hotReload, files, ct);
 			}
 			catch (Exception e)
 			{

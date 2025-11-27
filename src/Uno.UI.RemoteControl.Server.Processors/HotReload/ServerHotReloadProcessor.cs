@@ -793,15 +793,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public void Dispose()
 		{
-			_solutionWatcherEventsDisposable?.Dispose();
-			if (_solutionWatchers != null)
-			{
-				foreach (var watcher in _solutionWatchers)
-				{
-					watcher.Dispose();
-				}
-			}
-
+			_solutionSubscriptions?.Dispose();
 			_hotReloadService?.EndSession();
 		}
 
