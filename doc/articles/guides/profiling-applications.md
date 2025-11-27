@@ -87,7 +87,7 @@ alias mlaunch=$(dotnet build -getProperty:MlaunchPath *.csproj -f net9.0-ios)
 1. Start CPU profiling:
 
     ```dotnetcli
-    ~/.dotnet/tools/dotnet-trace collect --dsrouter ios --format speedscope
+    dotnet-trace collect --dsrouter ios --format speedscope
     ```
 
 1. Optionally take a GC dump:
