@@ -75,7 +75,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					// has been registered too late.
 					if (string.IsNullOrEmpty(wsAsm.Location))
 					{
-						throw new InvalidOperationException("Microsoft.CodeAnalysis.Workspaces was loaded from a stream and must loaded from a known path");
+						throw new InvalidOperationException("Microsoft.CodeAnalysis.Workspaces was loaded from a stream and must be loaded from a known path");
 					}
 				}
 

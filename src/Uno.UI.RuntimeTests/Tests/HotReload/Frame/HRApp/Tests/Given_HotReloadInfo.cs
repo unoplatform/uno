@@ -43,9 +43,9 @@ public class Given_HotReloadInfo : BaseTestClass
 			Console.WriteLine($"Current App Version: {currentAppVersion}");
 			Console.WriteLine($"Current update file: {currentUpdateFileRequestId}");
 
-			Assert.IsGreaterThan(originalAppVersion, currentAppVersion, "Application should have been updated (even if update didn't produced any effective code change).");
-			Assert.IsNotNull(currentUpdateFileRequestId, "We sent an UpdateFile request, we should got back it's ID.");
-			Assert.AreNotEqual(currentUpdateFileRequestId, originalUpdateFileRequestId, "We sent an UpdateFile request, we should got back it's ID.");
+			Assert.IsGreaterThan(originalAppVersion, currentAppVersion, "Application should have been updated (even if update didn't produce any effective code change).");
+			Assert.IsNotNull(currentUpdateFileRequestId, "We sent an UpdateFile request, we should get back its ID.");
+			Assert.AreNotEqual(currentUpdateFileRequestId, originalUpdateFileRequestId, "We sent an UpdateFile request, we should get back its ID.");
 		}
 		finally
 		{

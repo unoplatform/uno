@@ -59,7 +59,7 @@ public class HotReloadInfoTask_v0 : Microsoft.Build.Utilities.Task
 	{
 		using var stream = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
 
-		// First we validate if teh content is the same, if so, we don't even touch the file (to avoid unnecessary rebuilds)
+		// First we validate if the content is the same, if so, we don't even touch the file (to avoid unnecessary rebuilds)
 		using (var reader = new StreamReader(stream, Encoding.UTF8, true, 4096, leaveOpen: true))
 		{
 			if (content.Equals(reader.ReadToEnd()))

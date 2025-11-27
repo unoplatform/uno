@@ -6,11 +6,13 @@ using System.Text;
 namespace Uno.UI.RemoteControl.HotReload.Messages;
 
 /// <summary>
-/// Configuration message sent from the client to the server to initialize hot reload functionality.
+/// Represents a configuration message sent from the client to the server to initialize and configure hot reload functionality.
+/// This record provides the necessary project information, MSBuild properties, and hot reload capabilities required by the server
+/// to enable and manage hot reload operations during development.
 /// </summary>
-/// <param name="ProjectPath"></param>
-/// <param name="MetadataUpdateCapabilities"></param>
-/// <param name="MSBuildPropertiesRaw"></param>
+/// <param name="ProjectPath">The path to the project being configured for hot reload.</param>
+/// <param name="MetadataUpdateCapabilities">Array of metadata update capabilities supported by the application.</param>
+/// <param name="MSBuildPropertiesRaw">Raw MSBuild properties in base64-encoded format.</param>
 /// <param name="EnableMetadataUpdates">Instructs the dev-server to observe the project for changes (on file system) and emit metadata updates.</param>
 /// <param name="EnableHotReloadThruDebugger">
 /// Instructs the dev-server to send metadata updates to the debugger (i.e. through the IDE channel)
@@ -42,5 +44,5 @@ public record ConfigureServer(
 			.Where(tokens => tokens.Length == 2)
 			.ToDictionary(
 				tokens => tokens[0],
-				split => Encoding.UTF8.GetString(Convert.FromBase64String(split[1])));
+				tokens => Encoding.UTF8.GetString(Convert.FromBase64String(tokens[1])));
 }

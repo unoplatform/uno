@@ -616,7 +616,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					hotReload.EnableAutoRetryIfNoChanges(message.ForceHotReloadAttempts, message.ForceHotReloadDelay);
 
-					// Even if IDE does not support hot-reload manual request, we still invoke this to report the HR processingFiles state as soon as possible.
+					// Even if IDE does not support hot-reload manual requests, we still invoke this to report the HR processingFiles state as soon as possible.
 					await RequestHotReloadToIde();
 				}
 
