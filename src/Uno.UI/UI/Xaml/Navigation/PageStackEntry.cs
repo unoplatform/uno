@@ -7,8 +7,6 @@ using Uno.Extensions.Specialized;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers;
 using System.Linq;
-using System.Reflection;
-using Microsoft.UI.Composition.Interactions;
 
 namespace Microsoft.UI.Xaml.Navigation;
 
@@ -17,6 +15,9 @@ namespace Microsoft.UI.Xaml.Navigation;
 /// </summary>
 public sealed partial class PageStackEntry : DependencyObject
 {
+	// Delimiter used to separate the assembly-qualified name from the ALC name in descriptors
+	private const string AlcDescriptorDelimiter = "##";
+
 	// Descriptor -- this is the type of the page that corresponds to this entry
 	private string m_descriptor;
 
@@ -71,34 +72,45 @@ public sealed partial class PageStackEntry : DependencyObject
 
 	internal static string BuildDescriptor(Type pageType)
 	{
+		var assemblyQualifiedName = pageType.AssemblyQualifiedName 
+			?? throw new ArgumentException($"Type {pageType.FullName} does not have an assembly-qualified name.", nameof(pageType));
+
 		if (AssemblyLoadContext.GetLoadContext(pageType.Assembly) != AssemblyLoadContext.Default)
 		{
 			var alc = AssemblyLoadContext.GetLoadContext(pageType.Assembly);
-			return $"{pageType.AssemblyQualifiedName}##{alc.Name}";
+			return $"{assemblyQualifiedName}{AlcDescriptorDelimiter}{alc.Name}";
 		}
 
-		return pageType.AssemblyQualifiedName;
+		return assemblyQualifiedName;
 	}
 
+	/// <summary>
+	/// Resolves a type descriptor string to a Type instance.
+	/// </summary>
+	/// <param name="descriptor">The descriptor string, either an assembly-qualified name or a name with ALC suffix (##ALCName).</param>
+	/// <returns>The resolved Type, or null if the type cannot be found or the ALC is not loaded.</returns>
 	internal static Type ResolveDescriptor(string descriptor)
 	{
-		if (!descriptor.Contains("##"))
+		if (!descriptor.Contains(AlcDescriptorDelimiter))
 		{
+			// Type.GetType returns null if the type is not found
 			return GetType(descriptor);
 		}
 		else
 		{
-			var alcParts = descriptor.Split("##", StringSplitOptions.None);
+			var alcParts = descriptor.Split(AlcDescriptorDelimiter, StringSplitOptions.None);
 
 			if (AssemblyLoadContext.All.Where(alc => alc.Name == alcParts[1]).FirstOrDefault() is { } alc)
 			{
 				using (alc.EnterContextualReflection())
 				{
+					// Type.GetType returns null if the type is not found in the ALC
 					return GetType(alcParts[0]);
 				}
 			}
 
-			return null;
+			throw new InvalidOperationException(
+				$"Failed to resolve type descriptor '{descriptor}': AssemblyLoadContext with name '{alcParts[1]}' was not found.");
 		}
 	}
 
