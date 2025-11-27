@@ -6,7 +6,7 @@ uid: Uno.Tutorials.ProfilingApplications
 
 ## Profiling .NET Android/iOS applications
 
-.NET 7 and later provides the ability to do CPU profiling through [`dotnet-trace`](https://learn.microsoft.com/dotnet/core/diagnostics/dotnet-trace) for Android applications.
+.NET provides the ability to do CPU profiling through [`dotnet-trace`](https://learn.microsoft.com/dotnet/core/diagnostics/dotnet-trace) for iOS and Android applications.
 
 ### Pre-requisites
 
@@ -19,82 +19,84 @@ Run the following commands
 ## Profiling .NET iOS applications
 
 > [!NOTE]
-> This documentation is based on [.NET iOS profiling documentation](https://github.com/xamarin/xamarin-macios/wiki/Profiling).
+> This documentation is based on [.NET iOS profiling](https://github.com/xamarin/xamarin-macios/wiki/Profiling) and [.NET Android profiling](https://github.com/dotnet/android/blob/main/Documentation/guides/tracing.md) documentation.
 
 Profiling iOS apps needs to be done on a mac machine.
 
-First, create an alias to mlaunch:
+First, create an alias to `mlaunch`:
 
 ```bash
-alias mlaunch=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/bin/mlaunch
+cd [your-folder-with-the-csproj]
+$alias mlaunch=$(dotnet build -getProperty:MlaunchPath *.csproj -f net9.0-ios)
 ```
 
 ### Profiling on an iOS Simulator
 
-1. The first step is to launch the tool that provides a connection between the app and the .NET tracing tools:
+1. Build the app with the following parameters:
 
     ```dotnetcli
-    dotnet-dsrouter client-server -ipcc ~/my-sim-port -tcps 127.0.0.1:9000
+    cd [your-folder-with-the-csproj]
+    dotnet build -f net10.0-ios -p:DiagnosticAddress=127.0.0.1 -p:DiagnosticPort=9000 -p:DiagnosticSuspend=true -p:DiagnosticListenMode=listen
     ```
 
-2. Launch the app and make it suspend upon launch (waiting for the .NET tooling to connect):
+1. Find the simulator you want to run on:
+
+    ```dotnetcli
+    $ xcrun simctl list devices
+    ```
+
+    Find a device that is shutdown or booted, and take note of its UDID.
+
+1. Launch the app (it will be paused on startup waiting for the .NET tooling to connect):
 
     ```bash
-    mlaunch --launchsim bin/Debug/net*/*/*.app --device :v2:runtime=com.apple.CoreSimulator.SimRuntime.iOS-15-4,devicetype=com.CoreSimulator.SimDeviceType.iPhone-11 --wait-for-exit --stdout=$(tty) --stderr=$(tty) --argument --connection-mode --argument none '--setenv:DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend'
+    mlaunch --device :v2:udid=xxxxxxxx-yyyy-zzzz-aaaa-bbbbbbbbbbbb --wait-for-exit --stdout=$(tty) --stderr=$(tty) --launchsim=testgc01/bin/Debug/net*-ios/*/*.app
     ```
 
-3. At this point it's necessary to wait until the following line shows up in the terminal:
+    Replace the UDID with the one you found above.
 
-    ```console
-    The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
-    ```
-
-4. Once that's printed, go ahead and start profiling:
+1. One the app is waiting ahead and start profiling:
 
     ```dotnetcli
-    dotnet-trace collect --diagnostic-port ~/my-sim-port --format speedscope
+    dotnet-trace collect --dsrouter ios-sim --format speedscope
     ```
 
-To find which device to use, use:
+1. Optionally take a GC dump:
 
-```bash
-xcrun simctl list devices
-```
-
-Then reference the UDID of the simulator in the mlaunch command:
-
-```bash
-mlaunch ... --device :v2:udid=50BCC90D-7E56-4AFB-89C5-3688BF345998 ...
-```
+    ```dotnetcli
+    dotnet-gcdump collect --dsrouter ios-sim
+    ```
 
 ### Profiling on a physical iOS device
 
-Launch the tool that bridges the app and the .NET tracing tools:
 
-```bash
-dotnet-dsrouter server-client -ipcs ~/my-dev-port -tcpc 127.0.0.1:9001 --forward-port iOS
-```
+1. Build the app with the following parameters:
 
-Install & launch the app and make it suspended upon launch:
+    ```dotnetcli
+    cd [your-folder-with-the-csproj]
+    dotnet build -f net10.0-ios -p:DiagnosticAddress=127.0.0.1 -p:DiagnosticPort=9000 -p:DiagnosticSuspend=true -p:DiagnosticListenMode=listen
+    ```
 
-```bash
-mlaunch --installdev bin/Debug/net*/*/*.app --devname ... 
-mlaunch --launchdev bin/Debug/net*/*/*.app --devname ... --wait-for-exit --argument --connection-mode --argument none '--setenv:DOTNET_DiagnosticPorts=127.0.0.1:9001,suspend,listen'
-```
+1. Install & launch the app:
 
-At this point, it's necessary to wait until the following line shows up in the terminal:
+    ```bash
+    mlaunch --installdev bin/Debug/net*/*/*.app --devname ... 
+    mlaunch --launchdev bin/Debug/net*/*/*.app --devname ... --wait-for-exit
+    ```
 
-```console
-The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
-```
+1. Start CPU profiling:
 
-Once that's printed, go ahead and start profiling:
+    ```dotnetcli
+    ~/.dotnet/tools/dotnet-trace collect --dsrouter ios --format speedscope
+    ```
 
-```bash
-dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedscope
-```
+1. Optionally take a GC dump:
 
-## Profiling .NET Android applications
+    ```dotnetcli
+    dotnet-gcdump collect --dsrouter ios
+    ```
+
+## Profiling on Android
 
 ### Enable profiling in your application
 
@@ -145,12 +147,6 @@ The `suspend` directive means that the application will wait for `dotnet-trace` 
 
 - Open a browser at `https://speedscope.app` and drop the `*.speedscope.json` file in it
 
-### Getting GC memory dumps
-
-To take a GC memory dump of a running android app, follow the same steps above, but instead of `dotnet-trace collect -p <port>`, use `dotnet-gcdump collect -p <port>`. It will create a `.gcdump` file that can be viewed in Visual Studio and Perfview on Windows and [heapview](https://github.com/1hub/dotnet-heapview) on non-Windows platforms.
-
-See complete [documentation](https://github.com/dotnet/android/blob/main/Documentation/guides/tracing.md) for more details.
-
 ### Analyzing the trace data
 
 This section provides insights into what to look for when analyzing flame charts.
@@ -158,6 +154,10 @@ This section provides insights into what to look for when analyzing flame charts
 - When building without AOT, a lot of the startup traces will show time spent in `System.Private.CoreLib!System.Runtime.CompilerServices.RuntimeHelpers.CompileMethod(object)`, indicating that that the JIT is doing a lot of work. This can make performance improvements harder to find.
 - When building with AOT, most of the IL is compiled to native code with some exceptions. You may still find `RuntimeHelpers.CompileMethod` invocations. In such cases, you may need to find what is causing the AOT compiler to skip IL portions. If the JIT still impacts cold paths of your application, you may still need to adjust your code to avoid the JIT. For instance, some generics constructs force the AOT compiler to still use JITing. In other cases, it could be accessing static-type members. The JIT conditions are runtime version dependent, and [looking at the runtime code](https://github.com/dotnet/runtime/blob/9703660baa08914773b26e413e361c8ce04e6d94/src/mono/mono/mini/aot-compiler.c) can help to find out which ones.
 - Some of the time is spent in the .NET Android binding framework (e.g. `Android.Runtime.JNIEnv` or `Java.Interop.TypeManager`), operations that cannot be adjusted by the application. One change to consider is to reduce the native code invocations to a strict minimum, where impactful.
+
+## Analyzing GC memory dumps
+
+You can analyze the GC memory `.gcdump` files using the [Visual Studio 2022/2026 memory profiler](https://learn.microsoft.com/en-us/visualstudio/profiling/memory-usage-without-debugging2?view=visualstudio&pivots=programming-language-dotnet#managed-types-reports) by using the File / Open menu and navigating the results.
 
 ## Profiling Skia Desktop applications
 
