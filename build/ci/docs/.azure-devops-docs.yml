@@ -29,12 +29,27 @@ jobs:
   - template: ../templates/docfx-intermediary-assets.yml
 
   - task: MSBuild@1
+    displayName: 'Build Staging Documentation'
     inputs:
       solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(Agent.TempDirectory)/unobinlog/generate-docs.binlog
+      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(Agent.TempDirectory)/unobinlog/generate-docs-staging.binlog
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - task: MSBuild@1
+    displayName: 'Build Canary Documentation'
+    inputs:
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /t:GenerateDocCanary /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(Agent.TempDirectory)/unobinlog/generate-docs-canary.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
@@ -42,11 +57,18 @@ jobs:
       createLogFile: false
 
   - task: PublishPipelineArtifact@1
-    displayName: 'Publish Docs Artifacts'
+    displayName: 'Publish Staging Docs Artifacts'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(build.artifactstagingdirectory)
-      ArtifactName: DocumentationArtifacts
+      targetPath: $(build.artifactstagingdirectory)/doc
+      ArtifactName: DocumentationArtifacts-Staging
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Canary Docs Artifacts'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/doc-canary
+      ArtifactName: DocumentationArtifacts-Canary
 
   - task: PublishBuildArtifacts@1
     condition: always()

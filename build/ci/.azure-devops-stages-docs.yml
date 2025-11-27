@@ -33,3 +33,103 @@ stages:
   - template: docs/.azure-devops-docs.yml
     parameters:
       poolName: '$(windowsScaledPool)'
+
+# Deployment stages
+- stage: deploy_docs_canary
+  displayName: Deploy Docs to Canary
+  dependsOn: docs_generation
+  condition: |
+    and(
+      succeeded(),
+      eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    )
+  jobs:
+  - deployment: DeployCanary
+    displayName: 'Deploy to Canary Environment'
+    environment: 'Uno Platform Docs Canary'
+    pool:
+      vmImage: $(linuxVMImage)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: DocumentationArtifacts-Canary
+            displayName: 'Download Canary Documentation'
+
+          - template: templates/deploy-docs-to-azure.yml
+            parameters:
+              azureSubscription: 'Uno Platform Azure Subscription'
+              storageAccountName: '$(DocsCanaryStorageAccount)'
+              containerName: '$web'
+              artifactName: 'DocumentationArtifacts-Canary'
+              sourcePath: '.'
+              displayName: 'Deploy Documentation to Canary'
+
+- stage: deploy_docs_staging
+  displayName: Deploy Docs to Staging
+  dependsOn: docs_generation
+  condition: |
+    and(
+      succeeded(),
+      or(
+        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+        startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/')
+      )
+    )
+  jobs:
+  - deployment: DeployStaging
+    displayName: 'Deploy to Staging Environment'
+    environment: 'Uno Platform Docs Staging'
+    pool:
+      vmImage: $(linuxVMImage)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: DocumentationArtifacts-Staging
+            displayName: 'Download Staging Documentation'
+
+          - template: templates/deploy-docs-to-azure.yml
+            parameters:
+              azureSubscription: 'Uno Platform Azure Subscription'
+              storageAccountName: '$(DocsStagingStorageAccount)'
+              containerName: '$web'
+              artifactName: 'DocumentationArtifacts-Staging'
+              sourcePath: '.'
+              displayName: 'Deploy Documentation to Staging'
+
+- stage: deploy_docs_production
+  displayName: Deploy Docs to Production
+  dependsOn: deploy_docs_staging
+  condition: |
+    and(
+      succeeded(),
+      or(
+        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+        startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/')
+      )
+    )
+  jobs:
+  - deployment: DeployProduction
+    displayName: 'Deploy to Production Environment'
+    environment: 'Uno Platform Docs Production'
+    pool:
+      vmImage: $(linuxVMImage)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: DocumentationArtifacts-Staging
+            displayName: 'Download Staging Documentation for Production'
+
+          - template: templates/deploy-docs-to-azure.yml
+            parameters:
+              azureSubscription: 'Uno Platform Azure Subscription'
+              storageAccountName: '$(DocsProdStorageAccount)'
+              containerName: '$web'
+              artifactName: 'DocumentationArtifacts-Staging'
+              sourcePath: '.'
+              displayName: 'Deploy Documentation to Production'

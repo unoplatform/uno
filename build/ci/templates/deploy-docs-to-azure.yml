@@ -1,0 +1,37 @@
+parameters:
+  - name: azureSubscription
+    type: string
+    default: ''
+  - name: storageAccountName
+    type: string
+    default: ''
+  - name: containerName
+    type: string
+    default: '$web'
+  - name: artifactName
+    type: string
+    default: 'DocumentationArtifacts'
+  - name: sourcePath
+    type: string
+    default: 'doc'
+  - name: displayName
+    type: string
+    default: 'Deploy Documentation'
+
+steps:
+  - task: AzureCLI@2
+    displayName: ${{ parameters.displayName }}
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscription }}
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        # Upload files to Azure Storage static website
+        az storage blob upload-batch `
+          --account-name ${{ parameters.storageAccountName }} `
+          --destination ${{ parameters.containerName }} `
+          --source $(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.sourcePath }} `
+          --overwrite true `
+          --auth-mode login
+        
+        Write-Host "Documentation deployed successfully to ${{ parameters.storageAccountName }}"
