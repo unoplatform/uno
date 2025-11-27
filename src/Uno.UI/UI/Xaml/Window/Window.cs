@@ -175,14 +175,7 @@ partial class Window
 		get => _windowImplementation.Content;
 		set
 		{
-			// Check if we're running in a secondary ALC by comparing assembly load context
-			// Use the incoming value's assembly, or fall back to existing content when clearing
-			var checkTarget = value ?? _windowImplementation.Content;
-			var isSecondaryAlc = checkTarget is not null && !ReferenceEquals(
-				System.Runtime.Loader.AssemblyLoadContext.Default,
-				System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(checkTarget.GetType().Assembly));
-
-			if (isSecondaryAlc && ContentHostOverride is { } host)
+			if (IsContentFromSecondaryAlc(value) && ContentHostOverride is { } host)
 			{
 				// We're in a secondary ALC, redirect to the host override
 				host.Content = value;
@@ -195,10 +188,12 @@ partial class Window
 		}
 	}
 
-	/// <summary>
-	/// Gets or sets an internal static content host override for scenarios like secondary AssemblyLoadContext hosting.
-	/// When set, Window.Content from secondary ALCs will redirect to this ContentControl.
-	/// </summary>
+	/// Gets or sets an internal <b>static</b> content host override for scenarios like secondary AssemblyLoadContext (ALC) hosting.
+	/// <para>
+	/// <b>Global effect:</b> This property is static and affects all <see cref="Window"/> instances in the application.
+	/// <b>Thread safety:</b> This property is <b>not thread-safe</b>; it should be set during application startup, before creating any secondary ALC applications.
+	/// <b>Usage:</b> When set, <see cref="Window.Content"/> from secondary ALCs will redirect to this <see cref="ContentControl"/>.
+	/// </para>
 	internal static ContentControl? ContentHostOverride { get; set; }
 
 	/// <summary>
@@ -323,13 +318,7 @@ partial class Window
 
 	public void Activate()
 	{
-		// Check if the content is from a secondary ALC with ContentHostOverride
-		var content = ContentHostOverride?.Content;
-		var isSecondaryAlc = content is not null && !ReferenceEquals(
-			System.Runtime.Loader.AssemblyLoadContext.Default,
-			System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(content.GetType().Assembly));
-
-		if (isSecondaryAlc && ContentHostOverride is not null)
+		if (IsContentHostedInSecondaryAlc())
 		{
 			// Don't activate - we're hosted in another window
 			return;
@@ -387,4 +376,29 @@ partial class Window
 	}
 
 	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => _sizeChangedHandlers?.Invoke(this, e);
+
+	/// <summary>
+	/// Checks if the given content element is from a secondary AssemblyLoadContext.
+	/// Uses the incoming value's assembly, or falls back to existing content when value is null.
+	/// </summary>
+	private bool IsContentFromSecondaryAlc(UIElement? value)
+	{
+		var checkTarget = value ?? _windowImplementation.Content;
+		return checkTarget is not null && !ReferenceEquals(
+			System.Runtime.Loader.AssemblyLoadContext.Default,
+			System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(checkTarget.GetType().Assembly));
+	}
+
+	/// <summary>
+	/// Checks if the content in ContentHostOverride is from a secondary ALC.
+	/// </summary>
+	private bool IsContentHostedInSecondaryAlc()
+	{
+		var content = ContentHostOverride?.Content;
+		return content is not null 
+			&& ContentHostOverride is not null
+			&& !ReferenceEquals(
+				System.Runtime.Loader.AssemblyLoadContext.Default,
+				System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(content.GetType().Assembly));
+	}
 }

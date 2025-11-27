@@ -77,20 +77,9 @@ internal sealed class AlcContentHost : ContentControl
 		// Copy direct resources (non-merged)
 		// We need to be careful here to only copy resources that are directly defined
 		// in the application resources, not those from merged dictionaries
-		foreach (var key in sourceApp.Resources.Keys)
+		foreach (var key in sourceApp.Resources.Keys.Except(Resources.Keys))
 		{
-			if (!Resources.ContainsKey(key))
-			{
-				Resources[key] = sourceApp.Resources[key];
-			}
+			Resources[key] = sourceApp.Resources[key];
 		}
-	}
-
-	protected override void OnContentChanged(object? oldContent, object? newContent)
-	{
-		base.OnContentChanged(oldContent, newContent);
-
-		// Ensure resources are updated when content changes
-		UpdateMergedResources();
 	}
 }
