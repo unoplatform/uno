@@ -69,7 +69,6 @@ alias mlaunch=$(dotnet build -getProperty:MlaunchPath *.csproj -f net9.0-ios)
 
 ### Profiling on a physical iOS device
 
-
 1. Build the app with the following parameters:
 
     ```dotnetcli

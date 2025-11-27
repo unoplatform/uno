@@ -154,6 +154,7 @@ Here's what to look for:
 On iOS with the native renderer enabled, memory leaks can happen very frequently when using cross-references on UIElement instances. Some high level analysis can be done using [this C# analyzer](https://github.com/jonathanpeppers/memory-analyzers), to determine obvious patterns that cause memory leaks.
 
 You'll find below other known memory leak patterns on iOS Native:
+
 - `VisualStateManager` must be set on the root element of a XAML file. Placing it on any other control will cause a native controls leak.
 
 ## Skia Targets Specifics
