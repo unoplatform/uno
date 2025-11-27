@@ -189,6 +189,12 @@ public partial class TextBox
 
 	partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => TextBoxView?.OnSelectionHighlightColorChanged(brush);
 
+	partial void OnSelectionHighlightColorWhenNotFocusedChangedPartial(SolidColorBrush brush)
+	{
+		TextBoxView?.OnSelectionHighlightColorWhenNotFocusedChanged(brush);
+		UpdateDisplaySelection();
+	}
+
 	partial void UpdateFontPartial()
 	{
 		TextBoxView?.UpdateFont();
@@ -417,11 +423,15 @@ public partial class TextBox
 
 	private void UpdateDisplaySelection()
 	{
-		if (_isSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
+		if (_isSkiaTextBox && TextBoxView?.DisplayBlock is { } displayBlock && displayBlock.Inlines is { } inlines)
 		{
 			inlines.Selection = (SelectionStart, SelectionStart + SelectionLength);
 			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
-			inlines.RenderSelection = isFocused;
+			// When SelectionHighlightColorWhenNotFocused is set and there is a selection, render selection even when not focused
+			var hasSelectionHighlightColorWhenNotFocused = SelectionHighlightColorWhenNotFocused != null && SelectionLength > 0;
+			var renderingUnfocusedSelection = !isFocused && hasSelectionHighlightColorWhenNotFocused;
+			inlines.RenderSelection = isFocused || hasSelectionHighlightColorWhenNotFocused;
+			displayBlock.IsRenderingUnfocusedSelection = renderingUnfocusedSelection;
 			var caretShowing = (CaretMode is CaretDisplayMode.ThumblessCaretShowing && _selection.length == 0) || CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 			inlines.RenderCaret =
 				isFocused &&
