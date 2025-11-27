@@ -60,14 +60,14 @@ jobs:
     displayName: 'Publish Staging Docs Artifacts'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(build.artifactstagingdirectory)/doc
+      targetPath: $(build.artifactstagingdirectory)/doc/_site
       ArtifactName: DocumentationArtifacts-Staging
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Canary Docs Artifacts'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(build.artifactstagingdirectory)/doc-canary
+      targetPath: $(build.artifactstagingdirectory)/doc-canary/_site
       ArtifactName: DocumentationArtifacts-Canary
 
   - task: PublishBuildArtifacts@1
