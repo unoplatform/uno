@@ -27,12 +27,7 @@ steps:
       scriptLocation: 'inlineScript'
       inlineScript: |
         # Upload files to Azure Storage static website
-        az storage blob upload-batch `
-          --account-name ${{ parameters.storageAccountName }} `
-          --destination ${{ parameters.containerName }} `
-          --source $(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.sourcePath }} `
-          --overwrite true `
-          --auth-mode login
+        $uploadResult = az storage blob upload-batch --account-name ${{ parameters.storageAccountName }} --destination ${{ parameters.containerName }} --source $(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.sourcePath }} --overwrite true --auth-mode login
         
         # Check if the upload was successful
         if ($LASTEXITCODE -ne 0) {
