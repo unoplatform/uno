@@ -2135,7 +2135,7 @@
 			<!-- END ListViewBase selection changes -->
 		</Methods>
 	</IgnoreSet>
-	<IgnoreSet baseVersion="6.2">
+	<IgnoreSet baseVersion="6.4">
 	  <Types>
 		  <Member fullName="Uno.Media.Playback.IMediaPlayerExtension" reason="Does not exist in WinUI" />
 		  <Member fullName="Uno.Media.Playback.IMediaPlayerEventsExtension" reason="Does not exist in WinUI" />
