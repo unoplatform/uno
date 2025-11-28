@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DirectUI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -77,6 +78,23 @@ partial class Selector
 
 		// updates the selection and visual state of visible and cached items
 		UpdateVisibleAndCachedItemsSelectionAndVisualState(true /* updateIsSelected */);
+	}
+
+	/// <summary>
+	/// Clears the current selection for data sources implementing ISelectionInfo.
+	/// </summary>
+	private void InvokeDataSourceClearSelection()
+	{
+		if (m_tpDataSourceAsSelectionInfo is null)
+		{
+			return;
+		}
+
+		var selectedRanges = m_tpDataSourceAsSelectionInfo.GetSelectedRanges();
+		for (int i = 0; i < selectedRanges.Count; i++)
+		{
+			m_tpDataSourceAsSelectionInfo.DeselectRange(selectedRanges[i]);
+		}
 	}
 
 	/// <summary>
@@ -313,31 +331,147 @@ partial class Selector
 	/// </summary>
 	internal void MakeSingleSelection(int index, bool animateIfBringIntoView, object selectedItem, FocusNavigationDirection focusNavigationDirection)
 	{
-		//UNO TODO: Implement SelectJustThisItemInternal on Selector
-		//SelectJustThisItemInternal(SelectedIndex, index, selectedItem, animateIfBringIntoView, focusNavigationDirection);
+		if (m_tpDataSourceAsSelectionInfo is { })
+		{
+			InvokeDataSourceClearSelection();
+			if (index >= 0)
+			{
+				InvokeDataSourceRangeSelection(select: true, index, 1);
+			}
+			else
+			{
+				UpdatePublicSelectionPropertiesAfterDataSourceSelectionInfo();
+			}
+			return;
+		}
+
+		var resolvedItem = selectedItem ?? TryGetItemAt(index);
+		if (index >= 0)
+		{
+			SelectedIndex = index;
+		}
+		else
+		{
+			SelectedIndex = -1;
+		}
+
+		if (resolvedItem is not null && !ReferenceEquals(SelectedItem, resolvedItem))
+		{
+			SelectedItem = resolvedItem;
+		}
+
+		if (animateIfBringIntoView && index >= 0)
+		{
+			SetFocusedItem(index, shouldScrollIntoView: true, animateIfBringIntoView, focusNavigationDirection, InputActivationBehavior.NoActivate);
+		}
 	}
 
 	internal void ScrollIntoViewInternal(object item, bool isHeader, bool isFooter, bool isFromPublicAPI, ScrollIntoViewAlignment alignment, double offset, bool animateIfBringIntoView)
 	{
-		//UNO TODO: Implement ScrollIntoViewInternal on Selector
+		switch (this)
+		{
+			case ListViewBase listViewBase:
+				if (alignment != ScrollIntoViewAlignment.Default)
+				{
+					listViewBase.ScrollIntoView(item, alignment);
+				}
+				else
+				{
+					listViewBase.ScrollIntoView(item);
+				}
+				break;
+			case ComboBox comboBox:
+				comboBox.ScrollIntoView(item, alignment);
+				break;
+			default:
+				if (ContainerFromItem(item) is FrameworkElement element)
+				{
+					var options = new BringIntoViewOptions
+					{
+						AnimationDesired = animateIfBringIntoView
+					};
+					element.StartBringIntoView(options);
+				}
+				break;
+		}
 	}
 
 	internal void AutomationPeerAddToSelection(int index, object item)
 	{
-		//UNO TODO: Implement AutomationPeerAddToSelection on Selector
+		item ??= TryGetItemAt(index);
+
+		if (m_tpDataSourceAsSelectionInfo is { } && index >= 0)
+		{
+			InvokeDataSourceRangeSelection(select: true, index, 1);
+			return;
+		}
+
+		if (this is ListViewBase listViewBase && listViewBase.IsSelectionMultiple)
+		{
+			if (item is { } && !listViewBase.SelectedItems.Contains(item))
+			{
+				listViewBase.SelectedItems.Add(item);
+			}
+			return;
+		}
+
+		MakeSingleSelection(index, animateIfBringIntoView: false, item, FocusNavigationDirection.None);
 	}
 
 	internal void AutomationPeerRemoveFromSelection(int index, object item)
 	{
-		//UNO TODO: Implement AutomationPeerRemoveFromSelection on Selector
+		item ??= TryGetItemAt(index);
+
+		if (m_tpDataSourceAsSelectionInfo is { } && index >= 0)
+		{
+			InvokeDataSourceRangeSelection(select: false, index, 1);
+			return;
+		}
+
+		if (this is ListViewBase listViewBase && listViewBase.IsSelectionMultiple)
+		{
+			if (item is { } && listViewBase.SelectedItems.Contains(item))
+			{
+				listViewBase.SelectedItems.Remove(item);
+			}
+			return;
+		}
+
+		if (SelectedIndex == index || Equals(SelectedItem, item))
+		{
+			SelectedIndex = -1;
+		}
 	}
 
 	internal bool AutomationPeerIsSelected(object item)
 	{
-		//UNO TODO: Implement AutomationPeerIsSelected on Selector
+		if (m_tpDataSourceAsSelectionInfo is { } && item is { })
+		{
+			var index = Items.IndexOf(item);
+			if (index >= 0)
+			{
+				return m_tpDataSourceAsSelectionInfo.IsSelected(index);
+			}
+		}
 
-		return false;
+		if (this is ListViewBase listViewBase && listViewBase.IsSelectionMultiple)
+		{
+			return listViewBase.SelectedItems.Contains(item);
+		}
+
+		return Equals(SelectedItem, item);
 	}
 
 	internal bool IsSelectionPatternApplicable() => true;
+
+	private object TryGetItemAt(int index)
+	{
+		var items = Items;
+		if (items is null || index < 0 || index >= items.Count)
+		{
+			return null;
+		}
+
+		return items[index];
+	}
 }
