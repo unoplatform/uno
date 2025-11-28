@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -77,7 +78,7 @@ internal sealed partial class AlcContentHost : ContentControl
 		// Copy direct resources (non-merged)
 		// We need to be careful here to only copy resources that are directly defined
 		// in the application resources, not those from merged dictionaries
-		foreach (var key in sourceApp.Resources.Keys.Except(Resources.Keys))
+		foreach (var key in sourceApp.Resources.Keys.Except(Resources.Keys).ToList())
 		{
 			Resources[key] = sourceApp.Resources[key];
 		}

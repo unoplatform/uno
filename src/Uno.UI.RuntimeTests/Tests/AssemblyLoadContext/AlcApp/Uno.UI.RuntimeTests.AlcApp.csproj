@@ -12,8 +12,6 @@
 		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>
 
 		<UnoUIRuntimeTestEngine_DisableValidateUno>true</UnoUIRuntimeTestEngine_DisableValidateUno>
-       <!-- Required until https://github.com/dotnet/sdk/issues/36666 is released -->
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
 		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 		<NoWarn>$(NoWarn);CS1998;IDE0051;IDE0055;NU1903;MSB3277</NoWarn>

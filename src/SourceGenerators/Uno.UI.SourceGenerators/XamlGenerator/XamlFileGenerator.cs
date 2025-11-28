@@ -500,8 +500,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				ApplyLiteralProperties();
 				writer.AppendLine();
 
-				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
-				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
+				ApplyAppGlobalResources();
 
 				if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
 				{
@@ -518,8 +517,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			using (writer.BlockInvariant($"else"))
 			{
-				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
-				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
+				ApplyAppGlobalResources();
 
 				if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
 				{
@@ -550,6 +548,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				AttachUnhandledExceptionHandler();
+			}
+
+			void ApplyAppGlobalResources()
+			{
+				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
+				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
 			}
 
 			void ApplyLiteralProperties()

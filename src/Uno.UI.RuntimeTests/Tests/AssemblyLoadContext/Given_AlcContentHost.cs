@@ -38,23 +38,6 @@ public class Given_AlcContentHost
 		}
 	}
 
-	[TestMethod]
-	public async Task When_ContentHostOverride_Then_ContentRedirected()
-	{
-		// Note: This test validates the ContentHostOverride mechanism but doesn't test
-		// the ALC detection since we're in the same ALC. See When_SecondaryAlcApp_Then_ContentHosted
-		// for the full ALC scenario.
-		
-		// Arrange
-		// Create a content host and set it statically
-		var contentHost = new AlcContentHost();
-		Microsoft.UI.Xaml.Window.ContentHostOverride = contentHost;
-
-		// In the same ALC, content won't redirect automatically (by design)
-		// This test just validates the ContentHostOverride can be set
-
-		// Cleanup is handled by TestCleanup
-	}
 
 	[TestMethod]
 	public async Task When_AlcContentHost_Then_ResourcesInherited()

@@ -96,22 +96,20 @@ public sealed partial class PageStackEntry : DependencyObject
 			// Type.GetType returns null if the type is not found
 			return GetType(descriptor);
 		}
-		else
+
+		var alcParts = descriptor.Split(AlcDescriptorDelimiter, StringSplitOptions.None);
+
+		if (AssemblyLoadContext.All.FirstOrDefault(alc => alc.Name == alcParts[1]) is { } alc)
 		{
-			var alcParts = descriptor.Split(AlcDescriptorDelimiter, StringSplitOptions.None);
-
-			if (AssemblyLoadContext.All.Where(alc => alc.Name == alcParts[1]).FirstOrDefault() is { } alc)
+			using (alc.EnterContextualReflection())
 			{
-				using (alc.EnterContextualReflection())
-				{
-					// Type.GetType returns null if the type is not found in the ALC
-					return GetType(alcParts[0]);
-				}
+				// Type.GetType returns null if the type is not found in the ALC
+				return GetType(alcParts[0]);
 			}
-
-			throw new InvalidOperationException(
-				$"Failed to resolve type descriptor '{descriptor}': AssemblyLoadContext with name '{alcParts[1]}' was not found.");
 		}
+
+		throw new InvalidOperationException(
+			$"Failed to resolve type descriptor '{descriptor}': AssemblyLoadContext with name '{alcParts[1]}' was not found.");
 	}
 
 	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
