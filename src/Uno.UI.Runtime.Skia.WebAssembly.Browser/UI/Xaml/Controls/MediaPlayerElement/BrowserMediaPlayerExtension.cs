@@ -243,7 +243,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 
 	public void ToggleMute() => NativeMethods.SetMuted(HtmlElement.ElementId, _player.IsMuted);
 
-	public void OnVolumeChanged() => NativeMethods.SetVolume(HtmlElement.ElementId, _player.Volume / 100);
+	public void OnVolumeChanged() => NativeMethods.SetVolume(HtmlElement.ElementId, _player.Volume);
 
 	public void OnOptionChanged(string name, object value) { }
 
