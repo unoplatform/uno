@@ -53,7 +53,12 @@ public partial class Package
 	internal static void SetEntryAssembly(Assembly entryAssembly)
 	{
 		_entryAssembly = entryAssembly;
-		Current.Id.Name = entryAssembly.GetName().Name; // Set the package name to the entry assembly name by default.
+		var assemblyName = entryAssembly.GetName();
+		Current.Id.Name = assemblyName.Name; // Set the package name to the entry assembly name by default.
+		if (assemblyName.Version is not null)
+		{
+			Current.Id.Version = new PackageVersion(assemblyName.Version);
+		}
 		Current.ParsePackageManifest();
 		IsManifestInitialized = true;
 	}
@@ -117,10 +122,15 @@ public partial class Package
 			{
 				Id.Name = idNode.Attributes?.GetNamedItem("Name")?.Value ?? "";
 
-				var versionString = idNode.Attributes?.GetNamedItem("Version")?.Value ?? "";
-				if (Version.TryParse(versionString, out var version))
+				// By default we use the entry assembly version, which is usually set by the <AssemblyDisplayVersion> MSBuild property.
+				// If not set yet, we try to get the version from the manifest instead.
+				if (Id.Version == default)
 				{
-					Id.Version = new PackageVersion(version);
+					var versionString = idNode.Attributes?.GetNamedItem("Version")?.Value ?? "";
+					if (Version.TryParse(versionString, out var version))
+					{
+						Id.Version = new PackageVersion(version);
+					}
 				}
 
 				Id.Publisher = idNode.Attributes?.GetNamedItem("Publisher")?.Value ?? "";
