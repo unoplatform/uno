@@ -219,11 +219,8 @@ public class Given_AlcContentHost
 #error This .NET version is yet not supported by the test project build script.
 #endif
 
-
+		// The CI environment builds build tooling in debug (related to the HR tests)
 		var configuration = "Debug";
-#if RELEASE
-		configuration = "Release";
-#endif
 
 		// Build the project using dotnet CLI
 		var alcAppDir = Path.GetDirectoryName(alcAppProjectPath)!;
