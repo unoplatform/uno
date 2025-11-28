@@ -29,7 +29,6 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.SendMessage(message);
 
-
 		var reloadWaiter = TypeMappings.WaitForResume();
 		if (!reloadWaiter.IsCompleted)
 		{
@@ -39,9 +38,6 @@ internal static class HotReloadHelper
 		}
 
 		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
-		
-		// The previous tasks only indicates the update has been received and processed by visual tree ... not the UI has been updated yet
-		await UnitTestsUIContentHelper.WaitForIdle();
 	}
 
 	/// <summary>
