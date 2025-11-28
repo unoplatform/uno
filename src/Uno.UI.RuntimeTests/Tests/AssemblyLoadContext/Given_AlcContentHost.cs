@@ -1,3 +1,4 @@
+#if HAS_UNO
 #nullable enable
 
 using System;
@@ -40,6 +41,7 @@ public class Given_AlcContentHost
 
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	public async Task When_AlcContentHost_Then_ResourcesInherited()
 	{
 		// Arrange
@@ -62,6 +64,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	public async Task When_AlcContentHost_Then_MergedDictionariesInherited()
 	{
 		// Arrange
@@ -86,6 +89,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	public async Task When_SecondaryAlcApp_Then_ContentHosted()
 	{
 		// Arrange
@@ -315,3 +319,4 @@ public class Given_AlcContentHost
 		}
 	}
 }
+#endif
