@@ -138,7 +138,7 @@ internal readonly partial struct UnicodeText
 			}
 			else if (status < 0)
 			{
-				// What ICU has a very low bar for what it considers a "warning", so this can be very spammy. 
+				// ICU has a very low bar for what it considers a "warning", so this can be very spammy. 
 				typeof(ICU).LogTrace()?.Warn($"{typeof(T).Name} raised a warning code {status.ToString("X", CultureInfo.InvariantCulture)}");
 			}
 		}
@@ -190,7 +190,7 @@ internal readonly partial struct UnicodeText
 
 		public class BrowserICUSymbols
 		{
-			// These methods are supplied by owr own unoicu.a static library and includes support for the BreakIterator
+			// These methods are supplied by our own unoicu.a static library and includes support for the BreakIterator
 			// API. The dotnet runtime version of ICU complains about mising resources when calling ubrk_open even
 			// when udata_setCommonData is called.
 			[DllImport("unoicu")]

@@ -296,10 +296,6 @@ internal readonly struct ParsedText : IParsedText
 	MaxLinesHit:
 
 		desiredSize = renderLines.Count == 0 ? new Size(0, defaultLineHeight) : new Size(widestLineWidth, height);
-		if (string.Concat(inlines.Select(InlineExtensions.GetText)).StartsWith("Lorem", StringComparison.InvariantCulture))
-		{
-		}
-		// Console.WriteLine($"Ramez measured {} desiredSize={desiredSize}");
 		return new(inlines, renderLines, availableSize, textAlignment, textWrapping, defaultLineHeight, flowDirection);
 
 		// Local functions
