@@ -51,6 +51,8 @@ public partial class ComboBox : Selector
 	/// </summary>
 	private ManagedWeakReference? _selectionParentInDropdown;
 
+	internal ContentPresenter? GetContentPresenterPart() => m_tpContentPresenterPart;
+
 	public ComboBox()
 	{
 		ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
