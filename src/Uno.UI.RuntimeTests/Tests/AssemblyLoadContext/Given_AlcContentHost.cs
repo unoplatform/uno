@@ -179,31 +179,45 @@ public class Given_AlcContentHost
 			"TestAccentBrush should have the expected color");
 	}
 
+	private static string GetAlcAppPath()
+	{
+		var basePath = Path.GetDirectoryName(Application.Current.GetType().Assembly.Location)!;
+
+		var searchPaths = new[] {
+			Path.Combine(basePath, "..", "..", "..", "..", "..", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
+			Path.Combine(basePath, "..", "..", "src", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
+		};
+
+		var hrAppPath = searchPaths
+			.Where(Directory.Exists)
+			.FirstOrDefault();
+
+		if (hrAppPath is null)
+		{
+			throw new InvalidOperationException("Unable to find AlcApp folder in " + string.Join(", ", searchPaths));
+		}
+
+		return hrAppPath;
+	}
+
+
 	/// <summary>
 	/// Builds the AlcApp test project and returns the path to the compiled assembly.
 	/// </summary>
 	private async Task<string?> BuildAlcAppAsync()
 	{
-		var testDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-		Assert.IsNotNull(testDirectory, "Test directory should be found");
-
-		// Navigate from the test binary location to the AlcApp project
-		// Typical path: .../Uno.UI.RuntimeTests/bin/Debug/net10.0/...
-		// Target path: .../Uno.UI.RuntimeTests/Tests/AssemblyLoadContext/AlcApp/
-		var runtimeTestsRoot = Path.GetDirectoryName(testDirectory);
-		while (runtimeTestsRoot != null && !Directory.Exists(Path.Combine(runtimeTestsRoot, "Uno.UI.RuntimeTests")))
-		{
-			runtimeTestsRoot = Directory.GetParent(runtimeTestsRoot)?.FullName;
-		}
-
-		Assert.IsNotNull(runtimeTestsRoot, "RuntimeTests root directory should be found");
-
-		var alcAppProjectPath = Path.Combine(runtimeTestsRoot, "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp",
-			"Uno.UI.RuntimeTests.AlcApp.csproj");
+		var alcAppProjectPath = Path.Combine(GetAlcAppPath(), "Uno.UI.RuntimeTests.AlcApp.csproj");
 		Assert.IsTrue(File.Exists(alcAppProjectPath), $"AlcApp project should exist at {alcAppProjectPath}");
 
 		// Determine target framework and configuration
-		var targetFramework = "net10.0";
+		var targetFramework =
+#if NET10_0
+			"net10.0";
+#else
+#error This .NET version is not supported
+#endif
+
+
 		var configuration = "Debug";
 #if RELEASE
 		configuration = "Release";
