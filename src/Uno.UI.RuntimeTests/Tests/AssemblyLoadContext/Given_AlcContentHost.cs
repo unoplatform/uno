@@ -213,8 +213,10 @@ public class Given_AlcContentHost
 		var targetFramework =
 #if NET10_0
 			"net10.0";
+#elif NET9_0
+			"net9.0";
 #else
-#error This .NET version is not supported
+#error This .NET version is yet not supported by the test project build script.
 #endif
 
 
