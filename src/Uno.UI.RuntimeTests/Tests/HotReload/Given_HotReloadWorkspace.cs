@@ -106,12 +106,12 @@ public partial class Given_HotReloadWorkspace
 
 	public static async Task InitializeServer()
 	{
-		if (_remoteControlPort == 0)
+		if (_remoteControlPort is 0)
 		{
 			_remoteControlPort = GetTcpPort();
-
-			StartServer(_remoteControlPort);
 		}
+
+		EnsureServer(_remoteControlPort);
 	}
 
 	public static async Task<string> RunTestApp(string filters, CancellationToken ct)
@@ -230,7 +230,7 @@ public partial class Given_HotReloadWorkspace
 		return hrAppPath;
 	}
 
-	private static void StartServer(int port)
+	private static void EnsureServer(int port)
 	{
 		if (_process is null or { HasExited: true })
 		{

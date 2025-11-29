@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<PropertyGroup>
+		<UnoGenerateHotReloadInfo>True</UnoGenerateHotReloadInfo>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(UnoIsHotReloadHost)'=='true'">
 		<RuntimeIdentifier Condition="'$(UnoHotReloadRuntimeIdentifier)' != ''">$(UnoHotReloadRuntimeIdentifier)</RuntimeIdentifier>
 		<TargetFramework Condition="'$(UnoHotReloadTargetFramework)' != ''">$(UnoHotReloadTargetFramework)</TargetFramework>

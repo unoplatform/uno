@@ -12,6 +12,7 @@
 		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>
 
 		<UnoUIRuntimeTestEngine_DisableValidateUno>true</UnoUIRuntimeTestEngine_DisableValidateUno>
+		<UnoGenerateHotReloadInfo>True</UnoGenerateHotReloadInfo>
        <!-- Required until https://github.com/dotnet/sdk/issues/36666 is released -->
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
