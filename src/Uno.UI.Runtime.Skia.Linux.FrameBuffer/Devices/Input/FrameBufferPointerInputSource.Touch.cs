@@ -18,6 +18,7 @@ using static Windows.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
 using Uno.Foundation.Logging;
 using System.Collections.Generic;
+using Windows.Graphics.Display;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia;
@@ -43,8 +44,29 @@ unsafe internal partial class FrameBufferPointerInputSource
 			if (rawEventType == LIBINPUT_EVENT_TOUCH_DOWN
 				|| rawEventType == LIBINPUT_EVENT_TOUCH_MOTION)
 			{
-				var x = libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-				var y = libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				double x, y;
+				switch (FrameBufferWindowWrapper.Instance.Orientation)
+				{
+					case DisplayOrientations.None:
+					case DisplayOrientations.Landscape:
+						x = libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+						y = libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+						break;
+					case DisplayOrientations.Portrait:
+						y = FrameBufferWindowWrapper.Instance.Bounds.Height - libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+						x = libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+						break;
+					case DisplayOrientations.LandscapeFlipped:
+						x = libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+						y = FrameBufferWindowWrapper.Instance.Bounds.Height - libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+						break;
+					case DisplayOrientations.PortraitFlipped:
+						y = libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+						x = FrameBufferWindowWrapper.Instance.Bounds.Width - libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
 				currentPosition = new Point(x, y);
 				_activePointers[pointerId] = currentPosition;
 			}
