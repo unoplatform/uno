@@ -184,13 +184,12 @@ public class Given_AlcContentHost
 		var basePath = Path.GetDirectoryName(Application.Current.GetType().Assembly.Location)!;
 
 		var searchPaths = new[] {
-			Path.Combine(basePath), // CI build output
 			Path.Combine(basePath, "..", "..", "..", "..", "..", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
 			Path.Combine(basePath, "..", "..", "src", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
 		};
 
 		var hrAppPath = searchPaths
-			.Where(p => File.Exists(Path.Combine(p, "AlcApp.dll")))
+			.Where(p => File.Exists(Path.Combine(p, "Uno.UI.RuntimeTests.AlcApp.csproj")))
 			.FirstOrDefault();
 
 		if (hrAppPath is null)
