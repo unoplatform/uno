@@ -12,8 +12,5 @@ namespace Uno.Foundation.Internals
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
 	internal sealed class BindableAttribute : Attribute
 	{
-		public BindableAttribute()
-		{
-		}
 	}
 }
