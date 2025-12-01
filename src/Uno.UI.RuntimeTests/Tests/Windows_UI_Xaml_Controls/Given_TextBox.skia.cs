@@ -2741,7 +2741,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			var bounds = SUT.GetAbsoluteBounds();
-			mouse.MoveTo(bounds.Location.Offset(145, 55));
+			mouse.MoveTo(bounds.Location.Offset(145, 50));
 			await WindowHelper.WaitForIdle();
 
 			mouse.Press();
