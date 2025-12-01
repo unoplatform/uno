@@ -69,8 +69,7 @@ internal partial class FrameBufferPointerInputSource
 		}
 		else if (type == LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE)
 		{
-			var x = libinput_event_pointer_get_absolute_x_transformed(rawPointerEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-			var y = libinput_event_pointer_get_absolute_y_transformed(rawPointerEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+			var (x, y) = GetOrientationAdjustedAbsolutionPosition(rawPointerEvent, libinput_event_pointer_get_absolute_x_transformed, libinput_event_pointer_get_absolute_y_transformed);
 			MousePosition = new Point(x, y);
 
 			raisePointerEvent = RaisePointerMoved;

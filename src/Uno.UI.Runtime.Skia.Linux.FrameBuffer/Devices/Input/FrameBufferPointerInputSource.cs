@@ -80,6 +80,35 @@ internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSourc
 	private VirtualKeyModifiers GetCurrentModifiersState()
 		=> _keyboardInputSource?.Invoke() ?? VirtualKeyModifiers.None;
 
+	private (double x, double y) GetOrientationAdjustedAbsolutionPosition(IntPtr rawEvent, Func<IntPtr, int, double> getX, Func<IntPtr, int, double> getY)
+	{
+		double x, y;
+		switch (FrameBufferWindowWrapper.Instance.Orientation)
+		{
+			case DisplayOrientations.None:
+			case DisplayOrientations.Landscape:
+				x = getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				y = getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				break;
+			case DisplayOrientations.Portrait:
+				y = FrameBufferWindowWrapper.Instance.Bounds.Height - getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				x = getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				break;
+			case DisplayOrientations.LandscapeFlipped:
+				x = FrameBufferWindowWrapper.Instance.Bounds.Width - getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				y = FrameBufferWindowWrapper.Instance.Bounds.Height - getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				break;
+			case DisplayOrientations.PortraitFlipped:
+				y = getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				x = FrameBufferWindowWrapper.Instance.Bounds.Width - getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				break;
+			default:
+				throw new ArgumentOutOfRangeException();
+		}
+
+		return (x, y);
+	}
+
 	private void LogNotSupported([CallerMemberName] string member = "")
 	{
 		if (this.Log().IsEnabled(LogLevel.Debug))

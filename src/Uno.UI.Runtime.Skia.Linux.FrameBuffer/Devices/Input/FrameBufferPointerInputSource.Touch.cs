@@ -44,29 +44,7 @@ unsafe internal partial class FrameBufferPointerInputSource
 			if (rawEventType == LIBINPUT_EVENT_TOUCH_DOWN
 				|| rawEventType == LIBINPUT_EVENT_TOUCH_MOTION)
 			{
-				double x, y;
-				switch (FrameBufferWindowWrapper.Instance.Orientation)
-				{
-					case DisplayOrientations.None:
-					case DisplayOrientations.Landscape:
-						x = libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-						y = libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
-						break;
-					case DisplayOrientations.Portrait:
-						y = FrameBufferWindowWrapper.Instance.Bounds.Height - libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
-						x = libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-						break;
-					case DisplayOrientations.LandscapeFlipped:
-						x = libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-						y = FrameBufferWindowWrapper.Instance.Bounds.Height - libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
-						break;
-					case DisplayOrientations.PortraitFlipped:
-						y = libinput_event_touch_get_x_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
-						x = FrameBufferWindowWrapper.Instance.Bounds.Width - libinput_event_touch_get_y_transformed(rawTouchEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
+				var (x, y) = GetOrientationAdjustedAbsolutionPosition(rawTouchEvent, libinput_event_touch_get_x_transformed, libinput_event_touch_get_y_transformed);
 				currentPosition = new Point(x, y);
 				_activePointers[pointerId] = currentPosition;
 			}
