@@ -7,21 +7,32 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Windows.Storage.Pickers.Provider;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+
 
 #if __APPLE_UIKIT__
 using UIKit;
 #elif __ANDROID__
 using Uno.UI;
+#endif
+
+#if __APPLE_UIKIT__
+using UIKit;
+using _View = UIKit.UIView;
+#elif __ANDROID__
+using _View = Android.Views.View;
+#else
+using _View = Microsoft.UI.Xaml.DependencyObject;
 #endif
 
 [assembly: System.Reflection.Metadata.MetadataUpdateHandler(typeof(Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor))]
@@ -30,71 +41,53 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
-		private static ClientHotReloadProcessor? _instance;
-
-#if HAS_UNO
-		private static ClientHotReloadProcessor? Instance => _instance;
-#else
-		private static ClientHotReloadProcessor? Instance => _instance ??= new();
-
-		private ClientHotReloadProcessor()
+		private static IEnumerable<(FrameworkElement element, string key)> EnumerateVisualTree(object? instance, string parentKey)
 		{
-			_status = new(this);
+			if (instance is not _View view)
+			{
+				yield break;
+			}
+
+			var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
+			var instanceKey = $"{parentKey}_{instanceTypeName}";
+
+			if (view is FrameworkElement element)
+			{
+				yield return (element, instanceKey);
+			}
+
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(view); i++)
+			{
+				var child = VisualTreeHelper.GetChild(view, i);
+				var inner = EnumerateVisualTree(child, $"{instanceKey}_[{i}]");
+
+				foreach (var childElement in inner)
+				{
+					yield return childElement;
+				}
+			}
 		}
-#endif
 
-		private static async IAsyncEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
-			object? instance,
-			Func<FrameworkElement, string, Task<TMatch?>> predicate,
-			string? parentKey)
+		private static void IterateVisualTree(object? instance, Func<FrameworkElement, bool> action)
 		{
-
-			if (instance is FrameworkElement fe)
+			if (instance is not _View view)
 			{
-				var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
-				var instanceKey = parentKey is not null ? $"{parentKey}_{instanceTypeName}" : instanceTypeName;
-				var match = await predicate(fe, instanceKey);
-				if (match is not null)
-				{
-					yield return match;
-				}
+				return;
+			}
 
-				var idx = 0;
-				foreach (var child in fe.EnumerateChildren())
+			if (view is FrameworkElement element)
+			{
+				var stop = action(element);
+				if (stop)
 				{
-					var inner = EnumerateHotReloadInstances(child, predicate, $"{instanceKey}_[{idx}]");
-					idx++;
-					await foreach (var validElement in inner)
-					{
-						yield return validElement;
-					}
+					return;
 				}
 			}
-#if __IOS__ || __ANDROID__
-#if __IOS__
-			else if (instance is UIView nativeView)
-#elif __ANDROID__
-			else if (instance is global::Android.Views.ViewGroup nativeView)
-#endif
+
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(view); i++)
 			{
-				// Enumerate through native instances, such as NativeFramePresenter
-
-				var idx = 0;
-				foreach (var nativeChild in nativeView.EnumerateChildren())
-				{
-					var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
-					var instanceKey = parentKey is not null ? $"{parentKey}_{instanceTypeName}" : instanceTypeName;
-					var inner = EnumerateHotReloadInstances(nativeChild, predicate, $"{instanceKey}_[{idx}]");
-
-					idx++;
-
-					await foreach (var validElement in inner)
-					{
-						yield return validElement;
-					}
-				}
+				IterateVisualTree(VisualTreeHelper.GetChild(view, i), action);
 			}
-#endif
 		}
 
 		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)
