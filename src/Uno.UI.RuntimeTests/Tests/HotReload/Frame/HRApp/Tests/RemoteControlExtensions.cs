@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Uno.UI.Helpers;
+using Uno.UI.HotReload;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
@@ -29,8 +30,7 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.SendMessage(message);
 
-		var reloadWaiter = TypeMappings.WaitForResume();
-		if (!reloadWaiter.IsCompleted)
+		if (HotReloadService.Instance?.IsUIUpdatePaused is true)
 		{
 			// Reloads are paused (ie task hasn't completed), so don't wait for any update
 			// This is to handle testing the pause/resume feature of HR
@@ -66,8 +66,7 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.SendMessage(message);
 
-		var reloadWaiter = TypeMappings.WaitForResume();
-		if (!reloadWaiter.IsCompleted)
+		if (HotReloadService.Instance?.IsUIUpdatePaused is true)
 		{
 			// Reloads are paused (ie task hasn't completed), so don't wait for any update
 			// This is to handle testing the pause/resume feature of HR

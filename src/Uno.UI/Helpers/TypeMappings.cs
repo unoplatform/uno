@@ -1,10 +1,9 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Uno.UI.Helpers;
 
@@ -14,38 +13,22 @@ namespace Uno.UI.Helpers;
 public static class TypeMappings
 {
 	/// <summary>
-	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
-	/// of the original type.
+	/// This maps a replacement type to the original type. This dictionary will grow with each iteration of the original type.
 	/// </summary>
-	private static IDictionary<Type, Type> AllMappedTypeToOriginalTypeMappings { get; } = new Dictionary<Type, Type>();
-
-	/// <summary>
-	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
-	/// of the original type.
-	/// Similiar to AllMappedTypeToOriginalTypeMappings but doesn't update whilst hot reload is paused
-	/// </summary>
-	private static IDictionary<Type, Type> MappedTypeToOriginalTypeMappings { get; set; } = new Dictionary<Type, Type>();
+	private static ImmutableDictionary<Type, Type> _mappedTypeToOriginalType = ImmutableDictionary<Type, Type>.Empty;
 
 	/// <summary>
 	/// This maps an original type to the most recent replacement type. This dictionary will only grow when
 	/// a different original type is modified.
 	/// </summary>
-	private static IDictionary<Type, Type> AllOriginalTypeToMappedType { get; } = new Dictionary<Type, Type>();
-
-	/// <summary>
-	/// This maps an original type to the most recent replacement type. This dictionary will only grow when
-	/// a different original type is modified.
-	/// Similiar to AllOriginalTypeToMappedType but doesn't update whilst hot reload is paused
-	/// </summary>
-	private static IDictionary<Type, Type> OriginalTypeToMappedType { get; set; } = new Dictionary<Type, Type>();
+	private static ImmutableDictionary<Type, Type> _originalTypeToMappedType = ImmutableDictionary<Type, Type>.Empty;
 
 	/// <summary>
 	/// Extension method to return the replacement type for a given instance type
 	/// </summary>
-	/// <param name="instanceType">This is the type that may have been replaced</param>
+	/// <param name="instanceType">This is the type (original or any updated version of it) that may have been replaced</param>
 	/// <returns>If instanceType has been replaced, then the replacement type, otherwise the instanceType</returns>
-	public static Type GetReplacementType(
-		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] this Type instanceType)
+	public static Type GetReplacementType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] this Type instanceType)
 	{
 		// Two scenarios:
 		// 1. The instance type is a mapped type, in which case we need to get the original type
@@ -57,106 +40,37 @@ public static class TypeMappings
 	/// <summary>
 	/// Creates an instance of the replacement type using its original type.
 	/// </summary>
-	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
-	/// <returns>An new instance for the original type</returns>
+	/// <typeparam name="TType">The type (original or any updated version of it) to be created</typeparam>
+	/// <returns>A new instance for the original type</returns>
 	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
-	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOriginalType>()
-		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType());
+	public static object? CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TType>()
+		=> Activator.CreateInstance(typeof(TType).GetReplacementType());
 
 	/// <summary>
 	/// Creates an instance of the replacement type using its original type.
 	/// </summary>
-	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
+	/// <typeparam name="TType">The type (original or any updated version of it) to be created</typeparam>
 	/// <param name="args">The arguments used to create the instance, passed to the ctor</param>
-	/// <returns>An new instance for the original type</returns>
-	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TOriginalType>(params object[] args)
-		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType(), args: args);
+	/// <returns>A new instance for the original type</returns>
+	public static object? CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TType>(params object[] args)
+		=> Activator.CreateInstance(typeof(TType).GetReplacementType(), args: args);
 
-	internal static Type GetMappedType(this Type originalType) =>
-		OriginalTypeToMappedType.TryGetValue(originalType, out var mappedType) ? mappedType : default;
+	internal static Type? GetMappedType(this Type originalType)
+		=> _originalTypeToMappedType.GetValueOrDefault(originalType);
 
-	internal static Type GetOriginalType(this Type mappedType) =>
-		MappedTypeToOriginalTypeMappings.TryGetValue(mappedType, out var originalType) ? originalType : default;
+	internal static Type? GetOriginalType(this Type mappedType)
+		=> _mappedTypeToOriginalType.GetValueOrDefault(mappedType);
 
-	internal static bool IsReplacedBy(this Type sourceType, Type mappedType)
+	internal static void RegisterMappings(ImmutableDictionary<Type, Type> updatedTypesPerOriginal)
 	{
-		if (mappedType.GetOriginalType() is { } originalType)
-		{
-			if (originalType == sourceType)
-			{
-				return true;
-			}
-			return sourceType.GetOriginalType()?.GetMappedType() == mappedType;
-		}
+		ImmutableInterlocked.Update(
+			ref _mappedTypeToOriginalType,
+			static (all, updated) => all.AddRange(updated.Select(pair => new KeyValuePair<Type, Type>(pair.Value, pair.Key))),
+			updatedTypesPerOriginal);
 
-		return false;
-	}
-
-	internal static void RegisterMapping(Type mappedType, Type originalType)
-	{
-		AllMappedTypeToOriginalTypeMappings[mappedType] = originalType;
-		AllOriginalTypeToMappedType[originalType] = mappedType;
-
-		if (_mappingsPaused is null)
-		{
-			MappedTypeToOriginalTypeMappings[mappedType] = originalType;
-			OriginalTypeToMappedType[originalType] = mappedType;
-		}
-	}
-
-	/// <summary>
-	/// This method is required for testing purposes. A typical test will navigate
-	/// to a specific page and expect that page (not a replacement type) as a starting 
-	/// point. For this to work, we need to reset the mappings.
-	/// </summary>
-	internal static void ClearMappings()
-	{
-		MappedTypeToOriginalTypeMappings.Clear();
-		OriginalTypeToMappedType.Clear();
-		AllMappedTypeToOriginalTypeMappings.Clear();
-		AllOriginalTypeToMappedType.Clear();
-	}
-
-	private static TaskCompletionSource _mappingsPaused;
-
-	/// <summary>
-	/// Gets a Task that can be awaited to ensure type mappings
-	/// are being applied. This is useful particularly for testing 
-	/// HR the pause/resume function of type mappings
-	/// </summary>
-	/// <returns>A task that will complete when type mapping collection
-	/// has resumed. Returns a completed task if type mapping collection
-	/// is currently active
-	/// The value (bool) returned from the task indicates whether the layout should be updated</returns>
-	public static Task WaitForResume()
-		=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.FromResult(true);
-
-	/// <summary>
-	/// Gets whether type mappings are currently paused 
-	/// </summary>
-	public static bool IsPaused => _mappingsPaused is not null;
-
-
-	/// <summary>
-	/// Pause the collection of type mappings.
-	/// Internally the type mappings are still collected but will only be
-	/// applied to the mapping dictionaries after Resume is called
-	/// </summary>
-	public static void Pause() => Interlocked.CompareExchange(ref _mappingsPaused, new TaskCompletionSource(), null);
-
-	/// <summary>
-	/// Resumes the collection of type mappings
-	/// If new types have been created whilst type mapping
-	/// was paused, those new mappings will be applied before
-	/// the WaitForResume task completes
-	/// </summary>
-	public static void Resume()
-	{
-		if (Interlocked.Exchange(ref _mappingsPaused, null) is { } completion)
-		{
-			MappedTypeToOriginalTypeMappings = new Dictionary<Type, Type>(AllMappedTypeToOriginalTypeMappings);
-			OriginalTypeToMappedType = new Dictionary<Type, Type>(AllOriginalTypeToMappedType);
-			completion.TrySetResult();
-		}
+		ImmutableInterlocked.Update(
+			ref _originalTypeToMappedType,
+			static (all, updated) => all.SetItems(updated),
+			updatedTypesPerOriginal);
 	}
 }

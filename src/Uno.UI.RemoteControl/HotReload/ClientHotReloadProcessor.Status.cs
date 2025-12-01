@@ -31,7 +31,7 @@ public partial class ClientHotReloadProcessor
 	/// </summary>
 	public Status CurrentStatus => _status.Current;
 
-	private readonly StatusSink _status;
+	internal readonly StatusSink _status;
 
 	public enum HotReloadSource
 	{
@@ -69,7 +69,7 @@ public partial class ClientHotReloadProcessor
 		(HotReloadState State, IImmutableList<HotReloadServerOperationData> Operations) Server,
 		(HotReloadState State, IImmutableList<HotReloadClientOperation> Operations) Local);
 
-	private class StatusSink(ClientHotReloadProcessor owner)
+	internal class StatusSink(ClientHotReloadProcessor owner)
 	{
 		private HotReloadState? _serverState;
 		private bool _isFinalServerState;
@@ -129,9 +129,9 @@ public partial class ClientHotReloadProcessor
 		public void ConfigureSourceForNextOperation(HotReloadSource source)
 			=> _source = source;
 
-		public HotReloadClientOperation ReportLocalStarting(Type[] types)
+		public HotReloadClientOperation ReportLocalStarting(Type[] types, HotReloadSource? source = null)
 		{
-			var op = new HotReloadClientOperation(_source, types, NotifyStatusChanged);
+			var op = new HotReloadClientOperation(source ?? _source, types, NotifyStatusChanged);
 			ImmutableInterlocked.Update(ref _localOperations, static (history, op) => history.Add(op).Sort(Compare), op);
 			NotifyStatusChanged();
 
@@ -167,7 +167,7 @@ public partial class ClientHotReloadProcessor
 				_ => (HotReloadState)Math.Max((int)serverState, (int)localState)
 			};
 
-			return new(globalState, (serverState, _serverOperations.Values.ToImmutableArray()), (localState, _localOperations));
+			return new(globalState, (serverState, [.. _serverOperations.Values]), (localState, _localOperations));
 		}
 	}
 
