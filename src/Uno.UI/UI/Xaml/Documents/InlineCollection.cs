@@ -2,12 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.UI.Xaml.Controls;
+
 #if __WASM__
 using System.Collections.Specialized;
-using System.Linq;
-
 #endif
-using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -88,7 +87,7 @@ namespace Microsoft.UI.Xaml.Documents
 				{
 					if (_collection.Count == 1 && _collection[0] is not Span)
 					{
-						return [_collection[0]];
+						return [(Inline)_collection[0]];
 					}
 					else if (_collection.Count == 0)
 					{

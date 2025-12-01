@@ -1221,7 +1221,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				foreach (var candidate in _hyperlinks)
 				{
-					if (hyperlink == candidate.hyperlink)
+					if (hyperlink == candidate)
 					{
 						return hyperlink;
 					}
