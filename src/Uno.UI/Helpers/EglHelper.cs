@@ -27,6 +27,24 @@ internal class EglHelper
 	public const int EGL_OPENGL_ES2_BIT = 0x04;
 	public const int EGL_OPENGL_ES3_BIT = 0x40;
 
+	static EglHelper() => NativeLibrary.SetDllImportResolver(typeof(EglHelper).Assembly, Resolver);
+	private static IntPtr Resolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+	{
+		if (libraryName != libEGL)
+		{
+			return IntPtr.Zero;
+		}
+
+		var actualName = libraryName;
+		if (OperatingSystem.IsLinux())
+		{
+			// libEGL.so.1 is the actual runtime dependency, which is usually symlinked to libEGL.so but not always
+			actualName = "libEGL.so.1";
+		}
+
+		return NativeLibrary.Load(actualName, assembly, searchPath);
+	}
+
 	public static (IntPtr surface, IntPtr glContext, int major, int minor, int samples, int stencil) InitializeGles2Context(IntPtr eglDisplay, IntPtr? window = null)
 	{
 		if (eglDisplay == IntPtr.Zero)
