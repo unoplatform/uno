@@ -471,7 +471,10 @@ internal readonly partial struct UnicodeText : IParsedText
 						line[^1] = line[^1] with { endInInline = endIndexInLastRun };
 						lines.Add(line);
 						(firstRunIndex, startingIndexInFirstRun) = (endRunIndex - 1, endIndexInLastRun);
-						lineBreakingOpportunityIndex--; // retry the line breaking opportunity
+						if (endRunIndex != lineBreakingOpporunity.endRunIndex || endIndexInLastRun != lineBreakingOpporunity.endIndexInLastRun)
+						{
+							lineBreakingOpportunityIndex--; // retry the line breaking opportunity
+						} // else we took the whole thing and couldn't split the sequence any further
 					}
 				}
 			}
