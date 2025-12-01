@@ -96,7 +96,7 @@ public partial class HotReloadService
 	{
 		private int _released;
 
-		public async ValueTask<UIUpdateResumeResult> TryProcess()
+		public async ValueTask<UIUpdateResumeResult> TryResume()
 		{
 			if (Interlocked.CompareExchange(ref _released, 1, 0) is not 0)
 			{
@@ -113,9 +113,9 @@ public partial class HotReloadService
 		}
 
 		public async ValueTask DisposeAsync()
-			=> await TryProcess();
+			=> await TryResume();
 
 		~UIUpdatePauseHandle()
-			=> _ = TryProcess();
+			=> _ = TryResume();
 	}
 }
