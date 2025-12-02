@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
@@ -557,6 +559,24 @@ internal readonly partial struct UnicodeText : IParsedText
 		if (OperatingSystem.IsBrowser())
 		{
 			var breaker = ICU.BrowserICUSymbols.init_line_breaker(text);
+			if (breaker == IntPtr.Zero)
+			{
+				typeof(UnicodeText).LogError()?.Error($"Failed to create a break iterator for input text '{text}'. Falling back to naive CRLF line breaking.");
+				var lines = new List<int>();
+				var i = 0;
+				while (text.IndexOfAny(['\r', '\n'], i) is var next && next != -1)
+				{
+					i = next + text.Length > i + 1 && text[i] == '\r' && text[i + 1] == '\n' ? 2 : 1;
+					lines.Add(i);
+				}
+
+				if (lines.Count == 0 || lines[^1] != text.Length)
+				{
+					lines.Add(text.Length);
+				}
+				return lines;
+			}
+
 			for (var next = ICU.BrowserICUSymbols.next_line_breaking_opportunity(breaker); next != -1; next = ICU.BrowserICUSymbols.next_line_breaking_opportunity(breaker))
 			{
 				ret.Add(next);
