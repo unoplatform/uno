@@ -542,6 +542,11 @@ public partial class TextBox
 			case VirtualKey.Control:
 			case VirtualKey.LeftControl:
 			case VirtualKey.RightControl:
+			case VirtualKey.Menu:
+			case VirtualKey.LeftMenu:
+			case VirtualKey.RightMenu:
+			case VirtualKey.LeftWindows:
+			case VirtualKey.RightWindows:
 				// No-op when pressing these key specifically.
 				return;
 		}
