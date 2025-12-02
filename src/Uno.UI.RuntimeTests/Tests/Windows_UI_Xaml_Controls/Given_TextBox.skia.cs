@@ -402,6 +402,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Option_Or_Command_Key_Alone()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "hello world" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Test Option/Alt keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Menu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+
+			// Test Command/Windows keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+		}
+
+		[TestMethod]
 		public async Task When_Ctrl_Home_End()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
