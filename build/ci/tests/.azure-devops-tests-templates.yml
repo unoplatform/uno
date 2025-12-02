@@ -57,7 +57,6 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
-      OPENAPI_TOKEN: $(OPENAPI_TOKEN)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -290,3 +289,4 @@ jobs:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
       WasmCachePath: $(WasmCachePath)
+      OPENAPI_TOKEN: $(OPENAPI_TOKEN)
