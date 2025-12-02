@@ -44,6 +44,7 @@
 		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.7.1" />
+		<PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
 
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
