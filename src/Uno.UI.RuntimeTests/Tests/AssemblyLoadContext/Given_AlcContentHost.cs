@@ -186,6 +186,7 @@ public class Given_AlcContentHost
 		var searchPaths = new[] {
 			Path.Combine(basePath, "..", "..", "..", "..", "..", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
 			Path.Combine(basePath, "..", "..", "src", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
+			Path.Combine(basePath, "..", "..", ".."), // CI
 		};
 
 		var hrAppPath = searchPaths
