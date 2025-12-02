@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.Xaml.Media;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
@@ -316,24 +317,24 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle)
 	{
+		var symbolsFont = FontDetailsCache.GetFont(FeatureConfiguration.Font.SymbolsFont, fontSize, fontWeight, fontStretch, fontStyle).details;
+		if (symbolsFont.SKFont.ContainsGlyph(codepoint))
+		{
+			return symbolsFont;
+		}
 		if (OperatingSystem.IsAndroid())
 		{
 			foreach (var file in Directory.EnumerateFiles("/system/fonts"))
 			{
-				var task = FontDetailsCache.GetFont(file, fontSize, fontWeight, fontStretch, fontStyle);
-				if (task.details.SKFont.ContainsGlyph(codepoint))
+				var font = FontDetailsCache.GetFont(file, fontSize, fontWeight, fontStretch, fontStyle).details;
+				if (font.SKFont.ContainsGlyph(codepoint))
 				{
-					return task.details;
+					return font;
 				}
 			}
-			var typeface = SKFontManager.Default.MatchCharacter(codepoint);
-			return typeface is not null ? FontDetailsCache.GetFont(typeface.FamilyName, fontSize, fontWeight, fontStretch, fontStyle).details : null;
 		}
-		else
-		{
-			var typeface = SKFontManager.Default.MatchCharacter(codepoint);
-			return typeface is not null ? FontDetailsCache.GetFont(typeface.FamilyName, fontSize, fontWeight, fontStretch, fontStyle).details : null;
-		}
+		var typeface = SKFontManager.Default.MatchCharacter(codepoint);
+		return typeface is not null ? FontDetailsCache.GetFont(typeface.FamilyName, fontSize, fontWeight, fontStretch, fontStyle).details : null;
 	}
 
 	private static IEnumerable<(ReadonlyInlineCopy Inline, int startInInline, int endInInline)> GroupByInline(List<BidiRun> line)
@@ -561,7 +562,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var breaker = ICU.BrowserICUSymbols.init_line_breaker(text);
 			if (breaker == IntPtr.Zero)
 			{
-				typeof(UnicodeText).LogError()?.Error($"Failed to create a break iterator for input text '{text}'. Falling back to naive CRLF line breaking.");
+				typeof(UnicodeText).LogError()?.Error($"Failed to create a break iterator for input text '{text}' of unicode codepoints [{string.Join(',', text.EnumerateRunes())}]. Falling back to naive CRLF line breaking.");
 				var lines = new List<int>();
 				var i = 0;
 				while (text.IndexOfAny(['\r', '\n'], i) is var next && next != -1)
@@ -680,9 +681,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				FontDetails newFontDetails;
 				if (char.ConvertToUtf32(inline.Text, i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
 				{
-					newFontDetails = SKFontManager.Default.MatchCharacter(codepoint) is { } fallbackTypeface
-						? FontDetailsCache.GetFont(fallbackTypeface.FamilyName, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle).details
-						: inline.FontDetails;
+					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle) ?? inline.FontDetails;
 				}
 				else
 				{
