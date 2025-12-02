@@ -115,16 +115,17 @@ bool uno_native_is_attached(NSView<UNONativeElement>* element)
 
 void uno_native_measure(NSView<UNONativeElement>* element, double childWidth, double childHeight, double availableWidth, double availableHeight, double* width, double* height)
 {
-    double resolvedWidth = isfinite(availableWidth) ? availableWidth : (isfinite(childWidth) ? childWidth : 0);
-    double resolvedHeight = isfinite(availableHeight) ? availableHeight : (isfinite(childHeight) ? childHeight : 0);
-
-    if (resolvedWidth <= 0)
+    CGSize size = element.subviews.firstObject.frame.size;
+    
+    double resolvedWidth = isfinite(availableWidth) ? availableWidth : (isfinite(childWidth) ? childWidth : -1.0);
+    double resolvedHeight = isfinite(availableHeight) ? availableHeight : (isfinite(childHeight) ? childHeight : -1.0);
+    if (resolvedWidth < 0)
     {
-        resolvedWidth = element.bounds.size.width;
+        resolvedWidth = size.width;
     }
-    if (resolvedHeight <= 0)
+    if (resolvedHeight < 0)
     {
-        resolvedHeight = element.bounds.size.height;
+        resolvedHeight = size.height;
     }
 
     *width = resolvedWidth;
