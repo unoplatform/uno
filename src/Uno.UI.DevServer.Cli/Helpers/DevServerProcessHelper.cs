@@ -14,6 +14,7 @@ internal static class DevServerProcessHelper
 	public static ProcessStartInfo CreateDotnetProcessStartInfo(
 		string hostPath,
 		IEnumerable<string> arguments,
+		string workingDirectory,
 		bool redirectOutput,
 		bool redirectInput = false)
 	{
@@ -27,7 +28,7 @@ internal static class DevServerProcessHelper
 			RedirectStandardOutput = redirectOutput,
 			RedirectStandardError = redirectOutput,
 			RedirectStandardInput = redirectInput,
-			WorkingDirectory = Directory.GetCurrentDirectory(),
+			WorkingDirectory = workingDirectory,
 		};
 
 		var hostArgPath = hostPath;

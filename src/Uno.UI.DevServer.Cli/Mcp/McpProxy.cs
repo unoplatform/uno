@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design.Serialization;
 using System.Text.Json;
+using System.Threading;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -8,7 +13,6 @@ using ModelContextProtocol;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
-using System.Threading;
 using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
@@ -18,22 +22,33 @@ internal class McpProxy
 	private readonly ILogger<McpProxy> _logger;
 	private readonly DevServerMonitor _devServerMonitor;
 	private readonly McpClientProxy _mcpClientProxy;
+	private readonly Tool _addRootsTool;
 	private bool _waitForTools;
+	private bool _forceRootsFallback;
+	private string? _currentDirectory;
+	private int _devServerPort;
+	private List<string> _forwardedArgs = [];
+	private string[] _roots = [];
 
 	// Clients that don't support the list_updated notification
-	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex"];
+	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client"];
 
 	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy)
 	{
 		_logger = logger;
 		_devServerMonitor = mcpServerMonitor;
 		_mcpClientProxy = mcpClientProxy;
+
+		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
 	}
 
-	public async Task<int> RunAsync(string currentDirectory, int port, List<string> forwardedArgs, bool waitForTools, CancellationToken ct)
+	public async Task<int> RunAsync(string currentDirectory, int port, List<string> forwardedArgs, bool waitForTools, bool forceRootsFallback, CancellationToken ct)
 	{
 		_waitForTools = waitForTools;
-		_devServerMonitor.StartMonitoring(currentDirectory, port, forwardedArgs);
+		_forceRootsFallback = forceRootsFallback;
+		_currentDirectory = currentDirectory;
+		_devServerPort = port;
+		_forwardedArgs = forwardedArgs;
 
 		try
 		{
@@ -46,6 +61,31 @@ internal class McpProxy
 		}
 	}
 
+	[Description("This tool MUST be called to before another uno app tools to initialize properly")]
+	private async Task SetRoots([Description("Fully qualified root folder path for the workspace")] string[] roots)
+	{
+		if (!_forceRootsFallback)
+		{
+			return;
+		}
+
+		_roots = roots;
+
+		await ProcessRoots();
+	}
+
+	private async Task ProcessRoots()
+	{
+		if (_roots.FirstOrDefault() is { } rootUri
+			&& Uri.TryCreate(rootUri, UriKind.RelativeOrAbsolute, out var root))
+		{
+			_devServerMonitor.StartMonitoring(root.LocalPath, _devServerPort, _forwardedArgs);
+		}
+		else if (!_forceRootsFallback)
+		{
+			_logger.LogWarning("No roots found, devserver not started");
+		}
+	}
 
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
 	{
@@ -58,6 +98,15 @@ internal class McpProxy
 			.WithCallToolHandler(async (ctx, ct) =>
 			{
 				var upstreamClient = _mcpClientProxy.UpstreamClient;
+
+				if (_forceRootsFallback && ctx.Params?.Name == _addRootsTool.Name)
+				{
+					if (_forceRootsFallback)
+					{
+						await SetRoots(ctx.Params.Arguments?["roots"].Deserialize<string[]>() ?? []);
+						return new CallToolResult() { Content = [new TextContentBlock() { Text = "Ok" }] };
+					}
+				}
 
 				if (upstreamClient is null)
 				{
@@ -80,11 +129,39 @@ internal class McpProxy
 			})
 			.WithListToolsHandler(async (ctx, ct) =>
 			{
+				var clientSupportsRoots = !_forceRootsFallback && (ctx.Server.ClientCapabilities?.Roots?.ListChanged ?? false);
+
+				if (clientSupportsRoots)
+				{
+					var roots = await ctx.Server.RequestRootsAsync(new(), ct);
+
+					if (roots.Roots.Count != 0)
+					{
+						_roots = [.. roots.Roots.Select(r => r.Uri)];
+					}
+					else
+					{
+						// convert _currentDirectory to a file uri
+						if (Uri.TryCreate(_currentDirectory ?? Environment.CurrentDirectory, UriKind.RelativeOrAbsolute, out var root))
+						{
+							_roots = [root.ToString() ?? Environment.CurrentDirectory];
+						}
+					}
+				}
+				else
+				{
+					_roots = [Environment.CurrentDirectory];
+				}
+
+				await ProcessRoots();
+
 				// Claude Code and Codex do not support the list_updated notification.
 				// To avoid tool invocation failures, we wait for the tools to be available
 				// after the dev server has started.
-				if (_waitForTools
+				if ((!_forceRootsFallback || !clientSupportsRoots) &&
+					(_waitForTools
 					|| ClientsWithoutListUpdateSupport.Contains(ctx.Server.ClientInfo?.Name))
+				)
 				{
 					_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
 
@@ -95,8 +172,15 @@ internal class McpProxy
 
 				if (upstreamClient is null)
 				{
+					List<Tool> tools = [];
+
+					if (_forceRootsFallback)
+					{
+						tools.Add(_addRootsTool);
+					}
+
 					// The devserver is not started yet, so there are no tools to report.
-					return new() { Tools = [] };
+					return new() { Tools = tools };
 				}
 
 				_logger.LogTrace("Client requested tools list update");
@@ -107,7 +191,7 @@ internal class McpProxy
 
 				return new()
 				{
-					Tools = list.Select(t => t.ProtocolTool).ToList()
+					Tools = [.. list.Select(t => t.ProtocolTool)]
 				};
 			});
 
@@ -123,9 +207,9 @@ internal class McpProxy
 		{
 			tcs.TrySetResult();
 
-			await host.Services.GetRequiredService<IMcpServer>().SendNotificationAsync(
+			await host.Services.GetRequiredService<McpServer>().SendNotificationAsync(
 				NotificationMethods.ToolListChangedNotification,
-				new ResourceUpdatedNotificationParams()
+				new ToolListChangedNotificationParams()
 			);
 		});
 

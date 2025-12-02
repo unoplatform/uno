@@ -18,7 +18,7 @@ internal class McpClientProxy
 	private Func<Task>? _toolListChanged;
 	private readonly CancellationTokenSource _disposeCts = new();
 
-	public IMcpClient? UpstreamClient { get; internal set; }
+	public McpClient? UpstreamClient { get; internal set; }
 
 	public McpClientProxy(ILogger<McpClientProxy> logger, DevServerMonitor monitor)
 	{
@@ -43,11 +43,11 @@ internal class McpClientProxy
 		}, _disposeCts.Token);
 	}
 
-	async Task<IMcpClient> ConnectOrDieAsync(string url, Microsoft.Extensions.Logging.ILogger log, CancellationToken ct)
+	async Task<McpClient> ConnectOrDieAsync(string url, Microsoft.Extensions.Logging.ILogger log, CancellationToken ct)
 	{
 		try
 		{
-			var clientTransport = new SseClientTransport(new()
+			var clientTransport = new HttpClientTransport(new()
 			{
 				Name = "Devserver",
 				Endpoint = new Uri(url),
@@ -61,7 +61,7 @@ internal class McpClientProxy
 					Name = "stdio-http-proxy",
 					Version = "1.0.0",
 				},
-				Capabilities = new()
+				Handlers = new()
 				{
 					NotificationHandlers =
 					[
@@ -78,7 +78,7 @@ internal class McpClientProxy
 			};
 
 			log.LogInformation("Connecting to upstream MCP at {Url}", url);
-			var client = await McpClientFactory.CreateAsync(clientTransport, options, cancellationToken: ct);
+			var client = await McpClient.CreateAsync(clientTransport, options, cancellationToken: ct);
 			log.LogInformation("Connected to upstream: {Name} {Version}", client.ServerInfo.Name, client.ServerInfo.Version);
 			return client;
 		}
