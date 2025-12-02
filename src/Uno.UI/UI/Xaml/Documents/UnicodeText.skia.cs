@@ -714,11 +714,19 @@ internal readonly partial struct UnicodeText : IParsedText
 		var isTab = textRun is "\t";
 		if ((isTab || IsLineBreak(textRun, textRun.Length)) && infos[^1].Cluster == textRun.Length - (textRun is [.., '\r', '\n'] ? 2 : 1))
 		{
-			fontDetails.Font.TryGetGlyph(' ', out var codepoint);
+			fontDetails.Font.TryGetGlyph(' ', out var spaceCodepoint);
 			var tabWidth = TabStopWidth / fontDetails.TextScale.textScaleX;
 			// 1 and not 0 to avoid issues related to newlines having zero width. This way, it's practically 0 but not == 0.
 			var xAdvance = isTab ? tabWidth - (currentLineWidth / fontDetails.TextScale.textScaleX ?? 1) % tabWidth : 1;
-			ret[^1] = (infos[^1] with { Codepoint = codepoint }, new UnoGlyphPosition(positions[^1] with { XAdvance = (int)xAdvance }, xAdvance));
+			ret[^1] = (infos[^1] with { Codepoint = spaceCodepoint }, new UnoGlyphPosition(positions[^1] with { XAdvance = (int)xAdvance }, xAdvance));
+		}
+
+		if (ret is [])
+		{
+			// Even though textRun is nonempty and fontDetails contains a font that can shape all the characters in it,
+			// Font.Shape may still decide to yield 0 glyphs.
+			fontDetails.Font.TryGetGlyph(' ', out var spaceCodepoint);
+			ret = [(new GlyphInfo { Codepoint = spaceCodepoint }, new UnoGlyphPosition(new GlyphPosition(), 0))];
 		}
 		return ret;
 	}
