@@ -19,8 +19,8 @@ public class HotReloadInfoTask_v0 : Microsoft.Build.Utilities.Task
 	/// <inheritdoc />
 	public override bool Execute()
 	{
-		var attributePath = Path.Combine(IntermediateOutputPath, "uno.hot-reload.info", "HotReloadInfo.Attribute.g.cs");
-		var infoPath = Path.Combine(IntermediateOutputPath, "uno.hot-reload.info", "HotReloadInfo.g.cs");
+		var attributePath = Path.Combine(IntermediateOutputPath, HotReloadInfoHelper.HotReloadInfoAttributeFilePath);
+		var infoPath = Path.Combine(IntermediateOutputPath, HotReloadInfoHelper.HotReloadInfoFilePath);
 
 		Log.LogMessage($"Generating hot-reload info to : {infoPath}");
 
