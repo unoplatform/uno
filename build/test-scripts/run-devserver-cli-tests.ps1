@@ -223,14 +223,10 @@ Begin now.
 function Setup-UnoStudioLicenses {
     param([string]$WorkDirectory)
 
-    $isWindows = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)
-    $isMacOS = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)
-    $isLinux = -not ($isWindows -or $isMacOS)
-
-    if ($isWindows) {
+    if ($IsWindows) {
         $dataRoot = if (-not [string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) { $env:LOCALAPPDATA } else { Join-Path $WorkDirectory '.local' }
     }
-    elseif ($isMacOS) {
+    elseif ($IsMacOS) {
         $homePath = if (-not [string]::IsNullOrWhiteSpace($env:HOME)) { $env:HOME } else { $WorkDirectory }
         $dataRoot = Join-Path $homePath 'Library/Application Support'
     }
