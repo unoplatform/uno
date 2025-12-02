@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
@@ -110,45 +111,80 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 		var package = new DataPackage();
 
-		var formatEtcList = formats.ToArray();
-		var formatList =
-			formatEtcList
-			.Where(static formatetc =>
-			{
-				if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
-				{
-					return false;
-				}
-				if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
-				{
-					typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
-					return false;
-				}
-
-				return true;
-			})
-			.Select(f => (CLIPBOARD_FORMAT)f.cfFormat)
-			.ToList();
-
-		var mediumsToDispose = new List<STGMEDIUM>();
-		using var mediumsDisposable = new DisposableStruct<List<STGMEDIUM>>(static list =>
+		// Check if we have virtual files (e.g., Outlook attachments)
+		var hasVirtualFiles = VirtualFileHelper.ContainsVirtualFiles(dataObject);
+		if (hasVirtualFiles)
 		{
-			foreach (var medium in list)
-			{
-				PInvoke.ReleaseStgMedium(&medium);
-			}
-		}, mediumsToDispose);
+			this.Log().LogInfo("Detected virtual files (e.g., Outlook attachments)");
 
-		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
+			// For virtual files, we'll extract them asynchronously in the background
+			// and set a flag in the DataPackage to indicate this
+			_ = Task.Run(async () =>
+			{
+				try
+				{
+					var files = await VirtualFileHelper.ExtractVirtualFilesAsync(dataObject);
+					if (files.Count > 0)
+					{
+						this.Log().LogInfo($"Successfully extracted {files.Count} virtual file(s)");
+
+						// Update the package with the extracted files
+						// Note: This is done asynchronously, so the drop might complete before this finishes
+						package.SetStorageItems(files);
+					}
+				}
+				catch (Exception ex)
+				{
+					this.LogError()?.Error($"Failed to extract virtual files: {ex.Message}", ex);
+				}
+			});
+
+			// Set a placeholder to indicate files are being loaded
+			package.SetText("[Loading files...]");
+		}
+		else
 		{
-			var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
-			dataObject->GetData(formatEtc, out STGMEDIUM medium);
-			mediumsToDispose.Add(medium);
-			return medium.u.hGlobal;
-		});
+			// Standard file handling (existing code)
+			var formatEtcList = formats.ToArray();
+			var formatList =
+				formatEtcList
+				.Where(static formatetc =>
+				{
+					if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
+					{
+						return false;
+					}
+					if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
+					{
+						typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
+						return false;
+					}
+
+					return true;
+				})
+				.Select(f => (CLIPBOARD_FORMAT)f.cfFormat)
+				.ToList();
+
+			var mediumsToDispose = new List<STGMEDIUM>();
+			using var mediumsDisposable = new DisposableStruct<List<STGMEDIUM>>(static list =>
+			{
+				foreach (var medium in list)
+				{
+					PInvoke.ReleaseStgMedium(&medium);
+				}
+			}, mediumsToDispose);
+
+			Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
+			{
+				var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
+				dataObject->GetData(formatEtc, out STGMEDIUM medium);
+				mediumsToDispose.Add(medium);
+				return medium.u.hGlobal;
+			});
+		}
 
 		// Create DragUI for visual feedback during drag operation
-		var dragUI = CreateDragUIForExternalDrag(dataObject, formatEtcList);
+		var dragUI = CreateDragUIForExternalDrag(dataObject, formats.ToArray());
 
 		// DROPEFFECT and DataPackageOperation have the same binary representation
 		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*dropEffect), dragUI);
