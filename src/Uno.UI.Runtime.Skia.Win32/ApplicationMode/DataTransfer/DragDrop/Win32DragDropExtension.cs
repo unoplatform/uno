@@ -25,7 +25,7 @@ using Microsoft.UI.Input;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interface
+internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interface, IDropSource.Interface
 {
 	private static readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 
@@ -192,7 +192,126 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 		return HRESULT.S_OK;
 	}
 
-	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new System.NotImplementedException();
+	public unsafe void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action)
+	{
+		// Create IDataObject wrapper from DataPackage
+		var dataObjectWrapper = CreateDataObjectFromPackage(info.Data);
+		if (dataObjectWrapper.Value == null)
+		{
+			this.LogError()?.Error($"{nameof(StartNativeDrag)}: Failed to create IDataObject from DataPackage");
+			action(DataPackageOperation.None);
+			return;
+		}
+
+		using (dataObjectWrapper)
+		{
+			// Create IDropSource implementation
+			using var dropSource = ComHelpers.TryGetComScope<IDropSource>(this, out HRESULT hResult);
+			if (hResult.Failed)
+			{
+				this.LogError()?.Error($"{nameof(ComHelpers.TryGetComScope)}<{nameof(IDropSource)}> failed: {Win32Helper.GetErrorMessage(hResult)}");
+				action(DataPackageOperation.None);
+				return;
+			}
+
+			// Convert allowed operations to DROPEFFECT
+			var allowedEffects = ConvertOperationToDropEffect(info.AllowedOperations);
+
+			// Perform the drag operation using Windows.Win32.UI.Shell
+			DROPEFFECT resultEffect;
+			hResult = Windows.Win32.PInvoke.DoDragDrop(
+				(IDataObject*)dataObjectWrapper.Value,
+				(Windows.Win32.System.Ole.IDropSource*)dropSource.Value,
+				allowedEffects,
+				&resultEffect);
+
+			if (hResult.Failed && hResult != (HRESULT)DRAGDROP_S_DROP && hResult != (HRESULT)DRAGDROP_S_CANCEL)
+			{
+				this.LogError()?.Error($"DoDragDrop failed: {Win32Helper.GetErrorMessage(hResult)}");
+				action(DataPackageOperation.None);
+				return;
+			}
+
+			// Convert result back to DataPackageOperation
+			var resultOperation = ConvertDropEffectToOperation(resultEffect);
+			action(resultOperation);
+		}
+	}
+
+	// IDropSource implementation
+	unsafe HRESULT IDropSource.Interface.QueryContinueDrag(BOOL fEscapePressed, MODIFIERKEYS_FLAGS grfKeyState)
+	{
+		// Cancel if escape was pressed
+		if (fEscapePressed)
+		{
+			return (HRESULT)DRAGDROP_S_CANCEL;
+		}
+
+		// Count pressed mouse buttons
+		int pressedButtons = 0;
+		if ((grfKeyState & MODIFIERKEYS_FLAGS.MK_LBUTTON) != 0) pressedButtons++;
+		if ((grfKeyState & MODIFIERKEYS_FLAGS.MK_MBUTTON) != 0) pressedButtons++;
+		if ((grfKeyState & MODIFIERKEYS_FLAGS.MK_RBUTTON) != 0) pressedButtons++;
+
+		// Cancel if multiple buttons pressed
+		if (pressedButtons >= 2)
+		{
+			return (HRESULT)DRAGDROP_S_CANCEL;
+		}
+
+		// Drop if no buttons pressed
+		if (pressedButtons == 0)
+		{
+			return (HRESULT)DRAGDROP_S_DROP;
+		}
+
+		return HRESULT.S_OK;
+	}
+
+	unsafe HRESULT IDropSource.Interface.GiveFeedback(DROPEFFECT dwEffect)
+	{
+		// Use default system cursors
+		return (HRESULT)DRAGDROP_S_USEDEFAULTCURSORS;
+	}
+
+	private static DROPEFFECT ConvertOperationToDropEffect(DataPackageOperation operation)
+	{
+		var effect = DROPEFFECT.DROPEFFECT_NONE;
+		if ((operation & DataPackageOperation.Copy) != 0)
+			effect |= DROPEFFECT.DROPEFFECT_COPY;
+		if ((operation & DataPackageOperation.Move) != 0)
+			effect |= DROPEFFECT.DROPEFFECT_MOVE;
+		if ((operation & DataPackageOperation.Link) != 0)
+			effect |= DROPEFFECT.DROPEFFECT_LINK;
+		return effect;
+	}
+
+	private static DataPackageOperation ConvertDropEffectToOperation(DROPEFFECT effect)
+	{
+		var operation = DataPackageOperation.None;
+		if ((effect & DROPEFFECT.DROPEFFECT_COPY) != 0)
+			operation |= DataPackageOperation.Copy;
+		if ((effect & DROPEFFECT.DROPEFFECT_MOVE) != 0)
+			operation |= DataPackageOperation.Move;
+		if ((effect & DROPEFFECT.DROPEFFECT_LINK) != 0)
+			operation |= DataPackageOperation.Link;
+		return operation;
+	}
+
+	private unsafe ComScope<IDataObject> CreateDataObjectFromPackage(DataPackageView data)
+	{
+		// Create a COM-visible data object implementation
+		var dataObject = new DataPackageDataObject(data);
+		var comScope = ComHelpers.TryGetComScope<IDataObject>(dataObject, out HRESULT hResult);
+
+		if (hResult.Failed)
+		{
+			this.LogError()?.Error($"{nameof(ComHelpers.TryGetComScope)}<{nameof(IDataObject)}> failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return default;
+		}
+
+		return comScope;
+	}
 
 	private static unsafe DragUI? CreateDragUIForExternalDrag(IDataObject* dataObject, FORMATETC[] formatEtcList)
 	{
@@ -402,4 +521,9 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 		scaledPosition = GetScaledPosition(nativePosition.X, nativePosition.Y);
 	}
+
+	// Constants for IDropSource
+	private const int DRAGDROP_S_DROP = 0x00040100;
+	private const int DRAGDROP_S_CANCEL = 0x00040101;
+	private const int DRAGDROP_S_USEDEFAULTCURSORS = 0x00040102;
 }

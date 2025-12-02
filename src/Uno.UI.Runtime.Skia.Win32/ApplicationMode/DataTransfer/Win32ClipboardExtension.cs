@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
@@ -413,6 +414,86 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}"); }
 		// "If SetClipboardData succeeds, the system owns the object identified by the hMem parameter. The application may not write to or free the data once ownership has been transferred to the system"
 		shouldFree = !success;
+	}
+
+	internal static unsafe HGLOBAL WriteStringToHGlobal(string text)
+	{
+		fixed (void* srcBytes = &text.GetPinnableReference())
+		{
+			var bufferLength = (text.Length + 1) * sizeof(char); // + 1 for \0
+			var handle = PInvoke.GlobalAlloc(
+				GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE,
+				(UIntPtr)bufferLength);
+
+			if (handle == IntPtr.Zero)
+			{
+				return (HGLOBAL)IntPtr.Zero;
+			}
+
+			using var lockDisposable = Win32Helper.GlobalLock(handle, out var dstBytes);
+			if (lockDisposable is null)
+			{
+				PInvoke.GlobalFree(handle);
+				return (HGLOBAL)IntPtr.Zero;
+			}
+
+			Buffer.MemoryCopy(srcBytes, dstBytes, bufferLength, bufferLength);
+			return handle;
+		}
+	}
+
+	internal static unsafe HGLOBAL WriteFileListToHGlobal(IReadOnlyList<string> filePaths)
+	{
+		// Calculate the size needed for the file list
+		// DROPFILES structure + null-terminated file paths + final null terminator
+		var dropFilesSize = Marshal.SizeOf<DROPFILES>();
+		var totalSize = dropFilesSize;
+
+		foreach (var path in filePaths)
+		{
+			totalSize += (path.Length + 1) * sizeof(char); // + 1 for null terminator
+		}
+		totalSize += sizeof(char); // Final null terminator
+
+		var handle = PInvoke.GlobalAlloc(
+			GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE,
+			(UIntPtr)totalSize);
+
+		if (handle == IntPtr.Zero)
+		{
+			return (HGLOBAL)IntPtr.Zero;
+		}
+
+		using var lockDisposable = Win32Helper.GlobalLock(handle, out var memory);
+		if (lockDisposable is null)
+		{
+			PInvoke.GlobalFree(handle);
+			return (HGLOBAL)IntPtr.Zero;
+		}
+
+		// Set up DROPFILES structure
+		var dropFiles = (DROPFILES*)memory;
+		dropFiles->pFiles = (uint)dropFilesSize;
+		dropFiles->pt = default;
+		dropFiles->fNC = 0;
+		dropFiles->fWide = 1; // Unicode
+
+		// Write file paths
+		var currentPos = (byte*)memory + dropFilesSize;
+		foreach (var path in filePaths)
+		{
+			var pathBytes = Encoding.Unicode.GetBytes(path + '\0');
+			fixed (byte* pathPtr = pathBytes)
+			{
+				Buffer.MemoryCopy(pathPtr, currentPos, pathBytes.Length, pathBytes.Length);
+			}
+			currentPos += pathBytes.Length;
+		}
+
+		// Write final null terminator
+		*(char*)currentPos = '\0';
+
+		return handle;
 	}
 
 	private readonly ref struct ClipboardDisposable

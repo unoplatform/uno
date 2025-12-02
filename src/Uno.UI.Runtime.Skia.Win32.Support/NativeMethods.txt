@@ -133,6 +133,7 @@ DefWindowProc
 DescribePixelFormat
 DestroyWindow
 DispatchMessage
+DoDragDrop
 DragQueryFile
 DwmSetWindowAttribute
 DwmIsCompositionEnabled
@@ -201,6 +202,7 @@ PeekMessage
 PostMessage
 RegGetValue
 RegisterClassEx
+RegisterClipboardFormat
 RegisterDragDrop
 RegisterTouchWindow
 RegisterWindowMessage
