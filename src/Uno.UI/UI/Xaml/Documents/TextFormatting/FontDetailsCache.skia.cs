@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using SkiaSharp;
 using Uno.Extensions;
@@ -11,6 +12,7 @@ using Uno.UI.Xaml.Media;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
+using Uno.Helpers;
 using SKFontStyleWidth = SkiaSharp.SKFontStyleWidth;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -58,9 +60,16 @@ internal static class FontDetailsCache
 			typeof(FontDetailsCache).Log().LogDebug($"Fetching font from {uri}");
 		}
 
-		var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-		using var stream = await file.OpenStreamForReadAsync();
-		return stream is null ? null : SKTypeface.FromStream(stream);
+		try
+		{
+			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
+			return SKTypeface.FromStream(stream);
+		}
+		catch (Exception e)
+		{
+			typeof(FontDetailsCache).LogError()?.Error($"Loading font from {uri} failed: {e}");
+			return null;
+		}
 	}
 
 	private static Task<SKTypeface?> GetFontInternal(
@@ -79,7 +88,7 @@ internal static class FontDetailsCache
 			name = name.Substring(0, hashIndex);
 		}
 
-		if (Uri.TryCreate(name, UriKind.Absolute, out var uri) && uri.IsLocalResource())
+		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
 			return LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 		}

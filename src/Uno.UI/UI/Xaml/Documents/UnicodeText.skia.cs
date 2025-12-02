@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
@@ -108,7 +109,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	bool IParsedText.IsBaseDirectionRightToLeft => _rtl;
 
-	internal unsafe UnicodeText(
+	internal UnicodeText(
 		Size availableSize,
 		Inline[] inlines, // only leaf nodes
 		FontDetails defaultFontDetails, // only used for a final empty line, otherwise the FontDetails are read from the inline
@@ -261,9 +262,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						FontDetails newFontDetails;
 						if (char.ConvertToUtf32(inline.Text, startInInline + i) is var codepoint && !inline.FontDetails.SKFont.ContainsGlyph(codepoint))
 						{
-							newFontDetails = SKFontManager.Default.MatchCharacter(codepoint) is { } fallbackTypeface
-								? FontDetailsCache.GetFont(fallbackTypeface.FamilyName, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle).details
-								: inline.FontDetails;
+							newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle) ?? inline.FontDetails;
 						}
 						else
 						{
@@ -311,6 +310,28 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		return shapedLines;
+	}
+
+	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle)
+	{
+		if (OperatingSystem.IsAndroid())
+		{
+			foreach (var file in Directory.EnumerateFiles("/system/fonts"))
+			{
+				var task = FontDetailsCache.GetFont(file, fontSize, fontWeight, fontStretch, fontStyle);
+				if (task.details.SKFont.ContainsGlyph(codepoint))
+				{
+					return task.details;
+				}
+			}
+			var typeface = SKFontManager.Default.MatchCharacter(codepoint);
+			return typeface is not null ? FontDetailsCache.GetFont(typeface.FamilyName, fontSize, fontWeight, fontStretch, fontStyle).details : null;
+		}
+		else
+		{
+			var typeface = SKFontManager.Default.MatchCharacter(codepoint);
+			return typeface is not null ? FontDetailsCache.GetFont(typeface.FamilyName, fontSize, fontWeight, fontStretch, fontStyle).details : null;
+		}
 	}
 
 	private static IEnumerable<(ReadonlyInlineCopy Inline, int startInInline, int endInInline)> GroupByInline(List<BidiRun> line)
