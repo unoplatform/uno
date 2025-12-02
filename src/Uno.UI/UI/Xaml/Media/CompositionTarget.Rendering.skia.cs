@@ -108,7 +108,10 @@ public partial class CompositionTarget
 			((ICompositionTarget)this).RequestNewFrame();
 		}
 
-		InvalidateNativeRender();
+		if (rootElement.XamlRoot is not null)
+		{
+			XamlRootMap.GetHostForRoot(rootElement.XamlRoot)?.InvalidateRender();
+		}
 
 		var nativeVisualsZOrderChanged = _nativeVisualsInZOrder.Count != nativeVisualsInZOrder.Count;
 		if (!nativeVisualsZOrderChanged)
