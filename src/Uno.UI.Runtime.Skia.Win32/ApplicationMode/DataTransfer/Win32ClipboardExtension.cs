@@ -40,6 +40,7 @@ using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Buffer = System.Buffer;
+using System.Drawing;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -475,8 +476,8 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		var dropFiles = (DROPFILES*)memory;
 		dropFiles->pFiles = (uint)dropFilesSize;
 		dropFiles->pt = default;
-		dropFiles->fNC = 0;
-		dropFiles->fWide = 1; // Unicode
+		dropFiles->fNC = false;
+		dropFiles->fWide = true; // Unicode
 
 		// Write file paths
 		var currentPos = (byte*)memory + dropFilesSize;
@@ -494,6 +495,15 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		*(char*)currentPos = '\0';
 
 		return handle;
+	}
+
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
+	public struct DROPFILES
+	{
+		public uint pFiles;
+		public Point pt;
+		public bool fNC;
+		public bool fWide;
 	}
 
 	private readonly ref struct ClipboardDisposable
