@@ -4,9 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.Storage.Streams;
@@ -19,7 +17,6 @@ using Windows.Win32.System.SystemServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
@@ -28,7 +25,7 @@ using Microsoft.UI.Input;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interface
+internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interface
 {
 	private static readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 
@@ -72,7 +69,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		return new Point(x / xamlRoot.RasterizationScale, y / xamlRoot.RasterizationScale);
 	}
 
-	unsafe HRESULT IDropTarget.Interface.DragEnter(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
+	unsafe HRESULT IDropTarget.Interface.DragEnter(IDataObject* dataObject, MODIFIERKEYS_FLAGS keyState, POINTL nativePoint, DROPEFFECT* dropEffect)
 	{
 		Debug.Assert(_manager is not null && _coreDragDropManager is not null);
 
@@ -97,18 +94,13 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 			return HRESULT.E_UNEXPECTED;
 		}
 
-		var position = new System.Drawing.Point(pt.x, pt.y);
-
-		var success = PInvoke.ScreenToClient(_hwnd, ref position);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-		var scaledPosition = GetScaledPosition(position.X, position.Y);
-
-		var src = new DragEventSource(scaledPosition, grfKeyState);
+		GetDragPoint(nativePoint, out var nativeDragPoint, out var scaledDragPoint);
+		var src = new DragEventSource(scaledDragPoint, keyState);
 
 		var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {position}, formats: ";
+			var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {nativeDragPoint}, formats: ";
 			foreach (var format in formats)
 			{
 				log += (CLIPBOARD_FORMAT)format.cfFormat + " ";
@@ -146,6 +138,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 				PInvoke.ReleaseStgMedium(&medium);
 			}
 		}, mediumsToDispose);
+
 		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
 		{
 			var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
@@ -158,25 +151,22 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		var dragUI = CreateDragUIForExternalDrag(dataObject, formatEtcList);
 
 		// DROPEFFECT and DataPackageOperation have the same binary representation
-		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*pdwEffect), dragUI);
+		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*dropEffect), dragUI);
 		_coreDragDropManager.DragStarted(info);
 
-		*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
+		*dropEffect = (DROPEFFECT)_manager.ProcessMoved(src);
 
 		return HRESULT.S_OK;
 	}
 
-	unsafe HRESULT IDropTarget.Interface.DragOver(MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
+	unsafe HRESULT IDropTarget.Interface.DragOver(MODIFIERKEYS_FLAGS keyState, POINTL nativePoint, DROPEFFECT* dropEffect)
 	{
-		var position = new System.Drawing.Point(pt.x, pt.y);
-		var success = PInvoke.ScreenToClient(_hwnd, ref position);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-		var scaledPosition = GetScaledPosition(position.X, position.Y);
-		var src = new DragEventSource(scaledPosition, grfKeyState);
+		GetDragPoint(nativePoint, out var nativeDragPoint, out var scaledDragPoint);
+		var src = new DragEventSource(scaledDragPoint, keyState);
 
-		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragOver)} @ {position}");
+		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragOver)} @ {nativeDragPoint}");
 
-		*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
+		*dropEffect = (DROPEFFECT)_manager.ProcessMoved(src);
 
 		return HRESULT.S_OK;
 	}
@@ -190,17 +180,14 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		return HRESULT.S_OK;
 	}
 
-	unsafe HRESULT IDropTarget.Interface.Drop(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
+	unsafe HRESULT IDropTarget.Interface.Drop(IDataObject* dataObject, MODIFIERKEYS_FLAGS keyState, POINTL nativePoint, DROPEFFECT* dropEffect)
 	{
-		var position = new System.Drawing.Point(pt.x, pt.y);
-		var success = PInvoke.ScreenToClient(_hwnd, ref position);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-		var scaledPosition = GetScaledPosition(position.X, position.Y);
-		var src = new DragEventSource(scaledPosition, grfKeyState);
+		GetDragPoint(nativePoint, out var nativeDragPoint, out var scaledDragPoint);
+		var src = new DragEventSource(scaledDragPoint, keyState);
 
-		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {position}");
+		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {nativeDragPoint}");
 
-		*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
+		*dropEffect = (DROPEFFECT)_manager.ProcessReleased(src);
 
 		return HRESULT.S_OK;
 	}
@@ -404,59 +391,15 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		}
 	}
 
-	private readonly struct DragEventSource(Point point, MODIFIERKEYS_FLAGS modifierFlags) : IDragEventSource
+	private void GetDragPoint(POINTL pt, out System.Drawing.Point nativePosition, out Point scaledPosition)
 	{
-		private static long _nextFrameId;
-		private readonly Point _location = point;
-
-		public long Id => _fakePointerId;
-
-		public uint FrameId { get; } = (uint)Interlocked.Increment(ref _nextFrameId);
-
-		/// <inheritdoc />
-		public (Point location, DragDropModifiers modifier) GetState()
+		nativePosition = new System.Drawing.Point(pt.x, pt.y);
+		var success = PInvoke.ScreenToClient(_hwnd, ref nativePosition);
+		if (!success)
 		{
-			var flags = DragDropModifiers.None;
-			if ((modifierFlags & MODIFIERKEYS_FLAGS.MK_SHIFT) != 0)
-			{
-				flags |= DragDropModifiers.Shift;
-			}
-			if ((modifierFlags & MODIFIERKEYS_FLAGS.MK_CONTROL) != 0)
-			{
-				flags |= DragDropModifiers.Control;
-			}
-			if ((modifierFlags & MODIFIERKEYS_FLAGS.MK_LBUTTON) != 0)
-			{
-				flags |= DragDropModifiers.LeftButton;
-			}
-			if ((modifierFlags & MODIFIERKEYS_FLAGS.MK_RBUTTON) != 0)
-			{
-				flags |= DragDropModifiers.RightButton;
-			}
-			if ((modifierFlags & MODIFIERKEYS_FLAGS.MK_MBUTTON) != 0)
-			{
-				flags |= DragDropModifiers.MiddleButton;
-			}
-			return (_location, flags);
+			this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		/// <inheritdoc />
-		public Point GetPosition(object? relativeTo)
-		{
-			if (relativeTo is null)
-			{
-				return _location;
-			}
-
-			if (relativeTo is UIElement elt)
-			{
-				var eltToRoot = UIElement.GetTransform(elt, null);
-				var rootToElt = eltToRoot.Inverse();
-
-				return rootToElt.Transform(_location);
-			}
-
-			throw new InvalidOperationException("The relative to must be a UIElement.");
-		}
+		scaledPosition = GetScaledPosition(nativePosition.X, nativePosition.Y);
 	}
 }
