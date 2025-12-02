@@ -92,6 +92,17 @@ jobs:
   - template: ../templates/linux-install-deps.yml
 
   - script: |
+      # Build source generators for hot reload runtime tests
+      # Used to build the hot reload test secondary app during runtime tests
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
+      dotnet build -c Debug
+    displayName: Build HR dependencies
+
+  - script: |
       chmod +x build/test-scripts/linux-skia-runtime-tests.sh
       build/test-scripts/linux-skia-runtime-tests.sh
     displayName: Run Runtime Tests
