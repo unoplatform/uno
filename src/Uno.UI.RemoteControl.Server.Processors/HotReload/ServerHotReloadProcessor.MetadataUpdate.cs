@@ -14,15 +14,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Build.Evaluation;
+using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Uno.Disposables;
 using Uno.Threading;
+using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
-using Project = Microsoft.CodeAnalysis.Project;
+using Uno.UI.Tasks.HotReloadInfo;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
@@ -53,8 +55,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			if (_useRoslynHotReload)
 			{
-				Debugger.Launch();
-
 				// Assembly registrations must be done before the workspace is initialized
 				// Not doing so will cause the roslyn msbuild workspace to fail to load because
 				// of a missing path on assemblies loaded from a memory stream.
@@ -107,57 +107,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					await Notify(HotReloadEvent.Initializing);
 
-					// Clone the properties from the ConfigureServer
-					var properties = configureServer.MSBuildProperties.ToDictionary();
+					var (outputPath, intermediateOutputPath, solution, watch) = await CreateCompilation(configureServer, ct);
 
-					// Flag the current build as created for hot reload, which allows for running targets or settings
-					// props/items in the context of the hot reload workspace.
-					properties["UnoIsHotReloadHost"] = "True";
-
-					// If the runtime identifier NOT been used in the output path, this usually indicates that it was not passed as a parameter for the build
-					// in that case we **must** not use it to init the hot-reload workspace (parameters are required to be exactly the same to get valid patches)
-					// Note: This is required to get HR to work on Rider 2024.3 with Android
-					// Note 2: We remove both properties to make sure to use the default behavior
-					var appendIdToPath = properties.Remove("AppendRuntimeIdentifierToOutputPath", out var appendStr)
-						&& bool.TryParse(appendStr, out var append)
-						&& append;
-					var hasOutputPath = properties.Remove("OutputPath", out var outputPath);
-					properties.Remove("IntermediateOutputPath", out var intermediateOutputPath);
-
-					if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
-					{
-						if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
-						{
-							// Set the RuntimeIdentifier as a temporary property so that we do not force the
-							// property as a read-only global property that would be transitively applied to
-							// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
-							// which references a netstd2.0 library project)
-							properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
-						}
-					}
-
-					// Pass the TargetFramework as a temporary property so that we do not force the tfm for all projects, but only the head project
-					// (that references the Dev Server assembly which includes the target file to promote back the UnoHotReloadTargetFramework as TargetFramework).
-					// This is required to make sure that an application referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
-					// can still be hot-reloaded.
-					if (properties.Remove("TargetFramework", out var targetFramework))
-					{
-						properties["UnoHotReloadTargetFramework"] = targetFramework;
-					}
-
-					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
-						configureServer.ProjectPath,
-						_reporter,
-						configureServer.MetadataUpdateCapabilities,
-						properties,
-						ct);
-
-					ObserveSolutionPaths(result.Item1, intermediateOutputPath, outputPath);
+					ObserveSolutionPaths(solution, intermediateOutputPath, outputPath);
 
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
 					await Notify(HotReloadEvent.Ready);
 
-					return result;
+					return (solution, watch);
 				}
 				catch (Exception e)
 				{
@@ -171,60 +128,117 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private void ObserveSolutionPaths(Solution solution, params string?[] excludedDir)
+		private async Task<(string? outputPath, string? intermediateOutputPath, Solution solution, WatchHotReloadService watch)> CreateCompilation(ConfigureServer configureServer, CancellationToken ct)
 		{
-			var observedPaths = solution
+			// Clone the properties from the ConfigureServer
+			var properties = configureServer.MSBuildProperties.ToDictionary();
+
+			// Flag the current build as created for hot reload, which allows for running targets or settings
+			// props/items in the context of the hot reload workspace.
+			properties["UnoIsHotReloadHost"] = "True";
+
+			// If the runtime identifier NOT been used in the output path, this usually indicates that it was not passed as a parameter for the build
+			// in that case we **must** not use it to init the hot-reload workspace (parameters are required to be exactly the same to get valid patches)
+			// Note: This is required to get HR to work on Rider 2024.3 with Android
+			// Note 2: We remove both properties to make sure to use the default behavior
+			var appendIdToPath = properties.Remove("AppendRuntimeIdentifierToOutputPath", out var appendStr)
+				&& bool.TryParse(appendStr, out var append)
+				&& append;
+			var hasOutputPath = properties.Remove("OutputPath", out var outputPath);
+			properties.Remove("IntermediateOutputPath", out var intermediateOutputPath);
+
+			if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
+			{
+				if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
+				{
+					// Set the RuntimeIdentifier as a temporary property so that we do not force the
+					// property as a read-only global property that would be transitively applied to
+					// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
+					// which references a netstd2.0 library project)
+					properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
+				}
+			}
+
+			// Pass the TargetFramework as a temporary property so that we do not force the tfm for all projects, but only the head project
+			// (that references the Dev Server assembly which includes the target file to promote back the UnoHotReloadTargetFramework as TargetFramework).
+			// This is required to make sure that an application referencing a class-lib project targeting a different TFM (e.g. net10 while head is net10-desktop)
+			// can still be hot-reloaded.
+			if (properties.Remove("TargetFramework", out var targetFramework))
+			{
+				properties["UnoHotReloadTargetFramework"] = targetFramework;
+			}
+
+			var (solution, watch) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
+				configureServer.ProjectPath,
+				_reporter,
+				configureServer.MetadataUpdateCapabilities,
+				properties,
+				ct);
+			return (outputPath, intermediateOutputPath, solution, watch);
+		}
+
+		private void ObserveSolutionPaths(Solution solution, params string?[] excludedDirPattern)
+		{
+			ImmutableArray<string> excludedDir =
+			[
+				.. from pattern in excludedDirPattern
+				where pattern is not null
+				from project in solution.Projects
+				let projectDir = Path.GetDirectoryName(project.FilePath)!
+				select Path.Combine(projectDir, pattern).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+			];
+
+			var watchers = solution
 				.Projects
-				.SelectMany(project =>
-				{
-					var projectDir = Path.GetDirectoryName(project.FilePath);
-					ImmutableArray<string> excludedProjectDir = [.. from dir in excludedDir where dir is not null select Path.Combine(projectDir!, dir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)];
-
-					var paths = project
-						.Documents
-						.Select(d => d.FilePath)
-						.Concat(project.AdditionalDocuments.Select(d => d.FilePath))
-						.Select(Path.GetDirectoryName)
-						.Where(path => path is not null
-							&& (path.Contains("uno.hot-reload.info") /* temp patch! This will be reviewed for file add detection */
-								|| !excludedProjectDir.Any(dir => path.StartsWith(dir, _pathsComparison))))
-						.Distinct()
-						.ToArray();
-
-					return paths;
-				})
+				.Select(project => Path.GetDirectoryName(project.FilePath))
 				.Distinct()
-				.ToArray();
-
-#if DEBUG
-			Console.WriteLine($"Observing paths {string.Join(", ", observedPaths)}");
-#endif
-			var watchers = observedPaths
-				.Select(p => new FileSystemWatcher
+				.Select(dir =>
 				{
-					Path = p!,
-					Filter = "*.*",
-					NotifyFilter = NotifyFilters.LastWrite |
-						NotifyFilters.Attributes |
-						NotifyFilters.Size |
-						NotifyFilters.CreationTime |
-						NotifyFilters.FileName,
-					EnableRaisingEvents = true,
-					IncludeSubdirectories = false
+					_reporter.Verbose($"Observing '{dir}' project directories for metadata changes.");
+
+					return new FileSystemWatcher
+					{
+						Path = dir!,
+						Filter = "*.*",
+						NotifyFilter = NotifyFilters.LastWrite |
+							NotifyFilters.Attributes |
+							NotifyFilters.Size |
+							NotifyFilters.CreationTime |
+							NotifyFilters.FileName,
+						EnableRaisingEvents = true,
+						IncludeSubdirectories = true // Required for added files in subfolders
+					};
 				})
 				.ToArray();
 			var processing = new CancellationTokenSource(); // Updates are cumulative, we cannot abort updates, so we have a SINGLE token for all operations.
 			var watchersSubscription = To2StepsObservable(watchers, HasInterest, _solutionWatchersGate).Subscribe(
-				filePaths => _ = ProcessMetadataChanges(filePaths, processing.Token),
+				filePaths => _ = ProcessFileChanges(filePaths, processing.Token),
 				e => Console.WriteLine($"Error {e}"));
 
 			_solutionSubscriptions = new CompositeDisposable([watchersSubscription, Disposable.Create(processing.Cancel), processing, .. watchers]);
 
-			static bool HasInterest(string file)
-				=> Path.GetExtension(file).ToLowerInvariant() is not ".csproj" and not ".editorconfig";
+			bool HasInterest(string file)
+			{
+				if (Path.GetExtension(file).ToLowerInvariant() is ".csproj" or ".editorconfig")
+				{
+					return false;
+				}
+
+				if (excludedDir.Any(dir => file.StartsWith(dir, _pathsComparison)))
+				{
+					// File is in an excluded directory (bin or obj)
+					// However, we still allow changes from the HotReloadInfo
+					if (!file.EndsWith(HotReloadInfoHelper.HotReloadInfoFilePath, _pathsComparison))
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
 		}
 
-		private async Task ProcessMetadataChanges(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
+		private async Task ProcessFileChanges(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
 		{
 			// Notify the start of the hot-reload processing as soon as possible, even before the buffering of file change is completed
 			var hotReload = await StartOrContinueHotReload();
@@ -467,14 +481,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			foreach (var file in files)
 			{
+				var found = false;
 				var exists = File.Exists(file);
-				var document = solution
+				var documents = solution
 					.Projects
 					.SelectMany(p => p.Documents)
-					.FirstOrDefault(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase));
-
-				if (document is not null)
+					.Where(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase));
+				foreach (var document in documents)
 				{
+					found = true;
 					if (exists)
 					{
 						editedDocuments.Add(document);
@@ -483,16 +498,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					{
 						removedDocuments.Add(document.Id);
 					}
-					continue;
 				}
 
-				var additionalDocument = solution
+				var additionalDocuments = solution
 					.Projects
 					.SelectMany(p => p.AdditionalDocuments)
-					.FirstOrDefault(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase));
-
-				if (additionalDocument is not null)
+					.Where(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase));
+				foreach (var additionalDocument in additionalDocuments)
 				{
+					found = true;
 					if (exists)
 					{
 						editedAdditionalDocuments.Add(additionalDocument);
@@ -501,18 +515,20 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					{
 						removedAdditionalDocuments.Add(additionalDocument.Id);
 					}
-					continue;
 				}
 
 				// Not found in current solution
-				if (exists)
+				if (!found)
 				{
-					potentiallyAdded.Add(file);
-				}
-				else
-				{
-					_reporter.Verbose($"Could not find document with path '{file}' in the workspace and file does not exist on disk.");
-					notFound.Add(file);
+					if (exists)
+					{
+						potentiallyAdded.Add(file);
+					}
+					else
+					{
+						_reporter.Verbose($"Could not find document with path '{file}' in the workspace and file does not exist on disk.");
+						notFound.Add(file);
+					}
 				}
 			}
 
@@ -548,12 +564,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				_reporter.Output($"Detected {newFiles.Count} potentially new file(s). Creating temporary workspace to discover them...");
 
 				// Create a temporary workspace to discover the new files
-				var (tempSolution, _) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
-					_configureServer.ProjectPath,
-					_reporter,
-					_configureServer.MetadataUpdateCapabilities,
-					_configureServer.MSBuildProperties,
-					ct);
+				var (_, _, tempSolution, _) = await CreateCompilation(_configureServer, ct);
 
 				var discoveredDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
 				var discoveredAdditionalDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
@@ -562,22 +573,19 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				foreach (var file in newFiles)
 				{
 					// Search for the file in the temp workspace's projects
+					// Note: Here again we assume that document can appear in more than one project (same project loaded with different TFM)
 					var found = false;
 					foreach (var project in tempSolution.Projects)
 					{
-						var document = project.Documents.FirstOrDefault(d => string.Equals(d.FilePath, file, _pathsComparison));
-						if (document != null)
+						if (project.Documents.FirstOrDefault(d => string.Equals(d.FilePath, file, _pathsComparison)) is { } document)
 						{
+							found = true;
 							discoveredDocuments.Add(new(project.GetInfo(), document.GetInfo()));
-							break;
 						}
-
-						var additionalDocument = project.AdditionalDocuments.FirstOrDefault(d => string.Equals(d.FilePath, file, _pathsComparison));
-						if (additionalDocument != null)
+						else if (project.AdditionalDocuments.FirstOrDefault(d => string.Equals(d.FilePath, file, _pathsComparison)) is { } additionalDocument)
 						{
 							found = true;
 							discoveredAdditionalDocuments.Add(new(project.GetInfo(), additionalDocument.GetInfo()));
-							break;
 						}
 					}
 
@@ -624,57 +632,36 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			// Added documents has been detected using a temporary solution.
 			// We need to make sure to find the right project instance in the current solution, and update the document ID accordingly.
+			// Note: A project may appear multiple times in the solution (e.g. different TFM), so we need to add the document to **all** instances.
 			foreach (var added in changeSet.AddedDocuments)
 			{
-				var project = solution.Projects.FirstOrDefault(p => p.FilePath == added.Project.FilePath);
-				if (project is null)
+				var found = false;
+				var projects = solution.Projects.Where(p => p.FilePath == added.Project.FilePath);
+				foreach (var project in projects)
+				{
+					found = true;
+					solution = solution.AddDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
+				}
+				if (!found)
 				{
 					hotReload.NotifyIgnored(added.Document.FilePath!);
-				}
-				else
-				{
-					solution = solution.AddDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
 				}
 			}
 
 			foreach (var added in changeSet.AddedAdditionalDocuments)
 			{
-				var project = solution.Projects.FirstOrDefault(p => p.FilePath == added.Project.FilePath);
-				if (project is null)
+				var found = false;
+				var projects = solution.Projects.Where(p => p.FilePath == added.Project.FilePath);
+				foreach (var project in projects)
+				{
+					found = true;
+					solution = solution.AddAdditionalDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
+				}
+				if (!found)
 				{
 					hotReload.NotifyIgnored(added.Document.FilePath!);
 				}
-				else
-				{
-					solution = solution.AddAdditionalDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
-				}
 			}
-
-			//// Add the new files to the solution
-			//foreach (var documentInfo in changeSet.AddedDocuments)
-			//{
-			//	//var project = solution.GetProject(documentInfo.Project);
-			//	//if (project is not null)
-			//	{
-			//		//var sourceText = await GetSourceTextAsync(documentInfo.Document.FilePath!);
-			//		//var newDocumentId = DocumentId.CreateNewId(project.Id);
-			//		solution = solution.AddDocument(documentInfo);
-			//		_reporter.Output($"Added new document {documentInfo.Name}");
-			//	}
-			//}
-
-			//foreach (var additionalDocumentInfo in changeSet.AddedAdditionalDocuments)
-			//{
-			//	//var project = solution.GetProject(additionalDocumentInfo.Project);
-			//	//if (project is not null)
-			//	{
-			//		//var sourceText = await GetSourceTextAsync(additionalDocumentInfo.Document.FilePath!);
-			//		//var newDocumentId = DocumentId.CreateNewId(project.Id);
-			//		//solution = solution.AddAdditionalDocument(newDocumentId, additionalDocumentInfo.Document.Name, sourceText, additionalDocumentInfo.Document.Folders, additionalDocumentInfo.Document.FilePath);
-			//		solution = solution.AddAdditionalDocument(additionalDocumentInfo);
-			//		_reporter.Output($"Added new additional document {additionalDocumentInfo.Name}");
-			//	}
-			//}
 
 			solution = solution
 				.RemoveDocuments(changeSet.RemovedDocuments)
@@ -683,18 +670,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			hotReload.NotifyIgnored(changeSet.IgnoredFiles);
 
 			return solution;
-
-			//foreach (var documentInfo in changeSet.AddedDocuments)
-			//{
-			//	//var project = solution.GetProject(documentInfo.Project);
-			//	//if (project is not null)
-			//	{
-			//		//var sourceText = await GetSourceTextAsync(documentInfo.Document.FilePath!);
-			//		//var newDocumentId = DocumentId.CreateNewId(project.Id);
-			//		 .AddDocument(documentInfo);
-			//		_reporter.Output($"Added new document {documentInfo.Name}");
-			//	}
-			//}
 		}
 
 		private record ChangeSet(
@@ -712,46 +687,5 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		private record struct AddedDocumentInfo(ProjectInfo Project, DocumentInfo Document);
-		//private record struct AdditionalDocumentInfo(ProjectId Project, TextDocument Document);
 	}
-}
-
-public static class RoslynExtensions
-{
-	public static ProjectInfo GetInfo(this Project project)
-		=> ProjectInfo.Create(
-			ProjectId.CreateNewId(),
-			project.Version,
-			project.Name,
-			project.AssemblyName,
-			project.Language,
-			project.FilePath,
-			project.OutputFilePath,
-			project.CompilationOptions,
-			project.ParseOptions,
-			[..project.Documents.Select(GetInfo)],
-			project.ProjectReferences,
-			project.MetadataReferences,
-			project.AnalyzerReferences,
-			[..project.AdditionalDocuments.Select(GetInfo)],
-			project.IsSubmission,
-			default);
-
-	public static DocumentInfo GetInfo(this Document document)
-		=> DocumentInfo.Create(
-			document.Id,
-			document.Name,
-			document.Folders,
-			document.SourceCodeKind,
-			document.FilePath is null ? null : new FileTextLoader(document.FilePath!, Encoding.UTF8),
-			document.FilePath);
-
-	public static DocumentInfo GetInfo(this TextDocument document)
-		=> DocumentInfo.Create(
-			document.Id,
-			document.Name,
-			document.Folders,
-			default,
-			document.FilePath is null ? null : new FileTextLoader(document.FilePath!, Encoding.UTF8),
-			document.FilePath);
 }
