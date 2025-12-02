@@ -155,10 +155,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
 		}
 
-		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
-		// is different between the fallback font and OpenSans
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaMacOS)]
+		// Different platforms will resolve SKFontManager.Default.MatchCharacter to different fonts
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 		public async Task Check_FontFallback_Shaping()
 		{
 			var SUT = new TextBlock
@@ -169,7 +168,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
-			var familyName = skFont.Typeface.FamilyName;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
