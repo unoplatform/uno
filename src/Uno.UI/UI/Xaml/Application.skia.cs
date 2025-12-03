@@ -35,9 +35,6 @@ namespace Microsoft.UI.Xaml
 		private static bool _startInvoked;
 
 		[ThreadStatic]
-		private static Application _current;
-
-		[ThreadStatic]
 		private static string? _argumentsOverride;
 
 		internal static void SetArguments(string arguments)
@@ -45,7 +42,7 @@ namespace Microsoft.UI.Xaml
 
 		partial void InitializePartial()
 		{
-			_current = this;
+			SetCurrentApplication(this);
 			SetCurrentLanguage();
 
 			if (!_startInvoked)

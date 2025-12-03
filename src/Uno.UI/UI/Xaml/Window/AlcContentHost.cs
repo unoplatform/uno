@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -12,9 +11,10 @@ namespace Uno.UI.Xaml.Controls;
 /// A specialized ContentControl that hosts content from a secondary AssemblyLoadContext,
 /// inheriting resources from the secondary ALC's Application.Current.Resources.
 /// </summary>
-internal sealed partial class AlcContentHost : ContentControl
+public sealed partial class AlcContentHost : ContentControl
 {
-	private Application? _sourceApplication;
+	private Application? _sourceApplicationOverride;
+	private Application? _contentApplication;
 
 	public AlcContentHost()
 	{
@@ -26,21 +26,25 @@ internal sealed partial class AlcContentHost : ContentControl
 		Loaded += OnLoaded;
 	}
 
-	/// <summary>
-	/// Gets or sets the source Application from which to inherit resources.
-	/// When not set, uses Application.Current.
-	/// </summary>
-	public Application? SourceApplication
+	internal Application? SourceApplicationOverride
 	{
-		get => _sourceApplication;
+		get => _sourceApplicationOverride;
 		set
 		{
-			if (_sourceApplication != value)
+			if (!ReferenceEquals(_sourceApplicationOverride, value))
 			{
-				_sourceApplication = value;
+				_sourceApplicationOverride = value;
 				UpdateMergedResources();
 			}
 		}
+	}
+
+	protected override void OnContentChanged(object oldContent, object newContent)
+	{
+		base.OnContentChanged(oldContent, newContent);
+
+		_contentApplication = Application.GetForInstance(newContent);
+		UpdateMergedResources();
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
@@ -50,7 +54,10 @@ internal sealed partial class AlcContentHost : ContentControl
 
 	private void UpdateMergedResources()
 	{
-		var sourceApp = _sourceApplication ?? Application.Current;
+		var sourceApp = _sourceApplicationOverride
+			?? _contentApplication
+			?? Application.GetForInstance(Content)
+			?? Application.Current;
 
 		if (sourceApp?.Resources is null)
 		{

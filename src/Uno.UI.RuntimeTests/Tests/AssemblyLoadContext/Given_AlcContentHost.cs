@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Private.Infrastructure;
 
@@ -52,7 +53,7 @@ public class Given_AlcContentHost
 		// Act
 		var contentHost = new AlcContentHost
 		{
-			SourceApplication = testApp
+			SourceApplicationOverride = testApp
 		};
 
 		// Force the control to load and update resources
@@ -77,7 +78,7 @@ public class Given_AlcContentHost
 		// Act
 		var contentHost = new AlcContentHost
 		{
-			SourceApplication = testApp
+			SourceApplicationOverride = testApp
 		};
 
 		// Force the control to load and update resources
@@ -120,7 +121,7 @@ public class Given_AlcContentHost
 		// Set up ContentHostOverride before starting the secondary app
 		// This is set in the PRIMARY ALC and will be used by the secondary ALC's Window.Content setter
 		_contentHost = new AlcContentHost();
-		Microsoft.UI.Xaml.Window.ContentHostOverride = _contentHost;
+		WindowHelper.ContentHostOverride = _contentHost;
 
 		// Set the content host as the window content using TestServices
 		TestServices.WindowHelper.WindowContent = _contentHost;
