@@ -76,6 +76,8 @@ internal class McpProxy
 
 	private async Task ProcessRoots()
 	{
+		_logger.LogTrace("MCP Client Roots: {Roots}", string.Join(", ", _roots));
+
 		if (_roots.FirstOrDefault() is { } rootUri
 			&& Uri.TryCreate(rootUri, UriKind.RelativeOrAbsolute, out var root))
 		{
@@ -135,6 +137,8 @@ internal class McpProxy
 				{
 					var roots = await ctx.Server.RequestRootsAsync(new(), ct);
 
+					_logger.LogTrace("MCP Client supports roots: {Roots}", string.Join(", ", roots.Roots.Select(r => r.Uri)));
+
 					if (roots.Roots.Count != 0)
 					{
 						_roots = [.. roots.Roots.Select(r => r.Uri)];
@@ -150,6 +154,8 @@ internal class McpProxy
 				}
 				else
 				{
+					_logger.LogTrace("MCP Client does not support roots");
+
 					_roots = [Environment.CurrentDirectory];
 				}
 

@@ -144,7 +144,7 @@ function Register-UnoCodexMcps {
     Push-Location $WorkingDirectory
     try {
         Invoke-CodexMcpAdd -Name "uno" -Arguments @("--url", "https://mcp.platform.uno/v1")
-        Invoke-CodexMcpAdd -Name "uno-app" -Arguments @("--", "dotnet", "uno-devserver", "--mcp-app")
+        Invoke-CodexMcpAdd -Name "uno-app" -Arguments @("--", "dotnet", "uno-devserver", "--mcp-app", "-l", "trace")
     }
     finally {
         Pop-Location
