@@ -256,7 +256,7 @@ jobs:
       artifactName: 'Nuget_Packages'
 
   - template: ../templates/gitversion.yml
-  - template: ../templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/dotnet-install.yml
   - template: ../templates/uno-dev-feed.yml
 
   - task: CopyFiles@2
