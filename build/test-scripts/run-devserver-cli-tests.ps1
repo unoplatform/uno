@@ -181,7 +181,45 @@ Begin now.
 
     Write-Log "Invoking Codex CLI to enumerate MCP tools."
     $codexArgs = @("--sandbox", "workspace-write", "--ask-for-approval", "never")
-    $process = Start-Process -FilePath "codex" -ArgumentList $codexArgs -WorkingDirectory $WorkingDirectory -RedirectStandardInput $instructionsFile -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -PassThru
+
+    $codexExecutable = "codex"
+    $codexArguments = $codexArgs
+
+    if ($IsWindows) {
+        # Run Codex through cmd.exe so we can redirect stdin/stdout to the npm-generated .cmd shim.
+        $codexExecutable = "cmd.exe"
+        $codexArguments = @("/c", "codex") + $codexArgs
+    }
+    elseif ($IsMacOS) {
+        $scriptCommand = Get-Command script -ErrorAction SilentlyContinue
+        if ($scriptCommand) {
+            # BSD script accepts the target command as positional args after the transcript file.
+            $codexExecutable = $scriptCommand.Source
+            $codexArguments = @("-q", "/dev/null", "codex") + $codexArgs
+        }
+        else {
+            Write-Log "script command not found; continuing without pseudo terminal shim."
+        }
+    }
+    elseif ($IsLinux) {
+        $scriptCommand = Get-Command script -ErrorAction SilentlyContinue
+        if ($scriptCommand) {
+            function ConvertTo-SingleQuotedShellArg([string]$value) {
+                if ($null -eq $value) { return "''" }
+                return "'" + ($value -replace "'", "'""'""'") + "'"
+            }
+
+            $shellCommand = (@("codex") + $codexArgs) | ForEach-Object { ConvertTo-SingleQuotedShellArg $_ }
+            $commandString = [string]::Join(' ', $shellCommand)
+            $codexExecutable = $scriptCommand.Source
+            $codexArguments = @("-q", "-c", $commandString, "/dev/null")
+        }
+        else {
+            Write-Log "script command not found; continuing without pseudo terminal shim."
+        }
+    }
+
+    $process = Start-Process -FilePath $codexExecutable -ArgumentList $codexArguments -WorkingDirectory $WorkingDirectory -RedirectStandardInput $instructionsFile -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -PassThru
 
     $timeoutMs = 300000
     if (-not $process.WaitForExit($timeoutMs)) {
