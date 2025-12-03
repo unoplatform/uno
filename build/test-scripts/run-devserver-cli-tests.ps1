@@ -170,56 +170,24 @@ Tasks:
 3. Confirm completion and exit when finished.
 
 Begin now.
-/mcp
-/exit
+"@
 "@
 
-    $instructionsFile = [System.IO.Path]::GetTempFileName()
-    Set-Content -LiteralPath $instructionsFile -Value $instructions -Encoding UTF8
     $stdOutFile = [System.IO.Path]::GetTempFileName()
     $stdErrFile = [System.IO.Path]::GetTempFileName()
 
     Write-Log "Invoking Codex CLI to enumerate MCP tools."
-    $codexArgs = @("--sandbox", "workspace-write", "--ask-for-approval", "never")
+    $codexArgs = @("exec", "--sandbox", "workspace-write", "--ask-for-approval", "never", $instructions)
 
     $codexExecutable = "codex"
     $codexArguments = $codexArgs
-
     if ($IsWindows) {
-        # Run Codex through cmd.exe so we can redirect stdin/stdout to the npm-generated .cmd shim.
+        # npm exposes Codex CLI through a .cmd shim on Windows, so run it via cmd.exe
         $codexExecutable = "cmd.exe"
         $codexArguments = @("/c", "codex") + $codexArgs
     }
-    elseif ($IsMacOS) {
-        $scriptCommand = Get-Command script -ErrorAction SilentlyContinue
-        if ($scriptCommand) {
-            # BSD script accepts the target command as positional args after the transcript file.
-            $codexExecutable = $scriptCommand.Source
-            $codexArguments = @("-q", "/dev/null", "codex") + $codexArgs
-        }
-        else {
-            Write-Log "script command not found; continuing without pseudo terminal shim."
-        }
-    }
-    elseif ($IsLinux) {
-        $scriptCommand = Get-Command script -ErrorAction SilentlyContinue
-        if ($scriptCommand) {
-            function ConvertTo-SingleQuotedShellArg([string]$value) {
-                if ($null -eq $value) { return "''" }
-                return "'" + ($value -replace "'", "'""'""'") + "'"
-            }
 
-            $shellCommand = (@("codex") + $codexArgs) | ForEach-Object { ConvertTo-SingleQuotedShellArg $_ }
-            $commandString = [string]::Join(' ', $shellCommand)
-            $codexExecutable = $scriptCommand.Source
-            $codexArguments = @("-q", "-c", $commandString, "/dev/null")
-        }
-        else {
-            Write-Log "script command not found; continuing without pseudo terminal shim."
-        }
-    }
-
-    $process = Start-Process -FilePath $codexExecutable -ArgumentList $codexArguments -WorkingDirectory $WorkingDirectory -RedirectStandardInput $instructionsFile -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -PassThru
+    $process = Start-Process -FilePath $codexExecutable -ArgumentList $codexArguments -WorkingDirectory $WorkingDirectory -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -PassThru
 
     $timeoutMs = 300000
     if (-not $process.WaitForExit($timeoutMs)) {
@@ -231,7 +199,6 @@ Begin now.
     $stdout = Get-Content $stdOutFile -ErrorAction SilentlyContinue -Raw
     $stderr = Get-Content $stdErrFile -ErrorAction SilentlyContinue -Raw
 
-    Remove-Item $instructionsFile -ErrorAction SilentlyContinue
     Remove-Item $stdOutFile -ErrorAction SilentlyContinue
     Remove-Item $stdErrFile -ErrorAction SilentlyContinue
 
