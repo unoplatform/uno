@@ -562,7 +562,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var breaker = ICU.BrowserICUSymbols.init_line_breaker(text);
 			if (breaker == IntPtr.Zero)
 			{
-				typeof(UnicodeText).LogError()?.Error($"Failed to create a break iterator for input text '{text}' of unicode codepoints [{string.Join(',', text.EnumerateRunes())}]. Falling back to naive CRLF line breaking.");
+				typeof(UnicodeText).LogError()?.Error($"Failed to create a break iterator for input text '{text}' of unicode codepoints [{string.Join(',', text.EnumerateRunes().Select(r => r.Value))}]. Falling back to naive space-based line breaking.");
 				var lines = new List<int>();
 				var i = 0;
 				while (text.IndexOfAny(['\r', '\n'], i) is var next && next != -1)

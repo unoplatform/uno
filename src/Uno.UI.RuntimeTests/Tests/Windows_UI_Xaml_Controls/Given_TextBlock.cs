@@ -654,6 +654,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		[DataRow("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf")]
 		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf")]
 		public async Task When_FontFamily_Changed(string font)
