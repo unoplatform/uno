@@ -354,38 +354,34 @@ The indicator displays the current connection status. Clicking on it will open a
 
 ### Statuses
 
-Here's a summary of the Hot Reload connection statuses and their corresponding icons:
+The indicator surfaces two kinds of information: the connection to the IDE/dev server and the state of the hot-reload pipeline.
 
-#### Connection
+#### Connection to the IDE/dev server
 
-- ![The icon indicating that the user is not signed in](../Assets/features/hotreload/status-connection-not-signed-in.png) **Not Signed In**  
-  _User needs to sign in to enable Hot Reload._
+- **Initializing**: The app is starting up and the dev server connection is being prepared.
+- **No server configured**: No endpoint was provided by the IDE (release build or Uno extension not installed/loaded). Install or update the Uno extension in your IDE and rebuild.
+- **Invalid endpoint from IDE**: An endpoint was provided without a port (often an out-of-date or not-yet-loaded extension). Rebuild and make sure the Uno extension is installed and loaded before launching.
+- **Connecting / Connected**: The client is handshaking with the IDE or has established the connection (the tooltip shows the current ping time).
+- **Connected with warnings**: The app connected but detected a version mismatch, missing processors on the dev server, late/lost keep-alive pings, or invalid frames. Restarting the IDE/dev server usually clears this.
+- **Reconnecting / Disconnected**: A previously working connection was lost; the client will keep retrying.
+- **Connection timeout / failed**: The IDE/dev server could not be reached (IDE closed, firewall, or wrong endpoint).
 
-- ![The icon indicating an ongoing connection attempt](../Assets/features/hotreload/status-connection-connecting.png) **Connecting**  
-  _Establishing a connection._
+#### Hot Reload engine state
 
-- ![The icon indicating a successful connection](../Assets/features/hotreload/status-connection-connected.png) **Connected**  
-  _Connection established._
+- **Initializing**: The dev server is loading the workspace and preparing Hot Reload.
+- **Processing**: Changes are being compiled/applied (server or local app still busy).
+- **Ready**: Hot Reload is connected and waiting for changes.
+- **Disabled**: Hot Reload was turned off (workspace failed to load, unsupported runtime, or debugger attached in an unsupported configuration).
 
-- ![The icon indicating a connection issue](../Assets/features/hotreload/status-connection-warning.png) **Warning**  
-  _Usually indicates an issue that can be resolved by restarting your IDE._
+#### Hot Reload operation outcomes (history in the flyout)
 
-- ![The icon indicating a failed connection](../Assets/features/hotreload/status-connection-failed.png) **Connection Failed**  
-  _A connection error occurred. Refer to the [troubleshooting documentation](#troubleshooting) for possible solutions._
-
-- ![The icon indicating the server is unreachable](../Assets/features/hotreload/status-connection-server-unreachable.png) **Server Unreachable**  
-  _Hot Reload could not connect to the server. Check the [troubleshooting documentation](#troubleshooting) for guidance._
-
-#### Operation
-
-- ![The icon shown when Hot Reload succeeds](../Assets/features/hotreload/status-hr-success.png) **Success**  
-  _The Hot Reload changes have been applied successfully._
-
-- ![The icon shown when Hot Reload fails](../Assets/features/hotreload/status-hr-failed.png) **Failed**  
-  _Hot Reload encountered an error and could not apply the changes._
-
-- ![The icon shown when Hot Reload is in progress](../Assets/features/hotreload/status-hr-processing.png) **Processing**  
-  _Hot Reload is applying changes or initializing._
+- **Processing**: A change is currently being applied.
+- **Success**: The change was applied in the app.
+- **No Changes**: The dev server did not detect any difference for the requested files.
+- **Ignored**: The app skipped applying the change (for example, debugger attached in an unsupported mode).
+- **Rude Edit**: The edit is not supported by Hot Reload and requires a rebuild.
+- **Failed**: Compilation or apply errors occurred; check the diagnostics listed in the flyout.
+- **Aborted / Internal Error**: The dev server stopped processing the operation or encountered an internal failure.
 
 ## Troubleshooting
 
