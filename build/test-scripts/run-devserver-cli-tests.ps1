@@ -200,24 +200,36 @@ Begin now.
         $codexArguments = @("/c", "codex") + $codexArgs
     }
 
-    $process = Start-Process -FilePath $codexExecutable -ArgumentList $codexArguments -WorkingDirectory $WorkingDirectory -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -RedirectStandardInput $instructionsFile -PassThru
+    $previousRustLog = $env:RUST_LOG
+    $env:RUST_LOG = 'debug'
+    try {
+        $process = Start-Process -FilePath $codexExecutable -ArgumentList $codexArguments -WorkingDirectory $WorkingDirectory -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -RedirectStandardInput $instructionsFile -PassThru
 
-    $timeoutMs = 300000
-    if (-not $process.WaitForExit($timeoutMs)) {
-        try { $process.Kill() } catch {}
-        $stdErrContent = Get-Content $stdErrFile -ErrorAction SilentlyContinue -Raw
-        throw "Codex CLI timed out after $($timeoutMs / 1000) seconds. STDERR:`n$stdErrContent"
+        $timeoutMs = 300000
+        if (-not $process.WaitForExit($timeoutMs)) {
+            try { $process.Kill() } catch {}
+            $stdErrContent = Get-Content $stdErrFile -ErrorAction SilentlyContinue -Raw
+            throw "Codex CLI timed out after $($timeoutMs / 1000) seconds. STDERR:`n$stdErrContent"
+        }
+
+        $stdout = Get-Content $stdOutFile -ErrorAction SilentlyContinue -Raw
+        $stderr = Get-Content $stdErrFile -ErrorAction SilentlyContinue -Raw
+
+        Remove-Item $stdOutFile -ErrorAction SilentlyContinue
+        Remove-Item $stdErrFile -ErrorAction SilentlyContinue
+        Remove-Item $instructionsFile -ErrorAction SilentlyContinue
+
+        if ($process.ExitCode -ne 0) {
+            throw "Codex CLI exited with code $($process.ExitCode).`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
+        }
     }
-
-    $stdout = Get-Content $stdOutFile -ErrorAction SilentlyContinue -Raw
-    $stderr = Get-Content $stdErrFile -ErrorAction SilentlyContinue -Raw
-
-    Remove-Item $stdOutFile -ErrorAction SilentlyContinue
-    Remove-Item $stdErrFile -ErrorAction SilentlyContinue
-    Remove-Item $instructionsFile -ErrorAction SilentlyContinue
-
-    if ($process.ExitCode -ne 0) {
-        throw "Codex CLI exited with code $($process.ExitCode).`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
+    finally {
+        if ($null -ne $previousRustLog) {
+            $env:RUST_LOG = $previousRustLog
+        }
+        else {
+            Remove-Item Env:RUST_LOG -ErrorAction SilentlyContinue
+        }
     }
 
     if (-not (Test-Path $toolsFile)) {
