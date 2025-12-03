@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -17,7 +18,8 @@ internal readonly partial struct UnicodeText
 		// The version number of ICU is important because the exported symbols have their names appended by
 		// the version number. For example, there's a ubrk_open_74 in ICU v74, but not a ubrk_open.
 		private static readonly int _icuVersion;
-		private static readonly Func<Type, object> _getMethodMemoized;
+		private static readonly IntPtr _libicuuc;
+		private static Dictionary<Type, object> _lookupCache = new();
 
 		static unsafe ICU()
 		{
@@ -94,18 +96,7 @@ internal readonly partial struct UnicodeText
 				throw new DllNotFoundException("Failed to load libicuuc.");
 			}
 
-			_getMethodMemoized = Funcs.CreateMemoized<Type, object>(type =>
-			{
-				if (NativeLibrary.TryGetExport(libicuuc, type.Name, out var func))
-				{
-					return Marshal.GetDelegateForFunctionPointer(func, type);
-				}
-				if (NativeLibrary.TryGetExport(libicuuc, $"{type.Name}_{_icuVersion}", out var func2))
-				{
-					return Marshal.GetDelegateForFunctionPointer(func2, type);
-				}
-				throw new Exception($"Failed to obtain the {type.Name} method from the ICU libraries.");
-			});
+			_libicuuc = libicuuc;
 
 			GetMethod<u_getVersion>()(out var versionInfo);
 			var ptr = Marshal.AllocHGlobal(1000);
@@ -114,7 +105,26 @@ internal readonly partial struct UnicodeText
 			Marshal.FreeHGlobal(ptr);
 		}
 
-		public static T GetMethod<T>() => (T)_getMethodMemoized(typeof(T));
+		public static T GetMethod<T>()
+		{
+			if (!_lookupCache.TryGetValue(typeof(T), out var value))
+			{
+				if (NativeLibrary.TryGetExport(_libicuuc, typeof(T).Name, out var func))
+				{
+					value = Marshal.GetDelegateForFunctionPointer<T>(func)!;
+				}
+				else if (NativeLibrary.TryGetExport(_libicuuc, $"{typeof(T).Name}_{_icuVersion}", out var func2))
+				{
+					value = Marshal.GetDelegateForFunctionPointer<T>(func2)!;
+				}
+				else
+				{
+					throw new Exception($"Failed to obtain the {typeof(T).Name} method from the ICU libraries.");
+				}
+				_lookupCache[typeof(T)] = value;
+			}
+			return (T)value;
+		}
 
 		public static unsafe DisposableStruct<IntPtr> CreateBiDiAndSetPara(string text, int start, int end, byte paraLevel, out IntPtr bidi)
 		{
