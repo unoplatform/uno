@@ -9,6 +9,8 @@ internal class Program
 	{
 		var host = UnoPlatformHostBuilder.Create()
 			.App(() => new App())
+			.UseX11()
+			.UseMacOS()
 			.UseWin32()
 			.Build();
 
