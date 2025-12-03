@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI;
+using Uno.UI.HotReload;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
@@ -96,10 +97,8 @@ public class Given_Frame : BaseTestClass
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Pause HR
-		TypeMappings.Pause();
-		try
+		await using(var pause = HotReloadService.Instance?.PauseUIUpdates())
 		{
-
 			// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
 			await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 				FirstPageTextBlockOriginalText,
@@ -109,11 +108,6 @@ public class Given_Frame : BaseTestClass
 					await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 				},
 				ct);
-		}
-		finally
-		{
-			// Resume HR
-			TypeMappings.Resume();
 		}
 
 		// Check that the text has been updated
@@ -143,10 +137,8 @@ public class Given_Frame : BaseTestClass
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Pause HR
-		TypeMappings.Pause();
-		try
+		await using (var pause = HotReloadService.Instance?.PauseUIUpdates())
 		{
-
 			// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
 			await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 				FirstPageTextBlockOriginalText,
@@ -156,11 +148,6 @@ public class Given_Frame : BaseTestClass
 					await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 				},
 				ct);
-		}
-		finally
-		{
-			// Resume HR
-			TypeMappings.Resume();
 		}
 
 		// Although HR has been un-paused (resumed) the UI should not have updated at this point
@@ -199,9 +186,7 @@ public class Given_Frame : BaseTestClass
 		// Check the initial text of the TextBlock
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
-		// Pause HR
-		TypeMappings.Pause();
-		try
+		await using (var pause = HotReloadService.Instance?.PauseUIUpdates())
 		{
 			var waitingTask = TestingUpdateHandler.WaitForReloadCompleted();
 
@@ -218,22 +203,15 @@ public class Given_Frame : BaseTestClass
 				},
 				ct);
 		}
-		finally
-		{
-			// Resume HR
-			TypeMappings.Resume();
-		}
 
-		// Although HR has been un-paused (resumed) the UI should not have updated at this point
-		// due to false parameter passed to Resume method
+		// Although HR has been un-paused (resumed) the UI should not have updated at this point.
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Force a refresh
 		Window.Current!.ForceHotReloadUpdate();
-
 		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
 
-		// Check that the text has been updated
+		// Check that the text has still not been updated (since change has been rolled back)
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 	}
 

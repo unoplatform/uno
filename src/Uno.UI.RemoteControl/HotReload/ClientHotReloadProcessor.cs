@@ -2,9 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
+using Uno.UI.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.Tasks.HotReloadInfo;
 
@@ -18,11 +20,26 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 	private Dictionary<string, string>? _msbuildProperties;
 
+	private static ClientHotReloadProcessor? _instance;
+
+#if HAS_UNO
 	public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 	{
+		Debug.Assert(_instance is null, "ClientHotReloadProcessor instance already exists");
+
 		_rcClient = rcClient;
 		_status = new(this);
+		_instance = this;
+		HotReloadService.Init(this);
 	}
+#else
+	private ClientHotReloadProcessor()
+	{
+		_status = new(this);
+		_instance = this;
+		HotReloadService.Init(this);
+	}
+#endif
 
 	partial void InitializeMetadataUpdater();
 

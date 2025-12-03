@@ -7,14 +7,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
+using Uno.UI.Helpers;
+using Uno.UI.HotReload;
 using Uno.UI.RemoteControl;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
+using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RuntimeTests.Tests.HotReload;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.Helpers;
-using Uno.UI.RemoteControl.HotReload;
+using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
@@ -153,18 +154,14 @@ public class Given_TextBlock : BaseTestClass
 			FirstPageTextBlockChangedText,
 			true)
 			.WithExtendedTimeouts(); // Required for CI
-		try
+		await using (var pause = HotReloadService.Instance?.PauseUIUpdates())
 		{
-			TypeMappings.Pause();
 			await hr.UpdateFileAsync(req, ct);
 
 			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText); // should NOT be changed
 		}
-		finally
-		{
-			TypeMappings.Resume();
-			await hr.UpdateFileAsync(req.Undo(waitForHotReload: true), CancellationToken.None);
-		}
+
+		await hr.UpdateFileAsync(req.Undo(waitForHotReload: true), CancellationToken.None);
 	}
 #endif
 }
