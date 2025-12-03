@@ -144,7 +144,7 @@ function Register-UnoCodexMcps {
     Push-Location $WorkingDirectory
     try {
         Invoke-CodexMcpAdd -Name "uno" -Arguments @("--url", "https://mcp.platform.uno/v1")
-        Invoke-CodexMcpAdd -Name "uno-app" -Arguments @("--", "dotnet", "dnx", "-y", "uno.devserver", "--mcp-app")
+        Invoke-CodexMcpAdd -Name "uno-app" -Arguments @("--", "dotnet", "uno-devserver", "--mcp-app")
     }
     finally {
         Pop-Location
@@ -175,8 +175,20 @@ Begin now.
     $stdOutFile = [System.IO.Path]::GetTempFileName()
     $stdErrFile = [System.IO.Path]::GetTempFileName()
 
+    $model = if (-not [string]::IsNullOrWhiteSpace($env:CODEX_MODEL)) { $env:CODEX_MODEL } else { "gpt-5.1-mini" }
+
     Write-Log "Invoking Codex CLI to enumerate MCP tools."
-    $codexArgs = @("exec", "--sandbox", "workspace-write", "--ask-for-approval", "never", $instructions)
+    $codexArgs = @(
+        '--ask-for-approval','never',
+        'exec',
+        '-m',$model,
+        '--sandbox','workspace-write',
+        '-c','mcp_servers.uno-app.startup_timeout_sec=120',
+        '-c','features.web_search_request=true',
+        '-c','features.rmcp_client=true',
+        '-c','sandbox_workspace_write.network_access=true',
+        $instructions
+    )
 
     $codexExecutable = "codex"
     $codexArguments = $codexArgs
