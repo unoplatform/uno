@@ -106,7 +106,7 @@ function Ensure-CodexCli {
         return $false
     }
 
-    $packageName = '@openai/codex-cli'
+    $packageName = '@openai/codex'
     $npmArgs = @('install', '-g', $packageName)
 
     & npm @npmArgs

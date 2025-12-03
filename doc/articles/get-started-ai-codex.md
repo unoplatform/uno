@@ -12,7 +12,14 @@ This guide will walk you through the setup process for getting started with Code
 
 ## Setting up Uno Platform MCPs
 
-1. Install [Codex CLI](https://developers.openai.com/codex/cli)
+1. Install [Codex CLI](https://developers.openai.com/codex/cli) using the official commands, for example:
+
+    ```bash
+    npm i -g @openai/codex
+    # or on macOS
+    brew install --cask codex
+    ```
+
 1. Register the Uno Platform MCPs:
 
     ```bash
