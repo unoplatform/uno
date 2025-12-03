@@ -16,6 +16,8 @@ A new internal property that allows redirecting Window.Content to a custom Conte
 internal ContentControl? ContentHostOverride { get; set; }
 ```
 
+Access this property through `Uno.UI.Xaml.WindowHelper.ContentHostOverride`.
+
 **Behavior**:
 - When `ContentHostOverride` is set, `Window.Content` setter redirects to `ContentHostOverride.Content`
 - The getter also checks `ContentHostOverride` first before returning the actual window content
@@ -30,15 +32,15 @@ A specialized ContentControl that automatically inherits resources from a source
 ```csharp
 internal sealed class AlcContentHost : ContentControl
 {
-    public Application? SourceApplication { get; set; }
+   internal Application? SourceApplicationOverride { get; set; }
 }
 ```
 
 **Features**:
-- Automatically merges ResourceDictionaries from SourceApplication.Resources
-- Copies theme dictionaries
+- Automatically determines the correct Application based on the hosted content's AssemblyLoadContext
+- Optionally allows setting `SourceApplicationOverride` (internal) for testing scenarios
+- Merges ResourceDictionaries and theme dictionaries from the resolved application
 - Updates resources when content changes
-- Supports both direct resources and merged dictionaries
 
 ### 3. Test Infrastructure
 
@@ -69,15 +71,11 @@ var appType = pluginAssembly.GetType("PluginNamespace.App");
 // 3. Create an instance of the secondary app
 var secondaryApp = Activator.CreateInstance(appType) as Application;
 
-// 4. Create the ALC content host
-var contentHost = new AlcContentHost
-{
-    SourceApplication = secondaryApp
-};
+// 4. Create the ALC content host (it will resolve Application resources automatically)
+var contentHost = new AlcContentHost();
 
 // 5. Set the content host override on the main window
-var window = Microsoft.UI.Xaml.Window.Current;
-window.ContentHostOverride = contentHost;
+Uno.UI.Xaml.WindowHelper.ContentHostOverride = contentHost;
 
 // 6. Launch the secondary app (this will set window.Content)
 secondaryApp.OnLaunched(launchArgs);
@@ -95,13 +93,13 @@ secondaryApp.OnLaunched(launchArgs);
 
 ### Resource Inheritance
 
-When `AlcContentHost.SourceApplication` is set:
-1. Clears existing merged dictionaries to avoid duplicates
-2. Merges all ResourceDictionaries from source app
-3. Copies theme dictionaries
-4. Copies direct resources (non-merged)
+When `AlcContentHost` receives content from a secondary ALC:
+1. Resolves the owning `Application` via an internal lookup on that content's AssemblyLoadContext
+2. Clears existing merged dictionaries to avoid duplicates
+3. Merges all ResourceDictionaries from the resolved application
+4. Copies theme dictionaries and direct resources
 
-This ensures that controls within the secondary ALC app can resolve resources from their app's `Application.Resources`.
+This ensures that controls within the secondary ALC app can resolve resources from their app's `Application.Resources` without any manual wiring.
 
 ### Window Implementation Updates
 
