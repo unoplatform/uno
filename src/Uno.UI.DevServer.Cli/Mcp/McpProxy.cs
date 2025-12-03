@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Design.Serialization;
+using System.IO;
 using System.Text.Json;
 using System.Threading;
 using Microsoft.AspNetCore.Routing;
@@ -78,15 +79,40 @@ internal class McpProxy
 	{
 		_logger.LogTrace("MCP Client Roots: {Roots}", string.Join(", ", _roots));
 
-		if (_roots.FirstOrDefault() is { } rootUri
-			&& Uri.TryCreate(rootUri, UriKind.RelativeOrAbsolute, out var root))
+		if (_roots.FirstOrDefault() is { } rootUri)
 		{
-			_devServerMonitor.StartMonitoring(root.LocalPath, _devServerPort, _forwardedArgs);
+			var rootPath = GetRootPath(rootUri);
+			if (!string.IsNullOrWhiteSpace(rootPath))
+			{
+				_devServerMonitor.StartMonitoring(rootPath, _devServerPort, _forwardedArgs);
+			}
 		}
 		else if (!_forceRootsFallback)
 		{
 			_logger.LogWarning("No roots found, devserver not started");
 		}
+	}
+
+	private string? GetRootPath(string rootUri)
+	{
+		if (Uri.TryCreate(rootUri, UriKind.Absolute, out var absoluteUri) && absoluteUri.IsFile)
+		{
+			return absoluteUri.LocalPath;
+		}
+
+		if (Path.IsPathRooted(rootUri))
+		{
+			return Path.GetFullPath(rootUri);
+		}
+
+		if (!string.IsNullOrWhiteSpace(_currentDirectory))
+		{
+			var combined = Path.Combine(_currentDirectory, rootUri);
+			return Path.GetFullPath(combined);
+		}
+
+		_logger.LogWarning("Unable to resolve MCP root path from '{RootUri}'", rootUri);
+		return null;
 	}
 
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
