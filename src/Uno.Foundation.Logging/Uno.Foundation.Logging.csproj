@@ -20,7 +20,7 @@
     	<Description>This package provides internal logging utilities for Uno.UI and Uno.WinUI packages</Description>
 		
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<CommonOverridePackageId>Uno.Foundation.Logging</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
