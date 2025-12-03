@@ -13,6 +13,7 @@
 		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701;1572;1587;419;1574;1711;1734;CS0105</NoWarn>
+		<IsAotCompatible>true</IsAotCompatible>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
