@@ -1358,7 +1358,7 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		/// <remarks>This method needs to be aligned with the symbols query in BindableTypeProvidersSourceGenerator.</remarks>
 		private static bool IsValidMetadataProviderType(Type type)
-			=> type.IsPublic && type.IsClass;
+			=> type.IsPublic && (type.IsClass || type.IsValueType);
 	}
 }
 #endif

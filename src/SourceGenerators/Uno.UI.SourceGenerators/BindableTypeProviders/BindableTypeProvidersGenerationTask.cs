@@ -364,10 +364,15 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								continue;
 							}
 
+							// For value types (structs), we cannot generate setters because modifying an unboxed value type
+							// creates a temporary copy that is immediately discarded. Only generate getters for structs.
+							var isValueType = ownerType.TypeKind == TypeKind.Struct;
+
 							if (
 								property.SetMethod != null
 								&& !property.SetMethod.IsInitOnly
 								&& property.SetMethod.IsLocallyPublic(_currentModule!)
+								&& !isValueType
 								)
 							{
 								writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName}, Set{propertyName});");
