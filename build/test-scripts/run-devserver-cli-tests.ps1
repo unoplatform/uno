@@ -174,6 +174,9 @@ Begin now.
 
     $stdOutFile = [System.IO.Path]::GetTempFileName()
     $stdErrFile = [System.IO.Path]::GetTempFileName()
+    $instructionsFile = [System.IO.Path]::GetTempFileName()
+
+    Set-Content -Path $instructionsFile -Value $instructions -Encoding utf8
 
     $model = if (-not [string]::IsNullOrWhiteSpace($env:CODEX_MODEL)) { $env:CODEX_MODEL } else { "gpt-5.1-mini" }
 
@@ -183,11 +186,10 @@ Begin now.
         'exec',
         '-m',$model,
         '--sandbox','workspace-write',
-        '-c','mcp_servers.uno-app.startup_timeout_sec=120',
+        '-c','mcp_servers."uno-app".startup_timeout_sec=120',
         '-c','features.web_search_request=true',
         '-c','features.rmcp_client=true',
-        '-c','sandbox_workspace_write.network_access=true',
-        $instructions
+        '-c','sandbox_workspace_write.network_access=true'
     )
 
     $codexExecutable = "codex"
@@ -198,7 +200,7 @@ Begin now.
         $codexArguments = @("/c", "codex") + $codexArgs
     }
 
-    $process = Start-Process -FilePath $codexExecutable -ArgumentList $codexArguments -WorkingDirectory $WorkingDirectory -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -PassThru
+    $process = Start-Process -FilePath $codexExecutable -ArgumentList $codexArguments -WorkingDirectory $WorkingDirectory -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -RedirectStandardInput $instructionsFile -PassThru
 
     $timeoutMs = 300000
     if (-not $process.WaitForExit($timeoutMs)) {
@@ -212,6 +214,7 @@ Begin now.
 
     Remove-Item $stdOutFile -ErrorAction SilentlyContinue
     Remove-Item $stdErrFile -ErrorAction SilentlyContinue
+    Remove-Item $instructionsFile -ErrorAction SilentlyContinue
 
     if ($process.ExitCode -ne 0) {
         throw "Codex CLI exited with code $($process.ExitCode).`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
