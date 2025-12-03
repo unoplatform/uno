@@ -797,27 +797,68 @@ public sealed partial class DateTimeFormatter
 
 		string ConstructPattern(string str)
 		{
-			var builder = new StringBuilder();
-			char lastChar = str[0];
-			int count = 1;
-			for (int i = 1; i < str.Length; i++)
+			if (string.IsNullOrEmpty(str))
 			{
-				if (lastChar != str[i])
-				{
-					AddToBuilder(builder, lastChar, count);
+				return string.Empty;
+			}
 
-					lastChar = str[i];
-					count = 1;
+			char singleQuoteChar = '\'';
+			var builder = new StringBuilder();
+			int i = 0;
+			int len = str.Length;
+
+			while (i < len)
+			{
+				char currentChar = str[i];
+
+				// Handle quoted section (literals) "MMMM 'de' yyyy"
+				if (currentChar == singleQuoteChar)
+				{
+					i++;
+					var literal = new StringBuilder();
+
+					while (i < len)
+					{
+						if (str[i] == singleQuoteChar)
+						{
+							if (i + 1 < len && str[i + 1] == singleQuoteChar)
+							{
+								literal.Append(singleQuoteChar);
+								i += 2;
+							}
+							else
+							{
+								// End of quoted section
+								i++;
+								break;
+							}
+						}
+						else
+						{
+							literal.Append(str[i]);
+							i++;
+						}
+					}
+
+					builder.Append(literal);
 				}
 				else
 				{
-					count++;
+					char lastChar = currentChar;
+					int count = 1;
+					i++;
+
+					while (i < len && str[i] == lastChar && str[i] != '\'')
+					{
+						count++;
+						i++;
+					}
+
+					AddToBuilder(builder, lastChar, count);
 				}
 			}
 
-			AddToBuilder(builder, lastChar, count);
 			return builder.ToString();
 		}
 	}
-
 }
