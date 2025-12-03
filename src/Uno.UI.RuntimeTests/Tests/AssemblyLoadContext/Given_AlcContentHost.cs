@@ -201,7 +201,6 @@ public class Given_AlcContentHost
 		return hrAppPath;
 	}
 
-
 	/// <summary>
 	/// Builds the AlcApp test project and returns the path to the compiled assembly.
 	/// </summary>
@@ -227,19 +226,6 @@ public class Given_AlcContentHost
 		var alcAppDir = Path.GetDirectoryName(alcAppProjectPath)!;
 		var outputPath = Path.Combine(alcAppDir, "bin", configuration, targetFramework);
 		var assemblyPath = Path.Combine(outputPath, "Uno.UI.RuntimeTests.AlcApp.dll");
-
-		// Check if already built
-		if (File.Exists(assemblyPath))
-		{
-			var assemblyWriteTime = File.GetLastWriteTime(assemblyPath);
-			var projectWriteTime = File.GetLastWriteTime(alcAppProjectPath);
-
-			// If assembly is newer than project, skip rebuild
-			if (assemblyWriteTime > projectWriteTime)
-			{
-				return assemblyPath;
-			}
-		}
 
 		// Need to build the project
 		var startInfo = new System.Diagnostics.ProcessStartInfo
