@@ -564,11 +564,15 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				typeof(UnicodeText).LogError()?.Error($"Failed to create a break iterator for input text '{text}' of unicode codepoints [{string.Join(',', text.EnumerateRunes().Select(r => r.Value))}]. Falling back to naive space-based line breaking.");
 				var lines = new List<int>();
-				var i = 0;
-				while (text.IndexOfAny(['\r', '\n'], i) is var next && next != -1)
+				for (int i = 0; i < text.Length;)
 				{
-					i = next + text.Length > i + 1 && text[i] == '\r' && text[i + 1] == '\n' ? 2 : 1;
-					lines.Add(i);
+					var inc = text.Length > i + 1 && text[i] == '\r' && text[i + 1] == '\n' ? 2 : 1;
+					if (char.IsWhiteSpace(text[i]))
+					{
+						lines.Add(i + inc);
+					}
+
+					i += inc;
 				}
 
 				if (lines.Count == 0 || lines[^1] != text.Length)
