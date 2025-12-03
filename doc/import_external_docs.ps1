@@ -10,17 +10,17 @@ Set-PSDebug -Trace 1
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
     "uno.wasm.bootstrap" = @{ ref="3b707687f10ffd3b93dbeff3a867c23d250ae3ca" } #latest release/stable/10.0 branch commit
-    "uno.themes"         = @{ ref="6dbbe45ef852fabeff2c41d134cbde6f2ef6bc96" } #latest release/stable/6.0 branch commit
-    "uno.toolkit.ui"     = @{ ref="915bf060ea6f059b7b48aeb0c052b021855b732a" } #latest release/stable/8.3 branch commit
+    "uno.themes"         = @{ ref="25d5ed1b611e433912fffbd7be68c69af737e5dd" } #latest release/stable/6.0 branch commit
+    "uno.toolkit.ui"     = @{ ref="8ff0d5ca9fb373cf4e460debd0129682dd3869cd" } #latest release/stable/8.3 branch commit
     "uno.check"          = @{ ref="0fabc47c022c7eb86b1c4760441780ff3638b06e" } #latest release/stable/1.33 branch commit
     "uno.xamlmerge.task" = @{ ref="377ce2d9fdeab0d4f0b94a61e008731a40b10220" } #latest release/stable/1.33 branch commit
     "figma-docs"         = @{ ref="842a2792282b88586a337381b2b3786e779973b4" } #latest main commit
     "uno.resizetizer"    = @{ ref="e051343230e86d2e4ebc5e1840e530dd4fc9a4da" } #latest main commit
     "uno.uitest"         = @{ ref="94d027295b779e28064aebf99aeaee2b393ad558" } #latest master commit
-    "uno.extensions"     = @{ ref="4e253164e577a014152d94f239cb81de284441a9" } #latest release/stable/7.0 branch commit
+    "uno.extensions"     = @{ ref="9761c4acdf766fef6f6e1ba76d73795a9d263743" } #latest release/stable/7.0 branch commit
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" } #latest master commit
     "uno.samples"        = @{ ref="8098a452951c9f73cbcf8d0ac1348f029820e53a" } #latest master commit
-    "uno.chefs"          = @{ ref="af0a0c928337688c5ed3e87c3389a1cfdad46933" } #latest main commit
+    "uno.chefs"          = @{ ref="16a62fdd6950a2f89fe0f94dc5cc67207cab9c4a" } #latest main commit
     "hd-docs"            = @{ ref="ded00dc100ae7dcba4a78fd32d393a58c1d1f23e"; dest="studio/Hot Design" } #latest main commit
 }
 
