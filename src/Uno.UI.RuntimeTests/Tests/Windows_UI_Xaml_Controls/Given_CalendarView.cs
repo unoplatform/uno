@@ -308,26 +308,26 @@ public class Given_CalendarView
 	[TestMethod]
 	public async Task When_Spanish_Language()
 	{
-		var calendarView = new CalendarView();
+		var calendarView = new CalendarView()
+		{
+			Language = "es-ES"
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
 		TestServices.WindowHelper.WindowContent = calendarView;
 		await TestServices.WindowHelper.WaitForLoaded(calendarView);
-		calendarView.Language = "es-ES";
-		await TestServices.WindowHelper.WaitForIdle();
-		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
-		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual("enero de 2024", calendarView.TemplateSettings.HeaderText);
 	}
 
 	[TestMethod]
 	public async Task When_English_Language()
 	{
-		var calendarView = new CalendarView();
+		var calendarView = new CalendarView()
+		{
+			Language = "en-US"
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
 		TestServices.WindowHelper.WindowContent = calendarView;
 		await TestServices.WindowHelper.WaitForLoaded(calendarView);
-		calendarView.Language = "en"; //default culture usually is en
-		await TestServices.WindowHelper.WaitForIdle();
-		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
-		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual("January 2024", calendarView.TemplateSettings.HeaderText);
 	}
 }

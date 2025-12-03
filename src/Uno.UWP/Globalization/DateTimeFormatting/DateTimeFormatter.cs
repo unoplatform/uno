@@ -802,7 +802,7 @@ public sealed partial class DateTimeFormatter
 				return string.Empty;
 			}
 
-			char singleQuoteChar = '\'';
+			const char singleQuoteChar = '\'';
 			var builder = new StringBuilder();
 			int i = 0;
 			int len = str.Length;
@@ -844,17 +844,16 @@ public sealed partial class DateTimeFormatter
 				}
 				else
 				{
-					char lastChar = currentChar;
 					int count = 1;
 					i++;
 
-					while (i < len && str[i] == lastChar && str[i] != '\'')
+					while (i < len && str[i] == currentChar)
 					{
 						count++;
 						i++;
 					}
 
-					AddToBuilder(builder, lastChar, count);
+					AddToBuilder(builder, currentChar, count);
 				}
 			}
 
