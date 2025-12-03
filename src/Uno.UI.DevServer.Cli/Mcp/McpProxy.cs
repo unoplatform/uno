@@ -237,6 +237,8 @@ internal class McpProxy
 
 		_mcpClientProxy.RegisterToolListChangedCallback(async () =>
 		{
+			_logger.LogTrace("Upstream tool list changed");
+
 			tcs.TrySetResult();
 
 			await host.Services.GetRequiredService<McpServer>().SendNotificationAsync(

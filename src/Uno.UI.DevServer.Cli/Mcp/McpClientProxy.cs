@@ -80,6 +80,17 @@ internal class McpClientProxy
 			log.LogInformation("Connecting to upstream MCP at {Url}", url);
 			var client = await McpClient.CreateAsync(clientTransport, options, cancellationToken: ct);
 			log.LogInformation("Connected to upstream: {Name} {Version}", client.ServerInfo.Name, client.ServerInfo.Version);
+
+			var tools = await client.ListToolsAsync(cancellationToken: ct);
+
+			if (tools?.Count != 0)
+			{
+				log.LogTrace("Upstream MCP responded with {Count} tools", tools?.Count);
+
+				// We already have a list, raise now.
+				_toolListChanged?.Invoke();
+			}
+
 			return client;
 		}
 		catch (Exception ex)
