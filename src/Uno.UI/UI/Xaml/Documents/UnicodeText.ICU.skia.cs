@@ -33,6 +33,11 @@ internal readonly partial struct UnicodeText
 					throw new Exception("Failed to load libicuuc.");
 				}
 			}
+			else if (OperatingSystem.IsIOS())
+			{
+				_icuVersion = 77;
+				libicuuc = IntPtr.Zero;
+			}
 			else if (OperatingSystem.IsLinux() || OperatingSystem.IsAndroid() || OperatingSystem.IsMacOS())
 			{
 				// On Linux and Android, we get the ICU binaries from the dynamic linker search path
@@ -109,7 +114,17 @@ internal readonly partial struct UnicodeText
 		{
 			if (!_lookupCache.TryGetValue(typeof(T), out var value))
 			{
-				if (NativeLibrary.TryGetExport(_libicuuc, typeof(T).Name, out var func))
+				if (OperatingSystem.IsIOS())
+				{
+					var methodName = typeof(T).Name + "_" + _icuVersion;
+					var method = typeof(IOSICUSymbols).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+					if (method is null)
+					{
+						throw new InvalidOperationException($"Failed to find {typeof(T).Name} in {nameof(IOSICUSymbols)}.");
+					}
+					value = Delegate.CreateDelegate(typeof(T), method);
+				}
+				else if (NativeLibrary.TryGetExport(_libicuuc, typeof(T).Name, out var func))
 				{
 					value = Marshal.GetDelegateForFunctionPointer<T>(func)!;
 				}
@@ -238,6 +253,45 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("__Internal")]
 			static extern void u_versionToString();
+		}
+
+		private static class IOSICUSymbols
+		{
+			[DllImport("__Internal")]
+			static extern IntPtr ubidi_open_77();
+
+			[DllImport("__Internal")]
+			static extern void ubidi_close_77(IntPtr pBiDi);
+
+			[DllImport("__Internal")]
+			static extern void ubidi_setPara_77(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
+
+			[DllImport("__Internal")]
+			static extern void ubidi_getLogicalRun_77(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
+
+			[DllImport("__Internal")]
+			static extern int ubidi_countRuns_77(IntPtr pBiDI, out int errorCode);
+
+			[DllImport("__Internal")]
+			static extern int ubidi_getVisualRun_77(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+
+			[DllImport("__Internal")]
+			static extern IntPtr ubrk_open_77(int type, IntPtr locale, IntPtr text, int textLength, out int status);
+
+			[DllImport("__Internal")]
+			static extern IntPtr ubrk_close_77(IntPtr bi);
+
+			[DllImport("__Internal")]
+			static extern int ubrk_first_77(IntPtr bi);
+
+			[DllImport("__Internal")]
+			static extern int ubrk_next_77(IntPtr bi);
+
+			[DllImport("__Internal")]
+			static extern void u_getVersion_77(out UVersionInfo versionInfo);
+
+			[DllImport("__Internal")]
+			static extern void u_versionToString_77(IntPtr versionArray, IntPtr versionString);
 		}
 	}
 }
