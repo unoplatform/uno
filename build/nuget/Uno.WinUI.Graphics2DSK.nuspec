@@ -59,20 +59,20 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
-        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0" />
-        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0" />
+        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.Crossruntime\net9.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0" />
+        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.Crossruntime\net10.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0" />
 
-        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-windows10.0.19041.0" />
+        <file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.Windows\net9.0-windows10.0.19041.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-windows10.0.19041.0" />
 
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-android\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-android" />
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-ios18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-ios18.0" />
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-tvos18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-tvos18.0" />
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net9.0-maccatalyst18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-maccatalyst18.0" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.netcoremobile\net9.0-android\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-android" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.netcoremobile\net9.0-ios18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-ios18.0" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.netcoremobile\net9.0-tvos18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-tvos18.0" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.netcoremobile\net9.0-maccatalyst18.0\Uno.WinUI.Graphics2DSK.*" target="lib\net9.0-maccatalyst18.0" />
 
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0-android\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-android" />
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0-ios26.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-ios26.0" />
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0-tvos26.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-tvos26.0" />
-		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\net10.0-maccatalyst26.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-maccatalyst26.0" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.netcoremobile\net10.0-android\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-android" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.netcoremobile\net10.0-ios26.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-ios26.0" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.netcoremobile\net10.0-tvos26.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-tvos26.0" />
+		<file src="..\..\src\AddIns\Uno.WinUI.Graphics2DSK\bin\Release\Uno.WinUI.Graphics2DSK.netcoremobile\net10.0-maccatalyst26.0\Uno.WinUI.Graphics2DSK.*" target="lib\net10.0-maccatalyst26.0" />
 	</files>
 
 </package>
