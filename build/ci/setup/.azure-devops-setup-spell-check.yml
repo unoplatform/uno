@@ -1,36 +1,4 @@
 steps:
-- bash: |
-    set -euo pipefail
-
-    TARGET_REF="${SYSTEM_PULLREQUEST_TARGETBRANCH:-}"
-    BASE=""
-
-    if [ -n "$TARGET_REF" ]; then
-      echo "Fetching $TARGET_REF for diff..."
-      git fetch origin "$TARGET_REF" --depth=1
-      BASE="FETCH_HEAD"
-    else
-      BASE="$(git rev-parse HEAD^ 2>/dev/null || echo '')"
-    fi
-
-    if [ -z "$BASE" ]; then
-      echo "Unable to determine base commit; running spell check by default."
-      echo "##vso[task.setvariable variable=DocChangesDetected]true"
-      exit 0
-    fi
-
-    CHANGED_FILES=$(git diff --name-only "$BASE" HEAD | grep -E '^(doc/|README|README\\.md|README\\.rst|.*\\.md$|.*\\.mdx$|.*\\.markdown$|.*\\.yml$|.*\\.yaml$)' || true)
-
-    if [ -n "$CHANGED_FILES" ]; then
-      echo "Documentation-related changes detected:"
-      echo "$CHANGED_FILES"
-      echo "##vso[task.setvariable variable=DocChangesDetected]true"
-    else
-      echo "No documentation changes detected; skipping spell check."
-      echo "##vso[task.setvariable variable=DocChangesDetected]false"
-    fi
-  displayName: Detect documentation changes
-
 - task: Cache@2
   displayName: Cache npm (cspell)
   inputs:
