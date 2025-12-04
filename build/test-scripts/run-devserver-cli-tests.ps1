@@ -178,7 +178,7 @@ Begin now.
 
     Set-Content -Path $instructionsFile -Value $instructions -Encoding utf8
 
-    $model = if (-not [string]::IsNullOrWhiteSpace($env:CODEX_MODEL)) { $env:CODEX_MODEL } else { "gpt-5.1-mini" }
+    $model = if (-not [string]::IsNullOrWhiteSpace($env:CODEX_MODEL)) { $env:CODEX_MODEL } else { "gpt-5-mini" }
 
     Write-Log "Invoking Codex CLI to enumerate MCP tools."
     $codexArgs = @(
@@ -289,6 +289,9 @@ function Setup-UnoStudioLicenses {
             Write-Warning "Failed to write UNO_STUDIO_LICENSES_BIN to $licensesPath : $_"
         }
     }
+    else {
+        Write-Log "UNO_STUDIO_LICENSES_BIN environment variable not set. Skipping license setup."
+    }
 
     if ($env:UNO_STUDIO_USER_JSON) {
         $userJsonPath = Join-Path $unoDir 'user.json'
@@ -299,6 +302,9 @@ function Setup-UnoStudioLicenses {
         catch {
             Write-Warning "Failed to write UNO_STUDIO_USER_JSON to $userJsonPath : $_"
         }
+    }
+    else {
+        Write-Log "UNO_STUDIO_USER_JSON environment variable not set. Skipping user.json setup."
     }
 
     return $unoDir
