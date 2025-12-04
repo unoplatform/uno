@@ -10,6 +10,7 @@ $scopeVariables = [ordered]@{
     RequireNativeIos     = $false
     RequireNativeWasm    = $false
     SkiaScreenshots      = $false
+    ScreenshotsRequired  = $false
 }
 
 $patterns = @{
@@ -86,5 +87,7 @@ foreach ($file in $changedFiles) {
         }
     }
 }
+
+$scopeVariables['ScreenshotsRequired'] = $scopeVariables.RequireNativeAndroid -or $scopeVariables.RequireNativeIos -or $scopeVariables.RequireNativeWasm -or $scopeVariables.SkiaScreenshots
 
 Publish-TestScopes -Values $scopeVariables
