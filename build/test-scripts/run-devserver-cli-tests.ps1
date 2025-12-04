@@ -164,7 +164,7 @@ function Invoke-CodexToolEnumerationTest {
 You are running inside an automated CI validation for the Uno Platform devserver CLI.
 
 Tasks:
-1. Run /mcp exactly once to list every MCP tool available to you.
+1. Create a list of all MCP tools available to you
 2. Create or overwrite a JSON file named '$toolsFileName' in the current working directory.
     The JSON must be an object that contains a property ``"tools"`` whose value is an alphabetically sorted array listing every tool identifier you discovered.
 3. Confirm completion and exit when finished.
