@@ -18,6 +18,9 @@ jobs:
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
+    # Disable analyzers for eligible projects in tests to improve performance
+    UnoDisableAnalyzersInSamples: 'true'
+
   steps:
   - checkout: self
     clean: true
