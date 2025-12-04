@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Android.Content.Res;
 using Android.OS;
 using Uno.UI.Extensions;
@@ -22,7 +23,7 @@ public partial class Application
 		PermissionsHelper.Initialize();
 	}
 
-	static partial Task StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback)
+	static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback)
 	{
 		return callback(new ApplicationInitializationCallbackParams());
 	}

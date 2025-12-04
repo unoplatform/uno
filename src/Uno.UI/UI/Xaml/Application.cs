@@ -357,7 +357,7 @@ namespace Microsoft.UI.Xaml
 			StartPartial(callback);
 		}
 
-		static partial void StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
+		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
 
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 

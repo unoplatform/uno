@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
-		static partial Task StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback)
+		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback)
 		{
 			return callback(new ApplicationInitializationCallbackParams());
 		}
