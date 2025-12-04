@@ -806,12 +806,20 @@ public sealed partial class DateTimeFormatter
 
 			foreach (var part in IsWithinSingleQuotesRegex().Split(str))
 			{
-				// add quoted literal as is, without the quotes
-				if (part.StartsWith('\''))
+				// skip empty block
+				if (part.Length == 0)
 				{
-					builder.Append(part[1..^1]);
+					continue;
 				}
-				// for non-quoted parts, further segment them by continous character
+				// add quoted literal as is, without the quotes
+				else if (part.StartsWith('\''))
+				{
+					if (part.Length > 2)
+					{
+						builder.Append(part[1..^1]);
+					}
+				}
+				// for non-quoted parts, further segment them by grouping repeated character(s)
 				else
 				{
 					foreach (var segment in DateTimeFormatPartsRegex().EnumerateMatches(part))
@@ -820,6 +828,7 @@ public sealed partial class DateTimeFormatter
 					}
 				}
 			}
+
 			return builder.ToString();
 		}
 	}
