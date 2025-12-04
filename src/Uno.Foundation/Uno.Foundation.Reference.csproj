@@ -17,7 +17,7 @@
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<CommonOverridePackageId>Uno.Foundation</CommonOverridePackageId>
 		<IsAotCompatible>true</IsAotCompatible>
 	</PropertyGroup>
 
