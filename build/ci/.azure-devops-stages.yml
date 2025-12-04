@@ -66,6 +66,10 @@ stages:
       env:
         SYSTEM_COLLECTIONURI: $(System.CollectionUri)
 
+- template: setup/.azure-devops-master-health.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - stage: binaries_build_native_macos
   displayName: Build - Native Binaries
   dependsOn:
