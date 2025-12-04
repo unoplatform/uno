@@ -39,33 +39,6 @@ stages:
         pwsh: true
         filePath: build/ci/scripts/determine-test-scope.ps1
 
-- stage: master_health
-  displayName: Validate Master Health
-  dependsOn:
-    - Setup
-
-  jobs:
-  - job: MasterHealth
-    displayName: Check Master Build Status
-
-    pool:
-      vmImage: $(linuxVMImage)
-
-    steps:
-    - checkout: self
-      clean: false
-
-    - task: PowerShell@2
-      inputs:
-        pwsh: true
-        filePath: build/ci/scripts/check-master-status.ps1
-        arguments: >
-          -Project "$(System.TeamProject)"
-          -DefinitionId "$(System.DefinitionId)"
-        condition: eq(variables['Build.Reason'], 'PullRequest')
-      env:
-        SYSTEM_COLLECTIONURI: $(System.CollectionUri)
-
 - template: setup/.azure-devops-master-health.yml
   parameters:
     vmImage: '$(linuxVMImage)'
