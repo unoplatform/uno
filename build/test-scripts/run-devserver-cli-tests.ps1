@@ -375,12 +375,12 @@ try {
 
     & dotnet uno-devserver stop
 
-    $openApiToken = $env:OPENAPI_TOKEN
+    $openApiToken = $env:CODEX_API_KEY
     if ([string]::IsNullOrWhiteSpace($openApiToken)) {
-        Write-Log "OPENAPI_TOKEN not provided. Skipping Codex MCP integration test."
+        Write-Log "CODEX_API_KEY not provided. Skipping Codex MCP integration test."
     }
     else {
-        Write-Log "OPENAPI_TOKEN detected. Starting Codex MCP integration test."
+        Write-Log "CODEX_API_KEY detected. Starting Codex MCP integration test."
         if (Ensure-CodexCli) {
             Register-UnoCodexMcps -WorkingDirectory $slnDir
             Invoke-CodexToolEnumerationTest -WorkingDirectory $slnDir
