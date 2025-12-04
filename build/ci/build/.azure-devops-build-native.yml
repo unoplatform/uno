@@ -60,10 +60,15 @@ jobs:
 
   - bash: |
       export CCACHE_DIR="${HOME}/Library/Caches/ccache"
-      export CC="ccache clang"
-      export CXX="ccache clang++"
-      export CMAKE_C_COMPILER="$CC"
-      export CMAKE_CXX_COMPILER="$CXX"
+      CCACHE_BIN="$(which ccache)"
+      if [ -z "$CCACHE_BIN" ]; then
+        echo "ccache binary not found"
+        exit 1
+      fi
+      export CC=clang
+      export CXX=clang++
+      export CMAKE_C_COMPILER_LAUNCHER="$CCACHE_BIN"
+      export CMAKE_CXX_COMPILER_LAUNCHER="$CCACHE_BIN"
       cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
       chmod +x build.sh
       ./build.sh
