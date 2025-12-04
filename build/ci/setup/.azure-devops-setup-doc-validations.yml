@@ -32,5 +32,5 @@ steps:
     fi
   displayName: Detect documentation changes
 
-- template: setup/.azure-devops-setup-spell-check.yml
-- template: setup/.azure-devops-setup-markdown-lint.yml
+- template: .azure-devops-setup-spell-check.yml
+- template: .azure-devops-setup-markdown-lint.yml
