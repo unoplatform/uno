@@ -140,4 +140,5 @@
 
 	<Import Project="MixinGeneration.targets" />
 
+	<Target Name="GetTargetPath" />
 </Project>
