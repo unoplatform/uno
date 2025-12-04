@@ -413,8 +413,6 @@ try {
 
     Setup-UnoStudioLicenses -WorkDirectory $workDir
 
-    Prime-RemoteControlHost -SolutionPath "$env:BUILD_SOURCESDIRECTORY/src/SolutionTemplate/5.6/uno56netcurrent/uno56netcurrent.sln" -Port 48718
-
     Set-Location $slnDir
 
     # Default port
@@ -458,6 +456,8 @@ try {
     Write-Log "Devserver HTTP port $port is open at $DevServerBaseUrl"
 
     & dotnet uno-devserver stop
+
+    Prime-RemoteControlHost -SolutionPath "$env:BUILD_SOURCESDIRECTORY/src/SolutionTemplate/5.6/uno56netcurrent/uno56netcurrent.sln" -Port 48718
 
     $openApiToken = $env:CODEX_API_KEY
     if ([string]::IsNullOrWhiteSpace($openApiToken)) {
