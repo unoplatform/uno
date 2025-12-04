@@ -47,6 +47,9 @@ partial class Window
 	private Brush? _background;
 	private WindowType _windowType;
 
+	// Window-local storage to detect secondary ALC content
+	private object? _alcLocalContent;
+
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
 	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
@@ -172,13 +175,23 @@ partial class Window
 	/// </summary>
 	public UIElement? Content
 	{
-		get => _windowImplementation.Content;
+		get
+		{
+			if (IsContentFromSecondaryAlc(_alcLocalContent))
+			{
+				return ContentHostOverride?.Content as UIElement;
+			}
+
+			return _windowImplementation.Content;
+		}
+
 		set
 		{
 			if (IsContentFromSecondaryAlc(value) && ContentHostOverride is { } host)
 			{
 				// We're in a secondary ALC, redirect to the host override
 				host.Content = value;
+				_alcLocalContent = value;
 			}
 			else
 			{
@@ -188,13 +201,13 @@ partial class Window
 		}
 	}
 
-	/// Gets or sets an internal <c>static</c> content host override for scenarios like secondary AssemblyLoadContext (ALC) hosting.
-	/// <para>
-	/// <strong>Global effect:</strong> This property is <c>static</c> and affects all <see cref="Window"/> instances in the application.
-	/// <strong>Thread safety:</strong> This property is <c>not thread-safe</c>; it should be set during application startup, before creating any secondary ALC applications.
-	/// <strong>Usage:</strong> When set, <see cref="Window.Content"/> from secondary ALCs will redirect to this <see cref="ContentControl"/>.
-	/// </para>
-	internal static ContentControl? ContentHostOverride { get; set; }
+    /// Gets or sets an internal <c>static</c> content host override for scenarios like secondary AssemblyLoadContext (ALC) hosting.
+    /// <para>
+    /// <strong>Global effect:</strong> This property is <c>static</c> and affects all <see cref="Window"/> instances in the application.
+    /// <strong>Thread safety:</strong> This property is <c>not thread-safe</c>; it should be set during application startup, before creating any secondary ALC applications.
+    /// <strong>Usage:</strong> When set, <see cref="Window.Content"/> from secondary ALCs will redirect to this <see cref="ContentControl"/>.
+    /// </para>
+    internal static ContentControl? ContentHostOverride { get; set; }
 
 	/// <summary>
 	/// Gets the window of the current thread.
@@ -381,7 +394,7 @@ partial class Window
 	/// Checks if the given content element is from a secondary AssemblyLoadContext.
 	/// When value is null, returns false to allow clearing content.
 	/// </summary>
-	private bool IsContentFromSecondaryAlc(UIElement? value)
+	private bool IsContentFromSecondaryAlc(object? value)
 	{
 		// Explicitly handle null: a null assignment should clear content, not be detected as secondary ALC
 		if (value == null)

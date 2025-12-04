@@ -140,24 +140,35 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
 
+	private static bool _isRunning;
+
 	protected override Task RunLoop()
 	{
 		Win32EventLoop.Schedule(() => Application.Start(_ =>
 		{
 			var app = _appBuilder();
 			app.Host = this;
+
+			return app;
 		}), NativeDispatcherPriority.Normal);
 
-		// This will keep running until the event loop has no queued actions left and all the windows are closed
-		while (true)
+		if (!_isRunning)
 		{
-			Win32EventLoop.RunOnce();
+			_isRunning = true;
 
-			if (_allWindowsClosed && !Win32EventLoop.HasMessages())
+			// This will keep running until the event loop has no queued actions left and all the windows are closed
+			while (true)
 			{
-				return Task.CompletedTask;
+				Win32EventLoop.RunOnce();
+
+				if (_allWindowsClosed && !Win32EventLoop.HasMessages())
+				{
+					return Task.CompletedTask;
+				}
 			}
 		}
+
+		return Task.CompletedTask;
 	}
 
 	internal static void RegisterWindow(HWND hwnd)
