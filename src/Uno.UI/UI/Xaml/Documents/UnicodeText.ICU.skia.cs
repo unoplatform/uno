@@ -116,6 +116,9 @@ internal readonly partial struct UnicodeText
 			{
 				if (OperatingSystem.IsIOS())
 				{
+					// iOS doesn't support NativeLibrary.TryGetExport so we have to make DllImport declarations to
+					// the exact symbol names at compile times (even DllImport.EntryPoint doesn't work) and do the
+					// method mapping by reflection.
 					var methodName = typeof(T).Name + "_" + _icuVersion;
 					var method = typeof(IOSICUSymbols).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
 					if (method is null)
