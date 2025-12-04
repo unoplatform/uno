@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml
 			return 0;
 		}
 
-		static async partial void StartPartial(ApplicationInitializationCallback callback)
+		static async partial void StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback)
 		{
 			try
 			{
@@ -94,7 +94,7 @@ namespace Microsoft.UI.Xaml
 
 				_ = global::Windows.Storage.ApplicationData.Current.EnablePersistenceAsync();
 
-				callback(new ApplicationInitializationCallbackParams());
+				return callback(new ApplicationInitializationCallbackParams());
 			}
 			catch (Exception exception)
 			{
@@ -102,6 +102,8 @@ namespace Microsoft.UI.Xaml
 				{
 					typeof(Application).Log().LogError("Application initialization failed.", exception);
 				}
+
+				return null;
 			}
 		}
 
