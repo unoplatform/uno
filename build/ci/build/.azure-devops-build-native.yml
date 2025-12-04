@@ -31,9 +31,39 @@ jobs:
   - template: ../templates/dotnet-install.yml
 
   - bash: |
+      set -euo pipefail
+      if ! command -v ccache >/dev/null 2>&1; then
+        echo "Installing ccache..."
+        brew install ccache
+      else
+        echo "ccache already installed"
+      fi
+      mkdir -p "$HOME/Library/Caches/ccache"
+    displayName: Ensure ccache is installed
+
+  - bash: |
+      set -euo pipefail
+      ACTIVE_XCODE=$(xcode-select -p)
+      echo "Active Xcode path: $ACTIVE_XCODE"
+      echo "##vso[task.setvariable variable=ActiveXcodePath]$ACTIVE_XCODE"
+    displayName: Detect active Xcode path
+
+  - task: Cache@2
+    displayName: Cache ccache objects
+    inputs:
+      key: macos-skia-native | ccache | $(Agent.OS) | $(ActiveXcodePath)
+      path: $(HOME)/Library/Caches/ccache
+
+  - bash: |
+      export CCACHE_DIR="${HOME}/Library/Caches/ccache"
+      export CC="ccache clang"
+      export CXX="ccache clang++"
+      export CMAKE_C_COMPILER="$CC"
+      export CMAKE_CXX_COMPILER="$CXX"
       cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
       chmod +x build.sh
       ./build.sh
+      ccache -s || true
     displayName: Build Skia macOS native
 
   - task: PublishPipelineArtifact@1
