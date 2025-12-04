@@ -25,6 +25,13 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    sparseCheckout: |
+      src/Uno.UI.Runtime.Skia.MacOS/**
+      build/**
+      Directory.Build.props
+      global.json
+      NuGet.Config
+      README.md
 
   - template: ../templates/gitversion.yml
   
