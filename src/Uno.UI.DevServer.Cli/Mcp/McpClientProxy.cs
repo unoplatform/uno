@@ -83,10 +83,10 @@ internal class McpClientProxy
 
 			var tools = await client.ListToolsAsync(cancellationToken: ct);
 
+			log.LogTrace("Upstream MCP responded with {Count} tools", tools?.Count);
+
 			if (tools?.Count != 0)
 			{
-				log.LogTrace("Upstream MCP responded with {Count} tools", tools?.Count);
-
 				// We already have a list, raise now.
 				_toolListChanged?.Invoke();
 			}
