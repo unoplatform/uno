@@ -25,7 +25,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
-    sparseCheckout: |
+    sparseCheckoutPatterns: |
       src/Uno.UI.Runtime.Skia.MacOS/**
       build/**
       Directory.Build.props
