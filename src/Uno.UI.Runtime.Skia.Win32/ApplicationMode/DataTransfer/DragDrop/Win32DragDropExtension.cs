@@ -36,6 +36,9 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 	private readonly CoreDragDropManager _coreDragDropManager;
 	private readonly HWND _hwnd;
 	private readonly ComScope<IDropTarget> _dropTarget;
+	
+	// Track async capability for the current drag operation
+	private IDataObjectAsyncCapability? _currentAsyncCapability;
 
 	public unsafe Win32DragDropExtension(DragDropManager manager)
 	{
@@ -75,6 +78,25 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 	unsafe HRESULT IDropTarget.Interface.DragEnter(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
 	{
 		Debug.Assert(_manager is not null && _coreDragDropManager is not null);
+
+		// Check for async capability support
+		_currentAsyncCapability = null;
+		var supportsAsync = DataObjectAsyncCapabilityHelper.TryGetAsyncCapability(dataObject, out _currentAsyncCapability);
+
+		if (supportsAsync && _currentAsyncCapability != null)
+		{
+			// Enable async mode for delayed content
+			if (DataObjectAsyncCapabilityHelper.SetAsyncMode(_currentAsyncCapability, true))
+			{
+				this.Log().Debug("Async mode enabled for data object");
+				
+				// Start the async operation
+				if (DataObjectAsyncCapabilityHelper.StartOperation(_currentAsyncCapability))
+				{
+					this.Log().Debug("Async operation started");
+				}
+			}
+		}
 
 		IEnumFORMATETC* enumFormatEtc;
 		var hResult = dataObject->EnumFormatEtc((uint)DATADIR.DATADIR_GET, &enumFormatEtc);
@@ -187,6 +209,14 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 		_manager.ProcessAborted(_fakePointerId);
 
+		// Check if we have a stored async capability and end the operation as cancelled
+		if (_currentAsyncCapability != null)
+		{
+			DataObjectAsyncCapabilityHelper.EndOperation(_currentAsyncCapability, (HRESULT)unchecked((int)0x80004004), 0); // E_ABORT
+			this.Log().Debug("Async operation cancelled");
+			_currentAsyncCapability = null;
+		}
+
 		return HRESULT.S_OK;
 	}
 
@@ -200,7 +230,17 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {position}");
 
-		*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
+		var operation = _manager.ProcessReleased(src);
+		*pdwEffect = (DROPEFFECT)operation;
+
+		// Check if we have a stored async capability and end the operation
+		if (_currentAsyncCapability != null)
+		{
+			// End the async operation with the result
+			DataObjectAsyncCapabilityHelper.EndOperation(_currentAsyncCapability, HRESULT.S_OK, (uint)operation);
+			this.Log().Debug("Async operation ended successfully");
+			_currentAsyncCapability = null;
+		}
 
 		return HRESULT.S_OK;
 	}
@@ -219,7 +259,6 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 			// Try to get the DIB data directly
 			var hResult = dataObject->GetData(dibFormat, out STGMEDIUM dibMedium);
 			if (hResult.Succeeded && dibMedium.tymed == TYMED.TYMED_HGLOBAL && dibMedium.u.hGlobal != IntPtr.Zero)
-			{
 				try
 				{
 					var unoImage = ConvertDibToUnoBitmapImage(dibMedium.u.hGlobal);
@@ -242,7 +281,6 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 				{
 					PInvoke.ReleaseStgMedium(&dibMedium);
 				}
-			}
 		}
 
 		// Check if we have file drop format
@@ -253,7 +291,6 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 			// Try to get the HDROP data directly
 			var hResult = dataObject->GetData(hdropFormat, out STGMEDIUM hdropMedium);
 			if (hResult.Succeeded && hdropMedium.u.hGlobal != IntPtr.Zero)
-			{
 				try
 				{
 					var filePaths = ExtractFilePathsFromHDrop(hdropMedium.u.hGlobal);
@@ -284,7 +321,6 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 				{
 					PInvoke.ReleaseStgMedium(&hdropMedium);
 				}
-			}
 		}
 
 		return dragUI;
