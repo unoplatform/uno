@@ -35,6 +35,10 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 	private readonly HWND _hwnd;
 	private readonly ComScope<IDropTarget> _dropTarget;
 
+	// Store the data object and original FORMATETC temporarily during drag operation
+	private unsafe IDataObject* _currentDataObject;
+	private FORMATETC? _hdropFormatEtc;
+
 	public unsafe Win32DragDropExtension(DragDropManager manager)
 	{
 		var host = XamlRootMap.GetHostForRoot(manager.ContentRoot.GetOrCreateXamlRoot()) as Win32WindowWrapper ?? throw new InvalidOperationException($"Couldn't find an {nameof(Win32WindowWrapper)} instance associated with this {nameof(XamlRoot)}.");
@@ -74,6 +78,9 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 	{
 		Debug.Assert(_manager is not null && _coreDragDropManager is not null);
 
+		// Store the data object for later use in Drop event
+		_currentDataObject = dataObject;
+
 		IEnumFORMATETC* enumFormatEtc;
 		var hResult = dataObject->EnumFormatEtc((uint)DATADIR.DATADIR_GET, &enumFormatEtc);
 		if (hResult.Failed)
@@ -99,6 +106,24 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 		var src = new DragEventSource(scaledDragPoint, keyState);
 
 		var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
+
+		// Log all available formats with their names for debugging
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {nativeDragPoint}, found {fetchedFormatCount} formats:\n";
+			foreach (var format in formats)
+			{
+				var formatName = GetClipboardFormatName(format.cfFormat);
+
+				// Check if data is actually available
+				var queryResult = dataObject->QueryGetData(&format);
+				var available = queryResult.Succeeded ? "Available" : $"Not Available ({Win32Helper.GetErrorMessage(queryResult)})";
+
+				log += $"  - Format {format.cfFormat} ({formatName}), tymed: {(TYMED)format.tymed}, dwAspect: {format.dwAspect} - {available}\n";
+			}
+			this.Log().Debug(log);
+		}
+
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {nativeDragPoint}, formats: ";
@@ -111,76 +136,131 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 		var package = new DataPackage();
 
-		// Check if we have virtual files (e.g., Outlook attachments)
+		// Check if we have virtual files (e.g., classic Outlook attachments)
+		// Modern Outlook (Chromium-based) provides CF_HDROP directly, so we handle that in standard file handling
 		var hasVirtualFiles = VirtualFileHelper.ContainsVirtualFiles(dataObject);
 		if (hasVirtualFiles)
 		{
-			this.Log().LogInfo("Detected virtual files (e.g., Outlook attachments)");
+			this.Log().LogInfo("Detected virtual files (classic Outlook attachments)");
 
-			// For virtual files, we'll extract them asynchronously in the background
-			// and set a flag in the DataPackage to indicate this
-			_ = Task.Run(async () =>
+			try
 			{
-				try
+				// Extract virtual files synchronously
+				var files = VirtualFileHelper.ExtractVirtualFiles(dataObject);
+				if (files.Count > 0)
 				{
-					var files = await VirtualFileHelper.ExtractVirtualFilesAsync(dataObject);
-					if (files.Count > 0)
-					{
-						this.Log().LogInfo($"Successfully extracted {files.Count} virtual file(s)");
-
-						// Update the package with the extracted files
-						// Note: This is done asynchronously, so the drop might complete before this finishes
-						package.SetStorageItems(files);
-					}
+					this.Log().LogInfo($"Successfully extracted {files.Count} virtual file(s)");
+					package.SetStorageItems(files);
 				}
-				catch (Exception ex)
+				else
 				{
-					this.LogError()?.Error($"Failed to extract virtual files: {ex.Message}", ex);
+					this.Log().LogWarning("Virtual files detected but extraction returned 0 files");
 				}
-			});
-
-			// Set a placeholder to indicate files are being loaded
-			package.SetText("[Loading files...]");
+			}
+			catch (Exception ex)
+			{
+				this.LogError()?.Error($"Failed to extract virtual files: {ex.Message}", ex);
+			}
 		}
 		else
 		{
+			this.Log().LogDebug("No virtual files detected, checking for delayed rendering (data might be available in Drop event)");
+
 			// Standard file handling (existing code)
+			// Note: For Chromium-based Outlook, CF_HDROP data is not available until Drop event
 			var formatEtcList = formats.ToArray();
-			var formatList =
-				formatEtcList
-				.Where(static formatetc =>
-				{
-					if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
-					{
-						return false;
-					}
-					if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
-					{
-						typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
-						return false;
-					}
 
-					return true;
-				})
-				.Select(f => (CLIPBOARD_FORMAT)f.cfFormat)
-				.ToList();
-
-			var mediumsToDispose = new List<STGMEDIUM>();
-			using var mediumsDisposable = new DisposableStruct<List<STGMEDIUM>>(static list =>
+			// Check if CF_HDROP is available but will use delayed rendering
+			var hasCfHdrop = formatEtcList.Any(f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_HDROP);
+			if (hasCfHdrop)
 			{
-				foreach (var medium in list)
+				// Store the exact FORMATETC for CF_HDROP as announced by the source
+				_hdropFormatEtc = formatEtcList.First(f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_HDROP);
+
+				this.Log().LogInfo($"CF_HDROP format detected - tymed: {(TYMED)_hdropFormatEtc.Value.tymed}, dwAspect: {_hdropFormatEtc.Value.dwAspect}, lindex: {_hdropFormatEtc.Value.lindex}");
+
+				// Check if the data source supports asynchronous operations (Chromium-based apps)
+				if (AsyncDataHelper.SupportsAsyncOperation(dataObject))
 				{
-					PInvoke.ReleaseStgMedium(&medium);
+					this.Log().LogInfo("Data source supports asynchronous operations (Chromium/Outlook) - starting async operation");
+
+					// Start the async operation - this tells the source to begin rendering data
+					if (AsyncDataHelper.StartAsyncOperation(dataObject))
+					{
+						this.Log().LogInfo("Async operation started - data will be available in Drop event");
+					}
+					else
+					{
+						this.Log().LogWarning("Failed to start async operation - will retry in Drop event");
+					}
 				}
-			}, mediumsToDispose);
+				else
+				{
+					this.Log().LogInfo("Will retrieve file data in Drop event (delayed rendering)");
+				}
 
-			Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
+				// Don't try to get the data now, it will be available in Drop
+				// Just create an empty package, the real data will be retrieved on drop
+			}
+			else
 			{
-				var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
-				dataObject->GetData(formatEtc, out STGMEDIUM medium);
-				mediumsToDispose.Add(medium);
-				return medium.u.hGlobal;
-			});
+				// Process other formats that are immediately available
+				var formatList =
+					formatEtcList
+					.Where(static formatetc =>
+					{
+						if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
+						{
+							return false;
+						}
+						if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
+						{
+							typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
+							return false;
+						}
+
+						return true;
+					})
+					.Select(f => (CLIPBOARD_FORMAT)f.cfFormat)
+					.ToList();
+
+				if (formatList.Count > 0)
+				{
+					this.Log().LogDebug($"Processing {formatList.Count} standard formats: {string.Join(", ", formatList)}");
+				}
+
+				var mediumsToDispose = new List<STGMEDIUM>();
+				using var mediumsDisposable = new DisposableStruct<List<STGMEDIUM>>(static list =>
+				{
+					foreach (var medium in list)
+					{
+						PInvoke.ReleaseStgMedium(&medium);
+					}
+				}, mediumsToDispose);
+
+				Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
+				{
+					var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
+					var hr = dataObject->GetData(formatEtc, out STGMEDIUM medium);
+
+					if (hr.Failed)
+					{
+						this.Log().LogError($"GetData failed for format {format} ({GetClipboardFormatName((int)format)}): {Win32Helper.GetErrorMessage(hr)} (0x{hr.Value:X8})");
+						return default(HGLOBAL);
+					}
+
+					if (medium.tymed == TYMED.TYMED_NULL)
+					{
+						this.Log().LogWarning($"GetData returned TYMED_NULL for format {format} ({GetClipboardFormatName((int)format)})");
+						return default(HGLOBAL);
+					}
+
+					this.Log().LogDebug($"GetData succeeded for format {format} ({GetClipboardFormatName((int)format)}), tymed: {medium.tymed}");
+
+					mediumsToDispose.Add(medium);
+					return medium.u.hGlobal;
+				});
+			}
 		}
 
 		// Create DragUI for visual feedback during drag operation
@@ -193,6 +273,42 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 		*dropEffect = (DROPEFFECT)_manager.ProcessMoved(src);
 
 		return HRESULT.S_OK;
+	}
+
+	private static unsafe string GetClipboardFormatName(int format)
+	{
+		// Try to get the name of registered clipboard formats
+		const int bufferSize = 256;
+		var buffer = stackalloc char[bufferSize];
+		var length = PInvoke.GetClipboardFormatName((uint)format, buffer, bufferSize);
+
+		if (length > 0)
+		{
+			return new string(buffer, 0, (int)length);
+		}
+
+		// Return standard format names
+		return format switch
+		{
+			1 => "CF_TEXT",
+			2 => "CF_BITMAP",
+			3 => "CF_METAFILEPICT",
+			4 => "CF_SYLK",
+			5 => "CF_DIF",
+			6 => "CF_TIFF",
+			7 => "CF_OEMTEXT",
+			8 => "CF_DIB",
+			9 => "CF_PALETTE",
+			10 => "CF_PENDATA",
+			11 => "CF_RIFF",
+			12 => "CF_WAVE",
+			13 => "CF_UNICODETEXT",
+			14 => "CF_ENHMETAFILE",
+			15 => "CF_HDROP",
+			16 => "CF_LOCALE",
+			17 => "CF_DIBV5",
+			_ => $"Unknown({format})"
+		};
 	}
 
 	unsafe HRESULT IDropTarget.Interface.DragOver(MODIFIERKEYS_FLAGS keyState, POINTL nativePoint, DROPEFFECT* dropEffect)
@@ -221,9 +337,112 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 		GetDragPoint(nativePoint, out var nativeDragPoint, out var scaledDragPoint);
 		var src = new DragEventSource(scaledDragPoint, keyState);
 
-		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {nativeDragPoint}");
+		this.Log().LogDebug($"{nameof(IDropTarget.Interface.Drop)} @ {nativeDragPoint}");
 
+		// Try to extract file data with async operation support
+		if (_hdropFormatEtc.HasValue)
+		{
+			try
+			{
+				var hdropFormat = _hdropFormatEtc.Value;
+
+				this.Log().LogDebug($"Using stored CF_HDROP format - tymed: {(TYMED)hdropFormat.tymed}, dwAspect: {hdropFormat.dwAspect}, lindex: {hdropFormat.lindex}");
+
+				// Check if async operation is supported
+				if (AsyncDataHelper.SupportsAsyncOperation(dataObject))
+				{
+					this.Log().LogInfo("Waiting for async operation to complete...");
+
+					// Wait for the async operation to complete (with 5 second timeout)
+					if (AsyncDataHelper.WaitForAsyncCompletion(dataObject, 5000))
+					{
+						this.Log().LogInfo("Async operation completed successfully");
+					}
+					else
+					{
+						this.Log().LogWarning("Async operation did not complete in time");
+					}
+				}
+
+				var queryResult = dataObject->QueryGetData(&hdropFormat);
+				if (queryResult.Succeeded)
+				{
+					this.Log().LogDebug("CF_HDROP is available, attempting to retrieve file paths");
+
+					var hr = dataObject->GetData(hdropFormat, out STGMEDIUM medium);
+					if (hr.Succeeded && medium.tymed == TYMED.TYMED_HGLOBAL && medium.u.hGlobal != IntPtr.Zero)
+					{
+						this.Log().LogInfo("Successfully retrieved CF_HDROP data");
+
+						try
+						{
+							var filePaths = ExtractFilePathsFromHDrop(medium.u.hGlobal);
+							this.Log().LogInfo($"Extracted {filePaths.Count} file path(s): {string.Join(", ", filePaths)}");
+
+							if (filePaths.Count > 0)
+							{
+								var files = filePaths
+									.Where(System.IO.File.Exists)
+									.Select(path => Windows.Storage.StorageFile.GetFileFromPath(path) as Windows.Storage.IStorageItem)
+									.ToList();
+
+								if (files.Count > 0)
+								{
+									// Create a new data package with the files
+									var package = new DataPackage();
+									package.SetStorageItems(files);
+
+									// Update the core drag drop manager with the new data
+									var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*dropEffect), null);
+									_coreDragDropManager.DragStarted(info);
+
+									this.Log().LogInfo($"Successfully updated drag data with {files.Count} file(s) from async operation");
+								}
+							}
+						}
+						finally
+						{
+							PInvoke.ReleaseStgMedium(&medium);
+						}
+					}
+					else
+					{
+						this.Log().LogWarning($"GetData for CF_HDROP failed: {Win32Helper.GetErrorMessage(hr)} (0x{hr.Value:X8}), tymed: {medium.tymed}");
+					}
+				}
+				else
+				{
+					this.Log().LogWarning($"CF_HDROP not available: {Win32Helper.GetErrorMessage(queryResult)} (0x{queryResult.Value:X8})");
+				}
+
+				// Complete the async operation
+				if (AsyncDataHelper.SupportsAsyncOperation(dataObject))
+				{
+					AsyncDataHelper.CompleteAsyncOperation(dataObject, HRESULT.S_OK);
+				}
+			}
+			catch (Exception ex)
+			{
+				this.LogError()?.Error($"Error extracting files in Drop event: {ex.Message}", ex);
+
+				// Complete the async operation with error
+				if (AsyncDataHelper.SupportsAsyncOperation(dataObject))
+				{
+					AsyncDataHelper.CompleteAsyncOperation(dataObject, HRESULT.E_UNEXPECTED);
+				}
+			}
+		}
+		else
+		{
+			this.Log().LogDebug("No CF_HDROP format was stored from DragEnter");
+		}
+
+		// Process the drop
 		*dropEffect = (DROPEFFECT)_manager.ProcessReleased(src);
+
+		// Clear the stored data
+		_currentDataObject = null;
+		_hdropFormatEtc = null;
 
 		return HRESULT.S_OK;
 	}

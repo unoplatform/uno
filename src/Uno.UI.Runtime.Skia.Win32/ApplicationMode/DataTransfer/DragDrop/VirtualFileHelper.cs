@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -31,8 +30,11 @@ internal static unsafe class VirtualFileHelper
 		var fileDescriptorFormat = PInvoke.RegisterClipboardFormat(CFSTR_FILEDESCRIPTORW);
 		if (fileDescriptorFormat == 0)
 		{
+			typeof(VirtualFileHelper).Log().LogError("Failed to register FileGroupDescriptorW clipboard format");
 			return false;
 		}
+
+		typeof(VirtualFileHelper).Log().LogInfo($"Registered FileGroupDescriptorW format: {fileDescriptorFormat}");
 
 		var formatEtc = new FORMATETC
 		{
@@ -44,13 +46,29 @@ internal static unsafe class VirtualFileHelper
 		};
 
 		var result = dataObject->QueryGetData(&formatEtc);
+		
+		typeof(VirtualFileHelper).Log().LogInfo($"QueryGetData for FileGroupDescriptorW returned: {result} (0x{result.Value:X8})");
+
+		if (result.Failed)
+		{
+			// Try alternative format name (some apps might use different variant)
+			var altFormat = PInvoke.RegisterClipboardFormat("FileGroupDescriptor");
+			if (altFormat != 0)
+			{
+				typeof(VirtualFileHelper).Log().LogInfo($"Trying alternative FileGroupDescriptor format: {altFormat}");
+				formatEtc.cfFormat = (ushort)altFormat;
+				result = dataObject->QueryGetData(&formatEtc);
+				typeof(VirtualFileHelper).Log().LogInfo($"QueryGetData for FileGroupDescriptor returned: {result} (0x{result.Value:X8})");
+			}
+		}
+
 		return result.Succeeded;
 	}
 
 	/// <summary>
 	/// Extracts virtual files from the data object and saves them to temporary storage.
 	/// </summary>
-	public static async Task<List<IStorageFile>> ExtractVirtualFilesAsync(IDataObject* dataObject)
+	public static List<IStorageFile> ExtractVirtualFiles(IDataObject* dataObject)
 	{
 		var files = new List<IStorageFile>();
 
@@ -59,9 +77,11 @@ internal static unsafe class VirtualFileHelper
 
 		if (fileDescriptorFormat == 0 || fileContentsFormat == 0)
 		{
-			typeof(VirtualFileHelper).Log().LogError("Failed to register clipboard formats for virtual files");
+			typeof(VirtualFileHelper).Log().LogError($"Failed to register clipboard formats - FileGroupDescriptorW: {fileDescriptorFormat}, FileContents: {fileContentsFormat}");
 			return files;
 		}
+
+		typeof(VirtualFileHelper).Log().LogInfo($"Registered formats - FileGroupDescriptorW: {fileDescriptorFormat}, FileContents: {fileContentsFormat}");
 
 		// Get file descriptors
 		var descriptorFormatEtc = new FORMATETC
@@ -76,8 +96,28 @@ internal static unsafe class VirtualFileHelper
 		var hr = dataObject->GetData(descriptorFormatEtc, out var descriptorMedium);
 		if (hr.Failed)
 		{
-			typeof(VirtualFileHelper).Log().LogError($"Failed to get file descriptors: {Win32Helper.GetErrorMessage(hr)}");
-			return files;
+			typeof(VirtualFileHelper).Log().LogError($"Failed to get file descriptors: {Win32Helper.GetErrorMessage(hr)} (0x{hr.Value:X8})");
+			
+			// Try alternative format
+			var altFormat = PInvoke.RegisterClipboardFormat("FileGroupDescriptor");
+			if (altFormat != 0)
+			{
+				typeof(VirtualFileHelper).Log().LogInfo($"Trying alternative FileGroupDescriptor format: {altFormat}");
+				descriptorFormatEtc.cfFormat = (ushort)altFormat;
+				hr = dataObject->GetData(descriptorFormatEtc, out descriptorMedium);
+				
+				if (hr.Failed)
+				{
+					typeof(VirtualFileHelper).Log().LogError($"Alternative format also failed: {Win32Helper.GetErrorMessage(hr)} (0x{hr.Value:X8})");
+					return files;
+				}
+				
+				typeof(VirtualFileHelper).Log().LogInfo("Alternative format succeeded!");
+			}
+			else
+			{
+				return files;
+			}
 		}
 
 		try
@@ -85,6 +125,7 @@ internal static unsafe class VirtualFileHelper
 			using var lockDisposable = Win32Helper.GlobalLock(descriptorMedium.u.hGlobal, out var descriptorPtr);
 			if (lockDisposable is null)
 			{
+				typeof(VirtualFileHelper).Log().LogError("Failed to lock global memory for file descriptors");
 				return files;
 			}
 
@@ -92,27 +133,41 @@ internal static unsafe class VirtualFileHelper
 			var fileGroupDescriptor = (FILEGROUPDESCRIPTORW*)descriptorPtr;
 			var fileCount = fileGroupDescriptor->cItems;
 
-			typeof(VirtualFileHelper).Log().LogInformation($"Found {fileCount} virtual file(s)");
+			typeof(VirtualFileHelper).Log().LogInfo($"Found {fileCount} virtual file(s)");
+
+			if (fileCount == 0)
+			{
+				typeof(VirtualFileHelper).Log().LogWarning("File count is 0");
+				return files;
+			}
 
 			// Get temporary folder for extracted files
-			var tempFolder = await GetTempFolderAsync();
+			var tempFolder = GetTempFolder();
+			typeof(VirtualFileHelper).Log().LogInfo($"Using temp folder: {tempFolder}");
 
 			// Extract each file
 			for (uint i = 0; i < fileCount; i++)
 			{
 				try
 				{
-					var file = await ExtractVirtualFileAsync(dataObject, fileContentsFormat, fileGroupDescriptor, i, tempFolder);
+					var file = ExtractVirtualFile(dataObject, fileContentsFormat, fileGroupDescriptor, i, tempFolder);
 					if (file is not null)
 					{
 						files.Add(file);
+						typeof(VirtualFileHelper).Log().LogInfo($"Successfully added file {i + 1}/{fileCount}");
+					}
+					else
+					{
+						typeof(VirtualFileHelper).Log().LogWarning($"File {i + 1}/{fileCount} extraction returned null");
 					}
 				}
 				catch (Exception ex)
 				{
-					typeof(VirtualFileHelper).Log().LogError($"Failed to extract virtual file {i}: {ex.Message}");
+					typeof(VirtualFileHelper).Log().LogError($"Failed to extract virtual file {i}: {ex.Message}", ex);
 				}
 			}
+			
+			typeof(VirtualFileHelper).Log().LogInfo($"Extraction complete. Successfully extracted {files.Count}/{fileCount} files");
 		}
 		finally
 		{
@@ -122,15 +177,17 @@ internal static unsafe class VirtualFileHelper
 		return files;
 	}
 
-	private static async Task<IStorageFile?> ExtractVirtualFileAsync(
+	private static IStorageFile? ExtractVirtualFile(
 		IDataObject* dataObject,
 		uint fileContentsFormat,
 		FILEGROUPDESCRIPTORW* fileGroupDescriptor,
 		uint fileIndex,
-		StorageFolder tempFolder)
+		string tempFolderPath)
 	{
-		// Get file descriptor for this file
-		var fileDescriptor = &fileGroupDescriptor->fgd[fileIndex];
+		// Get file descriptor for this file using pointer arithmetic
+		// The FILEGROUPDESCRIPTORW struct contains only the first descriptor,
+		// but subsequent descriptors follow it in memory
+		var fileDescriptor = (FILEDESCRIPTORW*)(&fileGroupDescriptor->fgd) + fileIndex;
 
 		// Get filename
 		var fileName = Marshal.PtrToStringUni((IntPtr)fileDescriptor->cFileName);
@@ -142,7 +199,7 @@ internal static unsafe class VirtualFileHelper
 		// Make filename safe
 		fileName = MakeSafeFileName(fileName);
 
-		typeof(VirtualFileHelper).Log().LogInformation($"Extracting virtual file: {fileName}");
+		typeof(VirtualFileHelper).Log().LogInfo($"Extracting virtual file: {fileName}");
 
 		// Get file contents
 		var contentsFormatEtc = new FORMATETC
@@ -154,8 +211,7 @@ internal static unsafe class VirtualFileHelper
 			tymed = (uint)TYMED.TYMED_HGLOBAL | (uint)TYMED.TYMED_ISTREAM
 		};
 
-		STGMEDIUM contentsMedium;
-		var hr = dataObject->GetData(contentsFormatEtc, &contentsMedium);
+		var hr = dataObject->GetData(contentsFormatEtc, out var contentsMedium);
 		if (hr.Failed)
 		{
 			typeof(VirtualFileHelper).Log().LogError($"Failed to get file contents for {fileName}: {Win32Helper.GetErrorMessage(hr)}");
@@ -164,8 +220,11 @@ internal static unsafe class VirtualFileHelper
 
 		try
 		{
-			// Create file in temp folder
-			var file = tempFolder.CreateFileAsync(fileName, Windows.Storage.CreationCollisionOption.GenerateUniqueName);
+			// Create file path
+			var filePath = Path.Combine(tempFolderPath, fileName);
+
+			// Ensure unique filename
+			filePath = GetUniqueFilePath(filePath);
 
 			if (contentsMedium.tymed == TYMED.TYMED_HGLOBAL)
 			{
@@ -180,14 +239,14 @@ internal static unsafe class VirtualFileHelper
 				var data = new byte[size];
 				Marshal.Copy((IntPtr)contentsPtr, data, 0, size);
 
-				await Windows.Storage.FileIO.WriteBytesAsync(file, data);
+				File.WriteAllBytes(filePath, data);
 			}
 			else if (contentsMedium.tymed == TYMED.TYMED_ISTREAM)
 			{
 				// Data is in IStream
 				var stream = (IStream*)contentsMedium.u.pstm;
 
-				using var fileStream = await file.OpenStreamForWriteAsync();
+				using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
 
 				// Read from IStream and write to file
 				const int bufferSize = 4096;
@@ -204,12 +263,19 @@ internal static unsafe class VirtualFileHelper
 
 					var managedBuffer = new byte[bytesRead];
 					Marshal.Copy((IntPtr)buffer, managedBuffer, 0, (int)bytesRead);
-					await fileStream.WriteAsync(managedBuffer, 0, (int)bytesRead);
+					fileStream.Write(managedBuffer, 0, (int)bytesRead);
 				}
 			}
+			else
+			{
+				typeof(VirtualFileHelper).Log().LogError($"Unsupported TYMED type: {contentsMedium.tymed}");
+				return null;
+			}
 
-			typeof(VirtualFileHelper).Log().LogInformation($"Successfully extracted: {fileName}");
-			return file;
+			typeof(VirtualFileHelper).Log().LogInfo($"Successfully extracted: {fileName}");
+
+			// Create StorageFile from path
+			return Windows.Storage.StorageFile.GetFileFromPath(filePath);
 		}
 		catch (Exception ex)
 		{
@@ -222,19 +288,39 @@ internal static unsafe class VirtualFileHelper
 		}
 	}
 
-	private static string GetTempFolderPath()
+	private static string GetTempFolder()
 	{
-		var tempFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder.Path;
+		var tempFolder = Path.Combine(Path.GetTempPath(), "UnoDragDrop_" + DateTime.Now.Ticks);
 
-		if (tempFolder is null)
+		if (!Directory.Exists(tempFolder))
 		{
-			throw new InvalidOperationException("Unknown tempoarary folder");
+			Directory.CreateDirectory(tempFolder);
 		}
 
-		var subFolder = Path.Combine(tempFolder, "DragDrop_" + DateTime.Now.Ticks);
-		Directory.CreateDirectory(subFolder);
+		return tempFolder;
+	}
 
-		return subFolder;
+	private static string GetUniqueFilePath(string filePath)
+	{
+		if (!File.Exists(filePath))
+		{
+			return filePath;
+		}
+
+		var directory = Path.GetDirectoryName(filePath) ?? string.Empty;
+		var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+		var extension = Path.GetExtension(filePath);
+
+		var counter = 1;
+		string newPath;
+		do
+		{
+			newPath = Path.Combine(directory, $"{fileNameWithoutExtension} ({counter}){extension}");
+			counter++;
+		}
+		while (File.Exists(newPath));
+
+		return newPath;
 	}
 
 	private static string MakeSafeFileName(string fileName)

@@ -220,7 +220,7 @@ internal partial class InputManager
 					{
 						this.Log().Debug($"A pointer is already being processed {_manager._current} while trying to raise {this}");
 					}
-					Debug.Fail($"A pointer is already being processed {_manager._current} while trying to raise {this}.");
+					//Debug.Fail($"A pointer is already being processed {_manager._current} while trying to raise {this}.");
 				}
 				_manager._current = this;
 
