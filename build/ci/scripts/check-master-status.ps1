@@ -20,7 +20,7 @@ try {
         exit 0
     }
 
-    Write-Host "Latest master build $($latestBuild.buildNumber) failed."
+    Write-Error "Latest master build $($latestBuild.buildNumber) failed."
 
     $lastSuccess = $builds |
         Where-Object { $_.result -eq "succeeded" -or $_.result -eq "partiallySucceeded" } |
