@@ -91,26 +91,26 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
+		static partial void StartPartial(Func<ApplicationInitializationCallbackParams, Application?> callback)
 		{
 			_startInvoked = true;
 
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
-			callback(new ApplicationInitializationCallbackParams());
+			var currentApp = callback(new ApplicationInitializationCallbackParams()) ?? _current;
 
 			if (OperatingSystem.IsBrowser())
 			{
 				_ = ApplicationData.Current.EnablePersistenceAsync();
 
 				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
+				DispatcherQueue.Main.TryEnqueue(currentApp.InvokeOnLaunched);
 			}
 			else
 			{
 				// Other platforms can be synchronous, except iOS that requires
 				// the creation of the window to be synchronous to avoid a black screen.
-				_current.InvokeOnLaunched();
+				currentApp.InvokeOnLaunched();
 			}
 		}
 
