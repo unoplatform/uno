@@ -70,42 +70,11 @@
 		<WriteFilesTask FilesToProcess="@(_FilesContent)" />
 	</Target>
 
-	<Target Name="BuildCIMobile">
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
-			Projects="filters\Uno.UI-packages-netcoremobile.slnf"
-			Targets="Restore;Build"
-			RebaseOutputs="false"
-			BuildInParallel="true" />
-
-	</Target>
-
-	<Target Name="BuildCIWasm">
+	<Target Name="BuildCIPackages">
 
 		<MSBuild
 			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
-			Projects="filters\Uno.UI-packages-wasm.slnf"
-			Targets="Restore;Build"
-			RebaseOutputs="false"
-			BuildInParallel="true" />
-
-	</Target>
-
-	<Target Name="BuildCISkia">
-
-		<MSBuild
-			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
-			Projects="filters\Uno.UI-packages-skia.slnf"
-			Targets="Restore;Build"
-			RebaseOutputs="false"
-			BuildInParallel="true" />
-
-	</Target>
-
-	<Target Name="BuildCIReference">
-
-		<MSBuild
-			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
-			Projects="filters\Uno.UI-packages-reference.slnf"
+			Projects="filters\Uno.UI-packages-all.slnf"
 			Targets="Restore;Build"
 			RebaseOutputs="false"
 			BuildInParallel="true" />
