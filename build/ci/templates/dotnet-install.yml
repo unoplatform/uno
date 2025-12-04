@@ -20,16 +20,6 @@ steps:
     condition: eq(variables['Agent.OS'], 'Windows_NT')
 
   - task: UseDotNet@2
-    displayName: 'Install .NET 9 Runtime'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: sdk
-      useGlobalJson: false
-      includePreviewVersions: false
-      version: 9.0.300
-      installationPath: $(DOTNET_INSTALL_DIR)
-
-  - task: UseDotNet@2
     displayName: 'Use .NET SDK from global.json'
     retryCountOnTaskFailure: 3
     condition: ${{ eq(parameters.haveCheckout, true) }}
