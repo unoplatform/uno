@@ -217,18 +217,23 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			_solutionSubscriptions = new CompositeDisposable([watchersSubscription, Disposable.Create(processing.Cancel), processing, .. watchers]);
 
-			bool HasInterest(string file)
+			bool HasInterest(string path)
 			{
-				if (Path.GetExtension(file).ToLowerInvariant() is ".csproj" or ".editorconfig")
+				if (Path.GetExtension(path).ToLowerInvariant() is ".csproj" or ".editorconfig")
 				{
 					return false;
 				}
 
-				if (excludedDir.Any(dir => file.StartsWith(dir, _pathsComparison)))
+				if (!File.Exists(path) && Directory.Exists(path))
+				{
+					return false;
+				}
+
+				if (excludedDir.Any(dir => path.StartsWith(dir, _pathsComparison)))
 				{
 					// File is in an excluded directory (bin or obj)
 					// However, we still allow changes from the HotReloadInfo
-					if (!file.EndsWith(HotReloadInfoHelper.HotReloadInfoFilePath, _pathsComparison))
+					if (!path.EndsWith(HotReloadInfoHelper.HotReloadInfoFilePath, _pathsComparison))
 					{
 						return false;
 					}
@@ -655,7 +660,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				foreach (var project in projects)
 				{
 					found = true;
+					//var id = DocumentId.CreateNewId(project.Id);
 					solution = solution.AddAdditionalDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
+					//await solution.GetAdditionalDocument(id)!.GetTextAsync(ct);
 				}
 				if (!found)
 				{
@@ -666,6 +673,21 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			solution = solution
 				.RemoveDocuments(changeSet.RemovedDocuments)
 				.RemoveAdditionalDocuments(changeSet.RemovedAdditionalDocuments);
+
+			// If a document has been added, we make sure to refresh teh configuration of the analyzers.
+			// This is especially required for new XAML files to have the 'build_metadata.AdditionalFiles.SourceItemGroup = Page' updated
+			// from the file ./obj/Debug/{tfm}/{projectName}.GeneratedMSBuildEditorConfig.editorconfig
+			if (changeSet.HasAddOrRemove)
+			{
+				var analyzersConfigs = solution
+					.Projects
+					.SelectMany(p => p.AnalyzerConfigDocuments)
+					.Where(config => config.FilePath is not null);
+				foreach (var analyzerConfig in analyzersConfigs)
+				{
+					solution = solution.WithAnalyzerConfigDocumentText(analyzerConfig.Id, await GetSourceTextAsync(analyzerConfig.FilePath!, ct));
+				}
+			}
 
 			hotReload.NotifyIgnored(changeSet.IgnoredFiles);
 
@@ -682,6 +704,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			ImmutableHashSet<string> IgnoredFiles
 		)
 		{
+			public bool HasAddOrRemove => !AddedDocuments.IsEmpty || !AddedAdditionalDocuments.IsEmpty || !RemovedDocuments.IsEmpty || !RemovedAdditionalDocuments.IsEmpty;
+
 			public static ChangeSet IgnoreAll(ImmutableHashSet<string> ignoredFiles)
 				=> new([], [], [], [], [], [], ignoredFiles);
 		}

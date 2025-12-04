@@ -6,16 +6,20 @@ using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages;
 
-public class UpdateFile : IMessage
+/// <summary>
+/// LEGACY Request to update a SINGLE file.
+/// </summary>
+public class UpdateSingleFileRequest : IMessage, IUpdateFileRequest
 {
-	public const string Name = nameof(UpdateFile);
+	public const string Name = "UpdateFile";
 
-	/// <summary>
-	/// ID of this file update request.
-	/// </summary>
+	/// <inheritdoc />
 	[JsonProperty]
 	public string RequestId { get; set; } = Guid.NewGuid().ToString();
 
+	/// <summary>
+	/// Gets or sets the file system path to edit.
+	/// </summary>
 	[JsonProperty]
 	public string FilePath { get; set; } = string.Empty;
 
@@ -32,36 +36,23 @@ public class UpdateFile : IMessage
 	public string? NewText { get; set; }
 
 	/// <summary>
-	/// If true, the file will be saved on disk, even if the content is the same.
-	/// NULL means the default behavior will be used according to the capabilities of the IDE (our integration).
-	/// </summary>
-	/// <remarks>
-	/// Currently, this is only used for VisualStudio, because the update requires a file save on disk for other IDEs.
-	/// On VisualStudio, the save to disk is not required for doing Hot Reload.
-	/// </remarks>
-	public bool? ForceSaveOnDisk { get; set; }
-
-	/// <summary>
 	/// Indicates if the file can be created or deleted.
 	/// </summary>
 	[JsonProperty]
 	public bool IsCreateDeleteAllowed { get; set; }
 
-	/// <summary>
-	/// Disable the forced hot-reload requested on VS after the file has been modified.
-	/// </summary>
+	/// <inheritdoc />
+	public bool? ForceSaveOnDisk { get; set; }
+
+	/// <inheritdoc />
 	[JsonProperty]
 	public bool IsForceHotReloadDisabled { get; set; }
 
-	/// <summary>
-	/// The delay to wait before forcing (**OR RETRYING**) a hot reload in Visual Studio.
-	/// </summary>
+	/// <inheritdoc />
 	[JsonProperty]
 	public TimeSpan? ForceHotReloadDelay { get; set; }
 
-	/// <summary>
-	/// Number of times to retry the hot reload in Visual Studio **if not changes are detected**.
-	/// </summary>
+	/// <inheritdoc />
 	[JsonProperty]
 	public int? ForceHotReloadAttempts { get; set; }
 

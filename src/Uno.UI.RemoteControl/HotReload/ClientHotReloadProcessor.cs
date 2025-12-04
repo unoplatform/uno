@@ -39,6 +39,13 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				ProcessAssemblyReload(frame.GetContent<AssemblyDeltaReload>());
 				break;
 
+			case UpdateSingleFileResponse.Name:
+				// Dev server is not in sync with the application ... this should not happen, but we can safely handle that
+				var single = frame.GetContent<UpdateSingleFileResponse>();
+				var multi = new UpdateFileResponse(single.RequestId, null, [new FileEditResult(single.FilePath, single.Result, single.Error)], single.HotReloadCorrelationId);
+				ProcessUpdateFileResponse(multi);
+				break;
+
 			case UpdateFileResponse.Name:
 				ProcessUpdateFileResponse(frame.GetContent<UpdateFileResponse>());
 				break;
