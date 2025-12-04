@@ -14,9 +14,7 @@ stages:
 - stage: runtime_tests_skia_build
   displayName: Build - Skia Runtime Tests
   dependsOn:
-    - Setup
     - binaries_build_native_macos
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true'))
 
   jobs:
   - template: .azure-devops-tests-skia-build.yml
@@ -29,7 +27,6 @@ stages:
   displayName: Tests - WebAssembly Skia
   dependsOn:
     - Setup
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true'))
 
   jobs:
   - template: .azure-devops-tests-webassembly-skia-build.yml
@@ -48,7 +45,6 @@ stages:
   displayName: Tests - Android Skia
   dependsOn:
     - Setup
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true'))
 
   jobs:
   - template: .azure-devops-tests-android-skia-build.yml
@@ -66,7 +62,6 @@ stages:
   displayName: Tests - Android+CoreCLR Skia
   dependsOn:
     - Setup
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true'))
 
   jobs:
   - template: .azure-devops-tests-android-coreclr-skia-build.yml
@@ -84,7 +79,6 @@ stages:
   displayName: Tests - Android+NativeAOT Skia
   dependsOn:
     - Setup
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true'))
 
   jobs:
   - template: .azure-devops-tests-android-nativeaot-skia-build.yml
@@ -101,9 +95,7 @@ stages:
 - stage: runtime_tests_skia_ios
   displayName: Tests - iOS Skia
   dependsOn:
-    - Setup
     - binaries_build_native_macos
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true'))
 
   jobs:
   - template: .azure-devops-tests-ios-skia-build.yml
@@ -135,8 +127,6 @@ stages:
   displayName: Tests - Desktop Skia Linux
   dependsOn:
     - runtime_tests_skia_build
-    - Setup
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true'))
 
   jobs:
   - template: .azure-devops-tests-linux-skia.yml
@@ -156,8 +146,6 @@ stages:
   displayName: Tests - Desktop Skia macOS
   dependsOn:
     - runtime_tests_skia_build
-    - Setup
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true'))
 
   jobs:
   - template: .azure-devops-tests-macos-skia.yml
@@ -177,8 +165,6 @@ stages:
   displayName: Tests - Desktop Skia Windows
   dependsOn:
     - runtime_tests_skia_build
-    - Setup
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true'))
 
   jobs:
   - template: .azure-devops-tests-windows-skia.yml
