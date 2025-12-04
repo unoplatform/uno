@@ -46,12 +46,15 @@ jobs:
       ACTIVE_XCODE=$(xcode-select -p)
       echo "Active Xcode path: $ACTIVE_XCODE"
       echo "##vso[task.setvariable variable=ActiveXcodePath]$ACTIVE_XCODE"
+      SANITIZED=$(echo "$ACTIVE_XCODE" | sed 's/[^A-Za-z0-9._-]/_/g')
+      echo "Using sanitized cache key segment: $SANITIZED"
+      echo "##vso[task.setvariable variable=ActiveXcodeKeySegment]$SANITIZED"
     displayName: Detect active Xcode path
 
   - task: Cache@2
     displayName: Cache ccache objects
     inputs:
-      key: macos-skia-native | ccache | $(Agent.OS) | '$(ActiveXcodePath)'
+      key: macos-skia-native | ccache | $(Agent.OS) | $(ActiveXcodeKeySegment)
       path: $(HOME)/Library/Caches/ccache
 
   - bash: |
