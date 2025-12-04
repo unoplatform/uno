@@ -57,18 +57,18 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-prepare-$(XAML_FLAVOR_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /nr:false /r /m:24 /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-prepare-$(XAML_FLAVOR_BUILD).binlog
     displayName: Preparing assets
 
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-$(XAML_FLAVOR_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /r /m:24 /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Mobile binaries
 
   - powershell: |
       Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build build/Uno.UI.Build.csproj /m:24 /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Reference Binaries
   
   ## Restore skia-macos native assets
@@ -80,12 +80,12 @@ jobs:
 
   - powershell: |
       Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCISkia "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build build/Uno.UI.Build.csproj /m:24 /t:BuildCISkia "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Skia Binaries
 
   - powershell: |
       Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIWasm "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build build/Uno.UI.Build.csproj /m:24 /t:BuildCIWasm "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Wasm Binaries
 
   - task: MSBuild@1
