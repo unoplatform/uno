@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml
 		public DataPackageOperation ProcessAborted(long pointerId)
 			=> FindOperation(pointerId)?.Aborted() ?? DataPackageOperation.None;
 
-		private DragOperation? FindOperation(IDragEventSource src)
+		public DragOperation? FindOperation(IDragEventSource src)
 			=> _dragOperations.FirstOrDefault(drag => drag.Info.SourceId == src.Id);
 
 		private DragOperation? FindOperation(long pointerId)

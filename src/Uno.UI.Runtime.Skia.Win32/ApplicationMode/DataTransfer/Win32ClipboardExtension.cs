@@ -246,56 +246,59 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 	private static unsafe void GetFileDropList(HGLOBAL handle, DataPackage package)
 	{
-		using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
-		if (lockDisposable is null)
+		package.SetDataProvider(StandardDataFormats.StorageItems, _ =>
 		{
-			return;
-		}
-
-		var hDrop = new HDROP((IntPtr)firstByte);
-
-		var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
-		if (filesDropped == 0)
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
-		var files = new List<IStorageItem>((int)filesDropped);
-		for (uint i = 0; i < filesDropped; i++)
-		{
-			var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
-			if (charLength == 0)
+			using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
+			if (lockDisposable is null)
 			{
-				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
-				continue;
+				return;
 			}
-			charLength++; // + 1 for \0
 
-			var buffer = Marshal.AllocHGlobal((IntPtr)(charLength * Unsafe.SizeOf<char>()));
-			using var bufferDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, buffer);
-			var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), charLength);
-			if (charsWritten == 0)
-			{
-				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
-				break;
-			}
-			var filePath = Marshal.PtrToStringUni(buffer, (int)charsWritten);
-			if (Directory.Exists(filePath))
-			{
-				files.Add(new StorageFolder(filePath));
-			}
-			else if (File.Exists(filePath))
-			{
-				files.Add(StorageFile.GetFileFromPath(filePath));
-			}
-			else
-			{
-				typeof(Win32ClipboardExtension).LogError()?.Error($"HDROP Clipboard: file path '{filePath}' was not a valid file or directory.");
-			}
-		}
+			var hDrop = new HDROP((IntPtr)firstByte);
 
-		package.SetStorageItems(files);
+			var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
+			if (filesDropped == 0)
+			{
+				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
+				return;
+			}
+
+			var files = new List<IStorageItem>((int)filesDropped);
+			for (uint i = 0; i < filesDropped; i++)
+			{
+				var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
+				if (charLength == 0)
+				{
+					typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
+					continue;
+				}
+				charLength++; // + 1 for \0
+
+				var buffer = Marshal.AllocHGlobal((IntPtr)(charLength * Unsafe.SizeOf<char>()));
+				using var bufferDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, buffer);
+				var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), charLength);
+				if (charsWritten == 0)
+				{
+					typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
+					break;
+				}
+				var filePath = Marshal.PtrToStringUni(buffer, (int)charsWritten);
+				if (Directory.Exists(filePath))
+				{
+					files.Add(new StorageFolder(filePath));
+				}
+				else if (File.Exists(filePath))
+				{
+					files.Add(StorageFile.GetFileFromPath(filePath));
+				}
+				else
+				{
+					typeof(Win32ClipboardExtension).LogError()?.Error($"HDROP Clipboard: file path '{filePath}' was not a valid file or directory.");
+				}
+			}
+
+			package.SetStorageItems(files);
+		});
 	}
 
 	public void SetContent(DataPackage content)

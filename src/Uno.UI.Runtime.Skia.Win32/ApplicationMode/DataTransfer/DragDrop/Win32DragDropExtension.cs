@@ -25,6 +25,7 @@ using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using IDataObject = Windows.Win32.System.Com.IDataObject;
 using Microsoft.UI.Input;
+using Windows.Win32.UI.Shell;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -198,11 +199,145 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		var scaledPosition = GetScaledPosition(position.X, position.Y);
 		var src = new DragEventSource(scaledPosition, grfKeyState);
 
+		// retrieve the current data package
+		_coreDragDropManager.ProcessMoved(src);
+
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {position}");
 
-		*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
+		// Some drag sources only support async operations. Notably, Chromium-based applications with file drop (the
+		// new Outlook is one example). The async interface is primarily a feature check and ref counting mechanism.
+		// To enable applications to accept filenames from these sources we use the interface when available and just
+		// do the operation synchronously. When we add new async API we would defer to the async interface.
+		//
+		// See: https://learn.microsoft.com/windows/win32/shell/datascenarios#dragging-and-dropping-shell-objects-asynchronously
 
-		return HRESULT.S_OK;
+		Windows.Win32.UI.Shell.IDataObjectAsyncCapability* asyncCapability = null;
+		HRESULT result = HRESULT.S_OK;
+
+		// Query for the async capability interface
+		// GUID: {3D8B0590-F691-11D2-8EA9-006097DF5BD4}
+		Guid asyncCapabilityGuid = new Guid(0x3D8B0590, 0xF691, 0x11D2, 0x8E, 0xA9, 0x00, 0x60, 0x97, 0xDF, 0x5B, 0xD4);
+		result = dataObject->QueryInterface(&asyncCapabilityGuid, (void**)&asyncCapability);
+		if (result.Succeeded && asyncCapability is not null)
+		{
+			// Check if the data object supports async mode
+			result = asyncCapability->GetAsyncMode(out BOOL isAsync);
+			if (result.Succeeded && isAsync)
+			{
+				// Start the async operation
+				result = asyncCapability->StartOperation();
+				if (result.Failed)
+				{
+					((IUnknown*)asyncCapability)->Release();
+					return result;
+				}
+			}
+			else
+			{
+				// Async not supported, release and null out the pointer
+				((IUnknown*)asyncCapability)->Release();
+				asyncCapability = null;
+			}
+		}
+		else
+		{
+			asyncCapability = null;
+		}
+
+		try
+		{
+
+			if (asyncCapability is not null)
+			{
+				// Complete the async operation
+				var endResult = asyncCapability->EndOperation(HRESULT.S_OK, null, (uint)*pdwEffect);
+				((IUnknown*)asyncCapability)->Release();
+			}
+			IEnumFORMATETC* enumFormatEtc;
+			var hResult = dataObject->EnumFormatEtc((uint)DATADIR.DATADIR_GET, &enumFormatEtc);
+			if (hResult.Failed)
+			{
+				this.LogError()?.Error($"{nameof(IDataObject.EnumFormatEtc)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				return HRESULT.E_UNEXPECTED;
+			}
+
+			using var enumFormatDisposable = new DisposableStruct<IntPtr>(static p => ((IEnumFORMATETC*)p)->Release(), (IntPtr)enumFormatEtc);
+
+			enumFormatEtc->Reset();
+			const int formatBufferLength = 100;
+			var formatBuffer = stackalloc FORMATETC[formatBufferLength];
+			uint fetchedFormatCount;
+			hResult = enumFormatEtc->Next(formatBufferLength, formatBuffer, &fetchedFormatCount);
+			if (hResult.Failed)
+			{
+				this.LogError()?.Error($"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				return HRESULT.E_UNEXPECTED;
+			}
+			var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {position}, formats: ";
+				foreach (var format in formats)
+				{
+					log += (CLIPBOARD_FORMAT)format.cfFormat + " ";
+				}
+				this.Log().Trace(log);
+			}
+			var package = new DataPackage();
+
+			var formatEtcList = formats.ToArray();
+			var formatList =
+				formatEtcList
+				.Where(static formatetc =>
+				{
+					if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
+					{
+						return false;
+					}
+					if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
+					{
+						typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
+						return false;
+					}
+
+					return true;
+				})
+				.Select(f => (CLIPBOARD_FORMAT)f.cfFormat)
+				.ToList();
+
+			var mediumsToDispose = new List<STGMEDIUM>();
+			using var mediumsDisposable = new DisposableStruct<List<STGMEDIUM>>(static list =>
+			{
+				foreach (var medium in list)
+				{
+					PInvoke.ReleaseStgMedium(&medium);
+				}
+			}, mediumsToDispose);
+			Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
+			{
+				var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
+				dataObject->GetData(formatEtc, out STGMEDIUM medium);
+				mediumsToDispose.Add(medium);
+				return medium.u.hGlobal;
+			});
+
+			*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
+			result = HRESULT.S_OK;
+
+		}
+		catch
+		{
+			if (asyncCapability is not null)
+			{
+				// We weren't successful in completing the operation, so we need to end it with no drop effect.
+				// There isn't clear guidance on expected errors here, so we'll just use E_UNEXPECTED.
+				asyncCapability->EndOperation(HRESULT.E_UNEXPECTED, null, (uint)DROPEFFECT.DROPEFFECT_NONE);
+				((IUnknown*)asyncCapability)->Release();
+			}
+			throw;
+		}
+
+		return result;
 	}
 
 	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new System.NotImplementedException();

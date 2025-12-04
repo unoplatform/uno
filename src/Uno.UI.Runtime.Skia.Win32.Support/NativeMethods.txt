@@ -101,6 +101,7 @@ BITMAPFILEHEADER
 BROWSEINFOW
 CLIPBOARD_FORMAT
 IDataObject
+IDataObjectAsyncCapability
 IDropSource
 IEnumUnknown
 IFileOpenDialog
