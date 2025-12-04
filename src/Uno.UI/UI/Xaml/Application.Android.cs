@@ -22,7 +22,7 @@ public partial class Application
 		PermissionsHelper.Initialize();
 	}
 
-	static partial void StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback)
+	static partial Task StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback)
 	{
 		return callback(new ApplicationInitializationCallbackParams());
 	}
