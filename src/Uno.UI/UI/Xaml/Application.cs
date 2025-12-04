@@ -345,10 +345,19 @@ namespace Microsoft.UI.Xaml
 
 		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
+			StartPartial(p =>
+			{
+				callback(p);
+				return null;
+			});
+		}
+
+		internal static void Start(Func<ApplicationInitializationCallbackParams, Application> callback)
+		{
 			StartPartial(callback);
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback);
+		static partial void StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
 
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 
