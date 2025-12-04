@@ -1,4 +1,4 @@
-Set-PSDebug -Trace 1
+# Set-PSDebug -Trace 1
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -222,6 +222,10 @@ Begin now.
         if ($process.ExitCode -ne 0) {
             throw "Codex CLI exited with code $($process.ExitCode).`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
         }
+        else{
+            Write-Log "Codex CLI completed successfully."
+            Write-Log "STDOUT:`n$stdout`nSTDERR:`n$stderr"
+        }
     }
     finally {
         if ($null -ne $previousRustLog) {
@@ -248,7 +252,10 @@ Begin now.
         throw "codex-tools.json does not contain a non-empty 'tools' array."
     }
 
-    Write-Log "Codex CLI reported $($json.tools.Count) tools via codex-tools.json."
+    Write-Log "Codex CLI reported $($json.tools.Count) tools via codex-tools.json:"
+    foreach ($tool in $json.tools) {
+        Write-Log " - $tool"
+    }
 }
 
 function Setup-UnoStudioLicenses {
