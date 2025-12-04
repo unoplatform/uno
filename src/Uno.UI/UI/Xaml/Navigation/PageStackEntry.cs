@@ -89,12 +89,14 @@ public sealed partial class PageStackEntry : DependencyObject
 	/// </summary>
 	/// <param name="descriptor">The descriptor string, either an assembly-qualified name or a name with ALC suffix (##ALCName).</param>
 	/// <returns>The resolved Type, or null if the type cannot be found or the ALC is not loaded.</returns>
+	[return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
 	internal static Type ResolveDescriptor(string descriptor)
 	{
 		if (!descriptor.Contains(AlcDescriptorDelimiter))
 		{
 			// Type.GetType returns null if the type is not found
-			return GetType(descriptor);
+			return Type.GetType(descriptor);
 		}
 
 		var alcParts = descriptor.Split(AlcDescriptorDelimiter, StringSplitOptions.None);
@@ -104,17 +106,13 @@ public sealed partial class PageStackEntry : DependencyObject
 			using (alc.EnterContextualReflection())
 			{
 				// Type.GetType returns null if the type is not found in the ALC
-				return GetType(alcParts[0]);
+				return Type.GetType(alcParts[0]);
 			}
 		}
 
 		throw new InvalidOperationException(
 			$"Failed to resolve type descriptor '{descriptor}': AssemblyLoadContext with name '{alcParts[1]}' was not found.");
 	}
-
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
-	static Type GetType(string typeName)
-		=> Type.GetType(typeName);
 
 	//------------------------------------------------------------------------
 	//
