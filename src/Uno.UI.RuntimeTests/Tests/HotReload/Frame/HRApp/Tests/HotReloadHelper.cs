@@ -1,13 +1,48 @@
 ﻿using System.IO;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl;
+using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
+using Uno.WinUI.Runtime.Skia.X11;
+using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
 internal static class HotReloadHelper
 {
+	public static ValueTask<FileUpdate> UpdateAsync(ImmutableArray<FileEdit> edits, CancellationToken ct)
+		=> UpdateAsync(new UpdateRequest(edits), ct);
+
+	public static async ValueTask<FileUpdate> UpdateAsync(UpdateRequest request, CancellationToken ct)
+	{
+		var hr = RemoteControlClient.Instance?.Processors.OfType<ClientHotReloadProcessor>().SingleOrDefault()
+			?? throw new InvalidOperationException("Hot-reload not initialized properly");
+
+		request = request.WithExtendedTimeouts(); // Required for CI
+
+		if (await hr.TryUpdateFilesAsync(request, ct) is { Error: { } error })
+		{
+			throw error;
+		}
+
+		return new(hr, request);
+	}
+
+	public record FileUpdate(ClientHotReloadProcessor HotReload, UpdateRequest Request) : IAsyncDisposable
+	{
+		/// <inheritdoc />
+		public async ValueTask DisposeAsync()
+		{
+			var ct = CancellationToken.None; // If test has been aborted, we still want to undo!
+			var req = Request.Undo(waitForHotReload: true /* Do not pollute sub-sequent tests */);
+			if (await HotReload.TryUpdateFilesAsync(req, ct) is { Error: { } error })
+			{
+				throw error;
+			}
+		}
+	}
+
 	public static async Task UpdateServerFile<T>(string originalText, string replacementText, CancellationToken ct)
 		where T : FrameworkElement, new()
 	{
@@ -52,7 +87,7 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.WaitForConnection();
 
-		var message = new UpdateFile
+		var message = new UpdateSingleFileRequest
 		{
 			FilePath = Path.Combine(GetProjectPath(), filePathInProject.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar)),
 			OldText = originalText,

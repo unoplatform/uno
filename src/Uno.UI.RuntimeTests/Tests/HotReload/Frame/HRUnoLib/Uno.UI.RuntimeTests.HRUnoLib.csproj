@@ -1,8 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<PropertyGroup>
-		<!-- Ensure that the app logs the console -->
-		<OutputType>Exe</OutputType>
 		<TargetFramework>net10.0</TargetFramework>
+		<UnoSingleProject>true</UnoSingleProject>
+		<OutputType>Library</OutputType>
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
 		<!-- in-solution build -->
@@ -12,17 +16,20 @@
 		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>
 
 		<UnoUIRuntimeTestEngine_DisableValidateUno>true</UnoUIRuntimeTestEngine_DisableValidateUno>
-		<UnoGenerateHotReloadInfo>True</UnoGenerateHotReloadInfo>
-       <!-- Required until https://github.com/dotnet/sdk/issues/36666 is released -->
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+		<!--
+			UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
+			https://aka.platform.uno/singleproject-features
+		-->
+
+		<UnoFeatures>
+			SkiaRenderer;
+		</UnoFeatures>
 
 		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 		<NoWarn>$(NoWarn);CS1998;IDE0051;IDE0055;NU1903;MSB3277</NoWarn>
 	</PropertyGroup>
-
-	<Target Name="DisplayBasePath" BeforeTargets="BeforeBuild">
-		<Message Text="_UnoBaseReferenceBinPath: $(_UnoBaseReferenceBinPath)" Importance="high" />
-	</Target>
 
 	<ItemGroup>
 		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/SamplesApp*.dll" />
@@ -32,29 +39,8 @@
 
 		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" Exclude="@(UnoReferenceExclusion)" />
 
-		<!-- C:/s/uno.github/uno/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/../../../../SamplesApp/SamplesApp.Skia.Gtk/bin -->
-		
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-		
-		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
-		<PackageReference Include="MSTest.TestFramework" />
-		<PackageReference Include="MSTest.Analyzers" />
-		<PackageReference Include="SkiaSharp" Version="3.119.0" />
-		<PackageReference Include="HarfBuzzSharp" Version="8.3.1.1" />
-		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.7.1" />
-
-		<!--
-		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.0" />
-		<PackageReference Include="SkiaSharp.Skottie" Version="3.119.0" />
-		<PackageReference Include="Uno.WinUI.DevServer" Version="4.8.33" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.8.33" />
-		-->
-
-		<ProjectReference Include="..\HRUnoLib\Uno.UI.RuntimeTests.HRUnoLib.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.props" />
