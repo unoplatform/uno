@@ -51,7 +51,7 @@ jobs:
   - task: Cache@2
     displayName: Cache ccache objects
     inputs:
-      key: macos-skia-native | ccache | $(Agent.OS) | $(ActiveXcodePath)
+      key: macos-skia-native | ccache | $(Agent.OS) | '$(ActiveXcodePath)'
       path: $(HOME)/Library/Caches/ccache
 
   - bash: |
