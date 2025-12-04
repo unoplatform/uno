@@ -103,6 +103,7 @@ BROWSEINFOW
 CLIPBOARD_FORMAT
 ICONINFO
 IDataObject
+IDataObjectAsyncCapability
 IDropSource
 IEnumUnknown
 IFileOpenDialog
@@ -168,6 +169,7 @@ GetActiveWindow
 GetCapture
 GetClientRect
 GetClipboardData
+GetClipboardFormatName
 GetDC
 GetDeviceCaps
 GetDpiForWindow
