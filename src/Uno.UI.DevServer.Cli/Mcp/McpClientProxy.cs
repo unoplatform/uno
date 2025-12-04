@@ -67,6 +67,8 @@ internal class McpClientProxy
 					[
 						new(NotificationMethods.ToolListChangedNotification, (notification, cancellationToken) =>
 						{
+							log.LogTrace("Upstream MCP notified tool list changed");
+
 							var notificationParams = JsonSerializer.Deserialize<ResourceUpdatedNotificationParams>(notification.Params, McpJsonUtilities.DefaultOptions);
 
 							_toolListChanged?.Invoke();

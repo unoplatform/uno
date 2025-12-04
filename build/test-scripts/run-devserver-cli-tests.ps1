@@ -317,81 +317,6 @@ function Setup-UnoStudioLicenses {
     return $unoDir
 }
 
-function Prime-RemoteControlHost {
-    param(
-        [Parameter(Mandatory = $true)] [string]$SolutionPath,
-        [int]$Port = 48718
-    )
-
-    if ([string]::IsNullOrWhiteSpace($env:NBGV_SemVer2)) {
-        throw "NBGV_SemVer2 is not defined; cannot locate Uno.WinUI.DevServer package."
-    }
-
-    $resolvedSolution = (Resolve-Path -LiteralPath $SolutionPath -ErrorAction Stop).Path
-    $solutionDirectory = Split-Path $resolvedSolution -Parent
-
-    $homePath = if ($IsWindows -and -not [string]::IsNullOrWhiteSpace($env:USERPROFILE)) {
-        $env:USERPROFILE
-    }
-    elseif (-not [string]::IsNullOrWhiteSpace($env:HOME)) {
-        $env:HOME
-    }
-    else {
-        $PWD.Path
-    }
-
-    $dllPath = [System.IO.Path]::Combine(
-        $homePath,
-        '.nuget',
-        'packages',
-        'uno.winui.devserver',
-        $env:NBGV_SemVer2,
-        'tools','rc','host','net10.0','Uno.UI.RemoteControl.Host.dll'
-    )
-
-    if (-not (Test-Path -LiteralPath $dllPath)) {
-        throw "Remote Control Host not found at $dllPath"
-    }
-
-    $stdOutFile = [System.IO.Path]::GetTempFileName()
-    $stdErrFile = [System.IO.Path]::GetTempFileName()
-
-    $arguments = @(
-        $dllPath,
-        '--httpPort', $Port,
-        '--solution', $resolvedSolution
-    )
-
-    $process = Start-Process -FilePath 'dotnet' -ArgumentList $arguments -WorkingDirectory $solutionDirectory -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -PassThru
-
-    $timedOut = $false
-    try {
-        $timeoutMs = 60000
-        if (-not $process.WaitForExit($timeoutMs)) {
-            $timedOut = $true
-            try { $process.Kill() } catch {}
-        }
-    }
-    finally {
-        $stdout = Get-Content $stdOutFile -ErrorAction SilentlyContinue -Raw
-        $stderr = Get-Content $stdErrFile -ErrorAction SilentlyContinue -Raw
-
-        Remove-Item $stdOutFile -ErrorAction SilentlyContinue
-        Remove-Item $stdErrFile -ErrorAction SilentlyContinue
-
-        Write-Log "RemoteControlHost STDOUT:`n$stdout"
-        Write-Log "RemoteControlHost STDERR:`n$stderr"
-    }
-
-    if ($timedOut) {
-        throw "Remote Control Host timed out after 60 seconds."
-    }
-
-    if ($process.ExitCode -ne 0) {
-        throw "Remote Control Host exited with code $($process.ExitCode)."
-    }
-}
-
 try {
     cd $env:BUILD_SOURCESDIRECTORY/src/SolutionTemplate
     & $env:BUILD_SOURCESDIRECTORY/build/test-scripts/update-uno-sdk-globaljson.ps1
@@ -456,8 +381,6 @@ try {
     Write-Log "Devserver HTTP port $port is open at $DevServerBaseUrl"
 
     & dotnet uno-devserver stop
-
-    Prime-RemoteControlHost -SolutionPath "$env:BUILD_SOURCESDIRECTORY/src/SolutionTemplate/5.6/uno56netcurrent/uno56netcurrent.sln" -Port 48718
 
     $openApiToken = $env:CODEX_API_KEY
     if ([string]::IsNullOrWhiteSpace($openApiToken)) {
