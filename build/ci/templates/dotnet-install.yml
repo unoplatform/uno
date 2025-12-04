@@ -5,7 +5,7 @@ parameters:
 steps:
   - bash: |
       rm global.json
-      cp build/ci/net10/global.json global.json
+      cp build/ci/net10/_global.json global.json
     displayName: "Using .NET 10 global.json"
     condition: ${{ eq(parameters.haveCheckout, true) }}
 
