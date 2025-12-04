@@ -81,6 +81,16 @@
 
 	</Target>
 
+	<Target Name="BuildCIReference">
+
+		<MSBuild
+			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
+			Projects="filters\Uno.UI-packages-reference.slnf"
+			Targets="Restore;Build"
+			RebaseOutputs="false"
+			BuildInParallel="true" />
+	</Target>
+
 	<Target Name="BuildSyncGenerator">
 		<!-- Restore the nuget packages for packages-* solution filters -->
 		<!-- These filters contain Uno.UI project and its dependencies, which are what needs to be restored -->
