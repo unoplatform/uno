@@ -183,13 +183,7 @@ stages:
 - stage: test_finalization
   displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
-  condition: or(
-    ne(variables['Build.Reason'], 'PullRequest'),
-    eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeAndroid'], 'true'),
-    eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeIos'], 'true'),
-    eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeWasm'], 'true'),
-    eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true')
-  )
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.ScreenshotsRequired'], 'true'))
   dependsOn:
     - Setup
     - wasm_tests
