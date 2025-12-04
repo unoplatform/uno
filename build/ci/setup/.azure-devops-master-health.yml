@@ -1,8 +1,8 @@
 parameters:
   vmImage: ''
 
-stage:
-  stage: master_health
+stages:
+- stage: master_health
   displayName: Validate Master Health
   dependsOn:
     - Setup
