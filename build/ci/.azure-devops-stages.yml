@@ -21,6 +21,24 @@ stages:
     - template: setup/.azure-devops-setup-commitsar.yml
     - template: setup/.azure-devops-setup-doc-validations.yml
 
+  - job: DetermineScope
+    displayName: Determine Native Test Scope
+
+    pool:
+      vmImage: $(linuxVMImage)
+
+    steps:
+    - checkout: self
+      clean: false
+      fetchDepth: 0
+
+    - task: PowerShell@2
+      name: SetScope
+      displayName: Evaluate native-impacting changes
+      inputs:
+        pwsh: true
+        filePath: build/ci/scripts/determine-test-scope.ps1
+
 - stage: master_health
   displayName: Validate Master Health
   dependsOn:
@@ -51,7 +69,7 @@ stages:
 - stage: binaries_build_native_macos
   displayName: Build - Native Binaries
   dependsOn:
-    - master_health
+    - Setup
 
   jobs:
   - template: build/.azure-devops-build-native.yml
@@ -90,7 +108,7 @@ stages:
 - stage: unit_tests
   displayName: Tests - Unit Tests
   dependsOn:
-    - master_health
+    - Setup
 
   jobs:
 
@@ -100,9 +118,9 @@ stages:
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
-  condition: ne(variables['Build.Reason'], 'PullRequest')
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeWasm'], 'true'))
   dependsOn:
-    - master_health
+    - Setup
 
   jobs:
   
@@ -125,9 +143,9 @@ stages:
 
 - stage: android_tests
   displayName: Tests - Android Native
-  condition: ne(variables['Build.Reason'], 'PullRequest')
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeAndroid'], 'true'))
   dependsOn:
-    - master_health
+    - Setup
 
   jobs:
   - template: tests/.azure-devops-tests-android-native.yml
@@ -140,9 +158,9 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
-  condition: ne(variables['Build.Reason'], 'PullRequest')
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeIos'], 'true'))
   dependsOn:
-    - master_health
+    - Setup
 
   jobs:
   - template: tests/.azure-devops-tests-ios-native.yml
@@ -155,7 +173,7 @@ stages:
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK
   dependsOn:
-    - master_health
+    - Setup
 
   jobs:
   - template: tests/.azure-devops-tests-winappsdk.yml
@@ -165,7 +183,15 @@ stages:
 - stage: test_finalization
   displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
+  condition: or(
+    ne(variables['Build.Reason'], 'PullRequest'),
+    eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeAndroid'], 'true'),
+    eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeIos'], 'true'),
+    eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeWasm'], 'true'),
+    eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.SkiaScreenshots'], 'true')
+  )
   dependsOn:
+    - Setup
     - wasm_tests
     - ios_tests
     - android_tests
@@ -183,7 +209,7 @@ stages:
 - stage: ios_testflight
   displayName: Publish - iOS Testflight
   dependsOn:
-    - master_health
+    - Setup
 
   jobs:
   - template: publish/.azure-devops-publish-ios-testflight.yml
