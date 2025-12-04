@@ -290,3 +290,5 @@ jobs:
       NBGV_SemVer2: $(NBGV_SemVer2)
       WasmCachePath: $(WasmCachePath)
       OPENAPI_TOKEN: $(OPENAPI_TOKEN)
+      UNO_STUDIO_LICENSES_BIN: $(UNO_STUDIO_LICENSES_BIN)
+      UNO_STUDIO_USER_JSON: $(UNO_STUDIO_USER_JSON)
