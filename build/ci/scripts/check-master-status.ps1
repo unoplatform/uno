@@ -20,7 +20,7 @@ try {
         exit 0
     }
 
-    Write-Error "Latest master build $($latestBuild.buildNumber) failed."
+    Write-Host "Latest master build $($latestBuild.buildNumber) failed."
 
     $lastSuccess = $builds |
         Where-Object { $_.result -eq "succeeded" -or $_.result -eq "partiallySucceeded" } |
@@ -38,7 +38,7 @@ try {
     Write-Host "Last successful build was $($lastSuccess.buildNumber) at $lastSuccessTime ($([Math]::Round($diff.TotalHours, 2)) hours ago)."
 
     if ($diff.TotalHours -gt 24) {
-        Write-Error "Master has been failing for more than 24 hours. Last success was at $lastSuccessTime. Blocking PR merge."
+        Write-Host "Master has been failing for more than 24 hours. Last success was at $lastSuccessTime. Blocking PR merge."
         exit 1
     }
 
