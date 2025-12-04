@@ -10,6 +10,11 @@ stages:
     steps:
     - checkout: self
       clean: true
+      sparseCheckoutPatterns: |
+        doc/**
+        README.md
+        README/**
+        build/**
 
     - template: templates/gitversion-run.yml
     - template: setup/.azure-devops-setup-commitsar.yml
