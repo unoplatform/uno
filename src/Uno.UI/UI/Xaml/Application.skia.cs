@@ -97,7 +97,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		static partial void StartPartial(Func<ApplicationInitializationCallbackParams, Application?> callback)
+		private static partial Application? StartPartial(Func<ApplicationInitializationCallbackParams, Application?> callback)
 		{
 			_startInvoked = true;
 
@@ -118,6 +118,8 @@ namespace Microsoft.UI.Xaml
 				// the creation of the window to be synchronous to avoid a black screen.
 				currentApp.InvokeOnLaunched();
 			}
+
+			return currentApp;
 		}
 
 		private void InvokeOnLaunched()
