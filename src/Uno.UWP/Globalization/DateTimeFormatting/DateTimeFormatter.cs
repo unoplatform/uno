@@ -802,62 +802,31 @@ public sealed partial class DateTimeFormatter
 				return string.Empty;
 			}
 
-			const char singleQuoteChar = '\'';
 			var builder = new StringBuilder();
-			int i = 0;
-			int len = str.Length;
 
-			while (i < len)
+			foreach (var part in IsWithinSingleQuotesRegex().Split(str))
 			{
-				char currentChar = str[i];
-
-				// Handle quoted section (literals) "MMMM 'de' yyyy"
-				if (currentChar == singleQuoteChar)
+				// add quoted literal as is, without the quotes
+				if (part.StartsWith('\''))
 				{
-					i++;
-					var literal = new StringBuilder();
-
-					while (i < len)
-					{
-						if (str[i] == singleQuoteChar)
-						{
-							if (i + 1 < len && str[i + 1] == singleQuoteChar)
-							{
-								literal.Append(singleQuoteChar);
-								i += 2;
-							}
-							else
-							{
-								// End of quoted section
-								i++;
-								break;
-							}
-						}
-						else
-						{
-							literal.Append(str[i]);
-							i++;
-						}
-					}
-
-					builder.Append(literal);
+					builder.Append(part[1..^1]);
 				}
+				// for non-quoted parts, further segment them by continous character
 				else
 				{
-					int count = 1;
-					i++;
-
-					while (i < len && str[i] == currentChar)
+					foreach (var segment in DateTimeFormatPartsRegex().EnumerateMatches(part))
 					{
-						count++;
-						i++;
+						AddToBuilder(builder, part[segment.Index], segment.Length);
 					}
-
-					AddToBuilder(builder, currentChar, count);
 				}
 			}
-
 			return builder.ToString();
 		}
 	}
+
+	[GeneratedRegex(@"('[^']+')")]
+	private static partial Regex IsWithinSingleQuotesRegex();
+
+	[GeneratedRegex(@"(.)(\1+)?")]
+	private static partial Regex DateTimeFormatPartsRegex();
 }
