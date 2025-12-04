@@ -21,10 +21,37 @@ stages:
     - template: setup/.azure-devops-setup-commitsar.yml
     - template: setup/.azure-devops-setup-doc-validations.yml
 
+- stage: master_health
+  displayName: Validate Master Health
+  dependsOn:
+    - Setup
+
+  jobs:
+  - job: MasterHealth
+    displayName: Check Master Build Status
+
+    pool:
+      vmImage: $(linuxVMImage)
+
+    steps:
+    - checkout: self
+      clean: false
+
+    - task: PowerShell@2
+      inputs:
+        pwsh: true
+        filePath: build/ci/scripts/check-master-status.ps1
+        arguments: >
+          -Project "$(System.TeamProject)"
+          -DefinitionId "$(System.DefinitionId)"
+        condition: eq(variables['Build.Reason'], 'PullRequest')
+      env:
+        SYSTEM_COLLECTIONURI: $(System.CollectionUri)
+
 - stage: binaries_build_native_macos
   displayName: Build - Native Binaries
   dependsOn:
-    - Setup
+    - master_health
 
   jobs:
   - template: build/.azure-devops-build-native.yml
@@ -63,7 +90,7 @@ stages:
 - stage: unit_tests
   displayName: Tests - Unit Tests
   dependsOn:
-    - Setup
+    - master_health
 
   jobs:
 
@@ -75,7 +102,7 @@ stages:
   displayName: Tests - WebAssembly Native
   condition: ne(variables['Build.Reason'], 'PullRequest')
   dependsOn:
-    - Setup
+    - master_health
 
   jobs:
   
@@ -100,7 +127,7 @@ stages:
   displayName: Tests - Android Native
   condition: ne(variables['Build.Reason'], 'PullRequest')
   dependsOn:
-    - Setup
+    - master_health
 
   jobs:
   - template: tests/.azure-devops-tests-android-native.yml
@@ -115,7 +142,7 @@ stages:
   displayName: Tests - iOS Native
   condition: ne(variables['Build.Reason'], 'PullRequest')
   dependsOn:
-    - Setup
+    - master_health
 
   jobs:
   - template: tests/.azure-devops-tests-ios-native.yml
@@ -128,7 +155,7 @@ stages:
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK
   dependsOn:
-    - Setup
+    - master_health
 
   jobs:
   - template: tests/.azure-devops-tests-winappsdk.yml
@@ -156,7 +183,7 @@ stages:
 - stage: ios_testflight
   displayName: Publish - iOS Testflight
   dependsOn:
-    - Setup
+    - master_health
 
   jobs:
   - template: publish/.azure-devops-publish-ios-testflight.yml
