@@ -7,18 +7,9 @@ stages:
     pool:
       vmImage: $(linuxVMImage)
 
-    variables:
-      npm_config_cache: $(Pipeline.Workspace)/.npm
-
     steps:
     - checkout: self
       clean: true
-
-    - task: Cache@2
-      inputs:
-        key: validation | $(Agent.OS) | $(Build.SourcesDirectory)/build/ci/**
-        path: $(npm_config_cache)
-      displayName: Cache npm packages
 
     - template: templates/gitversion-run.yml
     - template: setup/.azure-devops-setup-commitsar.yml
@@ -77,6 +68,7 @@ stages:
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
+  condition: ne(variables['Build.Reason'], 'PullRequest')
   dependsOn:
     - Setup
 
@@ -101,6 +93,7 @@ stages:
 
 - stage: android_tests
   displayName: Tests - Android Native
+  condition: ne(variables['Build.Reason'], 'PullRequest')
   dependsOn:
     - Setup
 
@@ -115,6 +108,7 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
+  condition: ne(variables['Build.Reason'], 'PullRequest')
   dependsOn:
     - Setup
 

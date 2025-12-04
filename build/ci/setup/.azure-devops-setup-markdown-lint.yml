@@ -3,9 +3,19 @@ steps:
   inputs:
     versionSpec: '18.x'
 
+- task: Cache@2
+  displayName: Cache npm (markdownlint)
+  inputs:
+    key: validation | markdownlint | v0.38.0 | $(Agent.OS)
+    path: $(Pipeline.Workspace)/.npm/markdownlint
+
 # Keep that version in sync with documentation at doc/README.md
 - bash: npm install -g markdownlint-cli@0.38.0
   displayName: Install markdownlint-cli
+  env:
+    NPM_CONFIG_CACHE: $(Pipeline.Workspace)/.npm/markdownlint
 
 - bash: markdownlint -c $(Build.SourcesDirectory)/build/.markdownlint.json "doc/**/*.md"
   displayName: Run Markdown Linter
+  env:
+    NPM_CONFIG_CACHE: $(Pipeline.Workspace)/.npm/markdownlint
