@@ -255,6 +255,14 @@ jobs:
     inputs:
       artifactName: 'Nuget_Packages'
 
+  # Install the .NET 10 SDK in the default system location so 
+  # the devserver tests can find them.
+  - task: UseDotNet@2
+    displayName: Install .NET 10 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '10.0.100'
+
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-install.yml
   - template: ../templates/uno-dev-feed.yml
