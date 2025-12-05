@@ -398,7 +398,7 @@ try {
             Invoke-CodexToolEnumerationTest -WorkingDirectory $slnDir
         }
         else {
-            Write-Log "Codex CLI unavailable after installation attempt. Skipping Codex MCP integration test."
+            throw "Codex CLI unavailable after installation attempt."
         }
     }
 
