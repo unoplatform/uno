@@ -256,6 +256,11 @@ Begin now.
     foreach ($tool in $json.tools) {
         Write-Log " - $tool"
     }
+
+    $screenshotTool = $json.tools | Where-Object { $_ -like '*uno_app_get_screenshot*' } | Select-Object -First 1
+    if (-not $screenshotTool) {
+        throw "Codex CLI did not report the required 'uno_app_get_screenshot' tool."
+    }
 }
 
 function Setup-UnoStudioLicenses {
