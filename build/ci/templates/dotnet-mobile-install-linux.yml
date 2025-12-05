@@ -3,6 +3,8 @@ parameters:
 
 steps:
 
+  - template: dotnet-install.yml
+
   - bash: |
       ubuntu_release=`lsb_release -rs`
       wget https://packages.microsoft.com/config/ubuntu/${ubuntu_release}/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
@@ -17,8 +19,6 @@ steps:
   - template: dotnet-setup-cache.yml
     parameters:
       UnoCheckParameters: ${{ parameters.UnoCheckParameters }}
-
-  - template: dotnet-install.yml
 
   - bash: |
       dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json
