@@ -329,7 +329,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// Note: rect has already been rounded, if needed, during arrange.
 			var visual = Visual;
-			visual.Offset = new Vector3((float)rect.X, (float)rect.Y, 0) + _translation;
+			visual.ArrangeOffset = new Vector3((float)rect.X, (float)rect.Y, 0) + _translation;
 			visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
 			if (_renderTransform is null && !GetFlowDirectionTransform().IsIdentity)
 			{
