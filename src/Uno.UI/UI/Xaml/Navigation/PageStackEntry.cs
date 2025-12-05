@@ -70,50 +70,6 @@ public sealed partial class PageStackEntry : DependencyObject
 		return spPageStackEntry;
 	}
 
-	internal static string BuildDescriptor(Type pageType)
-	{
-		var assemblyQualifiedName = pageType.AssemblyQualifiedName
-			?? throw new ArgumentException($"Type {pageType.FullName} does not have an assembly-qualified name.", nameof(pageType));
-
-		if (AssemblyLoadContext.GetLoadContext(pageType.Assembly) != AssemblyLoadContext.Default)
-		{
-			var alc = AssemblyLoadContext.GetLoadContext(pageType.Assembly);
-			return $"{assemblyQualifiedName}{AlcDescriptorDelimiter}{alc.Name}";
-		}
-
-		return assemblyQualifiedName;
-	}
-
-	/// <summary>
-	/// Resolves a type descriptor string to a Type instance.
-	/// </summary>
-	/// <param name="descriptor">The descriptor string, either an assembly-qualified name or a name with ALC suffix (##ALCName).</param>
-	/// <returns>The resolved Type, or null if the type cannot be found or the ALC is not loaded.</returns>
-	[return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
-	internal static Type ResolveDescriptor(string descriptor)
-	{
-		if (!descriptor.Contains(AlcDescriptorDelimiter))
-		{
-			// Type.GetType returns null if the type is not found
-			return Type.GetType(descriptor);
-		}
-
-		var alcParts = descriptor.Split(AlcDescriptorDelimiter, StringSplitOptions.None);
-
-		if (AssemblyLoadContext.All.FirstOrDefault(alc => alc.Name == alcParts[1]) is { } alc)
-		{
-			using (alc.EnterContextualReflection())
-			{
-				// Type.GetType returns null if the type is not found in the ALC
-				return Type.GetType(alcParts[0]);
-			}
-		}
-
-		throw new InvalidOperationException(
-			$"Failed to resolve type descriptor '{descriptor}': AssemblyLoadContext with name '{alcParts[1]}' was not found.");
-	}
-
 	//------------------------------------------------------------------------
 	//
 	//  Method: PrepareContent
