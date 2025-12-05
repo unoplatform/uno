@@ -17,12 +17,39 @@ startOnLoad: false
 mermaid.init(undefined, ".lang-mermaid");
 </script>
 
-<!-- Algolia DocSearch -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
-<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<!-- Algolia DocSearch v4 -->
+<!-- 
+    DocSearch v4 Implementation
+    
+    This implements Algolia DocSearch v4 (community plan) for the Uno Platform documentation.
+    DocSearch v4 uses Algolia Autocomplete v1 and provides improved relevance, grouping, and UI.
+    
+    Current Configuration:
+    - Index: platform (production)
+    - AppId: PHB9D8WS99
+    - API Key: 7877394996f96cde1a9b795dce3f7787
+    - maxResultsPerGroup: 10 (increased from default 5 for better visibility)
+    
+    Future Enhancements (as per issue #1588):
+    - Phase 4: Add "See all results" footer (resultsFooterComponent in v4 API)
+    - Phase 4: Implement full /search page using InstantSearch.js
+    - Optional: Evaluate Ask AI feature (may require paid plan)
+    
+    Staging Configuration:
+    - For testing changes, use staging index: platform-staging
+    - Staging website: https://unoplatformdocstaging.z13.web.core.windows.net/articles/intro.html
+    
+    Documentation:
+    - DocSearch v4: https://docsearch.algolia.com/docs/docsearch
+    - v4 API Reference: https://docsearch.algolia.com/docs/api/
+    - Autocomplete: https://www.algolia.com/doc/ui-libraries/autocomplete/introduction/
+    - InstantSearch: https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/js
+-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@4" />
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@4"></script>
 <script>
     /**
-     * Initialize Algolia DocSearch
+     * Initialize Algolia DocSearch v4
      * This function initializes DocSearch for the element with id 'docsearch'.
      */
     function initializeDocSearch() {
@@ -41,16 +68,75 @@ mermaid.init(undefined, ".lang-mermaid");
                         console.log("MutationObserver disconnected.");
                     }
                 } else {
-                    // Initialize DocSearch if not already initialized
-                    console.log("Initializing DocSearch...");
+                    // Initialize DocSearch v4 if not already initialized
+                    console.log("Initializing DocSearch v4...");
                     docsearch({
                         container: '#docsearch',
                         appId: 'PHB9D8WS99',
                         indexName: 'platform',
                         apiKey: '7877394996f96cde1a9b795dce3f7787',
-                        placeholder: 'Search Docs...'
+                        placeholder: 'Search Docs...',
+                        // v4 Configuration Options
+                        maxResultsPerGroup: 10, // Increased from default 5 for better result visibility
+                        insights: true, // Enable search analytics tracking
+                        debug: false, // Set to true for debugging search issues
+                        // Analytics: Track searches and clicks
+                        transformItems(items) {
+                            // Track displayed results
+                            if (items.length > 0 && window.gtag) {
+                                gtag('event', 'view_search_results', {
+                                    search_term: items[0].__autocomplete_queryID || 'unknown',
+                                });
+                            }
+                            return items;
+                        },
+                        // Track clicks on search results
+                        navigator: {
+                            navigate({ itemUrl }) {
+                                const query = document.querySelector('#docsearch input')?.value;
+                                if (window.gtag && query) {
+                                    gtag('event', 'search_result_click', {
+                                        search_term: query,
+                                        link_url: itemUrl,
+                                    });
+                                }
+                                window.location.assign(itemUrl);
+                            },
+                        }
+                        // "See all results" footer component (v4 feature)
+                        resultsFooterComponent: ({ state }) => {
+                            const query = state.query;
+                            if (!query) return null;
+                            
+                            const relPath = document.querySelector("meta[property='docfx\\:rel']")?.getAttribute("content") || '';
+                            const searchUrl = `${relPath}search.html?q=${encodeURIComponent(query)}`;
+                            
+                            return {
+                                type: 'a',
+                                ref: undefined,
+                                constructor: undefined,
+                                key: 'see-all-results',
+                                props: {
+                                    href: searchUrl,
+                                    style: {
+                                        display: 'block',
+                                        textAlign: 'center',
+                                        padding: '12px 16px',
+                                        borderTop: '1px solid #e0e0e0',
+                                        color: '#5468ff',
+                                        textDecoration: 'none',
+                                        fontWeight: '500',
+                                    },
+                                    onClick: (e) => {
+                                        // Let the link work normally
+                                        return true;
+                                    },
+                                    children: `See all results for "${query}"`,
+                                },
+                            };
+                        },
                     });
-                    console.log("DocSearch initialized.");
+                    console.log("DocSearch v4 initialized.");
                     // Disconnect the observer after initialization
                     if (observer) {
                         observer.disconnect();
