@@ -46,7 +46,7 @@ If your old WinUI/UWP app project had dependencies, you will have to add those d
 
 - .NET Standard projects within the solution: you should be able to add these as dependencies to any target platform project without difficulties.
 
-- WinUI/UWP projects within the solution: these will have to be modified to be cross-platform class libraries - follow the instructions [here](migrating-libraries.md).
+- WinUI/UWP projects within the solution: these will have to be modified to be cross-platform class libraries - follow the instructions in [Migrating Libraries](migrating-libraries.md).
 
 - external dependencies: [see information here](migrating-before-you-start.md) on finding equivalent dependencies for NuGet packages and framework libraries.
 

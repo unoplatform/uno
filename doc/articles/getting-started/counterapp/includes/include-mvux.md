@@ -13,7 +13,7 @@ As part of creating the application, we selected MVUX as the presentation framew
     }
     ```
 
-- Add a new `partial record` above named `Countable`. This record will be responsible for updating our counter's properties all while ensuring immutability. Learn more about immutable records [here](xref:Uno.Extensions.Mvux.Records#how-to-create-immutable-records).
+- Add a new `partial record` above named `Countable`. This record will be responsible for updating our counter's properties all while ensuring immutability. Learn more about [immutable records](xref:Uno.Extensions.Mvux.Records#how-to-create-immutable-records).
 
     ```csharp
     internal partial record Countable
@@ -44,7 +44,7 @@ As part of creating the application, we selected MVUX as the presentation framew
     public IState<Countable> Countable => State.Value(this, () => new Countable(0, 1));
     ```
 
-- Add a method named `IncrementCounter` to the `MainModel` that will in turn call the `Countable`'s `Increment` method and therefore update the counter. You can find more information on commands in MVUX [here](xref:Uno.Extensions.Mvux.Advanced.Commands).
+- Add a method named `IncrementCounter` to the `MainModel` that will in turn call the `Countable`'s `Increment` method and therefore update the counter. You can find more information on [commands in MVUX](xref:Uno.Extensions.Mvux.Advanced.Commands).
 
     ```csharp
     public ValueTask IncrementCounter()
