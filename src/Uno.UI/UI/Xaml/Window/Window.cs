@@ -75,7 +75,13 @@ partial class Window
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
 
-		if (!NativeWindowFactory.SupportsMultipleWindows)
+		if (
+			!NativeWindowFactory.SupportsMultipleWindows
+
+			// When a second ALC is defined with a Window, we allow it
+			// even on single-window platforms
+			&& Window.ContentHostOverride == null
+		)
 		{
 			if (_current is not null && _current != this)
 			{
@@ -201,12 +207,13 @@ partial class Window
 		}
 	}
 
+	/// <summary>
 	/// Gets or sets an internal <c>static</c> content host override for scenarios like secondary AssemblyLoadContext (ALC) hosting.
-	/// <para>
-	/// <strong>Global effect:</strong> This property is <c>static</c> and affects all <see cref="Window"/> instances in the application.
-	/// <strong>Thread safety:</strong> This property is <c>not thread-safe</c>; it should be set during application startup, before creating any secondary ALC applications.
-	/// <strong>Usage:</strong> When set, <see cref="Window.Content"/> from secondary ALCs will redirect to this <see cref="ContentControl"/>.
-	/// </para>
+	/// </summary>
+	/// <remarks>
+	/// Global effect: This property is <c>static</c> and affects all <see cref="Window"/> instances in the application.
+	/// Usage: When set, <see cref="Window.Content"/> from secondary ALCs will redirect to this <see cref="ContentControl"/>.
+	/// </remarks>
 	internal static ContentControl? ContentHostOverride { get; set; }
 
 	/// <summary>

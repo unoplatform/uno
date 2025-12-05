@@ -20,6 +20,7 @@ using Windows.UI.Text;
 using System.Collections.Generic;
 using Microsoft.UI.Composition;
 using Windows.Storage;
+using System.Runtime.Loader;
 
 
 #if HAS_UNO_WINUI || WINAPPSDK
@@ -101,7 +102,20 @@ namespace Microsoft.UI.Xaml
 
 			if (OperatingSystem.IsBrowser())
 			{
-				_ = ApplicationData.Current.EnablePersistenceAsync();
+				if (AssemblyLoadContext.GetLoadContext(currentApp.GetType().Assembly) == AssemblyLoadContext.Default)
+				{
+					// Ensure the assembly containing Application is not unloaded while running in WASM
+					_ = ApplicationData.Current.EnablePersistenceAsync();
+				}
+				else
+				{
+					// Secondary ALC uses the primary ALC's ApplicationData, so no need to initialize it again
+
+					if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(Application).Log().Debug("Skipping secondary ALC persistence initialization");
+					}
+				}
 
 				// Force a schedule to let the dotnet exports be initialized properly
 				DispatcherQueue.Main.TryEnqueue(currentApp.InvokeOnLaunched);

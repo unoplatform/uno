@@ -24,7 +24,14 @@ internal class WebAssemblyWindowFactoryExtension : INativeWindowFactoryExtension
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
-		if (_initialWindow is not null && _initialWindow != window)
+		if (
+			_initialWindow is not null
+			&& _initialWindow != window
+
+			// When a second ALC is defined with a Window, we allow it
+			// even on single-window platforms
+			&& Window.ContentHostOverride == null
+		)
 		{
 			throw new InvalidOperationException("Wasm Skia currently supports single window only");
 		}
