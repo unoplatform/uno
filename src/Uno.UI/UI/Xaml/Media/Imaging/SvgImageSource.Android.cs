@@ -81,7 +81,7 @@ partial class SvgImageSource
 				}
 				else
 				{
-					using var imageStream = await ImageSourceHelpers.OpenStreamFromUriAsync(UriSource, ct);
+					using var imageStream = await AppDataUriEvaluator.ToStream(UriSource, ct);
 					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(imageStream, ct);
 				}
 			}

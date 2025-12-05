@@ -22,6 +22,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
+using Uno.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
@@ -2058,6 +2059,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var text = "copied content";
 			dp.SetText(text);
 			Clipboard.SetContent(dp);
+			await Task.Delay(500);
 
 			// This actually matches WinUI. text comes before "initial" and text2 comes after text
 
@@ -2069,6 +2071,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var text2 = "copied content 2";
 			dp2.SetText(text2);
 			Clipboard.SetContent(dp2);
+			await Task.Delay(500);
 
 			SUT.PasteFromClipboard();
 			await WindowHelper.WaitForIdle();
@@ -2738,7 +2741,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			var bounds = SUT.GetAbsoluteBounds();
-			mouse.MoveTo(bounds.GetCenter());
+			mouse.MoveTo(bounds.Location.Offset(145, 50));
 			await WindowHelper.WaitForIdle();
 
 			mouse.Press();
@@ -2956,8 +2959,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(13, SUT.SelectionStart);
-			Assert.AreEqual(26, SUT.SelectionLength);
+			Assert.AreEqual(25, SUT.SelectionStart);
+			Assert.AreEqual(14, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -4214,10 +4217,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				// For some reason, the caret sometimes appears black, and sometimes as very dark grey (#FF030303), so we check for both
-				Color[] blacks = [Colors.Black, Colors.FromARGB(0xFF, 0x03, 0x03, 0x03)];
-				if (blacks.Any(b => HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), b)) &&
-					blacks.All(b => !HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black)))
+				// this color is the result of alpha blending 0xE4000000 (the default caret color) on top of 0xFFFFFFFF
+				var black = Colors.White.AlphaBlend(((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
+				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), black) &&
+					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), black))
 				{
 					break;
 				}

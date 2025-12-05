@@ -590,13 +590,13 @@ namespace Uno.UI.Samples.Tests
 				default:
 				case TestResult.Error:
 				case TestResult.Failed:
-					return "❌ (F)";
+					return "\uE711 (F)";
 
 				case TestResult.Skipped:
-					return "🚫 (I)";
+					return "\uEE35 (I)";
 
 				case TestResult.Passed:
-					return "✔️ (S)";
+					return "\uE73E️ (S)";
 			}
 		}
 

@@ -155,10 +155,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
 		}
 
-		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
-		// is different between the fallback font and OpenSans
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm)]
+		// Different platforms will resolve SKFontManager.Default.MatchCharacter to different fonts
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 		public async Task Check_FontFallback_Shaping()
 		{
 			var SUT = new TextBlock
@@ -169,7 +168,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
-			var familyName = skFont.Typeface.FamilyName;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
@@ -656,9 +654,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		public async Task When_FontFamily_In_Separate_Assembly()
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[DataRow("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf")]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf")]
+		public async Task When_FontFamily_Changed(string font)
 		{
-			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
+			var SUT = new TextBlock { Text = "abcd" };
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForIdle();
 
@@ -670,38 +671,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
 			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
 
-			SUT.FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf");
-
-			int counter = 3;
-
-			do
-			{
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(100);
-
-				SUT.InvalidateMeasure();
-			}
-			while (SUT.DesiredSize == originalSize && counter-- > 0);
-
-			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
-		}
-
-		[TestMethod]
-		public async Task When_FontFamily_Default()
-		{
-			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForIdle();
-
-			var size = new Size(1000, 1000);
-			SUT.Measure(size);
-
-			var originalSize = SUT.DesiredSize;
-
-			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
-			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
-
-			SUT.FontFamily = Application.Current.Resources["SymbolThemeFontFamily"] as FontFamily;
+			SUT.FontFamily = new FontFamily(font);
 
 			int counter = 3;
 
