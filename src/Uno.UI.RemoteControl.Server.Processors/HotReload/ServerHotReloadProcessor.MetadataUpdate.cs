@@ -674,7 +674,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				.RemoveDocuments(changeSet.RemovedDocuments)
 				.RemoveAdditionalDocuments(changeSet.RemovedAdditionalDocuments);
 
-			// If a document has been added, we make sure to refresh teh configuration of the analyzers.
+			// If a document has been added, we make sure to refresh the configuration of the analyzers.
 			// This is especially required for new XAML files to have the 'build_metadata.AdditionalFiles.SourceItemGroup = Page' updated
 			// from the file ./obj/Debug/{tfm}/{projectName}.GeneratedMSBuildEditorConfig.editorconfig
 			if (changeSet.HasAddOrRemove)
