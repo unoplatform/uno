@@ -11,11 +11,13 @@ steps:
 
   - pwsh: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)/.dotnet"
+      echo "##vso[task.setvariable variable=DOTNET_ROOT;]$(Build.SourcesDirectory)/.dotnet"
     displayName: "Set DOTNET_INSTALL_DIR for macOS/Linux"
     condition: or(eq(variables['Agent.OS'], 'Linux'), eq(variables['Agent.OS'], 'Darwin'))
 
   - pwsh: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)\.dotnet"
+      echo "##vso[task.setvariable variable=DOTNET_ROOT;]$(Build.SourcesDirectory)\.dotnet"
     displayName: "Set DOTNET_INSTALL_DIR for Windows"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
 
