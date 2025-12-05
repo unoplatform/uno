@@ -7,7 +7,7 @@ steps:
     inputs:
       pwsh: true
       targetType: inline
-        script: |
+      script: |
         $ErrorActionPreference = 'Stop'
         $args = @('workload', 'install', 'wasm-tools-net9')
         if ($IsWindows) {
