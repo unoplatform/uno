@@ -804,7 +804,7 @@ public sealed partial class DateTimeFormatter
 
 			var builder = new StringBuilder();
 
-			foreach (var part in IsWithinSingleQuotesRegex().Split(str))
+			foreach (var part in StringLiteralRegex().Split(str))
 			{
 				// skip empty block
 				if (part.Length == 0)
@@ -822,7 +822,7 @@ public sealed partial class DateTimeFormatter
 				// for non-quoted parts, further segment them by grouping repeated character(s)
 				else
 				{
-					foreach (var segment in DateTimeFormatPartsRegex().EnumerateMatches(part))
+					foreach (var segment in RepeatedCharactersRegex().EnumerateMatches(part))
 					{
 						AddToBuilder(builder, part[segment.Index], segment.Length);
 					}
@@ -834,8 +834,8 @@ public sealed partial class DateTimeFormatter
 	}
 
 	[GeneratedRegex(@"('[^']+')")]
-	private static partial Regex IsWithinSingleQuotesRegex();
+	private static partial Regex StringLiteralRegex();
 
 	[GeneratedRegex(@"(.)(\1+)?")]
-	private static partial Regex DateTimeFormatPartsRegex();
+	private static partial Regex RepeatedCharactersRegex();
 }
