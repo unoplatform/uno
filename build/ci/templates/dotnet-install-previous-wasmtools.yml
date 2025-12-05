@@ -17,3 +17,6 @@ steps:
           sudo dotnet @args
         }
     retryCountOnTaskFailure: 3
+    env:
+      DOTNET_ROOT: $(DOTNET_ROOT)
+      DOTNET_INSTALL_DIR: $(DOTNET_INSTALL_DIR)
