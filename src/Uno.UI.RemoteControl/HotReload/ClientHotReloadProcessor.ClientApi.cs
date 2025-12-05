@@ -116,7 +116,7 @@ public partial class ClientHotReloadProcessor
 		}
 
 		public UpdateRequest Undo()
-			=> this with { Edits = [..Edits.Select(edit => edit with { OldText = edit.NewText, NewText = edit.OldText })] };
+			=> this with { Edits = [.. Edits.Select(edit => edit with { OldText = edit.NewText, NewText = edit.OldText })] };
 
 		public UpdateRequest Undo(bool waitForHotReload)
 			=> this with { Edits = [.. Edits.Select(edit => edit with { OldText = edit.NewText, NewText = edit.OldText })], WaitForHotReload = waitForHotReload };
