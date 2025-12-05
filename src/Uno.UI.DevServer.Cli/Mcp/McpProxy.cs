@@ -125,7 +125,7 @@ internal class McpProxy
 			.WithStdioServerTransport()
 			.WithCallToolHandler(async (ctx, ct) =>
 			{
-				var upstreamClient = _mcpClientProxy.UpstreamClient;
+				var upstreamClient = await _mcpClientProxy.UpstreamClient;
 
 				if (_forceRootsFallback && ctx.Params?.Name == _addRootsTool.Name)
 				{
@@ -200,7 +200,7 @@ internal class McpProxy
 					await tcs.Task;
 				}
 
-				var upstreamClient = _mcpClientProxy.UpstreamClient;
+				var upstreamClient = await _mcpClientProxy.UpstreamClient;
 
 				if (upstreamClient is null)
 				{
@@ -210,6 +210,8 @@ internal class McpProxy
 					{
 						tools.Add(_addRootsTool);
 					}
+
+					_logger.LogTrace("Upstream client is not connected, returning {Count} tools", tools.Count);
 
 					// The devserver is not started yet, so there are no tools to report.
 					return new() { Tools = tools };
