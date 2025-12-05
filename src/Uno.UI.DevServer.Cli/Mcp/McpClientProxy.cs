@@ -91,11 +91,14 @@ internal class McpClientProxy
 
 			log.LogTrace("Upstream MCP responded with {Count} tools", tools?.Count);
 
-			if (tools?.Count != 0)
+			_ = Task.Run(() =>
 			{
-				// We already have a list, raise now.
-				_toolListChanged?.Invoke();
-			}
+				if (tools?.Count != 0)
+				{
+					// We already have a list, raise now.
+					_toolListChanged?.Invoke();
+				}
+			});
 		}
 		catch (Exception ex)
 		{

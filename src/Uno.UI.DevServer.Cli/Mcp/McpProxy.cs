@@ -202,6 +202,8 @@ internal class McpProxy
 
 				var upstreamClient = await _mcpClientProxy.UpstreamClient;
 
+				_logger.LogTrace("Got upstream client");
+
 				if (upstreamClient is null)
 				{
 					List<Tool> tools = [];
