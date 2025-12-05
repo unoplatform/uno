@@ -3,13 +3,13 @@ parameters:
 
 steps:
 
+  - template: dotnet-install.yml
+
   - template: jdk-setup.yml
 
   - template: dotnet-setup-cache.yml
     parameters:
       UnoCheckParameters: ${{ parameters.UnoCheckParameters }}
-
-  - template: dotnet-install.yml
 
   - powershell: |
       & dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json
