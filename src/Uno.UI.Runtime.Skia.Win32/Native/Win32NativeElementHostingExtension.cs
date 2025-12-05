@@ -295,7 +295,16 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 		var scale = _presenter.XamlRoot?.RasterizationScale ?? 1;
 
-		_lastArrangeRect = new Rect(arrangeRect.X * scale, arrangeRect.Y * scale, arrangeRect.Width * scale, arrangeRect.Height * scale);
+		var x = arrangeRect.X * scale;
+		var y = arrangeRect.Y * scale;
+		var width = arrangeRect.Width * scale;
+		var height = arrangeRect.Height * scale;
+
+		_lastArrangeRect = new Rect(
+			double.IsFinite(x) ? x : 0,
+			double.IsFinite(y) ? y : 0,
+			double.IsFinite(width) ? width : 0,
+			double.IsFinite(height) ? height : 0);
 
 		var success = PInvoke.SetWindowPos(
 				(HWND)window.Hwnd,
@@ -314,7 +323,12 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		OnRenderingNegativePathReevaluated(this, _lastClipPath);
 	}
 
-	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize) => availableSize;
+	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)
+	{
+		return new Size(
+			double.IsFinite(availableSize.Width) ? availableSize.Width : 0,
+			double.IsFinite(availableSize.Height) ? availableSize.Height : 0);
+	}
 
 	public unsafe object CreateSampleComponent(string text)
 	{
