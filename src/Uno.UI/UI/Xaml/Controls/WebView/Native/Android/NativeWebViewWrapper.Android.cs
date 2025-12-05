@@ -16,7 +16,7 @@ using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class NativeWebViewWrapper : INativeWebView
+internal partial class NativeWebViewWrapper : INativeWebView, INativeWebViewCookieManager
 {
 	private readonly Uri AndroidAssetBaseUri = new Uri("file:///android_asset/");
 
@@ -291,6 +291,140 @@ internal partial class NativeWebViewWrapper : INativeWebView
 		{
 			_coreWebView.RaiseWebMessageReceived(message);
 		}
+	}
+
+	// Cookie Management Implementation
+	Task<IReadOnlyList<CoreWebView2Cookie>> INativeWebViewCookieManager.GetCookiesAsync(string uri)
+	{
+		var cookieManager = Android.Webkit.CookieManager.Instance;
+		var cookies = new List<CoreWebView2Cookie>();
+
+		if (cookieManager != null)
+		{
+			var cookieString = cookieManager.GetCookie(uri);
+			if (!string.IsNullOrEmpty(cookieString))
+			{
+				var cookiePairs = cookieString.Split(';');
+				var parsedUri = new Uri(uri);
+				var domain = parsedUri.Host;
+				var path = parsedUri.AbsolutePath;
+
+				foreach (var cookiePair in cookiePairs)
+				{
+					var trimmedPair = cookiePair.Trim();
+					var equalIndex = trimmedPair.IndexOf('=');
+					if (equalIndex > 0)
+					{
+						var name = trimmedPair.Substring(0, equalIndex);
+						var value = trimmedPair.Substring(equalIndex + 1);
+						var cookie = new CoreWebView2Cookie(name, value, domain, path);
+						cookies.Add(cookie);
+					}
+				}
+			}
+		}
+
+		return Task.FromResult<IReadOnlyList<CoreWebView2Cookie>>(cookies);
+	}
+
+	void INativeWebViewCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie)
+	{
+		var cookieManager = Android.Webkit.CookieManager.Instance;
+		if (cookieManager != null)
+		{
+			var cookieString = BuildCookieString(cookie);
+			var url = $"https://{cookie.Domain}{cookie.Path}";
+			cookieManager.SetCookie(url, cookieString);
+			cookieManager.Flush();
+		}
+	}
+
+	void INativeWebViewCookieManager.DeleteCookie(CoreWebView2Cookie cookie)
+	{
+		var cookieManager = Android.Webkit.CookieManager.Instance;
+		if (cookieManager != null)
+		{
+			// Set cookie with expired date to delete it
+			var expiredCookie = $"{cookie.Name}=; Domain={cookie.Domain}; Path={cookie.Path}; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+			var url = $"https://{cookie.Domain}{cookie.Path}";
+			cookieManager.SetCookie(url, expiredCookie);
+			cookieManager.Flush();
+		}
+	}
+
+	void INativeWebViewCookieManager.DeleteCookies(string name, string uri)
+	{
+		var cookieManager = Android.Webkit.CookieManager.Instance;
+		if (cookieManager != null)
+		{
+			var parsedUri = new Uri(uri);
+			var domain = parsedUri.Host;
+			var path = parsedUri.AbsolutePath;
+			var expiredCookie = $"{name}=; Domain={domain}; Path={path}; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+			cookieManager.SetCookie(uri, expiredCookie);
+			cookieManager.Flush();
+		}
+	}
+
+	void INativeWebViewCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
+	{
+		var cookieManager = Android.Webkit.CookieManager.Instance;
+		if (cookieManager != null)
+		{
+			var expiredCookie = $"{name}=; Domain={domain}; Path={path}; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+			var url = $"https://{domain}{path}";
+			cookieManager.SetCookie(url, expiredCookie);
+			cookieManager.Flush();
+		}
+	}
+
+	void INativeWebViewCookieManager.DeleteAllCookies()
+	{
+		var cookieManager = Android.Webkit.CookieManager.Instance;
+		cookieManager?.RemoveAllCookies(null);
+		cookieManager?.Flush();
+	}
+
+	private string BuildCookieString(CoreWebView2Cookie cookie)
+	{
+		var parts = new List<string>
+		{
+			$"{cookie.Name}={cookie.Value}"
+		};
+
+		if (!string.IsNullOrEmpty(cookie.Domain))
+		{
+			parts.Add($"Domain={cookie.Domain}");
+		}
+
+		if (!string.IsNullOrEmpty(cookie.Path))
+		{
+			parts.Add($"Path={cookie.Path}");
+		}
+
+		if (!cookie.IsSession)
+		{
+			// Convert from seconds since epoch to RFC 2822 format
+			var expiresDate = DateTimeOffset.FromUnixTimeSeconds((long)cookie.Expires);
+			parts.Add($"Expires={expiresDate:R}");
+		}
+
+		if (cookie.IsSecure)
+		{
+			parts.Add("Secure");
+		}
+
+		if (cookie.IsHttpOnly)
+		{
+			parts.Add("HttpOnly");
+		}
+
+		if (cookie.SameSite != CoreWebView2CookieSameSiteKind.None)
+		{
+			parts.Add($"SameSite={cookie.SameSite}");
+		}
+
+		return string.Join("; ", parts);
 	}
 
 	[System.Text.RegularExpressions.GeneratedRegex(@"^file://(?!/)")]
