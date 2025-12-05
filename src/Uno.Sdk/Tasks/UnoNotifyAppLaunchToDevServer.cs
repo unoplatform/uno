@@ -71,6 +71,7 @@ public sealed class UnoNotifyAppLaunchToDevServer_v0 : Task
 			}
 			else
 			{
+				Log.LogError($"[NotifyDevServer] Failed to notify dev server. HTTP {(int)response.StatusCode} {response.ReasonPhrase} returned from {url}");
 				Success = false;
 				ResponseContent = string.Empty;
 				return false;
@@ -78,7 +79,7 @@ public sealed class UnoNotifyAppLaunchToDevServer_v0 : Task
 		}
 		catch (Exception ex)
 		{
-			Log.LogWarning($"[NotifyDevServer] GET {url} failed: {ex.GetType().Name}: {ex.Message}");
+			Log.LogError($"[NotifyDevServer] Failed to notify dev server at {url}. {ex.GetType().Name}: {ex.Message}");
 			Success = false;
 			ResponseContent = string.Empty;
 			return false;

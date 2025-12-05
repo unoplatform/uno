@@ -12,6 +12,8 @@
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "Uno.Analyzers.Tests\\Uno.Analyzers.Tests.csproj",
       "Uno.Analyzers\\Uno.Analyzers.csproj",
+      "Uno.Sdk.Tests\\Uno.Sdk.Tests.csproj",
+      "Uno.Sdk\\Uno.Sdk.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.Tests.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
