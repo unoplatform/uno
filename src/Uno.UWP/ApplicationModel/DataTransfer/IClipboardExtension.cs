@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Uno.ApplicationModel.DataTransfer

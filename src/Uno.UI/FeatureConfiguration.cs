@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -8,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using System.Runtime.InteropServices;
+using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 
 namespace Uno.UI
@@ -884,6 +886,13 @@ namespace Uno.UI
 			/// OpenGL if available. Otherwise, software rendering will be used.
 			/// </summary>
 			public static bool? UseOpenGLOnX11 { get; set; }
+
+			/// <summary>
+			/// Determines if OpenGL ES + EGL should be used instead of OpenGL + GLX if both are available. This value is only
+			/// used if <see cref="UseOpenGLOnX11"/> is true or null. This property only affects the order of attempting
+			/// to create a GL/GlES context but even when true, if the preferred API fails, the other will be attempted.
+			/// </summary>
+			public static bool PreferGLESOverGLOnX11 { get; set; }
 
 			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Win32 target. If null, defaults to

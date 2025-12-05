@@ -10,6 +10,7 @@ using Windows.UI.Core;
 using Uno.UI.RuntimeTests.Extensions;
 using Private.Infrastructure;
 using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Xaml;
 using Uno.UI.Samples.UITests.Helpers;
 
 #if !HAS_UNO
@@ -91,7 +92,21 @@ partial class App
 			await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
 				CancellationToken.None,
 				runtimeTestResultFilePath,
-				() => System.Environment.Exit(0));
+#if __SKIA__
+				async () =>
+				{
+					if (OperatingSystem.IsLinux())
+					{
+						// On X11, we sometimes get a segfault if we exit without closing the window first
+						Window.CurrentSafe!.Close();
+						await Task.Delay(TimeSpan.FromSeconds(5));
+					}
+					System.Environment.Exit(0);
+				}
+#else
+				() => System.Environment.Exit(0)
+#endif
+				);
 
 			return true;
 		}

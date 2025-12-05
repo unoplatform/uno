@@ -1354,6 +1354,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_SurrogatePair_Copy()
 		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
 			var SUT = new TextBlock
 			{
 				Text = "🚫 Hello world",
@@ -1391,6 +1398,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_IsTextSelectionEnabled_CRLF()
 		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
 			var delayToAvoidDoubleTap = 600;
 			var SUT = new TextBlock
 			{
@@ -1492,6 +1506,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
 		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
 			var SUT = new TextBlock
 			{
 				Text = "Hello world",
@@ -1586,6 +1607,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
 		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
 			var SUT = new TextBlock
 			{
 				Text = "Hello world",
