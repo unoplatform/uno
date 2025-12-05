@@ -6,6 +6,8 @@ uid: Uno.DevServer
 
 The Dev Server is the local development companion that enables productive inner-loop features in Uno Platform, such as Hot Reload, design-time updates, and IDE integration. It runs as a lightweight HTTP process and maintains a bidirectional channel with the IDE and the running application.
 
+The latest version of the Uno.DevServer is [![NuGet](https://img.shields.io/nuget/v/uno.devserver.svg)](https://www.nuget.org/packages/Uno.DevServer/).
+
 ## Overview
 
 - Provides a transport between the IDE and the running application to exchange development-time messages
@@ -32,15 +34,59 @@ The Dev Server is the local development companion that enables productive inner-
 
 ## Command-line (advanced usage for specific scenarios)
 
-You can manage the Dev Server from the command line using the dotnet tool `Uno.DevServer` (command: uno-devserver):
+You can manage the Dev Server from the command line using the dotnet tool [`Uno.DevServer`](https://www.nuget.org/packages/Uno.DevServer/).
 
-- `uno-devserver start`: Start the Dev Server for the current solution directory
-- `uno-devserver stop`: Stop the Dev Server attached to the current directory
-- `uno-devserver list`: List running Dev Server instances
-- `uno-devserver cleanup`: Terminate stale Dev Server processes
-- `uno-devserver login`: Open the Uno Platform settings application
-- `--mcp`: Run an MCP proxy mode for integration with MCP-based tooling
-- `--port | -p <int>`: Optional port value for MCP proxy mode
+### Installing the dotnet Dev Server tool
+
+The dotnet Dev Server tool is not installed by default, since the IDE Extensions managing it's regular tasks for you already.
+
+If you want or need to install or update it, e.g. for [Troubleshooting Dev Server in VS Code](#vscodets), you can do so, by following the steps below.
+
+*This is assuming you already have installed the [**dotnet CLI**](https://dotnet.microsoft.com/download)*
+
+1. Open a Terminal
+
+2. Enter the following command:
+
+   ```pwsh
+   dotnet tool install -global Uno.DevServer
+   ```
+
+   Now the `dotnet CLI` should respond:
+
+   ```pwsh
+   PS C:\Users\YourName\source\YourUnoApp> dotnet tool install --global Uno.DevServer
+   You can invoke the tool using the following command: uno-devserver
+   Tool 'uno.devserver' (version '6.4.185') was successfully installed.
+   ```
+
+   >[!TIP]
+   > If you already installed it before, you can use the `dotnet tool -g update Uno.DevServer` command or re-use the installation command. The Endresult will be the same.
+
+3. You can now use the Dev Server  commandline name to print out the tool default command `--help`:
+
+   ```pwsh
+   uno-devserver
+   ```
+
+### Supported Commands for Dev Server
+
+| Command                  | Description                                                  |
+|:------------------------:|:-------------------------------------------------------------|
+| `uno-devserver start`    | Start the Dev Server for the current solution directory      |
+| `uno-devserver stop`     | Stop the Dev Server attached to the current directory        |
+| `uno-devserver list`     | List running Dev Server instances                            |
+| `uno-devserver cleanup`  | Terminate stale Dev Server processes                         |
+| `uno-devserver login`    | Open the Uno Platform settings application                   |
+| `--mcp`                  | Run an MCP proxy mode for integration with MCP-based tooling |
+<!-- TODO: Validate this command is still available and correct named like this! The actual source code doesn't seem to expect this argument name: https://github.com/unoplatform/uno/blob/f5ea9ec0df2476a14463d28dc37e729ef917b8b2/src/Uno.UI.RemoteControl.Host/Program.cs#L52-L86 and in case this should be "httpPort" instead, we should tell, that this argument is only Recognized alongside the "start" command
+
+| `--port, -p <int>`       | Optional port value for MCP proxy mode                       |
+-> Suggested Change:
+| `uno-devserver start --httpPort, -p <int>`       | Optional port value for MCP proxy mode <br/> Required: start command                       |
+-->
+| `--mcp-wait-tools-list`  | Start in MCP STDIO mode                                      |
+| `--file-log, -fl <path>` | Enable file logging to the provided file path (supports {Date} token). <br/> Required: path argument. |
 
 ## Hot Reload
 
@@ -95,6 +141,33 @@ The Dev Server enables Hot Reload for a faster inner loop:
     4. In the Output window, select `Uno Platform` from the drop-down.
 
        ![`Uno Platform` output drop-down](Assets/features/hotreload/vs-code-uno-platform-hr-output.png)
+
+- The **Uno Platform Status** Page (available via Bottomline Extension Bar) shows everywhere `... not found` and any `uno-devserver` command, except from eventually the  toolname only (shows the tool `--help`), fails to find `global.json` containing the SDK Version:
+
+   ```
+   PS C:\Users\YourUserName\repos\DevTKSS\DevTKSS.Uno.SampleApps> uno-devserver start
+   fail: No global.json found in current directory or parent directories. Please run this command from within a project that uses Uno SDK.
+   fail: Could not determine SDK version from global.json.
+   ```
+
+   **To solve this, you can follow these steps:**
+
+   1. Make sure your open Workspacefolder is including `.vscode/` with at least:
+
+      - `launch.json`
+      - `tasks.json`
+
+   2. If your Repository is maybe structured with `./src/` and `./docs/` at the root level, but this folder is still nested like `./src/.vscode/launch.json` you have the following options to solve this:
+
+     1. move the `./src/.vscode/` folder containing the required files to the Workspace (Repository Root) Folder, adjust the pathes to your project(s) by adding the `src/` prefix and restart VS Code, to make sure all extensions are catching up the changes correctly
+     2. Open vs code instead in the `./src` Folder, without having to move those files
+
+     > [!TIP]
+     > It's up to you, which Option you want to choose, but most of the cases you might want to prefer choosing the first one, in case you are using **Source Control Management** with e.g. **GIT**
+
+   3. Now check the the **Uno Platform Status** and enter your `uno-devserver [command] [option]` again.
+
+   If the problem persists, please make sure to [open an issue](www.github.com/unoplatform/uno/issues/new/choose).
 
 ### [**Rider**](#tab/riderts)
 
