@@ -15,6 +15,23 @@ partial class PageStackEntry
 {
 	// Note: LEGACY, not used by MUX (_useWinUIBehavior)
 	internal Page Instance { get; set; }
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Loader;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Extensions.Specialized;
+using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
+using System.Linq;
+using System.Reflection;
+
+namespace Microsoft.UI.Xaml.Navigation;
+
+partial class PageStackEntry
+{
+	// Note: LEGACY, not used by MUX (_useWinUIBehavior)
+	internal Page Instance { get; set; }
 
 	/// <summary>
 	/// Builds a descriptor string for the specified page type, including assembly context information if the type's
@@ -157,4 +174,5 @@ partial class PageStackEntry
 		assemblyName = string.Empty;
 		return false;
 	}
+}
 }
