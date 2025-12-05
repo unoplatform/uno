@@ -38,7 +38,7 @@ public class Given_FileAddUpdateRemove
 	public async Task When_AddInLib()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token;
-		var sut = CreateType(_libDir);
+		var sut = CreateLibType();
 
 		Assert.IsNull(sut.Get(), "Type should not exists yet");
 
@@ -94,7 +94,7 @@ public class Given_FileAddUpdateRemove
 	public async Task When_AddAndEditInLib()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(300)).Token;
-		var sut = CreateType(_libDir);
+		var sut = CreateLibType();
 
 		Assert.IsNull(sut.Get(), "Type should not exists yet");
 
@@ -196,9 +196,11 @@ public class Given_FileAddUpdateRemove
 		Assert.IsNull(removed.CreateInstance(), "BlankAppPage2 should have been removed");
 	}
 
-	private record struct DynamicType(string Namespace, string Name, string FilePath)
+	private record struct DynamicType(string Namespace, string Name, string Assembly, string Directory)
 	{
-		public Type? Get() => Type.GetType($"{Namespace}.{Name}");
+		public string FilePath => Path.Combine(Directory, Name);
+
+		public Type? Get() => Type.GetType($"{Namespace}.{Name},{Assembly}");
 
 		public object? CreateInstance()
 		{
@@ -211,10 +213,16 @@ public class Given_FileAddUpdateRemove
 		}
 	}
 
-	private static DynamicType CreateType(string? dir = null, [CallerMemberName] string @class = "TestPage")
+	private static DynamicType CreateType([CallerMemberName] string @class = "TestPage")
 	{
 		var name = $"{@class}_{Guid.NewGuid():N}";
-		return new DynamicType("Uno.UI.RuntimeTests", name, Path.Combine(dir ?? _appDir, name));
+		return new DynamicType("Uno.UI.RuntimeTests", name, "Uno.UI.RuntimeTests.HRApp.Skia", _appDir);
+	}
+
+	private static DynamicType CreateLibType([CallerMemberName] string @class = "TestPage")
+	{
+		var name = $"{@class}_{Guid.NewGuid():N}";
+		return new DynamicType("Uno.UI.RuntimeTests", name, "Uno.UI.RuntimeTests.HRUnoLib", _libDir);
 	}
 
 	private static DynamicType GetType<TPage>()
@@ -222,6 +230,7 @@ public class Given_FileAddUpdateRemove
 		=> new(
 			typeof(TPage).Namespace ?? throw new ArgumentOutOfRangeException(nameof(TPage)),
 			typeof(TPage).Name,
+			typeof(TPage).Assembly.GetName().Name ?? throw new ArgumentOutOfRangeException(nameof(TPage)),
 			Uno.UI.RuntimeTests.Tests.HotReload.FrameworkElementExtensions.GetDebugParseContext(new TPage()).FileName[..^".xaml".Length]);
 
 	private static FileEdit EditXaml<TPage>(string oldText, string newText)
@@ -254,11 +263,11 @@ public class Given_FileAddUpdateRemove
 
 	private static FileEdit AddXaml(DynamicType type)
 		=> new (
-			type.FilePath + "*.xaml",
+			type.FilePath + ".xaml",
 			OldText: null,
 			NewText: $$"""
 				<Page
-					x:Class="{{type}}"
+					x:Class="{{type.Namespace}}.{{type.Name}}"
 					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
