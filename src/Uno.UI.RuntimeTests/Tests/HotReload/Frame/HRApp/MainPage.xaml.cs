@@ -51,6 +51,7 @@ namespace UnoApp50
 			var testConfig = new UnitTestEngineConfig()
 			{
 				Filter = filters,
+				Attempts = 1
 			};
 
 			await testControl.RunTests(CancellationToken.None, testConfig);
