@@ -37,6 +37,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private int _runningChildren;
 		private bool _hasFillingChildren;
 		private bool _hasScheduledCompletion;
+		private bool _isReversing;
+		private Dictionary<Timeline, (object from, object to)> _originalAnimationValues;
 
 		public Storyboard()
 		{
@@ -92,6 +94,103 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			Play();
 		}
 
+		/// <summary>
+		/// Reverse all child animations by swapping their From/To values.
+		/// </summary>
+		private void ReverseChildren()
+		{
+			if (Children != null)
+			{
+				// Store original values if not already stored
+				if (_originalAnimationValues == null)
+				{
+					_originalAnimationValues = new Dictionary<Timeline, (object from, object to)>();
+				}
+
+				for (int i = 0; i < Children.Count; i++)
+				{
+					var child = Children[i];
+
+					// Try to reverse DoubleAnimation
+					if (child is DoubleAnimation doubleAnim)
+					{
+						// Store original values if this is the first reverse
+						if (!_originalAnimationValues.ContainsKey(child))
+						{
+							_originalAnimationValues[child] = (doubleAnim.From, doubleAnim.To);
+						}
+
+						var tempFrom = doubleAnim.From;
+						doubleAnim.From = doubleAnim.To;
+						doubleAnim.To = tempFrom;
+					}
+					// Try to reverse ColorAnimation
+					else if (child is ColorAnimation colorAnim)
+					{
+						if (!_originalAnimationValues.ContainsKey(child))
+						{
+							_originalAnimationValues[child] = (colorAnim.From, colorAnim.To);
+						}
+
+						var tempFrom = colorAnim.From;
+						colorAnim.From = colorAnim.To;
+						colorAnim.To = tempFrom;
+					}
+					// Try to reverse PointAnimation
+					else if (child is PointAnimation pointAnim)
+					{
+						if (!_originalAnimationValues.ContainsKey(child))
+						{
+							_originalAnimationValues[child] = (pointAnim.From, pointAnim.To);
+						}
+
+						var tempFrom = pointAnim.From;
+						pointAnim.From = pointAnim.To;
+						pointAnim.To = tempFrom;
+					}
+					// For child Storyboards, we don't need to do anything - they will handle their own AutoReverse
+				}
+			}
+		}
+
+		/// <summary>
+		/// Restore original From/To values for all child animations.
+		/// </summary>
+		private void RestoreChildren()
+		{
+			if (Children != null && _originalAnimationValues != null)
+			{
+				for (int i = 0; i < Children.Count; i++)
+				{
+					var child = Children[i];
+
+					if (_originalAnimationValues.TryGetValue(child, out var original))
+					{
+						// Restore DoubleAnimation
+						if (child is DoubleAnimation doubleAnim)
+						{
+							doubleAnim.From = (double?)original.from;
+							doubleAnim.To = (double?)original.to;
+						}
+						// Restore ColorAnimation
+						else if (child is ColorAnimation colorAnim)
+						{
+							colorAnim.From = (Color?)original.from;
+							colorAnim.To = (Color?)original.to;
+						}
+						// Restore PointAnimation
+						else if (child is PointAnimation pointAnim)
+						{
+							pointAnim.From = (Point?)original.from;
+							pointAnim.To = (Point?)original.to;
+						}
+					}
+				}
+
+				_originalAnimationValues.Clear();
+			}
+		}
+
 		public void Begin()
 		{
 			if (_trace.IsEnabled)
@@ -109,6 +208,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			State = TimelineState.Active;
 			_hasFillingChildren = false;
 			_replayCount = 1;
+			_isReversing = false; // Reset reversing state on Begin
+			_originalAnimationValues = null; // Clear stored values on new Begin
 			_activeDuration.Restart();
 
 			Play();
@@ -267,11 +368,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			if (Children != null)
 			{
+				// If AutoReverse is enabled and we were in forward phase, reverse the children first
+				if (AutoReverse && !_isReversing)
+				{
+					ReverseChildren();
+				}
+
 				for (int i = 0; i < Children.Count; i++)
 				{
 					ITimeline child = Children[i];
 
 					child.SkipToFill();
+				}
+
+				// After skipping to fill, restore original values if we reversed
+				if (AutoReverse && !_isReversing)
+				{
+					RestoreChildren();
 				}
 			}
 		}
@@ -357,6 +470,24 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (_runningChildren == 0)
 			{
+				// Handle AutoReverse: if enabled and we just finished the forward animation, reverse it
+				if (AutoReverse && !_isReversing)
+				{
+					_isReversing = true;
+					// Reverse all children by swapping their From/To values and replaying
+					ReverseChildren();
+					Play();
+					return;
+				}
+
+				// If we were reversing, we've now completed both forward and reverse
+				if (_isReversing)
+				{
+					_isReversing = false;
+					// Restore original From/To values
+					RestoreChildren();
+				}
+
 				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
 					Replay(); // replay the animation
