@@ -1,0 +1,57 @@
+<Page x:Class="SamplesApp.Samples.Windows_Storage_Pickers.FileOpenPickerTests"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:SamplesApp.Samples.Windows_Storage_Pickers"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
+
+    <StackPanel Spacing="10" Padding="20">
+        <TextBlock Text="FileOpenPicker Test" 
+                   Style="{StaticResource HeaderTextBlockStyle}" />
+        
+        <Button x:Name="SelectFileButton" 
+                Content="Select File" 
+                Click="OnSelectFileClick" 
+                HorizontalAlignment="Left"
+                Margin="0,0,0,10"/>
+        
+        <TextBlock x:Name="FileNameText" 
+                   Style="{StaticResource BodyTextBlockStyle}" 
+                   Text="No file selected"
+                   Margin="0,0,0,10"/>
+        
+        <TextBlock Text="File Content:" 
+                   Style="{StaticResource SubheaderTextBlockStyle}" 
+                   Margin="0,10,0,5"/>
+        
+        <ScrollViewer Height="200" 
+                     BorderThickness="1" 
+                     BorderBrush="Gray" 
+                     Margin="0,0,0,10">
+            <TextBlock x:Name="FileContentText" 
+                      TextWrapping="Wrap"
+                      Padding="10"/>
+        </ScrollViewer>
+        
+        <Button x:Name="ModifyFileButton" 
+                Content="Modify File" 
+                Click="OnModifyFileClick"
+                IsEnabled="False"
+                HorizontalAlignment="Left"
+                Margin="0,0,0,10"/>
+        
+        <TextBlock x:Name="ModificationStatusText" 
+                   Style="{StaticResource BodyTextBlockStyle}"
+                   Foreground="Green"
+                   TextWrapping="Wrap"/>
+        
+        <TextBlock x:Name="VerificationInstructions" 
+                   Style="{StaticResource BodyTextBlockStyle}" 
+                   FontStyle="Italic"
+                   TextWrapping="Wrap"
+                   Visibility="Collapsed">
+            <Run Text="Please verify the file has been modified at the source location using File Explorer."/>
+        </TextBlock>
+    </StackPanel>
+</Page>
