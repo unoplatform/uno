@@ -540,13 +540,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			var added = await DiscoverNewFilesAsync(ImmutableHashSet.CreateRange(potentiallyAdded), ct);
 
 			return new(
-				[..editedDocuments],
-				[..editedAdditionalDocuments],
+				[.. editedDocuments],
+				[.. editedAdditionalDocuments],
 				added.documents,
 				added.additionalDocuments,
-				[..removedDocuments],
-				[..removedAdditionalDocuments],
-				[..notFound, ..added.ignored]);
+				[.. removedDocuments],
+				[.. removedAdditionalDocuments],
+				[.. notFound, .. added.ignored]);
 		}
 
 		private async ValueTask<(ImmutableArray<AddedDocumentInfo> documents, ImmutableArray<AddedDocumentInfo> additionalDocuments, ImmutableHashSet<string> ignored)> DiscoverNewFilesAsync(

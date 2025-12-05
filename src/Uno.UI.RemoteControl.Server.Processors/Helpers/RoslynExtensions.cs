@@ -17,11 +17,11 @@ public static class RoslynExtensions
 			project.OutputFilePath,
 			project.CompilationOptions,
 			project.ParseOptions,
-			[..project.Documents.Select(GetInfo)],
+			[.. project.Documents.Select(GetInfo)],
 			project.ProjectReferences,
 			project.MetadataReferences,
 			project.AnalyzerReferences,
-			[..project.AdditionalDocuments.Select(GetInfo)],
+			[.. project.AdditionalDocuments.Select(GetInfo)],
 			project.IsSubmission,
 			default);
 

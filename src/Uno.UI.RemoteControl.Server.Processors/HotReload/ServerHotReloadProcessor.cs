@@ -612,7 +612,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				IsForceHotReloadDisabled = singleRequest.IsForceHotReloadDisabled,
 				ForceHotReloadDelay = singleRequest.ForceHotReloadDelay,
 				ForceHotReloadAttempts = singleRequest.ForceHotReloadAttempts,
-				Edits = [new (singleRequest.FilePath, singleRequest.OldText, singleRequest.NewText, singleRequest.IsCreateDeleteAllowed)],
+				Edits = [new(singleRequest.FilePath, singleRequest.OldText, singleRequest.NewText, singleRequest.IsCreateDeleteAllowed)],
 			};
 			var multiResponse = await DoProcessUpdateFileRequest(multiRequest);
 			var singleResult = multiResponse.Results.SingleOrDefault();
@@ -692,7 +692,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 			catch (Exception ex)
 			{
-				return new (edit.FilePath, FileUpdateResult.Failed, ex.Message);
+				return new(edit.FilePath, FileUpdateResult.Failed, ex.Message);
 			}
 
 			async ValueTask<(FileUpdateResult, string?)> DoRemoteUpdateInIde(string newText)
