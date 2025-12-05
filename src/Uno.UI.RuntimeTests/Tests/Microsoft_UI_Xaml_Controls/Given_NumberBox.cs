@@ -69,6 +69,116 @@ public class Given_NumberBox
 
 		Assert.AreEqual("123.46 units", formattedText);
 	}
+
+	[TestMethod]
+	public async Task When_Value_Set_To_NaN_Multiple_Times_Should_Not_StackOverflow()
+	{
+		// This test validates the fix for potential StackOverflow when using two-way bindings with x:Bind
+		// When both the current Value and incoming value are NaN, we should not call SetValue
+		// to avoid infinite loops since NaN != NaN
+
+		var numberBox = new NumberBox();
+
+		WindowHelper.WindowContent = numberBox;
+		await WindowHelper.WaitForLoaded(numberBox);
+
+		// Initially, Value should be NaN (default)
+		Assert.IsTrue(double.IsNaN(numberBox.Value), "Initial Value should be NaN");
+
+		// Setting NaN when current value is already NaN should not trigger property change
+		// This simulates what happens with two-way binding
+		int valueChangedCount = 0;
+		numberBox.ValueChanged += (s, e) => valueChangedCount++;
+
+		// Set NaN multiple times - should not cause StackOverflow and should not trigger ValueChanged
+		numberBox.Value = double.NaN;
+		numberBox.Value = double.NaN;
+		numberBox.Value = double.NaN;
+
+		Assert.AreEqual(0, valueChangedCount, "ValueChanged should not be raised when setting NaN to NaN");
+		Assert.IsTrue(double.IsNaN(numberBox.Value), "Value should still be NaN");
+	}
+
+	[TestMethod]
+	public async Task When_Value_Changed_From_NaN_To_Number_Should_Update()
+	{
+		// Validate that changing from NaN to a number works correctly
+		var numberBox = new NumberBox();
+
+		WindowHelper.WindowContent = numberBox;
+		await WindowHelper.WaitForLoaded(numberBox);
+
+		Assert.IsTrue(double.IsNaN(numberBox.Value), "Initial Value should be NaN");
+
+		int valueChangedCount = 0;
+		numberBox.ValueChanged += (s, e) =>
+		{
+			valueChangedCount++;
+			Assert.IsTrue(double.IsNaN(e.OldValue), "OldValue should be NaN");
+			Assert.AreEqual(42.0, e.NewValue, "NewValue should be 42.0");
+		};
+
+		// Change from NaN to a number - should work
+		numberBox.Value = 42.0;
+
+		Assert.AreEqual(1, valueChangedCount, "ValueChanged should be raised once");
+		Assert.AreEqual(42.0, numberBox.Value, "Value should be 42.0");
+	}
+
+	[TestMethod]
+	public async Task When_Value_Changed_From_Number_To_NaN_Should_Update()
+	{
+		// Validate that changing from a number to NaN works correctly
+		var numberBox = new NumberBox();
+
+		WindowHelper.WindowContent = numberBox;
+		await WindowHelper.WaitForLoaded(numberBox);
+
+		// Set initial value
+		numberBox.Value = 100.0;
+		Assert.AreEqual(100.0, numberBox.Value, "Initial Value should be 100.0");
+
+		int valueChangedCount = 0;
+		numberBox.ValueChanged += (s, e) =>
+		{
+			valueChangedCount++;
+			Assert.AreEqual(100.0, e.OldValue, "OldValue should be 100.0");
+			Assert.IsTrue(double.IsNaN(e.NewValue), "NewValue should be NaN");
+		};
+
+		// Change from number to NaN - should work
+		numberBox.Value = double.NaN;
+
+		Assert.AreEqual(1, valueChangedCount, "ValueChanged should be raised once");
+		Assert.IsTrue(double.IsNaN(numberBox.Value), "Value should be NaN");
+	}
+
+	[TestMethod]
+	public async Task When_Value_Changed_Between_Numbers_Should_Update()
+	{
+		// Validate that changing between numbers works correctly
+		var numberBox = new NumberBox();
+
+		WindowHelper.WindowContent = numberBox;
+		await WindowHelper.WaitForLoaded(numberBox);
+
+		// Set initial value
+		numberBox.Value = 10.0;
+		Assert.AreEqual(10.0, numberBox.Value, "Initial Value should be 10.0");
+
+		int valueChangedCount = 0;
+		numberBox.ValueChanged += (s, e) =>
+		{
+			valueChangedCount++;
+		};
+
+		// Change from one number to another - should work
+		numberBox.Value = 20.0;
+		numberBox.Value = 30.0;
+
+		Assert.AreEqual(2, valueChangedCount, "ValueChanged should be raised twice");
+		Assert.AreEqual(30.0, numberBox.Value, "Value should be 30.0");
+	}
 }
 
 internal class CustomNumberFormatter : INumberFormatter2, INumberParser
