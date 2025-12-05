@@ -26,9 +26,9 @@ internal class CliManager
 	{
 		try
 		{
-			if (originalArgs.Contains("--mcp"))
+			if (originalArgs.Contains("--mcp-app"))
 			{
-				return await RunMcpProxyAsync(originalArgs.Where(a => a != "--mcp").ToArray());
+				return await RunMcpProxyAsync(originalArgs.Where(a => a != "--mcp-app").ToArray());
 			}
 
 			ShowBanner();
@@ -38,7 +38,7 @@ internal class CliManager
 				return await OpenSettings(originalArgs);
 			}
 
-			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync();
+			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(Environment.CurrentDirectory);
 
 			if (hostPath is null)
 			{
@@ -50,7 +50,7 @@ internal class CliManager
 				string.Equals(originalArgs[0], "cleanup", StringComparison.OrdinalIgnoreCase)
 			);
 
-			var startInfo = BuildHostArgs(hostPath, originalArgs, redirectOutput: !isDirectOutputCommand);
+			var startInfo = BuildHostArgs(hostPath, originalArgs, Environment.CurrentDirectory, redirectOutput: !isDirectOutputCommand);
 
 			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
 			return result.ExitCode;
@@ -82,14 +82,14 @@ internal class CliManager
 
 	private async Task<int> OpenSettings(string[] originalArgs)
 	{
-		var studioExecutable = await _unoToolsLocator.ResolveSettingsExecutableAsync();
+		var studioExecutable = await _unoToolsLocator.ResolveSettingsExecutableAsync(Environment.CurrentDirectory);
 
 		if (studioExecutable is null)
 		{
 			return 1; // errors already logged
 		}
 
-		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, redirectOutput: true);
+		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, Environment.CurrentDirectory, redirectOutput: true);
 
 		var (exitCode, stdOut, stdErr) = await DevServerProcessHelper.RunGuiProcessAsync(startInfo, _logger, TimeSpan.FromSeconds(3));
 
@@ -124,6 +124,7 @@ internal class CliManager
 
 			int requestedPort = 0;
 			bool mcpWaitToolsList = false;
+			bool forceRootsFallback = false;
 			var forwardedArgs = new List<string>();
 
 			for (int i = 0; i < args.Length; i++)
@@ -149,11 +150,16 @@ internal class CliManager
 					mcpWaitToolsList = true;
 					continue; // do not forward mcp-specific arguments to controller
 				}
+				else if (a == "--force-roots-fallback")
+				{
+					forceRootsFallback = true;
+					continue; // do not forward mcp-specific arguments to controller
+				}
 				forwardedArgs.Add(a);
 			}
 
 			var waitForTools = mcpWaitToolsList;
-			return await _services.GetRequiredService<McpProxy>().RunAsync(Environment.CurrentDirectory, requestedPort, forwardedArgs, waitForTools, CancellationToken.None);
+			return await _services.GetRequiredService<McpProxy>().RunAsync(Environment.CurrentDirectory, requestedPort, forwardedArgs, waitForTools, forceRootsFallback, CancellationToken.None);
 		}
 		catch (Exception ex)
 		{
@@ -162,7 +168,7 @@ internal class CliManager
 		}
 	}
 
-	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, bool redirectOutput = true)
+	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true)
 	{
 		var args = new List<string> { "--command" };
 		if (originalArgs.Length > 0)
@@ -178,6 +184,6 @@ internal class CliManager
 			args.Add("start");
 		}
 
-		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, redirectOutput);
+		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput);
 	}
 }

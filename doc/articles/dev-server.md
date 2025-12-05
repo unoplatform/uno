@@ -39,7 +39,7 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `uno-devserver list`: List running Dev Server instances
 - `uno-devserver cleanup`: Terminate stale Dev Server processes
 - `uno-devserver login`: Open the Uno Platform settings application
-- `--mcp`: Run an MCP proxy mode for integration with MCP-based tooling
+- `--mcp-app`: Run an MCP proxy mode for integration with MCP-based tooling
 - `--port | -p <int>`: Optional port value for MCP proxy mode
 
 ## Hot Reload
