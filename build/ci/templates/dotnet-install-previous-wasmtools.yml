@@ -2,7 +2,21 @@ parameters:
   UnoCheckParameters: ''
 
 steps:
-  - powershell: |
-      & dotnet workload install wasm-tools-net9
+  - task: PowerShell@2
     displayName: Install Previous .NET Wasm Workloads
+    inputs:
+      pwsh: true
+      targetType: inline
+      script: |
+        $ErrorActionPreference = 'Stop'
+        $args = @('workload', 'install', 'wasm-tools-net9')
+        if ($IsWindows) {
+          & dotnet @args
+        }
+        else {
+          sudo dotnet @args
+        }
     retryCountOnTaskFailure: 3
+    env:
+      DOTNET_ROOT: $(DOTNET_ROOT)
+      DOTNET_INSTALL_DIR: $(DOTNET_INSTALL_DIR)

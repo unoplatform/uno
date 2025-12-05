@@ -1,8 +1,20 @@
 steps:
+- task: Cache@2
+  displayName: Cache npm (cspell)
+  inputs:
+    key: validation | cspell | v8.3.2 | $(Agent.OS)
+    path: $(Pipeline.Workspace)/.npm/cspell
+  condition: eq(variables['DocChangesDetected'], 'true')
 
 # Keep that version in sync with documentation at doc/README.md
 - bash: npm install -g cspell@8.3.2
   displayName: Install cSpell
+  env:
+    NPM_CONFIG_CACHE: $(Pipeline.Workspace)/.npm/cspell
+  condition: eq(variables['DocChangesDetected'], 'true')
 
 - bash: cspell --config ./build/cSpell.json "doc/**/*.md" "doc/**/toc.yml" --no-progress
   displayName: Run Spell Checking
+  env:
+    NPM_CONFIG_CACHE: $(Pipeline.Workspace)/.npm/cspell
+  condition: eq(variables['DocChangesDetected'], 'true')
