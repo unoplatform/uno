@@ -17,6 +17,7 @@ using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -36,6 +37,7 @@ namespace Microsoft.UI.Xaml
 	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
 	{
 		private bool _isContentViewSet;
+		private SystemNavigationManagerBackPressedCallback _backPressedCallback;
 
 		/// <summary>
 		/// The windows model implies only one managed activity.
@@ -268,6 +270,12 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
+
+			// Register the OnBackPressedCallback for handling back button/gesture
+			// This is required for Android 33+ where OnBackPressed is deprecated and
+			// Android 36+ where OnBackPressed is no longer called at all.
+			_backPressedCallback = new SystemNavigationManagerBackPressedCallback(this);
+			OnBackPressedDispatcher.AddCallback(this, _backPressedCallback);
 
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
