@@ -15,6 +15,25 @@ namespace Windows.Devices.Geolocation
 	{
 		private CLLocationManager _locationManager;
 
+		private double _movementThreshold;
+
+		/// <summary>
+		/// The distance of movement, in meters, relative to the coordinate from the last PositionChanged event,
+		/// that is required for the Geolocator to raise a PositionChanged event. The default value is 0.
+		/// </summary>
+		public double MovementThreshold
+		{
+			get => _movementThreshold;
+			set
+			{
+				_movementThreshold = value;
+				if (_locationManager != null)
+				{
+					_locationManager.DistanceFilter = value;
+				}
+			}
+		}
+
 		partial void PlatformInitialize()
 		{
 			if (NativeDispatcher.Main.HasThreadAccess)
@@ -22,6 +41,7 @@ namespace Windows.Devices.Geolocation
 				_locationManager = new CLLocationManager
 				{
 					DesiredAccuracy = DesiredAccuracy == PositionAccuracy.Default ? 10 : 1,
+					DistanceFilter = _movementThreshold,
 				};
 
 				_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
