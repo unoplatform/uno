@@ -154,6 +154,20 @@
 		<Exec Command="$(MSBuildThisFileDirectory)\tools\docfx.exe ..\doc\docfx.json --debug -o $(OutputDir)\doc" />
 	</Target>
 
+	<Target Name="GenerateDocCanary" DependsOnTargets="BuildSyncGenerator">
+		<MSBuild Properties="Configuration=Debug"
+			Projects="..\src\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"
+			Targets="Restore;Build"
+			RebaseOutputs="false"
+			BuildInParallel="true" />
+
+		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
+		<Exec Command="powershell .\import_external_docs_canary.ps1" WorkingDirectory="..\doc" />
+		<Exec Command="powershell .\generate-llms-full.ps1 -InputFolder &quot;articles&quot; -LlmsTxtOutput &quot;articles/llms/llms.txt&quot; -LlmsFullTxtOutput &quot;articles/llms/llms-full.txt&quot; -BaseContentFile &quot;articles/llms/llms.txt&quot; -TocYmlPath &quot;articles/toc.yml&quot;" WorkingDirectory="..\doc" />
+		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools docfx --version $(DocfxVersion)" Condition="!exists('$(MSBuildThisFileDirectory)\tools\docfx.exe')" />
+		<Exec Command="$(MSBuildThisFileDirectory)\tools\docfx.exe ..\doc\docfx.json --debug -o $(OutputDir)\doc-canary" />
+	</Target>
+
 	<Target Name="RunAPISyncTool" DependsOnTargets="BuildSyncGenerator">
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
 	</Target>
