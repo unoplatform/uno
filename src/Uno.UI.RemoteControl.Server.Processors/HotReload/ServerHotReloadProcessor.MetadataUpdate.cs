@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
+using Uno.Disposables;
+using Uno.Threading;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
@@ -27,8 +29,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private static readonly StringComparer _pathsComparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
 		private static readonly StringComparison _pathsComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-		private FileSystemWatcher[]? _solutionWatchers;
-		private IDisposable? _solutionWatcherEventsDisposable;
+		private IDisposable? _solutionSubscriptions;
+		private readonly FastAsyncLock _solutionUpdateGate = new();
+		private readonly BufferGate _solutionWatchersGate = new();
 
 		private Task<(Solution, WatchHotReloadService)>? _initializeTask;
 		private Solution? _currentSolution;
@@ -38,7 +41,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private bool _useRoslynHotReload;
 		private bool _useHotReloadThruDebugger;
 
-		private bool InitializeMetadataUpdater(ConfigureServer configureServer, Dictionary<string, string> properties)
+		private bool InitializeMetadataUpdater(ConfigureServer configureServer)
 		{
 			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
 
@@ -52,7 +55,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				// of a missing path on assemblies loaded from a memory stream.
 				CompilationWorkspaceProvider.RegisterAssemblyLoader();
 
-				InitializeInner(configureServer, properties);
+				InitializeInner(configureServer);
 
 				return true;
 			}
@@ -62,27 +65,42 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private void InitializeInner(ConfigureServer configureServer, Dictionary<string, string> properties)
+		private void InitializeInner(ConfigureServer configureServer)
 		{
-			if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
+			try
 			{
-				// If this assembly was loaded from a stream, it will not have a location.
-				// This will indicate that the assembly loader from CompilationWorkspaceProvider
-				// has been registered too late.
-				if (string.IsNullOrEmpty(wsAsm.Location))
+				if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
 				{
-					throw new InvalidOperationException("Microsoft.CodeAnalysis.Workspaces was loaded from a stream and must loaded from a known path");
+					// If this assembly was loaded from a stream, it will not have a location.
+					// This will indicate that the assembly loader from CompilationWorkspaceProvider
+					// has been registered too late.
+					if (string.IsNullOrEmpty(wsAsm.Location))
+					{
+						throw new InvalidOperationException("Microsoft.CodeAnalysis.Workspaces was loaded from a stream and must be loaded from a known path");
+					}
 				}
+
+				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
+
+				_initializeTask = InitializeAsync(CancellationToken.None);
 			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Failed to initialize compilation workspace: {e}");
 
-			CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
+				_ = _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = false });
+				_ = Notify(HotReloadEvent.Disabled);
 
-			_initializeTask = Task.Run(
-			async () =>
+				throw;
+			}
+			async Task<(Solution, WatchHotReloadService)> InitializeAsync(CancellationToken ct)
 			{
 				try
 				{
 					await Notify(HotReloadEvent.Initializing);
+
+					// Clone the properties from the ConfigureServer
+					var properties = configureServer.MSBuildProperties.ToDictionary();
 
 					// Flag the current build as created for hot reload, which allows for running targets or settings
 					// props/items in the context of the hot reload workspace.
@@ -124,7 +142,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						_reporter,
 						configureServer.MetadataUpdateCapabilities,
 						properties,
-						CancellationToken.None);
+						ct);
 
 					ObserveSolutionPaths(result.Item1, intermediateOutputPath, outputPath);
 
@@ -142,38 +160,38 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 					throw;
 				}
-			},
-			CancellationToken.None);
+			}
 		}
 
 		private void ObserveSolutionPaths(Solution solution, params string?[] excludedDir)
 		{
-			var observedPaths =
-				solution.Projects
-					.SelectMany(project =>
-					{
-						var projectDir = Path.GetDirectoryName(project.FilePath);
-						ImmutableArray<string> excludedProjectDir = [.. from dir in excludedDir where dir is not null select Path.Combine(projectDir!, dir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)];
+			var observedPaths = solution
+				.Projects
+				.SelectMany(project =>
+				{
+					var projectDir = Path.GetDirectoryName(project.FilePath);
+					ImmutableArray<string> excludedProjectDir = [.. from dir in excludedDir where dir is not null select Path.Combine(projectDir!, dir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)];
 
-						var paths = project
-							.Documents
-							.Select(d => d.FilePath)
-							.Concat(project.AdditionalDocuments.Select(d => d.FilePath))
-							.Select(Path.GetDirectoryName)
-							.Where(path => path is not null && !excludedProjectDir.Any(dir => path.StartsWith(dir, _pathsComparison)))
-							.Distinct()
-							.ToArray();
+					var paths = project
+						.Documents
+						.Select(d => d.FilePath)
+						.Concat(project.AdditionalDocuments.Select(d => d.FilePath))
+						.Select(Path.GetDirectoryName)
+						.Where(path => path is not null
+							&& (path.Contains("uno.hot-reload.info") /* temp patch! This will be reviewed for file add detection */
+								|| !excludedProjectDir.Any(dir => path.StartsWith(dir, _pathsComparison))))
+						.Distinct()
+						.ToArray();
 
-						return paths;
-					})
-					.Distinct()
-					.ToArray();
+					return paths;
+				})
+				.Distinct()
+				.ToArray();
 
 #if DEBUG
 			Console.WriteLine($"Observing paths {string.Join(", ", observedPaths)}");
 #endif
-
-			_solutionWatchers = observedPaths
+			var watchers = observedPaths
 				.Select(p => new FileSystemWatcher
 				{
 					Path = p!,
@@ -187,16 +205,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					IncludeSubdirectories = false
 				})
 				.ToArray();
-
-			_solutionWatcherEventsDisposable = To2StepsObservable(_solutionWatchers, HasInterest).Subscribe(
-				filePaths => _ = ProcessMetadataChanges(filePaths),
+			var processing = new CancellationTokenSource(); // Updates are cumulative, we cannot abort updates, so we have a SINGLE token for all operations.
+			var watchersSubscription = To2StepsObservable(watchers, HasInterest, _solutionWatchersGate).Subscribe(
+				filePaths => _ = ProcessMetadataChanges(filePaths, processing.Token),
 				e => Console.WriteLine($"Error {e}"));
+
+			_solutionSubscriptions = new CompositeDisposable([watchersSubscription, Disposable.Create(processing.Cancel), processing, .. watchers]);
 
 			static bool HasInterest(string file)
 				=> Path.GetExtension(file).ToLowerInvariant() is not ".csproj" and not ".editorconfig";
 		}
 
-		private async Task ProcessMetadataChanges(Task<ImmutableHashSet<string>> filesAsync)
+		private async Task ProcessMetadataChanges(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
 		{
 			// Notify the start of the hot-reload processing as soon as possible, even before the buffering of file change is completed
 			var hotReload = await StartOrContinueHotReload();
@@ -206,9 +226,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				hotReload = await StartHotReload(files);
 			}
 
+			// Process the batch of files (sequentially!)
 			try
 			{
-				await ProcessSolutionChanged(hotReload, files, CancellationToken.None);
+				using var _ = await _solutionUpdateGate.LockAsync(ct);
+				await ProcessSolutionChanged(hotReload, files, ct);
 			}
 			catch (Exception e)
 			{
@@ -323,13 +345,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (_useHotReloadThruDebugger)
 					{
-						await _remoteControlServer.SendMessageToIDEAsync(
+						if (!await _remoteControlServer.TrySendMessageToIDEAsync(
 							new Uno.UI.RemoteControl.Messaging.IdeChannel.HotReloadThruDebuggerIdeMessage(
 								updates[i].ModuleId.ToString(),
 								Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
 								Convert.ToBase64String(updates[i].ILDelta.ToArray()),
 								Convert.ToBase64String(updates[i].PdbDelta.ToArray())
-							));
+							),
+							ct))
+						{
+							throw new InvalidOperationException("No active connection with the IDE to send update thru debugger.");
+						}
 					}
 					else
 					{

@@ -19,6 +19,7 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.Telemetry;
+using Uno.UI.Tasks.HotReloadInfo;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessor<Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor>]
 
@@ -38,14 +39,20 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public string Scope => WellKnownScopes.HotReload;
 
+		// Properties configured on processor initialization (by the ConfigureServer message)
+		// WARNING: Those properties might change!
+		private ConfigureServer? _config;
 		private bool _isRunningInsideVisualStudio;
 
-		private void InterpretMsbuildProperties(IDictionary<string, string> properties)
+		private void InitializeProcessor(ConfigureServer config)
 		{
 			// This is called from ProcessConfigureServer() during initialization.
+			// WARNING: It's possible that this method is called multiple times! (HD will invoke this among the standard init)
 
-			_isRunningInsideVisualStudio = properties
-				.TryGetValue("BuildingInsideVisualStudio", out var vs) && vs.Equals("true", StringComparison.OrdinalIgnoreCase);
+			_config = config;
+
+			_isRunningInsideVisualStudio = config.MSBuildProperties.TryGetValue("BuildingInsideVisualStudio", out var isVsRaw)
+				&& isVsRaw.Equals("true", StringComparison.OrdinalIgnoreCase);
 		}
 
 		public async Task ProcessFrame(Frame frame)
@@ -492,15 +499,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				this.Log().LogDebug($"Base project path: {configureServer.ProjectPath}");
 			}
 
-			var properties = configureServer
-				.MSBuildProperties
-				.ToDictionary();
-
-			InterpretMsbuildProperties(properties);
+			InitializeProcessor(configureServer);
 
 			try
 			{
-				if (InitializeMetadataUpdater(configureServer, properties))
+				if (InitializeMetadataUpdater(configureServer))
 				{
 					this.Log().LogDebug($"Metadata updater initialized");
 				}
@@ -568,9 +571,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				await using var ctReg = cts.Token.Register(() => tcs.TrySetCanceled());
 
 				_pendingRequestsToIde.TryAdd(message.CorrelationId, tcs);
-				await _remoteControlServer.SendMessageToIDEAsync(message);
-
-				return await tcs.Task;
+				if (await _remoteControlServer.TrySendMessageToIDEAsync(message, cts.Token))
+				{
+					return await tcs.Task;
+				}
+				else
+				{
+					return new Result("No IDE connection to send the message.");
+				}
 			}
 			catch (Exception ex)
 			{
@@ -587,33 +595,30 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task ProcessUpdateFile(UpdateFile message)
 		{
-			var hotReload = await StartHotReload(ImmutableHashSet<string>.Empty.Add(Path.GetFullPath(message.FilePath)));
+			var hotReload = await StartHotReload([Path.GetFullPath(message.FilePath)]);
+			using var _ = _solutionWatchersGate.Acquire(); // Makes sure to batch all file changes in a single solution update
 
 			try
 			{
 				var (result, error) = message switch
 				{
 					{ FilePath: null or { Length: 0 } } => (FileUpdateResult.BadRequest, "Invalid request (file path is empty)"),
-					{ OldText: not null, NewText: not null } => await (_isRunningInsideVisualStudio
-						? DoRemoteUpdateInIde(message.NewText)
-						: DoUpdateOnDisk(message.OldText, message.NewText)),
-					{ OldText: null, NewText: not null } => await (_isRunningInsideVisualStudio
-						? DoRemoteUpdateInIde(message.NewText)
-						: DoWriteToDisk(message.NewText)),
+					{ OldText: not null, NewText: not null } when _isRunningInsideVisualStudio => await DoRemoteUpdateInIde(message.NewText),
+					{ OldText: not null, NewText: not null } => await DoUpdateOnDisk(message.OldText, message.NewText),
+					{ OldText: null, NewText: not null } when _isRunningInsideVisualStudio => await DoRemoteUpdateInIde(message.NewText),
+					{ OldText: null, NewText: not null } => await DoWriteToDisk(message.NewText),
 					{ NewText: null, IsCreateDeleteAllowed: true } => await DoDeleteFromDisk(),
 					_ => (FileUpdateResult.BadRequest, "Invalid request")
 				};
 
-				var isIdeSupportingHotReload = _isRunningInsideVisualStudio;
+				await WriteHotReloadInfo();
 
 				if (message.IsForceHotReloadDisabled is false && (int)result < 300)
 				{
 					hotReload.EnableAutoRetryIfNoChanges(message.ForceHotReloadAttempts, message.ForceHotReloadDelay);
 
-					if (isIdeSupportingHotReload)
-					{
-						await RequestHotReloadToIde();
-					}
+					// Even if IDE does not support hot-reload manual requests, we still invoke this to report the HR processingFiles state as soon as possible.
+					await RequestHotReloadToIde();
 				}
 
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", result, error, hotReload.Id));
@@ -624,7 +629,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", FileUpdateResult.Failed, ex.Message));
 			}
 
-			async Task<(FileUpdateResult, string?)> DoRemoteUpdateInIde(string newText)
+			async ValueTask<(FileUpdateResult, string?)> DoRemoteUpdateInIde(string newText)
 			{
 				var saveToDisk = message.ForceSaveOnDisk ?? true; // Temporary set to true until this issue is fixed: https://github.com/unoplatform/uno.hotdesign/issues/3454
 
@@ -679,7 +684,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return (FileUpdateResult.Success, null);
 			}
 
-			async Task<(FileUpdateResult, string?)> DoWriteToDisk(string newText)
+			async ValueTask<(FileUpdateResult, string?)> DoWriteToDisk(string newText)
 			{
 				if (!message.IsCreateDeleteAllowed && !File.Exists(message.FilePath))
 				{
@@ -722,9 +727,22 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return (FileUpdateResult.Success, null);
 			}
 
-			async Task WaitForFileUpdated()
+			async ValueTask WriteHotReloadInfo()
 			{
-				var file = new FileInfo(message.FilePath);
+				if (_config?.HotReloadInfoPath is not { Length: > 0 } path)
+				{
+					return;
+				}
+
+				var effectiveUpdate = WaitForFileUpdated(path);
+				await File.WriteAllTextAsync(path, HotReloadInfoHelper.GenerateInfo(hotReload.Id, message.RequestId));
+				await effectiveUpdate;
+			}
+
+			async ValueTask WaitForFileUpdated(string? filePath = null)
+			{
+				filePath ??= message.FilePath ?? throw new InvalidOperationException("File path not set");
+				var file = new FileInfo(filePath);
 				var dir = file.Directory;
 				while (dir is { Exists: false })
 				{
@@ -755,7 +773,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				if (await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(5))) != tcs.Task
 					&& this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug($"File update event not received for '{message.FilePath}', continuing anyway [{message.RequestId}].");
+					this.Log().LogDebug($"File update event not received for '{filePath}', continuing anyway [{message.RequestId}].");
 				}
 			}
 		}
@@ -764,8 +782,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			var result = await SendAndWaitForResult(new ForceHotReloadIdeMessage(GetNextIdeCorrelationId()));
 
-			// Note: For now the IDE will notify the ProcessingFiles only in case of force hot reload request sent by client!
-			await Notify(HotReloadEvent.ProcessingFiles, HotReloadEventSource.IDE);
+			if (result.IsSuccess)
+			{
+				// Note: For now the IDE will notify the ProcessingFiles only in case of force hot reload request sent by client!
+				await Notify(HotReloadEvent.ProcessingFiles, HotReloadEventSource.IDE);
+			}
 
 			return result.IsSuccess;
 		}
@@ -773,20 +794,65 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public void Dispose()
 		{
-			_solutionWatcherEventsDisposable?.Dispose();
-			if (_solutionWatchers != null)
-			{
-				foreach (var watcher in _solutionWatchers)
-				{
-					watcher.Dispose();
-				}
-			}
-
+			_solutionSubscriptions?.Dispose();
 			_hotReloadService?.EndSession();
 		}
 
 		#region Helpers
-		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter)
+		private class BufferGate
+		{
+			private int _holders;
+			private ImmutableHashSet<Action> _onRelease = ImmutableHashSet<Action>.Empty;
+
+			public IDisposable Acquire()
+			{
+				Interlocked.Increment(ref _holders);
+				return new Holder(this);
+			}
+
+			public class Holder(BufferGate owner) : IDisposable
+			{
+				private int _disposed;
+				public void Dispose()
+				{
+					if (Interlocked.CompareExchange(ref _disposed, 1, 0) is 0
+						&& Interlocked.Decrement(ref owner._holders) is 0)
+					{
+						owner.ProcessCallbacks();
+					}
+				}
+			}
+
+			public void RunOrPlan(Action action)
+			{
+				if (_holders is 0)
+				{
+					action();
+				}
+				else
+				{
+					ImmutableInterlocked.Update(ref _onRelease, static (set, action) => set.Add(action), action);
+					if (_holders is 0) // The gate has been released while we were adding the callback, process it now
+					{
+						ProcessCallbacks();
+					}
+				}
+			}
+
+			private void ProcessCallbacks()
+			{
+				foreach (var callback in Interlocked.Exchange(ref _onRelease, ImmutableHashSet<Action>.Empty))
+				{
+					try
+					{
+						callback();
+					}
+					catch (Exception) { }
+				}
+			}
+		}
+
+		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter, BufferGate bufferGate)
 			=> Observable.Create<Task<ImmutableHashSet<string>>>(o =>
 			{
 				// Create an observable instead of using the FromEventPattern which
@@ -796,7 +862,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				var gate = new object();
 				var buffer = default((ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task)?);
-				var bufferTimer = new Timer(CloseBuffer);
+				var bufferTimer = new Timer(_ => bufferGate.RunOrPlan(CloseBuffer));
 
 				void changed(object s, FileSystemEventArgs args) => OnNext(args.FullPath);
 				void renamed(object s, RenamedEventArgs args) => OnNext(args.FullPath);
@@ -828,7 +894,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					}
 				}
 
-				void CloseBuffer(object? state)
+				void CloseBuffer()
 				{
 					(ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task) completingBuffer;
 					if (buffer is null)

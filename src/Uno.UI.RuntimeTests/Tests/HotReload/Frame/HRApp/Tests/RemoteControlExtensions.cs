@@ -29,7 +29,6 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.SendMessage(message);
 
-
 		var reloadWaiter = TypeMappings.WaitForResume();
 		if (!reloadWaiter.IsCompleted)
 		{
