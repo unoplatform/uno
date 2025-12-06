@@ -147,7 +147,11 @@ namespace Microsoft.UI.Xaml.Controls
 					var contentTemplateRootAsITextBlock = contentTemplateRootAsIUIE as TextBlock;
 					if (contentTemplateRootAsITextBlock != null)
 					{
-						contentTemplateRootAsITextBlock.TextDecorations = TextDecorations.Underline;
+						// Only apply underline if HighContrast is enabled OR HyperlinkUnderlineVisible is true
+						if (ShouldUnderlineHyperlink())
+						{
+							contentTemplateRootAsITextBlock.TextDecorations = TextDecorations.Underline;
+						}
 					}
 				}
 			}
