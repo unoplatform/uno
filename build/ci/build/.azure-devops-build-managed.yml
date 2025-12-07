@@ -79,8 +79,7 @@ jobs:
       solution: build/filters/Uno.UI-packages-windows.slnf
       msbuildLocationMethod: version
       msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(NBGV_SemVer2) /p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)\vslatest /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:UnoDisableAnalyzersForSamples=true /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(NBGV_SemVer2) /p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)\vslatest /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -92,7 +91,6 @@ jobs:
       solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
-      msbuildArchitecture: x86
       msbuildArguments: /r /m /v:m /t:BuildNuGetPackage "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(XAML_FLAVOR_BUILD)-$(NBGV_SemVer2)-generate-packages.binlog
       clean: false
       restoreNugetPackages: false
