@@ -45,10 +45,15 @@
 	<Target Name="UpdateTasksSHA">
 
 		<ItemGroup>
+			<!-- 
+			IMPORTANT: adding csproj files here might cache the nuget Cache@2 process
+			to trash on every build since the csproj will be modified. Use the AssemblyName.props
+			pattern instead.
+			-->
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\**\*.cs" />
 			<_Sha1Replace Include="..\build\nuget\uno.winui.winappsdk.targets" />
 			<_Sha1Replace Include="..\build\nuget\uno.winui.runtime-replace.targets" />
-			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\AssemblyName.props" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
 			<_Sha1Replace Include="..\src\Uno.Sdk\**\*" />
 		</ItemGroup>
@@ -63,7 +68,7 @@
 		<ItemGroup>
 			<_FilesContent 
 				Include="%(_Sha1Replace.Identity)"
-				Contents="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','$(_ReplacedSHA)'))" />
+				Contents="$([System.Text.RegularExpressions.Regex]::Replace([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)'), '(?<=\\.|_)v0', '$(_ReplacedSHA)'))" />
 
 		</ItemGroup>
 
