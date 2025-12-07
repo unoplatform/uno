@@ -8,6 +8,8 @@ steps:
       pwsh: true
       targetType: inline
       script: |
+        echo "DOTNET_ROOT: $env:DOTNET_ROOT"
+        echo "DOTNET_INSTALL_DIR: $env:DOTNET_INSTALL_DIR"
         $ErrorActionPreference = 'Stop'
         $args = @('workload', 'install', 'wasm-tools-net9')
         if ($IsWindows) {
