@@ -383,7 +383,26 @@
 		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.1.0-dev.29" IgnoreExitCode="true" />
 
 		<MakeDir Directories="$(OutputDir)\ApiDiff" />
-		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=%(_diffPackage.Identity) --other=%(_diffPackage.Other) --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff\ApiDiff.%(_diffPackage.Identity).$(NBGV_SemVer2).md" />
+
+		<ItemGroup>
+			<_DiffPackageInvocation Include="@(_diffPackage)">
+				<DiffBase>%(Identity)</DiffBase>
+				<DiffOther>%(Other)</DiffOther>
+				<DiffOutput>$(OutputDir)\ApiDiff\ApiDiff.%(Identity).$(NBGV_SemVer2).md</DiffOutput>
+			</_DiffPackageInvocation>
+		</ItemGroup>
+
+		<MSBuild
+			Projects="$(MSBuildProjectFullPath)"
+			Targets="_GenerateSinglePackageDiff"
+			Properties="CombinedConfiguration=$(CombinedConfiguration);DiffBase=%(_DiffPackageInvocation.DiffBase);DiffOther=%(_DiffPackageInvocation.DiffOther);DiffOutput=%(_DiffPackageInvocation.DiffOutput)"
+			BuildInParallel="true"
+			StopOnFirstFailure="true"
+			RebaseOutputs="false" />
+	</Target>
+
+	<Target Name="_GenerateSinglePackageDiff">
+		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(DiffBase) --other=$(DiffOther) --diffignore=PackageDiffIgnore.xml --outfile=$(DiffOutput)" />
 	</Target>
 
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">
