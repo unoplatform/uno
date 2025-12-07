@@ -36,11 +36,6 @@ internal record UnitTestMethodInfo
 			HasCustomAttribute<FiltersAttribute>(method) ||
 			HasCustomAttribute<FiltersAttribute>(method.DeclaringType);
 
-		ExpectedException = method
-			.GetCustomAttributes<ExpectedExceptionAttribute>()
-			.SingleOrDefault()
-			?.ExceptionType;
-
 		_casesParameters = method
 			.GetCustomAttributes<Attribute>()
 			.OfType<ITestDataSource>()
@@ -62,8 +57,6 @@ internal record UnitTestMethodInfo
 	public string Name => Method.Name;
 
 	public MethodInfo Method { get; }
-
-	public Type? ExpectedException { get; }
 
 	public bool RequiresFullWindow { get; }
 
@@ -87,7 +80,7 @@ internal record UnitTestMethodInfo
 			string? firstNonSatisfiedMatch = null;
 			foreach (ConditionBaseAttribute attribute in group)
 			{
-				bool shouldRun = attribute.Mode == ConditionMode.Include ? attribute.ShouldRun : !attribute.ShouldRun;
+				bool shouldRun = attribute.Mode == ConditionMode.Include ? attribute.IsConditionMet : !attribute.IsConditionMet;
 				if (shouldRun)
 				{
 					atLeastOneInGroupIsSatisfied = true;
