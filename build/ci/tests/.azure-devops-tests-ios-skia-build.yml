@@ -28,7 +28,7 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
     # Disable analyzers for eligible projects in samples to improve performance
-    UnoDisableAnalyzersInSamples: 'true'
+    UNO_DISABLE_ANALYZERS_IN_SAMPLES: 'true'
 
   steps:
   - checkout: self
