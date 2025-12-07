@@ -64,8 +64,7 @@ variables:
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline
 
-  # https://github.com/microsoft/azure-pipelines-tasks/issues/11864
-  #enable_package_cache: true
+  enable_package_cache: true
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
