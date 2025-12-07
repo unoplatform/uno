@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="AssemblyName.props" />
 	<PropertyGroup>
@@ -105,17 +105,6 @@
 			Filename="%(_TemporaryCodeFile.Identity)"
 			MatchExpression="DefaultUnoSdkVersion"
 			ReplacementText="$(PackageVersion)-Private" />
-
-		<!-- This is better but Jerome made me take it out -->
-		<!-- <ReplaceFileText
-			Filename="%(_IntermediateTargetFile.Identity)"
-			MatchExpression="_v0"
-			ReplacementText="$(UnoSdkVersionSuffix)" />
-
-		<ReplaceFileText
-			Filename="%(_TemporaryCodeFile.Identity)"
-			MatchExpression="_v0"
-			ReplacementText="$(UnoSdkVersionSuffix)" /> -->
 
 		<ItemGroup>
 			<None Include="@(_PackageManifestPackFile)" Pack="true" PackagePath="targets\$(TargetFramework)\%(Filename)%(Extension)" />
