@@ -23,8 +23,6 @@ jobs:
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
-    # Disable analyzers for eligible projects in samples to improve performance
-    UNO_DISABLE_ANALYZERS_IN_SAMPLES: 'true'
 
   steps:
   - checkout: self
@@ -46,10 +44,10 @@ jobs:
       artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
-  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net9.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
+  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net9.0 /p:Configuration=Release /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
     displayName: Build WPF Islands Head
 
-  - powershell: dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net10.0 -f net10.0 /bl:$(build.artifactstagingdirectory)\logs\build-generic.binlog
+  - powershell: dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net10.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -f net10.0 /bl:$(build.artifactstagingdirectory)\logs\build-generic.binlog
     displayName: Build Generic Skia Head
 
   - task: PublishPipelineArtifact@1

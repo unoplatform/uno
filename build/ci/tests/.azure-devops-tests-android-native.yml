@@ -32,8 +32,6 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget/packages
 
-    # Disable analyzers for eligible projects in samples to improve performance
-    UNO_DISABLE_ANALYZERS_IN_SAMPLES: 'true'
 
   steps:
   - checkout: self
@@ -56,7 +54,7 @@ jobs:
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
-      dotnet publish -f net9.0-android -c Release -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
+      dotnet publish -f net9.0-android -c Release -p:UnoTargetFrameworkOverride=net9.0-android -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Samples app
 
   - task: CopyFiles@2

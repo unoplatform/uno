@@ -18,9 +18,6 @@ jobs:
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
-    # Disable analyzers for eligible projects in samples to improve performance
-    UNO_DISABLE_ANALYZERS_IN_SAMPLES: 'true'
-
   steps:
   - checkout: self
     clean: true
@@ -30,7 +27,7 @@ jobs:
     parameters:
       UnoCheckParameters: '--tfm net10.0-android'
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net10.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net10.0-android /bl:$(build.artifactstagingdirectory)/logs/build-skia-android.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net10.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net10.0-android -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-android.binlog
     displayName: Build Android Skia Head
 
   - task: CopyFiles@2
