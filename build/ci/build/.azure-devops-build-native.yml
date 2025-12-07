@@ -52,6 +52,23 @@ jobs:
       echo "##vso[task.setvariable variable=ActiveXcodeKeySegment]$SANITIZED"
     displayName: Detect active Xcode path
 
+  - bash: |
+      set -euo pipefail
+      DERIVED_DATA_DIR="$HOME/Library/Developer/Xcode/DerivedData"
+      mkdir -p "$DERIVED_DATA_DIR"
+      echo "Xcode DerivedData directory: $DERIVED_DATA_DIR"
+      echo "##vso[task.setvariable variable=DerivedDataDirectory]$DERIVED_DATA_DIR"
+    displayName: Configure Xcode cache paths
+
+  - task: Cache@2
+    displayName: Cache Xcode DerivedData
+    inputs:
+      key: macos-skia-native | xcode-deriveddata | $(Agent.OS) | "xcode-$(ActiveXcodeKeySegment)" | $(Build.SourceVersion)
+      restoreKeys: |
+        macos-skia-native | xcode-deriveddata | $(Agent.OS) | "xcode-$(ActiveXcodeKeySegment)"
+        macos-skia-native | xcode-deriveddata | $(Agent.OS)
+      path: $(DerivedDataDirectory)
+
   - task: Cache@2
     displayName: Cache ccache objects
     inputs:
