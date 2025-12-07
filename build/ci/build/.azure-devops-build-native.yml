@@ -55,7 +55,7 @@ jobs:
   - task: Cache@2
     displayName: Cache ccache objects
     inputs:
-      key: macos-skia-native | ccache | $(Agent.OS) | "xcode-$(ActiveXcodeKeySegment)"
+      key: macos-skia-native | ccache | libexec-v1 | $(Agent.OS) | "xcode-$(ActiveXcodeKeySegment)"
       path: $(HOME)/Library/Caches/ccache
 
   - bash: |
@@ -63,6 +63,13 @@ jobs:
       CCACHE_BIN="$(which ccache)"
       if [ -z "$CCACHE_BIN" ]; then
         echo "ccache binary not found"
+        exit 1
+      fi
+      CCACHE_LIBEXEC="$(brew --prefix ccache)/libexec"
+      if [ -d "$CCACHE_LIBEXEC" ]; then
+        export PATH="$CCACHE_LIBEXEC:$PATH"
+      else
+        echo "ccache libexec directory not found"
         exit 1
       fi
       export CC=clang
