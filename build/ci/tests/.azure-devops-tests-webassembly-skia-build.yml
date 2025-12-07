@@ -40,7 +40,7 @@ jobs:
       nugetRoot: $(Agent.WorkFolder)/.nuget
 
   - powershell: |
-      echo "UnoDisableAnalyzersInSamples: $env:UnoDisableAnalyzersInSamples"
+      echo "UnoDisableAnalyzersInSamples: $env:UNODISABLEANALYZERSINSAMPLES"
       dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0 -p:UnoTargetFrameworkOverride=net10.0 -p:PreBuildUnoUITasks=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-wasm-browser.binlog
     displayName: Build Wasm Skia Head
 
