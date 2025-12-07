@@ -25,6 +25,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchDepth: 1
 
   - template: ../templates/gitversion.yml
   
@@ -32,71 +33,11 @@ jobs:
 
   - bash: |
       set -euo pipefail
-      if ! command -v ccache >/dev/null 2>&1; then
-        echo "Installing ccache..."
-        brew install ccache
-      else
-        echo "ccache already installed"
-      fi
-      mkdir -p "$HOME/Library/Caches/ccache"
-    displayName: Ensure ccache is installed
-
-  - bash: |
-      set -euo pipefail
-      ACTIVE_XCODE=$(xcode-select -p)
-      echo "Active Xcode path: $ACTIVE_XCODE"
-      XCODE_APP_DIR=$(dirname "$(dirname "$ACTIVE_XCODE")")
-      XCODE_APP_NAME=$(basename "$XCODE_APP_DIR")
-      SANITIZED=$(echo "$XCODE_APP_NAME" | sed 's/[^A-Za-z0-9._-]/_/g')
-      echo "Active Xcode identifier: $SANITIZED"
-      echo "##vso[task.setvariable variable=ActiveXcodeKeySegment]$SANITIZED"
-    displayName: Detect active Xcode path
-
-  - bash: |
-      set -euo pipefail
-      DERIVED_DATA_DIR="$HOME/Library/Developer/Xcode/DerivedData"
-      mkdir -p "$DERIVED_DATA_DIR"
-      echo "Xcode DerivedData directory: $DERIVED_DATA_DIR"
-      echo "##vso[task.setvariable variable=DerivedDataDirectory]$DERIVED_DATA_DIR"
-    displayName: Configure Xcode cache paths
-
-  - task: Cache@2
-    displayName: Cache Xcode DerivedData
-    inputs:
-      key: macos-skia-native | xcode-deriveddata | $(Agent.OS) | "xcode-$(ActiveXcodeKeySegment)" | $(Build.SourceVersion)
-      restoreKeys: |
-        macos-skia-native | xcode-deriveddata | $(Agent.OS) | "xcode-$(ActiveXcodeKeySegment)"
-        macos-skia-native | xcode-deriveddata | $(Agent.OS)
-      path: $(DerivedDataDirectory)
-
-  - task: Cache@2
-    displayName: Cache ccache objects
-    inputs:
-      key: macos-skia-native | ccache | libexec-v1 | $(Agent.OS) | "xcode-$(ActiveXcodeKeySegment)"
-      path: $(HOME)/Library/Caches/ccache
-
-  - bash: |
-      export CCACHE_DIR="${HOME}/Library/Caches/ccache"
-      CCACHE_BIN="$(which ccache)"
-      if [ -z "$CCACHE_BIN" ]; then
-        echo "ccache binary not found"
-        exit 1
-      fi
-      CCACHE_LIBEXEC="$(brew --prefix ccache)/libexec"
-      if [ -d "$CCACHE_LIBEXEC" ]; then
-        export PATH="$CCACHE_LIBEXEC:$PATH"
-      else
-        echo "ccache libexec directory not found"
-        exit 1
-      fi
       export CC=clang
       export CXX=clang++
-      export CMAKE_C_COMPILER_LAUNCHER="$CCACHE_BIN"
-      export CMAKE_CXX_COMPILER_LAUNCHER="$CCACHE_BIN"
       cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
       chmod +x build.sh
       ./build.sh
-      ccache -s || true
     displayName: Build Skia macOS native
 
   - task: PublishPipelineArtifact@1
