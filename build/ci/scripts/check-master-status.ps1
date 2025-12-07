@@ -14,8 +14,24 @@ try {
         exit 0
     }
 
+    function Test-BuildSucceeded($build) {
+        if ($build.result -eq "succeeded" -or $build.result -eq "partiallySucceeded") {
+            return $true
+        }
+
+        $publishIssues = $build.issues |
+            Where-Object { $_.type -eq "error" -and $_.message -match "Publish to nuget\.org" }
+
+        if ($publishIssues.Count -gt 0) {
+            Write-Host "Build $($build.buildNumber) failed only due to 'Publish to nuget.org'. Treating as succeeded."
+            return $true
+        }
+
+        return $false
+    }
+
     $latestBuild = $builds[0]
-    if ($latestBuild.result -eq "succeeded" -or $latestBuild.result -eq "partiallySucceeded") {
+    if (Test-BuildSucceeded $latestBuild) {
         Write-Host "Latest master build $($latestBuild.buildNumber) succeeded."
         exit 0
     }
@@ -23,7 +39,7 @@ try {
     Write-Host "Latest master build $($latestBuild.buildNumber) failed."
 
     $lastSuccess = $builds |
-        Where-Object { $_.result -eq "succeeded" -or $_.result -eq "partiallySucceeded" } |
+        Where-Object { Test-BuildSucceeded $_ } |
         Select-Object -First 1
 
     if ($null -eq $lastSuccess) {
