@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 	<!--
 		Keep AssemblyName isolated so the build-time SHA substitution can rewrite this file
 		without dirtifying the csproj, which is part of the NuGet cache key.
