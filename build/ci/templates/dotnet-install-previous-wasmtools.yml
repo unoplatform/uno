@@ -1,5 +1,6 @@
 parameters:
   UnoCheckParameters: ''
+  DotNetRoot: '$(DOTNET_ROOT)'
 
 steps:
   - task: PowerShell@2
@@ -9,14 +10,31 @@ steps:
       targetType: inline
       script: |
         $ErrorActionPreference = 'Stop'
+        $dotnetExe = 'dotnet'
+        $dotnetRoot = $null
+        if (-not $IsWindows) {
+          $dotnetRoot = '${{ parameters.DotNetRoot }}'
+          if ([string]::IsNullOrWhiteSpace($dotnetRoot)) {
+            $dotnetRoot = "$(Agent.ToolsDirectory)/dotnet"
+          }
+
+          $dotnetExeCandidate = Join-Path $dotnetRoot 'dotnet'
+          if (Test-Path $dotnetExeCandidate) {
+            $dotnetExe = $dotnetExeCandidate
+          }
+
+          Write-Host "Using dotnet root $dotnetRoot"
+          $env:DOTNET_ROOT = $dotnetRoot
+        }
+
         $args = @('workload', 'install', 'wasm-tools-net9')
         if ($IsWindows) {
-          & dotnet @args
+          & $dotnetExe @args
         }
         else {
-          $envArgs = @("DOTNET_ROOT=$env:DOTNET_ROOT")
-          sudo env @envArgs dotnet @args
+          $envArgs = @("DOTNET_ROOT=$dotnetRoot", "PATH=$dotnetRoot:$env:PATH")
+          sudo env @envArgs $dotnetExe @args
         }
     retryCountOnTaskFailure: 3
     env:
-      DOTNET_ROOT: $(DOTNET_ROOT)
+      DOTNET_ROOT: ${{ parameters.DotNetRoot }}
