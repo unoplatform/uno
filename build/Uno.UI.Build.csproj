@@ -68,7 +68,7 @@
 		<ItemGroup>
 			<_FilesContent 
 				Include="%(_Sha1Replace.Identity)"
-				Contents="$([System.Text.RegularExpressions.Regex]::Replace([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)'), '(?<=\\.|_)v0', '$(_ReplacedSHA)'))" />
+				Contents="$([System.Text.RegularExpressions.Regex]::Replace([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)'), '(?&lt;=\\.|_)v0', '$(_ReplacedSHA)'))" />
 
 		</ItemGroup>
 
