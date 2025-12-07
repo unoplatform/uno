@@ -9,7 +9,7 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   variables:
-    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget/packages
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
@@ -24,7 +24,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(NUGET_PACKAGES)
+      nugetRoot: $(build.sourcesdirectory)/.nuget
 
   - bash: |
       dotnet publish /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net10.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/logs/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(NBGV_SemVer2).binlog
@@ -68,7 +68,7 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   variables:
-    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget/packages
     SITE_SUFFIX: 'net10.0'
 
   steps:
@@ -179,7 +179,7 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   variables:
-    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget/packages
 
   steps:
   - checkout: self
@@ -189,7 +189,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(NUGET_PACKAGES)
+      nugetRoot: $(build.sourcesdirectory)/.nuget
 
   - task: NodeTool@0
     inputs:

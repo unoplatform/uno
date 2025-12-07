@@ -23,7 +23,7 @@ jobs:
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
-    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget/packages
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
@@ -41,7 +41,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(NUGET_PACKAGES)
+      nugetRoot: $(Agent.WorkFolder)/.nuget
 
   - template: ../templates/ios-build-select-version.yml
     parameters:

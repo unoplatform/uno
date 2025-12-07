@@ -17,7 +17,7 @@ jobs:
     CI_Build: true
 
     # Use pre-defined local nuget cache for restore
-    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget/packages
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -37,7 +37,7 @@ jobs:
  
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(NUGET_PACKAGES)
+      nugetRoot: $(Agent.WorkFolder)/.nuget
 
   - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0 -p:UnoTargetFrameworkOverride=net10.0 -p:PreBuildUnoUITasks=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-wasm-browser.binlog
     displayName: Build Wasm Skia Head

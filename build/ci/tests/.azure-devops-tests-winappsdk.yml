@@ -13,14 +13,15 @@ jobs:
     CI_Build: true
 
     # Use pre-defined local nuget cache for restore
-    NUGET_PACKAGES: 'C:\NugetPackages'
+    NUGET_CACHE_ROOT: 'C:\NugetPackages'
+    NUGET_PACKAGES: '$(NUGET_CACHE_ROOT)\packages'
 
   steps:
   - checkout: self
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(NUGET_PACKAGES)
+      nugetRoot: $(NUGET_CACHE_ROOT)
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-install.yml

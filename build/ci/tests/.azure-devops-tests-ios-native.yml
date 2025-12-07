@@ -59,7 +59,8 @@ jobs:
   variables:
     CI_Build: true
     SourceLinkEnabled: falses
-    NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+    NUGET_CACHE_ROOT: $(Pipeline.Workspace)/.nuget
+    NUGET_PACKAGES: $(NUGET_CACHE_ROOT)/packages
 
   steps:
   - checkout: self
@@ -67,7 +68,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(NUGET_PACKAGES)
+      nugetRoot: $(NUGET_CACHE_ROOT)
 
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
@@ -119,7 +120,7 @@ jobs:
 - ${{ each AutomatedTestGroup in parameters.AUTOMATED_TESTS_GROUPS }}:
   - template: .azure-devops-tests-ios-runner.yml
     parameters:
-      nugetPackages: $(NUGET_PACKAGES)
+      nugetRoot: $(NUGET_CACHE_ROOT)
       JobName: 'iOS_Automated_Tests_Group_${{ AutomatedTestGroup.value }}'
       JobDisplayName: 'Automated Tests ${{ AutomatedTestGroup.key }}'
       TestRunName: 'iOS Native Automated Tests ${{ AutomatedTestGroup.key }}'
@@ -141,7 +142,7 @@ jobs:
 - ${{ each RuntimeTestGroup in parameters.RUNTIME_TESTS_GROUPS }}:
   - template: .azure-devops-tests-ios-runner.yml
     parameters:
-      nugetPackages: $(NUGET_PACKAGES)
+      nugetRoot: $(NUGET_CACHE_ROOT)
       JobName: 'iOS_Automated_Tests_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
       JobDisplayName: 'Runtime Tests ${{ RuntimeTestGroup.key }}'
       TestRunName: 'iOS Native Runtime Tests ${{ RuntimeTestGroup.key }}'
@@ -175,7 +176,7 @@ jobs:
 - ${{ each snapshotGroup in parameters.SNAPSHOT_GROUPS }}:
   - template: .azure-devops-tests-ios-runner.yml
     parameters:
-      nugetPackages: $(NUGET_PACKAGES)
+      nugetRoot: $(NUGET_CACHE_ROOT)
       JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
       JobDisplayName: 'Snapshot Tests ${{ snapshotGroup.key }}'
       TestRunName: 'iOS Native Snapshot Tests ${{ snapshotGroup.key }}'

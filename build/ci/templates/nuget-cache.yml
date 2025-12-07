@@ -1,18 +1,21 @@
 parameters:
-  nugetPackages: '$(Pipeline.Workspace)/.nuget/packages'
-  nugetHttpCache: '$(Pipeline.Workspace)/.nuget/v3-cache'
+  nugetRoot: '$(Pipeline.Workspace)/.nuget'
 
 steps:
 
   - powershell: |
-      New-Item -ItemType Directory -Force "${{ parameters.nugetPackages }}" | Out-Null
-      New-Item -ItemType Directory -Force "${{ parameters.nugetHttpCache }}" | Out-Null
-      Write-Host "##vso[task.setvariable variable=NUGET_HTTP_CACHE_PATH]${{ parameters.nugetHttpCache }}"
+      New-Item -ItemType Directory -Force "${{ parameters.nugetRoot }}" | Out-Null
+      $packages = Join-Path "${{ parameters.nugetRoot }}" 'packages'
+      $httpCache = Join-Path "${{ parameters.nugetRoot }}" 'v3-cache'
+      New-Item -ItemType Directory -Force $packages | Out-Null
+      New-Item -ItemType Directory -Force $httpCache | Out-Null
+      Write-Host "##vso[task.setvariable variable=NUGET_HTTP_CACHE_PATH]$httpCache"
+      Write-Host "##vso[task.setvariable variable=NUGET_CACHE_ROOT]${{ parameters.nugetRoot }}"
     displayName: Prepare NuGet cache folders
 
   - script: |
-      compact /c "${{ parameters.nugetPackages }}"
-      compact /c "${{ parameters.nugetHttpCache }}"
+      compact /c "${{ parameters.nugetRoot }}\packages"
+      compact /c "${{ parameters.nugetRoot }}\v3-cache"
 
     condition: and(succeeded(), eq( variables['Agent.OS'], 'Windows_NT' ))
     displayName: Compress nuget package cache folder
@@ -21,7 +24,5 @@ steps:
     condition: eq(variables['enable_package_cache'], 'true')
     inputs:
       key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
-      path: |
-        ${{ parameters.nugetPackages }}
-        ${{ parameters.nugetHttpCache }}
+      path: $(NUGET_CACHE_ROOT)
     displayName: Restore NuGet packages cache
