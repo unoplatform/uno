@@ -32,7 +32,7 @@ steps:
           & $dotnetExe @args
         }
         else {
-          $envArgs = @("DOTNET_ROOT=$dotnetRoot", "PATH=$dotnetRoot:${env:PATH}")
+          $envArgs = @("DOTNET_ROOT=${dotnetRoot}", "PATH=${dotnetRoot}:${env:PATH}")
           sudo env @envArgs $dotnetExe @args
         }
     retryCountOnTaskFailure: 3
