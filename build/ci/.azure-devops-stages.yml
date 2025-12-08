@@ -70,8 +70,9 @@ stages:
 
 - stage: packages_tests
   displayName: Tests - Templates
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.TemplateTestsRequired'], 'true'))
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['TemplateTestsRequired'], 'true'))
   dependsOn:
+    - Setup
     - binaries_build_winui
 
   jobs: 
@@ -96,7 +97,7 @@ stages:
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeWasm'], 'true'))
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['RequireNativeWasm'], 'true'))
   dependsOn:
     - Setup
 
@@ -121,7 +122,7 @@ stages:
 
 - stage: android_tests
   displayName: Tests - Android Native
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeAndroid'], 'true'))
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['RequireNativeAndroid'], 'true'))
   dependsOn:
     - Setup
 
@@ -136,7 +137,7 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeIos'], 'true'))
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['RequireNativeIos'], 'true'))
   dependsOn:
     - Setup
 
@@ -161,7 +162,7 @@ stages:
 - stage: test_finalization
   displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.ScreenshotsRequired'], 'true'))
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['ScreenshotsRequired'], 'true'))
   dependsOn:
     - Setup
     - wasm_tests

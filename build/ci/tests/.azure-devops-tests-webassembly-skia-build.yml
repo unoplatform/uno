@@ -45,6 +45,7 @@ jobs:
   - pwsh: |
       $artifactName = "skia-browserwasm-samples-app-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
       Write-Host "Publishing Samples App artifact: $artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
     name: set_samples_artifact
     displayName: 'Set Samples App Artifact Name'
