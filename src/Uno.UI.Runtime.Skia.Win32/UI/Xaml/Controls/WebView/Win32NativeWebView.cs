@@ -48,6 +48,8 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 {
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
+	private const uint WM_SYSCOMMAND = 0x0112;
+	private const uint SC_CLOSE = 0xF060;
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -254,12 +256,12 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 				PInvoke.GetClientRect(_hwnd, out var bounds);
 				_controller.Bounds = bounds;
 				return new LRESULT(0);
-			case 0x0112: // WM_SYSCOMMAND
+			case WM_SYSCOMMAND:
 				// When Alt+F4 is pressed on a focused WebView2, Windows sends WM_SYSCOMMAND with SC_CLOSE
 				// to the WebView2's child window. We need to forward this to the parent window to close
 				// the entire application instead of just the WebView2 control.
 				var syscommand = (uint)wParam.Value & 0xFFF0; // Mask off the low 4 bits
-				if (syscommand == 0xF060) // SC_CLOSE
+				if (syscommand == SC_CLOSE)
 				{
 					var parentHwnd = ParentHwnd;
 					if (parentHwnd != HWND.Null)
