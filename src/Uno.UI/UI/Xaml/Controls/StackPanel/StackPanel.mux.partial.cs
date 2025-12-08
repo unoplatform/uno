@@ -244,7 +244,7 @@ partial class StackPanel
 
 	internal Rect GetItemsBounds() => new Rect(0, 0, ActualWidth, ActualHeight);
 
-	//// This method is used for getting closest as well as Insertion Index
+	// This method is used for getting closest as well as Insertion Index
 	private int GetClosestOrInsertionIndex(Point position, bool isInsertionIndex)
 	{
 		var totalSize = new Size(0, 0); // itemSize which include Justification Size
