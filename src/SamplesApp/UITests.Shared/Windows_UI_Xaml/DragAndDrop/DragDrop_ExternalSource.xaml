@@ -1,0 +1,150 @@
+<UserControl
+	x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ExternalSource"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:UITests.Windows_UI_Xaml.DragAndDrop"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="600"
+	d:DesignWidth="800">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Row="0" Padding="10" Background="#F5F5F5">
+			<TextBlock 
+				Text="External Drag &amp; Drop Test" 
+				FontSize="20" 
+				FontWeight="Bold" 
+				Margin="0,0,0,10" />
+			<TextBlock 
+				Text="Drop files, images, text, or HTML content from external applications into the area below." 
+				TextWrapping="Wrap"
+				Margin="0,0,0,5" />
+			<TextBlock 
+				Text="For example: drag files from File Explorer, images from a web browser, or text from a text editor." 
+				TextWrapping="Wrap"
+				Foreground="Gray"
+				FontSize="12" />
+		</StackPanel>
+
+		<Border
+			x:Name="DropTarget"
+			Grid.Row="1"
+			AllowDrop="True"
+			Background="#E8F4F8"
+			BorderBrush="DodgerBlue"
+			BorderThickness="3"
+			CornerRadius="8"
+			Margin="10">
+			
+			<ScrollViewer VerticalScrollBarVisibility="Auto">
+				<StackPanel Padding="20" Spacing="15">
+					<TextBlock 
+						x:Name="DropIndicator"
+						Text="Drop files, images, text, or HTML here"
+						FontSize="18"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Foreground="Gray"
+						FontStyle="Italic" />
+
+					<!-- Drop Information -->
+					<StackPanel x:Name="InfoPanel" Visibility="Collapsed" Spacing="10">
+						<TextBlock Text="Drop Information:" FontWeight="Bold" FontSize="16" />
+						
+						<StackPanel Spacing="5">
+							<TextBlock Text="Available Formats:" FontWeight="SemiBold" />
+							<TextBlock x:Name="FormatsText" TextWrapping="Wrap" />
+						</StackPanel>
+
+						<StackPanel Spacing="5">
+							<TextBlock Text="Allowed Operations:" FontWeight="SemiBold" />
+							<TextBlock x:Name="OperationsText" TextWrapping="Wrap" />
+						</StackPanel>
+					</StackPanel>
+
+					<!-- Image Preview -->
+					<StackPanel x:Name="ImagePanel" Visibility="Collapsed" Spacing="10">
+						<TextBlock Text="Image Preview:" FontWeight="Bold" FontSize="16" />
+						<Border 
+							Background="White" 
+							BorderBrush="Gray" 
+							BorderThickness="1"
+							MaxWidth="400"
+							MaxHeight="400"
+							HorizontalAlignment="Left">
+							<Image 
+								x:Name="ImagePreview" 
+								Stretch="Uniform" />
+						</Border>
+					</StackPanel>
+
+					<!-- Text Content -->
+					<StackPanel x:Name="TextPanel" Visibility="Collapsed" Spacing="10">
+						<TextBlock Text="Text Content:" FontWeight="Bold" FontSize="16" />
+						<Border 
+							Background="White" 
+							BorderBrush="Gray" 
+							BorderThickness="1"
+							Padding="10"
+							MaxHeight="300">
+							<ScrollViewer VerticalScrollBarVisibility="Auto">
+								<TextBlock 
+									x:Name="TextContent" 
+									TextWrapping="Wrap" 
+									FontFamily="Consolas" />
+							</ScrollViewer>
+						</Border>
+					</StackPanel>
+
+					<!-- HTML Content -->
+					<StackPanel x:Name="HtmlPanel" Visibility="Collapsed" Spacing="10">
+						<TextBlock Text="HTML Content:" FontWeight="Bold" FontSize="16" />
+						<Border 
+							Background="White" 
+							BorderBrush="Gray" 
+							BorderThickness="1"
+							Padding="10"
+							MaxHeight="300">
+							<ScrollViewer VerticalScrollBarVisibility="Auto">
+								<TextBlock 
+									x:Name="HtmlContent" 
+									TextWrapping="Wrap" 
+									FontFamily="Consolas" />
+							</ScrollViewer>
+						</Border>
+					</StackPanel>
+
+					<!-- File List -->
+					<StackPanel x:Name="FilePanel" Visibility="Collapsed" Spacing="10">
+						<TextBlock Text="Files Dropped:" FontWeight="Bold" FontSize="16" />
+						<ItemsControl x:Name="FilesList">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<StackPanel Orientation="Horizontal" Spacing="5" Margin="0,2">
+										<TextBlock Text="📄" />
+										<TextBlock Text="{Binding}" />
+									</StackPanel>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+
+					<!-- Clear Button -->
+					<Button 
+						x:Name="ClearButton" 
+						Content="Clear" 
+						Click="ClearButton_Click"
+						Visibility="Collapsed"
+						HorizontalAlignment="Left"
+						Margin="0,10,0,0" />
+				</StackPanel>
+			</ScrollViewer>
+		</Border>
+	</Grid>
+</UserControl>

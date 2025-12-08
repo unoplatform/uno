@@ -5,10 +5,20 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.VisualBasic;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -16,15 +26,7 @@ using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.System.Com;
 using Windows.Win32.System.Ole;
 using Windows.Win32.System.SystemServices;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
-using Uno.Disposables;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.UI.Hosting;
-using Uno.UI.NativeElementHosting;
 using IDataObject = Windows.Win32.System.Com.IDataObject;
-using Microsoft.UI.Input;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -149,7 +151,42 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
 		{
 			var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
-			dataObject->GetData(formatEtc, out STGMEDIUM medium);
+			var hr = dataObject->GetData(formatEtc, out STGMEDIUM medium);
+
+			if (!hr.Succeeded)
+			{
+				FORMATETC formatetc = new()
+				{
+					cfFormat = formatEtc.cfFormat,
+					dwAspect = (uint)1,
+					lindex = -1,
+					tymed = (uint)TYMED.TYMED_HGLOBAL
+				};
+
+				if (dataObject->QueryGetData(formatetc).Failed)
+				{
+					return default;
+				}
+
+				HRESULT hr2 = dataObject->GetData(formatetc, out var medium2);
+
+				// Fallback for file drops when normal serialization fails
+				if (format == CLIPBOARD_FORMAT.CF_HDROP &&
+					medium.tymed == TYMED.TYMED_HGLOBAL &&
+					hr2.Succeeded)
+				{
+					// Try to get data from HGLOBAL directly if standard approach fails
+					if (!package.Contains(StandardDataFormats.StorageItems))
+					{
+						var files = TryGetFilesFromHGLOBAL(medium.u.hGlobal);
+						if (files is not null && files.Count > 0)
+						{
+							package.SetStorageItems(files);
+						}
+					}
+				}
+			}
+
 			mediumsToDispose.Add(medium);
 			return medium.u.hGlobal;
 		});
@@ -199,6 +236,110 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		var src = new DragEventSource(scaledPosition, grfKeyState);
 
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {position}");
+
+		IEnumFORMATETC* enumFormatEtc;
+		var hResult = dataObject->EnumFormatEtc((uint)DATADIR.DATADIR_GET, &enumFormatEtc);
+		if (hResult.Failed)
+		{
+			this.LogError()?.Error($"{nameof(IDataObject.EnumFormatEtc)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return HRESULT.E_UNEXPECTED;
+		}
+
+		using var enumFormatDisposable = new DisposableStruct<IntPtr>(static p => ((IEnumFORMATETC*)p)->Release(), (IntPtr)enumFormatEtc);
+
+		enumFormatEtc->Reset();
+		const int formatBufferLength = 100;
+		var formatBuffer = stackalloc FORMATETC[formatBufferLength];
+		uint fetchedFormatCount;
+		hResult = enumFormatEtc->Next(formatBufferLength, formatBuffer, &fetchedFormatCount);
+		if (hResult.Failed)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return HRESULT.E_UNEXPECTED;
+		}
+
+		var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {position}, formats: ";
+			foreach (var format in formats)
+			{
+				log += (CLIPBOARD_FORMAT)format.cfFormat + " ";
+			}
+			this.Log().Trace(log);
+		}
+
+		var package = new DataPackage();
+
+		var formatEtcList = formats.ToArray();
+		var formatList =
+			formatEtcList
+			.Where(static formatetc =>
+			{
+				if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
+				{
+					return false;
+				}
+				if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
+				{
+					typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
+					return false;
+				}
+
+				return true;
+			})
+			.Select(f => (CLIPBOARD_FORMAT)f.cfFormat)
+			.ToList();
+
+		var mediumsToDispose = new List<STGMEDIUM>();
+		using var mediumsDisposable = new DisposableStruct<List<STGMEDIUM>>(static list =>
+		{
+			foreach (var medium in list)
+			{
+				PInvoke.ReleaseStgMedium(&medium);
+			}
+		}, mediumsToDispose);
+		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
+		{
+			var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
+			var hr = dataObject->GetData(formatEtc, out STGMEDIUM medium);
+			if (!hr.Succeeded)
+			{
+				FORMATETC formatetc = new()
+				{
+					cfFormat = formatEtc.cfFormat,
+					dwAspect = (uint)1,
+					lindex = -1,
+					tymed = (uint)TYMED.TYMED_HGLOBAL
+				};
+
+				if (dataObject->QueryGetData(formatetc).Failed)
+				{
+					return default;
+				}
+
+				HRESULT hr2 = dataObject->GetData(formatetc, out var medium2);
+
+				// Fallback for file drops when normal serialization fails
+				if (format == CLIPBOARD_FORMAT.CF_HDROP &&
+					medium2.tymed == TYMED.TYMED_HGLOBAL &&
+					hr2.Succeeded)
+				{
+					// Try to get data from HGLOBAL directly if standard approach fails
+					if (!package.Contains(StandardDataFormats.StorageItems))
+					{
+						var files = TryGetFilesFromHGLOBAL(medium.u.hGlobal);
+						if (files is not null && files.Count > 0)
+						{
+							package.SetStorageItems(files);
+						}
+					}
+				}
+			}
+
+			mediumsToDispose.Add(medium);
+			return medium.u.hGlobal;
+		});
 
 		*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
 
@@ -340,6 +481,62 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		}
 
 		return filePaths;
+	}
+
+	private static unsafe List<IStorageItem>? TryGetFilesFromHGLOBAL(HGLOBAL handle)
+	{
+		try
+		{
+			using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
+			if (lockDisposable is null)
+			{
+				return null;
+			}
+
+			var hdrop = new Windows.Win32.UI.Shell.HDROP((IntPtr)firstByte);
+			
+			// Query total file count
+			uint count = PInvoke.DragQueryFile(hdrop, 0xFFFFFFFF, new PWSTR(), 0);
+			if (count == 0)
+			{
+				return null;
+			}
+
+			var files = new List<IStorageItem>((int)count);
+			const int MAX_PATH = 260;
+			var buffer = stackalloc char[MAX_PATH + 1];
+
+			for (uint i = 0; i < count; i++)
+			{
+				uint charactersCopied = PInvoke.DragQueryFile(hdrop, i, new PWSTR(buffer), MAX_PATH + 1);
+				if (charactersCopied == 0)
+				{
+					continue;
+				}
+
+				var filePath = new string(buffer, 0, (int)charactersCopied);
+				
+				if (Directory.Exists(filePath))
+				{
+					files.Add(new StorageFolder(filePath));
+				}
+				else if (File.Exists(filePath))
+				{
+					files.Add(StorageFile.GetFileFromPath(filePath));
+				}
+				else
+				{
+					typeof(Win32DragDropExtension).Log()?.LogWarning($"File path '{filePath}' from drag-drop is not a valid file or directory.");
+				}
+			}
+
+			return files.Count > 0 ? files : null;
+		}
+		catch (Exception ex)
+		{
+			typeof(Win32DragDropExtension).LogError()?.Error($"Failed to extract files from HGLOBAL: {ex.Message}");
+			return null;
+		}
 	}
 
 	private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? LoadImageFromFile(string filePath)
