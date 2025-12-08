@@ -4821,6 +4821,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlConstants.Types.DependencyProperty:
 						return BuildDependencyProperty(GetMemberValue(), owner);
 
+					case XamlConstants.Types.RoutedEvent:
+						return BuildRoutedEvent(GetMemberValue(), owner);
+
 					case XamlConstants.Types.Brush:
 					case XamlConstants.Types.SolidColorBrush:
 						return BuildBrush(GetMemberValue());
@@ -5308,6 +5311,51 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			throw new XamlGenerationException($"'{property}' is not a DependencyProperty in type '{currentStyleTargetType.GetFullyQualifiedTypeExcludingGlobal()}'", location);
+		}
+
+		private string BuildRoutedEvent(string routedEventValue, IXamlLocation location)
+		{
+			// Parse RoutedEvent values in the format "TypeName.EventName" (e.g., "FrameworkElement.Loaded")
+			// The actual validation of which events are supported is done by the property setter (e.g., EventTrigger.RoutedEvent)
+			var normalizedValue = routedEventValue?.Trim();
+			if (string.IsNullOrEmpty(normalizedValue))
+			{
+				throw new XamlGenerationException("RoutedEvent value cannot be empty.", location);
+			}
+
+			var dotIndex = normalizedValue!.LastIndexOf('.');
+			if (dotIndex <= 0 || dotIndex >= normalizedValue.Length - 1)
+			{
+				throw new XamlGenerationException(
+					$"Invalid RoutedEvent format '{routedEventValue}'. Expected format is 'TypeName.EventName' (e.g., 'FrameworkElement.Loaded').",
+					location);
+			}
+
+			var typeName = normalizedValue.Substring(0, dotIndex);
+			var eventName = normalizedValue.Substring(dotIndex + 1);
+
+			// Find the type
+			var type = FindType(typeName);
+			if (type == null)
+			{
+				throw new XamlGenerationException(
+					$"Could not find type '{typeName}' for RoutedEvent '{routedEventValue}'.",
+					location);
+			}
+
+			// Look for a static RoutedEvent property/field named "{eventName}Event"
+			var routedEventPropertyName = eventName + "Event";
+			var routedEventSymbol = type.GetMembers(routedEventPropertyName)
+				.FirstOrDefault(m => m.IsStatic && (m is IPropertySymbol || m is IFieldSymbol));
+
+			if (routedEventSymbol == null)
+			{
+				throw new XamlGenerationException(
+					$"Could not find RoutedEvent '{routedEventPropertyName}' on type '{type.GetFullyQualifiedTypeExcludingGlobal()}'.",
+					location);
+			}
+
+			return $"{type.GetFullyQualifiedTypeIncludingGlobal()}.{routedEventPropertyName}";
 		}
 
 		private string BuildBrush(string memberValue)
