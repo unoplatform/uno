@@ -10,6 +10,8 @@ using Microsoft.UI.Xaml.Tests.Enterprise;
 using MUXControlsTestApp.Utilities;
 using UIElement = Microsoft.UI.Xaml.UIElement;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.Linq;
+using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 
 #if HAS_UNO
 using DirectUI;
