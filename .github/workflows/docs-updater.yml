@@ -1,0 +1,87 @@
+name: Update External Docs Commit Hashes
+
+on:
+  schedule:
+    # Run every 6 hours at minutes 0 (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to update'
+        required: true
+        default: 'master'
+
+concurrency:
+  group: ${{ github.workflow }} - ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs-update:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch:
+          - master
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          fetch-depth: 0
+
+      - name: "Docs Update"
+        uses: ./.github/actions/docs-update
+        with:
+          branch: ${{ matrix.branch }}
+
+      - name: Set target branch
+        id: targetbranch
+        run: |
+          if [[ "${{ matrix.branch }}" == "master" ]]; then
+            echo "targetbranch=docs/update/dev" >> $GITHUB_OUTPUT
+          else
+            versionNumber=$(echo "${{ matrix.branch }}" | cut -d'/' -f 3)
+            echo "targetbranch=docs/update/release/$versionNumber" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ${{ matrix.branch }}
+          branch: ${{ steps.targetbranch.outputs.targetbranch }}
+          commit-message: 'chore: Update external docs commit hashes'
+          title: External Docs Update - ${{ matrix.branch }}
+          body: |
+            This updates the external documentation commit hashes in `doc/import_external_docs.ps1` to the latest commits from each repository's default branch.
+            
+            The following repositories are automatically tracked and updated to their default branch:
+            - uno.wasm.bootstrap
+            - uno.themes
+            - uno.toolkit.ui
+            - uno.check
+            - uno.xamlmerge.task
+            - figma-docs
+            - uno.resizetizer
+            - uno.uitest
+            - uno.extensions
+            - workshops
+            - uno.samples
+            - uno.chefs
+            - hd-docs
+            
+            Each repository's default branch (main, master, or configured default) is automatically detected and used.
+            
+            This is an automated update created by the external docs updater workflow.
+          labels: docs-update
+          draft: false
+
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}

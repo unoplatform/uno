@@ -1,0 +1,119 @@
+name: "Docs Update"
+description: "Update external docs commit hashes to latest from default branches"
+
+inputs:
+  branch:
+    description: 'base branch'
+    required: true
+    default: 'master'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup PowerShell
+      shell: pwsh
+      run: |
+        Write-Host "Setting up environment for docs update..." -ForegroundColor Green
+
+    - name: Update external docs commit hashes
+      shell: pwsh
+      run: |
+        Write-Host "Updating external docs commit hashes..." -ForegroundColor Green
+        
+        # List of repositories to track (will fetch default branch dynamically)
+        $repos = @(
+            "uno.wasm.bootstrap",
+            "uno.themes",
+            "uno.toolkit.ui",
+            "uno.check",
+            "uno.xamlmerge.task",
+            "figma-docs",
+            "uno.resizetizer",
+            "uno.uitest",
+            "uno.extensions",
+            "workshops",
+            "uno.samples",
+            "uno.chefs",
+            "hd-docs"
+        )
+        
+        $scriptPath = "doc/import_external_docs.ps1"
+        
+        if (-Not (Test-Path $scriptPath)) {
+            Write-Error "Script not found: $scriptPath"
+            exit 1
+        }
+        
+        # Read the current script content
+        $content = Get-Content $scriptPath -Raw
+        $updatedCount = 0
+        
+        foreach ($repo in $repos) {
+            Write-Host "Processing $repo..." -ForegroundColor Cyan
+            
+            try {
+                # First, get the repository info to find the default branch
+                $repoInfoUrl = "https://api.github.com/repos/unoplatform/$repo"
+                $repoInfo = Invoke-RestMethod -Uri $repoInfoUrl -Headers @{
+                    "Accept" = "application/vnd.github.v3+json"
+                    "User-Agent" = "Uno-Docs-Updater"
+                }
+                
+                $defaultBranch = $repoInfo.default_branch
+                Write-Host "  Default branch: $defaultBranch" -ForegroundColor Gray
+                
+                # Get the latest commit hash from the default branch
+                $commitUrl = "https://api.github.com/repos/unoplatform/$repo/commits/$defaultBranch"
+                $commitInfo = Invoke-RestMethod -Uri $commitUrl -Headers @{
+                    "Accept" = "application/vnd.github.v3+json"
+                    "User-Agent" = "Uno-Docs-Updater"
+                }
+                
+                $latestHash = $commitInfo.sha
+                Write-Host "  Latest commit: $latestHash" -ForegroundColor Gray
+                
+                # Update the hash in the script using regex
+                # Match pattern: "repo-name" = @{ ref="<hash>" } #comment
+                $pattern = "(`"$repo`"\s*=\s*@\{\s*ref\s*=\s*`")[a-f0-9]{40}(`"\s*}[^#]*)(#.*)?$"
+                $comment = "latest $defaultBranch commit"
+                $replacement = "`${1}$latestHash`${2}#$comment"
+                
+                $newContent = $content -replace $pattern, $replacement
+                
+                if ($newContent -ne $content) {
+                    $content = $newContent
+                    $updatedCount++
+                    Write-Host "  ✓ Updated $repo to $latestHash" -ForegroundColor Green
+                } else {
+                    Write-Host "  ⚠ No change for $repo (already up to date or pattern not matched)" -ForegroundColor Yellow
+                }
+            }
+            catch {
+                Write-Warning "Failed to process $repo : $_"
+            }
+        }
+        
+        # Write the updated content back to the file
+        if ($updatedCount -gt 0) {
+            Set-Content -Path $scriptPath -Value $content -NoNewline
+            Write-Host "`n✓ Updated $updatedCount commit hash(es) in $scriptPath" -ForegroundColor Green
+        } else {
+            Write-Host "`n⚠ No updates were made" -ForegroundColor Yellow
+        }
+        
+        # Show git diff for verification
+        Write-Host "`nChanges made:" -ForegroundColor Cyan
+        git diff $scriptPath
+
+    - name: Check for changes
+      id: check_changes
+      shell: pwsh
+      run: |
+        $changes = git status --porcelain doc/import_external_docs.ps1
+        if ($changes) {
+            echo "has_changes=true" >> $env:GITHUB_OUTPUT
+            Write-Host "Changes detected in import_external_docs.ps1" -ForegroundColor Green
+        } else {
+            echo "has_changes=false" >> $env:GITHUB_OUTPUT
+            Write-Host "No changes detected in import_external_docs.ps1" -ForegroundColor Yellow
+        }
