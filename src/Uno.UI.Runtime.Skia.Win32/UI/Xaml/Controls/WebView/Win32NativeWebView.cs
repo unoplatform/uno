@@ -68,6 +68,29 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 	private string _documentTitle = string.Empty;
 	private readonly NativeWebView.CoreWebView2Controller _controller;
 
+	private HWND ParentHwnd
+	{
+		get
+		{
+			if (_presenter.XamlRoot is null)
+			{
+				return HWND.Null;
+			}
+
+			if (_presenter.XamlRoot.HostWindow is not { } window)
+			{
+				return HWND.Null;
+			}
+
+			if (window.NativeWindow is not Win32NativeWindow nativeWindow)
+			{
+				return HWND.Null;
+			}
+
+			return (HWND)nativeWindow.Hwnd;
+		}
+	}
+
 	static unsafe Win32NativeWebView()
 	{
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
@@ -238,7 +261,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 				var syscommand = (uint)wParam.Value & 0xFFF0; // Mask off the low 4 bits
 				if (syscommand == 0xF060) // SC_CLOSE
 				{
-					var parentHwnd = PInvoke.GetParent(_hwnd);
+					var parentHwnd = ParentHwnd;
 					if (parentHwnd != HWND.Null)
 					{
 						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
@@ -249,7 +272,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 			case PInvoke.WM_CLOSE:
 				// Prevent the WebView2 window from being closed directly. Instead, forward to the parent
 				// window so the entire application can close properly.
-				var parent = PInvoke.GetParent(_hwnd);
+				var parent = ParentHwnd;
 				if (parent != HWND.Null)
 				{
 					PInvoke.SendMessage(parent, msg, wParam, lParam);
