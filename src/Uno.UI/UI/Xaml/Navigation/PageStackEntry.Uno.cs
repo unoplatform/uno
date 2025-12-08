@@ -31,9 +31,9 @@ partial class PageStackEntry
 		var assemblyQualifiedName = pageType.AssemblyQualifiedName
 			?? throw new ArgumentException($"Type {pageType.FullName} does not have an assembly-qualified name.", nameof(pageType));
 
-		if (AssemblyLoadContext.GetLoadContext(pageType.Assembly) != AssemblyLoadContext.Default)
+		var alc = AssemblyLoadContext.GetLoadContext(pageType.Assembly);
+		if (alc != AssemblyLoadContext.Default)
 		{
-			var alc = AssemblyLoadContext.GetLoadContext(pageType.Assembly);
 			return $"{assemblyQualifiedName}{AlcDescriptorDelimiter}{alc.Name}";
 		}
 
@@ -55,9 +55,15 @@ partial class PageStackEntry
 			return Type.GetType(descriptor);
 		}
 
-		var alcParts = descriptor.Split(AlcDescriptorDelimiter, StringSplitOptions.None);
-		var typeDescriptor = alcParts[0];
-		var alcName = alcParts[1];
+		var descriptorParts = descriptor.Split(AlcDescriptorDelimiter, StringSplitOptions.None);
+		if (descriptorParts.Length != 2 || string.IsNullOrWhiteSpace(descriptorParts[0]) || string.IsNullOrWhiteSpace(descriptorParts[1]))
+		{
+			throw new InvalidOperationException(
+				$"Failed to resolve type descriptor '{descriptor}': expected format '<Type>{AlcDescriptorDelimiter}<ALCName>'.");
+		}
+
+		var typeDescriptor = descriptorParts[0];
+		var alcName = descriptorParts[1];
 
 		if (AssemblyLoadContext.All.FirstOrDefault(alc => alc.Name == alcName) is { } alc)
 		{

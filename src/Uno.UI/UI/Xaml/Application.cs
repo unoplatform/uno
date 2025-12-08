@@ -125,6 +125,8 @@ namespace Microsoft.UI.Xaml
 
 			lock (_applicationsByAlcSync)
 			{
+				// ConditionalWeakTable lacks an update helper; remove the previous entry first so re-registration succeeds when the
+				// same ALC bootstraps multiple Application instances (e.g., AlcApp runtime tests).
 				_applicationsByAlc.Remove(alc);
 				_applicationsByAlc.Add(alc, app);
 			}

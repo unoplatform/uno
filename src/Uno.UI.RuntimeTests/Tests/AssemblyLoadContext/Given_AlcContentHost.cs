@@ -15,6 +15,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 
@@ -29,7 +30,7 @@ public class Given_AlcContentHost
 	public void Cleanup()
 	{
 		// Clean up the static content host override
-		Microsoft.UI.Xaml.Window.ContentHostOverride = null;
+		WindowHelper.ContentHostOverride = null;
 
 		_contentHost = null;
 
@@ -40,103 +41,96 @@ public class Given_AlcContentHost
 		}
 	}
 
-
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	public async Task When_AlcContentHost_Then_ResourcesInherited()
 	{
-		// Arrange
-		var testApp = new TestApplication();
-		var testBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 0, 0));
-		testApp.Resources["TestBrush"] = testBrush;
+		var contentHost = await StartSecondaryAlcAppAsync();
 
-		// Act
-		var contentHost = new AlcContentHost
-		{
-			SourceApplicationOverride = testApp
-		};
+		Assert.IsTrue(contentHost.Resources.ContainsKey("TestAccentBrush"), "ContentHost should project resources from the secondary Application");
+		var accentBrush = contentHost.Resources["TestAccentBrush"] as SolidColorBrush;
+		Assert.IsNotNull(accentBrush, "TestAccentBrush should be a SolidColorBrush");
 
-		// Force the control to load and update resources
-		await TestServices.WindowHelper.WaitForIdle();
+		var root = contentHost.Content as FrameworkElement;
+		Assert.IsNotNull(root, "Secondary content should be a FrameworkElement");
+		var titleTextBlock = root.FindName("TitleTextBlock") as TextBlock;
+		Assert.IsNotNull(titleTextBlock, "TitleTextBlock should be discoverable via FindName");
 
-		// Assert
-		Assert.IsTrue(contentHost.Resources.ContainsKey("TestBrush"), "ContentHost should inherit resources from SourceApplication");
-		Assert.AreEqual(testBrush, contentHost.Resources["TestBrush"], "Resource should match the one from SourceApplication");
+		Assert.AreSame(accentBrush, titleTextBlock!.Foreground, "Sub-app visuals should consume brushes from the projected resources");
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	public async Task When_AlcContentHost_Then_MergedDictionariesInherited()
 	{
-		// Arrange
-		var testApp = new TestApplication();
-		var mergedDict = new ResourceDictionary();
-		var testBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 0, 255, 0));
-		mergedDict["MergedBrush"] = testBrush;
-		testApp.Resources.MergedDictionaries.Add(mergedDict);
+		var contentHost = await StartSecondaryAlcAppAsync();
+		Assert.IsTrue(contentHost.Resources.MergedDictionaries.Count > 0, "ContentHost should surface merged dictionaries from the secondary Application");
 
-		// Act
-		var contentHost = new AlcContentHost
-		{
-			SourceApplicationOverride = testApp
-		};
+		var mergedDictionary = contentHost.Resources.MergedDictionaries
+			.FirstOrDefault(dict => dict.ContainsKey("TestTextBlockStyle"));
+		Assert.IsNotNull(mergedDictionary, "Merged dictionaries should contain TestTextBlockStyle");
 
-		// Force the control to load and update resources
-		await TestServices.WindowHelper.WaitForIdle();
+		var projectedStyle = mergedDictionary!["TestTextBlockStyle"] as Style;
+		Assert.IsNotNull(projectedStyle, "TestTextBlockStyle should be available as a Style");
 
-		// Assert
-		Assert.AreEqual(1, contentHost.Resources.MergedDictionaries.Count, "ContentHost should have merged dictionaries");
-		Assert.IsTrue(contentHost.Resources.ContainsKey("MergedBrush"), "ContentHost should have access to merged dictionary resources");
+		var root = contentHost.Content as FrameworkElement;
+		Assert.IsNotNull(root, "Secondary content should be a FrameworkElement");
+		var statusTextBlock = root.FindName("StatusTextBlock") as TextBlock;
+		Assert.IsNotNull(statusTextBlock, "StatusTextBlock should be discoverable via FindName");
+
+		Assert.AreSame(projectedStyle, statusTextBlock!.Style, "Merged dictionary styles should apply to secondary visuals");
 	}
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	public async Task When_SecondaryAlcApp_Then_ContentHosted()
 	{
-		// Arrange
-		// Build the AlcApp project
+		var contentHost = await StartSecondaryAlcAppAsync();
+
+		Assert.IsNotNull(contentHost.Content, "ContentHost.Content should be set by the secondary app");
+		Assert.IsTrue(contentHost.Resources.ContainsKey("TestAccentBrush"),
+			"TestAccentBrush should be available from secondary app resources");
+
+		var testBrush = contentHost.Resources["TestAccentBrush"] as SolidColorBrush;
+		Assert.IsNotNull(testBrush, "TestAccentBrush should be a SolidColorBrush");
+		Assert.AreEqual(Windows.UI.Color.FromArgb(0xFF, 0x6B, 0x4C, 0xE0), testBrush!.Color,
+			"TestAccentBrush should have the expected color");
+	}
+
+	private async Task<AlcContentHost> StartSecondaryAlcAppAsync()
+	{
 		var alcAppPath = await BuildAlcAppAsync();
 		Assert.IsNotNull(alcAppPath, "AlcApp build should succeed");
 		Assert.IsTrue(File.Exists(alcAppPath), $"AlcApp assembly should exist at {alcAppPath}");
 
-		// Create ALC and load the assembly
 		var alcAppDirectory = Path.GetDirectoryName(alcAppPath)!;
 		_testAlc = new TestAssemblyLoadContext(alcAppDirectory);
 		var alcAppAssembly = _testAlc.LoadFromAssemblyPath(alcAppPath);
 		Assert.IsNotNull(alcAppAssembly, "AlcApp assembly should be loaded");
 
-		// Get the Program type with the Main entry point
 		var programType = alcAppAssembly.GetType("AlcTestApp.Program");
 		Assert.IsNotNull(programType, "Program type should be found in AlcApp assembly");
 
-		// Get the Main method
-		var mainMethod = programType.GetMethod("Main",
-			System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+		var mainMethod = programType!.GetMethod("Main",
+			BindingFlags.Public | BindingFlags.Static);
 		Assert.IsNotNull(mainMethod, "Main method should exist");
 
-		// Get the App type to access TestWindow property later
 		var appType = alcAppAssembly.GetType("AlcTestApp.App");
 		Assert.IsNotNull(appType, "App type should be found in AlcApp assembly");
 
-		// Set up ContentHostOverride before starting the secondary app
-		// This is set in the PRIMARY ALC and will be used by the secondary ALC's Window.Content setter
 		_contentHost = new AlcContentHost();
 		WindowHelper.ContentHostOverride = _contentHost;
-
-		// Set the content host as the window content using TestServices
 		TestServices.WindowHelper.WindowContent = _contentHost;
 
-		// Act
-		// Run Main in a background thread (it will call host.Run() which blocks)
 		var mainThread = new System.Threading.Thread(() =>
 		{
 			try
 			{
-				mainMethod.Invoke(null, new object[] { Array.Empty<string>() });
+				mainMethod!.Invoke(null, new object[] { Array.Empty<string>() });
 			}
 			catch (Exception ex)
 			{
-				System.Diagnostics.Debug.WriteLine($"Main execution exception: {ex}");
+				this.Log().Error("Secondary ALC app execution failed", ex);
 			}
 		})
 		{
@@ -145,39 +139,30 @@ public class Given_AlcContentHost
 		};
 		mainThread.Start();
 
-		// Wait for the app to initialize and window to be created
-		// The App.TestWindow will be set by OnLaunched
+		await WaitForSecondaryWindowAsync(appType!);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		return _contentHost!;
+	}
+
+	private static async Task WaitForSecondaryWindowAsync(Type appType)
+	{
+		var testWindowProperty = appType.GetField("TestWindow", BindingFlags.NonPublic | BindingFlags.Static);
+		Assert.IsNotNull(testWindowProperty, "App.TestWindow property should be discoverable via reflection");
+
 		var maxWaitTime = TimeSpan.FromSeconds(5);
 		var startTime = DateTime.Now;
-		var testWindowProperty = appType.GetProperty("TestWindow",
-			System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-
 		while (DateTime.Now - startTime < maxWaitTime)
 		{
-			var testWindow = testWindowProperty?.GetValue(null);
-			if (testWindow != null)
+			if (testWindowProperty!.GetValue(null) is not null)
 			{
-				break;
+				return;
 			}
+
 			await Task.Delay(100);
 		}
 
-		// Get the secondary app instance from Application.Current in the ALC
-
-		// Wait for UI to settle
-		await TestServices.WindowHelper.WaitForIdle();
-
-		// Assert
-		Assert.IsNotNull(_contentHost.Content, "ContentHost.Content should be set by the secondary app");
-
-		// Verify resources are available from the secondary app
-		Assert.IsTrue(_contentHost.Resources.ContainsKey("TestAccentBrush"),
-			"TestAccentBrush should be available from secondary app resources");
-
-		var testBrush = _contentHost.Resources["TestAccentBrush"] as SolidColorBrush;
-		Assert.IsNotNull(testBrush, "TestAccentBrush should be a SolidColorBrush");
-		Assert.AreEqual(Windows.UI.Color.FromArgb(0xFF, 0x6B, 0x4C, 0xE0), testBrush.Color,
-			"TestAccentBrush should have the expected color");
+		throw new InvalidOperationException("Timed out waiting for AlcTestApp.App.TestWindow to be assigned.");
 	}
 
 	private static string GetAlcAppPath()
@@ -260,17 +245,6 @@ public class Given_AlcContentHost
 	}
 
 	/// <summary>
-	/// Test application for verifying resource inheritance
-	/// </summary>
-	private class TestApplication : Application
-	{
-		public TestApplication()
-		{
-			Resources = new ResourceDictionary();
-		}
-	}
-
-	/// <summary>
 	/// Custom AssemblyLoadContext for testing ALC scenarios.
 	/// Loads all assemblies from the secondary app directory except Uno assemblies,
 	/// which are shared with the default ALC.
@@ -286,7 +260,7 @@ public class Given_AlcContentHost
 
 		protected override Assembly? Load(AssemblyName assemblyName)
 		{
-			Console.WriteLine($"Searching assembly: {assemblyName}");
+			this.Log().Debug($"Searching assembly: {assemblyName}");
 
 			var name = assemblyName.Name;
 
@@ -301,7 +275,7 @@ public class Given_AlcContentHost
 				name.StartsWith("HarfBuzzSharp", StringComparison.OrdinalIgnoreCase))
 			)
 			{
-				Console.WriteLine($"Assembly skipped: {assemblyName}");
+				this.Log().Debug($"Assembly skipped: {assemblyName}");
 				return null; // Use default ALC
 			}
 
@@ -309,11 +283,11 @@ public class Given_AlcContentHost
 			var assemblyPath = Path.Combine(_basePath, name + ".dll");
 			if (File.Exists(assemblyPath))
 			{
-				Console.WriteLine($"Loading assembly from: {assemblyPath}");
+				this.Log().Debug($"Loading assembly from: {assemblyPath}");
 				return LoadFromAssemblyPath(assemblyPath);
 			}
 
-			Console.WriteLine($"Assembly not found: {assemblyName}");
+			this.Log().Debug($"Assembly not found: {assemblyName}");
 
 			// Fall back to default resolution
 			return null;

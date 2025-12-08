@@ -140,6 +140,11 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
 
+	/// <summary>
+	/// There's only one running instance of the event loop, even in the 
+	/// context of running inside an ALC.
+	/// </summary>
+	/// <remarks>This field does not need to be synchronized because it's only called from a single builder.</remarks>
 	private static bool _isRunning;
 
 	protected override Task RunLoop()
