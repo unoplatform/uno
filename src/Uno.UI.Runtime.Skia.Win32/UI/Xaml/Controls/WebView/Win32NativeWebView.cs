@@ -50,6 +50,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
 	private const uint WM_SYSCOMMAND = 0x0112;
 	private const uint SC_CLOSE = 0xF060;
+	private const uint SC_MASK = 0xFFF0; // Mask to extract system command from wParam
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -260,7 +261,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 				// When Alt+F4 is pressed on a focused WebView2, Windows sends WM_SYSCOMMAND with SC_CLOSE
 				// to the WebView2's child window. We need to forward this to the parent window to close
 				// the entire application instead of just the WebView2 control.
-				var syscommand = (uint)wParam.Value & 0xFFF0; // Mask off the low 4 bits
+				var syscommand = (uint)wParam.Value & SC_MASK;
 				if (syscommand == SC_CLOSE)
 				{
 					var parentHwnd = ParentHwnd;
@@ -274,11 +275,13 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 			case PInvoke.WM_CLOSE:
 				// Prevent the WebView2 window from being closed directly. Instead, forward to the parent
 				// window so the entire application can close properly.
-				var parent = ParentHwnd;
-				if (parent != HWND.Null)
 				{
-					PInvoke.SendMessage(parent, msg, wParam, lParam);
-					return new LRESULT(0);
+					var parentHwnd = ParentHwnd;
+					if (parentHwnd != HWND.Null)
+					{
+						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
+						return new LRESULT(0);
+					}
 				}
 				break;
 		}
