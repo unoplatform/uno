@@ -2,10 +2,24 @@ steps:
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
+  condition: eq(variables['DocChangesDetected'], 'true')
+
+- task: Cache@2
+  displayName: Cache npm (markdownlint)
+  inputs:
+    key: validation | markdownlint | v0.38.0 | $(Agent.OS)
+    path: $(Pipeline.Workspace)/.npm/markdownlint
+  condition: eq(variables['DocChangesDetected'], 'true')
 
 # Keep that version in sync with documentation at doc/README.md
 - bash: npm install -g markdownlint-cli@0.38.0
   displayName: Install markdownlint-cli
+  env:
+    NPM_CONFIG_CACHE: $(Pipeline.Workspace)/.npm/markdownlint
+  condition: eq(variables['DocChangesDetected'], 'true')
 
 - bash: markdownlint -c $(Build.SourcesDirectory)/build/.markdownlint.json "doc/**/*.md"
   displayName: Run Markdown Linter
+  env:
+    NPM_CONFIG_CACHE: $(Pipeline.Workspace)/.npm/markdownlint
+  condition: eq(variables['DocChangesDetected'], 'true')

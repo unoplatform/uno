@@ -9,12 +9,15 @@
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
+		<UnoDisableAnalyzersForSamples>true</UnoDisableAnalyzersForSamples>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 		<RootNamespace>Uno.UI</RootNamespace>
 		<AssemblyName>Uno.UI</AssemblyName>
-		<IsAotCompatible>true</IsAotCompatible>
+
+		<!-- This assembly does not need to be NAOT compatible, and we're compatible implicitly via binding generators -->
+		<!-- <IsAotCompatible>true</IsAotCompatible> -->
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 		<TSBindingAssemblySource>Uno;Uno.UI</TSBindingAssemblySource>

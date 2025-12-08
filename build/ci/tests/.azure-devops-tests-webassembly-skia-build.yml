@@ -22,6 +22,8 @@ jobs:
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
+    # Disable analyzers for eligible projects in samples to improve performance
+
   steps:
   - checkout: self
     clean: true
@@ -36,15 +38,24 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0 -p:UnoTargetFrameworkOverride=net10.0 -p:PreBuildUnoUITasks=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-wasm-browser.binlog
+  - powershell: |
+      dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0 -p:UnoTargetFrameworkOverride=net10.0 -p:PreBuildUnoUITasks=true -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-wasm-browser.binlog
     displayName: Build Wasm Skia Head
+
+  - pwsh: |
+      $artifactName = "skia-browserwasm-samples-app-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      Write-Host "Publishing Samples App artifact: $artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
+    name: set_samples_artifact
+    displayName: 'Set Samples App Artifact Name'
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish WebAssembly Binaries'
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/bin/Release/net10.0/publish/wwwroot
-      artifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
+      artifactName: $(SamplesAppArtifactName)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3

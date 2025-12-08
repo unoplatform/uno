@@ -11,8 +11,11 @@
 		<AssemblyName>Uno.UI</AssemblyName>
 		<RootNamespace>Uno.UI</RootNamespace>
 		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
+		<UnoDisableAnalyzersForSamples>true</UnoDisableAnalyzersForSamples>
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701;1572;1587;419;1574;1711;1734;CS0105</NoWarn>
+		<!-- Disable ILLink analyzer warnings, this assembly is only the reference assembly -->
+		<NoWarn>$(NoWarn);IL2026;IL2032;IL2041;IL2043;IL2046;IL2055;IL2057;IL2058;IL2059;IL2060;IL2062;IL2063;IL2064;IL2065;IL2066;IL2067;IL2068;IL2069;IL2070;IL2071;IL2072;IL2073;IL2074;IL2075;IL2076;IL2077;IL2078;IL2079;IL2080;IL2081;IL2082;IL2083;IL2084;IL2085;IL2086;IL2087;IL2088;IL2089;IL2090;IL2091;IL2092;IL2093;IL2094;IL2095;IL2096;IL2097;IL2098;IL2099;IL2103;IL2106;IL2110;IL2111;IL2112;IL2113;IL2114;IL2115;IL2116;IL2122;IL2123;IL2124;IL2125;IL2126;IL3000;IL3001;IL3002;IL3003;IL3004;IL3005;IL3050;IL3051;IL3056;IL3057;IL3058;IL4000;IL4001</NoWarn>
 		<IsAotCompatible>true</IsAotCompatible>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -141,4 +144,6 @@
 
 	<Import Project="MixinGeneration.targets" />
 
+	<!-- Empty GetTargetPath target to prevent build errors when project is referenced but not actually built -->
+	<Target Name="GetTargetPath" />
 </Project>

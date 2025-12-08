@@ -11,8 +11,9 @@ parameters:
   UITEST_VARIANT: ''
   SAMPLESAPP_BUNDLE_ID: ''
   nugetPackages: ''
-  SamplesAppArtifactName: ''
   dependsOn: ''
+  SamplesAppArtifactName: ''
+  BuildJobName: ''
 
 jobs:
 - job: ${{ parameters.JobName }}
@@ -24,12 +25,21 @@ jobs:
     vmImage: ${{ parameters.vmImage }}
 
   variables:
-    CI_Build: true
-    SourceLinkEnabled: false
-    NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
-    UITEST_ALLOW_RERUN: ${{ parameters.UITEST_ALLOW_RERUN }}
-    
-    UNO_UITEST_BUCKET_COUNT: 5
+  - name: CI_Build
+    value: true
+  - name: SourceLinkEnabled
+    value: false
+  - name: NUGET_PACKAGES
+    value: $(Pipeline.Workspace)/.nuget/packages
+  - name: UITEST_ALLOW_RERUN
+    value: ${{ parameters.UITEST_ALLOW_RERUN }}
+  - name: UNO_UITEST_BUCKET_COUNT
+    value: 5
+  - name: SamplesAppArtifactName
+    value: ${{ parameters.SamplesAppArtifactName }}
+  - ${{ if and(eq(parameters.SamplesAppArtifactName, ''), ne(parameters.BuildJobName, '')) }}:
+    - name: SamplesAppArtifactName
+      value: $[ dependencies.${{ parameters.BuildJobName }}.outputs['set_ios_artifact.SamplesAppArtifactName'] ]
 
   steps:
   - checkout: self
@@ -38,8 +48,8 @@ jobs:
   - task: DownloadPipelineArtifact@2
     displayName: Downloading iOS Samples App
     inputs:
-      artifact: ${{ parameters.SamplesAppArtifactName }}
-      path: $(build.sourcesdirectory)/build/${{ parameters.SamplesAppArtifactName }}
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - task: DownloadBuildArtifacts@0
     condition: gt(variables['System.JobAttempt'], 1)
