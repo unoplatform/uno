@@ -10,6 +10,7 @@ $scopeVariables = [ordered]@{
     RequireNativeIos     = $false
     RequireNativeWasm    = $false
     SkiaScreenshots      = $false
+    TemplateTestsRequired = $false
     ScreenshotsRequired  = $false
 }
 
@@ -18,7 +19,11 @@ $patterns = @{
     RequireNativeIos     = [regex]'(?i)^.*\.(ios|uikit)\.cs$'
     RequireNativeWasm    = [regex]'(?i)^.*\.wasm\.cs$'
     SkiaScreenshots      = [regex]'(?i)^.*\.skia\.cs$'
+    TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/.*devserver.*|^src/.*remotecontrol.*)'
 }
+
+$netcoreMobileProjectPattern = [regex]'(?i)\.netcoremobile\.csproj$'
+$wasmProjectPattern = [regex]'(?i)\.wasm\.csproj$'
 
 function Set-TestScopeVariable {
     param(
@@ -80,11 +85,33 @@ if (-not $changedFiles) {
 
 foreach ($file in $changedFiles) {
     $trimmed = $file.Trim()
+    if ([string]::IsNullOrWhiteSpace($trimmed)) {
+        continue
+    }
+
+    $normalized = $trimmed -replace '\\', '/'
+
     foreach ($scope in $patterns.GetEnumerator()) {
-        if (-not $scopeVariables[$scope.Key] -and $scope.Value.IsMatch($trimmed)) {
-            Write-Host "File '$trimmed' matches pattern for $($scope.Key)."
+        if (-not $scopeVariables[$scope.Key] -and $scope.Value.IsMatch($normalized)) {
+            Write-Host "File '$normalized' matches pattern for $($scope.Key)."
             $scopeVariables[$scope.Key] = $true
         }
+    }
+
+    if ($netcoreMobileProjectPattern.IsMatch($normalized)) {
+        if (-not $scopeVariables.RequireNativeAndroid) {
+            Write-Host "File '$normalized' touches netcoremobile csproj; enabling RequireNativeAndroid."
+            $scopeVariables.RequireNativeAndroid = $true
+        }
+        if (-not $scopeVariables.RequireNativeIos) {
+            Write-Host "File '$normalized' touches netcoremobile csproj; enabling RequireNativeIos."
+            $scopeVariables.RequireNativeIos = $true
+        }
+    }
+
+    if (-not $scopeVariables.RequireNativeWasm -and $wasmProjectPattern.IsMatch($normalized)) {
+        Write-Host "File '$normalized' touches wasm csproj; enabling RequireNativeWasm."
+        $scopeVariables.RequireNativeWasm = $true
     }
 }
 
