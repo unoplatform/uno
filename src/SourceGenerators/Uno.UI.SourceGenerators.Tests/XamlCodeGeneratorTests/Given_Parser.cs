@@ -390,7 +390,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 8, 6, 8, 6).WithArguments("Invalid GridLength value 'invalid'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 8, 5, 8, 5).WithArguments("Invalid GridLength value 'invalid'"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -419,7 +419,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Invalid Double value 'invalid'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Invalid Single value 'invalid'"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -449,7 +449,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 4, 7, 4).WithArguments("Invalid Point value 'auto,0'. Each component must be a valid number"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 31, 7, 31).WithArguments("Invalid Point value 'auto,0'. Each component must be a valid number"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
