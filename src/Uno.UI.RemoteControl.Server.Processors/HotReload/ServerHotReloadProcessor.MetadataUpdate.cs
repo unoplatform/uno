@@ -229,6 +229,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return false;
 				}
 
+				if (path.Contains("\\.vs\\")) // Not needs to check for AltDirectorySeparatorChar as VS is windows only and always use '\'
+				{
+					// Ignore changes in the .vs cache folder
+					return false;
+				}
+
 				if (excludedDir.Any(dir => path.StartsWith(dir, _pathsComparison)))
 				{
 					// File is in an excluded directory (bin or obj)
@@ -262,6 +268,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			catch (Exception e)
 			{
 				_reporter.Warn($"Internal error while processing hot-reload ({e.Message}).");
+				_reporter.Verbose(e.ToString());
 
 				await hotReload.Complete(HotReloadServerResult.InternalError, e);
 			}

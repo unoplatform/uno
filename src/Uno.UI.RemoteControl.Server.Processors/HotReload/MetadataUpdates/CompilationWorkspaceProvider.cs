@@ -8,6 +8,7 @@ using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -16,6 +17,38 @@ using Uno.UI.RemoteControl.Helpers;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
+	//public class UnoHostWorkspaceServices(UnoHostService host, Workspace workspace) : HostWorkspaceServices
+	//{
+	//	/// <inheritdoc />
+	//	public override TWorkspaceService? GetService<TWorkspaceService>()
+	//		where TWorkspaceService : default
+	//		=> default!;
+
+	//	/// <inheritdoc />
+	//	public override IEnumerable<TLanguageService> FindLanguageServices<TLanguageService>(MetadataFilter filter)
+	//		=> new CSharp;
+
+	//	/// <inheritdoc />
+	//	public override HostServices HostServices { get; } = host;
+
+	//	/// <inheritdoc />
+	//	public override Workspace Workspace { get; } = workspace;
+	//}
+
+	//public class UnoHostService : HostServices
+	//{
+	//	/// <inheritdoc />
+	//	protected override HostWorkspaceServices CreateWorkspaceServices(Workspace workspace)
+	//		=> new UnoHostWorkspaceServices(this, workspace);
+	//}
+
+	//public class UnoLiveWorksSpace : Workspace
+	//{
+	//	/// <inheritdoc />
+	//	public UnoLiveWorksSpace(HostServices host, string? workspaceKind)
+	//		: base(host, ) { }
+	//}
+
 	internal static class CompilationWorkspaceProvider
 	{
 		private static string MSBuildBasePath = "";
