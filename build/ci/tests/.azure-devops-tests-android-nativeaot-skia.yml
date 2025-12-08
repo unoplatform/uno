@@ -18,6 +18,7 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+    SamplesAppArtifactName: $[ dependencies.Skia_Android_NativeAOT_Tests_Build.outputs['set_android_nativeaot_artifact.SamplesAppArtifactName'] ]
 
   strategy:
     matrix:
@@ -28,7 +29,6 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-nativeaot-skia-build
         TARGETPLATFORM_NAME: net10
         UITEST_TEST_TIMEOUT: '2600s'
 
@@ -38,7 +38,6 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-nativeaot-skia-build
         TARGETPLATFORM_NAME: net10
         UITEST_TEST_TIMEOUT: '2600s'
 
@@ -48,7 +47,6 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-nativeaot-skia-build
         TARGETPLATFORM_NAME: net10
         UITEST_TEST_TIMEOUT: '2600s'
 
@@ -58,7 +56,6 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 3
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-nativeaot-skia-build
         TARGETPLATFORM_NAME: net10
         UITEST_TEST_TIMEOUT: '2600s'
 
@@ -68,7 +65,6 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         UITEST_RUNTIME_TEST_GROUP: 4
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-nativeaot-skia-build
         TARGETPLATFORM_NAME: net10
         UITEST_TEST_TIMEOUT: '2600s'
 
@@ -83,10 +79,10 @@ jobs:
     displayName: 'Enable KVM'
 
   - task: DownloadPipelineArtifact@2
-    displayName: Downloading $(SAMPLEAPP_ARTIFACT_NAME)
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-      artifact: $(SAMPLEAPP_ARTIFACT_NAME)
-      path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
+      artifact: $(SamplesAppArtifactName)
+      path: '$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/android'
 
   - task: DownloadBuildArtifacts@0
     condition: gt(variables['System.JobAttempt'], 1)

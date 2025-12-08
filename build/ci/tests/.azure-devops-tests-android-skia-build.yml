@@ -40,12 +40,20 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
+  - pwsh: |
+      $artifactName = "uitests-android-skia-build-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      Write-Host "Publishing Android Samples artifact: $artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
+    name: set_android_artifact
+    displayName: 'Set Android Samples Artifact Name'
+
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Android Binaries'
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)/android
-      ArtifactName: uitests-android-skia-build
+      ArtifactName: $(SamplesAppArtifactName)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
