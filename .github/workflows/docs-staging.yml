@@ -1,0 +1,96 @@
+name: Documentation Staging Deployment
+
+on:
+  schedule:
+    # Run every 6 hours at minutes 0 (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.x
+            10.0.x
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: doc/package-lock.json
+
+      - name: Install Node dependencies
+        working-directory: doc
+        run: npm ci
+
+      - name: Setup NuGet cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+
+      - name: Install docfx
+        run: dotnet tool update --global docfx
+
+      - name: Import external docs from latest branches
+        shell: pwsh
+        working-directory: doc
+        run: |
+          Write-Host "Running import_external_docs_test.ps1 to fetch latest docs..." -ForegroundColor Green
+          ./import_external_docs_test.ps1
+
+      - name: Build documentation assets
+        shell: pwsh
+        working-directory: doc
+        run: |
+          Write-Host "Building documentation website assets..." -ForegroundColor Green
+          npm run build
+
+      - name: Generate documentation with DocFx
+        shell: pwsh
+        working-directory: doc
+        run: |
+          Write-Host "Generating documentation with DocFx..." -ForegroundColor Green
+          docfx
+
+      - name: Deploy to Azure Static Web Apps (Staging)
+        id: deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_STAGING }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "doc/_site"
+          skip_app_build: true
+          skip_api_build: true
+
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: documentation-staging-${{ github.run_number }}
+          path: doc/_site
+          retention-days: 7
