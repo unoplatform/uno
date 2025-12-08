@@ -32,9 +32,6 @@ jobs:
   - template: ../templates/dotnet-install.yml
 
   - bash: |
-      set -euo pipefail
-      export CC=clang
-      export CXX=clang++
       cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
       chmod +x build.sh
       ./build.sh
