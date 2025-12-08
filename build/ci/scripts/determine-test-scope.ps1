@@ -1,3 +1,20 @@
+<#
+.SYNOPSIS
+Determines which CI test scopes must run for a pull request based on the touched files.
+
+.DESCRIPTION
+This script inspects the diff between the PR head and its target branch to figure out
+which native build/test stages should execute. It sets Azure DevOps variables (both
+standard and task output) for each scope so subsequent jobs can conditionally run.
+
+It uses file-suffix heuristics that MUST remain aligned with
+src/Uno.CrossTargetting.targets. Update both locations together when introducing a new
+platform-specific suffix. When the script cannot determine scope (e.g., non-PR build or
+git fetch failure) it enables every scope to stay safe.
+
+.PARAMETER DefaultTargetBranch
+Fallback branch used when System.PullRequest.TargetBranch is not available.
+#>
 param(
     [string]$DefaultTargetBranch = 'refs/heads/master'
 )
@@ -14,9 +31,12 @@ $scopeVariables = [ordered]@{
     ScreenshotsRequired  = $false
 }
 
+# NOTE: The suffix-based filters below MUST stay aligned with the platform filters declared in
+#       src/Uno.CrossTargetting.targets (see the ItemGroup near the top of that file). When
+#       adding or removing conditional includes there, update this list accordingly.
 $patterns = @{
-    RequireNativeAndroid = [regex]'(?i)^.*\.android\.cs$'
-    RequireNativeIos     = [regex]'(?i)^.*\.(ios|uikit)\.cs$'
+    RequireNativeAndroid = [regex]'(?i)^.*\.(android|xamarin)\.cs$'
+    RequireNativeIos     = [regex]'(?i)^.*\.(ios|tvos|uikit|iosmacos|apple|xamarin)\.cs$'
     RequireNativeWasm    = [regex]'(?i)^.*\.wasm\.cs$'
     SkiaScreenshots      = [regex]'(?i)^.*\.skia\.cs$'
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/.*devserver.*|^src/.*remotecontrol.*)'
