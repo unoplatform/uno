@@ -60,7 +60,6 @@ jobs:
 - job: Wasm_UITests_Snap
   displayName: 'WebAssembly Snapshot Tests'
   dependsOn:
-  - Setup
   - Wasm_UITests_Build
   condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['SetScope.RequireNativeWasm'], 'true'))
 
