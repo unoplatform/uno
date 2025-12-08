@@ -231,6 +231,31 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 				PInvoke.GetClientRect(_hwnd, out var bounds);
 				_controller.Bounds = bounds;
 				return new LRESULT(0);
+			case 0x0112: // WM_SYSCOMMAND
+				// When Alt+F4 is pressed on a focused WebView2, Windows sends WM_SYSCOMMAND with SC_CLOSE
+				// to the WebView2's child window. We need to forward this to the parent window to close
+				// the entire application instead of just the WebView2 control.
+				var syscommand = (uint)wParam.Value & 0xFFF0; // Mask off the low 4 bits
+				if (syscommand == 0xF060) // SC_CLOSE
+				{
+					var parentHwnd = PInvoke.GetParent(_hwnd);
+					if (parentHwnd != HWND.Null)
+					{
+						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
+						return new LRESULT(0);
+					}
+				}
+				break;
+			case PInvoke.WM_CLOSE:
+				// Prevent the WebView2 window from being closed directly. Instead, forward to the parent
+				// window so the entire application can close properly.
+				var parent = PInvoke.GetParent(_hwnd);
+				if (parent != HWND.Null)
+				{
+					PInvoke.SendMessage(parent, msg, wParam, lParam);
+					return new LRESULT(0);
+				}
+				break;
 		}
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}
