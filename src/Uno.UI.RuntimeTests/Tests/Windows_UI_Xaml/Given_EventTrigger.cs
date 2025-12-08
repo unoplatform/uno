@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Microsoft.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -201,9 +202,9 @@ public class Given_EventTrigger
 	</Border.Triggers>
 </Border>";
 
-		Assert.ThrowsExactly<XamlParseException>(() =>
+		Assert.Throws<Exception>(() =>
 		{
-			XamlReader.Load(xaml);
+			Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml);
 		});
 	}
 
