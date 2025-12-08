@@ -36,7 +36,7 @@ jobs:
  
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(Agent.WorkFolder)/.nuget
+      nugetPackages: $(NUGET_PACKAGES)
 
   - powershell: |
       dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0 -p:UnoTargetFrameworkOverride=net10.0 -p:PreBuildUnoUITasks=true -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-wasm-browser.binlog

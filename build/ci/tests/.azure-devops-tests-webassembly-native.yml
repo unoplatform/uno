@@ -24,7 +24,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(build.sourcesdirectory)/.nuget
+      nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
       dotnet publish /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net10.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/logs/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(NBGV_SemVer2).binlog
@@ -190,7 +190,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(build.sourcesdirectory)/.nuget
+      nugetPackages: $(NUGET_PACKAGES)
 
   - task: NodeTool@0
     inputs:

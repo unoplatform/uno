@@ -11,6 +11,7 @@ stages:
     - checkout: self
       clean: true
       sparseCheckoutPatterns: |
+        # root files are needed for versioning and build scripts
         /*
         doc/**
         README.md

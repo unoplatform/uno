@@ -48,7 +48,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetPackages: $(Agent.WorkFolder)/.nuget
+      nugetPackages: $(NUGET_PACKAGES)
 
   - template: ../templates/gitversion.yml
 
