@@ -458,7 +458,7 @@ partial class StackPanel
 	/// </summary>
 	/// <param name="isForHorizontalSnapPoints">
 	/// Value indicating whether notification
-	/// is for horizonatal snap points.
+	/// is for horizontal snap points.
 	/// </param>
 	private void NotifySnapPointsChanges(bool isForHorizontalSnapPoints)
 	{
