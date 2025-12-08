@@ -39,7 +39,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetRoot: $(Agent.WorkFolder)/.nuget
+      nugetPackages: $(Agent.WorkFolder)/.nuget
 
   - template: ../templates/ios-build-select-version.yml
     parameters:

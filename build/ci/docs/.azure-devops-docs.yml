@@ -12,15 +12,14 @@ jobs:
     CI_Build: true
 
     # Use pre-defined local nuget cache for restore
-    NUGET_CACHE_ROOT: 'C:\NugetPackages'
-    NUGET_PACKAGES: '$(NUGET_CACHE_ROOT)\packages'
+    NUGET_PACKAGES: 'C:\NugetPackages\packages'
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetRoot: $(NUGET_CACHE_ROOT)
+      nugetPackages: $(NUGET_PACKAGES)
 
   - template: ../templates/dotnet-mobile-install-windows.yml
 

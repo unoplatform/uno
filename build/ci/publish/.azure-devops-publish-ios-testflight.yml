@@ -29,10 +29,8 @@ jobs:
       value: true
     - name: SourceLinkEnabled
       value: false
-    - name: NUGET_CACHE_ROOT
-      value: $(Pipeline.Workspace)/.nuget
     - name: NUGET_PACKAGES
-      value: $(NUGET_CACHE_ROOT)/packages
+      value: $(Pipeline.Workspace)/.nuget/packages
 
   steps:
   - checkout: self
@@ -59,7 +57,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetRoot: $(NUGET_CACHE_ROOT)
+      nugetPackages: $(NUGET_PACKAGES)
 
   - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:

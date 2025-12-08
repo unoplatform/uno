@@ -29,11 +29,8 @@ jobs:
       value: false
 
     # Use pre-defined local nuget cache for restore
-    - name: NUGET_CACHE_ROOT
-      value: 'C:\NugetPackages'
-
     - name: NUGET_PACKAGES
-      value: '$(NUGET_CACHE_ROOT)\packages'
+      value: 'C:\NugetPackages\packages'
 
     - name: UNO_UWP_BUILD
       value: ${{ parameters.UNO_UWP_BUILD }}
@@ -47,7 +44,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetRoot: $(NUGET_CACHE_ROOT)
+      nugetPackages: $(NUGET_PACKAGES)
 
   - template: ../templates/gitversion.yml
 

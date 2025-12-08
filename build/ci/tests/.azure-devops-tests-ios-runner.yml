@@ -53,7 +53,7 @@ jobs:
 
   - template: ../templates/nuget-cache.yml
     parameters:
-      nugetRoot: ${{ parameters.nugetRoot }}
+      nugetPackages: ${{ parameters.nugetRoot }}
 
   - template: ../templates/ios-build-select-version.yml
     parameters:
