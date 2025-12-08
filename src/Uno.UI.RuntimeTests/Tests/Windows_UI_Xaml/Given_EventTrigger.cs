@@ -164,7 +164,7 @@ public class Given_EventTrigger
 		Assert.ThrowsExactly<ArgumentException>(() =>
 		{
 			eventTrigger.RoutedEvent = customEvent;
-		}, "Setting a non-Loaded RoutedEvent should throw NotSupportedException");
+		}, "Setting a non-Loaded RoutedEvent should throw ArgumentException");
 	}
 
 	[TestMethod]
@@ -216,5 +216,47 @@ public class Given_EventTrigger
 		await TestServices.WindowHelper.WaitForLoaded(page);
 
 		Assert.AreEqual(Colors.Red, page.BorderBackgroundColor);
+	}
+
+	[TestMethod]
+	public async Task When_EventTrigger_Set_After_Element_Is_Already_Loaded()
+	{
+		bool storyboardStarted = false;
+
+		var border = new Border
+		{
+			Width = 50,
+			Height = 50
+		};
+
+		// Add to visual tree first (element gets loaded)
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Verify element is loaded
+		Assert.IsTrue(border.IsLoaded, "Border should be loaded before adding triggers");
+
+		// Create storyboard
+		var storyboard = new Storyboard();
+		storyboard.Completed += (s, e) => storyboardStarted = true;
+
+		// Create BeginStoryboard action
+		var beginStoryboard = new BeginStoryboard
+		{
+			Storyboard = storyboard
+		};
+
+		// Create EventTrigger and add AFTER element is already loaded
+		var eventTrigger = new EventTrigger();
+		eventTrigger.Actions.Add(beginStoryboard);
+
+		// Add trigger to border (element is already loaded)
+		border.Triggers.Add(eventTrigger);
+
+		// Wait for storyboard to complete - should fire immediately since element is already loaded
+		await TestServices.WindowHelper.WaitFor(() => storyboardStarted, timeoutMS: 2000);
+
+		Assert.IsTrue(storyboardStarted, "Storyboard should have started even when trigger is set after element is loaded");
 	}
 }
