@@ -213,11 +213,11 @@ partial class StackPanel
 	private int GetInsertionIndex(Point position) =>
 			GetClosestOrInsertionIndex(position, true);
 
-	//// Gets a series of bool values indicating whether a given index is
-	//// positioned on the leftmost, topmost, rightmost, or bottommost
-	//// edges of the layout.  This can be useful for both determining whether
-	//// to tilt items at the edges of rows or columns as well as providing
-	//// data for portal animations.
+	// Gets a series of bool values indicating whether a given index is
+	// positioned on the leftmost, topmost, rightmost, or bottommost
+	// edges of the layout.  This can be useful for both determining whether
+	// to tilt items at the edges of rows or columns as well as providing
+	// data for portal animations.
 	private void IsLayoutBoundary(
 		int index,
 		out bool isLeftBoundary,
