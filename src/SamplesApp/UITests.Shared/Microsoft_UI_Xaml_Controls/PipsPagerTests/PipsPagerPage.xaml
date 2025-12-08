@@ -79,7 +79,7 @@
 				<ComboBoxItem x:Name="TenMaxVisiblePips"
 							  AutomationProperties.Name="TenMaxVisiblePips">10 Pages</ComboBoxItem>
 			</ComboBox>
-			// get the materialized items inside the pips pager / compare with unmaterialized directly inside the itemsrepeater control
+			<!-- get the materialized items inside the pips pager / compare with unmaterialized directly inside the itemsrepeater control -->
 			<ComboBox x:Name="TestPipsPagerOrientationComboBox"
 					  Header="Orentation"
 					  SelectedIndex="1">
