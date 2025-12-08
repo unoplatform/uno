@@ -7,6 +7,7 @@ public partial class FrameworkElement
 {
 	private TriggerCollection _triggers;
 	private bool _triggersInitialized;
+	private bool _loadedTriggersFired;
 
 	/// <summary>
 	/// Gets the collection of triggers for animations that are defined for a FrameworkElement.
@@ -37,36 +38,49 @@ public partial class FrameworkElement
 
 		_triggersInitialized = true;
 
-		// Hook into the Loaded event to process triggers
-		this.Loaded += OnLoadedForTriggers;
+		// If already loaded, fire triggers immediately
+		if (IsLoaded)
+		{
+			FireLoadedTriggers();
+		}
+		else
+		{
+			// Hook into the Loaded event to process triggers
+			this.Loaded += OnLoadedForTriggers;
+		}
 	}
 
 	private void OnLoadedForTriggers(object sender, RoutedEventArgs e)
 	{
-		if (_triggers == null || _triggers.Count == 0)
+		// Unsubscribe to prevent memory leaks
+		this.Loaded -= OnLoadedForTriggers;
+
+		FireLoadedTriggers();
+	}
+
+	private void FireLoadedTriggers()
+	{
+		if (_loadedTriggersFired || _triggers == null || _triggers.Count == 0)
 		{
 			return;
 		}
 
+		_loadedTriggersFired = true;
+
 		// EventTrigger only supports Loaded event, so we fire all EventTrigger actions when Loaded fires
-		foreach (var trigger in _triggers.OfType<EventTrigger>())
+		// Use .ToArray() to avoid collection modification during enumeration
+		foreach (var trigger in _triggers.OfType<EventTrigger>().ToArray())
 		{
 			trigger.FireActions();
 		}
 	}
 
-	private static RoutedEvent _loadedEvent;
-	internal static RoutedEvent LoadedEvent
-	{
-		get
-		{
-			if (_loadedEvent == null)
-			{
-				_loadedEvent = new RoutedEvent(
-					Uno.UI.Xaml.RoutedEventFlag.None,
-					nameof(Loaded));
-			}
-			return _loadedEvent;
-		}
-	}
+	private static readonly RoutedEvent _loadedEvent = new RoutedEvent(
+		Uno.UI.Xaml.RoutedEventFlag.None,
+		nameof(Loaded));
+
+	/// <summary>
+	/// Identifies the Loaded routed event.
+	/// </summary>
+	internal static RoutedEvent LoadedEvent => _loadedEvent;
 }
