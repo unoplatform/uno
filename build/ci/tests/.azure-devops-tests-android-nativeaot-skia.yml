@@ -100,8 +100,6 @@ jobs:
         $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
     displayName: Run Android+NativeAOT Skia Tests
-    env:
-      SAMPLEAPP_ARTIFACT_NAME: $(SAMPLEAPP_ARTIFACT_NAME)
 
   - task: PublishTestResults@2
     condition: always()
