@@ -75,7 +75,7 @@ catch {
     return
 }
 
-$diffArgs = @('--name-only', 'FETCH_HEAD...HEAD')
+$diffArgs = @('--name-only', 'FETCH_HEAD..HEAD')
 $changedFiles = git diff @diffArgs | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
 
 if (-not $changedFiles) {

@@ -9,7 +9,7 @@
 
 	<!-- 
 	Disable analyzers for eligible projects in samples to improve build performance.
-	Setting UnoDisableAnalyzersForSamples=true in the project file will disable analyzers for that project.
+	To disable analyzers for a project, BOTH the global environment variable UnoDisableAnalyzersInSamples=true AND the project property UnoDisableAnalyzersForSamples=true must be set.
 	 -->
 	<PropertyGroup Condition="'$(UNO_DISABLE_ANALYZERS_IN_SAMPLES)' == 'true' and '$(UnoDisableAnalyzersForSamples)'=='true'">
 		<UnoDisableNetAnalyzers>true</UnoDisableNetAnalyzers>

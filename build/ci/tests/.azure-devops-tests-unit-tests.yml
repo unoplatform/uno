@@ -31,7 +31,7 @@ jobs:
   - template: ../templates/dotnet-install.yml
   - template: ../templates/jdk-setup.yml
 
-  # Required to build tests
+  # Required to build tests targeting net9.0 framework (netprevious test support)
   - task: UseDotNet@2
     displayName: Install .NET 9 SDK
     inputs:

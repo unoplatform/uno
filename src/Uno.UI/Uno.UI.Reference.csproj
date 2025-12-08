@@ -144,5 +144,6 @@
 
 	<Import Project="MixinGeneration.targets" />
 
+	<!-- Empty GetTargetPath target to prevent build errors when project is referenced but not actually built -->
 	<Target Name="GetTargetPath" />
 </Project>

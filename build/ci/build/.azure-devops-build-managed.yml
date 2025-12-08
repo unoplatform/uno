@@ -74,7 +74,7 @@ jobs:
     displayName: Building Managed binaries
 
   - task: MSBuild@1
-    displayName: Building WinAppSDK package binaries
+    displayName: Building WinAppSDK and Graphics3DGL package binaries
     inputs:
       solution: build/filters/Uno.UI-packages-windows.slnf
       msbuildLocationMethod: version
