@@ -18,7 +18,7 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
-    SamplesAppArtifactName: $[ dependencies.Skia_Android_CoreCLR_Tests_Build.outputs['set_android_coreclr_artifact.SamplesAppArtifactName'] ]
+    SAMPLEAPP_ARTIFACT_NAME: $[ dependencies.Skia_Android_CoreCLR_Tests_Build.outputs['set_android_coreclr_artifact.SamplesAppArtifactName'] ]
 
   strategy:
     matrix:
@@ -79,10 +79,10 @@ jobs:
     displayName: 'Enable KVM'
 
   - task: DownloadPipelineArtifact@2
-    displayName: Downloading $(SamplesAppArtifactName)
+    displayName: Downloading $(SAMPLEAPP_ARTIFACT_NAME)
     inputs:
-      artifact: $(SamplesAppArtifactName)
-      path: '$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/android'
+      artifact: $(SAMPLEAPP_ARTIFACT_NAME)
+      path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
 
   - task: DownloadBuildArtifacts@0
     condition: gt(variables['System.JobAttempt'], 1)
