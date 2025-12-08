@@ -5007,7 +5007,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var trimmed = component.Trim();
 						if (!string.IsNullOrEmpty(trimmed) && !double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
 						{
-							throw new XamlGenerationException($"Invalid {typeName} value '{value}'. Each component must be a valid number", owner);
+							AddError($"Invalid {typeName} value '{value}'. Each component must be a valid number", owner);
+							return "0, 0";
 						}
 					}
 
@@ -5182,7 +5183,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return $"global::System.TimeSpan.FromTicks({value.Ticks} /* {memberValue} */)";
 		}
 
-		private static string BuildGridLength(string memberValue, XamlMemberDefinition? owner = null)
+		private string BuildGridLength(string memberValue, XamlMemberDefinition? owner = null)
 		{
 			try
 			{
@@ -5191,7 +5192,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (Exception) when (owner != null)
 			{
-				throw new XamlGenerationException($"Invalid GridLength value '{memberValue}'", owner);
+				AddError($"Invalid GridLength value '{memberValue}'", owner);
+				return $"new global::{XamlConstants.Types.GridLength}(0f, global::{XamlConstants.Types.GridUnitType}.Pixel)";
 			}
 		}
 
@@ -5325,7 +5327,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static string BuildThickness(string memberValue, XamlMemberDefinition owner)
+		private string BuildThickness(string memberValue, XamlMemberDefinition owner)
 		{
 			// This is until we find an appropriate way to convert strings to Thickness.
 			if (!memberValue.Contains(","))
@@ -5340,7 +5342,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var trimmed = component.Trim();
 				if (!double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
 				{
-					throw new XamlGenerationException($"Invalid Thickness value '{memberValue}'. Each component must be a valid number", owner);
+					AddError($"Invalid Thickness value '{memberValue}'. Each component must be a valid number", owner);
+					return "new global::Microsoft.UI.Xaml.Thickness(0)";
 				}
 			}
 
@@ -5353,7 +5356,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return "new global::Microsoft.UI.Xaml.Thickness(" + memberValue + ")";
 		}
 
-		private static string BuildCornerRadius(string memberValue, XamlMemberDefinition owner)
+		private string BuildCornerRadius(string memberValue, XamlMemberDefinition owner)
 		{
 			// values can be separated by commas or whitespace
 			// ensure commas are used for the constructor
@@ -5369,7 +5372,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var trimmed = component.Trim();
 				if (!double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
 				{
-					throw new XamlGenerationException($"Invalid CornerRadius value '{memberValue}'. Each component must be a valid number", owner);
+					AddError($"Invalid CornerRadius value '{memberValue}'. Each component must be a valid number", owner);
+					return $"new {XamlConstants.Types.CornerRadius}(0)";
 				}
 			}
 
@@ -6790,7 +6794,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (owner != null)
 				{
 					var typeName = isDouble ? "Double" : "Single";
-					throw new XamlGenerationException($"Invalid {typeName} value '{memberValue}'", owner);
+					AddError($"Invalid {typeName} value '{memberValue}'", owner);
+					return isDouble ? "0d" : "0f";
 				}
 			}
 
