@@ -60,7 +60,7 @@ function Set-TestScopeVariable {
 function Publish-TestScopes {
     param([hashtable]$Values)
 
-    foreach ($key in $Values.Keys) {
+    foreach ($key in @($Values.Keys)) {
         Set-TestScopeVariable -Name $key -Value $Values[$key]
     }
 }
@@ -68,7 +68,7 @@ function Publish-TestScopes {
 function Enable-AllScopes {
     param([hashtable]$Values)
 
-    foreach ($key in $Values.Keys) {
+    foreach ($key in @($Values.Keys)) {
         $Values[$key] = $true
     }
 }
