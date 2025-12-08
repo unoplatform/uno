@@ -1,8 +1,11 @@
+using System;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Markup;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -154,23 +157,63 @@ public class Given_EventTrigger
 		var eventTrigger = new EventTrigger();
 
 		// Create a custom routed event (not Loaded)
-		var customEvent = new RoutedEvent(Uno.UI.Xaml.RoutedEventFlag.None, "CustomEvent");
+		var customEvent = FrameworkElement.PointerCanceledEvent;
 
 		// Attempting to set a non-Loaded RoutedEvent should throw
-		Assert.ThrowsException<NotSupportedException>(() =>
+		Assert.ThrowsExactly<ArgumentException>(() =>
 		{
 			eventTrigger.RoutedEvent = customEvent;
 		}, "Setting a non-Loaded RoutedEvent should throw NotSupportedException");
 	}
 
 	[TestMethod]
-	public void When_EventTrigger_With_Loaded_Event_Succeeds()
+	public void When_EventTrigger_With_Loaded_Event_XamlReader()
 	{
-		var eventTrigger = new EventTrigger();
+		var xaml = @"
+<Border xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+	<Border.Triggers>
+		<EventTrigger RoutedEvent='FrameworkElement.Loaded'>
+			<BeginStoryboard>
+				<Storyboard />
+			</BeginStoryboard>
+		</EventTrigger>
+	</Border.Triggers>
+</Border>";
 
-		// Setting the Loaded event should succeed
-		eventTrigger.RoutedEvent = FrameworkElement.LoadedEvent;
+		var xamlReader = XamlReader.Load(xaml);
+		var border = (Border)xamlReader;
+		var eventTrigger = (EventTrigger)border.Triggers[0];
 
-		Assert.AreEqual(FrameworkElement.LoadedEvent, eventTrigger.RoutedEvent);
+		Assert.IsNotNull(eventTrigger.RoutedEvent);
+	}
+
+	[TestMethod]
+	public void When_EventTrigger_With_Invalid_Event_XamlReader()
+	{
+		var xaml = @"
+<Border xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+	<Border.Triggers>
+		<EventTrigger RoutedEvent='FrameworkElement.Invalid'>
+			<BeginStoryboard>
+				<Storyboard />
+			</BeginStoryboard>
+		</EventTrigger>
+	</Border.Triggers>
+</Border>";
+
+		Assert.ThrowsExactly<XamlParseException>(() =>
+		{
+			XamlReader.Load(xaml);
+		});
+	}
+
+	[TestMethod]
+	public async Task When_EventTrigger_In_Xaml()
+	{
+		var page = new EventTrigger_Xaml_Valid();
+		TestServices.WindowHelper.WindowContent = page;
+		await TestServices.WindowHelper.WaitForLoaded(page);
+
+		Assert.AreEqual(Colors.Red, page.BorderBackgroundColor);
 	}
 }
