@@ -11,8 +11,8 @@ parameters:
   UITEST_VARIANT: ''
   SAMPLESAPP_BUNDLE_ID: ''
   nugetRoot: '$(Pipeline.Workspace)/.nuget'
-  SamplesAppArtifactName: ''
   dependsOn: ''
+  BuildJobName: ''
 
 jobs:
 - job: ${{ parameters.JobName }}
@@ -31,6 +31,8 @@ jobs:
     
     UNO_UITEST_BUCKET_COUNT: 5
 
+    SamplesAppArtifactName: $[ dependencies.${{ parameters.BuildJobName }}.outputs['set_ios_artifact.SamplesAppArtifactName'] ]
+
   steps:
   - checkout: self
     clean: true
@@ -38,8 +40,8 @@ jobs:
   - task: DownloadPipelineArtifact@2
     displayName: Downloading iOS Samples App
     inputs:
-      artifact: ${{ parameters.SamplesAppArtifactName }}
-      path: $(build.sourcesdirectory)/build/${{ parameters.SamplesAppArtifactName }}
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - task: DownloadBuildArtifacts@0
     condition: gt(variables['System.JobAttempt'], 1)

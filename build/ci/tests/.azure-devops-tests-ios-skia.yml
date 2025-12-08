@@ -22,10 +22,6 @@ parameters:
   - key: '3'
     value: '04'
 
-variables:
-- name: IosSamplesAppArtifactName
-  value: $[ dependencies.Skia_Tests_Build_iOS.outputs['set_ios_artifact.SamplesAppArtifactName'] ]
-
 jobs:
 ##
 ## Runtime tests
@@ -39,7 +35,6 @@ jobs:
       TestRunName: 'iOS Skia Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
       vmImage: ${{ parameters.vmMacImageTest }}
-      SamplesAppArtifactName: $(IosSamplesAppArtifactName)
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_TEST_TIMEOUT: '90m'
       UITEST_AUTOMATED_GROUP: RuntimeTests
@@ -51,3 +46,4 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - Skia_Tests_Build_iOS
+      BuildJobName: 'Skia_Tests_Build_iOS'
