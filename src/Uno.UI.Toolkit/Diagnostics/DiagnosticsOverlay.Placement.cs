@@ -112,9 +112,10 @@ public sealed partial class DiagnosticsOverlay
 		// This ensures the overlay doesn't get positioned in the title bar drag area
 		if (_root.HostWindow?.AppWindow.TitleBar is { ExtendsContentIntoTitleBar: true } titleBar)
 		{
-			var titleBarHeight = titleBar.Height;
-			bounds.Y += titleBarHeight;
-			bounds.Height -= titleBarHeight;
+			// Height is in native device pixels, convert to DIPs by dividing by rasterization scale
+			var titleBarHeightInDips = titleBar.Height / _root.RasterizationScale;
+			bounds.Y += titleBarHeightInDips;
+			bounds.Height -= titleBarHeightInDips;
 		}
 #else
 		var bounds = new Rect(default, _root.Size);
