@@ -47,6 +47,11 @@ namespace Microsoft.UI.Composition
 			UpdateTransform();
 		}
 
+		partial void OnArrangeOffsetChanged(Vector3 value)
+		{
+			UpdateTransform();
+		}
+
 		private void UpdateTransform()
 		{
 			var matrix = CATransform3D.MakeTranslation((nfloat)_offset.X, (nfloat)_offset.Y, (nfloat)_offset.Z);
