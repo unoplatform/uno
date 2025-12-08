@@ -15,6 +15,7 @@ steps:
 
     if [ -z "$BASE" ]; then
       echo "Unable to determine base commit; running documentation checks by default."
+      echo "##vso[task.setvariable variable=DocChangesDetected]true"
       exit 0
     fi
 
