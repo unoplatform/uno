@@ -5,6 +5,7 @@ parameters:
 steps:
   - bash: |
       rm global.json
+      # The file is named _global.json to avoid being picked up by the UseDotnet@2 task
       cp build/ci/net10/_global.json global.json
     displayName: "Using .NET 10 global.json"
     condition: ${{ eq(parameters.haveCheckout, true) }}
