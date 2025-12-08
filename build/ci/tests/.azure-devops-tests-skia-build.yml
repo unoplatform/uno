@@ -17,7 +17,7 @@ jobs:
     CI_Build: true
 
     # Use pre-defined local nuget cache for restore
-    NUGET_PACKAGES: 'C:\NugetPackages\packages'
+    NUGET_PACKAGES: 'C:\NugetPackages'
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}

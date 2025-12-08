@@ -30,7 +30,7 @@ jobs:
   variables:
     CI_Build: true
     SourceLinkEnabled: false
-    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget/packages
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
 
   steps:

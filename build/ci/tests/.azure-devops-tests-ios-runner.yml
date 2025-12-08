@@ -10,7 +10,7 @@ parameters:
   UITEST_ALLOW_RERUN: ''
   UITEST_VARIANT: ''
   SAMPLESAPP_BUNDLE_ID: ''
-  nugetRoot: '$(Pipeline.Workspace)/.nuget'
+  nugetPackages: ''
   dependsOn: ''
   SamplesAppArtifactName: ''
   BuildJobName: ''

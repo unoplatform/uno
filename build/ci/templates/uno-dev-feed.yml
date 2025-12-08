@@ -1,5 +1,5 @@
 parameters:
-  nugetRoot: '$(Pipeline.Workspace)/.nuget'
+  nugetPackages: '$(Pipeline.Workspace)/.nuget/packages'
 
 steps:
 

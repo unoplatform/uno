@@ -9,7 +9,7 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   variables:
-    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget/packages
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
@@ -68,7 +68,7 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   variables:
-    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget/packages
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     SITE_SUFFIX: 'net10.0'
 
   steps:
@@ -179,7 +179,7 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   variables:
-    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget/packages
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
   steps:
   - checkout: self

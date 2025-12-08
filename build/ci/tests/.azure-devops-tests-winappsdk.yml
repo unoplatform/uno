@@ -13,7 +13,7 @@ jobs:
     CI_Build: true
 
     # Use pre-defined local nuget cache for restore
-    NUGET_PACKAGES: 'C:\NugetPackages\packages'
+    NUGET_PACKAGES: 'C:\NugetPackages'
 
   steps:
   - checkout: self
