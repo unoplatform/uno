@@ -18,7 +18,7 @@ steps:
       exit 0
     fi
 
-    CHANGED_FILES=$(git diff --name-only "$BASE" HEAD | grep -E '^(doc/|README|README\\.md|README\\.rst|.*\\.md$|.*\\.mdx$|.*\\.markdown$|.*\\.yml$|.*\\.yaml$)' || true)
+    CHANGED_FILES=$(git diff --name-only "$BASE" HEAD | grep -E '^(doc/|README|README\\.md|README\\.rst|.*\\.md$|.*\\.mdx$|.*\\.markdown$|doc/.*\\.yml$|doc/.*\\.yaml$)' || true)
 
     if [ -n "$CHANGED_FILES" ]; then
       echo "Documentation-related changes detected:"
