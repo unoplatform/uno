@@ -62,7 +62,7 @@ jobs:
   dependsOn:
   - Setup
   - Wasm_UITests_Build
-  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.RequireNativeWasm'], 'true'))
+  condition: or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['SetScope.RequireNativeWasm'], 'true'))
 
   container: nv-bionic-wasm
 
