@@ -2,8 +2,6 @@ steps:
 - bash: |
     set -euo pipefail
 
-    echo "##vso[task.setvariable variable=DocChangesDetected]true"
-
     TARGET_REF="${SYSTEM_PULLREQUEST_TARGETBRANCH:-}"
     BASE=""
 
