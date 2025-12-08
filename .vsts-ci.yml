@@ -64,7 +64,9 @@ variables:
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline
 
-  enable_package_cache: true
+  # Caching disabled because it does not improve performance in our pipelines
+  # but also causes stability issues where assemblies stay in a compressed form (!?)
+  # enable_package_cache: true
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
