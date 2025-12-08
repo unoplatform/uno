@@ -22,7 +22,7 @@ public partial class EventTrigger : TriggerBase
 	/// Gets or sets the name of the event that initiates the trigger.
 	/// Currently, only the FrameworkElement.Loaded event is supported.
 	/// </summary>
-	/// <exception cref="NotSupportedException">Thrown when a value other than the Loaded event is set.</exception>
+	/// <exception cref="ArgumentException">Thrown when a value other than the Loaded event is set.</exception>
 	public RoutedEvent RoutedEvent
 	{
 		get => _routedEvent;
@@ -32,7 +32,7 @@ public partial class EventTrigger : TriggerBase
 			// See: https://github.com/microsoft/microsoft-ui-xaml/blob/b1db15715bfead9fe8ad2e7f78b0172589225e69/src/dxaml/xcp/dxaml/lib/EventTrigger_Partial.cpp#L5
 			if (value != null && value != FrameworkElement.LoadedEvent)
 			{
-				throw new NotSupportedException("EventTrigger only supports the Loaded event.");
+				throw new ArgumentException("EventTrigger only supports the Loaded event.", nameof(value));
 			}
 			_routedEvent = value;
 		}
