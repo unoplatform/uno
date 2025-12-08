@@ -18,7 +18,15 @@ $ErrorActionPreference = 'Stop'
 
 Write-Host "Updating external docs commit hashes..." -ForegroundColor Green
 
+# Configuration
 $scriptPath = "doc/import_external_docs.ps1"
+$organization = "unoplatform"
+
+# GitHub API headers
+$apiHeaders = @{
+    "Accept" = "application/vnd.github.v3+json"
+    "User-Agent" = "Uno-Docs-Updater"
+}
 
 if (-Not (Test-Path $scriptPath)) {
     Write-Error "Script not found: $scriptPath"
@@ -51,27 +59,25 @@ foreach ($repo in $repos) {
     
     try {
         # First, get the repository info to find the default branch
-        $repoInfoUrl = "https://api.github.com/repos/unoplatform/$repo"
-        $repoInfo = Invoke-RestMethod -Uri $repoInfoUrl -Headers @{
-            "Accept" = "application/vnd.github.v3+json"
-            "User-Agent" = "Uno-Docs-Updater"
-        }
+        $repoInfoUrl = "https://api.github.com/repos/$organization/$repo"
+        $repoInfo = Invoke-RestMethod -Uri $repoInfoUrl -Headers $apiHeaders
         
         $defaultBranch = $repoInfo.default_branch
         Write-Host "  Default branch: $defaultBranch" -ForegroundColor Gray
         
         # Get the latest commit hash from the default branch
-        $commitUrl = "https://api.github.com/repos/unoplatform/$repo/commits/$defaultBranch"
-        $commitInfo = Invoke-RestMethod -Uri $commitUrl -Headers @{
-            "Accept" = "application/vnd.github.v3+json"
-            "User-Agent" = "Uno-Docs-Updater"
-        }
+        $commitUrl = "https://api.github.com/repos/$organization/$repo/commits/$defaultBranch"
+        $commitInfo = Invoke-RestMethod -Uri $commitUrl -Headers $apiHeaders
         
         $latestHash = $commitInfo.sha
         Write-Host "  Latest commit: $latestHash" -ForegroundColor Gray
         
         # Update the hash in the script using regex
-        # Match pattern: "repo-name" = @{ ref="<hash>" } #comment
+        # Pattern explanation:
+        # - (`"$repo`"\s*=\s*@\{\s*ref\s*=\s*`") : Matches "repo-name" = @{ ref="
+        # - [a-f0-9]{40} : Matches the 40-character commit hash
+        # - (`"\s*}[^#]*) : Matches closing quote, brace, and any whitespace before comment
+        # - (#.*)? : Optionally matches the comment at the end
         $pattern = "(`"$repo`"\s*=\s*@\{\s*ref\s*=\s*`")[a-f0-9]{40}(`"\s*}[^#]*)(#.*)?$"
         $comment = "latest $defaultBranch commit"
         $replacement = "`${1}$latestHash`${2}#$comment"
