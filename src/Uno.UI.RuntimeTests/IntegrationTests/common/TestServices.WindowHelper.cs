@@ -8,8 +8,6 @@ using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using MUXControlsTestApp.Utilities;
-using System.Linq;
-using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 using UIElement = Microsoft.UI.Xaml.UIElement;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -234,7 +232,14 @@ namespace Private.Infrastructure
 					isRelayouted = true;
 				}
 
-				frameworkElement.LayoutUpdated += OnLayoutUpdated;
+				if (!frameworkElement.DispatcherQueue.HasThreadAccess)
+				{
+					await RunOnUIThread(() => frameworkElement.LayoutUpdated += OnLayoutUpdated);
+				}
+				else
+				{
+					frameworkElement.LayoutUpdated += OnLayoutUpdated;
+				}
 
 				await WaitFor(() => isRelayouted, message: $"{frameworkElement} re-layouted");
 			}
