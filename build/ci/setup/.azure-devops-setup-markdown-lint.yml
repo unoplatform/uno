@@ -7,7 +7,7 @@ steps:
 - task: Cache@2
   displayName: Cache npm (markdownlint)
   inputs:
-    key: validation | markdownlint | v0.38.0 | $(Agent.OS)
+    key: '"validation" | "markdownlint" | "v0.38.0" | $(Agent.OS)'
     path: $(Pipeline.Workspace)/.npm/markdownlint
   condition: eq(variables['DocChangesDetected'], 'true')
 
