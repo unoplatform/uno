@@ -104,7 +104,7 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
       UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
-      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/${{ parameters.SamplesAppArtifactName }}/SamplesApp.app"
+      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/SamplesApp.app"
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
 
   - task: PublishTestResults@2
