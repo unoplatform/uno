@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Tests.Common;
-using Private.Infrastructure;
-using Windows.Foundation;
-using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Tests.Common;
+using Private.Infrastructure;
+using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.IntegrationTests.dcontrols.stackpanel;
 
 [TestClass]
 [RequiresFullWindow]
+[RequiresScaling(1.0f)]
 public class StackPanelIntegrationTests
 {
 	private const int s_itemCount = 3;
@@ -107,12 +107,12 @@ public class StackPanelIntegrationTests
 	}
 
 	[TestMethod]
+	[RequiresScaling(1.0f)]
 	public async Task CanChangeOrientation()
 	{
 		WindowHelper.SetWindowSizeOverride(new Size(400, 400));
 
 		List<UIElement> itemsVector = null;
-
 		// Build up our vectors of expected rectangle positions
 		var expectedVerticalOrientationPositions = new List<Point>();
 		{
@@ -140,17 +140,28 @@ public class StackPanelIntegrationTests
 
 		// Start with the StackPanel vertically oriented
 		var stackPanel = await PanelsHelper.AddPanelWithContent<StackPanel>(itemsVector, Orientation.Vertical);
+		await RunOnUIThread(() =>
+		{
+			stackPanel.UpdateLayout();
+		});
+		bool layoutUpdated = false;
+		await RunOnUIThread(() =>
+		{
+			stackPanel.LayoutUpdated += (s, e) => layoutUpdated = true;
+		});
 
 		await PanelsHelper.VerifyItemPositions(stackPanel, expectedVerticalOrientationPositions);
 		TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "Vertical");
 
 		LOG_OUTPUT("Changing orientation to horizontal.");
 
+		layoutUpdated = false;
 		// Now make the StackPanel horizontally oriented
 		await RunOnUIThread(() =>
 		{
 			stackPanel.Orientation = Orientation.Horizontal;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await PanelsHelper.VerifyItemPositions(stackPanel, expectedHorizontalOrientationPositions);
@@ -158,11 +169,13 @@ public class StackPanelIntegrationTests
 
 		LOG_OUTPUT("Changing orientation to vertical.");
 
+		layoutUpdated = false;
 		// Switch back to vertical orientation
 		await RunOnUIThread(() =>
 		{
 			stackPanel.Orientation = Orientation.Vertical;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await PanelsHelper.VerifyItemPositions(stackPanel, expectedVerticalOrientationPositions);
@@ -177,11 +190,17 @@ public class StackPanelIntegrationTests
 
 		LOG_OUTPUT("Changing orientation to horizontal.");
 
+		bool layoutUpdated = false;
+		await RunOnUIThread(() =>
+		{
+			stackPanel.LayoutUpdated += (s, e) => layoutUpdated = true;
+		});
 		// Now make the StackPanel horizontally oriented
 		await RunOnUIThread(() =>
 		{
 			stackPanel.Orientation = Orientation.Horizontal;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 		await PanelsHelper.VerifyPanelDesiredSize(stackPanel, 350.0f, 100.0f);
 	}
@@ -191,7 +210,11 @@ public class StackPanelIntegrationTests
 	{
 		var stackPanel = await VerifyDesiredSize_Setup();
 		await PanelsHelper.VerifyPanelDesiredSize(stackPanel, 200.0f, 200.0f);
-
+		bool layoutUpdated = false;
+		await RunOnUIThread(() =>
+		{
+			stackPanel.LayoutUpdated += (s, e) => layoutUpdated = true;
+		});
 		// Set MinWidth/MinHeight on StackPanel
 		await RunOnUIThread(() =>
 
@@ -199,16 +222,19 @@ public class StackPanelIntegrationTests
 			stackPanel.MinWidth = 250;
 			stackPanel.MinHeight = 150;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 		await PanelsHelper.VerifyPanelDesiredSize(stackPanel, 250.0f, 200.0f);
 
 		LOG_OUTPUT("Changing orientation to horizontal.");
 
+		layoutUpdated = false;
 		// Now make the StackPanel horizontally oriented
 		await RunOnUIThread(() =>
 		{
 			stackPanel.Orientation = Orientation.Horizontal;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 		await PanelsHelper.VerifyPanelDesiredSize(stackPanel, 350.0f, 150.0f);
 	}
@@ -218,24 +244,31 @@ public class StackPanelIntegrationTests
 	{
 		var stackPanel = await VerifyDesiredSize_Setup();
 		await PanelsHelper.VerifyPanelDesiredSize(stackPanel, 200.0f, 200.0f);
-
+		bool layoutUpdated = false;
+		await RunOnUIThread(() =>
+		{
+			stackPanel.LayoutUpdated += (s, e) => layoutUpdated = true;
+		});
 		// Set MinWidth/MinHeight on StackPanel
 		await RunOnUIThread(() =>
 		{
 			stackPanel.MaxWidth = 175;
 			stackPanel.MaxHeight = 50;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 		await PanelsHelper.VerifyPanelDesiredSize(stackPanel, 175.0f, 50.0f);
 
 		LOG_OUTPUT("Changing orientation to horizontal.");
 
+		layoutUpdated = false;
 		// Now make the StackPanel horizontally oriented
 		await RunOnUIThread(() =>
 
 		{
 			stackPanel.Orientation = Orientation.Horizontal;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 		await PanelsHelper.VerifyPanelDesiredSize(stackPanel, 175.0f, 50.0f);
 	}
@@ -274,16 +307,24 @@ public class StackPanelIntegrationTests
 
 			TestServices.WindowHelper.WindowContent = root;
 		});
+		await TestServices.WindowHelper.WaitForLoaded(stackPanel);
 		await TestServices.WindowHelper.WaitForIdle();
 		TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "1");
-
+		bool layoutUpdated = false;
+		await RunOnUIThread(() =>
+		{
+			stackPanel.LayoutUpdated += (s, e) => layoutUpdated = true;
+		});
 		await RunOnUIThread(() =>
 
 		{
 			stackPanel.Spacing = -10;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 		TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "2");
+
+		layoutUpdated = false;
 
 		await RunOnUIThread(() =>
 
@@ -291,14 +332,18 @@ public class StackPanelIntegrationTests
 			stackPanel.Spacing = 10;
 			stackPanel.Orientation = Orientation.Horizontal;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 		TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "3");
+
+		layoutUpdated = false;
 
 		await RunOnUIThread(() =>
 
 		{
 			stackPanel.Spacing = -10;
 		});
+		await TestServices.WindowHelper.WaitFor(() => layoutUpdated);
 		await TestServices.WindowHelper.WaitForIdle();
 		TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "4");
 	}
@@ -308,12 +353,12 @@ public class StackPanelIntegrationTests
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(600, 600));
 		//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /*resizeWindow*/);
-
+		StackPanel stackPanel = null;
 		// Verify that basic layout is performed correctly.
 		await RunOnUIThread(() =>
 
 		{
-			TestServices.WindowHelper.WindowContent = (StackPanel)XamlReader.Load(
+			TestServices.WindowHelper.WindowContent = stackPanel = (StackPanel)XamlReader.Load(
 				@"<StackPanel
 			    xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
 			    xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
@@ -326,7 +371,7 @@ public class StackPanelIntegrationTests
 			    <Rectangle Margin='5' Width='90' Height='40' Fill='Red'/>
 			</StackPanel>");
 		});
-
+		await TestServices.WindowHelper.WaitForLoaded(stackPanel);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
@@ -405,6 +450,7 @@ public class StackPanelIntegrationTests
 			TestServices.WindowHelper.WindowContent = stackPanel;
 		});
 
+		await TestServices.WindowHelper.WaitForLoaded(stackPanel);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Attach SnapPointsChangedEvent.");

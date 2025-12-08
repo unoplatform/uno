@@ -17,7 +17,6 @@ internal static class PanelsHelper
 		where TPanel : Panel, new()
 	{
 		TPanel panel = null;
-		var loadedEvent = false;
 
 		await RunOnUIThread(async () =>
 		{
@@ -42,14 +41,17 @@ internal static class PanelsHelper
 				panel.Children.Add(contentItem);
 			}
 
-			panel.Loaded += (s, e) => loadedEvent = true;
-
 			TestServices.WindowHelper.WindowContent = panel;
 		});
 
 		LOG_OUTPUT("Waiting for the %s to be loaded...", typeof(TPanel).Name);
-		await WindowHelper.WaitFor(() => loadedEvent);
+		await WindowHelper.WaitForLoaded(panel);
 		LOG_OUTPUT("%s loaded.", typeof(TPanel).Name);
+
+		await RunOnUIThread(() =>
+		{
+			panel.UpdateLayout();
+		});
 
 		return panel;
 	}
