@@ -15,7 +15,9 @@
 		<Deterministic>true</Deterministic>
 		<RootNamespace>Uno.UI</RootNamespace>
 		<AssemblyName>Uno.UI</AssemblyName>
-		<IsAotCompatible>true</IsAotCompatible>
+
+		<!-- This assembly does not need to be NAOT compatible, and we're compatible implicitly via binding generators -->
+		<!-- <IsAotCompatible>true</IsAotCompatible> -->
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 		<TSBindingAssemblySource>Uno;Uno.UI</TSBindingAssemblySource>
