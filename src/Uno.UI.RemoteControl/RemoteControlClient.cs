@@ -296,7 +296,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					.Select(addr => (addr.endpoint.ToLowerInvariant(), addr.port))
 					.ToHashSet();
 
-				var loopbackAddress = IPAddress.Loopback.ToString();
+				var loopbackAddress = IPAddress.Loopback.ToString().ToLowerInvariant();
 
 				// Add loopback addresses with the same ports, but only if not already present
 				var loopbackAddresses = ports
