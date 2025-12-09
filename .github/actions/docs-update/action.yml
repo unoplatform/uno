@@ -7,6 +7,11 @@ inputs:
     required: true
     default: 'master'
 
+outputs:
+  has_changes:
+    description: 'Whether changes were detected'
+    value: ${{ steps.check_changes.outputs.has_changes }}
+
 runs:
   using: "composite"
   steps:
