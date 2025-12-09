@@ -32,6 +32,7 @@ jobs:
         uses: ./.github/actions/docs-update
         with:
           branch: ${{ inputs.branch || 'master' }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set target branch
         id: targetbranch

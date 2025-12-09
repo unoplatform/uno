@@ -7,6 +7,10 @@ inputs:
     required: true
     default: 'master'
 
+    github_token:
+        description: 'GitHub token used for authenticated API calls'
+        required: false
+
 outputs:
   has_changes:
     description: 'Whether changes were detected'
@@ -24,6 +28,16 @@ runs:
       shell: pwsh
       run: |
         Write-Host "Updating external docs commit hashes..." -ForegroundColor Green
+        
+        # Use the provided GitHub token (if any) to authenticate API calls
+        $githubToken = '${{ inputs.github_token }}'
+        $baseHeaders = @{
+            "Accept"     = "application/vnd.github.v3+json"
+            "User-Agent" = "Uno-Docs-Updater"
+        }
+        if (-not [string]::IsNullOrEmpty($githubToken)) {
+            $baseHeaders["Authorization"] = "Bearer $githubToken"
+        }
         
         $scriptPath = "doc/import_external_docs.ps1"
         
@@ -64,10 +78,7 @@ runs:
             try {
                 # First, get the repository info to find the default branch
                 $repoInfoUrl = "https://api.github.com/repos/unoplatform/$repo"
-                $repoInfo = Invoke-RestMethod -Uri $repoInfoUrl -Headers @{
-                    "Accept" = "application/vnd.github.v3+json"
-                    "User-Agent" = "Uno-Docs-Updater"
-                }
+                $repoInfo = Invoke-RestMethod -Uri $repoInfoUrl -Headers $baseHeaders
                 
                 $defaultBranch = $repoInfo.default_branch
                 Write-Host "  Default branch: $defaultBranch" -ForegroundColor Gray
@@ -83,10 +94,7 @@ runs:
                     $allBranches = @()
                     $nextUrl = $branchesUrl
                     do {
-                        $response = Invoke-WebRequest -Uri $nextUrl -Headers @{
-                            "Accept" = "application/vnd.github.v3+json"
-                            "User-Agent" = "Uno-Docs-Updater"
-                        }
+                        $response = Invoke-WebRequest -Uri $nextUrl -Headers $baseHeaders
                         $pageBranches = $response.Content | ConvertFrom-Json
                         $allBranches += $pageBranches
 
@@ -131,10 +139,7 @@ runs:
                 
                 # Get the latest commit hash from the selected branch
                 $commitUrl = "https://api.github.com/repos/unoplatform/$repo/commits/$targetBranch"
-                $commitInfo = Invoke-RestMethod -Uri $commitUrl -Headers @{
-                    "Accept" = "application/vnd.github.v3+json"
-                    "User-Agent" = "Uno-Docs-Updater"
-                }
+                $commitInfo = Invoke-RestMethod -Uri $commitUrl -Headers $baseHeaders
                 
                 $latestHash = $commitInfo.sha
                 Write-Host "  Latest commit on '$targetBranch': $latestHash" -ForegroundColor Gray
