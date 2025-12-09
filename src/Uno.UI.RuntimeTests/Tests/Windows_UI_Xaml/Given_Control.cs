@@ -20,7 +20,6 @@ using Windows.UI;
 using Expander = Microsoft.UI.Xaml.Controls.Expander;
 using MUXControlsTestApp.Utilities;
 
-
 #if HAS_UNO
 using Uno.UI.Controls.Legacy;
 using Uno.UI.Xaml;
@@ -546,6 +545,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(Thumb),
 				typeof(ToggleButton),
 				typeof(Uno.UI.Controls.Legacy.ProgressRing),
+				typeof(Xaml.Controls.AlcContentHost),
 			};
 
 			allControlTypes = allControlTypes.Except(builtInControls);
