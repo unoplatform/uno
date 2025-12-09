@@ -18,30 +18,26 @@ concurrency:
 jobs:
   docs-update:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        branch:
-          - master
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ matrix.branch }}
+          ref: ${{ inputs.branch || 'master' }}
           fetch-depth: 0
 
       - name: "Docs Update"
         uses: ./.github/actions/docs-update
         with:
-          branch: ${{ matrix.branch }}
+          branch: ${{ inputs.branch || 'master' }}
 
       - name: Set target branch
         id: targetbranch
         run: |
-          if [[ "${{ matrix.branch }}" == "master" ]]; then
+          BRANCH="${{ inputs.branch || 'master' }}"
+          if [[ "$BRANCH" == "master" ]]; then
             echo "targetbranch=docs/update/dev" >> $GITHUB_OUTPUT
           else
-            versionNumber=$(echo "${{ matrix.branch }}" | cut -d'/' -f 3)
+            versionNumber=$(echo "$BRANCH" | cut -d'/' -f 3)
             echo "targetbranch=docs/update/release/$versionNumber" >> $GITHUB_OUTPUT
           fi
         shell: bash
@@ -51,13 +47,13 @@ jobs:
         uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: ${{ matrix.branch }}
+          base: ${{ inputs.branch || 'master' }}
           branch: ${{ steps.targetbranch.outputs.targetbranch }}
           commit-message: 'chore: Update external docs commit hashes'
-          title: 'chore(docs): External Docs Update - ${{ matrix.branch }}'
+          title: 'chore(docs): External Docs Update - ${{ inputs.branch || ''master'' }}'
           body: |
             This updates the external documentation commit hashes in `doc/import_external_docs.ps1` to the latest commits from each repository's default branch.
-            
+
             The following repositories are automatically tracked and updated to their default branch:
             - uno.wasm.bootstrap
             - uno.themes
@@ -72,9 +68,9 @@ jobs:
             - uno.samples
             - uno.chefs
             - hd-docs
-            
+
             Each repository's default branch (main, master, or configured default) is automatically detected and used.
-            
+
             This is an automated update created by the external docs updater workflow.
           labels: docs-update
           draft: false
