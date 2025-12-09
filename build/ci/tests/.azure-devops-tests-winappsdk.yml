@@ -151,6 +151,23 @@ jobs:
       }
       
       Write-Host "Installing MSIX bundle: $($msixBundlePath.FullName)"
+      
+      # Find and install dependencies (including Windows App Runtime)
+      $packageFolder = Split-Path $msixBundlePath.FullName
+      $dependenciesFolder = Join-Path $packageFolder "Dependencies/x64"
+      
+      if (Test-Path $dependenciesFolder) {
+        Write-Host "Installing dependencies from: $dependenciesFolder"
+        $dependencies = Get-ChildItem -Path $dependenciesFolder -Filter "*.appx" -ErrorAction SilentlyContinue
+        foreach ($dep in $dependencies) {
+          Write-Host "Installing dependency: $($dep.Name)"
+          Add-AppxPackage -Path $dep.FullName -ErrorAction Continue
+        }
+      } else {
+        Write-Host "No dependencies folder found at: $dependenciesFolder"
+      }
+      
+      # Install the main package
       Add-AppxPackage -Path $msixBundlePath.FullName
     displayName: Install MSIX Package
 
