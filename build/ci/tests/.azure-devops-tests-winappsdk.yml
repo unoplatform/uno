@@ -1,5 +1,6 @@
 parameters:
   vmImage: ''
+  poolName: ''
 
 jobs:
 - job: WASDK_Build
@@ -65,4 +66,70 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: WinAppSDK-Package
+      ArtifactType: Container
+
+- job: WinUI_Runtime_Tests
+  displayName: ' ' ## Name is concatenated with the matrix group name
+  dependsOn: WASDK_Build
+  timeoutInMinutes: 90
+  cancelTimeoutInMinutes: 1
+
+  pool:
+    vmImage: ${{ parameters.poolName }}
+
+  strategy:
+    matrix:
+      'Runtime Tests 0':
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+      'Runtime Tests 1':
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+      'Runtime Tests 2':
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+
+  variables:
+    SamplesAppArtifactName: WinAppSDK-Package
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: ../templates/dotnet-install.yml
+
+  - pwsh: build/test-scripts/run-winui-runtime-tests.ps1
+    displayName: Run WinUI Runtime Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'WinUI Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/winui-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    displayName: Publish Failed Tests Results
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
       ArtifactType: Container
