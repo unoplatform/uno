@@ -10,7 +10,9 @@ on:
         description: 'Branch to update'
         required: true
         default: 'master'
-
+permissions:
+  contents: write
+  pull-requests: write
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
