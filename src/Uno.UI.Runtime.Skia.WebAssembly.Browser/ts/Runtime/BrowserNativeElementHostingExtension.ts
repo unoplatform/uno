@@ -98,6 +98,11 @@ namespace Uno.UI.NativeElementHosting {
 			this.getElementOrThrow(id).remove();
 		}
 
+		public static setZIndex(id: string, zIndex: number) {
+			let element = this.getElementOrThrow(id);
+			element.style.zIndex = zIndex.toString();
+		}
+
 		public static createSampleComponent(parentId: string, text: string) {
 			let element = this.getElementOrThrow(parentId);
 

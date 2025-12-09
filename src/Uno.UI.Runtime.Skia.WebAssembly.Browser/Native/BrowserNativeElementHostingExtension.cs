@@ -45,6 +45,14 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		NativeMethods.ChangeNativeElementOpacity(((BrowserHtmlElement)content).ElementId, opacity);
 	}
 
+	public bool SupportsZIndex() => true;
+
+	public void SetZIndex(object content, int zIndex)
+	{
+		Debug.Assert(content is BrowserHtmlElement);
+		NativeMethods.SetZIndex(((BrowserHtmlElement)content).ElementId, zIndex);
+	}
+
 	public static void SetSvgClipPathForNativeElementHost(string path)
 	{
 		if (_lastSvgClipPath != path)
@@ -85,5 +93,8 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.setSvgClipPathForNativeElementHost")]
 		internal static partial string SetSvgClipPathForNativeElementHost(string path);
+
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.setZIndex")]
+		internal static partial void SetZIndex(string content, int zIndex);
 	}
 }

@@ -155,18 +155,33 @@ partial class ContentPresenter
 		{
 			var host = rentedArray[index].Item2;
 
-			if (index == -1 && host._nativeElementAttached)
+			if (host._nativeElementHostingExtension.Value.SupportsZIndex())
 			{
-				// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
-				Debug.Assert(host.IsNativeHost);
-				host._nativeElementAttached = false;
-				host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+				host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
 			}
-			else if (host._nativeElementAttached)
+			else
 			{
-				host.DetachNativeElement(host.Content);
-				host.AttachNativeElement();
-				host.ArrangeNativeElement();
+				if (host._nativeElementAttached)
+				{
+					if (index == -1)
+					{
+						// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
+						Debug.Assert(host.IsNativeHost);
+						host._nativeElementAttached = false;
+						host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+					}
+					else
+					{
+						host.DetachNativeElement(host.Content);
+						host.AttachNativeElement();
+						host.ArrangeNativeElement();
+					}
+				}
+				else if (index != -1)
+				{
+					host.AttachNativeElement();
+					host.ArrangeNativeElement();
+				}
 			}
 		}
 	}
