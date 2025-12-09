@@ -30,6 +30,50 @@ To add a new runtime test:
 4. Use the helpers described below to set up the state required to repro your bug, and use standard `Assert` calls and/or [FluentAssertions](https://fluentassertions.com/introduction) to verify expected state.
 5. Verify your test locally by running according to the instructions above. Typically it's fine to test locally on just one target platform; the CI will take care of the others.
 
+### Platform-specific test exclusions
+
+Runtime tests can be conditionally excluded or included for specific platforms using the `[PlatformCondition]` attribute. This is useful when a feature is not yet implemented or behaves differently on certain platforms.
+
+#### Using PlatformCondition
+
+The `PlatformConditionAttribute` allows you to specify which platforms a test should run on or be excluded from:
+
+```csharp
+// Exclude test from WinUI
+[TestMethod]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+public void When_Test_That_Fails_On_WinUI()
+{
+    // Test implementation
+}
+
+// Run test only on specific platforms
+[TestMethod]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Skia)]
+public void When_Test_Only_For_Wasm_And_Skia()
+{
+    // Test implementation
+}
+
+// Exclude from multiple platforms
+[TestMethod]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+public void When_Test_Not_Supported_On_Mobile()
+{
+    // Test implementation
+}
+```
+
+#### Available platforms
+
+The `RuntimeTestPlatforms` enum includes the following platforms:
+
+- **Native platforms**: `NativeWinUI`, `NativeWasm`, `NativeAndroid`, `NativeIOS`, `NativeMacCatalyst`, `NativeTvOS`
+- **Skia platforms**: `SkiaWpf`, `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaMacCatalyst`, `SkiaTvOS`, `SkiaFrameBuffer`
+- **Combined platforms**: `Skia`, `Native`, `Wasm`, `Android`, `IOS`, etc.
+
+When using platform exclusions, always add a comment or issue reference explaining why the test is excluded, to help track and resolve platform-specific issues.
+
 ### Helpers
 
 A number of helper methods are available to set up a state for testing common UI scenarios.
