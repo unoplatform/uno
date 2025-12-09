@@ -4346,7 +4346,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-        
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_TargetBlank.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
