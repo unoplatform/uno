@@ -20,29 +20,24 @@ runs:
       run: |
         Write-Host "Updating external docs commit hashes..." -ForegroundColor Green
         
-        # List of repositories to track (will fetch default branch dynamically)
-        $repos = @(
-            "uno.wasm.bootstrap",
-            "uno.themes",
-            "uno.toolkit.ui",
-            "uno.check",
-            "uno.xamlmerge.task",
-            "figma-docs",
-            "uno.resizetizer",
-            "uno.uitest",
-            "uno.extensions",
-            "workshops",
-            "uno.samples",
-            "uno.chefs",
-            "hd-docs"
-        )
-        
         $scriptPath = "doc/import_external_docs.ps1"
         
         if (-Not (Test-Path $scriptPath)) {
             Write-Error "Script not found: $scriptPath"
             exit 1
         }
+        
+        # Get the list of repositories from the script
+        Write-Host "Getting repository list from $scriptPath..." -ForegroundColor Cyan
+        $repos = & $scriptPath -ListRepos
+        
+        if (-not $repos -or $repos.Count -eq 0) {
+            Write-Warning "No repositories found in $scriptPath"
+            exit 0
+        }
+        
+        Write-Host "Found $($repos.Count) repositories to update:" -ForegroundColor Green
+        $repos | ForEach-Object { Write-Host "  - $_" -ForegroundColor Gray }
         
         # Read the current script content
         $content = Get-Content $scriptPath -Raw
