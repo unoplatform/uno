@@ -149,7 +149,7 @@ runs:
                 # We intentionally ignore any existing comment and always replace it with
                 #   #latest $branchDescription commit
                 $escapedRepo = [regex]::Escape($repo)
-                $pattern = "`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`"[a-f0-9]{40}`"\s*\}(\s*;\s*[^#]*)?.*"
+                $pattern = "`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`"[a-f0-9]{7,64}`"\s*\}(\s*;\s*[^#]*)?.*"
                 $comment = "latest $branchDescription commit"
                 $replacement = "`"$repo`" = @{ ref=`"$latestHash`" }${1} #$comment"
                 
