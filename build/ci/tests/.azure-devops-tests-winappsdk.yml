@@ -30,6 +30,14 @@ jobs:
   # Required until Uno.Xaml can build without all targets enabled
   - template: ../templates/jdk-setup.yml
 
+  - pwsh: |
+      # Decode the base64-encoded signing certificate from the variable
+      $certBytes = [Convert]::FromBase64String('$(SAMPLESAPP_SIGNING_CERTIFICATE)')
+      $certPath = "$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows_TemporaryKey.pfx"
+      [IO.File]::WriteAllBytes($certPath, $certBytes)
+      Write-Host "Certificate written to: $certPath"
+    displayName: Decode Signing Certificate
+
   - task: MSBuild@1
     inputs:
       solution: src\SamplesApp\SamplesApp.Windows\SamplesApp.Windows.csproj
@@ -44,7 +52,7 @@ jobs:
       # ---
       # NOTE: The error says to specify a RuntimeIdentifier *OR* platform other than AnyCPU.
       # We already specify RuntimeIdentifier=win-x64 in the build below. Still, the error pops up.
-      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
+      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile=$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows_TemporaryKey.pfx /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -57,19 +65,6 @@ jobs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/AppPackages
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/AppPackages
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
-
-  - task: CopyFiles@2
-    displayName: 'Copy Unpackaged App'
-    condition: always()
-    inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/x64/Release/net9.0-windows10.0.19041.0/win-x64
-      Contents: |
-        **
-        !AppPackages/**
-      TargetFolder: $(build.artifactstagingdirectory)/UnpackagedApp
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -139,8 +134,34 @@ jobs:
 
   - template: ../templates/dotnet-install.yml
 
+  - pwsh: |
+      # Decode and import the signing certificate to trusted stores
+      $certBytes = [Convert]::FromBase64String('$(WINAPPSDK_SAMPLESAPP_SIGNING_CERTIFICATE)')
+      $certPath = "$(Build.SourcesDirectory)/build/SamplesApp_SigningCert.pfx"
+      [IO.File]::WriteAllBytes($certPath, $certBytes)
+      
+      # Import the certificate to LocalMachine\Root (Trusted Root CAs) for MSIX installation
+      Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\LocalMachine\Root
+      Write-Host "Certificate imported to Trusted Root Certification Authorities store"
+      
+      # Find and install the x64 MSIX package
+      $msixPath = Get-ChildItem -Path "$(SamplesAppArtifactPath)/AppPackages" -Filter "*_x64.msix" -Recurse | Select-Object -First 1
+      if (-not $msixPath) {
+        throw "Could not find x64 MSIX package in $(SamplesAppArtifactPath)/AppPackages"
+      }
+      
+      Write-Host "Installing MSIX package: $($msixPath.FullName)"
+      Add-AppxPackage -Path $msixPath.FullName
+    displayName: Install MSIX Package
+
   - pwsh: build/test-scripts/run-winui-runtime-tests.ps1
     displayName: Run WinUI Runtime Tests
+
+  - pwsh: |
+      # Uninstall the MSIX package
+      Get-AppxPackage -Name "SamplesApp" | Remove-AppxPackage -ErrorAction SilentlyContinue
+    displayName: Uninstall MSIX Package
+    condition: always()
 
   - task: PublishTestResults@2
     condition: always()
