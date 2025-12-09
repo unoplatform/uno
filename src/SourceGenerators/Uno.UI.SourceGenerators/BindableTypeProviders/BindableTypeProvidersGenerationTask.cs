@@ -38,6 +38,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private INamedTypeSymbol? _nsObjectSymbol;
 			private INamedTypeSymbol? _nonBindableSymbol;
 			private INamedTypeSymbol? _resourceDictionarySymbol;
+			private INamedTypeSymbol? _observableObjectSymbol;
+			private INamedTypeSymbol? _observableObjectAttributeSymbol;
+			private INamedTypeSymbol? _inotifyPropertyChangedSymbol;
 			private IModuleSymbol? _currentModule;
 			private string? _projectFullPath;
 			private string? _projectDirectory;
@@ -86,6 +89,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_nsObjectSymbol = context.Compilation.GetTypeByMetadataName("Foundation.NSObject");
 						_nonBindableSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Data.NonBindableAttribute");
 						_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.ResourceDictionary");
+						_observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
+						_observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute");
+						_inotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged");
 						_currentModule = context.Compilation.SourceModule;
 
 						var modules = from ext in context.Compilation.ExternalReferences
@@ -130,7 +136,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						where
 							!type.IsGenericType
 							&& !type.IsAbstract
-							&& type.GetAllAttributes().Any(a => a.AttributeClass?.Name == "BindableAttribute")
+							&& (type.GetAllAttributes().Any(a => a.AttributeClass?.Name == "BindableAttribute") || IsCommunityToolkitMvvmType(type))
 							&& IsValidProvider(type)
 						select type;
 
@@ -166,6 +172,40 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				// Exclude resource dictionaries for linking constraints (XamlControlsResources in particular)
 				// Those are not databound, so there's no need to generate providers for them.
 				&& !type.Is(_resourceDictionarySymbol);
+
+			private bool IsCommunityToolkitMvvmType(INamedTypeSymbol type)
+			{
+				// Check if type has [ObservableObject] attribute
+				if (_observableObjectAttributeSymbol != null 
+					&& type.GetAllAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, _observableObjectAttributeSymbol)))
+				{
+					return true;
+				}
+
+				// Check if type inherits from ObservableObject
+				if (_observableObjectSymbol != null)
+				{
+					var baseType = type.BaseType;
+					while (baseType != null)
+					{
+						if (SymbolEqualityComparer.Default.Equals(baseType, _observableObjectSymbol))
+						{
+							return true;
+						}
+						baseType = baseType.BaseType;
+					}
+				}
+
+				// Check if type implements INotifyPropertyChanged
+				// This is a fallback for other MVVM implementations that might not use CommunityToolkit
+				if (_inotifyPropertyChangedSymbol != null 
+					&& type.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, _inotifyPropertyChangedSymbol)))
+				{
+					return true;
+				}
+
+				return false;
+			}
 
 			private void GenerateProviderTable(IndentedStringBuilder writer)
 			{
