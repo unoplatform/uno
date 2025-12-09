@@ -7,7 +7,7 @@ function Assert-ExitCodeIsZero()
     if ($LASTEXITCODE -ne 0)
     {
         throw "Exit code must be zero."
-	}
+    }
 }
 
 Write-Host "Running WinUI Runtime Tests..."
