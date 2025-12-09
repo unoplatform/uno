@@ -43,6 +43,16 @@ runs:
         
         Write-Host "Found $($repos.Count) repositories to update:" -ForegroundColor Green
         $repos | ForEach-Object { Write-Host "  - $_" -ForegroundColor Gray }
+
+        # Determine behavior based on the action input branch
+        $branchInput = '${{ inputs.branch }}'
+        $useReleaseBranches = $branchInput -like 'release/stable/*'
+
+        if ($useReleaseBranches) {
+            Write-Host "Running in release mode for '$branchInput' - will use each repo's latest 'release/stable/*' branch if available, otherwise its default branch." -ForegroundColor Cyan
+        } else {
+            Write-Host "Running in default mode for '$branchInput' - will use each repo's default branch." -ForegroundColor Cyan
+        }
         
         # Read the current script content
         $content = Get-Content $scriptPath -Raw
@@ -61,23 +71,60 @@ runs:
                 
                 $defaultBranch = $repoInfo.default_branch
                 Write-Host "  Default branch: $defaultBranch" -ForegroundColor Gray
+
+                $targetBranch = $defaultBranch
+                $branchDescription = $defaultBranch
+
+                if ($useReleaseBranches) {
+                    # Try to locate the latest release/stable/* branch for this repo
+                    $branchesUrl = "https://api.github.com/repos/unoplatform/$repo/branches?per_page=100"
+                    $branches = Invoke-RestMethod -Uri $branchesUrl -Headers @{
+                        "Accept" = "application/vnd.github.v3+json"
+                        "User-Agent" = "Uno-Docs-Updater"
+                    }
+
+                    $releaseBranches = @()
+                    foreach ($b in @($branches)) {
+                        $name = $b.name
+                        if ($name -like 'release/stable/*') {
+                            $suffix = $name.Substring('release/stable/'.Length)
+                            try {
+                                $version = [version]$suffix
+                                $releaseBranches += [pscustomobject]@{ Name = $name; Version = $version }
+                            } catch {
+                                Write-Host "  Skipping branch '$name' – unable to parse version part '$suffix'." -ForegroundColor DarkYellow
+                            }
+                        }
+                    }
+
+                    if ($releaseBranches.Count -gt 0) {
+                        $latestRelease = $releaseBranches | Sort-Object Version -Descending | Select-Object -First 1
+                        $targetBranch = $latestRelease.Name
+                        $branchDescription = $latestRelease.Name
+                        Write-Host "  Using latest release branch: $targetBranch" -ForegroundColor Gray
+                    } else {
+                        Write-Host "  No 'release/stable/*' branches found – falling back to default branch '$defaultBranch'." -ForegroundColor DarkYellow
+                    }
+                }
                 
-                # Get the latest commit hash from the default branch
-                $commitUrl = "https://api.github.com/repos/unoplatform/$repo/commits/$defaultBranch"
+                # Get the latest commit hash from the selected branch
+                $commitUrl = "https://api.github.com/repos/unoplatform/$repo/commits/$targetBranch"
                 $commitInfo = Invoke-RestMethod -Uri $commitUrl -Headers @{
                     "Accept" = "application/vnd.github.v3+json"
                     "User-Agent" = "Uno-Docs-Updater"
                 }
                 
                 $latestHash = $commitInfo.sha
-                Write-Host "  Latest commit: $latestHash" -ForegroundColor Gray
+                Write-Host "  Latest commit on '$targetBranch': $latestHash" -ForegroundColor Gray
                 
                 # Update the hash in the script using regex
-                # Match pattern: "repo-name" = @{ ref="<hash>" } #comment
+                # Match pattern: "repo-name" = @{ ref="<hash>" } [; dest=...] [anything-after]
+                # We intentionally ignore any existing comment and always replace it with
+                #   #latest $branchDescription commit
                 $escapedRepo = [regex]::Escape($repo)
-                $pattern = "`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`"([a-f0-9]{40})`"\s*\}(\s*;\s*[^#]*)?\s*(#.*)?"
-                $comment = "latest $defaultBranch commit"
-                $replacement = "`"$repo`" = @{ ref=`"$latestHash`" }${2} #$comment"
+                $pattern = "`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`"[a-f0-9]{40}`"\s*\}(\s*;\s*[^#]*)?.*"
+                $comment = "latest $branchDescription commit"
+                $replacement = "`"$repo`" = @{ ref=`"$latestHash`" }${1} #$comment"
                 
                 $newContent = $content -replace $pattern, $replacement
                 
