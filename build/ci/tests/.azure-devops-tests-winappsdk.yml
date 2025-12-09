@@ -96,7 +96,7 @@ jobs:
   cancelTimeoutInMinutes: 1
 
   pool:
-    vmImage: ${{ parameters.poolName }}
+    vmImage: 'windows-latest'
 
   strategy:
     matrix:
