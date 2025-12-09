@@ -274,6 +274,39 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				.ToArray();
 		}
 
+		// For WASM and desktop platforms, add loopback address for better reliability and airplane mode support
+		// Mobile platforms (iOS, Android) should not use loopback as they connect to a different machine
+		if (_serverAddresses is { Length: > 0 }
+			&& (OperatingSystem.IsBrowser()
+				|| OperatingSystem.IsWindows()
+				|| OperatingSystem.IsLinux()
+				|| OperatingSystem.IsMacOS()))
+		{
+			// Get unique ports from existing addresses
+			var ports = _serverAddresses
+				.Select(addr => addr.port)
+				.Where(port => port > 0)
+				.Distinct()
+				.ToArray();
+
+			if (ports.Length > 0)
+			{
+				// Add loopback addresses with the same ports, but only if not already present
+				var loopbackAddresses = ports
+					.Select(port => ("127.0.0.1", port))
+					.Where(loopback => !_serverAddresses.Any(addr =>
+						addr.endpoint.Equals(loopback.Item1, StringComparison.OrdinalIgnoreCase)
+						&& addr.port == loopback.port))
+					.ToArray();
+
+				if (loopbackAddresses.Length > 0)
+				{
+					// Prepend loopback addresses to give them priority
+					_serverAddresses = loopbackAddresses.Concat(_serverAddresses).ToArray();
+				}
+			}
+		}
+
 		// Enable hot-reload
 		// Note: We register the HR processor even if we _serverAddresses is empty. This is to make sure to create the HR indicator.
 		RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
