@@ -19,7 +19,7 @@ namespace Uno.UI.NativeElementHosting {
 			}
 		}
 
-		public static setSvgClipPathForNativeElementHost(path: string) {
+		public static setSvgClipPathForNativeElementHost(path: string, fillType: string) {
 			if (!document.getElementById("unoNativeElementHostClipPath")) {
 				const svgContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 				svgContainer.setAttribute("width", "0");
@@ -34,7 +34,8 @@ namespace Uno.UI.NativeElementHosting {
 				document.body.appendChild(svgContainer);
 				clipPath.appendChild(this.clipPath);
 			}
-			this.clipPath.setAttributeNS(null, "d", path);
+			this.clipPath.setAttribute("d", path);
+			this.clipPath.setAttribute("clip-rule", fillType);
 		}
 
 		private static getNativeElementHost(): HTMLElement {
