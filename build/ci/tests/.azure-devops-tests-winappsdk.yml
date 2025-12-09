@@ -80,6 +80,18 @@ jobs:
       ArtifactName: WinAppSDK-Package
       ArtifactType: Container
 
+##
+## WinUI Runtime Tests
+##
+## Note: If tests fail on WinUI, they should be excluded using the [PlatformCondition] attribute
+## in the test code itself. Example:
+##
+##   [TestMethod]
+##   [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+##   public void When_Test_That_Fails_On_WinUI() { ... }
+##
+## See: doc/articles/uno-development/creating-runtime-tests.md
+##
 - job: WinUI_Runtime_Tests
   displayName: ' ' ## Name is concatenated with the matrix group name
   dependsOn: WASDK_Build
