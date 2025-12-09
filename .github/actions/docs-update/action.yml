@@ -104,15 +104,17 @@ runs:
 
                     $branches = $allBranches
                     $releaseBranches = @()
-                    foreach ($b in @($branches)) {
-                        $name = $b.name
-                        if ($name -like 'release/stable/*') {
-                            $suffix = $name.Substring('release/stable/'.Length)
-                            try {
-                                $version = [version]$suffix
-                                $releaseBranches += [pscustomobject]@{ Name = $name; Version = $version }
-                            } catch {
-                                Write-Host "  Skipping branch '$name' – unable to parse version part '$suffix'." -ForegroundColor DarkYellow
+                    if ($branches) {
+                        foreach ($b in @($branches)) {
+                            $name = $b.name
+                            if ($name -like 'release/stable/*') {
+                                $suffix = $name.Substring('release/stable/'.Length)
+                                try {
+                                    $version = [version]$suffix
+                                    $releaseBranches += [pscustomobject]@{ Name = $name; Version = $version }
+                                } catch {
+                                    Write-Host "  Skipping branch '$name' – unable to parse version part '$suffix'." -ForegroundColor DarkYellow
+                                }
                             }
                         }
                     }
