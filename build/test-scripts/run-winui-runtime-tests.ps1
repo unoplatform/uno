@@ -40,20 +40,15 @@ Write-Host "Runtime test arguments: $($runtimeTestArgs -join ' ')"
 $failedTestsDir = Split-Path -Parent $UNO_TESTS_FAILED_LIST
 New-Item -ItemType Directory -Force -Path $failedTestsDir | Out-Null
 
-# Find the unpackaged app executable
-$unpackagedAppPath = Join-Path $env:SamplesAppArtifactPath "UnpackagedApp"
-$exePath = Join-Path $unpackagedAppPath "SamplesApp.Windows.exe"
+# Use the app execution alias registered by the MSIX package
+$exeAlias = "unosamplesapp.exe"
 
-if (-not (Test-Path $exePath)) {
-    throw "Could not find unpackaged exe at: $exePath"
-}
-
-Write-Host "Found unpackaged app: $exePath"
+Write-Host "Using app execution alias: $exeAlias"
 
 # Launch the app with runtime test arguments
 Write-Host "Launching app with runtime tests..."
 
-$process = Start-Process -FilePath $exePath -ArgumentList $runtimeTestArgs -PassThru -NoNewWindow
+$process = Start-Process -FilePath $exeAlias -ArgumentList $runtimeTestArgs -PassThru -NoNewWindow
 
 Write-Host "App launched with PID: $($process.Id)"
 Write-Host "Waiting for test results..."
