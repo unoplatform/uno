@@ -1,6 +1,7 @@
 param(
-  [Parameter(ValueFromPipelineByPropertyName = $true)]
-  $branches = $null
+    [Parameter(ValueFromPipelineByPropertyName = $true)]$branches = $null,
+    [Parameter(ValueFromPipelineByPropertyName = $true)][string]$contributor_git_url = $null,
+    [Parameter(ValueFromPipelineByPropertyName = $true)][string[]]$forks_to_import = $null
 )
 
 Set-PSDebug -Trace 1
@@ -28,13 +29,51 @@ $uno_git_url = "https://github.com/unoplatform/"
 
 # --- END OF CONFIGURATION --------------------------------------------------
 
+# Validation ordering note: contributor URL normalization must occur BEFORE requiring it when forks are provided.
+
+# Normalize blank contributor URL to null (CI may pass empty string)
+if ([string]::IsNullOrWhiteSpace($contributor_git_url)) { $contributor_git_url = $null }
+
+# If forks are specified and non-empty, contributor_git_url must be present (non-null after normalization)
+if ($forks_to_import -ne $null -and $forks_to_import.Count -gt 0 -and $contributor_git_url -eq $null) {
+    throw "Parameter 'forks_to_import' requires 'contributor_git_url' to be specified."
+}
+
+# Validate fork names against configured repositories (only if array provided)
+if ($forks_to_import -ne $null) {
+    $configuredRepos = $external_docs.Keys | ForEach-Object { $_.ToLower() }
+    $invalidForks = $forks_to_import |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+        Where-Object { $configuredRepos -notcontains $_.ToLower() }
+    if ($invalidForks.Count -gt 0) {
+        throw "The following repository names in forks_to_import are not configured in external_docs: $($invalidForks -join ', ')"
+    }
+}
+
+# If a contributor git URL is provided, validate only when forks are specified; never fail CI when unused.
+if ($contributor_git_url -ne $null) {
+    if ($forks_to_import -eq $null -or $forks_to_import.Count -eq 0) {
+        Write-Warning 'Parameter ''contributor_git_url'' was provided but ''forks_to_import'' is null or empty. The contributor URL will not be used.'
+    }
+    else {
+        if ($contributor_git_url -notmatch '^https?://') {
+            Write-Warning "Parameter 'contributor_git_url' is not a valid HTTP/HTTPS URL. Ignoring contributor URL and falling back to Uno repos."
+            $contributor_git_url = $null
+        }
+        elseif (-not $contributor_git_url.EndsWith('/')) {
+            $contributor_git_url += '/'
+        }
+    }
+}
+
 # If branches are passed, use them to override the default ones (ref, but not dest)
-if ($branches) {
+if ($branches -ne $null) {
     foreach ($repo in $branches.Keys) {
         $branch = $branches[$repo]
         if ($external_docs[$repo]) {
             $external_docs[$repo].ref = $branch
-        } else {
+        }
+        else {
             $external_docs[$repo] = @{ ref = $branch }     # default dest = external
         }
     }
@@ -46,15 +85,15 @@ $external_docs
 $ErrorActionPreference = 'Stop'
 
 function Get-TargetRoot([string]$repo) {
-    $cfg  = $external_docs[$repo]
-    $dest = if ($cfg.ContainsKey('dest') -and $cfg.dest) { $cfg.dest } else { Join-Path 'external' $repo }
+    $cfg = $external_docs[$repo]
+    $dest = if ($cfg.ContainsKey('dest') -and $cfg.dest) { $cfg.dest } else {
+        Join-Path 'external' $repo
+    }
     return Join-Path 'articles' $dest
 }
 
-function Assert-ExitCodeIsZero()
-{
-    if ($LASTEXITCODE -ne 0)
-    {
+function Assert-ExitCodeIsZero() {
+    if ($LASTEXITCODE -ne 0) {
         Set-PSDebug -Off
 
         throw "Exit code must be zero."
@@ -68,27 +107,34 @@ $detachedHeadConfig = git config --get advice.detachedHead
 git config advice.detachedHead false
 
 # Heads - Release
-foreach ($repoPath in $external_docs.Keys)
-{
+foreach ($repoPath in $external_docs.Keys) {
     $repoCfg = $external_docs[$repoPath]
     $repoRef = $repoCfg.ref
     $targetRoot = Get-TargetRoot $repoPath
-    $fullPath   = $targetRoot
-    $repoUrl = "$uno_git_url$repoPath"
-        
-    if (-Not (Test-Path $fullPath))
-    {        
+    $fullPath = $targetRoot
+
+    if ($contributor_git_url -ne $null -and $forks_to_import -ne $null -and ($forks_to_import -contains $repoPath)) {
+        # Fork override: use contributor-provided git URL base
+        $repoUrl = "$contributor_git_url$repoPath"
+    }
+    else {
+        $repoUrl = "$uno_git_url$repoPath"
+    }
+
+    Write-Output "Importing $repoPath from $repoUrl..."
+
+    if (-Not (Test-Path $fullPath)) {
+
         Write-Host "Cloning $repoPath ($repoUrl@$repoRef) into $targetRoot..." -ForegroundColor Black -BackgroundColor Blue
         New-Item -ItemType Directory -Force -Path (Split-Path -Parent $fullPath) | Out-Null
         git clone --filter=blob:none --no-tags $repoUrl $fullPath
         Assert-ExitCodeIsZero
     }
-    else
-    {
+    else {
         Write-Host "Skipping clone of $repoPath ($repoUrl@$repoRef) into $targetRoot (already exists)."-ForegroundColor Black -BackgroundColor DarkYellow
     }
-
     pushd $fullPath
+
     try {
         Write-Host "Checking out $repoUrl@$repoRef..." -ForegroundColor Black -BackgroundColor Blue
         git fetch --filter=blob:none origin $repoRef # fetch the latest commit for the specified ref
@@ -97,8 +143,7 @@ foreach ($repoPath in $external_docs.Keys)
         Assert-ExitCodeIsZero
 
         # if not detached
-        if ((git symbolic-ref -q HEAD) -ne $null)
-        {
+        if ((git symbolic-ref -q HEAD) -ne $null) {
             echo "Resetting to $repoUrl@$repoRef..."
             git reset --hard origin/$repoRef
             Assert-ExitCodeIsZero
