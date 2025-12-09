@@ -1,6 +1,7 @@
 param(
   [Parameter(ValueFromPipelineByPropertyName = $true)]
-  $branches = $null
+  $branches = $null,
+  [switch]$ListRepos
 )
 
 Set-PSDebug -Trace 1
@@ -27,6 +28,13 @@ $external_docs = @{
 $uno_git_url = "https://github.com/unoplatform/"
 
 # --- END OF CONFIGURATION --------------------------------------------------
+
+# If -ListRepos flag is set, output the repository names and exit
+if ($ListRepos) {
+    Set-PSDebug -Off
+    $external_docs.Keys | ForEach-Object { Write-Output $_ }
+    exit 0
+}
 
 # If branches are passed, use them to override the default ones (ref, but not dest)
 if ($branches) {
