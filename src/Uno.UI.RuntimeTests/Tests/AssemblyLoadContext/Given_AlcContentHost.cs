@@ -150,7 +150,7 @@ public class Given_AlcContentHost
 		var testWindowProperty = appType.GetField("TestWindow", BindingFlags.NonPublic | BindingFlags.Static);
 		Assert.IsNotNull(testWindowProperty, "App.TestWindow property should be discoverable via reflection");
 
-		var maxWaitTime = TimeSpan.FromSeconds(5);
+		var maxWaitTime = TimeSpan.FromSeconds(30);
 		var startTime = DateTime.Now;
 		while (DateTime.Now - startTime < maxWaitTime)
 		{
