@@ -291,12 +291,15 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 			if (ports.Length > 0)
 			{
+				// Create a set of existing endpoints for efficient lookup
+				var existingEndpoints = _serverAddresses
+					.Select(addr => (addr.endpoint.ToLowerInvariant(), addr.port))
+					.ToHashSet();
+
 				// Add loopback addresses with the same ports, but only if not already present
 				var loopbackAddresses = ports
 					.Select(port => ("127.0.0.1", port))
-					.Where(loopback => !_serverAddresses.Any(addr =>
-						addr.endpoint.Equals(loopback.Item1, StringComparison.OrdinalIgnoreCase)
-						&& addr.port == loopback.port))
+					.Where(loopback => !existingEndpoints.Contains((loopback.Item1, loopback.Item2)))
 					.ToArray();
 
 				if (loopbackAddresses.Length > 0)
