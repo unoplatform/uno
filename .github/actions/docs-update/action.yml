@@ -91,25 +91,8 @@ runs:
                     $branchesUrl = "https://api.github.com/repos/unoplatform/$repo/branches?per_page=100"
 
                     # Fetch all branches with pagination
-                    $allBranches = @()
-                    $nextUrl = $branchesUrl
-                    do {
-                        $response = Invoke-WebRequest -Uri $nextUrl -Headers $baseHeaders
-                        $pageBranches = $response.Content | ConvertFrom-Json
-                        $allBranches += $pageBranches
-
-                        # Parse Link header for pagination
-                        $linkHeader = $response.Headers["Link"]
-                        $nextUrl = $null
-                        if ($linkHeader) {
-                            foreach ($link in $linkHeader -split ",") {
-                                if ($link -match '<([^>]+)>;\s*rel="next"') {
-                                    $nextUrl = $matches[1]
-                                }
-                            }
-                        }
-                    } while ($nextUrl)
-
+                    # Use Invoke-RestMethod with -FollowRelLink to fetch all branches with pagination
+                    $allBranches = Invoke-RestMethod -Uri $branchesUrl -Headers $baseHeaders -FollowRelLink
                     $branches = $allBranches
                     $releaseBranches = @()
                     if ($branches) {
