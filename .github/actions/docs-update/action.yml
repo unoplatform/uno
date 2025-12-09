@@ -69,9 +69,9 @@ runs:
                 
                 # Update the hash in the script using regex
                 # Match pattern: "repo-name" = @{ ref="<hash>" } #comment
-                $pattern = "(`"$repo`"\s*=\s*@\{\s*ref\s*=\s*`")[a-f0-9]{40}(`"\s*}[^#]*)(#.*)?$"
+                $pattern = "`"$repo`"\s*=\s*@\{\s*ref\s*=\s*`"([a-f0-9]{40})`"\s*\}(\s*;\s*[^#]*)?\s*(#.*)?"
                 $comment = "latest $defaultBranch commit"
-                $replacement = "`${1}$latestHash`${2}#$comment"
+                $replacement = "`"$repo`" = @{ ref=`"$latestHash`" }${2} #$comment"
                 
                 $newContent = $content -replace $pattern, $replacement
                 
