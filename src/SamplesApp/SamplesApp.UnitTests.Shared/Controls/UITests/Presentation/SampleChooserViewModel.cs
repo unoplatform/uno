@@ -38,6 +38,7 @@ using Uno.UI.Samples.UITests.Helpers;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using MUXControlsTestApp.Utilities;
 
 namespace SampleControl.Presentation
 {
@@ -503,7 +504,7 @@ namespace SampleControl.Presentation
 				await OpenRuntimeTests(ct);
 
 				if (ContentPhone is FrameworkElement fe
-					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
+					&& fe.FindVisualChildByName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
 				{
 #if IS_CI
 					// Used to disable showing the test output visually
