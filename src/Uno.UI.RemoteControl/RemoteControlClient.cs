@@ -265,6 +265,29 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					+ "This can usually be fixed with a **rebuild** of your application. "
 					+ "If not, make sure you have the latest version of the uno's extensions installed in your IDE and restart your IDE.");
 			}
+			else
+			{
+				// For WASM and desktop platforms, add loopback address for better reliability and airplane mode support
+				// Mobile platforms (iOS, Android) should not use loopback as they connect to a different machine
+				if ((OperatingSystem.IsBrowser()
+					|| OperatingSystem.IsWindows()
+					|| OperatingSystem.IsLinux()
+					|| OperatingSystem.IsMacOS()))
+				{
+					var serverPort = _serverAddresses.Select(addr => addr.port).Where(p => p > 0).FirstOrDefault();
+					if (serverPort > 0)
+					{
+						var loopbackAddress = IPAddress.Loopback.ToString().ToLowerInvariant();
+						var hasLoopback = _serverAddresses.Any(addr => addr.endpoint.Equals(loopbackAddress, StringComparison.OrdinalIgnoreCase) && addr.port == serverPort);
+
+						if (!hasLoopback)
+						{
+							// Prepend loopback address to give it priority
+							_serverAddresses = new[] { (loopbackAddress, serverPort) }.Concat(_serverAddresses).ToArray();
+						}
+					}
+				}
+			}
 		}
 
 		if (_serverAddresses is null or { Length: 0 })
@@ -272,44 +295,6 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			_serverAddresses = endpoints
 				?.Select(ep => (ep.Endpoint, ep.Port))
 				.ToArray();
-		}
-
-		// For WASM and desktop platforms, add loopback address for better reliability and airplane mode support
-		// Mobile platforms (iOS, Android) should not use loopback as they connect to a different machine
-		if (_serverAddresses is { Length: > 0 }
-			&& (OperatingSystem.IsBrowser()
-				|| OperatingSystem.IsWindows()
-				|| OperatingSystem.IsLinux()
-				|| OperatingSystem.IsMacOS()))
-		{
-			// Get unique ports from existing addresses
-			var ports = _serverAddresses
-				.Select(addr => addr.port)
-				.Where(port => port > 0)
-				.Distinct()
-				.ToArray();
-
-			if (ports.Length > 0)
-			{
-				// Create a set of existing endpoints for efficient lookup
-				var existingEndpoints = _serverAddresses
-					.Select(addr => (addr.endpoint.ToLowerInvariant(), addr.port))
-					.ToHashSet();
-
-				var loopbackAddress = IPAddress.Loopback.ToString().ToLowerInvariant();
-
-				// Add loopback addresses with the same ports, but only if not already present
-				var loopbackAddresses = ports
-					.Select(port => (loopbackAddress, port))
-					.Where(loopback => !existingEndpoints.Contains((loopback.loopbackAddress, loopback.port)))
-					.ToArray();
-
-				if (loopbackAddresses.Length > 0)
-				{
-					// Prepend loopback addresses to give them priority
-					_serverAddresses = loopbackAddresses.Concat(_serverAddresses).ToArray();
-				}
-			}
 		}
 
 		// Enable hot-reload
