@@ -132,7 +132,11 @@ runs:
                 # We intentionally ignore any existing comment and always replace it with
                 #   #latest $branchDescription commit
                 $escapedRepo = [regex]::Escape($repo)
-                $pattern = "`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`"[a-f0-9]{7,64}`"\s*\}(\s*;\s*[^#]*)?.*"
+                # The hash pattern matches either:
+                #   - 7 to 40 lowercase hex chars (abbreviated/full SHA-1, as supported by Git)
+                #   - exactly 64 lowercase hex chars (full SHA-256, as GitHub is transitioning to SHA-256)
+                # This ensures forward compatibility while avoiding accidental matches of partial hashes.
+                $pattern = "`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`"(?:[a-f0-9]{7,40}|[a-f0-9]{64})`"\s*\}(\s*;\s*[^#]*)?.*"
                 $comment = "latest $branchDescription commit"
                 $replacement = "`"$repo`" = @{ ref=`"$latestHash`" }${1} #$comment"
                 
