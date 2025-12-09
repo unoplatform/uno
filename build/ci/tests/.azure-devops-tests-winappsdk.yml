@@ -144,14 +144,14 @@ jobs:
       Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\LocalMachine\Root
       Write-Host "Certificate imported to Trusted Root Certification Authorities store"
       
-      # Find and install the x64 MSIX package
-      $msixPath = Get-ChildItem -Path "$(SamplesAppArtifactPath)/AppPackages" -Filter "*_x64.msix" -Recurse | Select-Object -First 1
-      if (-not $msixPath) {
-        throw "Could not find x64 MSIX package in $(SamplesAppArtifactPath)/AppPackages"
+      # Find and install the MSIX bundle
+      $msixBundlePath = Get-ChildItem -Path "$(SamplesAppArtifactPath)/AppPackages" -Filter "*.msixbundle" -Recurse | Select-Object -First 1
+      if (-not $msixBundlePath) {
+        throw "Could not find MSIX bundle in $(SamplesAppArtifactPath)/AppPackages"
       }
       
-      Write-Host "Installing MSIX package: $($msixPath.FullName)"
-      Add-AppxPackage -Path $msixPath.FullName
+      Write-Host "Installing MSIX bundle: $($msixBundlePath.FullName)"
+      Add-AppxPackage -Path $msixBundlePath.FullName
     displayName: Install MSIX Package
 
   - pwsh: build/test-scripts/run-winui-runtime-tests.ps1
