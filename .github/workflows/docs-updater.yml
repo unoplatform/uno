@@ -65,7 +65,7 @@ jobs:
             Behavior per run:
 
             - When run against `master`, each repository is updated to the latest commit on its default branch (main, master, or other configured default).
-            - When run against a `release/stable/*` branch, each repository is first checked for `release/stable/*` branches; the one with the highest version suffix is selected and used. If no such branch exists, the repository's default branch is used instead.
+            - When run against a `release/stable/*` branch, each repository is checked for all `release/stable/*` branches; if any exist, the one with the highest version suffix is selected and used. If no such branch exists, the repository's default branch is used instead.
 
             This is an automated update created by the external docs updater workflow.
           labels: docs-update
