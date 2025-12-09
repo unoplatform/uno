@@ -71,28 +71,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 	private string _documentTitle = string.Empty;
 	private readonly NativeWebView.CoreWebView2Controller _controller;
 
-	private HWND ParentHwnd
-	{
-		get
-		{
-			if (_presenter.XamlRoot is null)
-			{
-				return HWND.Null;
-			}
-
-			if (_presenter.XamlRoot.HostWindow is not { } window)
-			{
-				return HWND.Null;
-			}
-
-			if (window.NativeWindow is not Win32NativeWindow nativeWindow)
-			{
-				return HWND.Null;
-			}
-
-			return (HWND)nativeWindow.Hwnd;
-		}
-	}
+	private HWND ParentHwnd => (_presenter.XamlRoot?.HostWindow?.NativeWindow as Win32NativeWindow)?.Hwnd is IntPtr hwnd ? (HWND)hwnd : HWND.Null;
 
 	static unsafe Win32NativeWebView()
 	{
