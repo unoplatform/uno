@@ -1,0 +1,90 @@
+parameters:
+  poolName: ''
+
+jobs:
+- job: WinUI_Runtime_Tests
+  displayName: 'WinUI Runtime Tests'
+  timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
+
+  pool:
+    vmImage: ${{ parameters.poolName }}
+
+  variables:
+    CI_Build: true
+
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
+    UNO_UWP_BUILD: false
+    XAML_FLAVOR_BUILD: WinUI
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: ../templates/gitversion.yml
+  - template: ../templates/dotnet-install.yml
+
+  # Required until Uno.Xaml can build without all targets enabled
+  - template: ../templates/jdk-setup.yml
+
+  # Required to build tests targeting net9.0 framework (netprevious test support)
+  - task: UseDotNet@2
+    displayName: Install .NET 9 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '9.0.300'
+      installationPath: $(DOTNET_INSTALL_DIR)
+
+  # This task is required to run in separately to avoid hitting targets file
+  # caching issues with msbuild 17.3 or later
+  - task: DotNetCoreCLI@2
+    inputs:
+      workingDirectory: Build
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=Release|Any CPU" /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-winui-prepare-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Preparing assets
+
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=Release|Any CPU" -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Reference Binaries
+
+  - pwsh: |
+      dotnet build src/Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Windows.csproj -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\winui-runtime-tests-build-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Build WinUI Runtime Tests
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: WinUI-RuntimeTests-Build-Artifacts
+      ArtifactType: Container
+
+  - pwsh: build/test-scripts/run-winui-runtime-tests.ps1
+    displayName: Run WinUI Runtime Tests
+
+  - task: PublishTestResults@2
+    displayName: Publish Test Results
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '*.trx'
+      searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults'
+      testRunTitle: 'WinUI Runtime Tests'
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+    continueOnError: false
+    condition: always()
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: winui-runtime-tests-binlogs-$(XAML_FLAVOR_BUILD)
+      ArtifactType: Container

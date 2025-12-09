@@ -160,6 +160,16 @@ stages:
     parameters:
       poolName: '$(windows2022HostedVMImage)'
 
+- stage: winui_runtime_tests
+  displayName: Tests - WinUI Runtime Tests
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: tests/.azure-devops-tests-winui-runtime.yml
+    parameters:
+      poolName: '$(windows2022HostedVMImage)'
+
 - stage: test_finalization
   displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
