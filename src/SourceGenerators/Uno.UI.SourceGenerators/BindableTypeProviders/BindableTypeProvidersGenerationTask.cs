@@ -176,7 +176,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private bool IsCommunityToolkitMvvmType(INamedTypeSymbol type)
 			{
 				// Check if type has [ObservableObject] attribute
-				if (_observableObjectAttributeSymbol != null 
+				if (_observableObjectAttributeSymbol != null
 					&& type.GetAllAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, _observableObjectAttributeSymbol)))
 				{
 					return true;
@@ -198,7 +198,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 				// Check if type implements INotifyPropertyChanged
 				// This is a fallback for other MVVM implementations that might not use CommunityToolkit
-				if (_inotifyPropertyChangedSymbol != null 
+				if (_inotifyPropertyChangedSymbol != null
 					&& type.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, _inotifyPropertyChangedSymbol)))
 				{
 					return true;
