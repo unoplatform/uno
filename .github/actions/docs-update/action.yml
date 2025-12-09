@@ -69,7 +69,8 @@ runs:
                 
                 # Update the hash in the script using regex
                 # Match pattern: "repo-name" = @{ ref="<hash>" } #comment
-                $pattern = "`"$repo`"\s*=\s*@\{\s*ref\s*=\s*`"([a-f0-9]{40})`"\s*\}(\s*;\s*[^#]*)?\s*(#.*)?"
+                $escapedRepo = [regex]::Escape($repo)
+                $pattern = "`"$escapedRepo`"\s*=\s*@\{\s*ref\s*=\s*`"([a-f0-9]{40})`"\s*\}(\s*;\s*[^#]*)?\s*(#.*)?"
                 $comment = "latest $defaultBranch commit"
                 $replacement = "`"$repo`" = @{ ref=`"$latestHash`" }${2} #$comment"
                 
