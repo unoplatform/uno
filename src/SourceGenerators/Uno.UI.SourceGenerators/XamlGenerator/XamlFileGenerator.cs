@@ -4808,7 +4808,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return GetMemberValue();
 					case SpecialType.System_Single:
 					case SpecialType.System_Double:
-						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner);
+						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner, owner);
 					case SpecialType.System_String:
 						return "\"" + DoubleEscape(memberValue) + "\"";
 					case SpecialType.System_Boolean:
@@ -5192,7 +5192,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (Exception) when (owner != null)
 			{
-				AddError($"Invalid GridLength value '{memberValue}'", owner);
+				AddError($"Invalid GridLength value '{memberValue}', expected a number (e.g., '100'), 'Auto', or a star value (e.g., '2*')", owner);
 				return $"new global::{XamlConstants.Types.GridLength}(0f, global::{XamlConstants.Types.GridUnitType}.Pixel)";
 			}
 		}
@@ -6706,7 +6706,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private void BuildInitializer(IIndentedStringBuilder writer, XamlObjectDefinition xamlObjectDefinition, XamlMemberDefinition? owner = null)
+		private void BuildInitializer(IIndentedStringBuilder writer, XamlObjectDefinition xamlObjectDefinition, XamlMemberDefinition? owner)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var initializer = xamlObjectDefinition.Members.First(m => m.Member.Name == "_Initialization");
@@ -6720,7 +6720,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new XamlGenerationException($"Initializer value for '{xamlObjectDefinition.Type.Name}' cannot be empty", xamlObjectDefinition);
 					}
 
-					writer.AppendLineInvariantIndented("{0}", GetFloatingPointLiteral(initializer.Value.ToString() ?? "", GetType(xamlObjectDefinition.Type), owner));
+					writer.AppendLineInvariantIndented("{0}", GetFloatingPointLiteral(initializer.Value.ToString() ?? "", GetType(xamlObjectDefinition.Type), owner, xamlObjectDefinition));
 				}
 				else if (xamlObjectDefinition.Type.Name == "Boolean")
 				{
@@ -6746,7 +6746,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string GetFloatingPointLiteral(string memberValue, INamedTypeSymbol type, XamlMemberDefinition? owner)
+		private string GetFloatingPointLiteral(string memberValue, INamedTypeSymbol type, XamlMemberDefinition? owner, IXamlLocation location)
 		{
 			var name = ValidatePropertyType(type, owner);
 
@@ -6789,14 +6789,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			// Validate that the value is a valid number
-			if (!double.TryParse(memberValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+			if (!double.TryParse(memberValue, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
 			{
-				if (owner != null)
-				{
-					var typeName = isDouble ? "Double" : "Single";
-					AddError($"Invalid {typeName} value '{memberValue}'", owner);
-					return isDouble ? "0d" : "0f";
-				}
+				var typeName = isDouble ? "Double" : "Single";
+				AddError($"Invalid {typeName} value '{memberValue}'", location);
+				return isDouble ? "0d" : "0f";
 			}
 
 			return "{0}{1}".InvariantCultureFormat(memberValue, isDouble ? "d" : "f");

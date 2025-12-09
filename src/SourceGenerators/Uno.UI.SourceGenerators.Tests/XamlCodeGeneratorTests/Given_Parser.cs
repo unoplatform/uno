@@ -390,7 +390,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 8, 5, 8, 5).WithArguments("Invalid GridLength value 'invalid'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 8, 5, 8, 5).WithArguments("Invalid GridLength value 'invalid', expected a number (e.g., '100'), 'Auto', or a star value (e.g., '2*')"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
