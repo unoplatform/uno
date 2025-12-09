@@ -54,7 +54,7 @@ jobs:
           base: ${{ matrix.branch }}
           branch: ${{ steps.targetbranch.outputs.targetbranch }}
           commit-message: 'chore: Update external docs commit hashes'
-          title: External Docs Update - ${{ matrix.branch }}
+          title: 'chore(docs): External Docs Update - ${{ matrix.branch }}'
           body: |
             This updates the external documentation commit hashes in `doc/import_external_docs.ps1` to the latest commits from each repository's default branch.
             
