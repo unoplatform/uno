@@ -70,7 +70,16 @@ The `RuntimeTestPlatforms` enum includes the following platforms:
 
 - **Native platforms**: `NativeWinUI`, `NativeWasm`, `NativeAndroid`, `NativeIOS`, `NativeMacCatalyst`, `NativeTvOS`
 - **Skia platforms**: `SkiaWpf`, `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaMacCatalyst`, `SkiaTvOS`, `SkiaFrameBuffer`
-- **Combined platforms**: `Skia`, `Native`, `Wasm`, `Android`, `IOS`, etc.
+- **Combined platforms**: 
+  - `NativeUIKit` (NativeIOS | NativeTvOS | NativeMacCatalyst)
+  - `SkiaUIKit` (SkiaIOS | SkiaTvOS | SkiaMacCatalyst)
+  - `SkiaMobile` (SkiaAndroid | SkiaUIKit)
+  - `SkiaDesktop` (SkiaWpf | SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands | SkiaFrameBuffer)
+  - `Skia` (SkiaDesktop | SkiaWasm | SkiaMobile)
+  - `Native` (NativeWasm | NativeAndroid | NativeIOS | NativeMacCatalyst | NativeTvOS | NativeWinUI)
+  - `Wasm` (NativeWasm | SkiaWasm)
+  - `Android` (NativeAndroid | SkiaAndroid)
+  - `IOS` (NativeIOS | SkiaIOS)
 
 When using platform exclusions, always add a comment or issue reference explaining why the test is excluded, to help track and resolve platform-specific issues.
 
