@@ -21,6 +21,12 @@ internal readonly partial struct UnicodeText
 		private static readonly IntPtr _libicuuc;
 		private static Dictionary<Type, object> _lookupCache = new();
 
+		private const DllImportSearchPath NativeLibrarySearchDirectories =
+			  DllImportSearchPath.ApplicationDirectory
+			| DllImportSearchPath.AssemblyDirectory
+			| DllImportSearchPath.UserDirectories
+			;
+
 		static unsafe ICU()
 		{
 			IntPtr libicuuc;
@@ -28,7 +34,7 @@ internal readonly partial struct UnicodeText
 			{
 				// On Windows, We get the ICU binaries from the Microsoft.ICU.ICU4C.Runtime package
 				_icuVersion = 72;
-				if (!NativeLibrary.TryLoad("icuuc72", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
+				if (!NativeLibrary.TryLoad("icuuc72", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					throw new Exception("Failed to load libicuuc.");
 				}
@@ -42,13 +48,13 @@ internal readonly partial struct UnicodeText
 			{
 				// On Linux and Android, we get the ICU binaries from the dynamic linker search path
 				// On MacOS, we get the ICU binaries from the uno.icu-macos package.
-				if (OperatingSystem.IsMacOS() && !NativeLibrary.TryLoad("icudata", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out _))
+				if (OperatingSystem.IsMacOS() && !NativeLibrary.TryLoad("icudata", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out _))
 				{
 					// MacOS doesn't automatically load icudata from icuuc for some reason even though the icuuc binary
 					// lists icudata in the `otool -L` output, so we have to load it by hand
 					throw new Exception("Failed to load libicudata.");
 				}
-				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
+				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					throw new Exception("Failed to load libicuuc.");
 				}
