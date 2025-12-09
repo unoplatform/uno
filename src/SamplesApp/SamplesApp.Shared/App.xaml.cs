@@ -391,9 +391,13 @@ namespace SamplesApp
 
 		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
-			Console.WriteLine($"HandleLaunchArguments: {launchActivatedEventArgs.Arguments}");
-
+#if !HAS_UNO
+			var args = Environment.GetCommandLineArgs().Skip(1).Aggregate("", (current, arg) => current + " " + arg).Trim();
+#else
 			var args = launchActivatedEventArgs.Arguments ?? "";
+#endif
+
+			Console.WriteLine($"HandleLaunchArguments: {args}");
 
 			if (HandleAutoScreenshots(args))
 			{
