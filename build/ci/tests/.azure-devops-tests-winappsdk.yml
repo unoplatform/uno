@@ -65,8 +65,10 @@ jobs:
     displayName: 'Copy Unpackaged App'
     condition: always()
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/x64/Release/net9.0-windows10.0.19041.0/win-x64/publish
-      Contents: '**'
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/x64/Release/net9.0-windows10.0.19041.0/win-x64
+      Contents: |
+        **
+        !AppPackages/**
       TargetFolder: $(build.artifactstagingdirectory)/UnpackagedApp
       CleanTargetFolder: false
       OverWrite: false
