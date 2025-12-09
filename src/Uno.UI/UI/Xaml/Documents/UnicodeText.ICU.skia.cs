@@ -19,7 +19,7 @@ internal readonly partial struct UnicodeText
 		// the version number. For example, there's a ubrk_open_74 in ICU v74, but not a ubrk_open.
 		private static readonly int _icuVersion;
 		private static readonly IntPtr _libicuuc;
-		private static Dictionary<Type, object> _lookupCache = new();
+		private static readonly Dictionary<Type, object> _lookupCache = new();
 
 		static unsafe ICU()
 		{
@@ -50,7 +50,21 @@ internal readonly partial struct UnicodeText
 				}
 				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
 				{
-					throw new Exception("Failed to load libicuuc.");
+					if (OperatingSystem.IsLinux())
+					{
+						for (int j = 100; j >= 67; j--)
+						{
+							// some environments only have a versioned library and don't symlink it to libicuuc.so
+							if (NativeLibrary.TryLoad($"libicuuc.so.{j}", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
+							{
+								break;
+							}
+						}
+					}
+					if (libicuuc == IntPtr.Zero)
+					{
+						throw new Exception("Failed to load libicuuc.");
+					}
 				}
 
 				// Since libicuuc not installed by us, we have no control over the specific version number, so
@@ -98,7 +112,7 @@ internal readonly partial struct UnicodeText
 			}
 			else
 			{
-				throw new DllNotFoundException("Failed to load libicuuc.");
+				throw new DllNotFoundException("Failed to load libicuuc: unsupported platform.");
 			}
 
 			_libicuuc = libicuuc;
