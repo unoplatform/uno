@@ -13,6 +13,11 @@ namespace Uno.UI.Helpers;
 /// </summary>
 public static class TypeMappings
 {
+	internal const DynamicallyAccessedMemberTypes TypeRequirements =
+		  DynamicallyAccessedMemberTypes.PublicParameterlessConstructor
+		| DynamicallyAccessedMemberTypes.PublicConstructors
+		;
+
 	/// <summary>
 	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
 	/// of the original type.
@@ -44,8 +49,9 @@ public static class TypeMappings
 	/// </summary>
 	/// <param name="instanceType">This is the type that may have been replaced</param>
 	/// <returns>If instanceType has been replaced, then the replacement type, otherwise the instanceType</returns>
+	[return: DynamicallyAccessedMembers(TypeRequirements)]
 	public static Type GetReplacementType(
-		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] this Type instanceType)
+		[DynamicallyAccessedMembers(TypeRequirements)] this Type instanceType)
 	{
 		// Two scenarios:
 		// 1. The instance type is a mapped type, in which case we need to get the original type
@@ -60,7 +66,7 @@ public static class TypeMappings
 	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
 	/// <returns>An new instance for the original type</returns>
 	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
-	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOriginalType>()
+	public static object CreateInstance<[DynamicallyAccessedMembers(TypeRequirements)] TOriginalType>()
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType());
 
 	/// <summary>
@@ -69,16 +75,26 @@ public static class TypeMappings
 	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
 	/// <param name="args">The arguments used to create the instance, passed to the ctor</param>
 	/// <returns>An new instance for the original type</returns>
-	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TOriginalType>(params object[] args)
+	public static object CreateInstance<[DynamicallyAccessedMembers(TypeRequirements)] TOriginalType>(params object[] args)
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType(), args: args);
 
-	internal static Type GetMappedType(this Type originalType) =>
+	[return: DynamicallyAccessedMembers(TypeRequirements)]
+	internal static Type GetMappedType(
+		[DynamicallyAccessedMembers(TypeRequirements)]
+		this Type originalType) =>
 		OriginalTypeToMappedType.TryGetValue(originalType, out var mappedType) ? mappedType : default;
 
-	internal static Type GetOriginalType(this Type mappedType) =>
+	[return: DynamicallyAccessedMembers(TypeRequirements)]
+	internal static Type GetOriginalType(
+		[DynamicallyAccessedMembers(TypeRequirements)]
+		this Type mappedType) =>
 		MappedTypeToOriginalTypeMappings.TryGetValue(mappedType, out var originalType) ? originalType : default;
 
-	internal static bool IsReplacedBy(this Type sourceType, Type mappedType)
+	internal static bool IsReplacedBy(
+		[DynamicallyAccessedMembers(TypeRequirements)]
+		this Type sourceType,
+		[DynamicallyAccessedMembers(TypeRequirements)]
+		Type mappedType)
 	{
 		if (mappedType.GetOriginalType() is { } originalType)
 		{
@@ -92,7 +108,11 @@ public static class TypeMappings
 		return false;
 	}
 
-	internal static void RegisterMapping(Type mappedType, Type originalType)
+	internal static void RegisterMapping(
+		[DynamicallyAccessedMembers(TypeRequirements)]
+		Type mappedType,
+		[DynamicallyAccessedMembers(TypeRequirements)]
+		Type originalType)
 	{
 		AllMappedTypeToOriginalTypeMappings[mappedType] = originalType;
 		AllOriginalTypeToMappedType[originalType] = mappedType;

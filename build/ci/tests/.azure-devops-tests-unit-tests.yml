@@ -18,6 +18,7 @@ jobs:
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
+
   steps:
   - checkout: self
     clean: true
@@ -30,13 +31,12 @@ jobs:
   - template: ../templates/dotnet-install.yml
   - template: ../templates/jdk-setup.yml
 
-  # We need just the .NET 8 runtime (not the SDK).
-  # Building with .NET 9 SDK is fine, but running the app when the TFM is net9.0 requires the .NET 8 runtime
+  # Required to build tests targeting net9.0 framework (netprevious test support)
   - task: UseDotNet@2
-    displayName: Install .NET 8 SDK
+    displayName: Install .NET 9 SDK
     inputs:
       packageType: 'sdk'
-      version: '8.x'
+      version: '9.0.300'
       installationPath: $(DOTNET_INSTALL_DIR)
 
   # This task is required to run in separately to avoid hitting targets file
@@ -44,16 +44,16 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-prepare-$(XAML_FLAVOR_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-prepare-$(XAML_FLAVOR_BUILD).binlog
     displayName: Preparing assets
 
   - powershell: |
       Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Reference Binaries
 
   - pwsh: |
-      dotnet build src/Uno.UI-UnitTests-only.slnf -c Release -bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build src/Uno.UI-UnitTests-only.slnf -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
     displayName: Build unit tests solution filter
 
   - task: PublishBuildArtifacts@1
@@ -65,7 +65,7 @@ jobs:
       ArtifactType: Container
 
   - pwsh: |
-      dotnet test src/Uno.UI-UnitTests-only.slnf -c Release -bl:$(build.artifactstagingdirectory)\unit-tests-run-$(XAML_FLAVOR_BUILD).binlog --no-build -- --no-progress --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
+      dotnet test src/Uno.UI-UnitTests-only.slnf -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\unit-tests-run-$(XAML_FLAVOR_BUILD).binlog --no-build -- --no-progress --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
     displayName: Run unit tests
 
   - task: PublishTestResults@2

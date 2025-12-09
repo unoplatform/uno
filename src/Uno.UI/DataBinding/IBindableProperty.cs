@@ -3,6 +3,7 @@
 using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -26,6 +27,7 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// Gets the type of the property
 		/// </summary>
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		Type PropertyType { get; }
 
 		/// <summary>

@@ -1,5 +1,6 @@
 ﻿#if !NETFX_CORE
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 
 namespace Uno.UI.DataBinding
@@ -8,6 +9,7 @@ namespace Uno.UI.DataBinding
 	internal static partial class BindingPropertyHelper
 	{
 		[Preserve]
+		[RequiresDynamicCode("`System.Dynamic` use requires dynamic code.")]
 		private class UnoGetMemberBinder : GetMemberBinder
 		{
 			public UnoGetMemberBinder(string name, bool ignoreCase) : base(name, ignoreCase) { }
@@ -17,6 +19,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		[Preserve]
+		[RequiresDynamicCode("`System.Dynamic` use requires dynamic code.")]
 		private class UnoSetMemberBinder : SetMemberBinder
 		{
 			public UnoSetMemberBinder(string name, bool ignoreCase) : base(name, ignoreCase) { }
