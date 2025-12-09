@@ -20,68 +20,39 @@ if (Test-Path $UNO_TESTS_FAILED_LIST) {
 }
 
 # Build command-line arguments for runtime tests
-$runtimeTestArgs = "--runtime-tests=$TEST_RESULTS_FILE"
+$runtimeTestArgs = @("--runtime-tests=`"$TEST_RESULTS_FILE`"")
 
 if ($env:UITEST_RUNTIME_TEST_GROUP) {
-    $runtimeTestArgs += " --runtime-tests-group=$env:UITEST_RUNTIME_TEST_GROUP"
+    $runtimeTestArgs += "--runtime-tests-group=$env:UITEST_RUNTIME_TEST_GROUP"
 }
 
 if ($env:UITEST_RUNTIME_TEST_GROUP_COUNT) {
-    $runtimeTestArgs += " --runtime-tests-group-count=$env:UITEST_RUNTIME_TEST_GROUP_COUNT"
+    $runtimeTestArgs += "--runtime-tests-group-count=$env:UITEST_RUNTIME_TEST_GROUP_COUNT"
 }
 
 if ($env:UITEST_RUNTIME_TESTS_FILTER) {
-    $runtimeTestArgs += " --runtime-test-filter=$env:UITEST_RUNTIME_TESTS_FILTER"
+    $runtimeTestArgs += "--runtime-test-filter=$env:UITEST_RUNTIME_TESTS_FILTER"
 }
 
-Write-Host "Runtime test arguments: $runtimeTestArgs"
+Write-Host "Runtime test arguments: $($runtimeTestArgs -join ' ')"
 
-# Find the WinAppSDK package
-$packagePath = Get-ChildItem -Path $env:SamplesAppArtifactPath -Filter "*.msix" -Recurse | Select-Object -First 1
+# Find the unpackaged app executable
+$unpackagedAppPath = Join-Path $env:SamplesAppArtifactPath "UnpackagedApp"
+$exePath = Join-Path $unpackagedAppPath "SamplesApp.Windows.exe"
 
-if (-not $packagePath) {
-    throw "Could not find MSIX package in $env:SamplesAppArtifactPath"
+if (-not (Test-Path $exePath)) {
+    throw "Could not find unpackaged exe at: $exePath"
 }
 
-Write-Host "Found package: $($packagePath.FullName)"
+Write-Host "Found unpackaged app: $exePath"
 
-# Install the package
-Write-Host "Installing package..."
-Add-AppxPackage -Path $packagePath.FullName -ForceApplicationShutdown
-
-# Get the package full name
-$packageName = "uno.platform.SamplesApp-dev"
-$installedPackage = Get-AppxPackage -Name $packageName
-
-if (-not $installedPackage) {
-    throw "Package $packageName was not installed successfully"
-}
-
-Write-Host "Package installed: $($installedPackage.PackageFullName)"
-
-# Get the app executable info
-$packageFamilyName = $installedPackage.PackageFamilyName
-$appId = "App"
-
+# Launch the app with runtime test arguments
 Write-Host "Launching app with runtime tests..."
 
-# Start the app with arguments using explorer.exe shell:AppsFolder protocol
-# This is the reliable way to pass arguments to packaged WinUI apps
-$appUserModelId = "${packageFamilyName}!${appId}"
+$process = Start-Process -FilePath $exePath -ArgumentList $runtimeTestArgs -PassThru -NoNewWindow
 
-# Create a VBS script to launch the app with arguments (workaround for passing args to MSIX apps)
-$vbsScript = @"
-Set objShell = CreateObject("WScript.Shell")
-objShell.Run "shell:AppsFolder\$appUserModelId $runtimeTestArgs"
-"@
-
-$vbsPath = "$env:TEMP\launch-samplesapp.vbs"
-$vbsScript | Out-File -FilePath $vbsPath -Encoding ASCII
-
-# Launch via VBS script
-cscript.exe //nologo $vbsPath
-
-Write-Host "App launched, waiting for test results..."
+Write-Host "App launched with PID: $($process.Id)"
+Write-Host "Waiting for test results..."
 
 # Wait for the test results file with timeout
 $timeout = 600 # 10 minutes
@@ -89,8 +60,16 @@ $elapsed = 0
 $checkInterval = 5
 
 while ($elapsed -lt $timeout) {
+    # Check if process has exited
+    if ($process.HasExited) {
+        Write-Host "App process has exited with code: $($process.ExitCode)"
+        break
+    }
+    
     if (Test-Path $TEST_RESULTS_FILE) {
         Write-Host "Test results file found!"
+        # Wait a bit more for the app to finish writing and exit cleanly
+        Start-Sleep -Seconds 5
         break
     }
     
@@ -100,20 +79,29 @@ while ($elapsed -lt $timeout) {
 }
 
 if (-not (Test-Path $TEST_RESULTS_FILE)) {
-    throw "Test results file was not created within the timeout period"
+    Write-Host "Test results file was not created within the timeout period"
+    
+    # Try to get the app process logs if still running
+    if (-not $process.HasExited) {
+        Write-Host "Force stopping the app..."
+        Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+    }
+    
+    throw "Test results file was not created"
 }
 
-# Give the app a moment to finish writing
-Start-Sleep -Seconds 5
+# Ensure the process has exited
+if (-not $process.HasExited) {
+    Write-Host "Waiting for app to exit gracefully..."
+    $process.WaitForExit(30000) # Wait up to 30 seconds
+    
+    if (-not $process.HasExited) {
+        Write-Host "Force stopping the app..."
+        Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+    }
+}
 
 Write-Host "Test execution completed. Processing results..."
-
-# Stop the app
-Get-Process | Where-Object { $_.ProcessName -like "*SamplesApp*" } | Stop-Process -Force -ErrorAction SilentlyContinue
-
-# Uninstall the package for cleanup
-Write-Host "Cleaning up package..."
-Remove-AppxPackage -Package $installedPackage.PackageFullName -ErrorAction SilentlyContinue
 
 ## Export the failed tests list for reuse in a pipeline retry
 Push-Location "$env:BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
