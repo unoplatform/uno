@@ -78,11 +78,31 @@ runs:
                 if ($useReleaseBranches) {
                     # Try to locate the latest release/stable/* branch for this repo
                     $branchesUrl = "https://api.github.com/repos/unoplatform/$repo/branches?per_page=100"
-                    $branches = Invoke-RestMethod -Uri $branchesUrl -Headers @{
-                        "Accept" = "application/vnd.github.v3+json"
-                        "User-Agent" = "Uno-Docs-Updater"
-                    }
 
+                    # Fetch all branches with pagination
+                    $allBranches = @()
+                    $nextUrl = $branchesUrl
+                    do {
+                        $response = Invoke-WebRequest -Uri $nextUrl -Headers @{
+                            "Accept" = "application/vnd.github.v3+json"
+                            "User-Agent" = "Uno-Docs-Updater"
+                        }
+                        $pageBranches = $response.Content | ConvertFrom-Json
+                        $allBranches += $pageBranches
+
+                        # Parse Link header for pagination
+                        $linkHeader = $response.Headers["Link"]
+                        $nextUrl = $null
+                        if ($linkHeader) {
+                            foreach ($link in $linkHeader -split ",") {
+                                if ($link -match '<([^>]+)>;\s*rel="next"') {
+                                    $nextUrl = $matches[1]
+                                }
+                            }
+                        }
+                    } while ($nextUrl)
+
+                    $branches = $allBranches
                     $releaseBranches = @()
                     foreach ($b in @($branches)) {
                         $name = $b.name
