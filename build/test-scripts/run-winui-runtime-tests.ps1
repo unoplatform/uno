@@ -36,6 +36,10 @@ if ($env:UITEST_RUNTIME_TESTS_FILTER) {
 
 Write-Host "Runtime test arguments: $($runtimeTestArgs -join ' ')"
 
+# Ensure the failed tests directory exists before running tests
+$failedTestsDir = Split-Path -Parent $UNO_TESTS_FAILED_LIST
+New-Item -ItemType Directory -Force -Path $failedTestsDir | Out-Null
+
 # Find the unpackaged app executable
 $unpackagedAppPath = Join-Path $env:SamplesAppArtifactPath "UnpackagedApp"
 $exePath = Join-Path $unpackagedAppPath "SamplesApp.Windows.exe"
@@ -105,8 +109,6 @@ Write-Host "Test execution completed. Processing results..."
 
 ## Export the failed tests list for reuse in a pipeline retry
 Push-Location "$env:BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
-$failedTestsDir = Split-Path -Parent $UNO_TESTS_FAILED_LIST
-New-Item -ItemType Directory -Force -Path $failedTestsDir | Out-Null
 
 Write-Host "Running NUnitTransformTool"
 
