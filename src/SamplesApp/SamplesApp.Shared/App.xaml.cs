@@ -392,7 +392,7 @@ namespace SamplesApp
 		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
 #if !HAS_UNO
-			var args = Environment.GetCommandLineArgs().Skip(1).Aggregate("", (current, arg) => current + " " + arg).Trim();
+			var args = Environment.GetCommandLineArgs().Skip(1).Aggregate("", (current, arg) => current + "&" + arg).Trim();
 #else
 			var args = launchActivatedEventArgs.Arguments ?? "";
 #endif
