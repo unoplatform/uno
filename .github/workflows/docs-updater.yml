@@ -37,9 +37,12 @@ jobs:
           BRANCH="${{ inputs.branch || 'master' }}"
           if [[ "$BRANCH" == "master" ]]; then
             echo "targetbranch=docs/update/dev" >> $GITHUB_OUTPUT
-          else
-            versionNumber=$(echo "$BRANCH" | cut -d'/' -f 3)
+          elif [[ "$BRANCH" =~ ^release/stable/([0-9]+\.[0-9]+)$ ]]; then
+            versionNumber="${BASH_REMATCH[1]}"
             echo "targetbranch=docs/update/release/$versionNumber" >> $GITHUB_OUTPUT
+          else
+            echo "Unexpected branch format: $BRANCH"
+            exit 1
           fi
         shell: bash
 
