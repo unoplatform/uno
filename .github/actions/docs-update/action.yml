@@ -7,9 +7,9 @@ inputs:
     required: true
     default: 'master'
 
-    github_token:
-        description: 'GitHub token used for authenticated API calls'
-        required: false
+  github_token:
+    description: 'GitHub token used for authenticated API calls'
+    required: false
 
 outputs:
   has_changes:
