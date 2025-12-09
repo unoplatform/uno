@@ -61,7 +61,7 @@ jobs:
     displayName: 'Copy MSIX Packages'
     condition: always()
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/x64/Release/net9.0-windows10.0.19041.0/win-x64/AppPackages
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/AppPackages
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/AppPackages
       CleanTargetFolder: false
