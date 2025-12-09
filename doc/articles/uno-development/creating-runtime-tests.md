@@ -70,7 +70,7 @@ The `RuntimeTestPlatforms` enum includes the following platforms:
 
 - **Native platforms**: `NativeWinUI`, `NativeWasm`, `NativeAndroid`, `NativeIOS`, `NativeMacCatalyst`, `NativeTvOS`
 - **Skia platforms**: `SkiaWpf`, `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaMacCatalyst`, `SkiaTvOS`, `SkiaFrameBuffer`
-- **Combined platforms**: 
+- **Combined platforms**:
   - `NativeUIKit` (NativeIOS | NativeTvOS | NativeMacCatalyst)
   - `SkiaUIKit` (SkiaIOS | SkiaTvOS | SkiaMacCatalyst)
   - `SkiaMobile` (SkiaAndroid | SkiaUIKit)
