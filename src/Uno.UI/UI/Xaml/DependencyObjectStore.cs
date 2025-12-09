@@ -644,7 +644,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ClearInheritedDataContext()
+		internal void ClearInheritedDataContext()
 		{
 			ClearValue(_dataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
 		}
