@@ -32,7 +32,7 @@ jobs:
 
   - pwsh: |
       # Decode the base64-encoded signing certificate from the variable
-      $certBytes = [Convert]::FromBase64String('$(SAMPLESAPP_SIGNING_CERTIFICATE)')
+      $certBytes = [Convert]::FromBase64String('$(WINAPPSDK_SAMPLESAPP_SIGNING_CERTIFICATE)')
       $certPath = "$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows_TemporaryKey.pfx"
       [IO.File]::WriteAllBytes($certPath, $certBytes)
       Write-Host "Certificate written to: $certPath"
