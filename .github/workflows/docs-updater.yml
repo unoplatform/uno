@@ -52,24 +52,9 @@ jobs:
           base: ${{ inputs.branch || 'master' }}
           branch: ${{ steps.targetbranch.outputs.targetbranch }}
           commit-message: 'chore: Update external docs commit hashes'
-          title: 'chore(docs): External Docs Update - ${{ inputs.branch || ''master'' }}'
+          title: "chore(docs): External Docs Update - ${{ inputs.branch || 'master' }}"
           body: |
             This updates the external documentation commit hashes in `doc/import_external_docs.ps1` to the latest commits from each repository's default branch.
-
-            The following repositories are automatically tracked and updated to their default branch:
-            - uno.wasm.bootstrap
-            - uno.themes
-            - uno.toolkit.ui
-            - uno.check
-            - uno.xamlmerge.task
-            - figma-docs
-            - uno.resizetizer
-            - uno.uitest
-            - uno.extensions
-            - workshops
-            - uno.samples
-            - uno.chefs
-            - hd-docs
 
             Each repository's default branch (main, master, or configured default) is automatically detected and used.
 
