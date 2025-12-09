@@ -135,6 +135,20 @@ jobs:
   - template: ../templates/dotnet-install.yml
 
   - pwsh: |
+      # Install Windows App Runtime 1.8
+      Write-Host "Installing Windows App Runtime 1.8..."
+      $runtimeUrl = "https://aka.ms/windowsappsdk/1.8/latest/windowsappruntimeinstall-x64.exe"
+      $runtimeInstaller = "$(Build.SourcesDirectory)/build/windowsappruntimeinstall-x64.exe"
+      
+      Write-Host "Downloading from: $runtimeUrl"
+      Invoke-WebRequest -Uri $runtimeUrl -OutFile $runtimeInstaller
+      
+      Write-Host "Running installer: $runtimeInstaller"
+      Start-Process -FilePath $runtimeInstaller -ArgumentList "--quiet" -Wait -NoNewWindow
+      Write-Host "Windows App Runtime 1.8 installed successfully"
+    displayName: Install Windows App Runtime
+  
+  - pwsh: |
       # Decode and import the signing certificate to trusted stores
       $certBytes = [Convert]::FromBase64String('$(WINAPPSDK_SAMPLESAPP_SIGNING_CERTIFICATE)')
       $certPath = "$(Build.SourcesDirectory)/build/SamplesApp_SigningCert.pfx"
@@ -151,23 +165,6 @@ jobs:
       }
       
       Write-Host "Installing MSIX bundle: $($msixBundlePath.FullName)"
-      
-      # Find and install dependencies (including Windows App Runtime)
-      $packageFolder = Split-Path $msixBundlePath.FullName
-      $dependenciesFolder = Join-Path $packageFolder "Dependencies/x64"
-      
-      if (Test-Path $dependenciesFolder) {
-        Write-Host "Installing dependencies from: $dependenciesFolder"
-        $dependencies = Get-ChildItem -Path $dependenciesFolder -Filter "*.appx" -ErrorAction SilentlyContinue
-        foreach ($dep in $dependencies) {
-          Write-Host "Installing dependency: $($dep.Name)"
-          Add-AppxPackage -Path $dep.FullName -ErrorAction Continue
-        }
-      } else {
-        Write-Host "No dependencies folder found at: $dependenciesFolder"
-      }
-      
-      # Install the main package
       Add-AppxPackage -Path $msixBundlePath.FullName
     displayName: Install MSIX Package
 
