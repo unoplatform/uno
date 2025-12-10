@@ -1,6 +1,7 @@
 name: "📚 Documentation Issue"
 description: "Report an issue with the Uno documentation 📝"
-labels: [kind/consumer-experience, kind/documentation, triage/untriaged, difficulty/tbd]
+labels: [kind/documentation, triage/untriaged]
+type: "Bug"
 body:
   - type: markdown
     attributes:
