@@ -64,7 +64,7 @@ The `IncludeNativeLibrariesForSelfExtract` and `IncludeAllContentForSelfExtract`
 
 Uno Platform supports publishing desktop apps using **ClickOnce** to Windows environments.
 
-In order to publish your app targeting `net10.0-desktop` (you can check this in your `.csproj`) with this, you'll need to create a `.pubxml` file using Visual Studio, or to use the file below:
+To publish your app that targets `net10.0-desktop` in your `.csproj`, you'll need to create a `.pubxml` file using Visual Studio, or use the file below:
 
 # [**Using a Sample Profile**](#tab/windows)
 
