@@ -3,6 +3,7 @@
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,8 +32,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsScrollInertiaEnabledProperty, value);
 		}
 
-		public static DependencyProperty IsScrollInertiaEnabledProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty IsScrollInertiaEnabledProperty
+		{
+			[DynamicDependency(nameof(GetIsScrollInertiaEnabled))]
+			[DynamicDependency(nameof(SetIsScrollInertiaEnabled))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				nameof(IsScrollInertiaEnabled),
 				typeof(bool),
 				typeof(ScrollViewer),
@@ -52,8 +57,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsHorizontalScrollChainingEnabledProperty, value);
 		}
 
-		public static DependencyProperty IsHorizontalScrollChainingEnabledProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty IsHorizontalScrollChainingEnabledProperty
+		{
+			[DynamicDependency(nameof(GetIsHorizontalScrollChainingEnabled))]
+			[DynamicDependency(nameof(SetIsHorizontalScrollChainingEnabled))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"IsHorizontalScrollChainingEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
@@ -73,8 +82,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsHorizontalRailEnabledProperty, value);
 		}
 
-		public static DependencyProperty IsHorizontalRailEnabledProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty IsHorizontalRailEnabledProperty
+		{
+			[DynamicDependency(nameof(GetIsHorizontalRailEnabled))]
+			[DynamicDependency(nameof(SetIsHorizontalRailEnabled))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"IsHorizontalRailEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
@@ -94,8 +107,13 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsVerticalScrollChainingEnabledProperty, value);
 		}
 
-		public static DependencyProperty IsVerticalScrollChainingEnabledProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty IsVerticalScrollChainingEnabledProperty
+		{
+
+			[DynamicDependency(nameof(GetIsVerticalScrollChainingEnabled))]
+			[DynamicDependency(nameof(SetIsVerticalScrollChainingEnabled))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"IsVerticalScrollChainingEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
@@ -115,8 +133,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsVerticalRailEnabledProperty, value);
 		}
 
-		public static DependencyProperty IsVerticalRailEnabledProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty IsVerticalRailEnabledProperty
+		{
+			[DynamicDependency(nameof(GetIsVerticalRailEnabled))]
+			[DynamicDependency(nameof(SetIsVerticalRailEnabled))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"IsVerticalRailEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
