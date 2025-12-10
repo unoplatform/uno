@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
+using System;
 
 namespace Microsoft.UI.Xaml.Tests.Common;
 
@@ -191,7 +192,7 @@ internal static class PanelsHelper
 		});
 	}
 
-	private static int Round(double value) => (int)(value + 0.5);
+	private static int Round(double value) => (int)Math.Round(value);
 
 	//template<class TItemsControl>
 	//       static void ApplyContainerStyle(TItemsControl^ itemsControl);
