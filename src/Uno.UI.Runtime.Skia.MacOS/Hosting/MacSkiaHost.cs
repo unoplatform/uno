@@ -96,10 +96,11 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 				Windows.Storage.StorageFile.ResourcePathBase = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, "Resources");
 			}
 
-			void CreateApp(ApplicationInitializationCallbackParams _)
+			Application CreateApp(ApplicationInitializationCallbackParams _)
 			{
 				var app = _appBuilder!();
 				app.Host = Current;
+				return app;
 			}
 			Application.Start(CreateApp);
 		}
