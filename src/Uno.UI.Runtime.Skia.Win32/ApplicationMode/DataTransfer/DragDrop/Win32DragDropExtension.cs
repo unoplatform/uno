@@ -16,6 +16,9 @@ using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.System.Com;
 using Windows.Win32.System.Ole;
 using Windows.Win32.System.SystemServices;
+using Windows.Win32.UI.Shell;
+using Windows.Win32.UI.WindowsAndMessaging;
+using System.Runtime.InteropServices.Marshalling;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
@@ -30,6 +33,8 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interface
 {
+	[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = false)]
+	private static extern unsafe uint ExtractIconExW(string lpszFile, int nIconIndex, HICON* phiconLarge, HICON* phiconSmall, uint nIcons);
 	private static readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 
 	private readonly DragDropManager _manager;
@@ -287,6 +292,46 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 			}
 		}
 
+		// For non-image files, try to get the file icon
+		if (hdropFormatIndex >= 0)
+		{
+			var hdropFormat = formatEtcList[hdropFormatIndex];
+			var hResult = dataObject->GetData(hdropFormat, out STGMEDIUM hdropMedium);
+			if (hResult.Succeeded && hdropMedium.u.hGlobal != IntPtr.Zero)
+			{
+				try
+				{
+					var filePaths = ExtractFilePathsFromHDrop(hdropMedium.u.hGlobal);
+					// Get the first file's icon
+					var firstFile = filePaths.FirstOrDefault();
+					if (firstFile is not null)
+					{
+						try
+						{
+							var iconImage = ExtractFileIcon(firstFile);
+							if (iconImage is not null)
+							{
+								dragUI.SetContentFromExternalBitmapImage(iconImage);
+								return dragUI;
+							}
+						}
+						catch (Exception ex)
+						{
+							var logger = typeof(Win32DragDropExtension).Log();
+							if (logger.IsEnabled(LogLevel.Debug))
+							{
+								logger.LogDebug($"Failed to extract file icon for drag operation: {ex.Message}");
+							}
+						}
+					}
+				}
+				finally
+				{
+					PInvoke.ReleaseStgMedium(&hdropMedium);
+				}
+			}
+		}
+
 		return dragUI;
 	}
 
@@ -400,6 +445,213 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		catch (Exception ex) when (ex is IOException or NotSupportedException or InvalidOperationException)
 		{
 			// Failed to convert bitmap - encoding or stream operations failed
+			return null;
+		}
+	}
+
+	private static unsafe Microsoft.UI.Xaml.Media.Imaging.BitmapImage? ExtractFileIcon(string filePath)
+	{
+		try
+		{
+			// Validate file path
+			if (string.IsNullOrWhiteSpace(filePath))
+			{
+				return null;
+			}
+
+			// Use ExtractIconExW to get the large icon for the file
+			HICON largeIcon = default;
+			HICON smallIcon = default;
+			var result = ExtractIconExW(filePath, 0, &largeIcon, &smallIcon, 1);
+
+			if (result == 0 || largeIcon == default)
+			{
+				// ExtractIconExW returns 0 if no icons were extracted
+				if (smallIcon != default)
+				{
+					PInvoke.DestroyIcon(smallIcon);
+				}
+				return null;
+			}
+
+			// Clean up the small icon if extracted
+			if (smallIcon != default)
+			{
+				PInvoke.DestroyIcon(smallIcon);
+			}
+
+			var hIcon = largeIcon;
+
+			try
+			{
+				// Convert HICON to BitmapImage
+				return ConvertHIconToBitmapImage(hIcon);
+			}
+			finally
+			{
+				// Cleanup: destroy the icon handle
+				PInvoke.DestroyIcon(hIcon);
+			}
+		}
+		catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException)
+		{
+			// Failed to extract icon
+			return null;
+		}
+	}
+
+	private static unsafe Microsoft.UI.Xaml.Media.Imaging.BitmapImage? ConvertHIconToBitmapImage(HICON hIcon)
+	{
+		try
+		{
+			// Get icon info
+			ICONINFO iconInfo;
+			if (!PInvoke.GetIconInfo(hIcon, &iconInfo))
+			{
+				return null;
+			}
+
+			try
+			{
+				// Get bitmap info
+				var bmp = new BITMAP();
+				if (PInvoke.GetObject((HGDIOBJ)iconInfo.hbmColor, Marshal.SizeOf<BITMAP>(), &bmp) == 0)
+				{
+					return null;
+				}
+
+				var width = bmp.bmWidth;
+				var height = bmp.bmHeight;
+
+				// Create a device context
+				var hdc = PInvoke.GetDC(HWND.Null);
+				if (hdc == default)
+				{
+					return null;
+				}
+
+				try
+				{
+					var memDc = PInvoke.CreateCompatibleDC(hdc);
+					if (memDc == default)
+					{
+						return null;
+					}
+
+					try
+					{
+						// Create bitmap info header for 32-bit RGBA
+						var bitmapInfo = new BITMAPINFO
+						{
+							bmiHeader = new BITMAPINFOHEADER
+							{
+								biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>(),
+								biWidth = width,
+								biHeight = -height, // Negative height for top-down DIB
+								biPlanes = 1,
+								biBitCount = 32,
+								biCompression = (uint)BI_COMPRESSION.BI_RGB
+							}
+						};
+
+						// Create DIB section
+						void* bits;
+						var hBitmap = PInvoke.CreateDIBSection(memDc, &bitmapInfo, DIB_USAGE.DIB_RGB_COLORS, &bits, HANDLE.Null, 0);
+						if (hBitmap == default)
+						{
+							return null;
+						}
+
+						try
+						{
+							var oldBitmap = PInvoke.SelectObject(memDc, (HGDIOBJ)hBitmap);
+
+							// Draw icon onto the bitmap
+							if (!PInvoke.DrawIconEx(memDc, 0, 0, hIcon, width, height, 0, HBRUSH.Null, DI_FLAGS.DI_NORMAL))
+							{
+								return null;
+							}
+
+							PInvoke.SelectObject(memDc, oldBitmap);
+
+							// Copy bitmap data to a byte array
+							var stride = width * 4; // 4 bytes per pixel (RGBA)
+							var dataSize = stride * height;
+							var pixelData = new byte[dataSize];
+							Marshal.Copy((IntPtr)bits, pixelData, 0, dataSize);
+
+							// Create memory stream and write BMP file format
+							using var memoryStream = new MemoryStream();
+
+							// Write BMP file header
+							var fileHeaderSize = 14;
+							var infoHeaderSize = Marshal.SizeOf<BITMAPINFOHEADER>();
+							var fileSize = fileHeaderSize + infoHeaderSize + dataSize;
+
+							memoryStream.WriteByte((byte)'B');
+							memoryStream.WriteByte((byte)'M');
+							memoryStream.Write(BitConverter.GetBytes(fileSize), 0, 4);
+							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // Reserved
+							memoryStream.Write(BitConverter.GetBytes(fileHeaderSize + infoHeaderSize), 0, 4); // Offset to pixel data
+
+							// Write BITMAPINFOHEADER
+							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biSize), 0, 4);
+							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biWidth), 0, 4);
+							memoryStream.Write(BitConverter.GetBytes(-bitmapInfo.bmiHeader.biHeight), 0, 4); // Flip back to positive
+							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biPlanes), 0, 2);
+							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biBitCount), 0, 2);
+							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biCompression), 0, 4);
+							memoryStream.Write(BitConverter.GetBytes(dataSize), 0, 4); // Image size
+							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // X pixels per meter
+							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // Y pixels per meter
+							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // Colors used
+							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // Important colors
+
+							// Write pixel data (need to flip vertically for BMP format)
+							for (int y = height - 1; y >= 0; y--)
+							{
+								memoryStream.Write(pixelData, y * stride, stride);
+							}
+
+							memoryStream.Position = 0;
+
+							// Create Uno BitmapImage from the stream
+							var unoBitmap = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
+							unoBitmap.SetSource(memoryStream.AsRandomAccessStream());
+
+							return unoBitmap;
+						}
+						finally
+						{
+							PInvoke.DeleteObject((HGDIOBJ)hBitmap);
+						}
+					}
+					finally
+					{
+						PInvoke.DeleteDC(memDc);
+					}
+				}
+				finally
+				{
+					_ = PInvoke.ReleaseDC(HWND.Null, hdc);
+				}
+			}
+			finally
+			{
+				// Cleanup icon info bitmaps
+				if (iconInfo.hbmColor != default)
+				{
+					PInvoke.DeleteObject((HGDIOBJ)iconInfo.hbmColor);
+				}
+				if (iconInfo.hbmMask != default)
+				{
+					PInvoke.DeleteObject((HGDIOBJ)iconInfo.hbmMask);
+				}
+			}
+		}
+		catch (Exception ex) when (ex is IOException or NotSupportedException or InvalidOperationException)
+		{
+			// Failed to convert icon to bitmap
 			return null;
 		}
 	}
