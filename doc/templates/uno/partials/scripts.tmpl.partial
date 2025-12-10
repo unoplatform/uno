@@ -18,8 +18,8 @@ mermaid.init(undefined, ".lang-mermaid");
 </script>
 
 <!-- Algolia DocSearch -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
-<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@4" />
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@4"></script>
 <script>
     /**
      * Initialize Algolia DocSearch
