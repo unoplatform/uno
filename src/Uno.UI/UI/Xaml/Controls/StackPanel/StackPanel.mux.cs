@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference StackPanel.cpp, tag winui3/release/1.8.0, commit 61382c07
+// MUX Reference StackPanel.cpp, commit 9d6fb15c0
 
 using System;
 using Windows.Foundation;
@@ -750,6 +750,7 @@ partial class StackPanel
 		}
 	}
 
+#if HAS_UNO // We don't support SetValue, this is called in OnAreScrollSnapPointsRegularChanged instead.
 	////-------------------------------------------------------------------------
 	////
 	////  Function:   CStackPanel.SetValue
@@ -777,4 +778,5 @@ partial class StackPanel
 	//Cleanup:
 	//	return hr;
 	//}
+#endif
 }
