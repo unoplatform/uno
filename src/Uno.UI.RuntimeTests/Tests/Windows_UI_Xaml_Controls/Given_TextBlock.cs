@@ -996,7 +996,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Text_Contains_Tabs_Does_Not_Throw()
 		{
-			// This used to throw an exception
+			// This used to throw an exception when tab characters appeared at the end of an inline segment boundary
+			// due to an infinite loop in the tab handling logic.
 			await UITestHelper.Load(new TextBlock
 			{
 				Text = """
