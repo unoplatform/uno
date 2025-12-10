@@ -10,6 +10,7 @@ namespace Uno.UI.RuntimeTests.IntegrationTests;
 
 [TestClass]
 [RequiresFullWindow]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class FrameIntegrationTests : BaseDxamlTestClass
 {
 #if HAS_UNO
@@ -685,21 +686,18 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task CacheModeDisabled()
 	{
 		await VerifyCachePageNavigationHelper(NavigationCacheMode.Disabled, new int[7] { 1, 10, 2, 11, 20, 12, 3 });
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task CacheModeEnabled()
 	{
 		await VerifyCachePageNavigationHelper(NavigationCacheMode.Enabled, new int[7] { 1, 10, 1, 10, 20, 10, 3 });
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task CacheModeRequired()
 	{
 		await VerifyCachePageNavigationHelper(NavigationCacheMode.Required, new int[7] { 1, 10, 1, 10, 20, 10, 1 });
