@@ -1305,9 +1305,9 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		private bool IsCustomMarkupExtension(XamlType xamlType)
 		{
 			var type = TypeResolver.FindType(xamlType);
-			if (type == null)
+			if (type == null && !xamlType.Name.EndsWith("Extension", StringComparison.Ordinal))
 			{
-				// Try with "Extension" suffix
+				// Try with "Extension" suffix per XAML markup extension naming convention
 				type = TypeResolver.FindType(xamlType.PreferredXamlNamespace, xamlType.Name + "Extension");
 			}
 			return type?.Is<MarkupExtension>() == true;
