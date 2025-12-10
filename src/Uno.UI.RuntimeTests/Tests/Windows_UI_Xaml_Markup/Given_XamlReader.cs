@@ -1116,6 +1116,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			WindowHelper.WindowContent = sut;
 			await WindowHelper.WaitForLoaded(sut);
 		}
+
+		[TestMethod]
+		public void When_AttachedProperty_On_NonDependencyObject()
+		{
+			// Test case for issue: XamlReader.Load exception - attached property on x:String throws exception
+			// Attached properties on non-dependency objects (like x:String) should be ignored gracefully
+			var xaml = """
+				<ListView xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<ListView.Items>
+						<x:String local:ShadowIdentifier.Sxid="TestValue">Item1</x:String>
+					</ListView.Items>
+				</ListView>
+				""";
+
+			var element = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as ListView;
+			
+			Assert.IsNotNull(element);
+			Assert.AreEqual(1, element.Items.Count);
+			Assert.AreEqual("Item1", element.Items[0]);
+		}
+	}
+
+	// Dummy attached property for testing
+	public static class ShadowIdentifier
+	{
+		public static DependencyProperty SxidProperty { get; } = DependencyProperty.RegisterAttached(
+			"Sxid",
+			typeof(string),
+			typeof(ShadowIdentifier),
+			new PropertyMetadata(default(string)));
+
+		public static string GetSxid(DependencyObject obj) => (string)obj.GetValue(SxidProperty);
+		public static void SetSxid(DependencyObject obj, string value) => obj.SetValue(SxidProperty, value);
 	}
 
 	public partial class Given_XamlReader
