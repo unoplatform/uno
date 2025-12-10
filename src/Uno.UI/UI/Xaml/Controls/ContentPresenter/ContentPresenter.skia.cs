@@ -20,6 +20,7 @@ partial class ContentPresenter
 
 	private bool _nativeElementAttached;
 	private IDisposable _frameRenderedDisposable;
+	private Rect? _lastArrangeRect;
 
 	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
 
@@ -96,6 +97,7 @@ partial class ContentPresenter
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
 #endif
 		_nativeHosts.Remove(this);
+		_lastArrangeRect = null;
 		if (_nativeElementAttached)
 		{
 			_frameRenderedDisposable.Dispose();
@@ -190,7 +192,11 @@ partial class ContentPresenter
 	private void ArrangeNativeElement()
 	{
 		var arrangeRect = this.GetAbsoluteBoundsRect();
-		_nativeElementHostingExtension.Value!.ArrangeNativeElement(Content, arrangeRect);
+		if (_lastArrangeRect != arrangeRect)
+		{
+			_lastArrangeRect = arrangeRect;
+			_nativeElementHostingExtension.Value!.ArrangeNativeElement(Content, arrangeRect);
+		}
 	}
 
 	internal object CreateSampleComponent(string text)
