@@ -284,25 +284,8 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 							}
 						}
 					}
-				}
-				finally
-				{
-					PInvoke.ReleaseStgMedium(&hdropMedium);
-				}
-			}
-		}
 
-		// For non-image files, try to get the file icon
-		if (hdropFormatIndex >= 0)
-		{
-			var hdropFormat = formatEtcList[hdropFormatIndex];
-			var hResult = dataObject->GetData(hdropFormat, out STGMEDIUM hdropMedium);
-			if (hResult.Succeeded && hdropMedium.u.hGlobal != IntPtr.Zero)
-			{
-				try
-				{
-					var filePaths = ExtractFilePathsFromHDrop(hdropMedium.u.hGlobal);
-					// Get the first file's icon
+					// For non-image files, try to get the file icon
 					var firstFile = filePaths.FirstOrDefault();
 					if (firstFile is not null)
 					{
