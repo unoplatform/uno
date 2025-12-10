@@ -275,8 +275,9 @@ namespace Uno.UI.Samples.Tests
 
 		private async Task ReportMessage(string message, bool isRunning = true)
 		{
-#if HAS_UNO
 			_log?.Info(message);
+#if DEBUG
+			global::System.Diagnostics.Debug.WriteLine(message);
 #endif
 
 			void Setter()
