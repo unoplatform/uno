@@ -118,9 +118,27 @@ foreach ($repo in $repos) {
             # Try to locate the latest release/stable/* branch for this repo
             $branchesUrl = "https://api.github.com/repos/unoplatform/$repo/branches?per_page=100"
 
-            # Fetch all branches with pagination (GitHub PowerShell supports -FollowRelLink)
-            $allBranches = Invoke-RestMethod -Uri $branchesUrl -Headers $baseHeaders -FollowRelLink
-            $branches = $allBranches
+            # Explicitly handle pagination to ensure all branches are fetched.
+            # The GitHub API returns a maximum of 100 branches per page.
+            # This loop follows the 'next' link in the response headers until all pages are retrieved.
+            $branches = @()
+            $nextUrl = $branchesUrl
+            do {
+                $response = Invoke-WebRequest -Uri $nextUrl -Headers $baseHeaders
+                $pageBranches = $response.Content | ConvertFrom-Json
+                $branches += $pageBranches
+                $linkHeader = $response.Headers['Link']
+                $nextUrl = $null
+                if ($linkHeader) {
+                    # Parse the Link header to find the next page URL
+                    foreach ($link in $linkHeader -split ',') {
+                        if ($link -match '<(.*?)>; rel="next"') {
+                            $nextUrl = $matches[1]
+                            break
+                        }
+                    }
+                }
+            } while ($nextUrl)
             $releaseBranches = @()
             if ($branches) {
                 foreach ($b in @($branches)) {
@@ -131,7 +149,7 @@ foreach ($repo in $repos) {
                             $version = [version]$suffix
                             $releaseBranches += [pscustomobject]@{ Name = $name; Version = $version }
                         } catch {
-                            Write-Host "  Skipping branch '$name'  unable to parse version part '$suffix'." -ForegroundColor DarkYellow
+                            Write-Host "  Skipping branch '$name' - unable to parse version part '$suffix'." -ForegroundColor DarkYellow
                         }
                     }
                 }
@@ -143,7 +161,7 @@ foreach ($repo in $repos) {
                 $branchDescription = $latestRelease.Name
                 Write-Host "  Using latest release branch: $targetBranch" -ForegroundColor Gray
             } else {
-                Write-Host "  No 'release/stable/*' branches found  falling back to default branch '$defaultBranch'." -ForegroundColor DarkYellow
+                Write-Host "  No 'release/stable/*' branches found - falling back to default branch '$defaultBranch'." -ForegroundColor DarkYellow
             }
         }
 
