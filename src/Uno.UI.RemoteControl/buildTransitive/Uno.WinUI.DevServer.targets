@@ -87,4 +87,26 @@
 		<WasmShellMonoEnvironment Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
 	</ItemGroup>
 
+	<!-- Disable linking on iOS and Android to avoid stripping required reflection metadata -->
+	<Choose>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+			<PropertyGroup>
+				<AndroidLinkMode Condition="'$(AndroidLinkMode)' == ''">None</AndroidLinkMode>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+			<PropertyGroup>
+				<MTouchLink Condition="'$(MTouchLink)' == ''">None</MTouchLink>
+			</PropertyGroup>
+		</When>
+	</Choose>
+
+	<Target Name="_UnoWarnAndroidLinkNotSetToNone" BeforeTargets="CoreCompile" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' and '$(AndroidLinkMode)' != 'None'">
+		<Warning Code="UHR001" Text="Hot Reload won't work correctly when linker/trimming is enabled. Set AndroidLinkMode to 'None'." />
+	</Target>
+	
+	<Target Name="_UnoWarniOSLinkNotSetToNone" BeforeTargets="CoreCompile" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' and '$(MTouchLink)' != 'None'">
+		<Warning Code="UHR001" Text="Hot Reload won't work correctly when linker/trimming is enabled. Set MTouchLink to 'None'." />
+	</Target>
+
 </Project>
