@@ -62,9 +62,9 @@ The `IncludeNativeLibrariesForSelfExtract` and `IncludeAllContentForSelfExtract`
 
 ### Windows ClickOnce
 
-Uno Platform supports publishing desktop apps using ClickOnce to Windows environments.
+Uno Platform supports publishing desktop apps using **ClickOnce** to Windows environments.
 
-In order to do so, you'll need to create a `.pubxml` file using Visual Studio, or to use the file below:
+In order to publish your app targeting `net10.0-desktop` in your `.csproj` with this, you'll need to create a `.pubxml` file using Visual Studio, or to use the file below:
 
 # [**Using a Sample Profile**](#tab/windows)
 
@@ -96,21 +96,21 @@ Create a file named `Properties\PublishProfiles\ClickOnceProfile.pubxml` in your
     <SignatureAlgorithm>(none)</SignatureAlgorithm>
     <SignManifests>False</SignManifests>
     <SkipPublishVerification>false</SkipPublishVerification>
-    <TargetFramework>net9.0-desktop</TargetFramework>
+    <TargetFramework>net10.0-desktop</TargetFramework>
     <UpdateEnabled>False</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateRequired>False</UpdateRequired>
     <WebPageFileName>Publish.html</WebPageFileName>
 
     <!-- Those two lines below need to be removed when building using "UnoClickOncePublishDir" -->
-    <PublishDir>bin\Release\net9.0-desktop\win-x64\app.publish\</PublishDir>
+    <PublishDir>bin\Release\net10.0-desktop\win-x64\app.publish\</PublishDir>
     <PublishUrl>bin\publish\</PublishUrl>
   </PropertyGroup>
   <ItemGroup>
     <!-- This section needs to be adjusted based on the target framework -->
-    <BootstrapperPackage Include="Microsoft.NetCore.DesktopRuntime.8.0.x64">
+    <BootstrapperPackage Include="Microsoft.NetCore.DesktopRuntime.10.0.x64">
       <Install>true</Install>
-      <ProductName>.NET Desktop Runtime 8.0.10 (x64)</ProductName>
+      <ProductName>.NET Desktop Runtime 10.0.1 (x64)</ProductName>
     </BootstrapperPackage>
   </ItemGroup>
 </Project>
@@ -149,5 +149,5 @@ The resulting package will be located in the `bin\publish` folder. You can chang
 Depending on your deployment settings, you can run the `Setup.exe` file to install the application on a machine.
 
 > [!IMPORTANT]
-> At this time, publishing with the Visual Studio Publishing Wizard is not supported for
-> multi-targeted projects. Using the command line above is required.
+> At this time, publishing with the [Visual Studio Publishing Wizard](https://learn.microsoft.com/de-de/visualstudio/deployment/quickstart-deploy-using-clickonce-folder?view=visualstudio) 
+> is not supported for multi-targeted projects. Using the command line above is required.
