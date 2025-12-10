@@ -22,8 +22,15 @@ partial class StackPanel
 		set => SetAreScrollSnapPointsRegularValue(value);
 	}
 
-	[GeneratedDependencyProperty(DefaultValue = false)]
+	[GeneratedDependencyProperty(DefaultValue = false, ChangedCallback = true)]
 	public static DependencyProperty AreScrollSnapPointsRegularProperty { get; } = CreateAreScrollSnapPointsRegularProperty();
+
+#if HAS_UNO // WinUI automatically syncs the backing field, we need to do it manually.
+	private void OnAreScrollSnapPointsRegularChanged(bool oldValue, bool newValue)
+	{
+		m_bAreScrollSnapPointsRegular = newValue;
+	}
+#endif
 
 	/// <summary>
 	/// Gets a value that indicates whether the vertical snap points
