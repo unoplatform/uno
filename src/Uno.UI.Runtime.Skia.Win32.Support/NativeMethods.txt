@@ -96,10 +96,12 @@ WM_SETICON
 WM_SIZE
 
 // Structs
+BITMAP
 DATADIR
 BITMAPFILEHEADER
 BROWSEINFOW
 CLIPBOARD_FORMAT
+ICONINFO
 IDataObject
 IDropSource
 IEnumUnknown
@@ -113,6 +115,8 @@ RECT
 MARGINS
 
 // Enums
+BI_COMPRESSION
+DI_FLAGS
 DWM_WINDOW_CORNER_PREFERENCE
 
 // Functions
@@ -134,6 +138,10 @@ DescribePixelFormat
 DestroyWindow
 DispatchMessage
 DragQueryFile
+DeleteDC
+DeleteObject
+DestroyIcon
+DrawIconEx
 DwmSetWindowAttribute
 DwmIsCompositionEnabled
 DwmExtendFrameIntoClientArea
@@ -164,7 +172,9 @@ GetDC
 GetDeviceCaps
 GetDpiForWindow
 GetDpiForMonitor
+GetIconInfo
 GetKeyState
+GetObject
 GetMessage
 GetMessageTime
 GetMonitorInfo
