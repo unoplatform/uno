@@ -204,8 +204,8 @@ partial class StackPanel
 
 	/// <summary>
 	/// Get the index where an item should be inserted if it were dropped at
-	///	the given position.  This will be used by live reordering.
-	///	In case of stackPanel, the position is position from the very first Item
+	/// the given position.  This will be used by live reordering.
+	/// In case of stackPanel, the position is position from the very first Item
 	/// StackPanel goes through all children and finds the insertion position
 	/// </summary>
 	/// <param name="position"></param>
