@@ -616,9 +616,10 @@ namespace Uno.Xaml
 					else
 					{
 						var at = sctx.GetXamlType(axtn);
+						var memberName = aname.Substring(propidx + 1);
 						if (at != null)
 						{
-							var am = at.GetAttachableMember(aname.Substring(propidx + 1));
+							var am = at.GetAttachableMember(memberName);
 							if (am != null)
 							{
 								sti.Members.Add(new Pair(am, p.Value));
@@ -631,7 +632,7 @@ namespace Uno.Xaml
 						else
 						{
 							// If the type cannot be resolved, create an unknown member
-							sti.Members.Add(new Pair(XamlMember.FromUnknown(aname.Substring(propidx + 1), apns, new XamlType(apns, apname, new List<XamlType>(), sctx)), p.Value));
+							sti.Members.Add(new Pair(XamlMember.FromUnknown(memberName, apns, new XamlType(apns, apname, new List<XamlType>(), sctx)), p.Value));
 						}
 					}
 				}

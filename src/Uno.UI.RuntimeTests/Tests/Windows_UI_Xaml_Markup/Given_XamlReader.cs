@@ -1136,19 +1136,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.AreEqual(1, element.Items.Count);
 			Assert.AreEqual("Item1", element.Items[0]);
 		}
-	}
 
-	// Dummy attached property for testing
-	public static class ShadowIdentifier
-	{
-		public static DependencyProperty SxidProperty { get; } = DependencyProperty.RegisterAttached(
-			"Sxid",
-			typeof(string),
-			typeof(ShadowIdentifier),
-			new PropertyMetadata(default(string)));
+		// Dummy attached property for testing
+		public static class ShadowIdentifier
+		{
+			public static DependencyProperty SxidProperty { get; } = DependencyProperty.RegisterAttached(
+				"Sxid",
+				typeof(string),
+				typeof(ShadowIdentifier),
+				new PropertyMetadata(default(string)));
 
-		public static string GetSxid(DependencyObject obj) => (string)obj.GetValue(SxidProperty);
-		public static void SetSxid(DependencyObject obj, string value) => obj.SetValue(SxidProperty, value);
+			public static string GetSxid(DependencyObject obj) => (string)obj.GetValue(SxidProperty);
+			public static void SetSxid(DependencyObject obj, string value) => obj.SetValue(SxidProperty, value);
+		}
 	}
 
 	public partial class Given_XamlReader
