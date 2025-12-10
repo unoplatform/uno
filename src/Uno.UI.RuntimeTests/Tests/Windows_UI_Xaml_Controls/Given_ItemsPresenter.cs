@@ -971,6 +971,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Header_Binding()
 	{
 		var ic = (ItemsControl)XamlReader.Load(
@@ -1099,6 +1100,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Header_Template()
 	{
 		var ic = (ItemsControl)XamlReader.Load(
