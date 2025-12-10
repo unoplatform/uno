@@ -31,7 +31,7 @@ public partial class ClientHotReloadProcessor
 		Exception? Error = null)
 	{
 		/// <summary>
-		/// Indicates if at leats one file is known to have been updated on server-side.
+		/// Indicates if at least one file is known to have been updated on server-side.
 		/// </summary>
 		public bool FileUpdated => FilesUpdated > 0; // For backward compat purposes!
 	}

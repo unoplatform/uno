@@ -229,7 +229,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return false;
 				}
 
-				if (path.Contains("\\.vs\\")) // Not needs to check for AltDirectorySeparatorChar as VS is windows only and always use '\'
+				if (path.Contains("\\.vs\\")) // No need to check for AltDirectorySeparatorChar as VS is windows only and always uses '\'
 				{
 					// Ignore changes in the .vs cache folder
 					return false;
@@ -297,7 +297,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return;
 			}
 
-			// Not mater if the build will succeed or not, we update the _currentSolution.
+			// No matter if the build will succeed or not, we update the _currentSolution.
 			// Files needs to be updated again to fix the compilation errors.
 			_currentSolution = solution;
 
@@ -622,7 +622,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			foreach (var document in changeSet.EditedDocuments)
 			{
 				solution = solution.WithDocumentText(document.Id, await GetSourceTextAsync(document.FilePath!, ct));
-				//_reporter.Output($"Updated document {Path.Combine([.. document.Folders, document.Name])}");
+
 			}
 
 			// Update existing additional documents
@@ -669,7 +669,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					found = true;
 					//var id = DocumentId.CreateNewId(project.Id);
 					solution = solution.AddAdditionalDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
-					//await solution.GetAdditionalDocument(id)!.GetTextAsync(ct);
+
 				}
 				if (!found)
 				{

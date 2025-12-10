@@ -409,9 +409,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				=> ImmutableInterlocked.Update(ref _ignoredFilePaths, static (files, file) => files.Add(file), file);
 
 			/// <summary>
-			/// Notifies a file has been ignored for this hot-reload operation.
+			/// Notifies multiple files have been ignored for this hot-reload operation.
+			/// Use this overload to ignore several files at once, as opposed to the single-file overload.
 			/// </summary>
-			/// <param name="file"></param>
+			/// <param name="files">The collection of file paths to mark as ignored.</param>
 			public void NotifyIgnored(IEnumerable<string> files)
 				=> ImmutableInterlocked.Update(ref _ignoredFilePaths, static (files, ignored) => files.Union(ignored), files);
 
