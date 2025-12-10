@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// end can be less than or equal to start when the selection starts ahead and then goes back
 		// see the selection in TextBox.skia.cs for more info
-		private Range Selection
+		internal Range Selection
 		{
 			get => _selection;
 			set
@@ -153,7 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				UpdateHyperlinks();
-				Inlines.InvalidatePreorderTree();
+				Inlines.InvalidateTraversedTree();
 			}
 
 			OnInlinesChangedPartial();
@@ -1095,8 +1095,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var aborted = false;
 			foreach (var hyperlink in _hyperlinks.ToList()) // .ToList() : for a strange reason on WASM the collection gets modified
 			{
-				aborted |= hyperlink.hyperlink.AbortPointerPressed(pointer);
-				aborted |= hyperlink.hyperlink.ReleasePointerOver(pointer);
+				aborted |= hyperlink.AbortPointerPressed(pointer);
+				aborted |= hyperlink.ReleasePointerOver(pointer);
 			}
 
 			aborted |= _hyperlinkOver?.ReleasePointerOver(pointer) ?? false;
@@ -1105,7 +1105,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return aborted;
 		}
 
-		private readonly ObservableCollection<(int start, int end, Hyperlink hyperlink)> _hyperlinks = new();
+		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
@@ -1120,7 +1120,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateHyperlinks()
 		{
-			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Where(h => h.hyperlink == _hyperlinkOver).Count() == 1);
+			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Count(h => h == _hyperlinkOver) == 1);
 
 			if (UseInlinesFastPath) // i.e. no Inlines
 			{
@@ -1129,7 +1129,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// Make sure to clear the pressed state of removed hyperlinks
 					foreach (var hyperlink in _hyperlinks)
 					{
-						hyperlink.hyperlink.AbortAllPointerState();
+						hyperlink.AbortAllPointerState();
 					}
 
 					_hyperlinkOver = null;
@@ -1139,26 +1139,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var previousHyperLinks = _hyperlinks.SelectToList(hyperlink => hyperlink.hyperlink);
-
 			_hyperlinkOver = null;
+			var previousHyperLinks = _hyperlinks.ToHashSet();
 			_hyperlinks.Clear();
-
-			var start = 0;
-			foreach (var inline in Inlines.PreorderTree)
+			foreach (var hyperlink in Inlines.TraversedTree.preorderTree.OfType<Hyperlink>())
 			{
-				switch (inline)
-				{
-					case Hyperlink hyperlink:
-						previousHyperLinks.Remove(hyperlink);
-						_hyperlinks.Add((start, start + hyperlink.GetText().Length, hyperlink));
-						break;
-					case Span span:
-						break;
-					default: // Leaf node
-						start += inline.GetText().Length;
-						break;
-				}
+				_hyperlinks.Add(hyperlink);
+				previousHyperLinks.Remove(hyperlink);
 			}
 
 			// Make sure to clear the pressed state of removed hyperlinks
@@ -1234,7 +1221,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				foreach (var candidate in _hyperlinks)
 				{
-					if (hyperlink == candidate.hyperlink)
+					if (hyperlink == candidate)
 					{
 						return hyperlink;
 					}
@@ -1242,14 +1229,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return null;
+#elif __SKIA__
+			return ParsedText.GetHyperlinkAt(e.GetCurrentPoint(this).Position);
 #else
-			var point = e.GetCurrentPoint(this).Position;
-			var characterIndex = GetCharacterIndexAtPoint(point);
-			var hyperlink = _hyperlinks
-				.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
-				.hyperlink;
-
-			return hyperlink;
+			return null;
 #endif
 		}
 		#endregion
@@ -1298,13 +1281,6 @@ namespace Microsoft.UI.Xaml.Controls
 			/*IsEnabled() &&*/ (IsTextSelectionEnabled || IsTabStop || FocusProperties.GetCaretBrowsingModeEnable()) &&
 			AreAllAncestorsVisible();
 
-		private record struct Range(int start, int end)
-		{
-			public Range((int start, int end) tuple) : this(tuple.start, tuple.end)
-			{
-			}
-		}
-
 		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
 		private bool IsTextTrimmable =>
 			TextTrimming != TextTrimming.None ||
@@ -1316,5 +1292,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
 		// There is a special handling for Foreground specifically there.
 		void IThemeChangeAware.OnThemeChanged() => OnForegroundChanged();
+
+		internal record struct Range(int start, int end);
 	}
 }

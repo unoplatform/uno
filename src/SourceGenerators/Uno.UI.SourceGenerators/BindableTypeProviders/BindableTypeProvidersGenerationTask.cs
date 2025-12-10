@@ -302,6 +302,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
 					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
 					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\", Justification = \"`typeof(Exception)` emits IL2026 because of `Exception.TargetSite`, which is not used.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2111\", Justification = \"`typeof(Type)` emits IL2111 because of `Type.TypeInitializer`, which is not used.\")]");
 					using (writer.BlockInvariant("internal static global::Uno.UI.DataBinding.IBindableType Build(global::Uno.UI.DataBinding.BindableType parent)"))
 					{
 						RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "Uno.UI.DataBinding.IBindableType Build(Uno.UI.DataBinding.BindableType)");
@@ -364,10 +366,15 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								continue;
 							}
 
+							// For value types (structs), we cannot generate setters because modifying an unboxed value type
+							// creates a temporary copy that is immediately discarded. Only generate getters for structs.
+							var isValueType = ownerType.TypeKind == TypeKind.Struct;
+
 							if (
 								property.SetMethod != null
 								&& !property.SetMethod.IsInitOnly
 								&& property.SetMethod.IsLocallyPublic(_currentModule!)
+								&& !isValueType
 								)
 							{
 								writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName}, Set{propertyName});");

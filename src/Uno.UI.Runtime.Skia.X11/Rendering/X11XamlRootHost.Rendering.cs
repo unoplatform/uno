@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using Uno.UI;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Timer = System.Timers.Timer;
 

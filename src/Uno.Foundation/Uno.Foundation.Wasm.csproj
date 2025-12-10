@@ -16,7 +16,8 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<CommonOverridePackageId>Uno.Foundation</CommonOverridePackageId>
+		<IsAotCompatible>true</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup>

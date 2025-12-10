@@ -1,4 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="AssemblyName.props" />
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<BuildOutputTargetFolder>targets</BuildOutputTargetFolder>
@@ -10,8 +12,6 @@
 		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
 		<Description>Do not use this package directly. It is intended for Uno Platform code contributors during development.</Description>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<UnoSdkVersionSuffix>_v0</UnoSdkVersionSuffix>
-		<AssemblyName>Uno.Sdk$(UnoSdkVersionSuffix)</AssemblyName>
 
 		<!-- Generate the nupkg only for WinUI, we do not support Uno.SDK for UWP -->
 		<GeneratePackageOnBuild Condition=" '$(UNO_UWP_BUILD)' != 'true' ">true</GeneratePackageOnBuild>
@@ -105,17 +105,6 @@
 			Filename="%(_TemporaryCodeFile.Identity)"
 			MatchExpression="DefaultUnoSdkVersion"
 			ReplacementText="$(PackageVersion)-Private" />
-
-		<!-- This is better but Jerome made me take it out -->
-		<!-- <ReplaceFileText
-			Filename="%(_IntermediateTargetFile.Identity)"
-			MatchExpression="_v0"
-			ReplacementText="$(UnoSdkVersionSuffix)" />
-
-		<ReplaceFileText
-			Filename="%(_TemporaryCodeFile.Identity)"
-			MatchExpression="_v0"
-			ReplacementText="$(UnoSdkVersionSuffix)" /> -->
 
 		<ItemGroup>
 			<None Include="@(_PackageManifestPackFile)" Pack="true" PackagePath="targets\$(TargetFramework)\%(Filename)%(Extension)" />

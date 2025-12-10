@@ -35,7 +35,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 4
 
   variables:
-    SamplesAppArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactName: $[ dependencies.Skia_Tests_Build_Browser.outputs['set_samples_artifact.SamplesAppArtifactName'] ]
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}

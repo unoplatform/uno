@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
@@ -20,20 +20,14 @@ using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
-using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.Foundation;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using Microsoft.UI.Xaml.Media.Media3D;
 using System.Numerics;
-
-#if HAS_UNO_WINUI
-using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -47,9 +41,6 @@ public partial class TextBox
 	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
-
-	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
-
 
 	private SelectionDetails _selection;
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
@@ -74,18 +65,10 @@ public partial class TextBox
 	private int _historyIndex;
 	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
-	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
-
-	private readonly DispatcherTimer _timer = new DispatcherTimer
-	{
-		Interval = TimeSpan.FromSeconds(0.5)
-	};
+	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
-
-	private Rect? _lastEndCaretRect;
-	private Rect? _lastStartCaretRect;
 
 	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
@@ -205,7 +188,7 @@ public partial class TextBox
 
 	partial void OnFlowDirectionChangedPartial()
 	{
-		TextBoxView?.SetFlowDirectionAndTextAlignment();
+		TextBoxView?.SetFlowDirection();
 	}
 
 	partial void OnTextWrappingChangedPartial()
@@ -222,11 +205,6 @@ public partial class TextBox
 	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType)
 	{
 		TextBoxView?.UpdateProperties();
-	}
-
-	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
-	{
-		TextBoxView?.SetFlowDirectionAndTextAlignment();
 	}
 
 	private void UpdateTextBoxView()
@@ -253,15 +231,7 @@ public partial class TextBox
 						caret.PointerCaptureLost += ClearCaretPointerState;
 					}
 
-					var inlines = displayBlock.Inlines;
-
-					inlines.DrawingStarted += () =>
-					{
-						_lastStartCaretRect = null;
-						_lastEndCaretRect = null;
-					};
-
-					inlines.DrawingFinished += () =>
+					displayBlock.DrawingFinished += () =>
 					{
 						// Only invalidate the carets after drawing is complete
 						// to avoid modifying the children visuals while they are being enumerated.
@@ -269,28 +239,6 @@ public partial class TextBox
 						{
 							UpdateFlyoutPosition();
 						}, NativeDispatcherPriority.Normal);
-					};
-
-					inlines.CaretFound += args =>
-					{
-						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
-							CaretMode == CaretDisplayMode.ThumblessCaretShowing)
-						{
-							var caretRect = args.rect;
-							var compositor = _visual.Compositor;
-							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-
-							brush.Paint(args.canvas, args.opacity, caretRect.ToSKRect());
-						}
-
-						if (args.endCaret)
-						{
-							_lastEndCaretRect = args.rect;
-						}
-						else
-						{
-							_lastStartCaretRect = args.rect;
-						}
 					};
 				}
 			}
@@ -303,15 +251,13 @@ public partial class TextBox
 	{
 		if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
-			var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
-			foreach (var (rectNullable, caret) in (ReadOnlySpan<(Rect?, CaretWithStemAndThumb)>)[(_lastStartCaretRect, _selectionStartThumbfulCaret), (_lastEndCaretRect, _selectionEndThumbfulCaret)])
+			var (selectionStart, selectionEnd) = IsBackwardSelection ? (SelectionStart + SelectionLength, SelectionLength) : (SelectionStart, SelectionStart + SelectionLength);
+			foreach (var (index, caret) in (ReadOnlySpan<(int, CaretWithStemAndThumb)>)[(selectionStart, _selectionStartThumbfulCaret), (selectionEnd, _selectionEndThumbfulCaret)])
 			{
-				if (rectNullable is not { } rect)
-				{
-					caret.Hide();
-					continue;
-				}
+				var rect = _textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
+				rect.Width = TextBlock.CaretThickness;
 				caret.Height = rect.Height + 16;
+				var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
 				if (transform.TransformBounds(rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
 				{
 					var matrixTransform = (MatrixTransform)transform;
@@ -327,6 +273,11 @@ public partial class TextBox
 					var totalMatrix = Matrix3x2.Multiply(translationMatrix, textBoxMatrix);
 					caret.ShowAt(XamlRoot, totalMatrix);
 				}
+			}
+			if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing)
+			{
+				_selectionStartThumbfulCaret.Hide();
+				_selectionEndThumbfulCaret.SetStemVisible(SelectionLength == 0);
 			}
 		}
 		else
@@ -377,7 +328,7 @@ public partial class TextBox
 		{
 			// SelectInternal sets _selectionEndsAtTheStart and _caretXOffset on its own
 			_selection.selectionEndsAtTheStart = false;
-			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
+			_caretXOffset = (float)(TextBoxView?.DisplayBlock.ParsedText.GetRectForIndex(start + length).Left ?? 0);
 		}
 
 		var selection = (start, length, _selection.selectionEndsAtTheStart);
@@ -428,17 +379,25 @@ public partial class TextBox
 
 	private void UpdateDisplaySelection()
 	{
-		if (_isSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
+		if (_isSkiaTextBox && TextBoxView?.DisplayBlock is { } displayBlock)
 		{
-			inlines.Selection = (SelectionStart, SelectionStart + SelectionLength);
+			displayBlock.Selection = new TextBlock.Range(SelectionStart, SelectionStart + SelectionLength);
 			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
-			inlines.RenderSelection = isFocused;
-			var caretShowing = (CaretMode is CaretDisplayMode.ThumblessCaretShowing && _selection.length == 0) || CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-			inlines.RenderCaret =
+			displayBlock.RenderSelection = isFocused;
+			if (CaretMode is CaretDisplayMode.ThumblessCaretShowing &&
+				SelectionLength == 0 &&
 				isFocused &&
-				caretShowing &&
-				(CaretMode is CaretDisplayMode.CaretWithThumbsBothEndsShowing || !IsReadOnly) && // If read only, we only show carets on touch.
-				!FeatureConfiguration.TextBox.HideCaret;
+				!IsReadOnly &&
+				!FeatureConfiguration.TextBox.HideCaret)
+			{
+				var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
+				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, brush);
+			}
+			else
+			{
+				displayBlock.RenderCaret = null;
+			}
+			((IBlock)TextBoxView.DisplayBlock).Invalidate(false);
 		}
 	}
 
@@ -462,12 +421,12 @@ public partial class TextBox
 			var (selectionStart, selectionEnd) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, _selection.start) : (_selection.start, _selection.start + _selection.length);
 			var index = putSelectionEndInVisibleViewport ? selectionEnd : selectionStart;
 
-			var caretRect = DisplayBlockInlines.GetRectForIndex(index) with { Width = InlineCollection.CaretThickness };
+			var caretRect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(index) with { Width = TextBlock.CaretThickness };
 
 			// Because the caret is only a single-pixel wide, and because screens can't draw in fractions of a pixel,
 			// we need to add Math.Ceiling to ensure that the caret is (fully) included in the visible viewport. This
 			// Math.Ceiling sometimes horizontal overscrolling, but it's more acceptable than sometimes not showing the caret.
-			var newHorizontalOffset = horizontalOffset.AtMost(caretRect.Left).AtLeast(Math.Ceiling(caretRect.Right - sv.ViewportWidth + InlineCollection.CaretThickness));
+			var newHorizontalOffset = horizontalOffset.AtMost(caretRect.Left).AtLeast(Math.Ceiling(caretRect.Right - sv.ViewportWidth + TextBlock.CaretThickness));
 
 			var newVerticalOffset = verticalOffset.AtMost(caretRect.Top).AtLeast(caretRect.Bottom - sv.ViewportHeight);
 
@@ -571,10 +530,12 @@ public partial class TextBox
 					KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
 				break;
-			case VirtualKey.Left:
+			case VirtualKey.Left when !TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+			case VirtualKey.Right when TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
 				KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
 				break;
-			case VirtualKey.Right:
+			case VirtualKey.Left when TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+			case VirtualKey.Right when !TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
 				KeyDownRightArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.Home:
@@ -694,7 +655,7 @@ public partial class TextBox
 			}
 
 			var oldText = text;
-			var index = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
+			var index = ctrl ? TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, false).start : selectionStart - 1;
 			text = text[..index] + text[selectionStart..];
 			selectionStart = index;
 
@@ -785,7 +746,7 @@ public partial class TextBox
 			var end = selectionStart + selectionLength;
 			if (ctrl)
 			{
-				end = FindChunkAt(end, false).start;
+				end = TextBoxView.DisplayBlock.ParsedText.GetWordAt(end, false).start;
 			}
 			else
 			{
@@ -798,7 +759,7 @@ public partial class TextBox
 		{
 			if (selectionLength == 0)
 			{
-				selectionStart = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
+				selectionStart = ctrl ? TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, false).start : selectionStart - 1;
 			}
 			else
 			{
@@ -837,7 +798,7 @@ public partial class TextBox
 				var end = selectionStart + selectionLength;
 				if (ctrl)
 				{
-					var chunk = FindChunkAt(end, true);
+					var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(end, true);
 					end = chunk.start + chunk.length;
 				}
 				else
@@ -853,7 +814,7 @@ public partial class TextBox
 				{
 					if (ctrl)
 					{
-						var chunk = FindChunkAt(selectionStart, true);
+						var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, true);
 						selectionStart = chunk.start + chunk.length;
 					}
 					else
@@ -885,11 +846,11 @@ public partial class TextBox
 		var end = selectionStart + selectionLength;
 		if (shift)
 		{
-			selectionLength = ctrl ? -selectionStart : GetLineAt(text, selectionStart, selectionLength).start - selectionStart;
+			selectionLength = ctrl ? -selectionStart : TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength).start - selectionStart;
 		}
 		else
 		{
-			selectionStart = ctrl ? 0 : GetLineAt(text, selectionStart, selectionLength).start;
+			selectionStart = ctrl ? 0 : TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength).start;
 			selectionLength = 0;
 		}
 		args.Handled = selectionStart != start || selectionLength != end - start;
@@ -916,7 +877,7 @@ public partial class TextBox
 			}
 			else
 			{
-				var line = GetLineAt(text, selectionStart, selectionLength);
+				var line = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
 				selectionLength = line.start + line.length - selectionStart;
 			}
 		}
@@ -928,7 +889,7 @@ public partial class TextBox
 			}
 			else
 			{
-				var line = GetLineAt(text, selectionStart, selectionLength);
+				var line = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
 				selectionStart = line.start + line.length;
 				if (line.length > 0 && selectionStart < text.Length && text[selectionStart - 1] == '\r')
 				{
@@ -976,7 +937,7 @@ public partial class TextBox
 			int index;
 			if (ctrl)
 			{
-				var chunk = FindChunkAt(selectionStart, true);
+				var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, true);
 				index = chunk.start + chunk.length;
 			}
 			else
@@ -1000,8 +961,8 @@ public partial class TextBox
 		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
 		{
 			_caretXOffset = selectionLength >= 0 ?
-				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Left :
-				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Right;
+				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
+				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
 		}
 		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
 		_inSelectInternal = false;
@@ -1024,33 +985,6 @@ public partial class TextBox
 	}
 
 	/// <summary>
-	/// The parameters here use the possibly-negative length format
-	/// </summary>
-	private (int start, int length) GetLineAt(string text, int selectionStart, int selectionLength)
-	{
-		if (Text.Length == 0)
-		{
-			return (0, 0);
-		}
-
-		var lines = DisplayBlockInlines.GetLineIntervals();
-		global::System.Diagnostics.CI.Assert(lines.Count > 0);
-
-		var end = selectionStart + selectionLength;
-
-		foreach (var line in lines)
-		{
-			if (line.start <= end && end < line.start + line.length)
-			{
-				return line;
-			}
-		}
-
-		// end == Text.Length
-		return lines[^1];
-	}
-
-	/// <summary>
 	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
 	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
 	/// This method cares about the second kind of lines.
@@ -1061,36 +995,56 @@ public partial class TextBox
 		{
 			return 0;
 		}
-		var startLine = GetLineAt(text, selectionStart, 0);
-		var endLine = GetLineAt(text, selectionStart + selectionLength, 0);
-		var lines = DisplayBlockInlines.GetLineIntervals();
-		var startLineIndex = lines.IndexOf(startLine);
-		var endLineIndex = lines.IndexOf(endLine);
 
-		if (up && shift && endLineIndex == 0)
+		var (startLineStart, startLineLength, startLineFirst, startLineLast, startLineIndex) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart);
+		var (endLineStart, endLineLength, endLineFirst, endLineLast, endLineIndex) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
+
+		if (up && shift && endLineFirst)
 		{
 			return 0; // first line, goes to the beginning
 		}
-		else if (!up && shift && endLineIndex == lines.Count - 1)
+		else if (!up && shift && endLineLast)
 		{
 			return text.Length; // last line, goes to the end
 		}
-		else if (!up && !shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
+		else if (!up && !shift && (startLineLast || endLineLast))
 		{
 			return text.Length; // last line, goes to the end
 		}
 
-		var newLineIndex = up ?
-			selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1) :
-			selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
+		int newLineIndex;
+		if (up)
+		{
+			if (selectionLength < 0 || shift)
+			{
+				newLineIndex = !endLineFirst ? endLineIndex - 1 : endLineIndex;
+			}
+			else
+			{
+				newLineIndex = !startLineFirst ? startLineIndex - 1 : startLineIndex;
+			}
+		}
+		else
+		{
+			if (selectionLength > 0 || shift)
+			{
+				newLineIndex = !endLineLast ? endLineIndex + 1 : endLineIndex;
+			}
+			else
+			{
+				newLineIndex = !startLineLast ? startLineIndex + 1 : startLineIndex;
+			}
+		}
 
-		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
+		var rect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength);
 		var x = _caretXOffset;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
+		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(new Point(x, y), true, true));
+		var (newLineStart, newLineLength, newLineFirst, newLineLast, _) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(index);
 		if (text.Length > index - 1
+			&& newLineLength > 1 // this check is for cases where the line has nothing but \r (i.e. is empty)
 			&& index - 1 >= 0
-			&& index == lines[newLineIndex].start + lines[newLineIndex].length
+			&& index == newLineStart + newLineLength
 			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
 		{
 			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
@@ -1101,84 +1055,6 @@ public partial class TextBox
 	}
 
 	private InlineCollection DisplayBlockInlines => TextBoxView?.DisplayBlock.Inlines;
-
-	/// <param name="right">Where to look for a chunk to the right or left of the caret when the caret is between chunks</param>
-	private (int start, int length) FindChunkAt(int index, bool right)
-	{
-		if (Text.GetHashCode() != _cachedChunks.hashCode)
-		{
-			GenerateChunks();
-		}
-
-		var i = 0;
-		foreach (var chunk in _cachedChunks.chunks)
-		{
-			if (chunk.start < index && chunk.start + chunk.length > index
-				|| chunk.start == index && right
-				|| chunk.start + chunk.length == index && !right)
-			{
-				return chunk;
-			}
-
-			i += chunk.length;
-		}
-
-		return _cachedChunks.chunks.Count > 0 ? _cachedChunks.chunks[^1] : (0, 0);
-	}
-
-	private void GenerateChunks()
-	{
-		var text = Text;
-
-		_cachedChunks.hashCode = text.GetHashCode();
-		var chunks = _cachedChunks.chunks;
-
-		chunks.Clear();
-
-		// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
-		// \r and \t are always their own chunks
-		var length = text.Length;
-		for (var i = 0; i < length;)
-		{
-			var start = i;
-			var c = text[i];
-			if (c is '\r' or '\t')
-			{
-				i++;
-			}
-			else if (c == ' ')
-			{
-				while (i < length && text[i] == ' ')
-				{
-					i++;
-				}
-			}
-			else if (char.IsLetterOrDigit(text[i]))
-			{
-				while (i < length && char.IsLetterOrDigit(text[i]))
-				{
-					i++;
-				}
-				while (i < length && text[i] == ' ')
-				{
-					i++;
-				}
-			}
-			else
-			{
-				while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
-				{
-					i++;
-				}
-				while (i < length && text[i] == ' ')
-				{
-					i++;
-				}
-			}
-
-			chunks.Add((start, i - start));
-		}
-	}
 
 	/// <summary>
 	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.

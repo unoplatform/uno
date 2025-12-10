@@ -115,7 +115,14 @@ namespace Uno.UI.Runtime.Skia
 			_fd = Libc.open(fileName, Libc.O_RDWR, 0);
 			if (_fd <= 0)
 			{
-				throw new InvalidOperationException($"Failed to open FrameBuffer device {fileName} ({Marshal.GetLastWin32Error()})");
+				var errno = Marshal.GetLastWin32Error();
+				var errnoStringPtr = Libc.strerror(errno);
+				var errorString = Marshal.PtrToStringAnsi(errnoStringPtr);
+				throw new InvalidOperationException($"Failed to open FrameBuffer device {fileName} ({errno}): {errorString}");
+			}
+			else
+			{
+				this.LogInfo()?.Info($"Successfully opened a framebuffer device at {fileName}");
 			}
 		}
 
@@ -252,6 +259,7 @@ namespace Uno.UI.Runtime.Skia
 
 		private void LogFramebufferInformation()
 		{
+			this.LogInfo()?.Info($"Successfully initialized a framebuffer device with size {_screenInfo.xres}x{_screenInfo.yres}");
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace(
