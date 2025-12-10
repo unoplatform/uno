@@ -29,6 +29,7 @@ partial class StackPanel
 	private void OnAreScrollSnapPointsRegularChanged(bool oldValue, bool newValue)
 	{
 		m_bAreScrollSnapPointsRegular = newValue;
+		OnAreScrollSnapPointsRegularChanged();
 	}
 #endif
 
