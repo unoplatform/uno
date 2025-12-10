@@ -1,0 +1,5 @@
+<ListView xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <ListView.Items>
+        <x:String local:TestAttachedProperty.TestValue="TestString">Item1</x:String>
+    </ListView.Items>
+</ListView>

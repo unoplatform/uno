@@ -198,6 +198,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
+		public void When_AttachedProperty_On_String()
+		{
+			// This test verifies that attached properties on non-DependencyObject types
+			// (like x:String) don't throw an exception during XamlReader.Load
+			var s = GetContent(nameof(When_AttachedProperty_On_String));
+			
+			// Should not throw NullReferenceException
+			var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as ListView;
+
+			Assert.IsNotNull(r);
+			Assert.AreEqual(1, r.Items.Count);
+			Assert.AreEqual("Item1", r.Items[0]);
+		}
+
+		[TestMethod]
 		public void When_Binding_TwoWay()
 		{
 			var s = GetContent(nameof(When_Binding_TwoWay));
