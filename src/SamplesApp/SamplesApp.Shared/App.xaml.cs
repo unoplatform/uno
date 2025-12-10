@@ -90,6 +90,9 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
+#if !HAS_UNO
+			UnhandledException += App_UnhandledException;
+#endif
 			// Fix language for UI tests
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
@@ -117,6 +120,15 @@ namespace SamplesApp
 			});
 #endif
 		}
+
+#if !HAS_UNO
+		private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+		{
+			e.Handled = true;
+			_log?.Error("UnhandledException", e.Exception);
+			global::System.Console.WriteLine($"UnhandledException: {e.Exception}");
+		}
+#endif
 
 		internal static Microsoft.UI.Xaml.Window? MainWindow => _mainWindow;
 
