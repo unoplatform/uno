@@ -1035,25 +1035,36 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				return;
 			}
 
-			// Load the markup extension object which will process its members and call ProvideValue
-			var memberContext = propertyInfo != null
-				? new MemberInitializationContext(instance, propertyInfo)
-				: null;
-
-			var value = LoadObject(extensionNode, rootInstance, memberContext: memberContext);
-
-			// Set the value on the target instance
-			if (value != null)
+			try
 			{
-				if (propertyInfo != null)
+				// Load the markup extension object which will process its members and call ProvideValue
+				var memberContext = propertyInfo != null
+					? new MemberInitializationContext(instance, propertyInfo)
+					: null;
+
+				var value = LoadObject(extensionNode, rootInstance, memberContext: memberContext);
+
+				// Set the value on the target instance
+				if (value != null)
 				{
-					GetPropertySetter(propertyInfo).Invoke(instance, new[] { value });
+					if (propertyInfo != null)
+					{
+						GetPropertySetter(propertyInfo).Invoke(instance, new[] { value });
+					}
+					else if (TypeResolver.FindDependencyProperty(member) is { } dependencyProperty &&
+							 instance is DependencyObject dependencyObject)
+					{
+						dependencyObject.SetValue(dependencyProperty, value);
+					}
 				}
-				else if (TypeResolver.FindDependencyProperty(member) is { } dependencyProperty &&
-						 instance is DependencyObject dependencyObject)
-				{
-					dependencyObject.SetValue(dependencyProperty, value);
-				}
+			}
+			catch (Exception ex) when (!(ex is XamlParseException))
+			{
+				throw new XamlParseException(
+					$"Failed to process custom markup extension '{extensionNode.Type.Name}'.",
+					ex,
+					extensionNode.LineNumber,
+					extensionNode.LinePosition);
 			}
 		}
 
