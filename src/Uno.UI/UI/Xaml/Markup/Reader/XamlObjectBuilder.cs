@@ -1036,7 +1036,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 
 			// Load the markup extension object which will process its members and call ProvideValue
-			var memberContext = propertyInfo != null 
+			var memberContext = propertyInfo != null
 				? new MemberInitializationContext(instance, propertyInfo)
 				: null;
 
