@@ -1,6 +1,6 @@
 ﻿using System;
-using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -25,14 +25,6 @@ partial class StackPanel
 	[GeneratedDependencyProperty(DefaultValue = false, ChangedCallback = true)]
 	public static DependencyProperty AreScrollSnapPointsRegularProperty { get; } = CreateAreScrollSnapPointsRegularProperty();
 
-#if HAS_UNO // WinUI automatically syncs the backing field, we need to do it manually.
-	private void OnAreScrollSnapPointsRegularChanged(bool oldValue, bool newValue)
-	{
-		m_bAreScrollSnapPointsRegular = newValue;
-		OnAreScrollSnapPointsRegularChanged();
-	}
-#endif
-
 	/// <summary>
 	/// Gets a value that indicates whether the vertical snap points
 	/// for the StackPanel are equidistant from each other.
@@ -52,7 +44,7 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the BackgroundSizing dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing))]
+	[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
 	public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
 
 	/// <summary>
@@ -67,8 +59,10 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the BorderBrush dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
 	public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
+
+	private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
 
 	/// <summary>
 	/// Gets or sets the border thickness of the panel.
@@ -82,10 +76,10 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the BorderThickness dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)] 
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
-	private static Thickness GetBorderThicknessDefaultValue() => default;
+	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
 	/// <summary>
 	/// Gets or sets the radius for the corners of the panel's border.
@@ -99,10 +93,10 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the CornerRadius dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty]
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
 	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
-	private static CornerRadius GetCornerRadiusDefaultValue() => default;
+	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
 
 	/// <summary>
 	/// Gets or sets the dimension by which child elements are stacked.
@@ -133,7 +127,7 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the Padding dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 	private static Thickness GetPaddingDefaultValue() => default;
