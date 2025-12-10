@@ -114,6 +114,14 @@ public class Given_Frame : BaseTestClass
 		{
 			// Resume HR
 			TypeMappings.Resume();
+
+			// We now must force a refresh since HR was paused when the change was made
+			// This is required to NOT pollute other tests that uses teh same pages
+			// Note: This is a BROKEN feature that is about to get fixed:
+			//		 Types are ALWAYS updated, TypeMappings only **pauses** UI updated.
+			Window.Current!.ForceHotReloadUpdate();
+			await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
+			await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
 		}
 
 		// Check that the text has been updated
