@@ -101,7 +101,7 @@ internal readonly partial struct UnicodeText
 				fixed (byte* dataPtr = data)
 				{
 					var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)dataPtr);
-					var errorString = Marshal.PtrToStringAnsi(errorPtr);
+					var errorString = Marshal.PtrToStringUTF8(errorPtr);
 					if (errorString is not null)
 					{
 						throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
