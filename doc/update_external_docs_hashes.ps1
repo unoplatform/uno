@@ -9,7 +9,7 @@ param(
 Write-Host "Updating external docs commit hashes..." -ForegroundColor Green
 
 # Use the provided GitHub token (if any) to authenticate API calls
-$githubToken = $GitHubToken
+$githubToken = if ($GitHubToken) { $GitHubToken } else { $env:GITHUB_TOKEN }
 $baseHeaders = @{
     "Accept"     = "application/vnd.github.v3+json"
     "User-Agent" = "Uno-Docs-Updater"
