@@ -17,38 +17,6 @@ using Uno.UI.RemoteControl.Helpers;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
-	//public class UnoHostWorkspaceServices(UnoHostService host, Workspace workspace) : HostWorkspaceServices
-	//{
-	//	/// <inheritdoc />
-	//	public override TWorkspaceService? GetService<TWorkspaceService>()
-	//		where TWorkspaceService : default
-	//		=> default!;
-
-	//	/// <inheritdoc />
-	//	public override IEnumerable<TLanguageService> FindLanguageServices<TLanguageService>(MetadataFilter filter)
-	//		=> new CSharp;
-
-	//	/// <inheritdoc />
-	//	public override HostServices HostServices { get; } = host;
-
-	//	/// <inheritdoc />
-	//	public override Workspace Workspace { get; } = workspace;
-	//}
-
-	//public class UnoHostService : HostServices
-	//{
-	//	/// <inheritdoc />
-	//	protected override HostWorkspaceServices CreateWorkspaceServices(Workspace workspace)
-	//		=> new UnoHostWorkspaceServices(this, workspace);
-	//}
-
-	//public class UnoLiveWorksSpace : Workspace
-	//{
-	//	/// <inheritdoc />
-	//	public UnoLiveWorksSpace(HostServices host, string? workspaceKind)
-	//		: base(host, ) { }
-	//}
-
 	internal static class CompilationWorkspaceProvider
 	{
 		private static string MSBuildBasePath = "";
@@ -97,13 +65,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			var globalProperties = properties.Where(property => IsValidProperty(property.Key)).ToDictionary();
 
 			MSBuildWorkspace workspace = null!;
-			//Microsoft.DotNet.Watch.IncrementalMSBuildWorkspace workspace = null!;
 			for (var i = 3; i > 0; i--)
 			{
 				try
 				{
 					workspace = MSBuildWorkspace.Create(globalProperties);
-					//workspace = new IncrementalMSBuildWorkspace(NullLogger.Instance);
 
 					workspace.WorkspaceFailed += (_sender, diag) =>
 					{
@@ -114,7 +80,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					};
 
 					await workspace.OpenProjectAsync(projectPath, cancellationToken: ct);
-					//await workspace.UpdateProjectConeAsync(projectPath, ct);
 					break;
 				}
 				catch (InvalidOperationException) when (i > 1)
