@@ -32,7 +32,6 @@ namespace Uno.UI.NativeElementHosting {
 				defs.appendChild(clipPath);
 				svgContainer.appendChild(defs);
 				document.body.appendChild(svgContainer);
-				clipPath.appendChild(this.clipPath);
 			}
 			this.clipPath.setAttribute("d", path);
 			this.clipPath.setAttribute("clip-rule", fillType);
