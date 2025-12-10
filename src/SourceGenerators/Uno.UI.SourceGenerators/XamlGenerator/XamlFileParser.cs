@@ -93,19 +93,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			try
 			{
 				var sourcePath = src.Item.File.Path;
-				var sourceText = src.Item.File.GetText(ct)!;
-				if (sourceText is null)
-				{
-					throw new Exception($"Failed to read additional file '{sourcePath}'");
-				}
+				var sourceText = src.Item.File.GetText(ct) ?? throw new Exception($"Failed to read additional file '{sourcePath}'");
+				var sourceLink = src.Link.Replace('\\', '/');
 
-				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, sourcePath, sourceText.GetChecksum());
+				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, sourcePath, sourceLink, sourceText.GetChecksum());
 				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
 				{
 					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
 					ScavengeCache();
-					Debug.Assert(cached.XamlFileDefinition.ParsingError is null); // We should not cache file that had exception.
-					return cached.XamlFileDefinition with { SourceLink = src.Link.Replace('\\', '/') };
+					return cached.XamlFileDefinition;
 				}
 
 				ScavengeCache();
@@ -128,17 +124,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				ct.ThrowIfCancellationRequested();
 
-				var xamlFileDefinition = new XamlFileDefinition(sourcePath, targetFilePath, sourceText.ToString(), sourceText.GetChecksum())
-				{
-					SourceLink = "--undefined--" // Set below, after caching
-				};
+				var xamlFileDefinition = new XamlFileDefinition(sourcePath, sourceLink, targetFilePath, sourceText.ToString(), sourceText.GetChecksum());
+				var ctx = new XamlFileParserContext(sourcePath);
 				try
 				{
-					VisitRoot(reader, ref xamlFileDefinition, ct);
-					if (!reader.DisableCaching)
-					{
-						_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
-					}
+					VisitRoot(reader, ref xamlFileDefinition, ref ctx, ct);
 				}
 				catch (OperationCanceledException)
 				{
@@ -146,27 +136,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				catch (__uno::Uno.Xaml.XamlParseException e)
 				{
-					xamlFileDefinition = xamlFileDefinition with { ParsingError = new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, sourcePath) };
+					ctx.ReportError(e.Message, e.LineNumber, e.LinePosition, null /* Do not forward inner */);
 				}
 				catch (XmlException e)
 				{
-					xamlFileDefinition = xamlFileDefinition with { ParsingError = new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, sourcePath) };
+					ctx.ReportError(e.Message, e.LineNumber, e.LinePosition, null /* Do not forward inner */);
 				}
-				catch (Exception e)
+				catch (Exception error)
 				{
-					xamlFileDefinition = xamlFileDefinition with
-					{
-						ParsingError = new XamlParsingException(
-							"Unable to process {2} node at Line {0}, position {1}".InvariantCultureFormat(reader.LineNumber, reader.LinePosition, reader.NodeType),
-							e,
-							reader.LineNumber,
-							reader.LinePosition,
-							sourcePath)
-					};
+					ctx.ReportError(
+						$"Unable to process {reader.NodeType} node at Line {reader.LineNumber}, position {reader.LinePosition}",
+						reader.LineNumber,
+						reader.LinePosition,
+						error);
 				}
 
-				// Note: we define the SourceLink after the cache as it's not considered in the cache key.
-				return xamlFileDefinition with { SourceLink = src.Link.Replace('\\', '/') };
+				xamlFileDefinition = xamlFileDefinition with
+				{
+					ParsingErrors = ctx.GetErrors()
+				};
+				if (!reader.DisableCaching)
+				{
+					_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+				}
+
+				return xamlFileDefinition;
 			}
 			catch (Exception e) when (e is not OperationCanceledException)
 			{
@@ -276,7 +270,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void VisitRoot(XamlXmlReader reader, ref XamlFileDefinition xamlFile, in CancellationToken ct)
+		private void VisitRoot(XamlXmlReader reader, ref XamlFileDefinition xamlFile, ref XamlFileParserContext ctx, in CancellationToken ct)
 		{
 			do
 			{
@@ -287,9 +281,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					case XamlNodeType.StartObject:
 						_depth++;
-						var root = new XamlObjectDefinition(reader, null);
+						var root = new XamlObjectDefinition(reader, xamlFile);
 						xamlFile.Objects.Add(root); // In order to keep alive parsed content if an exception occurs, we make sure to add the child before continuing parsing.
-						VisitObject(reader, ref root, ct);
+						VisitObject(reader, ref root, ref ctx, ct);
 						break;
 
 					case XamlNodeType.NamespaceDeclaration:
@@ -310,7 +304,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// );
 		}
 
-		private void VisitObject(XamlXmlReader reader, ref XamlObjectDefinition xamlObject, in CancellationToken ct)
+		private void VisitObject(XamlXmlReader reader, ref XamlObjectDefinition xamlObject, ref XamlFileParserContext ctx, in CancellationToken ct)
 		{
 			while (reader.Read())
 			{
@@ -321,16 +315,40 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					case XamlNodeType.StartMember:
 						_depth++;
-						var member = new XamlMemberDefinition(reader.Member, reader.LineNumber, reader.LinePosition, xamlObject);
+						var pos = reader.LinePosition;
+						XamlMemberDefinition? member;
+
+						// When missing commas in Binding expressions, the parser may create members with spaces in their name.
+						if (reader.Member.Name.Split([' '], StringSplitOptions.RemoveEmptyEntries) is { Length: > 1 } tokens)
+						{
+							// We create a positional members for each part except the last one.
+							foreach (var token in tokens.SkipLast(1))
+							{
+								var incompleteMember = new XamlMemberDefinition(new XamlMember(XamlConstants.PositionalParameters, reader.Member.DeclaringType, reader.Member.IsAttachable), reader.LineNumber, pos, xamlObject);
+								incompleteMember.Value = token;
+								xamlObject.Members.Add(incompleteMember);
+								pos += token.Length;
+								ctx.ReportError($"Missing comma between members of '{xamlObject.Type.Name}'", reader.LineNumber, pos);
+								pos++; // +1 for the space
+							}
+
+							// And init the actual member (the one which will be visited) with the last token.
+							member = new XamlMemberDefinition(new XamlMember(tokens.Last(), reader.Member.DeclaringType, reader.Member.IsAttachable), reader.LineNumber, pos, xamlObject);
+						}
+						else
+						{
+							member = new XamlMemberDefinition(reader.Member, reader.LineNumber, pos, xamlObject);
+						}
+
 						xamlObject.Members.Add(member); // In order to keep alive parsed content if an exception occurs, we make sure to add the member before continuing parsing.
-						VisitMember(reader, ref member, ct);
+						VisitMember(reader, ref member, ref ctx, ct);
 						break;
 
 					case XamlNodeType.StartObject:
 						_depth++;
 						var child = new XamlObjectDefinition(reader, xamlObject);
 						xamlObject.Objects.Add(child); // In order to keep alive parsed content if an exception occurs, we make sure to add the child before continuing parsing.
-						VisitObject(reader, ref child, ct);
+						VisitObject(reader, ref child, ref ctx, ct);
 						break;
 
 					case XamlNodeType.Value:
@@ -351,7 +369,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void VisitMember(XamlXmlReader reader, ref XamlMemberDefinition member, in CancellationToken ct)
+		private void VisitMember(XamlXmlReader reader, ref XamlMemberDefinition member, ref XamlFileParserContext ctx, in CancellationToken ct)
 		{
 			var lastWasLiteralInline = false;
 			var lastWasTrimSurroundingWhiteSpace = false;
@@ -369,9 +387,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return;
 
 					case XamlNodeType.Value:
-						if (IsLiteralInlineText(reader.Value, member, member.Owner))
+						if (IsLiteralInlineText(reader.Value, member))
 						{
-							var run = ConvertLiteralInlineTextToRun(reader, trimStart: !reader.PreserveWhitespace && lastWasTrimSurroundingWhiteSpace);
+							var run = ConvertLiteralInlineTextToRun(reader, member, trimStart: !reader.PreserveWhitespace && lastWasTrimSurroundingWhiteSpace);
 							member.Objects.Add(run);
 							lastWasLiteralInline = true;
 							lastWasTrimSurroundingWhiteSpace = false;
@@ -396,7 +414,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						var obj = new XamlObjectDefinition(reader, member.Owner, namespaces);
 						member.Objects.Add(obj); // In order to keep alive parsed content if an exception occurs, we make sure to add the object before continuing parsing.
-						VisitObject(reader, ref obj, ct);
+						VisitObject(reader, ref obj, ref ctx, ct);
 
 						if (!reader.PreserveWhitespace &&
 							lastWasLiteralInline &&
@@ -430,24 +448,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
-		{
-			return value is string
-				&& (
-					xamlObject.Type.Name is "TextBlock"
-						or "Bold"
-						or "Hyperlink"
-						or "Italic"
-						or "Underline"
-						or "Span"
-						or "Paragraph"
-				)
-				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
-		}
+		private static bool IsLiteralInlineText(object value, XamlMemberDefinition member)
+			=> value is string
+				&& member.Owner.Type.Name is "TextBlock"
+					or "Bold"
+					or "Hyperlink"
+					or "Italic"
+					or "Underline"
+					or "Span"
+					or "Paragraph"
+				&& member.Member.Name is "_UnknownContent"
+					or "Inlines";
 
-		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, bool trimStart)
+		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, XamlMemberDefinition member, bool trimStart)
 		{
-			var run = new XamlObjectDefinition(_runXamlType, reader.LineNumber, reader.LinePosition, owner: null, namespaces: null);
+			var run = new XamlObjectDefinition(reader, member.Owner) { Type = _runXamlType };
 			var runText = new XamlMemberDefinition(new XamlMember("Text", _runXamlType, false), reader.LineNumber, reader.LinePosition, run)
 			{
 				Value = trimStart ? ((string)reader.Value).TrimStart() : reader.Value

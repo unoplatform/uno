@@ -18,14 +18,18 @@ This is a remotely hosted publicly and provides:
 - A set of tools to search and fetch Uno Platform documentation
 - A set of prompts to create and develop Uno Platform applications.
 
-### Prompts
+### Predefined Prompts
 
-The prompts provided by the MCP are automatically registered in your environment when supported.
+The prompts provided by the MCP are automatically registered in your environment when supported by your AI agent (e.g., Claude, Codex, Copilot, etc.).
 
 Here are the currently supported prompts:
 
-- `/new`, used to create a new uno app with the best practices in mind.
-- `/init`, used to "prime" your current chat with uno's best practices. It's generally used in an existing app when adding new features.
+- `/new`, used to create a new Uno Platform app with the best practices in mind.
+- `/init`, used to "prime" your current chat with Uno's best practices. It's generally used in an existing app when adding new features.
+
+### Sample Prompts for Uno MCP Servers
+
+You can find common prompts to use with agents in our [getting started](xref:Uno.BuildYourApp.AI.Agents) section.
 
 ### Uno MCP Tools
 
@@ -64,3 +68,7 @@ The Pro license App MCP app tools are:
 
 - `uno_app_element_peer_action`, used to invoke a specific element automation peer action
 - `uno_app_get_element_datacontext`, used to get a textual representation of the DataContext on a FrameworkElement
+
+## Troubleshooting MCP Servers
+
+You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.

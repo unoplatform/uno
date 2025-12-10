@@ -79,6 +79,8 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 		var bounds = new Rect(default, newWindowSize);
 		SetBoundsAndVisibleBounds(bounds, bounds);
+		var size = new Windows.Graphics.SizeInt32((int)(newWindowSize.Width * RasterizationScale), (int)(newWindowSize.Height * RasterizationScale));
+		SetSizes(size, size);
 	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;

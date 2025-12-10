@@ -66,7 +66,7 @@ The Dev Server enables Hot Reload for a faster inner loop:
 - The TCP port number used by the app to connect back to the IDE is located in the <UnoRemoteControlPort> property of the [ProjectName].csproj.user file. If the port number does not match with the one found in the Uno Platform - Hot Reload output window, restart your IDE.
 - If the Dev Server does not start, ensure NuGet restore has completed successfully and Uno Platform packages are referenced by your project(s).
 
-### [**Visual Studio 2022**](#tab/vswints)
+### [**Visual Studio**](#tab/vswints)
 
 - The Output window in Visual Studio includes an output category named `Uno Platform`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
 

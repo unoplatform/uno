@@ -24,7 +24,11 @@ public sealed partial class PageStackEntry : DependencyObject
 	/// <param name="sourcePageType">The type of page associated with the navigation entry, as a type reference.</param>
 	/// <param name="parameter">The navigation parameter associated with the navigation entry.</param>
 	/// <param name="navigationTransitionInfo">Info about the animated transition associated with the navigation entry.</param>
-	public PageStackEntry(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)
+	public PageStackEntry(
+		[DynamicallyAccessedMembers(TypeMappings.TypeRequirements)]
+		Type sourcePageType,
+		object parameter,
+		NavigationTransitionInfo navigationTransitionInfo)
 	{
 		InitializeBinder();
 

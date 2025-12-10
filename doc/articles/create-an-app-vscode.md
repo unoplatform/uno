@@ -9,7 +9,7 @@ uid: Uno.GettingStarted.CreateAnApp.VSCode
 
 ## Create the App
 
-There are two ways to create your app. You can either use the Live Wizard or the `/new` Copilot Agent prompt.
+There are two ways to create your app. You can either use the Live Wizard or the `/mcp.uno.new` Copilot Agent prompt.
 
 # [**Live Wizard**](#tab/live-wizard)
 
@@ -70,7 +70,7 @@ Next, open the project using Visual Studio Code.
 
 # [**Copilot AI Prompt**](#tab/copilot-prompt)
 
-## Using the `/new` agent prompt
+## Using the `/mcp.uno.new` agent prompt
 
 1. Open VS Code in an empty new folder
 1. Add the Uno Platform MCP by creating a file named `.vscode/mcp.json`:
@@ -97,7 +97,7 @@ Next, open the project using Visual Studio Code.
 
     ![Agent mode](Assets/vscode-agent-mode.png)
 
-1. In the Copilot Window, type the `/new` then **Enter**.
+1. In the Copilot Window, type the `/mcp.uno.new` then **Enter**.
 1. The Agent will ask you for your app's description, write the following:
 
     ```text

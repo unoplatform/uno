@@ -3,7 +3,7 @@
 
 	<ItemGroup>
 		<UnoRuntimeEnabledPackage Include="Uno.UI.DevServer" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.devserver.targets'" />
-		<UnoRuntimeEnabledPackage Include="Uno.WinUI.DevServer"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.devserver.targets'"  />
+		<UnoRuntimeEnabledPackage Include="Uno.WinUI.DevServer" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.devserver.targets'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoRemoteControlConfigCookie) != ''">

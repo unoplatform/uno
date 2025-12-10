@@ -45,10 +45,15 @@
 	<Target Name="UpdateTasksSHA">
 
 		<ItemGroup>
+			<!-- 
+			IMPORTANT: adding csproj files here might cache the nuget Cache@2 process
+			to trash on every build since the csproj will be modified. Use the AssemblyName.props
+			pattern instead.
+			-->
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\**\*.cs" />
 			<_Sha1Replace Include="..\build\nuget\uno.winui.winappsdk.targets" />
 			<_Sha1Replace Include="..\build\nuget\uno.winui.runtime-replace.targets" />
-			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\AssemblyName.props" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
 			<_Sha1Replace Include="..\src\Uno.Sdk\**\*" />
 		</ItemGroup>
@@ -70,31 +75,11 @@
 		<WriteFilesTask FilesToProcess="@(_FilesContent)" />
 	</Target>
 
-	<Target Name="BuildCIMobile">
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
-			Projects="filters\Uno.UI-packages-netcoremobile.slnf"
-			Targets="Restore;Build"
-			RebaseOutputs="false"
-			BuildInParallel="true" />
-
-	</Target>
-
-	<Target Name="BuildCIWasm">
+	<Target Name="BuildCIPackages">
 
 		<MSBuild
 			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
-			Projects="filters\Uno.UI-packages-wasm.slnf"
-			Targets="Restore;Build"
-			RebaseOutputs="false"
-			BuildInParallel="true" />
-
-	</Target>
-
-	<Target Name="BuildCISkia">
-
-		<MSBuild
-			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
-			Projects="filters\Uno.UI-packages-skia.slnf"
+			Projects="filters\Uno.UI-packages-all.slnf"
 			Targets="Restore;Build"
 			RebaseOutputs="false"
 			BuildInParallel="true" />
@@ -109,7 +94,6 @@
 			Targets="Restore;Build"
 			RebaseOutputs="false"
 			BuildInParallel="true" />
-
 	</Target>
 
 	<Target Name="BuildSyncGenerator">
@@ -149,7 +133,7 @@
 
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="powershell .\import_external_docs.ps1" WorkingDirectory="..\doc" />
-		<Exec Command="powershell .\generate-llms-full.ps1 -InputFolder &quot;articles&quot; -OutputFile &quot;articles/llms/llms-full.txt&quot; -Llmstxt &quot;articles/llms/llms.txt&quot;" WorkingDirectory="..\doc" />
+		<Exec Command="powershell .\generate-llms-full.ps1 -InputFolder &quot;articles&quot; -LlmsTxtOutput &quot;articles/llms/llms.txt&quot; -LlmsFullTxtOutput &quot;articles/llms/llms-full.txt&quot; -BaseContentFile &quot;articles/llms/llms.txt&quot; -TocYmlPath &quot;articles/toc.yml&quot;" WorkingDirectory="..\doc" />
 		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools docfx --version $(DocfxVersion)" Condition="!exists('$(MSBuildThisFileDirectory)\tools\docfx.exe')" />
 		<Exec Command="$(MSBuildThisFileDirectory)\tools\docfx.exe ..\doc\docfx.json --debug -o $(OutputDir)\doc" />
 	</Target>
@@ -404,7 +388,26 @@
 		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.1.0-dev.29" IgnoreExitCode="true" />
 
 		<MakeDir Directories="$(OutputDir)\ApiDiff" />
-		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=%(_diffPackage.Identity) --other=%(_diffPackage.Other) --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff\ApiDiff.%(_diffPackage.Identity).$(NBGV_SemVer2).md" />
+
+		<ItemGroup>
+			<_DiffPackageInvocation Include="@(_diffPackage)">
+				<DiffBase>%(Identity)</DiffBase>
+				<DiffOther>%(Other)</DiffOther>
+				<DiffOutput>$(OutputDir)\ApiDiff\ApiDiff.%(Identity).$(NBGV_SemVer2).md</DiffOutput>
+			</_DiffPackageInvocation>
+		</ItemGroup>
+
+		<MSBuild
+			Projects="$(MSBuildProjectFullPath)"
+			Targets="_GenerateSinglePackageDiff"
+			Properties="CombinedConfiguration=$(CombinedConfiguration);DiffBase=%(_DiffPackageInvocation.DiffBase);DiffOther=%(_DiffPackageInvocation.DiffOther);DiffOutput=%(_DiffPackageInvocation.DiffOutput)"
+			BuildInParallel="true"
+			StopOnFirstFailure="true"
+			RebaseOutputs="false" />
+	</Target>
+
+	<Target Name="_GenerateSinglePackageDiff">
+		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(DiffBase) --other=$(DiffOther) --diffignore=PackageDiffIgnore.xml --outfile=$(DiffOutput)" />
 	</Target>
 
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">

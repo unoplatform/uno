@@ -190,7 +190,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out _shouldWriteErrorOnInvalidXaml))
 			{
-				_shouldWriteErrorOnInvalidXaml = true;
+				_shouldWriteErrorOnInvalidXaml = XamlFileGenerator.DefaultShouldWriteErrorOnInvalidXaml;
 			}
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("IsUiAutomationMappingEnabled") ?? "", out _isUiAutomationMappingEnabled))
@@ -430,7 +430,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						? xamlFiles.AsParallel().WithDegreeOfParallelism(1)
 						: xamlFiles.AsParallel())
 					.WithCancellation(ct)
-					.Select<XamlFileDefinition, (XamlFileDefinition definition, SourceText? code, Exception? error)>(file =>
+					.Select<XamlFileDefinition, (XamlFileDefinition definition, SourceText? code, IEnumerable<XamlGenerationException> errors)>(file =>
 					{
 						var generator = new XamlFileGenerator(
 							this,
@@ -462,28 +462,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							includeXamlNamespaces: includeXamlNamespaces
 						);
 
-						try
-						{
-							var csharpCode = generator.GenerateFile();
-							return new(file, csharpCode, null);
-						}
-						catch (Exception error)
-						{
-							return new(file, null, error);
-						}
+						var (code, errors) = generator.GenerateFile();
+						return new(file, code, errors);
 					})
 					.ToArray();
 
 				foreach (var csharpFile in csharpFiles)
 				{
-					// Note: We process parsing exception here in order to have it grouped with any other exception thrown during generation for this file.
-					if (csharpFile.definition.ParsingError is { } parseError)
+					// Note: We process parsing exceptions here in order to have them grouped with any other exception thrown during generation for this file.
+					foreach (var parseError in csharpFile.definition.ParsingErrors)
 					{
-						ProcessParsingException(parseError);
+						ProcessException(parseError);
 					}
-					if (csharpFile.error is { } genError)
+					foreach (var genError in csharpFile.errors)
 					{
-						ProcessParsingException(genError);
+						ProcessException(genError);
 					}
 					if (csharpFile.code is { } csharp)
 					{
@@ -500,7 +493,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				catch (Exception error)
 				{
-					ProcessParsingException(error);
+					ProcessException(error);
 				}
 
 				try
@@ -509,7 +502,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				catch (Exception error)
 				{
-					ProcessParsingException(error);
+					ProcessException(error);
 				}
 
 				TrackGenerationDone(stopwatch.Elapsed);
@@ -521,7 +514,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			catch (Exception e)
 			{
 				TrackGenerationFailed(e, stopwatch.Elapsed);
-				ProcessParsingException(e);
+				ProcessException(e);
 			}
 			finally
 			{
@@ -544,7 +537,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				""");
 		}
 
-		private void ProcessParsingException(Exception e)
+		private void ProcessException(Exception e)
 		{
 			IEnumerable<Exception> Flatten(Exception ex)
 			{
@@ -585,23 +578,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private Location? GetExceptionFileLocation(Exception exception)
 		{
-			if (exception is XamlParsingException xamlParsingException)
+			if (exception is IXamlLocation location) // XamlParsingException or XamlGenerationException
 			{
-				var xamlFile = _generatorContext.AdditionalFiles.FirstOrDefault(f => f.Path == xamlParsingException.FilePath);
+				var xamlFile = _generatorContext.AdditionalFiles.FirstOrDefault(f => f.Path == location.FilePath);
 
-				if (xamlFile != null
-					&& xamlFile.GetText() is { } xamlText
-					&& xamlParsingException.LineNumber.HasValue
-					&& xamlParsingException.LinePosition.HasValue)
+				if (xamlFile != null && xamlFile.GetText() is { } xamlText)
 				{
 					var linePosition = new LinePosition(
-						Math.Max(0, xamlParsingException.LineNumber.Value - 1),
-						Math.Max(0, xamlParsingException.LinePosition.Value - 1)
+						Math.Max(0, location.LineNumber - 1),
+						Math.Max(0, location.LinePosition - 1)
 					);
 
 					return Location.Create(
 						xamlFile.Path,
-						xamlText.Lines.ElementAtOrDefault(xamlParsingException.LineNumber.Value - 1).Span,
+						xamlText.Lines.ElementAtOrDefault(location.LineNumber - 1).Span,
 						new LinePositionSpan(linePosition, linePosition)
 					);
 				}

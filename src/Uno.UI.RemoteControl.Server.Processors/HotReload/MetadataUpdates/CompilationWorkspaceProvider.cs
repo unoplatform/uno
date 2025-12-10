@@ -34,6 +34,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 				// Unconditionally enable binlog generation in msbuild. See https://github.com/dotnet/project-system/blob/4210ce79cfd35154dbd858f056bfb9101f290e69/docs/design-time-builds.md?L61
 				Environment.SetEnvironmentVariable("MSBUILDDEBUGENGINE", "1");
+				Environment.SetEnvironmentVariable("MSBuildDebugEngine", "1"); // For case-sensitive environments like macOS
 				Environment.SetEnvironmentVariable("MSBUILDDEBUGPATH", logPath);
 			}
 

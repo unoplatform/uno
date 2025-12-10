@@ -10,7 +10,7 @@ You can start developing with various [**AI Agents**](xref:Uno.BuildYourApp.AI.A
 
 ## Hot Reload
 
-Make sure to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload) to enhance your Visual Studio 2022 or VS Code development experience.
+Make sure to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload) to enhance your development experience.
 
 ## App Solution Architecture
 

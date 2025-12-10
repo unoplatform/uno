@@ -4,15 +4,15 @@ The Uno Platform Status surfaces what Uno Platform is doing behind the scenes wh
 
 Its icon is located in the status bar of all supported IDEs.
 
-## [**Visual Studio 2022**](#tab/vswints)
+## [Visual Studio 2022/2026](#tab/vswints)
 
 ![Uno Platform Status](../Assets/uno-platform-status.png)
 
-## [**Visual Studio Code**](#tab/vscodets)
+## [Visual Studio Code](#tab/vscodets)
 
 ![Uno Platform Status](../Assets/uno-platform-status-code.png)
 
-## [**Rider**](#tab/riderts)
+## [Rider](#tab/riderts)
 
 ![Uno Platform Status](../Assets/uno-platform-status-rider.png)
 
@@ -54,7 +54,7 @@ To ensure consistency, the Uno tooling aligns itself with the package versions r
 
 ## Troubleshooting
 
-### [**Visual Studio 2022**](#tab/vswints)
+### [Visual Studio 2022](#tab/vswints)
 
 - The Output window in Visual Studio includes an output category named `Uno Platform - Dev Environment`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
 
@@ -70,7 +70,7 @@ To ensure consistency, the Uno tooling aligns itself with the package versions r
 
        ![Uno Platform output drop-down](../Assets/features/hotreload/vs-uno-platform-logs.png)
 
-### [**Visual Studio Code**](#tab/vscodets)
+### [Visual Studio Code](#tab/vscodets)
 
 - The Output window in Visual Studio Code includes an output category named `Uno Platform` in its drop-down menu. Diagnostic messages from the Uno Platform VS Code extension appear there.
 
@@ -84,7 +84,7 @@ To ensure consistency, the Uno tooling aligns itself with the package versions r
 
        ![`Uno Platform` output drop-down](../Assets/features/hotreload/vs-code-uno-platform-hr-output.png)
 
-### [**Rider**](#tab/riderts)
+### [Rider](#tab/riderts)
 
 - The Output window in Rider includes an output category named `Uno Platform` in its sidebar. Diagnostic messages from the Uno Platform Rider plugin appear there.
 

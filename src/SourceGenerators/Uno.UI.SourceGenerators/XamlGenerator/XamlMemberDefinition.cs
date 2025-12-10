@@ -39,6 +39,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public List<XamlObjectDefinition> Objects { get; } = [];
 
+		public string FilePath => Owner.FilePath;
+
 		public int LineNumber { get; }
 
 		public int LinePosition { get; }

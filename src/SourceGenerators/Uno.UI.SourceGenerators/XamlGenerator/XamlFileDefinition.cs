@@ -11,11 +11,12 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal sealed record class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>
+	internal sealed record class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>, IXamlLocation
 	{
-		public XamlFileDefinition(string file, string targetFilePath, string content, ImmutableArray<byte> checksum)
+		public XamlFileDefinition(string file, string link, string targetFilePath, string content, ImmutableArray<byte> checksum)
 		{
 			FilePath = file;
+			SourceLink = link;
 			TargetFilePath = targetFilePath;
 			Content = content;
 
@@ -34,14 +35,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public string FilePath { get; }
 
+		public int LineNumber => 1;
+
+		public int LinePosition => 1;
+
 		public string Checksum { get; }
 
-		public required string SourceLink { get; init; }
+		public string SourceLink { get; }
 
 		/// <summary>
 		/// Exception set by the parser if any error occurred during parsing
 		/// </summary>
-		public XamlParsingException? ParsingError { get; init; }
+		public ImmutableArray<XamlParsingException> ParsingErrors { get; init; } = ImmutableArray<XamlParsingException>.Empty;
 
 		/// <summary>
 		/// Provides the path to the file using an actual target path in the project

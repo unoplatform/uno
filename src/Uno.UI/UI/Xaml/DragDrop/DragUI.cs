@@ -18,11 +18,13 @@ namespace Microsoft.UI.Xaml
 			PointerDeviceType = pointerDeviceType;
 		}
 
-		internal PointerDeviceType PointerDeviceType { get; }
+		internal PointerDeviceType? PointerDeviceType { get; }
 
 		internal ImageSource? Content { get; set; }
 
 		internal Point? Anchor { get; set; }
+
+		internal bool IsExternalContent { get; set; }
 
 		public void SetContentFromBitmapImage(BitmapImage bitmapImage)
 			=> SetContentFromBitmapImage(bitmapImage, default);
@@ -31,6 +33,12 @@ namespace Microsoft.UI.Xaml
 		{
 			Content = bitmapImage;
 			Anchor = anchorPoint;
+		}
+
+		internal void SetContentFromExternalBitmapImage(BitmapImage bitmapImage)
+		{
+			Content = bitmapImage;
+			IsExternalContent = true;
 		}
 	}
 }

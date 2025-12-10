@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -63,7 +64,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			await test.RunAsync();
 		}
 
-		public class Test : TestBase
+		public partial class Test : TestBase
 		{
 			public Test(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
 				: base(new[] { xamlFile }, testFilePath, ShortName(testMethodName)) // We use only upper-cased char to reduce length of filename push to git)
@@ -80,8 +81,11 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			{
 			}
 
+			[GeneratedRegex("(?<slug>[A-Z][a-z])[a-z_]*")]
+			private static partial Regex GetShortNameRegex();
+
 			private static string ShortName(string name)
-				=> new string(name.Where(char.IsUpper).ToArray()); // We use only upper-cased char to reduce length of filename push to git
+				=> GetShortNameRegex().Replace(name, "${slug}"); // We use only upper-cased char to reduce length of filename push to git
 		}
 
 		public abstract class TestBase : CSharpSourceGeneratorVerifier<XamlCodeGenerator>.Test
@@ -223,7 +227,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 
 			protected override async Task<(Compilation compilation, ImmutableArray<Diagnostic> generatorDiagnostics)> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)
 			{
-				var resourceDirectory = Path.Combine(Path.GetDirectoryName(_testFilePath)!, TestOutputFolderName, _testMethodName);
+				var resourceDirectory = Path.Combine(Path.GetDirectoryName(_testFilePath)!, TestOutputFolderName, Path.GetFileNameWithoutExtension(_testFilePath), _testMethodName);
 
 				var (compilation, generatorDiagnostics) = await base.GetProjectCompilationAsync(project, verifier, cancellationToken);
 				var expectedNames = new HashSet<string>();
@@ -233,7 +237,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 					expectedNames.Add(GetFileNameFromTree(tree));
 				}
 
-				var currentTestPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
+				var currentTestPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{Path.GetFileNameWithoutExtension(_testFilePath)}.{_testMethodName}.";
 				foreach (var name in GetType().Assembly.GetManifestResourceNames())
 				{
 					if (!name.StartsWith(currentTestPrefix))
@@ -252,7 +256,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 
 			public TestBase AddGeneratedSources()
 			{
-				var expectedPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
+				var expectedPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{Path.GetFileNameWithoutExtension(_testFilePath)}.{_testMethodName}.";
 				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames())
 				{
 					if (!resourceName.StartsWith(expectedPrefix))

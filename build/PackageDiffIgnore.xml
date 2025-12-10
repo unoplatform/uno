@@ -2135,6 +2135,14 @@
 			<!-- END ListViewBase selection changes -->
 		</Methods>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="6.4">
+	  <Types>
+		  <Member fullName="Uno.Media.Playback.IMediaPlayerExtension" reason="Does not exist in WinUI" />
+		  <Member fullName="Uno.Media.Playback.IMediaPlayerEventsExtension" reason="Does not exist in WinUI" />
+		  <Member fullName="Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension" reason="Does not exist in WinUI" />
+		  <Member fullName="Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension" reason="Does not exist in WinUI" />
+	  </Types>
+	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.

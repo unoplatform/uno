@@ -126,6 +126,7 @@ stages:
 - stage: runtime_tests_skia_linux
   displayName: Tests - Desktop Skia Linux
   dependsOn:
+    - Setup
     - runtime_tests_skia_build
 
   jobs:
@@ -145,6 +146,7 @@ stages:
 - stage: runtime_tests_skia_macos
   displayName: Tests - Desktop Skia macOS
   dependsOn:
+    - Setup
     - runtime_tests_skia_build
 
   jobs:
@@ -164,6 +166,7 @@ stages:
 - stage: runtime_tests_skia_windows
   displayName: Tests - Desktop Skia Windows
   dependsOn:
+    - Setup
     - runtime_tests_skia_build
 
   jobs:

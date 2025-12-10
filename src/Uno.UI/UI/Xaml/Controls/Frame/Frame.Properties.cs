@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Navigation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -117,6 +118,8 @@ partial class Frame
 	/// <summary>
 	/// Identifies the CurrentSourcePageType dependency property.
 	/// </summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "`typeof(Type)` triggers IL2111 regarding `Type.TypeInitializer`, but Uno doesn't use `Type.TypeInitializer`!")]
+	// warning IL2111: Method 'System.Type.TypeInitializer.get' with parameters or return value with `DynamicallyAccessedMembersAttribute` is accessed via reflection. Trimmer can't guarantee availability of the requirements of the method.
 	public static DependencyProperty CurrentSourcePageTypeProperty { get; } =
 		DependencyProperty.Register(
 			nameof(CurrentSourcePageType),
@@ -174,6 +177,8 @@ partial class Frame
 	/// <summary>
 	/// Identifies the SourcePageType dependency property.
 	/// </summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "`typeof(Type)` triggers IL2111 regarding `Type.TypeInitializer`, but Uno doesn't use `Type.TypeInitializer`!")]
+	// warning IL2111: Method 'System.Type.TypeInitializer.get' with parameters or return value with `DynamicallyAccessedMembersAttribute` is accessed via reflection. Trimmer can't guarantee availability of the requirements of the method.
 	public static DependencyProperty SourcePageTypeProperty { get; } =
 		DependencyProperty.Register(
 			nameof(SourcePageType),

@@ -1235,6 +1235,12 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				Update(isIntermediate);
 
+				if (isIntermediate)
+				{
+					// when intermediate (aka manual) scrolling occurs,
+					// we want to cancel any pending snapping, to prevent snapping to occur mid-scroll.
+					_snapPointsTimer?.Stop();
+				}
 				if (!isIntermediate
 #if __APPLE_UIKIT__ || __ANDROID__
 					&& (_presenter as ListViewBaseScrollContentPresenter)?.NativePanel?.UseNativeSnapping != true
@@ -1258,6 +1264,7 @@ namespace Microsoft.UI.Xaml.Controls
 								DelayedMoveToSnapPoint();
 							};
 						}
+
 						_snapPointsTimer.Start();
 					}
 				}

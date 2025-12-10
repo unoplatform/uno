@@ -27,7 +27,7 @@ jobs:
     parameters:
       UnoCheckParameters: '--tfm net10.0-android'
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net10.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net10.0-android /bl:$(build.artifactstagingdirectory)/logs/build-skia-android.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net10.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net10.0-android -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-android.binlog
     displayName: Build Android Skia Head
 
   - task: CopyFiles@2
@@ -40,12 +40,20 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
+  - pwsh: |
+      $artifactName = "uitests-android-skia-build-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      Write-Host "Publishing Android Samples artifact: $artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
+    name: set_android_artifact
+    displayName: 'Set Android Samples Artifact Name'
+
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Android Binaries'
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)/android
-      ArtifactName: uitests-android-skia-build
+      ArtifactName: $(SamplesAppArtifactName)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
