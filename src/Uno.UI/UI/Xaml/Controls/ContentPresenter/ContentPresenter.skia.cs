@@ -154,6 +154,7 @@ partial class ContentPresenter
 		for (var index = 0; index < _nativeHosts.Count; index++)
 		{
 			var host = rentedArray[index].Item2;
+			var order = rentedArray[index].Item1;
 
 			if (host._nativeElementHostingExtension.Value.SupportsZIndex())
 			{
@@ -163,7 +164,7 @@ partial class ContentPresenter
 			{
 				if (host._nativeElementAttached)
 				{
-					if (index == -1)
+					if (order == -1)
 					{
 						// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
 						Debug.Assert(host.IsNativeHost);
@@ -177,7 +178,7 @@ partial class ContentPresenter
 						host.ArrangeNativeElement();
 					}
 				}
-				else if (index != -1)
+				else if (order != -1)
 				{
 					host.AttachNativeElement();
 					host.ArrangeNativeElement();
