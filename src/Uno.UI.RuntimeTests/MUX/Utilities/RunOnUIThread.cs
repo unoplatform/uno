@@ -8,6 +8,10 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Dispatching;
+using Private.Infrastructure;
+
+
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -26,7 +30,72 @@ namespace MUXControlsTestApp.Utilities
 	{
 		public static void Execute(Action action)
 		{
-			Execute(CoreApplication.MainView, action);
+			Execute(TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue, action);
+		}
+
+		public static void Execute(DispatcherQueue dispatcherQueue, Action action)
+		{
+			Exception exception = null;
+
+			if (dispatcherQueue.HasThreadAccess)
+			{
+				action();
+			}
+			else
+			{
+				// We're not on the UI thread, queue the work. Make sure that the action is not run until
+				// the splash screen is dismissed (i.e. that the window content is present).
+				var workComplete = new AutoResetEvent(false);
+#if false
+				App.RunAfterSplashScreenDismissed(() =>
+#endif
+				{
+					// If the Splash screen dismissal happens on the UI thread, run the action right now.
+					if (dispatcherQueue.HasThreadAccess)
+					{
+						try
+						{
+							action();
+						}
+						catch (Exception e)
+						{
+							exception = e;
+							throw;
+						}
+						finally // Unblock calling thread even if action() throws
+						{
+							workComplete.Set();
+						}
+					}
+					else
+					{
+						// Otherwise queue the work to the UI thread and then set the completion event on that thread.
+						var ignore = dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal,
+							() =>
+							{
+								try
+								{
+									action();
+								}
+								catch (Exception e)
+								{
+									exception = e;
+									throw;
+								}
+								finally // Unblock calling thread even if action() throws
+								{
+									workComplete.Set();
+								}
+							});
+					}
+				}
+
+				workComplete.WaitOne();
+				if (exception != null)
+				{
+					Verify.Fail("Exception thrown by action on the UI thread: " + exception.ToString());
+				}
+			}
 		}
 
 		public static void Execute(CoreApplicationView whichView, Action action)
