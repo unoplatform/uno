@@ -13,13 +13,13 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 {
 	/// <summary>
-    /// The application builder used to create the application instance, used in normal startup.
-    /// </summary>
+	/// The application builder used to create the application instance, used in normal startup.
+	/// </summary>
 	private static Func<Application>? _appBuilder;
 
 	/// <summary>
-    /// The application builder used to create an ALC based application instance.
-    /// </summary>
+	/// The application builder used to create an ALC based application instance.
+	/// </summary>
 	private Func<Application>? _instanceAppBuilder;
 
 	[ThreadStatic] private static bool _isDispatcherThread;
