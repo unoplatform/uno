@@ -32,6 +32,7 @@ jobs:
         uses: ./.github/actions/docs-update
         with:
           branch: ${{ inputs.branch || 'master' }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set target branch
         id: targetbranch
@@ -59,17 +60,13 @@ jobs:
           commit-message: 'chore: Update external docs commit hashes'
           title: "chore(docs): External Docs Update - ${{ inputs.branch || 'master' }}"
           body: |
-            This updates the external documentation commit hashes in `doc/import_external_docs.ps1` to the latest commits from each repository's default branch.
+            This updates the external documentation commit hashes in `doc/import_external_docs.ps1`.
 
-            Each repository's default branch (main, master, or configured default) is automatically detected and used.
+            Behavior per run:
+
+            - When run against `master`, each repository is updated to the latest commit on its default branch (main, master, or other configured default).
+            - When run against a `release/stable/*` branch, each repository is checked for all `release/stable/*` branches; if any exist, the one with the highest version suffix is selected and used. If no such branch exists, the repository's default branch is used instead.
 
             This is an automated update created by the external docs updater workflow.
           labels: docs-update
           draft: false
-
-      - name: Enable Pull Request Automerge
-        if: steps.cpr.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
