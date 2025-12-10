@@ -490,4 +490,35 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
+
+		// NSMenu (UNOMenu)
+		[DllImport("libUnoNativeMac.dylib")]
+		internal static unsafe extern void uno_menu_set_click_callback(delegate* unmanaged[Cdecl]<sbyte*, void> callback);
+
+		[DllImport("libUnoNativeMac.dylib")]
+		internal static extern void uno_menu_begin();
+
+		[DllImport("libUnoNativeMac.dylib", CharSet = CharSet.Ansi)]
+		internal static extern void uno_menu_begin_top(string id, string title);
+
+		[DllImport("libUnoNativeMac.dylib", CharSet = CharSet.Ansi)]
+		internal static extern void uno_menu_add_item(string id, string title, string? keyEquivalent);
+
+		[DllImport("libUnoNativeMac.dylib")]
+		internal static extern void uno_menu_add_separator();
+
+		[DllImport("libUnoNativeMac.dylib", CharSet = CharSet.Ansi)]
+		internal static extern void uno_menu_begin_submenu(string id, string title);
+
+		[DllImport("libUnoNativeMac.dylib")]
+		internal static extern void uno_menu_end_submenu();
+
+		[DllImport("libUnoNativeMac.dylib")]
+		internal static extern void uno_menu_end_top();
+
+		[DllImport("libUnoNativeMac.dylib")]
+		internal static extern void uno_menu_commit();
+
+		[DllImport("libUnoNativeMac.dylib", CharSet = CharSet.Ansi)]
+		internal static extern void uno_menu_set_enabled(string id, bool enabled);
 }
