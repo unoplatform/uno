@@ -13,9 +13,9 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 {
 	private readonly ILogger<UnoToolsLocator> _logger = logger;
 
-	public async Task<string?> ResolveSettingsExecutableAsync()
+	public async Task<string?> ResolveSettingsExecutableAsync(string workDirectory)
 	{
-		var sdkVersion = await GetSdkVersionFromGlobalJson();
+		var sdkVersion = await GetSdkVersionFromGlobalJson(workDirectory);
 
 		if (sdkVersion.sdkVersion == null || sdkVersion.sdkPackage == null)
 		{
@@ -45,9 +45,9 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 		return studioPath;
 	}
 
-	public async Task<string?> ResolveHostExecutableAsync()
+	public async Task<string?> ResolveHostExecutableAsync(string workDirectory)
 	{
-		var sdkVersion = await GetSdkVersionFromGlobalJson();
+		var sdkVersion = await GetSdkVersionFromGlobalJson(workDirectory);
 		if (sdkVersion.sdkVersion == null || sdkVersion.sdkPackage == null)
 		{
 			_logger.LogError("Could not determine SDK version from global.json.");
@@ -90,11 +90,11 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 		return null;
 	}
 
-	private async Task<(string? sdkPackage, string? sdkVersion)> GetSdkVersionFromGlobalJson()
+	private async Task<(string? sdkPackage, string? sdkVersion)> GetSdkVersionFromGlobalJson(string searchDirectory)
 	{
 		try
 		{
-			var globalJsonPath = FindGlobalJson(Directory.GetCurrentDirectory());
+			var globalJsonPath = FindGlobalJson(searchDirectory);
 			if (globalJsonPath is null)
 			{
 				_logger.LogError("No global.json found in current directory or parent directories. Please run this command from within a project that uses Uno SDK.");
