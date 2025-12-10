@@ -994,7 +994,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Tab_Handling()
+		public async Task When_Text_Contains_Tabs_Does_Not_Throw()
 		{
 			// This used to throw an exception
 			await UITestHelper.Load(new TextBlock
