@@ -26,6 +26,9 @@ namespace Uno.UI.Runtime.Skia.Native
 		[DllImport("libc", SetLastError = true)]
 		public static extern int close(int fd);
 
+		[DllImport("libc", CharSet = CharSet.Ansi)]
+		public static extern IntPtr strerror(int errno);
+
 		[DllImport("libc", SetLastError = true)]
 		public static extern int ioctl(int fd, FbIoCtl code, void* arg);
 

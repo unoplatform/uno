@@ -22,6 +22,9 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
+using Uno.ApplicationModel.DataTransfer;
+using Uno.Foundation.Extensibility;
+using Uno.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
@@ -977,6 +980,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Scrolling_Updates_After_Pasting_Long_Text()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -1726,6 +1734,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -1891,6 +1903,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -1987,6 +2003,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -2040,6 +2060,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste_History_Remains_Intact()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -2058,6 +2083,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var text = "copied content";
 			dp.SetText(text);
 			Clipboard.SetContent(dp);
+			await Task.Delay(500);
 
 			// This actually matches WinUI. text comes before "initial" and text2 comes after text
 
@@ -2069,6 +2095,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var text2 = "copied content 2";
 			dp2.SetText(text2);
 			Clipboard.SetContent(dp2);
+			await Task.Delay(500);
 
 			SUT.PasteFromClipboard();
 			await WindowHelper.WaitForIdle();
@@ -2089,6 +2116,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste_The_Same_Text()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -2738,7 +2770,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			var bounds = SUT.GetAbsoluteBounds();
-			mouse.MoveTo(bounds.GetCenter());
+			mouse.MoveTo(bounds.Location.Offset(145, 50));
 			await WindowHelper.WaitForIdle();
 
 			mouse.Press();
@@ -2881,6 +2913,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Clipboard can't be read for security reasons.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -2956,8 +2992,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(13, SUT.SelectionStart);
-			Assert.AreEqual(26, SUT.SelectionLength);
+			Assert.AreEqual(25, SUT.SelectionStart);
+			Assert.AreEqual(14, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -3537,6 +3573,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -4066,6 +4106,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// TODO: Investigate what goes wrong here on Wasm Skia.
 				Assert.Inconclusive("Not working on Wasm Skia, unknown issue.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -4214,10 +4258,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				// For some reason, the caret sometimes appears black, and sometimes as very dark grey (#FF030303), so we check for both
-				Color[] blacks = [Colors.Black, Colors.FromARGB(0xFF, 0x03, 0x03, 0x03)];
-				if (blacks.Any(b => HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), b)) &&
-					blacks.All(b => !HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black)))
+				// this color is the result of alpha blending 0xE4000000 (the default caret color) on top of 0xFFFFFFFF
+				var black = Colors.White.AlphaBlend(((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
+				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), black) &&
+					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), black))
 				{
 					break;
 				}
@@ -4528,6 +4572,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // needs paste permission
 		public async Task When_MaxLine_Paste()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox

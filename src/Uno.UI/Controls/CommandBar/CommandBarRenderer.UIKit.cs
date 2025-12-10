@@ -17,8 +17,8 @@ namespace Uno.UI.Controls
 {
 	internal partial class CommandBarRenderer : Renderer<CommandBar, UINavigationBar>
 	{
-		private static DependencyProperty BackButtonForegroundProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonForeground");
-		private static DependencyProperty BackButtonIconProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonIcon");
+		private static DependencyProperty BackButtonForegroundProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions, Uno.UI.Toolkit", "BackButtonForeground");
+		private static DependencyProperty BackButtonIconProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions, Uno.UI.Toolkit", "BackButtonIcon");
 
 		public CommandBarRenderer(CommandBar element) : base(element) { }
 

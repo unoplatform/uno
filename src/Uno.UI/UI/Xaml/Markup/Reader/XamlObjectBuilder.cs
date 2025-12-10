@@ -772,6 +772,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		{
 			if (TypeResolver.IsCollectionOrListType(property.Type))
 			{
+				[UnconditionalSuppressMessage("Trimming", "IL3050", Justification = "Hopefully Uno.UI.SourceGenerators.BindableTypeProviders.BindableTypeProvidersSourceGenerator will preserve what is needed.")]
 				object BuildInstance()
 				{
 					if (property.Type.GetGenericTypeDefinition() == typeof(IList<>))

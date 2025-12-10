@@ -4,6 +4,8 @@ using System.Reflection;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
+using System.Diagnostics.CodeAnalysis;
+
 
 #if NETFX_CORE
 using Microsoft.UI.Xaml;
@@ -79,7 +81,7 @@ namespace Microsoft.UI.Xaml
 			var currentType = element.GetType();
 			do
 			{
-				fieldInfo = currentType.GetTypeInfo().GetDeclaredField(property + "Property");
+				fieldInfo = GetField(currentType, property + "Property");
 
 				if (fieldInfo == null)
 				{
@@ -96,6 +98,11 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return null;
+
+			[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the field exists.")]
+			[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the field exists.")]
+			static FieldInfo GetField(Type type, string fieldName)
+				=> type.GetTypeInfo().GetDeclaredField(fieldName);
 		}
 
 		private static DependencyProperty GetDependencyPropertyFromProperties(object element, string property)
@@ -105,7 +112,7 @@ namespace Microsoft.UI.Xaml
 
 			do
 			{
-				propertyInfo = currentType.GetTypeInfo().GetDeclaredProperty(property + "Property");
+				propertyInfo = GetProperty(currentType, property + "Property");
 
 				if (propertyInfo == null)
 				{
@@ -122,6 +129,11 @@ namespace Microsoft.UI.Xaml
 
 
 			return null;
+
+			[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the property exists.")]
+			[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the property exists.")]
+			static PropertyInfo GetProperty(Type type, string propertyName)
+				=> type.GetTypeInfo().GetDeclaredProperty(propertyName);
 		}
 
 		public static T Binding<T>(this T element, string property, string propertyPath) where T : DependencyObject

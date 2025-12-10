@@ -30,7 +30,7 @@ jobs:
 
     # Use pre-defined local nuget cache for restore
     - name: NUGET_PACKAGES
-      value: 'C:\NugetPackages'
+      value: 'C:\NugetPackages\packages'
 
     - name: UNO_UWP_BUILD
       value: ${{ parameters.UNO_UWP_BUILD }}
@@ -51,6 +51,13 @@ jobs:
   - template: ../templates/dotnet-mobile-install-windows.yml
     parameters:
       UnoCheckParameters: '--tfm net10.0-ios --tfm net10.0-maccatalyst --tfm net10.0-android --tfm net10.0-tvos'
+  
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later
@@ -63,53 +70,16 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-$(XAML_FLAVOR_BUILD).binlog
-    displayName: Building Mobile binaries
-
-  - powershell: |
-      Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
-    displayName: Building Reference Binaries
-  
-  ## Restore skia-macos native assets
-  - task: DownloadPipelineArtifact@2
-    displayName: Restoring macOS native assets
-    inputs:
-      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
-      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
-
-  - powershell: |
-      Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCISkia "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
-    displayName: Building Skia Binaries
-
-  - powershell: |
-      Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIWasm "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD).binlog
-    displayName: Building Wasm Binaries
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIPackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-packages-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Managed binaries
 
   - task: MSBuild@1
-    displayName: Building WinAppSDK package binaries
+    displayName: Building WinAppSDK and Graphics3DGL package binaries
     inputs:
       solution: build/filters/Uno.UI-packages-windows.slnf
       msbuildLocationMethod: version
       msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
-      clean: false
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
-
-  - task: MSBuild@1
-    displayName: Building WinAppSDK Graphics3DGL package binaries
-    condition: and(succeeded(), eq(variables.UNO_UWP_BUILD, false))
-    inputs:
-      solution: src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(NBGV_SemVer2) /p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)\vslatest /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-graphics3dgl-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(NBGV_SemVer2) /p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)\vslatest /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -121,7 +91,6 @@ jobs:
       solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
-      msbuildArchitecture: x86
       msbuildArguments: /r /m /v:m /t:BuildNuGetPackage "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(XAML_FLAVOR_BUILD)-$(NBGV_SemVer2)-generate-packages.binlog
       clean: false
       restoreNugetPackages: false

@@ -18,6 +18,8 @@ jobs:
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
+    # Disable analyzers for eligible projects in samples to improve performance
+
   steps:
   - checkout: self
     clean: true
@@ -27,7 +29,7 @@ jobs:
     parameters:
       UnoCheckParameters: '--tfm net10.0-android'
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -r android-x64 -f net10.0-android -p:UnoTargetFrameworkOverride=net10.0-android -p:ApplicationId=uno.platform.samplesapp.skia.coreclr -p:UseMonoRuntime=false -p:SkiaSharpVersion=3.119.2-preview.1 /bl:$(build.artifactstagingdirectory)/logs/build-skia-android-coreclr.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -r android-x64 -f net10.0-android -p:UnoTargetFrameworkOverride=net10.0-android -p:ApplicationId=uno.platform.samplesapp.skia.coreclr -p:UseMonoRuntime=false -p:SkiaSharpVersion=3.119.2-preview.1 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$(build.artifactstagingdirectory)/logs/build-skia-android-coreclr.binlog
     displayName: Build Android+CoreCLR Skia Head
 
   - script: >
@@ -45,12 +47,20 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
+  - pwsh: |
+      $artifactName = "uitests-android-coreclr-skia-build-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      Write-Host "Publishing Android CoreCLR artifact: $artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
+    name: set_android_coreclr_artifact
+    displayName: 'Set Android CoreCLR Artifact Name'
+
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Android+CoreCLR Binaries'
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)/android-coreclr
-      ArtifactName: uitests-android-coreclr-skia-build
+      ArtifactName: $(SamplesAppArtifactName)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
