@@ -8,6 +8,8 @@ using System.IO;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.XamlGenerator;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators.CommunityToolkitMvvm;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Xml;
 using System.Threading;
@@ -38,9 +40,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private INamedTypeSymbol? _nsObjectSymbol;
 			private INamedTypeSymbol? _nonBindableSymbol;
 			private INamedTypeSymbol? _resourceDictionarySymbol;
-			private INamedTypeSymbol? _observableObjectSymbol;
-			private INamedTypeSymbol? _observableObjectAttributeSymbol;
-			private INamedTypeSymbol? _inotifyPropertyChangedSymbol;
 			private IModuleSymbol? _currentModule;
 			private string? _projectFullPath;
 			private string? _projectDirectory;
@@ -49,6 +48,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private string? _assemblyName;
 			private bool _xamlResourcesTrimming;
 			private CancellationToken _cancellationToken;
+			private IBindableTypeProvider[] _bindableTypeProviders = Array.Empty<IBindableTypeProvider>();
 
 			public string[] AnalyzerSuppressions { get; set; } = Array.Empty<string>();
 
@@ -89,10 +89,13 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_nsObjectSymbol = context.Compilation.GetTypeByMetadataName("Foundation.NSObject");
 						_nonBindableSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Data.NonBindableAttribute");
 						_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.ResourceDictionary");
-						_observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
-						_observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute");
-						_inotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged");
 						_currentModule = context.Compilation.SourceModule;
+
+						// Initialize bindable type providers from third-party generators
+						_bindableTypeProviders = new IBindableTypeProvider[]
+						{
+							new MvvmBindableTypeProvider(context.Compilation)
+						};
 
 						var modules = from ext in context.Compilation.ExternalReferences
 									  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
@@ -175,41 +178,19 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private bool IsBindableType(INamedTypeSymbol type)
 			{
-				// Get attributes once to avoid multiple enumerations
-				var attributes = type.GetAllAttributes();
-
 				// Check if type has [Bindable] attribute (original behavior)
-				if (attributes.Any(a => a.AttributeClass?.Name == "BindableAttribute"))
+				if (type.GetAllAttributes().Any(a => a.AttributeClass?.Name == "BindableAttribute"))
 				{
 					return true;
 				}
 
-				// Check if type has [ObservableObject] attribute (CommunityToolkit MVVM)
-				if (_observableObjectAttributeSymbol != null
-					&& attributes.Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, _observableObjectAttributeSymbol)))
+				// Check with third-party bindable type providers
+				foreach (var provider in _bindableTypeProviders)
 				{
-					return true;
-				}
-
-				// Check if type inherits from ObservableObject (CommunityToolkit MVVM)
-				if (_observableObjectSymbol != null)
-				{
-					var baseType = type.BaseType;
-					while (baseType != null)
+					if (provider.IsBindableType(type))
 					{
-						if (SymbolEqualityComparer.Default.Equals(baseType, _observableObjectSymbol))
-						{
-							return true;
-						}
-						baseType = baseType.BaseType;
+						return true;
 					}
-				}
-
-				// Check if type implements INotifyPropertyChanged (fallback for other MVVM implementations)
-				if (_inotifyPropertyChangedSymbol != null
-					&& type.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, _inotifyPropertyChangedSymbol)))
-				{
-					return true;
 				}
 
 				return false;
