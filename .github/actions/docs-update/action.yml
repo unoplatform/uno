@@ -8,8 +8,8 @@ inputs:
     default: 'master'
 
   github_token:
-    description: 'GitHub token used for authenticated API calls'
-    required: false
+  description: 'GitHub token used for authenticated API calls'
+  required: false
 
 outputs:
   has_changes:
@@ -27,7 +27,8 @@ runs:
     - name: Update external docs commit hashes
       shell: pwsh
       run: |
-        ./doc/update_external_docs_hashes.ps1 -Branch '${{ inputs.branch }}' -GitHubToken '${{ inputs.github_token }}'
+        $env:GITHUB_TOKEN = '${{ inputs.github_token }}'
+        ./doc/update_external_docs_hashes.ps1 -Branch '${{ inputs.branch }}'
 
     - name: Check for changes
       id: check_changes
