@@ -1658,6 +1658,48 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(new Vector2(31, 4), control.Vec2);
 		}
 
+		[TestMethod]
+		public void When_CustomMarkupExtension_Simple()
+		{
+			var xaml =
+				"""
+				<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:local='using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests' Tag="{local:CustomMarkupExtension Value1=Hello, Value2=World}" />
+				""";
+
+			var element = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as Grid;
+
+			Assert.IsNotNull(element);
+			Assert.AreEqual("Hello,World", element.Tag);
+		}
+
+		[TestMethod]
+		public void When_CustomMarkupExtension_Responsive()
+		{
+			var xaml =
+				"""
+				<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:local='using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests' Grid.RowSpan="{local:ResponsiveExtension Narrow=1, Wide=2}" />
+				""";
+
+			var element = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as Grid;
+
+			Assert.IsNotNull(element);
+			Assert.AreEqual(2, Grid.GetRowSpan(element));
+		}
+
+		[TestMethod]
+		public void When_CustomMarkupExtension_ShortName()
+		{
+			var xaml =
+				"""
+				<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:local='using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests' Tag="{local:CustomMarkup Value1=A, Value2=B}" />
+				""";
+
+			var element = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as Grid;
+
+			Assert.IsNotNull(element);
+			Assert.AreEqual("A,B", element.Tag);
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;

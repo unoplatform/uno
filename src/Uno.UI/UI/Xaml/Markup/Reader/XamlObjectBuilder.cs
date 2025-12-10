@@ -956,6 +956,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			{
 				ProcessStaticResourceMarkupNode(instance, member, propertyInfo);
 			}
+			else
+			{
+				// Handle custom markup extensions
+				ProcessCustomMarkupExtension(instance, rootInstance, member, propertyInfo);
+			}
 		}
 
 		private void ProcessStaticResourceMarkupNode(object instance, XamlMemberDefinition member, PropertyInfo? propertyInfo)
@@ -1018,6 +1023,36 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 							true
 						);
 					}
+				}
+			}
+		}
+
+		private void ProcessCustomMarkupExtension(object instance, object? rootInstance, XamlMemberDefinition member, PropertyInfo? propertyInfo)
+		{
+			var extensionNode = member.Objects.FirstOrDefault();
+			if (extensionNode == null)
+			{
+				return;
+			}
+
+			// Load the markup extension object which will process its members and call ProvideValue
+			var memberContext = propertyInfo != null 
+				? new MemberInitializationContext(instance, propertyInfo)
+				: null;
+
+			var value = LoadObject(extensionNode, rootInstance, memberContext: memberContext);
+
+			// Set the value on the target instance
+			if (value != null)
+			{
+				if (propertyInfo != null)
+				{
+					GetPropertySetter(propertyInfo).Invoke(instance, new[] { value });
+				}
+				else if (TypeResolver.FindDependencyProperty(member) is { } dependencyProperty &&
+						 instance is DependencyObject dependencyObject)
+				{
+					dependencyObject.SetValue(dependencyProperty, value);
 				}
 			}
 		}
@@ -1253,7 +1288,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			return false;
 		}
 
-		private static bool IsMarkupExtension(XamlMemberDefinition member)
+		private bool IsMarkupExtension(XamlMemberDefinition member)
 			=> member
 				.Objects
 				.Where(m =>
@@ -1263,8 +1298,20 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					|| m.Type.Name == "ThemeResource"
 					|| m.Type.Name == "CustomResource"
 					|| m.Type.Name == "TemplateBinding"
+					|| IsCustomMarkupExtension(m.Type)
 				)
 				.Any();
+
+		private bool IsCustomMarkupExtension(XamlType xamlType)
+		{
+			var type = TypeResolver.FindType(xamlType);
+			if (type == null)
+			{
+				// Try with "Extension" suffix
+				type = TypeResolver.FindType(xamlType.PreferredXamlNamespace, xamlType.Name + "Extension");
+			}
+			return type?.Is<MarkupExtension>() == true;
+		}
 
 		private void AddGenericDictionaryItems(
 			IDictionary<object, object> dictionary,
