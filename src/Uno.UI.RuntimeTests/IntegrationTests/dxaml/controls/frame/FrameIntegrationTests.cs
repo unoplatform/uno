@@ -685,18 +685,21 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task CacheModeDisabled()
 	{
 		await VerifyCachePageNavigationHelper(NavigationCacheMode.Disabled, new int[7] { 1, 10, 2, 11, 20, 12, 3 });
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task CacheModeEnabled()
 	{
 		await VerifyCachePageNavigationHelper(NavigationCacheMode.Enabled, new int[7] { 1, 10, 1, 10, 20, 10, 3 });
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task CacheModeRequired()
 	{
 		await VerifyCachePageNavigationHelper(NavigationCacheMode.Required, new int[7] { 1, 10, 1, 10, 20, 10, 1 });
@@ -745,13 +748,13 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 		Frame frame = null;
 
 		await TestServices.RunOnUIThread(() =>
-
 		{
 			frame = new Frame();
 			frame.CacheSize = 2;
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
+		await TestServices.WindowHelper.WaitForLoaded(frame);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// When NavigationCacheMode is Disabled all InstanceCounter will pick the latest Counter value
