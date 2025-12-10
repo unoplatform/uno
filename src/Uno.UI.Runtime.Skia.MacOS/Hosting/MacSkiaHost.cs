@@ -6,12 +6,21 @@ using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
 public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 {
+	/// <summary>
+    /// The application builder used to create the application instance, used in normal startup.
+    /// </summary>
 	private static Func<Application>? _appBuilder;
+
+	/// <summary>
+    /// The application builder used to create an ALC based application instance.
+    /// </summary>
+	private Func<Application>? _instanceAppBuilder;
 
 	[ThreadStatic] private static bool _isDispatcherThread;
 	[ThreadStatic] private static MacSkiaHost? _current;
@@ -42,6 +51,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 	{
 		_current = this;
 		_appBuilder = appBuilder;
+		_instanceAppBuilder = appBuilder;
 	}
 
 	internal static MacSkiaHost Current => _current!;
@@ -52,26 +62,67 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 
 	protected override void Initialize()
 	{
-		if (!InitializeMac())
+		if (!_isInitialized)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"Could not create the native NSApplication host");
-			}
-			return;
-		}
+			_isInitialized = true;
 
-		InitializeDispatcher();
+			if (!InitializeMac())
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Could not create the native NSApplication host");
+				}
+				return;
+			}
+
+			InitializeDispatcher();
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Main NSApplication is already initialized, skipping initialization.");
+			}
+		}
 	}
+
+	private static bool _isInitialized;
+	private static bool _isRunning;
 
 	protected override unsafe Task RunLoop()
 	{
-		// we'll call to NSApplication so it needs to be initialized first (and know what to call once done)
-		NativeUno.uno_set_application_start_callback(&StartApp);
+		if (!_isRunning)
+		{
+			_isRunning = true;
 
-		// `argc` and `argv` parameters are ignored by macOS
-		// see https://developer.apple.com/documentation/appkit/1428499-nsapplicationmain?language=objc
-		_ = NativeMac.NSApplicationMain(argc: 0, argv: nint.Zero);
+			// we'll call to NSApplication so it needs to be initialized first (and know what to call once done)
+			NativeUno.uno_set_application_start_callback(&StartApp);
+
+			// `argc` and `argv` parameters are ignored by macOS
+			// see https://developer.apple.com/documentation/appkit/1428499-nsapplicationmain?language=objc
+			_ = NativeMac.NSApplicationMain(argc: 0, argv: nint.Zero);
+		}
+		else
+		{
+			// For ALC scenarios, we need to start the secondary application on the main thread
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				Application CreateApp(ApplicationInitializationCallbackParams _)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug("Creating secondary App");
+					}
+
+					var app = _instanceAppBuilder!();
+					app.Host = Current;
+					return app;
+				}
+
+				Application.Start(CreateApp);
+
+			}, NativeDispatcherPriority.Normal);
+		}
 
 		return Task.CompletedTask;
 	}
