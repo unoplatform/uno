@@ -95,7 +95,7 @@ jobs:
 
   - script: |
       # Build source generators for hot reload runtime tests
-      # Used to build the hot reload test secondary app during runtime tests
+      # Used to build the hot reload and ALC test secondary app during runtime tests
       cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
       dotnet build -c Debug
       cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators

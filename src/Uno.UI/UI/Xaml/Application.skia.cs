@@ -100,6 +100,11 @@ namespace Microsoft.UI.Xaml
 
 			var currentApp = callback(new ApplicationInitializationCallbackParams()) ?? _current;
 
+			if (currentApp is null)
+			{
+				throw new InvalidOperationException("Application.Start callback must return a non-null Application instance. Ensure your callback returns a valid Application.");
+			}
+
 			if (OperatingSystem.IsBrowser())
 			{
 				if (AssemblyLoadContext.GetLoadContext(currentApp.GetType().Assembly) == AssemblyLoadContext.Default)

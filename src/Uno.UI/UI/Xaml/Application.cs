@@ -354,6 +354,13 @@ namespace Microsoft.UI.Xaml
 			});
 		}
 
+		/// <summary>
+		/// Boots an <see cref="Application"/> instance when hosting scenarios require returning the created app
+		/// (e.g., secondary AssemblyLoadContext projections).
+		/// This overload mirrors <see cref="Microsoft.UI.Xaml.Application.Start(ApplicationInitializationCallback)"/>
+		/// but allows the callback to return the constructed <see cref="Application"/> so the caller can capture it.
+		/// </summary>
+		/// <param name="callback">Factory invoked with initialization parameters; must return the created application instance.</param>
 		internal static void Start(Func<ApplicationInitializationCallbackParams, Application> callback)
 		{
 			StartPartial(callback);
