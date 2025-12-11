@@ -1,10 +1,10 @@
 ﻿using Common;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Private.Infrastructure;
-using Uno.UI.RuntimeTests;
-using System.Threading.Tasks;
 using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using System.Threading.Tasks;
+using Uno.UI.RuntimeTests;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -78,6 +78,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		[RunsOnUIThread]
 		public async Task VerifyIsEnabledCanBeToggledMultipleTimes()
 		{
+			const int ToggleIterations = 3;
 			DropDownButton dropDownButton = null;
 
 			await RunOnUIThread.ExecuteAsync(() =>
@@ -90,7 +91,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// Toggle IsEnabled multiple times to ensure visual state updates correctly
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < ToggleIterations; i++)
 			{
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
