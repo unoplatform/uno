@@ -49,6 +49,7 @@ partial class Window
 	private Brush? _background;
 	private WindowType _windowType;
 
+	private object? _secondaryAlcContent;
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
 	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
