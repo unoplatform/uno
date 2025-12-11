@@ -71,8 +71,9 @@ namespace Microsoft.UI.Xaml
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
 			Uno.UI.Extensions.PermissionsHelper.Initialize();
 
-			// note: Deep-Link will causes a new instance of this Activity and DecorView to be created.
-			// So, it will be important to rewire/update any event/listener on these two, here.
+			// Note: Deep-linking will cause a new instance of this Activity and its DecorView to be created.
+			// This means any event handlers or listeners attached to these objects in previous instances will not be present.
+			// Therefore, it is important to rewire or update any event/listener on these two here to ensure correct behavior.
 			StatusBar.GetForCurrentView().ResetListener();
 		}
 
