@@ -373,7 +373,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			else
 			{
 				var recorder = new SKPictureRecorder();
-				var recordingCanvas = recorder.BeginRecording(new SKRect(int.MinValue, int.MinValue, int.MaxValue, int.MaxValue));
+				var recordingCanvas = recorder.BeginRecording(new SKRect(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue));
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
@@ -414,7 +414,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
 
-					var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+					var recordingCanvas = _recorder.BeginRecording(new SKRect(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue));
 					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
@@ -482,7 +482,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			else
 			{
 				var recorder = new SKPictureRecorder();
-				var recordingCanvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+				var recordingCanvas = recorder.BeginRecording(new SKRect(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue));
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(visual, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
