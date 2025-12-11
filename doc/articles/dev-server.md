@@ -38,7 +38,7 @@ You can manage the Dev Server from the command line using the dotnet tool [`Uno.
 
 ### Installing the dotnet Dev Server tool
 
-The dotnet Dev Server tool is not installed by default, since the IDE Extensions managing it's regular tasks for you already.
+The dotnet Dev Server tool is not installed by default, since the IDE Extensions managing its regular tasks for you already.
 
 If you want or need to install or update it, e.g. for [Troubleshooting Dev Server in VS Code](#vscodets), you can do so, by following the steps below.
 
