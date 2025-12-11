@@ -647,6 +647,11 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
+			if (routedEvent.IsKeyEvent)
+			{
+				OnKeyEventRaised(routedEvent, (KeyRoutedEventArgs)args);
+			}
+
 			if (routedEvent.IsTunnelingEvent || ctx.ModeHasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
 			{
 				return isHandled;
@@ -695,6 +700,10 @@ namespace Microsoft.UI.Xaml
 
 			// [13] Raise on parent
 			return RaiseOnParent(routedEvent, args, parent, ctx);
+		}
+
+		private protected virtual void OnKeyEventRaised(RoutedEvent routedEvent, KeyRoutedEventArgs args)
+		{
 		}
 
 		/// <summary>
