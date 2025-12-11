@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Runtime.CompilerServices;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.HotReload;
@@ -11,6 +12,8 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
 internal static class HotReloadHelper
 {
+	private const int _timeoutMs = 45_000; // Very long delay for CI, change it to lower value for local tests!
+
 	public static ValueTask<FileUpdate> UpdateAsync(ImmutableArray<FileEdit> edits, CancellationToken ct)
 		=> UpdateAsync(new UpdateRequest(edits), ct);
 
@@ -43,7 +46,10 @@ internal static class HotReloadHelper
 		}
 	}
 
-	public static async Task UpdateServerFile<T>(string originalText, string replacementText, CancellationToken ct)
+	/// <summary>
+	/// DO NOT USE, prefer the UpdateAsync method above.
+	/// </summary>
+	public static async Task UpdateServerFile<T>(string originalText, string replacementText, CancellationToken ct, [CallerMemberName] string caller = "", [CallerLineNumber] int line = -1)
 		where T : FrameworkElement, new()
 	{
 		if (RemoteControlClient.Instance is null)
@@ -51,7 +57,8 @@ internal static class HotReloadHelper
 			return;
 		}
 
-		await RemoteControlClient.Instance.WaitForConnection();
+		var timeout = Task.Delay(_timeoutMs, ct);
+		await Wait(RemoteControlClient.Instance.WaitForConnection(), "connection");
 
 		var message = new T().CreateUpdateFileMessage(
 			originalText: originalText,
@@ -62,7 +69,7 @@ internal static class HotReloadHelper
 			return;
 		}
 
-		await RemoteControlClient.Instance.SendMessage(message);
+		await Wait(RemoteControlClient.Instance.SendMessage(message), "send-msg");
 
 		var reloadWaiter = TypeMappings.WaitForResume();
 		if (!reloadWaiter.IsCompleted)
@@ -72,20 +79,29 @@ internal static class HotReloadHelper
 			return;
 		}
 
-		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
+		await Wait(TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct), "tree-update");
+
+		async Task Wait(Task task, string step)
+		{
+			if (await Task.WhenAny(task, timeout) == timeout)
+			{
+				throw new TimeoutException($"Timed out waiting for visual tree update from {caller}@{line} <{step}>");
+			}
+		}
 	}
 
 	/// <summary>
-	/// Updates a specific file using an app relative path.
+	/// DO NOT USE, prefer the UpdateAsync method above.
 	/// </summary>
-	public static async Task UpdateServerFile(string filePathInProject, string originalText, string replacementText, CancellationToken ct)
+	public static async Task UpdateServerFile(string filePathInProject, string originalText, string replacementText, CancellationToken ct, [CallerMemberName] string caller = "", [CallerLineNumber] int line = -1)
 	{
 		if (RemoteControlClient.Instance is null)
 		{
 			return;
 		}
 
-		await RemoteControlClient.Instance.WaitForConnection();
+		var timeout = Task.Delay(_timeoutMs, ct);
+		await Wait(RemoteControlClient.Instance.WaitForConnection(), "connection");
 
 		var message = new UpdateSingleFileRequest
 		{
@@ -99,7 +115,7 @@ internal static class HotReloadHelper
 			return;
 		}
 
-		await RemoteControlClient.Instance.SendMessage(message);
+		await Wait(RemoteControlClient.Instance.SendMessage(message), "send-msg");
 
 		var reloadWaiter = TypeMappings.WaitForResume();
 		if (!reloadWaiter.IsCompleted)
@@ -109,18 +125,28 @@ internal static class HotReloadHelper
 			return;
 		}
 
-		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
+		await Wait(TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct), "tree-update");
+
+		async Task Wait(Task task, string step)
+		{
+			if (await Task.WhenAny(task, timeout) == timeout)
+			{
+				throw new TimeoutException($"Timed out waiting for visual tree update from {caller}@{line} <{step}>");
+			}
+		}
 	}
 
 	/// <summary>
-	/// Updates a project file's contents, asserts the change then revert.
+	/// DO NOT USE, prefer the UpdateAsync method above.
 	/// </summary>
 	public static async Task UpdateProjectFileAndRevert(
 		string filePathInProject,
 		string originalText,
 		string replacementText,
 		Func<Task> callback,
-		CancellationToken ct)
+		CancellationToken ct,
+		[CallerMemberName] string caller = "",
+		[CallerLineNumber] int line = -1)
 	{
 		if (RemoteControlClient.Instance is null)
 		{
@@ -131,21 +157,26 @@ internal static class HotReloadHelper
 
 		try
 		{
-			await UpdateServerFile(filePathInProject, originalText, replacementText, ct);
+			await UpdateServerFile(filePathInProject, originalText, replacementText, ct, caller, line);
 
 			await callback();
 		}
 		finally
 		{
-			await UpdateServerFile(filePathInProject, replacementText, originalText, CancellationToken.None);
+			await UpdateServerFile(filePathInProject, replacementText, originalText, CancellationToken.None, caller + "<undo>", line);
 		}
 	}
 
+	/// <summary>
+	/// DO NOT USE, prefer the UpdateAsync method above.
+	/// </summary>
 	public static async Task UpdateServerFileAndRevert<T>(
 		string originalText,
 		string replacementText,
 		Func<Task> callback,
-		CancellationToken ct)
+		CancellationToken ct,
+		[CallerMemberName] string caller = "",
+		[CallerLineNumber] int line = -1)
 		where T : FrameworkElement, new()
 	{
 		if (RemoteControlClient.Instance is null)
@@ -157,13 +188,13 @@ internal static class HotReloadHelper
 
 		try
 		{
-			await UpdateServerFile<T>(originalText, replacementText, ct);
+			await UpdateServerFile<T>(originalText, replacementText, ct, caller, line);
 
 			await callback();
 		}
 		finally
 		{
-			await UpdateServerFile<T>(replacementText, originalText, CancellationToken.None);
+			await UpdateServerFile<T>(replacementText, originalText, CancellationToken.None, caller + "<undo>", line);
 		}
 	}
 
