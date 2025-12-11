@@ -63,7 +63,7 @@ If you want or need to install or update it, e.g. for [Troubleshooting Dev Serve
    >[!TIP]
    > If you already installed it before, you can use the `dotnet tool -g update Uno.DevServer` command or re-use the installation command. The end result will be the same.
 
-3. You can now use the Dev Server  commandline name to print out the tool default command `--help`:
+3. You can now use the Dev Server command line name to print out the tool default command `--help`:
 
    ```pwsh
    uno-devserver
