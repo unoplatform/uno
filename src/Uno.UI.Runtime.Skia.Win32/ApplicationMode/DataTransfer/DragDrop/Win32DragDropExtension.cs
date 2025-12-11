@@ -35,6 +35,29 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 {
 	[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = false)]
 	private static extern unsafe uint ExtractIconExW(string lpszFile, int nIconIndex, HICON* phiconLarge, HICON* phiconSmall, uint nIcons);
+
+	[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = false)]
+	private static extern unsafe IntPtr SHGetFileInfoW(string pszPath, uint dwFileAttributes, IntPtr psfi, uint cbFileInfo, uint uFlags);
+
+	// Constants for SHGetFileInfo flags
+	private const uint SHGFI_ICON = 0x100;
+	private const uint SHGFI_LARGEICON = 0x0;
+	private const uint SHGFI_SMALLICON = 0x1;
+	private const uint SHGFI_USEFILEATTRIBUTES = 0x10;
+	private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
+
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+	private struct SHFILEINFOW
+	{
+		public IntPtr hIcon;
+		public int iIcon;
+		public uint dwAttributes;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+		public string szDisplayName;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+		public string szTypeName;
+	}
+
 	private static readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 
 	private readonly DragDropManager _manager;
@@ -292,6 +315,20 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 						try
 						{
 							var iconImage = ExtractFileIcon(firstFile);
+							if (iconImage is null)
+							{
+								var icon = GetFileTypeIcon(firstFile);
+								try
+								{
+									// Convert HICON to BitmapImage
+									iconImage = ConvertHIconToBitmapImage(icon);
+								}
+								finally
+								{
+									// Cleanup: destroy the icon handle
+									PInvoke.DestroyIcon(icon);
+								}
+							}
 							if (iconImage is not null)
 							{
 								dragUI.SetContentFromExternalBitmapImage(iconImage);
@@ -454,7 +491,6 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 				{
 					PInvoke.DestroyIcon(smallIcon);
 				}
-				return null;
 			}
 
 			// Clean up the small icon if extracted
@@ -480,6 +516,55 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		{
 			// Failed to extract icon
 			return null;
+		}
+	}
+
+	private static unsafe HICON GetFileTypeIcon(string filePath)
+	{
+		try
+		{
+			var fileInfo = new SHFILEINFOW();
+			var flags = SHGFI_ICON | SHGFI_LARGEICON;
+
+			// If the file doesn't exist, use SHGFI_USEFILEATTRIBUTES to get icon based on extension
+			if (!File.Exists(filePath))
+			{
+				flags |= SHGFI_USEFILEATTRIBUTES;
+			}
+
+			var pFileInfo = Marshal.AllocHGlobal(Marshal.SizeOf<SHFILEINFOW>());
+			try
+			{
+				Marshal.StructureToPtr(fileInfo, pFileInfo, false);
+
+				var result = SHGetFileInfoW(
+					filePath,
+					File.Exists(filePath) ? 0 : FILE_ATTRIBUTE_NORMAL,
+					pFileInfo,
+					(uint)Marshal.SizeOf<SHFILEINFOW>(),
+					flags
+				);
+
+				if (result != IntPtr.Zero)
+				{
+					fileInfo = Marshal.PtrToStructure<SHFILEINFOW>(pFileInfo);
+					if (fileInfo.hIcon != IntPtr.Zero)
+					{
+						return new HICON(fileInfo.hIcon);
+					}
+				}
+
+				return default;
+			}
+			finally
+			{
+				Marshal.FreeHGlobal(pFileInfo);
+			}
+		}
+		catch
+		{
+			// If SHGetFileInfo fails, return default
+			return default;
 		}
 	}
 
