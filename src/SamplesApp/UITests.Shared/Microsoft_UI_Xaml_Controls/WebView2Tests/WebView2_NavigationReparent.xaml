@@ -1,0 +1,195 @@
+<Page
+	x:Class="SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_NavigationReparent"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d not_win"
+	d:DesignHeight="600"
+	d:DesignWidth="400">
+
+	<not_win:Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<!-- Header with status -->
+		<StackPanel Grid.Row="0" 
+					Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" 
+					Padding="12"
+					Spacing="8">
+			<TextBlock Text="WebView2 TabView Disappearing Bug Repro" 
+					   FontWeight="Bold" 
+					   FontSize="16"/>
+			<TextBlock Text="Issue: WebViews disappear when switching between TabView tabs on second visit" 
+					   FontSize="12" 
+					   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
+					   TextWrapping="Wrap"/>
+			<TextBlock x:Name="StatusText" 
+					   Text="Status: Ready - Click between tabs to reproduce" 
+					   Foreground="{ThemeResource SystemAccentColorBrush}"
+					   TextWrapping="Wrap"/>
+			<TextBlock Text="Repro: Tab1 → Tab2 → Tab1 (WebView may disappear on second Tab1 visit)" 
+					   FontSize="11" 
+					   FontFamily="Consolas"
+					   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+		</StackPanel>
+
+		<!-- TabView with separate WebView2 instances -->
+		<mux:TabView x:Name="MainTabView"
+					 Grid.Row="1"
+					 TabWidthMode="Equal"
+					 SelectionChanged="OnTabSelectionChanged">
+			
+			<!-- Tab 1: Uno Platform -->
+			<mux:TabViewItem Header="🟦 Tab 1 (Uno)">
+				<Grid Padding="8">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<!-- Tab 1 Status -->
+					<StackPanel Grid.Row="0" 
+								Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" 
+								Padding="8" 
+								Spacing="4"
+								Margin="0,0,0,8"
+								BorderBrush="#1565C0"
+								BorderThickness="2"
+								CornerRadius="4">
+						<TextBlock Text="Tab 1 - platform.uno" 
+								   FontWeight="Bold" 
+								   Foreground="#1565C0"/>
+						<TextBlock x:Name="Tab1VisitCount" 
+								   Text="Visit count: 0" 
+								   FontSize="12"/>
+						<TextBlock x:Name="Tab1WebViewStatus" 
+								   Text="WebView: Not loaded" 
+								   FontSize="11"
+								   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+					</StackPanel>
+
+					<!-- WebView 1 with placeholder -->
+					<Grid Grid.Row="1">
+						<Border Background="#FF1565C0"
+								Opacity="0.2"
+								BorderBrush="#1565C0"
+								BorderThickness="3"
+								CornerRadius="4">
+							<TextBlock Text="⭕ WebView 1 should appear here"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"
+									   FontSize="16"
+									   FontWeight="Bold"/>
+						</Border>
+						
+						<mux:WebView2 x:Name="WebView1"
+									  Source="https://platform.uno"
+									  Loaded="OnWebView1Loaded"
+									  Unloaded="OnWebView1Unloaded"
+									  NavigationStarting="OnWebView1NavigationStarting"
+									  NavigationCompleted="OnWebView1NavigationCompleted"/>
+					</Grid>
+				</Grid>
+			</mux:TabViewItem>
+
+			<!-- Tab 2: Google -->
+			<mux:TabViewItem Header="🟩 Tab 2 (Google)">
+				<Grid Padding="8">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<!-- Tab 2 Status -->
+					<StackPanel Grid.Row="0" 
+								Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" 
+								Padding="8" 
+								Spacing="4"
+								Margin="0,0,0,8"
+								BorderBrush="#2E7D32"
+								BorderThickness="2"
+								CornerRadius="4">
+						<TextBlock Text="Tab 2 - google.com" 
+								   FontWeight="Bold" 
+								   Foreground="#2E7D32"/>
+						<TextBlock x:Name="Tab2VisitCount" 
+								   Text="Visit count: 0" 
+								   FontSize="12"/>
+						<TextBlock x:Name="Tab2WebViewStatus" 
+								   Text="WebView: Not loaded" 
+								   FontSize="11"
+								   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+					</StackPanel>
+
+					<!-- WebView 2 with placeholder -->
+					<Grid Grid.Row="1">
+						<Border Background="#FF2E7D32"
+								Opacity="0.2"
+								BorderBrush="#2E7D32"
+								BorderThickness="3"
+								CornerRadius="4">
+							<TextBlock Text="⭕ WebView 2 should appear here"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"
+									   FontSize="16"
+									   FontWeight="Bold"/>
+						</Border>
+						
+						<mux:WebView2 x:Name="WebView2"
+									  Source="https://www.google.com"
+									  Loaded="OnWebView2Loaded"
+									  Unloaded="OnWebView2Unloaded"
+									  NavigationStarting="OnWebView2NavigationStarting"
+									  NavigationCompleted="OnWebView2NavigationCompleted"/>
+					</Grid>
+				</Grid>
+			</mux:TabViewItem>
+
+			<!-- Tab 3: GitHub -->
+			<mux:TabViewItem Header="🟧 Tab 3 (GitHub)">
+				<Grid Padding="8">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<!-- Tab 3 Status -->
+					<StackPanel Grid.Row="0" 
+								Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" 
+								Padding="8" 
+								Spacing="4"
+								Margin="0,0,0,8"
+								BorderBrush="#E65100"
+								BorderThickness="2"
+								CornerRadius="4">
+						<TextBlock Text="Tab 3 - github.com" 
+								   FontWeight="Bold" 
+								   Foreground="#E65100"/>
+						<TextBlock x:Name="Tab3VisitCount" 
+								   Text="Visit count: 0" 
+								   FontSize="12"/>
+						<TextBlock x:Name="Tab3WebViewStatus" 
+								   Text="WebView: Not loaded" 
+								   FontSize="11"
+								   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+					</StackPanel>
+
+					<!-- WebView 3 with placeholder -->
+					<Grid Grid.Row="1">
+						<TextBlock Text="⭕ Different content"
+								   HorizontalAlignment="Center"
+								   VerticalAlignment="Center"
+								   FontSize="16"
+								   FontWeight="Bold"/>
+					</Grid>
+				</Grid>
+			</mux:TabViewItem>
+		</mux:TabView>
+	</not_win:Grid>
+</Page>
