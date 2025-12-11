@@ -40,6 +40,8 @@
 				<TextBlock Text="Options" Style="{ThemeResource StandardGroupHeader}" Margin="0,16,0,8"/>
 				<CheckBox x:Name="SetFlyoutCheckbox" AutomationProperties.Name="SetFlyoutCheckbox" IsChecked="True"
                         Content="Flyout set" Checked="SetFlyoutCheckbox_Checked" Unchecked="SetFlyoutCheckbox_Unchecked"/>
+				<CheckBox x:Name="IsEnabledCheckbox" AutomationProperties.Name="IsEnabledCheckbox" IsChecked="True"
+                        Content="Is Enabled" Checked="IsEnabledCheckbox_Checked" Unchecked="IsEnabledCheckbox_Unchecked"/>
 
 				<TextBlock Text="Status" Style="{ThemeResource StandardGroupHeader}" Margin="0,16,0,8"/>
 				<Grid>

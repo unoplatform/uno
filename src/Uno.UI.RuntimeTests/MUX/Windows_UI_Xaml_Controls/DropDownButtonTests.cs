@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
+using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -25,5 +26,92 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			Verify.AreEqual((FontFamily)Application.Current.Resources["SymbolThemeFontFamily"], font);
 		}
 #endif
+
+		[TestMethod]
+		[Description("Verifies that IsEnabled property changes the visual state properly")]
+		[RunsOnUIThread]
+		public async Task VerifyIsEnabledChangesVisualState()
+		{
+			DropDownButton dropDownButton = null;
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				dropDownButton = new DropDownButton();
+				dropDownButton.Content = "Test Button";
+				TestServices.WindowHelper.WindowContent = dropDownButton;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				// Verify button starts enabled
+				Verify.IsTrue(dropDownButton.IsEnabled, "Button should start enabled");
+
+				// Disable the button
+				dropDownButton.IsEnabled = false;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				// Verify button is disabled
+				Verify.IsFalse(dropDownButton.IsEnabled, "Button should be disabled");
+
+				// Re-enable the button (this is the critical test case for the issue)
+				dropDownButton.IsEnabled = true;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				// Verify button is enabled again
+				Verify.IsTrue(dropDownButton.IsEnabled, "Button should be enabled again");
+			});
+		}
+
+		[TestMethod]
+		[Description("Verifies that IsEnabled can be toggled multiple times")]
+		[RunsOnUIThread]
+		public async Task VerifyIsEnabledCanBeToggledMultipleTimes()
+		{
+			DropDownButton dropDownButton = null;
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				dropDownButton = new DropDownButton();
+				dropDownButton.Content = "Test Button";
+				TestServices.WindowHelper.WindowContent = dropDownButton;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Toggle IsEnabled multiple times to ensure visual state updates correctly
+			for (int i = 0; i < 3; i++)
+			{
+				await RunOnUIThread.ExecuteAsync(() =>
+				{
+					dropDownButton.IsEnabled = false;
+				});
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				await RunOnUIThread.ExecuteAsync(() =>
+				{
+					Verify.IsFalse(dropDownButton.IsEnabled, $"Button should be disabled on iteration {i}");
+
+					dropDownButton.IsEnabled = true;
+				});
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				await RunOnUIThread.ExecuteAsync(() =>
+				{
+					Verify.IsTrue(dropDownButton.IsEnabled, $"Button should be enabled on iteration {i}");
+				});
+			}
+		}
 	}
 }

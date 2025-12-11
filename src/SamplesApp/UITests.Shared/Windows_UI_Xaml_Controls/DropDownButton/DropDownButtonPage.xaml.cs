@@ -66,5 +66,21 @@ namespace MUXControlsTestApp
 				TestDropDownButton.Flyout = null;
 			}
 		}
+
+		private void IsEnabledCheckbox_Checked(object sender, RoutedEventArgs e)
+		{
+			if (TestDropDownButton != null)
+			{
+				TestDropDownButton.IsEnabled = true;
+			}
+		}
+
+		private void IsEnabledCheckbox_Unchecked(object sender, RoutedEventArgs e)
+		{
+			if (TestDropDownButton != null)
+			{
+				TestDropDownButton.IsEnabled = false;
+			}
+		}
 	}
 }
