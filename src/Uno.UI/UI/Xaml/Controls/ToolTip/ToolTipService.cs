@@ -225,8 +225,11 @@ public partial class ToolTipService
 			CloseToolTipImpl(toolTip);
 
 			owner.PointerEntered -= OnPointerEntered;
+			owner.GotFocus -= OnGotFocus;
 			owner.PointerExited -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
-			owner.Tapped -= OnTapped;
+			owner.PointerCaptureLost -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
+			owner.PointerCanceled -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
+			owner.LostFocus -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
 			owner.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
 			if (owner is ButtonBase)
 			{
@@ -260,14 +263,6 @@ public partial class ToolTipService
 	}
 
 	private static void OnPointerExitedOrCanceledOrCaptureLostOrLostFocus(object sender, object e)
-	{
-		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
-		{
-			CloseToolTipImpl(toolTip);
-		}
-	}
-
-	private static void OnTapped(object sender, TappedRoutedEventArgs e)
 	{
 		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
