@@ -230,7 +230,7 @@ public partial class ToolTipService
 			owner.PointerCaptureLost -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
 			owner.PointerCanceled -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
 			owner.LostFocus -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
-			owner.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			owner.RemoveHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown));
 			if (owner is ButtonBase)
 			{
 				owner.RemoveHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed));
