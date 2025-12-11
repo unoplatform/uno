@@ -17,11 +17,25 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="WasmScripts\**\*.js" />
-		<UpToDateCheckInput Remove="WasmScripts\uno-lottie.js" />
 		<UpToDateCheckInput Include="ts\**\*" />
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
+
+	<!-- Copy the generated TypeScript output to target-framework-specific obj folder to avoid race condition -->
+	<Target Name="CopyTypeScriptToIntermediateOutput" 
+	        AfterTargets="CompileTypeScriptWithTSConfig" 
+	        BeforeTargets="CoreCompile;PrepareResourceNames">
+		<Copy SourceFiles="WasmScripts\uno-lottie.js" 
+		      DestinationFiles="$(IntermediateOutputPath)uno-lottie.js" 
+		      SkipUnchangedFiles="true"
+		      Condition="Exists('WasmScripts\uno-lottie.js')" />
+		<!-- Add the copied file as an embedded resource with logical name -->
+		<ItemGroup>
+			<EmbeddedResource Include="$(IntermediateOutputPath)uno-lottie.js">
+				<LogicalName>Uno.UI.Lottie.WasmScripts.uno-lottie.js</LogicalName>
+			</EmbeddedResource>
+		</ItemGroup>
+	</Target>
 
 	<PropertyGroup Condition="'$(BuildingInsideUnoSourceGenerator)' != ''">
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
