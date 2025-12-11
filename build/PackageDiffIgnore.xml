@@ -2141,7 +2141,7 @@
 		</Methods>
 	</IgnoreSet>
 
-	<IgnoreSet baseVersion="6.2">
+	<IgnoreSet baseVersion="6.4">
 		<Types>
 		</Types>
 
