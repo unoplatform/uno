@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.UI;
 using System.Threading.Tasks;
+using Windows.UI.Input.Preview.Injection;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
@@ -9,6 +10,8 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Toolkit.DevTools.Input;
+using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -293,6 +296,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ToolTip_Dismissed_On_PointerCanceled()
+		{
+			TextBox tb;
+			var sv = new ScrollViewer
+			{
+				Content = new StackPanel
+				{
+					Height = 1000,
+					Children =
+					{
+						(tb = new TextBox().Apply(tb => ToolTipService.SetToolTip(tb, new ToolTip { Content = "Simple ToolTip 1" })))
+					}
+				}
+			};
+
+			await UITestHelper.Load(sv);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(tb.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(tb.XamlRoot).Count);
+
+			finger.MoveBy(0, -50);
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(tb.XamlRoot).Count);
+		}
 
 		[TestMethod]
 		public async Task When_ToolTip_Popup_XamlRoot()
