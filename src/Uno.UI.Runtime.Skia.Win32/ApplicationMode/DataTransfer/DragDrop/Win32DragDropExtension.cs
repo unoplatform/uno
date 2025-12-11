@@ -643,43 +643,27 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 							PInvoke.SelectObject(memDc, oldBitmap);
 
 							// Copy bitmap data to a byte array
-							var stride = width * 4; // 4 bytes per pixel (RGBA)
+							var stride = width * 4; // 4 bytes per pixel (BGRA)
 							var dataSize = stride * height;
 							var pixelData = new byte[dataSize];
 							Marshal.Copy((IntPtr)bits, pixelData, 0, dataSize);
 
-							// Create memory stream and write BMP file format
+							// Create PNG format to preserve transparency
+							// PNG file structure: signature + IHDR + IDAT + IEND
 							using var memoryStream = new MemoryStream();
 
-							// Write BMP file header
-							var fileHeaderSize = 14;
-							var infoHeaderSize = Marshal.SizeOf<BITMAPINFOHEADER>();
-							var fileSize = fileHeaderSize + infoHeaderSize + dataSize;
+							// PNG signature
+							byte[] pngSignature = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+							memoryStream.Write(pngSignature, 0, 8);
 
-							memoryStream.WriteByte((byte)'B');
-							memoryStream.WriteByte((byte)'M');
-							memoryStream.Write(BitConverter.GetBytes(fileSize), 0, 4);
-							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // Reserved
-							memoryStream.Write(BitConverter.GetBytes(fileHeaderSize + infoHeaderSize), 0, 4); // Offset to pixel data
+							// IHDR chunk
+							WriteIhdrChunk(memoryStream, width, height);
 
-							// Write BITMAPINFOHEADER
-							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biSize), 0, 4);
-							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biWidth), 0, 4);
-							memoryStream.Write(BitConverter.GetBytes(-bitmapInfo.bmiHeader.biHeight), 0, 4); // Flip back to positive
-							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biPlanes), 0, 2);
-							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biBitCount), 0, 2);
-							memoryStream.Write(BitConverter.GetBytes(bitmapInfo.bmiHeader.biCompression), 0, 4);
-							memoryStream.Write(BitConverter.GetBytes(dataSize), 0, 4); // Image size
-							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // X pixels per meter
-							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // Y pixels per meter
-							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // Colors used
-							memoryStream.Write(BitConverter.GetBytes((int)0), 0, 4); // Important colors
+							// IDAT chunk (image data)
+							WriteIdatChunk(memoryStream, pixelData, width, height);
 
-							// Write pixel data (need to flip vertically for BMP format)
-							for (int y = height - 1; y >= 0; y--)
-							{
-								memoryStream.Write(pixelData, y * stride, stride);
-							}
+							// IEND chunk
+							WriteIendChunk(memoryStream);
 
 							memoryStream.Position = 0;
 
@@ -722,6 +706,123 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 			// Failed to convert icon to bitmap
 			return null;
 		}
+	}
+
+	private static void WriteIhdrChunk(MemoryStream stream, int width, int height)
+	{
+		using var chunkData = new MemoryStream();
+
+		// Width (4 bytes, big-endian)
+		chunkData.Write(ToBigEndian(width), 0, 4);
+		// Height (4 bytes, big-endian)
+		chunkData.Write(ToBigEndian(height), 0, 4);
+		// Bit depth (1 byte) - 8 bits per channel
+		chunkData.WriteByte(8);
+		// Color type (1 byte) - 6 = RGBA
+		chunkData.WriteByte(6);
+		// Compression method (1 byte) - 0 = deflate
+		chunkData.WriteByte(0);
+		// Filter method (1 byte) - 0 = adaptive
+		chunkData.WriteByte(0);
+		// Interlace method (1 byte) - 0 = no interlace
+		chunkData.WriteByte(0);
+
+		WritePngChunk(stream, "IHDR"u8, chunkData.ToArray());
+	}
+
+	private static void WriteIdatChunk(MemoryStream stream, byte[] pixelData, int width, int height)
+	{
+		// Convert BGRA to RGBA and add filter bytes
+		var stride = width * 4;
+		var rawData = new byte[(stride + 1) * height]; // +1 for filter byte per row
+
+		for (var y = 0; y < height; y++)
+		{
+			// Filter byte (0 = None)
+			rawData[y * (stride + 1)] = 0;
+
+			for (var x = 0; x < width; x++)
+			{
+				var srcIndex = y * stride + x * 4;
+				var dstIndex = y * (stride + 1) + 1 + x * 4;
+
+				// Convert BGRA to RGBA
+				rawData[dstIndex + 0] = pixelData[srcIndex + 2]; // R
+				rawData[dstIndex + 1] = pixelData[srcIndex + 1]; // G
+				rawData[dstIndex + 2] = pixelData[srcIndex + 0]; // B
+				rawData[dstIndex + 3] = pixelData[srcIndex + 3]; // A
+			}
+		}
+
+		// Compress with zlib (deflate with zlib header)
+		using var compressedStream = new MemoryStream();
+		using (var deflateStream = new System.IO.Compression.ZLibStream(compressedStream, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
+		{
+			deflateStream.Write(rawData, 0, rawData.Length);
+		}
+
+		WritePngChunk(stream, "IDAT"u8, compressedStream.ToArray());
+	}
+
+	private static void WriteIendChunk(MemoryStream stream)
+	{
+		WritePngChunk(stream, "IEND"u8, []);
+	}
+
+	private static void WritePngChunk(MemoryStream stream, ReadOnlySpan<byte> chunkType, byte[] data)
+	{
+		// Length (4 bytes, big-endian)
+		stream.Write(ToBigEndian(data.Length), 0, 4);
+
+		// Chunk type (4 bytes)
+		stream.Write(chunkType);
+
+		// Chunk data
+		if (data.Length > 0)
+		{
+			stream.Write(data, 0, data.Length);
+		}
+
+		// CRC32 (4 bytes, big-endian) - calculated over chunk type + data
+		var crcData = new byte[4 + data.Length];
+		chunkType.CopyTo(crcData);
+		Array.Copy(data, 0, crcData, 4, data.Length);
+		var crc = CalculateCrc32(crcData);
+		stream.Write(ToBigEndian((int)crc), 0, 4);
+	}
+
+	private static byte[] ToBigEndian(int value)
+	{
+		var bytes = BitConverter.GetBytes(value);
+		if (BitConverter.IsLittleEndian)
+		{
+			Array.Reverse(bytes);
+		}
+		return bytes;
+	}
+
+	private static uint CalculateCrc32(byte[] data)
+	{
+		// PNG CRC32 polynomial
+		const uint polynomial = 0xEDB88320;
+
+		var crc = 0xFFFFFFFF;
+		foreach (var b in data)
+		{
+			crc ^= b;
+			for (var i = 0; i < 8; i++)
+			{
+				if ((crc & 1) != 0)
+				{
+					crc = (crc >> 1) ^ polynomial;
+				}
+				else
+				{
+					crc >>= 1;
+				}
+			}
+		}
+		return crc ^ 0xFFFFFFFF;
 	}
 
 	private readonly struct DragEventSource(Point point, MODIFIERKEYS_FLAGS modifierFlags) : IDragEventSource
