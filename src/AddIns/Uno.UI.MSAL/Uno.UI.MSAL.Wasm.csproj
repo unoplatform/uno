@@ -22,17 +22,19 @@
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
-	<!-- Copy the generated TypeScript output to target-framework-specific obj folder to avoid race condition -->
-	<Target Name="CopyTypeScriptToIntermediateOutput" 
+	<!-- Override TypeScript outFile to target-framework-specific intermediate folder to avoid race condition -->
+	<Target Name="_UnoUIMSALSetupTSCompilation" BeforeTargets="CompileTypeScriptWithTSConfig">
+		<PropertyGroup>
+			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(IntermediateOutputPath)MSAL.WebUI.js</TypeScriptConfigFileAdditionalFlags>
+		</PropertyGroup>
+	</Target>
+
+	<!-- Add the generated TypeScript output as an embedded resource with logical name -->
+	<Target Name="_UnoUIMSALAddTypeScriptResource" 
 	        AfterTargets="CompileTypeScriptWithTSConfig" 
-	        BeforeTargets="CoreCompile;PrepareResourceNames">
-		<Copy SourceFiles="WasmScripts\MSAL.WebUI.js" 
-		      DestinationFiles="$(IntermediateOutputPath)MSAL.WebUI.js" 
-		      SkipUnchangedFiles="true"
-		      Condition="Exists('WasmScripts\MSAL.WebUI.js')" />
-		<!-- Add the copied file as an embedded resource with logical name -->
+	        BeforeTargets="PrepareResourceNames">
 		<ItemGroup>
-			<EmbeddedResource Include="$(IntermediateOutputPath)MSAL.WebUI.js">
+			<EmbeddedResource Include="$(IntermediateOutputPath)MSAL.WebUI.js" Condition="Exists('$(IntermediateOutputPath)MSAL.WebUI.js')">
 				<LogicalName>Uno.UI.MSAL.WasmScripts.MSAL.WebUI.js</LogicalName>
 			</EmbeddedResource>
 		</ItemGroup>

@@ -29,17 +29,19 @@
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
-	<!-- Copy the generated TypeScript output to target-framework-specific obj folder to avoid race condition -->
-	<Target Name="CopyTypeScriptToIntermediateOutput" 
+	<!-- Override TypeScript outFile to target-framework-specific intermediate folder to avoid race condition -->
+	<Target Name="_UnoUIMediaPlayerSetupTSCompilation" BeforeTargets="CompileTypeScriptWithTSConfig">
+		<PropertyGroup>
+			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(IntermediateOutputPath)MediaElement.js</TypeScriptConfigFileAdditionalFlags>
+		</PropertyGroup>
+	</Target>
+
+	<!-- Add the generated TypeScript output as an embedded resource with logical name -->
+	<Target Name="_UnoUIMediaPlayerAddTypeScriptResource" 
 	        AfterTargets="CompileTypeScriptWithTSConfig" 
-	        BeforeTargets="CoreCompile;PrepareResourceNames">
-		<Copy SourceFiles="WasmScripts\MediaElement.js" 
-		      DestinationFiles="$(IntermediateOutputPath)MediaElement.js" 
-		      SkipUnchangedFiles="true"
-		      Condition="Exists('WasmScripts\MediaElement.js')" />
-		<!-- Add the copied file as an embedded resource with logical name -->
+	        BeforeTargets="PrepareResourceNames">
 		<ItemGroup>
-			<EmbeddedResource Include="$(IntermediateOutputPath)MediaElement.js">
+			<EmbeddedResource Include="$(IntermediateOutputPath)MediaElement.js" Condition="Exists('$(IntermediateOutputPath)MediaElement.js')">
 				<LogicalName>Uno.UI.Media.WasmScripts.MediaElement.js</LogicalName>
 			</EmbeddedResource>
 		</ItemGroup>

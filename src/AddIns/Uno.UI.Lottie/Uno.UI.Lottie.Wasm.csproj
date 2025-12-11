@@ -21,17 +21,19 @@
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
-	<!-- Copy the generated TypeScript output to target-framework-specific obj folder to avoid race condition -->
-	<Target Name="CopyTypeScriptToIntermediateOutput" 
+	<!-- Override TypeScript outFile to target-framework-specific intermediate folder to avoid race condition -->
+	<Target Name="_UnoUILottieSetupTSCompilation" BeforeTargets="CompileTypeScriptWithTSConfig">
+		<PropertyGroup>
+			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(IntermediateOutputPath)uno-lottie.js</TypeScriptConfigFileAdditionalFlags>
+		</PropertyGroup>
+	</Target>
+
+	<!-- Add the generated TypeScript output as an embedded resource with logical name -->
+	<Target Name="_UnoUILottieAddTypeScriptResource" 
 	        AfterTargets="CompileTypeScriptWithTSConfig" 
-	        BeforeTargets="CoreCompile;PrepareResourceNames">
-		<Copy SourceFiles="WasmScripts\uno-lottie.js" 
-		      DestinationFiles="$(IntermediateOutputPath)uno-lottie.js" 
-		      SkipUnchangedFiles="true"
-		      Condition="Exists('WasmScripts\uno-lottie.js')" />
-		<!-- Add the copied file as an embedded resource with logical name -->
+	        BeforeTargets="PrepareResourceNames">
 		<ItemGroup>
-			<EmbeddedResource Include="$(IntermediateOutputPath)uno-lottie.js">
+			<EmbeddedResource Include="$(IntermediateOutputPath)uno-lottie.js" Condition="Exists('$(IntermediateOutputPath)uno-lottie.js')">
 				<LogicalName>Uno.UI.Lottie.WasmScripts.uno-lottie.js</LogicalName>
 			</EmbeddedResource>
 		</ItemGroup>
