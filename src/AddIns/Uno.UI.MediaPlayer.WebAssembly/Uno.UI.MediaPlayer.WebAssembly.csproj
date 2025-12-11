@@ -25,11 +25,25 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="WasmScripts\**\*.js" />
-		<UpToDateCheckInput Remove="WasmScripts\*.js" />
 		<UpToDateCheckInput Include="ts\**\*" />
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
+
+	<!-- Copy the generated TypeScript output to target-framework-specific obj folder to avoid race condition -->
+	<Target Name="CopyTypeScriptToIntermediateOutput" 
+	        AfterTargets="CompileTypeScriptWithTSConfig" 
+	        BeforeTargets="CoreCompile;PrepareResourceNames">
+		<Copy SourceFiles="WasmScripts\MediaElement.js" 
+		      DestinationFiles="$(IntermediateOutputPath)MediaElement.js" 
+		      SkipUnchangedFiles="true"
+		      Condition="Exists('WasmScripts\MediaElement.js')" />
+		<!-- Add the copied file as an embedded resource with logical name -->
+		<ItemGroup>
+			<EmbeddedResource Include="$(IntermediateOutputPath)MediaElement.js">
+				<LogicalName>Uno.UI.Media.WasmScripts.MediaElement.js</LogicalName>
+			</EmbeddedResource>
+		</ItemGroup>
+	</Target>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild">
