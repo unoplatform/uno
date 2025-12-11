@@ -362,6 +362,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 #if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Currently fails on Android and iOS")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		[TestMethod]
 		public async Task When_ToolTip_Owner_Clicked()
@@ -375,13 +377,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Content = "Tooltip should disappear when button is clicked!",
 			};
 			ToolTipService.SetToolTip(button, tooltip);
-			TestServices.WindowHelper.WindowContent = button;
-			await TestServices.WindowHelper.WaitForLoaded(button);
-			await TestServices.WindowHelper.WaitForIdle();
+			await UITestHelper.Load(button);
 			tooltip.IsOpen = true;
-			await TestServices.WindowHelper.WaitForIdle();
-			button.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs());
-			await TestServices.WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle();
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+			mouse.Press(button.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.Release();
+			await UITestHelper.WaitForIdle();
 			Assert.IsFalse(tooltip.IsOpen);
 		}
 #endif
