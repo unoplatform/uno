@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- Ensure that the app logs the console -->
+		<!-- Ensure that the app logs to the console -->
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>

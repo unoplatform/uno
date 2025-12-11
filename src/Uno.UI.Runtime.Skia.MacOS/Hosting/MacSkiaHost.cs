@@ -22,6 +22,17 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 	/// </summary>
 	private Func<Application>? _instanceAppBuilder;
 
+	/// <summary>
+	/// Whether the host has been initialized for the whole process.
+	/// </summary>
+	/// <remarks>This field does not need synchronized since it's set only once at the beginning of the process.</remarks>
+	private static bool _isInitialized;
+	/// <summary>
+	/// Whether the main run loop has been started for the whole process.
+	/// </summary>
+	/// <remarks>This field does not need synchronized since it's set only once at the beginning of the process.</remarks>
+	private static bool _isRunning;
+
 	[ThreadStatic] private static bool _isDispatcherThread;
 	[ThreadStatic] private static MacSkiaHost? _current;
 
@@ -85,9 +96,6 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 			}
 		}
 	}
-
-	private static bool _isInitialized;
-	private static bool _isRunning;
 
 	protected override unsafe Task RunLoop()
 	{

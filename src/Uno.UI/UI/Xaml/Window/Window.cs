@@ -48,7 +48,7 @@ partial class Window
 	private WindowType _windowType;
 
 	// Window-local storage to detect secondary ALC content
-	private object? _alcLocalContent;
+	private object? _secondaryAlcContent;
 
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
 	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
@@ -183,7 +183,7 @@ partial class Window
 	{
 		get
 		{
-			if (IsContentFromSecondaryAlc(_alcLocalContent))
+			if (IsContentFromSecondaryAlc(_secondaryAlcContent))
 			{
 				return ContentHostOverride?.Content as UIElement;
 			}
@@ -197,7 +197,7 @@ partial class Window
 			{
 				// We're in a secondary ALC, redirect to the host override
 				host.Content = value;
-				_alcLocalContent = value;
+				_secondaryAlcContent = value;
 			}
 			else
 			{

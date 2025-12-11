@@ -28,8 +28,17 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	private readonly Func<Application> _appBuilder;
 	private BrowserRenderer? _renderer;
 	private readonly ManualResetEvent _terminationGate = new(false);
-	private static bool _initialized;
-	private static bool _running;
+
+	/// <summary>
+	/// Whether the host has been initialized for the whole process.
+	/// </summary>
+	/// <remarks>This field does not need synchronized since it's set only once at the beginning of the process.</remarks>
+	private static bool _isInitialized;
+	/// <summary>
+	/// Whether the main run loop has been started for the whole process.
+	/// </summary>
+	/// <remarks>This field does not need synchronized since it's set only once at the beginning of the process.</remarks>
+	private static bool _isRunning;
 
 	/// <summary>
 	/// Creates a host for a Uno Skia FrameBuffer application.
@@ -51,9 +60,9 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 	protected async override Task InitializeAsync()
 	{
-		if (!_initialized)
+		if (!_isInitialized)
 		{
-			_initialized = true;
+			_isInitialized = true;
 			NativeMethods.PersistBootstrapperLoader();
 			CompositionTarget.Rendering += OnCompositionTargetOnRendering;
 			void OnCompositionTargetOnRendering(object? sender, object o)
@@ -82,9 +91,9 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 	protected async override Task RunLoop()
 	{
-		var wasRunning = _running;
+		var wasRunning = _isRunning;
 
-		_running = true;
+		_isRunning = true;
 
 		Application CreateApp(ApplicationInitializationCallbackParams _)
 		{

@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -151,8 +152,8 @@ public class Given_AlcContentHost
 		Assert.IsNotNull(testWindowProperty, "App.TestWindow property should be discoverable via reflection");
 
 		var maxWaitTime = TimeSpan.FromSeconds(30);
-		var startTime = DateTime.Now;
-		while (DateTime.Now - startTime < maxWaitTime)
+		var waitTimer = Stopwatch.StartNew();
+		while (waitTimer.Elapsed < maxWaitTime)
 		{
 			if (testWindowProperty!.GetValue(null) is not null)
 			{
@@ -202,7 +203,7 @@ public class Given_AlcContentHost
 #elif NET9_0
 			"net9.0";
 #else
-#error This .NET version is yet not supported by the test project build script.
+#error This .NET version is not yet supported by the test project build script. Supported versions: NET10_0, NET9_0. To add support, add a new '#elif NETXX_X' block with the appropriate targetFramework string.
 #endif
 
 		// The CI environment builds build tooling in debug (related to the HR tests)
@@ -228,18 +229,19 @@ public class Given_AlcContentHost
 		using var process = System.Diagnostics.Process.Start(startInfo);
 		Assert.IsNotNull(process, "dotnet build process should start");
 
-		var output = await process.StandardOutput.ReadToEndAsync();
-		var error = await process.StandardError.ReadToEndAsync();
+		var outputTask = process.StandardOutput.ReadToEndAsync();
+		var errorTask = process.StandardError.ReadToEndAsync();
 
+		await Task.WhenAll(outputTask, errorTask);
 		await process.WaitForExitAsync();
 
 		if (process.ExitCode != 0)
 		{
-			Assert.Fail($"AlcApp build failed with exit code {process.ExitCode}.\nOutput: {output}\nError: {error}");
+			Assert.Fail($"AlcApp build failed with exit code {process.ExitCode}.\nOutput: {outputTask.Result}\nError: {errorTask.Result}");
 		}
 
 		Assert.IsTrue(File.Exists(assemblyPath),
-			$"AlcApp assembly should exist after build at {assemblyPath}.\nBuild output: {output}");
+			$"AlcApp assembly should exist after build at {assemblyPath}.\nBuild output: {outputTask.Result}");
 
 		return assemblyPath;
 	}

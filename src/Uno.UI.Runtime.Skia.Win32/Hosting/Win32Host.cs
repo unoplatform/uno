@@ -43,6 +43,14 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	private static volatile bool _allWindowsClosed;
 	private static int _openWindows;
 
+	/// <summary>
+	/// There's only one running instance of the event loop, even in the 
+	/// context of running inside an ALC.
+	/// </summary>
+	/// <remarks>This field does not need to be synchronized because it's only called from a single builder, and only once per process.</remarks>
+	private static bool _isRunning;
+	
+
 	static Win32Host()
 	{
 		var hResult = PInvoke.OleInitialize();
@@ -139,13 +147,6 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		CoreDispatcher.DispatchOverride = Win32EventLoop.Schedule;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
-
-	/// <summary>
-	/// There's only one running instance of the event loop, even in the 
-	/// context of running inside an ALC.
-	/// </summary>
-	/// <remarks>This field does not need to be synchronized because it's only called from a single builder.</remarks>
-	private static bool _isRunning;
 
 	protected override Task RunLoop()
 	{

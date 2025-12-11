@@ -32,7 +32,7 @@ partial class PageStackEntry
 			?? throw new ArgumentException($"Type {pageType.FullName} does not have an assembly-qualified name.", nameof(pageType));
 
 		var alc = AssemblyLoadContext.GetLoadContext(pageType.Assembly);
-		if (alc != AssemblyLoadContext.Default)
+		if (alc is not null && alc != AssemblyLoadContext.Default)
 		{
 			return $"{assemblyQualifiedName}{AlcDescriptorDelimiter}{alc.Name}";
 		}
@@ -74,7 +74,7 @@ partial class PageStackEntry
 		}
 
 		throw new InvalidOperationException(
-			$"Failed to resolve type descriptor '{descriptor}': AssemblyLoadContext with name '{alcName}' was not found.");
+			$"Failed to resolve type descriptor '{descriptor}': AssemblyLoadContext '{alcName}' was not found.");
 	}
 
 	[return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
