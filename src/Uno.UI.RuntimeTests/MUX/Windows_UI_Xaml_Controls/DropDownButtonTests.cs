@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using System.Threading.Tasks;
+using MUXControlsTestApp.Utilities;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
