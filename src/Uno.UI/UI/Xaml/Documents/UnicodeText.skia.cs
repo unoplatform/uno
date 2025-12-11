@@ -228,7 +228,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var line = linesWithLogicallyOrderedRuns[lineIndex];
 			if (line.Count == 0)
 			{
-				// Only the last line can be empty, otherwise it will have at least one piece of piece or a line break.
+				// Only the last line can be empty, otherwise it will have at least one piece of text or a line break.
 				Debug.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1);
 				if (lineIndex == 0)
 				{
@@ -346,20 +346,17 @@ internal readonly partial struct UnicodeText : IParsedText
 			var startInInline = groupAsArray[0].startInInline;
 			var endInInline = groupAsArray[^1].endInInline;
 			var i = startInInline;
-			while (inline.Text.IndexOf('\t', i) is var tabIndex && tabIndex != -1)
+			while (inline.Text.IndexOf('\t', i) is var tabIndex && tabIndex != -1 && tabIndex < endInInline)
 			{
 				if (i != tabIndex)
 				{
 					yield return (inline, i, tabIndex);
 				}
 				yield return (inline, tabIndex, tabIndex + 1);
+				i = tabIndex + 1;
 				if (i == endInInline)
 				{
 					break;
-				}
-				else
-				{
-					i = tabIndex + 1;
 				}
 			}
 

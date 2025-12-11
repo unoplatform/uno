@@ -993,6 +993,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 50, 50), Colors.Red);
 		}
 
+		[TestMethod]
+		public async Task When_Text_Contains_Tabs_Does_Not_Throw()
+		{
+			// This used to throw an exception when tab characters appeared at the end of an inline segment boundary
+			// due to an infinite loop in the tab handling logic.
+			await UITestHelper.Load(new TextBlock
+			{
+				Text = """
+				       public class Program { // http://www.github.com/
+				       	public static void Main(string[] args) {
+				       		Console.WriteLine("Hello, World!");
+				       	}
+				       
+				       	/*
+				       	 * Things to Try:
+				       	 * - Hover over the word 'Hit'
+				       	 * - Hit F1 and Search for 'TestAction'
+				       	 * - Press Ctrl+Enter
+				       	 * - After using Ctrl+Enter, hit F5
+				       	 * - Hit Ctrl+L
+				       	 * - Hit Ctrl+U
+				       	 * - Hit Ctrl+W
+				       	 * - Type the letter 'c'
+				       	 * - Type the word 'boo'
+				       	 * - Type 'foreach' to see Snippet.
+				       	 */
+				       }
+				       """
+			});
+		}
+
 #if HAS_RENDER_TARGET_BITMAP
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21322")]
