@@ -94,6 +94,42 @@ Uno Platform also provides the ability to determine if an asset or resource exis
 var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluentui-assets.ttf");
 ```
 
+### Loading JSON data files
+
+A common scenario is loading JSON data files packaged with your application. **Always use `StorageFile.GetFileFromApplicationUriAsync` instead of `System.IO.File` APIs** for cross-platform compatibility.
+
+**Example:**
+
+```csharp
+public async Task<string> LoadJsonFileAsync(string resourcePath)
+{
+    // Use StorageFile API for cross-platform support
+    var uri = new Uri(resourcePath);
+    var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(uri);
+    return await Windows.Storage.FileIO.ReadTextAsync(file);
+}
+
+// Usage:
+var json = await LoadJsonFileAsync("ms-appx:///AppData/Recipes.json");
+var recipes = JsonSerializer.Deserialize<List<Recipe>>(json);
+```
+
+**Why this matters:**
+- `System.IO.File` APIs work with physical file paths and don't understand `ms-appx://` URIs
+- On WebAssembly, files are downloaded on-demand and stored in IndexedDB, not the file system
+- On mobile platforms, the app package structure differs from desktop
+- `StorageFile.GetFileFromApplicationUriAsync` handles all platform-specific details automatically
+
+**Project setup:**
+
+Ensure your JSON files are marked as `Content` in your project file:
+
+```xml
+<ItemGroup>
+    <Content Include="AppData\**\*.json" />
+</ItemGroup>
+```
+
 ## Support for `RandomAccessStreamReference.CreateFromUri`
 
 Uno Platform supports the creation of a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a server often causes issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
