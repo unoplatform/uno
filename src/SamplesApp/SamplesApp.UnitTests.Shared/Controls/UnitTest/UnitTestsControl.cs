@@ -354,13 +354,13 @@ namespace Uno.UI.Samples.Tests
 			);
 		}
 
-		private void ReportTestResult(string className, string methodName, string testName, TimeSpan duration, TestResult testResult, Exception error = null, string message = null, string console = null)
+		private void ReportTestResult(UnitTestClassInfo testClassInfo, UnitTestMethodInfo testMethodInfo, string testName, TimeSpan duration, TestResult testResult, Exception error = null, string message = null, string console = null)
 		{
 			_testCases.Add(
 				new TestCaseResult
 				{
-					ClassName = className,
-					MethodName = methodName,
+					ClassName = testClassInfo?.Type?.FullName,
+					MethodName = testMethodInfo.Method?.Name,
 					TestName = testName,
 					Duration = duration,
 					TestResult = testResult,
@@ -768,7 +768,7 @@ namespace Uno.UI.Samples.Tests
 					}
 
 					_currentRun.Ignored++;
-					ReportTestResult(testClassInfo.TestClassName, test.Method.Name, testName, TimeSpan.Zero, TestResult.Skipped, message: ignoreMessage);
+					ReportTestResult(testClassInfo, test, testName, TimeSpan.Zero, TestResult.Skipped, message: ignoreMessage);
 
 					if (!config.IsRunningIgnored)
 					{
@@ -957,12 +957,12 @@ namespace Uno.UI.Samples.Tests
 							if (test.ExpectedException is null)
 							{
 								_currentRun.Succeeded++;
-								ReportTestResult(testClassInfo.TestClassName, test.Method.Name, fullTestName, sw.Elapsed, TestResult.Passed, console: console);
+								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Passed, console: console);
 							}
 							else
 							{
 								_currentRun.Failed++;
-								ReportTestResult(testClassInfo.TestClassName, test.Method.Name, fullTestName, sw.Elapsed, TestResult.Failed,
+								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed,
 									message: $"Test did not throw the excepted exception of type {test.ExpectedException.Name}",
 									console: console);
 							}
@@ -986,7 +986,7 @@ namespace Uno.UI.Samples.Tests
 							if (e is AssertInconclusiveException inconclusiveException)
 							{
 								_currentRun.Inconclusive++;
-								ReportTestResult(testClassInfo.TestClassName, test.Method.Name, fullTestName, sw.Elapsed, TestResult.Inconclusive, message: e.Message, console: console);
+								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Inconclusive, message: e.Message, console: console);
 							}
 							else if (test.ExpectedException is null || !test.ExpectedException.IsInstanceOfType(e))
 							{
@@ -1000,13 +1000,13 @@ namespace Uno.UI.Samples.Tests
 								else
 								{
 									_currentRun.Failed++;
-									ReportTestResult(testClassInfo.TestClassName, test.Method.Name, fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
+									ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
 								}
 							}
 							else
 							{
 								_currentRun.Succeeded++;
-								ReportTestResult(testClassInfo.TestClassName, test.Method.Name, fullTestName, sw.Elapsed, TestResult.Passed, e, console: console);
+								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Passed, e, console: console);
 							}
 						}
 						finally
@@ -1060,7 +1060,7 @@ namespace Uno.UI.Samples.Tests
 					catch (Exception e)
 					{
 						_currentRun.Failed++;
-						ReportTestResult(testClassInfo.TestClassName, testMethod.Method.Name, testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder?.GetContentAndReset());
+						ReportTestResult(testClassInfo, testMethod, testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder?.GetContentAndReset());
 					}
 				}
 
