@@ -85,6 +85,11 @@ public static class WebView2Extensions
 			control.NavigationStarting -= OnNavigationStarting;
 			control.NavigationCompleted -= OnNavigationCompleted;
 			control.Unloaded -= OnControlUnloaded;
+
+			if (control.CoreWebView2 is not null)
+			{
+				control.CoreWebView2.DocumentTitleChanged -= OnCoreDocumentTitleChanged;
+			}
 		}
 	}
 
@@ -144,11 +149,21 @@ public static class WebView2Extensions
 			await control.EnsureCoreWebView2Async();
 		}
 
-		// Remove previous event handler
-		control.CoreWebView2!.DocumentTitleChanged -= OnCoreDocumentTitleChanged;
+		// If CoreWebView2 is still null after attempting to ensure it, early return.
+		if (control.CoreWebView2 is null)
+		{
+			return;
+		}
 
-		// Subscribe to track document title changes
+		// Remove previous event handler
+		control.CoreWebView2.DocumentTitleChanged -= OnCoreDocumentTitleChanged;
+
+		// Ensure we don't double-subscribe the Unloaded handler
+		control.Unloaded -= OnControlUnloaded;
+
+		// Subscribe to track document title changes and to clean up on Unloaded
 		control.CoreWebView2.DocumentTitleChanged += OnCoreDocumentTitleChanged;
+		control.Unloaded += OnControlUnloaded;
 
 		// Set initial value. CoreWebView2.DocumentTitle Property will either have the current title or be an empty string, never null.
 		SetDocumentTitle(control, control.CoreWebView2.DocumentTitle);
@@ -162,9 +177,10 @@ public static class WebView2Extensions
 	/// <param name="args">Event data.</param>
 	private static void OnCoreDocumentTitleChanged(CoreWebView2 sender, object args)
 	{
-		if (sender.Owner is WebView2 control) // BUG: CoreWebView2 doesn't have a Owner Propery which we could use to provide to the DP. Evaluate creating a internal Eventhandler or a Backing field for the WebView2 Object?
+		if (sender.Owner is WebView2 control)
 		{
-			SetDocumentTitle(control, sender.DocumentTitle ?? string.Empty);
+			// CoreWebView2.DocumentTitle Property will either have the current title or be an empty string, never null.
+			SetDocumentTitle(control, sender.DocumentTitle);
 		}
 	}
 	#endregion
