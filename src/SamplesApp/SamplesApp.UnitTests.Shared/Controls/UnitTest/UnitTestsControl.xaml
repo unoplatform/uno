@@ -106,6 +106,7 @@
                 <Grid.Resources>
                     <Style TargetType="StackPanel">
                         <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Orientation" Value="Horizontal" />
                     </Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="VerticalAlignment" Value="Center" />
