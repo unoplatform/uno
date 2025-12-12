@@ -1,0 +1,72 @@
+name: Update External Docs Commit Hashes
+
+on:
+  schedule:
+    # Run every 6 hours at minutes 0 (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to update'
+        required: true
+        default: 'master'
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  docs-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || 'master' }}
+          fetch-depth: 0
+
+      - name: "Docs Update"
+        id: docs_update
+        uses: ./.github/actions/docs-update
+        with:
+          branch: ${{ inputs.branch || 'master' }}
+
+      - name: Set target branch
+        id: targetbranch
+        run: |
+          BRANCH="${{ inputs.branch || 'master' }}"
+          if [[ "$BRANCH" == "master" ]]; then
+            echo "targetbranch=docs/update/dev" >> $GITHUB_OUTPUT
+          elif [[ "$BRANCH" =~ ^release/stable/([0-9]+\.[0-9]+)$ ]]; then
+            versionNumber="${BASH_REMATCH[1]}"
+            echo "targetbranch=docs/update/release/$versionNumber" >> $GITHUB_OUTPUT
+          else
+            echo "Unexpected branch format: $BRANCH"
+            exit 1
+          fi
+        shell: bash
+
+      - name: Create Pull Request
+        id: cpr
+        if: steps.docs_update.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ${{ inputs.branch || 'master' }}
+          branch: ${{ steps.targetbranch.outputs.targetbranch }}
+          commit-message: 'chore: Update external docs commit hashes'
+          title: "chore(docs): External Docs Update - ${{ inputs.branch || 'master' }}"
+          body: |
+            This updates the external documentation commit hashes in `doc/import_external_docs.ps1`.
+
+            Behavior per run:
+
+            - When run against `master`, each repository is updated to the latest commit on its default branch (main, master, or other configured default).
+            - When run against a `release/stable/*` branch, each repository is checked for all `release/stable/*` branches; if any exist, the one with the highest version suffix is selected and used. If no such branch exists, the repository's default branch is used instead.
+
+            This is an automated update created by the external docs updater workflow.
+          labels: docs-update
+          draft: false

@@ -64,12 +64,13 @@ variables:
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline
 
-  # https://github.com/microsoft/azure-pipelines-tasks/issues/11864
-  #enable_package_cache: true
+  # Caching disabled because it does not improve performance in our pipelines
+  # but also causes stability issues where assemblies stay in a compressed form (!?)
+  # enable_package_cache: true
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
-  GlobalUnoCheckVersion: '1.33.0-dev.30'
+  GlobalUnoCheckVersion: '1.33.1'
 
 stages:
 - template: build/ci/.azure-devops-stages.yml

@@ -130,7 +130,7 @@ namespace Microsoft.UI.Xaml
 		private Entry[] _entries;
 #if TARGET_64BIT
 		private ulong _fastModMultiplier;
-		private static bool Is64Bits = Marshal.SizeOf(typeof(IntPtr)) >= 8
+		private static bool Is64Bits = IntPtr.Size >= 8
 #if __WASM__
 			|| WebAssemblyRuntime.IsWebAssembly;
 #else

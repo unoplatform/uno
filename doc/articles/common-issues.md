@@ -19,9 +19,10 @@ If issues persist, additional troubleshooting information is available in [this 
 ## Development Environments
 
 - [All Development Environments](xref:Uno.UI.CommonIssues.AllIDEs)
-- [Visual Studio 2022 for Windows](xref:Uno.UI.CommonIssues.vs2022)
+- [Visual Studio 2022/2026 for Windows](xref:Uno.UI.CommonIssues.vs2022)
 - [VS Code](xref:Uno.UI.CommonIssues.vscode)
 - [Rider](xref:Uno.UI.CommonIssues.rider)
+- [AI Agents](xref:Uno.UI.CommonIssues.AIAgents)
 
 ## Platforms
 

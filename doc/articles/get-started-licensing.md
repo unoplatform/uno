@@ -20,17 +20,17 @@ After creating your Uno Platform account, follow the steps below to sign in to y
 
 **I am developing on...**
 
-### [**Visual Studio 2022**](#tab/vs2022)
+### [**Visual Studio**](#tab/vs2022)
 
-If you’ve already set up **Visual Studio 2022** by following the [Get Started on Visual Studio 2022](xref:Uno.GetStarted.vs2022) documentation, sign in as follows:
+If you've already set up **Visual Studio** by following the [Get Started on Visual Studio](xref:Uno.GetStarted.vs2022) documentation, sign in as follows:
 
-1. Create a new Uno Platform project by following the [Creating an app with Visual Studio 2022](xref:Uno.GettingStarted.CreateAnApp.VS2022) documentation or open an existing one with Uno.Sdk version 5.5 or higher.
+1. Create a new Uno Platform project by following the [Creating an app with Visual Studio](xref:Uno.GettingStarted.CreateAnApp.VS2022) documentation or open an existing one with Uno.Sdk version 5.5 or higher.
 
    For existing applications, you should take this opportunity to update to the [latest `Uno.Sdk` version](https://www.nuget.org/packages/Uno.Sdk). See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
 
-1. After your project has finished loading, a notification should appear. Click on the **Sign in / Register** button.
+2. After your project has finished loading, a notification should appear. Click on the **Sign in / Register** button.
 
-   ![Visual Studio 2022 notification](Assets/uno-settings-notification.png)
+   ![Visual Studio notification](Assets/uno-settings-notification.png)
 
    > [!TIP]
    > Ensure that the lower left IDE icon shows a check mark and says "Ready" ![A checkmark with a text saying ready](getting-started/wizard/assets/vs2022-ready-statusbar.png). This ensures that the projects have been created, and their dependencies have been restored completely.
@@ -38,7 +38,7 @@ If you’ve already set up **Visual Studio 2022** by following the [Get Started 
    > [!NOTE]
    > If the notification doesn’t appear, access the Studio app by clicking on **Extensions** > **Uno Platform** > **Studio...**.
    >
-   > ![Visual Studio 2022 Menu](Assets/uno-settings-vs.png)
+   > ![Visual Studio Menu](Assets/uno-settings-vs.png)
 
 ### [**Visual Studio Code**](#tab/vscode)
 

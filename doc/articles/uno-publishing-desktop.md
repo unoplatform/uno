@@ -11,9 +11,9 @@ uid: uno.publishing.desktop
 - [Profile your app with Visual Studio](https://learn.microsoft.com/en-us/visualstudio/profiling)
 - [Profile using dotnet-trace and SpeedScope](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace)
 
-## Publish Using Visual Studio 2022
+## Publish Using Visual Studio
 
-- In the debugger toolbar drop-down, select the `net9.0-desktop` target framework
+- In the debugger toolbar drop-down, select the `net9.0-desktop` or `net10.0-desktop` target framework
 - Once the project has reloaded, right-click on the project and select **Publish**
 - Select the **Folder** target for your publication then click **Next**
 - Select the **Folder** target again then **Next**
@@ -21,7 +21,7 @@ uid: uno.publishing.desktop
 - The profile is created, you can now **Close** the dialog
 - In the opened editor, click `Show all settings`
 - Set **Configuration** to `Release`
-- Set **Target framework** to `net9.0-desktop`
+- Set **Target framework** to `net9.0-desktop` or `net10.0-desktop`
 - You can set **Deployment mode** to either `Framework-dependent` or `Self-contained`
   - If `Self-contained` is chosen and you're targeting Windows, **Target runtime** must match the installed .NET SDK runtime identifier
     as cross-publishing self-contained WPF apps (e.g. win-x64 to win-arm64) is not supported for now.
@@ -34,26 +34,26 @@ uid: uno.publishing.desktop
 On Windows/macOS/Linux, open a terminal in your `csproj` folder and run:
 
 ```shell
-dotnet publish -f net9.0-desktop
+dotnet publish -f net10.0-desktop
 ```
 
 If you wish to do a self-contained publish, run the following instead:
 
 ```shell
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFrameworks=net9.0-desktop
+dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFrameworks=net10.0-desktop
 ```
 
 Where `{{RID}}` specifies [the chosen OS and Architecture](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog) (e.g. win-x64). When targeting Windows, cross-publishing to architectures other than the currently running one is not supported.
 
 > [!IMPORTANT]
-> Due to changes in the .NET SDK, when providing an `{{RID}}` you will also need to add the following parameter `-p:TargetFrameworks=net9.0-desktop` for the publish command to succeed.
+> Due to changes in the .NET SDK, when providing an `{{RID}}` you will also need to add the following parameter `-p:TargetFrameworks=net10.0-desktop` for the publish command to succeed.
 
 ### Single-file publish
 
 [Single file](https://learn.microsoft.com/en-us/dotnet/core/deploying/single-file/overview?tabs=cli) publishing is supported with the following parameters:
 
 ```shell
-dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true
+dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true
 ```
 
 Same as above, make sure to replace the `{{RID}}` with [a valid value](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog).
@@ -62,9 +62,9 @@ The `IncludeNativeLibrariesForSelfExtract` and `IncludeAllContentForSelfExtract`
 
 ### Windows ClickOnce
 
-Uno Platform supports publishing desktop apps using ClickOnce to Windows environments.
+Uno Platform supports publishing desktop apps using **ClickOnce** to Windows environments.
 
-In order to do so, you'll need to create a `.pubxml` file using Visual Studio, or to use the file below:
+To publish your app that targets `net10.0-desktop` in your `.csproj`, you'll need to create a `.pubxml` file using Visual Studio, or use the file below:
 
 # [**Using a Sample Profile**](#tab/windows)
 
@@ -96,21 +96,21 @@ Create a file named `Properties\PublishProfiles\ClickOnceProfile.pubxml` in your
     <SignatureAlgorithm>(none)</SignatureAlgorithm>
     <SignManifests>False</SignManifests>
     <SkipPublishVerification>false</SkipPublishVerification>
-    <TargetFramework>net9.0-desktop</TargetFramework>
+    <TargetFramework>net10.0-desktop</TargetFramework>
     <UpdateEnabled>False</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateRequired>False</UpdateRequired>
     <WebPageFileName>Publish.html</WebPageFileName>
 
     <!-- Those two lines below need to be removed when building using "UnoClickOncePublishDir" -->
-    <PublishDir>bin\Release\net9.0-desktop\win-x64\app.publish\</PublishDir>
+    <PublishDir>bin\Release\net10.0-desktop\win-x64\app.publish\</PublishDir>
     <PublishUrl>bin\publish\</PublishUrl>
   </PropertyGroup>
   <ItemGroup>
     <!-- This section needs to be adjusted based on the target framework -->
-    <BootstrapperPackage Include="Microsoft.NetCore.DesktopRuntime.8.0.x64">
+    <BootstrapperPackage Include="Microsoft.NetCore.DesktopRuntime.10.0.x64">
       <Install>true</Install>
-      <ProductName>.NET Desktop Runtime 8.0.10 (x64)</ProductName>
+      <ProductName>.NET Desktop Runtime 10.0.1 (x64)</ProductName>
     </BootstrapperPackage>
   </ItemGroup>
 </Project>
@@ -149,5 +149,5 @@ The resulting package will be located in the `bin\publish` folder. You can chang
 Depending on your deployment settings, you can run the `Setup.exe` file to install the application on a machine.
 
 > [!IMPORTANT]
-> At this time, publishing with the Visual Studio Publishing Wizard is not supported for
-> multi-targeted projects. Using the command line above is required.
+> At this time, publishing with the [Visual Studio Publishing Wizard](https://learn.microsoft.com/visualstudio/deployment/quickstart-deploy-using-clickonce-folder?view=visualstudio) 
+> is not supported for multi-targeted projects. Using the command line above is required.

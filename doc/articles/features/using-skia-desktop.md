@@ -17,7 +17,7 @@ The set of supported platforms can be defined by using the `UnoPlatformHostBuild
 
 ## Get started with the Skia Desktop head
 
-Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [Visual Studio 2022](xref:Uno.GetStarted.vs2022), make sure to use Uno Platform 5.1 templates to get it.
+Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [Visual Studio](xref:Uno.GetStarted.vs2022), making sure to use the latest Uno Platform templates.
 
 Once created, in the `Platforms/Desktop/Program.cs` file, you'll find the following builder:
 

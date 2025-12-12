@@ -266,6 +266,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	partial void OnOffsetChanged(Vector3 value)
 		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
+	partial void OnArrangeOffsetChanged(Vector3 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
 	partial void OnSizeChanged(Vector2 value)
 		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
@@ -370,7 +373,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			else
 			{
 				var recorder = new SKPictureRecorder();
-				var recordingCanvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+				var recordingCanvas = recorder.BeginRecording(new SKRect(int.MinValue, int.MinValue, int.MaxValue, int.MaxValue));
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
@@ -571,15 +574,21 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	private Vector3 GetTotalOffset()
 	{
+		var total = new Vector3(
+			Offset.X + ArrangeOffset.X,
+			Offset.Y + ArrangeOffset.Y,
+			Offset.Z + ArrangeOffset.Z
+		);
+
 		if (IsTranslationEnabled && Properties.TryGetVector3("Translation", out var translation) == CompositionGetValueStatus.Succeeded)
 		{
 			// WARNING: DO NOT change this to plain "return Offset + translation;"
 			// as this results in very wrong values on Android when debugger is not attached.
 			// https://github.com/dotnet/runtime/issues/114094
-			return new Vector3(Offset.X + translation.X, Offset.Y + translation.Y, Offset.Z + translation.Z);
+			return new Vector3(total.X + translation.X, total.Y + translation.Y, total.Z + translation.Z);
 		}
 
-		return Offset;
+		return total;
 	}
 
 	internal virtual bool GetPrePaintingClipping(SKPath dst)

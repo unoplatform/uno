@@ -145,7 +145,13 @@ namespace Microsoft.UI.Xaml
 			_ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
 			if (Uri.TryCreate(FeatureConfiguration.Font.DefaultTextFontFamily, UriKind.RelativeOrAbsolute, out var uri))
 			{
-				_ = FontFamilyHelper.PreloadAllFontsInManifest(uri);
+				_ = FontFamilyHelper.PreloadAllFontsInManifest(uri).ContinueWith(t =>
+				{
+					if (!t.IsCompletedSuccessfully)
+					{
+						_ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.DefaultTextFontFamily), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+					}
+				});
 			}
 			else
 			{

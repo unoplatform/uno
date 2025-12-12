@@ -9,7 +9,7 @@ Uno Platform projects use the Uno.Sdk package that is designed to keep projects 
 This document explains the many features of this SDK and how to configure its behavior.
 
 > [!TIP]
-> Beginning with 5.2, Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio 2022 Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.
+> Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.
 
 ## Managing the Uno.Sdk version
 
@@ -229,9 +229,9 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
   </Choose>
 ```
 
-## Visual Studio 2022 First-TargetFramework workarounds
+## Visual Studio First-TargetFramework Workarounds
 
-Using a Single Project in Visual Studio 2022 requires the Uno Platform tooling to apply workarounds in order to have an acceptable debugging experience.
+Using a Single Project in Visual Studio requires the Uno Platform tooling to apply workarounds in order to have an acceptable debugging experience.
 
 For some of the platforms (Desktop, WinAppSDK, and WebAssembly), the corresponding target frameworks must be placed first in order for debugging and publishing to function properly. To address that problem, the Uno Platform tooling modifies the `csproj` file to reorder the `TargetFrameworks` property so that the list is accepted by Visual Studio.
 

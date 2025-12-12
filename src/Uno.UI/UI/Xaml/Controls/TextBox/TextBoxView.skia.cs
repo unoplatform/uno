@@ -31,12 +31,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DisplayBlock = new TextBlock
 			{
-				MinWidth = InlineCollection.CaretThickness,
+				MinWidth = TextBlock.CaretThickness,
 				Style = null, // Prevent inheriting TextBlock styles
 				IsTextBoxDisplay = true,
 			};
 
-			SetFlowDirectionAndTextAlignment();
+			SetFlowDirection();
 
 			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
 			{
@@ -76,27 +76,13 @@ namespace Microsoft.UI.Xaml.Controls
 			_overlayTextBoxViewExtension?.Select(start, length);
 		}
 
-		internal void SetFlowDirectionAndTextAlignment()
+		internal void SetFlowDirection()
 		{
 			if (TextBox is not { } textBox)
 			{
 				return;
 			}
-
-			var flowDirection = textBox.FlowDirection;
-			var textAlignment = textBox.TextAlignment;
-			if (flowDirection == FlowDirection.RightToLeft)
-			{
-				textAlignment = textAlignment switch
-				{
-					TextAlignment.Left => TextAlignment.Right,
-					TextAlignment.Right => TextAlignment.Left,
-					_ => textAlignment,
-				};
-			}
-
-			DisplayBlock.FlowDirection = flowDirection;
-			DisplayBlock.TextAlignment = textAlignment;
+			DisplayBlock.FlowDirection = textBox.FlowDirection;
 		}
 
 		internal void SetWrapping()

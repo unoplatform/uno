@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ public class TextBoxExtensions
 
 	public static void SetInputReturnType(DependencyObject obj, InputReturnType value) => obj.SetValue(InputReturnTypeProperty, value);
 
+	[DynamicDependency(nameof(GetInputReturnType))]
+	[DynamicDependency(nameof(SetInputReturnType))]
 	public static readonly DependencyProperty InputReturnTypeProperty =
 		DependencyProperty.RegisterAttached(
 			nameof(InputReturnType),

@@ -210,6 +210,7 @@ public class Given_DependencyObjectGenerator
 	 		}
 	 		
 	 		// Using a DependencyProperty as the backing store for DataContext.  This enables animation, styling, binding, etc...
+	 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
 	 		public static DependencyProperty DataContextProperty { get ; } =
 	 			DependencyProperty.Register(
 	 				name: nameof(DataContext),
@@ -240,6 +241,7 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
 	 		[EditorBrowsable(EditorBrowsableState.Never)]
+	 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
 	 		public static DependencyProperty TemplatedParentProperty { get ; } =
 	 			DependencyProperty.Register(
 	 				name: nameof(TemplatedParent),

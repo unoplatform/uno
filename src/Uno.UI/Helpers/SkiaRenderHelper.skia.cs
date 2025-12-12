@@ -33,7 +33,7 @@ internal static class SkiaRenderHelper
 
 	internal static (IntPtr picture, SKPath nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordPictureAndReturnPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
-		var canvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+		var canvas = _recorder.BeginRecording(new SKRect(int.MinValue, int.MinValue, int.MaxValue, int.MaxValue));
 		using var _ = new SKAutoCanvasRestore(canvas, true);
 		canvas.Clear(SKColors.Transparent);
 
