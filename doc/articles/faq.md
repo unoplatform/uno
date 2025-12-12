@@ -60,7 +60,7 @@ No, there's no need to have an existing WinUI application or have that specific 
 
 ### What 3rd parties support Uno Platform?
 
-Uno Platform is supported by several 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, and LightningChart; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI, and MVVMCross; HTTP/API clients with Refit and Kiota; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](xref:Uno.Development.SupportedLibraries)
+Uno Platform is supported by several 3rd-party packages and libraries. This includes advanced controls from Microsoft Windows Community Toolkit, Syncfusion, and LightningChart; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI, and MVVMCross; HTTP/API clients with Refit and Kiota; and local database management with SQLite. [See the full list of supported 3rd-party libraries.](xref:Uno.Development.SupportedLibraries)
 
 ### Where can I get support?
 

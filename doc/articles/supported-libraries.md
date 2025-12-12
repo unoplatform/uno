@@ -17,7 +17,7 @@ This article lists some of the 3rd-party libraries supported by Uno Platform.
 
 ## Presentation frameworks
 
-* [CommunityToolkit.Mvvm](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/) (MVVM Community Toolkit)
+* [CommunityToolkit.Mvvm](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/)
 * [Prism](https://prismlibrary.com/)
 * [ReactiveUI](https://www.reactiveui.net/)
 
