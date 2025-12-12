@@ -30,6 +30,9 @@ If you are new to VS Code or to developing C# applications with VS Code take the
 1. Configure VS Code to start from the command-line using the `code` command. This can be configured by following [these instructions](https://code.visualstudio.com/docs/editor/command-line#_launching-from-command-line).
 1. Install the **Uno Platform** extension. Press `F1` and type `Extensions: Install Extensions`, search the marketplace for **Uno Platform** and click the **Install** button.
 
+> [!NOTE]
+> The Uno Platform extension automatically sets up AI development capabilities with MCP (Model Context Protocol) servers, enabling AI agents like GitHub Copilot to intelligently interact with your Uno Platform applications. For more information about the MCP tools, see [Using the Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
+
 ## Platform-specific setup
 
 You may need to follow additional directions, depending on your development environment.
