@@ -1,6 +1,7 @@
 ﻿#if HAS_UNO_WINUI
 
 using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -21,13 +22,19 @@ public partial class ClientHotReloadProcessor
 	/// <summary>
 	/// Result details of a file update
 	/// </summary>
-	/// <param name="FileUpdated">Indicates if file is known to have been updated on server-side.</param>
+	/// <param name="FilesUpdated">Number of files that are known to have been updated on server-side.</param>
 	/// <param name="ApplicationUpdated">Indicates if the change had an impact on the compilation of the application (might be a success-full build or an error).</param>
 	/// <param name="Error">Gets the error if any happened during the update.</param>
 	public record struct UpdateResult(
-		bool FileUpdated,
+		int FilesUpdated,
 		bool? ApplicationUpdated,
-		Exception? Error = null);
+		Exception? Error = null)
+	{
+		/// <summary>
+		/// Indicates if at least one file is known to have been updated on server-side.
+		/// </summary>
+		public bool FileUpdated => FilesUpdated > 0; // For backward compat purposes!
+	}
 
 	/// <summary>
 	/// Request details of a file update
@@ -37,11 +44,25 @@ public partial class ClientHotReloadProcessor
 	/// <param name="NewText">Replacement text.</param>
 	/// <param name="WaitForHotReload">Indicates if we should also wait for the change to be applied in the application before completing the resulting task.</param>
 	public record struct UpdateRequest(
-		string FilePath,
-		string? OldText,
-		string? NewText,
+		ImmutableArray<FileEdit> Edits,
 		bool WaitForHotReload = true)
 	{
+		/// <summary>
+		/// Request details of a single file update
+		/// </summary>
+		/// <param name="FilePath">Path of the file to update, relative to the solution root dir.</param>
+		/// <param name="OldText">Current text to replace in the file.</param>
+		/// <param name="NewText">Replacement text.</param>
+		/// <param name="WaitForHotReload">Indicates if we should also wait for the change to be applied in the application before completing the resulting task.</param>
+		public UpdateRequest(
+			string FilePath,
+			string? OldText,
+			string? NewText,
+			bool WaitForHotReload = true)
+			: this([new(FilePath, OldText, NewText)], WaitForHotReload)
+		{
+		}
+
 		/// <summary>
 		/// Indicates if the file should be saved to disk.
 		/// </summary>
@@ -95,10 +116,10 @@ public partial class ClientHotReloadProcessor
 		}
 
 		public UpdateRequest Undo()
-			=> this with { OldText = NewText, NewText = OldText };
+			=> this with { Edits = [.. Edits.Select(edit => edit with { OldText = edit.NewText, NewText = edit.OldText })] };
 
 		public UpdateRequest Undo(bool waitForHotReload)
-			=> this with { OldText = NewText, NewText = OldText, WaitForHotReload = waitForHotReload };
+			=> this with { Edits = [.. Edits.Select(edit => edit with { OldText = edit.NewText, NewText = edit.OldText })], WaitForHotReload = waitForHotReload };
 	}
 
 	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, CancellationToken ct)
@@ -118,50 +139,77 @@ public partial class ClientHotReloadProcessor
 	public Task TryUpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, CancellationToken ct)
 		=> TryUpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload), ct);
 
-	public async Task<UpdateResult> TryUpdateFileAsync(UpdateRequest req, CancellationToken ct)
+	public Task<UpdateResult> TryUpdateFileAsync(UpdateRequest req, CancellationToken ct)
+		=> TryUpdateFilesAsync(req, ct);
+
+	public async Task<UpdateResult> TryUpdateFilesAsync(UpdateRequest req, CancellationToken ct)
 	{
 		var result = default(UpdateResult);
 		try
 		{
-			if (string.IsNullOrWhiteSpace(req.FilePath))
+			if (req.Edits.IsDefaultOrEmpty || req.Edits.Any(edit => string.IsNullOrWhiteSpace(edit.FilePath)))
 			{
-				return result with { Error = new ArgumentOutOfRangeException(nameof(req.FilePath), "File path is invalid (null or empty).") };
+				return result with { Error = new ArgumentOutOfRangeException(nameof(req.Edits), "Invalid edits (no edits or edit.FilePath is null or empty).") };
 			}
 
 			var log = this.Log();
 			var trace = log.IsTraceEnabled() ? log : default;
 			var debug = log.IsDebugEnabled() ? log : default;
-			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.FilePath)}]";
+			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.Edits.First().FilePath)}]";
 
-			debug?.Debug($"{tag} Updating file {req.FilePath} (from: {req.OldText?[..100]} | to: {req.NewText?[..100]}.");
+			debug?.Debug($"{tag} Updating {req.Edits.Length} file(s).");
+			if (debug?.IsTraceEnabled() ?? false)
+			{
+				foreach (var edit in req.Edits)
+				{
+					debug?.Debug($"{tag} '{edit.FilePath}' (from: {edit.OldText?[..100]} | to: {edit.NewText?[..100]}).");
+				}
+			}
 
 			// As the local HR is not really ID trackable (trigger by VS without any ID), we capture the current ID here to make sure that if HR completes locally before we get info from the server, we won't miss it.
 			var currentLocalHrId = GetCurrentLocalHotReloadId();
 
-			var request = new UpdateFile
+			var request = new UpdateFileRequest
 			{
-				FilePath = req.FilePath,
-				OldText = req.OldText,
-				NewText = req.NewText,
+				Edits = req.Edits,
 				ForceHotReloadDelay = req.HotReloadNoChangesRetryDelay,
 				ForceHotReloadAttempts = req.HotReloadNoChangesRetryAttempts,
 				ForceSaveOnDisk = req.ForceSaveToDisk,
 			};
 			var response = await UpdateFileCoreAsync(request, req.ServerUpdateTimeout, ct);
 
-			if (response.Result is FileUpdateResult.NoChanges)
+			if (response.Results.All(static r => r.Result is FileUpdateResult.NoChanges))
 			{
 				debug?.Debug($"{tag} Changes requested has no effect on server, completing.");
 				return result;
 			}
 
-			if (response.Result is not FileUpdateResult.Success)
-			{
-				debug?.Debug($"{tag} Server failed to update file: {response.Result} (srv error: {response.Error}).");
-				return result with { Error = new InvalidOperationException($"Failed to update file {req.FilePath}: {response.Result} (see inner exception for more details)", new InvalidOperationException(response.Error)) };
-			}
+			// Collect errors
+			var fileErrors = response
+				.Results
+				.Where(edit => ((int)edit.Result) > 300)
+				.Select(edit => new InvalidOperationException($"Failed to update file '{edit.FilePath}': {edit.Result} (see inner exception for more details)", new InvalidOperationException(edit.Error)))
+				.ToList();
 
-			result.FileUpdated = true;
+			result.FilesUpdated = response.Results.Length - fileErrors.Count;
+
+			// Append the global errors
+			if (response.GlobalError is not null)
+			{
+				fileErrors.Insert(0, new InvalidOperationException($"Failed to update files: {response.GlobalError}"));
+			}
+			result.Error = fileErrors.Count switch
+			{
+				0 => null,
+				1 => fileErrors[0],
+				_ => new AggregateException("Multiple errors occurred while updating files.", fileErrors),
+			};
+
+			if (response.GlobalError is not null || result.FilesUpdated is 0)
+			{
+				debug?.Debug($"{tag} Server failed to update files (srv error: {response.GlobalError} | updated files: {result.FilesUpdated}).");
+				return result;
+			}
 
 			if (!req.WaitForHotReload)
 			{
@@ -175,7 +223,7 @@ public partial class ClientHotReloadProcessor
 				return result with { Error = new InvalidOperationException("Cannot wait for Hot reload for this file.") };
 			}
 
-			trace?.Trace($"{tag} Successfully updated file on server ({response.Result}), waiting for server HR id {response.HotReloadCorrelationId}.");
+			trace?.Trace($"{tag} Successfully updated {result.FilesUpdated} file(s) on server, waiting for server HR id {response.HotReloadCorrelationId}.");
 
 			var serverHr = await WaitForServerHotReloadAsync(response.HotReloadCorrelationId.Value, req.ServerHotReloadTimeout, ct);
 			if (serverHr.Result is HotReloadServerResult.NoChanges)
@@ -189,7 +237,7 @@ public partial class ClientHotReloadProcessor
 			if (serverHr.Result is not HotReloadServerResult.Success)
 			{
 				debug?.Debug($"{tag} Server failed to applied changes in code: {serverHr.Result}.");
-				return result with { Error = new InvalidOperationException($"Failed to update file {req.FilePath}, hot-reload failed on server: {serverHr.Result}.") };
+				return result with { Error = new InvalidOperationException($"Failed to update {req.Edits.Length} file(s), hot-reload failed on server: {serverHr.Result}.") };
 			}
 
 			trace?.Trace($"{tag} Successfully got HR from server ({serverHr.Result}), waiting for local HR to complete.");
@@ -198,7 +246,7 @@ public partial class ClientHotReloadProcessor
 			if (localHr.Result is HotReloadClientResult.Failed)
 			{
 				debug?.Debug($"{tag} Failed to apply HR locally: {localHr.Result}.");
-				return result with { Error = new InvalidOperationException($"Failed to update file {req.FilePath}, hot-reload failed locally: {localHr.Result}.") };
+				return result with { Error = new InvalidOperationException($"Failed to update {req.Edits.Length} file(s), hot-reload failed locally: {localHr.Result}.") };
 			}
 
 			await Task.Delay(100, ct); // Wait a bit to make sure to let the dispatcher to resume, this is just for safety.
@@ -220,7 +268,7 @@ public partial class ClientHotReloadProcessor
 	#region File updates messaging
 	private EventHandler<UpdateFileResponse>? _updateResponse;
 
-	private async ValueTask<UpdateFileResponse> UpdateFileCoreAsync(UpdateFile request, TimeSpan timeout, CancellationToken ct)
+	private async ValueTask<UpdateFileResponse> UpdateFileCoreAsync(UpdateFileRequest request, TimeSpan timeout, CancellationToken ct)
 	{
 		var timeoutTask = Task.Delay(timeout, ct);
 		var responseAsync = new TaskCompletionSource<UpdateFileResponse>();
