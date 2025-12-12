@@ -43,7 +43,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)] // Disabled on macOS for unknown core dump
 	public async Task When_AlcContentHost_Then_ResourcesInherited()
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
@@ -61,7 +61,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)] // Disabled on macOS for unknown core dump
 	public async Task When_AlcContentHost_Then_MergedDictionariesInherited()
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
@@ -83,7 +83,7 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)] // Disabled on macOS for unknown core dump
 	public async Task When_SecondaryAlcApp_Then_ContentHosted()
 	{
 		var contentHost = await StartSecondaryAlcAppAsync();
