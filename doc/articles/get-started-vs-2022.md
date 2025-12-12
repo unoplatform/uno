@@ -72,4 +72,4 @@ To setup your environment for WSL:
 
 ## Next Steps
 
-You're all set! You can create your [first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.VS2022) by using either a getting started template, or by using the [Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
+You're all set! You can create your [first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.VS2022) using either a getting started template or the [Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
