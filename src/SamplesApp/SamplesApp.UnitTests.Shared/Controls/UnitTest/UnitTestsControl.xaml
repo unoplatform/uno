@@ -25,7 +25,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Spacing="4">
-            <Grid>
+            <Grid ColumnSpacing="4" RowSpacing="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -40,7 +40,8 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     HorizontalAlignment="Stretch"
-                    Click="OnRunTests">
+                    Click="OnRunTests"
+                    Style="{ThemeResource AccentButtonStyle}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <SymbolIcon Symbol="Play" />
                         <TextBlock Text="Run" />
