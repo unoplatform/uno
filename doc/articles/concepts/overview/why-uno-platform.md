@@ -52,7 +52,7 @@ Uno Platform supports WebAssembly, enabling your .NET apps to run natively in br
 
 ### Rich Tooling
 
-Unlike Flutter's Dart-based ecosystem or React Native's JavaScript foundation, Uno Platform leverages the mature .NET ecosystem with Visual Studio, VS Code, and Rider support. With **Uno Platform Studio**, you get industry-leading tools like Hot Design®, Hot Design® Agent, and AI-powered development assistance through Uno MCP—capabilities not available in any competing framework.
+Uno Platform leverages the mature .NET ecosystem with Visual Studio, VS Code, and Rider support. With **Uno Platform Studio**, you get industry-leading tools like Hot Design®, Hot Design® Agent, and AI-powered development assistance through Uno MCP—capabilities.
 
 ### Pixel-Perfect Control with Multiple Rendering Options
 
