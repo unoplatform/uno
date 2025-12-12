@@ -38,7 +38,7 @@ You can manage the Dev Server from the command line using the dotnet tool [`Uno.
 
 ### Installing the dotnet Dev Server tool
 
-The dotnet Dev Server tool is not installed by default, since the IDE Extensions managing its regular tasks for you already.
+The dotnet Dev Server tool is not installed by default, since the IDE Extensions manages its regular tasks for you already.
 
 If you want or need to install or update it, e.g. for [Troubleshooting Dev Server in VS Code](#vscodets), you can do so, by following the steps below.
 
@@ -49,7 +49,7 @@ If you want or need to install or update it, e.g. for [Troubleshooting Dev Serve
 2. Enter the following command:
 
    ```pwsh
-   dotnet tool install -global Uno.DevServer
+   dotnet tool install --global Uno.DevServer
    ```
 
    Now the `dotnet CLI` should respond:
@@ -61,7 +61,7 @@ If you want or need to install or update it, e.g. for [Troubleshooting Dev Serve
    ```
 
    >[!TIP]
-   > If you already installed it before, you can use the `dotnet tool -g update Uno.DevServer` command or re-use the installation command. The end result will be the same.
+   > If you already installed it before, you can use the `dotnet tool update --global Uno.DevServer` command or re-use the installation command. The end result will be the same.
 
 3. You can now use the Dev Server command line name to print out the tool default command `--help`:
 
@@ -145,29 +145,29 @@ The Dev Server enables Hot Reload for a faster inner loop:
 - The **Uno Platform Status** Page (available via Bottomline Extension Bar) shows everywhere `... not found` and any `uno-devserver` command, except from eventually the  toolname only (shows the tool `--help`), fails to find `global.json` containing the SDK Version:
 
    ```
-   PS C:\Users\YourUserName\repos\DevTKSS\DevTKSS.Uno.SampleApps> uno-devserver start
+   PS C:\Users\YourUserName\repos\YourUnoApp> uno-devserver start
    fail: No global.json found in current directory or parent directories. Please run this command from within a project that uses Uno SDK.
    fail: Could not determine SDK version from global.json.
    ```
 
    **To solve this, you can follow these steps:**
 
-   1. Make sure your open Workspacefolder is including `.vscode/` with at least:
+   1. Make sure your open workspace folder is including `.vscode/` with at least:
 
       - `launch.json`
       - `tasks.json`
 
-   2. If your Repository is maybe structured with `./src/` and `./docs/` at the root level, but this folder is still nested like `./src/.vscode/launch.json` you have the following options to solve this:
+   2. If your repository is maybe structured with `./src/` and `./docs/` at the root level, but this folder is still nested like `./src/.vscode/launch.json` you have the following options to solve this:
 
-     1. move the `./src/.vscode/` folder containing the required files to the Workspace (Repository Root) Folder, adjust the pathes to your project(s) by adding the `src/` prefix and restart VS Code, to make sure all extensions are catching up the changes correctly
+     1. move the `./src/.vscode/` folder containing the required files to the workspace folder in your repository root, adjust the paths to your project(s) by adding the `src/` prefix and restart vs code, to make sure all extensions are catching up the changes correctly
      2. Open vs code instead in the `./src` Folder, without having to move those files
 
      > [!TIP]
      > It's up to you, which Option you want to choose, but most of the cases you might want to prefer choosing the first one, in case you are using **Source Control Management** with e.g. **GIT**
 
-   3. Now check the the **Uno Platform Status** and enter your `uno-devserver [command] [option]` again.
+   3. Now check the **Uno Platform Status** and enter your `uno-devserver [command] [option]` again.
 
-   If the problem persists, please make sure to [open an issue](www.github.com/unoplatform/uno/issues/new/choose).
+   If the problem persists, please make sure to [open an issue](https://www.github.com/unoplatform/uno/issues/new/choose).
 
 ### [**Rider**](#tab/riderts)
 
