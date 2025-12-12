@@ -92,28 +92,35 @@ internal partial class Win32DragDropExtension
 					{
 						try
 						{
-							var iconImage = ExtractFileIcon(firstFile);
+							// First try to extract icon from executable/DLL
+							var iconImage = TryExtractIconFromExecutable(firstFile);
+
+							// If that fails, fall back to getting file type icon
 							if (iconImage is null)
 							{
 								var icon = GetFileTypeIcon(firstFile);
-								try
+								if (icon != default)
 								{
-									// Convert HICON to BitmapImage
-									iconImage = ConvertHIconToBitmapImage(icon);
-								}
-								finally
-								{
-									// Cleanup: destroy the icon handle
-									PInvoke.DestroyIcon(icon);
+									try
+									{
+										// Convert HICON to BitmapImage
+										iconImage = ConvertHIconToBitmapImage(icon);
+									}
+									finally
+									{
+										// Cleanup: destroy the icon handle
+										PInvoke.DestroyIcon(icon);
+									}
 								}
 							}
+
 							if (iconImage is not null)
 							{
 								dragUI.SetContentFromExternalBitmapImage(iconImage);
 								return dragUI;
 							}
 						}
-						catch (Exception ex)
+						catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or InvalidOperationException)
 						{
 							var logger = typeof(Win32DragDropExtension).Log();
 							if (logger.IsEnabled(LogLevel.Debug))

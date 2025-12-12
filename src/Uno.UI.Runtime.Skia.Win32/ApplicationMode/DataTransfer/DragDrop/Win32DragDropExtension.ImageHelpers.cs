@@ -12,9 +12,36 @@ namespace Uno.UI.Runtime.Skia.Win32;
 // Image and icon helper methods for drag-and-drop operations
 internal partial class Win32DragDropExtension
 {
+	/// <summary>
+	/// Extracts one or more icons from the specified executable file, DLL, or icon file.
+	/// </summary>
+	/// <param name="lpszFile">The path to the file from which to extract icons.</param>
+	/// <param name="nIconIndex">The zero-based index of the first icon to extract.</param>
+	/// <param name="phiconLarge">
+	/// Pointer to an array that receives handles to the large icons extracted. Can be null if large icons are not needed.
+	/// </param>
+	/// <param name="phiconSmall">
+	/// Pointer to an array that receives handles to the small icons extracted. Can be null if small icons are not needed.
+	/// </param>
+	/// <param name="nIcons">The number of icons to extract from the file.</param>
+	/// <returns>
+	/// If <paramref name="phiconLarge"/> and <paramref name="phiconSmall"/> are both null, returns the total number of icons in the file.
+	/// Otherwise, returns the number of icons successfully extracted.
+	/// </returns>
 	[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = false)]
 	private static extern unsafe uint ExtractIconExW(string lpszFile, int nIconIndex, HICON* phiconLarge, HICON* phiconSmall, uint nIcons);
 
+	/// <summary>
+	/// Retrieves information about an object in the file system, such as a file, folder, directory, or drive root.
+	/// </summary>
+	/// <param name="pszPath">The path to the file or folder.</param>
+	/// <param name="dwFileAttributes">File attribute flags. Used with <paramref name="uFlags"/> to specify the type of file information to retrieve.</param>
+	/// <param name="psfi">Pointer to a SHFILEINFOW structure to receive the file information.</param>
+	/// <param name="cbFileInfo">The size, in bytes, of the SHFILEINFOW structure pointed to by <paramref name="psfi"/>.</param>
+	/// <param name="uFlags">Flags that specify which file information to retrieve.</param>
+	/// <returns>
+	/// Returns a value whose meaning depends on the <paramref name="uFlags"/> parameter. Typically, returns a handle or zero on failure.
+	/// </returns>
 	[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = false)]
 	private static extern unsafe IntPtr SHGetFileInfoW(string pszPath, uint dwFileAttributes, IntPtr psfi, uint cbFileInfo, uint uFlags);
 
@@ -150,7 +177,14 @@ internal partial class Win32DragDropExtension
 		}
 	}
 
-	private static unsafe Microsoft.UI.Xaml.Media.Imaging.BitmapImage? ExtractFileIcon(string filePath)
+	/// <summary>
+	/// Attempts to extract an icon directly from an executable file or DLL.
+	/// This method uses ExtractIconExW which only works for executables and DLLs that contain icon resources.
+	/// For other file types, use <see cref="GetFileTypeIcon"/> instead.
+	/// </summary>
+	/// <param name="filePath">The path to the executable or DLL file.</param>
+	/// <returns>A BitmapImage containing the icon, or null if extraction fails.</returns>
+	private static unsafe Microsoft.UI.Xaml.Media.Imaging.BitmapImage? TryExtractIconFromExecutable(string filePath)
 	{
 		try
 		{
@@ -168,29 +202,29 @@ internal partial class Win32DragDropExtension
 			if (result == 0 || largeIcon == default)
 			{
 				// ExtractIconExW returns 0 if no icons were extracted
+				// Clean up the small icon if it was extracted
 				if (smallIcon != default)
 				{
 					PInvoke.DestroyIcon(smallIcon);
 				}
+				return null;
 			}
 
-			// Clean up the small icon if extracted
+			// Clean up the small icon if extracted (we only need the large one)
 			if (smallIcon != default)
 			{
 				PInvoke.DestroyIcon(smallIcon);
 			}
 
-			var hIcon = largeIcon;
-
 			try
 			{
 				// Convert HICON to BitmapImage
-				return ConvertHIconToBitmapImage(hIcon);
+				return ConvertHIconToBitmapImage(largeIcon);
 			}
 			finally
 			{
-				// Cleanup: destroy the icon handle
-				PInvoke.DestroyIcon(hIcon);
+				// Cleanup: destroy the large icon handle
+				PInvoke.DestroyIcon(largeIcon);
 			}
 		}
 		catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException)
@@ -200,6 +234,12 @@ internal partial class Win32DragDropExtension
 		}
 	}
 
+	/// <summary>
+	/// Gets the icon associated with a file type using Shell API.
+	/// This method works for all file types by retrieving the icon based on file extension.
+	/// </summary>
+	/// <param name="filePath">The path to the file.</param>
+	/// <returns>An HICON handle to the file type icon, or default if retrieval fails.</returns>
 	private static unsafe HICON GetFileTypeIcon(string filePath)
 	{
 		try
@@ -207,8 +247,11 @@ internal partial class Win32DragDropExtension
 			var fileInfo = new SHFILEINFOW();
 			var flags = SHGFI_ICON | SHGFI_LARGEICON;
 
+			// Check if file exists once and store the result
+			var fileExists = File.Exists(filePath);
+
 			// If the file doesn't exist, use SHGFI_USEFILEATTRIBUTES to get icon based on extension
-			if (!File.Exists(filePath))
+			if (!fileExists)
 			{
 				flags |= SHGFI_USEFILEATTRIBUTES;
 			}
@@ -220,7 +263,7 @@ internal partial class Win32DragDropExtension
 
 				var result = SHGetFileInfoW(
 					filePath,
-					File.Exists(filePath) ? 0 : FILE_ATTRIBUTE_NORMAL,
+					fileExists ? 0 : FILE_ATTRIBUTE_NORMAL,
 					pFileInfo,
 					(uint)Marshal.SizeOf<SHFILEINFOW>(),
 					flags
