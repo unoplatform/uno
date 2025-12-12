@@ -1,8 +1,10 @@
 using System.ComponentModel;
+using System.IO;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 
@@ -14,12 +16,19 @@ internal class McpProxy
 	private readonly DevServerMonitor _devServerMonitor;
 	private readonly McpClientProxy _mcpClientProxy;
 	private readonly Tool _addRootsTool;
+	private readonly string _toolCachePath;
+	private Tool[] _toolCache = [];
+	private bool _toolCacheLoaded;
+	private bool _shouldRefreshToolCache = true;
+	private readonly object _toolCacheLock = new();
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
 	private string? _currentDirectory;
 	private int _devServerPort;
 	private List<string> _forwardedArgs = [];
 	private string[] _roots = [];
+
+	private const string ToolCacheFileName = "tools-cache.json";
 
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client"];
@@ -31,6 +40,7 @@ internal class McpProxy
 		_mcpClientProxy = mcpClientProxy;
 
 		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
+		_toolCachePath = InitializeToolCachePath();
 	}
 
 	public async Task<int> RunAsync(string currentDirectory, int port, List<string> forwardedArgs, bool waitForTools, bool forceRootsFallback, CancellationToken ct)
@@ -63,6 +73,17 @@ internal class McpProxy
 		_roots = roots;
 
 		await ProcessRoots();
+	}
+
+	private static string InitializeToolCachePath()
+	{
+		var basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+		if (string.IsNullOrWhiteSpace(basePath))
+		{
+			basePath = Path.GetTempPath();
+		}
+
+		return Path.Combine(basePath, "Uno Platform", "uno.devserver", ToolCacheFileName);
 	}
 
 	private async Task ProcessRoots()
@@ -115,13 +136,13 @@ internal class McpProxy
 			.WithStdioServerTransport()
 			.WithCallToolHandler(async (ctx, ct) =>
 			{
-				var upstreamClient = await _mcpClientProxy.UpstreamClient;
-
 				if (_forceRootsFallback && ctx.Params?.Name == _addRootsTool.Name)
 				{
 					await SetRoots(ctx.Params.Arguments?["roots"].Deserialize<string[]>() ?? []);
 					return new CallToolResult() { Content = [new TextContentBlock() { Text = "Ok" }] };
 				}
+
+				var upstreamClient = await _mcpClientProxy.UpstreamClient;
 
 				if (upstreamClient is null)
 				{
@@ -146,17 +167,13 @@ internal class McpProxy
 			{
 				await EnsureRootsInitialized(ctx, tcs, ct);
 
-				var upstreamClient = await _mcpClientProxy.UpstreamClient;
-
-				_logger.LogTrace("Got upstream client");
-
-				if (upstreamClient is null)
+				if (_forceRootsFallback && _roots.Length == 0)
 				{
-					List<Tool> tools = [];
-
-					if (_forceRootsFallback)
+					List<Tool> tools = [_addRootsTool];
+					var cachedTools = GetCachedTools();
+					if (cachedTools.Length > 0)
 					{
-						tools.Add(_addRootsTool);
+						tools.AddRange(cachedTools);
 					}
 
 					_logger.LogTrace("Upstream client is not connected, returning {Count} tools", tools.Count);
@@ -165,15 +182,29 @@ internal class McpProxy
 					return new() { Tools = tools };
 				}
 
+				var upstreamClient = await _mcpClientProxy.UpstreamClient;
+
+				if (upstreamClient is null)
+				{
+					_logger.LogTrace("Upstream client is not connected, returning 0 tools");
+
+					return new() { Tools = [] };
+				}
+
+				_logger.LogTrace("Got upstream client");
+
 				_logger.LogTrace("Client requested tools list update");
 
 				var list = await upstreamClient!.ListToolsAsync(cancellationToken: ct);
+				Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
 
-				_logger.LogDebug("Reporting {Count} tools", list.Count);
+				_logger.LogDebug("Reporting {Count} tools", protocolTools.Length);
+
+				PersistToolCacheIfNeeded(protocolTools);
 
 				return new()
 				{
-					Tools = [.. list.Select(t => t.ProtocolTool)]
+					Tools = protocolTools
 				};
 			});
 
@@ -188,6 +219,13 @@ internal class McpProxy
 		_mcpClientProxy.RegisterToolListChangedCallback(async () =>
 		{
 			_logger.LogTrace("Upstream tool list changed");
+
+			lock (_toolCacheLock)
+			{
+				_shouldRefreshToolCache = true;
+			}
+
+			await RefreshCachedToolsFromUpstreamAsync();
 
 			tcs.TrySetResult();
 
@@ -225,33 +263,36 @@ internal class McpProxy
 
 		var clientSupportsRoots = !_forceRootsFallback && (ctx.Server.ClientCapabilities?.Roots?.ListChanged ?? false);
 
-		if (clientSupportsRoots)
+		if (!_forceRootsFallback)
 		{
-			var roots = await ctx.Server.RequestRootsAsync(new(), ct);
-
-			_logger.LogTrace("MCP Client supports roots: {Roots}", string.Join(", ", roots.Roots.Select(r => r.Uri)));
-
-			if (roots.Roots.Count != 0)
+			if (clientSupportsRoots)
 			{
-				_roots = [.. roots.Roots.Select(r => r.Uri)];
+				var roots = await ctx.Server.RequestRootsAsync(new(), ct);
+
+				_logger.LogTrace("MCP Client supports roots: {Roots}", string.Join(", ", roots.Roots.Select(r => r.Uri)));
+
+				if (roots.Roots.Count != 0)
+				{
+					_roots = [.. roots.Roots.Select(r => r.Uri)];
+				}
+				else
+				{
+					// convert _currentDirectory to a file uri
+					if (Uri.TryCreate(_currentDirectory ?? Environment.CurrentDirectory, UriKind.RelativeOrAbsolute, out var root))
+					{
+						_roots = [root.ToString() ?? Environment.CurrentDirectory];
+					}
+				}
 			}
 			else
 			{
-				// convert _currentDirectory to a file uri
-				if (Uri.TryCreate(_currentDirectory ?? Environment.CurrentDirectory, UriKind.RelativeOrAbsolute, out var root))
-				{
-					_roots = [root.ToString() ?? Environment.CurrentDirectory];
-				}
+				_logger.LogTrace("MCP Client does not support roots");
+
+				_roots = [Environment.CurrentDirectory];
 			}
-		}
-		else
-		{
-			_logger.LogTrace("MCP Client does not support roots");
 
-			_roots = [Environment.CurrentDirectory];
+			await ProcessRoots();
 		}
-
-		await ProcessRoots();
 
 		// Claude Code and Codex do not support the list_updated notification.
 		// To avoid tool invocation failures, we wait for the tools to be available
@@ -264,6 +305,105 @@ internal class McpProxy
 			_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
 
 			await tcs.Task;
+		}
+	}
+
+	private async Task RefreshCachedToolsFromUpstreamAsync()
+	{
+		if (!_forceRootsFallback)
+		{
+			return;
+		}
+
+		try
+		{
+			var upstreamClient = await _mcpClientProxy.UpstreamClient;
+			if (upstreamClient is null)
+			{
+				return;
+			}
+
+			var list = await upstreamClient.ListToolsAsync();
+			Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
+
+			PersistToolCacheIfNeeded(protocolTools);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Unable to refresh cached tools from upstream");
+		}
+	}
+
+	private Tool[] GetCachedTools()
+	{
+		lock (_toolCacheLock)
+		{
+			if (_toolCacheLoaded)
+			{
+				return _toolCache;
+			}
+
+			_toolCacheLoaded = true;
+
+			if (!_forceRootsFallback)
+			{
+				return _toolCache;
+			}
+
+			try
+			{
+				if (File.Exists(_toolCachePath))
+				{
+					var json = File.ReadAllText(_toolCachePath);
+					_toolCache = JsonSerializer.Deserialize<Tool[]>(json, McpJsonUtilities.DefaultOptions) ?? [];
+					_logger.LogTrace("Loaded {Count} cached tools from {Path}", _toolCache.Length, _toolCachePath);
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Unable to load tool cache from {Path}", _toolCachePath);
+				_toolCache = [];
+			}
+
+			return _toolCache;
+		}
+	}
+
+	private void PersistToolCacheIfNeeded(Tool[] tools)
+	{
+		if (!_forceRootsFallback || tools.Length == 0)
+		{
+			return;
+		}
+
+		lock (_toolCacheLock)
+		{
+			if (!_shouldRefreshToolCache)
+			{
+				return;
+			}
+
+			var directory = Path.GetDirectoryName(_toolCachePath);
+			try
+			{
+				if (!string.IsNullOrEmpty(directory))
+				{
+					Directory.CreateDirectory(directory);
+				}
+
+				var json = JsonSerializer.Serialize(tools, McpJsonUtilities.DefaultOptions);
+				File.WriteAllText(_toolCachePath, json);
+
+				_toolCache = tools;
+				_toolCacheLoaded = true;
+				_shouldRefreshToolCache = false;
+
+				_logger.LogTrace("Cached {Count} tools at {Path}", tools.Length, _toolCachePath);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Unable to persist tool cache to {Path}", _toolCachePath);
+			}
 		}
 	}
 }

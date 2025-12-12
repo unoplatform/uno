@@ -18,6 +18,8 @@
         href: xref:Uno.GetStarted.AI.CopilotCLI
       - name: Cursor
         href: xref:Uno.GetStarted.AI.Cursor
+      - name: Google Antigravity
+        href: xref:Uno.GetStarted.AI.GoogleAntigravity
 
     - name: Sign in with Uno Platform
       href: xref:Uno.GetStarted.Licensing
@@ -39,6 +41,8 @@
         href: xref:Uno.GettingStarted.CreateAnApp.AI.CopilotCli
       - name: Cursor
         href: xref:Uno.GettingStarted.CreateAnApp.AI.Cursor
+      - name: Google Antigravity
+        href: xref:Uno.GettingStarted.CreateAnApp.AI.GoogleAntigravity
 
     - name: Build your app
       topicHref: xref:Uno.GetStarted.Explore
