@@ -12,7 +12,7 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
 
 ## Setting up Uno Platform MCPs
 
-1. Install the [Google Antigravity](https://antigravity.google/) by following Google's official instructions for your operating system.
+1. Install [Google Antigravity](https://antigravity.google/) by following Google's official instructions for your operating system.
 1. Configure [Antigravity MCPs](https://antigravity.google/docs/mcp):
 
     1. Open the MCP store via the "..." dropdown at the top of the editor's agent panel.
@@ -41,7 +41,7 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
         ```
 
     > [!NOTE]
-    > `--force-roots-fallback` exposes the `uno_app_set_roots` tool so Antigravity, which does not provide yet [MCP roots](https://modelcontextprotocol.io/specification/2025-06-18/client/roots), can initialize.
+    > `--force-roots-fallback` exposes the `uno_app_set_roots` tool so Antigravity, which does not yet provide [MCP roots](https://modelcontextprotocol.io/specification/2025-06-18/client/roots), can initialize.
 
 ## Next Steps
 
