@@ -31,8 +31,9 @@
 
 	<!-- Add the generated TypeScript output as an embedded resource with logical name -->
 	<Target Name="_UnoUIMSALAddTypeScriptResource" 
-	        AfterTargets="CompileTypeScriptWithTSConfig" 
-	        BeforeTargets="PrepareResourceNames">
+	        Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+	        DependsOnTargets="CompileTypeScriptWithTSConfig" 
+	        BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<ItemGroup>
 			<EmbeddedResource Include="$(IntermediateOutputPath)MSAL.WebUI.js" Condition="Exists('$(IntermediateOutputPath)MSAL.WebUI.js')">
 				<LogicalName>Uno.UI.MSAL.WasmScripts.MSAL.WebUI.js</LogicalName>

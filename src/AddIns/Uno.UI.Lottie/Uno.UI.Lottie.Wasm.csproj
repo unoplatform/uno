@@ -30,8 +30,9 @@
 
 	<!-- Add the generated TypeScript output as an embedded resource with logical name -->
 	<Target Name="_UnoUILottieAddTypeScriptResource" 
-	        AfterTargets="CompileTypeScriptWithTSConfig" 
-	        BeforeTargets="PrepareResourceNames">
+	        Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+	        DependsOnTargets="CompileTypeScriptWithTSConfig" 
+	        BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<ItemGroup>
 			<EmbeddedResource Include="$(IntermediateOutputPath)uno-lottie.js" Condition="Exists('$(IntermediateOutputPath)uno-lottie.js')">
 				<LogicalName>Uno.UI.Lottie.WasmScripts.uno-lottie.js</LogicalName>
