@@ -46,7 +46,7 @@ It is well funded and has a [sustainability model](https://platform.uno/blog/sus
 
 ## Why Choose Uno Platform Over Alternatives?
 
-### Broader Platform Support Than .NET MAUI or Avalonia
+### Broader Platform Support
 
 Uno Platform uniquely supports WebAssembly, enabling your .NET apps to run natively in browsers alongside mobile and desktop platforms. While .NET MAUI focuses on mobile and desktop, and Avalonia on desktop, Uno Platform delivers true cross-platform reach including web deployment without additional frameworks.
 
