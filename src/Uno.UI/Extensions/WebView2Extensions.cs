@@ -54,9 +54,19 @@ public static class WebView2Extensions
 			throw new InvalidOperationException("The attached property 'IsNavigating' can only be applied to a WebView2 control.");
 		}
 
-		// Remove previous event handlers to prevent duplicate subscriptions
+		// Always remove previous event handlers to prevent duplicate subscriptions
 		control.NavigationStarting -= OnNavigationStarting;
 		control.NavigationCompleted -= OnNavigationCompleted;
+		control.Unloaded -= OnControlUnloaded;
+
+		// Only subscribe if the new value is true
+		if (e.NewValue is bool isEnabled && isEnabled)
+		{
+			control.NavigationStarting += OnNavigationStarting;
+			control.NavigationCompleted += OnNavigationCompleted;
+			control.Unloaded += OnControlUnloaded;
+		}
+	}
 
 	/// <summary>
 	/// Handles the <see cref="WebView2.Unloaded"/> event for the attached <see cref="WebView2"/> control and removes any event subscriptions:
@@ -68,17 +78,21 @@ public static class WebView2Extensions
 	/// </summary>
 	/// <param name="sender">The <see cref="WebView2"/> control that was unloaded.</param>
 	/// <param name="e"> The <see cref="RoutedEventArgs"/> event data.</param>
+	private static void OnControlUnloaded(object sender, RoutedEventArgs e)
+	{
+		if (sender is WebView2 control)
+		{
+			control.NavigationStarting -= OnNavigationStarting;
+			control.NavigationCompleted -= OnNavigationCompleted;
+			control.Unloaded -= OnControlUnloaded;
+		}
 	}
 
 	private static void OnNavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
-	{
-		SetIsNavigating(sender, true);
-	}
+		=> SetIsNavigating(sender, true);
 
 	private static void OnNavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
-	{
-		SetIsNavigating(sender, false);
-	}
+		=> SetIsNavigating(sender, false);
 
 	#endregion
 
