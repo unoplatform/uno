@@ -102,9 +102,11 @@
                 <TextBlock x:Name="runStatus" Text="Not initialized" />
             </StackPanel>
 
-            <Grid Margin="4" RowSpacing="4">
+            <Grid Margin="8" RowSpacing="8">
                 <Grid.Resources>
                     <Style TargetType="StackPanel">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="Spacing" Value="4" />
                         <Setter Property="Background" Value="Transparent" />
                         <Setter Property="Orientation" Value="Horizontal" />
                     </Style>
