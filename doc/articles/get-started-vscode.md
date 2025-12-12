@@ -31,7 +31,7 @@ If you are new to VS Code or to developing C# applications with VS Code take the
 1. Install the **Uno Platform** extension. Press `F1` and type `Extensions: Install Extensions`, search the marketplace for **Uno Platform** and click the **Install** button.
 
 > [!NOTE]
-> The Uno Platform extension automatically sets up AI development capabilities with MCP (Model Context Protocol) servers. These tools enable AI agents like GitHub Copilot to intelligently interact with your Uno Platform applications. For more information about the MCP tools, see [Using the Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
+> The Uno Platform extension automatically sets up AI development capabilities with MCP (Model Context Protocol) servers. These tools enable AI agents like GitHub Copilot to intelligently interact with your Uno Platform applications. To use MCP tools, you'll need to [sign in with your Uno Platform account](xref:Uno.GetStarted.Licensing), which includes a 30-day trial of Pro features. For more information about the MCP tools, see [Using the Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
 ## Platform-specific setup
 

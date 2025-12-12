@@ -44,7 +44,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 (17.9+) 
     ![Extension Manager - Uno Platform extension](Assets/tutorial01/uno-extensions.PNG)
 
 > [!NOTE]
-> The Uno Platform extension provides all the Copilot tooling needed to develop your apps. It includes automatic setup for AI development with MCP (Model Context Protocol) servers. These tools enable AI agents like GitHub Copilot to intelligently interact with your Uno Platform applications. For more information about the MCP tools, see [Using the Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
+> The Uno Platform extension provides all the Copilot tooling needed to develop your apps. It includes automatic setup for AI development with MCP (Model Context Protocol) servers. These tools enable AI agents like GitHub Copilot to intelligently interact with your Uno Platform applications. To use MCP tools, you'll need to [sign in with your Uno Platform account](xref:Uno.GetStarted.Licensing), which includes a 30-day trial of Pro features. For more information about the MCP tools, see [Using the Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
 ## Additional Setup for Android & iOS
 
