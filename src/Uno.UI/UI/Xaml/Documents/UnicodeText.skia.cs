@@ -14,8 +14,10 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Xaml.Media;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
 
@@ -384,12 +386,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		var lastRun = logicallyOrderedRuns[endRunIndex - 1];
 		var start = firstRunIndex == endRunIndex - 1 ? startingIndexInFirstRun : lastRun.startInInline;
 		var glyphsWithoutTrailingSpaces = ShapeRun(lastRun.inline.Text[start..endIndexInLastRun], lastRun.rtl, lastRun.fontDetails, usedWidth, ignoreTrailingSpaces: true);
-		usedWidth += RunWidth(glyphsWithoutTrailingSpaces, lastRun.inline.FontDetails);
 
 		logicallyOrderedRuns[firstRunIndex] = backup1;
 		logicallyOrderedRuns[endRunIndex - 1] = backup2;
 
-		return usedWidth - currentLineWidth;
+		return usedWidth - currentLineWidth + RunWidth(glyphsWithoutTrailingSpaces, lastRun.inline.FontDetails);
 	}
 
 	private static IEnumerable<(int endRunIndex, int endIndexInLastRun)> SplitByLineBreakingOpportunities(List<BidiRun> logicallyOrderedRuns, List<(int indexInInline, ReadonlyInlineCopy inline)> logicallyOrderedLineBreakingOpportunities)
@@ -1322,11 +1323,6 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static bool IsLineBreak(string text, int indexAfterLineBreakOpportunity)
 	{
 		// https://www.unicode.org/standard/reports/tr13/tr13-5.html
-
-		if (text is [.., '\r', '\n'])
-		{
-			return true;
-		}
 
 		switch (text[indexAfterLineBreakOpportunity - 1])
 		{
