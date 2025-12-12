@@ -20,7 +20,7 @@ However, built on top of this foundation is also a rich platform which includes 
 
 ### Hot Design® - The Industry's Only Visual Designer for Cross-Platform .NET
 
-**[Hot Design](xref:Uno.HotDesign.Overview)** is the industry's first and only runtime visual designer for cross-platform .NET applications. It transforms your running app into a designer from any IDE on any OS, offering unprecedented productivity gains. Unlike Flutter's DevTools or React Native's debugging tools, Hot Design provides true WYSIWYG design capabilities at runtime across all platforms.
+**[Hot Design](xref:Uno.HotDesign.Overview)** is the industry's first runtime visual designer for cross-platform .NET applications. It transforms your running app into a designer from any IDE on any OS, offering unprecedented productivity gains. Hot Design provides true WYSIWYG design capabilities at runtime across all platforms.
 
 ### Hot Design® Agent - AI-Powered UX/UI Creation
 
