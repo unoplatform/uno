@@ -497,7 +497,15 @@ namespace Uno.UI.Samples.Tests
 				testSuiteFixtureNode.AppendChild(testCaseNode);
 
 				testCaseNode.SetAttribute("name", run.TestName);
-				testCaseNode.SetAttribute("fullname", run.TestName);
+				testCaseNode.SetAttribute("fullname", run.FullName);
+				if (run.ClassName is not null)
+				{
+					testCaseNode.SetAttribute("classname", run.ClassName);
+				}
+				if (run.MethodName is not null)
+				{
+					testCaseNode.SetAttribute("methodname", run.MethodName);
+				}
 				testCaseNode.SetAttribute("duration", run.Duration.TotalSeconds.ToString(CultureInfo.InvariantCulture));
 				testCaseNode.SetAttribute("time", "0");
 
@@ -987,12 +995,12 @@ namespace Uno.UI.Samples.Tests
 									_currentRun.CurrentRepeatCount++;
 									canRetry = true;
 
-									await RunCleanup(instance, testClassInfo, testName, test.RunsOnUIThread);
+									await RunCleanup(instance, testClassInfo, test, testName, test.RunsOnUIThread);
 								}
 								else
 								{
 									_currentRun.Failed++;
-									ReportTestResult(testClassInfo.TestClassName, test.Method.Name, testClassInfo.TestClassName, test.Method.Name, fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
+									ReportTestResult(testClassInfo.TestClassName, test.Method.Name, fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
 								}
 							}
 							else
@@ -1011,7 +1019,7 @@ namespace Uno.UI.Samples.Tests
 					}
 				}
 
-				await RunCleanup(instance, testClassInfo, testName, test.RunsOnUIThread);
+				await RunCleanup(instance, testClassInfo, test, testName, test.RunsOnUIThread);
 
 				if (ct.IsCancellationRequested)
 				{
@@ -1041,7 +1049,7 @@ namespace Uno.UI.Samples.Tests
 				});
 			}
 
-			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName, bool runsOnUIThread)
+			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, UnitTestMethodInfo testMethod, string testName, bool runsOnUIThread)
 			{
 				async Task Run()
 				{
@@ -1052,7 +1060,7 @@ namespace Uno.UI.Samples.Tests
 					catch (Exception e)
 					{
 						_currentRun.Failed++;
-						ReportTestResult(testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder?.GetContentAndReset());
+						ReportTestResult(testClassInfo.TestClassName, testMethod.Method.Name, testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder?.GetContentAndReset());
 					}
 				}
 
