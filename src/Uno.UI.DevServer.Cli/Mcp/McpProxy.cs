@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,6 +30,10 @@ internal class McpProxy
 	private string[] _roots = [];
 
 	private const string ToolCacheFileName = "tools-cache.json";
+	private const int ToolCacheVersion = 1;
+	private const int MaxCachedTools = 128;
+	private const int MinToolNameLength = 3;
+	private const int MaxToolNameLength = 64;
 
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client"];
@@ -355,8 +360,24 @@ internal class McpProxy
 				if (File.Exists(_toolCachePath))
 				{
 					var json = File.ReadAllText(_toolCachePath);
-					_toolCache = JsonSerializer.Deserialize<Tool[]>(json, McpJsonUtilities.DefaultOptions) ?? [];
-					_logger.LogTrace("Loaded {Count} cached tools from {Path}", _toolCache.Length, _toolCachePath);
+					if (ToolCacheFile.TryRead(
+						json,
+						_toolCachePath,
+						_logger,
+						ToolCacheVersion,
+						MaxCachedTools,
+						MinToolNameLength,
+						MaxToolNameLength,
+						out var cachedTools))
+					{
+						_toolCache = cachedTools;
+						_logger.LogTrace("Loaded {Count} cached tools from {Path}", _toolCache.Length, _toolCachePath);
+					}
+					else
+					{
+						_logger.LogWarning("Tool cache validation failed, ignoring data from {Path}", _toolCachePath);
+						_toolCache = [];
+					}
 				}
 			}
 			catch (Exception ex)
@@ -383,6 +404,17 @@ internal class McpProxy
 				return;
 			}
 
+			if (!ToolCacheFile.TryValidateCachedTools(
+				tools,
+				MaxCachedTools,
+				MinToolNameLength,
+				MaxToolNameLength,
+				out var validationError))
+			{
+				_logger.LogWarning("Refusing to persist tool cache: {Reason}", validationError ?? "Unknown validation error");
+				return;
+			}
+
 			var directory = Path.GetDirectoryName(_toolCachePath);
 			try
 			{
@@ -391,10 +423,11 @@ internal class McpProxy
 					Directory.CreateDirectory(directory);
 				}
 
-				var json = JsonSerializer.Serialize(tools, McpJsonUtilities.DefaultOptions);
+				var entry = ToolCacheFile.CreateEntry(tools, ToolCacheVersion);
+				var json = JsonSerializer.Serialize(entry, McpJsonUtilities.DefaultOptions);
 				File.WriteAllText(_toolCachePath, json);
 
-				_toolCache = tools;
+				_toolCache = entry.Tools;
 				_toolCacheLoaded = true;
 				_shouldRefreshToolCache = false;
 
@@ -406,4 +439,5 @@ internal class McpProxy
 			}
 		}
 	}
+
 }
