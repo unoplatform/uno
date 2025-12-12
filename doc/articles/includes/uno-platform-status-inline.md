@@ -101,7 +101,7 @@ To ensure consistency, the Uno tooling aligns itself with the package versions r
      > [!TIP]
      > It's up to you, which Option you want to choose, but most of the cases you might want to prefer choosing the first one, in case you are using **Source Control Management** with e.g. **GIT**.
 
-   3. Now check the the **Uno Platform Status** and enter your `uno-devserver [command] [option]` again.
+   3. Now check the **Uno Platform Status** and enter your `uno-devserver [command] [option]` again.
 
    If the problem persists, please make sure to [open an issue](www.github.com/unoplatform/uno/issues/new/choose).
 
