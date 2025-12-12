@@ -85,9 +85,9 @@ For more information, see [Hot Reload](xref:Uno.Features.HotReload).
 
 ## Stop typing markup and use Figma code generation
 
-Design handoff is one of the biggest time traps, as design envisioned by the designer needs to be manually translated to markup. With our [Figma plugin](xref:Uno.Figma.Overview.GetStarted)\*, this process is automatic, and the result is well-structured, performant XAML or C#. Unlike Flutter's incomplete Figma integration or React Native's third-party solutions, Uno Platform's Design-to-Code feature is part of **Uno Platform Studio**, providing enterprise-grade design handoff capabilities.
+Design handoff is one of the biggest time traps, as design envisioned by the designer needs to be manually translated to markup. With our [Figma plugin](xref:Uno.Figma.GetStarted)\*, this process is automatic, and the result is well-structured, performant XAML or C#. Unlike Flutter's incomplete Figma integration or React Native's third-party solutions, Uno Platform's Design-to-Code feature is part of **Uno Platform Studio**, providing enterprise-grade design handoff capabilities.
 
-For more information, see [Design and Build Uno Platform Applications with Figma](xref:Uno.Figma.Overview.GetStarted).
+For more information, see [Design and Build Uno Platform Applications with Figma](xref:Uno.Figma.GetStarted).
 
 \*_Note this plugin is optional_
 
