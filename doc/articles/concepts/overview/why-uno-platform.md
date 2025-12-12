@@ -48,7 +48,7 @@ It is well funded and has a [sustainability model](https://platform.uno/blog/sus
 
 ### Broader Platform Support
 
-Uno Platform uniquely supports WebAssembly, enabling your .NET apps to run natively in browsers alongside mobile and desktop platforms. While .NET MAUI focuses on mobile and desktop, and Avalonia on desktop, Uno Platform delivers true cross-platform reach including web deployment without additional frameworks.
+Uno Platform supports WebAssembly, enabling your .NET apps to run natively in browsers alongside mobile and desktop platforms. Uno Platform delivers true cross-platform reach including web deployment without additional frameworks.
 
 ### Richer Tooling Than Flutter or React Native
 
