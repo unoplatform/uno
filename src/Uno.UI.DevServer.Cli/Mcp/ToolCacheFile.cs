@@ -10,14 +10,15 @@ namespace Uno.UI.DevServer.Cli.Mcp;
 
 internal static class ToolCacheFile
 {
+	private const int CacheVersion = 1;
+	private const int MaxCachedTools = 128;
+	private const int MinToolNameLength = 3;
+	private const int MaxToolNameLength = 64;
+
 	public static bool TryRead(
 		string json,
 		string cachePath,
 		ILogger logger,
-		int cacheVersion,
-		int maxCachedTools,
-		int minToolNameLength,
-		int maxToolNameLength,
 		out Tool[] tools)
 	{
 		tools = [];
@@ -33,7 +34,7 @@ internal static class ToolCacheFile
 			if (trimmed[0] == '[')
 			{
 				var legacy = JsonSerializer.Deserialize<Tool[]>(json, McpJsonUtilities.DefaultOptions) ?? [];
-				if (TryValidateCachedTools(legacy, maxCachedTools, minToolNameLength, maxToolNameLength, out _))
+				if (TryValidateCachedTools(legacy, out _))
 				{
 					tools = legacy;
 					return true;
@@ -60,16 +61,16 @@ internal static class ToolCacheFile
 				return false;
 			}
 
-			if (entry.Version != cacheVersion)
+			if (entry.Version != CacheVersion)
 			{
 				logger.LogDebug(
 					"Tool cache version mismatch for {Path} (found {Found}, expected {Expected}). Cache will be re-written when refreshed.",
 					cachePath,
 					entry.Version,
-					cacheVersion);
+					CacheVersion);
 			}
 
-			if (!TryValidateCachedTools(entry.Tools, maxCachedTools, minToolNameLength, maxToolNameLength, out var reason))
+			if (!TryValidateCachedTools(entry.Tools, out var reason))
 			{
 				logger.LogWarning(
 					"Tool cache validation failed for {Path}: {Reason}",
@@ -88,16 +89,11 @@ internal static class ToolCacheFile
 		}
 	}
 
-	public static bool TryValidateCachedTools(
-		Tool[] tools,
-		int maxCachedTools,
-		int minToolNameLength,
-		int maxToolNameLength,
-		out string? reason)
+	public static bool TryValidateCachedTools(Tool[] tools, out string? reason)
 	{
-		if (tools.Length > maxCachedTools)
+		if (tools.Length > MaxCachedTools)
 		{
-			reason = $"Tool cache contains too many entries ({tools.Length} > {maxCachedTools})";
+			reason = $"Tool cache contains too many entries ({tools.Length} > {MaxCachedTools})";
 			return false;
 		}
 
@@ -110,7 +106,7 @@ internal static class ToolCacheFile
 				return false;
 			}
 
-			if (!IsValidToolName(tool.Name, minToolNameLength, maxToolNameLength))
+			if (!IsValidToolName(tool.Name))
 			{
 				reason = $"Tool cache entry '{tool.Name}' has an invalid name";
 				return false;
@@ -121,7 +117,7 @@ internal static class ToolCacheFile
 		return true;
 	}
 
-	public static ToolCacheEntry CreateEntry(Tool[] tools, int cacheVersion)
+	public static ToolCacheEntry CreateEntry(Tool[] tools)
 	{
 		var cloned = tools.ToArray();
 		var normalizedJson = JsonSerializer.Serialize(cloned, McpJsonUtilities.DefaultOptions);
@@ -129,7 +125,7 @@ internal static class ToolCacheFile
 
 		return new ToolCacheEntry
 		{
-			Version = cacheVersion,
+			Version = CacheVersion,
 			Tools = cloned,
 			Checksum = checksum,
 		};
@@ -142,14 +138,14 @@ internal static class ToolCacheFile
 		return Convert.ToHexString(hash);
 	}
 
-	private static bool IsValidToolName(string? name, int minToolNameLength, int maxToolNameLength)
+	private static bool IsValidToolName(string? name)
 	{
 		if (string.IsNullOrWhiteSpace(name))
 		{
 			return false;
 		}
 
-		if (name.Length < minToolNameLength || name.Length > maxToolNameLength)
+		if (name.Length < MinToolNameLength || name.Length > MaxToolNameLength)
 		{
 			return false;
 		}

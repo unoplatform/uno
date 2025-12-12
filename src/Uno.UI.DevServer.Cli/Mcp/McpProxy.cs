@@ -30,10 +30,6 @@ internal class McpProxy
 	private string[] _roots = [];
 
 	private const string ToolCacheFileName = "tools-cache.json";
-	private const int ToolCacheVersion = 1;
-	private const int MaxCachedTools = 128;
-	private const int MinToolNameLength = 3;
-	private const int MaxToolNameLength = 64;
 
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client"];
@@ -364,10 +360,6 @@ internal class McpProxy
 						json,
 						_toolCachePath,
 						_logger,
-						ToolCacheVersion,
-						MaxCachedTools,
-						MinToolNameLength,
-						MaxToolNameLength,
 						out var cachedTools))
 					{
 						_toolCache = cachedTools;
@@ -406,9 +398,6 @@ internal class McpProxy
 
 			if (!ToolCacheFile.TryValidateCachedTools(
 				tools,
-				MaxCachedTools,
-				MinToolNameLength,
-				MaxToolNameLength,
 				out var validationError))
 			{
 				_logger.LogWarning("Refusing to persist tool cache: {Reason}", validationError ?? "Unknown validation error");
@@ -423,7 +412,7 @@ internal class McpProxy
 					Directory.CreateDirectory(directory);
 				}
 
-				var entry = ToolCacheFile.CreateEntry(tools, ToolCacheVersion);
+				var entry = ToolCacheFile.CreateEntry(tools);
 				var json = JsonSerializer.Serialize(entry, McpJsonUtilities.DefaultOptions);
 				File.WriteAllText(_toolCachePath, json);
 
