@@ -1,11 +1,16 @@
-﻿using Microsoft.UI.Xaml.Controls.Primitives;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ToolTipService
 {
-	public static DependencyProperty ToolTipProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	public static DependencyProperty ToolTipProperty
+	{
+		[DynamicDependency(nameof(GetToolTip))]
+		[DynamicDependency(nameof(SetToolTip))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"ToolTip",
 			typeof(object),
 			typeof(ToolTipService),
@@ -15,8 +20,12 @@ public partial class ToolTipService
 
 	public static void SetToolTip(DependencyObject element, object value) => element.SetValue(ToolTipProperty, value);
 
-	public static DependencyProperty PlacementProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	public static DependencyProperty PlacementProperty
+	{
+		[DynamicDependency(nameof(GetPlacement))]
+		[DynamicDependency(nameof(SetPlacement))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"Placement",
 			typeof(PlacementMode),
 			typeof(ToolTipService),
@@ -29,8 +38,12 @@ public partial class ToolTipService
 	/// <summary>
 	/// Gets or sets the object relative to which the tooltip is positioned.
 	/// </summary>
-	public static DependencyProperty PlacementTargetProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	public static DependencyProperty PlacementTargetProperty
+	{
+		[DynamicDependency(nameof(GetPlacementTarget))]
+		[DynamicDependency(nameof(SetPlacementTarget))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"PlacementTarget",
 			typeof(UIElement),
 			typeof(ToolTipService),
@@ -50,8 +63,12 @@ public partial class ToolTipService
 	/// <param name="value">The visual element that should be the placement target for the tooltip.</param>
 	public static void SetPlacementTarget(DependencyObject element, UIElement value) => element.SetValue(PlacementTargetProperty, value);
 
-	internal static DependencyProperty ToolTipReferenceProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	internal static DependencyProperty ToolTipReferenceProperty
+	{
+		[DynamicDependency(nameof(GetToolTipReference))]
+		[DynamicDependency(nameof(SetToolTipReference))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"ToolTipReference",
 			typeof(ToolTip),
 			typeof(ToolTipService),
@@ -61,8 +78,12 @@ public partial class ToolTipService
 
 	internal static void SetToolTipReference(DependencyObject element, ToolTip value) => element.SetValue(ToolTipReferenceProperty, value);
 
-	internal static DependencyProperty KeyboardAcceleratorToolTipProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	internal static DependencyProperty KeyboardAcceleratorToolTipProperty
+	{
+		[DynamicDependency(nameof(GetKeyboardAcceleratorToolTip))]
+		[DynamicDependency(nameof(SetKeyboardAcceleratorToolTip))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"KeyboardAcceleratorToolTip",
 			typeof(object),
 			typeof(ToolTipService),
@@ -72,8 +93,12 @@ public partial class ToolTipService
 
 	internal static void SetKeyboardAcceleratorToolTip(DependencyObject element, object value) => element.SetValue(KeyboardAcceleratorToolTipProperty, value);
 
-	internal static DependencyProperty KeyboardAcceleratorToolTipObjectProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	internal static DependencyProperty KeyboardAcceleratorToolTipObjectProperty
+	{
+		[DynamicDependency(nameof(GetKeyboardAcceleratorToolTipObject))]
+		[DynamicDependency(nameof(SetKeyboardAcceleratorToolTipObject))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"KeyboardAcceleratorToolTipObject",
 			typeof(ToolTip),
 			typeof(ToolTipService),
