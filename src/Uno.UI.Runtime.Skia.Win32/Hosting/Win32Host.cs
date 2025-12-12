@@ -49,7 +49,6 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	/// </summary>
 	/// <remarks>This field does not need to be synchronized because it's only called from a single builder, and only once per process.</remarks>
 	private static bool _isRunning;
-	
 
 	static Win32Host()
 	{
