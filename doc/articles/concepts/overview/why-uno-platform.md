@@ -16,7 +16,7 @@ However, built on top of this foundation is also a rich platform which includes 
 
 ## Uno Platform Studio - Productivity Tools That Set Us Apart
 
-**[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)** revolutionizes how developers design, build, and iterate on cross-platform applications. This comprehensive suite of productivity tools is a key differentiator that sets Uno Platform apart from alternatives like Flutter, .NET MAUI, React Native, and Avalonia.
+**[Uno Platform Studio](xref:Uno.Platform.Studio.Overview)** revolutionizes how developers design, build, and iterate on cross-platform applications. This comprehensive suite of productivity tools is a key differentiator that sets Uno Platform apart from other alternatives.
 
 ### Hot Design® - The Industry's Only Visual Designer for Cross-Platform .NET
 
