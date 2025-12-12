@@ -14,10 +14,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Uno.UI.Xaml.Media;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = HarfBuzzSharp.GlyphInfo;
 
@@ -386,11 +384,12 @@ internal readonly partial struct UnicodeText : IParsedText
 		var lastRun = logicallyOrderedRuns[endRunIndex - 1];
 		var start = firstRunIndex == endRunIndex - 1 ? startingIndexInFirstRun : lastRun.startInInline;
 		var glyphsWithoutTrailingSpaces = ShapeRun(lastRun.inline.Text[start..endIndexInLastRun], lastRun.rtl, lastRun.fontDetails, usedWidth, ignoreTrailingSpaces: true);
+		usedWidth += RunWidth(glyphsWithoutTrailingSpaces, lastRun.inline.FontDetails);
 
 		logicallyOrderedRuns[firstRunIndex] = backup1;
 		logicallyOrderedRuns[endRunIndex - 1] = backup2;
 
-		return usedWidth - currentLineWidth + RunWidth(glyphsWithoutTrailingSpaces, lastRun.inline.FontDetails);
+		return usedWidth - currentLineWidth;
 	}
 
 	private static IEnumerable<(int endRunIndex, int endIndexInLastRun)> SplitByLineBreakingOpportunities(List<BidiRun> logicallyOrderedRuns, List<(int indexInInline, ReadonlyInlineCopy inline)> logicallyOrderedLineBreakingOpportunities)
@@ -468,7 +467,8 @@ internal readonly partial struct UnicodeText : IParsedText
 					line[^1] = line[^1] with { endInInline = prevInSameLine.Value.endIndexInLastRun };
 					lines.Add(line);
 					(firstRunIndex, startingIndexInFirstRun) = (prevInSameLine.Value.endRunIndex - 1, prevInSameLine.Value.endIndexInLastRun);
-					prevInSameLine = lineBreakingOpporunity;
+					prevInSameLine = null;
+					lineBreakingOpportunityIndex--; // retry the line breaking opportunity
 				}
 				else
 				{
