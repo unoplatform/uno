@@ -61,6 +61,17 @@ For assistance configuring Android or iOS emulators, see the [Android & iOS emul
 
 [!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
+## OmniSharp Legacy Mode
+
+Starting **Uno Platform extension** version 0.12, running in VS Code automatically uses the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit`.
+
+If you are using Ona, any [Open VSX environment](https://open-vsx.org) or earlier versions of the Uno Platform extension, you will be automatically using the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` with OmniSharp enabled.
+
+To switch between C# Dev Kit and OmniSharp:
+
+- [Switch to C# Dev Kit Mode](xref:Uno.GetStarted.vscode.DevKit)
+- [Switch to OmniSharp Mode](xref:Uno.GetStarted.vscode.OmniSharp)
+
 ---
 
 ## Next Steps
