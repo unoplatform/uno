@@ -16,7 +16,8 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   docs-update:
     runs-on: ubuntu-latest
@@ -32,7 +33,6 @@ jobs:
         uses: ./.github/actions/docs-update
         with:
           branch: ${{ inputs.branch || 'master' }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set target branch
         id: targetbranch

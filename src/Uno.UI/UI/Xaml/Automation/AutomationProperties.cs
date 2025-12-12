@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Uno.UI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -22,8 +23,12 @@ namespace Microsoft.UI.Xaml.Automation
 			return (string)element.GetValue(NameProperty);
 		}
 
-		public static DependencyProperty NameProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty NameProperty
+		{
+			[DynamicDependency(nameof(GetName))]
+			[DynamicDependency(nameof(SetName))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"Name",
 				typeof(string),
 				typeof(AutomationProperties),
@@ -57,8 +62,12 @@ namespace Microsoft.UI.Xaml.Automation
 			element.SetValue(AccessibilityViewProperty, value);
 		}
 
-		public static DependencyProperty AccessibilityViewProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty AccessibilityViewProperty
+		{
+			[DynamicDependency(nameof(GetAccessibilityView))]
+			[DynamicDependency(nameof(SetAccessibilityView))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"AccessibilityView",
 				typeof(AccessibilityView),
 				typeof(AutomationProperties),
@@ -79,8 +88,12 @@ namespace Microsoft.UI.Xaml.Automation
 			element.SetValue(LabeledByProperty, value);
 		}
 
-		public static DependencyProperty LabeledByProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty LabeledByProperty
+		{
+			[DynamicDependency(nameof(GetLabeledBy))]
+			[DynamicDependency(nameof(SetLabeledBy))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"LabeledBy", typeof(UIElement),
 				typeof(AutomationProperties),
 				new FrameworkPropertyMetadata(default(UIElement))
@@ -100,8 +113,12 @@ namespace Microsoft.UI.Xaml.Automation
 			element.SetValue(LocalizedControlTypeProperty, value);
 		}
 
-		public static DependencyProperty LocalizedControlTypeProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty LocalizedControlTypeProperty
+		{
+			[DynamicDependency(nameof(GetLocalizedControlType))]
+			[DynamicDependency(nameof(SetLocalizedControlType))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"LocalizedControlType", typeof(string),
 				typeof(AutomationProperties),
 				new FrameworkPropertyMetadata(default(string))
@@ -116,8 +133,11 @@ namespace Microsoft.UI.Xaml.Automation
 			return (IList<DependencyObject>)element.GetValue(DescribedByProperty);
 		}
 
-		public static DependencyProperty DescribedByProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty DescribedByProperty
+		{
+			[DynamicDependency(nameof(GetDescribedBy))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"DescribedBy", typeof(IList<DependencyObject>),
 				typeof(AutomationProperties),
 				new FrameworkPropertyMetadata(default(IList<DependencyObject>)) // TODO: Empty list?
@@ -127,8 +147,12 @@ namespace Microsoft.UI.Xaml.Automation
 
 		#region AutomationId
 
-		public static DependencyProperty AutomationIdProperty { get; } =
-		DependencyProperty.RegisterAttached(
+		public static DependencyProperty AutomationIdProperty
+		{
+			[DynamicDependency(nameof(GetAutomationId))]
+			[DynamicDependency(nameof(SetAutomationId))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 			name: "AutomationId",
 			propertyType: typeof(string),
 			ownerType: typeof(AutomationProperties),
@@ -179,8 +203,12 @@ namespace Microsoft.UI.Xaml.Automation
 
 		public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, value);
 
-		public static DependencyProperty PositionInSetProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty PositionInSetProperty
+		{
+			[DynamicDependency(nameof(GetPositionInSet))]
+			[DynamicDependency(nameof(SetPositionInSet))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"PositionInSet", typeof(int),
 				typeof(AutomationProperties),
 				new FrameworkPropertyMetadata(-1)); //TODO:MZ: Validate this default value
@@ -189,8 +217,12 @@ namespace Microsoft.UI.Xaml.Automation
 
 		public static void SetSizeOfSet(DependencyObject element, int value) => element.SetValue(SizeOfSetProperty, value);
 
-		public static DependencyProperty SizeOfSetProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty SizeOfSetProperty
+		{
+			[DynamicDependency(nameof(GetSizeOfSet))]
+			[DynamicDependency(nameof(SetSizeOfSet))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"SizeOfSet", typeof(int),
 				typeof(AutomationProperties),
 				new FrameworkPropertyMetadata(-1)); //TODO:MZ: Validate this default value
@@ -199,8 +231,12 @@ namespace Microsoft.UI.Xaml.Automation
 
 		public static void SetLandmarkType(DependencyObject element, AutomationLandmarkType value) => element.SetValue(LandmarkTypeProperty, value);
 
-		public static DependencyProperty LandmarkTypeProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty LandmarkTypeProperty
+		{
+			[DynamicDependency(nameof(GetLandmarkType))]
+			[DynamicDependency(nameof(SetLandmarkType))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"LandmarkType", typeof(AutomationLandmarkType),
 				typeof(AutomationProperties),
 				new FrameworkPropertyMetadata(default(AutomationLandmarkType)));

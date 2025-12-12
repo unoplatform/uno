@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,8 +39,12 @@ namespace Uno.UI.Xaml
 		public static void SetXamlInfo(DependencyObject obj, XamlInfo owner)
 			=> obj.SetValue(XamlInfoProperty, owner);
 
-		public static DependencyProperty XamlInfoProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty XamlInfoProperty
+		{
+			[DynamicDependency(nameof(GetXamlInfo))]
+			[DynamicDependency(nameof(SetXamlInfo))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				name: nameof(XamlInfo),
 				propertyType: typeof(XamlInfo),
 				ownerType: typeof(XamlInfo),

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RadioMenuFlyoutItem.properties.cpp, commit d6634d1bb82697c9b700fff5adf4e9484e0952c5
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -11,8 +12,16 @@ namespace Microsoft.UI.Xaml.Controls
 		public static bool GetAreCheckStatesEnabled(DependencyObject obj) => (bool)obj.GetValue(AreCheckStatesEnabledProperty);
 		public static void SetAreCheckStatesEnabled(DependencyObject obj, bool value) => obj.SetValue(AreCheckStatesEnabledProperty, value);
 
-		public static DependencyProperty AreCheckStatesEnabledProperty { get; } =
-			DependencyProperty.RegisterAttached("AreCheckStatesEnabled", typeof(bool), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(false, OnAreCheckStatesEnabledPropertyChanged));
+		public static DependencyProperty AreCheckStatesEnabledProperty
+		{
+			[DynamicDependency(nameof(GetAreCheckStatesEnabled))]
+			[DynamicDependency(nameof(SetAreCheckStatesEnabled))]
+			get;
+		} = DependencyProperty.RegisterAttached(
+				"AreCheckStatesEnabled",
+				typeof(bool),
+				typeof(RadioMenuFlyoutItem),
+				new FrameworkPropertyMetadata(false, OnAreCheckStatesEnabledPropertyChanged));
 
 		public string GroupName
 		{

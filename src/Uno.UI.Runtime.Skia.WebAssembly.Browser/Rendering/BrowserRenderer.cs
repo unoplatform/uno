@@ -115,7 +115,8 @@ internal partial class BrowserRenderer
 
 		_context.Flush();
 
-		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!currentClipPath.IsEmpty ? currentClipPath.ToSvgPathData() : "");
+		var (path, fillType) = !currentClipPath.IsEmpty ? (currentClipPath.ToSvgPathData(), currentClipPath.FillType is SKPathFillType.EvenOdd ? "evenodd" : "nonzero") : ("", "nonzero");
+		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(path, fillType);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{

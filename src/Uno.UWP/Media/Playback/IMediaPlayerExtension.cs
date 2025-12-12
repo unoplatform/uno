@@ -12,7 +12,7 @@ namespace Uno.Media.Playback
 	/// <summary>
 	/// Extension definition for the <see cref="MediaPlayer"/> class
 	/// </summary>
-	internal interface IMediaPlayerExtension : IDisposable
+	public interface IMediaPlayerExtension : IDisposable
 	{
 		/// <summary>
 		/// Provides access to the ability to raise MediaPlayer events
