@@ -88,8 +88,7 @@ public partial class CoreWebView2
 	}
 
 	/// <summary>
-	/// Maps a host name to a folder path.
-	/// This allows content within the specified folder to be accessed
+	/// Maps a host name to a folder path, allowing content within the specified folder to be accessed via the virtual host name.
 	/// </summary>
 	/// <param name="hostName">The host name to map.</param>
 	/// <param name="folderPath">The folder path to map the host name to.</param>
