@@ -102,28 +102,25 @@ public static class WebView2Extensions
 
 		if (control.CoreWebView2 is null)
 		{
-			// CoreWebView2 may not be initialized yet, subscribe when it's ready
-			// Consider using EnsureCoreWebView2Async or waiting for initialization
-			return;
+			await control.EnsureCoreWebView2Async();
 		}
 
 		// Remove previous event handler
-		control.CoreWebView2.DocumentTitleChanged -= OnCoreDocumentTitleChanged;
+		control.CoreWebView2!.DocumentTitleChanged -= OnCoreDocumentTitleChanged;
 
 		// Subscribe to track document title changes
 		control.CoreWebView2.DocumentTitleChanged += OnCoreDocumentTitleChanged;
 
 		// Set initial value
-		SetDocumentTitle(control, control.CoreWebView2.DocumentTitle ?? string.Empty);
+		// SetDocumentTitle(control, control.CoreWebView2.DocumentTitle ?? string.Empty); // BUG: calling the DP twice makes no sense, have to search some other approach
 	}
 
 	private static void OnCoreDocumentTitleChanged(CoreWebView2 sender, object args)
 	{
-		if (sender.Owner is WebView2 control)
+		if (sender.Owner is WebView2 control) // BUG: CoreWebView2 doesn't have a Owner Propery which we could use to provide to the DP. Evaluate creating a internal Eventhandler or a Backing field for the WebView2 Object?
 		{
 			SetDocumentTitle(control, sender.DocumentTitle ?? string.Empty);
 		}
 	}
-
 	#endregion
 }
