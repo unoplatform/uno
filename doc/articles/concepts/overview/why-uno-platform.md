@@ -24,11 +24,15 @@ However, built on top of this foundation is also a rich platform which includes 
 
 ### Hot Design® Agent - AI-Powered UX/UI Creation
 
-**[Hot Design Agent](xref:Uno.HotDesign.Agent)** is an AI-powered assistant designed for rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time, providing capabilities not available in other cross-platform frameworks.
+**[Hot Design Agent](xref:Uno.HotDesign.Agent)** is an AI tooling assistant that builds your UI while the app is running. It works with data contexts and live previews to help developers design and interact with user interfaces in real time.
 
-### Uno MCP & App MCP - AI-Powered Development Intelligence
+### MCP - AI-Powered Development Intelligence
 
-**[Uno MCP](xref:Uno.Features.Uno.MCPs)** provides structured, semantic access to Uno Platform's complete knowledge base, while **App MCP** enables AI agents to interact directly with live applications. This unique integration of AI capabilities streamlines development workflows in ways competitors cannot match.
+**[Uno MCP](xref:Uno.Features.Uno.MCPs)** leverages semantic understanding to grasp your intent and deliver precise, context-aware answers. It provides instant, accurate guidance grounded in official Uno Platform documentation directly from your IDE.
+
+### App MCP - Agent Control for Running Applications
+
+**App MCP** allows AI agents to control the running app using pointer and keyboard interactions along with visual tree queries. It enables AI agents from Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, Codex, and more to interact with your application.
 
 ## True Single Project across Mobile, Web, Desktop, and Embedded
 
