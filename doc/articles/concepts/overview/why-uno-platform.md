@@ -50,7 +50,7 @@ It is well funded and has a [sustainability model](https://platform.uno/blog/sus
 
 Uno Platform supports WebAssembly, enabling your .NET apps to run natively in browsers alongside mobile and desktop platforms. Uno Platform delivers true cross-platform reach including web deployment without additional frameworks.
 
-### Richer Tooling Than Flutter or React Native
+### Rich Tooling
 
 Unlike Flutter's Dart-based ecosystem or React Native's JavaScript foundation, Uno Platform leverages the mature .NET ecosystem with Visual Studio, VS Code, and Rider support. With **Uno Platform Studio**, you get industry-leading tools like Hot Design®, Hot Design® Agent, and AI-powered development assistance through Uno MCP—capabilities not available in any competing framework.
 
