@@ -20,6 +20,7 @@ This article lists some of the 3rd-party libraries supported by Uno Platform.
 * [CommunityToolkit.Mvvm](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/)
 * [Prism](https://prismlibrary.com/)
 * [ReactiveUI](https://www.reactiveui.net/)
+* [MVVMCross](https://www.mvvmcross.com/)
 
 ## Design and theming
 
@@ -30,6 +31,16 @@ This article lists some of the 3rd-party libraries supported by Uno Platform.
 
 * [Refit](xref:Uno.Extensions.Http.Overview#refit) - Strongly-typed REST API client
 * [Kiota](xref:Uno.Extensions.Http.Overview#kiota) - OpenAPI/Swagger client generator
+
+## Data and storage
+
+* [SQLite](https://www.sqlite.org/) - Local database for all platforms including WebAssembly
+* [LiteDB](https://www.litedb.org/) - Embedded .NET NoSQL database
+* [Json.NET (Newtonsoft.Json)](https://www.newtonsoft.com/json) - Popular JSON framework for .NET
+
+## Logging
+
+* [Serilog](https://serilog.net/) - Flexible logging library
 
 ## Other libraries
 
