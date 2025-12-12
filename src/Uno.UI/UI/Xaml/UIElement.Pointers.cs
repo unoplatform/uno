@@ -230,7 +230,10 @@ namespace Microsoft.UI.Xaml
 			ClearPressed();
 			SetOver(null, false, ctx: BubblingContext.NoBubbling);
 			ClearDragOver();
+			ClearPointerStateNative();
 		}
+
+		partial void ClearPointerStateNative();
 
 		[ThreadStatic]
 		private static PointerEventDispatchResult _currentPointerEventDispatch;
