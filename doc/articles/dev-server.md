@@ -60,7 +60,7 @@ If you want or need to install or update it, e.g. for [Troubleshooting Dev Serve
    Tool 'uno.devserver' (version '6.4.185') was successfully installed.
    ```
 
-   >[!TIP]
+   > [!TIP]
    > If you already installed it before, you can use the `dotnet tool update --global Uno.DevServer` command or re-use the installation command. The end result will be the same.
 
 3. You can now use the Dev Server command line name to print out the tool default command `--help`:

@@ -88,15 +88,15 @@ To ensure consistency, the Uno tooling aligns itself with the package versions r
 
    **To solve this, you can follow these steps:**
 
-   1. Make sure your open Workspacefolder is including `.vscode/` with at least:
+   1. Make sure your open workspace folder is including `.vscode/` with at least:
 
       - `launch.json`
       - `tasks.json`
 
    2. If your Repository is maybe structured with `./src/` and `./docs/` at the root level, but this folder is still nested like `./src/.vscode/launch.json` you have the following options to solve this:
 
-     1. move the `./src/.vscode/` folder containing the required files to the Workspace (Repository Root) Folder, adjust the pathes to your project(s) by adding the appropriate `src/` filepath prefix and restart VS Code, to make sure all extensions are catching up the changes correctly
-     2. Open vs code instead in the `./src/` Folder, without having to move those files
+     1. move the `./src/.vscode/` folder containing the required files to the workspace folder in your repository root, adjust the paths to your project(s) by adding the appropriate `src/` filepath prefix and restart vs code, to make sure all extensions are catching up the changes correctly
+     2. Open vs code instead in the `./src/` folder, without having to move those files
 
      > [!TIP]
      > It's up to you, which Option you want to choose, but most of the cases you might want to prefer choosing the first one, in case you are using **Source Control Management** with e.g. **GIT**.
