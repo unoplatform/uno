@@ -60,4 +60,4 @@ To switch between C# Dev Kit and OmniSharp:
 
 ## Next Steps
 
-You're all set! You can create your [first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.VSCode).
+You're all set! You can create your [first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.VSCode) by using either a getting started template, or by using the [Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
