@@ -23,7 +23,10 @@ To run the SamplesApp locally:
 
 1. Ensure [your environment is configured](xref:Uno.GetStarted.vs2022) for the platform you want to run on.
 2. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
-3. Select `SamplesApp.[Platform]` as the startup app. (Eg, `SamplesApp.iOS` if you're running on iOS.)
+   - For Skia rendering (recommended for most scenarios): Use `Uno.UI-Skia-only.slnf` with `net10.0` target framework
+   - For native rendering on mobile: Use `Uno.UI-netcore-mobile-only.slnf` with platform-specific target frameworks (e.g., `net10.0-ios`, `net10.0-android`)
+   - For native WebAssembly: Use `Uno.UI-Wasm-only.slnf` with `net10.0` target framework
+3. Select `SamplesApp.[Platform]` as the startup app. (Eg, `SamplesApp.iOS` if you're running on iOS with native rendering, or `SamplesApp.Skia.Gtk` for Skia rendering on Linux.)
 4. If you're testing on a mobile platform, use a tablet if possible, as the app is optimized for a tablet layout.
 5. Run SamplesApp.
 
