@@ -154,6 +154,7 @@ public class X11NativeWebView : INativeWebView
 		{
 			_webview.LoadChanged += WebViewOnLoadChanged;
 			_webview.LoadFailed += WebViewOnLoadFailed;
+			_webview.Create += OnCreateWebView;
 			_webview.UserContentManager.RegisterScriptMessageHandler("unoWebView");
 			_webview.UserContentManager.ScriptMessageReceived += UserContentManagerOnScriptMessageReceived;
 			_webview.AddNotification(WebViewNotificationHandler);
@@ -381,6 +382,59 @@ public class X11NativeWebView : INativeWebView
 		{
 			_coreWebView.RaiseNavigationCompleted(uri, isSuccess: false, httpStatusCode: 0, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
 		});
+	}
+
+	private void OnCreateWebView(object o, CreateArgs args)
+	{
+		var targetUrl = args.NavigationAction.Request.Uri;
+		var refererUri = string.IsNullOrEmpty(_webview.Uri) ? CoreWebView2.BlankUri : new Uri(_webview.Uri);
+
+		var handled = false;
+		var tcs = new TaskCompletionSource();
+
+		_presenter.DispatcherQueue.TryEnqueue(() =>
+		{
+			try
+			{
+				_coreWebView.RaiseNewWindowRequested(targetUrl, refererUri, out handled);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Error during RaiseNewWindowRequested: {e}");
+				}
+			}
+			finally
+			{
+				tcs.SetResult();
+			}
+		});
+
+		tcs.Task.Wait();
+
+		if (!handled)
+		{
+			try
+			{
+				// 'xdg-open' is the standard command on modern Linux desktops
+				// to open a URL in the default application.
+				System.Diagnostics.Process.Start("xdg-open", targetUrl);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to open external URL '{targetUrl}' with xdg-open.", e);
+				}
+			}
+		}
+
+		// By setting RetValue to null, we are telling WebKitGTK
+		// "do not create a new WebView window".
+		// This stops the default "open new window" action,
+		// which is what we want whether the event was handled or not.
+		args.RetVal = null;
 	}
 
 	private void WebViewNotificationHandler(object o, NotifyArgs args)
