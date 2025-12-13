@@ -96,16 +96,13 @@ internal readonly partial struct UnicodeText
 					.Where(t => t.Item2 != null)
 					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
 					.First()!;
-				var data = new byte[stream.Length];
-				stream.ReadExactly(data, 0, data.Length);
-				fixed (byte* dataPtr = data)
+				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
+				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
+				var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)data);
+				var errorString = Marshal.PtrToStringUTF8(errorPtr);
+				if (errorString is not null)
 				{
-					var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)dataPtr);
-					var errorString = Marshal.PtrToStringUTF8(errorPtr);
-					if (errorString is not null)
-					{
-						throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
-					}
+					throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
 				}
 
 				// ICU is included in the dotnet runtime itself
