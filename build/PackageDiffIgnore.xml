@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <DiffIgnore>
   <IgnoreSets>
 	<IgnoreSet baseVersion="4.0.13">
@@ -2136,6 +2136,11 @@
 		</Methods>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="6.4">
+		<Fields>			
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Unused, and API isn't in WinUI" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed to ExplicitOrImplicitStyle, and API isn't in WinUI" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Renamed to DefaultStyle, and API isn't in WinUI" />
+		</Fields>
 	  <Types>
 		  <Member fullName="Uno.Media.Playback.IMediaPlayerEventsExtension" reason="Does not exist in WinUI" />
 		  <Member fullName="Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension" reason="Does not exist in WinUI" />
