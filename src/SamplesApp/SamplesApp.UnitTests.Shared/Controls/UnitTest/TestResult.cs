@@ -9,4 +9,5 @@ internal enum TestResult
 	Failed,
 	Error,
 	Skipped,
+	Inconclusive
 }
