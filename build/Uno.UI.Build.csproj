@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<DocfxVersion>2.73.2</DocfxVersion>
+		<DocfxVersion>2.78.4</DocfxVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

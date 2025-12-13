@@ -192,6 +192,7 @@ h5 {
 
   .nav > li {
     line-height: 24px;
+    margin-bottom: 8px;
     
     a {
       font-size: 14px;
@@ -205,6 +206,7 @@ h5 {
   .nav.level1 , .nav.level2 {
     > li {
       line-height: 20px;
+      margin-bottom: 6px;
         
       > a {
         font-size: 14px;
@@ -233,6 +235,7 @@ h5 {
 
   .toc .nav .in ul li {
     margin-left: 9px;
+    margin-bottom: 6px;
   }
 
   .toc .nav > li.filtered > ul, .toc .nav > li.in > ul {
