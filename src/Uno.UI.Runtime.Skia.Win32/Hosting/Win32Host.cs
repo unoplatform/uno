@@ -43,6 +43,13 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	private static volatile bool _allWindowsClosed;
 	private static int _openWindows;
 
+	/// <summary>
+	/// There's only one running instance of the event loop, even in the 
+	/// context of running inside an ALC.
+	/// </summary>
+	/// <remarks>This field does not need to be synchronized because it's only called from a single builder, and only once per process.</remarks>
+	private static bool _isRunning;
+
 	static Win32Host()
 	{
 		var hResult = PInvoke.OleInitialize();
@@ -146,18 +153,27 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		{
 			var app = _appBuilder();
 			app.Host = this;
+
+			return app;
 		}), NativeDispatcherPriority.Normal);
 
-		// This will keep running until the event loop has no queued actions left and all the windows are closed
-		while (true)
+		if (!_isRunning)
 		{
-			Win32EventLoop.RunOnce();
+			_isRunning = true;
 
-			if (_allWindowsClosed && !Win32EventLoop.HasMessages())
+			// This will keep running until the event loop has no queued actions left and all the windows are closed
+			while (true)
 			{
-				return Task.CompletedTask;
+				Win32EventLoop.RunOnce();
+
+				if (_allWindowsClosed && !Win32EventLoop.HasMessages())
+				{
+					return Task.CompletedTask;
+				}
 			}
 		}
+
+		return Task.CompletedTask;
 	}
 
 	internal static void RegisterWindow(HWND hwnd)

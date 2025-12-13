@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Loader;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Extensions.Specialized;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers;
+using System.Linq;
 
 namespace Microsoft.UI.Xaml.Navigation;
 
@@ -12,6 +15,9 @@ namespace Microsoft.UI.Xaml.Navigation;
 /// </summary>
 public sealed partial class PageStackEntry : DependencyObject
 {
+	// Delimiter used to separate the assembly-qualified name from the ALC name in descriptors
+	private const string AlcDescriptorDelimiter = "##";
+
 	// Descriptor -- this is the type of the page that corresponds to this entry
 	private string m_descriptor;
 
@@ -33,7 +39,7 @@ public sealed partial class PageStackEntry : DependencyObject
 		InitializeBinder();
 
 		SourcePageType = sourcePageType;
-		SetDescriptor(sourcePageType.AssemblyQualifiedName);
+		SetDescriptor(BuildDescriptor(sourcePageType));
 
 		Parameter = parameter;
 		NavigationTransitionInfo = navigationTransitionInfo;
@@ -58,7 +64,7 @@ public sealed partial class PageStackEntry : DependencyObject
 		spPageStackEntry.NavigationTransitionInfo = transitionInfo;
 
 		spPageStackEntry.SetDescriptor(descriptor);
-		var sourcePageType = Type.GetType(descriptor);
+		var sourcePageType = ResolveDescriptor(descriptor);
 		spPageStackEntry.SourcePageType = sourcePageType;
 
 		return spPageStackEntry;
