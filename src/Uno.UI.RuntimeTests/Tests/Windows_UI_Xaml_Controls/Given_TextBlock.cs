@@ -764,6 +764,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_Text_Wrapped_At_LineBreak()
+		{
+			var tb1 = new TextBlock()
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Line1 Line2\r\nLine3",
+				Width = 40,
+				Foreground = new SolidColorBrush(Colors.Red)
+			};
+			var tb2 = new TextBlock()
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Line1 Line2 Line3",
+				Width = 40,
+				Foreground = new SolidColorBrush(Colors.Red)
+			};
+
+			await UITestHelper.Load(new StackPanel { Children = { tb1, tb2 } });
+			Assert.AreEqual(tb1.ActualHeight, tb2.ActualHeight);
+		}
+
+		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_Measure()
 		{
