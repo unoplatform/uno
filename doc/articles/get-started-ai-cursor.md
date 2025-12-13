@@ -12,10 +12,36 @@ This guide will walk you through the setup process for getting started with Curs
 
 ## Setting up Uno Platform MCPs
 
-Install [Cursor](https://cursor.com/docs).
+1. Install [Cursor](https://cursor.com/docs).
 
-> [!NOTE]
-> The Uno Platform extension is not functional in Cursor at this time.
+	> [!NOTE]
+	> The Uno Platform extension is not functional in Cursor at this time.
+
+1. In Cursor, open the Uno project for which you want to enable MCP support.
+
+1. Open a terminal in the project folder and run the following command:
+
+	```bash
+	dnx -y uno.devserver login
+	```
+
+	The Uno Studio app will allow you to [sign in or create an account](xref:Uno.GetStarted.Licensing) and get access the [Uno App MCP](xref:Uno.Features.Uno.MCPs).
+
+1. Create a file named `.cursor/mcp.json` in the project folder and place the following content:
+
+	```json
+	{
+	  "mcpServers": {
+			"uno": {
+				 "url": "https://mcp.platform.uno/v1"
+			},
+			"uno-app": {
+				 "command": "dnx",
+				 "args": ["-y","uno.devserver","--mcp-app"]
+			}
+	  }
+	}
+	```
 
 ## Next Steps
 
