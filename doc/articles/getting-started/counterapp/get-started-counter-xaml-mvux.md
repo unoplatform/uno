@@ -72,7 +72,7 @@ The template will create a solution with a single cross-platform project, named 
 > [!NOTE]
 > If you don't have the **Uno Platform Extension for VS Code** installed, follow [these instructions](xref:Uno.GetStarted.vscode).
 
-- Launch The Live Wizard by clicking [here](https://new.platform.uno/)
+- Launch The Live Wizard by visiting the [Uno Platform Live Wizard](https://new.platform.uno/)
 
 - Name the project `Counter` and click **Start**
 
