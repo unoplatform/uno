@@ -1577,6 +1577,12 @@ namespace Microsoft.UI.Xaml
 		// child/property in its leave.
 		private void DependencyObject_LeaveImpl(LeaveParams @params)
 		{
+			// TODO: Remove when lifecycle is fully implemented.
+			if (this is IDependencyObjectStoreProvider provider)
+			{
+				provider.Store.ClearInheritedDataContext();
+			}
+
 			// Raise InheritanceContextChanged for the live leave.  We need to do this before m_bitFields.fLive is updated.
 			// params.fIsLive cannot be used because it is updated before we get here.
 			//if (IsActiveInVisualTree && m_bitFields.fWantsInheritanceContextChanged)
