@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators.CommunityToolkitMvvm;
 
-internal sealed class MvvmTypeProvider : ITypeProvider
+internal sealed class MvvmTypeProvider : ITypeProvider, IBindableTypeProvider
 {
 	private readonly XamlCodeGeneration _generation;
 
@@ -18,12 +18,18 @@ internal sealed class MvvmTypeProvider : ITypeProvider
 		IRelayCommandTSymbol = generation.GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IRelayCommand`1");
 		IAsyncRelayCommandSymbol = generation.GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand");
 		IAsyncRelayCommandTSymbol = generation.GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1");
+		ObservableObjectSymbol = generation.GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
+		ObservableObjectAttributeSymbol = generation.GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute");
+		INotifyPropertyChangedSymbol = generation.GetOptionalSymbolAsLazy("System.ComponentModel.INotifyPropertyChanged");
 	}
 
 	internal Lazy<INamedTypeSymbol?> IRelayCommandSymbol { get; }
 	internal Lazy<INamedTypeSymbol?> IRelayCommandTSymbol { get; }
 	internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandSymbol { get; }
 	internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandTSymbol { get; }
+	internal Lazy<INamedTypeSymbol?> ObservableObjectSymbol { get; }
+	internal Lazy<INamedTypeSymbol?> ObservableObjectAttributeSymbol { get; }
+	internal Lazy<INamedTypeSymbol?> INotifyPropertyChangedSymbol { get; }
 
 	public ITypeSymbol? TryGetType(ITypeSymbol symbol, string memberName)
 	{
@@ -95,5 +101,41 @@ internal sealed class MvvmTypeProvider : ITypeProvider
 		}
 
 		return null;
+	}
+
+	public bool IsBindableType(INamedTypeSymbol type)
+	{
+		// Get attributes once to avoid multiple enumerations
+		var attributes = type.GetAllAttributes();
+
+		// Check if type has [ObservableObject] attribute (CommunityToolkit MVVM)
+		if (ObservableObjectAttributeSymbol.Value != null
+			&& attributes.Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, ObservableObjectAttributeSymbol.Value)))
+		{
+			return true;
+		}
+
+		// Check if type inherits from ObservableObject (CommunityToolkit MVVM)
+		if (ObservableObjectSymbol.Value != null)
+		{
+			var baseType = type.BaseType;
+			while (baseType != null)
+			{
+				if (SymbolEqualityComparer.Default.Equals(baseType, ObservableObjectSymbol.Value))
+				{
+					return true;
+				}
+				baseType = baseType.BaseType;
+			}
+		}
+
+		// Check if type implements INotifyPropertyChanged (fallback for other MVVM implementations)
+		if (INotifyPropertyChangedSymbol.Value != null
+			&& type.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, INotifyPropertyChangedSymbol.Value)))
+		{
+			return true;
+		}
+
+		return false;
 	}
 }
