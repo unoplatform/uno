@@ -1116,6 +1116,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			WindowHelper.WindowContent = sut;
 			await WindowHelper.WaitForLoaded(sut);
 		}
+
+		[TestMethod]
+		public void When_AttachedProperty_On_String()
+		{
+			// This test verifies that attached properties on non-DependencyObject types
+			// (like x:String) don't throw an exception during XamlReader.Load
+			var sut = XamlHelper.LoadXaml<ListView>("""
+				<ListView xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+					<ListView.Items>
+						<x:String local:Given_AttachedDP.Prop="42">Item1</x:String>
+					</ListView.Items>
+				</ListView>
+			""");
+
+			Assert.IsNotNull(sut);
+			Assert.AreEqual(1, sut.Items.Count);
+			Assert.AreEqual("Item1", sut.Items[0]);
+		}
 	}
 
 	public partial class Given_XamlReader
