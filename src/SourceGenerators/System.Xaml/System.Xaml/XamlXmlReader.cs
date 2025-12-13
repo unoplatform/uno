@@ -616,14 +616,23 @@ namespace Uno.Xaml
 					else
 					{
 						var at = sctx.GetXamlType(axtn);
-						var am = at.GetAttachableMember(aname.Substring(propidx + 1));
-						if (am != null)
+						var memberName = aname.Substring(propidx + 1);
+						if (at != null)
 						{
-							sti.Members.Add(new Pair(am, p.Value));
+							var am = at.GetAttachableMember(memberName);
+							if (am != null)
+							{
+								sti.Members.Add(new Pair(am, p.Value));
+							}
+							else
+							{
+								sti.Members.Add(new Pair(XamlMember.FromUnknown(aname, apns, new XamlType(apns, apname, new List<XamlType>(), sctx)), p.Value));
+							}
 						}
 						else
 						{
-							sti.Members.Add(new Pair(XamlMember.FromUnknown(aname, apns, new XamlType(apns, apname, new List<XamlType>(), sctx)), p.Value));
+							// If the type cannot be resolved, create an unknown member
+							sti.Members.Add(new Pair(XamlMember.FromUnknown(memberName, apns, new XamlType(apns, apname, new List<XamlType>(), sctx)), p.Value));
 						}
 					}
 				}
