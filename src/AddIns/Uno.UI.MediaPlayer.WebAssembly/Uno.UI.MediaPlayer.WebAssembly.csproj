@@ -18,7 +18,12 @@
 	<PropertyGroup>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+
+		<_UnoRequiresEmbeddedResourcesInjection>true</_UnoRequiresEmbeddedResourcesInjection>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 	</PropertyGroup>
+
+	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
@@ -38,13 +43,11 @@
 
 	<!-- Add the generated TypeScript output as an embedded resource with logical name -->
 	<Target Name="_UnoUIMediaPlayerAddTypeScriptResource" 
-	        Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
-	        DependsOnTargets="CompileTypeScriptWithTSConfig" 
 	        BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<ItemGroup>
-			<EmbeddedResource Include="$(IntermediateOutputPath)MediaElement.js" Condition="Exists('$(IntermediateOutputPath)MediaElement.js')">
+			<_UnoInjectedResource Include="$(IntermediateOutputPath)MediaElement.js" Condition="Exists('$(IntermediateOutputPath)MediaElement.js')">
 				<LogicalName>Uno.UI.Media.WasmScripts.MediaElement.js</LogicalName>
-			</EmbeddedResource>
+			</_UnoInjectedResource>
 		</ItemGroup>
 	</Target>
 

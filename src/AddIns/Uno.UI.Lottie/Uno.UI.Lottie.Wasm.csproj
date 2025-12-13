@@ -14,7 +14,12 @@
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<Nullable>enable</Nullable>
+
+		<_UnoRequiresEmbeddedResourcesInjection>true</_UnoRequiresEmbeddedResourcesInjection>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 	</PropertyGroup>
+	
+	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="ts\**\*" />
@@ -30,13 +35,11 @@
 
 	<!-- Add the generated TypeScript output as an embedded resource with logical name -->
 	<Target Name="_UnoUILottieAddTypeScriptResource" 
-	        Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
-	        DependsOnTargets="CompileTypeScriptWithTSConfig" 
 	        BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<ItemGroup>
-			<EmbeddedResource Include="$(IntermediateOutputPath)uno-lottie.js" Condition="Exists('$(IntermediateOutputPath)uno-lottie.js')">
+			<_UnoInjectedResource Include="$(IntermediateOutputPath)uno-lottie.js" Condition="Exists('$(IntermediateOutputPath)uno-lottie.js')">
 				<LogicalName>Uno.UI.Lottie.WasmScripts.uno-lottie.js</LogicalName>
-			</EmbeddedResource>
+			</_UnoInjectedResource>
 		</ItemGroup>
 	</Target>
 
