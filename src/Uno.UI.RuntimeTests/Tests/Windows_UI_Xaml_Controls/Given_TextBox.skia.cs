@@ -118,6 +118,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Public_KeyDown_Subscription_Changes_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			SUT.KeyDown += (sender, args) =>
+			{
+				if (args.Key == VirtualKey.T)
+				{
+					SUT.Text = "Ramez";
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			await KeyboardHelper.PressKeySequence("t", SUT);
+
+			Assert.AreEqual("tRamez", SUT.Text);
+		}
+
+		[TestMethod]
 		public async Task When_Basic_Input_With_ArrowKeys()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
