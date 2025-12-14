@@ -27,7 +27,7 @@
 	</ItemGroup>
 
 	<!-- Override TypeScript outFile to target-framework-specific intermediate folder to avoid race condition -->
-	<Target Name="_UnoUILottieSetupTSCompilation" BeforeTargets="CompileTypeScriptWithTSConfig">
+	<Target Name="_UnoUILottieSetupTSCompilation" BeforeTargets="TypeScriptDeleteOutputFromOtherConfigs;CompileTypeScriptWithTSConfig">
 		<PropertyGroup>
 			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(IntermediateOutputPath)uno-lottie.js</TypeScriptConfigFileAdditionalFlags>
 			<!-- Keep the compiler log beside the per-target output so cleanup stays scoped -->
