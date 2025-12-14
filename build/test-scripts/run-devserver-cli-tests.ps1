@@ -217,7 +217,7 @@ Begin now.
     try {
         $process = Start-Process -FilePath $codexExecutable -ArgumentList $codexArguments -WorkingDirectory $WorkingDirectory -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -RedirectStandardInput $instructionsFile -PassThru
 
-        $timeoutMs = 90000 # 90 seconds
+        $timeoutMs = 180000 # 180 seconds
         if (-not $process.WaitForExit($timeoutMs)) {
             try { $process.Kill() } catch {}
             $stdErrContent = Get-Content $stdErrFile -ErrorAction SilentlyContinue -Raw
