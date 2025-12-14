@@ -76,7 +76,7 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the BorderThickness dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)] 
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
