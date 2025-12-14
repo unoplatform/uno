@@ -1118,6 +1118,33 @@ NSOperatingSystemVersion _osVersion;
     [super zoom:sender];
 }
 
+- (BOOL)performKeyEquivalent:(NSEvent *)event {
+    // Handle Command+W (close window) and Command+Q (quit app)
+    if ([event type] == NSEventTypeKeyDown && ([event modifierFlags] & NSEventModifierFlagCommand)) {
+        NSString *characters = [event charactersIgnoringModifiers];
+        
+        // Command+W - Close window
+        if ([characters isEqualToString:@"w"]) {
+#if DEBUG
+            NSLog(@"UNOWindow %p performKeyEquivalent Command+W", self);
+#endif
+            [self performClose:self];
+            return YES;
+        }
+        
+        // Command+Q - Quit application
+        if ([characters isEqualToString:@"q"]) {
+#if DEBUG
+            NSLog(@"UNOWindow %p performKeyEquivalent Command+Q", self);
+#endif
+            [[NSApplication sharedApplication] terminate:self];
+            return YES;
+        }
+    }
+    
+    return [super performKeyEquivalent:event];
+}
+
 - (void)windowDidMove:(NSNotification *)notification {
     CGPoint position = self.frame.origin;
 #if DEBUG
