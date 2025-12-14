@@ -1,5 +1,5 @@
 ---
-Uno.Features.FirebaseCloudMessaging
+uid: Uno.Features.FirebaseCloudMessaging
 ---
 
 # Implementing Firebase Cloud Messaging (FCM) in Uno Platform Apps
@@ -19,7 +19,8 @@ This guide walks through the process of implementing Firebase Cloud Messaging (F
 Add the following NuGet packages to your project, using the `<ItemGroup>` with a condition to ensure they're only added for the Android target:
 
 ```xml
-<ItemGroup Condition="'$(TargetFramework)'=='net8.0-android'">
+<!-- Update 'net10.0-android' to match your target framework version if needed -->
+<ItemGroup Condition="'$(TargetFramework)'=='net10.0-android'">
     <PackageReference Include="Xamarin.Firebase.Messaging" />
     <PackageReference Include="Xamarin.GooglePlayServices.Base" />
     <PackageReference Include="Xamarin.Google.Dagger" />
@@ -229,8 +230,8 @@ To get and handle the FCM token for sending notifications to specific devices:
 public static async Task<string> GetFCMTokenAsync()
 {
     var instanceId = FirebaseMessaging.Instance;
-    var token = await instanceId.GetToken();
-    return token;
+    var token = await instanceId.GetToken().ConfigureAwait(false);
+    return token?.ToString();
 }
 ```
 
@@ -336,4 +337,4 @@ protected override void OnCreate(Bundle savedInstanceState)
 
 - [Firebase Documentation](https://firebase.google.com/docs/cloud-messaging)
 - [Uno Platform Documentation](https://platform.uno/docs/)
-- [Android Notification Channels](https://developer.android.com/develop/ui/views/notifications/channels)\
+- [Android Notification Channels](https://developer.android.com/develop/ui/views/notifications/channels)
