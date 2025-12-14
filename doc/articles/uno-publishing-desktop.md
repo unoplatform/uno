@@ -149,5 +149,5 @@ The resulting package will be located in the `bin\publish` folder. You can chang
 Depending on your deployment settings, you can run the `Setup.exe` file to install the application on a machine.
 
 > [!IMPORTANT]
-> At this time, publishing with the [Visual Studio Publishing Wizard](https://learn.microsoft.com/visualstudio/deployment/quickstart-deploy-using-clickonce-folder?view=visualstudio) 
+> At this time, publishing with the [Visual Studio Publishing Wizard](https://learn.microsoft.com/visualstudio/deployment/quickstart-deploy-using-clickonce-folder?view=visualstudio)
 > is not supported for multi-targeted projects. Using the command line above is required.
