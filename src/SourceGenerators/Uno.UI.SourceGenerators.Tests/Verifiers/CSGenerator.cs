@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
@@ -14,7 +13,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 		where TSourceGenerator : ISourceGenerator, new()
 	{
 #pragma warning disable CS0618 // Type or member is obsolete
-		public class Test : CSharpSourceGeneratorTest<TSourceGenerator, MSTestVerifier>
+		public class Test : CSharpSourceGeneratorTest<TSourceGenerator>
 #pragma warning restore CS0618 // Type or member is obsolete
 		{
 			public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.Default;
