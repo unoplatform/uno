@@ -6,6 +6,19 @@ uid: Uno.Features.FirebaseCloudMessaging
 
 This guide walks through the process of implementing Firebase Cloud Messaging (FCM) for push notifications in an Uno Platform application targeting Android.
 
+## Platform Support
+
+| Platform         | Supported | Notes                                 |
+|-----------------|-----------|---------------------------------------|
+| Android         | ✅ Yes    | Full support via Firebase SDK         |
+| Windows         | ❌ No     | Not supported                         |
+| iOS             | ❌ No     | Not supported (use APNs instead)      |
+| WebAssembly     | ❌ No     | Not supported                         |
+| macOS (Catalyst)| ❌ No     | Not supported                         |
+| Linux (Skia)    | ❌ No     | Not supported                         |
+
+> [!NOTE]
+> Firebase Cloud Messaging is only supported on Android. For push notifications on other platforms, use the platform's native notification services (e.g., APNs for iOS, Windows Push Notification Services for Windows).
 ## Step 1: Set Up Firebase Project
 
 1. Go to [Firebase Console](https://console.firebase.google.com/)
@@ -83,6 +96,7 @@ using AndroidX.Core.App;
 using Android.OS;
 using Android.Media;
 using Android.Graphics;
+using System.Net.Http;
 
 namespace YourAppNamespace.Platforms.Android
 {
