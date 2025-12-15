@@ -12,9 +12,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 	public static partial class CSharpSourceGeneratorVerifier<TSourceGenerator>
 		where TSourceGenerator : ISourceGenerator, new()
 	{
-#pragma warning disable CS0618 // Type or member is obsolete
-		public class Test : CSharpSourceGeneratorTest<TSourceGenerator>
-#pragma warning restore CS0618 // Type or member is obsolete
+		public class Test : CSharpSourceGeneratorTest<TSourceGenerator, DefaultVerifier>
 		{
 			public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.Default;
 			public bool IgnoreAccessibility { get; set; }

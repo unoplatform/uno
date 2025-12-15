@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Testing;
 
 namespace Uno.Analyzers.Tests.Verifiers
 {
@@ -13,7 +14,7 @@ namespace Uno.Analyzers.Tests.Verifiers
 		where TAnalyzer : DiagnosticAnalyzer, new()
 		where TCodeFix : CodeFixProvider, new()
 	{
-		public class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix>
+		public class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier>
 		{
 			public Test()
 			{
