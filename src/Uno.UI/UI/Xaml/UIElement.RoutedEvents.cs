@@ -437,6 +437,8 @@ namespace Microsoft.UI.Xaml
 			remove => RemoveHandler(KeyDownEvent, value);
 		}
 
+		internal event KeyEventHandler PostKeyDown;
+
 		public event KeyEventHandler KeyUp
 		{
 			add => AddHandler(KeyUpEvent, value, false);
@@ -647,9 +649,9 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (routedEvent.IsKeyEvent)
+			if (routedEvent == KeyDownEvent)
 			{
-				OnKeyEventRaised(routedEvent, (KeyRoutedEventArgs)args);
+				PostKeyDown?.Invoke(this, (KeyRoutedEventArgs)args);
 			}
 
 			if (routedEvent.IsTunnelingEvent || ctx.ModeHasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
@@ -700,10 +702,6 @@ namespace Microsoft.UI.Xaml
 
 			// [13] Raise on parent
 			return RaiseOnParent(routedEvent, args, parent, ctx);
-		}
-
-		private protected virtual void OnKeyEventRaised(RoutedEvent routedEvent, KeyRoutedEventArgs args)
-		{
 		}
 
 		/// <summary>

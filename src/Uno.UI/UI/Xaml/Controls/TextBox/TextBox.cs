@@ -1159,13 +1159,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnTappedPartial();
 
-		private protected override void OnKeyEventRaised(RoutedEvent routedEvent, KeyRoutedEventArgs args)
+		private protected override void OnPostKeyDown(KeyRoutedEventArgs args)
 		{
-			if (routedEvent != KeyDownEvent)
-			{
-				return;
-			}
-
 #if __SKIA__
 			if (_isSkiaTextBox)
 			{
