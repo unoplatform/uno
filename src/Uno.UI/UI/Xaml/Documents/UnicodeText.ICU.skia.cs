@@ -96,6 +96,8 @@ internal readonly partial struct UnicodeText
 					.Where(t => t.Item2 != null)
 					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
 					.First()!;
+				// udata_setCommonData does not copy the buffer, so it needs to be pinned.
+				// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
 				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
 				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
 				var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)data);
