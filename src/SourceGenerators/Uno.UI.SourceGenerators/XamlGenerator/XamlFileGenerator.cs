@@ -2028,8 +2028,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// In this case, we go through this code path as it's much more efficient than FindType.
 			var baseTypeString = $"{ns}.{xamlType.Name}";
 
-			// Try finding the type with "Extension" suffix first, then without
-			return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+			// First, check if the type itself (without Extension suffix) is a MarkupExtension
+			var typeWithoutSuffix = FindMarkupExtensionType(baseTypeString);
+			if (typeWithoutSuffix != null)
+			{
+				return typeWithoutSuffix;
+			}
+
+			// Then try with "Extension" suffix, but only if the base type doesn't exist or is not a regular (non-MarkupExtension) type
+			// This prevents false positives when a control exists alongside a separate MarkupExtension with the same base name
+			// For example: FluentIcon (control) and FluentIconExtension (markup extension) should not be confused
+			// The base type existence check ensures we only use the Extension suffix for actual markup extension resolution
+			if (!xamlType.Name.EndsWith("Extension", StringComparison.Ordinal))
+			{
+				var baseTypeExists = _metadataHelper.FindTypeByFullName(baseTypeString) != null;
+				if (!baseTypeExists)
+				{
+					// Base type doesn't exist, so try with Extension suffix (e.g., {local:MyMarkup} -> MyMarkupExtension)
+					return FindMarkupExtensionType(baseTypeString + "Extension");
+				}
+			}
+
+			return null;
 		}
 
 		private INamedTypeSymbol? FindMarkupExtensionType(string fullTypeName)
