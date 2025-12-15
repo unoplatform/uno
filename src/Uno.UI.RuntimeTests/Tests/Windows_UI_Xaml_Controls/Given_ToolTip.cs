@@ -297,6 +297,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
@@ -329,6 +330,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle();
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(tb.XamlRoot).Count);
 		}
+#endif
 
 		[TestMethod]
 		public async Task When_ToolTip_Popup_XamlRoot()
