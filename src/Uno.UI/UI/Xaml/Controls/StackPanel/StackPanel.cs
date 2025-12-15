@@ -7,4 +7,10 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class StackPanel : Panel, IScrollSnapPointsInfo, IInsertionPanel
 {
+	/// <summary>
+	/// Initializes a new instance of the StackPanel class.
+	/// </summary>
+	public StackPanel()
+	{
+	}
 }
