@@ -434,6 +434,80 @@ public partial class TextBox
 		}
 	}
 
+	protected override void OnKeyDown(KeyRoutedEventArgs args)
+	{
+		// This is a minimal copy of OnkeyDownSkia that just sets args.Handled without doing any work.
+		// This is to match WinUI behavior where Handled is set for certain keys before public
+		// subscribers get the event, but before any actual text processing is done.
+		if (!_isSkiaTextBox)
+		{
+			return;
+		}
+
+		var (selectionStart, selectionLength) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, -_selection.length) : (_selection.start, _selection.length);
+		var text = Text;
+		var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
+		var ctrl = args.KeyboardModifiers.HasFlag(_platformCtrlKey);
+		switch (args.Key)
+		{
+			case VirtualKey.Escape:
+				if (HasPointerCapture)
+				{
+					args.Handled = true;
+				}
+				return;
+			case VirtualKey.Z when ctrl:
+			case VirtualKey.Y when ctrl:
+			case VirtualKey.Delete when !IsReadOnly:
+			case VirtualKey.A when ctrl:
+				if (!HasPointerCapture)
+				{
+					args.Handled = true;
+				}
+				return;
+			case VirtualKey.Up:
+				// on macOS start of document is `Command` and `Up`
+				if (ctrl && OperatingSystem.IsMacOS())
+				{
+					KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				else
+				{
+					KeyDownUpArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				break;
+			case VirtualKey.Down:
+				// on macOS end of document is `Command` and `Down`
+				if (ctrl && OperatingSystem.IsMacOS())
+				{
+					KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				else
+				{
+					KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				break;
+			case VirtualKey.Left when !TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+			case VirtualKey.Right when TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+				KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
+				break;
+			case VirtualKey.Left when TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+			case VirtualKey.Right when !TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+				KeyDownRightArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				break;
+			case VirtualKey.Home:
+				KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				break;
+			case VirtualKey.End:
+				KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				break;
+			// TODO: PageUp/Down
+			case VirtualKey.Back when !IsReadOnly:
+				KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
+				break;
+		}
+	}
+
 	private void OnKeyDownSkia(KeyRoutedEventArgs args)
 	{
 		if (_selection.length != 0 &&
