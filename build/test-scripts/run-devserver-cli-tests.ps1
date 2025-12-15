@@ -403,7 +403,12 @@ try {
     & dotnet uno-devserver stop -l trace
 
     $CodexAPIKey = $env:CODEX_API_KEY
-    if ([string]::IsNullOrWhiteSpace($CodexAPIKey)) {
+    $isForkPr = $env:SYSTEM_PULLREQUEST_ISFORK -eq 'True'
+
+    if ($isForkPr) {
+        Write-Log "Forked pull request detected. Skipping Codex MCP integration test for security."
+    }
+    elseif ([string]::IsNullOrWhiteSpace($CodexAPIKey)) {
         Write-Log "CODEX_API_KEY not provided. Skipping Codex MCP integration test."
     }
     else {
