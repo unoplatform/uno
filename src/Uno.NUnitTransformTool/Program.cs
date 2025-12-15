@@ -31,6 +31,13 @@ namespace Uno.ReferenceImplComparer
 
 		private static int FailOnEmptyResults(string inputFile)
 		{
+			// If the file doesn't exist, don't fail - this allows retries to run in full
+			if (!File.Exists(inputFile))
+			{
+				Console.WriteLine($"The test results file {inputFile} does not exist, allowing retry");
+				return 0;
+			}
+
 			var doc = new XmlDocument();
 			doc.LoadXml(File.ReadAllText(inputFile));
 
