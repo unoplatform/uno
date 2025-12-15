@@ -48,7 +48,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
 
-	internal static SKRect InfiniteClipRect { get; } = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
+	private const int SK_MaxS32FitsInFloat = 2147483520;
+	private const int SafeEdge = SK_MaxS32FitsInFloat / 2 - 1;
+	// if we use float.Min/MaxValue, weird overflows happen and clipping breaks badly.
+	// https://github.com/mono/skia/blob/927041a58f130e0dd0562ba86cb4170989ad39e9/src/core/SkRecorder.cpp#L79
+	// https://github.com/mono/skia/blob/927041a58f130e0dd0562ba86cb4170989ad39e9/src/core/SkRectPriv.h#L38
+	internal static SKRect InfiniteClipRect { get; } = new(-SafeEdge, -SafeEdge, SafeEdge, SafeEdge);
 
 	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
 
