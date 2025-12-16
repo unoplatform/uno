@@ -963,7 +963,7 @@ namespace Uno.UI.Samples.Tests
 							{
 								_currentRun.Failed++;
 								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed,
-									message: $"Test did not throw the excepted exception of type {test.ExpectedException.Name}",
+									message: $"Test did not throw the expected exception of type {test.ExpectedException.Name}",
 									console: console);
 							}
 						}
