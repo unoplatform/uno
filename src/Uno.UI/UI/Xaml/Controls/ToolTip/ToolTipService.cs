@@ -105,6 +105,16 @@ public partial class ToolTipService
 		}
 	}
 
+	private static void EnsureOpenTimer()
+	{
+		if (m_OpenTimer is null)
+		{
+			m_OpenTimer = new DispatcherTimer();
+			m_OpenTimer.Interval = TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay);
+			m_OpenTimer.Tick += OnOpenTimerTick;
+		}
+	}
+
 	private static void CloseToolTipImpl(ToolTip toolTip)
 	{
 		if (m_CurrentToolTip == toolTip)
@@ -185,10 +195,10 @@ public partial class ToolTipService
 		{
 			owner.PointerEntered += OnPointerEntered;
 			owner.GotFocus += OnGotFocus;
-			owner.PointerExited += OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
-			owner.PointerCaptureLost += OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
-			owner.PointerCanceled += OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
-			owner.LostFocus += OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
+			owner.PointerExited += OnPointerOutOrLostFocus;
+			owner.PointerCaptureLost += OnPointerOutOrLostFocus;
+			owner.PointerCanceled += OnPointerOutOrLostFocus;
+			owner.LostFocus += OnPointerOutOrLostFocus;
 			owner.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
 			if (owner is ButtonBase)
 			{
@@ -202,22 +212,6 @@ public partial class ToolTipService
 		}
 	}
 
-	private static void OnGotFocus(object sender, RoutedEventArgs e)
-	{
-		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
-		{
-			if (toolTip.IsOpen) return;
-
-			if (m_OpenTimer is null)
-			{
-				m_OpenTimer = new DispatcherTimer();
-				m_OpenTimer.Interval = TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay);
-				m_OpenTimer.Tick += OnOpenTimerTick;
-			}
-			OpenToolTipImpl(toolTip);
-		}
-	}
-
 	private static void OnOwnerUnloaded(object sender, RoutedEventArgs e)
 	{
 		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
@@ -226,10 +220,10 @@ public partial class ToolTipService
 
 			owner.PointerEntered -= OnPointerEntered;
 			owner.GotFocus -= OnGotFocus;
-			owner.PointerExited -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
-			owner.PointerCaptureLost -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
-			owner.PointerCanceled -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
-			owner.LostFocus -= OnPointerExitedOrCanceledOrCaptureLostOrLostFocus;
+			owner.PointerExited -= OnPointerOutOrLostFocus;
+			owner.PointerCaptureLost -= OnPointerOutOrLostFocus;
+			owner.PointerCanceled -= OnPointerOutOrLostFocus;
+			owner.LostFocus -= OnPointerOutOrLostFocus;
 			owner.RemoveHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown));
 			if (owner is ButtonBase)
 			{
@@ -237,6 +231,17 @@ public partial class ToolTipService
 			}
 			toolTip.OwnerVisibilitySubscription?.Dispose();
 			toolTip.OwnerVisibilitySubscription = null;
+		}
+	}
+
+	private static void OnGotFocus(object sender, RoutedEventArgs e)
+	{
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
+		{
+			if (toolTip.IsOpen) return;
+
+			EnsureOpenTimer();
+			OpenToolTipImpl(toolTip);
 		}
 	}
 
@@ -251,18 +256,13 @@ public partial class ToolTipService
 		{
 			if (toolTip.IsOpen) return;
 
-			if (m_OpenTimer is null)
-			{
-				m_OpenTimer = new DispatcherTimer();
-				m_OpenTimer.Interval = TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay);
-				m_OpenTimer.Tick += OnOpenTimerTick;
-			}
+			EnsureOpenTimer();
 			m_LastEnteredFrameId = e.FrameId;
 			OpenToolTipImpl(toolTip);
 		}
 	}
 
-	private static void OnPointerExitedOrCanceledOrCaptureLostOrLostFocus(object sender, object e)
+	private static void OnPointerOutOrLostFocus(object sender, object e)
 	{
 		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
