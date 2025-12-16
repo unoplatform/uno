@@ -260,16 +260,15 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					{
 						ProcessMarkupExtensionMember(control, instance, member, rootInstance ?? instance);
 					}
-					catch (Exception ex)
+					catch (XamlParseException ex)
 					{
-						// Log the exception but continue processing other members
-						// This allows markup extensions to work even if some properties can't be set
-						if (FeatureConfiguration.XamlReader.FailOnUnknownProperties)
-						{
-							AddParseException(new XamlParseException(
-								$"Failed to set property '{member.Member.Name}' on markup extension '{type.Name}': {ex.Message}",
-								ex, member.LineNumber, member.LinePosition));
-						}
+						// If it's already a XamlParseException, add it to the list
+						AddParseException(ex);
+					}
+					catch (Exception ex) when (!FeatureConfiguration.XamlReader.FailOnUnknownProperties)
+					{
+						// If FailOnUnknownProperties is false, silently continue
+						// This allows markup extensions with optional properties to work
 					}
 				}
 
