@@ -61,7 +61,7 @@ public partial class CoreWebView2
 		_processedSource = actualUri;
 		if (_owner.SwitchSourceBeforeNavigating)
 		{
-			Source = actualUri.IsAbsoluteUri ? actualUri.AbsoluteUri : actualUri.OriginalString;
+			Source = actualUri.AbsoluteUri;
 		}
 
 		UpdateFromInternalSource();
