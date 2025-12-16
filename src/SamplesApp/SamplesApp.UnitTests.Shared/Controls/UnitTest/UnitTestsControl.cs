@@ -360,7 +360,7 @@ namespace Uno.UI.Samples.Tests
 				new TestCaseResult
 				{
 					ClassName = testClassInfo?.Type?.FullName,
-					MethodName = testMethodInfo.Method?.Name,
+					MethodName = testMethodInfo?.Method?.Name,
 					TestName = testName,
 					Duration = duration,
 					TestResult = testResult,
