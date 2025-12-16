@@ -728,7 +728,8 @@ namespace Uno.UI.Samples.Tests
 				.Where(t => !(filters?.Any() ?? false)
 					|| testClassNameContainsFilters
 					|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
-					|| filters.Any(f => t.Name.Contains(f, StrComp)));
+					|| filters.Any(f => t.Name.Contains(f, StrComp))
+					|| filters.Any(f => $"{t.DeclaringType.FullName}.{t.Name}".Contains(f, StrComp)));
 		}
 
 		private async Task ExecuteTestsForInstance(
