@@ -1658,6 +1658,29 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(new Vector2(31, 4), control.Vec2);
 		}
 
+		[TestMethod]
+		public void When_AttachedProperty_On_NonDependencyObject()
+		{
+			// Test that attached properties on non-DependencyObject types (like x:String) don't throw exceptions
+			var xaml =
+				"""
+				<ListView xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+				          xmlns:local="using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests" 
+				          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				    <ListView.Items>
+				        <x:String local:TestAttachedProperty.TestId="test-id">Item1</x:String>
+				    </ListView.Items>
+				</ListView>
+				""";
+
+			// This should not throw an exception - attached property should be ignored
+			var element = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as ListView;
+			
+			Assert.IsNotNull(element);
+			Assert.AreEqual(1, element.Items.Count);
+			Assert.AreEqual("Item1", element.Items[0] as string);
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;
