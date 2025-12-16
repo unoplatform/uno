@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
@@ -19,6 +21,9 @@ namespace Uno.UI.Runtime.Skia.Win32;
 // IDropTarget implementation for handling drag-and-drop operations
 internal partial class Win32DragDropExtension
 {
+	// Supported TYMED types for drag-drop operations
+	private const TYMED SupportedTymed = TYMED.TYMED_HGLOBAL | TYMED.TYMED_ISTREAM | TYMED.TYMED_FILE;
+
 	unsafe HRESULT IDropTarget.Interface.DragEnter(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
 	{
 		Debug.Assert(_manager is not null && _coreDragDropManager is not null);
@@ -58,7 +63,7 @@ internal partial class Win32DragDropExtension
 			var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {position}, formats: ";
 			foreach (var format in formats)
 			{
-				log += (CLIPBOARD_FORMAT)format.cfFormat + " ";
+				log += $"{(CLIPBOARD_FORMAT)format.cfFormat}(tymed={(TYMED)format.tymed}) ";
 			}
 			this.Log().Trace(log);
 		}
@@ -70,13 +75,10 @@ internal partial class Win32DragDropExtension
 			formatEtcList
 			.Where(static formatetc =>
 			{
-				if (!Enum.IsDefined((CLIPBOARD_FORMAT)formatetc.cfFormat))
+				// Check if any of the supported TYMED types are available (tymed is a bitmask)
+				if (((TYMED)formatetc.tymed & SupportedTymed) == 0)
 				{
-					return false;
-				}
-				if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
-				{
-					typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
+					typeof(Win32DragDropExtension).LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} ({(TYMED)formatetc.tymed}) does not include any supported types ({SupportedTymed})");
 					return false;
 				}
 
@@ -86,6 +88,7 @@ internal partial class Win32DragDropExtension
 			.ToList();
 
 		var mediumsToDispose = new List<STGMEDIUM>();
+		var allocatedHGlobals = new List<HGLOBAL>();
 		using var mediumsDisposable = new DisposableStruct<List<STGMEDIUM>>(static list =>
 		{
 			foreach (var medium in list)
@@ -93,10 +96,68 @@ internal partial class Win32DragDropExtension
 				PInvoke.ReleaseStgMedium(&medium);
 			}
 		}, mediumsToDispose);
+		using var hGlobalsDisposable = new DisposableStruct<List<HGLOBAL>>(static list =>
+		{
+			foreach (var hGlobal in list)
+			{
+				PInvoke.GlobalFree(hGlobal);
+			}
+		}, allocatedHGlobals);
 		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
 		{
 			var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
-			dataObject->GetData(formatEtc, out STGMEDIUM medium);
+
+			// Try to get data preferring HGLOBAL, then IStream, then FILE
+			var preferredFormatEtc = formatEtc with { tymed = (uint)TYMED.TYMED_HGLOBAL };
+			var getDataResult = dataObject->GetData(preferredFormatEtc, out STGMEDIUM medium);
+
+			if (getDataResult.Failed || medium.tymed != TYMED.TYMED_HGLOBAL)
+			{
+				// Try IStream if HGLOBAL failed
+				if (((TYMED)formatEtc.tymed & TYMED.TYMED_ISTREAM) != 0)
+				{
+					preferredFormatEtc = formatEtc with { tymed = (uint)TYMED.TYMED_ISTREAM };
+					getDataResult = dataObject->GetData(preferredFormatEtc, out medium);
+
+					if (getDataResult.Succeeded && medium.tymed == TYMED.TYMED_ISTREAM)
+					{
+						// Convert IStream to HGLOBAL
+						var hGlobal = ReadIStreamToHGlobal(medium.u.pstm);
+						mediumsToDispose.Add(medium);
+						if (hGlobal.HasValue)
+						{
+							allocatedHGlobals.Add(hGlobal.Value);
+						}
+						return hGlobal;
+					}
+				}
+
+				// Try FILE if IStream failed
+				if (((TYMED)formatEtc.tymed & TYMED.TYMED_FILE) != 0)
+				{
+					preferredFormatEtc = formatEtc with { tymed = (uint)TYMED.TYMED_FILE };
+					getDataResult = dataObject->GetData(preferredFormatEtc, out medium);
+
+					if (getDataResult.Succeeded && medium.tymed == TYMED.TYMED_FILE)
+					{
+						// Convert file path to HGLOBAL containing file contents
+						var hGlobal = ReadFileToHGlobal(medium.u.lpszFileName);
+						mediumsToDispose.Add(medium);
+						if (hGlobal.HasValue)
+						{
+							allocatedHGlobals.Add(hGlobal.Value);
+						}
+						return hGlobal;
+					}
+				}
+
+				if (getDataResult.Failed)
+				{
+					typeof(Win32DragDropExtension).LogError()?.Error($"GetData failed for format {format}: {Win32Helper.GetErrorMessage(getDataResult)}");
+					return null;
+				}
+			}
+
 			mediumsToDispose.Add(medium);
 			return medium.u.hGlobal;
 		});
@@ -156,5 +217,137 @@ internal partial class Win32DragDropExtension
 	{
 		var xamlRoot = _manager.ContentRoot.GetOrCreateXamlRoot();
 		return new Point(x / xamlRoot.RasterizationScale, y / xamlRoot.RasterizationScale);
+	}
+
+	/// <summary>
+	/// Reads data from an IStream and returns it as an HGLOBAL.
+	/// </summary>
+	private static unsafe HGLOBAL? ReadIStreamToHGlobal(IStream* pStream)
+	{
+		if (pStream is null)
+		{
+			return null;
+		}
+
+		try
+		{
+			// Get the stream size using STATFLAG_NONAME (0x1) to skip the name
+			STATSTG stat;
+			var hResult = pStream->Stat(&stat, 0x1);
+			if (hResult.Failed)
+			{
+				typeof(Win32DragDropExtension).LogError()?.Error($"IStream.Stat failed: {Win32Helper.GetErrorMessage(hResult)}");
+				return null;
+			}
+
+			var streamSize = (int)stat.cbSize;
+			if (streamSize <= 0)
+			{
+				return null;
+			}
+
+			// Allocate global memory
+			var hGlobal = PInvoke.GlobalAlloc(Windows.Win32.System.Memory.GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE, (nuint)streamSize);
+			if (hGlobal == IntPtr.Zero)
+			{
+				typeof(Win32DragDropExtension).LogError()?.Error($"GlobalAlloc failed: {Win32Helper.GetErrorMessage()}");
+				return null;
+			}
+
+			var pBuffer = PInvoke.GlobalLock(hGlobal);
+			if (pBuffer is null)
+			{
+				PInvoke.GlobalFree(hGlobal);
+				typeof(Win32DragDropExtension).LogError()?.Error($"GlobalLock failed: {Win32Helper.GetErrorMessage()}");
+				return null;
+			}
+
+			try
+			{
+				// Seek to the beginning of the stream (STREAM_SEEK_SET = 0)
+				const int STREAM_SEEK_SET = 0;
+				pStream->Seek(0, STREAM_SEEK_SET, null);
+
+				// Read the stream data
+				uint bytesRead;
+				hResult = pStream->Read(pBuffer, (uint)streamSize, &bytesRead);
+				if (hResult.Failed)
+				{
+					PInvoke.GlobalUnlock(hGlobal);
+					PInvoke.GlobalFree(hGlobal);
+					typeof(Win32DragDropExtension).LogError()?.Error($"IStream.Read failed: {Win32Helper.GetErrorMessage(hResult)}");
+					return null;
+				}
+
+				return (HGLOBAL)hGlobal;
+			}
+			finally
+			{
+				PInvoke.GlobalUnlock(hGlobal);
+			}
+		}
+		catch (Exception ex)
+		{
+			typeof(Win32DragDropExtension).LogError()?.Error($"ReadIStreamToHGlobal failed: {ex.Message}");
+			return null;
+		}
+	}
+
+	/// <summary>
+	/// Reads a file from the given path and returns its contents as an HGLOBAL.
+	/// </summary>
+	private static unsafe HGLOBAL? ReadFileToHGlobal(PCWSTR filePath)
+	{
+		if (filePath.Value is null)
+		{
+			return null;
+		}
+
+		try
+		{
+			var path = filePath.ToString();
+			if (string.IsNullOrEmpty(path) || !File.Exists(path))
+			{
+				typeof(Win32DragDropExtension).LogError()?.Error($"ReadFileToHGlobal: File does not exist: {path}");
+				return null;
+			}
+
+			var fileBytes = File.ReadAllBytes(path);
+			if (fileBytes.Length == 0)
+			{
+				return null;
+			}
+
+			// Allocate global memory
+			var hGlobal = PInvoke.GlobalAlloc(Windows.Win32.System.Memory.GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE, (nuint)fileBytes.Length);
+			if (hGlobal == IntPtr.Zero)
+			{
+				typeof(Win32DragDropExtension).LogError()?.Error($"GlobalAlloc failed: {Win32Helper.GetErrorMessage()}");
+				return null;
+			}
+
+			var pBuffer = PInvoke.GlobalLock(hGlobal);
+			if (pBuffer is null)
+			{
+				PInvoke.GlobalFree(hGlobal);
+				typeof(Win32DragDropExtension).LogError()?.Error($"GlobalLock failed: {Win32Helper.GetErrorMessage()}");
+				return null;
+			}
+
+			try
+			{
+				Marshal.Copy(fileBytes, 0, (IntPtr)pBuffer, fileBytes.Length);
+				return (HGLOBAL)hGlobal;
+			}
+			finally
+			{
+				PInvoke.GlobalUnlock(hGlobal);
+			}
+		}
+		catch (Exception ex)
+		{
+			typeof(Win32DragDropExtension).LogError()?.Error($"ReadFileToHGlobal failed: {ex.Message}");
+			return null;
+		}
 	}
 }
