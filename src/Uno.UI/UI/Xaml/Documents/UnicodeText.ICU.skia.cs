@@ -32,9 +32,9 @@ internal readonly partial struct UnicodeText
 			IntPtr libicuuc;
 			if (OperatingSystem.IsWindows())
 			{
-				// On Windows, We get the ICU binaries from the Microsoft.ICU.ICU4C.Runtime package
-				_icuVersion = 72;
-				if (!NativeLibrary.TryLoad("icuuc72", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+				// On Windows, we get the ICU binaries from the uno.icu-win package.
+				_icuVersion = 77;
+				if (!NativeLibrary.TryLoad("icuuc77", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					throw new Exception("Failed to load libicuuc.");
 				}
