@@ -434,7 +434,7 @@ public partial class TextBox
 		}
 	}
 
-	protected override void OnKeyDown(KeyRoutedEventArgs args)
+	partial void OnKeyDownPartial(KeyRoutedEventArgs args)
 	{
 		// This is a minimal copy of OnkeyDownSkia that just sets args.Handled without doing any work.
 		// This is to match WinUI behavior where Handled is set for certain keys before public

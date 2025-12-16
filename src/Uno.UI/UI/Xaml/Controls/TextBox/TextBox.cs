@@ -1159,6 +1159,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnTappedPartial();
 
+		partial void OnKeyDownPartial(KeyRoutedEventArgs args);
+
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			base.OnKeyDown(args);
+
+			OnKeyDownPartial(args);
+		}
+
 		private protected override void OnPostKeyDown(KeyRoutedEventArgs args)
 		{
 #if __SKIA__
