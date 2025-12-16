@@ -265,7 +265,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						// If it's already a XamlParseException, add it to the list
 						AddParseException(ex);
 					}
-					catch (InvalidOperationException ex) when (!FeatureConfiguration.XamlReader.FailOnUnknownProperties && 
+					catch (InvalidOperationException ex) when (!FeatureConfiguration.XamlReader.FailOnUnknownProperties &&
 						ex.Message.Contains("does not exist on markup extension"))
 					{
 						// If FailOnUnknownProperties is false, silently skip unknown properties
@@ -978,7 +978,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			object rootInstance)
 		{
 			// Skip special members that don't correspond to actual properties
-			if (member.Member.Name == "_PositionalParameters" || 
+			if (member.Member.Name == "_PositionalParameters" ||
 				member.Member.Name == "_UnknownContent" ||
 				member.Member.Name == "_Initialization" ||
 				member.Member.Name == "base")
@@ -988,7 +988,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			// Try to find the property on the markup extension
 			var propertyInfo = TypeResolver.GetPropertyByName(control.Type, member.Member.Name);
-			
+
 			if (propertyInfo == null)
 			{
 				// Property not found - this might be okay for some markup extensions
