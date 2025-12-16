@@ -529,7 +529,8 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	// on the available window rect.
 	private void OnPresenterSizeChanged(object pSender, SizeChangedEventArgs args)
 	{
-		if (m_tpMenuPopupThemeTransition == null && ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition"))
+		if (m_tpMenuPopupThemeTransition == null &&
+			ApiInformation.IsTypePresent("Uno.UI,Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition"))
 		{
 			MenuFlyoutPresenter parentMenuFlyoutPresenter = GetParentMenuFlyoutPresenter();
 
