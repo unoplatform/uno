@@ -932,7 +932,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						session.Canvas.DrawText(blob1, currentLineX, line.baselineOffset, paint);
 					}
 
-					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart < run.endInInline + run.inline.StartIndex && run.startInInline + run.inline.StartIndex < sd.selectionClusterEnd.sourceTextStart))
+					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart < run.endInInline + run.inline.StartIndex && (selection!.Value.selectionEnd == _text.Length || run.startInInline + run.inline.StartIndex < sd.selectionClusterEnd.sourceTextStart)))
 					{
 						int selectionLeft;
 						int selectionRight; // the selection ends to the left of positions[selectionRight].X
