@@ -93,7 +93,6 @@
                     x:Name="testFilter"
                     Grid.Row="1"
                     Grid.ColumnSpan="3"
-                    Margin="0,0,4,0"
                     HorizontalAlignment="Stretch"
                     PlaceholderText="Enter test filter here" />
             </Grid>
@@ -198,11 +197,10 @@
         </ScrollViewer>
         <Button
             Grid.Row="1"
-            Margin="0,0,24,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="CopyFailedTestDetails">
-            <TextBlock Text="Copy" />
+            <FontIcon Glyph="&#xE8C8;" />
         </Button>
 
         <Rectangle
@@ -220,11 +218,10 @@
         </ScrollViewer>
         <Button
             Grid.Row="3"
-            Margin="0,0,24,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="CopyTestResults">
-            <TextBlock Text="Copy" />
+            <FontIcon Glyph="&#xE8C8;" />
         </Button>
 
         <Rectangle
