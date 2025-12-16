@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\MenuFlyoutSubItem_Partial.h, tag winui3/release/1.7.1, commit 5f27a786ac96c
+// MUX Reference dxaml\xcp\dxaml\lib\MenuFlyoutSubItem_Partial.h, tag winui3/release/1.8.1, commit cd3b7ad0eca
 
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls.Primitives;
