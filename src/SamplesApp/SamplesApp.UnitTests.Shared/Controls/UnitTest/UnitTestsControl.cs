@@ -312,6 +312,7 @@ namespace Uno.UI.Samples.Tests
 			{
 				RunTestCountForUITest = runTestCount.Text = _currentRun.Run.ToString();
 				ignoredTestCount.Text = _currentRun.Ignored.ToString();
+				retriedTestCount.Text = _currentRun.Retried.ToString();
 				inconclusiveTestCount.Text = _currentRun.Inconclusive.ToString();
 				succeededTestCount.Text = _currentRun.Succeeded.ToString();
 				FailedTestCountForUITest = failedTestCount.Text = _currentRun.Failed.ToString();
@@ -372,6 +373,7 @@ namespace Uno.UI.Samples.Tests
 			{
 				runTestCount.Text = _currentRun.Run.ToString();
 				ignoredTestCount.Text = _currentRun.Ignored.ToString();
+				retriedTestCount.Text = _currentRun.Retried.ToString();
 				inconclusiveTestCount.Text = _currentRun.Inconclusive.ToString();
 				succeededTestCount.Text = _currentRun.Succeeded.ToString();
 				failedTestCount.Text = _currentRun.Failed.ToString();
@@ -992,6 +994,12 @@ namespace Uno.UI.Samples.Tests
 							{
 								if (_currentRun.CurrentRepeatCount < config.Attempts - 1)
 								{
+									// Count only the first time we retry this test.
+									if (_currentRun.CurrentRepeatCount == 0)
+									{
+										_currentRun.Retried++;
+									}
+
 									_currentRun.CurrentRepeatCount++;
 									canRetry = true;
 

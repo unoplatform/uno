@@ -154,7 +154,7 @@
                     Grid.Row="1"
                     Grid.Column="0"
                     ToolTipService.ToolTip="Inconclusive tests">
-                    <FontIcon Foreground="DarkGray" Glyph="&#xE9CE;" />
+                    <FontIcon Foreground="DarkViolet" Glyph="&#xE9CE;" />
                     <TextBlock
                         x:Name="inconclusiveTestCount"
                         Foreground="DarkViolet"
@@ -164,6 +164,17 @@
                 <StackPanel
                     Grid.Row="1"
                     Grid.Column="1"
+                    ToolTipService.ToolTip="Retried tests">
+                    <FontIcon Foreground="Orange" Glyph="&#xE8EE;" />
+                    <TextBlock
+                        x:Name="retriedTestCount"
+                        Foreground="Orange"
+                        Text="None" />
+                </StackPanel>
+
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.Column="2"
                     ToolTipService.ToolTip="Ignored tests">
                     <FontIcon Foreground="DarkGray" Glyph="&#xEE35;" />
                     <TextBlock

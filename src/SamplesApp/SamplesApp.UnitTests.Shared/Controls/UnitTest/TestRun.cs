@@ -15,6 +15,8 @@ namespace Uno.UI.Samples.Tests
 
 			public int Ignored { get; set; }
 
+			public int Retried { get; set; }
+
 			public int Inconclusive { get; set; }
 
 			public int Succeeded { get; set; }
