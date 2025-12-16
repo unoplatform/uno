@@ -1675,7 +1675,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			// This should not throw an exception - attached property should be ignored
 			var element = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as ListView;
-			
+
 			Assert.IsNotNull(element);
 			Assert.AreEqual(1, element.Items.Count);
 			Assert.AreEqual("Item1", element.Items[0] as string);
