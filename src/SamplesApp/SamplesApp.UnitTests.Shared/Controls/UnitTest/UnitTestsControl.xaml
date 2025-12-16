@@ -59,7 +59,7 @@
                         <TextBlock Text="Stop" />
                     </StackPanel>
                 </Button>
-                <Button Grid.Column="3">
+                <Button Grid.Column="2">
                     <Button.Content>
                         <SymbolIcon Symbol="Setting" />
                     </Button.Content>
