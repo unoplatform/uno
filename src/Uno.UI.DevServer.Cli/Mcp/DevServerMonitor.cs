@@ -14,18 +14,24 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	private List<string> _forwardedArgs = [];
 	private string _currentDirectory = "";
 	private CancellationTokenSource? _cts;
+	private Task? _monitor;
 
 	public event Action<string>? ServerStarted;
 	public event Action? ServerFailed;
 
 	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs)
 	{
+		if (_monitor is not null)
+		{
+			throw new InvalidOperationException("DevServerMonitor is already running");
+		}
+
 		_originalPort = port;
 		_forwardedArgs = forwardedArgs;
 		_currentDirectory = currentDirectory;
 
 		_cts = new CancellationTokenSource();
-		_ = Task.Run(() => RunMonitor(_cts.Token), _cts.Token);
+		_monitor = Task.Run(() => RunMonitor(_cts.Token), _cts.Token);
 	}
 
 	private async Task RunMonitor(CancellationToken ct)
@@ -47,7 +53,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 					// If we don't have a dev server host, we can't start a DevServer yet.
 					var hostPath = await _services
 						.GetRequiredService<UnoToolsLocator>()
-						.ResolveHostExecutableAsync();
+						.ResolveHostExecutableAsync(_currentDirectory);
 
 					if (hostPath is not null)
 					{
@@ -63,7 +69,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 							_logger.LogDebug($"Using user-specified port {port}");
 						}
 
-						var (success, exitCode) = await StartProcess(hostPath, port, ct);
+						var (success, exitCode) = await StartProcess(hostPath, port, _currentDirectory, ct);
 						if (!success)
 						{
 							retryCount++;
@@ -116,36 +122,57 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 
 	private async Task<bool> WaitForServerReadyAsync(int port, CancellationToken ct)
 	{
-		var endpoint = $"http://localhost:{port}/mcp";
+		var endpoints = new[]
+		{
+			$"http://localhost:{port}/mcp",
+			$"http://127.0.0.1:{port}/mcp",
+			$"http://[::1]:{port}/mcp"
+		};
+
 		var maxAttempts = 30; // 30 seconds
 
 		using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(1) };
 
 		for (int i = 0; i < maxAttempts; i++)
 		{
-			try
+			// Test all endpoints simultaneously
+			var tasks = endpoints.Select(async endpoint =>
 			{
-				var response = await httpClient.GetAsync(endpoint, ct);
-				if (response.StatusCode != HttpStatusCode.NotFound
-					&& response.StatusCode != HttpStatusCode.BadRequest)
+				try
 				{
-					_logger.LogDebug("DevServer is ready at {Endpoint}", endpoint);
-					return true;
+					var response = await httpClient.GetAsync(endpoint, ct);
+					if (response.StatusCode != HttpStatusCode.NotFound
+						&& response.StatusCode != HttpStatusCode.BadRequest)
+					{
+						return (success: true, endpoint);
+					}
 				}
-			}
-			catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+				catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+				{
+					// Server not ready yet on this endpoint
+				}
+
+				return (success: false, endpoint: endpoint);
+			}).ToArray();
+
+			var results = await Task.WhenAll(tasks);
+
+			// Return success if any endpoint succeeded
+			var successfulEndpoint = results.FirstOrDefault(r => r.success);
+			if (successfulEndpoint.success)
 			{
-				// Server not ready yet
+				_logger.LogDebug("DevServer is ready at {Endpoint}", successfulEndpoint.endpoint);
+				return true;
 			}
 
 			await Task.Delay(1000, ct);
 		}
 
-		_logger.LogError("DevServer did not become ready within timeout period");
+		_logger.LogError("DevServer did not become ready within timeout period on any of: {Endpoints}", string.Join(", ", endpoints));
 		return false;
 	}
 
-	private async Task<(bool success, int? exitCode)> StartProcess(string hostPath, int port, CancellationToken ct)
+	private async Task<(bool success, int? exitCode)> StartProcess(string hostPath, int port, string workingDirectory, CancellationToken ct)
 	{
 		var args = new List<string>
 		{
@@ -153,12 +180,14 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			"--httpPort", port.ToString(System.Globalization.CultureInfo.InvariantCulture),
 			"--ppid", Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture)
 		};
+
 		args.AddRange(_forwardedArgs);
 
-		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, redirectOutput: true, redirectInput: true);
+		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true, redirectInput: true);
 
 		var (exitCode, stdout, stderr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
-		if (exitCode != 0)
+
+		if (_logger.IsEnabled(LogLevel.Debug) || exitCode != 0)
 		{
 			// Already logged by helper
 			if (!string.IsNullOrWhiteSpace(stdout))
@@ -169,10 +198,41 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			{
 				_logger.LogError("Controller stderr:\n{Stderr}", stderr);
 			}
+		}
+
+		if (exitCode != 0)
+		{
+			await StopLingeringDevServerAsync(hostPath, workingDirectory, ct);
 			return (false, exitCode);
 		}
 
 		return (true, null);
+	}
+
+	private async Task StopLingeringDevServerAsync(string hostPath, string workingDirectory, CancellationToken ct)
+	{
+		try
+		{
+			var stopArgs = new List<string>
+			{
+				"--command", "stop"
+			};
+
+			stopArgs.AddRange(_forwardedArgs);
+
+			var stopInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(
+				hostPath,
+				stopArgs,
+				workingDirectory,
+				redirectOutput: true);
+
+			_logger.LogWarning("Attempting to stop lingering DevServer instance after failed start.");
+			await DevServerProcessHelper.RunConsoleProcessAsync(stopInfo, _logger);
+		}
+		catch (Exception ex) when (!ct.IsCancellationRequested)
+		{
+			_logger.LogError(ex, "Failed to stop lingering DevServer instance");
+		}
 	}
 
 	private static int EnsureTcpPort()

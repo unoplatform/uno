@@ -15,16 +15,9 @@ stages:
     - checkout: self
       clean: true
 
-    - task: Cache@2
-      inputs:
-        key: validation | $(Agent.OS) | $(Build.SourcesDirectory)/build/ci/**
-        path: $(npm_config_cache)
-      displayName: Cache npm packages
-
     - template: templates/gitversion-run.yml
     - template: setup/.azure-devops-setup-commitsar.yml
-    - template: setup/.azure-devops-setup-spell-check.yml
-    - template: setup/.azure-devops-setup-markdown-lint.yml
+    - template: setup/.azure-devops-setup-doc-validations.yml
 
 - stage: docs_generation
   displayName: Docs Generation

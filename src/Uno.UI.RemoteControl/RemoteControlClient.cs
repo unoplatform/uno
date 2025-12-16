@@ -265,6 +265,29 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					+ "This can usually be fixed with a **rebuild** of your application. "
 					+ "If not, make sure you have the latest version of the uno's extensions installed in your IDE and restart your IDE.");
 			}
+			else
+			{
+				// For WASM and desktop platforms, add loopback address for better reliability and airplane mode support
+				// Mobile platforms (iOS, Android) should not use loopback as they connect to a different machine
+				if ((OperatingSystem.IsBrowser()
+					|| OperatingSystem.IsWindows()
+					|| OperatingSystem.IsLinux()
+					|| OperatingSystem.IsMacOS()))
+				{
+					var serverPort = _serverAddresses.Select(addr => addr.port).Where(p => p > 0).FirstOrDefault();
+					if (serverPort > 0)
+					{
+						var loopbackAddress = IPAddress.Loopback.ToString().ToLowerInvariant();
+						var hasLoopback = _serverAddresses.Any(addr => addr.endpoint.Equals(loopbackAddress, StringComparison.OrdinalIgnoreCase) && addr.port == serverPort);
+
+						if (!hasLoopback)
+						{
+							// Prepend loopback address to give it priority
+							_serverAddresses = new[] { (loopbackAddress, serverPort) }.Concat(_serverAddresses).ToArray();
+						}
+					}
+				}
+			}
 		}
 
 		if (_serverAddresses is null or { Length: 0 })

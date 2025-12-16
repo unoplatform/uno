@@ -316,12 +316,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlNodeType.StartMember:
 						_depth++;
 						var pos = reader.LinePosition;
-						XamlMemberDefinition? member = default;
+						XamlMemberDefinition? member;
 
 						// When missing commas in Binding expressions, the parser may create members with spaces in their name.
 						if (reader.Member.Name.Split([' '], StringSplitOptions.RemoveEmptyEntries) is { Length: > 1 } tokens)
 						{
-							// We create an empty member for each part except the last one.
+							// We create a positional members for each part except the last one.
 							foreach (var token in tokens.SkipLast(1))
 							{
 								var incompleteMember = new XamlMemberDefinition(new XamlMember(XamlConstants.PositionalParameters, reader.Member.DeclaringType, reader.Member.IsAttachable), reader.LineNumber, pos, xamlObject);
@@ -339,6 +339,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							member = new XamlMemberDefinition(reader.Member, reader.LineNumber, pos, xamlObject);
 						}
+
 						xamlObject.Members.Add(member); // In order to keep alive parsed content if an exception occurs, we make sure to add the member before continuing parsing.
 						VisitMember(reader, ref member, ref ctx, ct);
 						break;

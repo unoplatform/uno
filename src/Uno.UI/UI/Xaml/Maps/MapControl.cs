@@ -3,6 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using Uno;
 using Uno.Extensions;
@@ -236,8 +237,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			"LandmarksVisible", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
-		public static DependencyProperty LocationProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+		public static DependencyProperty LocationProperty
+		{
+			[DynamicDependency(nameof(GetLocation))]
+			[DynamicDependency(nameof(SetLocation))]
+			get;
+		} = Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"Location", typeof(Geopoint),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(Geopoint)));
@@ -251,8 +256,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			"MapServiceToken", typeof(string),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(string)));
-		public static DependencyProperty NormalizedAnchorPointProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+		public static DependencyProperty NormalizedAnchorPointProperty
+		{
+			[DynamicDependency(nameof(GetNormalizedAnchorPoint))]
+			[DynamicDependency(nameof(SetNormalizedAnchorPoint))]
+			get;
+		} = Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"NormalizedAnchorPoint", typeof(global::Windows.Foundation.Point),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));

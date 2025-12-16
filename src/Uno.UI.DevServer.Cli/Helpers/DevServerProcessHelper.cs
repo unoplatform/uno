@@ -11,9 +11,31 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 
 internal static class DevServerProcessHelper
 {
+	/// <summary>
+	/// Environment variables related to DOTNET_ROOT that should be propagated to child processes.
+	/// </summary>
+	private static readonly string[] DotnetRootEnvironmentVariables =
+	[
+		"DOTNET_ROOT",
+		"DOTNET_ROOT(x86)",
+		"DOTNET_ROOT_X64",
+		"DOTNET_ROOT_X86",
+		"DOTNET_ROOT_ARM64",
+		"DOTNET_ROOT_ARM"
+	];
+
+	/// <summary>
+	/// Propagation list in order to get licensing working properly on Linux.
+	/// </summary>
+	private static readonly string[] XdgEnvironmentVariables =
+	[
+		"XDG_DATA_HOME",
+	];
+
 	public static ProcessStartInfo CreateDotnetProcessStartInfo(
 		string hostPath,
 		IEnumerable<string> arguments,
+		string workingDirectory,
 		bool redirectOutput,
 		bool redirectInput = false)
 	{
@@ -27,7 +49,7 @@ internal static class DevServerProcessHelper
 			RedirectStandardOutput = redirectOutput,
 			RedirectStandardError = redirectOutput,
 			RedirectStandardInput = redirectInput,
-			WorkingDirectory = Directory.GetCurrentDirectory(),
+			WorkingDirectory = workingDirectory,
 		};
 
 		var hostArgPath = hostPath;
@@ -45,7 +67,34 @@ internal static class DevServerProcessHelper
 			psi.ArgumentList.Add(a);
 		}
 
+		PropagateDotnetRootVariables(psi);
+		PropagateXdgVariables(psi);
+
 		return psi;
+	}
+
+	private static void PropagateDotnetRootVariables(ProcessStartInfo startInfo)
+	{
+		foreach (var variableName in DotnetRootEnvironmentVariables)
+		{
+			var value = Environment.GetEnvironmentVariable(variableName);
+			if (!string.IsNullOrWhiteSpace(value))
+			{
+				startInfo.Environment[variableName] = value;
+			}
+		}
+	}
+
+	private static void PropagateXdgVariables(ProcessStartInfo startInfo)
+	{
+		foreach (var variableName in XdgEnvironmentVariables)
+		{
+			var value = Environment.GetEnvironmentVariable(variableName);
+			if (!string.IsNullOrWhiteSpace(value))
+			{
+				startInfo.Environment[variableName] = value;
+			}
+		}
 	}
 
 	public static async Task<(int? ExitCode, string StdOut, string StdErr)> RunGuiProcessAsync(

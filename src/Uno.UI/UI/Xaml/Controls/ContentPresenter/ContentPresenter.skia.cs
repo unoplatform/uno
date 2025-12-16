@@ -20,6 +20,7 @@ partial class ContentPresenter
 
 	private bool _nativeElementAttached;
 	private IDisposable _frameRenderedDisposable;
+	private Rect? _lastArrangeRect;
 
 	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
 
@@ -96,6 +97,7 @@ partial class ContentPresenter
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
 #endif
 		_nativeHosts.Remove(this);
+		_lastArrangeRect = null;
 		if (_nativeElementAttached)
 		{
 			_frameRenderedDisposable.Dispose();
@@ -154,19 +156,35 @@ partial class ContentPresenter
 		for (var index = 0; index < _nativeHosts.Count; index++)
 		{
 			var host = rentedArray[index].Item2;
+			var order = rentedArray[index].Item1;
 
-			if (index == -1 && host._nativeElementAttached)
+			if (host._nativeElementHostingExtension.Value.SupportsZIndex())
 			{
-				// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
-				Debug.Assert(host.IsNativeHost);
-				host._nativeElementAttached = false;
-				host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+				host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
 			}
-			else if (host._nativeElementAttached)
+			else
 			{
-				host.DetachNativeElement(host.Content);
-				host.AttachNativeElement();
-				host.ArrangeNativeElement();
+				if (host._nativeElementAttached)
+				{
+					if (order == -1)
+					{
+						// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
+						Debug.Assert(host.IsNativeHost);
+						host._nativeElementAttached = false;
+						host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+					}
+					else
+					{
+						host.DetachNativeElement(host.Content);
+						host.AttachNativeElement();
+						host.ArrangeNativeElement();
+					}
+				}
+				else if (order != -1)
+				{
+					host.AttachNativeElement();
+					host.ArrangeNativeElement();
+				}
 			}
 		}
 	}
@@ -174,7 +192,11 @@ partial class ContentPresenter
 	private void ArrangeNativeElement()
 	{
 		var arrangeRect = this.GetAbsoluteBoundsRect();
-		_nativeElementHostingExtension.Value!.ArrangeNativeElement(Content, arrangeRect);
+		if (_lastArrangeRect != arrangeRect)
+		{
+			_lastArrangeRect = arrangeRect;
+			_nativeElementHostingExtension.Value!.ArrangeNativeElement(Content, arrangeRect);
+		}
 	}
 
 	internal object CreateSampleComponent(string text)

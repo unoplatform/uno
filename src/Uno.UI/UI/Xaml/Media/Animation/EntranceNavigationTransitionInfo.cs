@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Xaml.Media.Animation
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 	{
@@ -16,8 +18,12 @@
 			element.SetValue(IsTargetElementProperty, value);
 		}
 
-		public static DependencyProperty IsTargetElementProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty IsTargetElementProperty
+		{
+			[DynamicDependency(nameof(GetIsTargetElement))]
+			[DynamicDependency(nameof(SetIsTargetElement))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 			"IsTargetElement", typeof(bool),
 			typeof(EntranceNavigationTransitionInfo),
 			new FrameworkPropertyMetadata(default(bool))

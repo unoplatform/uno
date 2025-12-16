@@ -20,7 +20,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
 
-  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['SetScope.SkiaScreenshots'], 'true')))
 
   variables:
     SamplesAppArtifactName: skia-generic-samples-app-WinUI

@@ -39,8 +39,10 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `uno-devserver list`: List running Dev Server instances
 - `uno-devserver cleanup`: Terminate stale Dev Server processes
 - `uno-devserver login`: Open the Uno Platform settings application
-- `--mcp`: Run an MCP proxy mode for integration with MCP-based tooling
+- `--mcp-app`: Run an MCP proxy mode for integration with MCP-based tooling
 - `--port | -p <int>`: Optional port value for MCP proxy mode
+- `--mcp-wait-tools-list`: Wait for the upstream Uno App tools to become available before responding to clients. Use this when working with MCP agents that do not react to `tool_list_changed` (for example, Codex or Claude Code).
+- `--force-roots-fallback`: Skip the MCP `roots` handshake and expose the `uno_app_set_roots` tool so agents that cannot send workspace roots can still initialize (required for Google Antigravity).
 
 ## Hot Reload
 
@@ -66,7 +68,7 @@ The Dev Server enables Hot Reload for a faster inner loop:
 - The TCP port number used by the app to connect back to the IDE is located in the <UnoRemoteControlPort> property of the [ProjectName].csproj.user file. If the port number does not match with the one found in the Uno Platform - Hot Reload output window, restart your IDE.
 - If the Dev Server does not start, ensure NuGet restore has completed successfully and Uno Platform packages are referenced by your project(s).
 
-### [**Visual Studio 2022**](#tab/vswints)
+### [**Visual Studio**](#tab/vswints)
 
 - The Output window in Visual Studio includes an output category named `Uno Platform`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
 

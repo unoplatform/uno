@@ -27,6 +27,7 @@ jobs:
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
+
   steps:
   - checkout: self
     clean: true
@@ -51,6 +52,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      UNO_DISABLE_ANALYZERS_IN_SAMPLES: "true"
 
   - task: CopyFiles@2
     inputs:
@@ -61,12 +63,20 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
+  - pwsh: |
+      $artifactName = "uitests-ios-skia-build-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      Write-Host "Publishing iOS Samples artifact: $artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
+      Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
+    name: set_ios_artifact
+    displayName: 'Set iOS Samples Artifact Name'
+
   - task: PublishPipelineArtifact@1
     displayName: 'Publish iOS Binaries'
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)/bin
-      ArtifactName: uitests-ios-skia-build
+      ArtifactName: $(SamplesAppArtifactName)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3

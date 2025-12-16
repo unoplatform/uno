@@ -697,6 +697,7 @@ partial class DependencyObjectPropertyAccess // src\dxaml\xcp\dxaml\lib\Dependen
 	public static PropertyAccess CreateInstance(
 		IPropertyAccessHost pOwner,
 		object pInspSource,
+		[DynamicallyAccessedMembers(MetadataAPI.TryGetDependencyPropertyByName_Type_Requirements)]
 		Type pSourceType,
 		bool fListenToChanges)
 	{
@@ -932,6 +933,7 @@ partial class DependencyObjectPropertyAccess // src\dxaml\xcp\dxaml\lib\Dependen
 
 	private static DependencyProperty ResolvePropertyName(
 	DependencyObject pSource,
+	[DynamicallyAccessedMembers(MetadataAPI.TryGetDependencyPropertyByName_Type_Requirements)]
 	Type pSourceType,
 	string szPropertyName)
 	{
@@ -1625,6 +1627,7 @@ internal class ReflectionPropertyAccess : PropertyAccess
 	public static PropertyAccess CreateInstance(
 		IPropertyAccessHost pOwner,
 		object pSource,
+		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
 		Type pSourceType,
 		bool fListenToChanges)
 	{

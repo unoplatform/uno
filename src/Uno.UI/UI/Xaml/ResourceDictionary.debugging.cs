@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Uno.UI;
 using Uno.Extensions;
@@ -58,6 +59,8 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for ResourceSource.  This enables animation, styling, binding, etc...
+		[DynamicDependency(nameof(GetResourceSource))]
+		[DynamicDependency(nameof(SetResourceSource))]
 		internal static readonly DependencyProperty ResourceSourceProperty =
 			DependencyProperty.RegisterAttached("ResourceSource", typeof(DebugResourceSource), typeof(ResourceDictionary), new FrameworkPropertyMetadata(null));
 

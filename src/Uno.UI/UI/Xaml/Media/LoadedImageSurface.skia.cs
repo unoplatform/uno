@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Media
 							uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ||
 							uri.IsFile)
 						{
-							stream = await ImageSourceHelpers.OpenStreamFromUriAsync(uri, CancellationToken.None);
+							stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
 						}
 						else if (uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 						{

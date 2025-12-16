@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia;
 
-unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSource
+internal partial class FrameBufferPointerInputSource : IUnoCorePointerInputSource
 {
 #pragma warning disable CS0067 // Some event are not raised on FrameBuffer ... yet!
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCaptureLost;
@@ -24,21 +25,16 @@ unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInp
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
-	private readonly DisplayInformation _displayInformation;
 	private Func<VirtualKeyModifiers>? _keyboardInputSource;
 	private IXamlRootHost? _host;
 
 	private FrameBufferPointerInputSource()
 	{
-		_displayInformation = DisplayInformation.GetForCurrentViewSafe();
 	}
 
 	internal static FrameBufferPointerInputSource Instance { get; } = new FrameBufferPointerInputSource();
 
-	internal void SetHost(IXamlRootHost host)
-	{
-		_host = host;
-	}
+	internal void SetHost(IXamlRootHost host) => _host = host;
 
 	public void Configure(Func<VirtualKeyModifiers> keyboardInputSource)
 	{
@@ -83,6 +79,35 @@ unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInp
 
 	private VirtualKeyModifiers GetCurrentModifiersState()
 		=> _keyboardInputSource?.Invoke() ?? VirtualKeyModifiers.None;
+
+	private (double x, double y) GetOrientationAdjustedAbsolutionPosition(IntPtr rawEvent, Func<IntPtr, int, double> getX, Func<IntPtr, int, double> getY)
+	{
+		double x, y;
+		switch (FrameBufferWindowWrapper.Instance.Orientation)
+		{
+			case DisplayOrientations.None:
+			case DisplayOrientations.Landscape:
+				x = getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				y = getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				break;
+			case DisplayOrientations.Portrait:
+				y = FrameBufferWindowWrapper.Instance.Bounds.Height - getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				x = getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				break;
+			case DisplayOrientations.LandscapeFlipped:
+				x = FrameBufferWindowWrapper.Instance.Bounds.Width - getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				y = FrameBufferWindowWrapper.Instance.Bounds.Height - getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				break;
+			case DisplayOrientations.PortraitFlipped:
+				y = getX(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Height);
+				x = FrameBufferWindowWrapper.Instance.Bounds.Width - getY(rawEvent, (int)FrameBufferWindowWrapper.Instance.Bounds.Width);
+				break;
+			default:
+				throw new ArgumentOutOfRangeException();
+		}
+
+		return (x, y);
+	}
 
 	private void LogNotSupported([CallerMemberName] string member = "")
 	{
