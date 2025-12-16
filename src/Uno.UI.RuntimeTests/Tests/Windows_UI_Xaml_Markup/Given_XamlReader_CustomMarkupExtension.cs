@@ -56,9 +56,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.IsNotNull(textBlock);
 			Assert.AreEqual(42, textBlock.Tag);
 		}
+
+		[TestMethod]
+		public void When_CustomMarkupExtension_InvalidTypeConversion_ThrowsException()
+		{
+			// Test that invalid type conversions throw clear error messages
+			var xaml = """
+				<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+					<TextBlock Tag="{local:TestSimpleMarkup Value=NotANumber}" />
+				</Grid>
+				""";
+
+			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() =>
+			{
+				var element = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml);
+			});
+		}
+
+		[TestMethod]
+		public void When_CustomMarkupExtension_UnknownProperty_ThrowsWhenConfigured()
+		{
+			// Save current configuration
+			var originalConfig = Uno.UI.FeatureConfiguration.XamlReader.FailOnUnknownProperties;
+			
+			try
+			{
+				// Enable FailOnUnknownProperties
+				Uno.UI.FeatureConfiguration.XamlReader.FailOnUnknownProperties = true;
+
+				var xaml = """
+					<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						  xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+						<TextBlock Tag="{local:TestSimpleMarkup Value=42, NonExistentProperty=99}" />
+					</Grid>
+					""";
+
+				Assert.ThrowsException<Uno.Xaml.XamlParseException>(() =>
+				{
+					var element = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml);
+				});
+			}
+			finally
+			{
+				// Restore original configuration
+				Uno.UI.FeatureConfiguration.XamlReader.FailOnUnknownProperties = originalConfig;
+			}
+		}
+
+		[TestMethod]
+		public void When_CustomMarkupExtension_NestedMarkupExtension()
+		{
+			// Test nested markup extensions
+			var xaml = """
+				<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+					<TextBlock Tag="{local:TestNested Inner={local:TestSimpleMarkup Value=99}}" />
+				</Grid>
+				""";
+
+			var element = Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml) as Grid;
+			
+			Assert.IsNotNull(element);
+			var textBlock = element.Children[0] as TextBlock;
+			Assert.IsNotNull(textBlock);
+			// The nested markup extension should have been evaluated
+			Assert.AreEqual(99, textBlock.Tag);
+		}
 	}
 
 	// Test markup extensions
+	// Note: WinUI/Uno automatically resolves 'TestResponsive' to 'TestResponsiveExtension'
+	// by appending 'Extension' suffix when used in XAML markup
 	public class TestResponsiveExtension : MarkupExtension
 	{
 		public int Narrow { get; set; }
@@ -78,6 +147,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		protected override object ProvideValue(IXamlServiceProvider serviceProvider)
 		{
 			return Value;
+		}
+	}
+
+	// Markup extension for testing nested scenarios
+	public class TestNestedExtension : MarkupExtension
+	{
+		public object Inner { get; set; }
+
+		protected override object ProvideValue(IXamlServiceProvider serviceProvider)
+		{
+			// Return the inner value
+			return Inner;
 		}
 	}
 }

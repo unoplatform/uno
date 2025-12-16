@@ -265,9 +265,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						// If it's already a XamlParseException, add it to the list
 						AddParseException(ex);
 					}
-					catch (Exception ex) when (!FeatureConfiguration.XamlReader.FailOnUnknownProperties)
+					catch (InvalidOperationException ex) when (!FeatureConfiguration.XamlReader.FailOnUnknownProperties && 
+						ex.Message.Contains("does not exist on markup extension"))
 					{
-						// If FailOnUnknownProperties is false, silently continue
+						// If FailOnUnknownProperties is false, silently skip unknown properties
 						// This allows markup extensions with optional properties to work
 					}
 				}
@@ -956,6 +957,20 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
+		/// <summary>
+		/// Processes a member (property) of a markup extension during XAML parsing.
+		/// </summary>
+		/// <remarks>
+		/// This method handles property initialization for markup extension instances during XamlReader.Load.
+		/// Unlike ProcessNamedMember, it bypasses the TypeResolver.IsType check that fails for custom types
+		/// from external assemblies, enabling proper resolution of markup extension properties.
+		/// </remarks>
+		/// <param name="control">The XAML object definition for the markup extension</param>
+		/// <param name="instance">The markup extension instance being configured</param>
+		/// <param name="member">The member (property) definition to process</param>
+		/// <param name="rootInstance">The root object instance for the XAML tree</param>
+		/// <exception cref="XamlParseException">Thrown when property conversion or assignment fails</exception>
+		/// <exception cref="InvalidOperationException">Thrown when a required property doesn't exist and FailOnUnknownProperties is true</exception>
 		private void ProcessMarkupExtensionMember(
 			XamlObjectDefinition control,
 			object instance,
@@ -965,6 +980,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			// Skip special members that don't correspond to actual properties
 			if (member.Member.Name == "_PositionalParameters" || 
 				member.Member.Name == "_UnknownContent" ||
+				member.Member.Name == "_Initialization" ||
 				member.Member.Name == "base")
 			{
 				return;
