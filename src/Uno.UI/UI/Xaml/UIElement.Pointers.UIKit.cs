@@ -74,6 +74,33 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 			}
+
+			public static void ReleaseAll(UIElement element)
+			{
+				var removed = false;
+				foreach (var pointer in _instances.Values)
+				{
+					removed |= pointer._leases.Remove(element);
+				}
+
+				if (!removed)
+				{
+					return; // Nothing else to do here
+				}
+
+				foreach (var pointer in _instances.Values.ToArray())
+				{
+					if (pointer._leases.Count is 0)
+					{
+						_instances.Remove(pointer._nativeId);
+					}
+				}
+
+				if (_instances.Count is 0)
+				{
+					_nextAvailablePointerId = 0;
+				}
+			}
 		}
 
 		[ThreadStatic]
@@ -91,6 +118,9 @@ namespace Microsoft.UI.Xaml
 #endif
 			ArePointersEnabled = true;
 		}
+
+		partial void ClearPointerStateNative()
+			=> TransientNativePointer.ReleaseAll(this);
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
