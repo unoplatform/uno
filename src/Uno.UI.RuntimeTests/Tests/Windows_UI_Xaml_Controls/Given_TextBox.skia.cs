@@ -203,6 +203,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Home_Empty_TextBox()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.RaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
 		public async Task When_Selection_With_Keyboard_NoMod_And_Shift()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

@@ -1282,6 +1282,10 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
 	{
+		if (_lines.Count == 0)
+		{
+			return (0, 0, true, true, 0);
+		}
 		foreach (var line in _lines)
 		{
 			if (line.startInText <= index && (line.endInText > index || (line.lineIndex == _lines.Count - 1 && line.endInText == index)))
