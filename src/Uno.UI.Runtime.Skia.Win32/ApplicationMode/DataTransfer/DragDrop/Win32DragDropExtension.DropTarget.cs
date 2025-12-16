@@ -47,7 +47,10 @@ internal partial class Win32DragDropExtension
 		var position = new System.Drawing.Point(pt.x, pt.y);
 
 		var success = PInvoke.ScreenToClient(_hwnd, ref position);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
+		if (!success)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		}
 		var scaledPosition = GetScaledPosition(position.X, position.Y);
 
 		var src = new DragEventSource(scaledPosition, grfKeyState);
@@ -76,7 +79,9 @@ internal partial class Win32DragDropExtension
 				}
 				if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
 				{
-					typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
+					typeof(Win32DragDropExtension).LogWarn()?.Warn(
+						$"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName((CLIPBOARD_FORMAT)formatetc.cfFormat)}, " +
+						$"but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)} and is not yet supported.");
 					return false;
 				}
 
@@ -117,7 +122,10 @@ internal partial class Win32DragDropExtension
 	{
 		var position = new System.Drawing.Point(pt.x, pt.y);
 		var success = PInvoke.ScreenToClient(_hwnd, ref position);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
+		if (!success)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		}
 		var scaledPosition = GetScaledPosition(position.X, position.Y);
 		var src = new DragEventSource(scaledPosition, grfKeyState);
 
@@ -141,7 +149,10 @@ internal partial class Win32DragDropExtension
 	{
 		var position = new System.Drawing.Point(pt.x, pt.y);
 		var success = PInvoke.ScreenToClient(_hwnd, ref position);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
+		if (!success)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		}
 		var scaledPosition = GetScaledPosition(position.X, position.Y);
 		var src = new DragEventSource(scaledPosition, grfKeyState);
 
