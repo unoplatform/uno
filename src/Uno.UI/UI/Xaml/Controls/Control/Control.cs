@@ -40,6 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void InitializeControl()
 		{
 			SubscribeToOverridenRoutedEvents();
+			SubscribeToPostKeyDown();
 			OnIsFocusableChanged();
 
 			DefaultStyleKey = typeof(Control);
@@ -329,6 +330,15 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 #if !__NETSTD_REFERENCE__
+		[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+		private void SubscribeToPostKeyDown()
+		{
+			if (GetIsEventOverrideImplemented(GetType(), nameof(OnPostKeyDown), _keyArgsType))
+			{
+				PostKeyDown += OnPostKeyDownHandler;
+			}
+		}
+
 		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToOverridenRoutedEvents()
 		{
@@ -1031,6 +1041,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnPreviewKeyUp(KeyRoutedEventArgs e) { }
 #endif
 		protected virtual void OnKeyDown(KeyRoutedEventArgs e) { }
+		private protected virtual void OnPostKeyDown(KeyRoutedEventArgs e) { }
 		protected virtual void OnKeyUp(KeyRoutedEventArgs e) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
 		protected virtual void OnLostFocus(RoutedEventArgs e) { }
@@ -1116,6 +1127,9 @@ namespace Microsoft.UI.Xaml.Controls
 					senderAsControl.OnKeyDown(args);
 				}
 			};
+
+		private static readonly KeyEventHandler OnPostKeyDownHandler =
+			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPostKeyDown(args);
 
 		private static readonly KeyEventHandler OnKeyUpHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyUp(args);
