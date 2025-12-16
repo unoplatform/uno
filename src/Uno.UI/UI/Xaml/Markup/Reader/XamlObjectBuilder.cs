@@ -256,7 +256,21 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				foreach (var member in control.Members)
 				{
-					ProcessNamedMember(control, instance, member, rootInstance ?? instance, settings);
+					try
+					{
+						ProcessMarkupExtensionMember(control, instance, member, rootInstance ?? instance);
+					}
+					catch (Exception ex)
+					{
+						// Log the exception but continue processing other members
+						// This allows markup extensions to work even if some properties can't be set
+						if (FeatureConfiguration.XamlReader.FailOnUnknownProperties)
+						{
+							AddParseException(new XamlParseException(
+								$"Failed to set property '{member.Member.Name}' on markup extension '{type.Name}': {ex.Message}",
+								ex, member.LineNumber, member.LinePosition));
+						}
+					}
 				}
 
 				var provider = new XamlServiceProviderContext
@@ -940,6 +954,75 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					settings: settings,
 					memberContext: new(instance, propertyInfo))
 				]);
+			}
+		}
+
+		private void ProcessMarkupExtensionMember(
+			XamlObjectDefinition control,
+			object instance,
+			XamlMemberDefinition member,
+			object rootInstance)
+		{
+			// Skip special members that don't correspond to actual properties
+			if (member.Member.Name == "_PositionalParameters" || 
+				member.Member.Name == "_UnknownContent" ||
+				member.Member.Name == "base")
+			{
+				return;
+			}
+
+			// Try to find the property on the markup extension
+			var propertyInfo = TypeResolver.GetPropertyByName(control.Type, member.Member.Name);
+			
+			if (propertyInfo == null)
+			{
+				// Property not found - this might be okay for some markup extensions
+				// that use dynamic properties or have optional parameters
+				if (FeatureConfiguration.XamlReader.FailOnUnknownProperties)
+				{
+					throw new InvalidOperationException(
+						$"The property '{member.Member.Name}' does not exist on markup extension '{control.Type.Name}'");
+				}
+				return;
+			}
+
+			// Get the value from the member
+			object? value;
+			if (member.Objects.Any())
+			{
+				// The member value is another object (e.g., nested markup extension)
+				value = LoadObject(member.Objects.First(), rootInstance: rootInstance);
+			}
+			else if (member.Value != null)
+			{
+				// The member has a string value that needs to be converted
+				try
+				{
+					value = BuildLiteralValue(propertyInfo.PropertyType, member.Value.ToString());
+				}
+				catch (Exception ex)
+				{
+					throw new XamlParseException(
+						$"Failed to convert value '{member.Value}' to type '{propertyInfo.PropertyType.Name}' for property '{member.Member.Name}' on markup extension '{control.Type.Name}'",
+						ex, member.LineNumber, member.LinePosition);
+				}
+			}
+			else
+			{
+				// No value specified
+				value = null;
+			}
+
+			// Set the property value
+			try
+			{
+				GetPropertySetter(propertyInfo).Invoke(instance, new[] { value });
+			}
+			catch (Exception ex)
+			{
+				throw new XamlParseException(
+					$"Failed to set property '{member.Member.Name}' on markup extension '{control.Type.Name}' with value '{value}' of type '{value?.GetType().Name ?? "null"}'",
+					ex, member.LineNumber, member.LinePosition);
 			}
 		}
 
