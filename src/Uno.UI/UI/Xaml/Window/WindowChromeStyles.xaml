@@ -192,15 +192,21 @@
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             ContentTransitions="{TemplateBinding ContentTransitions}" />
+                        <!--  Title bar with draggable area on the left and caption buttons on the right (Windows style)  -->
                         <Grid
                             x:Name="TitleBarMinMaxCloseContainer"
-                            HorizontalAlignment="Right"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
+                            ColumnDefinitions="*,Auto"
                             Visibility="{Binding CaptionVisibility, RelativeSource={RelativeSource TemplatedParent}}">
+                            <!--  Draggable area to the left of the caption buttons  -->
+                            <Border
+                                x:Name="DraggableArea"
+                                Grid.Column="0"
+                                Height="32" />
                             <Grid
                                 x:Name="MinMaxCloseContainer"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
+                                Grid.Column="1"
                                 ColumnDefinitions="Auto,Auto,Auto">
                                 <Button
                                     x:Name="MinimizeButton"
@@ -341,91 +347,101 @@
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             ContentTransitions="{TemplateBinding ContentTransitions}" />
-                        <StackPanel
+                        <!--  Title bar with caption buttons on the left and draggable area on the right (macOS style)  -->
+                        <Grid
                             x:Name="TitleBarMinMaxCloseContainer"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
-                            Margin="8,6,0,0"
-                            Orientation="Horizontal"
-                            Spacing="8"
+                            ColumnDefinitions="Auto,*"
                             Visibility="{Binding CaptionVisibility, RelativeSource={RelativeSource TemplatedParent}}">
                             <!--  macOS order: Close (red), Minimize (yellow), Maximize/Zoom (green)  -->
-                            <Button
-                                x:Name="CloseButton"
-                                AutomationProperties.AutomationId="_CloseButton"
-                                AutomationProperties.Name="Close"
-                                Background="{ThemeResource MacOSCloseButtonBackground}"
-                                Style="{StaticResource MacOSCaptionButton}">
-                                <Button.Resources>
-                                    <ResourceDictionary>
-                                        <ResourceDictionary.ThemeDictionaries>
-                                            <ResourceDictionary x:Key="Light">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="Dark">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="Default">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="HighContrast">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                        </ResourceDictionary.ThemeDictionaries>
-                                    </ResourceDictionary>
-                                </Button.Resources>
-                            </Button>
-                            <Button
-                                x:Name="MinimizeButton"
-                                AutomationProperties.AutomationId="_MinimizeButton"
-                                AutomationProperties.Name="Minimize"
-                                Background="{ThemeResource MacOSMinimizeButtonBackground}"
-                                Style="{StaticResource MacOSCaptionButton}">
-                                <Button.Resources>
-                                    <ResourceDictionary>
-                                        <ResourceDictionary.ThemeDictionaries>
-                                            <ResourceDictionary x:Key="Light">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="Dark">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="Default">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="HighContrast">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                        </ResourceDictionary.ThemeDictionaries>
-                                    </ResourceDictionary>
-                                </Button.Resources>
-                            </Button>
-                            <Button
-                                x:Name="MaximizeButton"
-                                AutomationProperties.AutomationId="_MaximizeButton"
-                                AutomationProperties.Name="Maximize"
-                                Background="{ThemeResource MacOSMaximizeButtonBackground}"
-                                Style="{StaticResource MacOSCaptionButton}">
-                                <Button.Resources>
-                                    <ResourceDictionary>
-                                        <ResourceDictionary.ThemeDictionaries>
-                                            <ResourceDictionary x:Key="Light">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="Dark">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="Default">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                            <ResourceDictionary x:Key="HighContrast">
-                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
-                                            </ResourceDictionary>
-                                        </ResourceDictionary.ThemeDictionaries>
-                                    </ResourceDictionary>
-                                </Button.Resources>
-                            </Button>
-                        </StackPanel>
+                            <StackPanel
+                                Grid.Column="0"
+                                Margin="8,6,0,0"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <Button
+                                    x:Name="CloseButton"
+                                    AutomationProperties.AutomationId="_CloseButton"
+                                    AutomationProperties.Name="Close"
+                                    Background="{ThemeResource MacOSCloseButtonBackground}"
+                                    Style="{StaticResource MacOSCaptionButton}">
+                                    <Button.Resources>
+                                        <ResourceDictionary>
+                                            <ResourceDictionary.ThemeDictionaries>
+                                                <ResourceDictionary x:Key="Light">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="Dark">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="Default">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="HighContrast">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                            </ResourceDictionary.ThemeDictionaries>
+                                        </ResourceDictionary>
+                                    </Button.Resources>
+                                </Button>
+                                <Button
+                                    x:Name="MinimizeButton"
+                                    AutomationProperties.AutomationId="_MinimizeButton"
+                                    AutomationProperties.Name="Minimize"
+                                    Background="{ThemeResource MacOSMinimizeButtonBackground}"
+                                    Style="{StaticResource MacOSCaptionButton}">
+                                    <Button.Resources>
+                                        <ResourceDictionary>
+                                            <ResourceDictionary.ThemeDictionaries>
+                                                <ResourceDictionary x:Key="Light">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="Dark">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="Default">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="HighContrast">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                            </ResourceDictionary.ThemeDictionaries>
+                                        </ResourceDictionary>
+                                    </Button.Resources>
+                                </Button>
+                                <Button
+                                    x:Name="MaximizeButton"
+                                    AutomationProperties.AutomationId="_MaximizeButton"
+                                    AutomationProperties.Name="Maximize"
+                                    Background="{ThemeResource MacOSMaximizeButtonBackground}"
+                                    Style="{StaticResource MacOSCaptionButton}">
+                                    <Button.Resources>
+                                        <ResourceDictionary>
+                                            <ResourceDictionary.ThemeDictionaries>
+                                                <ResourceDictionary x:Key="Light">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="Dark">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="Default">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="HighContrast">
+                                                    <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
+                                                </ResourceDictionary>
+                                            </ResourceDictionary.ThemeDictionaries>
+                                        </ResourceDictionary>
+                                    </Button.Resources>
+                                </Button>
+                            </StackPanel>
+                            <!--  Draggable area to the right of the caption buttons  -->
+                            <Border
+                                x:Name="DraggableArea"
+                                Grid.Column="1"
+                                Height="24" />
+                        </Grid>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">

@@ -32,6 +32,7 @@ internal sealed partial class WindowChrome : ContentControl
 	private readonly Window _window;
 
 	private FrameworkElement? m_tpTitleBarMinMaxCloseContainerPart;
+	private FrameworkElement? m_tpDraggableAreaPart;
 	private Button? m_tpCloseButtonPart;
 	private Button? m_tpMinimizeButtonPart;
 	private Button? m_tpMaximizeButtonPart;
@@ -154,6 +155,7 @@ internal sealed partial class WindowChrome : ContentControl
 		// attach event handlers
 
 		m_tpTitleBarMinMaxCloseContainerPart = GetTemplateChild("TitleBarMinMaxCloseContainer") as FrameworkElement;
+		m_tpDraggableAreaPart = GetTemplateChild("DraggableArea") as FrameworkElement;
 
 		if (m_tpTitleBarMinMaxCloseContainerPart is not null)
 		{
@@ -319,37 +321,11 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private RectInt32 GetDefaultCaptionRegionRect()
 	{
-		var titleBarContainer = m_tpTitleBarMinMaxCloseContainerPart;
-		if (titleBarContainer is not null)
+		// Use the DraggableArea element from the template to determine the caption region
+		var draggableArea = m_tpDraggableAreaPart;
+		if (draggableArea is not null)
 		{
-			var scale = _window.AppWindow.NativeAppWindow.RasterizationScale;
-			var transform = titleBarContainer.TransformToVisual(null);
-			var point = transform.TransformPoint(new Windows.Foundation.Point(0, 0));
-			var windowWidth = (int)(_window.Bounds.Width * scale);
-
-			if (OperatingSystem.IsMacOS())
-			{
-				// On macOS, caption buttons are on the left, so the caption area is to the right of the buttons
-				var buttonContainerRight = (int)((point.X + titleBarContainer.ActualWidth) * scale);
-				return new RectInt32
-				{
-					X = buttonContainerRight,
-					Y = 0,
-					Width = windowWidth - buttonContainerRight,
-					Height = (int)(titleBarContainer.ActualHeight * scale)
-				};
-			}
-			else
-			{
-				// On Windows/Linux, caption buttons are on the right, so the caption area is to the left of the buttons
-				return new RectInt32
-				{
-					X = 0,
-					Y = 0,
-					Width = (int)(point.X * scale),
-					Height = (int)(titleBarContainer.ActualHeight * scale)
-				};
-			}
+			return GetScreenRect(draggableArea);
 		}
 
 		return default;
