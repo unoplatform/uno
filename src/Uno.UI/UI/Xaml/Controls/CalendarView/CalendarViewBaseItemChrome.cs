@@ -743,7 +743,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			InvalidateRender();
-
 		}
 
 		// Today state affects text foreground, opacity, borderbrush and FontWeight
