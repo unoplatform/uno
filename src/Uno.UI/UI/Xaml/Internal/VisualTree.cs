@@ -11,12 +11,14 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.UI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft.UI.Xaml.Controls.CollectionChangedOperation;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -920,6 +922,80 @@ namespace Uno.UI.Xaml.Core
 			{
 				typeof(VisualTree).Log().LogDebug("Visual Tree was not found.");
 			}
+		}
+
+		// Helper function for types like Popup, Flyout, and ContentDialog to figure out which VisualTree
+		// it's attached to.  If there is no clear, unambiguous answer, this function returns an error.
+		private static VisualTree GetUniqueVisualTreeNoRef(
+			DependencyObject element,
+			DependencyObject? positionReferenceElement,
+			VisualTree? explicitTree)
+		{
+
+			VisualTree? result = VisualTree.GetForElement(element);
+			if (result is null)
+			{
+#if !HAS_UNO // Concpt of Mentor is not in Uno yet
+				// For a flyout that's on a button via e.g. Button.Flyout, we need to follow the mentor
+				// pointer to the Button and find the tree it belongs to.
+				result = VisualTree.GetForElementNoRef(element.GetMentor());
+#endif
+			}
+
+			if (positionReferenceElement is not null)
+			{
+				VisualTree? referenceTree = VisualTree.GetForElement(positionReferenceElement);
+				if (result is null)
+				{
+					result = referenceTree;
+				}
+
+				else if (result != referenceTree)
+				{
+					throw new InvalidOperationException("XamlRoot is ambiguous due to different VisualTrees.");
+				}
+			}
+
+			if (explicitTree is not null)
+			{
+				if (result is null)
+				{
+					result = explicitTree;
+				}
+				else if (result != explicitTree)
+				{
+					throw new InvalidOperationException("XamlRoot is ambiguous due to different VisualTrees.");
+				}
+			}
+
+			if (result is null)
+			{
+				CoreServices core = CoreServices.Instance; //element.GetContext();
+				if (core.InitializationType == InitializationType.IslandsOnly)
+				{
+					// If we started in an "islands-only way" (e.g., DesktopWindowXamlSource) there in no XAML content
+					// attached to the main window.  In this case, we can't fall back to the main visual tree -- this is
+					// an error.
+					throw new InvalidOperationException("XamlRoot is required but could not be determined.");
+				}
+				// The answer is unclear, so fall back to the MainVisualTree (the XAML content on the CoreWindow)
+				result = core.MainVisualTree;
+			}
+
+			if (result is null)
+			{
+				throw new InvalidOperationException("XamlRoot is required but could not be determined.");
+			}
+
+			return result;
+		}
+
+		internal void AttachElement(DependencyObject element)
+		{
+			var uniqueTree = VisualTree.GetUniqueVisualTreeNoRef(element, null/*positionReferenceElement*/, this /*explicitTree*/);
+
+			MUX_ASSERT(this == uniqueTree);
+			element.SetVisualTree(this);
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
