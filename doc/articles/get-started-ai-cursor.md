@@ -17,7 +17,7 @@ Install [Cursor](https://cursor.com/docs).
 > [!NOTE]
 > The Uno Platform extension is not functional in Cursor at this time.
 
-There is nothing specific to set up for Cursor. You can proceed to the next section to create your first app and using the Uno MCP's.
+There is nothing specific to set up for Cursor. You can proceed to the next section to create your first app and using the Uno MCPs.
 
 ## Next Steps
 
