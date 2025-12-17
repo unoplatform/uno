@@ -22,6 +22,7 @@
 	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
+		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<UpToDateCheckInput Include="ts\**\*" />
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
