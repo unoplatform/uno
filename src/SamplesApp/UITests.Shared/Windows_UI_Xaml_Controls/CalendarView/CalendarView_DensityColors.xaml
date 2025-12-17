@@ -13,7 +13,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<StackPanel Grid.Row="0" Background="#20000000" Margin="5" Padding="10" Spacing="10">
+		<StackPanel Grid.Row="0" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Margin="5" Padding="10" Spacing="10">
 			<TextBlock Text="CalendarView Density Colors Demo" Style="{ThemeResource SubtitleTextBlockStyle}" />
 			<TextBlock TextWrapping="Wrap" Text="This sample demonstrates the SetDensityColors method. Each day can show up to 10 density bars to indicate activity or event density for that day." />
 			
