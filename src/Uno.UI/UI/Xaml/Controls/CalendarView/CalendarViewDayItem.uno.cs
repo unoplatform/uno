@@ -42,7 +42,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			public DirectUI.IIterator<T> GetIterator()
 			{
-				return new UnoEnumeratorToIteratorAdapter<T>(_enumerable.GetEnumerator());
+				// Ensure WinRT IIterator semantics: HasCurrent must be valid immediately after GetIterator().
+				// UnoEnumeratorToIteratorAdapter starts before the first element, so we advance once here.
+				var iterator = new UnoEnumeratorToIteratorAdapter<T>(_enumerable.GetEnumerator());
+				iterator.MoveNext();
+				return iterator;
 			}
 
 			public IEnumerator<T> GetEnumerator() => _enumerable.GetEnumerator();
