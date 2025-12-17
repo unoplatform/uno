@@ -42,12 +42,24 @@ namespace Private.Infrastructure
 
 			public static void MoveMouse(Point position)
 			{
-				throw new System.NotImplementedException();
+				EnsureInputInjectorSupported();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+					mouse.MoveTo(position);
+				});
 			}
 
 			public static void MoveMouse(UIElement element)
 			{
-				throw new System.NotImplementedException();
+				EnsureInputInjectorSupported();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+					mouse.MoveTo(center);
+				});
 			}
 
 			public static void Hold(UIElement element)
@@ -93,7 +105,7 @@ namespace Private.Infrastructure
 			}
 			public static void Tap(Point point)
 			{
-#if WINAPPSDK || __SKIA__
+				EnsureInputInjectorSupported();
 				Finger finger = null;
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
@@ -105,9 +117,6 @@ namespace Private.Infrastructure
 				{
 					finger.Release();
 				});
-#else
-				throw new System.NotImplementedException();
-#endif
 			}
 
 			public static void ScrollMouseWheel(UIElement cv, int i)
