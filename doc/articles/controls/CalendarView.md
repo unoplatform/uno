@@ -98,7 +98,7 @@ public sealed partial class MyPage : Page
 
 - The visual rendering of density bars depends on the CalendarView template and styling
 - Density colors should be set each time the `CalendarViewDayItemChanging` event occurs, as day items are recycled
-- Colors are displayed from bottom to top on each day item
+- Colors represent density indicators for each day item
 - If more than 10 colors are provided, only the first 10 will be used
 - Transparent and semi-transparent colors are supported
 
