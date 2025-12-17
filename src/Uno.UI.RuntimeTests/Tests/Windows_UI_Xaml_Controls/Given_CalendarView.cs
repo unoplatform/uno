@@ -330,5 +330,41 @@ public class Given_CalendarView
 		await TestServices.WindowHelper.WaitForLoaded(calendarView);
 		Assert.AreEqual("January 2024", calendarView.TemplateSettings.HeaderText);
 	}
+
+	[TestMethod]
+	public async Task When_SetDensityColors_DoesNotThrow()
+	{
+		var calendarView = new CalendarView()
+		{
+			MinDate = DateTimeOffset.Now.AddDays(-10),
+			MaxDate = DateTimeOffset.Now.AddDays(10)
+		};
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Find a day item
+		var dayItems = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendarView);
+		Assert.IsTrue(dayItems.Count > 0, "Expected to find at least one CalendarViewDayItem");
+
+		var dayItem = dayItems[0];
+
+		// Test setting density colors - should not throw
+		var colors = new List<Windows.UI.Color>
+		{
+			Windows.UI.Colors.Red,
+			Windows.UI.Colors.Green,
+			Windows.UI.Colors.Blue
+		};
+
+		// This should not throw NotImplementedException
+		dayItem.SetDensityColors(colors);
+
+		// Test setting null - should not throw
+		dayItem.SetDensityColors(null);
+
+		// Test setting empty list - should not throw
+		dayItem.SetDensityColors(new List<Windows.UI.Color>());
+	}
 }
 #endif
