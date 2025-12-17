@@ -6,6 +6,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Markup;
+using Uno.UI.Helpers;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -41,7 +42,7 @@ namespace Microsoft.UI.Xaml
 		/// scenarios (e.g., hot reload, design-time updates). Outside of this mode, the field
 		/// should remain unchanged. See Uno.UI.TemplateManager for details.
 		/// </summary>
-		internal NewFrameworkTemplateBuilder? _viewFactory;
+		internal WeakDelegate<NewFrameworkTemplateBuilder>? _viewFactory;
 
 		/// <summary>
 		/// Sets the view factory. Internal method to avoid unwanted changes from outside the framework.
@@ -49,11 +50,11 @@ namespace Microsoft.UI.Xaml
 		/// <param name="factory">The new factory to set</param>
 		internal void SetViewFactory(NewFrameworkTemplateBuilder? factory)
 		{
-			_viewFactory = factory;
+			_viewFactory = WeakDelegate.Create(factory);
 		}
 
 		/// <summary>
-		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.
+		/// XAML scope captured during template creation, used as context provider for resource resolution when materializing template content.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
 
@@ -88,7 +89,7 @@ namespace Microsoft.UI.Xaml
 		{
 			InitializeBinder();
 
-			_viewFactory = factory;
+			SetViewFactory(factory);
 			_ownerRef = WeakReferencePool.RentWeakReference(this, owner);
 
 			// Compute the hash for this template once, it will be used a lot
@@ -141,7 +142,7 @@ namespace Microsoft.UI.Xaml
 				{
 					var settings = new TemplateMaterializationSettings(templatedParent, null);
 
-					var view = _viewFactory?.Invoke(_ownerRef?.Target, settings);
+					var view = _viewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
 					return view;
 				}
 				else
@@ -149,7 +150,7 @@ namespace Microsoft.UI.Xaml
 					var members = new List<DependencyObject>();
 					var settings = new TemplateMaterializationSettings(templatedParent, members.Add);
 
-					var view = _viewFactory?.Invoke(_ownerRef?.Target, settings);
+					var view = _viewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
 
 					if (view is { })
 					{
@@ -230,16 +231,16 @@ namespace Microsoft.UI.Xaml
 			);
 		}
 
-		internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factory)
+		internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> update)
 		{
 			// Special case to update the factory without creating a new instance.
 			// A special mode is required for it to work and is activated directly in the Uno.UI.TemplateManager.
 
-			var previous = _viewFactory;
-			var newFactory = factory?.Invoke(previous);
+			var previous = _viewFactory?.Delegate;
+			var newFactory = update?.Invoke(previous);
 			if (newFactory != previous)
 			{
-				_viewFactory = newFactory;
+				SetViewFactory(newFactory);
 
 				// Only invoke handlers if they exist for this instance
 				if (_templateUpdatedHandlers.TryGetValue(this, out var handlers))
