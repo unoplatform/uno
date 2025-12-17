@@ -370,7 +370,6 @@ public partial class Popup
 
 	internal void SetAssociatedVisualTree(VisualTree visualTree)
 	{
-		// TODO Uno: Implement this
-		//visualTree.AttachElement(this);
+		visualTree.AttachElement(this);
 	}
 }
