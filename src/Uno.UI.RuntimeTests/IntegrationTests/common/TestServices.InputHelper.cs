@@ -124,8 +124,29 @@ namespace Private.Infrastructure
 				throw new System.NotImplementedException();
 			}
 
-			public static void LeftMouseClick(UIElement element) => Tap(element);
-			public static void LeftMouseClick(Point point) => Tap(point);
+			public static void LeftMouseClick(UIElement element)
+			{
+				EnsureInputInjectorSupported();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+					mouse.Press(center);
+					mouse.Release();
+				});
+			}
+
+			public static void LeftMouseClick(Point point)
+			{
+				EnsureInputInjectorSupported();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+					mouse.Press(point);
+					mouse.Release();
+				});
+			}
 
 			public static void PenBarrelTap(FrameworkElement pElement)
 			{
