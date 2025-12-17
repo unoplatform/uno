@@ -72,10 +72,11 @@ internal partial class PopupRoot : Canvas
 
 	internal void CloseLightDismissablePopups()
 	{
-		// Create a snapshot to allow modification during iteration
-		foreach (var reference in _openPopups.ToArray())
+		var node = _openPopups.First;
+		while (node != null)
 		{
-			if (!reference.IsDisposed && reference.Target is Popup { IsLightDismissEnabled: true } popup)
+			var next = node.Next;
+			if (!node.Value.IsDisposed && node.Value.Target is Popup { IsLightDismissEnabled: true } popup)
 			{
 				if (popup.AssociatedFlyout is { } flyout)
 				{
@@ -86,6 +87,7 @@ internal partial class PopupRoot : Canvas
 					popup.IsOpen = false;
 				}
 			}
+			node = next;
 		}
 	}
 
