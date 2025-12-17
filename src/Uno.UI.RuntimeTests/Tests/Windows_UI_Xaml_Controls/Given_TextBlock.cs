@@ -764,6 +764,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_Text_Wrapped_At_LineBreak()
+		{
+			var tb1 = new TextBlock()
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Line1 Line2\r\nLine3",
+				Width = 40,
+				Foreground = new SolidColorBrush(Colors.Red)
+			};
+			var tb2 = new TextBlock()
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Line1 Line2 Line3",
+				Width = 40,
+				Foreground = new SolidColorBrush(Colors.Red)
+			};
+
+			await UITestHelper.Load(new StackPanel { Children = { tb1, tb2 } });
+			Assert.AreEqual(tb1.ActualHeight, tb2.ActualHeight);
+		}
+
+		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_Measure()
 		{
@@ -991,6 +1016,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 			var screenshot = await UITestHelper.ScreenShot(SUT);
 			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 50, 50), Colors.Red);
+		}
+
+		[TestMethod]
+		public async Task When_Text_Contains_Tabs_Does_Not_Throw()
+		{
+			// This used to throw an exception when tab characters appeared at the end of an inline segment boundary
+			// due to an infinite loop in the tab handling logic.
+			await UITestHelper.Load(new TextBlock
+			{
+				Text = """
+				       public class Program { // http://www.github.com/
+				       	public static void Main(string[] args) {
+				       		Console.WriteLine("Hello, World!");
+				       	}
+				       
+				       	/*
+				       	 * Things to Try:
+				       	 * - Hover over the word 'Hit'
+				       	 * - Hit F1 and Search for 'TestAction'
+				       	 * - Press Ctrl+Enter
+				       	 * - After using Ctrl+Enter, hit F5
+				       	 * - Hit Ctrl+L
+				       	 * - Hit Ctrl+U
+				       	 * - Hit Ctrl+W
+				       	 * - Type the letter 'c'
+				       	 * - Type the word 'boo'
+				       	 * - Type 'foreach' to see Snippet.
+				       	 */
+				       }
+				       """
+			});
 		}
 
 #if HAS_RENDER_TARGET_BITMAP

@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -40,8 +41,12 @@ namespace Microsoft.UI.Xaml
 			obj.SetValue(VisualStateGroupsProperty, value);
 		}
 
-		public static DependencyProperty VisualStateGroupsProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty VisualStateGroupsProperty
+		{
+			[DynamicDependency(nameof(GetVisualStateGroups))]
+			[DynamicDependency(nameof(SetVisualStateGroups))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"VisualStateGroups",
 				typeof(IList<VisualStateGroup>),
 				typeof(VisualStateManager),
@@ -94,13 +99,26 @@ namespace Microsoft.UI.Xaml
 			obj.SetValue(VisualStateManagerProperty, value);
 		}
 
-		internal static DependencyProperty VisualStateManagerProperty { get; } =
-			DependencyProperty.RegisterAttached("VisualStateManager", typeof(VisualStateManager), typeof(VisualStateManager), new FrameworkPropertyMetadata(null));
+		internal static DependencyProperty VisualStateManagerProperty
+		{
+			[DynamicDependency(nameof(GetVisualStateManager))]
+			[DynamicDependency(nameof(SetVisualStateManager))]
+			get;
+		} = DependencyProperty.RegisterAttached(
+				"VisualStateManager",
+				typeof(VisualStateManager),
+				typeof(VisualStateManager),
+				new FrameworkPropertyMetadata(null));
 
 		#endregion
 
 		#region CustomVisualStateManager Attached Property
-		public static DependencyProperty CustomVisualStateManagerProperty { get; } = DependencyProperty.RegisterAttached(
+		public static DependencyProperty CustomVisualStateManagerProperty
+		{
+			[DynamicDependency(nameof(GetCustomVisualStateManager))]
+			[DynamicDependency(nameof(SetCustomVisualStateManager))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"CustomVisualStateManager", typeof(VisualStateManager),
 				typeof(VisualStateManager),
 				new FrameworkPropertyMetadata(default(VisualStateManager)));

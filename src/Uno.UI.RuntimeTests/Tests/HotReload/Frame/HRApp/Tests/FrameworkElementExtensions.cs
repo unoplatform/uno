@@ -54,13 +54,13 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload
 			return (fileName, line, pos);
 		}
 
-		public static UpdateFile CreateUpdateFileMessage(
+		public static UpdateSingleFileRequest CreateUpdateFileMessage(
 			this FrameworkElement element,
 			string originalText,
 			string replacementText)
 		{
 			var fileInfo = element.GetDebugParseContext();
-			return new UpdateFile
+			return new UpdateSingleFileRequest
 			{
 				FilePath = fileInfo.FileName,
 				OldText = originalText,

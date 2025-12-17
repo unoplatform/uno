@@ -1159,10 +1159,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnTappedPartial();
 
-		/// <inheritdoc />
+		partial void OnKeyDownPartial(KeyRoutedEventArgs args);
+
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
+			base.OnKeyDown(args);
+
 			OnKeyDownPartial(args);
+		}
+
+		private protected override void OnPostKeyDown(KeyRoutedEventArgs args)
+		{
+#if __SKIA__
+			if (_isSkiaTextBox)
+			{
+				OnKeyDownSkia(args);
+			}
+			else
+#endif
+			{
+				OnKeyDownNonSkia(args);
+			}
 
 			var modifiers = CoreImports.Input_GetKeyboardModifiers();
 			if (!args.Handled && KeyboardAcceleratorUtility.IsKeyValidForAccelerators(args.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
@@ -1175,17 +1192,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnKeyDownPartial(KeyRoutedEventArgs args);
-
-#if !__SKIA__
-		partial void OnKeyDownPartial(KeyRoutedEventArgs args) => OnKeyDownInternal(args);
-#endif
-
-		private void OnKeyDownInternal(KeyRoutedEventArgs args)
+		private void OnKeyDownNonSkia(KeyRoutedEventArgs args)
 		{
-			base.OnKeyDown(args);
-
-
 			// On skia, sometimes SelectionStart is updated to a new value before KeyDown is fired, so
 			// we need to get selectionStart from another source on Skia.
 #if __SKIA__

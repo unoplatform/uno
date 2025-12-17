@@ -44,7 +44,11 @@ To create Uno Platform applications you will need [**Visual Studio 2022 (17.9+) 
     ![Extension Manager - Uno Platform extension](Assets/tutorial01/uno-extensions.PNG)
 
 > [!NOTE]
-> The Uno Platform extension provides all the Copilot tooling needed to develop your apps.
+> The Uno Platform extension provides all the tooling needed to enable AI agents from Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, Codex, and more.
+>
+> **Uno MCP** provides structured, semantic access to Uno Platform’s complete knowledge base—covering documentation, APIs, and best practices—empowering AI agents and developers with the intelligence they need to build better experiences. Meanwhile, **App MCP** brings intelligent automation to life by enabling AI agents to interact directly with live Uno Platform applications, creating a seamless bridge between design, development, and execution.
+>
+> Uno Platform's MCP tools are available when you [sign in to your Uno Platform account](xref:Uno.GetStarted.Licensing). For more information, see [Using the Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
 ## Additional Setup for Android & iOS
 
@@ -72,4 +76,4 @@ To setup your environment for WSL:
 
 ## Next Steps
 
-You're all set! You can create your [first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.VS2022).
+You're all set to create your [first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.VS2022)!

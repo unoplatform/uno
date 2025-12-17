@@ -5,6 +5,7 @@ using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Logging;
 using Uno.UI.DevServer.Cli.Mcp;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -20,8 +21,9 @@ internal class Program
 			Console.WriteLine("  --help, -h                 Show this help message and exit");
 			Console.WriteLine("  --log-level, -l <level>    Set the log level (Trace, Debug, Information, Warning, Error, Critical, None). Default is Information.");
 			Console.WriteLine("  --file-log, -fl <path>     Enable file logging to the provided file path (supports {Date} token). Required path argument.");
-			Console.WriteLine("  --mcp                      Start in MCP STDIO mode");
+			Console.WriteLine("  --mcp-app                  Start in App MCP STDIO mode");
 			Console.WriteLine("  --mcp-wait-tools-list      Wait for upstream server tools before responding to list_tools (MCP mode only)");
+			Console.WriteLine("  --force-roots-fallback     This mode can be used when the MCP client does not support the roots feature");
 			Console.WriteLine();
 			Console.WriteLine("Commands:");
 			Console.WriteLine("  start                      Start the DevServer for the current folder");

@@ -25,13 +25,12 @@
 	</Target>
 
 	<ItemGroup>
-		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/SamplesApp*.dll"/>
-		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Uno.UI.RuntimeTests*.dll"/>
-		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/System*.dll"/>
-		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Microsoft*.dll"/>
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/SamplesApp*.dll" />
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Uno.UI.RuntimeTests*.dll" />
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/System*.dll" />
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Microsoft*.dll" />
 
-		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" 
-				   Exclude="@(UnoReferenceExclusion)" />
+		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" Exclude="@(UnoReferenceExclusion)" />
 
 		<!-- C:/s/uno.github/uno/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/../../../../SamplesApp/SamplesApp.Skia.Gtk/bin -->
 		
@@ -55,8 +54,10 @@
 		<PackageReference Include="Uno.WinUI.DevServer" Version="4.8.33" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.8.33" />
 		-->
+
+		<ProjectReference Include="..\HRUnoLib\Uno.UI.RuntimeTests.HRUnoLib.csproj" />
 	</ItemGroup>
-	
+
 	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.props" />
 	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/uno.winui.runtime-replace.targets" />

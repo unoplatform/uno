@@ -39,8 +39,10 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `uno-devserver list`: List running Dev Server instances
 - `uno-devserver cleanup`: Terminate stale Dev Server processes
 - `uno-devserver login`: Open the Uno Platform settings application
-- `--mcp`: Run an MCP proxy mode for integration with MCP-based tooling
+- `--mcp-app`: Run an MCP proxy mode for integration with MCP-based tooling
 - `--port | -p <int>`: Optional port value for MCP proxy mode
+- `--mcp-wait-tools-list`: Wait for the upstream Uno App tools to become available before responding to clients. Use this when working with MCP agents that do not react to `tool_list_changed` (for example, Codex or Claude Code).
+- `--force-roots-fallback`: Skip the MCP `roots` handshake and expose the `uno_app_set_roots` tool so agents that cannot send workspace roots can still initialize (required for Google Antigravity).
 
 ## Hot Reload
 

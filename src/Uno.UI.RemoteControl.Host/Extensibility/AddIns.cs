@@ -77,8 +77,7 @@ public class AddIns
 				{
 					if (_log.IsEnabled(LogLevel.Warning))
 					{
-						var msg =
-							$"Failed to get add-ins for solution '{solutionFile}' for tfm {targetFramework} (command used: `dotnet {command}`).";
+						var msg = $"Failed to get add-ins for solution '{solutionFile}' for tfm {targetFramework} (command used: `dotnet {command}`).";
 						if (result.error is { Length: > 0 })
 						{
 							_log.Log(LogLevel.Warning, new Exception(result.error),

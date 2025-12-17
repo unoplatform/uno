@@ -437,6 +437,8 @@ namespace Microsoft.UI.Xaml
 			remove => RemoveHandler(KeyDownEvent, value);
 		}
 
+		internal event KeyEventHandler PostKeyDown;
+
 		public event KeyEventHandler KeyUp
 		{
 			add => AddHandler(KeyUpEvent, value, false);
@@ -645,6 +647,11 @@ namespace Microsoft.UI.Xaml
 						args.CanBubbleNatively = false;
 					}
 				}
+			}
+
+			if (routedEvent == KeyDownEvent)
+			{
+				PostKeyDown?.Invoke(this, (KeyRoutedEventArgs)args);
 			}
 
 			if (routedEvent.IsTunnelingEvent || ctx.ModeHasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)

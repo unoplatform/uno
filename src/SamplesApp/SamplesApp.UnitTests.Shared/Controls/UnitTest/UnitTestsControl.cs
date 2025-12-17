@@ -63,7 +63,7 @@ namespace Uno.UI.Samples.Tests
 		private ApplicationView _applicationView;
 #endif
 
-		private List<TestCaseResult> _testCases = new List<TestCaseResult>();
+		private List<TestCaseResult> _testCases = new();
 		private TestRun _currentRun;
 
 		// On WinUI/UWP dependency properties cannot be accessed outside of
@@ -312,6 +312,8 @@ namespace Uno.UI.Samples.Tests
 			{
 				RunTestCountForUITest = runTestCount.Text = _currentRun.Run.ToString();
 				ignoredTestCount.Text = _currentRun.Ignored.ToString();
+				retriedTestCount.Text = _currentRun.Retried.ToString();
+				inconclusiveTestCount.Text = _currentRun.Inconclusive.ToString();
 				succeededTestCount.Text = _currentRun.Succeeded.ToString();
 				FailedTestCountForUITest = failedTestCount.Text = _currentRun.Failed.ToString();
 			}
@@ -353,11 +355,13 @@ namespace Uno.UI.Samples.Tests
 			);
 		}
 
-		private void ReportTestResult(string testName, TimeSpan duration, TestResult testResult, Exception error = null, string message = null, string console = null)
+		private void ReportTestResult(UnitTestClassInfo testClassInfo, UnitTestMethodInfo testMethodInfo, string testName, TimeSpan duration, TestResult testResult, Exception error = null, string message = null, string console = null)
 		{
 			_testCases.Add(
 				new TestCaseResult
 				{
+					ClassName = testClassInfo?.Type?.FullName,
+					MethodName = testMethodInfo?.Method?.Name,
 					TestName = testName,
 					Duration = duration,
 					TestResult = testResult,
@@ -369,6 +373,8 @@ namespace Uno.UI.Samples.Tests
 			{
 				runTestCount.Text = _currentRun.Run.ToString();
 				ignoredTestCount.Text = _currentRun.Ignored.ToString();
+				retriedTestCount.Text = _currentRun.Retried.ToString();
+				inconclusiveTestCount.Text = _currentRun.Inconclusive.ToString();
 				succeededTestCount.Text = _currentRun.Succeeded.ToString();
 				failedTestCount.Text = _currentRun.Failed.ToString();
 
@@ -450,13 +456,13 @@ namespace Uno.UI.Samples.Tests
 			rootNode.SetAttribute("errors", "0");
 			rootNode.SetAttribute("passed", testRun.Succeeded.ToString());
 			rootNode.SetAttribute("failed", testRun.Failed.ToString());
-			rootNode.SetAttribute("inconclusive", "0");
+			rootNode.SetAttribute("inconclusive", testRun.Inconclusive.ToString());
 			rootNode.SetAttribute("skipped", testRun.Ignored.ToString());
 			rootNode.SetAttribute("asserts", "0");
 
 			var now = DateTimeOffset.Now;
 			rootNode.SetAttribute("run-date", now.ToString("yyyy-MM-dd"));
-			rootNode.SetAttribute("start-time", now.ToString("HH:mm:ss"));
+			rootNode.SetAttribute("start-time", testRun.StartTime.ToString("HH:mm:ss"));
 			rootNode.SetAttribute("end-time", now.ToString("HH:mm:ss"));
 
 			var testSuiteAssemblyNode = doc.CreateElement("test-suite");
@@ -483,7 +489,7 @@ namespace Uno.UI.Samples.Tests
 			testSuiteFixtureNode.SetAttribute("errors", "0");
 			testSuiteFixtureNode.SetAttribute("passed", testRun.Succeeded.ToString());
 			testSuiteFixtureNode.SetAttribute("failed", testRun.Failed.ToString());
-			testSuiteFixtureNode.SetAttribute("inconclusive", "0");
+			testSuiteFixtureNode.SetAttribute("inconclusive", testRun.Inconclusive.ToString());
 			testSuiteFixtureNode.SetAttribute("skipped", testRun.Ignored.ToString());
 			testSuiteFixtureNode.SetAttribute("asserts", "0");
 
@@ -493,7 +499,15 @@ namespace Uno.UI.Samples.Tests
 				testSuiteFixtureNode.AppendChild(testCaseNode);
 
 				testCaseNode.SetAttribute("name", run.TestName);
-				testCaseNode.SetAttribute("fullname", run.TestName);
+				testCaseNode.SetAttribute("fullname", run.FullName);
+				if (run.ClassName is not null)
+				{
+					testCaseNode.SetAttribute("classname", run.ClassName);
+				}
+				if (run.MethodName is not null)
+				{
+					testCaseNode.SetAttribute("methodname", run.MethodName);
+				}
 				testCaseNode.SetAttribute("duration", run.Duration.TotalSeconds.ToString(CultureInfo.InvariantCulture));
 				testCaseNode.SetAttribute("time", "0");
 
@@ -590,13 +604,15 @@ namespace Uno.UI.Samples.Tests
 				default:
 				case TestResult.Error:
 				case TestResult.Failed:
-					return "\uE711 (F)";
+					return "\uE711";
 
 				case TestResult.Skipped:
-					return "\uEE35 (I)";
+					return "\uEE35";
 
 				case TestResult.Passed:
-					return "\uE73E️ (S)";
+					return "\uE73E";
+				case TestResult.Inconclusive:
+					return "?";
 			}
 		}
 
@@ -610,10 +626,13 @@ namespace Uno.UI.Samples.Tests
 					return Colors.Red;
 
 				case TestResult.Skipped:
-					return Colors.Orange;
+					return Colors.DarkGray;
 
 				case TestResult.Passed:
 					return Colors.LightGreen;
+
+				case TestResult.Inconclusive:
+					return Colors.DarkViolet;
 			}
 		}
 
@@ -636,7 +655,7 @@ namespace Uno.UI.Samples.Tests
 				{
 					_currentRun.Failed = -1;
 					_ = ReportMessage($"Tests runner failed {e}");
-					ReportTestResult("Runtime exception", TimeSpan.Zero, TestResult.Failed, e);
+					ReportTestResult(null, null, "Runtime exception", TimeSpan.Zero, TestResult.Failed, e);
 					ReportTestsResults();
 				}
 			}
@@ -653,7 +672,10 @@ namespace Uno.UI.Samples.Tests
 
 		public async Task RunTests(CancellationToken ct, UnitTestEngineConfig config)
 		{
-			_currentRun = new TestRun();
+			_currentRun = new TestRun()
+			{
+				StartTime = DateTimeOffset.UtcNow
+			};
 
 			try
 			{
@@ -683,7 +705,7 @@ namespace Uno.UI.Samples.Tests
 			{
 				_currentRun.Failed = -1;
 				_ = ReportMessage($"Tests runner failed {e}");
-				ReportTestResult("Runtime exception", TimeSpan.Zero, TestResult.Failed, e);
+				ReportTestResult(null, null, "Runtime exception", TimeSpan.Zero, TestResult.Failed, e);
 				ReportTestsResults();
 			}
 			finally
@@ -709,7 +731,8 @@ namespace Uno.UI.Samples.Tests
 				.Where(t => !(filters?.Any() ?? false)
 					|| testClassNameContainsFilters
 					|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
-					|| filters.Any(f => t.Name.Contains(f, StrComp)));
+					|| filters.Any(f => t.Name.Contains(f, StrComp))
+					|| filters.Any(f => $"{t.DeclaringType.FullName}.{t.Name}".Contains(f, StrComp)));
 		}
 
 		private async Task ExecuteTestsForInstance(
@@ -751,7 +774,7 @@ namespace Uno.UI.Samples.Tests
 					}
 
 					_currentRun.Ignored++;
-					ReportTestResult(testName, TimeSpan.Zero, TestResult.Skipped, message: ignoreMessage);
+					ReportTestResult(testClassInfo, test, testName, TimeSpan.Zero, TestResult.Skipped, message: ignoreMessage);
 
 					if (!config.IsRunningIgnored)
 					{
@@ -940,13 +963,13 @@ namespace Uno.UI.Samples.Tests
 							if (test.ExpectedException is null)
 							{
 								_currentRun.Succeeded++;
-								ReportTestResult(fullTestName, sw.Elapsed, TestResult.Passed, console: console);
+								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Passed, console: console);
 							}
 							else
 							{
 								_currentRun.Failed++;
-								ReportTestResult(fullTestName, sw.Elapsed, TestResult.Failed,
-									message: $"Test did not throw the excepted exception of type {test.ExpectedException.Name}",
+								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed,
+									message: $"Test did not throw the expected exception of type {test.ExpectedException.Name}",
 									console: console);
 							}
 						}
@@ -968,28 +991,34 @@ namespace Uno.UI.Samples.Tests
 
 							if (e is AssertInconclusiveException inconclusiveException)
 							{
-								_currentRun.Ignored++;
-								ReportTestResult(fullTestName, sw.Elapsed, TestResult.Skipped, message: e.Message, console: console);
+								_currentRun.Inconclusive++;
+								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Inconclusive, message: e.Message, console: console);
 							}
 							else if (test.ExpectedException is null || !test.ExpectedException.IsInstanceOfType(e))
 							{
 								if (_currentRun.CurrentRepeatCount < config.Attempts - 1)
 								{
+									// Count only the first time we retry this test.
+									if (_currentRun.CurrentRepeatCount == 0)
+									{
+										_currentRun.Retried++;
+									}
+
 									_currentRun.CurrentRepeatCount++;
 									canRetry = true;
 
-									await RunCleanup(instance, testClassInfo, testName, test.RunsOnUIThread);
+									await RunCleanup(instance, testClassInfo, test, testName, test.RunsOnUIThread);
 								}
 								else
 								{
 									_currentRun.Failed++;
-									ReportTestResult(fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
+									ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
 								}
 							}
 							else
 							{
 								_currentRun.Succeeded++;
-								ReportTestResult(fullTestName, sw.Elapsed, TestResult.Passed, e, console: console);
+								ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Passed, e, console: console);
 							}
 						}
 						finally
@@ -1002,7 +1031,7 @@ namespace Uno.UI.Samples.Tests
 					}
 				}
 
-				await RunCleanup(instance, testClassInfo, testName, test.RunsOnUIThread);
+				await RunCleanup(instance, testClassInfo, test, testName, test.RunsOnUIThread);
 
 				if (ct.IsCancellationRequested)
 				{
@@ -1032,7 +1061,7 @@ namespace Uno.UI.Samples.Tests
 				});
 			}
 
-			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName, bool runsOnUIThread)
+			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, UnitTestMethodInfo testMethod, string testName, bool runsOnUIThread)
 			{
 				async Task Run()
 				{
@@ -1043,7 +1072,7 @@ namespace Uno.UI.Samples.Tests
 					catch (Exception e)
 					{
 						_currentRun.Failed++;
-						ReportTestResult(testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder?.GetContentAndReset());
+						ReportTestResult(testClassInfo, testMethod, testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder?.GetContentAndReset());
 					}
 				}
 

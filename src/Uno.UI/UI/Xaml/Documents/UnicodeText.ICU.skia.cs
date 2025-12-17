@@ -19,7 +19,13 @@ internal readonly partial struct UnicodeText
 		// the version number. For example, there's a ubrk_open_74 in ICU v74, but not a ubrk_open.
 		private static readonly int _icuVersion;
 		private static readonly IntPtr _libicuuc;
-		private static Dictionary<Type, object> _lookupCache = new();
+		private static readonly Dictionary<Type, object> _lookupCache = new();
+
+		private const DllImportSearchPath NativeLibrarySearchDirectories =
+			  DllImportSearchPath.ApplicationDirectory
+			| DllImportSearchPath.AssemblyDirectory
+			| DllImportSearchPath.UserDirectories
+			;
 
 		static unsafe ICU()
 		{
@@ -28,7 +34,7 @@ internal readonly partial struct UnicodeText
 			{
 				// On Windows, We get the ICU binaries from the Microsoft.ICU.ICU4C.Runtime package
 				_icuVersion = 72;
-				if (!NativeLibrary.TryLoad("icuuc72", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
+				if (!NativeLibrary.TryLoad("icuuc72", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					throw new Exception("Failed to load libicuuc.");
 				}
@@ -42,15 +48,29 @@ internal readonly partial struct UnicodeText
 			{
 				// On Linux and Android, we get the ICU binaries from the dynamic linker search path
 				// On MacOS, we get the ICU binaries from the uno.icu-macos package.
-				if (OperatingSystem.IsMacOS() && !NativeLibrary.TryLoad("icudata", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out _))
+				if (OperatingSystem.IsMacOS() && !NativeLibrary.TryLoad("icudata", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out _))
 				{
 					// MacOS doesn't automatically load icudata from icuuc for some reason even though the icuuc binary
 					// lists icudata in the `otool -L` output, so we have to load it by hand
 					throw new Exception("Failed to load libicudata.");
 				}
-				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
+				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
-					throw new Exception("Failed to load libicuuc.");
+					if (OperatingSystem.IsLinux())
+					{
+						for (int j = 100; j >= 67; j--)
+						{
+							// some environments only have a versioned library and don't symlink it to libicuuc.so
+							if (NativeLibrary.TryLoad($"libicuuc.so.{j}", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
+							{
+								break;
+							}
+						}
+					}
+					if (libicuuc == IntPtr.Zero)
+					{
+						throw new Exception("Failed to load libicuuc.");
+					}
 				}
 
 				// Since libicuuc not installed by us, we have no control over the specific version number, so
@@ -76,16 +96,15 @@ internal readonly partial struct UnicodeText
 					.Where(t => t.Item2 != null)
 					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
 					.First()!;
-				var data = new byte[stream.Length];
-				stream.ReadExactly(data, 0, data.Length);
-				fixed (byte* dataPtr = data)
+				// udata_setCommonData does not copy the buffer, so it needs to be pinned.
+				// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
+				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
+				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
+				var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)data);
+				var errorString = Marshal.PtrToStringUTF8(errorPtr);
+				if (errorString is not null)
 				{
-					var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)dataPtr);
-					var errorString = Marshal.PtrToStringAnsi(errorPtr);
-					if (errorString is not null)
-					{
-						throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
-					}
+					throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
 				}
 
 				// ICU is included in the dotnet runtime itself
@@ -98,7 +117,7 @@ internal readonly partial struct UnicodeText
 			}
 			else
 			{
-				throw new DllNotFoundException("Failed to load libicuuc.");
+				throw new DllNotFoundException("Failed to load libicuuc: unsupported platform.");
 			}
 
 			_libicuuc = libicuuc;
