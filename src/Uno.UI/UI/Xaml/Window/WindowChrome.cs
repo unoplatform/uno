@@ -133,7 +133,11 @@ internal sealed partial class WindowChrome : ContentControl
 	// one needs to apply Content Control style with key WindowChromeStyle defined in generic.xaml
 	internal void ApplyStylingForMinMaxCloseButtons()
 	{
-		var style = (Style)Application.Current.Resources["WindowChromeStyle"];
+		// Select the appropriate WindowChrome style based on the runtime OS
+		// macOS uses the macOS-style with traffic light buttons on the left
+		// Windows and Linux use the Windows-style with buttons on the right
+		var styleKey = OperatingSystem.IsMacOS() ? "MacOSWindowChromeStyle" : "WindowChromeStyle";
+		var style = (Style)Application.Current.Resources[styleKey];
 		SetValue(StyleProperty, style);
 	}
 
@@ -315,20 +319,37 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private RectInt32 GetDefaultCaptionRegionRect()
 	{
-		// Caption area should be everything to the left of the buttons (except for the container)
 		var titleBarContainer = m_tpTitleBarMinMaxCloseContainerPart;
 		if (titleBarContainer is not null)
 		{
 			var scale = _window.AppWindow.NativeAppWindow.RasterizationScale;
 			var transform = titleBarContainer.TransformToVisual(null);
 			var point = transform.TransformPoint(new Windows.Foundation.Point(0, 0));
-			return new RectInt32
+			var windowWidth = (int)(_window.Bounds.Width * scale);
+
+			if (OperatingSystem.IsMacOS())
 			{
-				X = 0,
-				Y = 0,
-				Width = (int)(point.X * scale),
-				Height = (int)(titleBarContainer.ActualHeight * scale)
-			};
+				// On macOS, caption buttons are on the left, so the caption area is to the right of the buttons
+				var buttonContainerRight = (int)((point.X + titleBarContainer.ActualWidth) * scale);
+				return new RectInt32
+				{
+					X = buttonContainerRight,
+					Y = 0,
+					Width = windowWidth - buttonContainerRight,
+					Height = (int)(titleBarContainer.ActualHeight * scale)
+				};
+			}
+			else
+			{
+				// On Windows/Linux, caption buttons are on the right, so the caption area is to the left of the buttons
+				return new RectInt32
+				{
+					X = 0,
+					Y = 0,
+					Width = (int)(point.X * scale),
+					Height = (int)(titleBarContainer.ActualHeight * scale)
+				};
+			}
 		}
 
 		return default;

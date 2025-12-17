@@ -18,6 +18,19 @@
             <SolidColorBrush x:Key="CloseButtonStrokePointerOver" Color="White" />
             <SolidColorBrush x:Key="CloseButtonBackgroundPressed" Color="#f1707a" />
             <SolidColorBrush x:Key="CloseButtonStrokePressed" Color="Black" />
+            <!--  macOS traffic light button colors  -->
+            <SolidColorBrush x:Key="MacOSCloseButtonBackground" Color="#FF5F57" />
+            <SolidColorBrush x:Key="MacOSCloseButtonBackgroundPointerOver" Color="#FF6961" />
+            <SolidColorBrush x:Key="MacOSCloseButtonBackgroundPressed" Color="#BF4840" />
+            <SolidColorBrush x:Key="MacOSMinimizeButtonBackground" Color="#FFBD2E" />
+            <SolidColorBrush x:Key="MacOSMinimizeButtonBackgroundPointerOver" Color="#FFC942" />
+            <SolidColorBrush x:Key="MacOSMinimizeButtonBackgroundPressed" Color="#BF8E22" />
+            <SolidColorBrush x:Key="MacOSMaximizeButtonBackground" Color="#28C840" />
+            <SolidColorBrush x:Key="MacOSMaximizeButtonBackgroundPointerOver" Color="#3DD656" />
+            <SolidColorBrush x:Key="MacOSMaximizeButtonBackgroundPressed" Color="#1E9630" />
+            <SolidColorBrush x:Key="MacOSCaptionButtonBackgroundDisabled" Color="#DCDCDC" />
+            <SolidColorBrush x:Key="MacOSCaptionButtonStroke" Color="Transparent" />
+            <SolidColorBrush x:Key="MacOSCaptionButtonStrokePointerOver" Color="#4D000000" />
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="HighContrast">
@@ -37,6 +50,19 @@
             <SolidColorBrush x:Key="CloseButtonStrokePointerOver" Color="{ThemeResource SystemColorHighlightTextColor}" />
             <SolidColorBrush x:Key="CloseButtonBackgroundPressed" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="CloseButtonStrokePressed" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <!--  macOS traffic light button colors (HighContrast uses system colors)  -->
+            <SolidColorBrush x:Key="MacOSCloseButtonBackground" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="MacOSCloseButtonBackgroundPointerOver" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="MacOSCloseButtonBackgroundPressed" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="MacOSMinimizeButtonBackground" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="MacOSMinimizeButtonBackgroundPointerOver" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="MacOSMinimizeButtonBackgroundPressed" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="MacOSMaximizeButtonBackground" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="MacOSMaximizeButtonBackgroundPointerOver" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="MacOSMaximizeButtonBackgroundPressed" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="MacOSCaptionButtonBackgroundDisabled" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="MacOSCaptionButtonStroke" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="MacOSCaptionButtonStrokePointerOver" Color="{ThemeResource SystemColorHighlightTextColor}" />
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Light">
@@ -56,6 +82,19 @@
             <SolidColorBrush x:Key="CloseButtonStrokePointerOver" Color="White" />
             <SolidColorBrush x:Key="CloseButtonBackgroundPressed" Color="#f1707a" />
             <SolidColorBrush x:Key="CloseButtonStrokePressed" Color="Black" />
+            <!--  macOS traffic light button colors  -->
+            <SolidColorBrush x:Key="MacOSCloseButtonBackground" Color="#FF5F57" />
+            <SolidColorBrush x:Key="MacOSCloseButtonBackgroundPointerOver" Color="#FF6961" />
+            <SolidColorBrush x:Key="MacOSCloseButtonBackgroundPressed" Color="#BF4840" />
+            <SolidColorBrush x:Key="MacOSMinimizeButtonBackground" Color="#FFBD2E" />
+            <SolidColorBrush x:Key="MacOSMinimizeButtonBackgroundPointerOver" Color="#FFC942" />
+            <SolidColorBrush x:Key="MacOSMinimizeButtonBackgroundPressed" Color="#BF8E22" />
+            <SolidColorBrush x:Key="MacOSMaximizeButtonBackground" Color="#28C840" />
+            <SolidColorBrush x:Key="MacOSMaximizeButtonBackgroundPointerOver" Color="#3DD656" />
+            <SolidColorBrush x:Key="MacOSMaximizeButtonBackgroundPressed" Color="#1E9630" />
+            <SolidColorBrush x:Key="MacOSCaptionButtonBackgroundDisabled" Color="#DCDCDC" />
+            <SolidColorBrush x:Key="MacOSCaptionButtonStroke" Color="Transparent" />
+            <SolidColorBrush x:Key="MacOSCaptionButtonStrokePointerOver" Color="#4D000000" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -234,6 +273,175 @@
                                         <Setter Target="MaximizeButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
                                         <Setter Target="CloseButton.Foreground" Value="{ThemeResource WindowCaptionForegroundDisabled}" />
                                         <Setter Target="CloseButton.Background" Value="{ThemeResource WindowCaptionButtonBackground}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  macOS Traffic Light Caption Button Style  -->
+    <Style x:Key="MacOSCaptionButton" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Width" Value="12" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="MinWidth" Value="12" />
+        <Setter Property="MinHeight" Value="12" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Ellipse
+                            x:Name="ButtonBackground"
+                            Width="12"
+                            Height="12"
+                            Fill="{TemplateBinding Background}"
+                            Stroke="{ThemeResource MacOSCaptionButtonStroke}"
+                            StrokeThickness="0.5" />
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="ButtonBackground.Stroke" Value="{ThemeResource MacOSCaptionButtonStrokePointerOver}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="ButtonBackground.Stroke" Value="{ThemeResource MacOSCaptionButtonStrokePointerOver}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="MinMaxStates">
+                                <VisualState x:Name="WindowStateNormal" />
+                                <VisualState x:Name="WindowStateMaximized" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  macOS-style WindowChrome with traffic light buttons on the left  -->
+    <Style x:Key="MacOSWindowChromeStyle" TargetType="ContentControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                    <Grid x:Name="LayoutRoot" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter
+                            x:Name="ClientAreaPresenter"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            ContentTransitions="{TemplateBinding ContentTransitions}" />
+                        <StackPanel
+                            x:Name="TitleBarMinMaxCloseContainer"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Margin="8,6,0,0"
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            Visibility="{Binding CaptionVisibility, RelativeSource={RelativeSource TemplatedParent}}">
+                            <!--  macOS order: Close (red), Minimize (yellow), Maximize/Zoom (green)  -->
+                            <Button
+                                x:Name="CloseButton"
+                                AutomationProperties.AutomationId="_CloseButton"
+                                AutomationProperties.Name="Close"
+                                Background="{ThemeResource MacOSCloseButtonBackground}"
+                                Style="{StaticResource MacOSCaptionButton}">
+                                <Button.Resources>
+                                    <ResourceDictionary>
+                                        <ResourceDictionary.ThemeDictionaries>
+                                            <ResourceDictionary x:Key="Light">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="Dark">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="Default">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="HighContrast">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSCloseButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                        </ResourceDictionary.ThemeDictionaries>
+                                    </ResourceDictionary>
+                                </Button.Resources>
+                            </Button>
+                            <Button
+                                x:Name="MinimizeButton"
+                                AutomationProperties.AutomationId="_MinimizeButton"
+                                AutomationProperties.Name="Minimize"
+                                Background="{ThemeResource MacOSMinimizeButtonBackground}"
+                                Style="{StaticResource MacOSCaptionButton}">
+                                <Button.Resources>
+                                    <ResourceDictionary>
+                                        <ResourceDictionary.ThemeDictionaries>
+                                            <ResourceDictionary x:Key="Light">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="Dark">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="Default">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="HighContrast">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMinimizeButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                        </ResourceDictionary.ThemeDictionaries>
+                                    </ResourceDictionary>
+                                </Button.Resources>
+                            </Button>
+                            <Button
+                                x:Name="MaximizeButton"
+                                AutomationProperties.AutomationId="_MaximizeButton"
+                                AutomationProperties.Name="Maximize"
+                                Background="{ThemeResource MacOSMaximizeButtonBackground}"
+                                Style="{StaticResource MacOSCaptionButton}">
+                                <Button.Resources>
+                                    <ResourceDictionary>
+                                        <ResourceDictionary.ThemeDictionaries>
+                                            <ResourceDictionary x:Key="Light">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="Dark">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="Default">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="HighContrast">
+                                                <StaticResource x:Key="MacOSCaptionButtonStrokePointerOver" ResourceKey="MacOSMaximizeButtonBackgroundPointerOver" />
+                                            </ResourceDictionary>
+                                        </ResourceDictionary.ThemeDictionaries>
+                                    </ResourceDictionary>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Target="TitleBarMinMaxCloseContainer.Background" Value="{ThemeResource WindowCaptionBackground}" />
+                                        <Setter Target="CloseButton.Background" Value="{ThemeResource MacOSCloseButtonBackground}" />
+                                        <Setter Target="MinimizeButton.Background" Value="{ThemeResource MacOSMinimizeButtonBackground}" />
+                                        <Setter Target="MaximizeButton.Background" Value="{ThemeResource MacOSMaximizeButtonBackground}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="WindowInactive">
+                                    <VisualState.Setters>
+                                        <Setter Target="TitleBarMinMaxCloseContainer.Background" Value="{ThemeResource WindowCaptionBackgroundDisabled}" />
+                                        <Setter Target="CloseButton.Background" Value="{ThemeResource MacOSCaptionButtonBackgroundDisabled}" />
+                                        <Setter Target="MinimizeButton.Background" Value="{ThemeResource MacOSCaptionButtonBackgroundDisabled}" />
+                                        <Setter Target="MaximizeButton.Background" Value="{ThemeResource MacOSCaptionButtonBackgroundDisabled}" />
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
