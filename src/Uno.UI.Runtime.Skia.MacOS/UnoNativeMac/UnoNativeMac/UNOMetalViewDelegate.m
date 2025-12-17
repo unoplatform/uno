@@ -24,6 +24,8 @@
         mtkView.sampleCount = 1;
         // this property has no effect on x86_64, only on arm64, and is required for sampling (which acrylicbrush does)
         mtkView.framebufferOnly = false;
+        mtkView.layerContentsPlacement = NSViewLayerContentsPlacementTopLeft;
+        mtkView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawDuringViewResize;
 #if DEBUG
         NSLog(@"initWithMetalKitView: paused %s enableSetNeedsDisplay %s", mtkView.paused ? "true" : "false", mtkView.enableSetNeedsDisplay ? "true" : "false");
 #endif
