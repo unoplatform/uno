@@ -3248,7 +3248,8 @@ public class MenuFlyoutIntegrationTests
 		TestServices.InputHelper.MoveMouse(menuFlyoutSubItem);
 		// Wait for the sub menu to open. It opens after a delay - clicking and waiting for idle doesn't open it.
 		// MSFT: 4815582 <MenuFlyout sub items don't expand on mouse click - they need to wait for the timeout> tracks this bug.
-		await TestServices.WindowHelper.SynchronouslyTickUIThread(60);
+		//await TestServices.WindowHelper.SynchronouslyTickUIThread(500);
+		await Task.Delay(500);
 	}
 
 	[TestMethod]
@@ -3268,7 +3269,7 @@ public class MenuFlyoutIntegrationTests
 		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
 
 		var menuFlyoutSubItemClosedEvent = new Event();
-		var subItemClosedRegistration = CreateSafeEventRegistration<Popup, RoutedEventHandler>("Closed");
+		var subItemClosedRegistration = CreateSafeEventRegistration<Popup, EventHandler<object>>("Closed");
 
 		await RunOnUIThread(() =>
 

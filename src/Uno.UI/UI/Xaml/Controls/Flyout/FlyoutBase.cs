@@ -648,10 +648,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal static Rect CalculateAvailableWindowRect(bool isMenuFlyout, Popup popup, object placementTarget, bool hasTargetPosition, Point positionPoint, bool isFull)
 		{
+#if HAS_UNO // This is a significantly simplified version of the WinUI logic.
 			// UNO TODO: UWP also uses values coming from the input pane and app bars, if any.
 			// Make sure of migrate to XamlRoot: https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.xamlroot
-			var xamlRoot = popup.XamlRoot ?? popup.Child?.XamlRoot;
+			var xamlRoot = XamlRoot.GetImplementationForElement(popup);
 			return xamlRoot.VisualTree.VisibleBounds;
+#endif
 		}
 
 		internal void SetPresenterStyle(
