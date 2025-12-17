@@ -8,7 +8,6 @@ namespace Uno.UI.Samples.Tests
 		{
 			public TestRun()
 			{
-				StartTime = DateTimeOffset.UtcNow;
 			}
 
 			public int Run { get; set; }
@@ -25,7 +24,7 @@ namespace Uno.UI.Samples.Tests
 
 			public int CurrentRepeatCount { get; set; }
 
-			public DateTimeOffset StartTime { get; }
+			public DateTimeOffset StartTime { get; init; }
 		}
 	}
 }

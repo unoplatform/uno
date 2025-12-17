@@ -672,7 +672,10 @@ namespace Uno.UI.Samples.Tests
 
 		public async Task RunTests(CancellationToken ct, UnitTestEngineConfig config)
 		{
-			_currentRun = new TestRun();
+			_currentRun = new TestRun()
+			{
+				StartTime = DateTimeOffset.UtcNow
+			};
 
 			try
 			{
