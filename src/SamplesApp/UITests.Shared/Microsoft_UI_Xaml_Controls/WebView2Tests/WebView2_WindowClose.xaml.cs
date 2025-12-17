@@ -38,7 +38,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 			if (window != null)
 			{
 				window.AppWindow.Closing += OnWindowClosing;
-				ViewModel.StatusMessage = "Ready to test. Focus the WebView and try closing shortcuts (Cmd+W or Cmd+Q on macOS).";
+				ViewModel.StatusMessage = "Ready to test. Focus the WebView and try closing shortcuts (Alt+F4 on Windows, Cmd+W or Cmd+Q on macOS).";
 			}
 			else
 			{
@@ -69,7 +69,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 	public class WebView2_WindowCloseViewModel : INotifyPropertyChanged
 	{
 		private bool _preventClose;
-		private string _statusMessage = "Ready to test. Focus the WebView and try closing shortcuts.";
+		private string _statusMessage = "Ready to test. Focus the WebView and try closing shortcuts (Cmd+W or Cmd+Q on macOS).";
 
 		public bool PreventClose
 		{
