@@ -19,7 +19,7 @@ public sealed partial class NativeMenuBar
 	{
 		// On iOS, menu bar integration requires buildMenu(with:) to be called from the UIApplicationDelegate.
 		// This implementation stores the menu structure to be used when the system requests menu building.
-		NativeMenuBridgeiOS.SetMenuItems(_items.ToList());
+		NativeMenuBridgeiOS.SetMenuItems(_items);
 	}
 }
 
@@ -28,9 +28,9 @@ public sealed partial class NativeMenuBar
 /// </summary>
 internal static class NativeMenuBridgeiOS
 {
-	private static List<NativeMenuItem>? _menuItems;
+	private static IReadOnlyList<NativeMenuItem>? _menuItems;
 
-	internal static void SetMenuItems(List<NativeMenuItem> items)
+	internal static void SetMenuItems(IReadOnlyList<NativeMenuItem> items)
 	{
 		_menuItems = items;
 	}
@@ -42,7 +42,7 @@ internal static class NativeMenuBridgeiOS
 	/// <param name="builder">The UIMenuBuilder provided by iOS.</param>
 	public static void BuildMenu(IUIMenuBuilder builder)
 	{
-		if (_menuItems == null || !_menuItems.Any())
+		if (_menuItems == null || _menuItems.Count == 0)
 		{
 			return;
 		}

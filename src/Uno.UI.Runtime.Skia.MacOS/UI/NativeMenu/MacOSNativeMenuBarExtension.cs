@@ -27,7 +27,7 @@ internal class MacOSNativeMenuBarExtension : INativeMenuBarExtension
 
 	public bool IsSupported => true;
 
-	public void Apply(IList<NativeMenuItem> items)
+	public void Apply(IReadOnlyList<NativeMenuItem> items)
 	{
 		// Clear existing menus first
 		NativeMenuInterop.uno_menu_bar_clear();

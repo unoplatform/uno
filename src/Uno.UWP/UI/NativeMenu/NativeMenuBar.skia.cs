@@ -1,7 +1,6 @@
 #if __SKIA__
 #nullable enable
 
-using System.Linq;
 using Uno.Foundation.Extensibility;
 
 namespace Uno.UI.NativeMenu;
@@ -18,7 +17,7 @@ public sealed partial class NativeMenuBar
 
 	partial void ApplyNativeMenuPartial()
 	{
-		GetExtension()?.Apply(_items.ToList());
+		GetExtension()?.Apply(_items);
 	}
 
 	private static INativeMenuBarExtension? GetExtension()

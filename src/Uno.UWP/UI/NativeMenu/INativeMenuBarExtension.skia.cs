@@ -19,6 +19,6 @@ internal interface INativeMenuBarExtension
 	/// Applies the menu items to the native menu bar.
 	/// </summary>
 	/// <param name="items">The collection of top-level menu items to apply.</param>
-	void Apply(IList<NativeMenuItem> items);
+	void Apply(IReadOnlyList<NativeMenuItem> items);
 }
 #endif
