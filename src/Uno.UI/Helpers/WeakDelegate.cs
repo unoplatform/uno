@@ -1,16 +1,36 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Uno.UI.Helpers;
 
-internal class WeakDelegate
+internal interface IDelegate<TDelegate> where TDelegate : Delegate
 {
-	public static WeakDelegate<TDelegate>? Create<TDelegate>(TDelegate? d)
-		where TDelegate : Delegate
+	public object? Target { get; }
+	public MethodInfo Method { get; }
+	public TDelegate? Delegate { get; }
+}
+
+/// <summary>
+/// Represents a plain wrapper over a normal delegate instance.
+/// </summary>
+/// <remarks>
+/// Solely used to conform to the <see cref="IDelegate{TDelegate}"/> interface, 
+/// so <see cref="WeakDelegate{TDelegate}"/> and literal delegate can be used interchangeably.
+/// </remarks>
+/// <typeparam name="TDelegate">The type of delegate encapsulated by this instance. Must derive from <see cref="Delegate"/>.</typeparam>
+internal class LiteralDelegate<TDelegate> : IDelegate<TDelegate>
+	where TDelegate : Delegate
+{
+	public object? Target => Delegate!.Target;
+	public MethodInfo Method => Delegate!.Method;
+	public TDelegate? Delegate { get; }
+
+	public LiteralDelegate(TDelegate d)
 	{
-		return d is { } ? new(d) : null;
+		Delegate = d;
 	}
 }
 
@@ -22,7 +42,8 @@ internal class WeakDelegate
 /// avoid memory leaks caused by strong references. Only delegates with a single target are supported;
 /// multicast delegates are not allowed.</remarks>
 /// <typeparam name="TDelegate">The type of delegate to be referenced. Must derive from <see cref="Delegate"/>.</typeparam>
-internal class WeakDelegate<TDelegate> where TDelegate : Delegate
+internal class WeakDelegate<TDelegate> : IDelegate<TDelegate>
+	where TDelegate : Delegate
 {
 	public WeakReference? Instance { get; init; }
 	public MethodInfo Method { get; init; }
@@ -64,4 +85,19 @@ internal class WeakDelegate<TDelegate> where TDelegate : Delegate
 		(Instance!.Target is { } t
 			? System.Delegate.CreateDelegate(typeof(TDelegate), t, Method) as TDelegate
 			: null);
+}
+
+internal class DelegateHelper
+{
+	public static LiteralDelegate<TDelegate> CreateLiteral<TDelegate>(TDelegate d)
+		where TDelegate : Delegate
+	{
+		return new(d);
+	}
+
+	public static WeakDelegate<TDelegate> CreateWeak<TDelegate>(TDelegate d)
+		where TDelegate : Delegate
+	{
+		return new(d);
+	}
 }

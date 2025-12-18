@@ -131,14 +131,15 @@ namespace Uno.UI
 		/// <returns>
 		/// True if the template was updated successfully.
 		/// </returns>
-		public static bool UpdateDataTemplate(DataTemplate currentTemplate, Func<View?> newViewfactory)
+		public static bool UpdateDataTemplate(DataTemplate currentTemplate, Func<View?> newViewFactory)
 		{
 			if (IsDataTemplateDynamicUpdateEnabled)
 			{
 				ArgumentNullException.ThrowIfNull(currentTemplate);
-				ArgumentNullException.ThrowIfNull(newViewfactory);
+				ArgumentNullException.ThrowIfNull(newViewFactory);
 
-				return currentTemplate.UpdateFactory(_ => (NewFrameworkTemplateBuilder)((_, _) => newViewfactory()));
+				// Update and notify
+				return currentTemplate.UpdateFactory(newViewFactory);
 			}
 
 			return false;

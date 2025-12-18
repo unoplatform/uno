@@ -56,7 +56,14 @@ namespace Microsoft.UI.Xaml.Controls
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
 		/// specified.
 		/// </summary>
-		private readonly static DataTemplate InnerContentPresenterTemplate = new DataTemplate(() => new ContentPresenter());
+		private readonly static DataTemplate InnerContentPresenterTemplate =
+			new DataTemplate(owner: null, factory: InnerContentPresenterTemplateImpl);
+
+		// note: Lambda functions even with `static` and none of variable captures
+		// still captures an instance of `ItemsControl+c<>` into `Delegate.Target` for no reason.
+		// This instance tends to be GC'd pretty soon, if the delegate was converted into a WeakDelegate by FrameworkTemplate.
+		// Using a regular static method avoids that capture.
+		private static _View InnerContentPresenterTemplateImpl(object o, TemplateMaterializationSettings s) => new ContentPresenter();
 
 		public static ItemsControl GetItemsOwner(DependencyObject element)
 		{
