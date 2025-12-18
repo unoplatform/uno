@@ -1,11 +1,8 @@
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Foundation;
 using UIKit;
-using Windows.System;
 
 namespace Uno.UI.NativeMenu;
 
@@ -132,31 +129,5 @@ internal static class NativeMenuBridgeiOS
 		}
 
 		return action;
-	}
-
-	private static UIKeyModifierFlags ConvertModifiers(VirtualKeyModifiers modifiers)
-	{
-		var flags = UIKeyModifierFlags.None;
-
-		if ((modifiers & VirtualKeyModifiers.Control) != 0)
-		{
-			flags |= UIKeyModifierFlags.Control;
-		}
-		if ((modifiers & VirtualKeyModifiers.Shift) != 0)
-		{
-			flags |= UIKeyModifierFlags.Shift;
-		}
-		if ((modifiers & VirtualKeyModifiers.Menu) != 0)
-		{
-			flags |= UIKeyModifierFlags.Alternate;
-		}
-		// Note: On macOS/iOS, Command is the primary modifier, but Windows uses Control
-		// Map Control to Command for more natural macOS/iOS behavior
-		if ((modifiers & VirtualKeyModifiers.Windows) != 0)
-		{
-			flags |= UIKeyModifierFlags.Command;
-		}
-
-		return flags;
 	}
 }
