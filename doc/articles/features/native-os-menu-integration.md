@@ -51,9 +51,10 @@ namespace Uno.UI.NativeMenu
     public sealed class NativeMenuBar
     {
         /// <summary>
-        /// Gets the singleton instance of the native menu bar for the application.
+        /// Gets the default native menu bar instance for the application.
         /// </summary>
-        public static NativeMenuBar Instance { get; }
+        /// <returns>The default NativeMenuBar instance, or null if native menus are not supported.</returns>
+        public static NativeMenuBar? GetDefault();
 
         /// <summary>
         /// Gets the collection of top-level menu items.
@@ -64,11 +65,6 @@ namespace Uno.UI.NativeMenu
         /// Gets or sets a value indicating whether the native menu bar is enabled.
         /// </summary>
         public bool IsEnabled { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether native menu integration is supported on the current platform.
-        /// </summary>
-        public static bool IsSupported { get; }
 
         /// <summary>
         /// Applies the current menu structure to the native OS menu system.
@@ -194,82 +190,17 @@ namespace Uno.UI.NativeMenu
 }
 ```
 
-### XAML Support
-
-The API should support XAML declaration for ease of use. A type converter would allow specifying keyboard accelerators as strings in XAML (e.g., `"Ctrl+N"`) while the code-behind API uses the `KeyboardAccelerator` type directly:
-
-```xml
-xmlns:native="using:Uno.UI.NativeMenu"
-
-<Page.Resources>
-    <native:NativeMenuBar x:Key="AppMenu">
-        <native:NativeMenuItem Text="File">
-            <native:NativeMenuItem Text="New" 
-                                   Command="{Binding NewCommand}"
-                                   KeyboardAccelerator="Ctrl+N" />
-            <native:NativeMenuItem Text="Open..." 
-                                   Command="{Binding OpenCommand}"
-                                   KeyboardAccelerator="Ctrl+O" />
-            <native:NativeMenuSeparator />
-            <native:NativeMenuItem Text="Save" 
-                                   Command="{Binding SaveCommand}"
-                                   KeyboardAccelerator="Ctrl+S" />
-            <native:NativeMenuItem Text="Save As..." 
-                                   Command="{Binding SaveAsCommand}"
-                                   KeyboardAccelerator="Ctrl+Shift+S" />
-            <native:NativeMenuSeparator />
-            <native:NativeMenuItem Text="Exit" 
-                                   Command="{Binding ExitCommand}" />
-        </native:NativeMenuItem>
-        
-        <native:NativeMenuItem Text="Edit">
-            <native:NativeMenuItem Text="Undo" 
-                                   Command="{Binding UndoCommand}"
-                                   KeyboardAccelerator="Ctrl+Z" />
-            <native:NativeMenuItem Text="Redo" 
-                                   Command="{Binding RedoCommand}"
-                                   KeyboardAccelerator="Ctrl+Y" />
-            <native:NativeMenuSeparator />
-            <native:NativeMenuItem Text="Cut" 
-                                   Command="{Binding CutCommand}"
-                                   KeyboardAccelerator="Ctrl+X" />
-            <native:NativeMenuItem Text="Copy" 
-                                   Command="{Binding CopyCommand}"
-                                   KeyboardAccelerator="Ctrl+C" />
-            <native:NativeMenuItem Text="Paste" 
-                                   Command="{Binding PasteCommand}"
-                                   KeyboardAccelerator="Ctrl+V" />
-        </native:NativeMenuItem>
-        
-        <native:NativeMenuItem Text="View">
-            <native:NativeMenuToggleItem Text="Show Toolbar" 
-                                         IsChecked="{Binding IsToolbarVisible}" />
-            <native:NativeMenuToggleItem Text="Show Status Bar" 
-                                         IsChecked="{Binding IsStatusBarVisible}" />
-        </native:NativeMenuItem>
-        
-        <native:NativeMenuItem Text="Help">
-            <native:NativeMenuItem Text="Documentation" 
-                                   Command="{Binding ShowDocumentationCommand}" />
-            <native:NativeMenuSeparator />
-            <native:NativeMenuItem Text="About" 
-                                   Command="{Binding ShowAboutCommand}" />
-        </native:NativeMenuItem>
-    </native:NativeMenuBar>
-</Page.Resources>
-```
-
-### Code-Behind Usage
+### Usage Example
 
 ```csharp
 using Uno.UI.NativeMenu;
 using Windows.System;
 
-// Check if native menus are supported
-if (NativeMenuBar.IsSupported)
+// Get the default native menu bar (returns null if not supported)
+var menuBar = NativeMenuBar.GetDefault();
+
+if (menuBar != null)
 {
-    var menuBar = NativeMenuBar.Instance;
-    
     // Create File menu
     var fileMenu = new NativeMenuItem { Text = "File" };
     fileMenu.Items.Add(new NativeMenuItem 
@@ -363,7 +294,7 @@ Windows-specific considerations:
 **Notes:**
 - Linux Framebuffer has no window manager integration
 - WebAssembly runs in browsers without native OS menu access
-- On unsupported platforms, `NativeMenuBar.IsSupported` returns `false`
+- On unsupported platforms, `NativeMenuBar.GetDefault()` returns `null`
 
 ## Integration with Existing WinUI MenuBar
 
@@ -383,9 +314,10 @@ public sealed partial class MainPage : Page
         InitializeComponent();
         
         // Try to use native menus, show in-app MenuBar as fallback
-        if (NativeMenuBar.IsSupported)
+        var nativeMenuBar = NativeMenuBar.GetDefault();
+        if (nativeMenuBar != null)
         {
-            SetupNativeMenu();
+            SetupNativeMenu(nativeMenuBar);
             InAppMenuBar.Visibility = Visibility.Collapsed;
         }
         else
