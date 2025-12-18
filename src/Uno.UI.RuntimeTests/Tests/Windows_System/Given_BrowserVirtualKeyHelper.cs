@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.System;
 
+#if HAS_UNO
 namespace Uno.UI.RuntimeTests.Tests.Windows_System
 {
 	[TestClass]
@@ -110,3 +111,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 	}
 }
+#endif
