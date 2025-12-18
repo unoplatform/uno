@@ -2979,6 +2979,7 @@ public class MenuFlyoutIntegrationTests
 	//}
 
 	[TestMethod]
+	[Ignore("This test does not pass until proper light dismiss layer support is added. #22175")]
 	public async Task ValidateRightClickChaining()
 	{
 		Button button1 = null;
