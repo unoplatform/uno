@@ -3,25 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Preview.Injection
 {
-	[global::System.FlagsAttribute]
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum InjectedInputPenParameters : uint
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		None = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Pressure = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Rotation = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		TiltX = 4,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		TiltY = 8,
-#endif
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenParameters.None
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenParameters.Pressure
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenParameters.Rotation
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenParameters.TiltX
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenParameters.TiltY
 	}
 #endif
 }
