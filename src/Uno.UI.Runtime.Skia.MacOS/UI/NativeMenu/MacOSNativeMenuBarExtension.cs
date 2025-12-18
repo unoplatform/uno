@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Uno.Foundation.Extensibility;
 using Uno.UI.NativeMenu;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -11,24 +12,19 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 /// <summary>
 /// macOS Skia implementation of native menu bar using NSMenu.
 /// </summary>
-internal static class MacOSNativeMenuBarExtension
+internal class MacOSNativeMenuBarExtension : INativeMenuBarExtension
 {
-	private static bool _isRegistered;
+	private static readonly MacOSNativeMenuBarExtension _instance = new();
+
+	private MacOSNativeMenuBarExtension()
+	{
+	}
 
 	public static void Register()
 	{
-		if (_isRegistered)
-		{
-			return;
-		}
-
-		_isRegistered = true;
-		NativeMenuBarSkiaSupport.RegisterExtension(new MacOSNativeMenuBarProvider());
+		ApiExtensibility.Register(typeof(INativeMenuBarExtension), _ => _instance);
 	}
-}
 
-internal class MacOSNativeMenuBarProvider : INativeMenuBarProvider
-{
 	public bool IsSupported => true;
 
 	public void Apply(IList<NativeMenuItem> items)

@@ -2,7 +2,6 @@
 
 using System;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.NativeMenu;
 
@@ -35,11 +34,6 @@ public sealed class NativeMenuToggleItem : NativeMenuItemBase
 	/// Gets or sets whether this menu item is enabled.
 	/// </summary>
 	public bool IsEnabled { get; set; } = true;
-
-	/// <summary>
-	/// Gets or sets the keyboard accelerator for this menu item.
-	/// </summary>
-	public KeyboardAccelerator? KeyboardAccelerator { get; set; }
 
 	/// <summary>
 	/// Occurs when the menu item is invoked.

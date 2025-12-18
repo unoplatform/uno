@@ -1,3 +1,4 @@
+#if __IOS__ || __MACCATALYST__
 #nullable enable
 
 using System.Collections.Generic;
@@ -131,3 +132,4 @@ internal static class NativeMenuBridgeiOS
 		return action;
 	}
 }
+#endif
