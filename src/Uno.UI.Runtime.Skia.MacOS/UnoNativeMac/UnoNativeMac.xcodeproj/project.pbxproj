@@ -24,6 +24,8 @@
 		D1CC768D2ABA1337002A44F0 /* UNOPickers.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CC768C2ABA1337002A44F0 /* UNOPickers.m */; };
 		D1F248A92A67288B008A609E /* UnoNativeMac.h in Headers */ = {isa = PBXBuildFile; fileRef = D1F248A82A67288B008A609E /* UnoNativeMac.h */; };
 		D1FE7A2B2B75C8C300ACFC76 /* UNOSoftView.m in Sources */ = {isa = PBXBuildFile; fileRef = D1FE7A2A2B75C8BB00ACFC76 /* UNOSoftView.m */; };
+		UNOMENU0001 /* UNOMenu.h in Headers */ = {isa = PBXBuildFile; fileRef = UNOMENU0002 /* UNOMenu.h */; };
+		UNOMENU0003 /* UNOMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = UNOMENU0004 /* UNOMenu.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +55,8 @@
 		D1F248A82A67288B008A609E /* UnoNativeMac.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnoNativeMac.h; sourceTree = "<group>"; };
 		D1FE7A2A2B75C8BB00ACFC76 /* UNOSoftView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOSoftView.m; sourceTree = "<group>"; };
 		D1FE7A2C2B75C8E100ACFC76 /* UNOSoftView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOSoftView.h; sourceTree = "<group>"; };
+		UNOMENU0002 /* UNOMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOMenu.h; sourceTree = "<group>"; };
+		UNOMENU0004 /* UNOMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOMenu.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +104,8 @@
 				43BC95F52E618E4700902390 /* MouseButtons.h */,
 				D11A81682D09F05400B3C0A5 /* UNOMediaPlayer.h */,
 				D11A816A2D09F06400B3C0A5 /* UNOMediaPlayer.m */,
+				UNOMENU0002 /* UNOMenu.h */,
+				UNOMENU0004 /* UNOMenu.m */,
 				D11A81642CF523B900B3C0A5 /* UNOWebView.h */,
 				D11A81652CF523B900B3C0A5 /* UNOWebView.m */,
 				D1F248A82A67288B008A609E /* UnoNativeMac.h */,
@@ -135,6 +141,7 @@
 				D1F248A92A67288B008A609E /* UnoNativeMac.h in Headers */,
 				43BC95F62E618E5400902390 /* MouseButtons.h in Headers */,
 				D1A065202A8467B200101BE6 /* UNOApplication.h in Headers */,
+				UNOMENU0001 /* UNOMenu.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +213,7 @@
 				D116C63E2AC79876004B975F /* UNOCursor.m in Sources */,
 				D11A81662CF523B900B3C0A5 /* UNOWebView.m in Sources */,
 				D18D4FAC2C2DE804003E4BBF /* UNONative.m in Sources */,
+				UNOMENU0003 /* UNOMenu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

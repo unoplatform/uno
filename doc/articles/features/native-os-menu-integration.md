@@ -281,17 +281,21 @@ Windows-specific considerations:
 
 ## Platform Support Matrix
 
-| Feature | macOS | iPadOS | Linux (X11) | Linux (FB) | Windows | WebAssembly |
-|---------|-------|--------|-------------|------------|---------|-------------|
-| Basic menu items | ✔ | ✔ | ✔ | ✖ | ✔ | ✖ |
-| Submenus | ✔ | ✔ | ✔ | ✖ | ✔ | ✖ |
-| Separators | ✔ | ✔ | ✔ | ✖ | ✔ | ✖ |
-| Toggle items | ✔ | ✔ | ✔ | ✖ | ✔ | ✖ |
-| Icons | ✔ | ✔ | ✔ | ✖ | ✔ | ✖ |
-| Keyboard accelerators | ✔ | ✔ | ✔ | ✖ | ✔ | ✖ |
-| Dynamic updates | ✔ | ✔ | ✔ | ✖ | ✔ | ✖ |
+| Feature | macOS (Skia) | macOS (Catalyst) | iPadOS | Linux (X11) | Linux (FB) | Windows | WebAssembly |
+|---------|--------------|------------------|--------|-------------|------------|---------|-------------|
+| Basic menu items | ✔ | ✔ | ✔ | 🔲 | ✖ | 🔲 | ✖ |
+| Submenus | ✔ | ✔ | ✔ | 🔲 | ✖ | 🔲 | ✖ |
+| Separators | ✔ | ✔ | ✔ | 🔲 | ✖ | 🔲 | ✖ |
+| Toggle items | ✔ | ✔ | ✔ | 🔲 | ✖ | 🔲 | ✖ |
+| Icons | 🔲 | 🔲 | 🔲 | 🔲 | ✖ | 🔲 | ✖ |
+| Keyboard accelerators | 🔲 | 🔲 | 🔲 | 🔲 | ✖ | 🔲 | ✖ |
+| Dynamic updates | ✔ | ✔ | ✔ | 🔲 | ✖ | 🔲 | ✖ |
+
+**Legend:** ✔ Implemented | 🔲 Planned | ✖ Not applicable
 
 **Notes:**
+- **macOS (Skia)**: Full NSMenu integration via native code
+- **macOS (Catalyst)** and **iPadOS**: UIMenu integration via iOS native APIs
 - Linux Framebuffer has no window manager integration
 - WebAssembly runs in browsers without native OS menu access
 - On unsupported platforms, `NativeMenuBar.GetDefault()` returns `null`
