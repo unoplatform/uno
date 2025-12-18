@@ -1078,7 +1078,7 @@ public class MenuFlyoutIntegrationTests
 
 
 
-	//						   < MenuFlyout x: Name = "menuFlyout" >
+	//						   < MenuFlyout x:Name="menuFlyout" >
 
 
 
@@ -1086,7 +1086,7 @@ public class MenuFlyoutIntegrationTests
 
 
 
-	//								   < Style TargetType = "MenuFlyoutPresenter" >
+	//								   < Style TargetType="MenuFlyoutPresenter" >
 
 
 
@@ -1094,27 +1094,27 @@ public class MenuFlyoutIntegrationTests
 
 
 
-	//								   </ Style >
+	//								   </Style >
 
 
 
-	//							   </ MenuFlyout.MenuFlyoutPresenterStyle >
+	//							   </MenuFlyout.MenuFlyoutPresenterStyle >
 
 
 
-	//							   < MenuFlyoutItem x: Name = "menuFlyoutItem" Text = "MenuFlyoutItem" />
+	//							   < MenuFlyoutItem x:Name="menuFlyoutItem" Text = "MenuFlyoutItem" />
 
 
 
-	//						   </ MenuFlyout >
+	//						   </MenuFlyout >
 
 
 
-	//					   </ Grid.Resources >
+	//					   </Grid.Resources >
 
 
 
-	//				   </ Grid >)"));
+	//				   </Grid >)"));
 
 
 
@@ -2248,9 +2248,9 @@ public class MenuFlyoutIntegrationTests
 
 	//					< Property Name = 'IsPressed' />
 
-	//				</ Rule >
+	//				</Rule >
 
-	//			</ Rules >)");
+	//			</Rules >)");
 
 
 	//	MenuFlyout menuFlyout;
@@ -3804,9 +3804,9 @@ public class MenuFlyoutIntegrationTests
 	//		var root = Grid> (XamlReader.Load(
 	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
 
-	//					  x: Name = 'root' >
+	//					  x:Name='root' >
 
-	//					< Button x: Name = 'button' Content = 'button.flyout' >
+	//					< Button x:Name='button' Content = 'button.flyout' >
 
 	//						< Button.Flyout >
 
@@ -3820,19 +3820,19 @@ public class MenuFlyoutIntegrationTests
 
 	//								< MenuFlyoutSubItem Text = 'Sub Item 1' >
 
-	//									< (MenuFlyoutItem)Sub item 1 </ MenuFlyoutItem >
+	//									< (MenuFlyoutItem)Sub item 1 </MenuFlyoutItem >
 
-	//									< (MenuFlyoutItem)Sub item 2 </ MenuFlyoutItem >
+	//									< (MenuFlyoutItem)Sub item 2 </MenuFlyoutItem >
 
-	//								</ MenuFlyoutSubItem >
+	//								</MenuFlyoutSubItem >
 
-	//							</ MenuFlyout >
+	//							</MenuFlyout >
 
-	//						</ Button.Flyout >
+	//						</Button.Flyout >
 
-	//					</ Button >
+	//					</Button >
 
-	//				</ Grid >)"));
+	//				</Grid >)"));
 
 
 	//		TestServices.WindowHelper.WindowContent = root;
@@ -4010,35 +4010,35 @@ public class MenuFlyoutIntegrationTests
 	//		root = Grid> (XamlReader.Load(
 	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
 
-	//					  x: Name = 'root' >
+	//					  x:Name='root' >
 
-	//					< Button x: Name = 'button' Content = 'button.flyout' >
+	//					< Button x:Name='button' Content = 'button.flyout' >
 
 	//						< Button.Flyout >
 
 	//							< MenuFlyout >
 
-	//								< MenuFlyoutItem x: Name = 'firstMenuFlyoutItem' Text = 'Item 1' />
+	//								< MenuFlyoutItem x:Name='firstMenuFlyoutItem' Text = 'Item 1' />
 
-	//								< MenuFlyoutSeparator x: Name = 'menuFlyoutSeparator' />
+	//								< MenuFlyoutSeparator x:Name='menuFlyoutSeparator' />
 
-	//								< ToggleMenuFlyoutItem x: Name = 'toggleMenuFlyoutItem' Text = 'Item 2' />
+	//								< ToggleMenuFlyoutItem x:Name='toggleMenuFlyoutItem' Text = 'Item 2' />
 
-	//								< MenuFlyoutSubItem x: Name = 'menuFlyoutSubItem' Text = 'Sub Item 1' >
+	//								< MenuFlyoutSubItem x:Name='menuFlyoutSubItem' Text = 'Sub Item 1' >
 
-	//									< (MenuFlyoutItem)Sub item 1 </ MenuFlyoutItem >
+	//									< (MenuFlyoutItem)Sub item 1 </MenuFlyoutItem >
 
-	//									< (MenuFlyoutItem)Sub item 2 </ MenuFlyoutItem >
+	//									< (MenuFlyoutItem)Sub item 2 </MenuFlyoutItem >
 
-	//								</ MenuFlyoutSubItem >
+	//								</MenuFlyoutSubItem >
 
-	//							</ MenuFlyout >
+	//							</MenuFlyout >
 
-	//						</ Button.Flyout >
+	//						</Button.Flyout >
 
-	//					</ Button >
+	//					</Button >
 
-	//				</ Grid >)"));
+	//				</Grid >)"));
 
 
 	//		TestServices.WindowHelper.WindowContent = root;
@@ -4127,35 +4127,35 @@ public class MenuFlyoutIntegrationTests
 	//		root = Grid> (XamlReader.Load(
 	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
 
-	//					  x: Name = 'root' >
+	//					  x:Name='root' >
 
-	//					< Button x: Name = 'button' Content = 'button.flyout' >
+	//					< Button x:Name='button' Content = 'button.flyout' >
 
 	//						< Button.Flyout >
 
 	//							< MenuFlyout >
 
-	//								< MenuFlyoutItem x: Name = 'firstMenuFlyoutItem' Text = 'Item 1' />
+	//								< MenuFlyoutItem x:Name='firstMenuFlyoutItem' Text = 'Item 1' />
 
-	//								< MenuFlyoutSeparator x: Name = 'menuFlyoutSeparator' />
+	//								< MenuFlyoutSeparator x:Name='menuFlyoutSeparator' />
 
-	//								< ToggleMenuFlyoutItem x: Name = 'toggleMenuFlyoutItem' Text = 'Item 2' />
+	//								< ToggleMenuFlyoutItem x:Name='toggleMenuFlyoutItem' Text = 'Item 2' />
 
-	//								< MenuFlyoutSubItem x: Name = 'menuFlyoutSubItem' Text = 'Sub Item 1' >
+	//								< MenuFlyoutSubItem x:Name='menuFlyoutSubItem' Text = 'Sub Item 1' >
 
-	//									< (MenuFlyoutItem)Sub item 1 </ MenuFlyoutItem >
+	//									< (MenuFlyoutItem)Sub item 1 </MenuFlyoutItem >
 
-	//									< (MenuFlyoutItem)Sub item 2 </ MenuFlyoutItem >
+	//									< (MenuFlyoutItem)Sub item 2 </MenuFlyoutItem >
 
-	//								</ MenuFlyoutSubItem >
+	//								</MenuFlyoutSubItem >
 
-	//							</ MenuFlyout >
+	//							</MenuFlyout >
 
-	//						</ Button.Flyout >
+	//						</Button.Flyout >
 
-	//					</ Button >
+	//					</Button >
 
-	//				</ Grid >)"));
+	//				</Grid >)"));
 
 
 	//		TestServices.WindowHelper.WindowContent = root;
@@ -4292,7 +4292,7 @@ public class MenuFlyoutIntegrationTests
 	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' Background='Orange' >
 	//					< TextBlock Text = 'Test MenuFlyout on the visible bounds.' FontSize = '20' />
 
-	//				</ Grid >)"));
+	//				</Grid >)"));
 
 
 	//		TestServices.WindowHelper.WindowContent = rootPanel;
@@ -4729,13 +4729,13 @@ public class MenuFlyoutIntegrationTests
 	//		menuFlyout = MenuFlyout> (XamlReader.Load(
 	//			LR"(<MenuFlyout x:Name="menuFlyout" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
 
-	//					< (MenuFlyoutItem)MenuItem1 </ MenuFlyoutItem >
+	//					< (MenuFlyoutItem)MenuItem1 </MenuFlyoutItem >
 
-	//					< (MenuFlyoutItem)MenuItem2 </ MenuFlyoutItem >
+	//					< (MenuFlyoutItem)MenuItem2 </MenuFlyoutItem >
 
-	//					< (MenuFlyoutItem)MenuItem3 </ MenuFlyoutItem >
+	//					< (MenuFlyoutItem)MenuItem3 </MenuFlyoutItem >
 
-	//				</ MenuFlyout >)"));
+	//				</MenuFlyout >)"));
 
 	//	});
 	//	await TestServices.WindowHelper.WaitForIdle();
@@ -4827,13 +4827,13 @@ public class MenuFlyoutIntegrationTests
 	//				<Button.Flyout>
 	//					< MenuFlyout x:Name = 'menuFlyout' xmlns = 'http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x = 'http://schemas.microsoft.com/winfx/2006/xaml' >
 
-	//						< (MenuFlyoutItem)The menu item </ MenuFlyoutItem >
+	//						< (MenuFlyoutItem)The menu item </MenuFlyoutItem >
 
-	//					</ MenuFlyout >
+	//					</MenuFlyout >
 
-	//				</ Button.Flyout >
+	//				</Button.Flyout >
 
-	//			</ Button >) "));
+	//			</Button >) "));
 
 
 	//		loadedRegistration.Attach(button, (s, e) => { loadedEvent.Set(); });
@@ -4887,9 +4887,9 @@ public class MenuFlyoutIntegrationTests
 	//			{
 	//			rootPanel = Grid> (XamlReader.Load(
 	//				LR"(<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
-	//						< Button x: Name = "button1" Content = "Button 1" />
+	//						< Button x:Name="button1" Content = "Button 1" />
 
-	//					</ Grid >)"));
+	//					</Grid >)"));
 
 	//				TestServices.WindowHelper.WindowContent = rootPanel;
 
@@ -4913,9 +4913,9 @@ public class MenuFlyoutIntegrationTests
 
 	//							< MenuFlyoutItem Text = "menu item 2.2" />
 
-	//						</ MenuFlyoutSubItem >
+	//						</MenuFlyoutSubItem >
 
-	//					</ MenuFlyout >)"));
+	//					</MenuFlyout >)"));
 
 
 	//				button = Button> (rootPanel.FindName("button1"));
@@ -5109,32 +5109,32 @@ public class MenuFlyoutIntegrationTests
 			var rootGrid = (Grid)(XamlReader.Load(
 				"""
 				<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-						Background = "SlateBlue" >
-					< Grid.Resources >
-						< Style x: Key = "MenuFlyoutItemStyle" TargetType = "MenuFlyoutItem" >
-							< Setter Property = "Template" >
-								< Setter.Value >
-									< ControlTemplate TargetType = "MenuFlyoutItem" >
-										< Grid x: Name = "LayoutRoot" >
-											< ContentControl x: Name = "testContentControl" >
-												< TextBlock x: Name = "TextBlock" />
-											</ ContentControl >
-										</ Grid >
-									</ ControlTemplate >
-								</ Setter.Value >
-							</ Setter >
-						</ Style >
-					</ Grid.Resources >
-					< FlyoutBase.AttachedFlyout >
-						< MenuFlyout x: Name = "menuFlyout" >
-							< MenuFlyoutItem x: Name = "menuFlyoutItem" Style = "{StaticResource MenuFlyoutItemStyle}" > Some Text </ MenuFlyoutItem >
-						</ MenuFlyout >
-					</ FlyoutBase.AttachedFlyout >
-				</ Grid >
+						Background="SlateBlue" >
+					<Grid.Resources>
+						<Style x:Key="MenuFlyoutItemStyle" TargetType="MenuFlyoutItem" >
+							<Setter Property="Template" >
+								<Setter.Value>
+									<ControlTemplate TargetType="MenuFlyoutItem">
+										<Grid x:Name="LayoutRoot">
+											<ContentControl x:Name="testContentControl">
+												<TextBlock x:Name="TextBlock" />
+											</ContentControl>
+										</Grid>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</Grid.Resources>
+					<FlyoutBase.AttachedFlyout>
+						<MenuFlyout x:Name="menuFlyout">
+							<MenuFlyoutItem x:Name="menuFlyoutItem" Style="{StaticResource MenuFlyoutItemStyle}">Some Text</MenuFlyoutItem>
+						</MenuFlyout>
+					</FlyoutBase.AttachedFlyout>
+				</Grid>
 				"""
 				));
-			menuFlyout = (MenuFlyout)(rootGrid.FindName("menuFlyout"));
-			menuFlyoutItem = (MenuFlyoutItem)(rootGrid.FindName("menuFlyoutItem"));
+			menuFlyout = FlyoutBase.GetAttachedFlyout(rootGrid) as MenuFlyout;
+			menuFlyoutItem = menuFlyout.Items[0] as MenuFlyoutItem;
 
 			menuFlyoutItem.Command = command;
 
@@ -5512,13 +5512,13 @@ public class MenuFlyoutIntegrationTests
 	//		root = Grid> (XamlReader.Load(
 	//			LR"(<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
 
-	//					  x: Name = 'root' >
+	//					  x:Name='root'>
 
-	//					< Button x: Name = 'buttonTop' Content = 'button top' VerticalAlignment = 'Top' />
+	//					<Button x:Name='buttonTop' Content = 'button top' VerticalAlignment = 'Top' />
 
-	//					< Button x: Name = 'buttonBottom' Content = 'button bottom'  VerticalAlignment = 'Bottom' />
+	//					<Button x:Name='buttonBottom' Content = 'button bottom'  VerticalAlignment = 'Bottom' />
 
-	//				</ Grid >)"));
+	//				</Grid>)"));
 
 
 	//		TestServices.WindowHelper.WindowContent = root;
@@ -5543,7 +5543,7 @@ public class MenuFlyoutIntegrationTests
 
 	//	{
 	//		menuFlyout = MenuFlyout> (XamlReader.Load(
-	//			"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
+	//			"<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>"
 
 	//			"    <MenuFlyoutItem>Menu item 1</MenuFlyoutItem>"
 
