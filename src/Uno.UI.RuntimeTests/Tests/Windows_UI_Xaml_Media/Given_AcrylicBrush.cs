@@ -146,5 +146,54 @@ public class Given_AcrylicBrush
 			((CompositionTarget)sp.Visual.CompositionTarget)!.FrameRendered -= OnFrameRendered;
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Nearby_Dark_Element_Should_Not_Bleed_Through()
+	{
+		// Create a layout with a dark element next to an acrylic element
+		// The dark element should NOT bleed through the acrylic
+		var darkElement = new Border
+		{
+			Width = 50,
+			Height = 100,
+			Background = new SolidColorBrush(Windows.UI.Colors.Black)
+		};
+
+		var acrylicElement = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new AcrylicBrush()
+			{
+				TintColor = Windows.UI.Colors.White,
+				TintOpacity = 0.5,
+				AlwaysUseFallback = false
+			}
+		};
+
+		// Place the elements side by side - dark on left, acrylic on right
+		var layout = new StackPanel
+		{
+			Orientation = Orientation.Horizontal,
+			Background = new SolidColorBrush(Windows.UI.Colors.White),
+			Children = { darkElement, acrylicElement }
+		};
+
+		await UITestHelper.Load(layout);
+
+		// Take a screenshot of the acrylic element's left edge (area closest to dark element)
+		var screenshot = await UITestHelper.ScreenShot(acrylicElement);
+
+		// Sample the left edge of the acrylic (first column of pixels)
+		// These should be light-colored (white-ish) because the acrylic is over white background
+		// If the dark element bleeds through, these pixels would be darker
+		var leftEdgePixel = screenshot.GetPixel(2, 50); // 2 pixels from left, middle height
+
+		// The pixel should be predominantly light (white with some tint)
+		// If bleeding occurs, the luminance would be much lower
+		var luminance = (leftEdgePixel.R + leftEdgePixel.G + leftEdgePixel.B) / 3.0;
+		luminance.Should().BeGreaterThan(150, "The left edge of acrylic should not be darkened by nearby dark element");
+	}
 }
 #endif

@@ -1592,7 +1592,12 @@ $$"""
 	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		UpdateFilter(bounds);
-		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });
+		// Use the Bounds property to constrain the layer area and clip the canvas
+		// to prevent nearby elements from bleeding through the acrylic effect.
+		canvas.Save();
+		canvas.ClipRect(bounds);
+		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
+		canvas.Restore();
 		canvas.Restore();
 	}
 
