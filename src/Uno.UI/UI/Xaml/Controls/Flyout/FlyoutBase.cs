@@ -20,10 +20,9 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
-
 using Microsoft.UI.Dispatching;
-using Uno.UI.DataBinding;
-
+using static Uno.UI.FeatureConfiguration;
+using Windows.System;
 #if __APPLE_UIKIT__
 using View = UIKit.UIView;
 #elif __ANDROID__
@@ -443,10 +442,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				UIElement rootElement = XamlRoot.Content;
+				UIElement rootElement = XamlRoot?.Content;
 				visualRoot = rootElement as FrameworkElement;
 			}
 			ShowAtCore(visualRoot, showOptions);
+		}
+
+		private void EnsureAssociatedXamlRoot(DependencyObject placementTarget)
+		{
+			VisualTree visualTree = VisualTree.GetUniqueVisualTreeNoRef(
+				this,
+				placementTarget,
+				null);
+
+			if (visualTree is not null)
+			{
+				visualTree.AttachElement(this);
+			}
 		}
 
 		private protected virtual void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
