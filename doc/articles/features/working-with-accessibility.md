@@ -143,7 +143,7 @@ When the value of `WinRTFeatureConfiguration.Accessibility.HighContrast` is chan
 ## Tips
 
 - Always set and localize `AppBarButton.Label` (even if it's not displayed on Android and iOS). It is used by the screen reader for accessibility.
-- Always use `x:Uid` to localize the `AutomationProperties.Name` attached property. The name of the resource in the RESW file should look like this: `MyButton.[using:Windows.UI.Xaml.Automation]AutomationProperties.Name`.
+- Always use `x:Uid` to localize the `AutomationProperties.Name` attached property. The name of the resource in the .resw file should look like this: `MyButton.[using:Windows.UI.Xaml.Automation]AutomationProperties.Name`.
 - Avoid using `Opacity="0"` and `IsHitTestVisible="False"` when you can use `Visibility="Collapsed"`. The screen reader can still focus the former, but not the latter.
 - Avoid stacking `TextBlock`s inside  a `Panel` when you can use `Inlines` inside a `TextBlock` (using `LineBreak` if necessary). This allows the screen reader to read all the text at once, instead of having the user select every part manually.
 - Use a converter to trim long text. While a `TextBlock` might ellipsize long text, the screen reader will read the entire text provided.
