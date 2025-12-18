@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 
 namespace Uno.UI.NativeMenu;
@@ -32,9 +33,10 @@ public static class NativeMenuBarSkiaSupport
 	/// Registers a platform-specific native menu bar provider.
 	/// </summary>
 	/// <param name="provider">The provider to register.</param>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="provider"/> is null.</exception>
 	public static void RegisterExtension(INativeMenuBarProvider provider)
 	{
-		_provider = provider;
+		_provider = provider ?? throw new ArgumentNullException(nameof(provider));
 	}
 
 	internal static INativeMenuBarProvider? GetProvider() => _provider;

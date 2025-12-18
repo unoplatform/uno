@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -113,7 +114,16 @@ internal static class NativeMenuCallbackManager
 
 	public static int RegisterCallback(Action callback)
 	{
+		ArgumentNullException.ThrowIfNull(callback);
+
 		EnsureCallbacksRegistered();
+
+		// Handle potential wraparound by clearing old callbacks if we're approaching max value
+		if (_nextCallbackId == int.MaxValue)
+		{
+			_nextCallbackId = 0;
+			_callbacks.Clear();
+		}
 
 		var id = _nextCallbackId++;
 		_callbacks[id] = callback;
