@@ -404,6 +404,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				UIElement rootElement = XamlRoot?.Content;
 				visualRoot = rootElement as FrameworkElement;
 			}
+			EnsureAssociatedXamlRoot(placementTarget);
 			ShowAtCore(visualRoot, showOptions);
 		}
 
