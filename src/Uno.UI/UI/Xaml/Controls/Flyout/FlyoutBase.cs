@@ -23,10 +23,12 @@ using System.Runtime.CompilerServices;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
+using static Uno.UI.FeatureConfiguration;
+
+
 #else
 using Windows.System;
 #endif
-
 #if __APPLE_UIKIT__
 using View = UIKit.UIView;
 #elif __ANDROID__
@@ -399,10 +401,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				UIElement rootElement = XamlRoot.Content;
+				UIElement rootElement = XamlRoot?.Content;
 				visualRoot = rootElement as FrameworkElement;
 			}
 			ShowAtCore(visualRoot, showOptions);
+		}
+
+		private void EnsureAssociatedXamlRoot(DependencyObject placementTarget)
+		{
+			VisualTree visualTree = VisualTree.GetUniqueVisualTreeNoRef(
+				this,
+				placementTarget,
+				null);
+
+			if (visualTree is not null)
+			{
+				visualTree.AttachElement(this);
+			}
 		}
 
 		private protected virtual void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)

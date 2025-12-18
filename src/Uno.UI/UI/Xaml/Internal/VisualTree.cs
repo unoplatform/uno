@@ -926,7 +926,7 @@ namespace Uno.UI.Xaml.Core
 
 		// Helper function for types like Popup, Flyout, and ContentDialog to figure out which VisualTree
 		// it's attached to.  If there is no clear, unambiguous answer, this function returns an error.
-		private static VisualTree GetUniqueVisualTreeNoRef(
+		internal static VisualTree GetUniqueVisualTreeNoRef(
 			DependencyObject element,
 			DependencyObject? positionReferenceElement,
 			VisualTree? explicitTree)
