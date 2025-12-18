@@ -149,6 +149,7 @@ public class Given_AcrylicBrush
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21095")]
 	public async Task When_Nearby_Dark_Element_Should_Not_Bleed_Through()
 	{
 		// Create a layout with a dark element next to an acrylic element
