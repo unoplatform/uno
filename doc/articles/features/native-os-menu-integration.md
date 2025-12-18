@@ -13,7 +13,7 @@ The Native OS Menu Integration API provides a unified cross-platform abstraction
 
 ## Motivation
 
-Developers building cross-platform applications need their apps to feel native on each operating system. Application and menu bar integration is an essential part of user expectations:
+Developers building cross-platform applications need their apps to feel native on each operating system. Application menu and menu bar integration is an essential part of user expectations:
 
 - **macOS**: Users expect standard menu bar items accessible via the global menu bar at the top of the screen
 - **iPadOS**: Stage Manager and external display support brought menu bar support to iPad applications
@@ -196,7 +196,7 @@ namespace Uno.UI.NativeMenu
 
 ### XAML Support
 
-The API should support XAML declaration for ease of use:
+The API should support XAML declaration for ease of use. A type converter would allow specifying keyboard accelerators as strings in XAML (e.g., `"Ctrl+N"`) while the code-behind API uses the `KeyboardAccelerator` type directly:
 
 ```xml
 xmlns:native="using:Uno.UI.NativeMenu"
@@ -262,6 +262,9 @@ xmlns:native="using:Uno.UI.NativeMenu"
 ### Code-Behind Usage
 
 ```csharp
+using Uno.UI.NativeMenu;
+using Windows.System;
+
 // Check if native menus are supported
 if (NativeMenuBar.IsSupported)
 {
