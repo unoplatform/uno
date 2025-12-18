@@ -275,15 +275,9 @@ namespace Microsoft.UI.Xaml
 
 			// Subscribe to SystemNavigationManager events to update callback state
 			var systemNavManager = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
-			systemNavManager.BackHandlerRequired += OnBackHandlerRequiredChanged;
 			systemNavManager.AppViewBackButtonVisibilityChanged += OnAppViewBackButtonVisibilityChanged;
 
 			// Set initial enabled state
-			UpdateBackPressedCallbackEnabled();
-		}
-
-		private void OnBackHandlerRequiredChanged(object? sender, bool required)
-		{
 			UpdateBackPressedCallbackEnabled();
 		}
 
@@ -297,9 +291,10 @@ namespace Microsoft.UI.Xaml
 			if (_backPressedCallback != null)
 			{
 				var systemNavManager = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
-				// Enable the callback when there are subscribers or back button is visible
+				// Enable the callback only when AppViewBackButtonVisibility is Visible.
+				// This is the proactive signal that the app can handle back navigation,
+				// which is required for Android's predictive back gesture to work correctly.
 				_backPressedCallback.Enabled =
-					systemNavManager.HasBackRequestedSubscribers ||
 					systemNavManager.AppViewBackButtonVisibility == AppViewBackButtonVisibility.Visible;
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -407,7 +402,6 @@ namespace Microsoft.UI.Xaml
 
 			// Unsubscribe from SystemNavigationManager events
 			var systemNavManager = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
-			systemNavManager.BackHandlerRequired -= OnBackHandlerRequiredChanged;
 			systemNavManager.AppViewBackButtonVisibilityChanged -= OnAppViewBackButtonVisibilityChanged;
 
 			NativeWindowWrapper.Instance.OnNativeClosed();
