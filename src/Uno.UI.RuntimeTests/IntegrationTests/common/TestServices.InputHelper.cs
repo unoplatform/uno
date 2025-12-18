@@ -155,11 +155,84 @@ namespace Private.Infrastructure
 
 			public static void ClickMouseButton(MouseButton button, Point position)
 			{
-				throw new System.NotImplementedException();
+				EnsureInputInjectorSupported();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+
+					switch (button)
+					{
+						case MouseButton.Left:
+							mouse.Press(position);
+							mouse.Release();
+							break;
+						case MouseButton.Right:
+							mouse.PressRight(position);
+							mouse.ReleaseRight();
+							break;
+						case MouseButton.Middle:
+							mouse.MoveTo(position);
+							mouse.PressMiddle();
+							mouse.ReleaseMiddle();
+							break;
+						default:
+							throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button));
+					}
+				});
 			}
 
-			internal static void MouseButtonDown(Button button1, int v1, int v2, MouseButton right) => throw new NotImplementedException();
-			internal static void MouseButtonUp(Button button1, int v1, int v2, MouseButton right) => throw new NotImplementedException();
+			internal static void MouseButtonDown(FrameworkElement element, int dx, int dy, MouseButton button)
+			{
+				EnsureInputInjectorSupported();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
+					var target = new Point(center.X + dx, center.Y + dy);
+
+					mouse.MoveTo(target);
+
+					switch (button)
+					{
+						case MouseButton.Left:
+							mouse.Press();
+							break;
+						case MouseButton.Right:
+							mouse.PressRight();
+							break;
+						case MouseButton.Middle:
+							mouse.PressMiddle();
+							break;
+						default:
+							throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button));
+					}
+				});
+			}
+
+			internal static void MouseButtonUp(FrameworkElement element, int dx, int dy, MouseButton button)
+			{
+				EnsureInputInjectorSupported();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+
+					switch (button)
+					{
+						case MouseButton.Left:
+							mouse.Release();
+							break;
+						case MouseButton.Right:
+							mouse.ReleaseRight();
+							break;
+						case MouseButton.Middle:
+							mouse.ReleaseMiddle();
+							break;
+						default:
+							throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button));
+					}
+				});
+			}
 
 			private static void EnsureInputInjectorSupported()
 			{
