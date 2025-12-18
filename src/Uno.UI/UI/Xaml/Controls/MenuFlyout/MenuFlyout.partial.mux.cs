@@ -351,7 +351,10 @@ Cleanup:
 	private void CacheInputDeviceTypeUsedToOpen(UIElement pTargetElement)
 	{
 		ContentRoot contentRoot = VisualTree.GetContentRootForElement(pTargetElement);
-		m_inputDeviceTypeUsedToOpen = contentRoot.InputManager.LastInputDeviceType;
+		if (contentRoot is not null)
+		{
+			m_inputDeviceTypeUsedToOpen = contentRoot.InputManager.LastInputDeviceType;
+		}
 	}
 
 #if false
