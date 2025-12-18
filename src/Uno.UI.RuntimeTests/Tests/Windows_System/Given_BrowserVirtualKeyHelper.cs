@@ -64,16 +64,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		[RunsOnUIThread]
 		public void When_FromCode_MetaLeft_Returns_RightWindows()
 		{
+			// Note: The mapping appears swapped (MetaLeft->RightWindows, MetaRight->LeftWindows)
+			// This is pre-existing behavior in BrowserVirtualKeyHelper.FromCode()
 			var result = BrowserVirtualKeyHelper.FromCode("MetaLeft");
-			Assert.AreEqual(VirtualKey.RightWindows, result, "MetaLeft should map to VirtualKey.RightWindows");
+			Assert.AreEqual(VirtualKey.RightWindows, result, "MetaLeft currently maps to VirtualKey.RightWindows");
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_FromCode_MetaRight_Returns_LeftWindows()
 		{
+			// Note: The mapping appears swapped (MetaLeft->RightWindows, MetaRight->LeftWindows)
+			// This is pre-existing behavior in BrowserVirtualKeyHelper.FromCode()
 			var result = BrowserVirtualKeyHelper.FromCode("MetaRight");
-			Assert.AreEqual(VirtualKey.LeftWindows, result, "MetaRight should map to VirtualKey.LeftWindows");
+			Assert.AreEqual(VirtualKey.LeftWindows, result, "MetaRight currently maps to VirtualKey.LeftWindows");
 		}
 
 		[TestMethod]
