@@ -10,6 +10,7 @@ using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.Graphics.Canvas.Effects;
 
 namespace Microsoft.UI.Composition;
 
@@ -52,7 +53,8 @@ public partial class CompositionEffectBrush : CompositionBrush
 			// Check BorderMode property - when Hard, don't expand blur padding to prevent
 			// sampling from areas outside the element bounds (prevents nearby elements from bleeding through)
 			effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderModeProp, out _);
-			bool isHardBorderMode = borderModeProp != 0xFF && (uint?)effectInterop.GetProperty(borderModeProp) == 1; // Hard = 1
+			var borderModeValue = borderModeProp != 0xFF ? effectInterop.GetProperty(borderModeProp) : null;
+			bool isHardBorderMode = borderModeValue is uint mode && mode == (uint)EffectBorderMode.Hard;
 
 			return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter,
 				UseBlurPadding && !isHardBorderMode ?
