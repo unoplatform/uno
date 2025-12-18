@@ -101,6 +101,12 @@ public sealed partial class NativeMenuBar
 
 	private void SubscribeToChanges()
 	{
+		// Subscribe to existing items in the collection
+		foreach (var item in _items)
+		{
+			SubscribeToMenuItem(item);
+		}
+
 		SubscribeToChangesPartial();
 	}
 
@@ -133,6 +139,10 @@ public sealed partial class NativeMenuBar
 
 	private void SubscribeToMenuItem(NativeMenuItem item)
 	{
+		// Unsubscribe first to prevent duplicate subscriptions
+		item.PropertyChanged -= OnMenuItemPropertyChanged;
+		item.ItemsChanged -= OnMenuItemChildrenChanged;
+
 		item.PropertyChanged += OnMenuItemPropertyChanged;
 		item.ItemsChanged += OnMenuItemChildrenChanged;
 
@@ -157,10 +167,13 @@ public sealed partial class NativeMenuBar
 
 	private void SubscribeToMenuItemBase(NativeMenuItemBase item)
 	{
+		// Unsubscribe first to prevent duplicate subscriptions
+		item.PropertyChanged -= OnMenuItemPropertyChanged;
 		item.PropertyChanged += OnMenuItemPropertyChanged;
 
 		if (item is NativeMenuItem menuItem)
 		{
+			menuItem.ItemsChanged -= OnMenuItemChildrenChanged;
 			menuItem.ItemsChanged += OnMenuItemChildrenChanged;
 			foreach (var child in menuItem.Items)
 			{

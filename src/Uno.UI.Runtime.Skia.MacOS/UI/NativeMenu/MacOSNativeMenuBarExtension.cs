@@ -151,6 +151,7 @@ internal class MacOSNativeMenuBarExtension : INativeMenuBarExtension
 /// </summary>
 internal static class NativeMenuCallbackManager
 {
+	private static readonly object _lock = new();
 	private static readonly Dictionary<int, Action> _callbacks = new();
 	private static int _nextCallbackId;
 	private static bool _callbacksRegistered;
@@ -161,15 +162,21 @@ internal static class NativeMenuCallbackManager
 
 		EnsureCallbacksRegistered();
 
-		var id = _nextCallbackId++;
-		_callbacks[id] = callback;
-		return id;
+		lock (_lock)
+		{
+			var id = _nextCallbackId++;
+			_callbacks[id] = callback;
+			return id;
+		}
 	}
 
 	public static void ClearCallbacks()
 	{
-		_callbacks.Clear();
-		_nextCallbackId = 0;
+		lock (_lock)
+		{
+			_callbacks.Clear();
+			_nextCallbackId = 0;
+		}
 	}
 
 	private static unsafe void EnsureCallbacksRegistered()
@@ -186,10 +193,13 @@ internal static class NativeMenuCallbackManager
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
 	private static void OnMenuItemInvoked(int callbackId)
 	{
-		if (_callbacks.TryGetValue(callbackId, out var callback))
+		Action? callback;
+		lock (_lock)
 		{
-			callback();
+			_callbacks.TryGetValue(callbackId, out callback);
 		}
+
+		callback?.Invoke();
 	}
 }
 
