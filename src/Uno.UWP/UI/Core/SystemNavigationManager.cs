@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
@@ -7,6 +7,9 @@ namespace Windows.UI.Core
 	public sealed partial class SystemNavigationManager
 	{
 		private static SystemNavigationManager _instance;
+
+		private event EventHandler<BackRequestedEventArgs> _backRequested;
+		private bool _hasBackRequestedSubscribers;
 
 		public static SystemNavigationManager GetForCurrentView()
 		{
@@ -18,7 +21,35 @@ namespace Windows.UI.Core
 			return _instance;
 		}
 
-		public event EventHandler<BackRequestedEventArgs> BackRequested = delegate { };
+		public event EventHandler<BackRequestedEventArgs> BackRequested
+		{
+			add
+			{
+				_backRequested += value;
+				var hadSubscribers = _hasBackRequestedSubscribers;
+				_hasBackRequestedSubscribers = true;
+				if (!hadSubscribers)
+				{
+					BackHandlerRequired?.Invoke(this, true);
+				}
+			}
+			remove
+			{
+				_backRequested -= value;
+				var hadSubscribers = _hasBackRequestedSubscribers;
+				_hasBackRequestedSubscribers = _backRequested != null;
+				if (hadSubscribers && !_hasBackRequestedSubscribers)
+				{
+					BackHandlerRequired?.Invoke(this, false);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Event raised when the back handler requirement changes.
+		/// Used by platform-specific code to enable/disable native back button handling.
+		/// </summary>
+		internal event EventHandler<bool> BackHandlerRequired;
 
 		private AppViewBackButtonVisibility _appViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
@@ -52,9 +83,14 @@ namespace Windows.UI.Core
 		internal bool RequestBack()
 		{
 			var args = new BackRequestedEventArgs();
-			BackRequested?.Invoke(this, args);
+			_backRequested?.Invoke(this, args);
 
 			return args.Handled;
 		}
+
+		/// <summary>
+		/// Gets whether there are any subscribers to the BackRequested event.
+		/// </summary>
+		internal bool HasBackRequestedSubscribers => _hasBackRequestedSubscribers;
 	}
 }

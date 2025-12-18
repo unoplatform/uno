@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Android.App;
 using Android.Content;
@@ -23,6 +23,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Windows.Storage.Pickers;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -36,6 +37,7 @@ namespace Microsoft.UI.Xaml
 		private static ClippedRelativeLayout? _nativeLayerHost;
 
 		private InputPane _inputPane;
+		private SystemNavigationManagerBackPressedCallback? _backPressedCallback;
 
 		private static bool _started;
 		private bool _isContentViewSet;
@@ -257,7 +259,54 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
 
+			// Register the OnBackPressedCallback for Android 36+ back gesture support
+			RegisterBackPressedCallback();
+
 			RaiseConfigurationChanges();
+		}
+
+		private void RegisterBackPressedCallback()
+		{
+			_backPressedCallback = new SystemNavigationManagerBackPressedCallback(this);
+
+			// Add the callback to the dispatcher with this activity as the lifecycle owner
+			// This ensures the callback is automatically removed when the activity is destroyed
+			OnBackPressedDispatcher.AddCallback(this, _backPressedCallback);
+
+			// Subscribe to SystemNavigationManager events to update callback state
+			var systemNavManager = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
+			systemNavManager.BackHandlerRequired += OnBackHandlerRequiredChanged;
+			systemNavManager.AppViewBackButtonVisibilityChanged += OnAppViewBackButtonVisibilityChanged;
+
+			// Set initial enabled state
+			UpdateBackPressedCallbackEnabled();
+		}
+
+		private void OnBackHandlerRequiredChanged(object? sender, bool required)
+		{
+			UpdateBackPressedCallbackEnabled();
+		}
+
+		private void OnAppViewBackButtonVisibilityChanged(object? sender, AppViewBackButtonVisibility visibility)
+		{
+			UpdateBackPressedCallbackEnabled();
+		}
+
+		private void UpdateBackPressedCallbackEnabled()
+		{
+			if (_backPressedCallback != null)
+			{
+				var systemNavManager = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
+				// Enable the callback when there are subscribers or back button is visible
+				_backPressedCallback.Enabled =
+					systemNavManager.HasBackRequestedSubscribers ||
+					systemNavManager.AppViewBackButtonVisibility == AppViewBackButtonVisibility.Visible;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"OnBackPressedCallback Enabled={_backPressedCallback.Enabled}");
+				}
+			}
 		}
 
 		protected override void OnStart()
@@ -355,6 +404,11 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.Stop();
 			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
 			LayoutProvider.InsetsChanged -= OnInsetsChanged;
+
+			// Unsubscribe from SystemNavigationManager events
+			var systemNavManager = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
+			systemNavManager.BackHandlerRequired -= OnBackHandlerRequiredChanged;
+			systemNavManager.AppViewBackButtonVisibilityChanged -= OnAppViewBackButtonVisibilityChanged;
 
 			NativeWindowWrapper.Instance.OnNativeClosed();
 		}
@@ -493,6 +547,42 @@ namespace Microsoft.UI.Xaml
 			{
 				base.OnDraw(canvas);
 				canvas.ClipPath(_androidPath);
+			}
+		}
+
+		/// <summary>
+		/// Custom OnBackPressedCallback for Android's predictive back gesture support.
+		/// This callback is used instead of the deprecated OnBackPressed method for Android 36+.
+		/// </summary>
+		private sealed class SystemNavigationManagerBackPressedCallback : OnBackPressedCallback
+		{
+			private readonly ApplicationActivity _activity;
+
+			public SystemNavigationManagerBackPressedCallback(ApplicationActivity activity)
+				: base(enabled: false) // Start disabled, will be enabled when subscribers are added
+			{
+				_activity = activity;
+			}
+
+			public override void HandleOnBackPressed()
+			{
+				var handled = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
+
+				if (!handled)
+				{
+					// If not handled by the app, let the system handle it
+					// Temporarily disable ourselves and re-trigger the back press
+					Enabled = false;
+					try
+					{
+						_activity.OnBackPressedDispatcher.OnBackPressed();
+					}
+					finally
+					{
+						// Re-enable ourselves based on the current state
+						_activity.UpdateBackPressedCallbackEnabled();
+					}
+				}
 			}
 		}
 	}
