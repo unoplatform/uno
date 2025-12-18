@@ -32,11 +32,17 @@ public partial class InputInjector
 
 	private readonly InjectedInputState _mouse = new(PointerDeviceType.Mouse);
 	private (InjectedInputState state, bool isAdded)? _touch;
+	private (InjectedInputState state, bool isAdded)? _pen;
 
 	/// <summary>
 	/// Gets the current state of the mouse pointer
 	/// </summary>
 	internal InjectedInputState Mouse => _mouse;
+
+	/// <summary>
+	/// Gets the current state of the pen pointer
+	/// </summary>
+	internal InjectedInputState? Pen => _pen?.state;
 
 	private readonly IInputInjectorTarget _target;
 
@@ -129,16 +135,81 @@ public partial class InputInjector
 			_target.InjectPointerUpdated(args);
 			await WaitForIdle(ct);
 
-			if (info.PointerInfo.PointerOptions.HasFlag(InjectedInputPointerOptions.PointerUp))
-			{
-				_target.InjectPointerRemoved(args);
-				_touch = (touch, isAdded: false);
-				await WaitForIdle(ct);
+					if (info.PointerInfo.PointerOptions.HasFlag(InjectedInputPointerOptions.PointerUp))
+					{
+						_target.InjectPointerRemoved(args);
+						_touch = (touch, isAdded: false);
+						await WaitForIdle(ct);
+					}
+				}
 			}
-		}
-	}
 
-	private const InjectedInputMouseOptions _mouseButtonDown = InjectedInputMouseOptions.LeftDown | InjectedInputMouseOptions.MiddleDown | InjectedInputMouseOptions.RightDown | InjectedInputMouseOptions.XDown;
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+			public void InitializePenInjection(InjectedInputVisualizationMode visualMode)
+			{
+				UninitializePenInjection();
+
+				_pen = (new InjectedInputState(PointerDeviceType.Pen), isAdded: false);
+			}
+
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+			public void UninitializePenInjection()
+			{
+				if (_pen is not null)
+				{
+					var cancel = new InjectedInputPenInfo
+					{
+						PointerInfo = new()
+						{
+							PointerId = 1,
+							PointerOptions = InjectedInputPointerOptions.Canceled
+						}
+					};
+
+					_target.InjectPointerRemoved(cancel.ToEventArgs(_pen.Value.state));
+
+					_pen = null;
+				}
+			}
+
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+			public void InjectPenInput(InjectedInputPenInfo input)
+			{
+				if (_pen is null)
+				{
+					InitializePenInjection(InjectedInputVisualizationMode.Default);
+				}
+
+				var pen = _pen!.Value.state;
+				var args = input.ToEventArgs(pen);
+
+				if (_pen is { isAdded: false })
+				{
+					_target.InjectPointerAdded(args);
+					_pen = (pen, isAdded: true);
+				}
+
+				pen.Update(args);
+
+				_target.InjectPointerUpdated(args);
+
+				if (input.PointerInfo.PointerOptions.HasFlag(InjectedInputPointerOptions.PointerUp))
+				{
+					_target.InjectPointerRemoved(args);
+					_pen = (pen, isAdded: false);
+				}
+			}
+
+			// TODO: Move as extension method
+			internal void InjectPenInput(IEnumerable<InjectedInputPenInfo> input)
+			{
+				foreach (var info in input)
+				{
+					InjectPenInput(info);
+				}
+			}
+
+			private const InjectedInputMouseOptions _mouseButtonDown = InjectedInputMouseOptions.LeftDown | InjectedInputMouseOptions.MiddleDown | InjectedInputMouseOptions.RightDown | InjectedInputMouseOptions.XDown;
 
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 	public void InjectMouseInput(IEnumerable<InjectedInputMouseInfo> input)
