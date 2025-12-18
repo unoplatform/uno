@@ -1,17 +1,14 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.System;
-
-#if __WASM__
 using Uno.UI.RuntimeTests.Helpers;
-#endif
+using Windows.System;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_System
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Wasm)]
 	public class Given_BrowserVirtualKeyHelper
 	{
-#if __WASM__
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_FromCode_ControlLeft_Returns_Control()
@@ -111,6 +108,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 			var result = BrowserVirtualKeyHelper.FromCode("UnknownKey123");
 			Assert.AreEqual(VirtualKey.None, result, "Unknown key codes should map to VirtualKey.None");
 		}
-#endif
 	}
 }
