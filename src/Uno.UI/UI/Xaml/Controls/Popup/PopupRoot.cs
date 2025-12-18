@@ -19,7 +19,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupRoot : Canvas
 {
-	private readonly List<ManagedWeakReference> _openPopups = new();
+	// A linked list of open popups. The most recently opened is at the head.
+	private readonly LinkedList<ManagedWeakReference> _openPopups = new();
 
 	private readonly SerialDisposable _subscriptions = new();
 
@@ -71,10 +72,11 @@ internal partial class PopupRoot : Canvas
 
 	internal void CloseLightDismissablePopups()
 	{
-		for (var i = _openPopups.Count - 1; i >= 0; i--)
+		var node = _openPopups.First;
+		while (node != null)
 		{
-			var reference = _openPopups[i];
-			if (!reference.IsDisposed && reference.Target is Popup { IsLightDismissEnabled: true } popup)
+			var next = node.Next;
+			if (!node.Value.IsDisposed && node.Value.Target is Popup { IsLightDismissEnabled: true } popup)
 			{
 				if (popup.AssociatedFlyout is { } flyout)
 				{
@@ -85,6 +87,7 @@ internal partial class PopupRoot : Canvas
 					popup.IsOpen = false;
 				}
 			}
+			node = next;
 		}
 	}
 
@@ -160,7 +163,8 @@ internal partial class PopupRoot : Canvas
 		{
 			popupRegistration = WeakReferencePool.RentWeakReference(popup, popup);
 
-			_openPopups.Add(popupRegistration);
+			// Insert at head so the most recently opened popup is first
+			_openPopups.AddFirst(popupRegistration);
 		}
 
 		return Disposable.Create(() => _openPopups.Remove(popupRegistration));
@@ -168,12 +172,15 @@ internal partial class PopupRoot : Canvas
 
 	private void CleanupPopupReferences()
 	{
-		for (int i = _openPopups.Count - 1; i >= 0; i--)
+		var node = _openPopups.First;
+		while (node != null)
 		{
-			if (_openPopups[i].IsDisposed || _openPopups[i].Target is null)
+			var next = node.Next;
+			if (node.Value.IsDisposed || node.Value.Target is null)
 			{
-				_openPopups.RemoveAt(i);
+				_openPopups.Remove(node);
 			}
+			node = next;
 		}
 	}
 
