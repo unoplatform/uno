@@ -237,7 +237,7 @@ namespace Private.Infrastructure
 			private static void EnsureInputInjectorSupported()
 			{
 #if !WINAPPSDK && !HAS_INPUT_INJECTOR
-				Assert.Inconclusive("InputInjector is not supported on this platform.");		
+				Assert.Inconclusive("InputInjector is not supported on this platform.");
 #endif
 			}
 		}
