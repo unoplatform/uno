@@ -1595,7 +1595,7 @@ $$"""
 		// Use the Bounds property to constrain the layer area and clip the canvas
 		// to prevent nearby elements from bleeding through the acrylic effect.
 		canvas.Save();
-		canvas.ClipRect(bounds);
+		canvas.ClipRect(bounds, antialias: true);
 		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter, Bounds = bounds });
 		canvas.Restore();
 		canvas.Restore();
