@@ -544,6 +544,8 @@
               href: controls/MediaPlayerElement.md
             - name: MenuFlyout
               href: controls/MenuFlyout.md
+            - name: Native OS Menu Integration (Proposal)
+              href: xref:Uno.Features.NativeOSMenuIntegration
             - name: NavigationView
               href: controls/NavigationView.md
             - name: Native control styles
