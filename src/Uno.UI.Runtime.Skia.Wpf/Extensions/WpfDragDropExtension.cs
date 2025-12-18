@@ -23,6 +23,7 @@ using WpfControl = System.Windows.Controls.Control;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Microsoft.UI.Input;
 
 namespace Uno.UI.Runtime.Skia.Wpf
 {
@@ -53,7 +54,8 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			var src = new DragEventSource(_fakePointerId, e);
 			var data = ToDataPackage(e.Data);
 			var allowedOperations = ToDataPackageOperation(e.AllowedEffects);
-			var info = new CoreDragInfo(src, data.GetView(), allowedOperations);
+			var dragUI = CreateDragUIForExternalDrag(e.Data);
+			var info = new CoreDragInfo(src, data.GetView(), allowedOperations, dragUI);
 
 			_coreDragDropManager.DragStarted(info);
 
@@ -171,6 +173,118 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			}
 
 			return dst;
+		}
+
+		private static DragUI? CreateDragUIForExternalDrag(IDataObject src)
+		{
+			var dragUI = new DragUI(PointerDeviceType.Mouse);
+
+			// Check if we're dragging an image file that can be shown as a thumbnail
+			if (src.GetData(DataFormats.Bitmap) is BitmapSource bitmap)
+			{
+				// Convert WPF BitmapSource to Uno BitmapImage for DragUI
+				var unoImage = ConvertBitmapSourceToUnoBitmapImage(bitmap);
+				if (unoImage is not null)
+				{
+					dragUI.SetContentFromExternalBitmapImage(unoImage);
+					return dragUI;
+				}
+			}
+
+			// If we have file paths, try to load the first image file as a thumbnail
+			if (src.GetData(DataFormats.FileDrop) is string[] files && files.Length > 0)
+			{
+				var imageFile = files.FirstOrDefault(f => IsImageFile(f));
+				if (imageFile is not null)
+				{
+					try
+					{
+						var unoImage = LoadImageFromFile(imageFile);
+						if (unoImage is not null)
+						{
+							dragUI.SetContentFromExternalBitmapImage(unoImage);
+							return dragUI;
+						}
+					}
+					catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException)
+					{
+						// If we can't load the image (file not found, no access, unsupported format, or invalid path),
+						// continue without visual feedback
+						var logger = typeof(WpfDragDropExtension).Log();
+						if (logger.IsEnabled(LogLevel.Debug))
+						{
+							logger.LogDebug($"Failed to load image thumbnail for drag operation: {ex.Message}");
+						}
+					}
+				}
+			}
+
+			return dragUI;
+		}
+
+		private static bool IsImageFile(string filePath)
+		{
+			// Common image formats supported by WPF BitmapImage
+			// Note: Additional formats can be added here as needed
+			var extension = Path.GetExtension(filePath).ToLowerInvariant();
+			return extension is ".png" or ".jpg" or ".jpeg" or ".gif" or ".bmp" or ".tiff" or ".ico";
+		}
+
+		private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? LoadImageFromFile(string filePath)
+		{
+			try
+			{
+				// Validate file path to prevent potential security issues
+				if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+				{
+					return null;
+				}
+
+				// Load the WPF bitmap
+				var wpfBitmap = new System.Windows.Media.Imaging.BitmapImage();
+				wpfBitmap.BeginInit();
+				wpfBitmap.CacheOption = BitmapCacheOption.OnLoad;
+				wpfBitmap.CreateOptions = BitmapCreateOptions.None;
+				wpfBitmap.UriSource = new Uri(filePath, UriKind.Absolute);
+				wpfBitmap.DecodePixelWidth = 96; // Limit thumbnail size
+				wpfBitmap.EndInit();
+				wpfBitmap.Freeze();
+
+				// Convert to Uno BitmapImage
+				return ConvertBitmapSourceToUnoBitmapImage(wpfBitmap);
+			}
+			catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException)
+			{
+				// Failed to load image - file might not exist, no access, unsupported format, or invalid path
+				return null;
+			}
+		}
+
+		private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? ConvertBitmapSourceToUnoBitmapImage(BitmapSource wpfBitmap)
+		{
+			try
+			{
+				// Encode the WPF bitmap to a stream
+				// Note: The using statement disposes the MemoryStream after SetSource() completes.
+				// This is safe because SetSource() reads and copies the stream data synchronously.
+				// Pre-allocate buffer for typical thumbnail size to avoid reallocations
+				using var memoryStream = new MemoryStream(capacity: 8192);
+				var encoder = new PngBitmapEncoder();
+				encoder.Frames.Add(BitmapFrame.Create(wpfBitmap));
+				encoder.Save(memoryStream);
+				memoryStream.Position = 0;
+
+				// Create Uno BitmapImage from the stream
+				var unoBitmap = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
+				unoBitmap.SetSource(memoryStream.AsRandomAccessStream());
+
+				return unoBitmap;
+			}
+			catch (Exception ex) when (ex is IOException or NotSupportedException or InvalidOperationException)
+			{
+				// Failed to convert bitmap - encoding or stream operations failed
+				return null;
+			}
 		}
 
 		private static async Task<DataObject> ToDataObject(DataPackageView src, CancellationToken ct)
