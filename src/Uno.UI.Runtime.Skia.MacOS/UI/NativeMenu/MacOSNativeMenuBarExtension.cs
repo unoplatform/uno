@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Uno.Foundation.Extensibility;
@@ -15,6 +17,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 internal class MacOSNativeMenuBarExtension : INativeMenuBarExtension
 {
 	private static readonly MacOSNativeMenuBarExtension _instance = new();
+	private ObservableCollection<NativeMenuItem>? _currentItems;
 
 	private MacOSNativeMenuBarExtension()
 	{
@@ -27,8 +30,52 @@ internal class MacOSNativeMenuBarExtension : INativeMenuBarExtension
 
 	public bool IsSupported => true;
 
-	public void Apply(IReadOnlyList<NativeMenuItem> items)
+	public void Apply(ObservableCollection<NativeMenuItem> items)
 	{
+		_currentItems = items;
+		RebuildEntireMenu(items);
+	}
+
+	public void SubscribeToChanges(ObservableCollection<NativeMenuItem> items)
+	{
+		// The NativeMenuBar already subscribes to changes and forwards them to this extension.
+		// This method is called to inform us that change tracking is now active.
+		_currentItems = items;
+	}
+
+	public void OnItemsChanged(ObservableCollection<NativeMenuItem> items, NotifyCollectionChangedEventArgs e)
+	{
+		// For top-level menu changes, rebuild the entire menu bar
+		// NSMenu doesn't have a simple way to insert/remove items at the menu bar level
+		RebuildEntireMenu(items);
+	}
+
+	public void OnMenuItemPropertyChanged(NativeMenuItemBase item, string? propertyName)
+	{
+		// For property changes, we need to rebuild the menu structure
+		// macOS NSMenu doesn't easily support in-place updates of menu items
+		// A more sophisticated implementation could track menu item handles and update them
+		if (_currentItems != null)
+		{
+			RebuildEntireMenu(_currentItems);
+		}
+	}
+
+	public void OnSubItemsChanged(NativeMenuItem parent, NotifyCollectionChangedEventArgs e)
+	{
+		// For submenu changes, rebuild the entire menu
+		// A more sophisticated implementation could rebuild only the affected submenu
+		if (_currentItems != null)
+		{
+			RebuildEntireMenu(_currentItems);
+		}
+	}
+
+	private void RebuildEntireMenu(ObservableCollection<NativeMenuItem> items)
+	{
+		// Clear callbacks before rebuilding
+		NativeMenuCallbackManager.ClearCallbacks();
+
 		// Clear existing menus first
 		NativeMenuInterop.uno_menu_bar_clear();
 
@@ -114,16 +161,15 @@ internal static class NativeMenuCallbackManager
 
 		EnsureCallbacksRegistered();
 
-		// Handle potential wraparound by clearing old callbacks if we're approaching max value
-		if (_nextCallbackId == int.MaxValue)
-		{
-			_nextCallbackId = 0;
-			_callbacks.Clear();
-		}
-
 		var id = _nextCallbackId++;
 		_callbacks[id] = callback;
 		return id;
+	}
+
+	public static void ClearCallbacks()
+	{
+		_callbacks.Clear();
+		_nextCallbackId = 0;
 	}
 
 	private static unsafe void EnsureCallbacksRegistered()

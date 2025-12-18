@@ -2,6 +2,8 @@
 #nullable enable
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using UIKit;
 
@@ -21,6 +23,27 @@ public sealed partial class NativeMenuBar
 		// This implementation stores the menu structure to be used when the system requests menu building.
 		NativeMenuBridgeiOS.SetMenuItems(_items);
 	}
+
+	partial void SubscribeToChangesPartial()
+	{
+		// iOS menu changes are reflected when the system rebuilds the menu
+		// Changes to the menu items collection will be picked up on next menu rebuild
+	}
+
+	partial void OnItemsChangedPartial(NotifyCollectionChangedEventArgs e)
+	{
+		// iOS will pick up changes when the menu is next rebuilt by the system
+	}
+
+	partial void OnMenuItemPropertyChangedPartial(NativeMenuItemBase item, string? propertyName)
+	{
+		// iOS will pick up changes when the menu is next rebuilt by the system
+	}
+
+	partial void OnSubItemsChangedPartial(NativeMenuItem parent, NotifyCollectionChangedEventArgs e)
+	{
+		// iOS will pick up changes when the menu is next rebuilt by the system
+	}
 }
 
 /// <summary>
@@ -28,9 +51,9 @@ public sealed partial class NativeMenuBar
 /// </summary>
 internal static class NativeMenuBridgeiOS
 {
-	private static IReadOnlyList<NativeMenuItem>? _menuItems;
+	private static ObservableCollection<NativeMenuItem>? _menuItems;
 
-	internal static void SetMenuItems(IReadOnlyList<NativeMenuItem> items)
+	internal static void SetMenuItems(ObservableCollection<NativeMenuItem> items)
 	{
 		_menuItems = items;
 	}
