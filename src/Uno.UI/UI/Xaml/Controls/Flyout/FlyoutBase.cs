@@ -382,15 +382,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public void ShowAt(FrameworkElement placementTarget)
 		{
-			ShowAtCore(placementTarget, null);
+			ShowAt(placementTarget, null);
 		}
 
 		public void ShowAt(DependencyObject placementTarget, FlyoutShowOptions showOptions)
 		{
-			if (placementTarget is FrameworkElement fe)
+			FrameworkElement visualRoot;
+			// Show at the target element, if target is null use the frame as target
+			if (placementTarget is not null)
 			{
-				ShowAtCore(fe, showOptions);
+				visualRoot = placementTarget as FrameworkElement;
 			}
+			else
+			{
+				UIElement rootElement = XamlRoot.Content;
+				visualRoot = rootElement as FrameworkElement;
+			}
+			ShowAtCore(visualRoot, showOptions);
 		}
 
 		private protected virtual void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
