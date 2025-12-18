@@ -10,14 +10,14 @@ namespace Microsoft.UI.Xaml.Input;
 internal class KeyboardAcceleratorCollection : DependencyObjectCollection<KeyboardAccelerator>
 {
 #if HAS_UNO // TODO: Uno specific - workaround for the lack of support for Enter/Leave on DOs.
-	private ParentVisualTreeListener _parentVisualTreeListener;
+	//private ParentVisualTreeListener _parentVisualTreeListener;
 
 	public KeyboardAcceleratorCollection(DependencyObject parent) : base(parent, true)
 	{
-		_parentVisualTreeListener = new ParentVisualTreeListener(
-			this,
-			() => Enter(null, new EnterParams(true)),
-			() => Leave(null, new LeaveParams(true)));
+		//_parentVisualTreeListener = new ParentVisualTreeListener(
+		//	this,
+		//	() => Enter(null, new EnterParams(true)),
+		//	() => Leave(null, new LeaveParams(true)));
 	}
 #endif
 
