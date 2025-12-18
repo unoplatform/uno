@@ -24,9 +24,6 @@
         mtkView.sampleCount = 1;
         // this property has no effect on x86_64, only on arm64, and is required for sampling (which acrylicbrush does)
         mtkView.framebufferOnly = false;
-        // Prevent content stretching during window resize by pinning to top-left. cf. https://github.com/unoplatform/uno/issues/22159
-        mtkView.layerContentsPlacement = NSViewLayerContentsPlacementTopLeft;
-        mtkView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawDuringViewResize;
 #if DEBUG
         NSLog(@"initWithMetalKitView: paused %s enableSetNeedsDisplay %s", mtkView.paused ? "true" : "false", mtkView.enableSetNeedsDisplay ? "true" : "false");
 #endif
