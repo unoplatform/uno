@@ -276,7 +276,7 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
 
-			// Register the OnBackPressedCallback for Android 36+ back gesture support
+			// Register the OnBackPressedCallback for Android predictive back gesture support
 			RegisterBackPressedCallback();
 
 			RaiseConfigurationChanges();
@@ -494,7 +494,7 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Custom OnBackPressedCallback for Android's predictive back gesture support.
-		/// This callback is used instead of the deprecated OnBackPressed method for Android 36+.
+		/// This callback is used instead of the deprecated OnBackPressed method.
 		/// </summary>
 		private sealed class SystemNavigationManagerBackPressedCallback : OnBackPressedCallback
 		{

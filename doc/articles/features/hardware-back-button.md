@@ -34,7 +34,7 @@ Make sure to unsubscribe from the event when no longer needed.
 
 ## Android predictive back gesture support
 
-Starting with Android 13 (API 33) and becoming mandatory in Android 15 (API 35), Android introduced support for predictive back gestures. Uno Platform supports this feature by using the modern `OnBackPressedCallback` API instead of the deprecated `OnBackPressed` method.
+Starting with Android 13 (API 33) and becoming more prominent in Android 14 (API 34) and Android 15 (API 35), Android introduced support for predictive back gestures. Uno Platform supports this feature by using the modern `OnBackPressedCallback` API instead of the deprecated `OnBackPressed` method.
 
 This means:
 
