@@ -194,11 +194,41 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				configureServer.MetadataUpdateCapabilities,
 				properties,
 				ct);
-			return (outputPath, intermediateOutputPath, solution, watch);
+
+			return new HotReloadWorkspace(workspace, watch, [Trim(outputPath), Trim(intermediateOutputPath)]);
+
+			// We make sure to trim the output path from any TFM / RID / Configuration suffixes
+			// This is to make sure that is we have multiple active HR workspace (like an old Android emulator reconnecting while a desktop app is running),
+			// we will not consider the files of the other targets.
+			string? Trim(string? outDir)
+			{
+				var result = outDir;
+				while(!string.IsNullOrWhiteSpace(result))
+				{
+					var updated = result
+						.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+						.TrimEnd(targetFramework, _pathsComparison)
+						.TrimEnd(runtimeIdentifier, _pathsComparison)
+						.TrimEnd(properties.GetValueOrDefault("Configuration"), _pathsComparison);
+					if (updated == result)
+					{
+						return result + Path.DirectorySeparatorChar; // We make sure to restore the dir separator at the end to make sure filters applies only on folders!
+					}
+					else
+					{
+						result = updated;
+					}
+				}
+
+				return null;
+			}
 		}
 
 		private IDisposable ObserveSolutionPaths(Solution solution, params string?[] excludedDirPattern)
 		{
+			// TODO: Resolve the bin and obj folders from the project (instead of assuming same config for all projects)
+			// e.g.: projectDir.First().AnalyzerOptions.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.intermediateoutputpath", out string value)
+			// Not implemented yet: for a netstd2.0 project, we don't have properties such intermediateoutputpath available!
 			ImmutableArray<string> excludedDir =
 			[
 				.. from pattern in excludedDirPattern
