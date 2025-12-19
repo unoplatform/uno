@@ -113,6 +113,7 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 							success = true;
 							break;
 						}
+						Thread.Sleep(TimeSpan.FromMilliseconds(10));
 					}
 
 					if (!success)
