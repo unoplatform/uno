@@ -226,12 +226,12 @@ internal partial class Win32DragDropExtension
 		var formatEtc = formatEtcNullable.Value;
 
 		HRESULT hResult3;
-		var localDataObject = dataObject;
+		IntPtr ptr;
 		fixed (Guid* guidPtr = &_asyncCapabilityGuid)
 		{
-			hResult3 = dataObject->QueryInterface(guidPtr, (void**)&localDataObject);
+			hResult3 = dataObject->QueryInterface(guidPtr, (void**)&ptr);
 		}
-		var asyncCapability = (IDataObjectAsyncCapability*)localDataObject;
+		var asyncCapability = (IDataObjectAsyncCapability*)ptr;
 		if (!hResult3.Succeeded || !asyncCapability->GetAsyncMode(out var isAsync).Succeeded || !isAsync)
 		{
 			return false;
